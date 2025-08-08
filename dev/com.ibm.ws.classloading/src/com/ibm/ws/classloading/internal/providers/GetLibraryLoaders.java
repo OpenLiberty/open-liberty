@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.EnumSet;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration.LibraryPrecedence;
 import com.ibm.ws.classloading.internal.LibertyLoader;
 import com.ibm.ws.classloading.internal.util.BlockingList.Listener;
 import com.ibm.ws.classloading.internal.util.BlockingList.Retriever;
@@ -30,30 +31,33 @@ import com.ibm.wsspi.library.Library;
  * It holds no references to the AppClassLoader object, so it cannot prevent
  * the AppClassLoader from being collected.
  */
-public class GetLibraryLoaders implements Retriever<String, LibertyLoader>, Listener<String, LibertyLoader> {
+public class GetLibraryLoaders implements Retriever<String, Providers.LoaderInfo>, Listener<String, Providers.LoaderInfo> {
+
     static final TraceComponent tc = Tr.register(GetLibraryLoaders.class);
     private final EnumSet<ApiType> ownerAPIs;
     private final String ownerID;
+    private final LibraryPrecedence precedence;
 
     /** Create a listener that does not listen straight away */
-    GetLibraryLoaders(String ownerId, EnumSet<ApiType> ownerAPIs) {
+    GetLibraryLoaders(String ownerId, EnumSet<ApiType> ownerAPIs, LibraryPrecedence precedence) {
         this.ownerID = ownerId;
         this.ownerAPIs = ownerAPIs;
+        this.precedence = precedence;
     }
 
     @Override
-    public LibertyLoader fetch(String id) throws ElementNotReadyException, ElementNotValidException {
+    public Providers.LoaderInfo fetch(String id) throws ElementNotReadyException, ElementNotValidException {
         Library lib = Providers.getSharedLibrary(id);
         if (lib == null)
             throw new ElementNotReadyException(id);
         if (libraryAndLoaderApiTypesDoNotMatch(lib))
             throw new ElementNotValidException();
-        return (LibertyLoader) lib.getClassLoader();
+        return new Providers.LoaderInfo((LibertyLoader) lib.getClassLoader(), precedence);
     }
 
     /** invoked by the blocking list when a synchronous fetch operation fails */
     @Override
-    public void listenFor(final String libraryId, final Slot<? super LibertyLoader> slot) {
+    public void listenFor(final String libraryId, final Slot<? super Providers.LoaderInfo> slot) {
         // Create a shared library listener
         new AbstractLibraryListener(libraryId, ownerID, Providers.bundleContext) {
             @Override
@@ -74,7 +78,7 @@ public class GetLibraryLoaders implements Retriever<String, LibertyLoader>, List
                     slot.delete();
                 } else {
                     final LibertyLoader libCL = (LibertyLoader) library.getClassLoader();
-                    slot.fill(libCL);
+                    slot.fill(new Providers.LoaderInfo(libCL, precedence));
                 }
                 deregister();
             }

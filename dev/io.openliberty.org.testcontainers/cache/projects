@@ -210,3 +210,4 @@ io.openliberty.microprofile.telemetry.internal.monitor_fat
 io.openliberty.org.apache.myfaces.4.0_fat
 io.openliberty.org.apache.myfaces.4.1_fat
 io.openliberty.springboot.fat30_fat
+io.openliberty.transaction.remote_fat

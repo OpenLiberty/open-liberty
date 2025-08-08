@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.apiTypeV
 import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.classProviderRef;
 import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.commonLibraryRef;
 import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.delegation;
+import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.patchLibraryRef;
 import static com.ibm.ws.classloading.ClassLoaderConfigHelper.Attribute.privateLibraryRef;
 import static com.ibm.wsspi.classloading.ApiType.API;
 import static com.ibm.wsspi.classloading.ApiType.IBMAPI;
@@ -40,6 +41,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.classloading.internal.ClassLoaderConfigurationExtended;
 import com.ibm.ws.classloading.internal.ClassLoadingConstants;
 import com.ibm.ws.classloading.internal.ClassLoadingServiceImpl;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
@@ -66,7 +68,7 @@ public class ClassLoaderConfigHelper {
 
     @com.ibm.websphere.ras.annotation.Trivial
     enum Attribute {
-        apiTypeVisibility, delegation, privateLibraryRef, commonLibraryRef, classProviderRef
+        apiTypeVisibility, delegation, patchLibraryRef, privateLibraryRef, commonLibraryRef, classProviderRef
     };
 
     @SuppressWarnings("serial")
@@ -79,6 +81,7 @@ public class ClassLoaderConfigHelper {
 
     private static final EnumSet<ApiType> DEFAULT_API_TYPES = EnumSet.of(SPEC, IBMAPI, API, STABLE);
 
+    private final List<String> patchLibraries;
     private final List<String> sharedLibraries;
     private final List<String> commonLibraries;
     private final List<String> classProviders;
@@ -105,6 +108,7 @@ public class ClassLoaderConfigHelper {
             this.classLoaderConfigProps = null;
             this.apiTypes = DEFAULT_API_TYPES;
             this.isDelegateLast = false;
+            this.patchLibraries = Collections.emptyList();
             this.sharedLibraries = Collections.emptyList();
             this.commonLibraries = Collections.emptyList();
             this.classProviders = Collections.emptyList();
@@ -125,6 +129,7 @@ public class ClassLoaderConfigHelper {
         this.sharedLibrariesPids = (String[]) values.remove(privateLibraryRef);
         this.commonLibrariesPids = (String[]) values.remove(commonLibraryRef);
 
+        this.patchLibraries = getIds(configAdmin, (String[]) values.remove(patchLibraryRef));
         this.sharedLibraries = getIds(configAdmin, sharedLibrariesPids);
         this.commonLibraries = getIds(configAdmin, commonLibrariesPids);
         this.classProviders = getIds(configAdmin, (String[]) values.remove(classProviderRef));
@@ -256,6 +261,13 @@ public class ClassLoaderConfigHelper {
         gwConfig.setApiTypeVisibility(apiTypes);
         if (classLoaderConfigProps != null) {
             // if there is some <classloader> config, we need to read it out of the helper into the gateway and classloader configuration objects
+            if (!patchLibraries.isEmpty()) {
+                try {
+                    ((ClassLoaderConfigurationExtended) config).setPatchLibraries(patchLibraries);
+                } catch (ClassCastException e) {
+                    // auto-ffdc; nobody should be doing this
+                }
+            }
             config.addSharedLibraries(sharedLibraries);
             config.setCommonLibraries(commonLibraries);
             config.setClassProviders(classProviders);

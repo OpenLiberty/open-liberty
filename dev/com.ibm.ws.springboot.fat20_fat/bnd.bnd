@@ -32,19 +32,50 @@ tested.features: \
   springBoot-1.5, \
   springBoot-2.0, \
   jms-2.0, \
-  jndi-1.0
+  jndi-1.0, \
+  localconnector-1.0, \
+  restconnector-2.0
 
 src: \
   fat/src,\
   test-applications/ejbapp1/src
 
 -buildpath: \
-  io.openliberty.org.apache.commons.logging;version=latest,\
-  io.openliberty.org.apache.commons.codec;version=latest,\
-  io.openliberty.org.apache.xercesImpl;version=latest, \
-  com.ibm.websphere.javaee.ejb.3.2;version=latest, \
-  com.ibm.websphere.javaee.cdi.2.0;version=latest, \
-\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.xercesImpl;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
+	net.sourceforge.htmlunit:htmlunit-cssparser;version='1.6.0',\
+	net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version='2.44.0',\
+	net.sourceforge.htmlunit:webdriver;version='2.6',\
+	org.seleniumhq.webdriver:webdriver-common;version='0.9.7376',\
+	org.brotli:dec;version='0.1.2',\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	com.ibm.ws.springboot.fat20.actuator.app;version=latest,\
+	com.ibm.ws.springboot.fat20.app;version=latest,\
+	com.ibm.ws.springboot.fat20.java.app;version=latest,\
+	com.ibm.ws.springboot.fat20.multicontext.app;version=latest,\
+	com.ibm.ws.springboot.fat20.war.app;version=latest,\
+	com.ibm.ws.springboot.fat20.webanno.app;version=latest,\
+	com.ibm.ws.springboot.fat20.webflux.app;version=latest,\
+	com.ibm.ws.springboot.fat20.transactions.app;version=latest,\
+	com.ibm.ws.springboot.fat20.data.app;version=latest,\
+	com.ibm.ws.springboot.fat20.concurrency.app;version=latest,\
+	com.ibm.ws.springboot.fat20.aop.app;version=latest,\
+	com.ibm.ws.springboot.fat20.validation.app;version=latest,\
+	com.ibm.ws.springboot.fat20.mbean.app;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
+	com.ibm.ws.springboot.fat20.websocket.app;version=latest,\
+	com.ibm.ws.springboot.fat20.jms.app;version=latest,\
+	io.openliberty.org.testcontainers;version=latest,\
+	org.springframework.context,\
   net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
   net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
   net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
@@ -55,23 +86,4 @@ src: \
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\
   com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 \
-  com.ibm.ws.org.apache.httpcomponents;version=latest, \
-\
-  com.ibm.ws.springboot.fat20.actuator.app;version=latest,\
-  com.ibm.ws.springboot.fat20.app;version=latest,\
-  com.ibm.ws.springboot.fat20.java.app;version=latest,\
-  com.ibm.ws.springboot.fat20.multicontext.app;version=latest,\
-  com.ibm.ws.springboot.fat20.war.app;version=latest,\
-  com.ibm.ws.springboot.fat20.webanno.app;version=latest,\
-  com.ibm.ws.springboot.fat20.webflux.app;version=latest,\
-  com.ibm.ws.springboot.fat20.transactions.app;version=latest,\
-  com.ibm.ws.springboot.fat20.data.app;version=latest,\
-  com.ibm.ws.springboot.fat20.concurrency.app;version=latest,\
-  com.ibm.ws.kernel.boot.core;version=latest, \
-  com.ibm.ws.kernel.service;version=latest,\
-  com.ibm.ws.kernel.security.thread;version=latest,\
-  com.ibm.ws.springboot.fat20.websocket.app;version=latest,\
-  com.ibm.ws.springboot.fat20.jms.app;version=latest,\
-  com.ibm.ws.springboot.fat20.aop.app;version=latest,\
-  io.openliberty.org.testcontainers;version=latest,\
-  com.ibm.ws.springboot.fat20.validation.app;version=latest
+  com.ibm.ws.org.apache.httpcomponents;version=latest

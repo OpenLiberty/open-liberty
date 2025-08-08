@@ -1,0 +1,26 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: apiTestFeature-1.0
+Subsystem-SymbolicName: test.feature.classloading.apiTestFeature-1.0; visibility:=public
+Subsystem-Version: 1.0
+Subsystem-Content: test.bundle.api; version="[1,1.1)"
+Subsystem-Type: osgi.subsystem.feature
+IBM-API-Package: 
+ org.osgi.framework, type="spec",
+ com.ibm.ws.classloading.configuration, type="spec",
+ test.bundle.api1.a; type="spec",
+ test.bundle.api1.b; type="spec",
+ test.bundle.api1.c; type="spec",
+ test.bundle.api1.tester1; type="spec",
+ test.bundle.api2.a; type="spec",
+ test.bundle.api2.b; type="spec",
+ test.bundle.api2.c; type="spec",
+ test.bundle.api2.tester2; type="spec",
+ test.bundle.api3.a; type="spec",
+ test.bundle.api3.b; type="spec",
+ test.bundle.api3.c; type="spec",
+ test.bundle.api3.tester3; type="spec",
+ test.bundle.api4.a; type="spec",
+ test.bundle.api4.b; type="spec",
+ test.bundle.api4.c; type="spec",
+ test.bundle.api4.tester4; type="spec"
+IBM-Feature-Version: 2

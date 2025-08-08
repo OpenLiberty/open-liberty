@@ -32,6 +32,7 @@ localhost/openliberty/testcontainers/oracle-ssl:23-full-faststart
 localhost/openliberty/testcontainers/postgres-init:17-alpine
 localhost/openliberty/testcontainers/postgres-krb5:17.0.0.1
 localhost/openliberty/testcontainers/postgres-ssl:17.0.0.1
+localhost/openliberty/testcontainers/spnego-kdc-server:1.0.0.1
 localhost/openliberty/testcontainers/sqlserver-ssl:2022.0.0.1-latest
 mariadb:10.3
 mcr.microsoft.com/mssql/server:2022-latest

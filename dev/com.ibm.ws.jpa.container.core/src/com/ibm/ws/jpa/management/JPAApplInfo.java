@@ -62,6 +62,13 @@ public abstract class JPAApplInfo {
     // Now synchronized to accomodate Dump Introspector events
     private Map<String, JPAScopeInfo> puScopes = null;
 
+    /**
+     * @return the puScopes
+     */
+    public Map<String, JPAScopeInfo> getPuScopes() {
+        return puScopes;
+    }
+
     /*
      * Constructor.
      *///F743-16027

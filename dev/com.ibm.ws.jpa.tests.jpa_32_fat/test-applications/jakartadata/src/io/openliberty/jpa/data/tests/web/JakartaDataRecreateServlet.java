@@ -2252,6 +2252,37 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32263")
+    public void testOLGH32263() throws Exception {
+        deleteAllEntities(TaxPayer.class);
+
+        AccountId account1 = new AccountId(123456789L, 111000000L);
+        AccountId account2 = new AccountId(987654321L, 222000000L);
+
+        TaxPayer tp1 = new TaxPayer(101L, TaxPayer.FilingStatus.Single, 0, 40000f, account1);
+        TaxPayer tp2 = new TaxPayer(102L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 60000f, account1);
+        TaxPayer tp3 = new TaxPayer(103L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 50000f, account2);
+
+        tx.begin();
+        em.persist(tp1);
+        em.persist(tp2);
+        em.persist(tp3);
+        tx.commit();
+
+        List<TaxPayer> result;
+
+        try {
+            result = em.createQuery(
+                                    "SELECT o FROM TaxPayer o WHERE (o.bankAccounts IS NOT EMPTY) ORDER BY o.ssn", TaxPayer.class)
+                            .setParameter(1, account1)
+                            .getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+        assertEquals(3, result.size());
+    }
+
+    @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31558")
     public void testOLGH31558() throws Exception {
         deleteAllEntities(ShippingAddress.class);

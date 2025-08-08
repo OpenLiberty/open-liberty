@@ -1,0 +1,24 @@
+<server description="RemoteEJBClient">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <transaction
+      recoverOnStartup="true"
+      waitForRecovery="false"
+    />
+
+    <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
+	<application location="TestBeanClient.war">
+        <classloader commonLibraryRef="AnonymousJDBCLib"/>
+	</application>
+</server>

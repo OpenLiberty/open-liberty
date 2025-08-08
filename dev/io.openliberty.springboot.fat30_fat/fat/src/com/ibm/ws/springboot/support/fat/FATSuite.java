@@ -75,7 +75,9 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ValidationTests30.class,
                 ValidationTests30War.class,
                 AopWebAppTests30.class,
-                AopSpringBootAppTests30.class
+                AopSpringBootAppTests30.class,
+                MBeanAppTests20.class,
+                MBeanAppTests20War.class
 })
 
 public class FATSuite {

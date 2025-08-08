@@ -1,0 +1,33 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication location="testPatchLib.war">
+        <classloader patchLibraryRef="testPatchA,testPatchB" privateLibraryRef="testPatchC,testPatchD"/>
+    </webApplication>
+
+    <library id="testPatchA">
+       <path name="libs/testLib1.jar"/>
+       <path name="libs/testLib2.jar"/>
+    </library>
+    <library id="testPatchB">
+       <path name="libs/testLib3.jar"/>
+       <path name="libs/testLib4.jar"/>
+    </library>
+    <library id="testPatchC">
+       <path name="libs/testLib5.jar"/>
+       <path name="libs/testLib6.jar"/>
+    </library>
+    <library id="testPatchD">
+       <path name="libs/testLib7.jar"/>
+       <path name="libs/testLib8.jar"/>
+    </library>
+
+    <javaPermission codeBase="${server.config.dir}/apps/testLibDelegation.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>
+

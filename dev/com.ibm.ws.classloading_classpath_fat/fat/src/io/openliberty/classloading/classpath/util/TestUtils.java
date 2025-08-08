@@ -57,7 +57,11 @@ public class TestUtils {
      * @param testClassPath1App
      */
     public static void assertCommonResourceFromArchive(Class<?> clazz, String expected) {
-        URL resource = clazz.getResource("/io/openliberty/classloading/test/resources/common.properties");
+        assertResourceFromArchive("common.properties", clazz, expected);
+    }
+
+    public static void assertResourceFromArchive(String resourceName, Class<?> clazz, String expected) {
+        URL resource = clazz.getResource("/io/openliberty/classloading/test/resources/" + resourceName);
         assertNotNull("No resource found for expected: " + expected, resource);
         assertEquals("Wrong resource found", expected, readFromArchive(resource));
     }
@@ -90,7 +94,7 @@ public class TestUtils {
         int i = 0;
         for (; i < expectedOrder.size(); i++) {
             assertTrue("No more resources found to match i=" + i + " for: " + expectedOrder.get(i), i < urls.size());
-            assertEquals("Wrong resource found for i=" + i, expectedOrder.get(i), readFromArchive(urls.get(i)));
+            assertEquals("Wrong resource found for i=" + i + " urls=" + urls, expectedOrder.get(i), readFromArchive(urls.get(i)));
         }
 
         if (i < urls.size()) {

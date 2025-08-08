@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.json.JsonArray;
@@ -39,6 +40,8 @@ import javax.json.JsonValue.ValueType;
 import javax.net.ssl.HttpsURLConnection;
 
 import com.ibm.websphere.simplicity.log.Log;
+
+import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * This class represents an external service that has been defined in a central registry with additional properties about it.
@@ -62,6 +65,9 @@ public class ExternalTestService {
     private static final String PROP_SERVER_ORIGIN = "server.origin";
     private static final String PROP_CONSUL_SERVERLIST = "global.consulServerList";
 
+    // Client network location
+    private static final String CLIENT_NETWORK_LOCATION = getNetworkLocation();
+
     // Random number generator to scramble service order
     private static final Random rand = new Random();
 
@@ -75,7 +81,7 @@ public class ExternalTestService {
     private ExternalTestService(JsonObject data, Map<String, ServiceProperty> props) {
         JsonObject serviceData = data.getJsonObject("Service");
         JsonObject nodeData = data.getJsonObject("Node");
-        String networkLocationProp = getNetworkLocation() + "_address";
+        String networkLocationProp = CLIENT_NETWORK_LOCATION + "_address";
         String address = null;
 
         if (props.get(networkLocationProp) != null) {
@@ -431,35 +437,36 @@ public class ExternalTestService {
      * @throws Exception    if we have exhausted the list of services and we encountered an exception along the way.
      */
     private static Collection<ExternalTestService> getMatchedServices(int count, List<ExternalTestService> testServices, ExternalTestServiceFilter filter) throws Exception {
+        String m = "getMatchedServices";
         Collections.shuffle(testServices, rand);
         Exception exception = null;
         Collection<ExternalTestService> matchedServices = new ArrayList<ExternalTestService>();
 
         for (ExternalTestService externalTestService : testServices) {
+            String serviceName = externalTestService.serviceName;
+
             //Do Network Location Filtering
             try {
                 String locationString = externalTestService.getProperties().get("allowed.networks");
-                if (locationString != null) {
+                if (Objects.nonNull(locationString)) { // If null assume the service supports all networks
                     List<String> allowedNetworks = Arrays.asList(locationString.split(","));
-                    String networkLocation = getNetworkLocation();
-                    if (!allowedNetworks.contains(networkLocation)) {
-                        //Network is not allowed
-                        String reason = "Build Machine cannot use instance as its networks location ("
-                                        + networkLocation + ") is not in allowed.networks ("
-                                        + locationString + ")";
+                    if (!allowedNetworks.contains(CLIENT_NETWORK_LOCATION)) {
+                        String reason = "Build Machine cannot use instance of " + serviceName + " as its networks location ("
+                                        + CLIENT_NETWORK_LOCATION + ") is not in allowed.networks (" + locationString + ")";
                         ExternalTestServiceReporter.reportUnhealthy(externalTestService, reason);
                         continue;
                     }
-
                 }
-                //If it reached here network is allowable
 
-                // Decrypt properties
+                Log.info(c, m, "Matched " + serviceName + " service based on network location (" + CLIENT_NETWORK_LOCATION + //
+                               ") is in allowed.networks (" + (Objects.isNull(locationString) ? "ALL" : locationString) + //
+                               ") continue to match service based on user defined filters.");
+
+                // Do decryption - fail fast if no decryption service is available
                 externalTestService.decryptProperties();
 
                 //Do Filter
-                boolean isMatched = filter.isMatched(externalTestService);
-                if (isMatched) {
+                if (filter.isMatched(externalTestService)) {
                     //We found one
                     matchedServices.add(externalTestService);
                     if (matchedServices.size() == count) {
@@ -486,35 +493,43 @@ public class ExternalTestService {
      *         determined network location based on the server origin system property.
      */
     private static String getNetworkLocation() {
+        // Priority 1: Use global.network.location system property
         String networkLocation = System.getProperty(PROP_NETWORK_LOCATION);
         if (networkLocation != null) {
             return networkLocation;
         }
+
+        // Priority 2: Fail if we are not running locally, all build definitions should have the above property.
+        if (!FATRunner.FAT_TEST_LOCALRUN) {
+            throw new RuntimeException("This build definition lacked the " + PROP_NETWORK_LOCATION + " system property. "
+                                       + "This property is required for our builds to correctly choose an external test resource. "
+                                       + "Please contact a build monitor update this build definition with the " + PROP_NETWORK_LOCATION + " system property.");
+        } else {
+            Log.warning(c, "For better efficiency, please add global.network.location=IBM9UK or IBM9US to your user.build.properties.");
+        }
+
+        // Priority 3: Make a best guess as to where the closest service is based off of the client IP address.
         String serverOrigin = System.getProperty(PROP_SERVER_ORIGIN);
         // Attempt to guess where the closest services will be located
         if (serverOrigin.startsWith("9.20.")) {
-            // Hursley
-            return "IBM9UK";
+            return "IBM9UK"; // Hursley
         } else if (serverOrigin.startsWith("9.42.") || serverOrigin.startsWith("9.46.")) {
-            // RTP
-            return "IBM9US";
+            return "IBM9US"; // RTP
         } else if (serverOrigin.startsWith("9.30.")) {
-            // SVL
-            return "IBM9US";
+            return "IBM9US"; // SVL
         } else if (serverOrigin.startsWith("9.57.")) {
-            // POK
-            return "IBM9US";
+            return "IBM9US"; // POK
         } else if (serverOrigin.startsWith("10.34.") || serverOrigin.startsWith("10.36.")) {
             return "HURPROD";
         } else if (serverOrigin.startsWith("10.51.")) {
             return "FYREHUR";
-        } else if (serverOrigin.startsWith("10.17.") || serverOrigin.startsWith("10.11.") || serverOrigin.startsWith("10.15.")) {
+        } else if (serverOrigin.startsWith("10.11.") || serverOrigin.startsWith("10.15.") || serverOrigin.startsWith("10.17.")) {
             return "FYRESVL";
-        } else if (serverOrigin.startsWith("10.21.") || serverOrigin.startsWith("10.26.")) {
+        } else if (serverOrigin.startsWith("10.21.") || serverOrigin.startsWith("10.22.") || serverOrigin.startsWith("10.23.") || serverOrigin.startsWith("10.26.")) {
             return "FYRERTP";
         } else {
-            System.out.println("Unknown host/IP address " + serverOrigin
-                               + ".  For better effeciency, please add global.network.location=IBM9UK or IBM9US to your user.build.properties.  If appropriate, please update fattest.simplicity/src/componenttest/topology/utils/ExternalTestService.getNetworkLocation()");
+            Log.warning(c, "Unable to determine closest service for the host/IP address: " + serverOrigin + ". "
+                           + "If appropriate, please update fattest.simplicity/src/componenttest/topology/utils/ExternalTestService.getNetworkLocation()");
             return "UNKNOWN";
         }
     }

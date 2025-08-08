@@ -47,6 +47,13 @@ class JPAPxmlInfo {
     private final Map<String, JPAPUnitInfo> ivPuList;
 
     /**
+     * @return the ivPuList
+     */
+    public Map<String, JPAPUnitInfo> getIvPuList() {
+        return ivPuList;
+    }
+
+    /**
      * Constructor.
      *
      * @param scopeInfo

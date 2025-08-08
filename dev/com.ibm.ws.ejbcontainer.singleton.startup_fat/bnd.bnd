@@ -18,7 +18,12 @@ src: \
 	test-applications/RestartStartupSingletonApp.ear/src, \
 	test-applications/RestartStartupSingletonEjb.jar/src, \
 	test-applications/RestartStartupSingletonIntf.jar/src, \
-	test-applications/RestartStartupSingletonWeb.war/src
+	test-applications/RestartStartupSingletonWeb.war/src, \
+	test-applications/SingletonPropertyIntf.jar/src, \
+	test-applications/SingletonPropertyNoStartupBean.jar/src, \
+	test-applications/SingletonPropertyNoStartupWeb.war/src, \
+	test-applications/SingletonPropertyStartupBean.jar/src, \
+	test-applications/SingletonPropertyTest.war/src
 
 fat.project: true
 

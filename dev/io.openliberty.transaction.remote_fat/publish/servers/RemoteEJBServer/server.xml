@@ -1,0 +1,32 @@
+<server description="RemoteEJBServer">
+
+    <!-- Enable features -->
+    <featureManager>
+        <feature>componenttest-1.0</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>transportSecurity-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestCommon.xml" />
+    
+	<httpEndpoint id="defaultHttpEndpoint"
+        host="*"
+        httpPort="${bvt.prop.HTTP_secondary}"
+        httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+    <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}"/>
+
+    <transaction
+      recoverOnStartup="true"
+      waitForRecovery="false"
+    />
+
+    <javaPermission name="*" actions="*" className="java.security.AllPermission"/>
+
+	<application location="TestBeanApp.ear">
+        <classloader commonLibraryRef="AnonymousJDBCLib"/>
+	</application>
+</server>

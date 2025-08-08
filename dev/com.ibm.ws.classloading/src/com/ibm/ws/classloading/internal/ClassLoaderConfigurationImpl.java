@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,12 +26,13 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
 import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 
-class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
+class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration, ClassLoaderConfigurationExtended {
     private final static ProtectionDomain DEFAULT_PROTECTION_DOMAIN = new ProtectionDomain(new CodeSource((URL) null, (Certificate[]) null), null);
     private boolean delegateLast;
     private boolean includeAppExtensions;
     private ClassLoaderIdentity id;
     private ClassLoaderIdentity parentId;
+    private List<String> patchLibraries = Collections.emptyList();
     private List<String> sharedLibraries = new ArrayList<String>();
     private List<String> commonLibraries = Collections.emptyList();
     private List<String> providers = Collections.emptyList();
@@ -59,6 +60,12 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
     @Override
     public ClassLoaderConfiguration setSharedLibraries(List<String> libs) {
         this.sharedLibraries = libs == null ? Collections.<String> emptyList() : libs;
+        return this;
+    }
+
+    @Override
+    public ClassLoaderConfiguration setPatchLibraries(List<String> libs) {
+        this.patchLibraries = libs == null ? Collections.<String> emptyList() : libs;
         return this;
     }
 
@@ -132,6 +139,11 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
     }
 
     @Override
+    public List<String> getPatchLibraries() {
+        return Collections.unmodifiableList(patchLibraries);
+    }
+
+    @Override
     @Trivial
     public List<String> getSharedLibraries() {
         return Collections.unmodifiableList(sharedLibraries);
@@ -159,6 +171,7 @@ class ClassLoaderConfigurationImpl implements ClassLoaderConfiguration {
         StringBuilder sb = new StringBuilder();
         sb.append(id)
           .append(" [child of ").append(parentId).append("]")
+          .append(" patchLibraries = ").append(patchLibraries)
           .append(" privateLibraries = ").append(sharedLibraries)
           .append(" commonLibraries = ").append(commonLibraries)
           .append(" providers = ").append(providers)

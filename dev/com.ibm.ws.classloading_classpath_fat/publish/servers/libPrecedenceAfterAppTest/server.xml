@@ -1,0 +1,45 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>jca-1.7</feature>
+        <feature>jms-2.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>apiTestFeature-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <classloading libraryPrecedence="afterApp" />
+    <webApplication location="testLibPrecedence.war">
+        <classloader commonLibraryRef="testCommonLib1,testCommonLib2" classProviderRef="DummyRA1"/>
+    </webApplication>
+
+    <resourceAdapter id="DummyRA1" location="${server.config.dir}/ras/testDummyRA.rar">
+      <classloader commonLibraryRef="testCommonLib3" classProviderRef="DummyRA2"/>
+    </resourceAdapter>
+
+    <resourceAdapter id="DummyRA2" location="${server.config.dir}/ras/testDummyRA.rar">
+      <classloader commonLibraryRef="testCommonLib4"/>
+    </resourceAdapter>
+
+    <library id="testCommonLib1">
+       <path name="libs/testLib1.jar"/>
+    </library>
+
+    <library id="testCommonLib2">
+       <path name="libs/testLib2.jar"/>
+    </library>
+
+    <library id="testCommonLib3">
+       <path name="libs/testLib3.jar"/>
+    </library>
+
+    <library id="testCommonLib4">
+       <path name="libs/testLib4.jar"/>
+    </library>
+
+    <javaPermission codeBase="${server.config.dir}/apps/testLibPrecedence.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>
+

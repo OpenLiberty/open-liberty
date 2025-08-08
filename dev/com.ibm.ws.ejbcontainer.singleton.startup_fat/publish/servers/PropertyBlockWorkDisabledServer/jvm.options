@@ -1,0 +1,2 @@
+-Dcom.ibm.websphere.ejbcontainer.blockWorkUntilAppStartedWaitTime=20
+-Dcom.ibm.websphere.ejbcontainer.blockWorkUntilAppStarted=false

@@ -73,8 +73,16 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
         return super.findResource(resName);
     }
 
+    protected URL delegateFindResource(String resName) {
+        return super.findResource(resName);
+    }
+
     @Override
     protected Enumeration<URL> findResources(String resName) throws IOException {
+        return super.findResources(resName);
+    }
+
+    protected Enumeration<URL> delegateFindResources(String resName) throws IOException {
         return super.findResources(resName);
     }
 

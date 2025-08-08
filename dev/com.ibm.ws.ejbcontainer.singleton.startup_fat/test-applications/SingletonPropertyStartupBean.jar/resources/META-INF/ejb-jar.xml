@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar xmlns="http://java.sun.com/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/ejb-jar_3_1.xsd"
+         version="3.1">
+
+  <enterprise-beans>
+    <session>
+  		<ejb-name>StartupSingletonBean</ejb-name>
+  		<ejb-class>singleton.property.startup.ejb.StartupSingletonBean</ejb-class>
+  		<session-type>Singleton</session-type>
+  		<concurrency-management-type>Container</concurrency-management-type>
+  		<init-on-startup>true</init-on-startup>
+  		<post-construct>
+  			<lifecycle-callback-method>postConstruct</lifecycle-callback-method>
+  		</post-construct>
+  		<ejb-local-ref>
+          <ejb-ref-name>ejb/StartupHelperSingletonBean</ejb-ref-name>
+          <local>singleton.property.shared.StartupHelperSingleton</local>
+          <ejb-link>StartupHelperSingletonBean</ejb-link>
+          <injection-target>
+              <injection-target-class>singleton.property.startup.ejb.StartupSingletonBean</injection-target-class>
+              <injection-target-name>ivHelper</injection-target-name>
+          </injection-target>
+      </ejb-local-ref>
+    </session>
+    <session>
+  		<ejb-name>StartupHelperSingletonBean</ejb-name>
+  		<ejb-class>singleton.property.startup.ejb.StartupHelperSingletonBean</ejb-class>
+  		<session-type>Singleton</session-type>
+  		<concurrency-management-type>Container</concurrency-management-type>
+    </session>
+
+  </enterprise-beans>
+
+</ejb-jar>

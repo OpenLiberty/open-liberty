@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014,2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration.LibraryPrecedence;
+import com.ibm.ws.classloading.internal.ClassLoaderConfigurationExtended;
 import com.ibm.ws.classloading.internal.DeclaredApiAccess;
 import com.ibm.ws.classloading.internal.LibertyLoader;
 import com.ibm.ws.classloading.internal.util.BlockingList;
@@ -40,6 +42,15 @@ import com.ibm.wsspi.kernel.service.utils.FilterUtils;
 import com.ibm.wsspi.library.Library;
 
 public class Providers {
+    public static final class LoaderInfo {
+        public final LibertyLoader loader;
+        public final LibraryPrecedence precedence;
+        LoaderInfo(LibertyLoader loader, LibraryPrecedence precedence) {
+            this.loader = loader;
+            this.precedence = precedence;
+        }
+    }
+
     static final TraceComponent tc = Tr.register(Providers.class);
     static BundleContext bundleContext;
 
@@ -49,10 +60,18 @@ public class Providers {
     }
 
     public static List<Library> getPrivateLibraries(ClassLoaderConfiguration config) {
-        List<String> privateLibraries = config.getSharedLibraries();
-        if (privateLibraries == null || privateLibraries.isEmpty()) {
+        return getLibraries(config.getId().getId(), config.getSharedLibraries());
+    }
+
+    public static List<Library> getPatchLibraries(ClassLoaderConfiguration config) {
+        List<String> patchLibraries = (config instanceof ClassLoaderConfigurationExtended) ? ((ClassLoaderConfigurationExtended) config).getPatchLibraries() : Collections.emptyList();
+        return getLibraries(config.getId().getId(), patchLibraries);
+    }
+
+    private static List<Library> getLibraries(String ownerId, List<String> libraryIds) {
+        if (libraryIds == null || libraryIds.isEmpty()) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "RETURN (privateLibraries == null || privateLibraries.isEmpty())");
+                Tr.debug(tc, "RETURN (libraryIds == null || libraryIds.isEmpty())");
             return Collections.emptyList();
         }
 
@@ -63,11 +82,11 @@ public class Providers {
             return Collections.emptyList();
         }
 
-        GetLibraries getLibraries = new GetLibraries(config.getId().getId());
-        return BlockingListMaker.defineList().waitFor(10, SECONDS).fetchElements(getLibraries).listenForElements(getLibraries).log(LOGGER).useKeys(privateLibraries).make();
+        GetLibraries getLibraries = new GetLibraries(ownerId);
+        return BlockingListMaker.defineList().waitFor(10, SECONDS).fetchElements(getLibraries).listenForElements(getLibraries).log(LOGGER).useKeys(libraryIds).make();
     }
 
-    public static List<LibertyLoader> getCommonLibraryLoaders(ClassLoaderConfiguration config, DeclaredApiAccess apiAccess) {
+    public static List<Providers.LoaderInfo> getCommonLibraryLoaders(ClassLoaderConfiguration config, DeclaredApiAccess apiAccess, LibraryPrecedence precedence) {
         List<String> commonLibIds = config.getCommonLibraries();
         if (commonLibIds == null || commonLibIds.isEmpty()) {
             if (tc.isDebugEnabled())
@@ -86,11 +105,11 @@ public class Providers {
 
         // this list will try to retrieve the libraries on demand
         // and it will block until they are available
-        GetLibraryLoaders getLibraryLoaders = new GetLibraryLoaders(config.getId().getId(), gwApis);
+        GetLibraryLoaders getLibraryLoaders = new GetLibraryLoaders(config.getId().getId(), gwApis, precedence);
         return BlockingListMaker.defineList().waitFor(10, SECONDS).fetchElements(getLibraryLoaders).listenForElements(getLibraryLoaders).log(LOGGER).useKeys(commonLibIds).make();
     }
 
-    public static List<LibertyLoader> getProviderLoaders(ClassLoaderConfiguration config, DeclaredApiAccess apiAccess) {
+    public static List<Providers.LoaderInfo> getProviderLoaders(ClassLoaderConfiguration config, DeclaredApiAccess apiAccess) {
         final String methodName = "getProviderLoaders(): ";
         List<String> providerIds = config.getClassProviders();
         if (providerIds == null || providerIds.isEmpty()) {
@@ -115,8 +134,8 @@ public class Providers {
     }
 
     @SuppressWarnings("unchecked")
-    public static Iterable<LibertyLoader> getDelegateLoaders(ClassLoaderConfiguration config, DeclaredApiAccess apiAccess) {
-        return new CompositeIterable<LibertyLoader>(getCommonLibraryLoaders(config, apiAccess), getProviderLoaders(config, apiAccess));
+    public static Iterable<Providers.LoaderInfo> getDelegateLoaders(ClassLoaderConfiguration config, DeclaredApiAccess apiAccess, LibraryPrecedence precedence) {
+        return new CompositeIterable<Providers.LoaderInfo>(getCommonLibraryLoaders(config, apiAccess, precedence), getProviderLoaders(config, apiAccess));
     }
 
     /**

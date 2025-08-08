@@ -16,6 +16,7 @@ import static com.ibm.ws.jpa.management.JPAConstants.JPA_RESOURCE_BUNDLE_NAME;
 import static com.ibm.ws.jpa.management.JPAConstants.JPA_TRACE_GROUP;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ import java.util.TreeSet;
 import javax.naming.Reference;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.spi.PersistenceUnitInfo;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -453,4 +455,111 @@ public abstract class AbstractJPAComponent
             return new TreeSet<String>(appNames);
         }
     }
+    
+    /**
+     * Retrieves the list of persistence units associated with the given J2EE module name.
+     * This method acts as a filter on the available persistence units registered in the runtime.
+     * It extracts the application name and module name (if present) from the given J2EEName
+     * and will call the method getPersistenceUnitsForApp(String, String)} to perform the actual lookup.
+     *
+     * @param j2eeName the J2EE name contains application and module values.
+     * @return a list of PersistenceUnitInfo objects matching the specified application
+     *         and module, or an empty list if no matches are found.
+     */
+    @Override
+    public List<PersistenceUnitInfo> getPersistenceUnits(J2EEName j2eeName) {
+        List<PersistenceUnitInfo> filteredAppList = new ArrayList<>();
+        String appName = "";
+        String modName = null;
+        if (j2eeName != null) {
+            if (j2eeName.getApplication() != null && !j2eeName.getApplication().isEmpty()) {
+                appName = j2eeName.getApplication();
+            }
+            if (j2eeName.getModule() != null && !j2eeName.getModule().isEmpty()) {
+                modName = j2eeName.getModule();
+            }
+
+            filteredAppList = getPersistenceUnitsForApp(appName, modName);
+        }
+        return filteredAppList;
+    }
+
+    /**
+     * Retrieves persistence units for the specified application and (optionally) module.
+     * This method iterates through the registered applications and their persistence unit
+     * scopes to locate persistence units that belong to the provided application name.
+     * If modName is provided, the search is further restricted to only those units
+     * belonging to the specified module.
+     *
+     * @param appName the name of the application to filter persistence units by.
+     * @param modName the name of the module to filter persistence units by.
+     * @return a list of PersistenceUnitInfo objects that match the provided application
+     *         (and module if specified), or an empty list if no matches are found.
+     */
+    private List<PersistenceUnitInfo> getPersistenceUnitsForApp(String appName, String modName) {
+        List<PersistenceUnitInfo> matchedUnits = new ArrayList<>();
+        synchronized (applList) {
+            for (JPAApplInfo applInfo : applList.values()) {
+                Map<String, JPAScopeInfo> puScopes = applInfo.getPuScopes();
+                if (puScopes == null || puScopes.isEmpty()) {
+                    continue;
+                }
+                for (JPAScopeInfo scope : puScopes.values()) {
+                    Map<String, JPAPxmlInfo> xmlInfos = scope.getPxmlsInfo();
+                    if (xmlInfos == null || xmlInfos.isEmpty())
+                        continue;
+
+                    for (JPAPxmlInfo xmlInfo : xmlInfos.values()) {
+                        Map<String, JPAPUnitInfo> puMap = xmlInfo.getIvPuList();
+                        if (puMap == null || puMap.isEmpty())
+                            continue;
+
+                        for (JPAPUnitInfo unitInfo : puMap.values()) {
+                            String unitAppName = unitInfo.getApplName();
+                            if (appName.equals(unitAppName)) {
+                                if (modName != null) {
+                                    String modUnitName = unitInfo.getIvArchivePuId().getModJarName();
+                                    if (modUnitName != null && modName.equals(modName)) {
+                                        matchedUnits.add(unitInfo);
+                                    }
+                                } else {
+                                    matchedUnits.add(unitInfo);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return matchedUnits;
+    }
+
+    /**
+     * Returns the EntityManagerFactory associated with the given persistence unit.
+     * This method looks up the persistence unit based on the provided J2EE name
+     * and delegates the request to the underlying persistence unit implementation.
+     *
+     * @param j2eeName            ,the J2EE module name used for identifying the persistence unit
+     * @param persistenceUnitInfo the persistence unit information
+     * @return the EntityManagerFactory for the specified persistence unit
+     */
+    @Override
+    public EntityManagerFactory getEntityManagerFactory(J2EEName j2eeName, PersistenceUnitInfo persistenceUnitInfo) {
+        return ((JPAPUnitInfo) persistenceUnitInfo).getEntityManagerFactory(j2eeName);
+    }
+
+    /**
+     * Creates and returns a new EntityManager for the given persistence unit.
+     * This method first obtains the EntityManagerFactory for the provided J2EE name
+     * and persistence unit, and then uses it to create a new EntityManager instance.
+     *
+     * @param j2eeName            the J2EE module name used for identifying the persistence unit
+     * @param persistenceUnitInfo the persistence unit information
+     * @return a newly created EntityManager associated with the specified persistence unit
+     */
+    @Override
+    public EntityManager getEntityManager(J2EEName j2eeName, PersistenceUnitInfo persistenceUnitInfo) {
+        return getEntityManagerFactory(j2eeName, persistenceUnitInfo).createEntityManager();
+    }
+
 }

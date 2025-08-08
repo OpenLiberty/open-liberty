@@ -205,6 +205,8 @@ class PackageLibertyWithFeatures extends DefaultTask {
     @Internal
     Closure withFeatures
     @Internal
+    List<String> excludedFeatures
+    @Internal
     Boolean completeFeatureList
     // packageServerConflict does not need to be set unless the list of features includes conflicting features
     //
@@ -222,8 +224,47 @@ class PackageLibertyWithFeatures extends DefaultTask {
     @Internal
     Boolean isBeta
 
+    def getFeaturePath(String feature) {
+        def file = getFeaturePath(feature, "")
+        file
+    }
+
+    def getFeaturePath(String feature, String suffix) {
+        def file
+        if (feature.endsWith(".mf")) {
+            file = project.file("wlp/lib/features/" + feature + suffix)
+        } else {
+            file = project.file("wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf" + suffix)
+            if(!file.exists()){
+                file = project.file("wlp/lib/features/io.openliberty." + feature + ".mf" + suffix)
+            }
+        }
+        file
+    }
+
+    def removeFeature(String feature) {
+        def file = getFeaturePath(feature)
+        def bakfile = new File(file.getPath()+".bak")
+        file.renameTo(bakfile)
+    }
+
+    def restoreFeature(String feature) {
+        def bakfile = getFeaturePath(feature, ".bak")
+        String path = bakfile.getPath()
+        int idx = path.indexOf(".bak")
+        def file = new File(path.substring(0,idx))
+        bakfile.renameTo(file)
+    }
+
     @TaskAction
     void buildPackage() {
+        // If we need to exclude features that cause extra conflicts, do it first
+        if (excludedFeatures != null) {
+            excludedFeatures.each {
+                removeFeature(it)
+            }
+        }
+
         // Create server in order to minify an image that only includes kind=ga features
         project.delete project.file('wlp/usr/servers/packageOpenLiberty')
         project.exec {
@@ -301,6 +342,13 @@ class PackageLibertyWithFeatures extends DefaultTask {
                     println line
                 }
             }
+        } finally {
+            // If we excluded some features, put them back
+            if (excludedFeatures != null) {
+                excludedFeatures.each {
+                    restoreFeature(it)
+                }
+            }
         }
     }
 }
@@ -376,37 +424,6 @@ def jakartaee11Features() { project.file("profiles/jakartaee11/features.xml").re
 def microProfile4Features() { project.file("profiles/microProfile4/features.xml").readLines() }
 def microProfile7Features() { project.file("profiles/microProfile7/features.xml").readLines() }
 
-def getFeaturePath(feature) {
-    def file = getFeaturePath(feature, "")
-    file
-}
-
-def getFeaturePath(feature, suffix) {
-    def file
-    if (feature.endsWith(".mf")) {
-        file = new File("$projectDir/wlp/lib/features/" + feature + suffix)
-    } else {
-        file = new File("$projectDir/wlp/lib/features/com.ibm.websphere.appserver." + feature + ".mf" + suffix)
-        if(!file.exists()){
-            file = new File("$projectDir/wlp/lib/features/io.openliberty." + feature + ".mf" + suffix)
-        }
-    }
-    file
-}
-def removeFeature(feature) {
-    def file = getFeaturePath(feature)
-    def bakfile = new File(file.getPath()+".bak")
-    file.renameTo(bakfile)
-}
-
-def restoreFeature(feature) {
-    def bakfile = getFeaturePath(feature, ".bak")
-    String path = bakfile.getPath()
-    int idx = path.indexOf(".bak")
-    def file = new File(path.substring(0,idx))
-    bakfile.renameTo(file)
-}
-
 def excludedEE7Features = ['cdi-1.2',
                            'jsonp-1.0',
                            'jaxrs-2.0',
@@ -414,6 +431,9 @@ def excludedEE7Features = ['cdi-1.2',
                            'jdbc-4.1',
                            'jaxrsClient-2.0',
                            'servlet-3.1']
+
+def excludedMP6Features = ['mpCompatible-6.0',
+                           'mpCompatible-6.1']
 
 def replaceBetaVersionAndEdition(String pathname, String release, String beta) {
     Path path = Paths.get(pathname)
@@ -470,14 +490,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
     //GA
     task packageOpenLibertyWebProfile8(type: PackageLibertyWithFeatures) {
-        doFirst {
-            excludedEE7Features.each {
-                this.&removeFeature("${it}")
-            }
-        }
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile8Features
+        excludedFeatures = excludedEE7Features
         packageServerConflict = "true"
         outputTo new File(packageDir, "webProfile8")
         doLast {
@@ -489,23 +505,15 @@ if (isAutomatedBuild && !isIFIXBuild) {
                 from "$packageDir/webProfile8/wlp/templates/clients/javaeeClient8/client.xml"
                 into "$packageDir/webProfile8/wlp/templates/clients/defaultClient"
             }
-            excludedEE7Features.each {
-                this.&restoreFeature("${it}")
-            }
         }
     }
 
     //GA
     task packageOpenLibertyJavaee8(type: PackageLibertyWithFeatures) {
-        doFirst {
-            excludedEE7Features.each {
-                this.&removeFeature("${it}")
-            }
-        }
-
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&javaee8Features
+        excludedFeatures = excludedEE7Features
         packageServerConflict = "true"
         outputTo new File(packageDir, "javaee8")
         doLast {
@@ -516,9 +524,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
             copy {
                 from "$packageDir/javaee8/wlp/templates/clients/javaeeClient8/client.xml"
                 into "$packageDir/javaee8/wlp/templates/clients/defaultClient"
-            }
-            excludedEE7Features.each {
-                this.&restoreFeature("${it}")
             }
         }
     }
@@ -560,13 +565,18 @@ if (isAutomatedBuild && !isIFIXBuild) {
             }
         }
     }
-    
-    //GA
+
+    //NOSHIP
     task packageOpenLibertyWebProfile11(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&webProfile11Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc"
+
+        // mpCompatible-6.0 and 6.1 features cause problems because we are allowing conflicts on mpCompatible feature
+        // so they get included in addition to the 7.0 and 7.1 ones that we want to conflict on.  Removing them from
+        // the features in the wlp/lib/features directory allows us to be able to package without issues.
+        excludedFeatures = excludedMP6Features
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.microProfile,io.openliberty.mpOpenAPI,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.openapi,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion"
         outputTo new File(packageDir, "webProfile11")
         doLast {
             copy {
@@ -580,12 +590,17 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
 
-    //GA
+    //NOSHIP
     task packageOpenLibertyJakartaee11(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&jakartaee11Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc"
+        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.microProfile,io.openliberty.mpOpenAPI,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.openapi,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion"
+
+        // mpCompatible-6.0 and 6.1 features cause problems because we are allowing conflicts on mpCompatible feature
+        // so they get included in addition to the 7.0 and 7.1 ones that we want to conflict on.  Removing them from
+        // the features in the wlp/lib/features directory allows us to be able to package without issues.
+        excludedFeatures = excludedMP6Features
         outputTo new File(packageDir, "jakartaee11")
         doLast {
             copy {
@@ -601,23 +616,16 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
     //GA
     task packageOpenLibertyMicroProfile4(type: PackageLibertyWithFeatures) {
-        doFirst {
-            excludedEE7Features.each {
-                this.&removeFeature("${it}")
-            }
-        }
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
         withFeatures this.&microProfile4Features
+        excludedFeatures = excludedEE7Features
         packageServerConflict = "com.ibm.websphere.appserver.microProfile,com.ibm.websphere.appserver.mpHealth,com.ibm.websphere.appserver.org.eclipse.microprofile.health"
         outputTo new File(packageDir, "microProfile4")
         doLast {
             copy {
                 from "$packageDir/microProfile4/wlp/templates/servers/microProfile4/server.xml"
                 into "$packageDir/microProfile4/wlp/templates/servers/defaultServer"
-            }
-            excludedEE7Features.each {
-                this.&restoreFeature("${it}")
             }
         }
     }

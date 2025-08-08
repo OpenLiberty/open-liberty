@@ -1605,15 +1605,27 @@ public class LibertyClient {
 
                     Properties envVars = new Properties();
                     envVars.setProperty("JAVA_HOME", machineJava);
-                    Log.info(c, "runJextract", "Running jextract on file: " + filename);
 
                     String outputFilename = filename + ".zip.DMP"; //adding .DMP to ensure it is collected even when not collecting archives
-                    String cmd = machineJava + "/bin/jextract";
-                    String[] parms = new String[] { filename, outputFilename };
-                    ProgramOutput output = machine.execute(cmd, parms, clientFolder.getAbsolutePath(), envVars);
-                    Log.info(c, "runJextract stdout", output.getStdout());
-                    Log.info(c, "runJextract stderr", output.getStderr());
-                    Log.info(c, "runJextract", "rc = " + output.getReturnCode());
+                    String tool = null;
+
+                    if (new File(machineJava + "/bin/jpackcore").exists()) {
+                        tool = "jpackcore";
+                    } else if (new File(machineJava + "/bin/jextract").exists()) {
+                        tool = "jextract";
+                    }
+
+                    if (tool != null) {
+                        String cmd = machineJava + "/bin/" + tool;
+                        Log.info(c, "runJextract", "Running " + tool + " on file: " + filename);
+                        String[] parms = new String[] { filename, outputFilename };
+                        ProgramOutput output = machine.execute(cmd, parms, clientFolder.getAbsolutePath(), envVars);
+                        Log.info(c, "runJextract stdout", output.getStdout());
+                        Log.info(c, "runJextract stderr", output.getStderr());
+                        Log.info(c, "runJextract", "rc = " + output.getReturnCode());
+                    } else {
+                        Log.info(c, "runJextract", "Skipping, unable to find jpackcore or jextract to run");
+                    }
                 }
             }
         }

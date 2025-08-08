@@ -48,5 +48,6 @@ wasliberty-internal-docker-local/openliberty/testcontainers/oracle-ssl:23-full-f
 wasliberty-internal-docker-local/openliberty/testcontainers/postgres-init:17-alpine
 wasliberty-internal-docker-local/openliberty/testcontainers/postgres-krb5:17.0.0.1
 wasliberty-internal-docker-local/openliberty/testcontainers/postgres-ssl:17.0.0.1
+wasliberty-internal-docker-local/openliberty/testcontainers/spnego-kdc-server:1.0.0.1
 wasliberty-internal-docker-local/openliberty/testcontainers/sqlserver-ssl:2022.0.0.1-latest
 wasliberty-mcr-docker-remote/mssql/server:2022-latest

@@ -17,6 +17,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.ejbcontainer.singleton.startup.fat.tests.PropertyBlockWorkDefaultTest;
+import com.ibm.ws.ejbcontainer.singleton.startup.fat.tests.PropertyBlockWorkDisabledTest;
 import com.ibm.ws.ejbcontainer.singleton.startup.fat.tests.RestartStartupSingletonTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -24,6 +26,8 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                PropertyBlockWorkDefaultTest.class,
+                PropertyBlockWorkDisabledTest.class,
                 RestartStartupSingletonTest.class
 })
 

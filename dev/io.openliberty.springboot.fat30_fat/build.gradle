@@ -60,6 +60,7 @@ dependencies {
     'xml-apis:xml-apis:1.4.01',
     project(':com.ibm.ws.org.apache.commons.io'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
+    project(':com.ibm.ws.org.apache.commons.lang3'),
     project(':io.openliberty.org.apache.commons.codec'),
     project(':io.openliberty.org.apache.xercesImpl')
 
@@ -103,7 +104,9 @@ def appDefs =
     [ 'io.openliberty.springboot.fat30.data.app', '.war' ], 
     [ 'io.openliberty.springboot.fat30.concurrency.app', '.war'], 
     [ 'io.openliberty.springboot.fat30.validation.app', '.war'],
-    [ 'io.openliberty.springboot.fat30.aop.app', '.war']]
+    [ 'io.openliberty.springboot.fat30.aop.app', '.war'],
+    [ 'io.openliberty.springboot.fat30.concurrency.app', '.war'],
+    [ 'io.openliberty.springboot.fat30.mbean.app', '.war']]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

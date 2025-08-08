@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import dummy.ra.DummyResourceAdapter;
 import io.openliberty.classloading.classpath.test.client1.ClientLib1;
 import io.openliberty.classloading.classpath.test.ejb1.InitBean1;
 import io.openliberty.classloading.classpath.test.ejb2.InitBean2;
@@ -51,9 +52,33 @@ import io.openliberty.classloading.classpath.test.war1.ClassPathDefaultLoaderSer
 import io.openliberty.classloading.classpath.test.war2.ClassPathDefaultLoaderServletTest2;
 import io.openliberty.classloading.classpath.test.war3.ClassPathDefaultLoaderServletTest3;
 import io.openliberty.classloading.classpath.util.TestUtils;
+import io.openliberty.classloading.feature.message.test.app.ParentLastFeatureMessageTestServlet;
 import io.openliberty.classloading.lib.path.test.app.LibPathTestServlet;
-import io.openliberty.classloading.parentlast.test.app.ParentLastTestServlet;
+import io.openliberty.classloading.library.precedence.test.app.LibPrecedenceBeforeAppTestServlet;
+import io.openliberty.classloading.libs.util.CodeSourceUtil;
+import io.openliberty.classloading.parent.library.inconsistent.test.app.ParentLibraryInconsistentTestServlet;
+import io.openlibery.classloading.patch.library.test.app.PatchLibraryTestServlet;
+import io.openlibery.classloading.patch.library.test.app.a.APatch;
+import io.openlibery.classloading.patch.library.test.app.b.BPatch;
+import io.openlibery.classloading.patch.library.test.app.c.CPatch;
+import io.openlibery.classloading.patch.library.test.app.d.DPatch;
+import io.openlibery.classloading.patch.library.test.app.e.EPatch;
+import io.openlibery.classloading.patch.library.test.app.f.FPatch;
+import io.openlibery.classloading.patch.library.test.app.g.GPatch;
+import io.openlibery.classloading.patch.library.test.app.h.HPatch;
 import junit.framework.AssertionFailedError;
+import test.bundle.api1.a.API_A1;
+import test.bundle.api1.b.API_B1;
+import test.bundle.api1.c.API_C1;
+import test.bundle.api2.a.API_A2;
+import test.bundle.api2.b.API_B2;
+import test.bundle.api2.c.API_C2;
+import test.bundle.api3.a.API_A3;
+import test.bundle.api3.b.API_B3;
+import test.bundle.api3.c.API_C3;
+import test.bundle.api4.a.API_A4;
+import test.bundle.api4.b.API_B4;
+import test.bundle.api4.c.API_C4;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -64,7 +89,11 @@ import junit.framework.AssertionFailedError;
     ClassPathDefaultLoaderLibraryTests.class,
     ClassPathInvalidLoaderTests.class,
     LibraryPathTest.class,
-    ParentLastLibraryFeatureTests.class
+    ParentLastLibraryFeatureTests.class,
+    LibraryParentLastInconsistentTests.class,
+    PatchLibraryTests.class,
+    LibraryPrecedenceBeforeAppTests.class,
+    LibraryPrecedenceAfterAppTests.class
 })
 public class FATSuite {
     static final String CLASSPATH_TEST_WAR_LOADER_SERVER = "classpathTestWarLoader";
@@ -74,7 +103,11 @@ public class FATSuite {
     static final String CLASSPATH_TEST_EAR_LOADER_SERVER = "classpathTestEarLoader";
     static final String PRIVATE_LIBRARY_TEST_SERVER = "privateLibraryTest";
     static final String LIB_FILESET_TEST_SERVER = "libPathTest";
-    static final String PARENT_LAST_TEST_SERVER = "parentLastTest";
+    static final String PARENT_LAST_LIBRARY_FEATURE_TEST_SERVER = "parentLastLibraryFeatureTest";
+    static final String PARENT_LAST_LIBRARY_INCONSISTENT_SERVER = "parentLastLibraryInconsistentTest";
+    static final String LIB_PRECEDENCE_BEFORE_APP_SERVER = "libPrecedenceBeforeAppTest";
+    static final String LIB_PRECEDENCE_AFTER_APP_SERVER = "libPrecedenceAfterAppTest";
+    static final String PATCH_LIB_WAR_TEST_SERVER = "patchLibWarTest";
 
     // ##### ARCHIVE NAMES #####
     // WAR archive names
@@ -82,7 +115,10 @@ public class FATSuite {
     public static final String TEST_CLASS_PATH2_APP = "testClassPath2";
     public static final String TEST_CLASS_PATH3_APP = "testClassPath3";
     public static final String TEST_LIB_FILESET_APP = "testLibFileSet";
-    public static final String TEST_PARENT_LAST_APP = "testParentLast";
+    public static final String TEST_PARENT_LAST_LIBRARY_FEATURE_APP = "testParentLastLibraryFeature";
+    public static final String TEST_PARENT_LIBRARY_INCONSISTENT_APP = "testParentLibraryInconsistent";
+    public static final String TEST_LIB_PRECECENCE_APP = "testLibPrecedence";
+    public static final String TEST_PATCH_LIB_APP = "testPatchLib";
 
     // EJB archive names
     public static final String TEST_EJB1 = "testEjb1";
@@ -114,6 +150,7 @@ public class FATSuite {
 
     // RAR archive names
     public static final String TEST_RAR1 = "testRar1";
+    public static final String TEST_DUMMY_RA = "testDummyRA";
 
     // Client archive names
     public static final String TEST_CLIENT1 = "testClient1";
@@ -159,7 +196,10 @@ public class FATSuite {
     static final WebArchive TEST_CLASS_PATH2_WAR;
     static final WebArchive TEST_CLASS_PATH3_WAR;
     static final WebArchive TEST_LIB_FILESET_WAR;
-    static final WebArchive TEST_PARENT_LAST_WAR;
+    static final WebArchive TEST_PARENT_LAST_LIBRARY_FEATURE_WAR;
+    static final WebArchive TEST_LIB_DELEGATION_PARENT_INCONSISTENT_WAR;
+    static final WebArchive TEST_PATCH_LIB_WAR;
+    static final WebArchive TEST_LIB_PRECENCENC_WAR;
 
     // EJB archives
     static final JavaArchive TEST_EJB1_JAR;
@@ -191,6 +231,7 @@ public class FATSuite {
 
     // RAR archives
     static final ResourceAdapterArchive TEST_RAR1_RAR;
+    static final ResourceAdapterArchive TEST_DUMMY_RAR;
 
     // Client archives
     static final JavaArchive TEST_CLIENT1_JAR;
@@ -200,14 +241,47 @@ public class FATSuite {
     static {
         try {
 
-            TEST_LIB1_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB1 + ".jar", Lib1.class.getPackage().getName());
-            TEST_LIB2_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB2 + ".jar", Lib2.class.getPackage().getName());
-            TEST_LIB3_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB3 + ".jar", Lib3.class.getPackage().getName());
-            TEST_LIB4_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB4 + ".jar", Lib4.class.getPackage().getName());
-            TEST_LIB5_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB5 + ".jar", Lib5.class.getPackage().getName());
-            TEST_LIB6_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB6 + ".jar", Lib6.class.getPackage().getName());
-            TEST_LIB7_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB7 + ".jar", Lib7.class.getPackage().getName());
-            TEST_LIB8_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB8 + ".jar", Lib8.class.getPackage().getName());
+            TEST_LIB1_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB1 + ".jar", Lib1.class.getPackage().getName(), //
+                                                          CodeSourceUtil.class.getPackage().getName(), //
+                                                          APatch.class.getPackage().getName(), //
+                                                          API_A1.class.getPackage().getName(), //
+                                                          API_B1.class.getPackage().getName(), //
+                                                          API_C1.class.getPackage().getName());
+            TEST_LIB2_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB2 + ".jar", Lib2.class.getPackage().getName(), //
+                                                          APatch.class.getPackage().getName(), //
+                                                          BPatch.class.getPackage().getName(), //
+                                                          API_A2.class.getPackage().getName(), //
+                                                          API_B2.class.getPackage().getName(), //
+                                                          API_C2.class.getPackage().getName());
+            TEST_LIB3_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB3 + ".jar", Lib3.class.getPackage().getName(), //
+                                                          APatch.class.getPackage().getName(), //
+                                                          BPatch.class.getPackage().getName(), //
+                                                          CPatch.class.getPackage().getName(), //
+                                                          API_A3.class.getPackage().getName(), //
+                                                          API_B3.class.getPackage().getName(), //
+                                                          API_C3.class.getPackage().getName() );
+            TEST_LIB4_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB4 + ".jar", Lib4.class.getPackage().getName(), //
+                                                          APatch.class.getPackage().getName(), //
+                                                          BPatch.class.getPackage().getName(), //
+                                                          CPatch.class.getPackage().getName(), //
+                                                          DPatch.class.getPackage().getName(), //
+                                                          API_A4.class.getPackage().getName(), //
+                                                          API_B4.class.getPackage().getName(), //
+                                                          API_C4.class.getPackage().getName() );
+            TEST_LIB5_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB5 + ".jar", Lib5.class.getPackage().getName(), //
+                                                          EPatch.class.getPackage().getName());
+            TEST_LIB6_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB6 + ".jar", Lib6.class.getPackage().getName(), //
+                                                          EPatch.class.getPackage().getName(), //
+                                                          FPatch.class.getPackage().getName());
+            TEST_LIB7_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB7 + ".jar", Lib7.class.getPackage().getName(), //
+                                                          EPatch.class.getPackage().getName(), //
+                                                          FPatch.class.getPackage().getName(), //
+                                                          GPatch.class.getPackage().getName());
+            TEST_LIB8_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB8 + ".jar", Lib8.class.getPackage().getName(), //
+                                                          EPatch.class.getPackage().getName(), //
+                                                          FPatch.class.getPackage().getName(), //
+                                                          GPatch.class.getPackage().getName(), //
+                                                          HPatch.class.getPackage().getName());
             TEST_LIB9_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB9 + ".jar", Lib9.class.getPackage().getName());
             TEST_LIB10_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB10 + ".jar", Lib10.class.getPackage().getName());
             TEST_LIB11_JAR = ShrinkHelper.buildJavaArchive(TEST_LIB11 + ".jar", Lib11.class.getPackage().getName());
@@ -240,8 +314,27 @@ public class FATSuite {
                                                                         LibPathTestServlet.class.getPackage().getName(),
                                                                         TestUtils.class.getPackage().getName());
 
-            TEST_PARENT_LAST_WAR = ShrinkHelper.buildDefaultApp(TEST_PARENT_LAST_APP + ".war",
-                                                                ParentLastTestServlet.class.getPackage().getName());
+            TEST_PARENT_LAST_LIBRARY_FEATURE_WAR = ShrinkHelper.buildDefaultApp(TEST_PARENT_LAST_LIBRARY_FEATURE_APP + ".war",
+                                                                ParentLastFeatureMessageTestServlet.class.getPackage().getName());
+
+            TEST_LIB_DELEGATION_PARENT_INCONSISTENT_WAR = ShrinkHelper.buildDefaultApp(TEST_PARENT_LIBRARY_INCONSISTENT_APP + ".war",
+                                                                ParentLibraryInconsistentTestServlet.class.getPackage().getName());
+
+            TEST_PATCH_LIB_WAR = ShrinkHelper.buildDefaultApp(TEST_PATCH_LIB_APP + ".war",
+                                                                   PatchLibraryTestServlet.class.getPackage().getName(), //
+                                                                   TestUtils.class.getPackage().getName(), //
+                                                                   APatch.class.getPackage().getName(), //
+                                                                   BPatch.class.getPackage().getName(), //
+                                                                   CPatch.class.getPackage().getName(), //
+                                                                   DPatch.class.getPackage().getName(), //
+                                                                   EPatch.class.getPackage().getName(), //
+                                                                   FPatch.class.getPackage().getName(), //
+                                                                   GPatch.class.getPackage().getName(), //
+                                                                   HPatch.class.getPackage().getName() );
+
+            TEST_LIB_PRECENCENC_WAR = ShrinkHelper.buildDefaultApp(TEST_LIB_PRECECENCE_APP + ".war",
+                                                                   LibPrecedenceBeforeAppTestServlet.class.getPackage().getName(), //
+                                                                   TestUtils.class.getPackage().getName());
 
             TEST_RESOURCE_ADAPTOR_JAR = ShrinkHelper.buildJavaArchive(TEST_RESOURCE_ADAPTOR + ".jar",
                                                                       TestResourceAdapter.class.getPackage().getName()).
@@ -251,6 +344,8 @@ public class FATSuite {
                             .addAsLibrary(TEST_RESOURCE_ADAPTOR_JAR)
                             .add(TEST_LIB12_JAR, "testlib/", ZipExporter.class);
             ShrinkHelper.addDirectory(TEST_RAR1_RAR, "test-applications/" + TEST_RAR1_RAR.getName() + "/resources/");
+
+            TEST_DUMMY_RAR = ShrinkHelper.buildDefaultRar(TEST_DUMMY_RA, DummyResourceAdapter.class.getPackage().getName());
 
             TEST_CLIENT1_JAR = ShrinkHelper.buildJavaArchive(TEST_CLIENT1 + ".jar", ClientLib1.class.getPackage().getName());
 

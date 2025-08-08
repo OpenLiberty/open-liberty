@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,13 +20,12 @@ import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.jar.Attributes;
-import java.util.jar.Manifest;
 
 import org.osgi.framework.Bundle;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation;
 import com.ibm.ws.classloading.internal.ContainerClassLoader.ByteResourceInformation;
 import com.ibm.ws.classloading.internal.util.Keyed;
@@ -65,12 +64,14 @@ class ShadowClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdenti
     };
 
     private final AppClassLoader shadowedLoader;
-    private final Iterable<LibertyLoader> delegateLoaders;
+    private final Iterable<LibertyLoader> beforeAppDelegateLoaders;
+    private final Iterable<LibertyLoader> afterAppDelegateLoaders;
 
     ShadowClassLoader(AppClassLoader shadowed) {
         super(getShadow(shadowed.parent));
         this.shadowedLoader = shadowed;
-        this.delegateLoaders = getShadows(shadowed.getDelegateLoaders());
+        this.beforeAppDelegateLoaders = getShadows(shadowed.getBeforeAppDelegateLoaders());
+        this.afterAppDelegateLoaders = getShadows(shadowed.getAfterAppDelegateLoaders());
     }
 
     /** create a {@link ShadowClassLoader} for the specified loader if it is an {@link AppClassLoader}. */
@@ -118,6 +119,12 @@ class ShadowClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdenti
             for (SearchLocation what : shadowedLoader.getSearchOrder()) {
                 try {
                     switch (what) {
+                        case BEFORE_DELEGATES: 
+                            result = loadFrom(beforeAppDelegateLoaders, className, returnNull);
+                            if (result != null) {
+                                return result;
+                            }
+                            break;
                         case PARENT:
                             if (parent instanceof LibertyLoader) {
                                 result = ((LibertyLoader) parent).loadClass(className, false, false, returnNull);
@@ -127,21 +134,17 @@ class ShadowClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdenti
                             } else {
                                 return parent.loadClass(className);
                             }
+                            break;
                         case SELF:
                             result = findClass(className, returnNull);
                             if (result != null) {
                                 return result;
                             }
-                        case DELEGATES:
-                            for (LibertyLoader delegate : delegateLoaders) {
-                                try {
-                                    result = delegate.loadClass(className, false, false, returnNull);
-                                    if (result != null) {
-                                        return result;
-                                    }
-                                } catch (ClassNotFoundException e) {
-                                    lastException = e;
-                                }
+                            break;
+                        case AFTER_DELEGATES:
+                            result = loadFrom(afterAppDelegateLoaders, className, returnNull);
+                            if (result != null) {
+                                return result;
                             }
                             break;
                         default:
@@ -160,6 +163,26 @@ class ShadowClassLoader extends LibertyLoader implements Keyed<ClassLoaderIdenti
             lastException = new ClassNotFoundException(className);
         }
         throw lastException;
+    }
+
+    @FFDCIgnore(ClassNotFoundException.class)
+    @Trivial
+    private Class<?> loadFrom(Iterable<LibertyLoader> delegates, String className, boolean returnNull) throws ClassNotFoundException {
+        ClassNotFoundException lastException = null;
+        for (LibertyLoader delegate : delegates) {
+            try {
+                Class<?> result = delegate.loadClass(className, false, false, returnNull);
+                if (result != null) {
+                    return result;
+                }
+            } catch (ClassNotFoundException e) {
+                lastException = e;
+            }
+        }
+        if (lastException != null) {
+            throw lastException;
+        }
+        return null;
     }
 
     @Override
