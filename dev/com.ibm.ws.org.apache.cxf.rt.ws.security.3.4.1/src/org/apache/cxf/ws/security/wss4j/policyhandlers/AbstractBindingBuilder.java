@@ -40,9 +40,6 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.xml.XMLConstants;
 import javax.xml.crypto.dsig.Reference;
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPHeader;
-import javax.xml.soap.SOAPMessage;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.xpath.XPath;
@@ -57,6 +54,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPHeader;
+import javax.xml.soap.SOAPMessage;
 import org.apache.cxf.attachment.AttachmentUtil;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.saaj.SAAJUtils;
@@ -159,10 +159,6 @@ import org.apache.wss4j.policy.model.X509Token.TokenType;
 /**
  *
  */
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandler {
     public static final String CRYPTO_CACHE = "ws-security.crypto.cache";
     protected static final Logger LOG = LogUtils.getL7dLogger(AbstractBindingBuilder.class);
@@ -619,7 +615,7 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
     ) throws WSSecurityException {
         if (endorse && isTokenRequired(token.getIncludeTokenType())) {
             byte[] salt = UsernameTokenUtil.generateSalt(true);
-            WSSecUsernameToken utBuilder = addDKUsernameToken(token, salt, true);
+            WSSecUsernameToken utBuilder = addDKUsernameToken(token, salt);
             if (utBuilder != null) {
                 utBuilder.prepare(salt);
                 addSupportingElement(utBuilder.getUsernameTokenElement());
@@ -870,7 +866,7 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
         return null;
     }
 
-    protected WSSecUsernameToken addDKUsernameToken(UsernameToken token, byte[] salt, boolean useMac) {
+    protected WSSecUsernameToken addDKUsernameToken(UsernameToken token, byte[] salt) {
         assertToken(token);
         if (!isTokenRequired(token.getIncludeTokenType())) {
             return null;
@@ -891,7 +887,7 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
             if (!StringUtils.isEmpty(password)) {
                 // If the password is available then build the token
                 utBuilder.setUserInfo(userName, password);
-                utBuilder.addDerivedKey(useMac,  1000);
+                utBuilder.addDerivedKey(1000);
                 utBuilder.prepare(salt);
             } else {
                 unassertPolicy(token, "No password available");
@@ -1458,7 +1454,7 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
 
                         if (!found.contains(el)) {
                             found.add(el);
-                            WSEncryptionPart part = null;
+                            final WSEncryptionPart part;
                             boolean saml1 = WSS4JConstants.SAML_NS.equals(el.getNamespaceURI())
                                 && "Assertion".equals(el.getLocalName());
                             boolean saml2 = WSS4JConstants.SAML2_NS.equals(el.getNamespaceURI())

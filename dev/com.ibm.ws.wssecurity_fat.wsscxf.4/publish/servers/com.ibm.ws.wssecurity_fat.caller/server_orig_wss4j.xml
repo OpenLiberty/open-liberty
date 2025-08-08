@@ -30,14 +30,15 @@
 		clientAuthenticationSupported="true" />
 	<keyStore
 		id="myKeyStore"
-		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/key.jks" />
+		password="Password"
+		type="PKCS12"
+		location="${server.config.dir}/ec_client_key.p12" />
+
 	<keyStore
 		id="myTrustStore"
-		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/sslServerTrust.jks" />
+		password="Password"
+		type="PKCS12"
+		location="${server.config.dir}/ec_server_key.p12" />
 
 
 	<include location="../fatTestPorts.xml" />
@@ -80,47 +81,50 @@
 			password="pw8server" />
 	</basicRegistry>
 
+
 	<!-- basicplcy.wssecfvt.test.CommonPasswordCallback -->
 	<wsSecurityClient
 		id="default"
 		ws-security.password="security"
 		ws-security.username="user1"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
 	        <!-- issue 30353 -->
 		<signatureProperties
 		        signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="Password"
+			org.apache.ws.security.crypto.merlin.keystore.alias="ecclientcert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/ec_client_key.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client2"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecondCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientSecond.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="Password"
+			org.apache.ws.security.crypto.merlin.keystore.alias="ecclientcert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/ec_client_key.p12" />
 	</wsSecurityClient>
 
 	<wsSecurityProvider
 		id="default"
-		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbhwss4j.CommonPasswordCallbackWss4j"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 		ws-security.return.security.error="true"
 	>
-                
+	<!-- 11/2022 issue 23060 added ws-security.return.security.error -->
+	
 		<callerToken name="UsernameToken" />
                 <!-- issue 30353 -->
 		<signatureProperties
 		        signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server2"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="Password"
+			org.apache.ws.security.crypto.merlin.keystore.alias="ecservercert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/ec_server_key.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefaultCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="Password"
+			org.apache.ws.security.crypto.merlin.keystore.alias="ecservercert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/ec_server_key.p12" />
 	</wsSecurityProvider>
+	<!-- This is in use by CxfCallerUNTTests -->
 
     <include location="imports/java2Permissions.xml" />
    

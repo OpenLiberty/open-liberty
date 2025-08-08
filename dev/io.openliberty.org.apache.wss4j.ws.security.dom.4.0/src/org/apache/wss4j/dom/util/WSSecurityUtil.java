@@ -32,7 +32,6 @@ import org.apache.wss4j.common.util.XMLUtils;
 import org.apache.wss4j.dom.handler.HandlerAction;
 import org.apache.wss4j.dom.handler.RequestData;
 import org.apache.wss4j.dom.handler.WSHandlerConstants;
-import org.apache.xml.security.stax.ext.XMLSecurityConstants;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -54,13 +53,10 @@ import java.util.List;
 
 import javax.security.auth.callback.CallbackHandler;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore; //Liberty code change
-
 
 /**
  * WS-Security Utility methods. <p/>
  */
-// No Liberty code change, debug only
 public final class WSSecurityUtil {
 
     private static boolean isSAAJ14 = false;
@@ -70,7 +66,6 @@ public final class WSSecurityUtil {
 
     private static final ClassValue<Method> GET_DOM_ELEMENTS_METHODS = new ClassValue<Method>() {
         @Override
-        @FFDCIgnore(NoSuchMethodException.class) // Liberty Change
         protected Method computeValue(Class<?> type) {
             try {
                 return getMethod(type, "getDomElement");
@@ -83,7 +78,6 @@ public final class WSSecurityUtil {
 
     private static final ClassValue<Method> GET_ENVELOPE_METHODS = new ClassValue<Method>() {
         @Override
-        @FFDCIgnore(NoSuchMethodException.class) // Liberty Change
         protected Method computeValue(Class<?> type) {
             try {
                 return getMethod(type, "getEnvelope");
@@ -128,7 +122,6 @@ public final class WSSecurityUtil {
         // Complete
     }
 
-    @FFDCIgnore(PrivilegedActionException.class) // Liberty Change
     private static Method getMethod(final Class<?> clazz, final String name,
                                    final Class<?>... parameterTypes) throws NoSuchMethodException {
         try {
@@ -243,11 +236,7 @@ public final class WSSecurityUtil {
             return true;
         }
 
-        if (hActor != null && actor != null && hActor.equalsIgnoreCase(actor)) {
-            return true;
-        }
-
-        return false;
+        return hActor != null && actor != null && hActor.equalsIgnoreCase(actor);
     }
 
     /**
@@ -299,11 +288,10 @@ public final class WSSecurityUtil {
      *
      * @param part The WSEncryptionPart object corresponding to the DOM Element(s) we want
      * @param callbackLookup The CallbackLookup object used to find Elements
-     * @param doc The owning document
      * @return the DOM Element in the SOAP Envelope that is found
      */
     public static List<Element> findElements(
-        WSEncryptionPart part, CallbackLookup callbackLookup, Document doc
+        WSEncryptionPart part, CallbackLookup callbackLookup
     ) throws WSSecurityException {
         // See if the DOM Element is stored in the WSEncryptionPart first
         if (part.getElement() != null) {
@@ -439,7 +427,6 @@ public final class WSSecurityUtil {
                         header = prependChildElement(envelope, header);
 
                     } catch (Exception e) {
-                        e.printStackTrace();
                         throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
                     }
 
@@ -638,23 +625,6 @@ public final class WSSecurityUtil {
         return actions;
     }
 
-    /**
-     * Generate a nonce of the given length using the SHA1PRNG algorithm. The SecureRandom
-     * instance that backs this method is cached for efficiency.
-     *
-     * @return a nonce of the given length
-     * @throws WSSecurityException
-     */
-    public static byte[] generateNonce(int length) throws WSSecurityException {
-        try {
-            return XMLSecurityConstants.generateBytes(length);
-        } catch (Exception ex) {
-            throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex,
-                    "empty", new Object[] {"Error in generating nonce of length " + length}
-            );
-        }
-    }
-
     public static void inlineAttachments(List<Element> includeElements,
                                          CallbackHandler attachmentCallbackHandler,
                                          boolean removeAttachments) throws WSSecurityException {
@@ -674,7 +644,7 @@ public final class WSSecurityUtil {
     }
 
     /**
-     * Register the javax.xml.soap.Node with new Cloned Dom Node with java9
+     * Register the jakarta.xml.soap.Node with new Cloned Dom Node with java9
      * @param doc The SOAPDocumentImpl
      * @param clonedElement The cloned Element
      * @return new clonedElement which already associated with the SAAJ Node
@@ -683,7 +653,7 @@ public final class WSSecurityUtil {
     public static Element cloneElement(Document doc, Element clonedElement) throws WSSecurityException {
         clonedElement = (Element)clonedElement.cloneNode(true);
         if (isSAAJ14) {
-            // here we need register the javax.xml.soap.Node with new instance
+            // here we need register the jakarta.xml.soap.Node with new instance
             clonedElement = (Element)doc.importNode(clonedElement, true);
             clonedElement = (Element)getDomElement(clonedElement);
         }

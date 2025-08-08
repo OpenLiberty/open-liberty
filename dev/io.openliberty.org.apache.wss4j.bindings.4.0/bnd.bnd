@@ -10,11 +10,22 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-bindings;4.0.0}}!/META-INF/MANIFEST.MF,bnd.overrides
-
--sub: *.bnd
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
 wss4jVersion=4.0.0
+Bundle-SymbolicName: io.openliberty.org.apache.wss4j.bindings.4.0
+
+WS-TraceGroup: WSS4J
+Bundle-ActivationPolicy: lazy
+
+Export-Package: \
+ org.apache.wss4j.binding.*;version=${wss4jVersion}
+
+Import-Package: \
+ org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)",\
+ org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
+ *
 
 -includeresource: \
  @${repo;org.apache.wss4j:wss4j-bindings;${wss4jVersion}}!/!META-INF/MANIFEST.MF|META-INF/maven/*

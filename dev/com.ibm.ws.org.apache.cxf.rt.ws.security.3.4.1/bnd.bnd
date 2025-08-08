@@ -34,14 +34,14 @@ Import-Package:  \
   javax.xml.soap;version=!, \
   org.apache.neethi, \
   org.apache.neethi.builders, \
-  org.apache.wss4j.*, \
+  org.apache.wss4j.*;version="[2.3.0,5.0.0)", \
   org.w3c.dom, \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
   javax.servlet.*;version="[0.0.0,3.0.0)", \
-  org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)",\
-  org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
+  org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)", \
+  org.apache.xml.security.*;version="[2.3.0,5.0.0)", \
   *
 
 Export-Package: \
@@ -113,4 +113,5 @@ instrument.classesIncludes: \
   com.ibm.websphere.appserver.spi.logging, \
   com.ibm.websphere.javaee.jws.1.0;version=latest, \
   org.codehaus.woodstox:stax2-api;version='4.2', \
-  org.codehaus.woodstox:woodstox-core-asl;version='4.2.0'
+  org.codehaus.woodstox:woodstox-core-asl;version='4.2.0', \
+	javax.xml.soap:javax.xml.soap-api;version=1.4.0

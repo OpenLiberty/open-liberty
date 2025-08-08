@@ -29,11 +29,11 @@ import java.util.logging.Level;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.xml.crypto.dsig.Reference;
-import javax.xml.soap.SOAPException;
-import javax.xml.soap.SOAPMessage;
 
 import org.w3c.dom.Element;
 
+import javax.xml.soap.SOAPException;
+import javax.xml.soap.SOAPMessage;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.helpers.DOMUtils;
@@ -90,10 +90,6 @@ import org.apache.wss4j.policy.model.X509Token;
 /**
  *
  */
-// Liberty Change; This class has no Liberty specific changes other than the Sensitive annotation 
-// It is required as an overlay because of Liberty specific changes to MessageImpl.put(). Any call
-// to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
-// If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class TransportBindingHandler extends AbstractBindingBuilder {
     TransportBinding tbinding;
 
@@ -341,7 +337,7 @@ public class TransportBindingHandler extends AbstractBindingBuilder {
         } else if (token instanceof UsernameToken) {
             // Create a UsernameToken object for derived keys and store the security token
             byte[] salt = UsernameTokenUtil.generateSalt(true);
-            WSSecUsernameToken usernameToken = addDKUsernameToken((UsernameToken)token, salt, true);
+            WSSecUsernameToken usernameToken = addDKUsernameToken((UsernameToken)token, salt);
             String id = usernameToken.getId();
             byte[] secret = usernameToken.getDerivedKey(salt);
             Arrays.fill(salt, (byte)0);

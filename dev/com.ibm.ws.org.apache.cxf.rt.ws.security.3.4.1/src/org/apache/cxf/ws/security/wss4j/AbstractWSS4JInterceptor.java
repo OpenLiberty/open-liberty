@@ -211,6 +211,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         if (passwordEncryptor != null) {
             msg.put(ConfigurationConstants.PASSWORD_ENCRYPTOR_INSTANCE, passwordEncryptor);
         }
+
         // Liberty Change Start
         String mustunderstand = (String)msg.getContextualProperty("ws-security.must-understand");
         if (mustunderstand != null && !mustunderstand.isEmpty()) {
@@ -229,7 +230,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         RequestData reqData
     ) throws WSSecurityException {
         Message message = (Message)reqData.getMsgContext();
-        ClassLoader classLoader = this.getClassLoader(reqData.getMsgContext());
+        ClassLoader classLoader = this.getClassLoader();
         PasswordEncryptor passwordEncryptor = getPasswordEncryptor(reqData);
         return
             WSS4JUtils.loadCryptoFromPropertiesFile(

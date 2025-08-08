@@ -10,11 +10,24 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-web;4.0.0}}!/META-INF/MANIFEST.MF,bnd.overrides
-
--sub: *.bnd
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
 wss4jVersion=4.0.0
+Bundle-SymbolicName:io.openliberty.org.apache.wss4j.ws.security.web.4.0
+
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.apache.wss4j.web.*;version=${wss4jVersion}
+
+Import-Package: \
+ org.apache.xml.security.*;version="[2.3.0,5.0.0)", \
+ org.apache.wss4j.dom.engine;version="[2.3.0,5.0.0)", \
+ org.apache.wss4j.common;version="[2.3.0,5.0.0)", \
+ *
 
 -includeresource: \
  @${repo;org.apache.wss4j:wss4j-ws-security-web;${wss4jVersion}}!/!META-INF/MANIFEST.MF|META-INF/maven/*

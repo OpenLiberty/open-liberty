@@ -10,9 +10,29 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-policy;4.0.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
 wss4jVersion=4.0.0
+
+Bundle-Description: org.apache.wss4j.wss4j.policy; version=4.0.0
+Bundle-ActivationPolicy: lazy
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.apache.wss4j.policy.*;version=${wss4jVersion}
+
+Import-Package: \
+ org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
+ *
+ 
+ -includeresource: \
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/!META-INF/MANIFEST.MF,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/templates/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/schemas/**,\
+ @${repo;org.apache.wss4j:wss4j-policy;${wss4jVersion}}!/*xml,\
+ org/apache/wss4j/policy=${bin}/org/apache/wss4j/policy
 
 -buildpath: org.apache.wss4j:wss4j-policy;version=${wss4jVersion}, \
             com.ibm.ws.org.apache.neethi.3.1.1;version=latest

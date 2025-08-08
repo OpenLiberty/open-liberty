@@ -10,16 +10,46 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-common;4.0.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
--sub: *.bnd
+Bundle-SymbolicName: io.openliberty.org.apache.wss4j.ws.security.common.4.0
 
 wss4jVersion=4.0.0
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.apache.ws.security.*;version=1.6.2, \
+ org.apache.wss4j.common.*;version=${wss4jVersion}
+  
+# these should be optional only when resolving jars from wlp/dev
+Import-Package: \
+ !com.ibm.security.jgss, \
+ !com.sun.security.jgss, \
+ !org.bouncycastle.asn1, \
+ !org.bouncycastle.asn1.x500, \
+ !org.bouncycastle.asn1.x509, \
+ !net.shibboleth.*, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
+ org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)",\
+ org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
+ org.jasypt.*, \
+ *
+
+DynamicImport-Package: \
+ org.bouncycastle.jce.provider,\
+ org.apache.wss4j.common.crypto,\
+ org.apache.wss4j.common.saml
 
 -includeresource: \
    @${repo;org.apache.wss4j:wss4j-ws-security-common;${wss4jVersion}}!/!META-INF/maven/*, \
    messages/wss4j_errors.properties=resources/wss4j_errors.properties, \
-   org/apache/wss4j=${bin}/org/apache/wss4j
+   org/apache/wss4j/common=${bin}/org/apache/wss4j/common, \
+   org/apache/ws/security=${bin}/org/apache/ws/security
+
 instrument.classesExcludes:\
 	org/apache/wss4j/common/cache/*.class, \
 	org/apache/wss4j/common/crypto/*.class

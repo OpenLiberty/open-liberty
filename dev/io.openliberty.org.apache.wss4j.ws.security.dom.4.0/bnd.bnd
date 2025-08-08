@@ -10,22 +10,43 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-dom;4.0.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
--sub: *.bnd
+Bundle-SymbolicName: io.openliberty.org.apache.wss4j.ws.security.dom.4.0
 
 wss4jVersion=4.0.0
+WS-TraceGroup: WSS4J
+Bundle-ActivationPolicy: lazy
+
+Export-Package: \
+ org.apache.wss4j.dom.*;version=${wss4jVersion}
+
+Import-Package: \
+ !com.sun.security.jgss,\
+ !com.ibm.security.jgss, \
+ !org.bouncycastle.asn1,\
+ !org.bouncycastle.asn1.x500, \
+ !org.bouncycastle.asn1.x509, \
+ com.sun.xml.messaging.saaj.soap;resolution:=optional, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
+ org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)",\
+ org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
+ org.apache.wss4j.common.*;version="[2.3.0,5.0.0)",\
+ *
 
 -includeresource: \
-   @${repo;org.apache.wss4j:wss4j-ws-security-dom;${wss4jVersion}}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
-   org/apache/wss4j=${bin}/org/apache/wss4j
-  
+ @${repo;org.apache.wss4j:wss4j-ws-security-dom;${wss4jVersion}}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
+ org/apache/wss4j/dom=${bin}/org/apache/wss4j/dom
+
 instrument.classesExcludes: org/apache/wss4j/dom/util/*.class
 
 -buildpath: org.apache.wss4j:wss4j-ws-security-dom;version=${wss4jVersion}, \
-            com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
-            com.ibm.ws.org.slf4j.api;version=latest, \
-            io.openliberty.org.apache.santuario.xmlsec;version=latest, \
-            com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest, \
-            com.ibm.ws.org.joda.time.2.9.9;version=latest, \
-            com.ibm.websphere.appserver.spi.logging;version=latest
+ com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
+ com.ibm.ws.org.slf4j.api;version=latest, \
+ io.openliberty.org.apache.santuario.xmlsec;version=latest, \
+ com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest, \
+ com.ibm.ws.org.joda.time.2.9.9;version=latest, \
+ com.ibm.websphere.appserver.spi.logging;version=latest
