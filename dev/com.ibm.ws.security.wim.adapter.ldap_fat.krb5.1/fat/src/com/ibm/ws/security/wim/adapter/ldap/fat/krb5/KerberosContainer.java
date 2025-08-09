@@ -98,7 +98,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                 Log.info(c, "configure", "ExposedPort=" + p.getPort());
                 exposedPorts.add(p);
             }
-            //exposedPorts.add(ExposedPort.tcp(88));
+
             exposedPorts.add(ExposedPort.udp(99));
             cmd.withExposedPorts(exposedPorts);
 
@@ -115,8 +115,8 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
     @Override
     protected void containerIsStarted(InspectContainerResponse containerInfo) {
-        String udp88 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(99, InternetProtocol.UDP))[0].getHostPortSpec();
-        udp_99 = Integer.valueOf(udp88);
+        String udp99 = containerInfo.getNetworkSettings().getPorts().getBindings().get(new ExposedPort(99, InternetProtocol.UDP))[0].getHostPortSpec();
+        udp_99 = Integer.valueOf(udp99);
         KRB5_PORT = "" + udp_99;
         Log.info(c, "containerIsStarted", "Using KRB5_PORT=" + KRB5_PORT);
     }
@@ -124,7 +124,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     @Override
     public Integer getMappedPort(int originalPort) {
         // For this container assume we always want the UDP port when we ask for port 99
-        if (originalPort == 88) {
+        if (originalPort == 99) {
             return udp_99;
         } else {
             return super.getMappedPort(originalPort);
@@ -152,7 +152,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                       "\n" +
                       "[realms]\n" +
                       "        " + KRB5_REALM.toUpperCase() + " = {\n" +
-                      "                kdc = " + getHost() + ":" + getMappedPort(88) + "\n" +
+                      "                kdc = " + getHost() + ":" + getMappedPort(99) + "\n" +
                       "                admin_server = " + getHost() + "\n" +
                       "        }\n" +
                       "\n" +

@@ -51,5 +51,3 @@ public.ecr.aws/docker/library/python:3.11.6
 ryanesch/acme-boulder:1.2
 seleniarm/standalone-chromium:4.8.3
 selenium/standalone-chrome:4.8.3
-zachhein/krb5-server:0.2
-zachhein/ldap-server:0.5
