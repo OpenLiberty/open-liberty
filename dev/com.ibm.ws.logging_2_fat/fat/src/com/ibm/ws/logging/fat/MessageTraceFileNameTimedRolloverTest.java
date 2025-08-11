@@ -53,11 +53,22 @@ public class MessageTraceFileNameTimedRolloverTest {
         }
     }
 
-    /** Set or clear com.ibm.ws.logging.trace.file.name in bootstrap.properties. */
+    /**
+     * Configure bootstrap.properties for these tests.
+     * If {@code value} is null we explicitly set a conservative trace spec (*=info)
+     * to prevent the FAT framework from enabling real trace and creating trace.log.
+     * Otherwise we set the requested trace file name (e.g., "stdout").
+     */
     private static void setBootstrapTraceFileName(String value) throws Exception {
-        String content = "bootstrap.include=../testports.properties\n"
-                         + (value == null ? "" : "com.ibm.ws.logging.trace.file.name=" + value + "\n");
-        writeBootstrap(content);
+        StringBuilder sb = new StringBuilder();
+        sb.append("bootstrap.include=../testports.properties\n");
+        if (value == null) {
+            // Neutralize trace so framework doesn't create trace.log
+            sb.append("com.ibm.ws.logging.trace.specification=*=info\n");
+        } else {
+            sb.append("com.ibm.ws.logging.trace.file.name=").append(value).append("\n");
+        }
+        writeBootstrap(sb.toString());
     }
 
     /** Clear bootstrap to just include test ports. */

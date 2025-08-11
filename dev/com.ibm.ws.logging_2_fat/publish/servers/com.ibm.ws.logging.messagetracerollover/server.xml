@@ -18,6 +18,4 @@
         <feature>timedexit-1.0</feature>
     </featureManager>
     
-    <logging traceSpecification="*=info"/>
-    
 </server>
