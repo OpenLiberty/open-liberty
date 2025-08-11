@@ -409,7 +409,7 @@ public class CommonTest {
         if (isZOS) {
             try (FileOutputStream out = new FileOutputStream(
                     testServer.getServerRoot() + SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE);
-                    OutputStreamWriter osw = new OutputStreamWriter(out, "IBM-1047");
+                    OutputStreamWriter osw = new OutputStreamWriter(out, "Cp1047");
                     PrintWriter pw = new PrintWriter(osw)) {
                 pw.print(InitClass.KRB5_CONF.getBytes());
             } catch (IOException e) {
