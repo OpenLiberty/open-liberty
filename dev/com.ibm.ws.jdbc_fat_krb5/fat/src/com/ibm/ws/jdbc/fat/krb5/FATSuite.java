@@ -84,6 +84,39 @@ public class FATSuite extends TestContainerSuite {
             throw firstError;
     }
 
+    public static String requestKeyTable2(final String user) throws Exception {
+        final String m = "requestKeyTable";
+        String containerLocation;
+
+        // Try to find cached key table
+        if (EXTERNAL_KEY_TABLE.containsKey(user)) {
+            containerLocation = EXTERNAL_KEY_TABLE.get(user);
+            Log.info(c, m, "Returning cached external key table from: " + krb5.getContainerId() + ":" + containerLocation);
+            return containerLocation;
+        } else {
+            containerLocation = "/tmp/client_" + user + "_krb5.keytab";
+        }
+
+        // Queries
+        final String[] script = new String[] { "/tmp/client-keytab.sh", user };
+
+        // Export principle to new keytab file
+        Log.info(c, m, "Execute in container " + krb5.getContainerName() + " : " + Arrays.toString(script));
+        ExecResult result = krb5.execInContainer(script);
+        if (result.getExitCode() != 0) {
+            Log.info(c, m, "\tSTDOUT: " + result.getStdout());
+            Log.info(c, m, "\tSTDERR: " + result.getStderr());
+            throw new IllegalStateException("Could not generate keytab file because exit code was: " + result.getExitCode() + " see logs for details.");
+        } else {
+            Log.info(c, m, "\tSTDOUT: " + result.getStdout());
+        }
+
+        // Cache location
+        EXTERNAL_KEY_TABLE.put(user, containerLocation);
+
+        return containerLocation;
+    }
+
     /**
      * Requests the KDC to export a keytab file for this user.
      * Then returns the location the keytab file was saved in the container.

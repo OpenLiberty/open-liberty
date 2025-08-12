@@ -85,7 +85,7 @@ public class DB2KerberosTest extends FATServletClient {
 
         // Generate krb5.keytab in KDC container, and then copy it to server/security directory
         krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
-        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable(DB2KerberosContainer.KRB5_USER), krbKeytabPath.toAbsolutePath().toString());
+        FATSuite.krb5.copyFileFromContainer(FATSuite.requestKeyTable2(DB2KerberosContainer.KRB5_USER), krbKeytabPath.toAbsolutePath().toString());
 
         // Uncomment to download db2restart debug file when debug is enabled
 //        db2.copyFileFromContainer("/tmp/db2restart.txt", "/path/to/a/directory/db2restart.txt");
@@ -117,6 +117,9 @@ public class DB2KerberosTest extends FATServletClient {
 
         verifyResult(db2.execInContainer("su", "-", db2.getUsername(), "-c", "db2support /tmp/ -s -d testdb"));
         db2.copyFileFromContainer("/tmp/db2support.zip", Props.getInstance().getProperty(Props.DIR_LOG) + "/db2support.zip");
+
+        verifyResult(db2.execInContainer("su", "-", db2.getUsername(), "-c", "db2diag -A"));
+//        Thread.sleep(Duration.ofMinutes(10).toMillis());
     }
 
     @AfterClass

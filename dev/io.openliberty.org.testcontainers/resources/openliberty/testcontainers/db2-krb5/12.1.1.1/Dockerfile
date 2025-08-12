@@ -19,6 +19,7 @@ RUN chmod 777 /docker-entrypoint.sh
 
 # TODO 'krb5-auth-dialog' is no longer available from package managers
 # that are configured on DB2 image. If needed download directly.
+#RUN yum clean all
 RUN yum -y install krb5-workstation krb5-libs
 
 # Create key table for service and user accounts
@@ -26,6 +27,7 @@ RUN yum -y install krb5-workstation krb5-libs
 RUN mkdir /etc/krb5
 RUN printf 'add_entry -password -p db2srvc@EXAMPLE.COM -k 1 -e aes256-cts\npassword\nwkt /etc/krb5.keytab' | ktutil
 RUN printf 'add_entry -password -p db2inst1/db2@EXAMPLE.COM -k 1 -e aes256-cts\npassword\nwkt /etc/krb5.keytab' | ktutil
+#RUN printf 'add_entry -password -p dbuser@EXAMPLE.COM -k 1 -e aes256-cts\npassword\nwkt /etc/krb5.keytab' | ktutil
 
 RUN chmod 777 /etc/krb5.keytab
 RUN chmod 777 ${DB2_ADMIN}/adm/db2start
