@@ -1029,9 +1029,9 @@ public class CommonTest {
 
     public static String maskHostnameAndPassword(String message) {
         if (message != null) {
-            if (InitClass.KDC_HOSTNAME != null)
+            if (InitClass.KDC_HOSTNAME != null && InitClass.KDCP_VAR != null)
                 message = message.replace(InitClass.KDC_HOSTNAME, InitClass.KDCP_VAR);
-            if (InitClass.KDC2_HOSTNAME != null)
+            if (InitClass.KDC2_HOSTNAME != null && InitClass.KDCP_VAR != null)
                 message = message.replace(InitClass.KDC2_HOSTNAME, InitClass.KDCS_VAR);
             if (InitClass.KDC_USER != null)
                 message = message.replace(InitClass.KDC_USER, "InitClass.KDC_USER");
