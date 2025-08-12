@@ -41,6 +41,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *
@@ -116,7 +117,7 @@ public class McpServlet extends HttpServlet {
     @FFDCIgnore({ JSONRPCException.class, InvocationTargetException.class, IllegalAccessException.class, IllegalArgumentException.class })
     private void callTool(McpRequest request, Writer writer) {
         McpToolCallParams params = request.getParams(McpToolCallParams.class, jsonb);
-        CreationalContext<Void> cc = bm.createCreationalContext(null);
+        CreationalContext<Object> cc = bm.createCreationalContext(null);
         Object bean = bm.getReference(params.getBean(), params.getBean().getBeanClass(), cc);
         McpResponse mcpResponse;
         try {
@@ -130,9 +131,36 @@ public class McpServlet extends HttpServlet {
             throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, List.of("Could not call " + params.getName()));
         } catch (IllegalArgumentException e) {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Incorrect arguments in params"));
+        } finally {
+            try {
+                cc.release();
+            } catch (Exception ex) {
+                LOG.warning("Failed to release bean: " + ex.getMessage());
+            }
         }
         jsonb.toJson(mcpResponse, writer);
 
+    }
+
+    @Dependent
+    public static class ClassTool {
+        private static final Logger LOG = Logger.getLogger(ClassTool.class.getName());
+        private String id;
+
+        @PostConstruct
+        void init() {
+            id = "ClassTool#" + System.identityHashCode(this);
+            LOG.info("[LIFECYCLE] @PostConstruct ClassTool fired");
+        }
+
+        @PreDestroy
+        void destroy() {
+            LOG.info("[LIFECYCLE] @PreDestroy ClassTool");
+        }
+
+        public String sayHello(String name) {
+            return "Hello, " + name;
+        }
     }
 
     /**

@@ -29,13 +29,16 @@ WS-TraceGroup: MCP
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.mcp;version=latest,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
-	com.ibm.ws.cdi.interfaces.jakarta;version=latest
+	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	jakarta.enterprise.cdi-api,\
+	io.openliberty.jakarta.cdi.3.0
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \
