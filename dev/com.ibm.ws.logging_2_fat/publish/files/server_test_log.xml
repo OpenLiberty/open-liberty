@@ -14,7 +14,7 @@
     <include location="../fatTestPorts.xml"/>
 
     <featureManager>
-        <feature>timedexit-1.0</feature>
+        <feature>jsp-2.3</feature>
     </featureManager>
 
     <logging

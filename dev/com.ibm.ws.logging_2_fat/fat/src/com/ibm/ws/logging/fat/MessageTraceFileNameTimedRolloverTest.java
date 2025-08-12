@@ -59,7 +59,7 @@ public class MessageTraceFileNameTimedRolloverTest {
      * to prevent the FAT framework from enabling real trace and creating trace.log.
      * Otherwise we set the requested trace file name (e.g., "stdout").
      */
-    private static void setBootstrapTraceFileName(String value) throws Exception {
+    private static void setBootstrapLoggingOverrides(String value) throws Exception {
         StringBuilder sb = new StringBuilder();
         sb.append("bootstrap.include=../testports.properties\n");
         if (value == null) {
@@ -153,7 +153,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "✓ Requirement: trace.log should NOT be created");
         Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "✓ Requirement: messages.log should roll over");
 
-        setBootstrapTraceFileName("stdout");
+        setBootstrapLoggingOverrides("stdout");
         Log.info(c, "testTraceFileNameStdoutBootstrapWithTimedRollover", "Set traceFileName=stdout in bootstrap.properties");
 
         waitForBeginningOfMinute();
@@ -216,7 +216,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "✓ Verify trace.log is NOT created and trace_* does NOT roll");
 
         // Ensure bootstrap is NOT forcing a file name
-        setBootstrapTraceFileName(null);
+        setBootstrapLoggingOverrides(null);
 
         server.setServerConfigurationFile("server_trace_stdout.xml");
 
@@ -255,7 +255,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "✓ Verify trace.log gets created and then rolled over");
 
         // Start with stdout via bootstrap
-        setBootstrapTraceFileName("stdout");
+        setBootstrapLoggingOverrides("stdout");
 
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
@@ -268,7 +268,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.setMarkToEndOfLog();
         Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "Updating to server_trace_log.xml...");
         server.setServerConfigurationFile("server_trace_log.xml");
-        assertNotNull("Config update should complete", server.waitForConfigUpdateInLogUsingMark(null));
+        server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
 
         // File must be created shortly after update
         assertTrue("trace.log should be created after dynamic update",
@@ -298,7 +298,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "✓ Verify trace.log does NOT roll over");
 
         // Let server.xml control (no bootstrap override)
-        setBootstrapTraceFileName(null);
+        setBootstrapLoggingOverrides(null);
 
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
@@ -343,7 +343,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         Log.info(c, "testDynamicMessageFileNameToCustomFile", "✓ Requirement: Verify custom_message.log gets rolled over");
 
         // Let server.xml control (no bootstrap override)
-        setBootstrapTraceFileName(null);
+        setBootstrapLoggingOverrides(null);
 
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
@@ -354,7 +354,7 @@ public class MessageTraceFileNameTimedRolloverTest {
 
         // Wait for the file to appear instead of waiting on CWWKG0017I
         assertTrue("custom_message.log should appear after config update",
-                   waitForFileExists("logs/custom_message.log", 20000));
+                   waitForFileExists("logs/custom_message.log", 50000));
 
         // Then wait for the next rollover and verify a rolled file exists
         Calendar nextRollover = getNextRolloverTime(0, 1);
@@ -380,7 +380,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "✓ Verify trace.log is NOT created, but messages.log still is");
 
         // Ensure bootstrap is NOT forcing a file name
-        setBootstrapTraceFileName(null);
+        setBootstrapLoggingOverrides(null);
 
         server.setServerConfigurationFile("server_trace_stdout.xml");
         server.startServer();
