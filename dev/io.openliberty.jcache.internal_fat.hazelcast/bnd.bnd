@@ -49,6 +49,7 @@ generate.replacement: true
 	com.ibm.ws.security.spnego.fat.common;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
 	com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
+    com.ibm.ws.kernel.boot;version=latest, \
 	com.ibm.ws.kernel.service;version=latest,\
 	com.hazelcast:hazelcast;version=5.1.3
     
