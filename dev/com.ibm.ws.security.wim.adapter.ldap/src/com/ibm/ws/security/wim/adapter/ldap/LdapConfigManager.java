@@ -427,6 +427,9 @@ public class LdapConfigManager {
      */
     private static final String FILTER_VALUE_PATTERN = "=%v";
 
+    // String to set the domain name configured to discover the ldap servers at runtime
+    private String domainNameForAutomaticDiscoveryOfLDAPServers = null;
+
     /**
      * Refreshes the caches using the given configuration data object.
      * This method should be called when there are changes in configuration and schema.
@@ -973,6 +976,20 @@ public class LdapConfigManager {
 
             resetEntitySearchFilters();
         }
+    }
+
+    /**
+     * @return domainNameForAutomaticDiscoveryOfLDAPServers   domain name to discover the ldap servers at runtime
+     */
+    public String getDomainNameForAutomaticDiscoveryOfLDAPServers(){
+    	return domainNameForAutomaticDiscoveryOfLDAPServers;
+    }
+    /**
+     * @return domainNameForAutomaticDiscoveryOfLDAPServers domain name to discover
+     *         the ldap servers at runtime, set to lower case
+     */
+    public String getDomainNameForAutomaticDiscoveryOfLDAPServersLowerCase() {
+        return domainNameForAutomaticDiscoveryOfLDAPServers.toLowerCase();
     }
 
     /**

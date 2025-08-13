@@ -26,8 +26,15 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.Control;
 import javax.naming.ldap.InitialLdapContext;
-
+import javax.naming.InvalidNameException;
+import javax.naming.Name;
+import javax.naming.NamingEnumeration;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
 import com.ibm.websphere.ras.Tr;
+import com.ibm.ws.security.wim.adapter.ldap.LdapConfigManager;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -66,6 +73,7 @@ public class TimedDirContext {
     private long iPoolTimestampSeconds;
 
     private final String iProviderURL;
+    private LdapConfigManager iLdapConfigMgr = null;
 
     /**
      * Construct a new {@link TimedDirContext} instance.
@@ -78,11 +86,16 @@ public class TimedDirContext {
      * @see InitialLdapContext#InitialLdapContext(Hashtable, Control[])
      */
     @Sensitive
-    public TimedDirContext(@Sensitive Hashtable<?, ?> environment, Control[] connCtls, long createTimestamp) throws NamingException {
+    public TimedDirContext(@Sensitive Hashtable<?, ?> environment, Control[] connCtls, long createTimestamp, LdapConfigManager cfg) throws NamingException {
         context = new InitialLdapContext(environment, connCtls);
         iCreateTimestampSeconds = createTimestamp;
         iPoolTimestampSeconds = createTimestamp;
         iProviderURL = (String) environment.get(DirContext.PROVIDER_URL);
+        iLdapConfigMgr = cfg;
+    }
+
+    public TimedDirContext(@Sensitive Hashtable<?, ?> environment, Control[] connCtls, long createTimestamp) throws NamingException {
+        this(environment, connCtls, createTimestamp, null);
     }
 
     /** @see InitialLdapContext#close() */
@@ -181,7 +194,7 @@ public class TimedDirContext {
         try {
             traceJndiBegin(METHODNAME, name, attrs);
             begin = System.currentTimeMillis();
-            results = context.getAttributes(name, attrs);
+            results = context.getAttributes(checkForDNSOverlap(name), attrs);
         } catch (NamingException e) {
             ne = e;
             throw e;
@@ -381,7 +394,7 @@ public class TimedDirContext {
             traceJndiBegin(METHODNAME, name, filterExpr, filterArgs, LdapHelper.printSearchControls(cons),
                            Context.REFERRAL + ": " + context.getEnvironment().get(Context.REFERRAL));
             begin = System.currentTimeMillis();
-            results = context.search(name, filterExpr, filterArgs, cons);
+            results = context.search(checkForDNSOverlap(name), filterExpr, filterArgs, cons);
         } catch (NamingException e) {
             ne = e;
             throw e;
@@ -412,7 +425,7 @@ public class TimedDirContext {
             traceJndiBegin(METHODNAME, name, filterExpr, LdapHelper.printSearchControls(cons),
                            Context.REFERRAL + ": " + context.getEnvironment().get(Context.REFERRAL));
             begin = System.currentTimeMillis();
-            results = context.search(name, filterExpr, cons);
+            results = context.search(checkForDNSOverlap(name), filterExpr, cons);
         } catch (NamingException e) {
             ne = e;
             throw e;
@@ -442,7 +455,7 @@ public class TimedDirContext {
         try {
             traceJndiBegin(METHODNAME, name, filterExpr, cons);
             begin = System.currentTimeMillis();
-            results = context.search(name, filterExpr, cons);
+            results = context.search(checkForDNSOverlap(name), filterExpr, cons);
         } catch (NamingException e) {
             ne = e;
             throw e;
@@ -467,6 +480,49 @@ public class TimedDirContext {
      */
     public void setCreateTimestamp(long createTimestamp) {
         iCreateTimestampSeconds = createTimestamp;
+    }
+
+        /**
+     * PH02868, skip sending the domain name on the name field as we're sending it on the providerURL. If
+     * we don't skip it here, it will be duplicated on the LDAP request.
+     */
+    private Name checkForDNSOverlap(Name searchBase) {
+        if(iLdapConfigMgr!= null && iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers() != null){
+            
+            try {
+                searchBase = new LdapName(checkForDNSOverlap(searchBase.toString()));
+            } catch (InvalidNameException e) {
+                 Tr.debug(tc, "checkForDNSOverlap", "Failed to create override name on " + searchBase.toString() +": " + e.getMessage());
+            }
+        }
+        return searchBase;
+    }
+
+    /**
+     * PH02868, skip sending the domain name on the name (searchBase) field as we're sending it on the providerURL. If
+     * we don't skip it here, it will be duplicated on the LDAP request.
+     * 
+     * If the searchBase sent in is shorter than the DomainNameForAutomaticDiscoveryOfLDAPServers, then the
+     * value of DomainNameForAutomaticDiscoveryOfLDAPServers overrides it. For example, if the searchBase 
+     * is dc=com and the DomainNameForAutomaticDiscoveryOfLDAPServers is dc=ibm,dc=com, the we'll send an
+     * empty searchBase and dc=ibm,dc=com is sent via the providerURL (ldap:///dc=ibm,c=com).
+     */
+    private String checkForDNSOverlap(String searchBase) {
+        if (iLdapConfigMgr != null && iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers() != null) {
+            String lowerCaseName = searchBase.toLowerCase();
+            String domainDNS = iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServersLowerCase();
+            if (lowerCaseName.equals(domainDNS) || domainDNS.endsWith(lowerCaseName)) {
+                searchBase = ("");
+                Tr.debug(tc, "checkForDNSOverlap", "Override " + searchBase + " with empty. Domain is "
+                                    + iLdapConfigMgr.getDomainNameForAutomaticDiscoveryOfLDAPServers());
+            } else if (lowerCaseName.endsWith(domainDNS)) {
+                int pos = lowerCaseName.indexOf(domainDNS);
+                String prevName = searchBase;
+                searchBase = searchBase.substring(0, pos - 1);
+                 Tr.debug(tc, "checkForDNSOverlap", "Override " + prevName + " with " + searchBase);
+            }
+        }
+        return searchBase;
     }
 
     /**

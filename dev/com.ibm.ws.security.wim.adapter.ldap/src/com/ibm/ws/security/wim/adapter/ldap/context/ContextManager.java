@@ -627,7 +627,7 @@ public class ContextManager {
             try {
                 TimedDirContext ctx = null;
                 try {
-                    ctx = new TimedDirContext(environment, getConnectionRequestControls(), roundToSeconds(System.currentTimeMillis()));
+                    ctx = new TimedDirContext(environment, getConnectionRequestControls(), roundToSeconds(System.currentTimeMillis(), iLdapConfigMgr));
                 } catch (NamingException e) {
                     if (!isConnectionException(e)) {
                         throw e;
@@ -642,7 +642,7 @@ public class ContextManager {
                     environment.put(Context.SECURITY_PRINCIPAL, principal);
                     environment.put(Context.SECURITY_CREDENTIALS, credential);
 
-                    ctx = new TimedDirContext(environment, getConnectionRequestControls(), roundToSeconds(System.currentTimeMillis()));
+                    ctx = new TimedDirContext(environment, getConnectionRequestControls(), roundToSeconds(System.currentTimeMillis(), iLdapConfigMgr));
                     String newURL = getProviderURL(ctx);
                     long creationTimeMillisec = System.currentTimeMillis();
 
