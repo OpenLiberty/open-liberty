@@ -10,14 +10,14 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;com.ibm.ws.org.eclipse.platform:org.eclipse.osgi;3.23.200.v20250605-1731}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;com.ibm.ws.org.eclipse.platform:org.eclipse.osgi;3.23.200.v20250812-1847}}!/META-INF/MANIFEST.MF,bnd.overrides
 -nouses: true
 -nodefaultversion: true
 
 instrument.disabled: true
 
 -includeresource: \
-   @${repo;com.ibm.ws.org.eclipse.platform:org.eclipse.osgi;3.23.200.v20250605-1731}!/!module-info.class
+   @${repo;com.ibm.ws.org.eclipse.platform:org.eclipse.osgi;3.23.200.v20250812-1847}!/!module-info.class
 
 -buildpath: \
-	com.ibm.ws.org.eclipse.platform:org.eclipse.osgi;version=3.23.200.v20250605-1731
+	com.ibm.ws.org.eclipse.platform:org.eclipse.osgi;version=3.23.200.v20250812-1847
