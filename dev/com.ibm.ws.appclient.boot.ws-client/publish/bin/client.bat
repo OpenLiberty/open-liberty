@@ -175,6 +175,8 @@ goto:eof
   if %RC% == 2 goto:eof
 
   call:clientWorkingDirectory
+  call:checkForFIPS1403
+
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
   call:javaCmdResult
@@ -260,7 +262,6 @@ goto:eof
     if exist "%JAVA_HOME%\jre\bin\java.exe" set JAVA_HOME=!JAVA_HOME!\jre
     set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
   )
-
 goto:eof
 
 @REM
@@ -302,7 +303,9 @@ goto:eof
   )
   
   set JVM_OPTIONS=!JVM_OPTIONS!%JVM_TEMP_OPTIONS%
-  
+
+  echo !JVM_OPTIONS!
+
 goto:eof
 
 @REM
@@ -349,6 +352,44 @@ goto:eof
   if not exist "%CLIENT_OUTPUT_DIR%" mkdir "%CLIENT_OUTPUT_DIR%"
   cd /d "%CLIENT_OUTPUT_DIR%"
 goto:eof
+
+@REM Check if the ENABLE_FIPS140_3 variable has been set by the user
+@REM If ENABLE_FIPS140_3 is set, determine the correct JVM options depending on the version of Java to be used and add to list
+@REM The version of java is determined to correctly set IBM SDK 8 or Semeru FIPS140-3 flags
+:checkForFIPS1403
+  @REM CHeck if FIPS140-3 is enabled for the client
+  if defined ENABLE_FIPS140_3 (
+    @REM determine if we are using IBM SDK 8 with FIPS140-3 support
+    if exist "%JAVA_HOME%\fips140-3" set IBM_SDK_8=true
+    if NOT defined IBM_SDK_8 (
+      if exist "%JRE_HOME%\fips140-3" set IBM_SDK_8=true
+      if NOT defined IBM_SDK_8 (
+        if exist "%WLP_DEFAULT_JAVA_HOME%\jre\fips140-3" set IBM_SDK_8=true
+      )
+    )
+
+    if defined IBM_SDK_8 (
+      set JVM_OPTIONS=-Xenablefips140-3 -Dcom.ibm.jsse2.usefipsprovider=true -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS !JVM_OPTIONS!
+    ) else (
+      @REM Retrieve name of Semeru FIPS140-3 profile from the last file in provided paths
+      for %%i in ("!ENABLE_FIPS140_3:;=";"!") do (
+          set "file=%%~i"
+      )
+      for /f "delims== " %%l in (!file!) do (
+        set line=%%l
+        if /i "!line:~0,18!" == "RestrictedSecurity" (
+          set "line=!line:~19!"
+          if "!line:~-7!" == "extends" (
+            set profileName=!line:~0,-8!
+          )
+        )
+      )
+      set JVM_OPTIONS=-Dsemeru.fips=true -Dsemeru.customprofile=!profileName! -Djava.security.properties=!ENABLE_FIPS140_3! !JVM_OPTIONS!
+    )
+  )
+
+goto:eof
+
 
 @REM
 @REM Check the result of a Java command.

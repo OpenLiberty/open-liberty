@@ -56,6 +56,23 @@ if NOT defined JAVA_HOME (
 @REM If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
 if exist "%JAVA_HOME%\lib\modules" set JVM_ARGS=--add-opens java.base/java.lang=ALL-UNNAMED !JVM_ARGS!
 
+@REM If ENABLE_FIPS140_3 is specified and has a value, add FIPS140-3
+if defined ENABLE_FIPS140_3 (
+    @REM determine if we are using IBM SDK 8 with FIPS140-3 support
+    if exist "%JAVA_HOME%\fips140-3" set IBM_SDK_8=true
+    if NOT defined IBM_SDK_8 (
+      if exist "%JRE_HOME%\fips140-3" set IBM_SDK_8=true
+      if NOT defined IBM_SDK_8 (
+        if exist "%WLP_DEFAULT_JAVA_HOME%\jre\fips140-3" set IBM_SDK_8=true
+      )
+    )
+    if defined IBM_SDK_8 (
+        set JVM_ARGS=-Xenablefips140-3 -Dcom.ibm.jsse2.usefipsprovider=true -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS !JVM_ARGS!
+    ) else (
+        set JVM_ARGS=-Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Custom -Djava.security.properties=!WLP_INSTALL_DIR!\lib\security\fips140-3\fips140_3Liberty.properties !JVM_ARGS!
+    )
+)
+
 set JVM_ARGS=-Djava.awt.headless=true !JVM_ARGS!
 set TOOL_JAVA_CMD_QUOTED=!JAVA_CMD_QUOTED! !JVM_ARGS! -jar "!WLP_INSTALL_DIR!\bin\@TOOL_JAR@"
 
