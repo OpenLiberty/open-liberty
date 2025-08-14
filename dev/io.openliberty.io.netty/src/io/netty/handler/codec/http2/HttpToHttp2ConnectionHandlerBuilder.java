@@ -92,7 +92,13 @@ public final class HttpToHttp2ConnectionHandlerBuilder extends
         return super.decoderEnforceMaxConsecutiveEmptyDataFrames(maxConsecutiveEmptyFrames);
     }
 
-    // Overlay added for max reset http options. Can be removed after Netty 4.1.120.Final
+    // Overlay added for max reset http options. Can be removed after Netty PR is merged in
+    @Override
+    public HttpToHttp2ConnectionHandlerBuilder encoderEnforceMaxRstFramesPerWindow(int maxRstFramesPerWindow,
+            int secondsPerWindow) {
+        return super.encoderEnforceMaxRstFramesPerWindow(maxRstFramesPerWindow, secondsPerWindow);
+    }
+
     @Override
     public HttpToHttp2ConnectionHandlerBuilder decoderEnforceMaxRstFramesPerWindow(int maxRstFramesPerWindow,
             int secondsPerWindow) {
