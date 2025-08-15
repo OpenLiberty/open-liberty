@@ -142,7 +142,7 @@ public class KeyStoreManager {
             Tr.entry(tc, "checkIfSignerAlreadyExistsInTrustStore");
 
         try {
-            String signerDigest = generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, signer);
+            String signerDigest = generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, signer);
             if (signerDigest == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     Tr.exit(tc, "checkIfSignerAlreadyExistsInTrustStore -> false (could not generate digest)");
@@ -157,7 +157,7 @@ public class KeyStoreManager {
                 if (trustStore.containsAlias(alias)) {
                     X509Certificate cert = (X509Certificate) trustStore.getCertificate(alias);
 
-                    String certDigest = generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, cert);
+                    String certDigest = generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, cert);
 
                     if (signerDigest.equals(certDigest)) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())

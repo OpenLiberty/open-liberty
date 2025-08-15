@@ -185,11 +185,11 @@ public class CryptoUtils {
 
     private static Map<String, String> secureAlternative = new HashMap<>();
     static {
-        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_SHA, MESSAGE_DIGEST_ALGORITHM_SHA256);
-        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_SHA1, MESSAGE_DIGEST_ALGORITHM_SHA256);
-        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_SHA_1, MESSAGE_DIGEST_ALGORITHM_SHA256);
-        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_SHA128, MESSAGE_DIGEST_ALGORITHM_SHA256);
-        secureAlternative.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5, MESSAGE_DIGEST_ALGORITHM_SHA256);
+        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_SHA, MESSAGE_DIGEST_ALGORITHM_SHA_256);
+        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_SHA1, MESSAGE_DIGEST_ALGORITHM_SHA_256);
+        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_SHA_1, MESSAGE_DIGEST_ALGORITHM_SHA_256);
+        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_SHA128, MESSAGE_DIGEST_ALGORITHM_SHA_256);
+        secureAlternative.put(MESSAGE_DIGEST_ALGORITHM_MD5, MESSAGE_DIGEST_ALGORITHM_SHA_256);
     }
 
     /**
@@ -327,12 +327,12 @@ public class CryptoUtils {
         return provider;
     }
 
-    public static final String MESSAGE_DIGEST_ALGORITHM = (fipsEnabled ? MESSAGE_DIGEST_ALGORITHM_SHA256 : MESSAGE_DIGEST_ALGORITHM_SHA);
+    public static final String MESSAGE_DIGEST_ALGORITHM = (fipsEnabled ? MESSAGE_DIGEST_ALGORITHM_SHA_256 : MESSAGE_DIGEST_ALGORITHM_SHA);
     /**
      * List of supported Message Digest Algorithms.
      */
     private static final List<String> supportedMessageDigestAlgorithms = Arrays.asList(
-                                                                                       MESSAGE_DIGEST_ALGORITHM_SHA256,
+                                                                                       MESSAGE_DIGEST_ALGORITHM_SHA_256,
                                                                                        MESSAGE_DIGEST_ALGORITHM_SHA_384,
                                                                                        MESSAGE_DIGEST_ALGORITHM_SHA_512);
 

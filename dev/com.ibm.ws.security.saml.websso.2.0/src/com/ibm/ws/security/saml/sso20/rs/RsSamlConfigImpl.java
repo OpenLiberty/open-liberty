@@ -130,7 +130,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
     String keyStoreRef = null;
     String keyAlias = null;
     String keyPassword = null;
-    String signatureMethodAlgorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+    String signatureMethodAlgorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
     String userIdentifier = "NameID";
     String groupIdentifier = null;
     String userUniqueIdentifier = "NameID";

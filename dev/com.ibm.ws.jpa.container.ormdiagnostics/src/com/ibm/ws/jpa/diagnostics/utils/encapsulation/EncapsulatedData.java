@@ -44,9 +44,9 @@ import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class EncapsulatedData {
-    private final String shaDigestAlg = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+    private final String shaDigestAlg = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
     public static EncapsulatedData createEncapsulatedData(String name, String id, byte[] data) throws Exception {
-        return createEncapsulatedData(name, id, CompressionType.GZIP, CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, data);
+        return createEncapsulatedData(name, id, CompressionType.GZIP, CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, data);
     }
 
     public static EncapsulatedData createEncapsulatedData(String name, String id, CompressionType ct,
