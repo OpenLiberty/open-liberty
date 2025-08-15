@@ -211,36 +211,36 @@ public class MessageTraceFileNameTimedRolloverTest {
      */
     @Test
     public void testTraceFileNameStdoutServerXmlWithTimedRollover() throws Exception {
-        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "=== TEST 2: Requirements Check ===");
-        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "✓ Use server.xml configuration with traceFileName=stdout");
-        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "✓ Verify trace.log is NOT created and trace_* does NOT roll");
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "=== TEST 2 ===");
 
-        // Ensure bootstrap is NOT forcing a file name
+        // Neutralize framework trace; let server.xml drive fileName
         setBootstrapLoggingOverrides(null);
 
-        server.setServerConfigurationFile("server_trace_stdout.xml");
-
-        // Align so we can assert that no trace_* file rolls on the next minute boundary
-        waitForBeginningOfMinute();
-
+        // 1) Start server on baseline config
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
+        // 2) Now swap to the stdout config and wait for config update complete
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("server_trace_stdout.xml");
+        assertNotNull("Config update should complete",
+                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*"));
+
+        // 3) Assert no trace.log ever appears
         boolean traceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
-        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "trace.log exists: " + traceLogExists + " (should be FALSE)");
         assertFalse("trace.log should NOT be created when traceFileName=stdout", traceLogExists);
 
+        // 4) Align to next minute and verify no trace_* rollover happens
+        waitForBeginningOfMinute();
         Calendar next = getNextRolloverTime(0, 1);
         long waitMs = next.getTimeInMillis() - System.currentTimeMillis() + 5000;
-        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "Waiting " + (waitMs / 1000) + " seconds for rollover check...");
         if (waitMs > 0)
             Thread.sleep(waitMs);
 
         int rolled = waitForRolledFiles("trace", 3000);
-        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "Found rolled trace_* files: " + rolled + " (should be 0)");
         assertEquals("trace_* rolled files must be ZERO when writing to stdout", 0, rolled);
 
-        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "=== TEST 2: COMPLETE ===");
+        Log.info(c, "testTraceFileNameStdoutServerXmlWithTimedRollover", "=== TEST 2 COMPLETE ===");
     }
 
     /**
@@ -375,26 +375,29 @@ public class MessageTraceFileNameTimedRolloverTest {
      */
     @Test
     public void testTraceFileNameStdoutNoTraceLogCreated() throws Exception {
-        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6: Requirements Check ===");
-        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "✓ Use server.xml configuration with traceFileName=stdout");
-        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "✓ Verify trace.log is NOT created, but messages.log still is");
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6 ===");
 
-        // Ensure bootstrap is NOT forcing a file name
+        // Neutralize framework trace; let server.xml drive fileName
         setBootstrapLoggingOverrides(null);
 
-        server.setServerConfigurationFile("server_trace_stdout.xml");
+        // 1) Start server on baseline config
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
+        // 2) Now swap to the stdout config and wait for config update complete
+        server.setMarkToEndOfLog();
+        server.setServerConfigurationFile("server_trace_stdout.xml");
+        assertNotNull("Config update should complete",
+                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*"));
+
+        // 3) Assert no trace.log; messages.log does exist
         boolean traceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
-        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "trace.log exists: " + traceLogExists + " (should be FALSE)");
         assertFalse("trace.log should NOT be created when traceFileName=stdout", traceLogExists);
 
         boolean messageLogExists = server.fileExistsInLibertyServerRoot("logs/messages.log");
-        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "messages.log exists: " + messageLogExists + " (should be TRUE)");
         assertTrue("messages.log should still be created normally", messageLogExists);
 
-        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6: COMPLETE ===");
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6 COMPLETE ===");
     }
 
     // ---- helpers for timing/rollover ----
