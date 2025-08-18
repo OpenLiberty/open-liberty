@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2013 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.messaging.security.MSTraceConstants;
@@ -40,8 +36,8 @@ public abstract class Permission {
 
     // Trace component for the Permission class
     private static TraceComponent tc = SibTr.register(Permission.class,
-            MSTraceConstants.MESSAGING_SECURITY_TRACE_GROUP,
-            MSTraceConstants.MESSAGING_SECURITY_RESOURCE_BUNDLE);
+                                                      MSTraceConstants.MESSAGING_SECURITY_TRACE_GROUP,
+                                                      MSTraceConstants.MESSAGING_SECURITY_RESOURCE_BUNDLE);
 
     // Absolute class name along with the package used for tracing
     private static final String CLASS_NAME = "com.ibm.ws.messaging.security.beans.Permission";
@@ -78,6 +74,52 @@ public abstract class Permission {
     }
 
     /**
+     * Add a User to the particular role
+     * 
+     * @param user
+     * @param role
+     */
+    protected void addUserToRole(String user, String role) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            SibTr.entry(tc, CLASS_NAME + "addUserToRole", new Object[] { user, role });
+        }
+        Set<String> usersForTheRole = roleToUserMap.get(role);
+        if (usersForTheRole != null) {
+            usersForTheRole.add(user);
+        } else {
+            usersForTheRole = new HashSet<String>();
+            usersForTheRole.add(user);
+        }
+        roleToUserMap.put(role, usersForTheRole);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            SibTr.exit(tc, CLASS_NAME + "addUserToRole");
+        }
+    }
+
+    /**
+     * Add a Group to the particular role
+     * 
+     * @param group
+     * @param role
+     */
+    protected void addGroupToRole(String group, String role) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            SibTr.entry(tc, CLASS_NAME + "addGroupToRole", new Object[] { group, role });
+        }
+        Set<String> groupsForTheRole = roleToGroupMap.get(role);
+        if (groupsForTheRole != null) {
+            groupsForTheRole.add(group);
+        } else {
+            groupsForTheRole = new HashSet<String>();
+            groupsForTheRole.add(group);
+        }
+        roleToGroupMap.put(role, groupsForTheRole);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            SibTr.exit(tc, CLASS_NAME + "addGroupToRole");
+        }
+    }
+
+    /**
      * Add all the users to a particular role
      * 
      * @param users
@@ -87,12 +129,13 @@ public abstract class Permission {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.entry(tc, CLASS_NAME + "addAllUsersToRole", new Object[] { users, role });
         }
-
-        if (users != null && role != null) {
-            Set<String> roleToUserLocalRef = roleToUserMap.computeIfAbsent(role, Permission::createSynchronizedSet);
-            users.stream().filter(Objects::nonNull).forEach(roleToUserLocalRef::add);
+        Set<String> usersForTheRole = roleToUserMap.get(role);
+        if (usersForTheRole != null) {
+            usersForTheRole.addAll(users);
+        } else {
+            usersForTheRole = users;
         }
-
+        roleToUserMap.put(role, usersForTheRole);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, CLASS_NAME + "addAllUsersToRole");
         }
@@ -108,12 +151,13 @@ public abstract class Permission {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.entry(tc, CLASS_NAME + "addAllGroupsToRole", new Object[] { groups, role });
         }
-
-        if (groups != null && role != null) {
-            Set<String> roleToGroupLocalRef = roleToGroupMap.computeIfAbsent(role, Permission::createSynchronizedSet);
-            groups.stream().filter(Objects::nonNull).forEach(roleToGroupLocalRef::add);
+        Set<String> groupsForTheRole = roleToGroupMap.get(role);
+        if (groupsForTheRole != null) {
+            groupsForTheRole.addAll(groups);
+        } else {
+            groupsForTheRole = groups;
         }
-
+        roleToGroupMap.put(role, groupsForTheRole);
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             SibTr.exit(tc, CLASS_NAME + "addAllGroupsToRole");
         }
@@ -150,10 +194,5 @@ public abstract class Permission {
      * @param groups
      */
     public abstract void addUsersAndGroupsToAllActions(Set<String> users, Set<String> groups);
-
-    //Object ignored is to match the signature of computeIfAbsent
-    private static <V extends Comparable<V>> SortedSet<V> createSynchronizedSet(Object ignored) {
-        return Collections.synchronizedSortedSet(new TreeSet<V>());
-    }
 
 }
