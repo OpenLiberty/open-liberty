@@ -249,10 +249,7 @@ public class MessageTraceFileNameTimedRolloverTest {
      */
     @Test
     public void testDynamicTraceFileNameStdoutToTraceLog() throws Exception {
-        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "=== TEST 3: Requirements Check ===");
-        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "✓ Start with traceFileName=stdout in bootstrap");
-        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "✓ Dynamically update to traceFileName=trace.log in server.xml");
-        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "✓ Verify trace.log gets created and then rolled over");
+        Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "=== TEST 3 ===");
 
         // Start with stdout via bootstrap
         setBootstrapLoggingOverrides("stdout");
@@ -264,11 +261,13 @@ public class MessageTraceFileNameTimedRolloverTest {
         assertFalse("trace.log should not exist initially when traceFileName=stdout",
                     server.fileExistsInLibertyServerRoot("logs/trace.log"));
 
-        // Dynamic update -> trace.log
+        // Dynamic update -> trace.log (mark BEFORE we change config)
         server.setMarkToEndOfLog();
         Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "Updating to server_trace_log.xml...");
         server.setServerConfigurationFile("server_trace_log.xml");
-        server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*");
+        assertNotNull("Config update should complete",
+                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 90000));
+        Thread.sleep(2000); // small settle
 
         // File must be created shortly after update
         assertTrue("trace.log should be created after dynamic update",
@@ -292,10 +291,7 @@ public class MessageTraceFileNameTimedRolloverTest {
      */
     @Test
     public void testDynamicTraceFileNameToCustomFile() throws Exception {
-        Log.info(c, "testDynamicTraceFileNameToCustomFile", "=== TEST 4: Requirements Check ===");
-        Log.info(c, "testDynamicTraceFileNameToCustomFile", "✓ Dynamically update traceFileName to test.log");
-        Log.info(c, "testDynamicTraceFileNameToCustomFile", "✓ Verify test.log gets rolled over");
-        Log.info(c, "testDynamicTraceFileNameToCustomFile", "✓ Verify trace.log does NOT roll over");
+        Log.info(c, "testDynamicTraceFileNameToCustomFile", "=== TEST 4 ===");
 
         // Let server.xml control (no bootstrap override)
         setBootstrapLoggingOverrides(null);
@@ -303,7 +299,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Sanity: trace.log should not be there at start of this test run
+        // Sanity: trace.log should not be there at start
         boolean initialTraceLog = server.fileExistsInLibertyServerRoot("logs/trace.log");
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Initial trace.log exists: " + initialTraceLog);
 
@@ -311,7 +307,9 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.setMarkToEndOfLog();
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Updating to server_test_log.xml...");
         server.setServerConfigurationFile("server_test_log.xml");
-        assertNotNull("Config update should complete", server.waitForConfigUpdateInLogUsingMark(null));
+        assertNotNull("Config update should complete",
+                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 90000));
+        Thread.sleep(2000); // small settle
 
         // test.log must be created shortly after update
         assertTrue("test.log should be created after dynamic update",
@@ -377,27 +375,28 @@ public class MessageTraceFileNameTimedRolloverTest {
     public void testTraceFileNameStdoutNoTraceLogCreated() throws Exception {
         Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6 ===");
 
-        // Neutralize framework trace; let server.xml drive fileName
+        // Ensure bootstrap is NOT forcing a file name
         setBootstrapLoggingOverrides(null);
 
-        // 1) Start server on baseline config
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // 2) Now swap to the stdout config and wait for config update complete
+        // Now update config to the traceFileName=stdout variant and wait for completion
         server.setMarkToEndOfLog();
         server.setServerConfigurationFile("server_trace_stdout.xml");
         assertNotNull("Config update should complete",
-                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*"));
+                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 90000));
+        Thread.sleep(2000); // small settle
 
-        // 3) Assert no trace.log; messages.log does exist
         boolean traceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "trace.log exists: " + traceLogExists + " (should be FALSE)");
         assertFalse("trace.log should NOT be created when traceFileName=stdout", traceLogExists);
 
         boolean messageLogExists = server.fileExistsInLibertyServerRoot("logs/messages.log");
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "messages.log exists: " + messageLogExists + " (should be TRUE)");
         assertTrue("messages.log should still be created normally", messageLogExists);
 
-        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6 COMPLETE ===");
+        Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "=== TEST 6: COMPLETE ===");
     }
 
     // ---- helpers for timing/rollover ----
