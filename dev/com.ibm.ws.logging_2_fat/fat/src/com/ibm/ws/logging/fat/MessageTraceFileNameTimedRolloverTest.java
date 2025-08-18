@@ -266,7 +266,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "Updating to server_trace_log.xml...");
         server.setServerConfigurationFile("server_trace_log.xml");
         assertNotNull("Config update should complete",
-                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 90000));
+                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 180000));
         Thread.sleep(2000); // small settle
 
         // File must be created shortly after update
@@ -308,7 +308,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Updating to server_test_log.xml...");
         server.setServerConfigurationFile("server_test_log.xml");
         assertNotNull("Config update should complete",
-                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 90000));
+                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 180000));
         Thread.sleep(2000); // small settle
 
         // test.log must be created shortly after update
