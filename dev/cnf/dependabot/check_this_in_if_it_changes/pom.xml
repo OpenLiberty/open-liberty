@@ -2732,6 +2732,11 @@
       <version>4.17</version>
     </dependency>
     <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.9.24</version>
+    </dependency>
+    <dependency>
       <groupId>org.asynchttpclient</groupId>
       <artifactId>async-http-client</artifactId>
       <version>2.12.3</version>
@@ -4658,6 +4663,26 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-servlet</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-web-server</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-webmvc</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>1.5.9.RELEASE</version>
     </dependency>
@@ -4670,6 +4695,11 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>3.3.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.0.0-M1</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
@@ -4803,6 +4833,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>3.0.7.RELEASE</version>
     </dependency>
@@ -4823,6 +4858,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
       <version>3.0.7.RELEASE</version>
     </dependency>
@@ -4840,6 +4880,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4925,6 +4970,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-web</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4969,57 +5019,57 @@
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>database-commons</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>db2</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>jdbc</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>kafka</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mongodb</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mssqlserver</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>oracle-free</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>oracle-xe</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>selenium</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
