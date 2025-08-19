@@ -30,7 +30,6 @@ import java.util.Set;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.channel.ChannelExec;
 import org.apache.sshd.client.channel.ClientChannelEvent;
@@ -864,9 +863,6 @@ public abstract class KdcHelper {
      * @return The SshClient.
      */
     protected SshClient getSshClient() {
-        if (Security.getProvider("BC") == null) {
-            Security.addProvider(new BouncyCastleProvider());
-        }
         SshClient sshClient = SshClient.setUpDefaultClient();
         sshClient.start();
         return sshClient;

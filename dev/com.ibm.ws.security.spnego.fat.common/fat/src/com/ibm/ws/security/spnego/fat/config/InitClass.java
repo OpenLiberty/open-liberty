@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
@@ -426,9 +425,6 @@ public class InitClass {
      * @return The SshClient.
      */
     protected static SshClient getSshClient() {
-        if (Security.getProvider("BC") == null) {
-            Security.addProvider(new BouncyCastleProvider());
-        }
         SshClient sshClient = SshClient.setUpDefaultClient();
         sshClient.start();
         return sshClient;
