@@ -80,7 +80,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>3.5.2</version>
 						<configuration>
-							<argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). -->
+							<argLine>${fat.framework.args}</argLine>
 							<forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/> <!-- Default forkNode has encoding issues on ZOS -->
 							<trimStackTrace>false</trimStackTrace>
 							<failIfNoTests>true</failIfNoTests>
@@ -126,7 +126,7 @@
 						<artifactId>maven-surefire-plugin</artifactId>
 						<version>3.5.2</version>
 						<configuration>
-							<argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBytes(). -->
+							<argLine>${fat.framework.args}</argLine>
 							<forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/> <!-- Default forkNode has encoding issues on ZOS -->
 							<trimStackTrace>false</trimStackTrace>
 							<failIfNoTests>true</failIfNoTests>
