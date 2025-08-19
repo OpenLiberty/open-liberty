@@ -7,9 +7,6 @@
     	<feature>monitor-1.0</feature>
     </featureManager>
     
-    <httpSession useSeparateSessionInvalidatorThreadPool="false"
-             delayInvalidationAlarmDuringServerStartup="60"/>
-
     <monitor  filter="ThreadPool,WebContainer,Session,ConnectionPool"/>
 
     <include location="../fatTestPorts.xml"/>
