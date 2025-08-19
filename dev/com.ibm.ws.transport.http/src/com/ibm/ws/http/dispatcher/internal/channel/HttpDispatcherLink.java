@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.CountDownLatch;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -131,6 +132,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     private final AtomicBoolean closeCompleted = new AtomicBoolean(false);
 
+    private final CountDownLatch closeCompleteLatch = new CountDownLatch(1);
+
     // Servlet 6.0
     private static AtomicInteger connectionCounter = new AtomicInteger(1);
     private int connectionId;
@@ -188,6 +191,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
             return;
         }
+
+        boolean performCloseOnThisThread = true;
 
         // This is added for Upgrade Servlet3.1 WebConnection
         // The only API available from connectionLink are close and destroy ,
@@ -265,6 +270,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (upgradedListener == null) {
                 String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
                 if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
+                     // This is the H2 path. Only one thread can perform the close.
+                    performCloseOnThisThread = false; // Assume this is not the first thread to reach here
+                    boolean isInitiator = false;
                     // want to close down at least once, and only once, for this type of upgraded connection
                     WebConnCanCloseSync.lock();
                     try {
@@ -272,37 +280,63 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                             // fall through to close logic after setting flag to only fall through once
                             // want to call close outside of the sync to avoid deadlocks.
                             WebConnCanClose = false;
+                            isInitiator = true;
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                 Tr.debug(tc, "close, Upgraded Web Connection closing Dispatcher Link");
                             }
-                        } else {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "close EXIT, Upgraded Web Connection already called close; returning");
-                            }
-                            return;
                         }
                     } finally {
                         WebConnCanCloseSync.unlock();
                     }
+
+                    if (isInitiator) {
+                        // This thread is the initiator, so it should perform the close.
+                        performCloseOnThisThread = true;
+                    } else {
+                        // This thread is a follower, so it should wait for the initiator to perform the close.
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Follower thread will now wait for close completion signal.");
+                        }
+                        long startTime = System.nanoTime();
+                        try {
+                            if (!closeCompleteLatch.await(5, java.util.concurrent.TimeUnit.SECONDS)) {
+                                Tr.debug(tc, "Timed out waiting for close to complete");
+                                //throw new java.io.IOException("Timed out waiting for connection close to complete.");
+                            }
+                            long waitTimeNanos = System.nanoTime() - startTime;
+                            long waitTimeMillis = java.util.concurrent.TimeUnit.NANOSECONDS.toMillis(waitTimeNanos);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Follower thread confirmed close completion after waiting for " + waitTimeMillis + " ms. Returning.");
+                            }
+                        } catch (InterruptedException ie) {
+                            Thread.currentThread().interrupt();
+                        }
+                        // The follower's job is done after waiting.
+                        return;
+                    }
                 }
+
             }
         }
 
-        // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
-        if (myChannel.getStop0Called() == false) {
-            try {
-                super.close(conn, e);
-            } finally {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close, decrement active connection count");
+        
+        if (performCloseOnThisThread){
+            // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
+            if (myChannel.getStop0Called() == false) {
+                try {
+                    super.close(conn, e);
+                } finally {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close, decrement active connection count");
+                    }
+                    this.myChannel.decrementActiveConns();
                 }
-                this.myChannel.decrementActiveConns();
+                closeCompleted.compareAndSet(false, true);
             }
-            closeCompleted.compareAndSet(false, true);
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "close EXIT");
+    
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "close EXIT");
+            }
         }
     }
 
@@ -346,7 +380,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // set decrementNeeded to true only for wsoc upgrade requests
-        if (upgraded != null && !getHttpInboundLink2().isDirectHttp2Link(vc)) {
+        boolean isH2HttpLink = isc.isH2Connection();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isH2HttpLink: " + isH2HttpLink);
+        }
+
+        if (upgraded != null && !isH2HttpLink) {
             if (this.decrementNeeded.compareAndSet(false, true)) { // i.e. this is called first
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "decrementNeeded set to true");
