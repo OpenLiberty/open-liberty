@@ -15,7 +15,10 @@ package com.ibm.ws.logging.fat;
 import static org.junit.Assert.*;
 
 import java.io.File;
+import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -220,11 +223,12 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // 2) Now swap to the stdout config and wait for config update complete
+        // 2) Now swap to the stdout config and wait for config update complete (via console.log)
         server.setMarkToEndOfLog();
+        long cMark = markConsoleEnd();
         server.setServerConfigurationFile("server_trace_stdout.xml");
-        assertNotNull("Config update should complete",
-                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*"));
+        assertTrue("Config update should complete (console)",
+                   waitForConfigUpdateInConsole(cMark, 180_000));
 
         // 3) Assert no trace.log ever appears
         boolean traceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
@@ -261,17 +265,17 @@ public class MessageTraceFileNameTimedRolloverTest {
         assertFalse("trace.log should not exist initially when traceFileName=stdout",
                     server.fileExistsInLibertyServerRoot("logs/trace.log"));
 
-        // Dynamic update -> trace.log (mark BEFORE we change config)
+        // Dynamic update -> trace.log (wait via console.log, not messages.log)
         server.setMarkToEndOfLog();
+        long cMark = markConsoleEnd();
         Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "Updating to server_trace_log.xml...");
         server.setServerConfigurationFile("server_trace_log.xml");
-        assertNotNull("Config update should complete",
-                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 180000));
-        Thread.sleep(2000); // small settle
+        assertTrue("Config update should complete (console)",
+                   waitForConfigUpdateInConsole(cMark, 180_000));
 
         // File must be created shortly after update
         assertTrue("trace.log should be created after dynamic update",
-                   waitForFileExists("logs/trace.log", 15000));
+                   waitForFileExists("logs/trace.log", 15_000));
 
         // And it must roll on the next boundary
         Calendar next = getNextRolloverTime(0, 1);
@@ -303,17 +307,17 @@ public class MessageTraceFileNameTimedRolloverTest {
         boolean initialTraceLog = server.fileExistsInLibertyServerRoot("logs/trace.log");
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Initial trace.log exists: " + initialTraceLog);
 
-        // Update to test.log
+        // Update to test.log (wait via console.log)
         server.setMarkToEndOfLog();
+        long cMark = markConsoleEnd();
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Updating to server_test_log.xml...");
         server.setServerConfigurationFile("server_test_log.xml");
-        assertNotNull("Config update should complete",
-                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 180000));
-        Thread.sleep(2000); // small settle
+        assertTrue("Config update should complete (console)",
+                   waitForConfigUpdateInConsole(cMark, 180_000));
 
         // test.log must be created shortly after update
         assertTrue("test.log should be created after dynamic update",
-                   waitForFileExists("logs/test.log", 15000));
+                   waitForFileExists("logs/test.log", 15_000));
 
         // On next boundary: test_* should roll, trace_* must NOT roll
         Calendar next = getNextRolloverTime(0, 1);
@@ -381,12 +385,12 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Now update config to the traceFileName=stdout variant and wait for completion
+        // Update config to the traceFileName=stdout variant and wait for completion (console.log)
         server.setMarkToEndOfLog();
+        long cMark = markConsoleEnd();
         server.setServerConfigurationFile("server_trace_stdout.xml");
-        assertNotNull("Config update should complete",
-                      server.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", 90000));
-        Thread.sleep(2000); // small settle
+        assertTrue("Config update should complete (console)",
+                   waitForConfigUpdateInConsole(cMark, 180_000));
 
         boolean traceLogExists = server.fileExistsInLibertyServerRoot("logs/trace.log");
         Log.info(c, "testTraceFileNameStdoutNoTraceLogCreated", "trace.log exists: " + traceLogExists + " (should be FALSE)");
@@ -400,6 +404,39 @@ public class MessageTraceFileNameTimedRolloverTest {
     }
 
     // ---- helpers for timing/rollover ----
+
+    /** Mark the end of console.log so we only scan new content. */
+    private static long markConsoleEnd() {
+        File console = new File(server.getLogsRoot(), "console.log");
+        return console.exists() ? console.length() : 0L;
+    }
+
+    /** Wait for CWWKG0017I/0018I in console.log starting from a byte offset. */
+    private static boolean waitForConfigUpdateInConsole(long startOffset, long timeoutMs) throws Exception {
+        File console = new File(server.getLogsRoot(), "console.log");
+        Pattern p = Pattern.compile("CWWKG001[7-8]I");
+        long end = System.currentTimeMillis() + timeoutMs;
+        long pos = startOffset;
+
+        while (System.currentTimeMillis() < end) {
+            if (console.exists()) {
+                try (RandomAccessFile raf = new RandomAccessFile(console, "r")) {
+                    long len = raf.length();
+                    if (len > pos) {
+                        raf.seek(pos);
+                        byte[] buf = new byte[(int) Math.min(Integer.MAX_VALUE, len - pos)];
+                        raf.readFully(buf);
+                        String chunk = new String(buf, StandardCharsets.UTF_8);
+                        if (p.matcher(chunk).find())
+                            return true;
+                        pos = len; // advance
+                    }
+                }
+            }
+            Thread.sleep(300);
+        }
+        return false;
+    }
 
     private static void waitForBeginningOfMinute() {
         // Wait for the beginning of the minute
