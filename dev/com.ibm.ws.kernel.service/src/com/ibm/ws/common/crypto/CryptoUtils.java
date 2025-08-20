@@ -225,24 +225,16 @@ public class CryptoUtils {
     }
 
     public static void logInsecureAlgorithm(String configProperty, String insecureAlgorithm) {
-        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
-        if (false) {
-            Tr.warning(tc, "CRYPTO_INSECURE", configProperty, insecureAlgorithm, getSecureAlternative(insecureAlgorithm));
-        }
+        Tr.warning(tc, "CRYPTO_INSECURE", configProperty, insecureAlgorithm, getSecureAlternative(insecureAlgorithm));
     }
 
     public static void logInsecureAlgorithmReplaced(String configProperty, String insecureAlgorithm, String secureAlgorithm) {
-        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
-        if (false) {
-            Tr.warning(tc, "CRYPTO_INSECURE_REPLACED", configProperty, insecureAlgorithm, secureAlgorithm);
-        }
+        Tr.warning(tc, "CRYPTO_INSECURE_REPLACED", configProperty, insecureAlgorithm, secureAlgorithm);
     }
 
     public static void logInsecureProvider(String provider, String insecureAlgorithm) {
-        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
-        if (false) {
-            Tr.warning(tc, "CRYPTO_INSECURE_PROVIDER", provider, insecureAlgorithm);
-        }
+
+        Tr.warning(tc, "CRYPTO_INSECURE_PROVIDER", provider, insecureAlgorithm);
     }
 
     public static boolean isIBMJCEAvailable() {
