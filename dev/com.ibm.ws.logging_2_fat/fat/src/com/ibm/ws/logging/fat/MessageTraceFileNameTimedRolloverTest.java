@@ -218,6 +218,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
+        // Wait for config update in console.log
         RemoteFile consoleLog = server.getConsoleLogFile();
         server.setMarkToEndOfLog(consoleLog);
         server.setServerConfigurationFile("server_trace_stdout.xml");
@@ -225,9 +226,11 @@ public class MessageTraceFileNameTimedRolloverTest {
         assertNotNull("Config update should complete (console)",
                       server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 40000L, consoleLog));
 
+        // No trace.log should be created
         assertFalse("trace.log should NOT be created when traceFileName=stdout",
                     server.fileExistsInLibertyServerRoot("logs/trace.log"));
 
+        // Verify no trace_* rollover happens on next boundary
         waitForBeginningOfMinute();
         Calendar next = getNextRolloverTime(0, 1);
         long waitMs = next.getTimeInMillis() - System.currentTimeMillis() + 5000;
@@ -256,6 +259,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         assertFalse("trace.log should not exist initially when traceFileName=stdout",
                     server.fileExistsInLibertyServerRoot("logs/trace.log"));
 
+        // Update to trace.log and confirm via console.log
         RemoteFile consoleLog = server.getConsoleLogFile();
         server.setMarkToEndOfLog(consoleLog);
         Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "Updating to server_trace_log.xml...");
@@ -267,6 +271,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         assertTrue("trace.log should be created after dynamic update",
                    waitForFileExists("logs/trace.log", 15000));
 
+        // And it must roll on the next boundary
         Calendar next = getNextRolloverTime(0, 1);
         long waitMs = next.getTimeInMillis() - System.currentTimeMillis() + 5000;
         if (waitMs > 0)
@@ -294,6 +299,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         boolean initialTraceLog = server.fileExistsInLibertyServerRoot("logs/trace.log");
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Initial trace.log exists: " + initialTraceLog);
 
+        // Update to test.log and confirm via console.log
         RemoteFile consoleLog = server.getConsoleLogFile();
         server.setMarkToEndOfLog(consoleLog);
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Updating to server_test_log.xml...");
@@ -305,6 +311,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         assertTrue("test.log should be created after dynamic update",
                    waitForFileExists("logs/test.log", 15000));
 
+        // On next boundary: test_* should roll, trace_* must NOT roll
         Calendar next = getNextRolloverTime(0, 1);
         long waitMs = next.getTimeInMillis() - System.currentTimeMillis() + 5000;
         if (waitMs > 0)
@@ -369,6 +376,7 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
+        // Update to stdout and confirm via console.log
         RemoteFile consoleLog = server.getConsoleLogFile();
         server.setMarkToEndOfLog(consoleLog);
         server.setServerConfigurationFile("server_trace_stdout.xml");
