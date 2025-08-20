@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,9 +62,9 @@ public class ClassAvailableTransformer implements ClassFileTransformer {
 
     /**
      * Create a new transformer and associate it with the specified {@code ProbeManagerImpl}.
-     * 
+     *
      * @param probeManagerImpl the probe management component
-     * @param instrumentation the {@code Instrumentation} reference for this VM
+     * @param instrumentation  the {@code Instrumentation} reference for this VM
      * @param includeBootstrap include classes defined to the bootstrap loader
      */
     public ClassAvailableTransformer(ProbeManagerImpl probeManagerImpl, Instrumentation instrumentation, boolean includeBootstrap) {
@@ -87,22 +87,21 @@ public class ClassAvailableTransformer implements ClassFileTransformer {
         // internal classes (like those in support of reflection)
         if ((loader == null && !includeBootstrap) || probeManagerImpl.isExcludedClass(className)) {
             return null;
-        }
-
-        // If this is a probe candidate, hook the static initializer
-        if (probeManagerImpl.isProbeCandidate(className)) {
+        } else {
+            /*
+             * Previously, runtime would check if isProbeCandidate(className) ( calls !isExcludedClass(className))
+             * This else block already implies the class is not excluded.
+             */
             return transformCandidate(classfileBuffer);
         }
-
-        return null;
     }
 
     /**
      * Inject the byte code required to call the {@code processCandidate} proxy
      * after class initialization.
-     * 
+     *
      * @param classfileBuffer the source class file
-     * 
+     *
      * @return the modified class file
      */
     byte[] transformCandidate(byte[] classfileBuffer) {
