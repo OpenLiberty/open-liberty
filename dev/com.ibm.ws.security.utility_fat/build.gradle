@@ -1,0 +1,13 @@
+autoFVT.doLast {
+    copy {
+        from new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+        into new File(autoFvtDir, 'publish/bundles')
+        rename '(.*)\\.jar', '$1_1.0\\.jar'
+        include '*customencryption.jar'
+    }
+    copy {
+        from new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles')
+        into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+        include '*_cmdline.jar'
+    }
+}
