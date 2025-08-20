@@ -225,16 +225,24 @@ public class CryptoUtils {
     }
 
     public static void logInsecureAlgorithm(String configProperty, String insecureAlgorithm) {
-        Tr.warning(tc, "CRYPTO_INSECURE", configProperty, insecureAlgorithm, getSecureAlternative(insecureAlgorithm));
+        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
+        if (false) {
+            Tr.warning(tc, "CRYPTO_INSECURE", configProperty, insecureAlgorithm, getSecureAlternative(insecureAlgorithm));
+        }
     }
 
     public static void logInsecureAlgorithmReplaced(String configProperty, String insecureAlgorithm, String secureAlgorithm) {
-        Tr.warning(tc, "CRYPTO_INSECURE_REPLACED", configProperty, insecureAlgorithm, secureAlgorithm);
+        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
+        if (false) {
+            Tr.warning(tc, "CRYPTO_INSECURE_REPLACED", configProperty, insecureAlgorithm, secureAlgorithm);
+        }
     }
 
     public static void logInsecureProvider(String provider, String insecureAlgorithm) {
-
-        Tr.warning(tc, "CRYPTO_INSECURE_PROVIDER", provider, insecureAlgorithm);
+        // TODO disabling CRYPTO_INSECURE warnings until full FIPS 140-3 support on Semeru is complete
+        if (false) {
+            Tr.warning(tc, "CRYPTO_INSECURE_PROVIDER", provider, insecureAlgorithm);
+        }
     }
 
     public static boolean isIBMJCEAvailable() {
@@ -264,31 +272,31 @@ public class CryptoUtils {
     }
 
     private static boolean isJava11orHigher() {
-        if (javaVersionChecked) {
+        if (javaVersionChecked.get()) {
             return isJava11orHigher;
         } else {
             isJava11orHigher = JavaInfo.majorVersion() >= 11;
-            javaVersionChecked = true;
+            javaVersionChecked.set(true);
             return isJava11orHigher;
         }
     }
 
     private static boolean isZOS() {
-        if (osVersionChecked) {
+        if (osVersionChecked.get()) {
             return isZOS;
         } else {
             isZOS = (osName.equalsIgnoreCase("z/OS") || osName.equalsIgnoreCase("OS/390"));
-            osVersionChecked = true;
+            osVersionChecked.set(true);
             return isZOS;
         }
     }
 
     public static boolean isZOSandRunningJava11orHigher() {
-        if (zOSAndJAVA11orHigherChecked) {
+        if (zOSAndJAVA11orHigherChecked.get()) {
             return iszOSAndJava11orHigher;
         } else {
             iszOSAndJava11orHigher = isJava11orHigher() && isZOS();
-            zOSAndJAVA11orHigherChecked = true;
+            zOSAndJAVA11orHigherChecked.set(true);
             return iszOSAndJava11orHigher;
         }
     }
@@ -403,7 +411,7 @@ public class CryptoUtils {
     }
 
     protected static boolean useEnhancedSecurityAlgorithms() {
-        if (isEnhancedSecurityChecked) {
+        if (isEnhancedSecurityChecked.get()) {
             return isEnhancedSecurity;
         } else {
             isEnhancedSecurity = isRunningBetaMode() && Boolean.valueOf(getPropertyLowerCase(PROPERTY_USE_ENHANCED_SECURITY_ALG, "false"));
@@ -411,7 +419,7 @@ public class CryptoUtils {
                 Tr.debug(tc, "isEnhancedSecurity: " + (isEnhancedSecurity ? "enabled" : "disabled"));
             }
         }
-        isEnhancedSecurityChecked = true;
+        isEnhancedSecurityChecked.set(true);
         return isEnhancedSecurity;
     }
 
@@ -474,7 +482,7 @@ public class CryptoUtils {
      * @return true if FIPS 140-3 is enabled for Semeru. Otherwise, false.
      */
     static boolean isSemeruFips140_3Enabled() {
-        if (semeruFips140_3Checked)
+        if (semeruFips140_3Checked.get())
             return semeruFips140_3Enabled;
         else {
             semeruFips140_3Enabled = false;
@@ -500,7 +508,7 @@ public class CryptoUtils {
                 }
             }
 
-            semeruFips140_3Checked = true;
+            semeruFips140_3Checked.set(true);
             return semeruFips140_3Enabled;
         }
     }
@@ -512,7 +520,7 @@ public class CryptoUtils {
      * @return true if FIPS 140-3 is enabled for IBM JDK 8. Otherwise, false.
      */
     static boolean isIbmJdk8Fips140_3Enabled() {
-        if (ibmJdk8Fips140_3Checked)
+        if (ibmJdk8Fips140_3Checked.get())
             return ibmJdk8Fips140_3Enabled;
         else {
             ibmJdk8Fips140_3Enabled = false;
@@ -538,7 +546,7 @@ public class CryptoUtils {
                 }
             }
 
-            ibmJdk8Fips140_3Checked = true;
+            ibmJdk8Fips140_3Checked.set(true);
             return ibmJdk8Fips140_3Enabled;
         }
     }
@@ -608,12 +616,12 @@ public class CryptoUtils {
     }
 
     public static boolean isFIPSEnabled() {
-        if (fipsChecked) {
+        if (fipsChecked.get()) {
             return fipsEnabled;
         } else {
             //fipsEnabled = isFips140_2Enabled() || isFips140_3Enabled();
             fipsEnabled = isFips140_3Enabled();
-            fipsChecked = true;
+            fipsChecked.set(true);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isFIPSEnabled: " + fipsEnabled);
             }
