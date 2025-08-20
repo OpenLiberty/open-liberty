@@ -52,18 +52,18 @@ public class SignatureAlgorithms {
     static {
         if (!fipsEnabled){
         RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), rsa_sha1);}
-        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256.toLowerCase(), rsa_sha256);
-        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_384.toLowerCase(), rsa_sha384);
-        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512.toLowerCase(), rsa_sha512);
+        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase(), rsa_sha256);
+        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.toLowerCase(), rsa_sha384);
+        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase(), rsa_sha512);
     }
 
     static Map<String, String> HMAC_MAP = new HashMap<String, String>();
     static {
         if (!fipsEnabled){
         HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), hmac_sha1);}
-        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256.toLowerCase(), hmac_sha256);
-        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_384.toLowerCase(), hmac_sha384);
-        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512.toLowerCase(), hmac_sha512);
+        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase(), hmac_sha256);
+        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.toLowerCase(), hmac_sha384);
+        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase(), hmac_sha512);
     }
 
     public static void setAlgorithm(SoapMessage message, String method) {

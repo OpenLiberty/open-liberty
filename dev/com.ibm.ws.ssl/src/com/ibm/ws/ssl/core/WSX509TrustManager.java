@@ -359,7 +359,7 @@ public final class WSX509TrustManager extends X509ExtendedTrustManager {
                                                                                                      + ".\n\nHere's the signer information (verify the digest value matches what is displayed at the server):"));
             for (int j = 0; j < chain.length; j++) {
                 stdout.println("");
-                String shaDigest = KeyStoreManager.getInstance().generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, chain[j]);
+                String shaDigest = KeyStoreManager.getInstance().generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, chain[j]);
                 stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0102I", "  Subject DN:    ")
                                + chain[j].getSubjectDN());
                 stdout.println(TraceNLSHelper.getInstance().getString("ssl.trustmanager.signer.prompt.CWPKI0103I", "  Issuer DN:     ")

@@ -157,7 +157,7 @@ public class KeyStoreManager {
                 if (trustStore.containsAlias(alias)) {
                     X509Certificate cert = (X509Certificate) trustStore.getCertificate(alias);
 
-                    String certDigest = generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, cert);
+                    String certDigest = generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256, cert);
 
                     if (signerDigest.equals(certDigest)) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
