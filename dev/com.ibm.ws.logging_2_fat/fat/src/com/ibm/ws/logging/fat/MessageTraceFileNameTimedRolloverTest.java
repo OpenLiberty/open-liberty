@@ -218,18 +218,16 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Wait for config update in console.log
         RemoteFile consoleLog = server.getConsoleLogFile();
         server.setMarkToEndOfLog(consoleLog);
         server.setServerConfigurationFile("server_trace_stdout.xml");
-        java.util.List<String> linesConsole = server.findStringsInLogsUsingMark("CWWKG0017I|CWWKG0018I", consoleLog);
-        assertTrue("Config update should complete (console)", linesConsole != null && !linesConsole.isEmpty());
 
-        // No trace.log should be created
+        assertNotNull("Config update should complete (console)",
+                      server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 40000L, consoleLog));
+
         assertFalse("trace.log should NOT be created when traceFileName=stdout",
                     server.fileExistsInLibertyServerRoot("logs/trace.log"));
 
-        // Verify no trace_* rollover happens on next boundary
         waitForBeginningOfMinute();
         Calendar next = getNextRolloverTime(0, 1);
         long waitMs = next.getTimeInMillis() - System.currentTimeMillis() + 5000;
@@ -258,13 +256,13 @@ public class MessageTraceFileNameTimedRolloverTest {
         assertFalse("trace.log should not exist initially when traceFileName=stdout",
                     server.fileExistsInLibertyServerRoot("logs/trace.log"));
 
-        // Update to trace.log and confirm via console.log
         RemoteFile consoleLog = server.getConsoleLogFile();
         server.setMarkToEndOfLog(consoleLog);
         Log.info(c, "testDynamicTraceFileNameStdoutToTraceLog", "Updating to server_trace_log.xml...");
         server.setServerConfigurationFile("server_trace_log.xml");
-        java.util.List<String> linesConsole = server.findStringsInLogsUsingMark("CWWKG0017I|CWWKG0018I", consoleLog);
-        assertTrue("Config update should complete (console)", linesConsole != null && !linesConsole.isEmpty());
+
+        assertNotNull("Config update should complete (console)",
+                      server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 40000L, consoleLog));
 
         assertTrue("trace.log should be created after dynamic update",
                    waitForFileExists("logs/trace.log", 15000));
@@ -296,13 +294,13 @@ public class MessageTraceFileNameTimedRolloverTest {
         boolean initialTraceLog = server.fileExistsInLibertyServerRoot("logs/trace.log");
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Initial trace.log exists: " + initialTraceLog);
 
-        // Update to test.log and confirm via console.log
         RemoteFile consoleLog = server.getConsoleLogFile();
         server.setMarkToEndOfLog(consoleLog);
         Log.info(c, "testDynamicTraceFileNameToCustomFile", "Updating to server_test_log.xml...");
         server.setServerConfigurationFile("server_test_log.xml");
-        java.util.List<String> linesConsole = server.findStringsInLogsUsingMark("CWWKG0017I|CWWKG0018I", consoleLog);
-        assertTrue("Config update should complete (console)", linesConsole != null && !linesConsole.isEmpty());
+
+        assertNotNull("Config update should complete (console)",
+                      server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 40000L, consoleLog));
 
         assertTrue("test.log should be created after dynamic update",
                    waitForFileExists("logs/test.log", 15000));
@@ -371,12 +369,12 @@ public class MessageTraceFileNameTimedRolloverTest {
         server.startServer();
         server.waitForStringInLog("CWWKF0011I");
 
-        // Update to stdout and confirm via console.log
         RemoteFile consoleLog = server.getConsoleLogFile();
         server.setMarkToEndOfLog(consoleLog);
         server.setServerConfigurationFile("server_trace_stdout.xml");
-        java.util.List<String> linesConsole = server.findStringsInLogsUsingMark("CWWKG0017I|CWWKG0018I", consoleLog);
-        assertTrue("Config update should complete (console)", linesConsole != null && !linesConsole.isEmpty());
+
+        assertNotNull("Config update should complete (console)",
+                      server.waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 40000L, consoleLog));
 
         assertFalse("trace.log should NOT be created when traceFileName=stdout",
                     server.fileExistsInLibertyServerRoot("logs/trace.log"));
