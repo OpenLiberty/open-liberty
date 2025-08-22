@@ -124,9 +124,10 @@ public class InitClass {
             KDC_HOST_SHORTNAME = services.get(0).getProperties().get(SPNEGOConstants.KDC_SHORTNAME_FROM_CONSUL);
             if (isZOS) {
                 KRB5_CONF = services.get(0).getProperties().get(SPNEGOConstants.ZKRB5_CONF_FROM_CONSUL);
-
+                Log.info(c, thisMethod, "Retrieved ZKRB5_CONF value: " + (KRB5_CONF != null ? "not null" : "null"));
             } else {
                 KRB5_CONF = services.get(0).getProperties().get(SPNEGOConstants.KRB5_CONF_FROM_CONSUL);
+                Log.info(c, thisMethod, "Retrieved KRB5_CONF value: " + (KRB5_CONF != null ? "not null" : "null"));
             }
             Z_USER = services.get(0).getProperties().get(SPNEGOConstants.Z_USER_FROM_CONSUL);
             FIRST_USER = services.get(0).getProperties().get(SPNEGOConstants.FIRST_USER_FROM_CONSUL);
@@ -159,7 +160,7 @@ public class InitClass {
                 Z_USER_PWD = services.get(1).getProperties().get(SPNEGOConstants.USER0_PWD_FROM_CONSUL);
 
                 Log.info(c, thisMethod, "connection to " + failedKdcShortName + " failed. Attempting failover KDC: "
-                        + KDC_HOST_SHORTNAME);
+                                        + KDC_HOST_SHORTNAME);
 
                 connInfo = new ConnectionInfo(KDC_HOSTNAME, InitClass.KDC_USER, InitClass.KDC_USER_PWD);
                 kdcMachine = Machine.getMachine(connInfo);
@@ -201,7 +202,7 @@ public class InitClass {
         }
 
         Log.info(c, thisMethod,
-                "We were able to retrieve the required information from consul, the test will now continue....");
+                 "We were able to retrieve the required information from consul, the test will now continue....");
         Log.info(c, thisMethod, "The following KDC's are being used: " + KDCP_VAR + " and " + KDCS_VAR + ".");
 
     }
@@ -212,8 +213,7 @@ public class InitClass {
      * @throws Exception
      * @throws InterruptedException
      */
-    private static void establishConnectionToKDC(String thisMethod, Machine kdcMachine)
-            throws Exception, InterruptedException {
+    private static void establishConnectionToKDC(String thisMethod, Machine kdcMachine) throws Exception, InterruptedException {
         for (int i = 1; i <= 3; i++) {
             try {
                 SshClient sshClient = getSshClient();
@@ -278,15 +278,15 @@ public class InitClass {
         if (canonicalHostName.equals(ipAddress)) {
             String asciiArtLineBreak = "\n=======================================================";
             Log.info(c, methodName, asciiArtLineBreak + "Can not resolve the hostname for IP address " + ipAddress +
-                    "\n SPNEGO tests cannot run on this machine. This is a machine set up issue with the host name. "
-                    + "\n This can be fixed by updating the hosts file or DNS server registration."
-                    + asciiArtLineBreak);
+                                    "\n SPNEGO tests cannot run on this machine. This is a machine set up issue with the host name. "
+                                    + "\n This can be fixed by updating the hosts file or DNS server registration."
+                                    + asciiArtLineBreak);
             Assume.assumeTrue(false); // This will stop the rest of tests from executing
             return serverCanonicalHostName = "tests cannot run";
         }
         if (canonicalHostName != null && canonicalHostName.length() > CANONICAL_HOST_NAME_CHAR_LIMIT) {
             Log.info(c, methodName, "Canonical host name [" + canonicalHostName
-                    + "] is longer than allowed character limit. Using a substring as the host name");
+                                    + "] is longer than allowed character limit. Using a substring as the host name");
             String tmpHostLowerCase = canonicalHostName.toLowerCase();
             if (tmpHostLowerCase.contains("ebc")) {
                 canonicalHostName = createRandomStringHostNameForEbc(canonicalHostName);
@@ -315,7 +315,7 @@ public class InitClass {
          */
         if ("localhost".equalsIgnoreCase(canonicalHostName)) {
             throw new UnknownHostException("The canonical host name of " + canonicalHostName
-                    + " is not supported. Ensure that your host name is resolvable.");
+                                           + " is not supported. Ensure that your host name is resolvable.");
         }
 
         serverCanonicalHostName = canonicalHostName;
@@ -347,7 +347,7 @@ public class InitClass {
             isRndHostName = true;
         }
         Log.info(c, methodName, "EBC canonical hostname " + canonicalHostName
-                + " mapped to the random generated hostname " + rndHostName);
+                                + " mapped to the random generated hostname " + rndHostName);
         return rndHostName;
     }
 
@@ -374,7 +374,7 @@ public class InitClass {
             isRndHostName = true;
         }
         Log.info(c, methodName,
-                "Canonical hostname " + canonicalHostName + " mapped to the random generated hostname " + rndHostName);
+                 "Canonical hostname " + canonicalHostName + " mapped to the random generated hostname " + rndHostName);
         return rndHostName;
     }
 
@@ -387,8 +387,8 @@ public class InitClass {
      *
      * @param canonicalHostName
      * @param issueMsg          - Boolean indicating whether a message should be
-     *                          logged if the canonical host name does not
-     *                          include the IBM domain.
+     *                              logged if the canonical host name does not
+     *                              include the IBM domain.
      * @return
      */
     public static String getShortHostName(String canonicalHostName, boolean issueMsg) {
@@ -437,11 +437,12 @@ public class InitClass {
      * @param machine   The machine to connect to.
      * @return The session.
      * @throws IOException If there was an error getting an SSH session to the
-     *                     machine.
+     *                         machine.
      */
     protected static ClientSession getSshSession(SshClient sshClient, Machine machine) throws IOException {
         ClientSession session = sshClient.connect(machine.getUsername(), machine.getHostname(), 22)
-                .verify(30, TimeUnit.SECONDS).getSession();
+                        .verify(30, TimeUnit.SECONDS)
+                        .getSession();
         session.addPasswordIdentity(machine.getPassword());
         session.auth().verify(30, TimeUnit.SECONDS).isSuccess();
         return session;
