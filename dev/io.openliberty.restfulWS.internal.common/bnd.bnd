@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: io.openliberty.restfulWS.internal.common
+
+-dsannotations: \
+  io.openliberty.restfulWS.internal.common.components.RestfulWSEJBUtilsLocator
+
+-dsannotations-inherit: true
+
+Export-Package: ,\
+  io.openliberty.restfulWS.internal.common.api,\
+  io.openliberty.restfulWS.internal.common.components
+
+Import-Package: \
+  *
+
+Include-Resource:\
+  io/openliberty=${bin}/io/openliberty
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
