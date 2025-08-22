@@ -26,6 +26,7 @@ src: \
   test-applications/context/src,\
   test-applications/contextresolver/src,\
   test-applications/customsecuritycontext/src,\
+  test-applications/EjbInjection/src,\
   test-applications/exceptionMappingWithOT/src,\
   test-applications/extraproviders/src,\
   test-applications/getCgetS/src,\
