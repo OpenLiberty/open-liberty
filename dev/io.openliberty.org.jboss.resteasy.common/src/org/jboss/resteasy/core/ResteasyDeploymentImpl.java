@@ -51,6 +51,12 @@ import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.metadata.ResourceBuilder;
 import org.jboss.resteasy.util.GetRestful;
 
+import io.openliberty.restfulWS.internal.common.api.RestfulWSEJBUtils;
+import io.openliberty.restfulWS.internal.common.components.RestfulWSEJBUtilsLocator;
+
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
@@ -509,6 +515,52 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment
    protected void registerResources(boolean useScanning) {
       // All providers should be registered before resources because of interceptors.
       // interceptors must exist as they are applied only once when the resource is registered.
+      // Liberty Change Start
+      System.out.println("Adam - application=" + application);
+      System.out.println("Adam - useScanning=" + useScanning);
+      System.out.println("Adam - scannedJndiComponentResources=" + scannedJndiComponentResources);
+      System.out.println("Adam - jndiComponentResources=" + jndiComponentResources);
+      System.out.println("Adam - jndiResources=" + jndiResources);
+      System.out.println("Adam - scannedResourceClasses=" + scannedResourceClasses);
+      System.out.println("Adam - scannedResourceClassesWithBuilder=" + scannedResourceClassesWithBuilder);
+      System.out.println("Adam - resourceClasses=" + resourceClasses);
+      System.out.println("Adam - resources=" + resources);
+      System.out.println("Adam - actualResourceClasses=" + actualResourceClasses);
+      System.out.println("Adam - resourceFactories=" + resourceFactories);
+
+      RestfulWSEJBUtils ejbUtils = RestfulWSEJBUtilsLocator.getRestfulWSEJBUtils();
+      if (useScanning && scannedResourceClasses != null) {
+         List<String> holder = new ArrayList<String>();
+         for (String clazz : scannedResourceClasses) {
+            // is EJB?
+             List<String> jndiList = ejbUtils.getJNDIResource(clazz);
+             System.out.println("Adam - clazz=" + clazz);
+             System.out.println("Adam - jndi=" + jndiList);
+             if (jndiList != null && !jndiList.isEmpty()) {
+                 for (String jndi : jndiList) {
+                  // TODO: test and make sure it's correct
+                     Context ctx;
+                     try {
+                        ctx = new InitialContext();
+                        System.out.println("Adam - lookup=" + ctx.lookup(jndi));
+                     } catch (NamingException e) {
+                         System.out.println("Adam - failed to look up!");
+                     }
+
+                     System.out.println("Adam - adding + " + jndi + ";" + clazz + ";true");
+                     scannedJndiComponentResources.add(jndi + ";" + clazz + ";true");
+//                     scannedResourceClasses.remove(clazz);
+                     if (!holder.contains(clazz)) {
+                         holder.add(clazz);
+                     }
+                 }
+             }
+         }
+         for (String clazz : holder) {
+             scannedResourceClasses.remove(clazz);
+         }
+      }
+      // Liberty Change End
 
       if (useScanning && scannedJndiComponentResources != null)
       {
