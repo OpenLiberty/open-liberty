@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -61,6 +61,7 @@ public class ThreadPoolMonitor extends StatisticActions {
     private static ThreadPoolStatsHelper _tpHelper = null;
 
     public ThreadPoolMonitor() {
+        Tr.info(tc, "DEBUGGING: ThreadPoolMonitor constructor");
         try {
             StatsGroup grp = StatsFactory.createStatsGroup("ThreadPool", template, null, this);
             StatsFactory.createStatsInstance(DEFAULT_POOL_NAME, grp, null, this);
@@ -77,6 +78,7 @@ public class ThreadPoolMonitor extends StatisticActions {
     @ProbeAtEntry
     @ProbeSite(clazz = "com.ibm.ws.threading.internal.ExecutorServiceImpl", method = "execute")
     public void atFieldGet(@This Object esi) {
+        Tr.info(tc, "DEBUGGING: atFieldGet");
         //We will be checking this only once.
         //Once we get ThreadPoolExecutorImpl for DEFAULT_POOL_NAME, we set ob_ref and won't execute any code here.
         if (ob_ref == null) {
@@ -110,6 +112,7 @@ public class ThreadPoolMonitor extends StatisticActions {
     @ProbeAtEntry
     @ProbeSite(clazz = "com.ibm.ws.threading.internal.ExecutorServiceImpl", method = "createExecutor")
     public void atCreateExecutorEntry(@Args Object[] myargs) {
+        Tr.info(tc, "DEBUGGING: atCreateExecutorEntry");
         Map<String, Object> componentConfig = (Map<String, Object>) myargs[0];
         String name = (String) componentConfig.get("name");
         if (name != null && !!!name.isEmpty()) {
@@ -123,6 +126,7 @@ public class ThreadPoolMonitor extends StatisticActions {
      * @param poolName
      */
     private synchronized void initThreadPoolStat(String _poolName) {
+        Tr.info(tc, "DEBUGGING: initThreadPoolStat");
         if (threadPoolCountByName.get(_poolName) != null) {
             return;
         }
@@ -136,6 +140,7 @@ public class ThreadPoolMonitor extends StatisticActions {
     /** {@inheritDoc} */
     @Override
     public void statisticCreated(SPIStatistic s) {
+        Tr.info(tc, "DEBUGGING: statisticCreated");
         if (s.getId() == ACTIVE_THREADS) {
             activeThreads = (SPIBoundedRangeStatistic) s;
         } else if (s.getId() == POOL_SIZE) {
@@ -150,6 +155,7 @@ public class ThreadPoolMonitor extends StatisticActions {
     /** {@inheritDoc} */
     @Override
     public void updateStatisticOnRequest(int dataId) {
+        Tr.info(tc, "DEBUGGING: updateStatisticOnRequest");
         if (_tpHelper == null) {
             return;
         }

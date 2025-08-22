@@ -51,6 +51,7 @@ public class MonitorMetricsHandler {
 
 	@Activate
 	protected void activate(ComponentContext context) {
+		Tr.debug(tc, "DEBUGGING: > activate()");
 		this.mappingTable = MappingTable.getInstance();
 		register();
 		addMBeanListener();
@@ -58,15 +59,18 @@ public class MonitorMetricsHandler {
 
 	@Reference
 	public void setExecutorService(ExecutorService execServ) {
+		Tr.debug(tc, "DEBUGGING: > setExecutorService()");
 		this.execServ = execServ;
 	}
 
 	public void unsetExecutorService(ExecutorService execServ) {
+		Tr.debug(tc, "DEBUGGING: > unsetExecutorService()");
 		this.execServ = null;
 	}
 
 	@Deactivate
 	protected void deactivate(ComponentContext context) {
+		Tr.debug(tc, "DEBUGGING: > deactivate()");
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 		if (listener != null) {
 			try {
@@ -86,8 +90,10 @@ public class MonitorMetricsHandler {
 
 			@Override
 			public void handleNotification(Notification notification, Object handback) {
+				Tr.debug(tc, "DEBUGGING: >> handleNotification()");
 				MBeanServerNotification mbsn = (MBeanServerNotification) notification;
 				String objectName = mbsn.getMBeanName().toString();
+				Tr.debug(tc, "DEBUGGING: > handleNotification() objectName: " + objectName);
 				if (MBeanServerNotification.REGISTRATION_NOTIFICATION.equals(mbsn.getType())) {
 					if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
 						Tr.debug(tc, "MBean Registered [", objectName + "]");
@@ -136,20 +142,25 @@ public class MonitorMetricsHandler {
 
 	protected void register() {
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+		Tr.debug(tc, "DEBUGGING: > register()");
 		for (String sName : mappingTable.getKeys()) {
+			Tr.debug(tc, "DEBUGGING: > register() Checking: " + sName);
 			Set<ObjectInstance> mBeanObjectInstanceSet;
 			try {
 				mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
 				if (sName.contains("ThreadPoolStats") && mBeanObjectInstanceSet.isEmpty() && execServ != null) {
+					Tr.debug(tc, "DEBUGGING: > register() Couldn't find MBean with name: " + sName);
 					execServ.execute(() -> {
-						final int MAX_TIME_OUT = 5000;
+						final int MAX_TIME_OUT = 50;
 						int currentTimeOut = 0;
 						Set<ObjectInstance> mBeanObjectInstanceSetTemp = mBeanObjectInstanceSet;
+						Tr.debug(tc, "DEBUGGING: > register() retrying for: " + sName);
 						while (mBeanObjectInstanceSetTemp.isEmpty() && currentTimeOut <= MAX_TIME_OUT) {
 							try {
 								Thread.sleep(50);
 
 								mBeanObjectInstanceSetTemp = mbs.queryMBeans(new ObjectName(sName), null);
+								Tr.debug(tc, "DEBUGGING: > register() queryMBeans: " + sName);
 								currentTimeOut += 50;
 							} catch (Exception e) {
 								if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
@@ -164,8 +175,16 @@ public class MonitorMetricsHandler {
 								break;
 							}
 						}
+						// Log timeout result
+						if (mBeanObjectInstanceSetTemp.isEmpty()) {
+							Tr.debug(tc, "DEBUGGING: ThreadPoolStats MBean could't be found even after retries.");
+						} else {
+							Tr.debug(tc, "DEBUGGING: ThreadPoolStats found after retries.");
+						}
 						registerMbeanObjects(mBeanObjectInstanceSetTemp);
 					});
+				} else {
+					Tr.debug(tc, "DEBUGGING: > register() Found MBean with name: " + sName);
 				}
 				registerMbeanObjects(mBeanObjectInstanceSet);
 			} catch (Exception e) {
