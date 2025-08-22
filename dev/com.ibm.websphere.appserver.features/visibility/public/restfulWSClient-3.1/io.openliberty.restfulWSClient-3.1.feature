@@ -63,7 +63,8 @@ Subsystem-Name: Jakarta RESTful Web Services 3.1 Client
   io.openliberty.org.apache.commons.logging, \
   com.ibm.ws.org.apache.httpcomponents, \
   io.openliberty.org.jboss.logging35, \
-  io.openliberty.org.jboss.resteasy.common.ee10
+  io.openliberty.org.jboss.resteasy.common.ee10,\
+  io.openliberty.restfulWS.internal.common
 -jars=\
   io.openliberty.jaxrs30; location:="dev/api/ibm/,lib/"
 -files=\
