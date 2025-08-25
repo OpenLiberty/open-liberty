@@ -1,0 +1,26 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Virtual thread disabler
+Bundle-SymbolicName: test.concurrent.no.vt.disabler
+Bundle-Description: Simulates a stack product that instructs Liberty to never create virtual threads.
+
+Private-Package: test.concurrent.no.vt.disabler.*
+
+Service-Component: \
+  test.concurrent.no.vt.disabler;\
+    implementation:=test.concurrent.no.vt.disabler.VirtualThreadDisabler;\
+    provide:='com.ibm.wsspi.threading.ThreadTypeOverride';\
+    configuration-policy:=ignore

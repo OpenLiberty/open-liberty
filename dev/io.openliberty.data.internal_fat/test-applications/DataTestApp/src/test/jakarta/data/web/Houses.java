@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -87,5 +87,17 @@ public interface Houses {
     @Save
     List<House> save(House... h);
 
-    boolean updateByParcelIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms(String parcel, Garage updatedGarage, int addedArea, int addedKitchenLength, int newNumBedrooms);
+    @Query("""
+                    UPDATE House
+                       SET garage=?2,
+                           area=area+?3,
+                           kitchen.length=kitchen.length+?4,
+                           numBedrooms=?5
+                     WHERE o.parcelId=?1
+                    """)
+    boolean updateHomeInfo(String parcel,
+                           Garage updatedGarage,
+                           int addedArea,
+                           int addedKitchenLength,
+                           int newNumBedrooms);
 }

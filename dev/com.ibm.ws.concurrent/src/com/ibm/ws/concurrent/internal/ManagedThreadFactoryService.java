@@ -160,12 +160,17 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     private final ThreadGroupTracker threadGroupTracker;
 
     /**
-     * Factory that creates virtual threads if greater than Java 21
-     * or raises an error if configured to create virtual threads
-     * on less than Java 21.
-     * Null if not configured to create virtual threads.
+     * A factory that creates virtual threads if greater than Java 21
+     * or, if less than Java 21 and configured to create virtual threads,
+     * raises an error.
+     * Null if less than Java 21 but not configured to create virtual threads.
      */
     private final ThreadFactory virtualThreadFactory;
+
+    /**
+     * OSGi service abstracting operations related to virtual threads.
+     */
+    private final VirtualThreadOps virtualThreadOps;
 
     /**
      * Metadata factory for the web container.
@@ -206,6 +211,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
         this.metadataIdentifierService = metadataSvc;
         this.threadGroupTracker = threadGroupTracker;
+        this.virtualThreadOps = virtualThreadOps;
 
         contextSvcRef.setReference(ref);
         contextSvcRef.activate(componentContext);
@@ -226,11 +232,13 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
         boolean virtual = Boolean.TRUE.equals(properties.get(VIRTUAL));
 
-        // TODO check the SPI to override virtual=true for CICS
-
         if (virtual)
             if (JavaInfo.majorVersion() >= 21)
-                virtualThreadFactory = virtualThreadOps.createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":", 1L, false, null);
+                virtualThreadFactory = virtualThreadOps //
+                                .createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":",
+                                                               1L,
+                                                               false,
+                                                               null);
             else
                 virtualThreadFactory = new VirtualThreadsUnsupported();
         else
@@ -474,10 +482,15 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                 throw new IllegalArgumentException(runnable.getClass().getName());
 
             Thread thread;
-            if (virtualThreadFactory == null) {
+            if (virtualThreadFactory == null ||
+                (service.virtualThreadOps.isSupported() &&
+                 !service.virtualThreadOps.isVirtualThreadCreationEnabled())) {
+                // new platform thread
                 String threadName = name + "-thread-" + createdThreadCount.incrementAndGet();
                 thread = new ManagedThreadImpl(this, runnable, threadName);
+                // TODO if (virtualThreadFactory != null) log message about override once only
             } else {
+                // new virtual thread
                 thread = virtualThreadFactory.newThread(new ManagedVirtualThreadAction(this, runnable));
             }
 

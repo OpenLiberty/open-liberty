@@ -794,11 +794,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_consumeTokenThatWasEncryptedUsingOtherContentEncryptionAlg() throws Exception {
 
+        String sigAlg = testOPServer.getServer().isSemeruFIPS140_3EnabledAndSupported() ? JwtConstants.SIGALG_ES256 : JwtConstants.SIGALG_RS256;
+
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
         parms.add(new NameValuePair(JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192));
-        parms.add(new NameValuePair(JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), JwtConstants.SIGALG_RS256)));
+        parms.add(new NameValuePair(JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg)));
 
-        genericEncryptTest(Constants.SIGALG_RS256, Constants.SIGALG_RS256, parms);
+        genericEncryptTest(sigAlg, sigAlg, parms);
     }
 
     /**

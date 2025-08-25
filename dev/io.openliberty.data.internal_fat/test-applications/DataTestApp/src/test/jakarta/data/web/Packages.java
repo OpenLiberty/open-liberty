@@ -104,6 +104,49 @@ public interface Packages extends BasicRepository<Package, Integer> {
     @OrderBy(ID)
     List<Integer> findIdByWidthRounded(int width);
 
+    @Query("""
+                    UPDATE Package
+                       SET height=height+?2,
+                           length=length*?3,
+                           width=width/?4
+                     WHERE (id=?1)
+                    """)
+    boolean increaseHeightAndLengthReduceWidth(int id,
+                                               float heightToAdd,
+                                               float lengthMultiplier,
+                                               float widthDivisor);
+
+    @Query("""
+                    UPDATE Package
+                       SET length=length*?4,
+                           width=width*?5,
+                           height=?6
+                     WHERE length<=?1 AND height BETWEEN ?2 AND ?3
+                    """)
+    long increaseLengthAndWidthAssignHeight(float maxLength,
+                                            float minHeight,
+                                            float maxHeight,
+                                            float lengthMultiplier,
+                                            float widthMultiplier,
+                                            float newHeight);
+
+    @Query("""
+                    UPDATE Package o
+                       SET o.length=o.length/?2,
+                           o.width=o.width/?3,
+                           o.height=o.height/?4
+                     WHERE o.id=?1
+                    """)
+    void reduceDimensions(int id, float lengthDivisor, float widthDivisor, float heightDivisor);
+
+    @Query("""
+                    UPDATE Package
+                       SET width=width/?2,
+                           description=CONCAT(description,?3)
+                     WHERE id=?1
+                    """)
+    boolean reduceWidthAppendDescription(int id, int widthDivisor, String additionalDescription);
+
     @Delete
     @OrderBy(value = "length", descending = true)
     List<Integer> removeIfDescriptionMatches(String description, Limit limit);
@@ -117,15 +160,6 @@ public interface Packages extends BasicRepository<Package, Integer> {
     @Delete
     @OrderBy("width")
     List<Package> takeOrdered(String description);
-
-    boolean updateByIdAddHeightMultiplyLengthDivideWidth(int id, float heightToAdd, float lengthMultiplier, float widthDivisor);
-
-    void updateByIdDivideLengthDivideWidthDivideHeight(int id, float lengthDivisor, float widthDivisor, float heightDivisor);
-
-    boolean updateByIdDivideWidthAddDescription(int id, int widthDivisor, String additionalDescription);
-
-    long updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(float maxLength, float minHeight, float maxHeight,
-                                                                                         float lengthMultiplier, float widthMultiplier, float newHeight);
 
     @Query("SELECT p FROM Package p WHERE (p.length * p.width * p.height >= ?1 AND p.length * p.width * p.height <= ?2)")
     @OrderBy(value = "width", descending = true)

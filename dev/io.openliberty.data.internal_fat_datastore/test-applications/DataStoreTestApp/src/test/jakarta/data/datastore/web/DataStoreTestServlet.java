@@ -41,6 +41,8 @@ import test.jakarta.data.datastore.ejb.DataStoreTestEJB;
 import test.jakarta.data.datastore.lib.DSDEntity;
 import test.jakarta.data.datastore.lib.DSDRepo;
 import test.jakarta.data.datastore.lib.ServerDSEntity;
+import test.jakarta.data.datastore.web.lib.WebLibEntity;
+import test.jakarta.data.datastore.web.lib.WebLibRepo;
 
 @DataSourceDefinition(name = "java:app/jdbc/DataSourceDef",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
@@ -99,6 +101,9 @@ public class DataStoreTestServlet extends FATServlet {
 
     @EJB
     DataStoreTestEJB testEJB;
+
+    @Inject
+    WebLibRepo webLibRepo;
 
     /**
      * Use a repository defined in a library of the application that uses
@@ -295,6 +300,23 @@ public class DataStoreTestServlet extends FATServlet {
     public void testRepositoryInEJBAppDefinesAndUsesDataSourceDefinition() {
         ejbApp.accept("testRepositoryInEJBAppDefinesAndUsesDataSourceDefinition",
                       "EJBAppDSDRepo");
+    }
+
+    /**
+     * Use a repository defined in a library of a web module.
+     */
+    @Test
+    public void testRepositoryInWebModuleLibrary() throws SQLException {
+
+        assertEquals(false, webLibRepo.request(5).isPresent());
+
+        webLibRepo.create(WebLibEntity.of(5, "five"));
+
+        assertEquals("servletuser1", webLibRepo.user());
+
+        WebLibEntity e = webLibRepo.request(5).orElseThrow();
+        assertEquals(5, e.id);
+        assertEquals("five", e.value);
     }
 
     /**

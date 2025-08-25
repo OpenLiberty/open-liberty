@@ -765,13 +765,13 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_consumeTokenThatWasEncryptedUsingOtherContentEncryptionAlg() throws Exception {
+	public void Social_EncryptionTests_consumeTokenThatWasEncryptedUsingOtherContentEncryptionAlg() throws Exception {
+		String sigAlg = testOPServer.getServer().isSemeruFIPS140_3EnabledAndSupported() ? JwtConstants.SIGALG_ES256 : JwtConstants.SIGALG_RS256;
+		List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192);
+		parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg));
 
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192);
-        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), JwtConstants.SIGALG_RS256));
-
-        genericEncryptTest(SocialConstants.SIGALG_RS256, SocialConstants.SIGALG_RS256, parms);
-    }
+		genericEncryptTest(sigAlg, sigAlg, parms);
+	}
 
     /**
      * Show that the Social Client can accept a token built specifying RSA_OAEP_256 (instead of RSA-OAEP) in the

@@ -1550,11 +1550,11 @@ public class DataTestServlet extends FATServlet {
         // Update embeddable attributes
 
         assertEquals(true, houses
-                        .updateByParcelIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms("TestEmbeddable-304-3655-30",
-                                                                                        null,
-                                                                                        180,
-                                                                                        2,
-                                                                                        4));
+                        .updateHomeInfo("TestEmbeddable-304-3655-30",
+                                        null,
+                                        180,
+                                        2,
+                                        4));
 
         h = houses.findById("TestEmbeddable-304-3655-30");
         assertEquals("TestEmbeddable-304-3655-30", h.parcelId);
@@ -4885,7 +4885,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Use repository updateBy methods with multiplication and division,
+     * Use repository Query methods with multiplication and division,
      */
     @Test
     public void testRepositoryUpdateMethodsMultiplyAndDivide() {
@@ -4936,7 +4936,7 @@ public class DataTestServlet extends FATServlet {
         packages.saveAll(List.of(p1, p2, p3, p4, p5, p6));
 
         // multiply, divide, and add within same update
-        assertEquals(true, packages.updateByIdAddHeightMultiplyLengthDivideWidth(990003, 1.0f, 0.95f, 1.05f));
+        assertEquals(true, packages.increaseHeightAndLengthReduceWidth(990003, 1.0f, 0.95f, 1.05f));
 
         Package p = packages.findById(990003).get();
         assertEquals(11.4f, p.length, 0.01f);
@@ -4944,7 +4944,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(10.2f, p.height, 0.01f);
 
         // perform same type of update to multiple columns
-        packages.updateByIdDivideLengthDivideWidthDivideHeight(990005, 1.2f, 1.15f, 1.1375f);
+        packages.reduceDimensions(990005, 1.2f, 1.15f, 1.1375f);
 
         p = packages.findById(990005).get();
         assertEquals(4.0f, p.length, 0.01f);
@@ -4952,7 +4952,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(24.0f, p.height, 0.01f);
 
         // multiple conditions and multiple updates
-        assertEquals(2L, packages.updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(7.1f, 18.4f, 19.4f, 1.1f, 1.2f, 19.5f));
+        assertEquals(2L, packages.increaseLengthAndWidthAssignHeight(7.1f, 18.4f, 19.4f, 1.1f, 1.2f, 19.5f));
 
         List<Package> results = packages.findByHeightBetween(19.4999f, 19.5001f);
         assertEquals(results.toString(), 2, results.size());
@@ -4968,7 +4968,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(19.5f, p.height, 0.01f);
 
         // divide width and append to description via query by method name
-        assertEquals(true, packages.updateByIdDivideWidthAddDescription(990003, 2, " halved"));
+        assertEquals(true, packages.reduceWidthAppendDescription(990003, 2, " halved"));
 
         p = packages.findById(990003).orElseThrow();
         assertEquals(11.4f, p.length, 0.01f);

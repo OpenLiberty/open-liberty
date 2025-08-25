@@ -3210,91 +3210,6 @@ public class QueryInfo {
     }
 
     /**
-     * Generates the JPQL UPDATE clause for a repository updateBy method such as updateByProductIdSetProductNameMultiplyPrice
-     */
-    private StringBuilder generateUpdateClause(String methodName, int c) {
-        int set = methodName.indexOf("Set", c);
-        int add = methodName.indexOf("Add", c);
-        int mul = methodName.indexOf("Multiply", c);
-        int div = methodName.indexOf("Divide", c);
-        int uFirst = Integer.MAX_VALUE;
-        if (set > 0 && set < uFirst)
-            uFirst = set;
-        if (add > 0 && add < uFirst)
-            uFirst = add;
-        if (mul > 0 && mul < uFirst)
-            uFirst = mul;
-        if (div > 0 && div < uFirst)
-            uFirst = div;
-        if (uFirst == Integer.MAX_VALUE)
-            throw new UnsupportedOperationException(methodName); // updateBy that lacks updates
-
-        // Compute the WHERE clause first due to its parameters being ordered first in the repository method signature
-        StringBuilder where = new StringBuilder(150);
-        generateWhereClause(methodName, c, uFirst, where);
-
-        String o = entityVar;
-        String o_ = entityVar_;
-        StringBuilder q = new StringBuilder(250);
-        q.append("UPDATE ").append(entityInfo.name).append(' ').append(o).append(" SET");
-
-        for (int u = uFirst; u > 0;) {
-            boolean first = u == uFirst;
-            char op;
-            if (u == set) {
-                op = '=';
-                set = methodName.indexOf("Set", u += 3);
-            } else if (u == add) {
-                op = '+';
-                add = methodName.indexOf("Add", u += 3);
-            } else if (u == div) {
-                op = '/';
-                div = methodName.indexOf("Divide", u += 6);
-            } else if (u == mul) {
-                op = '*';
-                mul = methodName.indexOf("Multiply", u += 8);
-            } else {
-                throw new IllegalStateException(methodName); // internal error
-            }
-
-            int next = Integer.MAX_VALUE;
-            if (set > u && set < next)
-                next = set;
-            if (add > u && add < next)
-                next = add;
-            if (mul > u && mul < next)
-                next = mul;
-            if (div > u && div < next)
-                next = div;
-
-            String attribute = next == Integer.MAX_VALUE ? methodName.substring(u) : methodName.substring(u, next);
-            String name = getAttributeName(attribute, true);
-
-            q.append(first ? " " : ", ").append(o_).append(name).append("=");
-
-            switch (op) {
-                case '+':
-                    if (CharSequence.class.isAssignableFrom(entityInfo.attributeTypes.get(name))) {
-                        q.append("CONCAT(").append(o_).append(name).append(',') //
-                                        .append('?').append(++jpqlParamCount).append(')');
-                        break;
-                    }
-                    // else fall through
-                case '*':
-                case '/':
-                    q.append(o_).append(name).append(op);
-                    // fall through
-                case '=':
-                    q.append('?').append(++jpqlParamCount);
-            }
-
-            u = next == Integer.MAX_VALUE ? -1 : next;
-        }
-
-        return q.append(where);
-    }
-
-    /**
      * Generates JPQL for updates of an entity by entity id and version (if versioned).
      */
     private StringBuilder generateUpdateEntity() {
@@ -4470,12 +4385,10 @@ public class QueryInfo {
                 parseOrderBy(orderBy, q);
 
             type = type == null ? QM_DELETE : type;
-        } else if (methodName.startsWith("update")) {
-            int c = by < 0 ? 6 : (by + 2);
-            q = generateUpdateClause(methodName, c);
-            type = QM_UPDATE;
         } else if (methodName.startsWith("count")) {
-            q = new StringBuilder(150).append("SELECT COUNT(").append(o).append(") FROM ").append(entityInfo.name).append(' ').append(o);
+            q = new StringBuilder(150) //
+                            .append("SELECT COUNT(").append(o).append(") FROM ") //
+                            .append(entityInfo.name).append(' ').append(o);
             if (by > 0 && methodName.length() > by + 2)
                 generateWhereClause(methodName, by + 2, methodName.length(), q);
             type = COUNT;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -270,7 +270,7 @@ public class DataValidationTestServlet extends FATServlet {
         creatures.save(c);
 
         // Validation does not apply to updates made in ways that do not involve the class
-        assertEquals(true, creatures.updateByIdSetWeight(800L, -0.823f));
+        assertEquals(true, creatures.setWeight(800L, -0.823f));
 
         // Validation does not apply to find operations.
         c = creatures.findById(800l).orElseThrow();
@@ -311,7 +311,7 @@ public class DataValidationTestServlet extends FATServlet {
                         459.2f));
 
         // Validation does not apply to updates made in ways that do not involve the class
-        assertEquals(true, creatures.updateByIdSetWeight(900L, -452.9f));
+        assertEquals(true, creatures.setWeight(900L, -452.9f));
 
         // Validation does not apply to find operations.
         Creature c = creatures.findById(900l).orElseThrow();

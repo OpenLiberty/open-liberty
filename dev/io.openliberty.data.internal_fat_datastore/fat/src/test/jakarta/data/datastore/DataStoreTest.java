@@ -74,16 +74,21 @@ public class DataStoreTest extends FATServletClient {
                         .addAsWebInfResource(new File("test-applications/DataStoreWebApp/resources/WEB-INF/ibm-web-bnd.xml"));
         ShrinkHelper.exportAppToServer(server, DataStoreWebApp);
 
-        JavaArchive DataStoreTestLib = ShrinkWrap.create(JavaArchive.class,
-                                                         "DataStoreTestLib.jar")
+        JavaArchive DataStoreTestAppLib = ShrinkWrap.create(JavaArchive.class,
+                                                            "DataStoreTestAppLib.jar")
                         .addPackage("test.jakarta.data.datastore.lib");
+
+        JavaArchive DataStoreTestAppWebLib = ShrinkWrap.create(JavaArchive.class,
+                                                               "DataStoreTestAppWebLib.jar")
+                        .addPackage("test.jakarta.data.datastore.web.lib");
 
         WebArchive DataStoreTestWeb1 = ShrinkWrap.create(WebArchive.class,
                                                          "DataStoreTestWeb1.war")
                         .addPackage("test.jakarta.data.datastore.web")
                         .addAsWebInfResource(new File("test-applications/DataStoreTestApp/resources/DataStoreTestWeb1/WEB-INF/ibm-web-bnd.xml"))
                         .addAsResource(new File("test-applications/DataStoreTestApp/resources/DataStoreTestWeb1/WEB-INF/classes/META-INF/persistence.xml"),
-                                       "META-INF/persistence.xml");
+                                       "META-INF/persistence.xml")
+                        .addAsLibrary(DataStoreTestAppWebLib);
 
         WebArchive DataStoreTestWeb2 = ShrinkWrap.create(WebArchive.class,
                                                          "DataStoreTestWeb2.war")
@@ -98,7 +103,7 @@ public class DataStoreTest extends FATServletClient {
 
         EnterpriseArchive DataStoreTestApp = ShrinkWrap.create(EnterpriseArchive.class,
                                                                "DataStoreTestApp.ear")
-                        .addAsLibrary(DataStoreTestLib)
+                        .addAsLibrary(DataStoreTestAppLib)
                         .addAsModule(DataStoreTestWeb1)
                         .addAsModule(DataStoreTestWeb2)
                         .addAsModule(DataStoreTestEJB);

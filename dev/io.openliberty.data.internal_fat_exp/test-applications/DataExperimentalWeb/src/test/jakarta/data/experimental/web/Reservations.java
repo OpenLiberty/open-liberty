@@ -55,9 +55,11 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Select;
+import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.function.ElementCount;
 import io.openliberty.data.repository.function.Extract;
+import io.openliberty.data.repository.update.Assign;
 
 /**
  * Covers various patterns that are extensions to Jakarta Data, such as
@@ -180,6 +182,15 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
 
     int removeByHostNotIn(Collection<String> hosts);
 
+    @Update
+    boolean setHost(@By("meetingID") long id,
+                    @Assign("host") String newHost);
+
+    @Update
+    int setLocation(@By("host") String host,
+                    @By("location") String currentLocation,
+                    @Assign("location") String newLocation);
+
     @Find
     @Select("meetingId")
     @OrderBy("host")
@@ -203,10 +214,6 @@ public interface Reservations extends BasicRepository<Reservation, Long> {
     List<Long> startsWithinHoursWithMinute(@By("start") @Extract(HOUR) @Is(AtLeast.class) int minHour,
                                            @By("start") @Extract(HOUR) @Is(AtMost.class) int maxHour,
                                            @By("start") @Extract(MINUTE) int minute);
-
-    int updateByHostAndLocationSetLocation(String host, String currentLocation, String newLocation);
-
-    boolean updateByMeetingIDSetHost(long meetingID, String newHost);
 
     @Find
     @OrderBy(ID)

@@ -1522,10 +1522,10 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
-     * Use repository updateBy methods.
+     * Use repository Query methods that perform assignment operations.
      */
     @Test
-    public void testRepositoryUpdateMethods() {
+    public void testRepositoryQueryMethodsAssignment() {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
         // remove data that other tests previously inserted to the same table
@@ -1570,7 +1570,7 @@ public class DataExperimentalServlet extends FATServlet {
         reservations.saveAll(List.of(r1, r2, r3, r4));
 
         // Update by primary key
-        assertEquals(true, reservations.updateByMeetingIDSetHost(1012004, "testRepositoryUpdateMethods-host2@example.org"));
+        assertEquals(true, reservations.setHost(1012004, "testRepositoryUpdateMethods-host2@example.org"));
 
         // See if the updated entry is found
         List<Long> found = new ArrayList<>();
@@ -1578,9 +1578,9 @@ public class DataExperimentalServlet extends FATServlet {
         assertEquals(List.of(1012004L), found);
 
         // Update multiple by various conditions
-        assertEquals(2, reservations.updateByHostAndLocationSetLocation("testRepositoryUpdateMethods-host1@example.org",
-                                                                        "050-2 A101",
-                                                                        "050-2 H115"));
+        assertEquals(2, reservations.setLocation("testRepositoryUpdateMethods-host1@example.org",
+                                                 "050-2 A101",
+                                                 "050-2 H115"));
         assertEquals(List.of(1012001L, 1012003L),
                      reservations.findByLocationContainsOrderByMeetingID("H115")
                                      .stream()

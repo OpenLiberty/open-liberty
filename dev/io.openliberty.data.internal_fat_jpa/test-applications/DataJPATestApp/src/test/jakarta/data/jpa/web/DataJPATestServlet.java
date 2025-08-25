@@ -4635,7 +4635,7 @@ public class DataJPATestServlet extends FATServlet {
             Thread.sleep(Duration.ofMillis(1).toMillis());
 
         dodgeZipCodes = new int[] { 55917, 55924, 55927, 55940, 55944, 55955, 55963, 55985 };
-        assertEquals(true, counties.updateByNameSetZipCodes("Dodge", dodgeZipCodes));
+        assertEquals(true, counties.setZipCodesFor("Dodge", dodgeZipCodes));
 
         // Try to update with outdated version/LocalDateTime:
         try {
@@ -4809,7 +4809,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, counties.findZipCodesByPopulationLessThanEqual(1).hasNext());
 
         // update array value to empty
-        assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", new int[0]));
+        assertEquals(true, counties.setZipCodesFor("Wabasha", new int[0]));
 
         // query on array value
         assertEquals(Arrays.toString(new int[0]),
@@ -4817,7 +4817,7 @@ public class DataJPATestServlet extends FATServlet {
 
         // update array value to non-empty
         int[] wabashaZipCodesDescending = new int[] { 55991, 55981, 55968, 55964, 55957, 55956, 55945, 55932, 55910, 55041 };
-        assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", wabashaZipCodesDescending));
+        assertEquals(true, counties.setZipCodesFor("Wabasha", wabashaZipCodesDescending));
 
         // query on array value
         assertEquals(Arrays.toString(wabashaZipCodesDescending),

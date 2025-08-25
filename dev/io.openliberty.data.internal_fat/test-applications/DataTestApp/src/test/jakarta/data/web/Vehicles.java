@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,7 @@ public interface Vehicles {
     @Save
     Iterable<Vehicle> save(Iterable<Vehicle> v);
 
+    @Query("UPDATE Vehicle SET price=price+?2 WHERE (vinId=?1)")
     boolean updateByVinIdAddPrice(String vin, float priceIncrease);
 
     @Query("WHERE LOWER(ID(THIS)) = ?1")

@@ -69,6 +69,11 @@ public class Constants {
 	public static final String OPEN_LIBERTY_SCM_TAG = "HEAD";
 	public static final String OPEN_LIBERTY_URL = "https://openliberty.io/";
 
+	public static final String WEBSPHERE_LIBERTY_SCM_CONNECTION = "scm:private";
+	public static final String WEBSPHERE_LIBRETY_SCM_URL = "private";
+	public static final String WEBSPHERE_LIBERTY_SCM_TAG = "private";
+	public static final String WEBSPHERE_LIBERTY_URL = "https://www.ibm.com/";
+
 	public static final String DEV_ID = "ericglau";
 	public static final String DEV_NAME = "Eric Lau";
 	public static final String DEV_EMAIL = "ericglau@ca.ibm.com";
