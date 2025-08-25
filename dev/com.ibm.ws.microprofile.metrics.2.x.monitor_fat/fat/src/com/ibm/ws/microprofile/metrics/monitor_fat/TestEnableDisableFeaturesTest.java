@@ -44,7 +44,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 
 @RunWith(FATRunner.class)
 public class TestEnableDisableFeaturesTest {
@@ -438,7 +438,7 @@ public class TestEnableDisableFeaturesTest {
     }
     
     @Test
-    @ExpectedFFDC(value = { "javax.management.InstanceNotFoundException" })
+    @AllowedFFDC(value = { "javax.management.InstanceNotFoundException" })
     public void testEDF9() throws Exception {
         currentServ = serverEDF9;
         String testName = "testEDF9";
