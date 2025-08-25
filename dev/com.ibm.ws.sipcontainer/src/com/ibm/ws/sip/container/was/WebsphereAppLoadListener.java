@@ -185,6 +185,9 @@ public class WebsphereAppLoadListener implements WebAppInitializationCollaborato
                 if (serlvets != null) {
                     removeSipServlets(appName, serlvets);
                 }
+		//remove application from sipServletThreadLocal hashmap
+                //see open-liberty issue #31839
+                ServletsInstanceHolder.getInstance().removeInitMember(appName);		
 
                 SipContainer.getInstance().unloadAppConfiguration(appDesc.getAppName());
                 if (c_logger.isTraceDebugEnabled()) {

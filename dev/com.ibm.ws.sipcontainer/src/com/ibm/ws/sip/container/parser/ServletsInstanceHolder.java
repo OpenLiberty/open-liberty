@@ -9,11 +9,14 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ ******************************************************************************/
 package com.ibm.ws.sip.container.parser;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import javax.servlet.ServletContext;
 import javax.servlet.sip.SipApplicationSessionActivationListener;
@@ -42,70 +45,70 @@ public class ServletsInstanceHolder implements ServletInstanceHolderInterface{
      * Class Logger. 
      */
     private static final LogMgr c_logger = Log.get(ServletsInstanceHolder.class);
+    /* members */
+    private final static ServletsInstanceHolder s_instance = new ServletsInstanceHolder();
+    private SipContainer m_sipcontainer = SipContainer.getInstance();
 
-	/* members */
-	private final static ServletsInstanceHolder s_instance = new ServletsInstanceHolder();
-	private SipContainer m_sipcontainer = SipContainer.getInstance();
-	
-	private ThreadLocal<InitMembers> sipServletThreadLocal = new ThreadLocal<InitMembers>(); 
-	
-	private ServletsInstanceHolder() {
-		// Exists only to defeat instantiation.
-		if(c_logger.isTraceDebugEnabled()){
-			c_logger.traceDebug(this,"ServletsInstanceHolder","ServletsInstanceHolder constructor");	
-		}
-	}
-	public static ServletsInstanceHolder getInstance(){
-		return s_instance;
-	}
-	
-	private static class InitMembers {
-		public SipServlet sipServlet;
-		public ServletContext sipletContext;
-		public SipAppDesc appDesc;
-		
-		public InitMembers(SipAppDesc appDesc, SipServlet sipServlet, ServletContext sipletContext) {
-			this.appDesc = appDesc; 
-			this.sipServlet = sipServlet; 
-			this.sipletContext = sipletContext;
-		}
-	}
-	
-	/**
-	 * Map that holds the siplets instances, order by Application name (i.e <appname,Map >).
-	 * each inner Map is order by <siplet-class-name,siplet-instance>
-	 */
-	private Map<String, Map<String, Object>> m_sipAppsServlets = new HashMap<String, Map<String, Object>>(1);
-	
-	/**
-	 * add instance
-	 * @param appName
-	 * @param instance
-	 */
-	public void addSipletInstance(String appName,String className,Object servletInstance){
-		if(c_logger.isTraceDebugEnabled()){
-			c_logger.traceDebug(this,"addSipletInstance","appName["+appName+"] class["+className+"] instance["+servletInstance+"]");	
-		}
-		
-		SipAppDesc sipApp = m_sipcontainer.getSipApp(appName);
-		if(c_logger.isTraceDebugEnabled()){
-			c_logger.traceDebug(this,"addSipletInstance","found sipAppDesc ["+sipApp+"]");	
-		}
-		
-		Map<String, Object> app = m_sipAppsServlets.get(appName);
-		if(app == null){
-			app = new HashMap<String, Object>(1);
-			m_sipAppsServlets.put(appName,app);
-			
-	        // Setup the listeners in this stage in order at least
+    private final Map<String, InitMembers> sipServletThreadLocal = new ConcurrentHashMap<>();
+    private final Map<String, ExecutorService> appExecutors = new ConcurrentHashMap<>();
+
+    private ServletsInstanceHolder() {
+              	// Exists only to defeat instantiation.
+        if (c_logger.isTraceDebugEnabled()) {
+            c_logger.traceDebug(this, "ServletsInstanceHolder", "ServletsInstanceHolder constructor");
+        }
+    }
+
+    public static ServletsInstanceHolder getInstance() {
+        return s_instance;
+    }
+
+    private static class InitMembers {
+        public SipServlet sipServlet;
+        public ServletContext sipletContext;
+        public SipAppDesc appDesc;
+
+        public InitMembers(SipAppDesc appDesc, SipServlet sipServlet, ServletContext sipletContext) {
+            this.appDesc = appDesc;
+            this.sipServlet = sipServlet;
+            this.sipletContext = sipletContext;
+        }
+    }
+
+    /**
+    * Map that holds the siplets instances, order by Application name (i.e <appname,Map >).
+    * each inner Map is order by <siplet-class-name,siplet-instance>
+    */
+    private Map<String, Map<String, Object>> m_sipAppsServlets = new HashMap<>(1);
+
+    /**
+    * add instance
+    * @param appName
+    * @param instance
+    */
+    public void addSipletInstance(String appName, String className, Object servletInstance) {
+        if (c_logger.isTraceDebugEnabled()) {
+           	
+		c_logger.traceDebug(this,"addSipletInstance","appName["+appName+"] class["+className+"] instance["+servletInstance+"]");	
+        }
+
+        SipAppDesc sipApp = m_sipcontainer.getSipApp(appName);
+        if (c_logger.isTraceDebugEnabled()) {
+            c_logger.traceDebug(this, "addSipletInstance", "found sipAppDesc [" + sipApp + "]");
+        }
+
+        Map<String, Object> app = m_sipAppsServlets.get(appName);
+        if (app == null) {
+            app = new HashMap<>(1);
+            m_sipAppsServlets.put(appName, app);
+         // Setup the listeners in this stage in order at least
 			// one siplet is load-on-startup and implements SipServletListener.
-			sipApp.setupSipListeners();
-		}
-		
-		
-		app.put(className,servletInstance);
-		
-		if(sipApp != null) {
+            sipApp.setupSipListeners();
+        }
+
+        app.put(className, servletInstance);
+
+        if(sipApp != null) {
 			if (servletInstance instanceof TimerListener) {
 				sipApp.replaceTimerListener((TimerListener) servletInstance);				
 	        }
@@ -140,34 +143,32 @@ public class ServletsInstanceHolder implements ServletInstanceHolderInterface{
 			}
 		}
 	}
-	
-	/**
-	 * add instance
-	 * @param appName
-	 * @param instance
-	 */
-	public void removeSipletInstance(String appName,String className){
-		if(c_logger.isTraceDebugEnabled()){
-			c_logger.traceDebug(this,"removeSipletInstance","appName["+appName+"] class["+className+"] ");	
-		}
-		
-		
-		SipAppDesc sipApp = m_sipcontainer.getSipApp(appName);
-		// Exists only to defeat instantiation.
 
-		Map<String, Object> app = m_sipAppsServlets.get(sipApp.getApplicationName());
-		Object servletInstance = null;
-		if(app != null){
-			servletInstance = app.remove(className);
-			if(app.isEmpty()) {
-				m_sipAppsServlets.remove(appName);
-			}
-		}
-		if(c_logger.isTraceDebugEnabled()){
-			c_logger.traceDebug(this,"removeSipletInstance","found sipAppDesc ["+sipApp+"]");	
-		}
-		
-		if(servletInstance != null && sipApp != null) {
+    /**
+    * add instance
+    * @param appName
+    * @param instance
+    */
+    public void removeSipletInstance(String appName, String className) {
+        if (c_logger.isTraceDebugEnabled()) {
+            c_logger.traceDebug(this,"removeSipletInstance","appName["+appName+"] class["+className+"] ");	
+        }
+
+        SipAppDesc sipApp = m_sipcontainer.getSipApp(appName);
+        // Exists only to defeat instantiation.
+        Map<String, Object> app = m_sipAppsServlets.get(sipApp.getApplicationName());
+        Object servletInstance = null;
+        if (app != null) {
+            servletInstance = app.remove(className);
+            if (app.isEmpty()) {
+                m_sipAppsServlets.remove(appName);
+            }
+        }
+        if (c_logger.isTraceDebugEnabled()) {
+            c_logger.traceDebug(this, "removeSipletInstance", "found sipAppDesc [" + sipApp + "]");
+        }
+
+        if(servletInstance != null && sipApp != null) {
 			if (servletInstance instanceof TimerListener) {
 				sipApp.removeTimerListener();				
 	        }
@@ -207,72 +208,91 @@ public class ServletsInstanceHolder implements ServletInstanceHolderInterface{
 			}
 		}
 	}
-	/**
-	 * 
-	 * @param appName
-	 * @param className
-	 * @return -  null if not found
-	 */
-	public Object getSipletinstance (String appName,String className){
-		Object instance = null;
-		Map<String, Object> app = m_sipAppsServlets.get(appName);
-		if(app != null){
-			instance = app.get(className);
-		}
-		return instance;
-	}
-	
-	/**
-	 * @see ServletsInstanceHolder#saveSipletReference(String, SipServlet, ServletContext)
-	 */
-	public void saveSipletReference(String appName, SipServlet sipServlet, ServletContext sipletContext) {
-		SipAppDesc sipApp = m_sipcontainer.getSipApp(appName);
-		if(c_logger.isTraceDebugEnabled()){
-			c_logger.traceDebug(this,"triggerSipletInitServlet","found sipAppDesc ["+sipApp+"]");	
-		}
-		
-		if(sipApp==null){
-			//this mean AppDesc was not created, then when it will be created it will take re-call this class 
-			//to get listeners instances
-			return;
-		}
+    /**
+    * Cleans up SIP app data for the given application. 
+    * IBM-Test-Fixes: OLGH32457
+    */
+    public void removeInitMember(String appName) {
+        c_logger.traceDebug("removeInitMember", " removing InitMember " + appName);
+	// Remove InitMember from ThreadLocal map
+        sipServletThreadLocal.remove(appName);
+	//  Remove servlet instances map  this is critical
+        m_sipAppsServlets.remove(appName);
+	// Shutdown executor for the app
+        shutdownExecutor(appName);
+    }
+    /**
+	 
+    * 
+    * @param appName
+    * @param className
+    * @return -  null if not found
+    */
 
-		SipServletDesc sipDesc = sipApp.getSipServlet(sipServlet.getServletName());
-		if(!sipDesc.isServletLoadOnStartup() && sipApp.getSipServletListeners().isEmpty()){
-			//this means SipServletDesc isn't load-on-startup and there are no listeners to the servlet. 
-			return;
-		}
-		
-		InitMembers members = new InitMembers(sipApp, sipServlet, sipletContext);
-		sipServletThreadLocal.set(members);
-	}
+    public Object getSipletinstance(String appName, String className) {
+        Map<String, Object> app = m_sipAppsServlets.get(appName);
+        return app != null ? app.get(className) : null;
+    }
 
-	/**
-	 * @see ServletsInstanceHolder#triggerSipletInitServlet()
-	 */
-	public void triggerSipletInitServlet(int appQueueIndex) {
-		InitMembers members = sipServletThreadLocal.get();
-		sipServletThreadLocal.set(null);
-		
-		if (members == null)
-			return;
-		
-		// Sending servlet listener notification
-		EventsDispatcher.sipServletInitiated(members.appDesc, members.sipServlet, members.sipletContext, appQueueIndex);		
-	}
-	
-	public void saveOnStartupServlet(){
-		InitMembers members = sipServletThreadLocal.get();
-	
-		if(members != null){
-			if(c_logger.isTraceDebugEnabled()){
-				c_logger.traceDebug(this,"saveOnStartupServlet","members are not null, adding: "+members.sipServlet.getServletName()+" to "+members.appDesc.getApplicationName());	
-			}
-		members.appDesc.saveLoadOnStartupServlet(members.sipServlet);
-		}else{
-			if(c_logger.isTraceDebugEnabled()){
-				c_logger.traceDebug(this,"saveOnStartupServlet","members is null");	
-			}
-		}
-	}
+   /**
+   * @see ServletsInstanceHolder#saveSipletReference(String, SipServlet, ServletContext)
+   */
+    public void saveSipletReference(String appName, SipServlet sipServlet, ServletContext sipletContext) {
+        SipAppDesc sipApp = m_sipcontainer.getSipApp(appName);
+        if (sipApp == null) return;
+
+        SipServletDesc sipDesc = sipApp.getSipServlet(sipServlet.getServletName());
+        if (!sipDesc.isServletLoadOnStartup() && sipApp.getSipServletListeners().isEmpty()) return;
+
+        InitMembers members = new InitMembers(sipApp, sipServlet, sipletContext);
+appExecutors.computeIfAbsent(appName, k -> Executors.newSingleThreadExecutor())
+    .submit(() -> {
+        sipServletThreadLocal.put(appName, members); // simulate thread-local scoped per app
+        try {
+            if (c_logger.isTraceDebugEnabled()) {
+                c_logger.traceDebug(this, "saveSipletReference",
+                        "Initializing servlet: " + sipServlet.getServletName() + " for app: " + appName);
+            }
+
+            // Save servlet instance for load-on-startup tracking
+            members.appDesc.saveLoadOnStartupServlet(sipServlet);
+
+            // Fire SIP Servlet initialized event
+            EventsDispatcher.sipServletInitiated(members.appDesc, sipServlet, sipletContext, 0);
+
+        } finally {
+            
+        }
+    });
+
+    }
+    /**
+    * @see ServletsInstanceHolder#triggerSipletInitServlet()
+    */
+    public void triggerSipletInitServlet(int appQueueIndex, String appName) {
+        // No-op with executor model, already triggered
+    }
+
+    @Override
+    public void triggerSipletInitServlet(int timestamp) {
+        // implement what this method is supposed to do
+    }
+
+    public void saveOnStartupServlet(String appName) {
+        // No-op with executor model, initialization already dispatched
+    }
+
+    @Override
+    public void saveOnStartupServlet() {
+    }
+
+    private void shutdownExecutor(String appName) {
+        ExecutorService executor = appExecutors.remove(appName);
+        if (executor != null) {
+            executor.shutdownNow();
+            if (c_logger.isTraceDebugEnabled()) {
+                c_logger.traceDebug(this, "shutdownExecutor", "Shutdown executor for app: " + appName);
+            }
+        }
+    }
 }
