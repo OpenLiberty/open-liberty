@@ -122,6 +122,7 @@ public abstract class BaseTestClass {
             TimeUnit.SECONDS.sleep(1);
 
             metricsString = metricsOutput.get();
+            Log.warning(c, String.format("DE_BUG assertTrueRetryWithTimeout %d", x));
             if (doMatching.apply(metricsString, expectedString)== true) {
                 Log.info(c, "assertTrueRetryWithTimeout", String.format("It took %d retries and %d seconds of waiting to be succesful)", x, (x + 1)));
                 return;

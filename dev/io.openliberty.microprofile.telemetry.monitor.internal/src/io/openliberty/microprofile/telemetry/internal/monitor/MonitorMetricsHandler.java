@@ -14,6 +14,7 @@ import java.lang.management.ManagementFactory;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
+import java.util.logging.Logger;
 
 import javax.management.InstanceNotFoundException;
 import javax.management.MBeanServer;
@@ -49,28 +50,30 @@ public class MonitorMetricsHandler {
 	protected Set<MonitorMetrics> mmonitorMetricsSet = new HashSet<MonitorMetrics>();
 	protected NotificationListener listener;
 
+	private static final Logger logger = Logger.getLogger(MonitorMetricsHandler.class.getName());
+
 	@Activate
 	protected void activate(ComponentContext context) {
-		Tr.debug(tc, "DEBUGGING: > activate()");
+		logger.warning("DE_BUG MMH.java : > activate()");
 		this.mappingTable = MappingTable.getInstance();
+		logger.warning("DE_BUG MMH.java : > ABOUT TO CALL REGISTER()");
 		register();
+		logger.warning("DE_BUG MMH.java : > DONE FIRST REGISTER()");
 		addMBeanListener();
 	}
 
 	@Reference
 	public void setExecutorService(ExecutorService execServ) {
-		Tr.debug(tc, "DEBUGGING: > setExecutorService()");
 		this.execServ = execServ;
 	}
 
 	public void unsetExecutorService(ExecutorService execServ) {
-		Tr.debug(tc, "DEBUGGING: > unsetExecutorService()");
 		this.execServ = null;
 	}
 
 	@Deactivate
 	protected void deactivate(ComponentContext context) {
-		Tr.debug(tc, "DEBUGGING: > deactivate()");
+		logger.warning("DE_BUG MMH.java: > deactivate()");
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
 		if (listener != null) {
 			try {
@@ -90,18 +93,23 @@ public class MonitorMetricsHandler {
 
 			@Override
 			public void handleNotification(Notification notification, Object handback) {
-				Tr.debug(tc, "DEBUGGING: >> handleNotification()");
+				long startTime = System.currentTimeMillis();
+				logger.warning("DE_BUG MMH.java: >> handleNotification()");
 				MBeanServerNotification mbsn = (MBeanServerNotification) notification;
 				String objectName = mbsn.getMBeanName().toString();
-				Tr.debug(tc, "DEBUGGING: > handleNotification() objectName: " + objectName);
+				logger.warning("DE_BUG MMH.java: > handleNotification() objectName: " + objectName  + "at " + startTime + "ms");
 				if (MBeanServerNotification.REGISTRATION_NOTIFICATION.equals(mbsn.getType())) {
 					if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
 						Tr.debug(tc, "MBean Registered [", objectName + "]");
 					}
 					String[][] data = mappingTable.getData(objectName);
 					if (data != null) {
+						logger.warning("DE_BUG MMH.java: > handleNotification() calling register(objectName, data) for " + objectName);
 						register(objectName, data);
 					}
+					long endTime = System.currentTimeMillis();
+					long elapsed = endTime-startTime;
+					logger.warning("DE_BUG MMH.java: > handleNotification() objectName registered at: " + objectName  + "at " + endTime + "ms " + elapsed +" ms elapsed");
 				} else if (MBeanServerNotification.UNREGISTRATION_NOTIFICATION.equals(mbsn.getType())) {
 					if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
 						Tr.debug(tc, "MBean Unregistered [" + objectName + "]");
@@ -142,25 +150,25 @@ public class MonitorMetricsHandler {
 
 	protected void register() {
 		MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-		Tr.debug(tc, "DEBUGGING: > register()");
+		logger.warning("DE_BUG MMH.java: > register()");
 		for (String sName : mappingTable.getKeys()) {
-			Tr.debug(tc, "DEBUGGING: > register() Checking: " + sName);
+			logger.warning("DE_BUG MMH.java: > register() Checking: " + sName);
 			Set<ObjectInstance> mBeanObjectInstanceSet;
 			try {
 				mBeanObjectInstanceSet = mbs.queryMBeans(new ObjectName(sName), null);
 				if (sName.contains("ThreadPoolStats") && mBeanObjectInstanceSet.isEmpty() && execServ != null) {
-					Tr.debug(tc, "DEBUGGING: > register() Couldn't find MBean with name: " + sName);
+					logger.warning("DE_BUG MMH.java: > register() Couldn't find ThreadPoolStats");
 					execServ.execute(() -> {
 						final int MAX_TIME_OUT = 50;
 						int currentTimeOut = 0;
 						Set<ObjectInstance> mBeanObjectInstanceSetTemp = mBeanObjectInstanceSet;
-						Tr.debug(tc, "DEBUGGING: > register() retrying for: " + sName);
+						logger.warning("DE_BUG MMH.java: > register() retrying for: " + sName);
 						while (mBeanObjectInstanceSetTemp.isEmpty() && currentTimeOut <= MAX_TIME_OUT) {
 							try {
 								Thread.sleep(50);
 
 								mBeanObjectInstanceSetTemp = mbs.queryMBeans(new ObjectName(sName), null);
-								Tr.debug(tc, "DEBUGGING: > register() queryMBeans: " + sName);
+								logger.warning("DE_BUG MMH.java: > register() queryMBeans: " + sName);
 								currentTimeOut += 50;
 							} catch (Exception e) {
 								if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
@@ -177,14 +185,14 @@ public class MonitorMetricsHandler {
 						}
 						// Log timeout result
 						if (mBeanObjectInstanceSetTemp.isEmpty()) {
-							Tr.debug(tc, "DEBUGGING: ThreadPoolStats MBean could't be found even after retries.");
+							logger.warning("DE_BUG MMH.java: ThreadPoolStats MBean could't be found even after retries.");
 						} else {
-							Tr.debug(tc, "DEBUGGING: ThreadPoolStats found after retries.");
+							logger.warning("DE_BUG MMH.java: ThreadPoolStats found after retries.");
 						}
 						registerMbeanObjects(mBeanObjectInstanceSetTemp);
 					});
 				} else {
-					Tr.debug(tc, "DEBUGGING: > register() Found MBean with name: " + sName);
+					logger.warning("DE_BUG MMH.java: > register() Found MBean with name: " + sName);
 				}
 				registerMbeanObjects(mBeanObjectInstanceSet);
 			} catch (Exception e) {
@@ -208,7 +216,11 @@ public class MonitorMetricsHandler {
 	}
 
 	protected synchronized void register(String objectName, String[][] data) {
- 
+		logger.warning("DE_BUG MMH.java: > register2()");
+		logger.warning("DE_BUG MMH.java: > register2() LIST BEFORE:");
+		for(MonitorMetrics mm : mmonitorMetricsSet) {
+			logger.warning("DE_BUG MMH.java: > register2() before list: " + mm.getObjectName());
+		}
 		MonitorMetrics monitorMetricsInsts = null;
 		if (!containMetrics(objectName)) {
 			monitorMetricsInsts = new MonitorMetrics(objectName);
@@ -217,12 +229,17 @@ public class MonitorMetricsHandler {
 			if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
 				Tr.debug(tc, "Monitoring MXBean " + objectName + " is registered to mpTelemetry.");
 			}
-
 		} else {
 			if (tc.isDebugEnabled() && TraceComponent.isAnyTracingEnabled()) {
 				Tr.debug(tc, objectName + " is already registered.");
 			}
 		}
+		logger.warning("DE_BUG MMH.java: > register2() > LIST AFTER:");
+		for(MonitorMetrics mm : mmonitorMetricsSet) {
+			logger.warning("DE_BUG MMH.java: > register2(): " + mm.getObjectName());
+		}
+		logger.warning("DE_BUG MMH.java: > register2() < LIST AFTER:");
+		logger.warning("DE_BUG MMH.java: < register2()");
 	}
 
 	protected boolean containMetrics(String objectName) {

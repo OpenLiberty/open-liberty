@@ -14,6 +14,7 @@ package com.ibm.ws.monitors;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import com.ibm.websphere.monitor.annotation.Args;
 import com.ibm.websphere.monitor.annotation.Monitor;
@@ -39,7 +40,7 @@ import com.ibm.wsspi.pmi.stat.SPIStatistic;
  */
 @Monitor(group = "ThreadPool")
 public class ThreadPoolMonitor extends StatisticActions {
-
+    
     @PublishedMetric
     public MeterCollection<ThreadPoolStats> threadPoolCountByName = new MeterCollection<ThreadPoolStats>("ThreadPool", this);
 
@@ -60,8 +61,10 @@ public class ThreadPoolMonitor extends StatisticActions {
     private SPIBoundedRangeStatistic poolSize;
     private static ThreadPoolStatsHelper _tpHelper = null;
 
+    private static final Logger logger = Logger.getLogger(ThreadPoolMonitor.class.getName());
+
     public ThreadPoolMonitor() {
-        Tr.info(tc, "DEBUGGING: ThreadPoolMonitor constructor");
+        logger.warning("DE_BUG: ThreadPoolMonitor.java: ThreadPoolMonitor constructor start");
         try {
             StatsGroup grp = StatsFactory.createStatsGroup("ThreadPool", template, null, this);
             StatsFactory.createStatsInstance(DEFAULT_POOL_NAME, grp, null, this);
@@ -73,12 +76,13 @@ public class ThreadPoolMonitor extends StatisticActions {
         } catch (Exception e) {
             FFDCFilter.processException(e, getClass().getName(), ".ThreadPoolMonitor");
         }
+        logger.warning("DE_BUG ThreadPoolMonitor.java: ThreadPoolMonitor constructor end");
     }
 
     @ProbeAtEntry
     @ProbeSite(clazz = "com.ibm.ws.threading.internal.ExecutorServiceImpl", method = "execute")
     public void atFieldGet(@This Object esi) {
-        Tr.info(tc, "DEBUGGING: atFieldGet");
+        logger.warning("DE_BUG ThreadPoolMonitor.java: atFieldGet");
         //We will be checking this only once.
         //Once we get ThreadPoolExecutorImpl for DEFAULT_POOL_NAME, we set ob_ref and won't execute any code here.
         if (ob_ref == null) {
@@ -107,12 +111,12 @@ public class ThreadPoolMonitor extends StatisticActions {
                 FFDCFilter.processException(e, getClass().getSimpleName(), "Unable to query Thread Pool Exec.");
             }
         }
+        logger.warning("DE_BUG ThreadPoolMonitor.java: atFieldGet end");
     }
 
     @ProbeAtEntry
     @ProbeSite(clazz = "com.ibm.ws.threading.internal.ExecutorServiceImpl", method = "createExecutor")
     public void atCreateExecutorEntry(@Args Object[] myargs) {
-        Tr.info(tc, "DEBUGGING: atCreateExecutorEntry");
         Map<String, Object> componentConfig = (Map<String, Object>) myargs[0];
         String name = (String) componentConfig.get("name");
         if (name != null && !!!name.isEmpty()) {
@@ -126,21 +130,25 @@ public class ThreadPoolMonitor extends StatisticActions {
      * @param poolName
      */
     private synchronized void initThreadPoolStat(String _poolName) {
-        Tr.info(tc, "DEBUGGING: initThreadPoolStat");
+        logger.warning("DE_BUG ThreadPoolMonitor.java:  initThreadPoolStat() entry");
         if (threadPoolCountByName.get(_poolName) != null) {
+            logger.warning("DE_BUG ThreadPoolMonitor.java: initThreadPoolStat(): threadPoolStat already created..");
             return;
+        } else {
+            logger.warning("DE_BUG ThreadPoolMonitor.java: initThreadPoolStat(): threadPoolStat is being initialized.");
         }
         if (_tpHelper == null) {
             _tpHelper = new ThreadPoolStatsHelper(_poolName, ob_ref);
         }
         ThreadPoolStats tpStats = new ThreadPoolStats(_poolName, ob_ref);
         threadPoolCountByName.put(_poolName, tpStats);
+        logger.warning("DE_BUG ThreadPoolMonitor.java: < initThreadPoolStat() exit");
     }
 
     /** {@inheritDoc} */
     @Override
     public void statisticCreated(SPIStatistic s) {
-        Tr.info(tc, "DEBUGGING: statisticCreated");
+        logger.warning("DE_BUG ThreadPoolMonitor.java: > statisticCreated()");
         if (s.getId() == ACTIVE_THREADS) {
             activeThreads = (SPIBoundedRangeStatistic) s;
         } else if (s.getId() == POOL_SIZE) {
@@ -150,21 +158,25 @@ public class ThreadPoolMonitor extends StatisticActions {
                 Tr.debug(tc, "Invlid stats found " + s);
             }
         }
+        logger.warning("DE_BUG ThreadPoolMonitor.java: < statisticCreated()");
     }
 
     /** {@inheritDoc} */
     @Override
     public void updateStatisticOnRequest(int dataId) {
-        Tr.info(tc, "DEBUGGING: updateStatisticOnRequest");
+        logger.warning("DE_BUG ThreadPoolMonitor.java: > updateStatisticOnRequest()");
         if (_tpHelper == null) {
+            logger.warning("DE_BUG ThreadPoolMonitor.java: > updateStatisticOnRequest(): _tpHelper is null");
             return;
         }
 
         if (dataId == ACTIVE_THREADS) {
             activeThreads.set(_tpHelper.getActiveThreads());
+            logger.warning("DE_BUG ThreadPoolMonitor.java: > updateStatisticOnRequest(): " + " activeThreads: " + _tpHelper.getActiveThreads());
         }
         if (dataId == POOL_SIZE) {
             poolSize.set(_tpHelper.getPoolSize());
+            logger.warning("DE_BUG ThreadPoolMonitor.java: > updateStatisticOnRequest(): " + " poolSize: " + _tpHelper.getPoolSize());
         }
     }
 
