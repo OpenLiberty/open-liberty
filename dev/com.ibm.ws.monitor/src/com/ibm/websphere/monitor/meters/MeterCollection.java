@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.logging.Logger;
 
 import javax.management.InstanceAlreadyExistsException;
 import javax.management.InstanceNotFoundException;
@@ -45,6 +46,8 @@ public final class MeterCollection<T> {
     final String collectionName;
     Object monitor;
 
+    private static final Logger logger = Logger.getLogger(MeterCollection.class.getName());
+
     public MeterCollection(String collectionName, Object monitor) {
         this.collectionName = collectionName;
         this.monitor = monitor;
@@ -59,6 +62,13 @@ public final class MeterCollection<T> {
                     Tr.debug(tc, "KEY =" + key + ",. Type of Meter is NULL");
                 }
             }
+
+            if (meter != null) {
+                logger.warning("DE_BUGGING MeterCollection.java KEY =" + key + ",. Type of Meter =" + meter.getClass().getSimpleName());
+            } else {
+                logger.warning("DE_BUGGING MeterCollection.java KEY =" + key + ",. Type of Meter is NULL");
+            }
+
             if (meter == null) {
                 return;
             }
@@ -121,12 +131,14 @@ public final class MeterCollection<T> {
         sb.append("type=").append(type);
         sb.append(",name=").append(name);
         ObjectName on = new ObjectName(sb.toString());
+        logger.warning("DE_BUGGING MeterCollection.java MXBEANHELPER " + on);
         if (operation == REGISTER_MXBEAN) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Registering MBean to platform MBean Server " + on);
             }
             try {
                 AccessController.doPrivileged((PrivilegedExceptionAction<Object>) () -> {
+                    logger.warning("DE_BUG > MXBeanHelper() Register " + on);
                     mbeanServer.registerMBean(mxBeanImpl, on);
                     return null;
                 });
