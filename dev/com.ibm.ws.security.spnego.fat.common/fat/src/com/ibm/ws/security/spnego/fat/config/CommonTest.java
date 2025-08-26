@@ -396,15 +396,15 @@ public class CommonTest {
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
         String thisMethod = "createKrbConf";
         Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE +
-        "the machine is z/OS? " + isZOS);
+        " is the machine z/OS? " + isZOS);
         // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
         // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
         // Additionally, for this update to work the allowed skew also needs to be updated on the KDC machine
+        InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
         if (InitClass.KRB5_CONF == null) {
             Log.info(c, thisMethod, "KRB5_CONF is null. This may be because we failed to obtain information from Consul.");
             throw new IOException("KRB5_CONF is null. Cannot create krb.conf file.");
         }
-        InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
         if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
             Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");
         } else {
