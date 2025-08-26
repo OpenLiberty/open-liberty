@@ -467,10 +467,7 @@ public class TestEnableDisableFeaturesTest {
         Assert.assertNotNull("CWWKT0016I for testJDBCApp NOT FOUND after config update",
                 serverEDF9.waitForStringInLogUsingMark("CWWKT0016I.*\\/testJDBCApp\\/"));
 
-        // (Optional) tiny settle to be extra safe
-        try { Thread.sleep(1000); } catch (InterruptedException ie) { Thread.currentThread().interrupt(); }
-
-        // Now it’s safe to hit the servlets
+        // Safe to hit the servlets
         checkStrings(getHttpServlet("/testSessionApp/testSessionServlet", serverEDF9),
                 new String[] { "Session id:" }, new String[] {});
 
