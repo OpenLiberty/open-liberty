@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+<h:head>
+    <title>Optional Example</title>
+</h:head>
+<h:body>
+    <h2>Optional in Faces</h2>
+
+        Expression: \${simpleBeanWithOptionalProperty.anotherSimpleBean.testString}
+        <br/>
+        Value Present Optional: "#{simpleBeanWithOptionalProperty.anotherSimpleBean.testString}"
+        <br/>
+        Expression: \${simpleBeanWithOptionalProperty.testString}
+        <br/>
+        Empty Optional: "#{simpleBeanWithOptionalProperty.testString}"
+        <br/>
+        Expression: \${simpleBeanWithOptionalProperty.optionalString}
+        <br/>
+        Empty Optional: "#{simpleBeanWithOptionalProperty.optionalString}"
+</h:body>
+</html>

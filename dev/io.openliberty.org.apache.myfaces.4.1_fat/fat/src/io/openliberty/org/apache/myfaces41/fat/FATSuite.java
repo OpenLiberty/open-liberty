@@ -25,6 +25,7 @@ import componenttest.topology.impl.LibertyServer;
 import io.openliberty.org.apache.myfaces41.fat.test.CompositeExtensionTest;
 import io.openliberty.org.apache.myfaces41.fat.test.ConfigTests;
 import io.openliberty.org.apache.myfaces41.fat.test.ContentLengthTest;
+import io.openliberty.org.apache.myfaces41.fat.test.EL60ResolversTest;
 import io.openliberty.org.apache.myfaces41.fat.test.Faces41CDITests;
 import io.openliberty.org.apache.myfaces41.fat.test.FacesConfigVersion41Test;
 import io.openliberty.org.apache.myfaces41.fat.test.FacesMessagesTest;
@@ -42,7 +43,8 @@ import io.openliberty.org.apache.myfaces41.fat.test.UUIDConverterTest;
                 FacesMessagesTest.class,
                 RenderIdTest.class,
                 RowStatePreservedTest.class,
-                FacesConfigVersion41Test.class
+                FacesConfigVersion41Test.class,
+                EL60ResolversTest.class
 })
 
 public class FATSuite {
