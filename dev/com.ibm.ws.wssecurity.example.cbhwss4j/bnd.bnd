@@ -38,4 +38,5 @@ test.project: true
 
 -buildpath: \
   com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest,\
+  com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
   com.ibm.ws.wssecurity.fat.utils.common;version=latest

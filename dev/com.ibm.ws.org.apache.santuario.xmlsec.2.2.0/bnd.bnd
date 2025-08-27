@@ -24,7 +24,8 @@ instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/templates/**, \
   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/schemas/**, \
   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/*xml, \
-  org/apache/xml/security=${bin}/org/apache/xml/security, \
+  org/apache/xml/security=${bin}/org/apache/xml/security/, \
+  org/apache/jcp/=${bin}/org/apache/jcp/, \
   org/apache/xml/security/resource/xmlsecurity_en.nlsprops=resources/org/apache/xml/security/resource/xmlsecurity_en.nlsprops
 
 -buildpath: \
@@ -32,6 +33,7 @@ instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	io.openliberty.com.fasterxml.woodstox.core;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+  io.openliberty.org.apache.commons.codec;version=latest
 
 globalize: false

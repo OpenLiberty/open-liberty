@@ -352,7 +352,12 @@ public class WSSecurityConfiguration implements ConfigurationListener {
                         // Log a message if the signature algorithm is not secure
                         String algorithm = (String) signaturePropertyMap.get("signatureAlgorithm");
                         if (algorithm == null || algorithm.isEmpty()) {
-                            algorithm = WSSecurityConstants.WSSEC_DEFAULT_SIGNATURE_ALGORITHM;
+                            // Set the Default to 256 if FIPS is enabled
+                            if (CryptoUtils.isFips140_3EnabledWithBetaGuard()) {
+                                algorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+                            } else {
+                                algorithm = WSSecurityConstants.WSSEC_DEFAULT_SIGNATURE_ALGORITHM;
+                            }
                         }
                         if (CryptoUtils.isAlgorithmInsecure(algorithm)) {
                             CryptoUtils.logInsecureAlgorithm("wsSecurityProvider.signatureProperties.signatureAlgorithm", algorithm);

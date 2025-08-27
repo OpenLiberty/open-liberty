@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2025 IBM Corporation and others.
+ * Copyright (c) 2020,2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,11 +47,11 @@ public class SignatureAlgorithms {
     static final String hmac_sha384 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha384";
     static final String hmac_sha512 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512";
 
+    private static final String sha256_sha256 = "http://www.w3.org/2001/04/xmldsig-more#sha256-sha256";
+
     static Map<String, String> RSA_MAP = new HashMap<String, String>();
-    static boolean fipsEnabled = CryptoUtils.isFips140_3EnabledWithBetaGuard();
     static {
-        if (!fipsEnabled){
-        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), rsa_sha1);}
+        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), rsa_sha1);
         RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase(), rsa_sha256);
         RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.toLowerCase(), rsa_sha384);
         RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase(), rsa_sha512);
@@ -59,8 +59,7 @@ public class SignatureAlgorithms {
 
     static Map<String, String> HMAC_MAP = new HashMap<String, String>();
     static {
-        if (!fipsEnabled){
-        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), hmac_sha1);}
+        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), hmac_sha1);
         HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase(), hmac_sha256);
         HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.toLowerCase(), hmac_sha384);
         HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase(), hmac_sha512);
@@ -84,6 +83,9 @@ public class SignatureAlgorithms {
             if (HMAC_MAP.containsKey(algorithm)) {
                 algorithmSuite.getAlgorithmSuiteType().setSymmetricSignature(HMAC_MAP.get(algorithm));
                 //algorithmSuite.setSymmetricSignature(HMAC_MAP.get(algorithm)); //v3
+            }
+            if(algorithm.contains("sha256-sha256")) {
+                algorithmSuite.getAlgorithmSuiteType().setSymmetricSignature(sha256_sha256);
             }
         }
     }

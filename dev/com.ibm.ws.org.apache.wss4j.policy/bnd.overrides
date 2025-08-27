@@ -22,3 +22,10 @@ WS-TraceGroup: WSS4J
 
 Export-Package: \
  org.apache.wss4j.policy.*;version=${bVersion}
+
+Import-Package: \
+ org.apache.xml.security.*;version="[2.0.0,5.0.0)",\
+ org.apache.neethi.*;version="[3.0.0,4.0.0)",\
+ org.apache.wss4j.*;version="[2.3.0,5.0.0)", \
+ !net.shibboleth.*,\
+ *

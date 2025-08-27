@@ -140,7 +140,7 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
             new QName(abinding.getName().getNamespaceURI(), SPConstants.ONLY_SIGN_ENTIRE_HEADERS_AND_BODY));
     }
 
-    private void doSignBeforeEncrypt() {
+private void doSignBeforeEncrypt() {
         try {
             AbstractTokenWrapper initiatorWrapper = abinding.getInitiatorSignatureToken();
             if (initiatorWrapper == null) {
@@ -239,8 +239,8 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
             }
 
             if (encToken != null) {
-                WSSecBase encr = null;
                 if (encToken.getToken() != null && !enc.isEmpty()) {
+                    final WSSecBase encr;
                     if (encToken.getToken().getDerivedKeys() == DerivedKeys.RequireDerivedKeys) {
                         encr = doEncryptionDerived(encToken, enc);
                     } else {
@@ -783,7 +783,7 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
             }
 
             List<Reference> referenceList = sig.addReferencesToSign(sigParts);
-            if (!referenceList.isEmpty()) {
+            if (!referenceList.isEmpty()) { 
                 //Do signature
                 if (bottomUpElement == null) {
                     sig.computeSignature(referenceList, false, null);

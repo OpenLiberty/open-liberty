@@ -50,6 +50,7 @@ import org.apache.cxf.ws.security.cache.CXFEHCacheReplayCache;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreException;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreUtils;
+import org.apache.cxf.ws.security.utils.JCacheUtil;
 import org.apache.wss4j.common.cache.MemoryReplayCache;
 import org.apache.wss4j.common.cache.ReplayCache;
 import org.apache.wss4j.common.cache.WSS4JCacheUtil;
@@ -349,12 +350,11 @@ public final class WSS4JUtils {
             URL propsURL = SecurityUtils.loadResource(message, s);
             Properties props = WSS4JUtils.getProps(s, propsURL);
             if (props == null) {
-                // Liberty Change Start
-                //LOG.fine("Cannot find Crypto Signature properties: " + s);
-                // Liberty Change End
+                LOG.fine("Cannot find Crypto Signature properties: " + s);
                 Exception ex = new Exception("Cannot find Crypto Signature properties: " + s);
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex);
             }
+
             signCrypto = CryptoFactory.getInstance(props, Loader.getClassLoader(CryptoFactory.class),
                                                    passwordEncryptor);
 
