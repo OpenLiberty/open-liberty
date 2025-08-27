@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2022 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  *******************************************************************************/
 
 package com.ibm.ws.security.saml.sso20.binding;
-
 
 import java.util.Arrays;
 import java.util.List;
@@ -66,15 +65,15 @@ import net.shibboleth.utilities.java.support.resolver.ResolverException;
 // MessageContext
 
 /**
- * 
  *
- * @param <InboundMessageType> type of inbound SAML message
+ *
+ * @param <InboundMessageType>  type of inbound SAML message
  * @param <OutboundMessageType> type of outbound SAML message
- * 
+ *
  */
 
 @SuppressWarnings("rawtypes")
-public class BasicMessageContext<InboundMessageType extends SAMLObject, OutboundMessageType extends SAMLObject>/* extends SAMLSOAPClientContextBuilder */{
+public class BasicMessageContext<InboundMessageType extends SAMLObject, OutboundMessageType extends SAMLObject> /* extends SAMLSOAPClientContextBuilder */ {
 
     public static final TraceComponent tc = Tr.register(BasicMessageContext.class,
                                                         TraceConstants.TRACE_GROUP,
@@ -93,25 +92,24 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     HttpRequestInfo cachedRequestInfo;
     boolean bSetIDPSSODescriptor = false;
 
-    
     Status logoutResponseStatus;
     String inResponseTo;
 
     AcsDOMMetadataProvider metadataProvider = null;
-    
+
     HttpServletRequest request;
     HttpServletResponse response;
 
     InitialRequestUtil irUtil = new InitialRequestUtil();
     ChainingEncryptedKeyResolver encryptedKeyResolver;
-    private List<EncryptedKeyResolver> resolverChain;
+    private final List<EncryptedKeyResolver> resolverChain;
     EncryptedKeyResolver inline = new InlineEncryptedKeyResolver();
     EncryptedKeyResolver encryptedelem = new EncryptedElementTypeEncryptedKeyResolver();
     EncryptedKeyResolver simple = new SimpleRetrievalMethodEncryptedKeyResolver();
-    
+
     SAMLPeerEntityContext samlPeerEntityContext = new SAMLPeerEntityContext();
 
-    private MessageContext<SAMLObject> messageContext;
+    private MessageContext messageContext;
     private Endpoint peerEntityEndpoint;
     private String inboundMessageIssuer;
 
@@ -143,11 +141,11 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     public HttpServletRequest getHttpServletRequest() {
         return this.request;
     }
-    
+
     public void setMetadataProvider(AcsDOMMetadataProvider acsIdpMetadataProvider) {
-       this.metadataProvider = acsIdpMetadataProvider;
+        this.metadataProvider = acsIdpMetadataProvider;
     }
-    
+
     public AcsDOMMetadataProvider getMetadataProvider() {
         return this.metadataProvider;
     }
@@ -169,10 +167,10 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
 
     void setIDPSSODescriptor() {
         bSetIDPSSODescriptor = true;
-        
+
         SAMLObject samlMsg = null;
         if (getMessageContext() != null) {
-            samlMsg = getMessageContext().getMessage();
+            samlMsg = (SAMLObject) getMessageContext().getMessage(); //v4 update
         }
         if (samlMsg != null && (samlMsg instanceof Response || samlMsg instanceof LogoutResponse ||
                                 samlMsg instanceof LogoutRequest)) {
@@ -189,30 +187,30 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
             }
             if (metadataProvider != null) {
 //                try {
-                    CriteriaSet criteriaSet = new CriteriaSet(new EntityIdCriterion(issuer));
-                    EntityDescriptor entityDescriptor = null;
-                    try {
-                        entityDescriptor = metadataProvider.resolveSingle(criteriaSet);
-                    } catch (ResolverException e) {
-                      // do nothing and let the IDPSsoDescriptor == null
-                      if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                          Tr.debug(tc, "ResolverException in setIDPSSODescriptor : ", e);
-                      }
+                CriteriaSet criteriaSet = new CriteriaSet(new EntityIdCriterion(issuer));
+                EntityDescriptor entityDescriptor = null;
+                try {
+                    entityDescriptor = metadataProvider.resolveSingle(criteriaSet);
+                } catch (ResolverException e) {
+                    // do nothing and let the IDPSsoDescriptor == null
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "ResolverException in setIDPSSODescriptor : ", e);
                     }
-                    if (entityDescriptor == null) {
-                        // cannot find a valid idpMetadata
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Can not find a valid IDP Metadata for issuer:"
-                                         + issuer);
-                        }
-                        // This could happen. And if no idpMetadata found, later on,
-                        // the Saml Token signature cannot be verified
-                        // since no trusted certificate...
-                        // Unless trustEngine is specified (using pkixTrustEngine)
-                    } else {
-                        peerEntityMetadata = entityDescriptor;
-                        idpSsoDescriptor = entityDescriptor.getIDPSSODescriptor(SAMLConstants.SAML20P_NS);
+                }
+                if (entityDescriptor == null) {
+                    // cannot find a valid idpMetadata
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Can not find a valid IDP Metadata for issuer:"
+                                     + issuer);
                     }
+                    // This could happen. And if no idpMetadata found, later on,
+                    // the Saml Token signature cannot be verified
+                    // since no trusted certificate...
+                    // Unless trustEngine is specified (using pkixTrustEngine)
+                } else {
+                    peerEntityMetadata = entityDescriptor;
+                    idpSsoDescriptor = entityDescriptor.getIDPSSODescriptor(SAMLConstants.SAML20P_NS);
+                }
 //                } catch (MetadataProviderException e) { // TODO: handle ResolverException?
 //                    // do nothing and let the IDPSsoDescriptor == null
 //                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -288,7 +286,7 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
                 try {
                     if (!(ssoService.getConfig().isDisableInitialRequestCookie())) {
                         cachedRequestInfo = irUtil.recreateHttpRequestInfo(externalRelayState, this.request, this.response, this.ssoService);
-                    }  
+                    }
                 } catch (SamlException e) {
                     Tr.debug(tc, "cannot recreate HttpRequestInfo using InitialRequest cookie", e.getMessage());
                     throw e;
@@ -346,12 +344,12 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     /**
      * @param messageContext
      */
-    public void setMessageContext(MessageContext<SAMLObject> messageContext) {
-        this.messageContext = messageContext;        
+    public void setMessageContext(MessageContext messageContext) {
+        this.messageContext = messageContext;
     }
 
-    public MessageContext<SAMLObject> getMessageContext() {
-        return this.messageContext;        
+    public MessageContext getMessageContext() {
+        return this.messageContext;
     }
 
     /**
@@ -359,22 +357,22 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
      */
     public void setSubjectNameIdentifier(NameID nameID) {
         this.subjectNameIdentifer = nameID;
-        
+
     }
 
     /**
      * @param entityEndpoint
      */
     public void setPeerEntityEndpoint(Endpoint entityEndpoint) {
-        this.peerEntityEndpoint = (Endpoint) entityEndpoint;
-        
+        this.peerEntityEndpoint = entityEndpoint;
+
     }
 
     /**
      * @return
      */
     public Endpoint getPeerEntityEndpoint() {
-       
+
         return this.peerEntityEndpoint;
     }
 
@@ -384,7 +382,7 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     public void setInboundSamlMessageIssuer(String issuer) {
         this.inboundMessageIssuer = issuer;
     }
-    
+
     public String getInboundSamlMessageIssuer() {
         return this.inboundMessageIssuer;
     }

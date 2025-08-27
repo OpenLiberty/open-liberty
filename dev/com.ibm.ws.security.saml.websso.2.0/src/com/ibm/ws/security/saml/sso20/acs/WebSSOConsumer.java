@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -64,10 +64,10 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
     @SuppressWarnings("unchecked")
     @FFDCIgnore({ SamlException.class })
     public BasicMessageContext<InboundMessageType, OutboundMessageType> handleSAMLResponse(HttpServletRequest req,
-                                                                                                               HttpServletResponse res,
-                                                                                                               SsoSamlService ssoService,
-                                                                                                               String externalRelayState,
-                                                                                                               SsoRequest samlRequest) throws SamlException {
+                                                                                           HttpServletResponse res,
+                                                                                           SsoSamlService ssoService,
+                                                                                           String externalRelayState,
+                                                                                           SsoRequest samlRequest) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> messageContext = null;
         try {
             @SuppressWarnings("rawtypes")
@@ -76,21 +76,21 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
 
             // get the SAML Response
             //Response samlResponse = (Response) messageContext.getInboundMessage();
-            MessageContext<SAMLObject> mc = messageContext.getMessageContext(); //v3
+            MessageContext mc = messageContext.getMessageContext(); //v3, v4 update
             Response samlResponse = (Response) mc.getMessage(); //v3
             String inboundMsgIssuer = samlResponse.getIssuer().getValue(); //v3
             messageContext.setInboundSamlMessageIssuer(inboundMsgIssuer);
-            
+
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "samlResponse:" + samlResponse);
                 Tr.debug(tc, DumpData.dumpXMLObject(null, samlResponse, 0).toString());
             }
-            
+
             //TODO: new config attribute to get this value?
             if (messageContext.getPeerEntityMetadata() != null) {
                 String issuer = messageContext.getPeerEntityMetadata().getEntityID();
                 mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer); //v3
-            }           
+            }
             mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
             mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS);
             //validate Response
@@ -156,17 +156,17 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
     @SuppressWarnings("unchecked")
     @FFDCIgnore({ SamlException.class })
     public BasicMessageContext<InboundMessageType, OutboundMessageType> handleSAMLLogoutResponse(HttpServletRequest req,
-                                                                                                                     HttpServletResponse res,
-                                                                                                                     SsoSamlService ssoService,
-                                                                                                                     String externalRelayState,
-                                                                                                                     SsoRequest samlRequest) throws SamlException {
+                                                                                                 HttpServletResponse res,
+                                                                                                 SsoSamlService ssoService,
+                                                                                                 String externalRelayState,
+                                                                                                 SsoRequest samlRequest) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> messageContext = null;
         try {
             @SuppressWarnings("rawtypes")
             BasicMessageContextBuilder ctxBuilder = BasicMessageContextBuilder.getInstance();
             messageContext = ctxBuilder.buildSLO(req, res, ssoService, externalRelayState, samlRequest);
-            MessageContext<SAMLObject> mc = messageContext.getMessageContext();
-            
+            MessageContext mc = messageContext.getMessageContext(); //v4 update
+
             // get the SAML Response
             LogoutResponse samlLogoutResponse = (LogoutResponse) messageContext.getMessageContext().getMessage(); //v3
             if (tc.isDebugEnabled()) {
@@ -178,7 +178,7 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
             if (messageContext.getPeerEntityMetadata() != null) {
                 String issuer = messageContext.getPeerEntityMetadata().getEntityID();
                 mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer);
-            }           
+            }
             mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
             mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS);
             //validate LogoutResponse - first check for status and then look at other data
@@ -199,16 +199,16 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
 
     @SuppressWarnings("unchecked")
     public BasicMessageContext<InboundMessageType, OutboundMessageType> handleSAMLLogoutRequest(HttpServletRequest req,
-                                                                                                                    HttpServletResponse res,
-                                                                                                                    SsoSamlService ssoService,
-                                                                                                                    String externalRelayState,
-                                                                                                                    SsoRequest samlRequest) throws SamlException {
+                                                                                                HttpServletResponse res,
+                                                                                                SsoSamlService ssoService,
+                                                                                                String externalRelayState,
+                                                                                                SsoRequest samlRequest) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> messageContext = null;
         @SuppressWarnings("rawtypes")
         BasicMessageContextBuilder ctxBuilder = BasicMessageContextBuilder.getInstance();
         messageContext = ctxBuilder.buildSLO(req, res, ssoService, externalRelayState, samlRequest);
-        MessageContext<SAMLObject> mc = messageContext.getMessageContext();
-        
+        MessageContext mc = messageContext.getMessageContext(); //v4 update
+
         // get the SAML Request
         LogoutRequest samlLogoutRequest = (LogoutRequest) messageContext.getMessageContext().getMessage();
         messageContext.setInboundSamlMessageIssuer(samlLogoutRequest.getIssuer().getValue());
@@ -221,7 +221,7 @@ public class WebSSOConsumer<InboundMessageType extends SAMLObject, OutboundMessa
         if (messageContext.getPeerEntityMetadata() != null) {
             String issuer = messageContext.getPeerEntityMetadata().getEntityID();
             mc.getSubcontext(SAMLPeerEntityContext.class, true).setEntityId(issuer);
-        }           
+        }
         mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME);
         mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS);
         // Status initialization

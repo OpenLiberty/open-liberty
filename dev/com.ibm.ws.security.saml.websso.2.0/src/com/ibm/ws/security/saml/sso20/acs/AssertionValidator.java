@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.acs;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -31,7 +32,6 @@ import org.opensaml.saml.saml2.core.ProxyRestriction;
 import org.opensaml.saml.saml2.core.Subject;
 import org.opensaml.saml.saml2.core.SubjectConfirmation;
 import org.opensaml.saml.saml2.core.SubjectConfirmationData;
-
 import org.opensaml.security.trust.TrustEngine;
 import org.opensaml.xmlsec.SignatureValidationParameters;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
@@ -81,7 +81,7 @@ public class AssertionValidator {
         // passed, subject to allowable clock skew between the providers
         //c. the InResponseTo attribute in the bearer <SubjectConfirmationData> equals the ID
         //of its original <AuthnRequest> message, unless the response is unsolicited (see Section 4.1.5 ), in
-        //which case the attribute MUST NOT be present  
+        //which case the attribute MUST NOT be present
 
         //D. If any bearer <SubjectConfirmationData> includes an Address attribute, the service provider
         //MAY check the user agent's client address against it.
@@ -105,9 +105,7 @@ public class AssertionValidator {
         }
         if (this.context.getSsoConfig().isWantAssertionsSigned() &&
             !this.context.getMessageContext().getSubcontext(SAMLPeerEntityContext.class, true).isAuthenticated()) {
-            throw new SamlException("SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR",
-                            null,
-                            new Object[] {});
+            throw new SamlException("SAML20_ASSERTION_SIGNATURE_NOT_VERIFIED_ERR", null, new Object[] {});
         }
     }
 
@@ -122,18 +120,16 @@ public class AssertionValidator {
                 signatureRule.initialize();
             } catch (ComponentInitializationException e) {
                 throw new SamlException("SAML20_ASSERTION_SIGNATURE_FAIL_ERR",
-                                        //The SAML Assertion Signature is not trusted or invalid with exception [{0}].
-                                        e,
-                                        new Object[] { e
-                                        });
+                                //The SAML Assertion Signature is not trusted or invalid with exception [{0}].
+                                e, new Object[] { e
+                                });
             }
             signatureRule.invoke(this.context.getMessageContext()); //we may not need this?
             signatureRule.evaluateAssertion(this.context, this.assertion);
         } catch (MessageHandlerException e) {
             throw new SamlException("SAML20_ASSERTION_SIGNATURE_FAIL_ERR",
                             //The SAML Assertion Signature is not trusted or invalid with exception [{0}].
-                            e,
-                            new Object[] { e
+                            e, new Object[] { e
                             });
         }
     }
@@ -167,8 +163,7 @@ public class AssertionValidator {
                     throw new SamlException("SAML20_SUBJECT_NOTBEFORE_ERR",
                                     // "NotBefore attribute is not allowed inside SubjectConfirmationData element.");
                                     //"SAML20_SUBJECT_NOTBEFORE_ERR=CWWKS5051E: NotBefore attribute is not allowed inside SubjectConfirmationData element."
-                                    null,
-                                    new Object[] {});
+                                    null, new Object[] {});
                 }
 
                 if (data.getNotOnOrAfter() == null) {
@@ -177,15 +172,14 @@ public class AssertionValidator {
                     }
                     throw new SamlException("SAML20_ELEMENT_ATTR_ERR",
                                     //"SAML20_SUBJECT_NOTON_ERR=CWWKS5052E: NotOnOrAfter attribute inside SubjectConfirmationData is required."
-                                    null,
-                                    new Object[] { "NotOnOrAfter", "SubjectConfirmationData" });
+                                    null, new Object[] { "NotOnOrAfter", "SubjectConfirmationData" });
                 }
 
-                if (data.getNotOnOrAfter().plus(clockSkewAllowed).isBeforeNow()) {
+                //if (data.getNotOnOrAfter().plus(clockSkewAllowed).isBeforeNow()) {
+                if (data.getNotOnOrAfter().plusMillis(clockSkewAllowed).isBefore(Instant.now())) { //v4 update
                     throw new SamlException("SAML20_SUBJECT_NOTONAFTER_ERR",
                                     //"SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: NotOnOrAfter  [{0}] in SubjectConfirmationData passed current time [{1}]"
-                                    null,
-                                    new Object[] { data.getNotOnOrAfter(), new Date(), (clockSkewAllowed / 1000) });
+                                    null, new Object[] { data.getNotOnOrAfter(), new Date(), (clockSkewAllowed / 1000) });
                 }
 
                 // Validate in response to
@@ -202,15 +196,13 @@ public class AssertionValidator {
                 if (data.getRecipient() == null) {
                     throw new SamlException("SAML20_ELEMENT_ATTR_ERR",
                                     // "SAML20_SUBJECT_NO_REC_ERR=CWWKS5054E: The Recipient attribute inside SubjectConfirmationData is required"
-                                    null,
-                                    new Object[] { "Recipient", "SubjectConfirmationData" });
+                                    null, new Object[] { "Recipient", "SubjectConfirmationData" });
                     // } else if (!context.getLocalEntityId().equals(data.getRecipient())) { //Need add it to M
                 } else if (!acsEndpointUrl.equals(data.getRecipient())) {
 
                     throw new SamlException("SAML20_SUBJECT_NO_REC_MATCH_ERR",
                                     // SAML20_SUBJECT_NO_REC_MATCH_ERR=CWWKS5055E: The Recipient [{0}] does not match this AssertionConsumerService [{1}]
-                                    null,
-                                    new Object[] { data.getRecipient(), acsEndpointUrl });
+                                    null, new Object[] { data.getRecipient(), acsEndpointUrl });
                 }
 
                 this.context.setSubjectNameIdentifier(subject.getNameID());
@@ -224,8 +216,7 @@ public class AssertionValidator {
         throw new SamlException("SAML20_NO_BEARER_FOUND",
                         //"The subject confirmation method urn:oasis:names:tc:SAML:2.0:cm:bearer is required.");
                         //SAML20_NO_BEARER_FOUND=CWWKSS5065E: Cannot find a valid Assertion with proper SubjectConfirmationData.
-                        null,
-                        new Object[] { method });
+                        null, new Object[] { method });
     }
 
     protected void verifyConditions() throws SamlException {
@@ -234,25 +225,22 @@ public class AssertionValidator {
         if (conditions == null || conditions.getAudienceRestrictions().size() == 0) {
             throw new SamlException("SAML20_ELEMENT_ERR",
                             //SAML20_SUBJECT_NO_AUD_ERR=CWWKS5056E: The Assertion must contain AudienceRestriction element.
-                            null,
-                            new Object[] { "AudienceRestriction" });
+                            null, new Object[] { "AudienceRestriction" });
         }
 
         if (conditions.getNotBefore() != null) {
-            if (conditions.getNotBefore().minus(clockSkewAllowed).isAfterNow()) {
+            if (conditions.getNotBefore().minusMillis(clockSkewAllowed).isAfter(Instant.now())) { //v4 update
                 throw new SamlException("SAML20_SUBJECT_NOBEFORE_ERR",
                                 // "SAML20_SUBJECT_NOBEFORE_ERR=CWWKS5057E: The Assertion must not be accepted before [{0}] condition. The current time is [{1}].
-                                null,
-                                new Object[] { conditions.getNotBefore(), new Date(), (clockSkewAllowed / 1000) });
+                                null, new Object[] { conditions.getNotBefore(), new Date(), (clockSkewAllowed / 1000) });
             }
         }
 
         if (conditions.getNotOnOrAfter() != null) {
-            if (conditions.getNotOnOrAfter().plus(clockSkewAllowed).isBeforeNow()) {
+            if (conditions.getNotOnOrAfter().plusMillis(clockSkewAllowed).isBefore(Instant.now())) { //v4 update
                 throw new SamlException("SAML20_SUBJECT_NOAFTER_ERR",
                                 //SAML20_SUBJECT_NOAFTER_ERR=CWWKS5058E: The Assertion must not be accepted after [{0}] condition. The current time is [{1}].
-                                null,
-                                new Object[] { conditions.getNotOnOrAfter(), new Date(), (clockSkewAllowed / 1000) });
+                                null, new Object[] { conditions.getNotOnOrAfter(), new Date(), (clockSkewAllowed / 1000) });
             }
         }
 
@@ -272,8 +260,7 @@ public class AssertionValidator {
                 //other not processed condition
                 throw new SamlException("SAML20_CONDITION_UNKNOWN_ERR",
                                 //SAML20_CONDITION_UNKNOWN_ERR=CWWKS5059E: The Conditions element must not contain unknown attribute [{0}].
-                                null,
-                                new Object[] { conditionQName });
+                                null, new Object[] { conditionQName });
             }
         }
     }
@@ -294,12 +281,10 @@ public class AssertionValidator {
                 }
                 if (audienceUrl.equals(aud.getAudienceURI())) {
                     return;
-                }
-                else {
+                } else {
                     lastException = new SamlException("SAML20_AUDIENCE_UNKNOWN_ERR",
                                     //SAML20_AUDIENCE_UNKNOWN_ERR=CWWKS5060E: The Conditions contain an invalid Audience attribute [{0}]. The expected Audience attribute is [{1}].
-                                    null,
-                                    new Object[] { aud.getAudienceURI(), audienceUrl });
+                                    null, new Object[] { aud.getAudienceURI(), audienceUrl });
                 }
             }
 
@@ -312,8 +297,7 @@ public class AssertionValidator {
         }
         throw new SamlException("SAML20_ELEMENT_ATTR_ERR",
                         //SAML20_AUDIENCE_NO_ERR=CWWKS5061E: The Conditions element must contain Audience attribute.
-                        null,
-                        new Object[] { "Audience", "Conditions" });
+                        null, new Object[] { "Audience", "Conditions" });
     }
 
     protected void verifyAuthnStatement() throws SamlException {
@@ -321,12 +305,11 @@ public class AssertionValidator {
         for (AuthnStatement statement : authns) {
 
             if (statement.getSessionNotOnOrAfter() != null &&
-                statement.getSessionNotOnOrAfter().plus(clockSkewAllowed).isBeforeNow()) {
+                statement.getSessionNotOnOrAfter().plusMillis(clockSkewAllowed).isBefore(Instant.now())) { //v4 update
                 throw new SamlException("SAML20_SESSION_ERR",
 
                                 //SAML20_SESSION_ERR=CWWKS5062E: The Session in AuthnStatement element is invalid after [{0}]. The current time is [{1}]
-                                null,
-                                new Object[] { statement.getSessionNotOnOrAfter(), new Date(), (clockSkewAllowed / 1000) });
+                                null, new Object[] { statement.getSessionNotOnOrAfter(), new Date(), (clockSkewAllowed / 1000) });
             }
 
             //TODO Verify AuthnContext for solicited sso if request contains AuthnContextClassReference

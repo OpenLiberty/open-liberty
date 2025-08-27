@@ -32,15 +32,18 @@ Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, \
     net.shibboleth.utilities.java.support.component.*, \
     net.shibboleth.utilities.java.support.resolver.*, \
     net.shibboleth.utilities.java.support.xml.*, \
+    org.opensaml.core.config,\
+    org.opensaml.core.xml.*,\
+    org.opensaml.core.xml.config.*,\
     org.opensaml.saml.common.binding.security.impl.*, \
     org.opensaml.saml.metadata.resolver.impl.*, \
     org.opensaml.saml.saml2.binding.decoding.impl.*, \
     org.opensaml.saml.saml2.core.impl.*, \
     org.opensaml.saml.saml2.metadata, \
-    org.opensaml.saml.common;version="[3.4.0,4.0.0)", \
-    org.opensaml.saml.common.*;version="[3.4.0,4.0.0)", \
-    org.opensaml.saml.config.impl;version="[3.4.0,4.0.0)", \
-    org.opensaml.xmlsec.config.impl;version="[3.4.0,4.0.0)", \
+    org.opensaml.saml.common, \
+    org.opensaml.saml.common.*, \
+    org.opensaml.saml.config.impl, \
+    org.opensaml.xmlsec.config.impl, \
     *
         
 # nlsmessages locates under com.ibm.ws.security.saml.sso20.internal.resources        

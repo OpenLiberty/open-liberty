@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020,2023 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -116,50 +116,73 @@ Import-Package: \
  !sun.misc,\
  !javax.inject,\
  javax.annotation,\
- javax.xml.namespace,\
- org.apache.commons.*;resolution:=optional,\
+ javax.crypto,\
+ javax.servlet.http,\
+ javax.xml.namespace;version=!,\
+ javax.xml.transform;version=!,\
+ javax.xml.parsers;version=!,\
+ javax.xml.validation;version=!,\
+ javax.xml.transform.stream;version=!,\
+ javax.xml.transform.dom;version=!,\
  org.apache.http,\
- com.codahale.metrics.*; version="[4.0.0,4.1.5)",\
- com.ibm.websphere.ras, \
- com.ibm.websphere.ras.annotation, \
- com.ibm.ws.ffdc, \
- org.joda.time, \
- org.joda.time.chrono,\
- org.joda.time.format,\
+ com.codahale.metrics.*; version="[4.0.0,4.2.25)",\
+ com.ibm.websphere.ras,\
+ com.ibm.websphere.ras.annotation,\
+ com.ibm.ws.ffdc,\
  !com.beust.jcommander, \
  !com.beust.jcommander.converters,\
+ com.google.common.base,\
  !com.google.appengine.api,\
  !com.google.apphosting.api,\
  !com.google.common.util.concurrent.internal,\
  !com.google.errorprone.annotations,\
  !com.google.errorprone.annotations.concurrent,\
+ net.shibboleth.utilities.java.support.logic,\
+ net.shibboleth.utilities.java.support.component,\
+ net.shibboleth.utilities.java.support.*,\
+ org.apache.commons.codec,\
+ org.apache.commons.codec.*,\
+ org.apache.xml.security,\
+ org.apache.xml.security.*,\
  !org.apache.http.client.cache,\
  !org.apache.http.impl.client.cache,\
  !org.apache.velocity.*,\
- !org.bouncycastle.*,\
  !org.bouncycastle.asn1,\
  !org.bouncycastle.asn1.x500,\
  !org.bouncycastle.asn1.x509,\
+ org.bouncycastle.crypto,\
  !org.checkerframework.checker.nullness.compatqual,\
- org.opensaml.storage;resolution:=optional, \
- org.opensaml.messaging.*;resolution:=optional, \
+ org.opensaml.storage;resolution:=optional,\
+ org.opensaml.messaging.*;resolution:=optional,\
+ org.slf4j.*,; version=!,\
+ org.w3c.dom;version=!,\
+ org.w3c.dom.ls;version=!,\
+ org.xml.sax;version=!,\
  *
+ 
+DynamicImport-Package: \
+ com.google.common.base,\
+ com.google.common.collect,\
+ org.w3c.dom,\
+ org.w3c.dom.ls,\
+ org.xml.sax
+
 
 Include-Resource: \
- @${repo;org.opensaml:opensaml-core;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
- @${repo;org.opensaml:opensaml-xmlsec-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xmlsec-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-security-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-saml-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-profile-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-soap-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-soap-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-saml-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-security-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xacml-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xacml-saml-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xacml-api;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xacml-saml-impl;3.4.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;io.dropwizard.metrics:metrics-core;4.1.5}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-core;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
+ @${repo;org.opensaml:opensaml-xmlsec-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xmlsec-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-security-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-saml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-profile-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-soap-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-soap-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-saml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-security-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xacml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xacml-saml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xacml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;org.opensaml:opensaml-xacml-saml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.dropwizard.metrics:metrics-core;4.2.25}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
  META-INF=resources/META-INF
 

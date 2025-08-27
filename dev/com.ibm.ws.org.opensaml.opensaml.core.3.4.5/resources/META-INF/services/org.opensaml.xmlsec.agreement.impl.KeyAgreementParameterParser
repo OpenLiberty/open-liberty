@@ -1,0 +1,4 @@
+org.opensaml.xmlsec.agreement.impl.DigestMethod$Parser
+org.opensaml.xmlsec.agreement.impl.KANonce$Parser
+org.opensaml.xmlsec.derivation.impl.ConcatKDF$Parser
+org.opensaml.xmlsec.derivation.impl.PBKDF2$Parser
