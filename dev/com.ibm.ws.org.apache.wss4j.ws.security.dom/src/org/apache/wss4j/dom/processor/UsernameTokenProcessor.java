@@ -132,8 +132,6 @@ public class UsernameTokenProcessor implements Processor {
         boolean allowNamespaceQualifiedPasswordTypes = data.isAllowNamespaceQualifiedPasswordTypes();
         int utTTL = data.getUtTTL();
         int futureTimeToLive = data.getUtFutureTTL();
-        LOG.debug("handleUsernameToken, utTTL = " + utTTL); //Liberty Change
-        LOG.debug("handleUsernameToken, futureTimeToLive = " + futureTimeToLive); //Liberty Change
 
         //
         // Parse and validate the UsernameToken element

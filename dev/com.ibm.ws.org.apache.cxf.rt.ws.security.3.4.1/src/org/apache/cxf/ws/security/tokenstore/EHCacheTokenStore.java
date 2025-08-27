@@ -31,6 +31,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier; // Liberty Change
 
@@ -44,6 +45,7 @@ import org.ehcache.CacheManager;
 import org.ehcache.Status;
 import org.ehcache.config.builders.CacheConfigurationBuilder;
 import org.ehcache.config.builders.CacheManagerBuilder;
+import org.ehcache.core.util.ClassLoading;
 
 // Liberty Change Start: Imports
 import org.ehcache.config.builders.ResourcePoolsBuilder;
@@ -51,6 +53,7 @@ import org.ehcache.config.units.EntryUnit;
 import org.ehcache.expiry.ExpiryPolicy;
 // Liberty Change End
 import org.ehcache.xml.XmlConfiguration;
+
 
 /**
  * An in-memory EHCache implementation of the TokenStore interface. The default TTL is 60 minutes
@@ -74,13 +77,18 @@ public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleLis
 
         this.key = key;
         try {
-            XmlConfiguration xmlConfig = new XmlConfiguration(configFileURL); // Liberty Change
 
             // Exclude the endpoint info bit added in TokenStoreUtils when getting the template name
             String template = key;
             if (template.contains("-")) {
                 template = key.substring(0, key.lastIndexOf('-'));
             }
+
+            // Set class loader cache of template object to SecurityToken classloader
+            Map<String, ClassLoader> cacheClassLoaders = new HashMap<>();
+            cacheClassLoaders.put(template, SecurityToken.class.getClassLoader());
+            XmlConfiguration xmlConfig = new XmlConfiguration(configFileURL, ClassLoading.getDefaultClassLoader(),
+                    cacheClassLoaders);
 
             CacheConfigurationBuilder<String, SecurityToken> configurationBuilder =
                     xmlConfig.newCacheConfigurationBuilderFromTemplate(template,
@@ -95,8 +103,8 @@ public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleLis
             throw new TokenStoreException(e);
         }
     }
-    
-	
+
+    	
     // Liberty Change Start
     /**
      * @param cachekey
@@ -188,7 +196,6 @@ public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleLis
         }
     }
 
-    @SuppressWarnings("unchecked") // Liberty Change
     public Collection<String> getTokenIdentifiers() {
         if (cache == null) {
             return null;

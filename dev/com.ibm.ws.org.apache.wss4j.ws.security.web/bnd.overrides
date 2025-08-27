@@ -22,5 +22,6 @@ Export-Package: \
  
 Import-Package: \
   javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)",\
- *
+  !org.jasypt.iv.*,\
+  *
  

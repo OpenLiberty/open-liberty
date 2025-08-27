@@ -58,6 +58,7 @@ import com.ibm.ws.wssecurity.signature.SignatureAlgorithms;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 import io.openliberty.wssecurity.WSSecurityFeatureHelper;
+import org.apache.cxf.ws.security.wss4j.WSS4JOutInterceptor;
 
 
 public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor {
@@ -212,6 +213,9 @@ public class WSSecurityLibertyPluginInterceptor extends AbstractSoapInterceptor 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "provider side message = ", message);
             }
+
+            
+
             // Handle UserNameTokenValidator
             Object validator = message.getContextualProperty(SecurityConstants.USERNAME_TOKEN_VALIDATOR);
             if (validator == null) {

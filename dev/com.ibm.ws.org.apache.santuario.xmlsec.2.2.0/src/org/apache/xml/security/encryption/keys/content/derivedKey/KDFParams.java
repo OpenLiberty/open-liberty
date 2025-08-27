@@ -16,14 +16,11 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+package org.apache.xml.security.encryption.keys.content.derivedKey;
 
-package org.apache.cxf.ws.security.tokenstore;
-
-// Liberty Change
-public class TokenStoreException extends Exception {
-
-    public TokenStoreException(Throwable cause) {
-        super(cause);
-    }
+/**
+ * Marker interface for all KDFParams implementations.
+ */
+public interface KDFParams {
 
 }

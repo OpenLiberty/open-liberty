@@ -35,4 +35,4 @@ task extractInjectedClasses(type: Copy) {
    into compileJava.destinationDir
 }
 
-compileJava.dependsOn extractInjectedClasses
+// compileJava.dependsOn extractInjectedClasses

@@ -74,6 +74,11 @@ public final class AttachmentUtil {
     public static final String ATTACHMENT_XOP_FOLLOW_URLS_PROPERTY = "org.apache.cxf.attachment.xop.follow.urls";
     // Liberty Change - End
 
+    // The default values for {@link AttachmentDataSource} content type in case when
+    // "Content-Type" header is not present.
+    public static final String ATTACHMENT_CONTENT_TYPE = "org.apache.cxf.attachment.content-type"; 
+
+
     public static final String BODY_ATTACHMENT_ID = "root.message@cxf.apache.org";
 
     private static volatile int counter;
@@ -454,14 +459,24 @@ public final class AttachmentUtil {
 
         AttachmentImpl att = new AttachmentImpl(id);
 
-        final String ct = getHeader(headers, "Content-Type");
+        String ct = getHeader(headers, "Content-Type");
+
+        // Liberty Change Start: Backport default value only of ATTACHMENT_CONTENT_TYPE
+        // from CXF 4.1
+        // TODO: Hardcoded a default for the new CXF 4.1 property, need to revisit
+        if (StringUtils.isEmpty(ct)) {
+            ct = "application/octet-stream";
+        }
+        // Liberty Change End
+
+
         String cd = getHeader(headers, "Content-Disposition");
         String fileName = getContentDispositionFileName(cd);
 
-	if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
-	   LOG.finest("createAttachment: Content-ID: " + id + ", Content-Type: " + 
-		       ct + ", Content-Disposition: " + cd + ", filename: " + fileName);
-	} //Liberty Change End
+        if (LOG.isLoggable(Level.FINEST)) { //Liberty Change Start
+            LOG.finest("createAttachment: Content-ID: " + id + ", Content-Type: " + 
+                    ct + ", Content-Disposition: " + cd + ", filename: " + fileName);
+        } //Liberty Change End
 
         String encoding = null;
 
