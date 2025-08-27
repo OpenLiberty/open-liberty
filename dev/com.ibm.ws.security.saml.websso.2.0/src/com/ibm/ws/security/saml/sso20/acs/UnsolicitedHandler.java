@@ -4,14 +4,13 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.acs;
-
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -24,7 +23,6 @@ import org.opensaml.saml.saml2.core.Assertion;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-
 import com.ibm.ws.security.common.structures.Cache;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoRequest;
@@ -33,10 +31,9 @@ import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.internal.utils.HttpRequestInfo;
+import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.RequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
-
-import com.ibm.ws.security.saml.sso20.internal.utils.InitialRequestUtil;
 import com.ibm.ws.security.saml.sso20.internal.utils.UnsolicitedResponseCache;
 import com.ibm.ws.security.saml.sso20.internal.utils.UserData;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
@@ -50,8 +47,8 @@ public class UnsolicitedHandler {
     SsoRequest samlRequest;
     Map<String, Object> parameters;
     SsoSamlService ssoService;
-    
-    InitialRequestUtil irUtil= new InitialRequestUtil();
+
+    InitialRequestUtil irUtil = new InitialRequestUtil();
 
     public UnsolicitedHandler(HttpServletRequest request,
                               HttpServletResponse response,
@@ -126,10 +123,10 @@ public class UnsolicitedHandler {
                 throw new SamlException(e); // let the SamlException handle the Exception
             }
             BasicMessageContext<?, ?> msgCtx = WebSSOConsumer.getInstance().handleSAMLResponse(request,
-                                                                                                  response,
-                                                                                                  ssoService,
-                                                                                                  null, // do not check inResponse in idp_init (SP Unsolicited)
-                                                                                                  samlRequest);
+                                                                                               response,
+                                                                                               ssoService,
+                                                                                               null, // do not check inResponse in idp_init (SP Unsolicited)
+                                                                                               samlRequest);
             //Prevent replay
             UnsolicitedResponseCache resCache = ssoService.getUnsolicitedResponseCache(samlRequest.getProviderName());
             Assertion assertion = msgCtx.getValidatedAssertion();
@@ -141,7 +138,8 @@ public class UnsolicitedHandler {
                                 //SAML20_RESPONSE_REPLAY=CWWKS5082E: The SAML assertion with ID [{0}] has already been received, and cannot be accepted.,
                                 null, new Object[] { assertion.getID() });
             } else {
-                long exp = assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter().getMillis();
+                //long exp = assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter().getMillis();
+                long exp = assertion.getSubject().getSubjectConfirmations().get(0).getSubjectConfirmationData().getNotOnOrAfter().toEpochMilli(); //v4 update
                 resCache.put(assertion.getID(), Long.valueOf(exp));
             }
 

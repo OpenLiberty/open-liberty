@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2023 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.acs;
 
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.List;
 
@@ -520,7 +521,7 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
      */
     protected boolean validateIssueInstant() throws SamlException {
 
-        DateTime jodaTime = null;
+        Instant jodaTime = null;
         if (samlResponse != null) {
             jodaTime = samlResponse.getIssueInstant();
         } else if (samlLogoutResponse != null) {
@@ -530,8 +531,8 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
         }
 
         if (jodaTime != null) {
-            if (jodaTime.plus(clockSkewAllowed).isAfterNow() &&
-                jodaTime.minus(clockSkewAllowed).isBeforeNow()) {
+            if (jodaTime.plusMillis(clockSkewAllowed).isAfter(Instant.now()) &&
+                jodaTime.minusMillis(clockSkewAllowed).isBefore(Instant.now())) { //v4 update
                 return true;
             }
         }
@@ -566,26 +567,25 @@ public class ResponseValidator<InboundMessageType extends SAMLObject, OutboundMe
             TrustEngine<Signature> trustEngine = MsgCtxUtil.getTrustedEngine(context);
             SignatureValidationParameters sigValParams = new SignatureValidationParameters();
             sigValParams.setSignatureTrustEngine((SignatureTrustEngine) trustEngine);
-            this.context.getMessageContext().getSubcontext(SecurityParametersContext.class, true).setSignatureValidationParameters(sigValParams); 
+            this.context.getMessageContext().getSubcontext(SecurityParametersContext.class, true).setSignatureValidationParameters(sigValParams);
             SAMLMessageXMLSignatureSecurityPolicyRule signatureRule = new SAMLMessageXMLSignatureSecurityPolicyRule(); //v3
             try {
                 signatureRule.initialize();
             } catch (ComponentInitializationException e) {
                 throw new SamlException("SAML20_SIGNATURE_NOT_VERIFIED_ERR",
-                                        //The SAML Assertion Signature is not trusted or invalid with exception [{0}].
-                                        e,
-                                        new Object[] { e
-                                        });
+                                //The SAML Assertion Signature is not trusted or invalid with exception [{0}].
+                                e, new Object[] { e
+                                });
             }
-            
+
             signatureRule.invoke(this.context.getMessageContext()); //TODO v3
             signatureRule.evaluateProtocol(this.context);
-            if (!signatureRule.getPeerContext().isAuthenticated()) {   //v3
+            if (!signatureRule.getPeerContext().isAuthenticated()) { //v3
                 throw new SamlException("SAML20_SIGNATURE_NOT_VERIFIED_ERR",
                                 //SAML20_SIGNARURE_NO_VERIFIED_ERR=CWWKS5046E: The SAML response message Signature is not verified.
                                 null, new Object[] {});
             }
-        } catch (MessageHandlerException e) { 
+        } catch (MessageHandlerException e) {
             throw new SamlException(e); // Let the SamlException handle the opensaml exception
             //"SAML Response Signature is not trusted or invalid. The signature validation fails with exception: " + e.getCause());
         }
