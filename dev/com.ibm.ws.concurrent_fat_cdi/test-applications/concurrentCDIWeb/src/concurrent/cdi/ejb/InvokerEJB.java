@@ -12,6 +12,7 @@
  *******************************************************************************/
 package concurrent.cdi.ejb;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.Callable;
@@ -43,16 +44,31 @@ public class InvokerEJB implements Invoker {
 
         // Requires the application's classloader (to access application scoped classes)
         Runnable task = () -> {
-            System.out.println("KJA1017 Thread classloader is: " + Thread.currentThread().getContextClassLoader());
-            System.out.println("KJA1017 Invoker classloader is: " + Invoker.class.getClassLoader());
+            try {
+                assertNotNull("Expected context classloader to be non-null",
+                              Thread.currentThread().getContextClassLoader());
+                assertEquals("Expected context classloader and Invoker classloader to be the same",
+                             Invoker.class.getClassLoader(),
+                             Thread.currentThread().getContextClassLoader());
+            } catch (AssertionError e) {
+                future.completeExceptionally(e);
+            }
+
             try {
                 Class.forName("java.lang.Integer"); //Exists as part of JVM
                 Class.forName("concurrent.cdi.ejb.Invoker"); //Exists inside EJB Module
-                Class.forName("concurrent.cdi.ext.ConcurrentCDIExtension"); // Exists outside EJB Module
-                future.complete("SUCCESS");
             } catch (ClassNotFoundException e) {
                 future.completeExceptionally(e);
             }
+
+            try {
+                Class.forName("concurrent.cdi.ext.ConcurrentCDIExtension"); // Exists outside EJB Module
+                future.completeExceptionally(new AssertionError("Should not have been able to load a class outside the EJB Module"));
+            } catch (ClassNotFoundException e) {
+                // expected
+            }
+
+            future.complete("SUCCESS");
         };
 
         Thread thread = defaultManagedThreadFactory.newThread(task);

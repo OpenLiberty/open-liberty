@@ -12,6 +12,7 @@
  *******************************************************************************/
 package concurrent.cdi.web;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.concurrent.CompletableFuture;
@@ -34,8 +35,16 @@ public class AppBean {
 
         // Requires the application's classloader (to access application scoped classes)
         Runnable task = () -> {
-            System.out.println("KJA1017 Thread classloader is: " + Thread.currentThread().getContextClassLoader());
-            System.out.println("KJA1017 MyAsync classloader is: " + MyAsync.class.getClassLoader());
+            try {
+                assertNotNull("Expected context classloader to be non-null",
+                              Thread.currentThread().getContextClassLoader());
+
+                assertEquals("Expected context classloader and MyAsync classloader to be the same",
+                             MyAsync.class.getClassLoader(),
+                             Thread.currentThread().getContextClassLoader());
+            } catch (AssertionError e) {
+                future.completeExceptionally(e);
+            }
 
             try {
                 Class.forName("java.lang.Integer"); //Exists as part of JVM

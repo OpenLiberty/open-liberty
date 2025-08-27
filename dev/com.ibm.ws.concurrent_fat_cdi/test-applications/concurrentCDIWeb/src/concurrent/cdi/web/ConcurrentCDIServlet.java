@@ -709,6 +709,41 @@ public class ConcurrentCDIServlet extends HttpServlet {
         assertEquals("value1", result);
     }
 
+    public void testInjectManagedThreadFactoryQualifiedClassloader() throws Exception {
+        assertNotNull(threadFactoryWithAppContext);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+        final ClassLoader expected = MyAsync.class.getClassLoader();
+
+        Runnable task = () -> {
+            try {
+                assertNotNull("Expected thread context classloader to be non-null",
+                              Thread.currentThread().getContextClassLoader());
+
+                assertEquals("Expected thread context classloader and MyAsync classloader to be the same",
+                             expected,
+                             Thread.currentThread().getContextClassLoader());
+            } catch (AssertionError e) {
+                future.completeExceptionally(e);
+            }
+
+            try {
+                Class.forName("java.lang.Integer"); //Exists as part of JVM
+                Class.forName("concurrent.cdi.web.MyAsync"); //Exists inside Web Module
+                Class.forName("concurrent.cdi.ext.ConcurrentCDIExtension"); // Exists outside Web Module
+                future.complete("SUCCESS");
+            } catch (ClassNotFoundException e) {
+                future.completeExceptionally(e);
+            }
+        };
+
+        Thread thread = threadFactoryWithAppContext.newThread(task);
+        thread.start();
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
     /**
      * Inject an instance of the default ManagedThreadFactory resource and use it.
      * Ensure that the default ManagedThreadFactory is configured with the application's classloader.
@@ -721,8 +756,16 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         // Requires the application's classloader (to access application scoped classes)
         Runnable task = () -> {
-            System.out.println("KJA1017 Thread classloader is: " + Thread.currentThread().getContextClassLoader());
-            System.out.println("KJA1017 MyAsync classloader is: " + MyAsync.class.getClassLoader());
+            try {
+                assertNotNull("Expected context classloader to be non-null",
+                              Thread.currentThread().getContextClassLoader());
+
+                assertEquals("Expected context classloader and MyAsync classloader to be the same",
+                             MyAsync.class.getClassLoader(),
+                             Thread.currentThread().getContextClassLoader());
+            } catch (AssertionError e) {
+                future.completeExceptionally(e);
+            }
 
             try {
                 Class.forName("java.lang.Integer"); //Exists as part of JVM
@@ -775,8 +818,16 @@ public class ConcurrentCDIServlet extends HttpServlet {
 
         // Requires the application's classloader (to access application scoped classes)
         Runnable task = () -> {
-            System.out.println("KJA1017 Thread classloader is: " + Thread.currentThread().getContextClassLoader());
-            System.out.println("KJA1017 MyAsync classloader is: " + MyAsync.class.getClassLoader());
+            try {
+                assertNotNull("Expected context classloader to be non-null",
+                              Thread.currentThread().getContextClassLoader());
+
+                assertEquals("Expected context classloader and MyAsync classloader to be the same",
+                             MyAsync.class.getClassLoader(),
+                             Thread.currentThread().getContextClassLoader());
+            } catch (AssertionError e) {
+                future.completeExceptionally(e);
+            }
 
             try {
                 Class.forName("java.lang.Integer"); //Exists as part of JVM

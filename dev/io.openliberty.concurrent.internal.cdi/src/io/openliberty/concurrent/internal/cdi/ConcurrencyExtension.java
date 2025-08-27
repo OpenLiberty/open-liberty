@@ -15,8 +15,10 @@ package io.openliberty.concurrent.internal.cdi;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Member;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import org.osgi.framework.BundleContext;
@@ -33,8 +35,11 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.resource.ResourceFactory;
+import com.ibm.wsspi.resource.ResourceInfo;
 
 import io.openliberty.concurrent.internal.cdi.interceptor.AsyncInterceptor;
+import io.openliberty.concurrent.internal.cdi.metadata.MTFDeferredMetaDataFactory;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactories;
 import io.openliberty.concurrent.internal.qualified.QualifiedResourceFactory;
 import jakarta.enterprise.concurrent.Asynchronous;
@@ -46,16 +51,16 @@ import jakarta.enterprise.concurrent.ManagedScheduledExecutorDefinition;
 import jakarta.enterprise.concurrent.ManagedScheduledExecutorService;
 import jakarta.enterprise.concurrent.ManagedThreadFactory;
 import jakarta.enterprise.concurrent.ManagedThreadFactoryDefinition;
+import jakarta.enterprise.context.Dependent;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Default;
-import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
-import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.AnnotatedType;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.BeforeBeanDiscovery;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.enterprise.inject.spi.Extension;
+import jakarta.enterprise.inject.spi.InjectionPoint;
 
 /**
  * CDI Extension for Jakarta Concurrency 3.1+ in Jakarta EE 11+, which corresponds to CDI 4.1+
@@ -71,13 +76,6 @@ public class ConcurrencyExtension implements Extension {
      * OSGi service for the Concurrency extension;
      */
     private ConcurrencyExtensionMetadata extSvc;
-
-    /**
-     * Indicates if we were able to create a default ManagedThreadFactory bean.
-     * If so, an instance of the bean is obtained during afterDeploymentValidation
-     * to force context capture to occur.
-     */
-    private boolean producedDefaultMTF;
 
     /**
      * Register interceptors before bean discovery.
@@ -124,10 +122,63 @@ public class ConcurrencyExtension implements Extension {
         if (!cdi.select(ManagedScheduledExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
             event.addBean(new ManagedScheduledExecutorBean(extSvc.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
 
-        if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
-            event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
-            producedDefaultMTF = true;
-        }
+        // Default managed thread factory is dependent scoped.
+        // beans are created based on injection point to determine Classloader at creation
+        //
+        final ResourceFactory MTFfactory = extSvc.defaultManagedThreadFactoryFactory;
+        event.addBean() //
+                        .types(ManagedThreadFactory.class) //
+                        .beanClass(ManagedThreadFactory.class) //
+                        .scope(Dependent.class) //
+                        .qualifiers(DEFAULT_QUALIFIER_ARRAY) //
+                        .id("ManagedThreadFactory:Default:" + MTFfactory) //unique identifier for PassivationCapable
+                        .alternative(false) //
+                        .createWith(cc -> {
+                            final String m = "lambda$createWith$BeanConfigurator";
+
+                            // Get declaring classloader - based on injection point
+                            InjectionPoint ip = CDI.current().select(InjectionPoint.class).get();
+                            Member member = ip.getMember();
+                            ClassLoader declaringClassLoader = null;
+                            if (Objects.nonNull(member)) { // When injection point is on a field or method
+                                declaringClassLoader = member.getDeclaringClass().getClassLoader();
+                            } else { // Programmatic lookup
+                                // TODO how can we determine classloader during programmatic lookup?
+                                // There seems to be a disconnect between the Concurrency and CDI specs in this space.
+                                // Concurrency says the default MTF
+                            }
+
+                            // Get declaring metadata
+                            ApplicationMetaData amd = cmd.getModuleMetaData().getApplicationMetaData();
+                            MTFDeferredMetaDataFactory metadataFactory = (MTFDeferredMetaDataFactory) extSvc.mtfMetadataFactory;
+                            MetaData declaringMetadata = metadataFactory.createComponentMetadata(amd, declaringClassLoader);
+
+                            final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+                            if (trace && tc.isEntryEnabled())
+                                Tr.entry(this, tc, m, cc, MTFfactory);
+
+                            ManagedThreadFactory instance;
+                            try {
+                                ResourceInfo info = new MTFBeanResourceInfoImpl(declaringClassLoader, declaringMetadata);
+                                instance = (ManagedThreadFactory) MTFfactory.createResource(info);
+                            } catch (RuntimeException x) {
+                                if (trace && tc.isEntryEnabled())
+                                    Tr.exit(this, tc, m, x);
+                                throw x;
+                            } catch (Exception x) {
+                                if (trace && tc.isEntryEnabled())
+                                    Tr.exit(this, tc, m, x);
+                                throw new RuntimeException(x);
+                            }
+
+                            if (trace && tc.isEntryEnabled())
+                                Tr.exit(this, tc, m, instance);
+
+                            return instance;
+                        });
+        // No destoryWith method necessary
+        // in-flight threads from this factory are expected to outlive the ManagedThreadFactory itself.
 
         // Look for beans from the module and the application.
         // TODO EJBs and component level?
@@ -223,26 +274,6 @@ public class ConcurrencyExtension implements Extension {
                          toArtifactName(factory.getDeclaringMetadata()),
                          toStackTrace(x));
             }
-        }
-    }
-
-    /**
-     * Force context to be initialized for the default ManagedThreadFactory instance
-     * if we were able to produce one.
-     *
-     * @param event
-     * @param beanManager
-     */
-    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event,
-                                          BeanManager beanManager) {
-        if (producedDefaultMTF) {
-            CDI<Object> cdi = CDI.current();
-            Instance<ManagedThreadFactory> instance = //
-                            cdi.select(ManagedThreadFactory.class, new Annotation[0]);
-            ManagedThreadFactory mtf = instance.get();
-
-            // Force instantiation of the bean in order to cause context to be captured
-            mtf.toString();
         }
     }
 
