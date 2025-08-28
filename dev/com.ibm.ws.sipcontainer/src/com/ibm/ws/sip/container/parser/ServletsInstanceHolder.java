@@ -49,7 +49,7 @@ public class ServletsInstanceHolder implements ServletInstanceHolderInterface{
     private final static ServletsInstanceHolder s_instance = new ServletsInstanceHolder();
     private SipContainer m_sipcontainer = SipContainer.getInstance();
 
-    private final Map<String, InitMembers> sipServletThreadLocal = new ConcurrentHashMap<>();
+    private final Map<String, InitMembers> sipServletHolderMap = new ConcurrentHashMap<>();
     private final Map<String, ExecutorService> appExecutors = new ConcurrentHashMap<>();
 
     private ServletsInstanceHolder() {
@@ -215,7 +215,7 @@ public class ServletsInstanceHolder implements ServletInstanceHolderInterface{
     public void removeInitMember(String appName) {
         c_logger.traceDebug("removeInitMember", " removing InitMember " + appName);
 	// Remove InitMember from ThreadLocal map
-        sipServletThreadLocal.remove(appName);
+        sipServletHolderMap.remove(appName);
 	//  Remove servlet instances map  this is critical
         m_sipAppsServlets.remove(appName);
 	// Shutdown executor for the app
@@ -247,7 +247,7 @@ public class ServletsInstanceHolder implements ServletInstanceHolderInterface{
         InitMembers members = new InitMembers(sipApp, sipServlet, sipletContext);
 appExecutors.computeIfAbsent(appName, k -> Executors.newSingleThreadExecutor())
     .submit(() -> {
-        sipServletThreadLocal.put(appName, members); // simulate thread-local scoped per app
+        sipServletHolderMap.put(appName, members); // simulate thread-local scoped per app
         try {
             if (c_logger.isTraceDebugEnabled()) {
                 c_logger.traceDebug(this, "saveSipletReference",
