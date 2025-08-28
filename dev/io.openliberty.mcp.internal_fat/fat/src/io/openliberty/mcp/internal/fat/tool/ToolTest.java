@@ -1011,6 +1011,23 @@ public class ToolTest extends FATServletClient {
                                       "name": "audioContentTool",
                                       "description": "Returns audio content object",
                                       "title": "Audio Content Tool"
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "description": "name of your city",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "name"
+                                            ]
+                                        },
+                                        "name": "create_city",
+                                        "description": "create and name your own city in the UK",
+                                        "title": "Create a city"
                                     }
                                 ]
                             },
@@ -1485,6 +1502,48 @@ public class ToolTest extends FATServletClient {
         String response = HttpTestUtils.callMCP(server, "/toolTest", request);
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"true"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testReturningPojo() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "create_city",
+                            "arguments": {
+                              "name": "Manchester"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\"country\\":\\"England\\",\\"isCapital\\":false,\\"name\\":\\"Manchester\\",\\"population\\":8000}"
+                              }
+                            ],
+                            "structuredContent": {
+                              "name": "Manchester",
+                              "country": "England",
+                              "population": 8000,
+                              "isCapital": false
+                            },
+                            "isError": false
+                          }
+                        }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }

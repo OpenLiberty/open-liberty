@@ -249,4 +249,10 @@ public class BasicTools {
         return input;
     }
 
+    @Tool(name = "create_city", title = "Create a city", description = "create and name your own city in the UK")
+    public City createCity(@ToolArg(name = "name", description = "name of your city") String name) {
+        return new City(name, "England", 8000, false);
+    }
+
+    public record City(String name, String country, int population, boolean isCapital) {};
 }
