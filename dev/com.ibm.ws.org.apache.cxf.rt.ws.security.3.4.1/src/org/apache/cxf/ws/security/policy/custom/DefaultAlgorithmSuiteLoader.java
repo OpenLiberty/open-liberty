@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -30,11 +31,13 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.policy.AssertionBuilderRegistry;
 import org.apache.cxf.ws.policy.builder.primitive.PrimitiveAssertion;
 import org.apache.cxf.ws.policy.builder.primitive.PrimitiveAssertionBuilder;
 import org.apache.cxf.ws.security.SecurityConstants;
+import org.apache.cxf.ws.security.wss4j.AlgorithmSuiteTranslater;
 import org.apache.neethi.Assertion;
 import org.apache.neethi.AssertionBuilderFactory;
 import org.apache.neethi.Policy;
@@ -47,6 +50,7 @@ import org.apache.wss4j.policy.model.AlgorithmSuite;
  * This class retrieves the default AlgorithmSuites plus the CXF specific GCM AlgorithmSuites.
  */
 public class DefaultAlgorithmSuiteLoader implements AlgorithmSuiteLoader {
+    private static final Logger LOG = LogUtils.getL7dLogger(AlgorithmSuiteTranslater.class); // Liberty Change
 
     public AlgorithmSuite getAlgorithmSuite(Bus bus, SPConstants.SPVersion version, Policy nestedPolicy) {
         AssertionBuilderRegistry reg = bus.getExtension(AssertionBuilderRegistry.class);
@@ -59,9 +63,10 @@ public class DefaultAlgorithmSuiteLoader implements AlgorithmSuiteLoader {
             assertions.put(qName, new PrimitiveAssertion(qName));
             qName = new QName(ns, "Basic256GCM");
             assertions.put(qName, new PrimitiveAssertion(qName));
+            qName = new QName(ns, "Basic256GCMSha256ECDHES");
+            assertions.put(qName, new PrimitiveAssertion(qName));
             qName = new QName(ns, "CustomAlgorithmSuite");
             assertions.put(qName, new PrimitiveAssertion(qName));
-
             reg.registerBuilder(new PrimitiveAssertionBuilder(assertions.keySet()) {
                 public Assertion build(Element element, AssertionBuilderFactory fact) {
                     if (XMLPrimitiveAssertionBuilder.isOptional(element)
@@ -121,7 +126,26 @@ public class DefaultAlgorithmSuiteLoader implements AlgorithmSuiteLoader {
                     256, 192, 256, 256, 1024, 4096
                 )
             );
-
+            
+            
+            // Liberty Change Start: 
+            
+            ALGORITHM_SUITE_TYPES.put(
+                  "Basic256GCMSha256ECDHES",
+                  new AlgorithmSuiteType(
+                      "Basic256GCMSha256ECDHES",
+                      SPConstants.SHA256,
+                      "http://www.w3.org/2009/xmlenc11#aes256-gcm",
+                      SPConstants.KW_AES256,
+                      SPConstants.KW_RSA_OAEP,
+                      "http://www.w3.org/2021/04/xmldsig-more#hkdf",
+                      "http://www.w3.org/2021/04/xmldsig-more#hkdf",
+                      SPConstants.KA_ECDH_ES,
+                      256, 192, 256, 256, 1024, 4096, 160, 512
+                  )
+           );
+            
+           // Liberty Change End
 
             ALGORITHM_SUITE_TYPES.put(
                     "CustomAlgorithmSuite",
@@ -164,7 +188,10 @@ public class DefaultAlgorithmSuiteLoader implements AlgorithmSuiteLoader {
             } else if ("Basic256GCM".equals(assertionName)) {
                 setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic256GCM"));
                 getAlgorithmSuiteType().setNamespace(assertionNamespace);
-            } else if ("CustomAlgorithmSuite".equals(assertionName)) {
+            } else if ("Basic256GCMSha256ECDHES".equals(assertionName)) {
+                setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("Basic256GCMSha256ECDHES"));
+                getAlgorithmSuiteType().setNamespace(assertionNamespace);
+            }else if ("CustomAlgorithmSuite".equals(assertionName)) {
                 setAlgorithmSuiteType(ALGORITHM_SUITE_TYPES.get("CustomAlgorithmSuite"));
                 getAlgorithmSuiteType().setNamespace(assertionNamespace);
             }

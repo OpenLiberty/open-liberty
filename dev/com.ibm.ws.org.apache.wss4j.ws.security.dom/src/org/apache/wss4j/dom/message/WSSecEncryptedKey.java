@@ -229,6 +229,7 @@ public class WSSecEncryptedKey extends WSSecBase {
             KeyAgreementParameters dhSpec = null;
             if (isKeyAgreementConfigured(keyAgreementMethod)) {
                 // generate ephemeral keys the key must match receivers keys
+            	LOG.info("@TJJ key agreement is configured!");
                 dhSpec = buildKeyAgreementParameter(remoteCert.getPublicKey());
                 kek = generateEncryptionKey(dhSpec);
             } else {

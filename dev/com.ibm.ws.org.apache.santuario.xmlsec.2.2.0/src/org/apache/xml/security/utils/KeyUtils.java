@@ -18,6 +18,22 @@
  */
 package org.apache.xml.security.utils;
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.Provider;
+import java.security.PublicKey;
+import java.security.interfaces.ECPublicKey;
+import java.security.spec.ECGenParameterSpec;
+import java.util.Arrays;
+
+import javax.crypto.KeyAgreement;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+
 import org.apache.xml.security.algorithms.implementations.ECDSAUtils;
 import org.apache.xml.security.encryption.XMLEncryptionException;
 import org.apache.xml.security.encryption.keys.content.derivedKey.ConcatKDF;
@@ -28,23 +44,13 @@ import org.apache.xml.security.encryption.params.KeyAgreementParameters;
 import org.apache.xml.security.encryption.params.KeyDerivationParameters;
 import org.apache.xml.security.exceptions.DERDecodingException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.algorithms.implementations.SignatureECDSA;
-import org.apache.xml.security.algorithms.implementations.SignatureECDSA.SignatureECDSASHA3_224;
-import org.apache.xml.security.algorithms.implementations.SignatureECDSA.SignatureECDSASHA3_384;
-import org.apache.xml.security.algorithms.implementations.SignatureECDSA.SignatureECDSASHA3_512;
-
-import javax.crypto.KeyAgreement;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.*;
-import java.security.interfaces.ECPublicKey;
-import java.security.spec.ECGenParameterSpec;
-import java.util.Arrays;
 
 /**
  * A set of utility methods to handle keys.
  */
 public class KeyUtils {
+
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(KeyUtils.class);
 
     /**
      * Enumeration of Supported key algorithm types.
@@ -57,6 +63,7 @@ public class KeyUtils {
         DH("DiffieHellman", "1.2.840.113549.1.3.1"),
         XDH("XDH", null),
         EdDSA("EdDSA", null);
+
         private final String jceName;
         private final String oid;
 
@@ -144,9 +151,7 @@ public class KeyUtils {
         }
 
         public static KeyType getByOid(String oid) {
-            return Arrays.stream(KeyType.values())
-                    .filter(keyType -> keyType.getOid().equals(oid))
-                    .findFirst().orElse(null);
+            return Arrays.stream(KeyType.values()).filter(keyType -> keyType.getOid().equals(oid)).findFirst().orElse(null);
         }
     }
 
@@ -154,7 +159,7 @@ public class KeyUtils {
      * Method generates DH keypair which match the type of given public key type.
      *
      * @param recipientPublicKey public key of recipient
-     * @param provider provider to use for key generation
+     * @param provider           provider to use for key generation
      * @return generated keypair
      * @throws XMLEncryptionException if the keys cannot be generated
      */
@@ -186,14 +191,13 @@ public class KeyUtils {
     /**
      * Create a KeyPairGenerator for the given algorithm and provider.
      *
-     * @param algorithm  the key JCE algorithm name
-     * @param provider the provider to use or null if default JCE provider should be used
+     * @param algorithm the key JCE algorithm name
+     * @param provider  the provider to use or null if default JCE provider should be used
      * @return the KeyPairGenerator
      * @throws NoSuchAlgorithmException if the algorithm is not supported
      */
     public static KeyPairGenerator createKeyPairGenerator(String algorithm, Provider provider) throws NoSuchAlgorithmException {
-        return provider == null ? KeyPairGenerator.getInstance(algorithm)
-                : KeyPairGenerator.getInstance(algorithm, provider);
+        return provider == null ? KeyPairGenerator.getInstance(algorithm) : KeyPairGenerator.getInstance(algorithm, provider);
     }
 
     /**
@@ -202,10 +206,9 @@ public class KeyUtils {
      * @param parameterSpec KeyAgreementParameterSpec which defines algorithm to derive key
      * @return generated secret key
      * @throws XMLEncryptionException if the secret key cannot be generated as: Key agreement is not supported,
-     * wrong key types, etc.
+     *                                    wrong key types, etc.
      */
-    public static SecretKey aesWrapKeyWithDHGeneratedKey(KeyAgreementParameters parameterSpec)
-            throws XMLEncryptionException {
+    public static SecretKey aesWrapKeyWithDHGeneratedKey(KeyAgreementParameters parameterSpec) throws XMLEncryptionException {
         try {
             PublicKey publicKey = parameterSpec.getAgreementPublicKey();
             PrivateKey privateKey = parameterSpec.getAgreementPrivateKey();
@@ -231,6 +234,7 @@ public class KeyUtils {
      * @throws XMLEncryptionException if the key wrap algorithm is not supported
      */
     public static int getAESKeyBitSizeForWrapAlgorithm(String keyWrapAlg) throws XMLEncryptionException {
+        LOG.info("@TJJ Key Wrap Algorithm is set to: " + keyWrapAlg);
         switch (keyWrapAlg) {
             case EncryptionConstants.ALGO_ID_KEYWRAP_AES128:
                 return 128;
@@ -248,14 +252,13 @@ public class KeyUtils {
      * Currently only the ConcatKDF and HMAC-base Extract-and-Expand Key Derivation
      * Function (HKDF) are supported.
      *
-     * @param sharedSecret the shared secret
+     * @param sharedSecret           the shared secret
      * @param keyDerivationParameter the key derivation parameters
      * @return the derived key encryption key
      * @throws IllegalArgumentException if the keyDerivationParameter is null
-     * @throws XMLSecurityException if the key derivation algorithm is not supported
+     * @throws XMLSecurityException     if the key derivation algorithm is not supported
      */
-    public static byte[] deriveKeyEncryptionKey(byte[] sharedSecret, KeyDerivationParameters keyDerivationParameter)
-            throws XMLSecurityException {
+    public static byte[] deriveKeyEncryptionKey(byte[] sharedSecret, KeyDerivationParameters keyDerivationParameter) throws XMLSecurityException {
 
         if (keyDerivationParameter == null) {
             throw new IllegalArgumentException(I18n.translate("KeyDerivation.MissingParameters"));
@@ -268,26 +271,23 @@ public class KeyUtils {
             return deriveKeyWithConcatKDF(sharedSecret, (ConcatKDFParams) keyDerivationParameter);
         }
 
-        throw new XMLEncryptionException("KeyDerivation.UnsupportedAlgorithm", keyDerivationAlgorithm,
-                keyDerivationParameter.getClass().getName());
+        throw new XMLEncryptionException("KeyDerivation.UnsupportedAlgorithm", keyDerivationAlgorithm, keyDerivationParameter.getClass().getName());
     }
 
     /**
      * Derive a key using the HMAC-based Extract-and-Expand Key Derivation
      * Function (HKDF) with implementation instance {@link HKDFParams}.
      *
-     * @param sharedSecret the shared secret
+     * @param sharedSecret  the shared secret
      * @param hkdfParameter the HKDF parameters
      * @return the derived key encryption key.
      * @throws XMLSecurityException if the key derivation parameters are invalid or
-     *       the hmac algorithm is not supported.
+     *                                  the hmac algorithm is not supported.
      */
-    public static byte[] deriveKeyWithHKDF(byte[] sharedSecret, HKDFParams hkdfParameter)
-            throws XMLSecurityException {
+    public static byte[] deriveKeyWithHKDF(byte[] sharedSecret, HKDFParams hkdfParameter) throws XMLSecurityException {
 
-        if (!EncryptionConstants.ALGO_ID_KEYDERIVATION_HKDF.equals(hkdfParameter.getAlgorithm())){
-            throw new XMLEncryptionException("KeyDerivation.UnsupportedAlgorithm", hkdfParameter.getAlgorithm(),
-                    HKDFParams.class.getName());
+        if (!EncryptionConstants.ALGO_ID_KEYDERIVATION_HKDF.equals(hkdfParameter.getAlgorithm())) {
+            throw new XMLEncryptionException("KeyDerivation.UnsupportedAlgorithm", hkdfParameter.getAlgorithm(), HKDFParams.class.getName());
         }
 
         HKDF kdf = new HKDF();
@@ -298,18 +298,16 @@ public class KeyUtils {
      * Derive a key using the Concatenation Key Derivation Function (ConcatKDF)
      * with implementation instance {@link ConcatKDFParams}.
      *
-     * @param sharedSecret the shared secret/ input keying material
+     * @param sharedSecret  the shared secret/ input keying material
      * @param ckdfParameter the ConcatKDF parameters
      * @return the derived key
      * @throws XMLSecurityException if the key derivation parameters are invalid or
-     *        the hash algorithm is not supported.
+     *                                  the hash algorithm is not supported.
      */
-    public static byte[] deriveKeyWithConcatKDF(byte[] sharedSecret, ConcatKDFParams ckdfParameter)
-            throws XMLSecurityException {
+    public static byte[] deriveKeyWithConcatKDF(byte[] sharedSecret, ConcatKDFParams ckdfParameter) throws XMLSecurityException {
 
-        if (!EncryptionConstants.ALGO_ID_KEYDERIVATION_CONCATKDF.equals(ckdfParameter.getAlgorithm())){
-            throw new XMLEncryptionException("KeyDerivation.UnsupportedAlgorithm", ckdfParameter.getAlgorithm(),
-                    HKDFParams.class.getName());
+        if (!EncryptionConstants.ALGO_ID_KEYDERIVATION_CONCATKDF.equals(ckdfParameter.getAlgorithm())) {
+            throw new XMLEncryptionException("KeyDerivation.UnsupportedAlgorithm", ckdfParameter.getAlgorithm(), HKDFParams.class.getName());
         }
 
         ConcatKDF concatKDF = new ConcatKDF();

@@ -57,7 +57,7 @@ Private-Package: \
   org/apache/cxf=${bin}/org/apache/cxf, \
   META-INF/cxf=resources/META-INF/cxf
 
-instrument.disabled: true
+instrument.disabled: false
 instrument.ffdc: false
 
 -buildpath: \

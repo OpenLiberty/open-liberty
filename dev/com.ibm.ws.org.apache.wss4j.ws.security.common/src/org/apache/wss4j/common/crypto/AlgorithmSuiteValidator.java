@@ -163,6 +163,13 @@ public class AlgorithmSuiteValidator {
             String keyDerivationFunction
     ) throws WSSecurityException {
         Set<String> keyDerivationFunctions = algorithmSuite.getDerivedKeyAlgorithms();
+        
+        LOG.info("@TJJ keyDerivationFunction = " + keyDerivationFunction + " is the set empty? "  + keyDerivationFunctions.isEmpty());
+        
+        for (String function : keyDerivationFunctions) {
+            // Process each string element in the set
+            LOG.info("@TJJ function = " + function);
+        }
         if (!keyDerivationFunctions.isEmpty()
                 && !keyDerivationFunctions.contains(keyDerivationFunction)) {
             LOG.warn(
@@ -279,6 +286,8 @@ public class AlgorithmSuiteValidator {
             throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
         }
         KeyUtils.KeyType keyType = KeyUtils.KeyType.getByOid(keyAlgorithmOId);
+        
+        LOG.info("@TJJ keyType = " + keyType);
         if (keyType == null) {
             LOG.warn("An unknown public key was provided");
             throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);

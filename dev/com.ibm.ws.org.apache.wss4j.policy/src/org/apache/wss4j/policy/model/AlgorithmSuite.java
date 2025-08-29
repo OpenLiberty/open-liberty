@@ -220,6 +220,36 @@ public class AlgorithmSuite extends AbstractSecurityAssertion implements PolicyC
         private String encryptionDigest;
         private String symmetricSignature = SPConstants.HMAC_SHA1;
         private String asymmetricSignature = SPConstants.RSA_SHA1;
+        
+        // Liberty Change Start: 
+        private String keyAgreementAlgorithm;
+        private int maximumEllipticCurveKeyLength = 512;
+        private int minimumEllipticCurveKeyLength = 160;
+        
+        public AlgorithmSuiteType(String name, String digest, String encryption, String symmetricKeyWrap, //NOPMD
+                String asymmetricKeyWrap, String encryptionKeyDerivation,
+                String signatureKeyDerivation,String keyAgreementAlgorithm, 
+                int encryptionDerivedKeyLength,int signatureDerivedKeyLength, int minimumSymmetricKeyLength,
+                int maximumSymmetricKeyLength, int minimumAsymmetricKeyLength,
+                int maximumAsymmetricKeyLength, int minimumEllipticCurveKeyLength, int maximumEllipticCurveKeyLength) {
+			this.name = name;
+			this.digest = digest;
+			this.encryption = encryption;
+			this.symmetricKeyWrap = symmetricKeyWrap;
+			this.asymmetricKeyWrap = asymmetricKeyWrap;
+			this.encryptionKeyDerivation = encryptionKeyDerivation;
+			this.signatureKeyDerivation = signatureKeyDerivation;
+			this.keyAgreementAlgorithm = keyAgreementAlgorithm;
+			this.encryptionDerivedKeyLength = encryptionDerivedKeyLength;
+			this.signatureDerivedKeyLength = signatureDerivedKeyLength;
+			this.minimumSymmetricKeyLength = minimumSymmetricKeyLength;
+			this.maximumSymmetricKeyLength = maximumSymmetricKeyLength;
+			this.minimumAsymmetricKeyLength = minimumAsymmetricKeyLength;
+			this.maximumAsymmetricKeyLength = maximumAsymmetricKeyLength;
+			this.minimumEllipticCurveKeyLength = minimumEllipticCurveKeyLength;
+			this.maximumEllipticCurveKeyLength = maximumEllipticCurveKeyLength;
+        }
+        // Liberty Change End
 
         public AlgorithmSuiteType(String name, String digest, String encryption, String symmetricKeyWrap, //NOPMD
                                   String asymmetricKeyWrap, String encryptionKeyDerivation,
@@ -534,6 +564,32 @@ public class AlgorithmSuite extends AbstractSecurityAssertion implements PolicyC
         public String getEncryptionDigest() {
             return encryptionDigest;
         }
+        
+        // Liberty Change Start: Add getters/setters for KeyAgreement parameters
+        public void setMinimumEllipticCurveKeyLength(int minimumEllipticCurveKeyLength) {
+    		this.minimumEllipticCurveKeyLength = minimumEllipticCurveKeyLength;
+        }
+
+        public int getMinimumEllipticCurveKeyLength() {
+    		return minimumEllipticCurveKeyLength;
+        }
+        
+        public void setMaximumEllipticCurveKeyLength(int maximumEllipticCurveKeyLength) {
+    		this.maximumEllipticCurveKeyLength = maximumEllipticCurveKeyLength;
+        }
+
+        public int getMaximumEllipticCurveKeyLength() {
+    		return maximumEllipticCurveKeyLength;
+        }
+
+        public void setKeyAgreement(String keyAgreementAlgorithm) {
+        	this.keyAgreementAlgorithm = keyAgreementAlgorithm;
+        }
+
+        public String getKeyAgreement() {
+        	return keyAgreementAlgorithm;
+        }
+        // Liberty Change End
     }
 
     public enum XPathType {

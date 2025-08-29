@@ -16,7 +16,8 @@
 
 santuarioVersion=2.3.4
 
-instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
+instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class, \
+ org/apache/jcp/xml/dsig/internal/dom/*.class
 
 -includeresource: \
   @${repo;org.apache.santuario:xmlsec;${santuarioVersion};EXACT}!/!META-INF/maven/*,\
@@ -34,6 +35,7 @@ instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
 	io.openliberty.com.fasterxml.woodstox.core;version=latest,\
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-  io.openliberty.org.apache.commons.codec;version=latest
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    com.ibm.websphere.appserver.spi.logging
 
 globalize: false

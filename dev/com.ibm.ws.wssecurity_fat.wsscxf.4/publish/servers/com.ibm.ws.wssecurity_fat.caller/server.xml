@@ -28,16 +28,18 @@
 		keyStoreRef="myKeyStore"
 		trustStoreRef="myTrustStore"
 		clientAuthenticationSupported="true" />
+
 	<keyStore
 		id="myKeyStore"
-		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/key.jks" />
+		password="security"
+		type="PKCS12"
+		location="${server.config.dir}/wss-ecdh.p12" />
+
 	<keyStore
 		id="myTrustStore"
-		password="LibertyServer"
-		type="jks"
-		location="${server.config.dir}/sslServerTrust.jks" />
+		password="security"
+		type="PKCS12"
+		location="${server.config.dir}/wss-ecdh.p12" />
 
 
 	<include location="../fatTestPorts.xml" />
@@ -78,27 +80,30 @@
 		<user
 			name="user1pw"
 			password="pw8server" />
+		<user
+			name="secp256r1"
+			password="security" />
 	</basicRegistry>
 
 	<!-- basicplcy.wssecfvt.test.CommonPasswordCallback -->
 	<wsSecurityClient
 		id="default"
 		ws-security.password="security"
-		ws-security.username="user1"
+		ws-security.username="secp256r1"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
 	        <!-- issue 30353 -->
 		<signatureProperties
-		        signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+		    signatureAlgorithm="sha256"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="security"
+			org.apache.ws.security.crypto.merlin.keystore.alias="secp256r1"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/wss-ecdh.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client2"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecondCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientSecond.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="security"
+			org.apache.ws.security.crypto.merlin.keystore.alias="secp256r1"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/wss-ecdh.p12"/>
 	</wsSecurityClient>
 
 	<wsSecurityProvider
@@ -107,20 +112,18 @@
 		ws-security.return.security.error="true"
 	>
 	<!-- 11/2022 issue 23060 added ws-security.return.security.error -->
-	
-		<callerToken name="UsernameToken" />
                 <!-- issue 30353 -->
 		<signatureProperties
-		        signatureAlgorithm="sha256"
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server2"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerSecond"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
+		    signatureAlgorithm="sha256"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="security"
+			org.apache.ws.security.crypto.merlin.keystore.alias="secp256r1"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/wss-ecdh.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
-			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefaultCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="security"
+			org.apache.ws.security.crypto.merlin.keystore.alias="secp256r1"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/wss-ecdh.p12" />
 	</wsSecurityProvider>
 	<!-- This is in use by CxfCallerUNTTests -->
 	

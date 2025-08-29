@@ -69,7 +69,7 @@ import javax.security.auth.x500.X500Principal;
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.common.util.Loader;
-
+import com.ibm.ws.common.crypto.CryptoUtils;
 /**
  * A Crypto implementation based on two Java KeyStore objects, one being the keystore, and one
  * being the truststore.
@@ -1055,7 +1055,9 @@ public class Merlin extends CryptoBase {
         MessageDigest sha = null;
 
         try {
-            sha = MessageDigest.getInstance("SHA1");
+            // Liberty Change Start: FIPS default to SHA256
+            sha = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1);
+            // Liberty Change End
         } catch (NoSuchAlgorithmException e) {
             throw new WSSecurityException(
                 WSSecurityException.ErrorCode.FAILURE, e, "decoding.general"
