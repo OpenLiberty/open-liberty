@@ -18,10 +18,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
+@SkipIfSysProp(SkipIfSysProp.OS_ZOS)
 public class JmsWebAppTests20 extends JmsAbstractTests {
     @Override
     public Set<String> getFeatures() {
