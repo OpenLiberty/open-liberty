@@ -58,15 +58,7 @@ public class PrototypeTest extends FATServletClient {
          ShrinkHelper.defaultDropinApp(remoteAppServer, "prototype", "io.openliberty.mpRestClient.fat.prototype");
         remoteAppServer.startServer();
          ShrinkHelper.defaultDropinApp(server, appName, "io.openliberty.mpRestClient.fat.prototypeClient");
-        // Build an application and export it to the dropins directory
-       // ShrinkHelper.defaultDropinApp(server, appName, "io.openliberty.mpRestClient.fat.prototype");
-
-        // Build an application, add third party libs, and manuall export to the dropins directory
-//        WebArchive app = ShrinkHelper.buildDefaultApp(appName, "com.ibm.ws.jaxrs.fat.prototype");
-//        app.addAsLibraries(new File(libs).listFiles());
-//        ShrinkHelper.exportDropinAppToServer(server, app);
-//        server.addInstalledAppForValidation(appName);
-
+  
         // Make sure we don't fail because we try to start an
         // already started server
         try {

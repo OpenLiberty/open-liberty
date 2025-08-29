@@ -26,25 +26,18 @@ javac.target: 11
 fat.project: true
 # These features get added programmatically
 tested.features: \
-  mpRestClient-1.0,\
-  jaxrsClient-2.1,\
+  mpRestClient-4.0,\
   jaxrs-2.1,\
-  jsonp-1.1,\
-  cdi-2.0,\
-  jca-1.7,\
-  jsonb-1.0,\
-  el-3.0,\
-  jaxb-2.2,\
-  beanValidation-2.0,\
-  noship-1.0
+  servlet-6.0,\
+  ssl-1.0,\
+  componenttest-2.0
 
 -buildpath: \
-    com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-    com.ibm.websphere.javaee.annotation.1.3;version=latest,\
-    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-    com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
-    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-    com.ibm.websphere.javaee.validation.2.0;version=latest,\
-    com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-    com.ibm.websphere.org.eclipse.microprofile.rest.client.1.0;version=latest,\
-    com.ibm.ws.componenttest
+    io.openliberty.jakarta.annotation.2.1;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest,\
+    io.openliberty.jakarta.restfulWS.3.0;version=latest,\
+    io.openliberty.jakarta.servlet.6.0;version=latest,\
+    io.openliberty.jakarta.validation.3.0;version=latest,\
+    io.openliberty.jakarta.xmlBinding.4.0;version=latest,\
+    io.openliberty.org.eclipse.microprofile.rest.client.4.0;version=latest,\
+    com.ibm.ws.componenttest.2.0;version=latest
