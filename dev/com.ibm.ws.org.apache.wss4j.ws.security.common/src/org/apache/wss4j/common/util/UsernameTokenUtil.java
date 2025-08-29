@@ -31,6 +31,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public final class UsernameTokenUtil {
     public static final int DEFAULT_ITERATION = 1000;
@@ -64,7 +65,9 @@ public final class UsernameTokenUtil {
 
         MessageDigest sha = null;
         try {
-            sha = MessageDigest.getInstance("SHA1");
+            // Liberty Change Start: FIPS default to SHA256
+            sha = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1);
+            // Liberty Change End
         } catch (NoSuchAlgorithmException e) {
             LOG.debug(e.getMessage(), e);
             throw new WSSecurityException(

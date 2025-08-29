@@ -24,7 +24,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.policy.PolicyUtils;
@@ -45,7 +47,9 @@ import org.apache.wss4j.policy.model.SupportingTokens;
  * to enforce what algorithms are allowed in a request.
  */
 public final class AlgorithmSuiteTranslater {
+    private static final Logger LOG = LogUtils.getLogger(AlgorithmSuiteTranslater.class); // Liberty Change
 
+    
     private final Map<String, Object> customAlgSuiteProperties;
 
     public AlgorithmSuiteTranslater() {
@@ -155,8 +159,10 @@ public final class AlgorithmSuiteTranslater {
 
             algorithmSuite.addDerivedKeyAlgorithm(SPConstants.P_SHA1);
             algorithmSuite.addDerivedKeyAlgorithm(SPConstants.P_SHA1_L128);
+            algorithmSuite.addDerivedKeyAlgorithm("http://www.w3.org/2021/04/xmldsig-more#hkdf");
+            algorithmSuite.addKeyAgreementMethodAlgorithm(SPConstants.KA_ECDH_ES);
         }
-
+        LOG.info("@TJJ algorithmSuite =" + algorithmSuite);
         return algorithmSuite;
     }
 

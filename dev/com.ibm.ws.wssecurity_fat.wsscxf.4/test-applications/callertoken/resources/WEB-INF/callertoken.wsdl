@@ -19,66 +19,40 @@
     <wsp:Policy wsu:Id="CallerHttpPolicy">
         <wsp:ExactlyOne>
             <wsp:All>
-                <sp:EncryptedSupportingTokens>
-                   <wsp:Policy>
-                      <sp:UsernameToken
-                         sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
-                         <wsp:Policy>                 
-                            <sp:HashPassword/>
-                            <sp:WssUsernameToken11/>
-                         </wsp:Policy>
-                      </sp:UsernameToken>
-                   </wsp:Policy>
-                </sp:EncryptedSupportingTokens>
-
-                <sp:AsymmetricBinding >
-                    <wsp:Policy>
-                        <sp:InitiatorToken>
-                            <wsp:Policy>
-                                <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
-                                    <wsp:Policy>
-                                        <sp:WssX509V3Token10/>
-                                    </wsp:Policy>
-                                </sp:X509Token>
-                            </wsp:Policy>
-                        </sp:InitiatorToken>
-                        <sp:RecipientToken>
-                            <wsp:Policy>
-                                <sp:X509Token sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/Never">
-                                    <wsp:Policy>
-                                        <sp:WssX509V3Token10/>
-                                    </wsp:Policy>
-                                </sp:X509Token>
-                            </wsp:Policy>
-                        </sp:RecipientToken>
-                        <sp:AlgorithmSuite>
-                            <wsp:Policy>
-                                <sp:Basic256Sha256/>
-                            </wsp:Policy>
-                        </sp:AlgorithmSuite>
-                        <sp:Layout>
-                            <wsp:Policy>
-                                <sp:Lax/>
-                            </wsp:Policy>
-                        </sp:Layout>
-                        <sp:IncludeTimestamp/>
-                        <sp:EncryptSignature /> <!--Somehow with EncryptBeforeSigning, we have to add this EncryptSignature  -->
-                        <sp:EncryptBeforeSigning />
-                        <sp:OnlySignEntireHeadersAndBody/>
-                    </wsp:Policy>
-                </sp:AsymmetricBinding>
-                <sp:Wss10>
-                    <wsp:Policy>
-                        <sp:MustSupportRefKeyIdentifier/>
-                        <sp:MustSupportRefIssuerSerial/>
-                    </wsp:Policy>
-                </sp:Wss10>
-                <sp:SignedParts>
-                    <sp:Body/>
-                </sp:SignedParts>
-                <sp:EncryptedParts>
-                    <sp:Body/>
-                </sp:EncryptedParts>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:RequireDerivedKeys/>
+                                <sp:RequireThumbprintReference/>
+                                <sp:WssX509V3Token11/>
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp-cxf:Basic256GCMSha256ECDHES xmlns:sp-cxf="http://cxf.apache.org/custom/security-policy"/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+            <sp:EncryptedParts>
+                <sp:Body/>
+            </sp:EncryptedParts>
             </wsp:All>
         </wsp:ExactlyOne>
     </wsp:Policy>

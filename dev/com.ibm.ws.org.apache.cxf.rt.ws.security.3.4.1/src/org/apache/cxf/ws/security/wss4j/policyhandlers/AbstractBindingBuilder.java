@@ -1580,7 +1580,15 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
         AlgorithmSuiteType algType = binding.getAlgorithmSuite().getAlgorithmSuiteType();
         encrKey.setKeyEncAlgo(algType.getAsymmetricKeyWrap());
         encrKey.setMGFAlgorithm(algType.getMGFAlgo());
-
+        // Liberty Change Start: Add Key Agreement method if needed
+        if(algType.getKeyAgreement() != null) {
+            LOG.info("@TJJ KeyAgreement on algType = " + algType.getKeyAgreement());
+            encrKey.setKeyAgreementMethod(algType.getKeyAgreement());
+            
+            // Since Key Agreement is enabled, we need to use SymmetricKeyWrapping
+            encrKey.setKeyEncAlgo(algType.getSymmetricKeyWrap());
+        }
+        // Liberty Change End
         encrKey.prepare(crypto, symmetricKey);
 
         if (alsoIncludeToken) {
