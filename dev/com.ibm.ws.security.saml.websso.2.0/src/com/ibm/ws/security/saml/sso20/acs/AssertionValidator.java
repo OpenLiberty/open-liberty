@@ -58,7 +58,7 @@ public class AssertionValidator {
                                                    TraceConstants.MESSAGE_BUNDLE);
 
     @SuppressWarnings("rawtypes")
-    protected BasicMessageContext context = null;
+    protected BasicMessageContext<?, ?> context = null;
     protected Assertion assertion = null;
     protected long clockSkewAllowed = 0; //Need make it configurable
 
@@ -124,7 +124,7 @@ public class AssertionValidator {
                                 e, new Object[] { e
                                 });
             }
-            signatureRule.invoke(this.context.getMessageContext()); //we may not need this?
+            signatureRule.invoke(this.context.getMessageContext());
             signatureRule.evaluateAssertion(this.context, this.assertion);
         } catch (MessageHandlerException e) {
             throw new SamlException("SAML20_ASSERTION_SIGNATURE_FAIL_ERR",

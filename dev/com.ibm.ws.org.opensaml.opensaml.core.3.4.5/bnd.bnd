@@ -21,6 +21,7 @@
 	io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
 	io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
 	io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest,\
+	com.ibm.ws.com.google.guava;version=latest,\
     com.ibm.ws.org.slf4j.api;version=latest
 
 instrument.ffdc: true

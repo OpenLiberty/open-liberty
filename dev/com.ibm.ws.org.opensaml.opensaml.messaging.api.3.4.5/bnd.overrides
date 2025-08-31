@@ -19,18 +19,25 @@ WS-TraceGroup: SAML20
 
 
 Import-Package:  !com.google.errorprone.annotations, \
+ javax.annotation;version=!, \
  *
  
 Export-Package: \
   org.opensaml.messaging;version="3.4.5", \
+  org.opensaml.messaging.context;version="3.4.5", \
   org.opensaml.messaging.context.*;version="3.4.5", \
+  org.opensaml.messaging.decoder;version="3.4.5", \
   org.opensaml.messaging.decoder.*;version="3.4.5", \
+  org.opensaml.messaging.encoder;version="3.4.5", \
   org.opensaml.messaging.encoder.*;version="3.4.5", \
+  org.opensaml.messaging.error;version="3.4.5", \
   org.opensaml.messaging.error.*;version="3.4.5", \
+  org.opensaml.messaging.handler;version="3.4.5", \
   org.opensaml.messaging.handler.*;version="3.4.5", \
+  org.opensaml.messaging.logic;version="3.4.5", \
   org.opensaml.messaging.logic.*;version="3.4.5", \
+  org.opensaml.messaging.pipeline;version="3.4.5", \
   org.opensaml.messaging.pipeline.*;version="3.4.5"
   
 Include-Resource: \
  @${repo;org.opensaml:opensaml-messaging-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
-

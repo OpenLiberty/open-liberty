@@ -16,5 +16,12 @@
 
 
 -buildpath: \
-    org.opensaml:opensaml-messaging-api;version=4.3.2
+	org.opensaml:opensaml-messaging-api;version='4.3.2',\
+	org.opensaml:opensaml-core;version='4.3.2',\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	com.ibm.ws.org.slf4j.api;version=latest,\
+	com.ibm.ws.com.google.guava;version=latest,\
+	com.google.code.findbugs:jsr305;version='3.0.2',\
+	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
+	org.jsr-305
 
