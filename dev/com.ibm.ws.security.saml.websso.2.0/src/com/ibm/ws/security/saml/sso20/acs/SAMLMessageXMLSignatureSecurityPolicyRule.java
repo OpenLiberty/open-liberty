@@ -39,6 +39,7 @@ import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.internal.utils.SignatureMethods;
 
+import net.shibboleth.utilities.java.support.component.ComponentSupport;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 
@@ -87,7 +88,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
      * @param validator The prevalidator to set.
      */
     public void setSignaturePrevalidator(final SignaturePrevalidator validator) {
-        //ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this); //TODO:
+        ComponentSupport.ifInitializedThrowUnmodifiabledComponentException(this);
         signaturePrevalidator = validator;
     }
 

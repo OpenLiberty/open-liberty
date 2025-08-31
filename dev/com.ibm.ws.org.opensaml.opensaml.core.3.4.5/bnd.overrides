@@ -115,6 +115,7 @@ Import-Package: \
  !sun.*,\
  !sun.misc,\
  !javax.inject,\
+ java.util.function,\
  javax.annotation,\
  javax.crypto,\
  javax.servlet.http,\
@@ -151,6 +152,9 @@ Import-Package: \
  !org.bouncycastle.asn1.x500,\
  !org.bouncycastle.asn1.x509,\
  org.bouncycastle.crypto,\
+ org.cryptacular.x509.dn,\
+ org.cryptacular.x509,\
+ org.cryptacular.*,\
  !org.checkerframework.checker.nullness.compatqual,\
  org.opensaml.storage;resolution:=optional,\
  org.opensaml.messaging.*;resolution:=optional,\

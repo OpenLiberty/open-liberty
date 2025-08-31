@@ -21,6 +21,7 @@ Export-Package: \
   org.opensaml.storage.*;version="3.4.5"
   
 Import-Package: \
+ java.util.function, \
  com.google.common.base; version="[27.0.0,33.0.0)", \
  *
  

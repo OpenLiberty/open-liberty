@@ -35,6 +35,7 @@ Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, \
     org.opensaml.core.config,\
     org.opensaml.core.xml.*,\
     org.opensaml.core.xml.config.*,\
+    org.opensaml.messaging.handler;version="[3.4.5,5)", \
     org.opensaml.saml.common.binding.security.impl.*, \
     org.opensaml.saml.metadata.resolver.impl.*, \
     org.opensaml.saml.saml2.binding.decoding.impl.*, \
@@ -147,9 +148,9 @@ Service-Component: \
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest, \
-    com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.kernel.security.thread;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
@@ -164,7 +165,8 @@ Service-Component: \
 	com.ibm.websphere.appserver.spi.saml20;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
-	com.ibm.ws.com.google.guava;version=latest
+	com.ibm.ws.com.google.guava;version=latest,\
+	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1
 	
 
 instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages*.class
