@@ -249,8 +249,29 @@ public class BasicTools {
         return input;
     }
 
-    @Tool(name = "create_city", title = "Create a city", description = "create and name your own city in the UK")
-    public City createCity(@ToolArg(name = "name", description = "name of your city") String name) {
+    @Tool(name = "testListObjectResponse", title = "City List",
+          description = "A tool to return a list of cities")
+    public List<City> testListObjectResponse() {
+        City city1 = new City("Paris", "France", 8000, true);
+        City city2 = new City("Manchester", "England", 15000, false);
+        return List.of(city1, city2);
+    }
+
+    @Tool(name = "testListStringResponse", title = "String List",
+          description = "A tool to return a list of strings")
+    public List<String> testListStringResponse() {
+        return List.of("red", "blue", "yellow");
+    }
+
+    @Tool(name = "testArrayResponse", title = "Array of ints",
+          description = "A tool to return an array of ints")
+    public int[] testArrayResponse() {
+        return new int[] { 1, 2, 3, 4, 5 };
+    }
+
+    @Tool(name = "testObjectResponse", title = "Create a city",
+          description = "A tool to return a city object you've named")
+    public City testObjectResponse(@ToolArg(name = "name", description = "name of your city") String name) {
         return new City(name, "England", 8000, false);
     }
 

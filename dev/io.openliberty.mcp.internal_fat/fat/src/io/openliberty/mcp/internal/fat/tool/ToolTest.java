@@ -1015,6 +1015,36 @@ public class ToolTest extends FATServletClient {
                                     {
                                         "inputSchema": {
                                             "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "name": "testListObjectResponse",
+                                        "description": "A tool to return a list of cities",
+                                        "title": "City List"
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "name": "testListStringResponse",
+                                        "description": "A tool to return a list of strings",
+                                        "title": "String List"
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "name": "testArrayResponse",
+                                        "description": "A tool to return an array of ints",
+                                        "title": "Array of ints"
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
                                             "properties": {
                                                 "name": {
                                                     "description": "name of your city",
@@ -1025,8 +1055,8 @@ public class ToolTest extends FATServletClient {
                                                 "name"
                                             ]
                                         },
-                                        "name": "create_city",
-                                        "description": "create and name your own city in the UK",
+                                        "name": "testObjectResponse",
+                                        "description": "A tool to return a city object you've named",
                                         "title": "Create a city"
                                     }
                                 ]
@@ -1507,17 +1537,127 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
-    public void testReturningPojo() throws Exception {
+    public void testReturningObject() throws Exception {
         String request = """
                           {
                           "jsonrpc": "2.0",
                           "id": "2",
                           "method": "tools/call",
                           "params": {
-                            "name": "create_city",
+                            "name": "testObjectResponse",
                             "arguments": {
                               "name": "Manchester"
                             }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
+        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":8000}"
+                              }
+                            ],
+                            "structuredContent": {
+                              "country": "England",
+                              "isCapital": false,
+                              "name": "Manchester",
+                              "population": 8000
+                            },
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testReturningArray() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testArrayResponse",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"[1,2,3,4,5]"
+                              }
+                            ],
+                            "structuredContent": [1,2,3,4,5],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testReturningStringList() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testListStringResponse",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"[\\\"red\\\",\\\"blue\\\",\\\"yellow\\\"]"
+                              }
+                            ],
+                            "structuredContent": ["red","blue","yellow"],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testReturningListOfObjects() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testListObjectResponse",
+                            "arguments": {}
                           }
                         }
                         """;
@@ -1532,15 +1672,23 @@ public class ToolTest extends FATServletClient {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"{\\"country\\":\\"England\\",\\"isCapital\\":false,\\"name\\":\\"Manchester\\",\\"population\\":8000}"
+                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
                               }
                             ],
-                            "structuredContent": {
-                              "name": "Manchester",
-                              "country": "England",
-                              "population": 8000,
-                              "isCapital": false
-                            },
+                            "structuredContent": [
+                              {
+                                "country": "France",
+                                "isCapital": true,
+                                "name": "Paris",
+                                "population": 8000
+                              },
+                              {
+                                "country": "England",
+                                "isCapital": false,
+                                "name": "Manchester",
+                                "population": 15000
+                              }
+                            ],
                             "isError": false
                           }
                         }
