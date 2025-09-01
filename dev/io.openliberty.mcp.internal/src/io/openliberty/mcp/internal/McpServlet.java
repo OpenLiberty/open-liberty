@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -117,6 +118,7 @@ public class McpServlet extends HttpServlet {
         Object bean = bm.getReference(params.getBean(), params.getBean().getBeanClass(), cc);
         try {
             Object result = params.getMethod().invoke(bean, params.getArguments(jsonb));
+            boolean includeStructuredContent = params.getMetadata().annotation().structuredContent();
             if (result instanceof ToolResponse response) {
                 transport.sendResponse(response);
             } else if (result instanceof List<?> list && !list.isEmpty() && list.stream().allMatch(item -> item instanceof Content)) {
@@ -125,6 +127,8 @@ public class McpServlet extends HttpServlet {
                 transport.sendResponse(ToolResponse.success(contents));
             } else if (result instanceof Content content) {
                 transport.sendResponse(ToolResponse.success(content));
+            } else if (includeStructuredContent) {
+                transport.sendResponse(ToolResponse.structuredSuccess(jsonb.toJson(result), result));
             } else if (result instanceof String s) {
                 transport.sendResponse(ToolResponse.success(s));
             } else {

@@ -26,13 +26,20 @@ public class Literals {
     }
 
     /**
-     * Creates a literal {@link Tool} annotation which doesn't specify any {@link Annotations}.
+     * Creates a literal {@link Tool} annotation which doesn't specify any {@link Annotations} or structuredContent.
      */
     public static Tool tool(String name, String title, String description) {
-        return tool(name, title, description, toolAnnotations(""));
+        return tool(name, title, description, false, toolAnnotations(""));
     }
 
-    public static Tool tool(String name, String title, String description, Annotations toolAnntations) {
+    /**
+     * Creates a literal {@link Tool} annotation which doesn't specify any {@link Annotations}.
+     */
+    public static Tool tool(String name, String title, String description, boolean structuredContent) {
+        return tool(name, title, description, structuredContent, toolAnnotations(""));
+    }
+
+    public static Tool tool(String name, String title, String description, boolean structuredContent, Annotations toolAnntations) {
         return new ToolLiteral() {
             private static final long serialVersionUID = 1L;
 
@@ -49,6 +56,11 @@ public class Literals {
             @Override
             public String description() {
                 return description;
+            }
+
+            @Override
+            public boolean structuredContent() {
+                return structuredContent;
             }
 
             @Override

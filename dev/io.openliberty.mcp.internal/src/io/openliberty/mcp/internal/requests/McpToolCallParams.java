@@ -30,7 +30,6 @@ import jakarta.json.bind.Jsonb;
  */
 public class McpToolCallParams {
 
-    private Jsonb jsonb;
     private String name;
     private ToolMetadata metadata;
 

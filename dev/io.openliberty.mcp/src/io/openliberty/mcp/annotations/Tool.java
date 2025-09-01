@@ -98,6 +98,12 @@ public @interface Tool {
      */
     Annotations annotations() default @Annotations;
 
+    /**
+     * If set to {@code true} and the method returns a type {@code X} which is not specifically treated (see the conversion
+     * rules), then the return value is converted to JSON and used as a {@code structuredContent} of the result.
+     */
+    boolean structuredContent() default false;
+
     @Retention(RUNTIME)
     @Target(ElementType.ANNOTATION_TYPE)
     public @interface Annotations {
