@@ -49,8 +49,9 @@ import io.openliberty.mcp.tools.ToolResponse;
  * content object.</li>
  * <li>If it returns a {@link List} of {@link Content} implementations or strings then the response is
  * {@code success} and contains a list of relevant content objects.</li>
- * <li>If it returns any other type {@code X} or {@code List<X>} then {@code X} is encoded using the {@link ToolResponseEncoder}
- * and {@link ContentEncoder} API and afterwards the rules above apply.</li>
+ * <li>If it returns any other type {@code X} or {@code List<X>} then {@code X} is encoded first using the {@link ToolResponseEncoder}
+ * and {@link ContentEncoder} API (unless {@link Tool#structuredContent()} is set to {@code true}), afterwards the
+ * rules above apply.</li>
  * <li>It may also return a {@link CompletionStage} that wraps any of the type mentioned above.</li>
  * </ul>
  *
@@ -101,8 +102,42 @@ public @interface Tool {
     /**
      * If set to {@code true} and the method returns a type {@code X} which is not specifically treated (see the conversion
      * rules), then the return value is converted to JSON and used as a {@code structuredContent} of the result.
+     * <p>
+     * Also the output schema is generated automatically from the return type.
+     *
+     * @see #outputSchema()
      */
     boolean structuredContent() default false;
+
+    /**
+     * An output schema for validation of results with structured content.
+     * <p>
+     * This configuration is useful when a tool method returns a {@link ToolResponse} with structured content directly - in this
+     * case, the return type may not be used for schema generation.
+     *
+     * @see #structuredContent()
+     */
+    OutputSchema outputSchema() default @OutputSchema;
+
+    @Retention(RUNTIME)
+    @Target(ElementType.ANNOTATION_TYPE)
+    public @interface OutputSchema {
+
+        /**
+         * The class from which the schema is generated.
+         * <p>
+         * If {@link Tool#structuredContent()} is set to {@code true} then the return type may be used for schema generation.
+         */
+        Class<?> from() default OutputSchema.class;
+
+        /**
+         * The generator class. Implementation classes must be CDI beans. Qualifiers are ignored.
+         * <p>
+         * By default, the built-in generator is used.
+         */
+        Class<? extends OutputSchemaGenerator> generator() default OutputSchemaGenerator.class;
+
+    }
 
     @Retention(RUNTIME)
     @Target(ElementType.ANNOTATION_TYPE)
