@@ -269,6 +269,13 @@ public class BasicTools {
         return new int[] { 1, 2, 3, 4, 5 };
     }
 
+    @Tool(name = "testStringStructuredContentResponse", title = "Structured Content String Response",
+          description = "A tool to return a string with structuredContent set. The tool should ignore this and not return a structuredContent field when the response is string.",
+          structuredContent = true)
+    public String testStringStructuredContentResponse() {
+        return "Hello World";
+    }
+
     @Tool(name = "testObjectResponse", title = "Create a city",
           description = "A tool to return a city object you've named", structuredContent = true)
     public City testObjectResponse(@ToolArg(name = "name", description = "name of your city") String name) {

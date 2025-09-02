@@ -1058,7 +1058,17 @@ public class ToolTest extends FATServletClient {
                                         "name": "testObjectResponse",
                                         "description": "A tool to return a city object you've named",
                                         "title": "Create a city"
-                                    }
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "name": "testStringStructuredContentResponse",
+                                        "description": "A tool to return a string with structuredContent set. The tool should ignore this and not return a structuredContent field when the response is string.",
+                                        "title": "Structured Content String Response"
+                                    },
                                 ]
                             },
                             "id": 1,
@@ -1692,6 +1702,27 @@ public class ToolTest extends FATServletClient {
                             "isError": false
                           }
                         }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testStringNotReturnedAsStructuredContent() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testStringStructuredContentResponse",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        String expectedResponseString = """
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello World"}], "isError": false}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }

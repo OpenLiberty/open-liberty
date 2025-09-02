@@ -101,7 +101,7 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
 
     public ToolResponse {
         if (content == null && structuredContent == null) {
-            throw new IllegalArgumentException("content must not be null");
+            throw new IllegalArgumentException("content and structuredContent must not both be null");
         }
     }
 

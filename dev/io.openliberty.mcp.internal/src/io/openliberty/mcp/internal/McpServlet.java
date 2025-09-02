@@ -127,10 +127,10 @@ public class McpServlet extends HttpServlet {
                 transport.sendResponse(ToolResponse.success(contents));
             } else if (result instanceof Content content) {
                 transport.sendResponse(ToolResponse.success(content));
-            } else if (includeStructuredContent) {
-                transport.sendResponse(ToolResponse.structuredSuccess(jsonb.toJson(result), result));
             } else if (result instanceof String s) {
                 transport.sendResponse(ToolResponse.success(s));
+            } else if (includeStructuredContent) {
+                transport.sendResponse(ToolResponse.structuredSuccess(jsonb.toJson(result), result));
             } else {
                 transport.sendResponse(ToolResponse.success(Objects.toString(result)));
             }
