@@ -391,27 +391,6 @@ clientEnvDefaults()
     fi
   fi
 
-  # If ENABLE_FIPS140_3 is set by the user then add appropiate FIPS140-3 JVM options
-  if [ -n "${ENABLE_FIPS140_3+set}" ]; then
-    # Inspect Java install to determine if IBM SDK 8 or Semeru
-    if [[ -d "${JAVA_HOME}/jre/fips140-3" || -d "${JAVA_HOME}/fips140-3" || -d "$(dirname $(dirname $(command -v java)))/jre/fips140-3" ]]; then
-      JVM_ARGS="${JVM_ARGS} -Xenablefips140-3 -Dcom.ibm.jsse2.usefipsprovider=true -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS"
-    else
-      # Retrieve the profile name from the last file in the property
-      regex='RestrictedSecurity\.([a-zA-Z0-9\.-]*)\.extends\s*?=.*'
-      files=(${ENABLE_FIPS140_3//:/ })
-      for file in $files; do
-        profileFile=$file
-      done
-      while read l; do
-        if [[ $l =~ $regex ]]; then
-          profile="${BASH_REMATCH[1]}"
-        fi
-      done < $profileFile
-      JVM_ARGS="${JVM_ARGS} -Dsemeru.fips=true -Dsemeru.customprofile=${profile} -Djava.security.properties=${ENABLE_FIPS140_3}"
-    fi
-  fi
-
   clientUmask
 }
 
@@ -462,6 +441,8 @@ clientEnvAndJVMOptions()
     mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
   fi
 
+  enableFIPS140_3
+
   return $rc
 }
 
@@ -486,6 +467,29 @@ mergeJVMOptions()
         fi
       done
       IFS=$saveIFS
+    fi
+}
+
+enableFIPS140_3()
+{
+    if [ -n "${ENABLE_FIPS140_3+set}" ]; then
+      if [ -d "${JAVA_HOME}/jre/fips140-3" ] || [ -d "${JAVA_HOME}/fips140-3" ] || [ -d "$(dirname $(dirname $(command -v java)))/jre/fips140-3" ]; then
+        JVM_ARGS="${JVM_ARGS} -Xenablefips140-3 -Dcom.ibm.jsse2.usefipsprovider=true -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS"
+      else
+        saveIFS=$IFS
+        IFS=":"
+        for file in $ENABLE_FIPS140_3; do
+          profileFile=$file
+        done
+        IFS=$saveIFS
+        while read l; do
+          match=$(echo "$l" | sed -n 's/.*RestrictedSecurity\.\([a-zA-Z0-9\.-]*\)\.extends[[:space:]]*=.*/\1/p')
+          if [ -n "$match" ]; then
+            profile=$match
+          fi
+        done < $profileFile
+        JVM_ARGS="${JVM_ARGS} -Dsemeru.fips=true -Dsemeru.customprofile=${profile} -Djava.security.properties=${ENABLE_FIPS140_3}"
+      fi
     fi
 }
 
