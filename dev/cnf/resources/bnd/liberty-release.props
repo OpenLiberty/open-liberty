@@ -19,7 +19,7 @@ libertyServiceVersion=${libertyBaseVersion}.${libertyFixpackVersion}
 libertyBetaVersion=2025.10.0.0
 libertyRelease=${if;${releaseTypeGA};${libertyServiceVersion};${libertyBetaVersion}}
 
-libertyBundleMicroVersion=106
+libertyBundleMicroVersion=107
 copyrightBuildYear=2025
 buildID=${libertyRelease}-${def;buildLabel}
 productEdition=BASE_ILAN
