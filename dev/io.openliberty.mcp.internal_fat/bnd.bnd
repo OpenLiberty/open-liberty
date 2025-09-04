@@ -16,7 +16,7 @@ javac.target: 17
 src: \
     fat/src
 
-fat.project: true 
+fat.project: true
 
 
 tested.features: \
