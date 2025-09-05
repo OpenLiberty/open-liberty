@@ -95,6 +95,8 @@ public class TestConstants {
      */
     public static final String ENV_OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE = "OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE";
 
+    public static final String ENV_OTEL_TRACES_SAMPLER = "OTEL_TRACES_SAMPLER";
+
     /*
      * Private constructor, no instances
      */

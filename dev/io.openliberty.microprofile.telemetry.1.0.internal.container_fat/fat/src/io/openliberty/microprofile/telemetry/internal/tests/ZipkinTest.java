@@ -87,6 +87,7 @@ public class ZipkinTest {
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
+        server.addEnvVar(TestConstants.ENV_OTEL_TRACES_SAMPLER, "always_on");
 
         // Construct the test application
         WebArchive spanTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
