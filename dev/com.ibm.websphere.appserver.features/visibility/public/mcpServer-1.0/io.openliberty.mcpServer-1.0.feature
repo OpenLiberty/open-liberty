@@ -1,5 +1,5 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
-symbolicName=io.openliberty.mcp-1.0
+symbolicName=io.openliberty.mcpServer-1.0
 visibility=public
 IBM-App-ForceRestart: install, \
  uninstall
@@ -10,8 +10,8 @@ IBM-API-Package: \
  io.openliberty.mcp.messaging, \
  io.openliberty.mcp.meta, \
  io.openliberty.mcp.tools
-IBM-ShortName: mcp-1.0
-Subsystem-Name: Model Context Protocol 1.0
+IBM-ShortName: mcpServer-1.0
+Subsystem-Name: Model Context Protocol Server 1.0
 -features=com.ibm.websphere.appserver.servlet-6.0;ibm.tolerates:=6.1,\
  io.openliberty.cdi-4.0;ibm.tolerates:=4.1,\
  io.openliberty.jsonb-3.0

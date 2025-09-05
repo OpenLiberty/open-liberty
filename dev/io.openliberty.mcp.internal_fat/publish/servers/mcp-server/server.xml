@@ -3,7 +3,7 @@
   <featureManager>
     <feature>servlet-6.0</feature>
     <feature>cdi-4.0</feature>
-    <feature>mcp-1.0</feature>
+    <feature>mcpServer-1.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml" />
