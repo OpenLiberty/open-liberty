@@ -15,7 +15,7 @@ Subsystem-Name: Model Context Protocol 1.0
 -features=com.ibm.websphere.appserver.servlet-6.0;ibm.tolerates:=6.1,\
  io.openliberty.cdi-4.0;ibm.tolerates:=4.1,\
  io.openliberty.jsonb-3.0
--bundles=io.openliberty.mcp, \
+-bundles=io.openliberty.mcp; location:="dev/api/ibm/", \
  io.openliberty.mcp.internal
 kind=noship
 edition=full

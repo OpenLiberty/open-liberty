@@ -14,6 +14,7 @@ Bundle-SymbolicName: io.openliberty.mcp
 Bundle-Description: Model Context Protocol API, version ${bVersion}
 
 bVersion=1.0
+publish.wlp.jar.suffix: dev/api/ibm
 
 javac.source: 17
 javac.target: 17
