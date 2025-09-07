@@ -4,17 +4,15 @@ visibility=public
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-API-Package: \
- io.openliberty.mcp.annotations, \
- io.openliberty.mcp.content, \
- io.openliberty.mcp.encoders, \
- io.openliberty.mcp.messaging, \
- io.openliberty.mcp.meta, \
- io.openliberty.mcp.tools
+ io.openliberty.mcp.annotations; type="ibm-api", \
+ io.openliberty.mcp.content; type="ibm-api", \
+ io.openliberty.mcp.encoders; type="ibm-api", \
+ io.openliberty.mcp.messaging; type="ibm-api", \
+ io.openliberty.mcp.meta; type="ibm-api", \
+ io.openliberty.mcp.tools; type="ibm-api"
 IBM-ShortName: mcpServer-1.0
 Subsystem-Name: Model Context Protocol Server 1.0
--features=com.ibm.websphere.appserver.servlet-6.0;ibm.tolerates:=6.1,\
- io.openliberty.cdi-4.0;ibm.tolerates:=4.1,\
- io.openliberty.jsonb-3.0
+-features=io.openliberty.mcpServer1.0.ee-10.0;ibm.tolerates:=11.0
 -bundles=io.openliberty.mcp; location:="dev/api/ibm/", \
  io.openliberty.mcp.internal
 kind=noship
