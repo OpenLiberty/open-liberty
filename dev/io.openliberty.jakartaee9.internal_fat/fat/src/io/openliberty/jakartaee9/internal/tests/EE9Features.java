@@ -228,7 +228,7 @@ public class EE9Features {
         features.add("mpReactiveMessaging-3.0");
 
         // Value-add features which aren't compatible
-        features.remove("mcp-1.0"); // requires EE10+
+        features.remove("mcpServer-1.0"); // requires EE10+
         features.remove("openid-2.0"); // stabilized
         features.remove("openapi-3.1"); // depends on mpOpenAPI
         features.remove("opentracing-1.0"); // opentracing depends on mpConfig
