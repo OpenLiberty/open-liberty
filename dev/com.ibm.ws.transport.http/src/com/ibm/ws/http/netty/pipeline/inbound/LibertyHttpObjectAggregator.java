@@ -67,8 +67,6 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
                 }
                 catch (NumberFormatException e) {
                     String longContentLengthNotSupportMsg = "Only POST request with integer content-length is supported at this time.";
-                    System.out.println(longContentLengthNotSupportMsg);
-                    
                     throw new IllegalArgumentException(longContentLengthNotSupportMsg);
                 }
             }
