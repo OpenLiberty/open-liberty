@@ -97,6 +97,8 @@ public class TestConstants {
 
     public static final String ENV_OTEL_TRACES_SAMPLER = "OTEL_TRACES_SAMPLER";
 
+    public static final String ENV_OTEL_BSP_MAX_EXPORT_BATCH_SIZE = "OTEL_BSP_MAX_EXPORT_BATCH_SIZE";
+
     /*
      * Private constructor, no instances
      */
