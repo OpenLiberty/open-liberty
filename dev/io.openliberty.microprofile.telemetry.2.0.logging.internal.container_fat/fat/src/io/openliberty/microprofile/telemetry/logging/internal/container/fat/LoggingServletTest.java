@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -28,6 +29,7 @@ import org.testcontainers.images.builder.ImageFromDockerfile;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -115,7 +117,8 @@ public class LoggingServletTest {
                                                "io.openliberty.module: Str(io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet)"));
 
         if (!containsSeverityText("testMessageLogs", logs, "INFO")) {
-            System.out.println("NOTE(testMessageLogs): SeverityText not present; relying on SeverityNumber.");
+            Log.info(LoggingServletTest.class, "testMessageLogs",
+                     "NOTE: SeverityText not present; relying on SeverityNumber.");
         }
 
         assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "SeverityNumber: Info"));
@@ -151,7 +154,8 @@ public class LoggingServletTest {
                                                "io.openliberty.module: Str(io.openliberty.microprofile.telemetry.logging.internal.container.fat.MpTelemetryLogApp.MpTelemetryServlet)"));
 
         if (!containsSeverityText("testTraceLogs", logs, "FINEST")) {
-            System.out.println("NOTE(testTraceLogs): SeverityText not present; relying on SeverityNumber.");
+            Log.info(LoggingServletTest.class, "testTraceLogs",
+                     "NOTE: SeverityText not present; relying on SeverityNumber.");
         }
 
         assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "SeverityNumber: Trace(1)"));
@@ -188,7 +192,8 @@ public class LoggingServletTest {
         assertTrue("Probe ID could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "io.openliberty.probe_id"));
 
         if (!containsSeverityText("testFFDCLogs", logs, "")) {
-            System.out.println("NOTE(testFFDCLogs): SeverityText not present; relying on SeverityNumber.");
+            Log.info(LoggingServletTest.class, "testFFDCLogs",
+                     "NOTE: SeverityText not present; relying on SeverityNumber.");
         }
 
         assertTrue("SeverityNumber message could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "SeverityNumber: Warn(13)"));
@@ -315,26 +320,13 @@ public class LoggingServletTest {
     // Accept common variants of severity text in collector output.
     // Check to avoid breaking the JUnit XML transform.
     private static boolean containsSeverityText(String testName, String logs, String expected) {
-        String[] probes = new String[] {
-            "SeverityText: " + expected,
-            "severityText: " + expected,
-            "SeverityText=" + expected,
-            "severityText=" + expected,
-            "severity_text: " + expected,
-            "severity_text=" + expected
-        };
-        for (String p : probes) {
-            if (logs.contains(p)) return true;
-        }
-        // if caller passed "", treat as "any SeverityText token present"
-        if (expected.isEmpty()) {
-            for (String p : new String[]{
-                "SeverityText:", "severityText:", "SeverityText=", "severityText=",
-                "severity_text:", "severity_text="
-            }) {
-                if (logs.contains(p)) return true;
-            }
-        }
-        return false;
+        // Accepts "SeverityText: INFO", "SeverityText:INFO", different cases/spaces.
+        // When expected == "" (FFDC), just check that the key exists in any form.
+        String base = "\\b(?:SeverityText|severityText|severity_text)\\s*:\\s*";
+        String pattern = (expected == null || expected.isEmpty())
+                ? base                                  // key present; value may be empty/omitted
+                : base + Pattern.quote(expected) + "\\b";
+
+        return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(logs).find();
     }
 }

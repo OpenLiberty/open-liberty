@@ -21,6 +21,6 @@
     <!--Java2 security-->
     <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
     
-   	<mpTelemetry source="message,trace"/>
+   	<mpTelemetry source="trace"/>
 
 </server>
