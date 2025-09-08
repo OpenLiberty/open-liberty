@@ -18,7 +18,6 @@ import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.Zipkin
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasParentSpanId;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.span;
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
-// In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
@@ -40,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -52,7 +52,6 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-import io.jaegertracing.api_v2.Model.Log;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
@@ -70,7 +69,7 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 @Mode(TestMode.FULL)
 public class ZipkinOtelCollectorTest {
 
-    private static final Class<?> c = ZipkinTest.class;
+    private static final Class<?> c = ZipkinOtelCollectorTest.class;
     private static final String SERVER_NAME = "spanTestServer";
 
     public static Network network = Network.newNetwork();
@@ -78,11 +77,14 @@ public class ZipkinOtelCollectorTest {
                                                                          .withLogConsumer(new SimpleLogConsumer(ZipkinTest.class, "zipkin"))
                                                                          .withNetwork(network)
                                                                          .withNetworkAliases("zipkin-all-in-one");
-    public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-zipkin.yaml"))
+
+    public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(
+                                                                                             new File("lib/LibertyFATTestFiles/otel-collector-config-zipkin.yaml"))
                                                                                                                                                                    .withNetwork(network)
                                                                                                                                                                    .withNetworkAliases("otel-collector-zipkin")
                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(ZipkinOtelCollectorTest.class,
                                                                                                                                                                                                           "otelCol"));
+
     public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
@@ -99,18 +101,52 @@ public class ZipkinOtelCollectorTest {
     @BeforeClass
     public static void setUp() throws Exception {
 
+        // Configure exporter → collector (gRPC)
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, otelCollectorContainer.getOtlpGrpcUrl());
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_PROTOCOL, "grpc");
+        // Some older agents only honor the per-signal endpoint:
+        server.addEnvVar("OTEL_EXPORTER_OTLP_TRACES_ENDPOINT", otelCollectorContainer.getOtlpGrpcUrl());
+
+        // Service + BSP batching config
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
-        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
-        server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
+        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100");
+        server.addEnvVar(TestConstants.ENV_OTEL_BSP_MAX_EXPORT_BATCH_SIZE, "1");
+        server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false");
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_SAMPLER, "always_on");
 
-        // Construct the test application
+        // Deploy app
         WebArchive spanTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
                                         .addPackage(TestResource.class.getPackage());
         ShrinkHelper.exportAppToServer(server, spanTest, SERVER_ONLY);
         server.startServer();
+
+        // Readiness probe (prevents 404 + cold pipeline flakes)
+        // Up to ~10s, sending a warm-up request until the endpoint responds Ok
+        int attempts = 0;
+        while (attempts < 20) { // 20 * 500ms = 10s max
+            try {
+                new HttpRequest(server, "/spanTest").run(String.class);
+                break; // success, app is ready and first span emitted
+            } catch (Exception e) {
+                Thread.sleep(500);
+                attempts++;
+            }
+        }
+
+        // Additional warm-up for older stacks
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)
+            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)
+            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)
+            || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+            try {
+                Thread.sleep(1000);
+                new HttpRequest(server, "/spanTest").run(String.class);
+                Thread.sleep(400);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     @AfterClass
@@ -119,19 +155,16 @@ public class ZipkinOtelCollectorTest {
     }
 
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
-                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID,
-                     TelemetryActions.MP14_MPTEL21_ID, TelemetryActions.MP41_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_JAVA8_ID,
-                     MicroProfileActions.MP71_EE10_ID, MicroProfileActions.MP71_EE11_ID })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID,
+                     TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP61_MPTEL20_ID,
+                     MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
     public void testBasicTelemetry1() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
-
         String traceId = request.run(String.class);
         Log.info(c, "testBasic", "TraceId is " + traceId);
 
-        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+        List<ZipkinSpan> spans = waitForSpansWithGrace(traceId, 1);
         Log.info(c, "testBasic", "Spans returned: " + spans);
-
         ZipkinSpan span = spans.get(0);
 
         assertThat(span, span().withTraceId(traceId)
@@ -140,17 +173,15 @@ public class ZipkinOtelCollectorTest {
     }
 
     @Test
-    @SkipForRepeat({ MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID,
-                     MicroProfileActions.MP61_ID, TelemetryActions.MP14_MPTEL21_ID, TelemetryActions.MP41_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_ID})
+    @SkipForRepeat({ MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID,
+                     TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID })
     public void testBasicTelemetry2() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
-
         String traceId = request.run(String.class);
         Log.info(c, "testBasic", "TraceId is " + traceId);
 
-        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+        List<ZipkinSpan> spans = waitForSpansWithGrace(traceId, 1);
         Log.info(c, "testBasic", "Spans returned: " + spans);
-
         ZipkinSpan span = spans.get(0);
 
         assertThat(span, span().withTraceId(traceId)
@@ -162,10 +193,9 @@ public class ZipkinOtelCollectorTest {
     public void testEventAdded() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest/eventAdded");
         String traceId = request.run(String.class);
-        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
 
+        List<ZipkinSpan> spans = waitForSpansWithGrace(traceId, 1);
         ZipkinSpan span = spans.get(0);
-
         assertThat(span, hasAnnotation(TestResource.TEST_EVENT_NAME));
     }
 
@@ -173,7 +203,8 @@ public class ZipkinOtelCollectorTest {
     public void testSubspan() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest/subspan");
         String traceId = request.run(String.class);
-        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(2));
+
+        List<ZipkinSpan> spans = waitForSpansWithGrace(traceId, 2);
 
         ZipkinSpan parent, child;
         if (hasParent(spans.get(0))) {
@@ -187,7 +218,6 @@ public class ZipkinOtelCollectorTest {
         assertThat(parent, hasNoParent());
         assertThat(child, hasParentSpanId(parent.getId()));
 
-        // Note that zipkin lowercases the name
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             assertThat(parent, hasProperty("name", equalToIgnoringCase("/spanTest/subspan")));
         } else {
@@ -200,7 +230,8 @@ public class ZipkinOtelCollectorTest {
     public void testExceptionRecorded() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest/exception");
         String traceId = request.run(String.class);
-        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
+
+        List<ZipkinSpan> spans = waitForSpansWithGrace(traceId, 1);
         ZipkinSpan span = spans.get(0);
         assertThat(span, ZipkinSpanMatcher.hasAnnotation(containsString("exception")));
     }
@@ -209,10 +240,9 @@ public class ZipkinOtelCollectorTest {
     public void testAttributeAdded() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest/attributeAdded");
         String traceId = request.run(String.class);
-        List<ZipkinSpan> spans = client.waitForSpansForTraceId(traceId, hasSize(1));
 
+        List<ZipkinSpan> spans = waitForSpansWithGrace(traceId, 1);
         ZipkinSpan span = spans.get(0);
-
         assertThat(span, ZipkinSpanMatcher.hasTag(TestResource.TEST_ATTRIBUTE_KEY.getKey(), TestResource.TEST_ATTRIBUTE_VALUE));
     }
 
@@ -220,4 +250,20 @@ public class ZipkinOtelCollectorTest {
         return span.getParentId() != null;
     }
 
+    private List<ZipkinSpan> waitForSpansWithGrace(String traceId, int expectedSize) throws Exception {
+        long graceMs = 750; // default
+
+        // Old stacks: more time
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            graceMs = 2500;
+        } else if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)
+                   || RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID)) {
+            graceMs = 1500;
+        } else if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+            graceMs = 2000;
+        }
+
+        Thread.sleep(graceMs);
+        return client.waitForSpansForTraceId(traceId, hasSize(expectedSize));
+    }
 }
