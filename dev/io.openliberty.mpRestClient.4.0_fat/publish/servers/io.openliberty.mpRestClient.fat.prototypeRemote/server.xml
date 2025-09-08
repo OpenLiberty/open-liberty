@@ -12,5 +12,3 @@
                  httpPort="${bvt.prop.HTTP_secondary}"
                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 </server>
-
-<!-- Made with Bob -->
