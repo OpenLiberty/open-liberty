@@ -27,6 +27,7 @@ import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import com.ibm.websphere.simplicity.log.Log;
 
 import java.io.File;
 import java.util.List;
@@ -54,7 +55,6 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-import io.jaegertracing.api_v2.Model.Log;
 import io.openliberty.microprofile.telemetry.internal.apps.spanTest.TestResource;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.otelCollector.OtelCollectorContainer;
