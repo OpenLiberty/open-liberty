@@ -8,7 +8,7 @@
   <include location="../fatTestPorts.xml"/>
 
   <library id="DB2JCCLib">
-    <file name="${shared.resource.dir}/jdbc/jcc.jar" />
+    <file name="${shared.resource.dir}/jcc/jcc.jar" />
   </library>
   
   <kerberos keytab="${KRB5_KEYTAB}" configFile="${KRB5_CONF}"/>
@@ -69,7 +69,7 @@
     <containerAuthData user="${DB2_USER}"  password="${DB2_PASS}"/>
   </dataSource>
     
-  <javaPermission codebase="${shared.resource.dir}/jdbc/jcc.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/jcc/jcc.jar" className="java.security.AllPermission"/>
   <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
   <javaPermission className="javax.security.auth.kerberos.ServicePermission" name="*" actions="initiate"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

@@ -7,6 +7,9 @@ echo "(*) Change external hostname to db2"
 sudo hostname db2
 hostname
 
+echo "(*) Create new user dbuser"
+useradd -s /bin/bash dbuser
+
 echo "(*) Persist env variables to user profile"
 USERPROFILE=/database/config/db2inst1/sqllib/userprofile
 echo "export DB2_KRB5_PRINCIPAL=${DB2_KRB5_PRINCIPAL}" >> $USERPROFILE
@@ -28,6 +31,12 @@ kinit -k -t /etc/krb5.keytab db2inst1/db2
 
 echo "(*) Debug credential cache"
 klist -e -f -a
+
+echo "(*) Grant connect to dbuser"
+db2 connect to TESTDB
+db2 grant createtab, implicit_schema, connect on database to user dbuser
+db2 grant use of tablespace USERSPACE1 to user dbuser
+db2 terminate
 
 echo "(*) Restart database"
 ## Uncomment to debug the restart process
