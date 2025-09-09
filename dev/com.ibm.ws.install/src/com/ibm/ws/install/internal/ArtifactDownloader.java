@@ -209,9 +209,8 @@ public class ArtifactDownloader implements AutoCloseable {
 
         checksumFormats[3] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
         checksumFormats[2] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1;
-        checksumFormats[1] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
-        checksumFormats[0] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512;
-
+        checksumFormats[1] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+        checksumFormats[0] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512;
 
         dLocation = FormatPathSuffix(dLocation);
         String repo = FormatUrlSuffix(repository.getRepositoryUrl());

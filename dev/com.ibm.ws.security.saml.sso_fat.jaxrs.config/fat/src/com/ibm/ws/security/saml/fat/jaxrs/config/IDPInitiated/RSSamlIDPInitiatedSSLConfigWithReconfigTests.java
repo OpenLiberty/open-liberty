@@ -84,7 +84,7 @@ public class RSSamlIDPInitiatedSSLConfigWithReconfigTests extends RSSamlIDPIniti
 
         RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
         RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA128);
+        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_128);
 
         List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
 
@@ -104,7 +104,7 @@ public class RSSamlIDPInitiatedSSLConfigWithReconfigTests extends RSSamlIDPIniti
 
         RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
         RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256);
+        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
 
         List<validationData> expectations = get401ExpectationsForJaxrsGet("Did not get the expected message saying the received signature was not valid and weaker than required.",
                 SAMLMessageConstants.CWWKS5049E_SIGNATURE_NOT_TRUSTED_OR_VALID);
@@ -123,7 +123,7 @@ public class RSSamlIDPInitiatedSSLConfigWithReconfigTests extends RSSamlIDPIniti
 
         RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
         RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA128);
+        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_128);
 
         // Update test settings to use an SP that encrypts SAML assertions
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();

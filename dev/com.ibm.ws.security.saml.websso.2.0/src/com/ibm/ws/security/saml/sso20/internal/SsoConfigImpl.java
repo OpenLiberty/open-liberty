@@ -130,7 +130,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
     String keyStoreRef = null;
     String keyAlias = null;
     String keyPassword = null;
-    String signatureMethodAlgorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+    String signatureMethodAlgorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
     String userIdentifier = "NameID";
     String groupIdentifier = null;
     String userUniqueIdentifier = "NameID";
@@ -583,7 +583,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
      */
     @Override
     public String getSignatureMethodAlgorithm() {
-        if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.equalsIgnoreCase(signatureMethodAlgorithm)) {
+        if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256.equalsIgnoreCase(signatureMethodAlgorithm)) {
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
         } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.equalsIgnoreCase(signatureMethodAlgorithm)) {
             // FIPS 140-3: Algorithm assessment complete; no changes required.

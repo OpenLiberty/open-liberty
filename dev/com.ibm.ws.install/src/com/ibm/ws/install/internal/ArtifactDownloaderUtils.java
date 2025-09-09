@@ -156,7 +156,7 @@ public class ArtifactDownloaderUtils {
     }
 
     public static String getChecksum(String filename, String format) throws NoSuchAlgorithmException, IOException {
-        if (format.equals(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256)) {
+        if (format.equals(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256)) {
             format = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
         }
         byte[] b = createChecksum(filename, format);

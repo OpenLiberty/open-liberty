@@ -85,7 +85,7 @@ public class OpenidClientConfigImpl implements OpenidClientConfig {
     public static final String SIGNATURE_HMAC_SHA256 = "HMAC-SHA256";
 
     public static final String HASH_ALG_SHA1 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1;
-    public static final String HASH_ALG_SHA256 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+    public static final String HASH_ALG_SHA256 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
 
     public static final String KEY_CONFIGURATION_ADMIN = "configurationAdmin";
 
