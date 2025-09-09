@@ -13,6 +13,7 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.openliberty.mcp.internal.McpRequestId;
 import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.MCPRequestValidationException;
 import jakarta.json.Json;
@@ -24,7 +25,7 @@ import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
 
 public record McpRequest(String jsonrpc,
-                         Object id,
+                         McpRequestId id,
                          String method,
                          JsonObject params) {
 
@@ -72,7 +73,7 @@ public record McpRequest(String jsonrpc,
             return createMCPNotificationRequest(jsonRpc, method, params);
         }
 
-        Object idObj = parseAndValidateId(id, errors);
+        McpRequestId idObj = parseAndValidateId(id, errors);
 
         if (!errors.isEmpty()) {
             throw new MCPRequestValidationException(errors);
@@ -98,17 +99,19 @@ public record McpRequest(String jsonrpc,
         }
     }
 
-    private static Object parseAndValidateId(JsonValue id, List<String> errors) {
-
+    private static McpRequestId parseAndValidateId(JsonValue id, List<String> errors) {
         return switch (id.getValueType()) {
-            case NUMBER -> ((JsonNumber) id).numberValue();
+            case NUMBER -> {
+                Number idNumber = ((JsonNumber) id).numberValue();
+                yield new McpRequestId(idNumber);
+            }
             case STRING -> {
                 String idString = ((JsonString) id).getString();
                 if (idString.isBlank()) {
                     errors.add("id must not be empty");
                     yield null;
                 }
-                yield idString;
+                yield new McpRequestId(idString);
             }
             default -> {
                 errors.add("id must be a string or number");

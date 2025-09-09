@@ -159,7 +159,7 @@ public class McpTransport {
      * @throws IOException
      */
     public void sendResponse(Object result) {
-        McpResponse mcpResponse = new McpResultResponse(mcpRequest.id(), result);
+        McpResponse mcpResponse = new McpResultResponse(mcpRequest.id().getValue(), result);
         jsonb.toJson(mcpResponse, writer);
     }
 
@@ -191,7 +191,7 @@ public class McpTransport {
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? "" : mcpRequest.id(), e);
+        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? "" : mcpRequest.id().getValue(), e);
         jsonb.toJson(mcpResponse, writer);
     }
 

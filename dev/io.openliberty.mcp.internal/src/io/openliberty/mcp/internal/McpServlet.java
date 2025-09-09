@@ -321,7 +321,7 @@ public class McpServlet extends HttpServlet {
     }
 
     private RequestId createOngoingRequestId(McpTransport transport) {
-        return new RequestId(transport.getMcpRequest().id().toString(),
+        return new RequestId(transport.getMcpRequest().id().getValue().toString(),
                              transport.getRequestIpAddress());
     }
 }
