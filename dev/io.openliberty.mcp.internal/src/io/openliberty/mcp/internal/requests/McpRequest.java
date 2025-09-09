@@ -13,7 +13,6 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.openliberty.mcp.internal.McpRequestId;
 import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.MCPRequestValidationException;
 import jakarta.json.Json;

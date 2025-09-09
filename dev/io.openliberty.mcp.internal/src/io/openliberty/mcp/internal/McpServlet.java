@@ -30,6 +30,7 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
+import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import io.openliberty.mcp.internal.requests.RequestId;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
@@ -303,7 +304,8 @@ public class McpServlet extends HttpServlet {
 
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
-        RequestId requestId = new RequestId(notificationParams.getRequestId(), transport.getRequestIpAddress());
+        McpRequestId mcpRedId = new McpRequestId(notificationParams.getRequestId());
+        RequestId requestId = new RequestId(mcpRedId, transport.getRequestIpAddress());
         Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -321,7 +323,7 @@ public class McpServlet extends HttpServlet {
     }
 
     private RequestId createOngoingRequestId(McpTransport transport) {
-        return new RequestId(transport.getMcpRequest().id().getValue().toString(),
+        return new RequestId(transport.getMcpRequest().id(),
                              transport.getRequestIpAddress());
     }
 }

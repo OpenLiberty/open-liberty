@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal;
+package io.openliberty.mcp.internal.requests;
 
 import java.util.Objects;
 
