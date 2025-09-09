@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.test;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertTrue;
 
 import java.io.StringReader;
 import java.util.Collections;
@@ -79,8 +80,8 @@ public class MessageParsingTest {
                           }
                         }
                         """);
-        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(((Number) request.id()).intValue(), equalTo(2));
+        McpRequest request = McpRequest.createValidMCPRequest(reader);
+        assertTrue(request.id().equals(2));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.TOOLS_CALL));
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         assertThat(toolCallRequest.getArguments(jsonb), arrayContaining("Hello"));
@@ -102,8 +103,8 @@ public class MessageParsingTest {
                           }
                         }
                         """);
-        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.id(), equalTo("2"));
+        McpRequest request = McpRequest.createValidMCPRequest(reader);
+        assertThat(request.id().getValue(), equalTo("2"));
     }
 
     @Test(expected = JSONRPCException.class)
@@ -207,8 +208,8 @@ public class MessageParsingTest {
                         }
                         """);
 
-        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.id(), equalTo("1"));
+        McpRequest request = McpRequest.createValidMCPRequest(reader);
+        assertThat(request.id().getValue(), equalTo("1"));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.INITIALIZE));
         McpInitializeParams params = request.getParams(McpInitializeParams.class, jsonb);
         assertThat(params.getProtocolVersion(), equalTo("2024-11-05"));
@@ -278,7 +279,7 @@ public class MessageParsingTest {
                           }
                         }
                         """);
-        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
+        McpRequest request = McpRequest.createValidMCPRequest(reader);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         assertThat(toolCallRequest.getArguments(jsonb), arrayContaining(111, 222));
     }
@@ -299,7 +300,7 @@ public class MessageParsingTest {
                           }
                         }
                         """);
-        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
+        McpRequest request = McpRequest.createValidMCPRequest(reader);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         assertThat(toolCallRequest.getArguments(jsonb), arrayContaining(true));
     }
