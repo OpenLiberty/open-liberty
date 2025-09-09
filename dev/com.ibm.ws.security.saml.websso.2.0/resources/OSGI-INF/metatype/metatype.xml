@@ -30,6 +30,7 @@
         <AD id="signatureMethodAlgorithm" name ="%signatureMethodAlgorithm" description="%signatureMethodAlgorithm.desc"
             required="false" type="String" default="SHA256">
                 <!-- defect 168307 Option label="%signatureMethodAlgorithm.NONE"   value="none" / -->
+                <Option label="%signatureMethodAlgorithm.ECDSAwithSHA256" value="ECDSAwithSHA256" />
             	<Option label="%signatureMethodAlgorithm.SHA256" value="SHA256" />
             	<Option label="%signatureMethodAlgorithm.SHA128" value="SHA128" />
             	<Option label="%signatureMethodAlgorithm.SHA1"   value="SHA1" />

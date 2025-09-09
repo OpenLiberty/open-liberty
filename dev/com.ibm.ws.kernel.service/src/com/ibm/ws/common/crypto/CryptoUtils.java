@@ -95,6 +95,7 @@ public class CryptoUtils {
     public static final String SIGNATURE_ALGORITHM_SHA1WITHRSA = "SHA1withRSA";
     public static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
     public static final String SIGNATURE_ALGORITHM_SHA512WITHRSA = "SHA512withRSA";
+    public static final String SIGNATURE_ALGORITHM_ECDSAWITHSHA256 = "ECDSAwithSHA256";
     public static final String RSA_SHA_512 = "RSA/SHA-512";
     public static final String RSA_SHA_1 = "RSA/SHA-1";
     public static final String CRYPTO_ALGORITHM_RSA = "RSA";
