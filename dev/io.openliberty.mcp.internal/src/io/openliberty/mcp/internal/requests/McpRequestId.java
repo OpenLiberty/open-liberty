@@ -12,7 +12,8 @@ package io.openliberty.mcp.internal.requests;
 import java.util.Objects;
 
 /**
- *
+ * Used to store the id of an McpRequest,
+ * which can either be represented as a String or Integer.
  */
 public final class McpRequestId {
 
@@ -36,7 +37,14 @@ public final class McpRequestId {
         return val instanceof Integer || val instanceof Short || val instanceof Long || val instanceof Byte;
     }
 
-    private boolean isEqual(Object val1, Object val2) {
+    /**
+     * Compares two id values for equality, considering only String and Number types.
+     *
+     * @param val1 The first object to compare.
+     * @param val2 The second object to compare.
+     * @return True if the objects are equal, false otherwise.
+     */
+    public static boolean mcpIdsAreEqual(Object val1, Object val2) {
         if (isString(val1) && isString(val2))
             return val1.equals(val2);
         if (isInteger(val1) && isInteger(val2)) {
@@ -47,17 +55,30 @@ public final class McpRequestId {
         return false;
     }
 
+    /**
+     * Overrides the equals method to compare if the inputted object
+     * has the same id value as this object
+     *
+     * @param obj The object to compare.
+     * @return True if the inputted object is either a McpRequestId with the same id value
+     * or the inputted object is an id with the same value as this object, false if otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
         if (obj instanceof McpRequestId) {
             McpRequestId objToCompare = (McpRequestId) obj;
-            return isEqual(this.value, objToCompare.getValue());
+            return mcpIdsAreEqual(this.value, objToCompare.getValue());
         }
-        return isEqual(this.value, obj);
+        return mcpIdsAreEqual(this.value, obj);
     }
 
+    /**
+     * Overrides the hashCode method to generate a hash code based on the stored id value.
+     *
+     * @return The hash code for this McpRequestId object based on the stored id value.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(value);
