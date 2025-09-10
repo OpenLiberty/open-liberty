@@ -19,8 +19,6 @@ publish.wlp.jar.suffix: dev/api/ibm
 javac.source: 17
 javac.target: 17
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
-
 WS-TraceGroup: MCP
 
 Export-Package: \
