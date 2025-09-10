@@ -58,6 +58,19 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
             CompositeByteBuf content = ctx.alloc().compositeBuffer();
             ctx.channel().attr(COMPOSITE_CONTENT).set(content);
+            
+            //If POST, check for integer content-length; fail-fast if CL is long which is not supported at this time.
+            String value = request.getMethod().name().equals("POST") ? request.headers().get(io.netty.handler.codec.http.HttpHeaderNames.CONTENT_LENGTH) : null ;
+            if (value != null) {
+                try {
+                    Integer.parseInt(value);
+                }
+                catch (NumberFormatException e) {
+                    String longContentLengthNotSupportMsg = "Only POST request with integer content-length is supported at this time.";
+                    throw new IllegalArgumentException(longContentLengthNotSupportMsg);
+                }
+            }
+            //END
         } else if (msg instanceof HttpContent) {
             CompositeByteBuf content = ctx.channel().attr(COMPOSITE_CONTENT).get();
             if (content != null) {
