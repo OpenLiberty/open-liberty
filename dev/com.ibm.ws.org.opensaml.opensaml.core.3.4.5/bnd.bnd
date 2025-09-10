@@ -17,11 +17,19 @@
 
 -buildpath: \
     org.opensaml:opensaml-core;version=4.3.2,\
+    org.opensaml:opensaml-xmlsec-api;version='4.3.2',\
+    org.opensaml:opensaml-xmlsec-impl;version='4.3.2',\
+    org.opensaml:opensaml-security-api;version='4.3.2',\
+    org.opensaml:opensaml-security-impl;version='4.3.2',\
+    com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5;version=latest,\
+    com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
+    org.cryptacular:cryptacular;version=1.2.4,\
     com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
 	io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
 	io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
 	io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest,\
 	com.ibm.ws.com.google.guava;version=latest,\
-    com.ibm.ws.org.slf4j.api;version=latest
+    com.ibm.ws.org.slf4j.api;version=latest,\
+    org.jsr-305
 
 instrument.ffdc: true
