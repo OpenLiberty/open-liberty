@@ -118,6 +118,7 @@ Import-Package: \
  java.util.function,\
  javax.annotation,\
  javax.crypto,\
+ javax.crypto.*,\
  javax.servlet.http,\
  javax.xml.namespace;version=!,\
  javax.xml.transform;version=!,\
@@ -133,6 +134,7 @@ Import-Package: \
  !com.beust.jcommander, \
  !com.beust.jcommander.converters,\
  com.google.common.base,\
+ com.google.common.primitives,\
  !com.google.appengine.api,\
  !com.google.apphosting.api,\
  !com.google.common.util.concurrent.internal,\
@@ -148,10 +150,14 @@ Import-Package: \
  !org.apache.http.client.cache,\
  !org.apache.http.impl.client.cache,\
  !org.apache.velocity.*,\
- !org.bouncycastle.asn1,\
+ org.bouncycastle.asn1,\
  !org.bouncycastle.asn1.x500,\
- !org.bouncycastle.asn1.x509,\
+ org.bouncycastle.asn1.x509,\
+ !org.bouncycastle.jce,\
  org.bouncycastle.crypto,\
+ org.bouncycastle.crypto.params,\
+ org.bouncycastle.crypto.digests,\
+ org.bouncycastle.crypto.agreement.*,\
  org.cryptacular.x509.dn,\
  org.cryptacular.x509,\
  org.cryptacular.*,\
@@ -188,5 +194,6 @@ Include-Resource: \
  @${repo;org.opensaml:opensaml-xacml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
  @${repo;org.opensaml:opensaml-xacml-saml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
  @${repo;io.dropwizard.metrics:metrics-core;4.2.25}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ org/opensaml=${bin}/org/opensaml, \
  META-INF=resources/META-INF
 

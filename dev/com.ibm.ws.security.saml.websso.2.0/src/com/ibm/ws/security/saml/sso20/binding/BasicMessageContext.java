@@ -13,7 +13,10 @@
 
 package com.ibm.ws.security.saml.sso20.binding;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,9 +43,19 @@ import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.encryption.support.ChainingEncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.EncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.InlineEncryptedKeyResolver;
+import org.opensaml.xmlsec.encryption.support.SimpleKeyInfoReferenceEncryptedKeyResolver;
 import org.opensaml.xmlsec.encryption.support.SimpleRetrievalMethodEncryptedKeyResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.impl.CollectionKeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.impl.KeyInfoProvider;
+import org.opensaml.xmlsec.keyinfo.impl.LocalKeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.impl.provider.AgreementMethodKeyInfoProvider;
+import org.opensaml.xmlsec.keyinfo.impl.provider.DEREncodedKeyValueProvider;
+import org.opensaml.xmlsec.keyinfo.impl.provider.DSAKeyValueProvider;
+import org.opensaml.xmlsec.keyinfo.impl.provider.ECKeyValueProvider;
+import org.opensaml.xmlsec.keyinfo.impl.provider.InlineX509DataProvider;
+import org.opensaml.xmlsec.keyinfo.impl.provider.RSAKeyValueProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -106,6 +119,7 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     EncryptedKeyResolver inline = new InlineEncryptedKeyResolver();
     EncryptedKeyResolver encryptedelem = new EncryptedElementTypeEncryptedKeyResolver();
     EncryptedKeyResolver simple = new SimpleRetrievalMethodEncryptedKeyResolver();
+    EncryptedKeyResolver simpleref = new SimpleKeyInfoReferenceEncryptedKeyResolver();
 
     SAMLPeerEntityContext samlPeerEntityContext = new SAMLPeerEntityContext();
 
@@ -118,7 +132,7 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     public BasicMessageContext(SsoSamlService ssoService) {
         this.ssoService = ssoService;
         this.ssoConfig = ssoService.getConfig();
-        resolverChain = Arrays.asList(inline, encryptedelem, simple);
+        resolverChain = Arrays.asList(inline, encryptedelem, simple, simpleref);
         encryptedKeyResolver = new ChainingEncryptedKeyResolver(resolverChain);
     }
 
@@ -127,7 +141,7 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
         this.ssoConfig = ssoService.getConfig();
         this.request = request;
         this.response = response;
-        resolverChain = Arrays.asList(inline, encryptedelem, simple);
+        resolverChain = Arrays.asList(inline, encryptedelem, simple, simpleref);
         encryptedKeyResolver = new ChainingEncryptedKeyResolver(resolverChain);
     }
 
@@ -246,6 +260,37 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
         return null;
     }
 
+    // Construct decrypter according the SsoConfig - v4 update
+    public void setKeyDecrypter() throws SamlException {
+        if (decrypter == null) {
+            Credential decryptingCredential = RequestUtil.getDecryptingCredential(ssoService);
+            Collection<Credential> credentials = Collections.singleton(decryptingCredential);
+            List<KeyInfoProvider> keyInfoProviders = new ArrayList<>();
+            keyInfoProviders.add(new RSAKeyValueProvider());
+            keyInfoProviders.add(new DSAKeyValueProvider());
+            keyInfoProviders.add(new ECKeyValueProvider());
+            keyInfoProviders.add(new DEREncodedKeyValueProvider());
+            keyInfoProviders.add(new InlineX509DataProvider());
+            keyInfoProviders.add(new AgreementMethodKeyInfoProvider());
+            KeyInfoCredentialResolver credresolver = new CollectionKeyInfoCredentialResolver(credentials);//new StaticKeyInfoCredentialResolver(decryptingCredential);
+            LocalKeyInfoCredentialResolver resolver = new LocalKeyInfoCredentialResolver(keyInfoProviders, credresolver);
+
+            /*
+             * decrypter = new Decrypter(null, // symmetric
+             * resolver, // asymmetric
+             * encryptedKeyResolver);
+             */
+            /*
+             * decrypter = new Decrypter(resolver, // symmetric
+             * null, // asymmetric
+             * null);
+             */
+            decrypter = new Decrypter(resolver, resolver, encryptedKeyResolver);
+            decrypter.setRootInNewDocument(true);
+
+        }
+    }
+
     // Construct an decrypter according the SsoConfig
     public void setDecrypter() throws SamlException {
         if (decrypter == null) {
@@ -261,7 +306,7 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
     // Construct an decrypter according the SsoConfig
     public Decrypter getDecrypter() throws SamlException {
         if (decrypter == null) {
-            setDecrypter();
+            setKeyDecrypter();
         }
         return decrypter; // This could be null
     }
