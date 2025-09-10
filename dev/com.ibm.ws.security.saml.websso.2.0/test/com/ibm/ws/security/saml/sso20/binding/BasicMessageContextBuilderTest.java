@@ -12,16 +12,15 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.binding;
 
-
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.integration.junit4.JUnit4Mockery;
-import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -32,19 +31,16 @@ import org.opensaml.core.config.Configuration;
 import org.opensaml.core.config.ConfigurationService;
 import org.opensaml.core.config.provider.MapBasedConfiguration;
 import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
-
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.core.xml.config.XMLObjectProviderRegistry;
-
-
 import org.opensaml.core.xml.io.UnmarshallingException;
-
 import org.opensaml.messaging.context.MessageContext;
 
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoRequest;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.error.SamlException;
+import com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
 import test.common.SharedOutputManager;
@@ -56,12 +52,6 @@ public class BasicMessageContextBuilderTest {
     @Rule
     public TestRule managerRule = outputMgr;
 
-    public static final Mockery mockery = new JUnit4Mockery() {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
-
     private static BasicMessageContextBuilder instance;
     private static QName qnLogoutRequest;
 
@@ -72,21 +62,20 @@ public class BasicMessageContextBuilderTest {
 
     public interface MockInterface {
         BasicMessageContext<?, ?> getBasicMessageContext();
-
         HTTPPostDecoder getSamlHttpPostDecoder();
     }
 
-    private static final MockInterface mockInterface = mockery.mock(MockInterface.class);
-
-    private static final BasicMessageContext basicMessageContext = mockery.mock(BasicMessageContext.class, "basicMessageContextCB");
-    private static final MessageContext messageContext = mockery.mock(MessageContext.class);
-    private static final HttpServletRequest httpServletRequest = mockery.mock(HttpServletRequest.class);
-    private static final HttpServletResponse httpServletResponse = mockery.mock(HttpServletResponse.class);
-    private static final SsoSamlService ssoService = mockery.mock(SsoSamlService.class);
-    private static final SsoRequest ssoRequest = mockery.mock(SsoRequest.class);
-    private static final SsoConfig ssoConfig = mockery.mock(SsoConfig.class);
-    private static final AcsDOMMetadataProvider acsDOM = mockery.mock(AcsDOMMetadataProvider.class);
-    private static final HTTPPostDecoder httpPostDecoder = mockery.mock(HTTPPostDecoder.class);
+    private static CommonMockitoObjects mockitoObjects;
+    private static MockInterface mockInterface;
+    private static BasicMessageContext basicMessageContext;
+    private static MessageContext messageContext;
+    private static HttpServletRequest httpServletRequest;
+    private static HttpServletResponse httpServletResponse;
+    private static SsoSamlService ssoService;
+    private static SsoRequest ssoRequest;
+    private static SsoConfig ssoConfig;
+    private static AcsDOMMetadataProvider acsDOM;
+    private static HTTPPostDecoder httpPostDecoder;
 
     @BeforeClass
     public static void setUp() {
@@ -94,23 +83,30 @@ public class BasicMessageContextBuilderTest {
         instance = new BasicMessageContextBuilder();
         qnLogoutRequest = new QName(QN_NS_URI, QN_LOCALNAME, QN_NAME);
         
+        // Initialize Mockito objects
+        mockitoObjects = new CommonMockitoObjects();
+        mockInterface = mock(MockInterface.class);
+        basicMessageContext = mockitoObjects.getBasicMessageContext();
+        messageContext = mockitoObjects.getMessageContext();
+        httpServletRequest = mockitoObjects.getServletRequest();
+        httpServletResponse = mockitoObjects.getServletResponse();
+        ssoService = mockitoObjects.getSsoService();
+        ssoRequest = mockitoObjects.getSsoRequest();
+        ssoConfig = mockitoObjects.getSsoConfig();
+        acsDOM = mock(AcsDOMMetadataProvider.class);
+        httpPostDecoder = mock(HTTPPostDecoder.class);
+        
         Configuration configuration = new MapBasedConfiguration();
         ConfigurationService.setConfiguration(configuration);
 
         XMLObjectProviderRegistry providerRegistry = new XMLObjectProviderRegistry();
         configuration.register(XMLObjectProviderRegistry.class, providerRegistry,
                                ConfigurationService.DEFAULT_PARTITION_NAME);
-
     }
 
     @AfterClass
     public static void tearDown() {
         outputMgr.trace("*=all=disabled");
-    }
-
-    @After
-    public void isSatisfied() {
-        mockery.assertIsSatisfied();
     }
 
     @Test
@@ -132,48 +128,30 @@ public class BasicMessageContextBuilderTest {
             }
         };
 
-        mockery.checking(new Expectations() {
-            {
-                one(mockInterface).getBasicMessageContext();
-                will(returnValue(basicMessageContext));
+        // Setup mock behavior
+        when(mockInterface.getBasicMessageContext()).thenReturn(basicMessageContext);
+        when(basicMessageContext.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.getIdpMetadataProvider()).thenReturn(acsDOM);
+        when(basicMessageContext.getHttpServletRequest()).thenReturn(httpServletRequest);
+        when(basicMessageContext.getSsoService()).thenReturn(ssoService);
+        when(ssoService.getProviderId()).thenReturn("sp1");
+        when(ssoConfig.getSpHostAndPort()).thenReturn("http://www.ibm.com");
+        when(mockInterface.getSamlHttpPostDecoder()).thenReturn(httpPostDecoder);
+        when(httpPostDecoder.getMessageContext()).thenReturn(messageContext);
 
-                one(basicMessageContext).setAndRemoveCachedRequestInfo(RELAY_STATE, ssoRequest);
-                //one(basicMessageContext).setInboundMessageTransport(with(any(HttpServletRequestAdapter.class)));
-
-                allowing(basicMessageContext).getSsoConfig();
-                will(returnValue(ssoConfig));
-
-                one(ssoConfig).getIdpMetadataProvider();
-                will(returnValue(acsDOM));
-
-                one(basicMessageContext).setMetadataProvider(acsDOM);
-
-                one(basicMessageContext).getHttpServletRequest();
-                will(returnValue(httpServletRequest));
-
-                one(basicMessageContext).getSsoService();
-                will(returnValue(ssoService));
-
-                one(ssoService).getProviderId();
-                will(returnValue("sp1"));
-               
-                one(ssoConfig).getSpHostAndPort();
-                will(returnValue("http://www.ibm.com"));
-
-                one(mockInterface).getSamlHttpPostDecoder();
-                will(returnValue(httpPostDecoder));
-
-                one(httpPostDecoder).decode();
-                
-                allowing(httpPostDecoder).getMessageContext();
-                will(returnValue(messageContext));
-                
-                allowing(basicMessageContext).setMessageContext(with(any(MessageContext.class)));
-
-            }
-        });
-
+        // Execute the method under test
         instance.buildAcs(httpServletRequest, httpServletResponse, ssoService, RELAY_STATE, ssoRequest);
+        
+        // Verify interactions
+        verify(basicMessageContext).setAndRemoveCachedRequestInfo(RELAY_STATE, ssoRequest);
+        verify(ssoConfig).getIdpMetadataProvider();
+        verify(basicMessageContext).setMetadataProvider(acsDOM);
+        verify(basicMessageContext).getHttpServletRequest();
+        verify(basicMessageContext).getSsoService();
+        verify(ssoService).getProviderId();
+        verify(ssoConfig).getSpHostAndPort();
+        verify(httpPostDecoder).decode();
+        // We don't verify setMessageContext because it uses any() matcher and is called multiple times
     }
 
 }

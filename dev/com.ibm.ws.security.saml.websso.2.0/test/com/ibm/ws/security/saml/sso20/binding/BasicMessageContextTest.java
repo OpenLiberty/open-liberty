@@ -33,7 +33,7 @@ import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
-import org.joda.time.DateTime;
+import java.time.Instant;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -85,7 +85,7 @@ public class BasicMessageContextTest {
         }
     };
 
-    private final DateTime date = new DateTime(2015, 6, 12, 15, 23, 0, 0);
+    private final Instant date = Instant.parse("2015-06-12T15:23:00Z");
     private static List<XMLObject> listXMLObjects = new ArrayList<XMLObject>();
 
     private static final Cache cache = mockery.mock(Cache.class);
