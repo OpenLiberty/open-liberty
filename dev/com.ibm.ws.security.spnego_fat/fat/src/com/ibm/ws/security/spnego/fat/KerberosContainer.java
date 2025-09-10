@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.charset.Charset;
 
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -44,6 +45,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static final String KRB5_KDC = "kerberos";
     public static final String KRB5_PASS = "password";
     public static String KDC_HOSTNAME = "notSetYet";
+        private static boolean isZOS = System.getProperty("os.name").equals("z/OS");
 
     private static final RemoteDockerImage SPNEGO_KDC_SERVER = ImageBuilder.build("spnego-kdc-server:1.0.0.1").getFuture();
 
@@ -155,7 +157,8 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                       "        ." + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n" +
                       "        " + KRB5_REALM.toLowerCase() + " = " + KRB5_REALM.toUpperCase() + "\n";
         outputPath.getParent().toFile().mkdirs();
-        Files.write(outputPath, conf.getBytes(StandardCharsets.UTF_8));
+        Charset charSet = isZOS?Charset.forName("IBM-1047"):StandardCharsets.UTF_8;
+        Files.write(outputPath, conf.getBytes(charSet));
     }
 
     public void generateJAASConf(Path outputPath) throws IOException {

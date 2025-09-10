@@ -14,7 +14,13 @@ package com.ibm.ws.security.spnego.fat.config;
 
 import static org.junit.Assert.assertNull;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -53,10 +59,12 @@ public class CommonTest {
     protected static String TARGET_SERVER = "";
     protected static boolean wasCommonTokenRefreshed = false;
     protected static JDKExpectationTestClass expectation;
-
     protected final static Krb5Helper krb5Helper = new Krb5Helper();
     protected static KdcHelper kdcHelper = null;
-
+    private static boolean isZOS = System.getProperty("os.name").equals("z/OS");
+    // When running on zOS the file format is not properly converted for the krb.conf file currently,
+    // so we will use krb.conf, which is already formatted for zOS.
+    private static final String SERVER_KRB5_CONFIG_FILE = isZOS? SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE : SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
     @Rule
     public TestName name = new TestName();
 
@@ -387,19 +395,38 @@ public class CommonTest {
 
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
         String thisMethod = "createKrbConf";
-        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
-        FileOutputStream out = new FileOutputStream(testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE +
+        " is the machine z/OS? " + isZOS);
         // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
         // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
         // Additionally, for this update to work the allowed skew also needs to be updated on the KDC machine
         InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
+        if (InitClass.KRB5_CONF == null) {
+            Log.info(c, thisMethod, "KRB5_CONF is null. This may be because we failed to obtain information from Consul.");
+            throw new IOException("KRB5_CONF is null. Cannot create krb.conf file.");
+        }
         if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
             Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");
         } else {
             Log.info(c, thisMethod, "Did not find clockskew  = 300 in krb5.conf");
         }
-        out.write(InitClass.KRB5_CONF.getBytes());
-        out.close();
+        if (isZOS) {
+            try (FileOutputStream out = new FileOutputStream(
+                    testServer.getServerRoot() + SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE);
+                    OutputStreamWriter osw = new OutputStreamWriter(out, "Cp1047");
+                    PrintWriter pw = new PrintWriter(osw)) {
+                pw.print(InitClass.KRB5_CONF);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Files.copy(Paths.get(SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE), Paths.get(SPNEGOConstants.SERVER_KRB5_CONFIG_FILE), StandardCopyOption.REPLACE_EXISTING);
+
+        } else {
+            FileOutputStream out = new FileOutputStream(
+                    testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+            out.write(InitClass.KRB5_CONF.getBytes());
+            out.close();
+        }
     }
 
     public static void spnegoTokencommonSetUp(String testServerName, String serverXml, List<String> checkApps, Map<String, String> testProps,
@@ -1006,9 +1033,9 @@ public class CommonTest {
 
     public static String maskHostnameAndPassword(String message) {
         if (message != null) {
-            if (InitClass.KDC_HOSTNAME != null)
+            if (InitClass.KDC_HOSTNAME != null && InitClass.KDCP_VAR != null)
                 message = message.replace(InitClass.KDC_HOSTNAME, InitClass.KDCP_VAR);
-            if (InitClass.KDC2_HOSTNAME != null)
+            if (InitClass.KDC2_HOSTNAME != null && InitClass.KDCP_VAR != null)
                 message = message.replace(InitClass.KDC2_HOSTNAME, InitClass.KDCS_VAR);
             if (InitClass.KDC_USER != null)
                 message = message.replace(InitClass.KDC_USER, "InitClass.KDC_USER");
@@ -1020,5 +1047,4 @@ public class CommonTest {
         }
         return message;
     }
-
 }

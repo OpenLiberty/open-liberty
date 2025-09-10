@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2021 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest.spnego;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.io.ByteArrayInputStream;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -102,6 +108,8 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 
 	protected final static Krb5Helper krb5Helper = new Krb5Helper();
 	protected static KdcHelper kdcHelper = null;
+
+    private static boolean isZOS = System.getProperty("os.name").equals("z/OS");
 
 	@Rule
 	public TestName name = new TestName();
@@ -498,10 +506,39 @@ public class SpnegoOIDCCommonTest extends AppPasswordsAndTokensCommonTest {
 
     protected static void createKrbConf(LibertyServer testServer) throws IOException {
         String thisMethod = "createKrbConf";
-        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
-        FileOutputStream out = new FileOutputStream(testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
-        out.write(InitClass.KRB5_CONF.getBytes());
-        out.close();
+        Log.info(c, thisMethod, "Creating krb.conf file inside the following path: " + testServer.getServerRoot()
+                + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+        // Some SUSE/AIX build machines have clock skews greater than 6 minutes.
+        // Updating the krb5.cnf allowed skew from 5 minutes (300s) to 10 minutes (600s)
+        // Additionally, for this update to work the allowed skew also needs to be
+        // updated on the KDC machine
+        InitClass.KRB5_CONF = InitClass.KRB5_CONF.replace("clockskew  = 300", "clockskew  = 600");
+        if (InitClass.KRB5_CONF == null) {
+            Log.info(c, thisMethod, "KRB5_CONF is null. This may be because we failed to obtain information from Consul.");
+            throw new IOException("KRB5_CONF is null. Cannot create krb.conf file.");
+        }
+        if (InitClass.KRB5_CONF.contains("clockskew  = 600")) {
+            Log.info(c, thisMethod, "Replaced clockskew  = 300 with clockskew  = 600");
+        } else {
+            Log.info(c, thisMethod, "Did not find clockskew  = 300 in krb5.conf");
+        }
+        if (isZOS) {
+            try (FileOutputStream out = new FileOutputStream(
+                    testServer.getServerRoot() + SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE);
+                    OutputStreamWriter osw = new OutputStreamWriter(out, "IBM-1047");
+                    PrintWriter pw = new PrintWriter(osw)) {
+                pw.print(InitClass.KRB5_CONF);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Files.copy(Paths.get(SPNEGOConstants.ZOS_SERVER_KRB5_CONFIG_FILE), Paths.get(SPNEGOConstants.SERVER_KRB5_CONFIG_FILE), StandardCopyOption.REPLACE_EXISTING);
+
+        } else {
+            FileOutputStream out = new FileOutputStream(
+                    testServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE);
+            out.write(InitClass.KRB5_CONF.getBytes());
+            out.close();
+        }
     }
 
 	private static HashMap<String, String> addBootstrapProps(Map<String, String> testProps)
