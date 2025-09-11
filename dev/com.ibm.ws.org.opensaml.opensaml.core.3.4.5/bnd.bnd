@@ -33,3 +33,5 @@
     org.jsr-305
 
 instrument.ffdc: true
+instrument.classesExcludes:\
+	org/opensaml/security/crypto/ec/curves/AbstractNamedCurve.class

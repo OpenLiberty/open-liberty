@@ -1,13 +1,3 @@
-org.opensaml.security.crypto.ec.curves.BrainpoolP256r1
-org.opensaml.security.crypto.ec.curves.BrainpoolP320r1
-org.opensaml.security.crypto.ec.curves.BrainpoolP384r1
-org.opensaml.security.crypto.ec.curves.BrainpoolP512r1
-org.opensaml.security.crypto.ec.curves.Secp112r1
-org.opensaml.security.crypto.ec.curves.Secp112r2
-org.opensaml.security.crypto.ec.curves.Secp128r1
-org.opensaml.security.crypto.ec.curves.Secp128r2
-org.opensaml.security.crypto.ec.curves.Secp160k1
-org.opensaml.security.crypto.ec.curves.Secp160r1
 org.opensaml.security.crypto.ec.curves.Secp160r2
 org.opensaml.security.crypto.ec.curves.Secp192k1
 org.opensaml.security.crypto.ec.curves.Secp192r1
