@@ -159,6 +159,8 @@ public class ConfigAdminHealthCheckTest {
 
         String configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp");
         String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp");
+        log("DE_BUG configAdminLine: ", configAdminLine);
+        log("DE_BUG stateMapLine: ", stateMapLine);
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
         assertNotNull("App was not detected by appTracker.", stateMapLine);
