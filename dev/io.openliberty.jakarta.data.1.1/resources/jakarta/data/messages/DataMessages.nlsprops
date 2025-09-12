@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=The {0} argument is required
+002.no.elements=The {0} list cannot be empty
+003.null.element=The {0} list cannot not have a null element
+004.arg.negative=The {0} argument cannot be negative
+005.zero.not.allowed=The {0} argument cannot be 0
+006.zero.size.key=The key must consist of at least one element
+007.wildcard.conflict=Cannot use the same character ({0}) for both wildcards
+008.escape.conflict=Cannot use the same character ({0}) for both a wildcard \
+ and escape character
+009.unknown.number.type=Unexpected subtype of Number: {0}
+010.unknown.total=A total count of elements is not available
+011.unknown.attr.type=The {0} instance was obtained in a way that does not \
+ identify the type of the attribute. For static metamodel classes, use an \
+ .of method that is defined on an Attribute subtype to supply the entity \
+ class and entity attribute type.
+012.unknown.decl.type=The {0} instance was obtained in a way that does not \
+ identify the entity class that declares the attribute. For static metamodel \
+ classes, use an .of method that is defined on an Attribute subtype to supply \
+ the entity class and entity attribute type.

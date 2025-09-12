@@ -129,7 +129,8 @@ fat.test.container.images:\
     org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
     org.jmock:jmock;strategy=exact;version=2.5.1,\
     org.seleniumhq.selenium:selenium-api;version=4.8.3,\
-    org.seleniumhq.selenium:selenium-support;version=4.8.3
+    org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+    jakarta.tck.arquillian:tck-porting-lib;version=11.0.1
 
 -testpath:\
     net.bytebuddy:byte-buddy-agent;version=1.16.1,\

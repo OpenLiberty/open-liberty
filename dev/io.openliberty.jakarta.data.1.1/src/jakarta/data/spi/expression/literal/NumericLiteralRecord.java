@@ -15,6 +15,8 @@ package jakarta.data.spi.expression.literal;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import jakarta.data.messages.Messages;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
@@ -22,8 +24,7 @@ record NumericLiteralRecord<N extends Number & Comparable<N>>(N value)
                 implements NumericLiteral<N> {
 
     NumericLiteralRecord {
-        if (value == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(value, "value");
     }
 
     @Override

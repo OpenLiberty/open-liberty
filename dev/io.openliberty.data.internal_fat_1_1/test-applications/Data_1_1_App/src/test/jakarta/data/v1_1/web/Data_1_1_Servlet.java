@@ -13,6 +13,7 @@
 package test.jakarta.data.v1_1.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
 
 import jakarta.data.Order;
 import jakarta.data.Sort;
+import jakarta.data.expression.TextExpression;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -90,5 +92,30 @@ public class Data_1_1_Servlet extends FATServlet {
                                                               order)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Attempt to use the static metamodel to create an expression for a
+     * negative length prefix of an entity attribute value. Verify that
+     * IllegalArgumentException is raised for the negative length and that
+     * the message includes a message argument, which in this case is
+     * "length", which is the name of the parameter that is received by the
+     * left method.
+     */
+    @Test
+    public void testMessageIncludesArg() {
+        try {
+            TextExpression<Fraction> negativeLengthPrefix = //
+                            _Fraction.name.left(-2);
+
+            fail("Created an expression for a negative length prefix: " +
+                 negativeLengthPrefix);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().contains("length"))
+                ; // pass
+            else
+                throw x;
+        }
     }
 }

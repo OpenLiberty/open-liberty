@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan("com.ibm.ws.springboot.fat30.multicontext.app.part0")
+@ComponentScan("com.ibm.ws.springboot.fat40.multicontext.app.part0")
 public class Config {
 	// EMPTY
 }

@@ -13,9 +13,9 @@
 package jakarta.data.metamodel;
 
 import java.time.temporal.Temporal;
-import java.util.Objects;
 
 import jakarta.data.expression.TemporalExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -30,9 +30,9 @@ public interface TemporalAttribute<T, V extends Temporal & Comparable<? extends 
                                String name,
                                Class<V> attributeType) {
 
-        Objects.requireNonNull(entityClass, "entityClass");
-        Objects.requireNonNull(name, "name");
-        Objects.requireNonNull(attributeType, "attributeType");
+        Messages.requireNonNull(entityClass, "entityClass");
+        Messages.requireNonNull(name, "name");
+        Messages.requireNonNull(attributeType, "attributeType");
 
         return new TemporalAttributeRecord<>(entityClass, name, attributeType);
     }

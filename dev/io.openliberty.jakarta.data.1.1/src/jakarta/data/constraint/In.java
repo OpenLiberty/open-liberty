@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import jakarta.data.expression.Expression;
+import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.Literal;
 
 /**
@@ -30,16 +31,17 @@ public interface In<V> extends Constraint<V> {
 
     static <V> In<V> values(Collection<V> values) {
 
-        if (values == null)
-            throw new NullPointerException("values");
+        Messages.requireNonNull(values, "values");
 
         if (values.isEmpty())
-            throw new IllegalArgumentException("values");
+            throw new IllegalArgumentException(Messages.get("002.no.elements",
+                                                            "values"));
 
         List<Expression<?, V>> expressions = new ArrayList<>(values.size());
         for (V value : values) {
             if (value == null)
-                throw new NullPointerException();
+                throw new NullPointerException(Messages.get("003.null.element",
+                                                            "values"));
 
             expressions.add(Literal.of(value));
         }
@@ -50,15 +52,16 @@ public interface In<V> extends Constraint<V> {
     @SafeVarargs
     static <V> In<V> expressions(Expression<?, V>... expressions) {
 
-        if (expressions == null)
-            throw new NullPointerException("expressions");
+        Messages.requireNonNull(expressions, "expressions");
 
         if (expressions.length == 0)
-            throw new IllegalArgumentException("expressions");
+            throw new IllegalArgumentException(Messages.get("002.no.elements",
+                                                            "expressions"));
 
         for (Expression<?, V> expression : expressions) {
             if (expression == null)
-                throw new NullPointerException();
+                throw new NullPointerException(Messages.get("003.null.element",
+                                                            "expressions"));
         }
 
         return new InRecord<>(List.of(expressions));
@@ -66,15 +69,16 @@ public interface In<V> extends Constraint<V> {
 
     static <V> In<V> expressions(List<Expression<?, V>> expressions) {
 
-        if (expressions == null)
-            throw new NullPointerException("expressions");
+        Messages.requireNonNull(expressions, "expressions");
 
         if (expressions.isEmpty())
-            throw new IllegalArgumentException("expressions");
+            throw new IllegalArgumentException(Messages.get("002.no.elements",
+                                                            "expressions"));
 
         for (Expression<?, V> expression : expressions) {
             if (expression == null)
-                throw new NullPointerException();
+                throw new NullPointerException(Messages.get("003.null.element",
+                                                            "expressions"));
         }
 
         return new InRecord<>(List.copyOf(expressions));
@@ -82,16 +86,17 @@ public interface In<V> extends Constraint<V> {
 
     @SafeVarargs
     static <V> In<V> values(V... values) {
-        if (values == null)
-            throw new NullPointerException("values");
+        Messages.requireNonNull(values, "values");
 
         if (values.length == 0)
-            throw new IllegalArgumentException("values");
+            throw new IllegalArgumentException(Messages.get("002.no.elements",
+                                                            "values"));
 
         List<Expression<?, V>> expressions = new ArrayList<>(values.length);
         for (V value : values) {
             if (value == null)
-                throw new NullPointerException();
+                throw new NullPointerException(Messages.get("003.null.element",
+                                                            "values"));
 
             expressions.add(Literal.of(value));
         }

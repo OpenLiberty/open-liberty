@@ -13,6 +13,7 @@
 package jakarta.data.metamodel;
 
 import jakarta.data.expression.NumericExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -23,10 +24,9 @@ public interface NumericAttribute<T, N extends Number & Comparable<N>> //
     static <T, N extends Number & Comparable<N>> NumericAttribute<T, N> //
                     of(Class<T> entityClass, String name, Class<N> attributeType) {
 
-        if (entityClass == null ||
-            name == null ||
-            attributeType == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(entityClass, "entityClass");
+        Messages.requireNonNull(name, "name");
+        Messages.requireNonNull(attributeType, "attributeType");
 
         return new NumericAttributeRecord<>(entityClass, name, attributeType);
     }

@@ -13,6 +13,7 @@
 package jakarta.data.metamodel;
 
 import jakarta.data.expression.Expression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -22,10 +23,9 @@ public interface BasicAttribute<T, V> extends Attribute<T>, Expression<T, V> {
     static <T, V> BasicAttribute<T, V> of(Class<T> entityClass,
                                           String name,
                                           Class<V> attributeType) {
-        if (entityClass == null ||
-            name == null ||
-            attributeType == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(entityClass, "entityClass");
+        Messages.requireNonNull(name, "name");
+        Messages.requireNonNull(attributeType, "attributeType");
 
         return new BasicAttributeRecord<>(entityClass, name, attributeType);
     }

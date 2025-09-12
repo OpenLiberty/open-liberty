@@ -38,6 +38,7 @@ src: \
 -testpath: \
   org.springframework.boot:spring-boot;${springBootVersion40}, \
   org.springframework.boot:spring-boot-autoconfigure;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-web-server;${springBootVersion40},
 \
   org.springframework:spring-beans;${springVersion40}, \
   org.springframework:spring-context;${springVersion40}, \

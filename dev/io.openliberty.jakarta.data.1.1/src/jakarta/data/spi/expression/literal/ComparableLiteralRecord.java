@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.data.messages.Messages;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
@@ -19,9 +21,7 @@ record ComparableLiteralRecord<T, V extends Comparable<?>>(V value)
                 implements ComparableLiteral<V> {
 
     ComparableLiteralRecord {
-        if (value == null) {
-            throw new NullPointerException();
-        }
+        Messages.requireNonNull(value, "value");
     }
 
     @Override

@@ -13,7 +13,8 @@
 package jakarta.data.restrict;
 
 import java.util.List;
-import java.util.Objects;
+
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -57,7 +58,7 @@ public class Restrict {
 
     public static <T> Restriction<T> not(Restriction<T> restriction) {
 
-        Objects.requireNonNull(restriction, "restriction");
+        Messages.requireNonNull(restriction, "restriction");
 
         return restriction.negate();
     }

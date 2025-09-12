@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 import org.jboss.arquillian.container.test.spi.client.deployment.ApplicationArchiveProcessor;
 import org.jboss.arquillian.container.test.spi.client.deployment.AuxiliaryArchiveAppender;
 import org.jboss.arquillian.core.spi.LoadableExtension.ExtensionBuilder;
+import org.jboss.arquillian.test.spi.enricher.resource.ResourceProvider;
 
 public enum TCKArchiveModifications implements ArchiveModification {
 
@@ -74,6 +75,14 @@ public enum TCKArchiveModifications implements ArchiveModification {
         public void applyModification(ExtensionBuilder extensionBuilder) {
             LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.TelemetryPortingArchiveProcessor");
             extensionBuilder.service(ApplicationArchiveProcessor.class, TelemetryPortingArchiveProcessor.class);
+        }
+    },
+    PLATFORM_TCK {
+        @Override
+        public void applyModification(ExtensionBuilder extensionBuilder) {
+            LOG.log(Level.INFO, "WLP: Adding Extension com.ibm.ws.fat.util.tck.PlatformTCKArchiveProcessor");
+            extensionBuilder.service(ResourceProvider.class, PlatformTCKArchiveProcessor.class); //Despite the name, impls of tck.arquillian.porting.lib.spi.AbstractTestArchiveProcessor should be registered as a ResourceProvider. See https://github.com/jakartaee/platform-tck/blob/main/tcks/profiles/platform/docs/userguide/platform/src/main/asciidoc/portingpackage.adoc
+            extensionBuilder.observer(PlatformTCKArchiveProcessor.class);
         }
     };
 

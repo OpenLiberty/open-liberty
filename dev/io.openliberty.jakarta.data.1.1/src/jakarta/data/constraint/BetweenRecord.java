@@ -13,6 +13,7 @@
 package jakarta.data.constraint;
 
 import jakarta.data.expression.ComparableExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -23,11 +24,9 @@ record BetweenRecord<V extends Comparable<?>>(
                 implements Between<V> {
 
     public BetweenRecord {
-        if (lowerBound == null)
-            throw new NullPointerException("lower");
+        Messages.requireNonNull(lowerBound, "lower");
 
-        if (upperBound == null)
-            throw new NullPointerException("upper");
+        Messages.requireNonNull(upperBound, "upper");
     }
 
     @Override

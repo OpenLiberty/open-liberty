@@ -332,7 +332,7 @@ public class DataProvider implements //
     public void applicationStarted(ApplicationInfo appInfo) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "applicationStarted" + appInfo.getDeploymentName() +
+            Tr.entry(this, tc, "applicationStarted " + appInfo.getDeploymentName() +
                                " (" + appInfo.getName() + ')');
 
         //Use deployment name but fall back to generated name

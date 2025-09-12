@@ -17,6 +17,7 @@ import static jakarta.data.constraint.LikeRecord.STRING_WILDCARD;
 import static jakarta.data.constraint.LikeRecord.translate;
 
 import jakarta.data.expression.TextExpression;
+import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.StringLiteral;
 
 /**
@@ -27,8 +28,7 @@ public interface NotLike extends Constraint<String> {
     Character escape();
 
     static NotLike literal(String value) {
-        if (value == null)
-            throw new NullPointerException("value");
+        Messages.requireNonNull(value, "value");
 
         StringLiteral expression = StringLiteral.of(LikeRecord.escape(value));
 
@@ -38,8 +38,7 @@ public interface NotLike extends Constraint<String> {
     TextExpression<?> pattern();
 
     static NotLike pattern(String pattern) {
-        if (pattern == null)
-            throw new NullPointerException("pattern");
+        Messages.requireNonNull(pattern, "pattern");
 
         StringLiteral expression = StringLiteral.of(pattern);
         return new NotLikeRecord(expression, null);
@@ -55,8 +54,7 @@ public interface NotLike extends Constraint<String> {
                            char charWildcard,
                            char stringWildcard,
                            char escape) {
-        if (pattern == null)
-            throw new NullPointerException("pattern");
+        Messages.requireNonNull(pattern, "pattern");
 
         StringLiteral expression = StringLiteral.of(translate(pattern,
                                                               charWildcard,
@@ -66,15 +64,13 @@ public interface NotLike extends Constraint<String> {
     }
 
     static NotLike pattern(TextExpression<?> pattern, char escape) {
-        if (pattern == null)
-            throw new NullPointerException("pattern");
+        Messages.requireNonNull(pattern, "pattern");
 
         return new NotLikeRecord(pattern, escape);
     }
 
     static NotLike prefix(String prefix) {
-        if (prefix == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(prefix, "prefix");
 
         StringLiteral expression = StringLiteral.of(LikeRecord.escape(prefix) +
                                                     STRING_WILDCARD);
@@ -83,8 +79,7 @@ public interface NotLike extends Constraint<String> {
     }
 
     static NotLike substring(String substring) {
-        if (substring == null)
-            throw new NullPointerException("substring");
+        Messages.requireNonNull(substring, "substring");
 
         StringLiteral expression = StringLiteral.of(STRING_WILDCARD +
                                                     LikeRecord.escape(substring) +
@@ -94,8 +89,7 @@ public interface NotLike extends Constraint<String> {
     }
 
     static NotLike suffix(String suffix) {
-        if (suffix == null)
-            throw new NullPointerException("suffix");
+        Messages.requireNonNull(suffix, "suffix");
 
         StringLiteral expression = StringLiteral.of(STRING_WILDCARD +
                                                     LikeRecord.escape(suffix));

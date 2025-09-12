@@ -13,7 +13,8 @@
 package jakarta.data.restrict;
 
 import java.util.List;
-import java.util.Objects;
+
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -28,12 +29,13 @@ record CompositeRestrictionRecord<T>(
 
     CompositeRestrictionRecord {
 
-        Objects.requireNonNull(restrictions, "restrictions");
+        Messages.requireNonNull(restrictions, "restrictions");
 
         if (restrictions.isEmpty())
-            throw new IllegalArgumentException("restrictions");
+            throw new IllegalArgumentException(Messages.get("002.no.elements",
+                                                            "restrictions"));
 
-        restrictions.forEach(r -> Objects.requireNonNull(r, "restriction"));
+        restrictions.forEach(r -> Messages.requireNonNull(r, "restriction"));
     }
 
     CompositeRestrictionRecord(Type type,

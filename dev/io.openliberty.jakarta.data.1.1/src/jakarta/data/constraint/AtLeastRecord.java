@@ -13,6 +13,7 @@
 package jakarta.data.constraint;
 
 import jakarta.data.expression.ComparableExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -22,8 +23,7 @@ record AtLeastRecord<V extends Comparable<?>>(
                 implements AtLeast<V> {
 
     public AtLeastRecord {
-        if (bound == null)
-            throw new NullPointerException("minimum");
+        Messages.requireNonNull(bound, "minimum");
     }
 
     @Override

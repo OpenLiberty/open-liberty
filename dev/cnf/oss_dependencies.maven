@@ -338,6 +338,7 @@ jakarta.servlet.jsp:jakarta.servlet.jsp-api:4.0.0
 jakarta.servlet:jakarta.servlet-api:5.0.0
 jakarta.servlet:jakarta.servlet-api:6.0.0
 jakarta.servlet:jakarta.servlet-api:6.1.0
+jakarta.tck.arquillian:tck-porting-lib:11.0.1
 jakarta.transaction:jakarta.transaction-api:1.3.3
 jakarta.transaction:jakarta.transaction-api:2.0.1
 jakarta.validation:jakarta.validation-api:3.0.2
@@ -927,6 +928,7 @@ org.slf4j:slf4j-api:1.7.36
 org.slf4j:slf4j-jdk14:1.7.36
 org.slf4j:slf4j-simple:1.7.36
 org.sonatype.goodies:package-url-java:1.0.1
+org.springframework.boot:spring-boot-actuator-autoconfigure:4.0.0-M1
 org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.7.18
 org.springframework.boot:spring-boot-autoconfigure:3.3.5

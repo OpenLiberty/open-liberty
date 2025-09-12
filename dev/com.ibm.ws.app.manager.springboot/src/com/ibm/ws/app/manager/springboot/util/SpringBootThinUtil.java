@@ -700,10 +700,18 @@ public class SpringBootThinUtil implements Closeable {
     }
 
     public static String getArtifactId(String jarName) {
-        // jarName :: [<dirPath>/]<artifactId>-<version>.jar
+        // jarName :: [<dirPath>/]<artifactId>-<version>-M1.jar
+        //-M1 in the version of artifact ids is for milestone versions. Getting the right artifact id is essential to filter them out correctly.
         int idxBegAid = jarName.lastIndexOf('/') + 1;
-        int idxEndAid = jarName.lastIndexOf('-') - 1;
-        return ((idxBegAid <= idxEndAid) && jarName.endsWith(".jar")) ? jarName.substring(idxBegAid, idxEndAid + 1).toLowerCase() : "";
+        int idxEndAid = -1;
+        
+        for (int i = 0; i < jarName.length() - 1; i++) {
+            if (jarName.charAt(i) == '-' && Character.isDigit(jarName.charAt(i + 1))) {
+                idxEndAid = i;
+                break;
+            }
+        }
+        return ((idxBegAid <= idxEndAid) && jarName.endsWith(".jar")) ? jarName.substring(idxBegAid, idxEndAid).toLowerCase() : "";        
     }
 
     /**

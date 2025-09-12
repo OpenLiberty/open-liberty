@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data;
 
+import jakarta.data.messages.Messages;
+
 /**
  * Method signatures copied from jakarta.data.repository.Sort from the Jakarta Data repo.
  */
@@ -20,8 +22,7 @@ public record Sort<T>(String property,
                 boolean ignoreCase) {
 
     public Sort {
-        if (property == null)
-            throw new NullPointerException("property is required");
+        Messages.requireNonNull(property, "property");
     }
 
     public static <T> Sort<T> asc(String property) {
@@ -41,8 +42,7 @@ public record Sort<T>(String property,
     }
 
     public static <T> Sort<T> of(String property, Direction direction, boolean ignoreCase) {
-        if (direction == null)
-            throw new NullPointerException("direction is required");
+        Messages.requireNonNull(direction, "direction");
 
         return new Sort<>(property, direction.equals(Direction.ASC), ignoreCase);
     }

@@ -13,6 +13,7 @@
 package jakarta.data.constraint;
 
 import jakarta.data.expression.ComparableExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -21,8 +22,7 @@ record AtMostRecord<V extends Comparable<?>>(
                 ComparableExpression<?, V> bound)
                 implements AtMost<V> {
     public AtMostRecord {
-        if (bound == null)
-            throw new NullPointerException("maximum");
+        Messages.requireNonNull(bound, "maximum");
     }
 
     @Override

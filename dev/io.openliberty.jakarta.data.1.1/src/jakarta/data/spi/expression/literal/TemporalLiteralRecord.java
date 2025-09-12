@@ -20,6 +20,8 @@ import java.time.Year;
 import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 
+import jakarta.data.messages.Messages;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
@@ -27,8 +29,7 @@ record TemporalLiteralRecord<V extends Temporal & Comparable<? extends Temporal>
                 implements TemporalLiteral<V> {
 
     TemporalLiteralRecord {
-        if (value == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(value, "value");
     }
 
     @Override

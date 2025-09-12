@@ -13,6 +13,7 @@
 package jakarta.data.constraint;
 
 import jakarta.data.expression.ComparableExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -22,8 +23,7 @@ record GreaterThanRecord<V extends Comparable<?>>(
                 implements GreaterThan<V> {
 
     public GreaterThanRecord {
-        if (bound == null)
-            throw new NullPointerException("lowerBound");
+        Messages.requireNonNull(bound, "lowerBound");
     }
 
     @Override

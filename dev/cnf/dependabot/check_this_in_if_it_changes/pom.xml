@@ -1712,6 +1712,11 @@
       <version>6.1.0</version>
     </dependency>
     <dependency>
+      <groupId>jakarta.tck.arquillian</groupId>
+      <artifactId>tck-porting-lib</artifactId>
+      <version>11.0.1</version>
+    </dependency>
+    <dependency>
       <groupId>jakarta.transaction</groupId>
       <artifactId>jakarta.transaction-api</artifactId>
       <version>1.3.3</version>
@@ -4655,6 +4660,11 @@
       <groupId>org.sonatype.goodies</groupId>
       <artifactId>package-url-java</artifactId>
       <version>1.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+      <version>4.0.0-M1</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>

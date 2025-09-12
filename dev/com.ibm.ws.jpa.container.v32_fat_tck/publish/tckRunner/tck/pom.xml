@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	~ Copyright (c) 2025 IBM Corporation and others. All rights reserved. 
+	~ This program and the accompanying materials are made available under the 
+	~ terms of the Eclipse Public License 2.0 which accompanies this distribution, 
+	~ and is available at 
+	~    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0 
+	~ Contributors: 
+	~    IBM Corporation - initial API and implementation 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>io.openliberty.microprofile.faulttolerance</groupId>
+	<artifactId>tck.runner.tck</artifactId>
+	<version>4.0</version>
+	<name>MicroProfile Fault Tolerance TCK Runner TCK Module</name>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>11</maven.compiler.source>
+		<maven.compiler.target>11</maven.compiler.target>
+
+		<targetDirectory>${project.basedir}/target</targetDirectory>
+
+		<jakarta-persistence-version>11.0.1</jakarta-persistence-version>
+		<!-- Test Infrastructure versions -->
+		<arquillian.version>1.9.1.Final</arquillian.version> <!-- earlier
+		versions of arquillian are not compatible with this TCK (paramater
+		inejction on @Deployment methods) -->
+		<arquillian.wlp.version>2.1.3</arquillian.wlp.version>
+		<arquillian.liberty.managed>2.1.3</arquillian.liberty.managed>
+		<junit.version>5.10.0</junit.version>
+		<sigtest.version>2.3</sigtest.version>
+	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.jboss.arquillian</groupId>
+				<artifactId>arquillian-bom</artifactId>
+				<version>${arquillian.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.junit</groupId>
+				<artifactId>junit-bom</artifactId>
+				<version>${junit.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.ibm.ws</groupId>
+			<artifactId>fattest.simplicity</artifactId>
+			<version>1</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/../../../lib/fattest.simplicity.jar</systemPath> <!--
+			This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+		</dependency>
+
+		<!-- tck - data - external TCK -->
+		<dependency>
+			<groupId>jakarta.tck</groupId>
+			<artifactId>persistence-platform-tck-tests</artifactId>
+			<version>${jakarta-persistence-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.tck.arquillian</groupId>
+			<artifactId>tck-porting-lib</artifactId>
+			<version>${jakarta-persistence-version}</version>
+		</dependency>
+
+		<!-- test frameworks -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.tck</groupId>
+			<artifactId>sigtest-maven-plugin</artifactId>
+			<version>${sigtest.version}</version>
+		</dependency>
+		<!-- CDI for resource injection -->
+		<dependency>
+			<groupId>org.jboss.weld.se</groupId>
+			<artifactId>weld-se-core</artifactId>
+			<version>5.1.0.Final</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Resteasy since the test uses  jakarta.ws.rs.client.ClientBuilder  -->
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-client</artifactId>
+			<version>6.0.0.Final</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.resteasy</groupId>
+			<artifactId>resteasy-json-binding-provider</artifactId>
+			<version>6.0.0.Final</version>
+		</dependency>
+
+		<!-- APIs referenced by TCK that do not require implementations for
+		standalone tests -->
+		<dependency>
+			<groupId>org.jboss.shrinkwrap</groupId>
+			<artifactId>shrinkwrap-api</artifactId>
+			<version>1.2.6</version>
+		</dependency>
+		<dependency>
+			<groupId>org.jboss.arquillian.junit5</groupId>
+			<artifactId>arquillian-junit5-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>io.openliberty.arquillian</groupId>
+			<artifactId>arquillian-liberty-managed-jakarta-junit5</artifactId>
+			<version>${arquillian.liberty.managed}</version>
+			<type>pom</type>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<directory>${targetDirectory}</directory>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.13.0</version>
+					<configuration>
+						<source>${maven.compiler.source}</source>
+						<target>${maven.compiler.target}</target>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.5.3</version>
+					<configuration>
+						<autoVersionSubmodules>true</autoVersionSubmodules>
+						<pushChanges>false</pushChanges>
+						<localCheckout>true</localCheckout>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-jar-plugin</artifactId>
+					<version>3.4.2</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.5.2</version>
+				<configuration>
+					<forkNode
+						implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory" /> <!--
+					Default forkNode has encoding issues on ZOS -->
+					<trimStackTrace>false</trimStackTrace>
+					<failIfNoTests>true</failIfNoTests>
+					<dependenciesToScan>
+						<dependency>jakarta.tck:persistence-platform-tck-tests</dependency>
+					</dependenciesToScan>
+					<statelessTestsetReporter
+						implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+						<usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+						<usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+					</statelessTestsetReporter>
+					<systemPropertyVariables>
+						<java.util.logging.config.file>${logging.config.file}</java.util.logging.config.file>
+						<jimage.dir>${jimage.dir}</jimage.dir>
+						<!--<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.data-api.jar:${jimage.dir}/java.base:${jimage.dir}/java.rmi:${jimage.dir}/java.sql:${jimage.dir}/java.naming</signature.sigTestClasspath>-->
+						<jakarta.tck.skip.deployment>true</jakarta.tck.skip.deployment>
+						<jakarta.tck.database.type>${jakarta.tck.database.type}</jakarta.tck.database.type>
+						<jakarta.tck.database.name>${jakarta.tck.database.name}</jakarta.tck.database.name>
+					</systemPropertyVariables>
+					<excludes>
+						<exclude>${excluded.tests}</exclude>
+					</excludes>
+					<includes>
+						<include>${included.tests}</include>
+					</includes>
+					<groups>${included.groups}</groups>
+					<reportNameSuffix>
+						${jakarta.profile}-${jakarta.tck.database.type}</reportNameSuffix>
+					<testSourceDirectory>
+						${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
+

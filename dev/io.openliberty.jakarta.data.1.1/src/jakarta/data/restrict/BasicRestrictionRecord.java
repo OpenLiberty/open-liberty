@@ -12,10 +12,9 @@
  *******************************************************************************/
 package jakarta.data.restrict;
 
-import java.util.Objects;
-
 import jakarta.data.constraint.Constraint;
 import jakarta.data.expression.Expression;
+import jakarta.data.messages.Messages;
 import jakarta.data.metamodel.Attribute;
 
 /**
@@ -26,8 +25,8 @@ record BasicRestrictionRecord<T, V>(Expression<T, V> expression,
                 implements BasicRestriction<T, V> {
 
     BasicRestrictionRecord {
-        Objects.requireNonNull(expression, "expression");
-        Objects.requireNonNull(constraint, "constraint");
+        Messages.requireNonNull(expression, "expression");
+        Messages.requireNonNull(constraint, "constraint");
     }
 
     @Override

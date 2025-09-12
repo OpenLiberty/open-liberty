@@ -13,6 +13,7 @@
 package jakarta.data.metamodel;
 
 import jakarta.data.Sort;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -30,10 +31,9 @@ public interface SortableAttribute<T> extends Attribute<T> {
     static <T, V> SortableAttribute<T> of(Class<T> entityClass,
                                           String name,
                                           Class<V> attributeType) {
-        if (entityClass == null ||
-            name == null ||
-            attributeType == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(entityClass, "entityClass");
+        Messages.requireNonNull(name, "name");
+        Messages.requireNonNull(attributeType, "attributeType");
 
         return new SortableAttributeRecord<>(entityClass, name, attributeType);
     }

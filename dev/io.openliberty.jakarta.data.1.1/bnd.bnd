@@ -25,6 +25,7 @@ Bundle-Description: Copied Jakarta Data API classes and some proposed or experim
 Export-Package: \
   jakarta.data;version="1.0.0",\
   jakarta.data.constraint;version="1.0.0",\
+  jakarta.data.event;version="1.0.0",\
   jakarta.data.exceptions;version="1.0.0",\
   jakarta.data.expression;version="1.0.0",\
   jakarta.data.metamodel;version="1.0.0",\
@@ -34,7 +35,12 @@ Export-Package: \
   jakarta.data.repository;version="1.0.0",\
   jakarta.data.restrict;version="1.0.0",\
   jakarta.data.spi;version="1.0.0",\
-  jakarta.data.spi.expression.literal;version="1.0.0"
+  jakarta.data.spi.expression.function;version="1.0.0",\
+  jakarta.data.spi.expression.literal;version="1.0.0",\
+  jakarta.data.spi.expression.path;version="1.0.0"
+
+Private-Package: \
+  jakarta.data.messages;version="1.0.0"
 
 instrument.classesExcludes: jakarta/data/*.class
 

@@ -14,6 +14,8 @@ package jakarta.data.page;
 
 import java.util.Optional;
 
+import jakarta.data.messages.Messages;
+
 /**
  * Method signatures are copied from jakarta.data.repository.PageRequest from the Jakarta Data repo.
  */
@@ -30,7 +32,7 @@ record Pagination(long page,
         if (size < 1)
             throw new IllegalArgumentException("maxPageSize: " + size);
         if (mode != Mode.OFFSET && (type == null || type.size() == 0))
-            throw new IllegalArgumentException("No key values were provided.");
+            throw new IllegalArgumentException(Messages.get("006.zero.size.key"));
     }
 
     @Override

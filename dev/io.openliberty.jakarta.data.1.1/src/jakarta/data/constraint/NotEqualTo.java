@@ -13,6 +13,7 @@
 package jakarta.data.constraint;
 
 import jakarta.data.expression.Expression;
+import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.Literal;
 
 /**
@@ -23,15 +24,13 @@ public interface NotEqualTo<V> extends Constraint<V> {
     Expression<?, V> expression();
 
     static <V> NotEqualTo<V> expression(Expression<?, V> expression) {
-        if (expression == null)
-            throw new NullPointerException("expression");
+        Messages.requireNonNull(expression, "expression");
 
         return new NotEqualToRecord<>(expression);
     }
 
     static <V> NotEqualTo<V> value(V value) {
-        if (value == null)
-            throw new NullPointerException("value");
+        Messages.requireNonNull(value, "value");
 
         return new NotEqualToRecord<>(Literal.of(value));
     }

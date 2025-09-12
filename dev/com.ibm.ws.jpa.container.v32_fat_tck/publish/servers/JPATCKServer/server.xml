@@ -1,0 +1,46 @@
+<!--
+    Copyright (c) 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+   <featureManager>
+        <feature>arquillian-support-jakarta-2.1</feature>
+        <feature>cdi-4.1</feature>
+        <feature>persistence-3.2</feature>
+        <feature>persistenceContainer-3.2</feature>
+        <feature>servlet-6.1</feature>
+        <feature>restfulWS-4.0</feature>
+        <feature>timedexit-1.0</feature>
+        <feature>localConnector-1.0</feature>
+   </featureManager>
+
+   <include location="../fatTestPorts.xml"/>
+   
+   <!--  dataSource IDs are taken from: https://github.com/jakartaee/platform-tck/blob/jakartaeetck-11.0.1/tcks/apis/persistence/persistence-inside-container/platform-tests/src/main/java/ee/jakarta/tck/persistence/ee/cdi/persistence.xml -->
+    <dataSource id="jdbc/DB1" jndiName="jdbc/DB1"  type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsmain" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+    
+    <dataSource id="jdbc/DB_no_tx" jndiName="jdbc/DB_no_tx" at.modify="true" type="javax.sql.XADataSource">
+        <jdbcDriver libraryRef="AnonymousJDBCLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:dsoverride" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <library id="AnonymousJDBCLib" >
+        <file name="${shared.resource.dir}/derby/derby.jar"/>
+    </library>
+
+   <!--Java2 security-->
+   <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+   
+
+</server>

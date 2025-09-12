@@ -47,6 +47,7 @@ Provide-Capability: spring.boot.support; jars:List<String>=springBoot40Server.ja
 -buildpath: \
   org.springframework.boot:spring-boot;${springBootVersion40}, \
   org.springframework.boot:spring-boot-autoconfigure;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-actuator-autoconfigure;${springBootVersion40}, \
   org.springframework.boot:spring-boot-web-server;${springBootVersion40}, \
   org.springframework.boot:spring-boot-servlet;${springBootVersion40}, \
   org.springframework.boot:spring-boot-webmvc;${springBootVersion40}, \

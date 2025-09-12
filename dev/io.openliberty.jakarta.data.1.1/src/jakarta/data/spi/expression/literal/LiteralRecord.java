@@ -12,14 +12,15 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.data.messages.Messages;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record LiteralRecord<V>(V value) implements Literal<V> {
 
     LiteralRecord {
-        if (value == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(value, "value");
     }
 
     @Override
