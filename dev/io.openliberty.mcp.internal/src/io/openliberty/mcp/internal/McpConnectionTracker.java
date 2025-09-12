@@ -9,15 +9,16 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import static io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode.INVALID_PARAMS;
+
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import io.openliberty.mcp.internal.requests.RequestId;
+import io.openliberty.mcp.internal.requests.ExecutionRequestId;
+import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.messaging.Cancellation;
 import jakarta.enterprise.context.ApplicationScoped;
-
-import static io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode.INVALID_PARAMS;
 
 /**
  * This is a connection tracker bean. It keeps track of ongoing tool call requests
@@ -26,28 +27,28 @@ import static io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode.IN
 @ApplicationScoped
 public class McpConnectionTracker {
 
-    private final ConcurrentMap<String, Cancellation> ongoingRequests;
+    private final ConcurrentMap<McpRequestId, Cancellation> ongoingRequests;
 
     public McpConnectionTracker() {
         this.ongoingRequests = new ConcurrentHashMap<>();
     }
 
-    public void deregisterOngoingRequest(RequestId id) {
-        ongoingRequests.remove(id.getUniqueId());
+    public void deregisterOngoingRequest(ExecutionRequestId id) {
+        ongoingRequests.remove(id.id());
     }
 
-    public void registerOngoingRequest(RequestId id, Cancellation cancellation) {
-        Cancellation previous = ongoingRequests.putIfAbsent(id.getUniqueId(), cancellation);
+    public void registerOngoingRequest(ExecutionRequestId id, Cancellation cancellation) {
+        Cancellation previous = ongoingRequests.putIfAbsent(id.id(), cancellation);
         if (previous != null) {
             throw new JSONRPCException(INVALID_PARAMS, "A request with id " + id.id() + " is already in progress");
         }
     }
 
-    public boolean isOngoingRequest(RequestId id) {
-        return ongoingRequests.containsKey(id.getUniqueId());
+    public boolean isOngoingRequest(ExecutionRequestId id) {
+        return ongoingRequests.containsKey(id.id());
     }
 
-    public Cancellation getOngoingRequestCancellation(RequestId id) {
-        return ongoingRequests.get(id.getUniqueId());
+    public Cancellation getOngoingRequestCancellation(ExecutionRequestId id) {
+        return ongoingRequests.get(id.id());
     }
 }

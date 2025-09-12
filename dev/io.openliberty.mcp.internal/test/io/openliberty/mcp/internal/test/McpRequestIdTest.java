@@ -12,6 +12,8 @@ package io.openliberty.mcp.internal.test;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.math.BigDecimal;
+
 import org.junit.Test;
 
 import io.openliberty.mcp.internal.requests.McpRequestId;
@@ -37,53 +39,27 @@ public class McpRequestIdTest {
 
     @Test
     public void testRequestIdNumbersAreEqual() {
-        Integer int1 = 1;
-        Long long1 = 1L;
-        Short short1 = 1;
-        Byte byte1 = 1;
-        McpRequestId intId = new McpRequestId(int1);
-        McpRequestId longId = new McpRequestId(long1);
-        McpRequestId shortId = new McpRequestId(short1);
-        McpRequestId byteId = new McpRequestId(byte1);
-        assertTrue(intId.equals(longId));
-        assertTrue(shortId.equals(byteId));
+        BigDecimal num1 = new BigDecimal(5);
+        BigDecimal num2 = new BigDecimal(5.0f);
+        McpRequestId req1 = new McpRequestId(num1);
+        McpRequestId req2 = new McpRequestId(num2);
+        assertTrue(req1.equals(req2));
     }
 
     @Test
     public void testRequestIdNumbersAreNotEqual() {
-        McpRequestId reqId1 = new McpRequestId(1);
-        McpRequestId reqId2 = new McpRequestId(2);
-        assertFalse(reqId1.equals(reqId2));
+        BigDecimal num1 = new BigDecimal(5);
+        BigDecimal num2 = new BigDecimal(7);
+        McpRequestId req1 = new McpRequestId(num1);
+        McpRequestId req2 = new McpRequestId(num2);
+        assertFalse(req1.equals(req2));
     }
 
     @Test
     public void testRequestIdStringDoesNotEqualNumber() {
-        McpRequestId reqIdInt = new McpRequestId(1);
+        McpRequestId reqIdInt = new McpRequestId(new BigDecimal(1));
         McpRequestId reqIdString = new McpRequestId("1");
         assertFalse(reqIdString.equals(reqIdInt));
-    }
-
-    @Test
-    public void testRequestIdStringEqualsString() {
-        McpRequestId reqIdString = new McpRequestId("dog");
-        assertTrue(reqIdString.equals("dog"));
-    }
-
-    @Test
-    public void testRequestIdNumberEqualsNumber() {
-        McpRequestId reqIdInt = new McpRequestId(1);
-        assertTrue(reqIdInt.equals(Integer.valueOf(1)));
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidRequestIdFloat() {
-        new McpRequestId(1.5);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void testInvalidRequestIdObj() {
-        Object obj = false;
-        new McpRequestId(obj);
     }
 
 }

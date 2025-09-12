@@ -32,7 +32,7 @@ import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
 import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
-import io.openliberty.mcp.internal.requests.RequestId;
+import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 import io.openliberty.mcp.messaging.Cancellation;
@@ -123,7 +123,7 @@ public class McpServlet extends HttpServlet {
 
     @FFDCIgnore({ JSONRPCException.class, InvocationTargetException.class, IllegalAccessException.class, IllegalArgumentException.class })
     private void callTool(McpTransport transport) {
-        RequestId requestId = createOngoingRequestId(transport);
+        ExecutionRequestId requestId = createOngoingRequestId(transport);
         McpToolCallParams params = transport.getParams(McpToolCallParams.class);
 
         if (params.getMetadata() == null) {
@@ -224,7 +224,7 @@ public class McpServlet extends HttpServlet {
      * @param requestId the ongoing request Id
      * @param toolMetadata the tool metadata
      */
-    private void addSpecialArguments(Object[] argumentsArray, RequestId requestId, ToolMetadata toolMetadata) {
+    private void addSpecialArguments(Object[] argumentsArray, ExecutionRequestId requestId, ToolMetadata toolMetadata) {
         for (SpecialArgumentMetadata argMetadata : toolMetadata.specialArguments()) {
             switch (argMetadata.typeResolution().specialArgsType()) {
                 case CANCELLATION -> {
@@ -305,7 +305,7 @@ public class McpServlet extends HttpServlet {
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
         McpRequestId mcpRedId = new McpRequestId(notificationParams.getRequestId());
-        RequestId requestId = new RequestId(mcpRedId, transport.getRequestIpAddress());
+        ExecutionRequestId requestId = new ExecutionRequestId(mcpRedId, transport.getRequestIpAddress());
         Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -322,8 +322,8 @@ public class McpServlet extends HttpServlet {
         transport.sendEmptyResponse();
     }
 
-    private RequestId createOngoingRequestId(McpTransport transport) {
-        return new RequestId(transport.getMcpRequest().id(),
+    private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
+        return new ExecutionRequestId(transport.getMcpRequest().id(),
                              transport.getRequestIpAddress());
     }
 }

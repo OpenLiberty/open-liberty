@@ -19,7 +19,7 @@ import io.openliberty.mcp.messaging.Cancellation;
  */
 public class CancellationImpl implements Cancellation {
 
-    private RequestId requestId;
+    private ExecutionRequestId requestId;
     private volatile Optional<String> reason = null;
 
     /**
@@ -36,7 +36,7 @@ public class CancellationImpl implements Cancellation {
         return new Result(true, reason);
     }
 
-    public void setRequestId(RequestId requestId) {
+    public void setRequestId(ExecutionRequestId requestId) {
         this.requestId = requestId;
     }
 

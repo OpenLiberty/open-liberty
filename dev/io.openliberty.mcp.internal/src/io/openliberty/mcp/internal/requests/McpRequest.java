@@ -100,10 +100,7 @@ public record McpRequest(String jsonrpc,
 
     private static McpRequestId parseAndValidateId(JsonValue id, List<String> errors) {
         return switch (id.getValueType()) {
-            case NUMBER -> {
-                Number idNumber = ((JsonNumber) id).numberValue();
-                yield new McpRequestId(idNumber);
-            }
+            case NUMBER -> new McpRequestId(((JsonNumber) id).bigDecimalValue());
             case STRING -> {
                 String idString = ((JsonString) id).getString();
                 if (idString.isBlank()) {

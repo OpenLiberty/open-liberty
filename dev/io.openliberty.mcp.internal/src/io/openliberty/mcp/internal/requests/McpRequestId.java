@@ -9,59 +9,67 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
+import java.math.BigDecimal;
 import java.util.Objects;
 
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+
 /**
- * Used to store the id of an McpRequest,
- * which can either be represented as a String or Integer.
+ * Stores the id of an MCP Request, which can be represented as a String or Number.
  */
+@JsonbTypeDeserializer(McpRequestIdDeserializer.class)
 public final class McpRequestId {
 
-    private final Object value;
+    private final String strVal;
+    private final BigDecimal numVal;
 
-    public McpRequestId(Object value) {
-        if (!isString(value) && !isInteger(value))
-            throw new IllegalArgumentException("Request Id must be a String or Number");
-        this.value = value;
+    public McpRequestId(String value) {
+        this.strVal = value;
+        this.numVal = null;
     }
 
-    public Object getValue() {
-        return value;
-    }
-
-    public static boolean isString(Object val) {
-        return val instanceof String;
-    }
-
-    public static boolean isInteger(Object val) {
-        return val instanceof Integer || val instanceof Short || val instanceof Long || val instanceof Byte;
+    public McpRequestId(BigDecimal value) {
+        this.numVal = value;
+        this.strVal = null;
     }
 
     /**
-     * Compares two id values for equality, considering only String and Number types.
+     * Retrieves the stored MCP Request ID value.
+     * 
+     * @return the MCP Request ID value as an Object.
+     * It will be either a String or BigDecimal depending on the type of the ID.
+     */
+    public Object getValue() {
+        if (strVal != null)
+            return strVal;
+        return numVal;
+    }
+
+    /**
+     * Compares two id values for equality, considering only String and BigDecimal types.
      *
      * @param val1 The first object to compare.
      * @param val2 The second object to compare.
      * @return True if the objects are equal, false otherwise.
      */
-    public static boolean mcpIdsAreEqual(Object val1, Object val2) {
-        if (isString(val1) && isString(val2))
+    public static boolean mcpIdsAreEqual(McpRequestId obj1, McpRequestId obj2) {
+        Object val1 = obj1.getValue();
+        Object val2 = obj2.getValue();
+        if (val1 instanceof String && val2 instanceof String) {
             return val1.equals(val2);
-        if (isInteger(val1) && isInteger(val2)) {
-            Number num1 = (Number) val1;
-            Number num2 = (Number) val2;
-            return num1.longValue() == num2.longValue();
+        }
+        if (val1 instanceof BigDecimal && val2 instanceof BigDecimal) {
+            // checks both Big Decimals have the same value
+            return ((BigDecimal) val1).compareTo((BigDecimal) val2) == 0;
         }
         return false;
     }
 
     /**
-     * Overrides the equals method to compare if the inputted object
-     * has the same id value as this object
+     * Overrides the equals method to compare if two MCP Request IDs are equal
      *
-     * @param obj The object to compare.
-     * @return True if the inputted object is either a McpRequestId with the same id value
-     * or the inputted object is an id with the same value as this object, false if otherwise.
+     * @param obj The McpRequestId object to compare.
+     * @return True if the MCP Request IDs are equal, false otherwise.
      */
     @Override
     public boolean equals(Object obj) {
@@ -69,9 +77,9 @@ public final class McpRequestId {
             return true;
         if (obj instanceof McpRequestId) {
             McpRequestId objToCompare = (McpRequestId) obj;
-            return mcpIdsAreEqual(this.value, objToCompare.getValue());
+            return mcpIdsAreEqual(this, objToCompare);
         }
-        return mcpIdsAreEqual(this.value, obj);
+        return false;
     }
 
     /**
@@ -81,7 +89,9 @@ public final class McpRequestId {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        if (strVal != null)
+            return Objects.hash(strVal);
+        return Objects.hash(numVal);
     }
 
 }

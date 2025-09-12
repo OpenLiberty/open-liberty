@@ -9,8 +9,4 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-public record RequestId(McpRequestId id, String sourceIp) {
-    public String getUniqueId() {
-        return id.getValue() + sourceIp;
-    }
-}
+public record ExecutionRequestId(McpRequestId id, String sourceIp) {}
