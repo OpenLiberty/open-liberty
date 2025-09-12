@@ -21,7 +21,7 @@ import jakarta.json.bind.serializer.JsonbDeserializer;
 import jakarta.json.stream.JsonParser;
 
 /**
- *
+ * Instructions for how Jsonb should deserialize JSON values into a {@link McpRequestId} type
  */
 public class McpRequestIdDeserializer implements JsonbDeserializer<McpRequestId> {
 

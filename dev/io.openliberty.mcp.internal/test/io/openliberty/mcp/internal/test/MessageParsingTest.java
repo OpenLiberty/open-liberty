@@ -21,8 +21,6 @@ import java.util.Map;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.Capabilities.ClientCapabilities;
 import io.openliberty.mcp.internal.Capabilities.Elicitation;
@@ -135,7 +133,7 @@ public class MessageParsingTest {
         McpRequest.createValidMCPRequest(reader);
     }
 
-    @Test(expected = JSONRPCException.class)
+    @Test(expected = JsonbException.class)
     public void validateFalseIdTypeWithDeserialization() throws JsonException, JSONRPCException {
         StringReader reader = new StringReader("""
                         {
@@ -170,7 +168,7 @@ public class MessageParsingTest {
                         }
                         """);
 
-        jsonb.fromJson(reader, McpRequest.class);
+        McpRequest.createValidMCPRequest(reader);
     }
 
     @Test(expected = JSONRPCException.class)
@@ -192,7 +190,7 @@ public class MessageParsingTest {
         McpRequest.createValidMCPRequest(reader);
     }
 
-    @Test(expected = JSONRPCException.class)
+    @Test(expected = JsonbException.class)
     public void validateEmptyIdWithDeserialization() throws JsonException, JSONRPCException {
         StringReader reader = new StringReader("""
                         {
@@ -212,7 +210,6 @@ public class MessageParsingTest {
     }
 
     @Test(expected = JSONRPCException.class)
-    @FFDCIgnore(JsonbException.class)
     public void validateMissingMethod() throws JsonException, JSONRPCException {
         StringReader reader = new StringReader("""
                         {
@@ -340,7 +337,7 @@ public class MessageParsingTest {
                           }
                         }
                         """);
-        McpRequest request = McpRequest.createValidMCPRequest(reader);
+        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         assertThat(toolCallRequest.getArguments(jsonb), arrayContaining(true));
     }

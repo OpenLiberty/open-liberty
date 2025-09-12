@@ -19,7 +19,7 @@ import org.junit.Test;
 import io.openliberty.mcp.internal.requests.McpRequestId;
 
 /**
- *
+ * Unit tests for the overidden .equals method for {@link McpRequestId}
  */
 public class McpRequestIdTest {
 
