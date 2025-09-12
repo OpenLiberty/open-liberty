@@ -11,7 +11,4 @@
     
     <javaPermission className="java.util.PropertyPermission" name="*" actions="read" />
     <javaPermission className="javax.net.ssl.SSLPermission" name="*" actions="setHostnameVerifier" />
-    
-    <!-- Enable trace for the REST client and multipart processing -->
-    <logging traceSpecification="*=info:io.openliberty.mpRestClient.*=all:org.apache.cxf.jaxrs.provider.multipart.*=all" />
 </server>
