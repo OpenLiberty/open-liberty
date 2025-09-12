@@ -43,33 +43,35 @@ public class RestfulWSModuleMetaDataListener implements ModuleMetaDataListener, 
      */
     @Override
     public List<String> getJNDIResource(String className) {
-        System.out.println("Adam - getJNDIResource(String className) className=" + className);
+        debug("className=" + className);
         List<String> jndiList = new ArrayList<String>();
         try {
             EJBEndpoints ejbEndpoints = moduleContainer.adapt(EJBEndpoints.class);
-            System.out.println("Adam - ejbEndpoints=" + ejbEndpoints);
+            debug("ejbEndpoints=" + ejbEndpoints);
             for (EJBEndpoint ejbEndpoint : ejbEndpoints.getEJBEndpoints()) {
                 if (ejbEndpoint.getClassName().equals(className)) {
-                    System.out.println("Adam - ejbEndpoint=" + ejbEndpoint);
+                    debug("ejbEndpoint=" + ejbEndpoint);
                     EJBType ejbType = ejbEndpoint.getEJBType();
-                    System.out.println("Adam - ejbType=" + ejbType);
+                    debug("ejbType=" + ejbType);
                     if (ejbType != EJBType.SINGLETON_SESSION && ejbType != EJBType.STATELESS_SESSION) {
                         continue;
                     }
                     
-                    System.out.println("Adam - isLocalBean=" + ejbEndpoint.isLocalBean());
-                    System.out.println("Adam - ejbClassName=" + ejbEndpoint.getClassName());
-                    System.out.println("Adam -    className=" + className);
+                    debug("isLocalBean=" + ejbEndpoint.isLocalBean());
+                    debug("ejbClassName=" + ejbEndpoint.getClassName());
+                    debug("className=" + className);
                     if (ejbEndpoint.isLocalBean()) {
-                        System.out.println("Adam - no interface");
+                        debug("no interface");
                         jndiList.add(getJNDIName(ejbEndpoint, null));
+//                        break; // TODO: testing just registering the first
                     } else {
                         for (String iface : ejbEndpoint.getLocalBusinessInterfaceNames()) {
                             ejbEndpoint.getReferenceFactory();
-                            System.out.println("Adam - iface=" + iface);
+                            debug("iface=" + iface);
                             // TODO: can className be an interface? Or do we have to compare that elsewhere?
                             // return getJNDIName();
                             jndiList.add(getJNDIName(ejbEndpoint, iface));
+//                            break; // TODO: testing just registering the first
                         }
                     }
                 }
@@ -91,12 +93,13 @@ public class RestfulWSModuleMetaDataListener implements ModuleMetaDataListener, 
         ExtendedModuleInfo moduleInfo = getModuleInfo(moduleContainer);
         String moduleName = moduleInfo.getName();
         
-        System.out.println("Adam - moduleName=" + moduleName);
+        debug("moduleName=" + moduleName);
         
         StringBuffer jndiName = new StringBuffer();
         if (moduleName == null) {
             jndiName.append("java:module/").append(beanName);
         } else {
+//            jndiName.append("java:app/").append(moduleName + "/").append(beanName);
             jndiName.append("java:app/").append(moduleName + "/").append(beanName);
         }
         
@@ -113,7 +116,6 @@ public class RestfulWSModuleMetaDataListener implements ModuleMetaDataListener, 
     @Override
     public void moduleMetaDataCreated(MetaDataEvent<ModuleMetaData> event) {
         RestfulWSModuleMetaDataListener.moduleContainer = event.getContainer();
-        System.out.println("Adam - moduleContainer=" + moduleContainer);
     }
 
     @Override
@@ -140,5 +142,16 @@ public class RestfulWSModuleMetaDataListener implements ModuleMetaDataListener, 
         }
         return moduleInfo;
     }
-
+    
+    private void debug(String message) {
+        boolean print = false; // allows me to turn of debug for this class without deleting statments
+        if (print) {
+            StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+            // Index 0 is getStackTrace(), 1 is this method (debug), 2 is the caller
+            StackTraceElement caller = stackTrace[2];
+            String methodName = caller.getMethodName();
+            int lineNumber = caller.getLineNumber();
+            System.out.println("Adam: " + this.getClass().getSimpleName() + "." + methodName + "()#L" + lineNumber + " - " + message );
+        }
+    }
 }

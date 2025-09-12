@@ -516,40 +516,22 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment
       // All providers should be registered before resources because of interceptors.
       // interceptors must exist as they are applied only once when the resource is registered.
       // Liberty Change Start
-      System.out.println("Adam - application=" + application);
-      System.out.println("Adam - useScanning=" + useScanning);
-      System.out.println("Adam - scannedJndiComponentResources=" + scannedJndiComponentResources);
-      System.out.println("Adam - jndiComponentResources=" + jndiComponentResources);
-      System.out.println("Adam - jndiResources=" + jndiResources);
-      System.out.println("Adam - scannedResourceClasses=" + scannedResourceClasses);
-      System.out.println("Adam - scannedResourceClassesWithBuilder=" + scannedResourceClassesWithBuilder);
-      System.out.println("Adam - resourceClasses=" + resourceClasses);
-      System.out.println("Adam - resources=" + resources);
-      System.out.println("Adam - actualResourceClasses=" + actualResourceClasses);
-      System.out.println("Adam - resourceFactories=" + resourceFactories);
-
       RestfulWSEJBUtils ejbUtils = RestfulWSEJBUtilsLocator.getRestfulWSEJBUtils();
       if (useScanning && scannedResourceClasses != null) {
          List<String> holder = new ArrayList<String>();
          for (String clazz : scannedResourceClasses) {
             // is EJB?
              List<String> jndiList = ejbUtils.getJNDIResource(clazz);
-             System.out.println("Adam - clazz=" + clazz);
-             System.out.println("Adam - jndi=" + jndiList);
              if (jndiList != null && !jndiList.isEmpty()) {
                  for (String jndi : jndiList) {
                   // TODO: test and make sure it's correct
                      Context ctx;
                      try {
                         ctx = new InitialContext();
-                        System.out.println("Adam - lookup=" + ctx.lookup(jndi));
-                     } catch (NamingException e) {
-                         System.out.println("Adam - failed to look up!");
-                     }
+                     } catch (NamingException e) {}
 
-                     System.out.println("Adam - adding + " + jndi + ";" + clazz + ";true");
+                     debug("adding + " + jndi + ";" + clazz + ";true");
                      scannedJndiComponentResources.add(jndi + ";" + clazz + ";true");
-//                     scannedResourceClasses.remove(clazz);
                      if (!holder.contains(clazz)) {
                          holder.add(clazz);
                      }
@@ -673,7 +655,9 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment
       }
 
       if (resourceFactories != null) {
+          debug("resourceFactories=" + resourceFactories);
          for (ResourceFactory factory : resourceFactories) {
+             factory.getScannableClass();
             registry.addResourceFactory(factory);
          }
       }
@@ -714,6 +698,7 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment
       }
       boolean cacheRefrence = Boolean.valueOf(config[2].trim());
       JndiComponentResourceFactory factory = new JndiComponentResourceFactory(jndiName, clazz, cacheRefrence);
+      debug("registering resource=" + resource + " factory=" + factory);
       getResourceFactories().add(factory);
 
    }
@@ -1207,5 +1192,17 @@ public class ResteasyDeploymentImpl implements ResteasyDeployment
    @Override
    public void setStatisticsEnabled(boolean statisticsEnabled) {
       this.statisticsEnabled = statisticsEnabled;
+   }
+   
+   private void debug(String message) {
+       boolean print = true; // allows me to turn of debug for this class without deleting statments
+       if (print) {
+           StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+           // Index 0 is getStackTrace(), 1 is this method (debug), 2 is the caller
+           StackTraceElement caller = stackTrace[2];
+           String methodName = caller.getMethodName();
+           int lineNumber = caller.getLineNumber();
+           System.out.println("Adam: " + this.getClass().getSimpleName() + "." + methodName + "()#L" + lineNumber + " - " + message );
+       }
    }
 }

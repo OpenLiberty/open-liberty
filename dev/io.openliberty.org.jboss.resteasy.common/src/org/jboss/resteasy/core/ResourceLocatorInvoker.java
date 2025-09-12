@@ -122,6 +122,10 @@ public class ResourceLocatorInvoker implements ResourceInvoker
    }
 
    private Object constructLocator(Object locator, ResteasyUriInfo uriInfo, Object[] args) {
+       debug("locator=" + locator);
+       debug("uriInfo=" + uriInfo);
+       debug("args=" + args);
+       debug("uriInfo.getPath()=" + uriInfo.getPath());
       try
       {
          uriInfo.pushCurrentResource(locator);
@@ -224,5 +228,17 @@ public class ResourceLocatorInvoker implements ResourceInvoker
 
    public MethodStatisticsLogger getMethodStatisticsLogger() {
       return methodStatisticsLogger;
+   }
+   
+   private void debug(String message) {
+       boolean print = true; // allows me to turn of debug for this class without deleting statments
+       if (print) {
+           StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+           // Index 0 is getStackTrace(), 1 is this method (debug), 2 is the caller
+           StackTraceElement caller = stackTrace[2];
+           String methodName = caller.getMethodName();
+           int lineNumber = caller.getLineNumber();
+           System.out.println("Adam: " + this.getClass().getSimpleName() + "." + methodName + "()#L" + lineNumber + " - " + message );
+       }
    }
 }

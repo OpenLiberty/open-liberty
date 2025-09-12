@@ -167,11 +167,10 @@ public class MethodInjectorImpl implements MethodInjector
       Object result = null;
       try
       {
-          System.out.println();
-          System.out.println("Adam - MethodInjectorImpl - invokedMethod=" + invokedMethod);
-          System.out.println("Adam - MethodInjectorImpl - resource=" + resource);
-          System.out.println("Adam - MethodInjectorImpl - args=" + args);
-          System.out.println();
+          debug("invokedMethod=" + invokedMethod);
+          debug("resource=" + resource);
+          debug("args=" + args);
+//          Thread.dumpStack();
          result = invokedMethod.invoke(resource, args);
       }
       catch (IllegalAccessException e)
@@ -221,4 +220,15 @@ public class MethodInjectorImpl implements MethodInjector
       return result;
    }
 
+   private void debug(String message) {
+       boolean print = false; // allows me to turn of debug for this class without deleting statments
+       if (print) {
+           StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
+           // Index 0 is getStackTrace(), 1 is this method (debug), 2 is the caller
+           StackTraceElement caller = stackTrace[2];
+           String methodName = caller.getMethodName();
+           int lineNumber = caller.getLineNumber();
+           System.out.println("Adam: " + this.getClass().getSimpleName() + "." + methodName + "()#L" + lineNumber + " - " + message );
+       }
+   }
 }

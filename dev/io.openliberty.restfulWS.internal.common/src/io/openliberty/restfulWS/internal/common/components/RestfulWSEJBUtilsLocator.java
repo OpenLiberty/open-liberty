@@ -21,7 +21,6 @@ public class RestfulWSEJBUtilsLocator {
 
     @Reference(service = RestfulWSEJBUtils.class, name = "io.openliberty.restfulws.internal.ejb.components.RestfulWSModuleMetaDataListener")
     public void setRestfulWSEJBUtils(RestfulWSEJBUtils restfulWSEJBUtils) {
-        System.out.println("Adam - setRestfulWSEJBUtils()");
         RestfulWSEJBUtilsLocator.restfulWSEJBUtils = restfulWSEJBUtils;
     }
 

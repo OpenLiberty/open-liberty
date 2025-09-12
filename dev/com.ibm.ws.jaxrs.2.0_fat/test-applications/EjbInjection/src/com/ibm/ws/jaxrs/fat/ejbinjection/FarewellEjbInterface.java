@@ -9,8 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs.fat.ejbinjection;
 
-public interface EjbInjectionBeanInterface {
+public interface FarewellEjbInterface {
 
-    public String hello();
+//    @GET
+//    @Path("farewell")
+    public String goodbye();
 
 }

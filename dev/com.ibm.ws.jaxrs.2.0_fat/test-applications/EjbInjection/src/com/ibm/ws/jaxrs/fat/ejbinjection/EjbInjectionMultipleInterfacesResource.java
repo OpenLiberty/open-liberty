@@ -14,15 +14,17 @@ package com.ibm.ws.jaxrs.fat.ejbinjection;
 
 import javax.annotation.Resource;
 import javax.ejb.Local;
+import javax.ejb.LocalBean;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 
 @Stateless
-@Local({ EjbInjectionBeanInterface.class, EjbInjectionBeanInterface2.class })
+@Local({ GreetEJBInterface.class, FarewellEjbInterface.class })
+@LocalBean
 @Path("multiinterface")
-public class EjbInjectionMultipleInterfacesResource implements EjbInjectionBeanInterface, EjbInjectionBeanInterface2 {
+public class EjbInjectionMultipleInterfacesResource implements GreetEJBInterface, FarewellEjbInterface {
 
     @Resource
     SessionContext ctx;
