@@ -28,11 +28,11 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
+import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
 import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
-import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 import io.openliberty.mcp.messaging.Cancellation;
@@ -304,7 +304,7 @@ public class McpServlet extends HttpServlet {
 
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
-        McpRequestId mcpRedId = new McpRequestId(notificationParams.getRequestId());
+        McpRequestId mcpRedId = notificationParams.getRequestId();
         ExecutionRequestId requestId = new ExecutionRequestId(mcpRedId, transport.getRequestIpAddress());
         Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
@@ -324,6 +324,6 @@ public class McpServlet extends HttpServlet {
 
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
         return new ExecutionRequestId(transport.getMcpRequest().id(),
-                             transport.getRequestIpAddress());
+                                      transport.getRequestIpAddress());
     }
 }

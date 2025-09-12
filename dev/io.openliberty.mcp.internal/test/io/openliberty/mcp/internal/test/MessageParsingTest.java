@@ -35,26 +35,21 @@ import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpInitializeParams.ClientInfo;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
 import io.openliberty.mcp.internal.requests.McpRequest;
-import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
 import jakarta.json.bind.JsonbException;
 
 /**
  *
  */
 public class MessageParsingTest {
-    static Jsonb jsonb;
+    private static Jsonb jsonb;
 
     @BeforeClass
     public static void setup() {
-        JsonbConfig jsonbConfig = new JsonbConfig()
-                                                   .withDeserializers(new McpRequestIdDeserializer());
-
-        jsonb = JsonbBuilder.create(jsonbConfig);
+        jsonb = JsonbBuilder.create();
         ToolRegistry registry = new ToolRegistry();
         ToolRegistry.set(registry);
 
@@ -88,8 +83,7 @@ public class MessageParsingTest {
                         }
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        int id = ((BigDecimal) request.id().getValue()).intValue();
-        assertThat(id, equalTo(2));
+        assertThat((BigDecimal) request.id().getValue(), equalTo(new BigDecimal(2)));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.TOOLS_CALL));
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         assertThat(toolCallRequest.getArguments(jsonb), arrayContaining("Hello"));
@@ -297,7 +291,7 @@ public class MessageParsingTest {
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.CANCELLED));
 
         McpNotificationParams notificationRequest = request.getParams(McpNotificationParams.class, jsonb);
-        assertThat(notificationRequest.getRequestId(), equalTo("123"));
+        assertThat(notificationRequest.getRequestId().getValue(), equalTo("123"));
         assertThat(notificationRequest.getReason(), equalTo("User requested cancellation"));
     }
 

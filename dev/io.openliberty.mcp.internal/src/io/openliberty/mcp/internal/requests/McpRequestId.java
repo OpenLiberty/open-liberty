@@ -13,10 +13,12 @@ import java.math.BigDecimal;
 import java.util.Objects;
 
 import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 
 /**
  * Stores the id of an MCP Request, which can be represented as a String or Number.
  */
+@JsonbTypeSerializer(McpRequestIdSerializer.class)
 @JsonbTypeDeserializer(McpRequestIdDeserializer.class)
 public final class McpRequestId {
 
@@ -35,7 +37,7 @@ public final class McpRequestId {
 
     /**
      * Retrieves the stored MCP Request ID value.
-     * 
+     *
      * @return the MCP Request ID value as an Object.
      * It will be either a String or BigDecimal depending on the type of the ID.
      */
