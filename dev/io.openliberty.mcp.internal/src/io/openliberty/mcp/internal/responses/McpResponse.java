@@ -10,11 +10,12 @@
 package io.openliberty.mcp.internal.responses;
 
 import io.openliberty.mcp.internal.requests.McpRequestId;
+import jakarta.json.bind.annotation.JsonbNillable;
 
 /**
  * An MCP Response message
- *
  */
+@JsonbNillable
 public abstract class McpResponse {
     private String jsonrpc;
     private McpRequestId id;

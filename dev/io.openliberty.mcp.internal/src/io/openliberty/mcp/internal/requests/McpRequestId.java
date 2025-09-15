@@ -36,35 +36,17 @@ public final class McpRequestId {
     }
 
     /**
-     * Retrieves the stored MCP Request ID value.
-     *
-     * @return the MCP Request ID value as an Object.
-     * It will be either a String or BigDecimal depending on the type of the ID.
+     * @return the strVal
      */
-    public Object getValue() {
-        if (strVal != null)
-            return strVal;
-        return numVal;
+    public String getStrVal() {
+        return strVal;
     }
 
     /**
-     * Compares two id values for equality, considering only String and BigDecimal types.
-     *
-     * @param val1 The first object to compare.
-     * @param val2 The second object to compare.
-     * @return True if the objects are equal, false otherwise.
+     * @return the numVal
      */
-    public static boolean mcpIdsAreEqual(McpRequestId obj1, McpRequestId obj2) {
-        Object val1 = obj1.getValue();
-        Object val2 = obj2.getValue();
-        if (val1 instanceof String && val2 instanceof String) {
-            return val1.equals(val2);
-        }
-        if (val1 instanceof BigDecimal && val2 instanceof BigDecimal) {
-            // checks both Big Decimals have the same value
-            return ((BigDecimal) val1).compareTo((BigDecimal) val2) == 0;
-        }
-        return false;
+    public BigDecimal getNumVal() {
+        return numVal;
     }
 
     /**
@@ -77,11 +59,12 @@ public final class McpRequestId {
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
-        if (obj instanceof McpRequestId) {
-            McpRequestId objToCompare = (McpRequestId) obj;
-            return mcpIdsAreEqual(this, objToCompare);
-        }
-        return false;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        McpRequestId other = (McpRequestId) obj;
+        return Objects.equals(numVal, other.numVal) && Objects.equals(strVal, other.strVal);
     }
 
     /**
@@ -91,9 +74,14 @@ public final class McpRequestId {
      */
     @Override
     public int hashCode() {
-        if (strVal != null)
-            return Objects.hash(strVal);
-        return Objects.hash(numVal);
+        return Objects.hash(numVal, strVal);
+    }
+
+    @Override
+    public String toString() {
+        if (getStrVal() != null)
+            return getStrVal();
+        return getNumVal().toString();
     }
 
 }

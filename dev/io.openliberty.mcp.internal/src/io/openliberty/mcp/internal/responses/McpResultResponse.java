@@ -24,7 +24,7 @@ public class McpResultResponse extends McpResponse {
 
     public McpResultResponse(McpRequestId id, Object result) {
         super("2.0", id);
-        if (id.getValue() instanceof String && ((String) id.getValue()).isBlank())
+        if (id.getStrVal() != null && id.getStrVal().isBlank())
             throw new IllegalArgumentException("id must not be empty");
         if (result == null)
             throw new IllegalArgumentException("Result field must be present");

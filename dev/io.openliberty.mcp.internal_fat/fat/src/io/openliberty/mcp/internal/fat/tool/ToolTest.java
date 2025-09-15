@@ -160,7 +160,7 @@ public class ToolTest extends FATServletClient {
                             "id must be a string or number"
                             ],
                         "message":"Invalid request"},
-                        "id":"",
+                        "id":null,
                         "jsonrpc":"2.0"}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
@@ -181,7 +181,7 @@ public class ToolTest extends FATServletClient {
                         {"error":{"code":-32700,
                         "message":"Parse error",
                         "data":["Invalid token=CURLYCLOSE at (line no=1, column no=3, offset=2). Expected tokens are: [CURLYOPEN, SQUAREOPEN, STRING, NUMBER, TRUE, FALSE, NULL]"]},
-                        "id":"",
+                        "id":null,
                         "jsonrpc":"2.0"}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, false);

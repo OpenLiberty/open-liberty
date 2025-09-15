@@ -9,8 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import java.math.BigDecimal;
-
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
@@ -22,11 +20,12 @@ public class McpRequestIdSerializer implements JsonbSerializer<McpRequestId> {
 
     @Override
     public void serialize(McpRequestId id, JsonGenerator generator, SerializationContext ctx) {
-        Object idVal = id.getValue();
-        if (idVal instanceof String)
-            generator.write((String) idVal);
-        else if (idVal instanceof BigDecimal)
-            generator.write(((BigDecimal) idVal));
+        if (id.getStrVal() != null && !id.getStrVal().isEmpty())
+            generator.write(id.getStrVal());
+        else if (id.getNumVal() != null)
+            generator.write(id.getNumVal());
+        else
+            generator.writeNull();
     }
 
 }

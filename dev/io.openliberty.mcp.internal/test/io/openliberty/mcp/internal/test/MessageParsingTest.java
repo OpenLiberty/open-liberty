@@ -83,7 +83,8 @@ public class MessageParsingTest {
                         }
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat((BigDecimal) request.id().getValue(), equalTo(new BigDecimal(2)));
+        assertThat(request.id().getNumVal(), equalTo(new BigDecimal(2)));
+        assertThat(request.id().getStrVal(), equalTo(null));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.TOOLS_CALL));
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         assertThat(toolCallRequest.getArguments(jsonb), arrayContaining("Hello"));
@@ -105,7 +106,8 @@ public class MessageParsingTest {
                         }
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.id().getValue(), equalTo("2"));
+        assertThat(request.id().getStrVal(), equalTo("2"));
+        assertThat(request.id().getNumVal(), equalTo(null));
     }
 
     @Test(expected = JSONRPCException.class)
@@ -247,7 +249,7 @@ public class MessageParsingTest {
                         """);
 
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.id().getValue(), equalTo("1"));
+        assertThat(request.id().getStrVal(), equalTo("1"));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.INITIALIZE));
         McpInitializeParams params = request.getParams(McpInitializeParams.class, jsonb);
         assertThat(params.getProtocolVersion(), equalTo("2024-11-05"));
@@ -291,7 +293,7 @@ public class MessageParsingTest {
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.CANCELLED));
 
         McpNotificationParams notificationRequest = request.getParams(McpNotificationParams.class, jsonb);
-        assertThat(notificationRequest.getRequestId().getValue(), equalTo("123"));
+        assertThat(notificationRequest.getRequestId().getStrVal(), equalTo("123"));
         assertThat(notificationRequest.getReason(), equalTo("User requested cancellation"));
     }
 
