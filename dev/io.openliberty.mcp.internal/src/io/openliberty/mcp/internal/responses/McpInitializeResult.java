@@ -10,11 +10,12 @@
 package io.openliberty.mcp.internal.responses;
 
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
+import io.openliberty.mcp.internal.McpProtocolVersion;
 
 /**
  * The result of an initialization request
  */
-public record McpInitializeResult(String protocolVersion,
+public record McpInitializeResult(McpProtocolVersion protocolVersion,
                                   ServerCapabilities capabilities,
                                   ServerInfo serverInfo,
                                   String instructions) {

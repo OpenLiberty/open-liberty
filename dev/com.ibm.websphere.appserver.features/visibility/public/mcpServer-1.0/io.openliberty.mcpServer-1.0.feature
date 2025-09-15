@@ -15,7 +15,7 @@ Subsystem-Name: Model Context Protocol Server 1.0
 -features=io.openliberty.mcpServer1.0.ee-10.0;ibm.tolerates:=11.0
 -bundles=io.openliberty.mcp; location:="dev/api/ibm/", \
  io.openliberty.mcp.internal
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

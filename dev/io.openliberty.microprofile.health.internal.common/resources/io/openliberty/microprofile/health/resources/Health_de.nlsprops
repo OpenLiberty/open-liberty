@@ -70,6 +70,9 @@ file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Es kann nich
 file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=Die Laufzeitumgebung ben\u00f6tigt Schreibrechte f\u00fcr das Verzeichnis /health, um die Dateien "live", "ready" und "started" zu erstellen, damit die dateibasierten Gesundheitspr\u00fcfungen ordnungsgem\u00e4\u00df funktionieren.
 file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=Der Benutzer muss die Ursache f\u00fcr das Berechtigungsproblem ermitteln.
 
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W=CWMMH0102W: Die Laufzeitumgebung kann den Pfad f\u00fcr das Verzeichnis /health nicht aufl\u00f6sen. Die dateibasierte Health-Check-Funktion wird deaktiviert.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.explanation=Die Laufzeit erfordert, dass die interne Eigenschaft server.output.dir oder die Umgebungsvariable WLP_OUTPUT_DIR gesetzt ist, um den Speicherort des Verzeichnisses /health zu bestimmen.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.useraction=Stellen Sie sicher, dass die Umgebungsvariable WLP_OUTPUT_DIR richtig gesetzt ist.
 
 file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: Die Laufzeitumgebung hat das Vorhandensein des folgenden Verzeichnisses entdeckt [ {0} ]. F\u00fcr die dateibasierte Gesundheitspr\u00fcfung unter diesem Pfad ist eine Datei mit demselben Namen erforderlich. Die dateibasierte Health-Check-Funktion wird deaktiviert.
 file.healthcheck.file.name.conflict.CWMMH0105W.explanation=Die dateibasierten Gesundheitspr\u00fcfungen erfordern die Erstellung und Verwendung der Dateien "live", "ready" und "started" im Verzeichnis /health. Im Verzeichnis /health ist bereits ein Verzeichnis mit einem dieser Namen vorhanden, so dass die erforderlichen Dateien nicht erstellt werden k\u00f6nnen.

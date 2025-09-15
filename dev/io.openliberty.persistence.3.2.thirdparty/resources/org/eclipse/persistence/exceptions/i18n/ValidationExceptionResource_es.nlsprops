@@ -641,3 +641,9 @@
 
 7360=La contrase\u00f1a de la base de datos se cifr\u00f3 mediante un algoritmo obsoleto. Vuelva a cifrarlo por `passwordUpdate.sh` de eclipselink.zip manojo.
 
+7361=S\u00f3lo se puede marcar un campo de la enumeraci\u00f3n mediante la anotaci\u00f3n @EnumeratedValue. Compruebe la clase enum [ {0} ].
+
+7362=Para un tipo enumerado ORDINAL, s\u00f3lo los tipos byte, short, int, log o wrapper pueden utilizarse como tipo de atributo marcado por @EnumeratedValue. Compruebe el atributo [ {0} ] en la clase enum [ {1} ].
+
+7363=Para un tipo enumerado STRING, s\u00f3lo el tipo java.lang.String puede utilizarse como tipo de atributo marcado por @EnumeratedValue. Compruebe el atributo [ {0} ] en la clase enum [ {1} ].
+

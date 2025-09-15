@@ -359,3 +359,5 @@
 
 6183=Der Zuordnungstyp {1} f\u00fcr das Attribut {2} von {0} wird mit der Query-By-Example-Funktion nicht unterst\u00fctzt. Wenn das Attribut sicher ignoriert werden kann, f\u00fcgen Sie es der Liste zu ignorierender Attribute hinzu oder setzen Sie die Beispielvalidierung in der Richtlinie auf false.
 
+6184=Falscher Wertetyp {0} wird an den Konstruktorausdruck \u00fcbergeben. Komplexe Typen (z. B. Arrays, Sammlungen oder Objekte) werden nicht unterst\u00fctzt.
+

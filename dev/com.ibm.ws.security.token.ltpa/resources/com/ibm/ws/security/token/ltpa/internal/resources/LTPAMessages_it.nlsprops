@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Imp
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: L''attributo updateTrigger \u00e8 impostato su disabilitato e l''intervallo di monitoraggio \u00e8 maggiore di {0}. Nessun ricaricamento dinamico si verifica quando i file di chiavi LTPA vengono modificati.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Quando l'attributo updateTrigger \u00e8 impostato su disabilitato, i file non vengono monitorati per eventuali modifiche sui file con il suffisso .keys e il ricaricamento dinamico non si verifica. Anche se l'attributo monitorInterval \u00e8 impostato su un intervallo maggiore di zero, l'attributo viene ignorato e i file non vengono monitorati.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Impostare il valore dell'attributo updateTrigger su polling o mbean.
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Le chiavi di convalida {0} devono essere rigenerate utilizzando algoritmi crittografici certificati FIPS 140-3.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Le chiavi di convalida LTPA create senza FIPS 140-3 abilitato falliscono quando FIPS 140-3 \u00e8 abilitato.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Usare il comando securityUtility createLTPAKeys per creare le chiavi di convalida approvate da FIPS quando \u00e8 configurato FIPS 140-3.

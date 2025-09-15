@@ -18,21 +18,20 @@ import java.util.Map;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.ToolArg;
+import io.openliberty.mcp.annotations.WrapBusinessError;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.Bean;
 
-/**
- *
- */
 public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> method,
                            Map<String, ArgumentMetadata> arguments,
                            List<SpecialArgumentMetadata> specialArguments,
-                           String name, String title, String description) {
+                           String name, String title, String description,
+                           List<Class<? extends Throwable>> businessExceptions) {
 
-    public record ArgumentMetadata(Type type, int index, String description, boolean required) {}
+    public record ArgumentMetadata(Type type, int index, String description, boolean required, boolean isDuplicate) {}
 
-    public record SpecialArgumentMetadata(SpecialArgumentType type, int index) {}
+    public record SpecialArgumentMetadata(SpecialArgumentType.Resolution typeResolution, int index) {}
 
     public ToolMetadata {
         arguments = ((arguments == null) ? Collections.emptyMap() : arguments);
@@ -40,12 +39,14 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
     }
 
     public static ToolMetadata createFrom(Tool annotation, Bean<?> bean, AnnotatedMethod<?> method) {
-
         String name = annotation.name().equals(Tool.ELEMENT_NAME) ? method.getJavaMember().getName() : annotation.name();
         String title = annotation.title().isEmpty() ? null : annotation.title();
         String description = annotation.description().isEmpty() ? null : annotation.description();
 
-        return new ToolMetadata(annotation, bean, method, getArgumentMap(method), getSpecialArgumentList(method), name, title, description);
+        WrapBusinessError wrapAnnotation = method.getAnnotation(WrapBusinessError.class);
+        List<Class<? extends Throwable>> businessExceptions = (wrapAnnotation != null) ? List.of(wrapAnnotation.value()) : Collections.emptyList();
+
+        return new ToolMetadata(annotation, bean, method, getArgumentMap(method), getSpecialArgumentList(method), name, title, description, businessExceptions);
     }
 
     private static Map<String, ArgumentMetadata> getArgumentMap(AnnotatedMethod<?> method) {
@@ -53,12 +54,9 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
         for (AnnotatedParameter<?> p : method.getParameters()) {
             ToolArg pInfo = p.getAnnotation(ToolArg.class);
             if (pInfo != null) {
-                ArgumentMetadata pData = new ArgumentMetadata(p.getBaseType(), p.getPosition(), pInfo.description(), pInfo.required());
-                if (pInfo.name().equals(Tool.ELEMENT_NAME)) {
-                    result.put(method.getJavaMember().getName(), pData);
-                } else {
-                    result.put(pInfo.name(), pData);
-                }
+                String toolArgName = (pInfo.name().equals(ToolArg.ELEMENT_NAME)) ? p.getJavaParameter().getName() : pInfo.name(); // p.getJavaParameter().getName() needs java compiler -parameter flag to work
+                boolean isDuplicateArg = result.containsKey(toolArgName);
+                result.put(toolArgName, new ArgumentMetadata(p.getBaseType(), p.getPosition(), pInfo.description(), pInfo.required(), isDuplicateArg));
             }
         }
         return result.isEmpty() ? Collections.emptyMap() : result;
@@ -74,5 +72,12 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
             }
         }
         return Collections.unmodifiableList(result);
+    }
+
+    /**
+     * Used for error reporting cases, such as locating Duplicate Tools and ToolArgs
+     */
+    public String getToolQualifiedName() {
+        return bean.getBeanClass() + "." + method.getJavaMember().getName();
     }
 }

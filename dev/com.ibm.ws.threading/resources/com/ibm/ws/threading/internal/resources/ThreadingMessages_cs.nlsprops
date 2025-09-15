@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,7 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=Upravte soubor 'server.xml' a zm\
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ V\u0161echna vl\u00e1kna ve v\u00fdchoz\u00edm spou\u0161t\u011b\u010di Liberty se zdaj\u00ed b\u00fdt zav\u011b\u0161en\u00e1 a nelze p\u0159idat dal\u0161\u00ed vl\u00e1kna, proto\u017ee velikost fondu dos\u00e1hla sv\u00e9ho limitu.  Aktu\u00e1ln\u00ed velikost fondu je {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=V\u0161echna v\u00fdchoz\u00ed vl\u00e1kna vykonavatele jsou obsazena, vl\u00e1kna v posledn\u00ed dob\u011b nedokon\u010dila \u017e\u00e1dn\u00e9 \u00falohy a \u00falohy \u010dekaj\u00ed ve front\u011b. Dal\u0161\u00ed vl\u00e1kna ji\u017e nelze p\u0159idat, proto\u017ee velikost fondu dos\u00e1hla sv\u00e9ho limitu.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=Zjist\u011bte, zda existuje \u00fazk\u00e9 m\u00edsto, nap\u0159\u00edklad uzam\u010den\u00e1 tabulka datab\u00e1ze, kter\u00e9 by mohlo br\u00e1nit vl\u00e1kn\u016fm v dokon\u010den\u00ed jejich \u00fakol\u016f. Pokud nen\u00ed \u017e\u00e1dn\u00e9 \u00fazk\u00e9 m\u00edsto a server pouze pot\u0159ebuje v\u00edce vl\u00e1ken, upravte atributy coreThreads a maxThreads konfigura\u010dn\u00edho prvku executor.
+
+CWWKE1208.override.virtual=CWWKE1208I: Z\u00e1sady soub\u011b\u017enosti {0} vytvo\u0159\u00ed vl\u00e1kna platformy, proto\u017ee vytv\u00e1\u0159en\u00ed virtu\u00e1ln\u00edch vl\u00e1ken serverem Liberty je zak\u00e1z\u00e1no.
+CWWKE1208.override.virtual.explanation=Server ThreadTypeOverride SPI zak\u00e1zal vytv\u00e1\u0159en\u00ed virtu\u00e1ln\u00edch vl\u00e1ken serverem Liberty.
+CWWKE1208.override.virtual.useraction=Nen\u00ed pot\u0159ebn\u00e1 \u017e\u00e1dn\u00e1 akce.

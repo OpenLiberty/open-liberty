@@ -49,3 +49,6 @@
 
 3010=Helytelen d\u00e1tum \u00e9rt\u00e9k [\u00c9\u00c9\u00c9\u00c9-HH-NN]: [{0}].
 
+3011=Az enum : [ {0} ] \u00e9rt\u00e9k\u00e9t nem lehetett lek\u00e9rni a [ {1} ] mez\u0151b\u0151l, mivel 
+ [{2}].
+

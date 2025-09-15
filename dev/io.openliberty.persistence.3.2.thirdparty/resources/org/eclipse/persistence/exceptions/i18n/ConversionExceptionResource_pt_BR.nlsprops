@@ -49,3 +49,6 @@
 
 3010=Valor de data incorreto [AAAA-MM-DD]: [{0}].
 
+3011=N\u00e3o foi poss\u00edvel obter o valor do enum: [ {0} ] do campo [ {1} ] devido 
+ [{2}].
+

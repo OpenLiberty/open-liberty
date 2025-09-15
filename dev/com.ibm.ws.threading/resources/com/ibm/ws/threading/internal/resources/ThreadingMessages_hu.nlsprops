@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -66,3 +66,7 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=M\u00f3dos\u00edtsa a 'server.xml
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ \u00dagy t\u0171nik, hogy a Liberty alap\u00e9rtelmezett v\u00e9grehajt\u00f3 minden sz\u00e1la le\u00e1llt, \u00e9s t\u00f6bb sz\u00e1l nem adhat\u00f3 hozz\u00e1, mivel a k\u00e9szlet m\u00e9rete el\u00e9rte a korl\u00e1tot.  A jelenlegi medence m\u00e9rete {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=Az \u00f6sszes alap\u00e9rtelmezett v\u00e9grehajt\u00f3 sz\u00e1l elfoglalt, a sz\u00e1lak nem v\u00e9geztek feladatot a k\u00f6zelm\u00faltban, \u00e9s a feladatok v\u00e1rakoznak a sorban. Nem lehet t\u00f6bb sz\u00e1lat hozz\u00e1adni, mert a pool m\u00e9rete el\u00e9rte a korl\u00e1tot.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=Hat\u00e1rozza meg, hogy van-e olyan sz\u0171k keresztmetszet, p\u00e9ld\u00e1ul egy z\u00e1rolt adatb\u00e1zis-t\u00e1bla, amely megakad\u00e1lyozhatja a sz\u00e1lakat a feladataik elv\u00e9gz\u00e9s\u00e9ben. Ha nincs sz\u0171k keresztmetszet, \u00e9s a kiszolg\u00e1l\u00f3nak csak t\u00f6bb sz\u00e1lra van sz\u00fcks\u00e9ge, \u00e1ll\u00edtsa be a v\u00e9grehajt\u00f3 konfigur\u00e1ci\u00f3s elem coreThreads \u00e9s maxThreads attrib\u00fatumait.
+
+CWWKE1208.override.virtual=CWWKE1208I: A {0} p\u00e1rhuzamoss\u00e1gi h\u00e1zirend platformsz\u00e1lakat hoz l\u00e9tre, mivel a virtu\u00e1lis sz\u00e1lak l\u00e9trehoz\u00e1sa a Liberty kiszolg\u00e1l\u00f3 \u00e1ltal le van tiltva.
+CWWKE1208.override.virtual.explanation=A ThreadTypeOverride SPI letiltotta a virtu\u00e1lis sz\u00e1lak l\u00e9trehoz\u00e1s\u00e1t a Liberty kiszolg\u00e1l\u00f3n.
+CWWKE1208.override.virtual.useraction=Nincs teend\u0151.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,7 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=Edite el archivo 'server.xml' y c
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ Todos los hilos del ejecutor por defecto Liberty parecen estar colgados, y no se pueden a\u00f1adir m\u00e1s hilos porque el tama\u00f1o del pool ha alcanzado su l\u00edmite.  El tama\u00f1o actual de la reserva es {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=Todos los subprocesos del ejecutor predeterminado est\u00e1n ocupados, los subprocesos no han completado ninguna tarea recientemente y las tareas est\u00e1n esperando en la cola. No se pueden a\u00f1adir m\u00e1s hilos porque el tama\u00f1o del pool ha alcanzado su l\u00edmite.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=Determine si existe un cuello de botella, como una tabla de base de datos bloqueada, que pueda impedir que los subprocesos completen sus tareas. Si no hay ning\u00fan cuello de botella y el servidor s\u00f3lo necesita m\u00e1s hilos, ajuste los atributos coreThreads y maxThreads del elemento de configuraci\u00f3n del ejecutor.
+
+CWWKE1208.override.virtual=CWWKE1208I: La pol\u00edtica de concurrencia {0} crear\u00e1 hilos de plataforma porque la creaci\u00f3n de hilos virtuales por el servidor Liberty est\u00e1 desactivada.
+CWWKE1208.override.virtual.explanation=El SPI ThreadTypeOverride desactiv\u00f3 la creaci\u00f3n de hilos virtuales por el servidor Liberty.
+CWWKE1208.override.virtual.useraction=No se requiere ninguna acci\u00f3n.

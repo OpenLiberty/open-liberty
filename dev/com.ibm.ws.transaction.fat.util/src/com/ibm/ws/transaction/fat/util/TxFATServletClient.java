@@ -17,7 +17,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Collections;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
@@ -60,5 +63,37 @@ public class TxFATServletClient extends FATServletClient {
         } finally {
             con.disconnect();
         }
+    }
+
+    /**
+     * Temporarily set an extra transaction attribute
+     */
+    public static AutoCloseable withExtraTranAttributes(LibertyServer server, String appName, String... attrs) throws Exception {
+        final ServerConfiguration config = server.getServerConfiguration();
+        final ServerConfiguration originalConfig = config.clone();
+        final Transaction transaction = config.getTransaction();
+
+        if (attrs == null || attrs.length % 2 != 0) {
+            throw new IllegalArgumentException();
+        }
+
+        for (int i = 0; (i + 1) < attrs.length; i += 2) {
+            transaction.setExtraAttribute(attrs[i], attrs[i + 1]);
+        }
+
+        try {
+        	if (server.isStarted()) server.setMarkToEndOfLog();
+            server.updateServerConfiguration(config);
+            if (server.isStarted()) server.waitForConfigUpdateInLogUsingMark(Collections.singleton(appName));
+        } catch (Exception e) {
+            try {
+            	server.updateServerConfiguration(originalConfig);
+            } catch (Exception e1) {
+                e.addSuppressed(e1);
+            }
+            throw e;
+        }
+
+        return () -> server.updateServerConfiguration(originalConfig);
     }
 }

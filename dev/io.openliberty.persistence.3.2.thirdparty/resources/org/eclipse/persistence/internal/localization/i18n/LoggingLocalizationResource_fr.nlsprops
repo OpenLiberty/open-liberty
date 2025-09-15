@@ -85,6 +85,10 @@ broadcast_remote_command_is_null=Avertissement : {0} : message {1} re\u00e7u con
 
 broadcast_remote_command_wrong_type=Avertissement : {0} : message {1} re\u00e7u contenant un objet de type {2} au lieu du type attendu RemoteCommand.
 
+cache_key_null_identity_map=CacheKey l''instance : {0}, stock\u00e9e dans la carte d''identit\u00e9, a une cl\u00e9 primaire nulle.
+
+cache_key_null_read_lock_manager=CacheKey instance : {0}, verrouill\u00e9e par le gestionnaire de verrou de lecture du cache a une cl\u00e9 primaire nulle.
+
 cannot_get_nested_collection_type=Le type de collection imbriqu\u00e9e ne peut pas \u00eatre obtenu.
 
 cannot_get_server_name_and_version=Impossible d''obtenir le nom et la version de serveur en raison de l''exception ci-apr\u00e8s.  {0}
@@ -114,10 +118,6 @@ connected_sdk=Connect\u00e9 : SDK
 connected_user_database=Connect\u00e9 : {3}{4}Utilisateur : {0}{3}{4}Base de donn\u00e9es : {1}  Version : {2}
 
 connected_user_database_driver=Connect\u00e9 : {0}{6}Utilisateur : {1}{6}Base de donn\u00e9es : {2}  Version : {3}{6}Pilote : {4}  Version : {5}
-
-corrupt_object=objet endommag\u00e9 : {0}
-
-corrupt_object_referenced_through_mapping=L''objet endommag\u00e9 suivant est r\u00e9f\u00e9renc\u00e9 via le mappage: {0}
 
 corrupted_session_announcement=ID session : {0}  Le gestionnaire de reconnaissance a re\u00e7u une annonce de session endommag\u00e9e - annonce ignor\u00e9e.
 
@@ -322,6 +322,8 @@ jpars_could_not_find_session_bean=Un appel est effectu\u00e9 \u00e0 un bean sess
 jta_cannot_be_disabled_in_cmp=Lors de l''utilisation de Container Managed Persistence (CMP), JTA ne peut pas \u00eatre d\u00e9sactiv\u00e9. EclipseLink agira comme JTA \u00e9tait activ\u00e9.
 
 jta_duplicate_ctrl_property=Classe de contr\u00f4leur de transaction JTA d\u00e9finie dans les propri\u00e9t\u00e9s "eclipselink.target-server" et "eclipselink.jta.controller". Utilisation de la valeur de "eclipselink.target-server".
+
+jta_tm_lookup_failure=Impossible de consulter l''instance TransactionManager : {0}
 
 jta_tsr_lookup_failure=Impossible de rechercher l''instance TransactionSynchronizationRegistry : {0}
 
@@ -657,18 +659,6 @@ retreived_null_message=Message null extrait de la rubrique : {0} ; ignor\u00e9
 
 retreived_unknown_message_type=Type de message inconnu extrait : {0} de la rubrique : {1} ; ignor\u00e9
 
-schema_default_create_tables_failed=Echec de la cr\u00e9ation des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
-
-schema_default_drop_tables_failed=Echec de la suppression des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
-
-schema_default_extend_tables_failed=Echec de l''extension des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
-
-schema_default_replace_tables_failed=Echec du remplacement des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
-
-schema_default_truncate_tables_failed=Echec de la troncature des tables dans le sch\u00e9ma de table par d\u00e9faut: {0}
-
-schema_drop_object_failed=Echec de la suppression de l''objet dans le sch\u00e9ma de table par d\u00e9faut: {0}
-
 sdo_classgenerator_exception={2}Une exception [{0}] s''est produite - message : [{1}]
 
 sdo_error_deserialization=Tentative de d\u00e9s\u00e9rialisation non autoris\u00e9e avec la classe {0}.
@@ -702,8 +692,6 @@ sop_object_not_found=L''\u00e9l\u00e9ment sopObject s\u00e9rialis\u00e9 est intr
 sop_object_wrong_pk=Retrait de l''objet sopObject s\u00e9rialis\u00e9 de la ligne car il comporte une cl\u00e9 primaire incorrecte [{0}] dans [{1}] de [{2}]
 
 sop_object_wrong_version=Retrait de l''objet sopObject s\u00e9rialis\u00e9 de la ligne car il comporte une version incorrecte [{0}] dans [{1}] de [{2}]
-
-stack_of_visited_objects_that_refer_to_the_corrupt_object=pile d''objets visit\u00e9s qui font r\u00e9f\u00e9rence \u00e0 l''objet endommag\u00e9 : {0}
 
 topLink_version=EclipseLink, version : {0}
 
@@ -746,8 +734,6 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery ne peut pas 
 validate_db_schema_with_not_supported=Le param\u00e8tre CMP natif WLS "validate-db-schema-with" n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 
 validate_ejb_jar=D\u00e9marrage de la validation de ejb-jar.xml, l''op\u00e9ration peut prendre du temps...
-
-validate_object_space=valider l''espace d''objet.
 
 verifiy_columns_read_locking_not_supported=Le param\u00e8tre optimiste "Read" sur "verify-columns" dans l\u2019entit\u00e9 ({0}) n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 

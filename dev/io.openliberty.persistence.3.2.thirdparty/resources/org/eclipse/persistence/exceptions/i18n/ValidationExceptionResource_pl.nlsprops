@@ -641,3 +641,9 @@
 
 7360=Has\u0142o bazy danych zosta\u0142o zaszyfrowane przy u\u017cyciu przestarza\u0142ego algorytmu. Zaszyfruj go ponownie `passwordUpdate.sh` z eclipselink.zip pakiet.
 
+7361=Tylko jedno pole w wyliczeniu mo\u017ce by\u0107 oznaczone adnotacj\u0105 @EnumeratedValue. Sprawd\u017a klas\u0119 wyliczeniow\u0105 [ {0} ].
+
+7362=W przypadku typu wyliczeniowego ORDINAL tylko typy byte, short, int, log lub wrapper mog\u0105 by\u0107 u\u017cywane jako typ atrybutu oznaczony przez @EnumeratedValue. Sprawd\u017a atrybut [ {0} ] w klasie wyliczeniowej [ {1} ].
+
+7363=Dla typu wyliczeniowego STRING, tylko typ java.lang.String mo\u017ce by\u0107 u\u017cyty jako typ atrybutu oznaczony przez @EnumeratedValue. Sprawd\u017a atrybut [ {0} ] w klasie wyliczeniowej [ {1} ].
+

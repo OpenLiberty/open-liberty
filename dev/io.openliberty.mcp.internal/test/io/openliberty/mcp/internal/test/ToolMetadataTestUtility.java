@@ -14,22 +14,15 @@ import java.util.Map;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.ToolMetadata;
-import io.openliberty.mcp.internal.ToolMetadata.ArgumentMetadata;
-import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 
 /**
- *
+ * Used for testing where the ArgumentMetadata is already created and not derived from an application
  */
-public class ToolMetadataUtil {
+public class ToolMetadataTestUtility {
 
-    public static ToolMetadata createToolMetadataFrom(Tool annotation, Map<String, ArgumentMetadata> arguments,
-                                                      List<SpecialArgumentMetadata> specialArguments) {
-
-        String title = annotation.title();
-        if (title.equals("")) {
-            title = null;
-        }
-
-        return new ToolMetadata(annotation, null, null, arguments, specialArguments, annotation.name(), title, annotation.description());
+    public static ToolMetadata createFrom(Tool annotation, Map<String, ToolMetadata.ArgumentMetadata> arguments, List<ToolMetadata.SpecialArgumentMetadata> specialArguments) {
+        // used for unit Tests that pre-populate argumentData and create Tools within the tests
+        String title = annotation.title().isEmpty() ? null : annotation.title();
+        return new ToolMetadata(annotation, null, null, arguments, specialArguments, annotation.name(), title, annotation.description(), null);
     }
 }

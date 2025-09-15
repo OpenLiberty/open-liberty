@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,7 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=Zmodyfikuj plik 'server.xml' i zm
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ Wszystkie w\u0105tki w domy\u015blnym executorze Liberty wydaj\u0105 si\u0119 by\u0107 zawieszone i nie mo\u017cna doda\u0107 wi\u0119cej w\u0105tk\u00f3w, poniewa\u017c rozmiar puli osi\u0105gn\u0105\u0142 sw\u00f3j limit.  Obecny rozmiar puli to {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=Wszystkie domy\u015blne w\u0105tki executora s\u0105 zaj\u0119te, w\u0105tki nie wykona\u0142y ostatnio \u017cadnych zada\u0144, a zadania czekaj\u0105 w kolejce. Nie mo\u017cna doda\u0107 wi\u0119cej w\u0105tk\u00f3w, poniewa\u017c rozmiar puli osi\u0105gn\u0105\u0142 limit.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=Ustalenie, czy istnieje w\u0105skie gard\u0142o, takie jak zablokowana tabela bazy danych, kt\u00f3re mo\u017ce uniemo\u017cliwi\u0107 w\u0105tkom wykonanie ich zada\u0144. Je\u015bli nie ma w\u0105skiego gard\u0142a, a serwer po prostu potrzebuje wi\u0119cej w\u0105tk\u00f3w, nale\u017cy dostosowa\u0107 atrybuty coreThreads i maxThreads elementu konfiguracji executora.
+
+CWWKE1208.override.virtual=CWWKE1208I: Polityka wsp\u00f3\u0142bie\u017cno\u015bci {0} utworzy w\u0105tki platformy, poniewa\u017c tworzenie w\u0105tk\u00f3w wirtualnych przez serwer Liberty jest wy\u0142\u0105czone.
+CWWKE1208.override.virtual.explanation=SPI ThreadTypeOverride wy\u0142\u0105czy\u0142o tworzenie wirtualnych w\u0105tk\u00f3w przez serwer Liberty.
+CWWKE1208.override.virtual.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

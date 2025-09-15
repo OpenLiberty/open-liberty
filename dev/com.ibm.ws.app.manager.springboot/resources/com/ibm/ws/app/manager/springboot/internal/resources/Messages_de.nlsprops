@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=Konfigurieren Sie eine g\u00fcltig
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Die Anwendung konnte nicht gestartet werden, weil die Spring Boot-Anwendung nicht in der gepackten Liberty-Server-JAR-Datei gefunden wurde.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Die gepackte Liberty-Server-JAR-Datei muss eine konfigurierte Spring Boot-Anwendung enthalten.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Konfigurieren Sie eine g\u00fcltige gepackte Liberty-Server-JAR-Datei.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: Das Feature {0} muss in der Datei server.xml konfiguriert sein. Die Funktion {1} ist konfiguriert und die Anwendung hat Spring Boot {2} Inhalt.
+error.spring4.required.explanation=Das derzeit konfigurierte Feature Spring Boot ist nicht mit Anwendungsinhalten kompatibel.
+error.spring4.required.useraction=Konfigurieren Sie eine Version des Features Spring Boot, die mit Anwendungsinhalten kompatibel ist.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: Die Funktion servlet-6.1 oder h\u00f6her muss konfiguriert sein. Die Funktion springBoot-4.0 ist konfiguriert und die Anwendung verwendet Servlets.
+error.spring4.requires.servlet61.or.later.application.explanation=Die Anwendung verwendet Servlets, aber es ist kein Servlet-Feature konfiguriert.
+error.spring4.requires.servlet61.or.later.application.useraction=Konfigurieren Sie das angegebene Servlet-Feature.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: Die Funktion websocket-2.2 oder h\u00f6her muss konfiguriert sein. Die Funktion springBoot-4.0 ist konfiguriert und die Anwendung verwendet WebSockets.
+error.spring4.requires.websocket22.or.later.application.explanation=Die Anwendung verwendet WebSockets, aber es ist keine Websocket-Funktion konfiguriert.
+error.spring4.requires.websocket22.or.later.application.useraction=Konfigurieren Sie die angegebene Websocket-Funktion.

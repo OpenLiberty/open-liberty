@@ -27,8 +27,6 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 import com.ibm.ws.transaction.fat.util.SetupRunner;
@@ -498,7 +496,7 @@ public class DBRotationTest extends CloudFATServletClient {
             serversToCleanup = Arrays.asList(server2, noRecoveryGroupServer1);
             server2.useSecondaryHTTPPort();
 
-            try (AutoCloseable x = withExtraTranAttributes(server2, "peerTimeBeforeStale", "600", "timeBetweenHeartbeats", "600")) {
+            try (AutoCloseable x = withExtraTranAttributes(server2, APP_NAME, "peerTimeBeforeStale", "600", "timeBetweenHeartbeats", "600")) {
                 FATUtils.startServers(_runner, server2, noRecoveryGroupServer1);
                 assertNotNull(server2.getServerName() + " recovery should have completed",
                               server2.waitForStringInTrace("WTRN0133I: Transaction recovery processing for this server is complete", FATUtils.LOG_SEARCH_TIMEOUT));
@@ -576,7 +574,7 @@ public class DBRotationTest extends CloudFATServletClient {
         longLeaseServerB.setHttpDefaultPort(longLeaseServerPortB);
         longLeaseServerC.setHttpDefaultPort(longLeaseServerPortC);
 
-        try (AutoCloseable x = withExtraTranAttributes(server2, "peerTimeBeforeStale", "300")) {
+        try (AutoCloseable x = withExtraTranAttributes(server2, APP_NAME, "peerTimeBeforeStale", "300")) {
             FATUtils.startServers(_runner, longLeaseServerA, longLeaseServerB, longLeaseServerC, server2);
 
             //  Check for key strings to see whether peer recovery has failed
@@ -663,36 +661,6 @@ public class DBRotationTest extends CloudFATServletClient {
         // Server1 should recover server2's logs even though they were empty
         assertNotNull(server1.getServerName() + " should have recovered for " + server2.getServerName(),
                       server1.waitForStringInTrace("Performed recovery for cloud0021", FATUtils.LOG_SEARCH_TIMEOUT));
-    }
-
-    /**
-     * Temporarily set an extra transaction attribute
-     */
-    private static AutoCloseable withExtraTranAttributes(LibertyServer server, String... attrs) throws Exception {
-        final ServerConfiguration config = server.getServerConfiguration();
-        final ServerConfiguration originalConfig = config.clone();
-        final Transaction transaction = config.getTransaction();
-
-        if (attrs == null || attrs.length % 2 != 0) {
-            throw new IllegalArgumentException();
-        }
-
-        for (int i = 0; (i + 1) < attrs.length; i += 2) {
-            transaction.setExtraAttribute(attrs[i], attrs[i + 1]);
-        }
-
-        try {
-            server.updateServerConfiguration(config);
-        } catch (Exception e) {
-            try {
-                server.updateServerConfiguration(originalConfig);
-            } catch (Exception e1) {
-                e.addSuppressed(e1);
-            }
-            throw e;
-        }
-
-        return () -> server.updateServerConfiguration(originalConfig);
     }
 
     // Returns false if the server is alive, throws Exception otherwise

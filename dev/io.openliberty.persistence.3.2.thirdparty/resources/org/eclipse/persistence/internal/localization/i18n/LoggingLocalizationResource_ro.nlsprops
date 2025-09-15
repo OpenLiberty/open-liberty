@@ -85,6 +85,10 @@ broadcast_remote_command_is_null=Avertisment: {0}: S-a primit mesajul {1} ce con
 
 broadcast_remote_command_wrong_type=Avertisment: {0}: mesajul primit {1} ce con\u0163ine un obiect de tip {2} \u00een locul RemoteCommand de tipul a\u015fteptat.
 
+cache_key_null_identity_map=CacheKey instan\u021b\u0103: {0}, stocat\u0103 \u00een harta de identitate, are o cheie primar\u0103 nul\u0103.
+
+cache_key_null_read_lock_manager=CacheKey instan\u021b\u0103: {0}, blocat\u0103 de cache read lock manager are, o cheie primar\u0103 nul\u0103.
+
 cannot_get_nested_collection_type=Nu a putut fi ob\u0163inut tipul colec\u0163iei imbricate.
 
 cannot_get_server_name_and_version=Nu se poate ob\u0163ine numele serverului \u015fi versiunea din cauza urm\u0103toarei excep\u0163ii.  {0}
@@ -114,10 +118,6 @@ connected_sdk=Conectat: SDK
 connected_user_database=Conectat: {3}{4}Utilizator: {0}{3}{4}Baz\u0103 de date: {1}  Versiune: {2}
 
 connected_user_database_driver=Conectat: {0}{6}Utilizator: {1}{6}Baz\u0103 de date: {2}  Versiune: {3}{6}Driver: {4}  Versiune: {5}
-
-corrupt_object=obiect corupt: {0}
-
-corrupt_object_referenced_through_mapping=Urm\u0103torul obiect corupt este men\u021bionat prin cartografiere: {0}
 
 corrupted_session_announcement=SessionID: {0} Managerul de descoperire a primit un anun\u0163 de sesiune corupt - se ignor\u0103.
 
@@ -322,6 +322,8 @@ jpars_could_not_find_session_bean=Se face un apel la un bean de sesiune cu numel
 jta_cannot_be_disabled_in_cmp=C\u00e2nd se folose\u015fte Container Managed Persistence (CMP), JTA nu poate fi dezactivat. EclipseLink se va comporta ca \u015fi cum JTA este activat.
 
 jta_duplicate_ctrl_property=Clasa de controler de tranzac\u021bii JTA este definit\u0103 \u00een ambele propriet\u0103\u021bi "eclipselink.target-server" \u0219i "eclipselink.jta.controller". Se utilizeaz\u0103 valoarea de la "eclipselink.target-server".
+
+jta_tm_lookup_failure=Nu se poate c\u0103uta instan\u021ba TransactionManager : {0}
 
 jta_tsr_lookup_failure=Nu se poate c\u0103uta instan\u021ba TransactionSynchronizationRegistry: {0}
 
@@ -657,18 +659,6 @@ retreived_null_message=S-a extras mesajul nul de la subiectul: {0}; se ignor\u01
 
 retreived_unknown_message_type=S-a extras tipul de mesaj necunoscut: {0} de la subiectul: {1}; se ignor\u0103
 
-schema_default_create_tables_failed=Nu a reu\u0219it s\u0103 creeze tabele \u00een schema de tabel implicit\u0103: {0}
-
-schema_default_drop_tables_failed=Nu a reu\u0219it s\u0103 scad\u0103 tabele \u00een schema de tabel implicit: {0}
-
-schema_default_extend_tables_failed=Nu a reu\u0219it s\u0103 extind\u0103 tabelele \u00een schema de tabel implicit\u0103: {0}
-
-schema_default_replace_tables_failed=Nu a reu\u0219it s\u0103 \u00eenlocuiasc\u0103 tabelele din schema de tabel implicit\u0103: {0}
-
-schema_default_truncate_tables_failed=Nu a reu\u0219it s\u0103 trunchieze tabele \u00een schema de tabel implicit: {0}
-
-schema_drop_object_failed=Nu a reu\u0219it s\u0103 renun\u021be la obiect \u00een schema de tabel implicit: {0}
-
 sdo_classgenerator_exception={2} A ap\u0103rut o excep\u0163ie [{0}] - mesajul este [{1}]
 
 sdo_error_deserialization=\u00cencercare neautorizat\u0103 de deserializare cu clasa {0}.
@@ -702,8 +692,6 @@ sop_object_not_found=sopObject serializat nu se afl\u0103 \u00een [{0}] \u00een 
 sop_object_wrong_pk=Se \u00eenl\u0103tur\u0103 sopObject-ul serializat de pe linie pentru c\u0103 are o cheie primar\u0103 gre\u015fit\u0103 [{0}] \u00een [{1}] \u00een [{2}]
 
 sop_object_wrong_version=Se \u00eenl\u0103tur\u0103 sopObject-ul serializat de pe linie pentru c\u0103 are o versiune gre\u015fit\u0103 [{0}] \u00een [{1}] \u00een [{2}]
-
-stack_of_visited_objects_that_refer_to_the_corrupt_object=stiva de obiecte vizitate care fac referire la obiectul corupt {0}
 
 topLink_version=EclipseLink, versiunea: {0}
 
@@ -746,8 +734,6 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nu poate fol
 validate_db_schema_with_not_supported=Setarea WLS native CMP "validate-db-schema-with" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
 validate_ejb_jar=Validarea ejb-jar.xml porne\u015fte, ar putea dura c\u00e2tva timp...
-
-validate_object_space=validare spa\u021biu de obiecte.
 
 verifiy_columns_read_locking_not_supported=Setarea optimist\u0103 "Citire" din "verificare-coloane" \u00een entitatea ({0}) nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 

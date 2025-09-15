@@ -10,6 +10,8 @@
 package io.openliberty.mcp.internal.fat.protocol;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.Matchers.containsString;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -18,6 +20,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -26,7 +29,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
-import io.openliberty.mcp.internal.fat.utils.HttpTestUtils;
 
 /**
  *
@@ -67,9 +69,29 @@ public class ProtocolVersionTest {
                           }
                         }
                         """;
-        String response = HttpTestUtils.callMCPWithoutProtocolVersion(server, "/protocolVersionTest", request);
-        assertTrue("Expected 400 error body mentioning MCP-Protocol-Version",
-                   response.contains("Missing or invalid MCP-Protocol-Version header"));
+
+        String response = new HttpRequest(server, "/protocolVersionTest/mcp").requestProp("Accept", ACCEPT_HEADER)
+                                                                             .jsonBody(request)
+                                                                             .method("POST")
+                                                                             .expectCode(200)
+                                                                             .run(String.class);
+
+        String expectedResponse = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "Hello"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }""";
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
     }
 
     @Test
@@ -80,6 +102,7 @@ public class ProtocolVersionTest {
                           "id": 1,
                           "method": "initialize",
                          "params": {
+                            "protocolVersion": "2025-06-18",
                             "clientInfo": {
                               "name": "test-client",
                               "version": "0.1"
@@ -89,8 +112,7 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionTest/mcp")
-                                                                             .requestProp("Accept", ACCEPT_HEADER)
+        String response = new HttpRequest(server, "/protocolVersionTest/mcp").requestProp("Accept", ACCEPT_HEADER)
                                                                              .jsonBody(request)
                                                                              .method("POST")
                                                                              .expectCode(200)
@@ -117,17 +139,17 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionTest/mcp")
-                                                                             .requestProp("Accept", ACCEPT_HEADER)
+        String response = new HttpRequest(server, "/protocolVersionTest/mcp").requestProp("Accept", ACCEPT_HEADER)
                                                                              .requestProp("MCP-Protocol-Version", "2022-02-02")
                                                                              .jsonBody(request)
                                                                              .method("POST")
                                                                              .expectCode(400)
                                                                              .run(String.class);
 
-        assertTrue("Expected error message about invalid protocol version",
-                   response.contains("Missing or invalid MCP-Protocol-Version header"));
-        assertTrue("Expected error message to contain expected version", response.contains("Expected: 2025-06-18"));
+        assertThat("Expected error message about invalid protocol version",
+                   response, containsString("Unsupported MCP-Protocol-Version header"));
+        assertThat("Expected error message to contain expected version",
+                   response, containsString("Supported values: 2025-06-18, 2025-03-26"));
     }
 
 }

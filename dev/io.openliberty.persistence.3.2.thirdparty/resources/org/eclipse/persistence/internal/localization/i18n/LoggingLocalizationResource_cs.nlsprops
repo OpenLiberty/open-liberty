@@ -85,6 +85,10 @@ broadcast_remote_command_is_null=Varov\u00e1n\u00ed: {0}: p\u0159ijata zpr\u00e1
 
 broadcast_remote_command_wrong_type=Varov\u00e1n\u00ed: {0}: p\u0159ijata zpr\u00e1va {1} obsahuj\u00edc\u00ed objekt typu {2} m\u00edsto o\u010dek\u00e1van\u00e9ho typu RemoteCommand.
 
+cache_key_null_identity_map=CacheKey instance: {0}, ulo\u017een\u00e1 v map\u011b identit, m\u00e1 nulov\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d.
+
+cache_key_null_read_lock_manager=CacheKey instance: {0}, uzam\u010den\u00e1 spr\u00e1vcem z\u00e1mku pro \u010dten\u00ed mezipam\u011bti, m\u00e1 nulov\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d.
+
 cannot_get_nested_collection_type=Vno\u0159en\u00fd typ kolekce nelze z\u00edskat.
 
 cannot_get_server_name_and_version=Nelze z\u00edskat n\u00e1zev a verzi serveru kv\u016fli n\u00e1sleduj\u00edc\u00ed v\u00fdjimce. {0}
@@ -114,10 +118,6 @@ connected_sdk=P\u0159ipojeno: SDK
 connected_user_database=P\u0159ipojeno: {3}{4}U\u017eivatel: {0}{3}{4}Datab\u00e1ze: {1} Verze: {2}
 
 connected_user_database_driver=P\u0159ipojeno: {0}{6}U\u017eivatel: {1}{6}Datab\u00e1ze: {2}  Verze: {3}{6}Ovlada\u010d: {4}  Verze: {5}
-
-corrupt_object=po\u0161kozen\u00fd objekt: {0}
-
-corrupt_object_referenced_through_mapping=N\u00e1sleduj\u00edc\u00ed po\u0161kozen\u00fd objekt je odkazov\u00e1n prost\u0159ednictv\u00edm mapov\u00e1n\u00ed: {0}
 
 corrupted_session_announcement=ID relace: {0}  Spr\u00e1vce zji\u0161\u0165ov\u00e1n\u00ed p\u0159ijal ozn\u00e1men\u00ed o poru\u0161en\u00e9 relaci - ignoruje se.
 
@@ -322,6 +322,8 @@ jpars_could_not_find_session_bean=Bylo provedeno vol\u00e1n\u00ed na objekt typu
 jta_cannot_be_disabled_in_cmp=P\u0159i pou\u017eit\u00ed perzistence Container Managed Persistence (CMP) nelze zak\u00e1zat JTA. EclipseLink bude pracovat, jako kdyby bylo JTA povoleno.
 
 jta_duplicate_ctrl_property=T\u0159\u00edda \u0159adi\u010de transakc\u00ed JTA je definovan\u00e1 ve vlastnostech "eclipselink.target-server" a "eclipselink.jta.controller". Pou\u017eije se hodnota z vlastnosti "eclipselink.target-server".
+
+jta_tm_lookup_failure=Nelze vyhledat instanci TransactionManager : {0}
 
 jta_tsr_lookup_failure=Nelze vyhledat instanci TransactionSynchronizationRegistry: {0}
 
@@ -657,18 +659,6 @@ retreived_null_message=Na\u010dtena zpr\u00e1va s hodnotou null z t\u00e9matu: {
 
 retreived_unknown_message_type=Na\u010dten nezn\u00e1m\u00fd typ zpr\u00e1vy: {0} z t\u00e9matu: {1}; ignoruje se.
 
-schema_default_create_tables_failed=Nezda\u0159ilo se vytvo\u0159it tabulky ve v\u00fdchoz\u00edm sch\u00e9matu tabulky: {0}
-
-schema_default_drop_tables_failed=Zru\u0161en\u00ed tabulek ve v\u00fdchoz\u00edm sch\u00e9matu tabulky se nezda\u0159ilo: {0}
-
-schema_default_extend_tables_failed=Roz\u0161\u00ed\u0159en\u00ed tabulek ve v\u00fdchoz\u00edm sch\u00e9matu tabulky se nezda\u0159ilo: {0}
-
-schema_default_replace_tables_failed=Nepoda\u0159ilo se nahradit tabulky ve v\u00fdchoz\u00edm sch\u00e9matu tabulky: {0}
-
-schema_default_truncate_tables_failed=Nepoda\u0159ilo se o\u0159\u00edznout tabulky ve v\u00fdchoz\u00edm sch\u00e9matu tabulky: {0}
-
-schema_drop_object_failed=Nepoda\u0159ilo se zru\u0161it objekt ve v\u00fdchoz\u00edm sch\u00e9matu tabulky: {0}
-
 sdo_classgenerator_exception={2} Do\u0161lo k v\u00fdjimce [{0}] - zpr\u00e1va je [{1}]
 
 sdo_error_deserialization=Neopr\u00e1vn\u011bn\u00fd pokus o deserializaci se t\u0159\u00eddou {0}.
@@ -702,8 +692,6 @@ sop_object_not_found=Serializovan\u00fd objekt sopObject nebyl nalezen v [{0}] v
 sop_object_wrong_pk=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObject z \u0159\u00e1dku, proto\u017ee m\u00e1 \u0161patn\u00fd prim\u00e1rn\u00ed kl\u00ed\u010d [{0}] v [{1}] v [{2}]
 
 sop_object_wrong_version=Odebr\u00e1n\u00ed serializovan\u00e9ho objektu sopObject z \u0159\u00e1dku, proto\u017ee m\u00e1 \u0161patnou verzi [{0}] v [{1}] v [{2}]
-
-stack_of_visited_objects_that_refer_to_the_corrupt_object=z\u00e1sobn\u00edk nav\u0161t\u00edven\u00fdch objekt\u016f, kter\u00e9 odkazuj\u00ed na po\u0161kozen\u00fd objekt: {0}
 
 topLink_version=EclipseLink, verze: {0}
 
@@ -746,8 +734,6 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery nem\u016f\u0
 validate_db_schema_with_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "validate-db-schema-with" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
 validate_ejb_jar=Ov\u011b\u0159ov\u00e1n\u00ed ejb-jar.xml za\u010dalo, m\u016f\u017ee to trvat ur\u010ditou dobu...
-
-validate_object_space=Ov\u011b\u0159te m\u00edsto objekt\u016f.
 
 verifiy_columns_read_locking_not_supported=Optimistick\u00e9 nastaven\u00ed "Read" parametru "verify-columns" v entit\u011b ({0}) EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 

@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=\u00c1ll\u00edtson be \u00e9rv\u00
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Az alkalmaz\u00e1s nem tudott elindulni, mert a Spring Boot alkalmaz\u00e1s nem tal\u00e1lhat\u00f3 meg a csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlban.
 error.application.not.found.inside.packaged.liberty.jar.explanation=A csomagolt Liberty Server JAR f\u00e1jlnak tartalmaznia kell egy be\u00e1ll\u00edtott Spring Boot rendszerbet\u00f6lt\u00e9si alkalmaz\u00e1st.
 error.application.not.found.inside.packaged.liberty.jar.useraction=\u00c1ll\u00edtson be \u00e9rv\u00e9nyes csomagolt Liberty kiszolg\u00e1l\u00f3 JAR f\u00e1jlt.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: A(z) {0} szolg\u00e1ltat\u00e1st be kell \u00e1ll\u00edtani a server.xml f\u00e1jlban. A {1} funkci\u00f3t konfigur\u00e1lt\u00e1k, \u00e9s az alkalmaz\u00e1s rendelkezik a Spring Boot {2} tartalommal.
+error.spring4.required.explanation=A jelenleg be\u00e1ll\u00edtott Spring Boot szolg\u00e1ltat\u00e1s nem kompatibilis az alkalmaz\u00e1startalommal.
+error.spring4.required.useraction=Konfigur\u00e1lja a Spring Boot szolg\u00e1ltat\u00e1snak olyan verzi\u00f3j\u00e1t, amely kompatibilis az alkalmaz\u00e1startalommal.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: A servlet-6.1 vagy \u00fajabb funkci\u00f3t kell konfigur\u00e1lni. A springBoot-4.0 funkci\u00f3t konfigur\u00e1lt\u00e1k, \u00e9s az alkalmaz\u00e1s szervleteket haszn\u00e1l.
+error.spring4.requires.servlet61.or.later.application.explanation=Az alkalmaz\u00e1s szervleteket haszn\u00e1l, de nincs konfigur\u00e1lva Servlet szolg\u00e1ltat\u00e1s.
+error.spring4.requires.servlet61.or.later.application.useraction=Konfigur\u00e1lja a megadott Servlet szolg\u00e1ltat\u00e1st.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: A websocket-2.2 vagy \u00fajabb funkci\u00f3t kell konfigur\u00e1lni. A springBoot-4.0 funkci\u00f3t konfigur\u00e1lt\u00e1k, \u00e9s az alkalmaz\u00e1s a WebSockets c\u00edmet haszn\u00e1lja.
+error.spring4.requires.websocket22.or.later.application.explanation=Az alkalmaz\u00e1s a WebSockets c\u00edmet haszn\u00e1lja, de nincs be\u00e1ll\u00edtva websocket funkci\u00f3.
+error.spring4.requires.websocket22.or.later.application.useraction=A megadott websocket funkci\u00f3 konfigur\u00e1l\u00e1sa.

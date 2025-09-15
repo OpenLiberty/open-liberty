@@ -12,6 +12,7 @@ package io.openliberty.jpa.persistence.tests.web;
 import static componenttest.annotation.OnlyIfSysProp.DB_Not_Default;
 import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -37,6 +38,7 @@ import componenttest.app.FATServlet;
 import io.openliberty.jpa.persistence.tests.models.AsciiCharacter;
 import io.openliberty.jpa.persistence.tests.models.Book;
 import io.openliberty.jpa.persistence.tests.models.DateTimeEntity;
+import io.openliberty.jpa.persistence.tests.models.Employee;
 import io.openliberty.jpa.persistence.tests.models.Event;
 import io.openliberty.jpa.persistence.tests.models.Organization;
 import io.openliberty.jpa.persistence.tests.models.Participant;
@@ -967,6 +969,36 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertEquals("Extracted Quarter should be 4", 4, ((Number) result.get(2)).intValue());
         assertEquals("Extracted Quarter should be 2", 2, ((Number) result.get(3)).intValue());
 
+    }
+    
+    @Test
+    @SkipIfSysProp({
+        DB_Postgres    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32848
+    })
+    public void testOLGH32848() throws Exception {
+        deleteAllEntities(Employee.class);
+        Employee abc = Employee.of("ABC", 50000, "O+");
+        Employee xyz = Employee.of("XYZ", 35000, "AB-");
+        
+        tx.begin();
+        em.persist(abc);
+        em.persist(xyz);
+        tx.commit();
+        
+        tx.begin();
+        
+        try {
+        em.createQuery("UPDATE Employee e SET e.info = ?1 WHERE e.id = ?2")
+          .setParameter(1, null)
+          .setParameter(2, abc.id)
+          .executeUpdate();
+        
+        tx.commit();
+        
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
     }
 
     /**

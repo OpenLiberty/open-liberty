@@ -61,7 +61,9 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ApplicationArgsTests40.class,
                 MissingWebsocketFeatureTests40.class,
                 TemplateTests40.class,
-                ApplicationStartedEventTests40.class
+                ApplicationStartedEventTests40.class,
+                ConcurrencyAppTests40.class,
+                MBeanAppTests40.class
 
 })
 

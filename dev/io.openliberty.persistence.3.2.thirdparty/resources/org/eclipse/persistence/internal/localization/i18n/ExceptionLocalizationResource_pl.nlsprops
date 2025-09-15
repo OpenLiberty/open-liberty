@@ -327,6 +327,8 @@ metamodel_managed_type_attribute_type_incorrect=Oczekiwano typu atrybutu [{2}] i
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Brak zadeklarowanego atrybutu [{0}] z typu zarz\u0105dzanego [{1}], jednak jest on zadeklarowany w nadklasie.
 
+missing_jpql_parser_class=Nie mo\u017cna za\u0142adowa\u0107 klasy parsera JPQL.
+
 missing_parameter_value=Argument zapytania {0} nie zosta\u0142 znaleziony na li\u015bcie parametr\u00f3w podanych podczas wykonywania zapytania.
 
 missing_toplink_bean_definition_for=Brak definicji komponentu bean TopLink dla elementu {0}
@@ -411,7 +413,7 @@ schema_validation=Schema Validation
 
 schema_validation_failed=Sprawdzanie poprawno\u015bci schematu nie powiod\u0142o si\u0119
 
-schema_validation_missing_table=W schemacie nie znaleziono obszaru roboczego tabeli {0}
+schema_validation_missing_table=Tabela {0} nie zosta\u0142a znaleziona w schemacie
 
 schema_validation_table_different_columns=Tabela {0} ma r\u00f3\u017cne kolumny w schemacie
 

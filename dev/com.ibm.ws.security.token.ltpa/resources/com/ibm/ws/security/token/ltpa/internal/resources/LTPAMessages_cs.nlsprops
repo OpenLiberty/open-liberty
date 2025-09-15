@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Nas
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: Atribut updateTrigger je nastaven na zak\u00e1z\u00e1no a interval monitorov\u00e1n\u00ed je v\u011bt\u0161\u00ed ne\u017e {0}. P\u0159i \u00faprav\u011b soubor\u016f s kl\u00ed\u010di LTPA nedojde k \u017e\u00e1dn\u00e9mu dynamick\u00e9mu op\u011btovn\u00e9mu na\u010dten\u00ed.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Kdy\u017e je atribut updateTrigger nastaven na zak\u00e1z\u00e1no, soubory nejsou monitorov\u00e1ny pro \u017e\u00e1dn\u00e9 \u00fapravy na souborech s p\u0159\u00edponou .keys a nedojde k dynamick\u00e9mu op\u011btovn\u00e9mu na\u010dten\u00ed. I kdy\u017e je atribut monitorInterval nastaven na interval v\u011bt\u0161\u00ed ne\u017e nula, atribut se ignoruje a soubory se nemonitoruj\u00ed.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Nastavte hodnotu atributu updateTrigger na polled nebo mbean.
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Ov\u011b\u0159ovac\u00ed kl\u00ed\u010de {0} mus\u00ed b\u00fdt regenerov\u00e1ny pomoc\u00ed kryptografick\u00fdch algoritm\u016f, kter\u00e9 jsou certifikov\u00e1ny podle FIPS 140-3.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Ov\u011b\u0159ovac\u00ed kl\u00ed\u010de LTPA, kter\u00e9 jsou vytvo\u0159eny bez zapnut\u00e9ho syst\u00e9mu FIPS 140-3, se p\u0159i zapnut\u00ed syst\u00e9mu FIPS 140-3 nezda\u0159\u00ed.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Pokud je nakonfigurov\u00e1n syst\u00e9m FIPS 140-3, pou\u017eijte p\u0159\u00edkaz securityUtility createLTPAKeys k vytvo\u0159en\u00ed ov\u011b\u0159ovac\u00edch kl\u00ed\u010d\u016f schv\u00e1len\u00fdch syst\u00e9mem FIPS.

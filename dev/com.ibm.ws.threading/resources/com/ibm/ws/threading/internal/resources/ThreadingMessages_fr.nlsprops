@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,7 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=Editez le fichier'server.xml'et r
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ Tous les threads de l''ex\u00e9cuteur par d\u00e9faut Liberty semblent \u00eatre bloqu\u00e9s, et aucun thread ne peut \u00eatre ajout\u00e9 car la taille du pool a atteint sa limite.  La taille actuelle de la piscine est de {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=Tous les threads de l'ex\u00e9cuteur par d\u00e9faut sont occup\u00e9s, les threads n'ont pas accompli de t\u00e2ches r\u00e9cemment et des t\u00e2ches sont en attente dans la file d'attente. Il n'est plus possible d'ajouter des threads car la taille du pool a atteint sa limite.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=D\u00e9terminez s'il existe un goulot d'\u00e9tranglement, tel qu'une table de base de donn\u00e9es verrouill\u00e9e, qui pourrait emp\u00eacher les threads d'accomplir leurs t\u00e2ches. S'il n'y a pas de goulot d'\u00e9tranglement et que le serveur a simplement besoin de plus de threads, ajustez les attributs coreThreads et maxThreads de l'\u00e9l\u00e9ment de configuration de l'ex\u00e9cuteur.
+
+CWWKE1208.override.virtual=CWWKE1208I: La politique de concurrence de {0} cr\u00e9era des threads de plate-forme car la cr\u00e9ation de threads virtuels par le serveur Liberty est d\u00e9sactiv\u00e9e.
+CWWKE1208.override.virtual.explanation=Le SPI ThreadTypeOverride a d\u00e9sactiv\u00e9 la cr\u00e9ation de threads virtuels par le serveur Liberty.
+CWWKE1208.override.virtual.useraction=Aucune action n'est requise.

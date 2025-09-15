@@ -327,6 +327,8 @@ metamodel_managed_type_attribute_type_incorrect=Tipo de atributo previsto [{2}] 
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=El atributo declarado [{0}] del tipo gestionado [{1}] no est\u00e1 presente, sin embargo, se declara en una superclase.
 
+missing_jpql_parser_class=No se ha podido cargar la clase del analizador JPQL.
+
 missing_parameter_value=El argumento de consulta {0} no se ha encontrado en la lista de par\u00e1metros proporcionada durante la ejecuci\u00f3n de la consulta.
 
 missing_toplink_bean_definition_for=Falta la definici\u00f3n de bean TopLink para {0}
@@ -411,7 +413,7 @@ schema_validation=Validaci\u00f3n mediante esquema
 
 schema_validation_failed=La validaci\u00f3n del esquema ha fallado
 
-schema_validation_missing_table=No se ha encontrado el lienzo de tabla {0} en el esquema
+schema_validation_missing_table=La tabla {0} no se encuentra en el esquema
 
 schema_validation_table_different_columns=La tabla {0} tiene columnas diferentes en el esquema
 

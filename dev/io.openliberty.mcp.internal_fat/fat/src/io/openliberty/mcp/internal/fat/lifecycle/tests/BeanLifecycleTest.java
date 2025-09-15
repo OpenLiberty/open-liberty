@@ -13,6 +13,7 @@ import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONL
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 import java.util.List;
@@ -100,7 +101,7 @@ public class BeanLifecycleTest {
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
-        server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool");
+        assertNotNull(server.waitForStringInLogUsingMark("\\[LIFECYCLE] @PreDestroy ClassTool"));
         // Fetch all lifecycle-related log messages
         List<String> lifecycleMessages = server.findStringsInLogsUsingMark(".*\\[(LIFECYCLE|LOGGED)].*", server.getDefaultLogFile());
         assertFalse("No [LIFECYCLE] lines found in logs since mark", lifecycleMessages.isEmpty());

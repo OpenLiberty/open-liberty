@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=Nakonfigurujte platn\u00fd zabalen
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Aplikaci se nezda\u0159ilo spustit, proto\u017ee aplikace Spring Boot nebyla nalezena uvnit\u0159 zabalen\u00e9ho souboru JAR serveru Liberty.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Zabalen\u00fd soubor JAR serveru Liberty mus\u00ed obsahovat nakonfigurovanou aplikaci Spring Boot.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Nakonfigurujte platn\u00fd zabalen\u00fd soubor JAR serveru Liberty.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: Funkce {0} mus\u00ed b\u00fdt nakonfigurov\u00e1na v souboru server.xml. Funkce {1} je nakonfigurov\u00e1na a aplikace m\u00e1 obsah Spring Boot {2}.
+error.spring4.required.explanation=Aktu\u00e1ln\u011b nakonfigurovan\u00e1 funkce Spring Boot nen\u00ed kompatibiln\u00ed s obsahem aplikace.
+error.spring4.required.useraction=Nakonfigurujte verzi funkce Spring Boot, kter\u00e1 je kompatibiln\u00ed s obsahem aplikace.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: Mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce servlet-6.1 nebo nov\u011bj\u0161\u00ed. Je nakonfigurov\u00e1na funkce springBoot-4.0 a aplikace pou\u017e\u00edv\u00e1 servlety.
+error.spring4.requires.servlet61.or.later.application.explanation=Aplikace pou\u017e\u00edv\u00e1 servlety, ale nen\u00ed nakonfigurov\u00e1na \u017e\u00e1dn\u00e1 funkce servletu.
+error.spring4.requires.servlet61.or.later.application.useraction=Nakonfigurujte uvedenou funkci servletu.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: Mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce websocket-2.2 nebo nov\u011bj\u0161\u00ed. Je nakonfigurov\u00e1na funkce springBoot-4.0 a aplikace pou\u017e\u00edv\u00e1 WebSockets.
+error.spring4.requires.websocket22.or.later.application.explanation=Aplikace pou\u017e\u00edv\u00e1 adresu WebSockets, ale nen\u00ed nakonfigurov\u00e1na funkce websocket.
+error.spring4.requires.websocket22.or.later.application.useraction=Konfigurace zadan\u00e9 funkce webov\u00e9ho socketu.

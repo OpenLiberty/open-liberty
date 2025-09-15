@@ -12,7 +12,10 @@ package io.openliberty.mcp.internal;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -36,13 +39,14 @@ import jakarta.servlet.http.HttpServletResponse;
  */
 public class McpTransport {
     private static final TraceComponent tc = Tr.register(McpTransport.class);
-    private static final String EXPECTED_PROTOCOL_VERSION = "2025-06-18";
     private static final String MCP_HEADER = "MCP-Protocol-Version";
+    private static final List<String> REQUIRED_MCP_MIME_TYPES = List.of("text/event-stream", "application/json");
     private HttpServletRequest req;
     private HttpServletResponse res;
     private Jsonb jsonb;
     private McpRequest mcpRequest;
     private Writer writer;
+    private McpProtocolVersion version;
 
     public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb) throws IOException {
         this.req = req;
@@ -58,16 +62,21 @@ public class McpTransport {
      * @return true if initialisation is successful, false otherwise.
      * @throws IOException if an I/O exception occurs.
      */
+    @FFDCIgnore(NoSuchElementException.class)
     public void init() throws IOException {
         if (!validReqAcceptHeader()) {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
-        this.mcpRequest = toRequest();
-        if (!validProtcolVersionHeader()) {
-            throw new HttpResponseException(
-                                            HttpServletResponse.SC_BAD_REQUEST,
-                                            "Missing or invalid MCP-Protocol-Version header. Expected: " + EXPECTED_PROTOCOL_VERSION);
+        try {
+            version = readProtocolVersionHeader();
+        } catch (NoSuchElementException e) {
+            String supportedValues = Arrays.stream(McpProtocolVersion.values())
+                                           .map(McpProtocolVersion::getVersion)
+                                           .collect(Collectors.joining(", "));
+            throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST,
+                                            "Unsupported MCP-Protocol-Version header. Supported values: " + supportedValues);
         }
+        this.mcpRequest = toRequest();
     }
 
     /**
@@ -101,8 +110,7 @@ public class McpTransport {
             String reqHeaderAcceptedTypes = req.getHeader("Accept");
             if (reqHeaderAcceptedTypes == null)
                 return false;
-            List<String> requiredMcpMimes = List.of("text/event-stream", "application/json");
-            for (String mcpMime : requiredMcpMimes) {
+            for (String mcpMime : REQUIRED_MCP_MIME_TYPES) {
                 if (!HeaderValidation.acceptContains(reqHeaderAcceptedTypes, mcpMime))
                     return false;
             }
@@ -114,13 +122,19 @@ public class McpTransport {
         }
     }
 
-    private boolean validProtcolVersionHeader() {
-        if (!"initialize".equals(mcpRequest.method())) {
-            String protocolVersion = req.getHeader(MCP_HEADER);
-            if (protocolVersion == null || !protocolVersion.equals(EXPECTED_PROTOCOL_VERSION))
-                return false;
+    /**
+     * Reads and parses the protocol version header. A missing header is interpreted as 2025-03-26
+     *
+     * @return the protocol version interpreted from the header
+     * @throws NoSuchElementException if the protocol is not one we support
+     */
+    private McpProtocolVersion readProtocolVersionHeader() {
+        String protocolVersion = req.getHeader(MCP_HEADER);
+        if (protocolVersion == null) {
+            return McpProtocolVersion.V_2025_03_26;
+        } else {
+            return McpProtocolVersion.parse(protocolVersion);
         }
-        return true;
     }
 
     public McpRequest getMcpRequest() {
@@ -204,5 +218,9 @@ public class McpTransport {
             throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, "Unknown proxy address.");
         }
         return ipAddress;
+    }
+
+    public McpProtocolVersion getProtocolVersion() {
+        return version;
     }
 }

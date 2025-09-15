@@ -19,3 +19,8 @@ dependencies {
   requiredLibs 'org.json:json:20080701',
                'org.skyscreamer:jsonassert:2.0-rc1'
 }
+/* Added to allow method parmaters to be available for MCP Tool Server*/ 
+// Allow us to test getting the name of a tool argument directly from the Java 
+compileJava {
+    options.compilerArgs << '-parameters'
+}

@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=Skonfiguruj poprawny spakowany pli
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Uruchomienie aplikacji nie powiod\u0142o si\u0119, poniewa\u017c aplikacja Spring Boot nie zosta\u0142a znaleziona w spakowanym pliku JAR serwera Liberty.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Spakowany plik JAR serwera Liberty musi zawiera\u0107 skonfigurowan\u0105 aplikacj\u0119 Spring Boot.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Skonfiguruj poprawny spakowany plik JAR serwera Liberty.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: Funkcj\u0119 {0} nale\u017cy skonfigurowa\u0107 w pliku server.xml. Funkcja {1} jest skonfigurowana, a aplikacja ma zawarto\u015b\u0107 Spring Boot {2}.
+error.spring4.required.explanation=Obecnie skonfigurowana funkcja Spring Boot nie jest zgodna z zawarto\u015bci\u0105 aplikacji.
+error.spring4.required.useraction=Skonfiguruj funkcj\u0119 Spring Boot w wersji zgodnej z zawarto\u015bci\u0105 aplikacji.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: Nale\u017cy skonfigurowa\u0107 funkcj\u0119 servlet-6.1 lub nowsz\u0105. Funkcja springBoot-4.0 jest skonfigurowana, a aplikacja korzysta z serwlet\u00f3w.
+error.spring4.requires.servlet61.or.later.application.explanation=Aplikacja u\u017cywa serwlet\u00f3w, ale nie skonfigurowano funkcji serwletu.
+error.spring4.requires.servlet61.or.later.application.useraction=Skonfiguruj okre\u015blon\u0105 funkcj\u0119 serwletu.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: Nale\u017cy skonfigurowa\u0107 funkcj\u0119 websocket-2.2 lub nowsz\u0105. Funkcja springBoot-4.0 jest skonfigurowana, a aplikacja korzysta z WebSockets.
+error.spring4.requires.websocket22.or.later.application.explanation=Aplikacja korzysta z adresu WebSockets, ale nie skonfigurowano funkcji websocket.
+error.spring4.requires.websocket22.or.later.application.useraction=Konfiguracja okre\u015blonej funkcji websocket.

@@ -641,3 +641,9 @@
 
 7360=Das Datenbankkennwort wurde mit einem veralteten Algorithmus verschl\u00fcsselt. Verschl\u00fcsseln Sie es erneut durch `passwordUpdate.sh` von eclipselink.zip b\u00fcndeln.
 
+7361=Es kann nur ein Feld in der Aufz\u00e4hlung durch die Anmerkung @EnumeratedValue gekennzeichnet werden. Pr\u00fcfen Sie die Aufz\u00e4hlungsklasse [ {0} ].
+
+7362=Bei einem ORDINAL-Aufz\u00e4hlungstyp k\u00f6nnen nur Byte-, Short-, Int-, Log- oder Wrapper-Typen als Attributtyp verwendet werden, die durch @EnumeratedValue gekennzeichnet sind. Pr\u00fcfen Sie das Attribut [ {0} ] in der Aufz\u00e4hlungsklasse [ {1} ].
+
+7363=Bei einem STRING-Aufz\u00e4hlungstyp kann nur der Typ java.lang.String als Attributtyp verwendet werden, der durch @EnumeratedValue gekennzeichnet ist. Pr\u00fcfen Sie das Attribut [ {0} ] in der Aufz\u00e4hlungsklasse [ {1} ].
+

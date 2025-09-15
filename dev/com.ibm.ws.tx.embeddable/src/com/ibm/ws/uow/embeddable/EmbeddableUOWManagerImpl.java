@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2012 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,15 +18,16 @@ import javax.transaction.RollbackException;
 import javax.transaction.Synchronization;
 import javax.transaction.Transaction;
 
-import com.ibm.ejs.ras.Tr;
-import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.tx.TranConstants;
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory;
 import com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl;
 import com.ibm.tx.jta.embeddable.impl.EmbeddableUserTransactionImpl;
 import com.ibm.tx.jta.impl.UserTransactionImpl;
 import com.ibm.tx.ltc.impl.LocalTranCoordImpl;
 import com.ibm.tx.ltc.impl.LocalTranCurrentSet;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.uow.UOWSynchronizationRegistry;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.LocalTransaction.LocalTransactionCurrent;
@@ -43,7 +44,7 @@ import com.ibm.wsspi.uow.UOWActionException;
 import com.ibm.wsspi.uow.UOWException;
 
 public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, UserTransactionController {
-    private static final TraceComponent tc = Tr.register(EmbeddableUOWManagerImpl.class, TranConstants.TRACE_GROUP, null);
+    private static final TraceComponent tc = Tr.register(EmbeddableUOWManagerImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 
     protected UOWScopeCallbackManager _callbackManager;
 
@@ -110,7 +111,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     @Override
     public void resume(UOWToken uowToken) throws IllegalThreadStateException, IllegalArgumentException, SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "resume", new Object[] { uowToken });
+            Tr.entry(tc, "resume", uowToken);
 
         if (uowToken != null && uowToken instanceof EmbeddableUOWTokenImpl) {
             final EmbeddableUOWTokenImpl uowTokenImpl = (EmbeddableUOWTokenImpl) uowToken;
@@ -184,7 +185,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     @Override
     public void resumeAll(UOWToken uowToken) throws Exception {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "resumeAll", new Object[] { uowToken });
+            Tr.entry(tc, "resumeAll", uowToken);
 
         if (uowToken != null) {
             resume(uowToken);
@@ -197,7 +198,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     @Override
     public synchronized void registerCallback(UOWScopeCallback callback) {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "registerCallback", new Object[] { callback, this });
+            Tr.entry(tc, "registerCallback", callback, this);
 
         if (_callbackManager == null) {
             _callbackManager = new UOWScopeCallbackManager();
@@ -215,7 +216,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     @Override
     public synchronized void registerRunUnderUOWCallback(UOWCallback callback) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "registerRunUnderUOWCallback", new Object[] { callback, this });
+            Tr.entry(tc, "registerRunUnderUOWCallback", callback, this);
 
         if (_runUnderUOWCallbackManager == null) {
             _runUnderUOWCallbackManager = new UOWCallbackManager();
@@ -292,7 +293,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     @Override
     public void runUnderUOW(int uowType, boolean join, UOWAction uowAction) throws UOWActionException, UOWException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "runUnderUOW", new Object[] { new Integer(uowType), Boolean.valueOf(join), uowAction });
+            Tr.entry(tc, "runUnderUOW", uowType, join, uowAction);
 
         final UOWScope initialUOWScope;
 
@@ -434,7 +435,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "getUOWTimeout", new Integer(timeout));
+            Tr.exit(tc, "getUOWTimeout", timeout);
         return timeout;
     }
 
@@ -446,7 +447,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     @Override
     public void setUOWTimeout(int uowType, int timeout) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "setUOWTimeout", new Object[] { Integer.valueOf(uowType), Integer.valueOf(timeout) });
+            Tr.entry(tc, "setUOWTimeout", uowType, timeout);
 
         switch (uowType) {
             case UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION:
@@ -491,14 +492,14 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
         final long localId = uowScope.getLocalId();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "getLocalUOWId", new Long(localId));
+            Tr.exit(tc, "getLocalUOWId", localId);
         return localId;
     }
 
     @Override
     public Object getResource(Object key) throws NullPointerException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "getResource", new Object[] { key, this });
+            Tr.entry(tc, "getResource", key, this);
 
         final SynchronizationRegistryUOWScope uowScope;
 
@@ -603,14 +604,14 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
         final int uowType = uowScope.getUOWType();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "getUOWType", new Integer(uowType));
+            Tr.exit(tc, "getUOWType", uowType);
         return uowType;
     }
 
     @Override
     public void putResource(Object key, Object value) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "putResource", new Object[] { key, value, this });
+            Tr.entry(tc, "putResource", key, value, this);
 
         final SynchronizationRegistryUOWScope uowScope;
 
@@ -637,7 +638,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     @Override
     public void registerInterposedSynchronization(Synchronization sync) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "registerInterposedSynchronization", new Object[] { sync, this });
+            Tr.entry(tc, "registerInterposedSynchronization", sync, this);
 
         if (sync == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -701,7 +702,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     @Override
     public void contextChange(int changeType, UOWScope uowScope) throws IllegalStateException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "contextChange", new Object[] { new Integer(changeType), uowScope, this });
+            Tr.entry(tc, "contextChange", changeType, uowScope, this);
 
         if (changeType == UOWScopeCallback.POST_BEGIN) {
             _callbackManager.notifyCallbacks(changeType, uowScope);
@@ -718,7 +719,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
      */
     private Throwable runUnderNewUOW(int uowType, UOWAction uowAction) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "runUnderNewUOW", new Object[] { new Integer(uowType), uowAction, this });
+            Tr.entry(tc, "runUnderNewUOW", uowType, uowAction, this);
 
         Throwable toThrow = null;
         final UOWScope uowScope;
@@ -775,7 +776,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
      */
     protected void uowEnd(UOWScope uowScope, int uowType) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "uowEnd", new Object[] { uowScope, new Integer(uowType), this });
+            Tr.entry(tc, "uowEnd", uowScope, uowType, this);
 
         final UOWCoordinator uow = EmbeddableTransactionManagerFactory.getUOWCurrent().getUOWCoord();
 
@@ -829,11 +830,15 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
      */
     protected void uowCommit(int uowType) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "uowCommit", Integer.valueOf(uowType));
+            Tr.entry(tc, "uowCommit", uowType);
 
         switch (uowType) {
             case UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION:
-                EmbeddableTransactionManagerFactory.getTransactionManager().commit();
+                if (ConfigurationProviderManager.getConfigurationProvider().isCorrectUOWScopeCallbacks()) {
+                    UserTransactionImpl.instance().commit();
+                } else {
+                    EmbeddableTransactionManagerFactory.getTransactionManager().commit();
+                }
                 break;
 
             case UOWSynchronizationRegistry.UOW_TYPE_LOCAL_TRANSACTION:
@@ -851,11 +856,15 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
      */
     protected void uowRollback(int uowType) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "uowRollback", Integer.valueOf(uowType));
+            Tr.entry(tc, "uowRollback", uowType);
 
         switch (uowType) {
             case UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION:
-                EmbeddableTransactionManagerFactory.getTransactionManager().rollback();
+                if (ConfigurationProviderManager.getConfigurationProvider().isCorrectUOWScopeCallbacks()) {
+                    UserTransactionImpl.instance().rollback();;
+                } else {
+                    EmbeddableTransactionManagerFactory.getTransactionManager().rollback();
+                }
                 break;
 
             case UOWSynchronizationRegistry.UOW_TYPE_LOCAL_TRANSACTION:
@@ -878,7 +887,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
      */
     protected UOWScope uowBegin(int uowType) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "uowBegin", Integer.valueOf(uowType));
+            Tr.entry(tc, "uowBegin", uowType);
 
         switch (uowType) {
             case UOWSynchronizationRegistry.UOW_TYPE_GLOBAL_TRANSACTION:
@@ -907,7 +916,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
      */
     private Throwable runUnderCurrentUOW(UOWAction uowAction) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "runUnderCurrentUOW", new Object[] { uowAction, this });
+            Tr.entry(tc, "runUnderCurrentUOW", uowAction, this);
 
         Throwable toThrow = null;
 
@@ -994,7 +1003,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     public Object runUnderUOW(int uowType, boolean join, ExtendedUOWAction uowAction, Class<?>[] rollbackOn, Class<?>[] dontRollbackOn) throws Exception, UOWException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "runUnderUOW", new Object[] { uowType, join, uowAction, rollbackOn, dontRollbackOn });
+            Tr.entry(tc, "runUnderUOW", uowType, join, uowAction, rollbackOn, dontRollbackOn);
 
         final UOWScope initialUOWScope = getUOWScope();
 
@@ -1033,7 +1042,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
      */
     private Object runUnderNewUOW(int uowType, ExtendedUOWAction uowAction, Class<?>[] rollbackOn, Class<?>[] dontRollbackOn) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "runUnderNewUOW", new Object[] { uowType, uowAction, this });
+            Tr.entry(tc, "runUnderNewUOW", uowType, uowAction, this);
 
         Object ret = null;
         final UOWScope uowScope = uowBegin(uowType);
@@ -1068,7 +1077,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
      */
     private Object runUnderCurrentUOW(ExtendedUOWAction uowAction, Class<?>[] rollbackOn, Class<?>[] dontRollbackOn) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "runUnderCurrentUOW", new Object[] { uowAction, this });
+            Tr.entry(tc, "runUnderCurrentUOW", uowAction, this);
 
         Object ret = null;
 
@@ -1127,7 +1136,7 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
 
     private boolean in(Throwable t, Class<?>[] list) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "in", new Object[] { t, list });
+            Tr.entry(tc, "in", t, list);
 
         if (list != null && t != null) {
             for (Class<?> c : list) {
@@ -1166,74 +1175,4 @@ public class EmbeddableUOWManagerImpl implements UOWManager, UOWScopeCallback, U
     public void setEnabled(boolean enabled) {
         EmbeddableUserTransactionImpl.setEnabled(enabled);
     }
-
-//    /**
-//     * @param uowType
-//     * @param uowAction
-//     * @return
-//     * @throws Exception
-//     */
-//    private Object runUnderNewUOW(int uowType, ExtendedUOWAction uowAction, Class[] rollbackOn, Class[] dontRollbackOn) throws Exception
-//    {
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-//            Tr.entry(tc, "runUnderNewUOW", new Object[] { uowType, uowAction, this });
-//
-//        Object ret = null;
-//        final UOWScope uowScope = uowBegin(uowType);
-//
-//        try {
-//            if (tc.isDebugEnabled())
-//                Tr.debug(tc, "Running UOWAction");
-//
-//            ret = uowAction.run();
-//        } catch (RuntimeException e) {
-//            FFDCFilter.processException(e, "com.ibm.ws.uow.UOWManagerImpl.runUnderNewUOW", "934", this);
-//
-//            if (!in(e, dontRollbackOn)) {
-//                setRollbackOnly();
-//            }
-//
-//            throw e;
-//        } catch (Exception e) {
-//            // No FFDC Code Needed
-//
-//            // A checked exception may be part of the application's
-//            // logic so we do not want to output an FFDC here.
-//
-//            if (in(e, rollbackOn)) {
-//                setRollbackOnly();
-//            }
-//
-//            throw e;
-//        } catch (Error e) {
-//            FFDCFilter.processException(e, "com.ibm.ws.uow.UOWManagerImpl.runUnderNewUOW", "1240", this);
-//
-//            if (!in(e, dontRollbackOn)) {
-//                setRollbackOnly();
-//            }
-//
-//            throw e;
-//        } catch (Throwable t) {
-//            // We have caught a strange beast, a subclass of Throwable that is neither Exception nor Error.
-//            // We can't throw it because it's not declared. We'll pack it in an Error and throw that.
-//            // Also, we'll set rollbackOnly like an Error
-//            FFDCFilter.processException(t, "com.ibm.ws.uow.UOWManagerImpl.runUnderNewUOW", "1250", this);
-//
-//            if (!in(t, dontRollbackOn)) {
-//                setRollbackOnly();
-//            }
-//
-//            throw new Error(t);
-//        } finally {
-//            try {
-//                uowEnd(uowScope, uowType);
-//            } catch (Throwable t) {
-//                FFDCFilter.processException(t, "com.ibm.ws.spi.uow.UOWManagerImpl.runUnderNewUOW", "175", this);
-//            }
-//        }
-//
-//        if (tc.isEntryEnabled())
-//            Tr.exit(tc, "runUnderNewUOW", ret);
-//        return ret;
-//    }
 }

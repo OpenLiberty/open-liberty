@@ -69,7 +69,7 @@ public abstract class MBeanAppAbstractTests extends AbstractSpringTests {
         assertTrue("Expected that server ID starts with bean",
                    serverDelegate.getMBeanServerId().startsWith("WebSphere"));
 
-        Object[] params_set1 = { "Hello", "MBeanAppTests20" };
+        Object[] params_set1 = { "Hello", "MBeanAppTests30" };
         String[] signature_set1 = { "java.lang.String", "java.lang.String" };
 
         System.out.println("Default domain of MBeanServerConnection is: " + mbsc.getDefaultDomain());
@@ -82,7 +82,7 @@ public abstract class MBeanAppAbstractTests extends AbstractSpringTests {
         System.out.println("This is the result of the JMX invoked MBean operation for Get Message: " + result1.toString());
         assertEquals("Hello", result1);
 
-        Object[] params_set2 = { "MBeanAppTests20" };
+        Object[] params_set2 = { "MBeanAppTests30" };
         String[] signature_set2 = { "java.lang.String" };
 
         mbsc.invoke(on1, "incrementCounter", params_set2, signature_set2);

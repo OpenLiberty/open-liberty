@@ -70,6 +70,9 @@ file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Nie mo\u017c
 file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=\u015arodowisko wykonawcze wymaga uprawnie\u0144 zapisu do katalogu /health w celu utworzenia plik\u00f3w "live", "ready" i "started", aby kontrole kondycji oparte na plikach dzia\u0142a\u0142y prawid\u0142owo.
 file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=U\u017cytkownik musi zidentyfikowa\u0107 g\u0142\u00f3wn\u0105 przyczyn\u0119 problemu z uprawnieniami.
 
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W=CWMMH0102W: \u015arodowisko wykonawcze nie mo\u017ce rozpozna\u0107 \u015bcie\u017cki do katalogu /health. Funkcja sprawdzania kondycji oparta na plikach zostanie wy\u0142\u0105czona.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.explanation=Runtime wymaga ustawienia wewn\u0119trznej w\u0142a\u015bciwo\u015bci server.output.dir lub zmiennej \u015brodowiskowej WLP_OUTPUT_DIR w celu okre\u015blenia lokalizacji katalogu /health.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.useraction=Upewnij si\u0119, \u017ce zmienna \u015brodowiskowa WLP_OUTPUT_DIR jest prawid\u0142owo ustawiona.
 
 file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: \u015arodowisko wykonawcze wykry\u0142o obecno\u015b\u0107 nast\u0119puj\u0105cego katalogu [ {0} ]. Plik o tej samej nazwie jest wymagany dla funkcji sprawdzania kondycji opartej na plikach w tej \u015bcie\u017cce. Funkcja sprawdzania kondycji oparta na plikach zostanie wy\u0142\u0105czona.
 file.healthcheck.file.name.conflict.CWMMH0105W.explanation=Kontrole stanu oparte na plikach wymagaj\u0105 utworzenia i u\u017cycia plik\u00f3w "live", "ready" i "started" w katalogu /health. Istniej\u0105cy katalog o jednej z tych nazw jest ju\u017c obecny w katalogu /health, co uniemo\u017cliwia utworzenie wymaganych plik\u00f3w.

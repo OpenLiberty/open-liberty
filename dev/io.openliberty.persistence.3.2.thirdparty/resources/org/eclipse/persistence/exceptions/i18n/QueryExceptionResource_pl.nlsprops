@@ -359,3 +359,5 @@
 
 6183=Typ odwzorowania {1} dla atrybutu {2} z {0} nie jest obs\u0142ugiwany w przypadku funkcji zapytania wed\u0142ug przyk\u0142adu.  Je\u015bli atrybut mo\u017cna bezpiecznie zignorowa\u0107, dodaj go do listy ignorowanych lub ustaw sprawdzanie poprawno\u015bci przyk\u0142ad\u00f3w w strategii na warto\u015b\u0107 false.
 
+6184=Nieprawid\u0142owy typ warto\u015bci {0} jest przekazywany do wyra\u017cenia konstruktora. Typy z\u0142o\u017cone (na przyk\u0142ad tablice, kolekcje lub obiekty) nie s\u0105 obs\u0142ugiwane.
+

@@ -14,7 +14,8 @@ import java.lang.reflect.Type;
 import io.openliberty.mcp.messaging.Cancellation;
 
 public enum SpecialArgumentType {
-    CANCELLATION(Cancellation.class);
+    CANCELLATION(Cancellation.class),
+    UNSUPPORTED(Object.class);
 
     private final Class<?> typeClass;
 
@@ -22,12 +23,33 @@ public enum SpecialArgumentType {
         this.typeClass = typeClass;
     }
 
-    public static SpecialArgumentType fromClass(Type type) {
+    public static Resolution fromClass(Type type) {
+        Class<?> clazz = extractClass(type);
+        if (clazz == null) {
+            return new Resolution(UNSUPPORTED, Object.class);
+        }
         for (SpecialArgumentType specialArgType : values()) {
-            if (specialArgType.typeClass.equals(type)) {
-                return specialArgType;
+            if (specialArgType.typeClass.equals(clazz)) {
+                return new Resolution(specialArgType, clazz);
             }
         }
-        throw new IllegalArgumentException();
+        return new Resolution(UNSUPPORTED, clazz);
+    }
+
+    private static Class<?> extractClass(Type type) {
+        if (type instanceof Class<?> clazz) {
+            return clazz;
+        }
+        return null;
+    }
+
+    public record Resolution(SpecialArgumentType specialArgsType, Class<?> actualClass) {
+        @Override
+        public String toString() {
+            if (specialArgsType == UNSUPPORTED) {
+                return "UNSUPPORTED(" + actualClass.getName() + ")";
+            }
+            return specialArgsType.name() + "(" + actualClass.getName() + ")";
+        }
     }
 }

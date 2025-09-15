@@ -33,8 +33,11 @@ tested.features: \
   pages-4.0, \
   websocket-2.2, \
   websocket-2.1, \
-  appSecurity-6.0
-  
+  appSecurity-6.0, \
+  concurrent-3.1, \
+  connectors-2.1, \
+  jndi-1.0, \
+  localConnector-1.0
   
 -buildpath: \
   com.ibm.ws.componenttest.2.0;version=latest,\
@@ -63,6 +66,7 @@ tested.features: \
   io.openliberty.springboot.fat40.multicontext.app;version=latest, \
   io.openliberty.springboot.fat40.webanno.app;version=latest, \
   io.openliberty.springboot.fat40.websocket.app;version=latest, \
-  io.openliberty.springboot.fat40.security.app;version=latest
- 
+  io.openliberty.springboot.fat40.security.app;version=latest, \
+  io.openliberty.springboot.fat40.concurrency.app;version=latest, \
+  io.openliberty.springboot.fat40.mbean.app;version=latest
 

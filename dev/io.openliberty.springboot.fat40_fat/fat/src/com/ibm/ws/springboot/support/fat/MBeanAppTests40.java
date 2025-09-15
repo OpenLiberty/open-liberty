@@ -19,15 +19,16 @@ import org.junit.runner.RunWith;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-public class MBeanAppTests20War extends MBeanAppAbstractTests {
+public class MBeanAppTests40 extends MBeanAppAbstractTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("servlet-6.0", "localConnector-1.0"));
+        return new HashSet<>(Arrays.asList("springBoot-4.0", "servlet-6.1", "localConnector-1.0"));
     }
 
     @Override
     public AppConfigType getApplicationConfigType() {
-        return AppConfigType.WEB_APP_TAG;
+        return AppConfigType.SPRING_BOOT_APP_TAG;
     }
+
 }

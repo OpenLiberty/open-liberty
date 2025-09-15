@@ -359,3 +359,5 @@
 
 6183=O tipo de mapeamento {1} para o atributo {2} de {0} n\u00e3o \u00e9 suportado com a funcionalidade Query By Example.  Se o atributo puder ser ignorado com seguran\u00e7a, inclua-o na lista ignorar ou configure a valida\u00e7\u00e3o de exemplo como false na pol\u00edtica.
 
+6184=O tipo de valor incorreto {0} \u00e9 passado para a express\u00e3o do construtor. N\u00e3o h\u00e1 suporte para tipos complexos (por exemplo, matrizes, cole\u00e7\u00f5es ou objetos).
+

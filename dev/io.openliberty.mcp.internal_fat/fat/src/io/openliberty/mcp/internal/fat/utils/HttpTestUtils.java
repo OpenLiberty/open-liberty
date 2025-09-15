@@ -56,13 +56,4 @@ public class HttpTestUtils {
         assertNull("Notification request received a response", response);
     }
 
-    public static String callMCPWithoutProtocolVersion(LibertyServer server, String path, String jsonRequestBody) throws Exception {
-        return new HttpRequest(server, path + "/mcp")
-                                                     .requestProp("Accept", ACCEPT_HEADER)
-                                                     .jsonBody(jsonRequestBody)
-                                                     .method("POST")
-                                                     .expectCode(400)
-                                                     .run(String.class);
-
-    }
 }

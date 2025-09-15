@@ -49,3 +49,6 @@
 
 3010=Nespr\u00e1vn\u00e1 hodnota data [ YYYY-MM-DD]: [{0}].
 
+3011=Nelze z\u00edskat hodnotu z v\u00fd\u010dtu : [ {0} ] z pole [ {1} ] z d\u016fvodu 
+ [{2}].
+

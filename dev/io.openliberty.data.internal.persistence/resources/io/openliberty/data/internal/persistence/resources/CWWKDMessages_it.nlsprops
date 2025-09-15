@@ -102,8 +102,7 @@ CWWKD1018.confl.special.param=CWWKD1018E: Il metodo {0} del deposito {1} non pu\
 CWWKD1018.confl.special.param.explanation=Alcuni dei parametri speciali di Jakarta Data, come Limit e PageRequest, non possono essere combinati in una firma di metodo di un singolo repository.
 CWWKD1018.confl.special.param.useraction=Aggiornare il repository per non usare entrambi i tipi di parametri speciali di Jakarta Data nella stessa firma del metodo.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere una query che mescola parametri posizionali e parametri denominati. L''interfaccia definisce una combinazione di {2} parametri posizionali e di
- {3} parametri denominati {4} per il valore dell''annotazione Query: {5}. Una query con parametri posizionali deve fare riferimento a ciascun parametro con il suo valore ordinale, a partire da ?1, e i parametri del metodo non devono avere l''annotazione Param. In una query con parametri denominati, ogni parametro deve essere referenziato dal suo nome, come {6}, e i parametri del metodo devono avere l''annotazione Param, come {7}. In alternativa, abilitando l''opzione di compilazione -parametri, i parametri del metodo possono indicare il parametro chiamato corrispondendo al suo nome, ad esempio {8}.
+CWWKD1019.mixed.positional.named=CWWKD1019E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere una query che mescola parametri posizionali e parametri denominati. L''interfaccia definisce un mix di {2} parametri posizionali e {3} parametri denominati {4} per il valore dell''annotazione Query: {5}. Una query con parametri posizionali deve fare riferimento a ciascun parametro con il suo valore ordinale, a partire da?1, e i parametri del metodo non devono avere l''annotazione Param. In una query con parametri denominati, ogni parametro deve essere referenziato dal suo nome, come {6}, e i parametri del metodo devono avere l''annotazione Param, come {7}. In alternativa, abilitando l''opzione di compilazione -parametri, i parametri del metodo possono indicare il parametro nominato, facendo corrispondere il suo nome, ad esempio {8}.
 CWWKD1019.mixed.positional.named.explanation=Le query con parametri devono utilizzare tutti i parametri denominati o tutti i parametri posizionali, non una combinazione.
 CWWKD1019.mixed.positional.named.useraction=Aggiornare il metodo del repository per utilizzare solo parametri denominati o solo parametri posizionali.
 
@@ -135,7 +134,9 @@ CWWKD1026.ignore.case.not.text=CWWKD1026E: L''attributo {0} dell''entit\u00e0 {1
 CWWKD1026.ignore.case.not.text.explanation=L'ordinamento con caso ignorato \u00e8 possibile solo con attributi di entit\u00e0 che rappresentano testo.
 CWWKD1026.ignore.case.not.text.useraction=Assicurarsi che i criteri di ordinamento siano applicati all'attributo corretto dell'entit\u00e0 e rimuovere l'istruzione di ignorare il caso se l'attributo dell'entit\u00e0 non rappresenta un testo.
 
-# TODO CWWKD1027 removed prior to GA of data-1.0 and can be reused
+CWWKD1027.datastore.lacks.java.comp=CWWKD1027E: Una o pi\u00f9 interfacce di repository ( {0} ) dell''artefatto applicativo {1} specificano un valore {2} dataStore che non corrisponde a un riferimento di risorsa dell''origine dati o a un riferimento di unit\u00e0 di persistenza perch\u00e9 manca il prefisso dello spazio dei nomi java:comp/env/. Si consideri la possibilit\u00e0 di modificare l''annotazione Repository per specificare {3}.
+CWWKD1027.datastore.lacks.java.comp.explanation=I nomi JNDI dei riferimenti alle risorse dell'origine dati e alle unit\u00e0 di persistenza devono includere un prefisso java: namespace.
+CWWKD1027.datastore.lacks.java.comp.useraction=Assicurarsi che il valore dell'archivio dati dell'annotazione Repository includa un prefisso java: namespace quando il valore indica il nome JNDI di un riferimento di risorsa dell'origine dati o di un riferimento di unit\u00e0 di persistenza.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: Il metodo {0} dell''interfaccia del repository {1} richiede i primi {2} risultati, superando il numero massimo consentito di risultati: {3}.
 CWWKD1028.first.exceeds.max.explanation=Il numero massimo di risultati della query \u00e8 limitato dai vincoli del sistema e dal valore specificato.
@@ -269,7 +270,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: L''interfaccia del repository {0} nell''
 CWWKD1060.name.out.of.scope.explanation=Lo spazio dei nomi specificato non \u00e8 accessibile dall'artefatto in cui \u00e8 definita l'interfaccia del repository.
 CWWKD1060.name.out.of.scope.useraction=Aggiornare l'annotazione Repository per specificare un nome di archivio dati visibile al modulo o alla libreria che fornisce l'interfaccia del repository.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: Una o pi\u00f9 interfacce di repository{0}) definite nel modulo enterprise bean {1} dell''applicazione {2} configurano un valore {2} per l''attributo {3}. Tuttavia, i nomi {4} non sono accessibili ai moduli enterprise bean. Utilizzare un nome appartenente a uno dei seguenti spazi dei nomi: {5}.
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Una o pi\u00f9 interfacce di repository ( {0} ) definite nel modulo {1} enterprise bean dell''applicazione {2} configurano un valore {3} per l''attributo {4}. Tuttavia, i nomi di {5} non sono accessibili ai moduli dei bean aziendali. Utilizzare un nome da uno dei seguenti spazi dei nomi: {6}.
 CWWKD1061.comp.name.in.ejb.explanation=Lo spazio dei nomi specificato non \u00e8 accessibile al modulo enterprise bean in cui \u00e8 definita l'interfaccia del repository.
 CWWKD1061.comp.name.in.ejb.useraction=Aggiornare l'annotazione Repository per specificare un nome di archivio dati visibile al modulo enterprise bean che fornisce l'interfaccia del repository.
 

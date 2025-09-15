@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=Corecta\u0163i cauza e\u015fu\u0103rii \u01
 CWWKC1103.skip.run.failed=CWWKC1103E: Execu\u0163ia taskului {0}, care a fost lansat c\u0103tre serviciul executor {1}, este s\u0103rit deoarece opera\u0163ia Trigger.skipRun a e\u015fuat cu urm\u0103toarea eroare: {2}.
 CWWKC1103.skip.run.failed.explanation=Opera\u0163ia skipRun pentru Trigger a e\u015fuat, f\u0103c\u00e2nd s\u0103 fie s\u0103rit\u0103 \u00eencercarea execu\u0163iei curente pentru task.
 CWWKC1103.skip.run.failed.useraction=Corecta\u0163i cauza e\u015fu\u0103rii \u015fi decide\u0163i dac\u0103 relansa\u0163i sau nu taskul.
+
+CWWKC1108.override.virtual=CWWKC1108I: Fabrica de fire gestionat\u0103 {0} va crea fire de platform\u0103 deoarece crearea de fire virtuale de c\u0103tre serverul Liberty este dezactivat\u0103.
+CWWKC1108.override.virtual.explanation=SPI ThreadTypeOverride a dezactivat crearea de fire virtuale de c\u0103tre serverul Liberty.
+CWWKC1108.override.virtual.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 CWWKC1110.task.canceled=CWWKC1110I: Sarcina {0} , care a fost trimis\u0103 serviciului executor {1} , este anulat\u0103.
 CWWKC1110.task.canceled.explanation=Sarcina a fost anulat\u0103.

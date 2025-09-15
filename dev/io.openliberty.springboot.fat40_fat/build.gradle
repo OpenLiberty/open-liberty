@@ -57,7 +57,9 @@ def appDefs =
     [ 'io.openliberty.springboot.fat40.multicontext.app', '.jar' ],
     [ 'io.openliberty.springboot.fat40.webanno.app', '.jar' ],
     [ 'io.openliberty.springboot.fat40.websocket.app', '.war' ],
-    [ 'io.openliberty.springboot.fat40.security.app', '.jar' ]]
+    [ 'io.openliberty.springboot.fat40.security.app', '.jar' ],
+    [ 'io.openliberty.springboot.fat40.concurrency.app', '.war'],
+    [ 'io.openliberty.springboot.fat40.mbean.app', '.war']]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

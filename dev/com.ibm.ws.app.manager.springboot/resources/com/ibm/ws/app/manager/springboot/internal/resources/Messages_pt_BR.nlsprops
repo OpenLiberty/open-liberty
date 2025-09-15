@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=Configure um arquivo JAR do servid
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: O aplicativo falhou ao iniciar porque o aplicativo Spring Boot n\u00e3o foi localizado dentro do arquivo JAR do Liberty Server empacotado.
 error.application.not.found.inside.packaged.liberty.jar.explanation=O arquivo JAR do Liberty Server empacotado deve conter um aplicativo Spring Boot configurado.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configure um arquivo JAR do servidor Liberty compactado v\u00e1lido.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: O recurso {0} deve ser configurado no arquivo server.xml. O recurso {1} est\u00e1 configurado e o aplicativo tem conte\u00fado Spring Boot {2}.
+error.spring4.required.explanation=O recurso Spring Boot configurado atualmente n\u00e3o \u00e9 compat\u00edvel com o conte\u00fado do aplicativo.
+error.spring4.required.useraction=Configure uma vers\u00e3o do recurso Spring Boot que seja compat\u00edvel com o conte\u00fado do aplicativo.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: O recurso servlet-6.1 ou posterior deve ser configurado. O recurso springBoot-4.0 est\u00e1 configurado e o aplicativo usa servlets.
+error.spring4.requires.servlet61.or.later.application.explanation=O aplicativo usa Servlets mas nenhum recurso de Servlet est\u00e1 configurado.
+error.spring4.requires.servlet61.or.later.application.useraction=Configure o recurso de Servlet especificado.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: O recurso websocket-2.2 ou posterior deve ser configurado. O recurso springBoot-4.0 est\u00e1 configurado e o aplicativo usa WebSockets.
+error.spring4.requires.websocket22.or.later.application.explanation=O aplicativo usa WebSockets, mas nenhum recurso de websocket est\u00e1 configurado.
+error.spring4.requires.websocket22.or.later.application.useraction=Configurar o recurso de websocket especificado.

@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -1078,23 +1079,47 @@ public class ToolTest extends FATServletClient {
                                             },
                                             "required": []
                                         },
+
                                         "name": "testToolArgIsNotRequired",
                                         "description": "ToolArgNotRequired",
                                         "title": "ToolArgNotRequired"
-                                    },
+                                     },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        },
+
+                                        "name": "staticInnerTool",
+                                        "description": "Defined in static inner class",
+                                        "title": "Static Inner Tool"
+                                      },
                                 ]
                             },
                             "id": 1,
                             "jsonrpc": "2.0"
                         }
-                                                                """;
+                         """;
 
         // Lenient mode test (false boolean in 3rd parameter
         JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
+    /**
+     *
+     */
+
     @Test
     public void testEchoMethodCallError() throws Exception {
+        server.setMarkToEndOfLog();
+
         String request = """
                           {
                           "jsonrpc": "2.0",
@@ -1110,12 +1135,12 @@ public class ToolTest extends FATServletClient {
                         """;
 
         String response = HttpTestUtils.callMCP(server, "/toolTest", request);
-        JSONObject jsonResponse = new JSONObject(response);
 
         String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Method call caused runtime exception"}], "isError": true}}
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Internal server error"}], "isError": true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
     }
 
     @Test
@@ -1738,6 +1763,43 @@ public class ToolTest extends FATServletClient {
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello World"}], "isError": false}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testStaticInnerTool() throws Exception {
+        String request = """
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "staticInnerTool",
+                            "arguments": {
+                              "input": "World"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+
+        String expectedResponseString = """
+                                                  {
+                                                  "id":"2",
+                                                  "jsonrpc":"2.0",
+                                                  "result": {
+                                                    "content": [
+                                                      {
+                                                        "type":"text",
+                                                        "text":"Hello World"
+                                                      }
+                                                    ],
+                                                    "isError": false
+                                                  }
+                                                }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, false);
     }
 
 }

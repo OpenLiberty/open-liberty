@@ -28,16 +28,12 @@ src: \
   src/main/java, \
   src/main/resources
 
-// TODO: Why is this needed?  The fat20 project doesn't need it.
-
--buildpath: \
-  io.openliberty.jakarta.servlet.6.1
-
 -testpath: \
   org.springframework.boot:spring-boot;${springBootVersion40}, \
   org.springframework.boot:spring-boot-autoconfigure;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-web-server;${springBootVersion40}, \
 \
   org.springframework:spring-beans;${springVersion40}, \
   org.springframework:spring-context;${springVersion40}, \
-  org.springframework:spring-web;${springVersion40}
-
+  org.springframework:spring-web;${springVersion40}, \
+  io.openliberty.jakarta.servlet.6.1

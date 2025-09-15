@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu selh\
 CWWKC1103.skip.run.failed=CWWKC1103E: Proveden\u00ed \u00falohy {0}, kter\u00e1 byla odesl\u00e1na prov\u00e1d\u011bc\u00ed slu\u017eb\u011b {1}, bylo vynech\u00e1no, proto\u017ee operace Trigger.skipRun se nezda\u0159ila s touto chybou: {2}.
 CWWKC1103.skip.run.failed.explanation=Operace skipRun pro spou\u0161t\u011b\u010d se nezda\u0159ila, co\u017e zp\u016fsobilo vynech\u00e1n\u00ed aktu\u00e1ln\u00edho pokusu o proveden\u00ed pro \u00falohu.
 CWWKC1103.skip.run.failed.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu selh\u00e1n\u00ed a rozhodn\u011bte se, zda chcete zopakovat odesl\u00e1n\u00ed \u00falohy.
+
+CWWKC1108.override.virtual=CWWKC1108I: Tov\u00e1rna vl\u00e1ken spravovan\u00e1 serverem {0} vytvo\u0159\u00ed vl\u00e1kna platformy, proto\u017ee vytv\u00e1\u0159en\u00ed virtu\u00e1ln\u00edch vl\u00e1ken serverem Liberty je zak\u00e1z\u00e1no.
+CWWKC1108.override.virtual.explanation=Server ThreadTypeOverride SPI zak\u00e1zal vytv\u00e1\u0159en\u00ed virtu\u00e1ln\u00edch vl\u00e1ken serverem Liberty.
+CWWKC1108.override.virtual.useraction=Nen\u00ed pot\u0159ebn\u00e1 \u017e\u00e1dn\u00e1 akce.
 
 CWWKC1110.task.canceled=CWWKC1110I: \u00daloha {0} , kter\u00e1 byla odesl\u00e1na exekutorsk\u00e9 slu\u017eb\u011b {1} , je zru\u0161ena.
 CWWKC1110.task.canceled.explanation=\u00dakol byl zru\u0161en.

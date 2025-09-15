@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,7 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=Modificare il file 'server.xml' e
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ Tutti i thread nell''esecutore predefinito Liberty sembrano essere bloccati e non \u00e8 possibile aggiungerne altri perch\u00e9 la dimensione del pool ha raggiunto il limite.  La dimensione attuale del pool \u00e8 {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=Tutti i thread dell'esecutore predefinito sono occupati, i thread non hanno completato alcun compito di recente e i compiti sono in attesa nella coda. Non \u00e8 possibile aggiungere altri thread perch\u00e9 la dimensione del pool ha raggiunto il limite.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=Determinare se c'\u00e8 un collo di bottiglia, come una tabella di database bloccata, che potrebbe impedire ai thread di completare i loro compiti. Se non c'\u00e8 un collo di bottiglia e il server ha solo bisogno di pi\u00f9 thread, regolare gli attributi coreThreads e maxThreads dell'elemento di configurazione dell'esecutore.
+
+CWWKE1208.override.virtual=CWWKE1208I: La politica di concurrency di {0} creer\u00e0 thread della piattaforma perch\u00e9 la creazione di thread virtuali da parte del server Liberty \u00e8 disabilitata.
+CWWKE1208.override.virtual.explanation=L'SPI ThreadTypeOverride ha disabilitato la creazione di thread virtuali da parte del server Liberty.
+CWWKE1208.override.virtual.useraction=Non \u00e8 necessaria alcuna azione.

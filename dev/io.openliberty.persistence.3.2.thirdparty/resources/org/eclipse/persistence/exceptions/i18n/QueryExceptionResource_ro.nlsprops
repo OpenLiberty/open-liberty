@@ -359,3 +359,5 @@
 
 6183=Tipul de mapare {1} pentru atributul {2} din {0} nu este suportat cu func\u0163ionalitatea Interogare dup\u0103 exemplu.  Dac\u0103 atributul poate fi ignorat \u00een siguran\u0163\u0103, atunci ad\u0103uga\u0163i-l \u00een lista de ignorare sau seta\u0163i validarea exemplului pe false \u00een politic\u0103.
 
+6184=Tipul de valoare incorect {0} este trecut \u00een expresia constructorului. Tipurile complexe (de exemplu, matrici, colec\u021bii sau obiecte) nu sunt acceptate.
+

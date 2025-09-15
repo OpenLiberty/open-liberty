@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Ust
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: Atrybut updateTrigger jest ustawiony na warto\u015b\u0107 disabled, a odst\u0119p czasu monitorowania jest wi\u0119kszy ni\u017c {0}. Po zmodyfikowaniu plik\u00f3w kluczy LTPA nie jest wykonywane dynamiczne prze\u0142adowanie.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Je\u015bli atrybut updateTrigger jest ustawiony na warto\u015b\u0107 disabled, pliki nie s\u0105 monitorowane pod k\u0105tem modyfikacji plik\u00f3w z przyrostkiem .keys i nie jest wykonywane prze\u0142adowanie dynamiczne. Nawet je\u015bli atrybut monitorInterval ma warto\u015b\u0107 wi\u0119ksz\u0105 od zera, atrybut jest ignorowany, a pliki nie s\u0105 monitorowane.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Ustaw warto\u015b\u0107 atrybutu updateTrigger na polled lub mbean.
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Klucze walidacyjne {0} musz\u0105 zosta\u0107 zregenerowane przy u\u017cyciu algorytm\u00f3w kryptograficznych posiadaj\u0105cych certyfikat FIPS 140-3.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Klucze walidacji LTPA, kt\u00f3re zosta\u0142y utworzone bez w\u0142\u0105czonej funkcji FIPS 140-3, ko\u0144cz\u0105 si\u0119 niepowodzeniem po w\u0142\u0105czeniu funkcji FIPS 140-3.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=U\u017cyj polecenia securityUtility createLTPAKeys, aby utworzy\u0107 klucze walidacji zatwierdzone przez FIPS, gdy skonfigurowany jest FIPS 140-3.

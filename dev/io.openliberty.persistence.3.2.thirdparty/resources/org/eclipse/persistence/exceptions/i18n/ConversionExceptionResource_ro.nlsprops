@@ -49,3 +49,6 @@
 
 3010=Valoarea incorect\u0103 a datei [YYYY-MM-DD]: [{0}].
 
+3011=Nu se poate ob\u021bine valoarea din enum : [ {0} ] din c\u00e2mpul [ {1} ] din cauza 
+ [{2}].
+

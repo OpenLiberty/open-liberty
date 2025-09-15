@@ -31,11 +31,15 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.PrivHelper;
 
+/**
+ * Use @SkipForSecurity instead
+ */
+@Deprecated
 public class SkipJavaSemeruWithFipsEnabled implements TestRule {
 
     // All tests that must be skipped with this rule must be annotated with the following tag
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ElementType.METHOD, ElementType.TYPE})
+    @Target({ ElementType.METHOD, ElementType.TYPE })
     public @interface SkipJavaSemeruWithFipsEnabledRule {}
 
     // Variables to evaluate the rule

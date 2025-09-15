@@ -9,25 +9,18 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
-import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertTrue;
+import java.util.List;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.mcp.internal.fat.tool.duplicateToolErrorTestApps.DuplicateToolErrorTest;
-import io.openliberty.mcp.internal.fat.utils.HttpTestUtils;
+import io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest;
 
 /**
  *
@@ -40,39 +33,47 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "DeploymentProblemTest.war").addPackage(DuplicateToolErrorTest.class.getPackage());
-        ShrinkHelper.exportDropinAppToServer(server, war, DISABLE_VALIDATION, SERVER_ONLY);
-        server.startServer();
+        ExpectedAppFailureValidator.deployAppToAssertFailure(server, "ExpectedAppFailureTest", DuplicateToolErrorTest.class.getPackage());
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWWKZ0002E"); // App failed to start
+        server.stopServer(ExpectedAppFailureValidator.APP_START_FAILED_CODE); // will be extended for translations
     }
 
     @Test
     public void testDuplicateToolDeploymentError() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/list",
-                          "params": {
-                            "cursor": "optional-cursor-value"
-                          }
-                        }
-                        """;
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest.bob",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest.duplicateBob",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest2.duplicateBob",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest.duplicateEcho",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest.echo",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest2.duplicateEcho",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest2.echo");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Duplicate Tool: ", expectedErrorList, server);
+    }
 
-        boolean deploymentErrorOccured = false;
+    @Test
+    public void testToolArgBlankTestCase() throws Exception {
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.argNameisBlank",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.argNameisBlankVariant");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Blank Tool Arg: ", expectedErrorList, server);
+    }
 
-        try {
-            HttpTestUtils.callMCP(server, "/toolTest", request);
-        } catch (Exception e) {
-            if (!server.findStringsInLogs("More than one MCP tool has the same name").isEmpty()) {
-                deploymentErrorOccured = true;
-            }
-        }
+    @Test
+    public void testToolArgDuplicatesTestCase() throws Exception {
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.duplicateParam.*arg",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.duplicateParamVariant.*arg");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Duplicate Tool Arg: ", expectedErrorList, server);
+    }
 
-        assertTrue("Expected a deployment error due to duplicate MCP Tools being present, no error was present", deploymentErrorOccured);
+    public void testDuplicateSpecialArgsTestCase() throws Exception {
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateSpecialArgsErrorTest.duplicateCancellation");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Duplicate Special Args: ", expectedErrorList, server);
+    }
+
+    public void testInvalidSpecialArgsTestCase() throws Exception {
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidSpecialArgsErrorTest.invalidSpecialArgumentTool");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Special Args: ", expectedErrorList, server);
     }
 }

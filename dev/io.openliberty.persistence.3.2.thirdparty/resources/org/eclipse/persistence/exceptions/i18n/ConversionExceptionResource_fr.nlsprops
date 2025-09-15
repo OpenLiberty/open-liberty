@@ -49,3 +49,6 @@
 
 3010=Valeur de date incorrecte [ AAAA-MM-JJ ]: [{0}].
 
+3011=Impossible d''obtenir la valeur de l''enum : [ {0} ] du champ [ {1} ] due 
+ [{2}].
+

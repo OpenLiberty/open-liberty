@@ -20,12 +20,30 @@ import io.openliberty.mcp.content.ImageContent;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.Dependent;
 
 /**
  *
  */
 @ApplicationScoped
 public class BasicTools {
+
+    //////////
+    // Custom Inner Tool
+    //////////
+
+    @Dependent
+    public static class StaticInnerTool {
+
+        @Tool(name = "staticInnerTool", title = "Static Inner Tool", description = "Defined in static inner class")
+        public String staticInnerTool(@ToolArg(name = "input") String input) {
+            return "Hello " + input;
+        }
+    }
+
+    //////////
+    // Content Types
+    //////////
 
     @Tool(name = "mixedContentTool", title = "Mixed Content Tool", description = "Returns Text, Audio or Image Content")
     public ToolResponse mixedContentTool(@ToolArg(name = "input", description = "input to echo") String input) {

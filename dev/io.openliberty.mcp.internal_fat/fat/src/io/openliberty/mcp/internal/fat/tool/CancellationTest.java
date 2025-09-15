@@ -113,7 +113,7 @@ public class CancellationTest extends FATServletClient {
         String response = future.get(10, TimeUnit.SECONDS);
 
         String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"OperationCancellationException", "type":"text"}],"isError":true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Internal server error", "type":"text"}],"isError":true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }

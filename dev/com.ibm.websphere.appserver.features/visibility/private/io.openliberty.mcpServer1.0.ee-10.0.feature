@@ -5,8 +5,7 @@ singleton=true
   com.ibm.websphere.appserver.servlet-6.0, \
   io.openliberty.cdi-4.0, \
   io.openliberty.jsonb-3.0, \
-  com.ibm.websphere.appserver.eeCompatible-10.0,\
-  io.openliberty.noShip-1.0
-kind=noship
-edition=full
+  com.ibm.websphere.appserver.eeCompatible-10.0
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=Corrija a causa da falha e decida se a tare
 CWWKC1103.skip.run.failed=CWWKC1103E: A execu\u00e7\u00e3o da tarefa {0}, que foi enviada para o servi\u00e7o do executor {1}, foi ignorada porque a opera\u00e7\u00e3o Trigger.skipRun falhou com o seguinte erro: {2}.
 CWWKC1103.skip.run.failed.explanation=A opera\u00e7\u00e3o skipRun para o Acionador falhou, fazendo com que a tentativa de execu\u00e7\u00e3o atual para a tarefa fosse ignorada.
 CWWKC1103.skip.run.failed.useraction=Corrija a causa da falha e decida se a tarefa ser\u00e1 reenviada ou n\u00e3o.
+
+CWWKC1108.override.virtual=CWWKC1108I: A f\u00e1brica de threads gerenciada {0} criar\u00e1 threads de plataforma porque a cria\u00e7\u00e3o de threads virtuais pelo servidor Liberty est\u00e1 desativada.
+CWWKC1108.override.virtual.explanation=O SPI ThreadTypeOverride desativou a cria\u00e7\u00e3o de threads virtuais pelo servidor Liberty.
+CWWKC1108.override.virtual.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
 
 CWWKC1110.task.canceled=CWWKC1110I: A tarefa {0}, que foi enviada ao servi\u00e7o executor {1}, \u00e9 cancelada.
 CWWKC1110.task.canceled.explanation=A tarefa foi cancelada.

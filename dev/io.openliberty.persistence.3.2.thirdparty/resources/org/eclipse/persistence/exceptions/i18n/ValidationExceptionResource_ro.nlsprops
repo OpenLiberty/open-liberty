@@ -641,3 +641,9 @@
 
 7360=Parola bazei de date a fost criptat\u0103 de un algoritm depreciat. Recripta\u021bi-l prin `passwordUpdate.sh` din eclipselink.zip pachet.
 
+7361=Un singur c\u00e2mp din enumerare poate fi marcat prin adnotarea @EnumeratedValue. Verifica\u021bi clasa enum [ {0} ].
+
+7362=Pentru un tip enumerat ORDINAL, numai tipurile byte, short, int, log sau wrapper pot fi utilizate ca tip de atribut marcat prin @EnumeratedValue. Verifica\u021bi atributul [ {0} ] \u00een clasa enum [ {1} ].
+
+7363=Pentru un tip enumerat STRING, numai tipul java.lang.String poate fi utilizat ca tip de atribut marcat prin @EnumeratedValue. Verifica\u021bi atributul [ {0} ] \u00een clasa enum [ {1} ].
+

@@ -76,8 +76,8 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ValidationTests30War.class,
                 AopWebAppTests30.class,
                 AopSpringBootAppTests30.class,
-                MBeanAppTests20.class,
-                MBeanAppTests20War.class,
+                MBeanAppTests30.class,
+                MBeanAppTests30War.class,
                 HTTPMetricsNoContextRootTest.class,
                 HTTPMetricsWithContextRootTest.class
 })

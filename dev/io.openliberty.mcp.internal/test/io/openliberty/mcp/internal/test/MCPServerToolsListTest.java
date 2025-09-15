@@ -41,17 +41,17 @@ public class MCPServerToolsListTest {
     }
 
     private List<ToolDescription> generateResponse(Tool numberTestTool, Map<String, ArgumentMetadata> arguments) {
-        return List.of(new ToolDescription(ToolMetadataUtil.createToolMetadataFrom(numberTestTool, arguments, Collections.emptyList())));
+        return List.of(new ToolDescription(ToolMetadataTestUtility.createFrom(numberTestTool, arguments, Collections.emptyList())));
     }
 
     @Test
     public void testJSONNumberFromPrimitives() throws Exception {
         Tool numberTestTool = Literals.tool("parseAllPrimitiveNumbers", "parse All PrimitiveNumbers", "Checks if primitives arguments are handled by the Json Serialiser");
-        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(long.class, 0, "long -> number", true),
-                                                         "var2", new ArgumentMetadata(double.class, 1, "double -> number", true),
-                                                         "var3", new ArgumentMetadata(byte.class, 1, "byte -> number", true),
-                                                         "var4", new ArgumentMetadata(float.class, 1, "float -> number", true),
-                                                         "var5", new ArgumentMetadata(short.class, 1, "short -> number", true));
+        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(long.class, 0, "long -> number", true, false),
+                                                         "var2", new ArgumentMetadata(double.class, 1, "double -> number", true, false),
+                                                         "var3", new ArgumentMetadata(byte.class, 1, "byte -> number", true, false),
+                                                         "var4", new ArgumentMetadata(float.class, 1, "float -> number", true, false),
+                                                         "var5", new ArgumentMetadata(short.class, 1, "short -> number", true, false));
 
         String responseString = jsonb.toJson(generateResponse(numberTestTool, arguments));
         String expectedString = """
@@ -103,11 +103,11 @@ public class MCPServerToolsListTest {
     @Test
     public void testJSONNumberFromWrapperPrimitives() throws Exception {
         Tool numberTestTool = Literals.tool("parseAllWrapperNumbers", "parse All Wrapper Numbers", "Checks if wrapper type primitive arguments are handled by the Json Serialiser");
-        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(Long.class, 0, "Long -> number", true),
-                                                         "var2", new ArgumentMetadata(Double.class, 1, "Double -> number", true),
-                                                         "var3", new ArgumentMetadata(Byte.class, 1, "Byte -> number", true),
-                                                         "var4", new ArgumentMetadata(Float.class, 1, "Float -> number", true),
-                                                         "var5", new ArgumentMetadata(Short.class, 1, "Short -> number", true));
+        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(Long.class, 0, "Long -> number", true, false),
+                                                         "var2", new ArgumentMetadata(Double.class, 1, "Double -> number", true, false),
+                                                         "var3", new ArgumentMetadata(Byte.class, 1, "Byte -> number", true, false),
+                                                         "var4", new ArgumentMetadata(Float.class, 1, "Float -> number", true, false),
+                                                         "var5", new ArgumentMetadata(Short.class, 1, "Short -> number", true, false));
         String responseString = jsonb.toJson(generateResponse(numberTestTool, arguments));
         String expectedString = """
                         [
@@ -158,9 +158,9 @@ public class MCPServerToolsListTest {
     @Test
     public void testJSONString() throws Exception {
         Tool stringTestTool = Literals.tool("parseStrings", "parseStrings", "Checks string types are handled by the Json Serialiser");
-        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(String.class, 0, "String -> string", true),
-                                                         "var2", new ArgumentMetadata(Character.class, 1, "Character -> string", true),
-                                                         "var3", new ArgumentMetadata(char.class, 1, "char -> string", true));
+        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(String.class, 0, "String -> string", true, false),
+                                                         "var2", new ArgumentMetadata(Character.class, 1, "Character -> string", true, false),
+                                                         "var3", new ArgumentMetadata(char.class, 1, "char -> string", true, false));
         String responseString = jsonb.toJson(generateResponse(stringTestTool, arguments));
         String expectedString = """
                         [
@@ -201,9 +201,9 @@ public class MCPServerToolsListTest {
     @Test
     public void testJSONInteger() throws Exception {
         Tool intTestTool = Literals.tool("parseInts", "parseInts", "Checks int types are handled by the Json Serialiser");
-        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(int.class, 0, "int -> int", true),
-                                                         "var2", new ArgumentMetadata(Integer.class, 1, "Integer -> int", true),
-                                                         "var3", new ArgumentMetadata(Integer.class, 1, "Integer -> int", true));
+        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(int.class, 0, "int -> int", true, false),
+                                                         "var2", new ArgumentMetadata(Integer.class, 1, "Integer -> int", true, false),
+                                                         "var3", new ArgumentMetadata(Integer.class, 1, "Integer -> int", true, false));
         String responseString = jsonb.toJson(generateResponse(intTestTool, arguments));
         String expectedString = """
                         [
@@ -244,9 +244,9 @@ public class MCPServerToolsListTest {
     @Test
     public void testJSONBoolean() throws Exception {
         Tool booleanTestTool = Literals.tool("parseBooleans", "parseBooleans", "Checks boolean types are handled by the Json Serialiser");
-        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(boolean.class, 0, "boolean -> boolean", true),
-                                                         "var2", new ArgumentMetadata(Boolean.class, 1, "Boolean -> boolean", true),
-                                                         "var3", new ArgumentMetadata(Boolean.class, 1, "Boolean -> boolean", true));
+        Map<String, ArgumentMetadata> arguments = Map.of("var1", new ArgumentMetadata(boolean.class, 0, "boolean -> boolean", true, false),
+                                                         "var2", new ArgumentMetadata(Boolean.class, 1, "Boolean -> boolean", true, false),
+                                                         "var3", new ArgumentMetadata(Boolean.class, 1, "Boolean -> boolean", true, false));
         String responseString = jsonb.toJson(generateResponse(booleanTestTool, arguments));
         String expectedString = """
                         [
@@ -289,27 +289,27 @@ public class MCPServerToolsListTest {
 
         //Weather Tool
         Tool weatherTool = Literals.tool("get_weather", "Weather Information Provider", "Get current weather information for a location");
-        Map<String, ArgumentMetadata> arguments = Map.of("location", new ArgumentMetadata(String.class, 0, "City in a country", true),
-                                                         "temperature", new ArgumentMetadata(double.class, 1, "in degrees Celsius", true),
-                                                         "humidity", new ArgumentMetadata(int.class, 2, "Relative Humidity", true));
+        Map<String, ArgumentMetadata> arguments = Map.of("location", new ArgumentMetadata(String.class, 0, "City in a country", true, false),
+                                                         "temperature", new ArgumentMetadata(double.class, 1, "in degrees Celsius", true, false),
+                                                         "humidity", new ArgumentMetadata(int.class, 2, "Relative Humidity", true, false));
         // Addition Tool
         Tool additionTool = Literals.tool("addition_calculator", "The Calculator Addition Tool", "Can add two floating point numbers");
-        Map<String, ArgumentMetadata> arguments2 = Map.of("number1", new ArgumentMetadata(double.class, 0, "operand 1", true),
-                                                          "number2", new ArgumentMetadata(double.class, 1, "operand 2", true));
+        Map<String, ArgumentMetadata> arguments2 = Map.of("number1", new ArgumentMetadata(double.class, 0, "operand 1", true, false),
+                                                          "number2", new ArgumentMetadata(double.class, 1, "operand 2", true, false));
         // Subtraction Tool
         Tool subtractionTool = Literals.tool("subtraction_calculator", "The Calculator Subtraction Tool", "Can subtract two integers");
-        Map<String, ArgumentMetadata> arguments3 = Map.of("number1", new ArgumentMetadata(int.class, 0, "operand 1", true),
-                                                          "number2", new ArgumentMetadata(int.class, 1, "operand 2", true));
+        Map<String, ArgumentMetadata> arguments3 = Map.of("number1", new ArgumentMetadata(int.class, 0, "operand 1", true, false),
+                                                          "number2", new ArgumentMetadata(int.class, 1, "operand 2", true, false));
         // True or False Tool
         Tool booleanTool = Literals.tool("and_operator", "Boolean And Operator", "Does a Boolean And Operation on two boolean variables");
-        Map<String, ArgumentMetadata> arguments4 = Map.of("var1", new ArgumentMetadata(boolean.class, 0, "operand 1", true),
-                                                          "var2", new ArgumentMetadata(boolean.class, 1, "operand 2", true));
+        Map<String, ArgumentMetadata> arguments4 = Map.of("var1", new ArgumentMetadata(boolean.class, 0, "operand 1", true, false),
+                                                          "var2", new ArgumentMetadata(boolean.class, 1, "operand 2", true, false));
 
         LinkedList<ToolDescription> toolDescriptions = new LinkedList<>();
-        toolDescriptions.add(new ToolDescription(ToolMetadataUtil.createToolMetadataFrom(weatherTool, arguments, Collections.emptyList())));
-        toolDescriptions.add(new ToolDescription(ToolMetadataUtil.createToolMetadataFrom(additionTool, arguments2, Collections.emptyList())));
-        toolDescriptions.add(new ToolDescription(ToolMetadataUtil.createToolMetadataFrom(subtractionTool, arguments3, Collections.emptyList())));
-        toolDescriptions.add(new ToolDescription(ToolMetadataUtil.createToolMetadataFrom(booleanTool, arguments4, Collections.emptyList())));
+        toolDescriptions.add(new ToolDescription(ToolMetadataTestUtility.createFrom(weatherTool, arguments, Collections.emptyList())));
+        toolDescriptions.add(new ToolDescription(ToolMetadataTestUtility.createFrom(additionTool, arguments2, Collections.emptyList())));
+        toolDescriptions.add(new ToolDescription(ToolMetadataTestUtility.createFrom(subtractionTool, arguments3, Collections.emptyList())));
+        toolDescriptions.add(new ToolDescription(ToolMetadataTestUtility.createFrom(booleanTool, arguments4, Collections.emptyList())));
 
         String responseString = jsonb.toJson(toolDescriptions);
         String expectedString = """

@@ -1225,7 +1225,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/24926
+    //Original issue: https://github.com/OpenLiberty/open-liberty/issues/24926
+    @SkipIfSysProp({ 
+        DB_Postgres    //Additional issue: https://github.com/OpenLiberty/open-liberty/issues/32848
+    }) 
     public void testOLGH24926() throws Exception {
         Line unitRadius = Line.of(0, 0, 1, 1);
 
