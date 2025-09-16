@@ -14,7 +14,9 @@
 		<feature>servlet-6.1</feature>
 		<!-- DO NOT ADD data-1.0 feature -->
 	    <feature>componenttest-2.0</feature>
-    </featureManager>
+	    <feature>cdi-4.1</feature>
+	    <feature>persistenceContainer-3.2</feature>
+	   </featureManager>
 
     <include location="../fatTestPorts.xml"/>
     <dataSource id="DefaultDataSource" fat.modify="true">
