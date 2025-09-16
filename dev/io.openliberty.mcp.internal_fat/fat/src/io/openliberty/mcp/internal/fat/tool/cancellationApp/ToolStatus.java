@@ -20,16 +20,23 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ToolStatus {
 
-    private CountDownLatch latch = new CountDownLatch(1);
+    private CountDownLatch latch;
 
     public void setRunning() {
+        resetLatchForNewTest();
         latch.countDown();
     }
 
     public void awaitRunning() throws InterruptedException {
+        resetLatchForNewTest();
         boolean toolStarted = latch.await(10, TimeUnit.SECONDS);
         if (!toolStarted) {
             throw new RuntimeException("Tool did not start");
         }
+    }
+
+    private void resetLatchForNewTest() {
+        if (latch == null || latch.getCount() == 0)
+            latch = new CountDownLatch(1);
     }
 }

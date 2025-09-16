@@ -65,7 +65,7 @@ public class CancellationTest extends FATServletClient {
     }
 
     @Test
-    public void testCancellationToolWithCancellableParameterAndCancellationRequest() throws Exception {
+    public void testCancellationToolWithCancellableParameterAndCancellationRequestWithStringId() throws Exception {
 
         final CountDownLatch latch = new CountDownLatch(1);
 
@@ -114,6 +114,60 @@ public class CancellationTest extends FATServletClient {
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Internal server error", "type":"text"}],"isError":true}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testCancellationToolWithCancellableParameterAndCancellationRequestWithNumbericId() throws Exception {
+
+        final CountDownLatch latch = new CountDownLatch(1);
+
+        Callable<String> threadCallingTool = () -> {
+            try {
+                String request = """
+                                  {
+                                  "jsonrpc": "2.0",
+                                  "id": 2,
+                                  "method": "tools/call",
+                                  "params": {
+                                    "name": "cancellationTool",
+                                    "arguments": {}
+                                  }
+                                }
+                                """;
+                //make sure this tread executes first
+                latch.countDown();
+                return HttpTestUtils.callMCP(server, "/cancellationTest", request);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        Future<String> future = executor.submit(threadCallingTool);
+
+        String cancellationRequestNotification = """
+                          {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/cancelled",
+                          "params": {
+                            "requestId": 2,
+                            "reason": "no longer needed"
+                          }
+                        }
+                        """;
+        //make sure the tool call request has started
+        latch.await();
+
+        // Call AwaitToolServlet to wait for the tool to start running
+        new HttpRequest(server, "/cancellationTest/awaitTool").run(String.class);
+
+        HttpTestUtils.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
+
+        String response = future.get(10, TimeUnit.SECONDS);
+
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"text":"Internal server error", "type":"text"}],"isError":true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
