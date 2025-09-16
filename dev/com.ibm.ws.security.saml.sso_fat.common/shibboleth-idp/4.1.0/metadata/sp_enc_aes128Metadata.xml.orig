@@ -5,26 +5,23 @@
 >
 	<md:SPSSODescriptor
 		AuthnRequestsSigned="false"
-		WantAssertionsSigned="true"
+		WantAssertionsSigned="false"
 		protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
 	>
 		<md:KeyDescriptor use="signing">
 			<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 				<ds:X509Data>
-					<ds:X509Certificate>MIIDBjCCAe6gAwIBAgIEVydUZTANBgkqhkiG9w0BAQsFADAvMQswCQYDVQQGEwJVUzEMMAoGA1UE
-						ChMDSUJNMRIwEAYDVQQDDAluZXdfdXNlcjIwHhcNMTYwNTAyMTMyMTQxWhcNMzUwNzAxMTMyMTQx
-						WjAvMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMRIwEAYDVQQDDAluZXdfdXNlcjIwggEiMA0G
-						CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCXrqxihzkdcYeeu0YIxnobzMsecCX7GE/ts5AyarAS
-						q3Aj7Ikkbdqy8uElCKLM/RwwDfXt6QkTpUAnYMFPyDaemolJcr8i5VCiQzgI2nQghsPrqqBUsngN
-						LWPN/oYVyIkCIY4fO2XwgJ3v+rQS+5hzB3+xSNOvBGmQtwQfZn8UTayHhrzZTDLFmRfeCFtn/cwW
-						2wyPPDRxKoo9SuAYKvhlwBZl6jJ7zVwvJtjlVv/n95l+R4EgPBJKyyolGaw0EWzbdz5EDKa0po/v
-						CxDDkBMR4jul7SSJYumofjC2wNXI3UL+n69klKJrQ5An/Pz1vk6SakULqoYEbELt46TvXAInAgMB
-						AAGjKjAoMBMGA1UdIwQMMAqACIwWUD/0aQzNMBEGA1UdDgQKBAiMFlA/9GkMzTANBgkqhkiG9w0B
-						AQsFAAOCAQEAP6loJKkjdMul7lPmn3N+nWf0+kyXsDp8DeFCGrh2lGozBLnUobd3c/+edL+zZnhl
-						moE+7ByktdWcfgOS6aB8BGHfUlyPnEm4hd9AOA5dHh7up0gowCU1HeY5j2MY6ztQtK5aE6EZ5vOC
-						rvqAS1sBBsRqQ+QJUxVMOnJpsbqjTuvOSxgiDY/XS7/8WYnehfz7cAlBQFdGSOIA9YJ2zjoK54J/
-						yV6Fk9vtFdim6l3odryRuwIJ5f77ib8LmkB88VGC8zLizeVucj6W/QrDm6VktuCXTjAwJveo60mV
-						MYfdAMTuT+9/WfJbr6xCgrGB8IYGi8JKlWgp+sgJYLY7hsU4Kw==
+					<ds:X509Certificate>MIIB3TCCAYOgAwIBAgIIGU+b9RssTr8wCgYIKoZIzj0EAwIwYzELMAkGA1UEBhMC
+dXMxDjAMBgNVBAgTBXRleGFzMQ8wDQYDVQQHEwZhdXN0aW4xDDAKBgNVBAoTA2li
+bTERMA8GA1UECxMIcnVudGltZXMxEjAQBgNVBAMTCWxvY2FsdXNlcjAeFw0yNTA4
+MzEyMjA2MTRaFw0zNTA4MjkyMjA2MTRaMGMxCzAJBgNVBAYTAnVzMQ4wDAYDVQQI
+EwV0ZXhhczEPMA0GA1UEBxMGYXVzdGluMQwwCgYDVQQKEwNpYm0xETAPBgNVBAsT
+CHJ1bnRpbWVzMRIwEAYDVQQDEwlsb2NhbHVzZXIwWTATBgcqhkjOPQIBBggqhkjO
+PQMBBwNCAAR+jgDNLh1vVCABhMMMrtlcyGv2d0UmymnbxcR7wAfv0MadsBJAk6Dr
+7JNDInnYYrpOKL14sbUnefG5N4hBE7CCoyEwHzAdBgNVHQ4EFgQU8qJz/5pgTAr3
+5Spkt3EKWiVIYm4wCgYIKoZIzj0EAwIDSAAwRQIgGz08ZBkU30de6sOZHTDBJZt2
+tbUw5iLzXep02KBHrLoCIQC8jkUyBRLdd4z1mBKDSl07Q6Ex7n9APYHfqYwQ8/Hf
+8g==
 					</ds:X509Certificate>
 				</ds:X509Data>
 			</ds:KeyInfo>
@@ -32,23 +29,25 @@
 		<md:KeyDescriptor use="encryption">
 			<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 				<ds:X509Data>
-					<ds:X509Certificate>MIIDBjCCAe6gAwIBAgIEVydUZTANBgkqhkiG9w0BAQsFADAvMQswCQYDVQQGEwJVUzEMMAoGA1UE
-						ChMDSUJNMRIwEAYDVQQDDAluZXdfdXNlcjIwHhcNMTYwNTAyMTMyMTQxWhcNMzUwNzAxMTMyMTQx
-						WjAvMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMRIwEAYDVQQDDAluZXdfdXNlcjIwggEiMA0G
-						CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQCXrqxihzkdcYeeu0YIxnobzMsecCX7GE/ts5AyarAS
-						q3Aj7Ikkbdqy8uElCKLM/RwwDfXt6QkTpUAnYMFPyDaemolJcr8i5VCiQzgI2nQghsPrqqBUsngN
-						LWPN/oYVyIkCIY4fO2XwgJ3v+rQS+5hzB3+xSNOvBGmQtwQfZn8UTayHhrzZTDLFmRfeCFtn/cwW
-						2wyPPDRxKoo9SuAYKvhlwBZl6jJ7zVwvJtjlVv/n95l+R4EgPBJKyyolGaw0EWzbdz5EDKa0po/v
-						CxDDkBMR4jul7SSJYumofjC2wNXI3UL+n69klKJrQ5An/Pz1vk6SakULqoYEbELt46TvXAInAgMB
-						AAGjKjAoMBMGA1UdIwQMMAqACIwWUD/0aQzNMBEGA1UdDgQKBAiMFlA/9GkMzTANBgkqhkiG9w0B
-						AQsFAAOCAQEAP6loJKkjdMul7lPmn3N+nWf0+kyXsDp8DeFCGrh2lGozBLnUobd3c/+edL+zZnhl
-						moE+7ByktdWcfgOS6aB8BGHfUlyPnEm4hd9AOA5dHh7up0gowCU1HeY5j2MY6ztQtK5aE6EZ5vOC
-						rvqAS1sBBsRqQ+QJUxVMOnJpsbqjTuvOSxgiDY/XS7/8WYnehfz7cAlBQFdGSOIA9YJ2zjoK54J/
-						yV6Fk9vtFdim6l3odryRuwIJ5f77ib8LmkB88VGC8zLizeVucj6W/QrDm6VktuCXTjAwJveo60mV
-						MYfdAMTuT+9/WfJbr6xCgrGB8IYGi8JKlWgp+sgJYLY7hsU4Kw==
+					<ds:X509Certificate>MIIB3TCCAYOgAwIBAgIIGU+b9RssTr8wCgYIKoZIzj0EAwIwYzELMAkGA1UEBhMC
+dXMxDjAMBgNVBAgTBXRleGFzMQ8wDQYDVQQHEwZhdXN0aW4xDDAKBgNVBAoTA2li
+bTERMA8GA1UECxMIcnVudGltZXMxEjAQBgNVBAMTCWxvY2FsdXNlcjAeFw0yNTA4
+MzEyMjA2MTRaFw0zNTA4MjkyMjA2MTRaMGMxCzAJBgNVBAYTAnVzMQ4wDAYDVQQI
+EwV0ZXhhczEPMA0GA1UEBxMGYXVzdGluMQwwCgYDVQQKEwNpYm0xETAPBgNVBAsT
+CHJ1bnRpbWVzMRIwEAYDVQQDEwlsb2NhbHVzZXIwWTATBgcqhkjOPQIBBggqhkjO
+PQMBBwNCAAR+jgDNLh1vVCABhMMMrtlcyGv2d0UmymnbxcR7wAfv0MadsBJAk6Dr
+7JNDInnYYrpOKL14sbUnefG5N4hBE7CCoyEwHzAdBgNVHQ4EFgQU8qJz/5pgTAr3
+5Spkt3EKWiVIYm4wCgYIKoZIzj0EAwIDSAAwRQIgGz08ZBkU30de6sOZHTDBJZt2
+tbUw5iLzXep02KBHrLoCIQC8jkUyBRLdd4z1mBKDSl07Q6Ex7n9APYHfqYwQ8/Hf
+8g==
 					</ds:X509Certificate>
 				</ds:X509Data>
 			</ds:KeyInfo>
+			<md:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-gcm">
+			</md:EncryptionMethod>
+			<md:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#kw-aes128">
+			</md:EncryptionMethod>
+
 		</md:KeyDescriptor>
 		<md:SingleLogoutService
 			Location="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes128/slo"

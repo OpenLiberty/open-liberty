@@ -116,7 +116,7 @@ Import-Package: \
  !sun.misc,\
  !javax.inject,\
  java.util.function,\
- javax.annotation,\
+ javax.annotation; version="[1.0.0,4.0.0)",\
  javax.crypto,\
  javax.crypto.*,\
  javax.servlet.http,\

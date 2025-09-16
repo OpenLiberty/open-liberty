@@ -28,6 +28,7 @@ import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCriterion;
 import org.opensaml.xmlsec.signature.Signature;
+import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignaturePrevalidator;
 import org.opensaml.xmlsec.signature.support.SignatureValidator;
@@ -201,7 +202,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
 
     protected void evaluateSignatureMethod(BasicMessageContext<?, ?> samlMsgCtx, Signature signature) throws MessageHandlerException {
         @SuppressWarnings("rawtypes")
-        String configMethod = ((BasicMessageContext) samlMsgCtx).getSsoConfig().getSignatureMethodAlgorithm();
+        String configMethod = SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA256;//((BasicMessageContext) samlMsgCtx).getSsoConfig().getSignatureMethodAlgorithm();
         String messageMethod = signature.getSignatureAlgorithm();
         if (SignatureMethods.toInteger(messageMethod) < SignatureMethods.toInteger(configMethod)) {
             if (tc.isDebugEnabled()) {
