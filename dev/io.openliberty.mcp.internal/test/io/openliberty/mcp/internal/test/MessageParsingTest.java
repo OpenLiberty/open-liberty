@@ -278,7 +278,7 @@ public class MessageParsingTest {
     }
 
     @Test
-    public void parseCancelledNotification() throws Exception {
+    public void parseCancelledNotificationWithStringId() throws Exception {
         StringReader reader = new StringReader("""
                         {
                            "jsonrpc": "2.0",
@@ -294,6 +294,26 @@ public class MessageParsingTest {
 
         McpNotificationParams notificationRequest = request.getParams(McpNotificationParams.class, jsonb);
         assertThat(notificationRequest.getRequestId().getStrVal(), equalTo("123"));
+        assertThat(notificationRequest.getReason(), equalTo("User requested cancellation"));
+    }
+
+    @Test
+    public void parseCancelledNotificationWithNumericId() throws Exception {
+        StringReader reader = new StringReader("""
+                        {
+                           "jsonrpc": "2.0",
+                           "method": "notifications/cancelled",
+                           "params": {
+                             "requestId": 5,
+                             "reason": "User requested cancellation"
+                           }
+                         }
+                        """);
+        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
+        assertThat(request.getRequestMethod(), equalTo(RequestMethod.CANCELLED));
+
+        McpNotificationParams notificationRequest = request.getParams(McpNotificationParams.class, jsonb);
+        assertThat(notificationRequest.getRequestId().getNumVal(), equalTo(new BigDecimal(5)));
         assertThat(notificationRequest.getReason(), equalTo("User requested cancellation"));
     }
 

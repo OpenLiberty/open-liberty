@@ -78,7 +78,9 @@ public class CancellationTest extends FATServletClient {
                                   "method": "tools/call",
                                   "params": {
                                     "name": "cancellationTool",
-                                    "arguments": {}
+                                    "arguments": {
+                                      "latchName": "strId"
+                                    }
                                   }
                                 }
                                 """;
@@ -105,8 +107,8 @@ public class CancellationTest extends FATServletClient {
         //make sure the tool call request has started
         latch.await();
 
-        // Call AwaitToolServlet to wait for the tool to start running
-        new HttpRequest(server, "/cancellationTest/awaitTool").run(String.class);
+        // Call AwaitToolServlet to wait for the tool to start running. Adds path param "strId" to specify which countdown latch to use
+        new HttpRequest(server, "/cancellationTest/awaitTool/strId").run(String.class);
 
         HttpTestUtils.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
 
@@ -132,7 +134,9 @@ public class CancellationTest extends FATServletClient {
                                   "method": "tools/call",
                                   "params": {
                                     "name": "cancellationTool",
-                                    "arguments": {}
+                                    "arguments": {
+                                      "latchName": "numId"
+                                    }
                                   }
                                 }
                                 """;
@@ -159,8 +163,8 @@ public class CancellationTest extends FATServletClient {
         //make sure the tool call request has started
         latch.await();
 
-        // Call AwaitToolServlet to wait for the tool to start running
-        new HttpRequest(server, "/cancellationTest/awaitTool").run(String.class);
+        // Call AwaitToolServlet to wait for the tool to start running. Adds path param "numId" to specify which countdown latch to use
+        new HttpRequest(server, "/cancellationTest/awaitTool/numId").run(String.class);
 
         HttpTestUtils.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
 

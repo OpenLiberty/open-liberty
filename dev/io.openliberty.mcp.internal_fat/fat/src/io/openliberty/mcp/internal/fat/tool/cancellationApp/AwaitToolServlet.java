@@ -22,7 +22,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Allows the test to wait for a tool to start running, so that it can be cancelled
  */
 @SuppressWarnings("serial")
-@WebServlet("/awaitTool")
+@WebServlet("/awaitTool/*")
 public class AwaitToolServlet extends HttpServlet {
 
     @Inject
@@ -31,10 +31,20 @@ public class AwaitToolServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            toolStatus.awaitRunning();
+            String latchName = getPathParam(req);
+            toolStatus.awaitRunning(latchName);
         } catch (InterruptedException e) {
             throw new RuntimeException(e.toString(), e);
         }
+    }
+
+    private String getPathParam(HttpServletRequest req) {
+        String pathParam = req.getPathInfo();
+        if (pathParam != null && pathParam.length() > 1) {
+            //removes the "/" from the start of the path param
+            return pathParam.substring(1);
+        }
+        throw new IllegalArgumentException("No path parameter found for awaitTool request");
     }
 
 }
