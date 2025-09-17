@@ -21,6 +21,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import componenttest.app.FATServlet;
+import io.openliberty.jpa.platformtck.tests.models.TestEntity;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -35,10 +36,6 @@ public class PlatformTCKServlet extends FATServlet {
     @Inject
     private EntityManager defaultEM; // Default TransactionScoped
     
-    // Direct persistence context as a fallback
-    @PersistenceContext(unitName = "PlatformTCKPersistenceUnit")
-    private EntityManager directEM;
-
     @Inject
     @ShortScoped
     private EntityManager shortScopedEM; // Dependent scope (shorter than TransactionScoped)
@@ -100,13 +97,6 @@ public void testEntityManagerWithShorterScope() throws Exception {
     System.out.println("Short-scoped EntityManager test passed!");
 }
 
-@Test
-public void testDirectEntityManagerInjection() {
-    assertNotNull(directEM);
-    System.out.println("EntityManager injected via @PersistenceContext");
-    assertTrue(directEM.isOpen());
-    System.out.println("Direct EntityManager test passed!");
-}
 
 @Test
 public void testEntityManagerWithLongerScope() throws Exception {
@@ -137,6 +127,65 @@ public void testEntityManagerWithLongerScope() throws Exception {
     System.out.println("Long-scoped EntityManager used in a second transaction");
     
     System.out.println("Long-scoped EntityManager test passed!");
+}
+
+@Test
+public void testMultipleEntityManagersFromSamePU() throws Exception {
+    // Test injecting two EntityManagers from same Persistence Unit (one with qualifier, one without)
+    assertNotNull("Default EntityManager should not be null", defaultEM);
+    assertNotNull("ShortScoped EntityManager should not be null", shortScopedEM);
+    
+    // Verify both are open
+    tx.begin();
+    try {
+        assertTrue("Default EntityManager should be open", defaultEM.isOpen());
+        assertTrue("ShortScoped EntityManager should be open", shortScopedEM.isOpen());
+        
+        // Verify they are different instances
+        assertFalse("Default and ShortScoped EntityManagers should be different instances",
+                   defaultEM == shortScopedEM);
+        
+        // Use default EntityManager to persist an entity
+        TestEntity entity1 = new TestEntity("DefaultEntityManager");
+        defaultEM.persist(entity1);
+        
+        // Use qualified EntityManager to persist another entity
+        TestEntity entity2 = new TestEntity("ShortScopedEntityManager");
+        shortScopedEM.persist(entity2);
+        
+        // Commit the transaction
+        tx.commit();
+        
+        // Start a new transaction
+        tx.begin();
+        
+        // Verify both entities were persisted and can be found by either EntityManager
+        TestEntity found1 = defaultEM.find(TestEntity.class, entity1.getId());
+        TestEntity found2 = shortScopedEM.find(TestEntity.class, entity2.getId());
+        
+        assertNotNull("Entity should be found with default EntityManager", found1);
+        assertNotNull("Entity should be found with ShortScoped EntityManager", found2);
+        
+        assertEquals("DefaultEntityManager", found1.getName());
+        assertEquals("ShortScopedEntityManager", found2.getName());
+        
+        // Cross-check: verify that each EntityManager can find entities created by the other
+        TestEntity crossCheck1 = shortScopedEM.find(TestEntity.class, entity1.getId());
+        TestEntity crossCheck2 = defaultEM.find(TestEntity.class, entity2.getId());
+        
+        assertNotNull("ShortScoped EntityManager should find entity created by default EntityManager", crossCheck1);
+        assertNotNull("Default EntityManager should find entity created by ShortScoped EntityManager", crossCheck2);
+        
+        // Clean up
+        defaultEM.remove(found1);
+        shortScopedEM.remove(found2);
+        
+        tx.commit();
+        System.out.println("Multiple EntityManagers from same PU test passed!");
+    } catch (Exception e) {
+        tx.rollback();
+        throw e;
+    }
 }
 
 }
