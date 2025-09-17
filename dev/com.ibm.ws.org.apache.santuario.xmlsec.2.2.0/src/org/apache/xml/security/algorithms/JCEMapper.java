@@ -36,9 +36,11 @@ public class JCEMapper {
         org.slf4j.LoggerFactory.getLogger(JCEMapper.class);
 
     private static Map<String, Algorithm> algorithmsMap = new ConcurrentHashMap<>();
+    // Liberty Change Start: Backport 4.x
+    private static String globalProviderName; 
 
-    private static String providerName;
-
+    private static final ThreadLocal<String> threadSpecificProviderName = new ThreadLocal<>();
+	// Liberty Change End
     /**
      * Method register
      *
@@ -202,6 +204,25 @@ public class JCEMapper {
             XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA512,
             new Algorithm("EC", "SHA512withECDSA", "Signature")
         );
+    	// Liberty Change Start: Backport 4.x
+        algorithmsMap.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA3_224,
+            new Algorithm("EC", "SHA3-224withECDSA", "Signature")
+        );
+        algorithmsMap.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA3_256,
+            new Algorithm("EC", "SHA3-256withECDSA", "Signature")
+        );
+        algorithmsMap.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA3_384,
+            new Algorithm("EC", "SHA3-384withECDSA", "Signature")
+        );
+        algorithmsMap.put(
+            XMLSignature.ALGO_ID_SIGNATURE_ECDSA_SHA3_512,
+            new Algorithm("EC", "SHA3-512withECDSA", "Signature")
+        );
+		
+   		 // Liberty Change End
         algorithmsMap.put(
             XMLSignature.ALGO_ID_SIGNATURE_ECDSA_RIPEMD160,
             new Algorithm("EC", "RIPEMD160withECDSA", "Signature")
@@ -429,12 +450,17 @@ public class JCEMapper {
         return null;
     }
 
+	
+    // Liberty Change Start: Backport 4.x
     /**
      * Gets the default Provider for obtaining the security algorithms
      * @return the default providerId.
      */
     public static String getProviderId() {
-        return providerName;
+        if (threadSpecificProviderName.get() != null) {
+            return threadSpecificProviderName.get();
+        }
+        return globalProviderName;
     }
 
     /**
@@ -445,8 +471,20 @@ public class JCEMapper {
      */
     public static void setProviderId(String provider) {
         JavaUtils.checkRegisterPermission();
-        providerName = provider;
+        globalProviderName = provider;
     }
+
+    /**
+     * Sets the default Provider for this thread to obtain the security algorithms
+     * @param threadSpecificProviderName the default providerId.
+     * @throws SecurityException if a security manager is installed and the
+     *    caller does not have permission to register the JCE algorithm
+     */
+    public static void setThreadSpecificProviderName(String threadSpecificProviderName) {
+        JavaUtils.checkRegisterPermission();
+        JCEMapper.threadSpecificProviderName.set(threadSpecificProviderName);
+    }
+	// Liberty Change End
 
     /**
      * Represents the Algorithm xml element

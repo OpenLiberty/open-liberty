@@ -44,7 +44,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 /**
  */
-public class XMLSecurityEventWriter implements XMLEventWriter {
+public class XMLSecurityEventWriter implements XMLEventWriter, AutoCloseable { // Liberty Change: Backport 4.x
 
     private final XMLStreamWriter xmlStreamWriter;
 

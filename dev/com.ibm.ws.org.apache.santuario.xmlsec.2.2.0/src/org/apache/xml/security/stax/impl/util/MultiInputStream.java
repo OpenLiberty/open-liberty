@@ -78,12 +78,18 @@ public class MultiInputStream extends InputStream {
 
     @Override
     public void close() throws IOException {
+        // Liberty Change Start: Backport 4.x
+        IOException e = new IOException("Failed to close all streams!");
         for (int i = 0; i < inputStreamCount; i++) {
             try {
                 inputStreams[i].close();
-            } catch (IOException e) { //NOPMD
-                //ignore and try to close the others
+            } catch (IOException suppressed) {
+                e.addSuppressed(suppressed);
             }
         }
+        if (e.getSuppressed().length > 0) {
+            throw e;
+        }
+        // Liberty Change End
     }
 }

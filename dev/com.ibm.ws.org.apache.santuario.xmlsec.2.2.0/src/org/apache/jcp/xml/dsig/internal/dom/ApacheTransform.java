@@ -38,6 +38,9 @@ import javax.xml.crypto.dsig.TransformService;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.signature.XMLSignatureNodeInput;
+import org.apache.xml.security.signature.XMLSignatureNodeSetInput;
+import org.apache.xml.security.signature.XMLSignatureStreamInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
@@ -165,19 +168,19 @@ public abstract class ApacheTransform extends TransformService {
             if (data instanceof DOMSubTreeData) {
                 LOG.debug("DOMSubTreeData = true");
                 DOMSubTreeData subTree = (DOMSubTreeData)data;
-                in = new XMLSignatureInput(subTree.getRoot());
+		// Liberty Change Start: Backport 4.x
+                in = new XMLSignatureNodeInput(subTree.getRoot());
                 in.setExcludeComments(subTree.excludeComments());
             } else {
-                @SuppressWarnings("unchecked")
+                @SuppressWarnings({"unchecked", "rawtypes"})
                 Set<Node> nodeSet =
                     Utils.toNodeSet(((NodeSetData)data).iterator());
-                in = new XMLSignatureInput(nodeSet);
+                in = new XMLSignatureNodeSetInput(nodeSet);
             }
         } else {
             LOG.debug("isNodeSet() = false");
             try {
-                in = new XMLSignatureInput
-                    (((OctetStreamData)data).getOctetStream());
+                in = new XMLSignatureStreamInput(((OctetStreamData) data).getOctetStream());
             } catch (Exception ex) {
                 throw new TransformException(ex);
             }
@@ -194,7 +197,8 @@ public abstract class ApacheTransform extends TransformService {
             } else {
                 in = transform.performTransform(in, secVal);
             }
-            if (in.isOctetStream()) {
+            if (in.hasUnprocessedInput()) {
+		// Liberty Change End
                 return new ApacheOctetStreamData(in);
             } else {
                 return new ApacheNodeSetData(in);

@@ -137,7 +137,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
             if (input.isExcludeComments()) {
                 includeComments = false;
             }
-            if (input.isOctetStream()) {
+            if (input.hasUnprocessedInput()) { // Liberty Change
                 engineCanonicalize(input.getBytes(), writer, secureValidation);
             } else if (input.isElement()) {
                 engineCanonicalizeSubTree(input.getSubNode(), input.getExcludeNode(), writer);
@@ -242,7 +242,7 @@ public abstract class CanonicalizerBase extends CanonicalizerSpi {
 
             case Node.ELEMENT_NODE :
                 documentLevel = NODE_NOT_BEFORE_OR_AFTER_DOCUMENT_ELEMENT;
-                if (currentNode == excludeNode) {
+                if (currentNode == excludeNode || (excludeNode != null && (excludeNode.isSameNode(currentNode) || currentNode.isSameNode(excludeNode)))) { // Liberty Change
                     break;
                 }
                 Element currentElement = (Element)currentNode;

@@ -19,6 +19,7 @@
 package org.apache.xml.security.utils.resolver.implementations;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.signature.XMLSignatureNodeInput;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -88,7 +89,7 @@ public class ResolverFragment extends ResourceResolverSpi {
             );
         }
 
-        XMLSignatureInput result = new XMLSignatureInput(selectedElem);
+        XMLSignatureInput result = new XMLSignatureNodeInput(selectedElem); // Liberty Change: Backport 4.x
         result.setSecureValidation(context.secureValidation);
         result.setExcludeComments(true);
 

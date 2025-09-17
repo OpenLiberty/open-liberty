@@ -34,6 +34,7 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.XMLSignatureByteInput;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
@@ -146,7 +147,8 @@ public class TransformXSLT extends TransformSpi {
                     try (ByteArrayOutputStream baos1 = new ByteArrayOutputStream()) {
                         StreamResult outputTarget = new StreamResult(baos1);
                         transformer.transform(xmlSource, outputTarget);
-                        XMLSignatureInput output = new XMLSignatureInput(baos1.toByteArray());
+						// Liberty Change Start: Backport 4.x
+                        XMLSignatureInput output = new XMLSignatureByteInput(baos1.toByteArray());
                         output.setSecureValidation(secureValidation);
                         return output;
                     }
@@ -155,7 +157,8 @@ public class TransformXSLT extends TransformSpi {
 
                 transformer.transform(xmlSource, outputTarget);
             }
-            XMLSignatureInput output = new XMLSignatureInput((byte[])null);
+            XMLSignatureInput output = new XMLSignatureByteInput(null);
+			// Liberty Change End
             output.setSecureValidation(secureValidation);
             output.setOutputStream(baos);
             return output;

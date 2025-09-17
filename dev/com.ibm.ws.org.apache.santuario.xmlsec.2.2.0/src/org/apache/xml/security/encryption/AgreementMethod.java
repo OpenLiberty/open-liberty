@@ -18,9 +18,12 @@
  */
 package org.apache.xml.security.encryption;
 
+import java.security.PublicKey;
 import java.util.Iterator;
 
-import org.apache.xml.security.keys.KeyInfo;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.encryption.keys.OriginatorKeyInfo;
+import org.apache.xml.security.encryption.keys.RecipientKeyInfo;
 import org.w3c.dom.Element;
 
 /**
@@ -88,6 +91,23 @@ public interface AgreementMethod {
      */
     void setKANonce(byte[] kanonce);
 
+    // Liberty Change Start: Backport 4.x
+    /**
+     * Returns KeyDerivationMethod information used in the <code>AgreementMethod</code>.
+     * @return The KeyDerivationMethod information regarding the <code>AgreementMethod</code>.
+     */
+    KeyDerivationMethod getKeyDerivationMethod() throws XMLSecurityException;
+
+    /**
+     * This method is used to set the <code>KeyDerivationMethod</code> when the <code>AgreementMethod</code> is being
+     * used to derive a key. The <code>KeyDerivationMethod</code> is declared as  <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
+     * but is used in ECDH_ES
+     *
+     * @param keyDerivationMethod
+     */
+    void setKeyDerivationMethod(KeyDerivationMethod keyDerivationMethod);
+	// Liberty Change End
+
     /**
      * Returns additional information regarding the <code>AgreementMethod</code>.
      * @return additional information regarding the <code>AgreementMethod</code>.
@@ -114,35 +134,42 @@ public interface AgreementMethod {
      *     <any namespace="##other" minOccurs="0" maxOccurs="unbounded"/>
      *   </pre>
      */
-    void revoveAgreementMethodInformation(Element info);
+    void removeAgreementMethodInformation(Element info); // Liberty Change: Backport 4.x
 
     /**
      * Returns information relating to the originator's shared secret.
      *
      * @return information relating to the originator's shared secret.
      */
-    KeyInfo getOriginatorKeyInfo();
+    OriginatorKeyInfo getOriginatorKeyInfo() throws XMLSecurityException; // Liberty Change: Backport 4.x
 
     /**
      * Sets the information relating to the originator's shared secret.
      *
      * @param keyInfo information relating to the originator's shared secret.
      */
-    void setOriginatorKeyInfo(KeyInfo keyInfo);
+    void setOriginatorKeyInfo(OriginatorKeyInfo keyInfo); // Liberty Change: Backport 4.x
+
+    /**
+     * Sets the originator's PublicKey to generate the secret
+     *
+     * @param publicKey originator's PublicKey
+     */
+    void setOriginatorPublicKey(PublicKey publicKey); // Liberty Change: Backport 4.x
 
     /**
      * Returns information relating to the recipient's shared secret.
      *
      * @return information relating to the recipient's shared secret.
      */
-    KeyInfo getRecipientKeyInfo();
+    RecipientKeyInfo getRecipientKeyInfo() throws XMLSecurityException; // Liberty Change: Backport 4.x
 
     /**
      * Sets the information relating to the recipient's shared secret.
      *
      * @param keyInfo information relating to the recipient's shared secret.
      */
-    void setRecipientKeyInfo(KeyInfo keyInfo);
+    void setRecipientKeyInfo(RecipientKeyInfo keyInfo); // Liberty Change: Backport 4.x
 
     /**
      * Returns the algorithm URI of this <code>CryptographicMethod</code>.

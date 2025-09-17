@@ -46,7 +46,7 @@ public class DigesterOutputStream extends ByteArrayOutputStream {
 
     /** {@inheritDoc} */
     @Override
-    public void write(int arg0) {
+    public synchronized void write(int arg0) { // Liberty Change: Backport 4.x fix
         mda.update((byte)arg0);
     }
 

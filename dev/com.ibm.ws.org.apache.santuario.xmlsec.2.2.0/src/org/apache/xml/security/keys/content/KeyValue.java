@@ -116,6 +116,22 @@ public class KeyValue extends SignatureElementProxy implements KeyInfoContent {
         }
     }
 
+	// Liberty Change Start: Backport 4.x
+    /**
+     * Verifies that the XML KeyValue encoding is supported for the given key type. If the
+     * encoding is supported, it returns true else false.
+     *
+     * @return true if the public key has a KeyValue encoding, false otherwise.
+     */
+    public static boolean isSupportedKeyType(PublicKey publicKey) {
+
+        return publicKey instanceof java.security.interfaces.DSAPublicKey
+                || publicKey instanceof java.security.interfaces.RSAPublicKey
+                || publicKey instanceof java.security.interfaces.ECPublicKey;
+
+    }
+	// Liberty Change End
+	
     /**
      * Constructor KeyValue
      *

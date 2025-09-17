@@ -130,8 +130,8 @@ public class XMLSecurityUtils {
     }
 
     public static Transformer getTransformer(
-            Transformer transformer, OutputStream outputStream, Map<String, Object> properties, String algorithm,
-            XMLSecurityConstants.DIRECTION direction) throws XMLSecurityException {
+                                             Transformer transformer, OutputStream outputStream, Map<String, Object> properties, String algorithm,
+                                             XMLSecurityConstants.DIRECTION direction) throws XMLSecurityException {
 
         @SuppressWarnings("unchecked")
         Class<Transformer> transformerClass = (Class<Transformer>) TransformerAlgorithmMapper.getTransformerClass(algorithm, direction);
@@ -171,8 +171,7 @@ public class XMLSecurityUtils {
     }
 
     public static void createKeyValueTokenStructure(AbstractOutputProcessor abstractOutputProcessor,
-                                                    OutputProcessorChain outputProcessorChain, X509Certificate[] x509Certificates)
-            throws XMLStreamException, XMLSecurityException {
+                                                    OutputProcessorChain outputProcessorChain, X509Certificate[] x509Certificates) throws XMLStreamException, XMLSecurityException {
 
         if (x509Certificates == null || x509Certificates.length == 0) {
             throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
@@ -185,8 +184,7 @@ public class XMLSecurityUtils {
 
     public static void createKeyValueTokenStructure(AbstractOutputProcessor abstractOutputProcessor,
                                                     OutputProcessorChain outputProcessorChain,
-                                                    PublicKey publicKey)
-            throws XMLStreamException, XMLSecurityException {
+                                                    PublicKey publicKey) throws XMLStreamException, XMLSecurityException {
 
         if (publicKey == null) {
             throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
@@ -235,7 +233,8 @@ public class XMLSecurityUtils {
             abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig11_NamedCurve, false, attributes);
             abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig11_NamedCurve);
             abstractOutputProcessor.createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig11_PublicKey, false, null);
-            abstractOutputProcessor.createCharactersAndOutputAsEvent(outputProcessorChain, XMLUtils.encodeToString(ECDSAUtils.encodePoint(ecPublicKey.getW(), ecPublicKey.getParams().getCurve())));
+            abstractOutputProcessor.createCharactersAndOutputAsEvent(outputProcessorChain,
+                                                                     XMLUtils.encodeToString(ECDSAUtils.encodePoint(ecPublicKey.getW(), ecPublicKey.getParams().getCurve())));
             abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig11_PublicKey);
             abstractOutputProcessor.createEndElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_dsig11_ECKeyValue);
         }
@@ -245,16 +244,14 @@ public class XMLSecurityUtils {
 
     public static void createX509SubjectKeyIdentifierStructure(AbstractOutputProcessor abstractOutputProcessor,
                                                                OutputProcessorChain outputProcessorChain,
-                                                               X509Certificate[] x509Certificates)
-                                                           throws XMLSecurityException, XMLStreamException {
+                                                               X509Certificate[] x509Certificates) throws XMLSecurityException, XMLStreamException {
         createX509SubjectKeyIdentifierStructure(abstractOutputProcessor, outputProcessorChain, x509Certificates, true);
     }
 
     public static void createX509SubjectKeyIdentifierStructure(AbstractOutputProcessor abstractOutputProcessor,
-            OutputProcessorChain outputProcessorChain,
-            X509Certificate[] x509Certificates,
-            boolean outputX509Data)
-        throws XMLSecurityException, XMLStreamException {
+                                                               OutputProcessorChain outputProcessorChain,
+                                                               X509Certificate[] x509Certificates,
+                                                               boolean outputX509Data) throws XMLSecurityException, XMLStreamException {
         if (x509Certificates == null || x509Certificates.length == 0) {
             throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
         }
@@ -262,8 +259,7 @@ public class XMLSecurityUtils {
         // SKI can only be used for a V3 certificate
         int version = x509Certificates[0].getVersion();
         if (version != 3) {
-            throw new XMLSecurityException("certificate.noSki.lowVersion",
-                                           new Object[]{version});
+            throw new XMLSecurityException("certificate.noSki.lowVersion", new Object[] { version });
         }
 
         if (outputX509Data) {
@@ -282,16 +278,14 @@ public class XMLSecurityUtils {
 
     public static void createX509CertificateStructure(AbstractOutputProcessor abstractOutputProcessor,
                                                       OutputProcessorChain outputProcessorChain,
-                                                      X509Certificate[] x509Certificates)
-                                                  throws XMLSecurityException, XMLStreamException {
+                                                      X509Certificate[] x509Certificates) throws XMLSecurityException, XMLStreamException {
         createX509CertificateStructure(abstractOutputProcessor, outputProcessorChain, x509Certificates, true);
     }
 
     public static void createX509CertificateStructure(AbstractOutputProcessor abstractOutputProcessor,
-            OutputProcessorChain outputProcessorChain,
-            X509Certificate[] x509Certificates,
-            boolean outputX509Data)
-        throws XMLSecurityException, XMLStreamException {
+                                                      OutputProcessorChain outputProcessorChain,
+                                                      X509Certificate[] x509Certificates,
+                                                      boolean outputX509Data) throws XMLSecurityException, XMLStreamException {
 
         if (x509Certificates == null || x509Certificates.length == 0) {
             throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
@@ -318,16 +312,14 @@ public class XMLSecurityUtils {
 
     public static void createX509SubjectNameStructure(AbstractOutputProcessor abstractOutputProcessor,
                                                       OutputProcessorChain outputProcessorChain,
-                                                      X509Certificate[] x509Certificates)
-                                                  throws XMLSecurityException, XMLStreamException {
+                                                      X509Certificate[] x509Certificates) throws XMLSecurityException, XMLStreamException {
         createX509SubjectNameStructure(abstractOutputProcessor, outputProcessorChain, x509Certificates, true);
     }
 
     public static void createX509SubjectNameStructure(AbstractOutputProcessor abstractOutputProcessor,
-            OutputProcessorChain outputProcessorChain,
-            X509Certificate[] x509Certificates,
-            boolean outputX509Data)
-        throws XMLSecurityException, XMLStreamException {
+                                                      OutputProcessorChain outputProcessorChain,
+                                                      X509Certificate[] x509Certificates,
+                                                      boolean outputX509Data) throws XMLSecurityException, XMLStreamException {
 
         if (x509Certificates == null || x509Certificates.length == 0) {
             throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
@@ -348,15 +340,14 @@ public class XMLSecurityUtils {
     }
 
     public static void createX509IssuerSerialStructure(AbstractOutputProcessor abstractOutputProcessor,
-                                                       OutputProcessorChain outputProcessorChain, X509Certificate[] x509Certificates)
-                                                       throws XMLStreamException, XMLSecurityException {
+                                                       OutputProcessorChain outputProcessorChain,
+                                                       X509Certificate[] x509Certificates) throws XMLStreamException, XMLSecurityException {
         createX509IssuerSerialStructure(abstractOutputProcessor, outputProcessorChain, x509Certificates, true);
     }
 
     public static void createX509IssuerSerialStructure(AbstractOutputProcessor abstractOutputProcessor,
-            OutputProcessorChain outputProcessorChain, X509Certificate[] x509Certificates,
-            boolean outputX509Data)
-            throws XMLStreamException, XMLSecurityException {
+                                                       OutputProcessorChain outputProcessorChain, X509Certificate[] x509Certificates,
+                                                       boolean outputX509Data) throws XMLStreamException, XMLSecurityException {
 
         if (x509Certificates == null || x509Certificates.length == 0) {
             throw new XMLSecurityException("stax.signature.publicKeyOrCertificateMissing");
@@ -380,15 +371,16 @@ public class XMLSecurityUtils {
 
     @SuppressWarnings("unchecked")
     public static TokenSecurityEvent<? extends InboundSecurityToken> createTokenSecurityEvent(
-            final InboundSecurityToken inboundSecurityToken, String correlationID) throws XMLSecurityException {
+                                                                                              final InboundSecurityToken inboundSecurityToken,
+                                                                                              String correlationID) throws XMLSecurityException {
 
         SecurityTokenConstants.TokenType tokenType = inboundSecurityToken.getTokenType();
 
         TokenSecurityEvent tokenSecurityEvent = null;
         if (SecurityTokenConstants.X509V1Token.equals(tokenType)
-                || SecurityTokenConstants.X509V3Token.equals(tokenType)
-                || SecurityTokenConstants.X509Pkcs7Token.equals(tokenType)
-                || SecurityTokenConstants.X509PkiPathV1Token.equals(tokenType)) {
+            || SecurityTokenConstants.X509V3Token.equals(tokenType)
+            || SecurityTokenConstants.X509Pkcs7Token.equals(tokenType)
+            || SecurityTokenConstants.X509PkiPathV1Token.equals(tokenType)) {
             tokenSecurityEvent = new X509TokenSecurityEvent();
         } else if (SecurityTokenConstants.KeyValueToken.equals(tokenType)) {
             tokenSecurityEvent = new KeyValueTokenSecurityEvent();
@@ -399,8 +391,7 @@ public class XMLSecurityUtils {
         } else if (SecurityTokenConstants.EncryptedKeyToken.equals(tokenType)) {
             tokenSecurityEvent = new EncryptedKeyTokenSecurityEvent();
         } else {
-            throw new XMLSecurityException("stax.unsupportedToken",
-                                           new Object[]{tokenType});
+            throw new XMLSecurityException("stax.unsupportedToken", new Object[] { tokenType });
         }
         tokenSecurityEvent.setSecurityToken(inboundSecurityToken);
         tokenSecurityEvent.setCorrelationID(correlationID);
@@ -474,16 +465,10 @@ public class XMLSecurityUtils {
         String keyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(symEncAlgo);
         SecretKeySpec keySpec;
         if (size > 0 && !symEncAlgo.endsWith("gcm") && !symEncAlgo.contains("hmac-")) {
-            keySpec =
-                new SecretKeySpec(
-                    rawKey, 0, rawKey.length > size ? size : rawKey.length, keyAlgorithm
-                );
+            keySpec = new SecretKeySpec(rawKey, 0, rawKey.length > size ? size : rawKey.length, keyAlgorithm);
         } else if (rawKey.length > MAX_SYMMETRIC_KEY_SIZE) {
             // Prevent a possible attack where a huge secret key is specified
-            keySpec =
-                new SecretKeySpec(
-                    rawKey, 0, MAX_SYMMETRIC_KEY_SIZE, keyAlgorithm
-                );
+            keySpec = new SecretKeySpec(rawKey, 0, MAX_SYMMETRIC_KEY_SIZE, keyAlgorithm);
         } else {
             keySpec = new SecretKeySpec(rawKey, keyAlgorithm);
         }
@@ -499,53 +484,85 @@ public class XMLSecurityUtils {
                 if ("http://www.w3.org/2001/XMLSchema.dtd".equals(systemId)) {
                     ConcreteLSInput concreteLSInput = new ConcreteLSInput();
                     concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/XMLSchema.dtd", XMLSecurityConstants.class));
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/XMLSchema.dtd", XMLSecurityConstants.class));
                     return concreteLSInput;
                 } else if ("XMLSchema.dtd".equals(systemId)) {
                     ConcreteLSInput concreteLSInput = new ConcreteLSInput();
                     concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/XMLSchema.dtd", XMLSecurityConstants.class));
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/XMLSchema.dtd", XMLSecurityConstants.class));
                     return concreteLSInput;
                 } else if ("datatypes.dtd".equals(systemId)) {
                     ConcreteLSInput concreteLSInput = new ConcreteLSInput();
                     concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/datatypes.dtd", XMLSecurityConstants.class));
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/datatypes.dtd", XMLSecurityConstants.class));
                     return concreteLSInput;
                 } else if ("http://www.w3.org/TR/2002/REC-xmldsig-core-20020212/xmldsig-core-schema.xsd".equals(systemId)) {
                     ConcreteLSInput concreteLSInput = new ConcreteLSInput();
                     concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd", XMLSecurityConstants.class));
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd", XMLSecurityConstants.class));
                     return concreteLSInput;
                 } else if ("http://www.w3.org/2001/xml.xsd".equals(systemId)) {
                     ConcreteLSInput concreteLSInput = new ConcreteLSInput();
                     concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/xml.xsd", XMLSecurityConstants.class));
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/xml.xsd", XMLSecurityConstants.class));
                     return concreteLSInput;
+                    // Liberty Change Start: Backport 4.x
+                } else if ("dsig-more_2001_04.xsd".equals(systemId)) {
+                    ConcreteLSInput concreteLSInput = new ConcreteLSInput();
+                    concreteLSInput.setByteStream(
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2001_04.xsd", XMLSecurityConstants.class));
+                    return concreteLSInput;
+                } else if ("dsig-more_2007_05.xsd".equals(systemId)) {
+                    ConcreteLSInput concreteLSInput = new ConcreteLSInput();
+                    concreteLSInput.setByteStream(
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2007_05.xsd", XMLSecurityConstants.class));
+                    return concreteLSInput;
+                } else if ("dsig-more_2021_04.xsd".equals(systemId)) {
+                    ConcreteLSInput concreteLSInput = new ConcreteLSInput();
+                    concreteLSInput.setByteStream(
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2021_04.xsd", XMLSecurityConstants.class));
+                    return concreteLSInput;
+                    // Liberty Change End
                 } else if ("rsa-pss.xsd".equals(systemId)) {
                     ConcreteLSInput concreteLSInput = new ConcreteLSInput();
                     concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/rsa-pss.xsd", XMLSecurityConstants.class));
+                                                  ClassLoaderUtils.getResourceAsStream("bindings/schemas/rsa-pss.xsd", XMLSecurityConstants.class));
                     return concreteLSInput;
                 }
                 return null;
             }
         });
         Schema schema = schemaFactory.newSchema(
-                new Source[]{
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/exc-c14n.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xop-include.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema-11.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig11-schema.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/rsa-pss.xsd", XMLSecurityConstants.class))
-                }
-                );
+                                                new Source[] {
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/exc-c14n.xsd", XMLSecurityConstants.class)),
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig-core-schema.xsd",
+                                                                                                                     XMLSecurityConstants.class)),
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xop-include.xsd",
+                                                                                                                     XMLSecurityConstants.class)),
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema.xsd",
+                                                                                                                     XMLSecurityConstants.class)),
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema-11.xsd",
+                                                                                                                     XMLSecurityConstants.class)),
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig11-schema.xsd",
+                                                                                                                     XMLSecurityConstants.class)),
+
+                                                               // Liberty Change Start: Backport 4.x
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2001_04.xsd",
+                                                                                                                     XMLSecurityConstants.class)),
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2007_05.xsd",
+                                                                                                                     XMLSecurityConstants.class)),
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2021_04.xsd",
+                                                                                                                     XMLSecurityConstants.class)),
+                                                               new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/rsa-pss.xsd", XMLSecurityConstants.class))
+
+                                                }
+        // Liberty Change End
+        );
         return schema;
     }
 
-    public static void createKeyNameTokenStructure(AbstractOutputProcessor abstractOutputProcessor, OutputProcessorChain outputProcessorChain, String keyName)
-            throws XMLStreamException, XMLSecurityException {
+    public static void createKeyNameTokenStructure(AbstractOutputProcessor abstractOutputProcessor, OutputProcessorChain outputProcessorChain,
+                                                   String keyName) throws XMLStreamException, XMLSecurityException {
 
         if (keyName == null || keyName.isEmpty()) {
             throw new XMLSecurityException("stax.signature.keyNameMissing");
