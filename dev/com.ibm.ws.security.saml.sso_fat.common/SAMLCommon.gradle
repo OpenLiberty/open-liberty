@@ -144,12 +144,12 @@ task copySamlFat_rs_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '*.arm'
+        include '*.jks', '*.arm', 'ec_key.p12'
       }
       copy {
         from new File(projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '.arm'
+        include '*.jks', '.arm', 'ec_key.p12'
       }
       // copySecurityDefaultFilesToServer
       copy {
@@ -277,12 +277,12 @@ task copySamlFat_sp_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '*.arm'
+        include '*.jks', '*.arm', 'ec_key.p12'
       }
       copy {
         from new File(projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '.arm'
+        include '*.jks', '.arm', 'ec_key.p12'
       }
       // copySecurityDefaultFilesToServer
       copy {
@@ -421,12 +421,12 @@ task copySamlFat_secondSP_mergedSPRS_server(dependsOn: [':com.ibm.ws.security.fa
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '*.arm'
+        include '*.jks', '*.arm', 'ec_key.p12'
       }
       copy {
         from new File(projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '.arm'
+        include '*.jks', '.arm', 'ec_key.p12'
       }
       // copySecurityDefaultFilesToServer
       copy {
