@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.wssecurity.cxf.validator;
 
+import java.time.Instant;
 import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Map;
 
@@ -21,7 +23,7 @@ import org.apache.wss4j.common.ext.WSSecurityException.ErrorCode;
 import org.apache.wss4j.dom.handler.RequestData;
 import org.apache.wss4j.common.saml.SamlAssertionWrapper;
 import org.apache.wss4j.dom.validate.Credential;
-import org.joda.time.DateTime;
+
 import org.opensaml.saml.common.SAMLVersion;
 
 import com.ibm.websphere.ras.Tr;
@@ -44,11 +46,11 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
                                                          WSSecurityConstants.TR_RESOURCE_BUNDLE);
 
     List<String> audienceRestrictions = new ArrayList<String>();//null; // if no restructions, set this to null
-    int iFutureTTL = 5 * 60; // 5 minutes 
+    int iFutureTTL = 5 * 60; // 5 minutes
     int ttl = 60 * 30; // 30 Minutes
 
     public WssSamlAssertionValidator(Map<String, Object> configMap) {
-        // ALlow the WssSamlAssertionValidator to initialized 
+        // ALlow the WssSamlAssertionValidator to initialized
         // But will fail when the validate method is called
 
         // always check the saml profile
@@ -64,8 +66,7 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "futureTTL:" + iFutureTTL +
-                             " ttl:" + ttl
-                                );
+                             " ttl:" + ttl);
             }
 
             String[] restrictions = (String[]) configMap.get(WSSecurityConstants.KEY_audienceRestrictions);
@@ -87,7 +88,7 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
     /**
      * Validate the credential argument. It must contain a non-null AssertionWrapper.
      * A Crypto and a CallbackHandler implementation is also required to be set.
-     * 
+     *
      * @param credential the Credential to be validated
      * @param data the RequestData associated with the request
      * @throws WSSecurityException on a failed validation
@@ -115,9 +116,9 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
      */
     @Override
     protected void checkConditions(SamlAssertionWrapper assertion) throws WSSecurityException {
-        DateTime validFrom = null;
-        DateTime validTill = null;
-        DateTime issueInstant = null;
+        Instant validFrom = null;
+        Instant validTill = null;
+        Instant issueInstant = null;
 
         if (assertion.getSamlVersion().equals(SAMLVersion.VERSION_20)
             && assertion.getSaml2().getConditions() != null) {
@@ -136,8 +137,8 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
         }
 
         if (validFrom != null) {
-            DateTime currentTime = new DateTime();
-            DateTime currentTimePlusSkew = currentTime.plusSeconds(iFutureTTL);
+            Instant currentTime = Instant.now();//new DateTime(); //v4 update
+            Instant currentTimePlusSkew = currentTime.plusSeconds(iFutureTTL);
             if (validFrom.isAfter(currentTimePlusSkew)) {
                 // The current time is before the SAML token's NotBefore assertion value; this assertion is not yet valid
                 Tr.error(tc, "saml_token_not_yet_valid", validFrom, currentTime, iFutureTTL);
@@ -147,17 +148,17 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
 
         if (validTill != null) {
             // newly added the clockSkew
-            DateTime validTillPlusSkew = validTill.plusSeconds(iFutureTTL); // add the clockSkew
-            DateTime currentTime = new DateTime();
-            if (validTillPlusSkew.isBeforeNow()) {
+            Instant validTillPlusSkew = validTill.plusSeconds(iFutureTTL); // add the clockSkew, v4 update
+            Instant currentTime = Instant.now();//new DateTime(); //v4 update
+            if (validTillPlusSkew.isBefore(Instant.now())) { //v4 update
                 // SAML token has expired - the NotOnOrAfter time has passed
                 Tr.error(tc, "saml_token_expired", validTill, currentTime, iFutureTTL);
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "invalidSAMLsecurity");
             }
         } else { // move here since findbug complains
             if (issueInstant != null) {
-                DateTime currentTime = new DateTime();
-                DateTime earliestAllowedIssuance = currentTime.minusSeconds(ttl + iFutureTTL); // also minus the clockSkew
+                Instant currentTime = Instant.now();//new DateTime(); //v4 update
+                Instant earliestAllowedIssuance = currentTime.minusSeconds(ttl + iFutureTTL); // also minus the clockSkew
 
                 if (issueInstant.isBefore(earliestAllowedIssuance)) {
                     // SAML token issued too long ago - TTL has passed
@@ -167,13 +168,13 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
             }
         }
 
-        // IssueInstant is not strictly in Conditions, but it has similar semantics to 
+        // IssueInstant is not strictly in Conditions, but it has similar semantics to
         // NotBefore, so including it here
 
         // Check the IssueInstant is not in the future, subject to the future TTL
         if (issueInstant != null) {
-            DateTime currentTime = new DateTime();
-            DateTime currentTimePlusSkew = currentTime.plusSeconds(iFutureTTL);
+            Instant currentTime = Instant.now();//new DateTime();  //v4 update
+            Instant currentTimePlusSkew = currentTime.plusSeconds(iFutureTTL);
             if (issueInstant.isAfter(currentTimePlusSkew)) {
                 // SAML token's IssueInstant assertion is in the future - the token is not yet valid
                 Tr.error(tc, "saml_token_issue_instant_in_future", issueInstant, currentTime, iFutureTTL);
