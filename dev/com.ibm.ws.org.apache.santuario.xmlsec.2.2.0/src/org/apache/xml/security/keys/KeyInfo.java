@@ -31,7 +31,15 @@ import org.apache.xml.security.encryption.EncryptedKey;
 import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.encryption.XMLEncryptionException;
 import org.apache.xml.security.exceptions.XMLSecurityException;
-import org.apache.xml.security.keys.content.*;
+import org.apache.xml.security.keys.content.DEREncodedKeyValue;
+import org.apache.xml.security.keys.content.KeyInfoReference;
+import org.apache.xml.security.keys.content.KeyName;
+import org.apache.xml.security.keys.content.KeyValue;
+import org.apache.xml.security.keys.content.MgmtData;
+import org.apache.xml.security.keys.content.PGPData;
+import org.apache.xml.security.keys.content.RetrievalMethod;
+import org.apache.xml.security.keys.content.SPKIData;
+import org.apache.xml.security.keys.content.X509Data;
 import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
 import org.apache.xml.security.keys.content.keyvalues.RSAKeyValue;
 import org.apache.xml.security.keys.keyresolver.KeyResolver;
@@ -39,7 +47,11 @@ import org.apache.xml.security.keys.keyresolver.KeyResolverException;
 import org.apache.xml.security.keys.keyresolver.KeyResolverSpi;
 import org.apache.xml.security.keys.storage.StorageResolver;
 import org.apache.xml.security.transforms.Transforms;
-import org.apache.xml.security.utils.*;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.ElementProxy;
+import org.apache.xml.security.utils.EncryptionConstants;
+import org.apache.xml.security.utils.SignatureElementProxy;
+import org.apache.xml.security.utils.XMLUtils;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -76,7 +88,7 @@ import org.w3c.dom.Node;
  * contains the corresponding type.
  *
  */
-public class KeyInfo extends ElementProxy {
+public class KeyInfo extends SignatureElementProxy {
 
     private static final org.slf4j.Logger LOG =
         org.slf4j.LoggerFactory.getLogger(KeyInfo.class);
@@ -220,24 +232,12 @@ public class KeyInfo extends ElementProxy {
     }
 
     /**
-     * Method adds public key encoded as KeyValue. If public key type is not supported by KeyValue, then
-     * DEREncodedKeyValue is used. If public key type is not supported by DEREncodedKeyValue, then
-     * IllegalArgumentException is thrown.
+     * Method add
      *
-     * @param pk public key to be added to KeyInfo
+     * @param pk
      */
-    public void add(PublicKey pk)  {
-
-        if (KeyValue.isSupportedKeyType(pk)) {
-            this.add(new KeyValue(getDocument(), pk));
-            return;
-        }
-
-        try {
-            this.add(new DEREncodedKeyValue(getDocument(), pk));
-        } catch (XMLSecurityException ex) {
-            throw new IllegalArgumentException(ex);
-        }
+    public void add(PublicKey pk) {
+        this.add(new KeyValue(getDocument(), pk));
     }
 
     /**
@@ -1227,11 +1227,5 @@ public class KeyInfo extends ElementProxy {
     @Override
     public String getBaseLocalName() {
         return Constants._TAG_KEYINFO;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String getBaseNamespace() {
-        return Constants.SignatureSpecNS;
     }
 }

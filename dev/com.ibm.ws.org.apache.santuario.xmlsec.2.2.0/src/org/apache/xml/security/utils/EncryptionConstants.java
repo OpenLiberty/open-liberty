@@ -45,21 +45,6 @@ public final class EncryptionConstants {
     /** Tag of Attr mimetype **/
     public static final String _ATT_MIMETYPE = "MimeType";
 
-    /** Tag of Attr AlgorithmID**/
-    public static final String _ATT_ALGORITHM_ID = "AlgorithmID";
-
-    /** Tag of Attr PartyUInfo**/
-    public static final String _ATT_PARTYUINFO = "PartyUInfo";
-
-    /** Tag of Attr PartyVInfo**/
-    public static final String _ATT_PARTYVINFO = "PartyVInfo";
-
-    /** Tag of Attr PartyVInfo**/
-    public static final String _ATT_SUPPPUBINFO = "SuppPubInfo";
-
-    /** Tag of Attr PartyVInfo**/
-    public static final String _ATT_SUPPPRIVINFO = "SuppPrivInfo";
-
     /** Tag of Element CarriedKeyName **/
     public static final String _TAG_CARRIEDKEYNAME = "CarriedKeyName";
 
@@ -119,23 +104,6 @@ public final class EncryptionConstants {
 
     /** Tag of Element RecipientKeyInfo **/
     public static final String _TAG_RECIPIENTKEYINFO = "RecipientKeyInfo";
-    /** Tag of Element KeyDerivationMethod **/
-    public static final String _TAG_KEYDERIVATIONMETHOD = "KeyDerivationMethod";
-
-    /** Tag of Element ConcatKDFParams **/
-    public static final String _TAG_CONCATKDFPARAMS = "ConcatKDFParams";
-
-    /** Tag of Element HKDFParams **/
-    public static final String _TAG_HKDFPARAMS = "HKDFParams";
-
-    /** Tag of Element PRF pseudorandom function (PRF) **/
-    public static final String _TAG_PRF = "PRF";
-
-    /** Tag of Element Info **/
-    public static final String _TAG_INFO = "Info";
-
-    /** Tag of Element KEY LENGTH **/
-    public static final String _TAG_KEYLENGTH = "KeyLength";
 
     /** Field ENCRYPTIONSPECIFICATION_URL */
     public static final String ENCRYPTIONSPECIFICATION_URL =
@@ -223,15 +191,6 @@ public final class EncryptionConstants {
     public static final String ALGO_ID_KEYAGREEMENT_DH =
         EncryptionConstants.EncryptionSpecNS + "dh";
 
-    /** Key Agreement Diffie-Hellman for EC (and X) keys with the originator ephemeral and receiver static key */
-    public static final String ALGO_ID_KEYAGREEMENT_ECDH_ES =
-            EncryptionConstants.EncryptionSpec11NS + "ECDH-ES";
-
-    public static final String ALGO_ID_KEYAGREEMENT_X25519 =
-            Constants.XML_DSIG_NS_MORE_21_04 + "x25519";
-
-    public static final String ALGO_ID_KEYAGREEMENT_X448 =
-            Constants.XML_DSIG_NS_MORE_21_04 + "x448";
     /** Symmetric Key Wrap - REQUIRED TRIPLEDES KeyWrap */
     public static final String ALGO_ID_KEYWRAP_TRIPLEDES =
         EncryptionConstants.EncryptionSpecNS + "kw-tripledes";
@@ -300,13 +259,6 @@ public final class EncryptionConstants {
     public static final String MGF1_SHA512 =
         EncryptionConstants.EncryptionSpec11NS + "mgf1sha512";
 
-    /** Key derivation function ConcatKDF */
-    public static final String ALGO_ID_KEYDERIVATION_CONCATKDF =
-            EncryptionConstants.EncryptionSpec11NS + "ConcatKDF";
-
-    /** Key derivation function HKDF */
-    public static final String ALGO_ID_KEYDERIVATION_HKDF =
-            Constants.XML_DSIG_NS_MORE_21_04 + "hkdf";
 
     private EncryptionConstants() {
         // we don't allow instantiation

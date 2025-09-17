@@ -18,9 +18,7 @@
  */
 package org.apache.xml.security.stax.ext;
 
-import java.security.AccessController;
 import java.security.NoSuchAlgorithmException;
-import java.security.PrivilegedAction;
 import java.security.SecureRandom;
 
 import javax.xml.bind.JAXBContext;
@@ -34,29 +32,23 @@ import javax.xml.validation.Schema;
 
 import org.apache.xml.security.exceptions.XMLSecurityException;
 
-import com.ibm.ws.common.crypto.CryptoUtils;
-
 /**
  * XMLSecurityConstants for global use
  *
  */
 public class XMLSecurityConstants {
 
-    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(XMLSecurityConstants.class);
-
     public static final DatatypeFactory datatypeFactory;
     public static final XMLOutputFactory xmlOutputFactory;
     public static final XMLOutputFactory xmlOutputFactoryNonRepairingNs;
 
-    private static volatile SecureRandom SECURE_RANDOM;
-    private static final Object SECURE_RANDOM_LOCK = new Object();
-    private static final String RANDOM_ALGORITHM_KEY = "org.apache.xml.security.securerandom.algorithm"; // Liberty Change
+    private static final SecureRandom SECURE_RANDOM;
     private static JAXBContext jaxbContext;
     private static Schema schema;
 
     static {
         try {
-            SECURE_RANDOM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new SecureRandom() : SecureRandom.getInstance("SHA1PRNG");
+            SECURE_RANDOM = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
@@ -66,49 +58,12 @@ public class XMLSecurityConstants {
         } catch (DatatypeConfigurationException e) {
             throw new RuntimeException(e);
         }
-        // Liberty Change Start: Borrowing what we did in WSSec when trying to find the
-        // Glassfish version of the JAXBImpl. This class loader can't find the WstxOutputFactory,
-        // so adding a work around to change classloaders in order to find it.
-        // TODO: investigate why we are not finding this provider
-        ClassLoader cl = null;
-        ClassLoader staximplcl = null;
-        try {
-            staximplcl = com.ctc.wstx.stax.WstxOutputFactory.class.getClassLoader();
-        } catch (Throwable t) {
-            LOG.debug("WsTxOutputFactory's classloader is not found!");
-        }
-        if (staximplcl != null) {
-            if (LOG.isDebugEnabled()) {
-                LOG.debug("setting up the Woodstox classloader!");
-            }
-            cl = Thread.currentThread().getContextClassLoader();
-            Thread.currentThread().setContextClassLoader(staximplcl);
-            try {
 
-                xmlOutputFactory = XMLOutputFactory.newInstance();
-                xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
+        xmlOutputFactory = XMLOutputFactory.newInstance();
+        xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
 
-                xmlOutputFactoryNonRepairingNs = XMLOutputFactory.newInstance();
-                xmlOutputFactoryNonRepairingNs.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
-
-            } catch (Exception e2) {
-                throw new RuntimeException(e2.getMessage(), e2);
-            } finally {
-                if (cl != null) {
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug("setting back the original class loader!");
-                    }
-                    Thread.currentThread().setContextClassLoader(cl);
-                }
-            }
-        } else {
-            xmlOutputFactory = XMLOutputFactory.newInstance();
-            xmlOutputFactory.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, true);
-
-            xmlOutputFactoryNonRepairingNs = XMLOutputFactory.newInstance();
-            xmlOutputFactoryNonRepairingNs.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
-        }
-        // Liberty Change End
+        xmlOutputFactoryNonRepairingNs = XMLOutputFactory.newInstance();
+        xmlOutputFactoryNonRepairingNs.setProperty(XMLOutputFactory.IS_REPAIRING_NAMESPACES, false);
     }
 
     protected XMLSecurityConstants() {
@@ -122,27 +77,9 @@ public class XMLSecurityConstants {
      * @throws XMLSecurityException
      */
     public static byte[] generateBytes(int length) throws XMLSecurityException {
-
-        SecureRandom rnd = SECURE_RANDOM;
-        if (rnd == null) {
-            synchronized (SECURE_RANDOM_LOCK) {
-                rnd = SECURE_RANDOM;
-                if (rnd == null) {
-                    try {
-                        final String prngAlgorithm = AccessController.doPrivileged(
-                                (PrivilegedAction<String>) () -> System.getProperty(RANDOM_ALGORITHM_KEY));
-                        SECURE_RANDOM = rnd = prngAlgorithm != null
-                                ? SecureRandom.getInstance(prngAlgorithm)
-                                : new SecureRandom();
-                    } catch (NoSuchAlgorithmException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        }
         try {
             byte[] temp = new byte[length];
-            rnd.nextBytes(temp);
+            SECURE_RANDOM.nextBytes(temp);
             return temp;
         } catch (Exception ex) {
             throw new XMLSecurityException(ex);
@@ -186,7 +123,7 @@ public class XMLSecurityConstants {
     public static final String NS_XMLENC = "http://www.w3.org/2001/04/xmlenc#";
     public static final String NS_XMLENC11 = "http://www.w3.org/2009/xmlenc11#";
     public static final String NS_DSIG = "http://www.w3.org/2000/09/xmldsig#";
-    public static final String NS_DSIG_MORE = "http://www.w3.org/2001/04/xmldsig-more#";
+    public static final String NS_DSIG_MORE ="http://www.w3.org/2001/04/xmldsig-more#";
     public static final String NS_DSIG_MORE_2007_05 = "http://www.w3.org/2007/05/xmldsig-more#";
     public static final String NS_DSIG11 = "http://www.w3.org/2009/xmldsig11#";
     public static final String NS_WSSE11 = "http://docs.oasis-open.org/wss/oasis-wss-wssecurity-secext-1.1.xsd";
@@ -271,7 +208,7 @@ public class XMLSecurityConstants {
     public static final String NS_C14N_EXCL = "http://www.w3.org/2001/10/xml-exc-c14n#";
     public static final String NS_XMLDSIG_FILTER2 = "http://www.w3.org/2002/06/xmldsig-filter2";
     public static final String NS_XMLDSIG_ENVELOPED_SIGNATURE = NS_DSIG + "enveloped-signature";
-    public static final String NS_XMLDSIG_SHA1 = NS_DSIG + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase();
+    public static final String NS_XMLDSIG_SHA1 = NS_DSIG + "sha1";
     public static final String NS_XMLDSIG_HMACSHA1 = NS_DSIG + "hmac-sha1";
     public static final String NS_XMLDSIG_RSASHA1 = NS_DSIG + "rsa-sha1";
     public static final String NS_XMLDSIG_MANIFEST = NS_DSIG + "Manifest";
@@ -300,8 +237,8 @@ public class XMLSecurityConstants {
     public static final String NS_MGF1_SHA384 = NS_XMLENC11 + "mgf1sha384";
     public static final String NS_MGF1_SHA512 = NS_XMLENC11 + "mgf1sha512";
 
-    public static final String NS_XENC_SHA256 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase();
-    public static final String NS_XENC_SHA512 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase();
+    public static final String NS_XENC_SHA256 = NS_XMLENC + "sha256";
+    public static final String NS_XENC_SHA512 = NS_XMLENC + "sha512";
 
     public static final String PREFIX_C14N_EXCL = "c14nEx";
     public static final QName ATT_NULL_PrefixList = new QName(null, "PrefixList");

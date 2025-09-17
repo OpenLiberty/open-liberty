@@ -521,20 +521,10 @@ public class XMLSecurityUtils {
                     concreteLSInput.setByteStream(
                             ClassLoaderUtils.getResourceAsStream("bindings/schemas/xml.xsd", XMLSecurityConstants.class));
                     return concreteLSInput;
-                } else if ("dsig-more_2001_04.xsd".equals(systemId)) {
+                } else if ("rsa-pss.xsd".equals(systemId)) {
                     ConcreteLSInput concreteLSInput = new ConcreteLSInput();
                     concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2001_04.xsd", XMLSecurityConstants.class));
-                    return concreteLSInput;
-                } else if ("dsig-more_2007_05.xsd".equals(systemId)) {
-                    ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                    concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2007_05.xsd", XMLSecurityConstants.class));
-                    return concreteLSInput;
-                } else if ("dsig-more_2021_04.xsd".equals(systemId)) {
-                    ConcreteLSInput concreteLSInput = new ConcreteLSInput();
-                    concreteLSInput.setByteStream(
-                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2021_04.xsd", XMLSecurityConstants.class));
+                            ClassLoaderUtils.getResourceAsStream("bindings/schemas/rsa-pss.xsd", XMLSecurityConstants.class));
                     return concreteLSInput;
                 }
                 return null;
@@ -548,9 +538,7 @@ public class XMLSecurityUtils {
                         new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema.xsd", XMLSecurityConstants.class)),
                         new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xenc-schema-11.xsd", XMLSecurityConstants.class)),
                         new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/xmldsig11-schema.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2001_04.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2007_05.xsd", XMLSecurityConstants.class)),
-                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/dsig-more_2021_04.xsd", XMLSecurityConstants.class))
+                        new StreamSource(ClassLoaderUtils.getResourceAsStream("bindings/schemas/rsa-pss.xsd", XMLSecurityConstants.class))
                 }
                 );
         return schema;

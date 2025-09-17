@@ -42,7 +42,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecNamespace;
  * Custom XMLStreamWriter to map XMLStreamWriter method calls into XMLEvent's
  *
  */
-public class XMLSecurityStreamWriter implements XMLStreamWriter, AutoCloseable {
+public class XMLSecurityStreamWriter implements XMLStreamWriter {
 
     private final OutputProcessorChain outputProcessorChain;
     private Element elementStack;

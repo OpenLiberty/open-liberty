@@ -31,7 +31,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 
 /**
  */
-public class XMLSecurityEventReader implements XMLEventReader, AutoCloseable {
+public class XMLSecurityEventReader implements XMLEventReader {
 
     private final Iterator<XMLSecEvent> xmlSecEventIterator;
     private XMLEvent xmlSecEvent;

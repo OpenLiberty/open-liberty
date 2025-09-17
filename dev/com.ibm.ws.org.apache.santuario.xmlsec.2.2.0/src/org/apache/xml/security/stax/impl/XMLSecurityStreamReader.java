@@ -46,7 +46,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
  * to XMLStreamReader
  *
  */
-public class XMLSecurityStreamReader implements XMLStreamReader, AutoCloseable {
+public class XMLSecurityStreamReader implements XMLStreamReader {
 
     private final InputProcessorChain inputProcessorChain;
     private XMLSecEvent currentXMLSecEvent;

@@ -31,7 +31,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Map;
 
-import org.apache.xml.security.signature.XMLSignatureByteInput;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
@@ -148,7 +147,7 @@ public class ResolverDirectHTTP extends ResourceResolverSpi {
 
                 LOG.debug("Fetched {} bytes from URI {}", summarized, uriNew.toString());
 
-                XMLSignatureInput result = new XMLSignatureByteInput(baos.toByteArray());
+                XMLSignatureInput result = new XMLSignatureInput(baos.toByteArray());
                 result.setSecureValidation(context.secureValidation);
 
                 result.setSourceURI(uriNew.toString());

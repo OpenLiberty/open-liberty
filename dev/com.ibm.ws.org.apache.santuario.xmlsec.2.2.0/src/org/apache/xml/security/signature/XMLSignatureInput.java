@@ -18,6 +18,8 @@
  */
 package org.apache.xml.security.signature;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -34,38 +36,104 @@ import org.apache.xml.security.c14n.implementations.CanonicalizerBase;
 import org.apache.xml.security.parser.XMLParserException;
 import org.apache.xml.security.utils.JavaUtils;
 import org.apache.xml.security.utils.XMLUtils;
+import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 
 /**
- * The XMLSignature Input
+ * Class XMLSignatureInput
+ *
+ * $todo$ check whether an XMLSignatureInput can be _both_, octet stream _and_ node set?
  */
-public abstract class XMLSignatureInput {
+public class XMLSignatureInput {
+    /*
+     * The XMLSignature Input can be either:
+     *   A byteArray like with/or without InputStream.
+     *   Or a nodeSet like defined either:
+     *       * as a collection of nodes
+     *       * or as subnode excluding or not comments and excluding or
+     *         not other nodes.
+     */
 
-    /** The original set from the constructor. */
+    /**
+     * Some InputStreams do not support the {@link java.io.InputStream#reset}
+     * method, so we read it in completely and work on our Proxy.
+     */
+    private InputStream inputOctetStreamProxy;
+    /**
+     * The original NodeSet for this XMLSignatureInput
+     */
     private Set<Node> inputNodeSet;
-    /** The original Element */
+    /**
+     * The original Element
+     */
     private Node subNode;
-    private boolean isNodeSet;
-
-    /** Node Filter list. */
-    private final List<NodeFilter> nodeFilters = new ArrayList<>();
-
-    /** Exclude Node *for enveloped transformations */
+    /**
+     * Exclude Node *for enveloped transformations*
+     */
     private Node excludeNode;
-    private boolean excludeComments;
+    /**
+     *
+     */
+    private boolean excludeComments = false;
 
-    private String sourceURI;
-    private String mimeType;
-    private boolean needsToBeExpanded;
+    private boolean isNodeSet = false;
+    /**
+     * A cached bytes
+     */
+    private byte[] bytes;
     private boolean secureValidation = true;
+
+    /**
+     * Some Transforms may require explicit MIME type, charset (IANA registered
+     * "character set"), or other such information concerning the data they are
+     * receiving from an earlier Transform or the source data, although no
+     * Transform algorithm specified in this document needs such explicit
+     * information. Such data characteristics are provided as parameters to the
+     * Transform algorithm and should be described in the specification for the
+     * algorithm.
+     */
+    private String mimeType;
+
+    /**
+     * Field sourceURI
+     */
+    private String sourceURI;
+
+    /**
+     * Node Filter list.
+     */
+    private List<NodeFilter> nodeFilters = new ArrayList<>();
+
+    private boolean needsToBeExpanded = false;
     private OutputStream outputStream;
 
     /**
-     * Construct a XMLSignatureInput
+     * Pre-calculated digest value of the object in base64.
      */
-    protected XMLSignatureInput() {
+    private String preCalculatedDigest;
+
+    /**
+     * Construct a XMLSignatureInput from an octet array.
+     * <p>
+     * This is a comfort method, which internally converts the byte[] array into
+     * an InputStream
+     * <p>NOTE: no defensive copy</p>
+     * @param inputOctets an octet array which including XML document or node
+     */
+    public XMLSignatureInput(byte[] inputOctets) {
+        // NO defensive copy
+        this.bytes = inputOctets;
     }
 
+    /**
+     * Constructs a <code>XMLSignatureInput</code> from an octet stream. The
+     * stream is directly read.
+     *
+     * @param inputOctetStream
+     */
+    public XMLSignatureInput(InputStream inputOctetStream)  {
+        this.inputOctetStreamProxy = inputOctetStream;
+    }
 
     /**
      * Construct a XMLSignatureInput from a subtree rooted by rootNode. This
@@ -73,84 +141,47 @@ public abstract class XMLSignatureInput {
      *
      * @param rootNode
      */
-    protected XMLSignatureInput(Node rootNode) {
+    public XMLSignatureInput(Node rootNode) {
         this.subNode = rootNode;
     }
 
-
     /**
-     * Construct a XMLSignatureInput from a {@link Set} of {@link Node}s.
+     * Constructor XMLSignatureInput
      *
-     * @param nodeSet
+     * @param inputNodeSet
      */
-    protected XMLSignatureInput(Set<Node> nodeSet) {
-        this.inputNodeSet = nodeSet;
+    public XMLSignatureInput(Set<Node> inputNodeSet) {
+        this.inputNodeSet = inputNodeSet;
     }
 
-
     /**
-     * @return true if this instance still can provide the unprocessed input
-     *         which was specified as the parameter of {@link XMLSignatureInput}
+     * Construct a <code>XMLSignatureInput</code> from a known digest value in Base64.
+     * This makes it possible to compare the element digest with the provided digest value.
+     * @param preCalculatedDigest digest value in base64.
      */
-    public abstract boolean hasUnprocessedInput();
-
-    /**
-     * @return the {@link InputStream} from input which was specified as
-     *         the parameter of {@link XMLSignatureInput} constructor
-     * @throws IOException
-     */
-    public abstract InputStream getUnprocessedInput() throws IOException;
-
-    /**
-     * @return data given in constructor converted to a {@link Node} or null if such conversion is
-     *         not supported by this {@link XMLSignatureInput}
-     * @throws XMLParserException
-     * @throws IOException
-     */
-    protected abstract Node convertToNode() throws XMLParserException, IOException;
-
-
-    /**
-     * Writes the data to the output stream.
-     *
-     * @param output
-     * @throws CanonicalizationException
-     * @throws IOException
-     */
-    public void write(OutputStream output) throws CanonicalizationException, IOException {
-        write(output, false);
+    public XMLSignatureInput(String preCalculatedDigest) {
+        this.preCalculatedDigest = preCalculatedDigest;
     }
 
-
     /**
-     * Writes the data to the output stream.
-     *
-     * @param output
-     * @param c14n11
-     * @throws CanonicalizationException
-     * @throws IOException
-     * @see <a href="https://www.w3.org/TR/xmldsig-core/#sec-ReferenceGeneration">XmlDSig-Core
-     *      Reference Generation</a>
+     * Check if the structure needs to be expanded.
+     * @return true if so.
      */
-    public abstract void write(OutputStream output, boolean c14n11) throws CanonicalizationException, IOException;
-
-
-    /**
-     * Get the Input NodeSet.
-     *
-     * @return the Input NodeSet.
-     */
-    public Set<Node> getInputNodeSet() {
-        return inputNodeSet;
+    public boolean isNeedsToBeExpanded() {
+        return needsToBeExpanded;
     }
 
+    /**
+     * Set if the structure needs to be expanded.
+     * @param needsToBeExpanded true if so.
+     */
+    public void setNeedsToBeExpanded(boolean needsToBeExpanded) {
+        this.needsToBeExpanded = needsToBeExpanded;
+    }
 
     /**
      * Returns the node set from input which was specified as the parameter of
      * {@link XMLSignatureInput} constructor
-     * <p>
-     * Can call the {@link #convertToNode()} to parse the {@link Node} from the input data.
-     * The internal state will change then.
      *
      * @return the node set
      * @throws XMLParserException
@@ -160,32 +191,36 @@ public abstract class XMLSignatureInput {
         return getNodeSet(false);
     }
 
+    /**
+     * Get the Input NodeSet.
+     * @return the Input NodeSet.
+     */
+    public Set<Node> getInputNodeSet() {
+        return inputNodeSet;
+    }
 
     /**
-     * Returns the node set from input which was specified as the parameter
-     * of {@link XMLSignatureInput} constructor
-     * <p>
-     * Can call the {@link #convertToNode()} to parse the {@link Node} from the input data.
-     * The internal state will change then.
-     *
+     * Returns the node set from input which was specified as the parameter of
+     * {@link XMLSignatureInput} constructor
      * @param circumvent
+     *
      * @return the node set
      * @throws XMLParserException
      * @throws IOException
      */
-    private Set<Node> getNodeSet(boolean circumvent) throws XMLParserException, IOException {
+    public Set<Node> getNodeSet(boolean circumvent) throws XMLParserException, IOException {
         if (inputNodeSet != null) {
             return inputNodeSet;
         }
-        if (subNode != null) {
+        if (inputOctetStreamProxy == null && subNode != null) {
             if (circumvent) {
                 XMLUtils.circumventBug2650(XMLUtils.getOwnerDocument(subNode));
             }
             inputNodeSet = new LinkedHashSet<>();
             XMLUtils.getSet(subNode, inputNodeSet, excludeNode, excludeComments);
             return inputNodeSet;
-        } else if (hasUnprocessedInput()) {
-            this.subNode = convertToNode();
+        } else if (isOctetStream()) {
+            convertToNodes();
             Set<Node> result = new LinkedHashSet<>();
             XMLUtils.getSet(subNode, result, null, false);
             return result;
@@ -194,76 +229,67 @@ public abstract class XMLSignatureInput {
         throw new RuntimeException("getNodeSet() called but no input data present");
     }
 
-
     /**
-     * Gets the node of this XMLSignatureInput
+     * Returns the Octet stream(byte Stream) from input which was specified as
+     * the parameter of {@link XMLSignatureInput} constructor
      *
-     * @return The excludeNode set.
-     */
-    public Node getSubNode() {
-        return subNode;
-    }
-
-
-    /**
-     * @param filter
-     * @throws XMLParserException
+     * @return the Octet stream(byte Stream) from input which was specified as
+     * the parameter of {@link XMLSignatureInput} constructor
      * @throws IOException
      */
-    public void addNodeFilter(NodeFilter filter) throws XMLParserException, IOException {
-        if (hasUnprocessedInput()) {
-            this.subNode = convertToNode();
+    public InputStream getOctetStream() throws IOException  {
+        if (inputOctetStreamProxy != null) {
+            return inputOctetStreamProxy;
         }
-        nodeFilters.add(filter);
-    }
 
+        if (bytes != null) {
+            inputOctetStreamProxy = new ByteArrayInputStream(bytes);
+            return inputOctetStreamProxy;
+        }
+
+        return null;
+    }
 
     /**
-     * @return the node filters
+     * @return real octet stream
      */
-    public final List<NodeFilter> getNodeFilters() {
-        return nodeFilters;
+    public InputStream getOctetStreamReal() {
+        return inputOctetStreamProxy;
     }
-
-
-    /**
-     * @param nodeSet
-     */
-    public final void setNodeSet(boolean nodeSet) {
-        isNodeSet = nodeSet;
-    }
-
 
     /**
      * Returns the byte array from input which was specified as the parameter of
-     * {@link XMLSignatureInput} constructor OR tries to reconstruct that if
-     * the element or node was already processed.
+     * {@link XMLSignatureInput} constructor
      *
-     * @return the byte array
+     * @return the byte[] from input which was specified as the parameter of
+     * {@link XMLSignatureInput} constructor
+     *
      * @throws CanonicalizationException
      * @throws IOException
      */
     public byte[] getBytes() throws IOException, CanonicalizationException {
-        if (hasUnprocessedInput()) {
-            return JavaUtils.getBytesFromStream(getUnprocessedInput());
+        byte[] inputBytes = getBytesFromInputStream();
+        if (inputBytes != null) {
+            return inputBytes;
         }
-        if (isElement() || isNodeSet()) {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            canonicalize(baos, false);
-            return baos.toByteArray();
+        if (isOctetStream() || isElement() || isNodeSet()) {
+            Canonicalizer20010315OmitComments c14nizer = new Canonicalizer20010315OmitComments();
+            try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+                c14nizer.engineCanonicalize(this, baos, secureValidation);
+                bytes = baos.toByteArray();
+            }
         }
-        return null;
+        return bytes;
     }
-
 
     /**
-     * @return true if the {@link #XMLSignatureInput(Set)} was used or the node set was parsed from
-     *         an input coming from another constructor.
+     * Determines if the object has been set up with a Node set
+     *
+     * @return true if the object has been set up with a Node set
      */
     public boolean isNodeSet() {
-        return isNodeSet || inputNodeSet != null;
+        return inputOctetStreamProxy == null && inputNodeSet != null || isNodeSet;
     }
-
 
     /**
      * Determines if the object has been set up with an Element
@@ -271,35 +297,166 @@ public abstract class XMLSignatureInput {
      * @return true if the object has been set up with an Element
      */
     public boolean isElement() {
-        return subNode != null && inputNodeSet == null && !isNodeSet;
+        return inputOctetStreamProxy == null && subNode != null
+            && inputNodeSet == null && !isNodeSet;
     }
 
-
     /**
-     * @return String given through constructor. Null by default, see extensions of this class.
+     * Determines if the object has been set up with an octet stream
+     *
+     * @return true if the object has been set up with an octet stream
      */
-    public String getPreCalculatedDigest() {
-        return null;
+    public boolean isOctetStream() {
+        return (inputOctetStreamProxy != null || bytes != null)
+          && inputNodeSet == null && subNode == null;
     }
 
+    /**
+     * Determines if {@link #setOutputStream} has been called with a
+     * non-null OutputStream.
+     *
+     * @return true if {@link #setOutputStream} has been called with a
+     * non-null OutputStream
+     */
+    public boolean isOutputStreamSet() {
+        return outputStream != null;
+    }
 
     /**
-     * @return the exclude node of this XMLSignatureInput
+     * Determines if the object has been set up with a ByteArray
+     *
+     * @return true if the object has been set up with an octet stream
+     */
+    public boolean isByteArray() {
+        return bytes != null && this.inputNodeSet == null && subNode == null;
+    }
+
+    /**
+     * Determines if the object has been set up with a pre-calculated digest.
+     * @return true if the object has been set up with a pre-calculated digest.
+     */
+    public boolean isPreCalculatedDigest() {
+        return preCalculatedDigest != null;
+    }
+
+    /**
+     * Is the object correctly set up?
+     *
+     * @return true if the object has been set up correctly
+     */
+    public boolean isInitialized() {
+        return isOctetStream() || isNodeSet();
+    }
+
+    /**
+     * Returns mimeType
+     *
+     * @return mimeType
+     */
+    public String getMIMEType() {
+        return mimeType;
+    }
+
+    /**
+     * Sets mimeType
+     *
+     * @param mimeType
+     */
+    public void setMIMEType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    /**
+     * Return SourceURI
+     *
+     * @return SourceURI
+     */
+    public String getSourceURI() {
+        return sourceURI;
+    }
+
+    /**
+     * Sets SourceURI
+     *
+     * @param sourceURI
+     */
+    public void setSourceURI(String sourceURI) {
+        this.sourceURI = sourceURI;
+    }
+
+    /**
+     * Method toString
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        if (isNodeSet()) {
+            return "XMLSignatureInput/NodeSet/" + inputNodeSet.size()
+                   + " nodes/" + getSourceURI();
+        }
+        if (isElement()) {
+            return "XMLSignatureInput/Element/" + subNode
+                + " exclude "+ excludeNode + " comments:"
+                + excludeComments +"/" + getSourceURI();
+        }
+        try {
+            byte[] bytes = getBytes();
+            return "XMLSignatureInput/OctetStream/"
+                   + (bytes != null ? bytes.length : 0)
+                   + " octets/" + getSourceURI();
+        } catch (IOException | CanonicalizationException ex) {
+            return "XMLSignatureInput/OctetStream//" + getSourceURI();
+        }
+    }
+
+    /**
+     * Method getHTMLRepresentation
+     *
+     * @throws XMLSignatureException
+     * @return The HTML representation for this XMLSignature
+     */
+    public String getHTMLRepresentation() throws XMLSignatureException {
+        XMLSignatureInputDebugger db = new XMLSignatureInputDebugger(this);
+        return db.getHTMLRepresentation();
+    }
+
+    /**
+     * Method getHTMLRepresentation
+     *
+     * @param inclusiveNamespaces
+     * @throws XMLSignatureException
+     * @return The HTML representation for this XMLSignature
+     */
+    public String getHTMLRepresentation(Set<String> inclusiveNamespaces)
+       throws XMLSignatureException {
+        XMLSignatureInputDebugger db =
+            new XMLSignatureInputDebugger(this, inclusiveNamespaces);
+        return db.getHTMLRepresentation();
+    }
+
+    /**
+     * Gets the exclude node of this XMLSignatureInput
+     * @return Returns the excludeNode.
      */
     public Node getExcludeNode() {
         return excludeNode;
     }
 
-
     /**
      * Sets the exclude node of this XMLSignatureInput
-     *
      * @param excludeNode The excludeNode to set.
      */
     public void setExcludeNode(Node excludeNode) {
         this.excludeNode = excludeNode;
     }
 
+    /**
+     * Gets the node of this XMLSignatureInput
+     * @return The excludeNode set.
+     */
+    public Node getSubNode() {
+        return subNode;
+    }
 
     /**
      * @return Returns the excludeComments.
@@ -308,7 +465,6 @@ public abstract class XMLSignatureInput {
         return excludeComments;
     }
 
-
     /**
      * @param excludeComments The excludeComments to set.
      */
@@ -316,156 +472,114 @@ public abstract class XMLSignatureInput {
         this.excludeComments = excludeComments;
     }
 
-
     /**
-     * @return Source URI
+     * @param diOs
+     * @throws IOException
+     * @throws CanonicalizationException
      */
-    public String getSourceURI() {
-        return sourceURI;
+    public void updateOutputStream(OutputStream diOs)
+        throws CanonicalizationException, IOException {
+        updateOutputStream(diOs, false);
     }
 
-
-    /**
-     * @param sourceURI
-     */
-    public void setSourceURI(String sourceURI) {
-        this.sourceURI = sourceURI;
+    public void updateOutputStream(OutputStream diOs, boolean c14n11)
+        throws CanonicalizationException, IOException {
+        if (diOs == outputStream) {
+            return;
+        }
+        if (bytes != null) {
+            diOs.write(bytes);
+        } else if (inputOctetStreamProxy == null) {
+            CanonicalizerBase c14nizer = null;
+            if (c14n11) {
+                c14nizer = new Canonicalizer11_OmitComments();
+            } else {
+                c14nizer = new Canonicalizer20010315OmitComments();
+            }
+            c14nizer.engineCanonicalize(this, diOs, secureValidation);
+        } else {
+            byte[] buffer = new byte[4 * 1024];
+            int bytesread = 0;
+            try (BufferedInputStream bis = new BufferedInputStream(inputOctetStreamProxy)) {
+                while ((bytesread = bis.read(buffer)) != -1) {
+                    diOs.write(buffer, 0, bytesread);
+                }
+            } finally {
+                // the stream is closed, and we can remove the inputOctetStreamProxy reference
+                this.inputOctetStreamProxy = null;
+            }
+        }
     }
 
-
     /**
-     * Some Transforms may require explicit MIME type, charset (IANA registered "character set"),
-     * or other such information concerning the data they are receiving from an earlier Transform
-     * or the source data, although no Transform algorithm specified in this document needs such
-     * explicit information.
-     * <p>
-     * Such data characteristics are provided as parameters to the Transform algorithm and should be
-     * described in the specification for the algorithm.
-     *
-     * @return mimeType
+     * @param os
      */
-    public String getMIMEType() {
-        return mimeType;
+    public void setOutputStream(OutputStream os) {
+        outputStream = os;
     }
 
-
-    /**
-     * Some Transforms may require explicit MIME type, charset (IANA registered "character set"),
-     * or other such information concerning the data they are receiving from an earlier Transform
-     * or the source data, although no Transform algorithm specified in this document needs such
-     * explicit information.
-     * <p>
-     * Such data characteristics are provided as parameters to the Transform algorithm and should be
-     * described in the specification for the algorithm.
-     *
-     * @param mimeType
-     */
-    public void setMIMEType(String mimeType) {
-        this.mimeType = mimeType;
+    private byte[] getBytesFromInputStream() throws IOException {
+        if (bytes != null) {
+            return bytes;
+        }
+        if (inputOctetStreamProxy == null) {
+            return null;
+        }
+        try {   //NOPMD
+            bytes = JavaUtils.getBytesFromStream(inputOctetStreamProxy);
+        } finally {
+            inputOctetStreamProxy.close();
+        }
+        return bytes;
     }
 
-
     /**
-     * @return true if the structure needs to be expanded.
+     * @param filter
      */
-    public boolean isNeedsToBeExpanded() {
-        return needsToBeExpanded;
+    public void addNodeFilter(NodeFilter filter) throws XMLParserException, IOException {
+        if (isOctetStream()) {
+            convertToNodes();
+        }
+        nodeFilters.add(filter);
     }
 
-
     /**
-     * Set if the structure needs to be expanded.
-     *
-     * @param needsToBeExpanded true if so.
+     * @return the node filters
      */
-    public void setNeedsToBeExpanded(boolean needsToBeExpanded) {
-        this.needsToBeExpanded = needsToBeExpanded;
+    public List<NodeFilter> getNodeFilters() {
+        return nodeFilters;
     }
 
-
     /**
-     * @return true by default, enabled validation in r/w operations
+     * @param b
      */
+    public void setNodeSet(boolean b) {
+        isNodeSet = b;
+    }
+
+    private void convertToNodes() throws XMLParserException, IOException {
+        // select all nodes, also the comments.
+        try {
+            Document doc = XMLUtils.read(this.getOctetStream(), secureValidation);
+            this.subNode = doc;
+        } finally {
+            if (this.inputOctetStreamProxy != null) {
+                this.inputOctetStreamProxy.close();
+            }
+            this.inputOctetStreamProxy = null;
+            this.bytes = null;
+        }
+    }
+
     public boolean isSecureValidation() {
         return secureValidation;
     }
 
-
-    /**
-     * Set to false to disable validation in r/w operations.
-     *
-     * @param secureValidation default is true.
-     */
     public void setSecureValidation(boolean secureValidation) {
         this.secureValidation = secureValidation;
     }
 
-
-    /**
-     * @return true if {@link #setOutputStream} has been called with a non-null OutputStream
-     */
-    public boolean isOutputStreamSet() {
-        return outputStream != null;
-    }
-
-
-    /**
-     * @param outputStream this stream will be ignored in {@link #write(OutputStream)} method
-     */
-    public void setOutputStream(OutputStream outputStream) {
-        this.outputStream = outputStream;
-    }
-
-
-    /**
-     * @return {@link OutputStream} set in {@link #setOutputStream(OutputStream)}
-     */
-    public OutputStream getOutputStream() {
-        return this.outputStream;
-    }
-
-
-    /**
-     * Creates a short description of this instance.
-     */
-    @Override
-    public String toString() {
-        String className = getClass().getSimpleName();
-        if (isNodeSet()) {
-            return className + "/NodeSet/" + inputNodeSet.size() + " nodes/" + getSourceURI();
-        }
-        if (isElement()) {
-            return className + "/Element/" + subNode + " exclude " + excludeNode + " comments:" + excludeComments
-                + "/" + getSourceURI();
-        }
-        if (hasUnprocessedInput()) {
-            try {
-                int available = getUnprocessedInput().available();
-                return className + "/OctetStream/" + available + " bytes/" + getSourceURI();
-            } catch (IOException ex) {
-                // Stream is unavailable and toString should not touch any IO, so ignore it.
-            }
-        }
-        return className + "/OctetStream//" + getSourceURI();
-    }
-
-
-    /**
-     * Canonicalizes this object to the output stream.
-     *
-     * @param c14n11
-     * @param output
-     * @throws CanonicalizationException
-     * @throws IOException
-     */
-    protected void canonicalize(OutputStream output, boolean c14n11) throws CanonicalizationException, IOException {
-        final CanonicalizerBase c14nizer;
-        if (c14n11) {
-            c14nizer = new Canonicalizer11_OmitComments();
-        } else {
-            c14nizer = new Canonicalizer20010315OmitComments();
-        }
-        c14nizer.engineCanonicalize(this, output, isSecureValidation());
-        output.flush();
+    public String getPreCalculatedDigest() {
+        return preCalculatedDigest;
     }
 }
