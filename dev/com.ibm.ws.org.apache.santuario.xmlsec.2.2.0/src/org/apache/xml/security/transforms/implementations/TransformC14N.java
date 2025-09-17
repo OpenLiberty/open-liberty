@@ -25,7 +25,6 @@ import java.io.OutputStream;
 import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315OmitComments;
-import org.apache.xml.security.signature.XMLSignatureByteInput;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
@@ -57,22 +56,23 @@ public class TransformC14N extends TransformSpi {
 
         Canonicalizer20010315 c14n = getCanonicalizer();
 
-        if (os == null && (input.hasUnprocessedInput() || input.isElement() || input.isNodeSet())) {
+        if (os == null && (input.isOctetStream() || input.isElement() || input.isNodeSet())) {
             try (ByteArrayOutputStream writer = new ByteArrayOutputStream()) {
                 c14n.engineCanonicalize(input, writer, secureValidation);
                 writer.flush();
-                XMLSignatureInput output = new XMLSignatureByteInput(writer.toByteArray());
+                XMLSignatureInput output = new XMLSignatureInput(writer.toByteArray());
                 output.setSecureValidation(secureValidation);
                 return output;
             } catch (IOException ex) {
                 throw new CanonicalizationException("empty", new Object[] {ex.getMessage()});
             }
+        } else {
+            c14n.engineCanonicalize(input, os, secureValidation);
+            XMLSignatureInput output = new XMLSignatureInput((byte[])null);
+            output.setSecureValidation(secureValidation);
+            output.setOutputStream(os);
+            return output;
         }
-        c14n.engineCanonicalize(input, os, secureValidation);
-        XMLSignatureInput output = new XMLSignatureByteInput(null);
-        output.setSecureValidation(secureValidation);
-        output.setOutputStream(os);
-        return output;
     }
 
     protected Canonicalizer20010315 getCanonicalizer() {

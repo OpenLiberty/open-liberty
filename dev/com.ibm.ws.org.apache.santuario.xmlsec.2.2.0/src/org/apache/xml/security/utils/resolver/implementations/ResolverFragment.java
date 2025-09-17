@@ -19,7 +19,6 @@
 package org.apache.xml.security.utils.resolver.implementations;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.signature.XMLSignatureNodeInput;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -89,7 +88,7 @@ public class ResolverFragment extends ResourceResolverSpi {
             );
         }
 
-        XMLSignatureInput result = new XMLSignatureNodeInput(selectedElem);
+        XMLSignatureInput result = new XMLSignatureInput(selectedElem);
         result.setSecureValidation(context.secureValidation);
         result.setExcludeComments(true);
 

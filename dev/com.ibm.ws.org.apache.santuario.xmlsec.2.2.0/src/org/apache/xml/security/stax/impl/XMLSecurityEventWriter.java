@@ -44,7 +44,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
 
 /**
  */
-public class XMLSecurityEventWriter implements XMLEventWriter, AutoCloseable {
+public class XMLSecurityEventWriter implements XMLEventWriter {
 
     private final XMLStreamWriter xmlStreamWriter;
 

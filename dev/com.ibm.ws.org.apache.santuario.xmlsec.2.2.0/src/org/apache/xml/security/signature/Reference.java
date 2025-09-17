@@ -18,7 +18,6 @@
  */
 package org.apache.xml.security.signature;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.AccessController;
@@ -557,7 +556,7 @@ public class Reference extends SignatureElementProxy {
                     InclusiveNamespaces.prefixStr2Set(in.getInclusiveNamespaces());
             }
 
-            return new XMLSignatureInputDebugger(nodes, inclusiveNamespaces).getHTMLRepresentation();
+            return nodes.getHTMLRepresentation(inclusiveNamespaces);
         } catch (XMLSecurityException ex) {
             throw new XMLSignatureException(ex);
         }
@@ -640,10 +639,10 @@ public class Reference extends SignatureElementProxy {
         } else if (input.isElement()) {
             referenceData = new ReferenceSubTreeData
                 (input.getSubNode(), input.isExcludeComments());
-        } else if (input.hasUnprocessedInput()) {
+        } else if (input.isOctetStream() || input.isByteArray()) {
             try {
                 referenceData = new ReferenceOctetStreamData
-                    (input.getUnprocessedInput(), input.getSourceURI(),
+                    (input.getOctetStream(), input.getSourceURI(),
                         input.getMIMEType());
             } catch (IOException ioe) {
                 // LOG a warning
@@ -696,7 +695,7 @@ public class Reference extends SignatureElementProxy {
     private byte[] calculateDigest(boolean validating)
         throws ReferenceNotInitializedException, XMLSignatureException {
         XMLSignatureInput input = this.getContentsBeforeTransformation();
-        if (input.getPreCalculatedDigest() != null) {
+        if (input.isPreCalculatedDigest()) {
             return getPreCalculatedDigest(input);
         }
 
@@ -715,16 +714,16 @@ public class Reference extends SignatureElementProxy {
             // if signing and c14n11 property == true explicitly add
             // C14N11 transform if needed
             if (Reference.useC14N11 && !validating && !output.isOutputStreamSet()
-                && !output.hasUnprocessedInput()) {
+                && !output.isOctetStream()) {
                 if (transforms == null) {
                     transforms = new Transforms(getDocument());
                     transforms.setSecureValidation(secureValidation);
                     getElement().insertBefore(transforms.getElement(), digestMethodElem);
                 }
                 transforms.addTransform(Transforms.TRANSFORM_C14N11_OMIT_COMMENTS);
-                output.write(os, true);
+                output.updateOutputStream(os, true);
             } else {
-                output.write(os);
+                output.updateOutputStream(os);
             }
             os.flush();
 
@@ -735,8 +734,12 @@ public class Reference extends SignatureElementProxy {
         } catch (XMLSecurityException | IOException ex) {
             throw new ReferenceNotInitializedException(ex);
         } finally { //NOPMD
-            if (output instanceof Closeable) {
-                close((Closeable) output);
+            try {
+                if (output != null && output.getOctetStreamReal() != null) {
+                    output.getOctetStreamReal().close();
+                }
+            } catch (IOException ex) {
+                throw new ReferenceNotInitializedException(ex);
             }
         }
     }
@@ -806,14 +809,5 @@ public class Reference extends SignatureElementProxy {
     @Override
     public String getBaseLocalName() {
         return Constants._TAG_REFERENCE;
-    }
-
-
-    private static void close(Closeable closeable) throws ReferenceNotInitializedException {
-        try {
-            closeable.close();
-        } catch (IOException e) {
-            throw new ReferenceNotInitializedException(e, "Close failed!");
-        }
     }
 }

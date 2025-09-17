@@ -19,7 +19,6 @@
 package org.apache.xml.security.utils.resolver.implementations;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.signature.XMLSignatureNodeInput;
 import org.apache.xml.security.utils.XMLUtils;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
@@ -85,7 +84,7 @@ public class ResolverXPointer extends ResourceResolverSpi {
             }
         }
 
-        XMLSignatureInput result = new XMLSignatureNodeInput(resultNode);
+        XMLSignatureInput result = new XMLSignatureInput(resultNode);
         result.setSecureValidation(context.secureValidation);
 
         result.setMIMEType("text/xml");

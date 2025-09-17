@@ -67,9 +67,6 @@ public final class Constants {
     /** The (newer) URL for more algorithms **/
     public static final String XML_DSIG_NS_MORE_07_05 = "http://www.w3.org/2007/05/xmldsig-more#";
 
-    /** The 2021 xmldsig-more URL for Internet Engineering Task Force (IETF) algorithms **/
-    public static final String XML_DSIG_NS_MORE_21_04 = "http://www.w3.org/2021/04/xmldsig-more#";
-
     /** The URI for XML spec*/
     public static final String XML_LANG_SPACE_SpecNS = "http://www.w3.org/XML/1998/namespace";
 
@@ -139,9 +136,6 @@ public final class Constants {
 
     /** Tag of Element RSAPSSParams **/
     public static final String _TAG_RSAPSSPARAMS = "RSAPSSParams";
-
-    /** Tag of Element Salt **/
-    public static final String _TAG_SALT = "Salt";
 
     /** Tag of Element SaltLength **/
     public static final String _TAG_SALTLENGTH = "SaltLength";

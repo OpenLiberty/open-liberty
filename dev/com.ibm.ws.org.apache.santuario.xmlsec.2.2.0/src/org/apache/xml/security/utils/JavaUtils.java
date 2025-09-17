@@ -51,19 +51,24 @@ public final class JavaUtils {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static byte[] getBytesFromFile(String filePath)
+    public static byte[] getBytesFromFile(String fileName)
         throws FileNotFoundException, IOException {
-        try (InputStream inputStream = Files.newInputStream(Paths.get(filePath));
+
+        byte[] refBytes = null;
+
+        try (InputStream inputStream = Files.newInputStream(Paths.get(fileName));
             UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream()) {
-            byte[] buf = new byte[8_192];
+            byte[] buf = new byte[1024];
             int len;
 
             while ((len = inputStream.read(buf)) > 0) {
                 baos.write(buf, 0, len);
             }
 
-            return baos.toByteArray();
+            refBytes = baos.toByteArray();
         }
+
+        return refBytes;
     }
 
     /**
@@ -86,18 +91,17 @@ public final class JavaUtils {
 
     /**
      * This method reads all bytes from the given InputStream till EOF and
-     * returns them as a byte array.
-     * <p>
-     * The method doesn't close the input stream.
+     * returns them as a byte array. The method doesn't close the input stream.
      *
      * @param inputStream
      * @return the bytes read from the stream
+     *
      * @throws FileNotFoundException
      * @throws IOException
      */
     public static byte[] getBytesFromStream(InputStream inputStream) throws IOException {
         try (UnsyncByteArrayOutputStream baos = new UnsyncByteArrayOutputStream()) {
-            byte[] buf = new byte[8_192];
+            byte[] buf = new byte[4 * 1024];
             int len;
             while ((len = inputStream.read(buf)) > 0) {
                 baos.write(buf, 0, len);

@@ -38,9 +38,6 @@ import javax.xml.crypto.dsig.TransformService;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.signature.XMLSignatureNodeInput;
-import org.apache.xml.security.signature.XMLSignatureNodeSetInput;
-import org.apache.xml.security.signature.XMLSignatureStreamInput;
 import org.apache.xml.security.transforms.Transform;
 import org.apache.xml.security.transforms.Transforms;
 import org.w3c.dom.Document;
@@ -168,18 +165,19 @@ public abstract class ApacheTransform extends TransformService {
             if (data instanceof DOMSubTreeData) {
                 LOG.debug("DOMSubTreeData = true");
                 DOMSubTreeData subTree = (DOMSubTreeData)data;
-                in = new XMLSignatureNodeInput(subTree.getRoot());
+                in = new XMLSignatureInput(subTree.getRoot());
                 in.setExcludeComments(subTree.excludeComments());
             } else {
-                @SuppressWarnings({"unchecked", "rawtypes"})
+                @SuppressWarnings("unchecked")
                 Set<Node> nodeSet =
                     Utils.toNodeSet(((NodeSetData)data).iterator());
-                in = new XMLSignatureNodeSetInput(nodeSet);
+                in = new XMLSignatureInput(nodeSet);
             }
         } else {
             LOG.debug("isNodeSet() = false");
             try {
-                in = new XMLSignatureStreamInput(((OctetStreamData) data).getOctetStream());
+                in = new XMLSignatureInput
+                    (((OctetStreamData)data).getOctetStream());
             } catch (Exception ex) {
                 throw new TransformException(ex);
             }
@@ -196,7 +194,7 @@ public abstract class ApacheTransform extends TransformService {
             } else {
                 in = transform.performTransform(in, secVal);
             }
-            if (in.hasUnprocessedInput()) {
+            if (in.isOctetStream()) {
                 return new ApacheOctetStreamData(in);
             } else {
                 return new ApacheNodeSetData(in);

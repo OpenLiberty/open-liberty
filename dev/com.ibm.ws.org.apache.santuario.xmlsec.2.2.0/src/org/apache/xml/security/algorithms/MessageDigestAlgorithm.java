@@ -99,7 +99,7 @@ public final class MessageDigestAlgorithm extends Algorithm {
         return new MessageDigestAlgorithm(doc, algorithmURI);
     }
 
-    public static MessageDigest getDigestInstance(String algorithmURI) throws XMLSignatureException {
+    private static MessageDigest getDigestInstance(String algorithmURI) throws XMLSignatureException {
         String algorithmID = JCEMapper.translateURItoJCEID(algorithmURI);
 
         if (algorithmID == null) {

@@ -154,9 +154,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                         createStartElementAndOutputAsEvent(outputProcessorChain, XMLSecurityConstants.TAG_xenc_EncryptionMethod, false, attributes);
 
                         final String encryptionKeyTransportDigestAlgorithm = getSecurityProperties().getEncryptionKeyTransportDigestAlgorithm();
-                        // Check for rsa-oaep-mgf1p then MGF1 is set by default and encryptionKeyTransportMGFAlgorithm must not be set!
-                        final String encryptionKeyTransportMGFAlgorithm = XMLSecurityConstants.NS_XENC_RSAOAEPMGF1P.equals(encryptionKeyTransportAlgorithm)?
-                                null : getSecurityProperties().getEncryptionKeyTransportMGFAlgorithm();
+                        final String encryptionKeyTransportMGFAlgorithm = getSecurityProperties().getEncryptionKeyTransportMGFAlgorithm();
 
                         if (XMLSecurityConstants.NS_XENC11_RSAOAEP.equals(encryptionKeyTransportAlgorithm) ||
                                 XMLSecurityConstants.NS_XENC_RSAOAEPMGF1P.equals(encryptionKeyTransportAlgorithm)) {
@@ -216,9 +214,7 @@ public class XMLEncryptOutputProcessor extends AbstractEncryptOutputProcessor {
                                 }
 
                                 MGF1ParameterSpec mgfParameterSpec = new MGF1ParameterSpec("SHA-1");
-                                // Check for RSA-OAEP then MGF1 is set by default and value must not be set!
-                                if (encryptionKeyTransportMGFAlgorithm != null
-                                    && !XMLSecurityConstants.NS_XENC_RSAOAEPMGF1P.equals(encryptionKeyTransportAlgorithm)) {
+                                if (encryptionKeyTransportMGFAlgorithm != null) {
                                     String jceMGFAlgorithm = JCEMapper.translateURItoJCEID(encryptionKeyTransportMGFAlgorithm);
                                     mgfParameterSpec = new MGF1ParameterSpec(jceMGFAlgorithm);
                                 }
