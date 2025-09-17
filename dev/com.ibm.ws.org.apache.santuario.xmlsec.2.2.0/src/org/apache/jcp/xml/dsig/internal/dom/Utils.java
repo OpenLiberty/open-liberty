@@ -40,25 +40,25 @@ import org.w3c.dom.Node;
 public final class Utils {
 
     private Utils() {}
-
-    public static byte[] readBytesFromStream(InputStream is)
-        throws IOException
-    {
+	
+	// Liberty Change Start: Backport 4.x
+    public static byte[] readBytesFromStream(InputStream is) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-            byte[] buf = new byte[1024];
+            byte[] buf = new byte[8192];
             while (true) {
                 int read = is.read(buf);
                 if (read == -1) { // EOF
                     break;
                 }
                 baos.write(buf, 0, read);
-                if (read < 1024) {
+                if (read < buf.length) {
                     break;
                 }
             }
             return baos.toByteArray();
         }
     }
+	// Liberty Change End
 
     /**
      * Converts an Iterator to a Set of Nodes, according to the XPath

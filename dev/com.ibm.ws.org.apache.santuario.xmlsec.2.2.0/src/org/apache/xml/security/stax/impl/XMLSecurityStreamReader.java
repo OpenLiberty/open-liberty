@@ -46,7 +46,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecStartElement;
  * to XMLStreamReader
  *
  */
-public class XMLSecurityStreamReader implements XMLStreamReader {
+public class XMLSecurityStreamReader implements XMLStreamReader, AutoCloseable { // Liberty Change: Backport 4.x
 
     private final InputProcessorChain inputProcessorChain;
     private XMLSecEvent currentXMLSecEvent;

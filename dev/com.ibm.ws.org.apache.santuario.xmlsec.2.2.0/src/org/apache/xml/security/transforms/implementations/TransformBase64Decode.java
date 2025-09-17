@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 
 import org.apache.xml.security.c14n.CanonicalizationException;
+import org.apache.xml.security.signature.XMLSignatureByteInput;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.TransformationException;
@@ -83,33 +84,29 @@ public class TransformBase64Decode extends TransformSpi {
             traverseElement((Element)el, sb);
             if (os == null) {
                 byte[] decodedBytes = XMLUtils.decode(sb.toString());
-                XMLSignatureInput output = new XMLSignatureInput(decodedBytes);
+				// Liberty Change Start: Backport 4.x
+                XMLSignatureInput output = new XMLSignatureByteInput(decodedBytes);
                 output.setSecureValidation(secureValidation);
                 return output;
             }
             byte[] bytes = XMLUtils.decode(sb.toString());
             os.write(bytes);
-            XMLSignatureInput output = new XMLSignatureInput((byte[])null);
+            XMLSignatureInput output = new XMLSignatureByteInput(null);
             output.setSecureValidation(secureValidation);
             output.setOutputStream(os);
             return output;
-        } else if (input.isOctetStream() || input.isNodeSet()) {
+        } else if (input.hasUnprocessedInput() || input.isNodeSet()) {
             if (os == null) {
                 byte[] base64Bytes = input.getBytes();
                 byte[] decodedBytes = XMLUtils.decode(base64Bytes);
-                XMLSignatureInput output = new XMLSignatureInput(decodedBytes);
+                XMLSignatureInput output = new XMLSignatureByteInput(decodedBytes);
                 output.setSecureValidation(secureValidation);
                 return output;
             }
-            if (input.isByteArray() || input.isNodeSet()) {
                 byte[] bytes = XMLUtils.decode(input.getBytes());
                 os.write(bytes);
-            } else {
-                byte[] inputBytes = JavaUtils.getBytesFromStream(input.getOctetStreamReal());
-                byte[] bytes = XMLUtils.decode(inputBytes);
-                os.write(bytes);
-            }
-            XMLSignatureInput output = new XMLSignatureInput((byte[])null);
+            XMLSignatureInput output = new XMLSignatureByteInput(null);
+			// Liberty Change End
             output.setSecureValidation(secureValidation);
             output.setOutputStream(os);
             return output;

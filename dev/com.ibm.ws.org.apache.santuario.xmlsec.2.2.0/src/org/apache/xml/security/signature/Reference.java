@@ -18,6 +18,7 @@
  */
 package org.apache.xml.security.signature;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.security.AccessController;
@@ -62,6 +63,7 @@ import org.w3c.dom.Text;
  * Construct a <CODE>ds:Reference</CODE> from an {@link org.w3c.dom.Element}.
  *
  * <p>Create a new reference</p>
+ *
  * <pre>
  * Document doc;
  * MessageDigestAlgorithm sha1 = MessageDigestAlgorithm.getInstance("http://#sha1");
@@ -72,13 +74,14 @@ import org.w3c.dom.Text;
  * </pre>
  *
  * <p>Verify a reference</p>
+ *
  * <pre>
  * Element refElem = doc.getElement("Reference"); // PSEUDO
  * Reference ref = new Reference(refElem);
  * String url = ref.getURI();
  * ref.setData(new XMLSignatureInput(new FileInputStream(url)));
  * if (ref.verify()) {
- *    System.out.println("verified");
+ *     System.out.println("verified");
  * }
  * </pre>
  *
@@ -119,12 +122,9 @@ public class Reference extends SignatureElementProxy {
      * will be added if necessary when generating the signature. See section
      * 3.1.1 of http://www.w3.org/2007/xmlsec/Drafts/xmldsig-core/ for more info.
      */
-    private static boolean useC14N11 =
-        AccessController.doPrivileged((PrivilegedAction<Boolean>)
-            () -> Boolean.getBoolean("org.apache.xml.security.useC14N11"));
+    private static boolean useC14N11 = AccessController.doPrivileged((PrivilegedAction<Boolean>) () -> Boolean.getBoolean("org.apache.xml.security.useC14N11"));
 
-    private static final org.slf4j.Logger LOG =
-        org.slf4j.LoggerFactory.getLogger(Reference.class);
+    private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(Reference.class);
 
     private Manifest manifest;
     private XMLSignatureInput transformsOutput;
@@ -153,19 +153,18 @@ public class Reference extends SignatureElementProxy {
     /**
      * Constructor Reference
      *
-     * @param doc the {@link Document} in which <code>XMLsignature</code> is placed
-     * @param baseURI the URI of the resource where the XML instance will be stored
-     * @param referenceURI URI indicate where is data which will digested
+     * @param doc                    the {@link Document} in which <code>XMLsignature</code> is placed
+     * @param baseURI                the URI of the resource where the XML instance will be stored
+     * @param referenceURI           URI indicate where is data which will digested
      * @param manifest
-     * @param transforms {@link Transforms} applied to data
+     * @param transforms             {@link Transforms} applied to data
      * @param messageDigestAlgorithm {@link MessageDigestAlgorithm Digest algorithm} which is
-     * applied to the data
-     * TODO should we throw XMLSignatureException if MessageDigestAlgoURI is wrong?
+     *                                   applied to the data
+     *                                   TODO should we throw XMLSignatureException if MessageDigestAlgoURI is wrong?
      */
     protected Reference(
-        Document doc, String baseURI, String referenceURI, Manifest manifest,
-        Transforms transforms, String messageDigestAlgorithm
-    ) throws XMLSignatureException {
+                        Document doc, String baseURI, String referenceURI, Manifest manifest,
+                        Transforms transforms, String messageDigestAlgorithm) throws XMLSignatureException {
         super(doc);
 
         addReturnToSelf();
@@ -204,22 +203,20 @@ public class Reference extends SignatureElementProxy {
         appendSelf(digestMethodElem);
         addReturnToSelf();
 
-        digestValueElement =
-            XMLUtils.createElementInSignatureSpace(getDocument(), Constants._TAG_DIGESTVALUE);
+        digestValueElement = XMLUtils.createElementInSignatureSpace(getDocument(), Constants._TAG_DIGESTVALUE);
 
         appendSelf(digestValueElement);
         addReturnToSelf();
     }
 
-
     /**
      * Build a {@link Reference} from an {@link Element}
      *
-     * @param element <code>Reference</code> element
-     * @param baseURI the URI of the resource where the XML instance was stored
+     * @param element  <code>Reference</code> element
+     * @param baseURI  the URI of the resource where the XML instance was stored
      * @param manifest is the {@link Manifest} of {@link SignedInfo} in which the Reference occurs.
-     * We need this because the Manifest has the individual {@link ResourceResolver}s which have
-     * been set by the user
+     *                     We need this because the Manifest has the individual {@link ResourceResolver}s which have
+     *                     been set by the user
      * @throws XMLSecurityException
      */
     protected Reference(Element element, String baseURI, Manifest manifest) throws XMLSecurityException {
@@ -229,16 +226,15 @@ public class Reference extends SignatureElementProxy {
     /**
      * Build a {@link Reference} from an {@link Element}
      *
-     * @param element <code>Reference</code> element
-     * @param baseURI the URI of the resource where the XML instance was stored
-     * @param manifest is the {@link Manifest} of {@link SignedInfo} in which the Reference occurs.
+     * @param element          <code>Reference</code> element
+     * @param baseURI          the URI of the resource where the XML instance was stored
+     * @param manifest         is the {@link Manifest} of {@link SignedInfo} in which the Reference occurs.
      * @param secureValidation whether secure validation is enabled or not
-     * We need this because the Manifest has the individual {@link ResourceResolver}s which have
-     * been set by the user
+     *                             We need this because the Manifest has the individual {@link ResourceResolver}s which have
+     *                             been set by the user
      * @throws XMLSecurityException
      */
-    protected Reference(Element element, String baseURI, Manifest manifest, boolean secureValidation)
-        throws XMLSecurityException {
+    protected Reference(Element element, String baseURI, Manifest manifest, boolean secureValidation) throws XMLSecurityException {
         super(element, baseURI);
         this.secureValidation = secureValidation;
         this.baseURI = baseURI;
@@ -259,14 +255,14 @@ public class Reference extends SignatureElementProxy {
         digestMethodElem = el;
         if (digestMethodElem == null ||
             !(Constants.SignatureSpecNS.equals(digestMethodElem.getNamespaceURI())
-                && Constants._TAG_DIGESTMETHOD.equals(digestMethodElem.getLocalName()))) {
+              && Constants._TAG_DIGESTMETHOD.equals(digestMethodElem.getLocalName()))) {
             throw new XMLSecurityException("signature.Reference.NoDigestMethod");
         }
 
         digestValueElement = XMLUtils.getNextElement(digestMethodElem.getNextSibling());
         if (digestValueElement == null ||
             !(Constants.SignatureSpecNS.equals(digestValueElement.getNamespaceURI())
-                && Constants._TAG_DIGESTVALUE.equals(digestValueElement.getLocalName()))) {
+              && Constants._TAG_DIGESTVALUE.equals(digestValueElement.getLocalName()))) {
             throw new XMLSecurityException("signature.Reference.NoDigestValue");
         }
         this.manifest = manifest;
@@ -371,7 +367,7 @@ public class Reference extends SignatureElementProxy {
      * <CODE>Reference</CODE> element points to a <CODE>#Object</CODE> element
      *
      * @return true if the Reference type indicates that this Reference points to an
-     * <code>Object</code>
+     *         <code>Object</code>
      */
     public boolean typeIsReferenceToObject() {
         return Reference.OBJECT_URI.equals(this.getType());
@@ -384,7 +380,7 @@ public class Reference extends SignatureElementProxy {
      * <CODE>Reference</CODE> element points to a <CODE>#Manifest</CODE> element
      *
      * @return true if the Reference type indicates that this Reference points to a
-     * {@link Manifest}
+     *         {@link Manifest}
      */
     public boolean typeIsReferenceToManifest() {
         return Reference.MANIFEST_URI.equals(this.getType());
@@ -414,36 +410,31 @@ public class Reference extends SignatureElementProxy {
      * @throws ReferenceNotInitializedException
      * @throws XMLSignatureException
      */
-    public void generateDigestValue()
-        throws XMLSignatureException, ReferenceNotInitializedException {
+    public void generateDigestValue() throws XMLSignatureException, ReferenceNotInitializedException {
         this.setDigestValueElement(this.calculateDigest(false));
     }
 
     /**
      * Returns the XMLSignatureInput which is created by de-referencing the URI attribute.
+     *
      * @return the XMLSignatureInput of the source of this reference
      * @throws ReferenceNotInitializedException If the resolver found any
-     * problem resolving the reference
+     *                                              problem resolving the reference
      */
-    public XMLSignatureInput getContentsBeforeTransformation()
-        throws ReferenceNotInitializedException {
+    public XMLSignatureInput getContentsBeforeTransformation() throws ReferenceNotInitializedException {
         try {
-            Attr uriAttr =
-                getElement().getAttributeNodeNS(null, Constants._ATT_URI);
+            Attr uriAttr = getElement().getAttributeNodeNS(null, Constants._ATT_URI);
 
-            ResourceResolverContext resolverContext =
-                new ResourceResolverContext(uriAttr, this.baseURI,
-                    secureValidation, this.manifest.getResolverProperties());
+            ResourceResolverContext resolverContext = new ResourceResolverContext(uriAttr, this.baseURI, secureValidation, this.manifest.getResolverProperties());
 
             return ResourceResolver.resolve(this.manifest.getPerManifestResolvers(), resolverContext);
-        }  catch (ResourceResolverException ex) {
+        } catch (ResourceResolverException ex) {
             throw new ReferenceNotInitializedException(ex);
         }
     }
 
     private XMLSignatureInput getContentsAfterTransformation(
-        XMLSignatureInput input, OutputStream os
-    ) throws XMLSignatureException {
+                                                             XMLSignatureInput input, OutputStream os) throws XMLSignatureException {
         try {
             Transforms transforms = this.getTransforms();
             XMLSignatureInput output = null;
@@ -465,11 +456,11 @@ public class Reference extends SignatureElementProxy {
 
     /**
      * Returns the XMLSignatureInput which is the result of the Transforms.
+     *
      * @return a XMLSignatureInput with all transformations applied.
      * @throws XMLSignatureException
      */
-    public XMLSignatureInput getContentsAfterTransformation()
-        throws XMLSignatureException {
+    public XMLSignatureInput getContentsAfterTransformation() throws XMLSignatureException {
         XMLSignatureInput input = this.getContentsBeforeTransformation();
         cacheDereferencedElement(input);
 
@@ -479,12 +470,12 @@ public class Reference extends SignatureElementProxy {
     /**
      * This method returns the XMLSignatureInput which represents the node set before
      * some kind of canonicalization is applied for the first time.
+     *
      * @return Gets a the node doing everything till the first c14n is needed
      *
      * @throws XMLSignatureException
      */
-    public XMLSignatureInput getNodesetBeforeFirstCanonicalization()
-        throws XMLSignatureException {
+    public XMLSignatureInput getNodesetBeforeFirstCanonicalization() throws XMLSignatureException {
         try {
             XMLSignatureInput input = this.getContentsBeforeTransformation();
             cacheDereferencedElement(input);
@@ -513,6 +504,7 @@ public class Reference extends SignatureElementProxy {
 
     /**
      * Method getHTMLRepresentation
+     *
      * @return The HTML of the transformation
      * @throws XMLSignatureException
      */
@@ -539,24 +531,20 @@ public class Reference extends SignatureElementProxy {
             Set<String> inclusiveNamespaces = new HashSet<>();
             if (c14nTransform != null
                 && c14nTransform.length(
-                    InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
-                    InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES) == 1) {
+                                        InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
+                                        InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES) == 1) {
 
                 // there is one InclusiveNamespaces element
-                InclusiveNamespaces in =
-                    new InclusiveNamespaces(
-                        XMLUtils.selectNode(
-                            c14nTransform.getElement().getFirstChild(),
-                            InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
-                            InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES,
-                            0
-                        ), this.getBaseURI());
+                InclusiveNamespaces in = new InclusiveNamespaces(XMLUtils.selectNode(
+                                                                                     c14nTransform.getElement().getFirstChild(),
+                                                                                     InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
+                                                                                     InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES,
+                                                                                     0), this.getBaseURI());
 
-                inclusiveNamespaces =
-                    InclusiveNamespaces.prefixStr2Set(in.getInclusiveNamespaces());
+                inclusiveNamespaces = InclusiveNamespaces.prefixStr2Set(in.getInclusiveNamespaces());
             }
 
-            return nodes.getHTMLRepresentation(inclusiveNamespaces);
+            return new XMLSignatureInputDebugger(nodes, inclusiveNamespaces).getHTMLRepresentation(); // Liberty Change: Backport 4.x
         } catch (XMLSecurityException ex) {
             throw new XMLSignatureException(ex);
         }
@@ -564,6 +552,7 @@ public class Reference extends SignatureElementProxy {
 
     /**
      * This method only works after a call to verify.
+     *
      * @return the transformed output(i.e. what is going to be digested).
      */
     public XMLSignatureInput getTransformsOutput() {
@@ -581,14 +570,14 @@ public class Reference extends SignatureElementProxy {
     /**
      * This method returns the {@link XMLSignatureInput} which is referenced by the
      * <CODE>URI</CODE> Attribute.
+     *
      * @param os where to write the transformation can be null.
      * @return the element to digest
      *
      * @throws XMLSignatureException
      * @see Manifest#verifyReferences()
      */
-    protected XMLSignatureInput dereferenceURIandPerformTransforms(OutputStream os)
-        throws XMLSignatureException {
+    protected XMLSignatureInput dereferenceURIandPerformTransforms(OutputStream os) throws XMLSignatureException {
         try {
             XMLSignatureInput input = this.getContentsBeforeTransformation();
             cacheDereferencedElement(input);
@@ -637,13 +626,12 @@ public class Reference extends SignatureElementProxy {
                 LOG.warn("cannot cache dereferenced data: " + e);
             }
         } else if (input.isElement()) {
-            referenceData = new ReferenceSubTreeData
-                (input.getSubNode(), input.isExcludeComments());
-        } else if (input.isOctetStream() || input.isByteArray()) {
+            referenceData = new ReferenceSubTreeData(input.getSubNode(), input.isExcludeComments());
+            // Liberty Change Start: Backport 4.x
+        } else if (input.hasUnprocessedInput()) {
             try {
-                referenceData = new ReferenceOctetStreamData
-                    (input.getOctetStream(), input.getSourceURI(),
-                        input.getMIMEType());
+                referenceData = new ReferenceOctetStreamData(input.getUnprocessedInput(), input.getSourceURI(), input.getMIMEType());
+                // Liberty Change End
             } catch (IOException ioe) {
                 // LOG a warning
                 LOG.warn("cannot cache dereferenced data: " + ioe);
@@ -660,9 +648,7 @@ public class Reference extends SignatureElementProxy {
      * @throws XMLSecurityException
      * @throws XMLSignatureException
      */
-    public Transforms getTransforms()
-        throws XMLSignatureException, InvalidTransformException,
-        TransformationException, XMLSecurityException {
+    public Transforms getTransforms() throws XMLSignatureException, InvalidTransformException, TransformationException, XMLSecurityException {
         return transforms;
     }
 
@@ -673,8 +659,7 @@ public class Reference extends SignatureElementProxy {
      * @throws ReferenceNotInitializedException
      * @throws XMLSignatureException
      */
-    public byte[] getReferencedBytes()
-        throws ReferenceNotInitializedException, XMLSignatureException {
+    public byte[] getReferencedBytes() throws ReferenceNotInitializedException, XMLSignatureException {
         try {
             XMLSignatureInput output = this.dereferenceURIandPerformTransforms(null);
             return output.getBytes();
@@ -682,7 +667,6 @@ public class Reference extends SignatureElementProxy {
             throw new ReferenceNotInitializedException(ex);
         }
     }
-
 
     /**
      * Method calculateDigest
@@ -692,10 +676,9 @@ public class Reference extends SignatureElementProxy {
      * @throws ReferenceNotInitializedException
      * @throws XMLSignatureException
      */
-    private byte[] calculateDigest(boolean validating)
-        throws ReferenceNotInitializedException, XMLSignatureException {
+    private byte[] calculateDigest(boolean validating) throws ReferenceNotInitializedException, XMLSignatureException {
         XMLSignatureInput input = this.getContentsBeforeTransformation();
-        if (input.isPreCalculatedDigest()) {
+        if (input.getPreCalculatedDigest() != null) { // Liberty Change: Backport 4.x
             return getPreCalculatedDigest(input);
         }
 
@@ -706,7 +689,7 @@ public class Reference extends SignatureElementProxy {
 
         XMLSignatureInput output = null;
         try (DigesterOutputStream diOs = new DigesterOutputStream(mda);
-            OutputStream os = new UnsyncBufferedOutputStream(diOs)) {
+                        OutputStream os = new UnsyncBufferedOutputStream(diOs)) {
 
             output = this.getContentsAfterTransformation(input, os);
             this.transformsOutput = output;
@@ -714,16 +697,17 @@ public class Reference extends SignatureElementProxy {
             // if signing and c14n11 property == true explicitly add
             // C14N11 transform if needed
             if (Reference.useC14N11 && !validating && !output.isOutputStreamSet()
-                && !output.isOctetStream()) {
+            // Liberty Change Start: Backport 4.x
+                && !output.hasUnprocessedInput()) {
                 if (transforms == null) {
                     transforms = new Transforms(getDocument());
                     transforms.setSecureValidation(secureValidation);
                     getElement().insertBefore(transforms.getElement(), digestMethodElem);
                 }
                 transforms.addTransform(Transforms.TRANSFORM_C14N11_OMIT_COMMENTS);
-                output.updateOutputStream(os, true);
+                output.write(os, true);
             } else {
-                output.updateOutputStream(os);
+                output.write(os);
             }
             os.flush();
 
@@ -734,13 +718,10 @@ public class Reference extends SignatureElementProxy {
         } catch (XMLSecurityException | IOException ex) {
             throw new ReferenceNotInitializedException(ex);
         } finally { //NOPMD
-            try {
-                if (output != null && output.getOctetStreamReal() != null) {
-                    output.getOctetStreamReal().close();
-                }
-            } catch (IOException ex) {
-                throw new ReferenceNotInitializedException(ex);
+            if (output instanceof Closeable) {
+                close((Closeable) output);
             }
+            // Liberty Change End
         }
     }
 
@@ -750,10 +731,9 @@ public class Reference extends SignatureElementProxy {
      * @param input XMLSignature
      * @return a pre-calculated digest value.
      * @throws ReferenceNotInitializedException if there is an error decoding digest value
-     * in Base64. Properly encoded pre-calculated digest value must be set.
+     *                                              in Base64. Properly encoded pre-calculated digest value must be set.
      */
-    private byte[] getPreCalculatedDigest(XMLSignatureInput input)
-            throws ReferenceNotInitializedException {
+    private byte[] getPreCalculatedDigest(XMLSignatureInput input) throws ReferenceNotInitializedException {
         LOG.debug("Verifying element with pre-calculated digest");
         String preCalculatedDigest = input.getPreCalculatedDigest();
         return XMLUtils.decode(preCalculatedDigest);
@@ -768,15 +748,12 @@ public class Reference extends SignatureElementProxy {
     public byte[] getDigestValue() throws XMLSecurityException {
         if (digestValueElement == null) {
             // The required element is not in the XML!
-            Object[] exArgs ={ Constants._TAG_DIGESTVALUE, Constants.SignatureSpecNS };
-            throw new XMLSecurityException(
-                "signature.Verification.NoSignatureElement", exArgs
-            );
+            Object[] exArgs = { Constants._TAG_DIGESTVALUE, Constants.SignatureSpecNS };
+            throw new XMLSecurityException("signature.Verification.NoSignatureElement", exArgs);
         }
         String content = XMLUtils.getFullTextChildrenFromNode(digestValueElement);
         return XMLUtils.decode(content);
     }
-
 
     /**
      * Tests reference validation is success or false
@@ -785,8 +762,7 @@ public class Reference extends SignatureElementProxy {
      * @throws ReferenceNotInitializedException
      * @throws XMLSecurityException
      */
-    public boolean verify()
-        throws ReferenceNotInitializedException, XMLSecurityException {
+    public boolean verify() throws ReferenceNotInitializedException, XMLSecurityException {
         byte[] elemDig = this.getDigestValue();
         byte[] calcDig = this.calculateDigest(true);
         boolean equal = MessageDigestAlgorithm.isEqual(elemDig, calcDig);
@@ -810,4 +786,14 @@ public class Reference extends SignatureElementProxy {
     public String getBaseLocalName() {
         return Constants._TAG_REFERENCE;
     }
+
+    // Liberty Change Start: Backport 4.x
+    private static void close(Closeable closeable) throws ReferenceNotInitializedException {
+        try {
+            closeable.close();
+        } catch (IOException e) {
+            throw new ReferenceNotInitializedException(e, "Close failed!");
+        }
+    }
+    // Liberty Change End
 }

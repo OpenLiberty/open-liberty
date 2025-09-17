@@ -35,7 +35,7 @@ public class ApacheOctetStreamData extends OctetStreamData
     public ApacheOctetStreamData(XMLSignatureInput xi)
         throws IOException
     {
-        super(xi.getOctetStream(), xi.getSourceURI(), xi.getMIMEType());
+        super(xi.getUnprocessedInput(), xi.getSourceURI(), xi.getMIMEType()); // Liberty Change: Backport 4.x
         this.xi = xi;
     }
 

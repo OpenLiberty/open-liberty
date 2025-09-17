@@ -26,6 +26,7 @@ import org.apache.xml.security.c14n.CanonicalizationException;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315Excl;
 import org.apache.xml.security.c14n.implementations.Canonicalizer20010315ExclOmitComments;
 import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.signature.XMLSignatureByteInput;
 import org.apache.xml.security.signature.XMLSignatureInput;
 import org.apache.xml.security.transforms.TransformSpi;
 import org.apache.xml.security.transforms.Transforms;
@@ -63,7 +64,7 @@ public class TransformC14NExclusive extends TransformSpi {
                 InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
                 InclusiveNamespaces._TAG_EC_INCLUSIVENAMESPACES) == 1
             ) {
-                Element inclusiveElement =
+                Element inclusiveElement = 
                     XMLUtils.selectNode(
                         transformElement.getFirstChild(),
                         InclusiveNamespaces.ExclusiveCanonicalizationNamespace,
@@ -78,23 +79,25 @@ public class TransformC14NExclusive extends TransformSpi {
 
             Canonicalizer20010315Excl c14n = getCanonicalizer();
 
-            if (os == null && (input.isOctetStream() || input.isElement() || input.isNodeSet())) {
+			// Liberty Change Start: Backport 4.x
+            if (os == null && (input.hasUnprocessedInput() || input.isElement() || input.isNodeSet())) {
                 try (ByteArrayOutputStream writer = new ByteArrayOutputStream()) {
                     c14n.engineCanonicalize(input, inclusiveNamespaces, writer, secureValidation);
                     writer.flush();
-                    XMLSignatureInput output = new XMLSignatureInput(writer.toByteArray());
+                    XMLSignatureInput output = new XMLSignatureByteInput(writer.toByteArray());
                     output.setSecureValidation(secureValidation);
                     return output;
                 } catch (IOException ex) {
                     throw new CanonicalizationException("empty", new Object[] {ex.getMessage()});
                 }
-            } else {
-                c14n.engineCanonicalize(input, inclusiveNamespaces, os, secureValidation);
-                XMLSignatureInput output = new XMLSignatureInput((byte[])null);
-                output.setSecureValidation(secureValidation);
-                output.setOutputStream(os);
-                return output;
             }
+            c14n.engineCanonicalize(input, inclusiveNamespaces, os, secureValidation);
+            XMLSignatureInput output = new XMLSignatureByteInput((byte[])null);
+			
+			// Liberty Change End
+            output.setSecureValidation(secureValidation);
+            output.setOutputStream(os);
+            return output;
         } catch (XMLSecurityException ex) {
             throw new CanonicalizationException(ex);
         }

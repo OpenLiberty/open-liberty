@@ -49,7 +49,7 @@ import org.apache.xml.security.binding.xmldsig.CanonicalizationMethodType;
 import org.apache.xml.security.binding.xmldsig.SignatureMethodType;
 import org.apache.xml.security.binding.xmldsig.SignatureType;
 import org.apache.xml.security.binding.xmldsig.SignedInfoType;
-import org.apache.xml.security.binding.xmldsig.pss.RSAPSSParams;
+import org.apache.xml.security.binding.xmldsig.pss.RSAPSSParamsType;
 import org.apache.xml.security.exceptions.XMLSecurityException;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.stax.ext.AbstractInputSecurityHeaderHandler;
@@ -375,13 +375,15 @@ public abstract class AbstractSignatureInputHandler extends AbstractInputSecurit
 
         private PSSParameterSpec rsaPSSParameterSpec(SignatureType signatureType) throws XMLSecurityException {
             SignatureMethodType signatureMethod = signatureType.getSignedInfo().getSignatureMethod();
-            RSAPSSParams rsapssParams = null;
+			// Liberty Change Start: Backport 4.x
+            RSAPSSParamsType rsapssParams = null;
             for (Object o : signatureMethod.getContent()) {
-                if (o instanceof RSAPSSParams) {
-                    rsapssParams = (RSAPSSParams) o;
+                if (o instanceof RSAPSSParamsType) {
+                    rsapssParams = (RSAPSSParamsType) o;
                     break;
                 }
             }
+			// Liberty Change End
             if (rsapssParams == null) {
                 throw new XMLSecurityException("algorithms.MissingRSAPSSParams");
             }

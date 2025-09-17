@@ -77,7 +77,7 @@ public final class DOMKeyInfoFactory extends KeyInfoFactory {
         String algorithm = key.getAlgorithm();
         if ("DSA".equals(algorithm)) {
             return new DOMKeyValue.DSA((DSAPublicKey) key);
-        } else if ("RSA".equals(algorithm)) {
+        } else if ("RSA".equals(algorithm) || "RSASSA-PSS".equals(algorithm)) { // Liberty Change: Backport 4.x
             return new DOMKeyValue.RSA((RSAPublicKey) key);
         } else if ("EC".equals(algorithm)) {
             return new DOMKeyValue.EC((ECPublicKey) key);

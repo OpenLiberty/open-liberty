@@ -31,7 +31,7 @@ import org.apache.xml.security.stax.ext.stax.XMLSecEvent;
 
 /**
  */
-public class XMLSecurityEventReader implements XMLEventReader {
+public class XMLSecurityEventReader implements XMLEventReader, AutoCloseable { // Liberty Change: Backport 4.x
 
     private final Iterator<XMLSecEvent> xmlSecEventIterator;
     private XMLEvent xmlSecEvent;

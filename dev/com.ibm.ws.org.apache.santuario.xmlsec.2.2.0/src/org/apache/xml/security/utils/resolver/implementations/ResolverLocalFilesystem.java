@@ -23,8 +23,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.Path;
 
 import org.apache.xml.security.signature.XMLSignatureInput;
+import org.apache.xml.security.signature.XMLSignatureFileInput;
 import org.apache.xml.security.utils.resolver.ResourceResolverContext;
 import org.apache.xml.security.utils.resolver.ResourceResolverException;
 import org.apache.xml.security.utils.resolver.ResourceResolverSpi;
@@ -46,9 +48,7 @@ public class ResolverLocalFilesystem extends ResourceResolverSpi {
         try {
             // calculate new URI
             URI uriNew = getNewURI(context.uriToResolve, context.baseUri);
-
-            InputStream inputStream = Files.newInputStream(Paths.get(uriNew));  //NOPMD
-            XMLSignatureInput result = new XMLSignatureInput(inputStream);
+            XMLSignatureInput result = new XMLSignatureFileInput(Paths.get(uriNew)); // Liberty Change: Backport 4.x
             result.setSecureValidation(context.secureValidation);
 
             result.setSourceURI(uriNew.toString());
