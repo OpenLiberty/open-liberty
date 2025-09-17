@@ -23,8 +23,8 @@
 
 	<keyStore
 		id="multiCertKeyStore"
-		password="Password"
-		type="pkcs12"
-		location="${server.config.dir}/ec_key.p12" />
+		password="Liberty"
+		type="jks"
+		location="${server.config.dir}/samlspKeyStore.jks" />
 
 </server>

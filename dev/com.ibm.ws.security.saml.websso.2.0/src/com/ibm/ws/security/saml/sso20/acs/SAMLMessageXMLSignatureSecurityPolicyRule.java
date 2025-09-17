@@ -202,7 +202,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
 
     protected void evaluateSignatureMethod(BasicMessageContext<?, ?> samlMsgCtx, Signature signature) throws MessageHandlerException {
         @SuppressWarnings("rawtypes")
-        String configMethod = SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA256;//((BasicMessageContext) samlMsgCtx).getSsoConfig().getSignatureMethodAlgorithm();
+        String configMethod = ((BasicMessageContext) samlMsgCtx).getSsoConfig().getSignatureMethodAlgorithm();
         String messageMethod = signature.getSignatureAlgorithm();
         if (SignatureMethods.toInteger(messageMethod) < SignatureMethods.toInteger(configMethod)) {
             if (tc.isDebugEnabled()) {

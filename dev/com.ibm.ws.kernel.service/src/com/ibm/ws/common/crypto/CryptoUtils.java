@@ -93,8 +93,6 @@ public class CryptoUtils {
     public static final String SHA1PRNG = "SHA1PRNG";
     public static final String SHA256DRBG = "SHA256DRBG";
 
-    public static final String CRYPTO_ALGORITHM_RSA = "RSA";
-
     public static final String ENCRYPT_ALGORITHM_DESEDE = "DESede";
     public static final String ENCRYPT_ALGORITHM_AES = "AES";
 
