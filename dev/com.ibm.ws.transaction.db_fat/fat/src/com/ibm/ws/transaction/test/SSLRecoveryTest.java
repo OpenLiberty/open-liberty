@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,10 +33,12 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+import com.ibm.ws.transaction.fat.util.PostgresqlContainerSuite;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.containers.KeystoreBuilder;
+import componenttest.containers.KeystoreBuilder.STORE_TYPE;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.PostgreSQLContainer;
@@ -52,17 +54,28 @@ public class SSLRecoveryTest extends FATServletClient {
     @Server("ssl-recovery")
     public static LibertyServer serverLibertySSL;
 
-    public static PostgreSQLContainer testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_IMAGE)
-                    .withDatabaseName(TxTestContainerSuite.POSTGRES_DB)
-                    .withUsername(TxTestContainerSuite.POSTGRES_USER)
-                    .withPassword(TxTestContainerSuite.POSTGRES_PASS)
+    public static PostgreSQLContainer testContainer = new PostgreSQLContainer(PostgresqlContainerSuite.getPostgresqlImageName())
+                    .withDatabaseName(PostgresqlContainerSuite.POSTGRES_DB)
+                    .withUsername(PostgresqlContainerSuite.POSTGRES_USER)
+                    .withPassword(PostgresqlContainerSuite.POSTGRES_PASS)
                     .withSSL()
                     .withLogConsumer(new SimpleLogConsumer(SSLRecoveryTest.class, "postgre-ssl"));
 
     @BeforeClass
     public static void beforeClass() throws Exception {
         serverLibertySSL.addIgnoredErrors(Arrays.asList("CWPKI0063W"));
-        testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2).withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT)).start();
+        testContainer.waitingFor(Wait.forLogMessage(".*database system is ready.*", 2)
+                        .withStartupTimeout(FATUtils.TESTCONTAINER_STARTUP_TIMEOUT))
+                        .start();
+
+        testContainer.copyFileFromContainer("/tmp/clientKeystore.p12", serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12");
+        KeystoreBuilder.of(serverLibertySSL, testContainer)
+                        .withCertificate("server", "/var/lib/postgresql/server.crt")
+                        .withDirectory(serverLibertySSL.getServerRoot() + "/resources/security/")
+                        .withFilename("outboundKeys")
+                        .withStoreType(STORE_TYPE.PKCS12)
+                        .withPassword("liberty")
+                        .export();
 
         setUp();
 
@@ -81,14 +94,14 @@ public class SSLRecoveryTest extends FATServletClient {
 
         String host = testContainer.getHost();
         String port = String.valueOf(testContainer.getMappedPort(5432));
-        String jdbcURL = testContainer.getJdbcUrl() + "?user=" + TxTestContainerSuite.POSTGRES_USER + "&password=" + TxTestContainerSuite.POSTGRES_PASS;
+        String jdbcURL = testContainer.getJdbcUrl() + "?user=" + PostgresqlContainerSuite.POSTGRES_USER + "&password=" + PostgresqlContainerSuite.POSTGRES_PASS;
         Log.info(c, "setUp", "Using PostgreSQL properties: host=" + host + "  port=" + port + ",  URL=" + jdbcURL);
 
         serverLibertySSL.addEnvVar("POSTGRES_HOST", host);
         serverLibertySSL.addEnvVar("POSTGRES_PORT", port);
-        serverLibertySSL.addEnvVar("POSTGRES_DB", TxTestContainerSuite.POSTGRES_DB);
-        serverLibertySSL.addEnvVar("POSTGRES_USER", TxTestContainerSuite.POSTGRES_USER);
-        serverLibertySSL.addEnvVar("POSTGRES_PASS", TxTestContainerSuite.POSTGRES_PASS);
+        serverLibertySSL.addEnvVar("POSTGRES_DB", PostgresqlContainerSuite.POSTGRES_DB);
+        serverLibertySSL.addEnvVar("POSTGRES_USER", PostgresqlContainerSuite.POSTGRES_USER);
+        serverLibertySSL.addEnvVar("POSTGRES_PASS", PostgresqlContainerSuite.POSTGRES_PASS);
         serverLibertySSL.addEnvVar("POSTGRES_URL", jdbcURL);
     }
 

@@ -21,6 +21,7 @@ import static org.junit.Assert.assertThat;
 
 import java.util.Map;
 
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -50,6 +51,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test the login module with an incorrectly encoded password
  */
 @RunWith(FATRunner.class)
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class LibertyLoginModuleInvalidTest {
 
     private static final String APP_NAME = "kafkaLoginModuleInvalidTest";
@@ -65,6 +67,9 @@ public class LibertyLoginModuleInvalidTest {
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeatDefault(SERVER_NAME);
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

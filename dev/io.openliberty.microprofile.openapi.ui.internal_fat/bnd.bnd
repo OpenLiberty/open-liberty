@@ -22,10 +22,11 @@ fat.test.container.images: selenium/standalone-chrome:4.8.3
 
 
 tested.features: \
-    expressionlanguage-5.0,\
-    appsecurity-5.0,\
     pages-3.1,\
-    servlet-6.0
+    pages-4.0,\
+    restfulWS-4.0,\
+    mpOpenAPI-4.1,\
+    appSecurity-6.0
 
 -buildpath: \
 	io.openliberty.org.testcontainers;version=latest,\

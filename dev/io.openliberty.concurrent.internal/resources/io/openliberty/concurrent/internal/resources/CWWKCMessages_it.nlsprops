@@ -58,6 +58,10 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: L''artefatto applicativo {0} specific
 CWWKC1207.lacks.qualifier.anno.explanation=L'annotazione Qualificatore indica che l'annotazione \u00e8 un qualificatore. L'annotazione Retention controlla la disponibilit\u00e0 delle annotazioni.
 CWWKC1207.lacks.qualifier.anno.useraction=Aggiungere le annotazioni @Qualifier e @Retention(RUNTIME) alla classe Qualifier.
 
+CWWKC1208.global.with.qualifiers=CWWKC1208E: L''artefatto applicativo {0} specifica un''annotazione {1} o un elemento del descrittore di distribuzione {2} che ha il nome {3} e l''elenco dei qualificatori {4}. Non \u00e8 possibile configurare una risorsa Jakarta Concurrency in modo che abbia qualificatori e uno spazio dei nomi java:global allo stesso tempo. Rimuovere i qualificatori dalla configurazione della risorsa Jakarta Concurrency che ha il nome {3} o passare allo spazio dei nomi java:app.
+CWWKC1208.global.with.qualifiers.explanation=La configurazione della risorsa Jakarta Concurrency non pu\u00f2 avere contemporaneamente qualificatori e uno spazio dei nomi java:global.
+CWWKC1208.global.with.qualifiers.useraction=Aggiornare la configurazione della risorsa Jakarta Concurrency definita dall'applicazione per omettere i qualificatori o utilizzare uno spazio dei nomi diverso, come lo spazio dei nomi java:app.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: La specifica Concurrency richiede che virtual=true sia ignorato nell''annotazione {1} dell''artefatto applicativo o nell''elemento {2} del descrittore di distribuzione con il nome {3}, perch\u00e9 Java {4} non supporta i thread virtuali.
 CWWKC1217.no.virtual.threads.explanation=I thread virtuali sono disponibili solo in Java 21 e successivi.
 CWWKC1217.no.virtual.threads.useraction=Aggiornare a Java 21 o successivo per abilitare l'uso dei thread virtuali.

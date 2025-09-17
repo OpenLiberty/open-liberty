@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -40,6 +39,5 @@ public class FATSuite extends TestContainerSuite {
     public static JdbcDatabaseContainer<?> postgre = DatabaseContainerFactory.createType(DatabaseContainerType.Postgres)
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
-                    .withPassword(POSTGRES_PASS)
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre"));
+                    .withPassword(POSTGRES_PASS);
 }

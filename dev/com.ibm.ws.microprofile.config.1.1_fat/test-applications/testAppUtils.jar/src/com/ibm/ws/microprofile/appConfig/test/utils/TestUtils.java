@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,7 +37,11 @@ public class TestUtils {
         }
         @SuppressWarnings("unchecked")
         Optional<T> opt = config.getOptionalValue(key, (Class<T>) expected.getClass());
-        T actual = opt.orElse(null);
+        assertContains(opt, key, expected);
+    }
+
+    public static <T> void assertContains(Optional<T> optional, String key, T expected) {
+        T actual = optional.orElse(null);
         if (actual == null) {
             throw new AssertionError("Value for key '" + key + "' was null");
         }
@@ -56,6 +60,13 @@ public class TestUtils {
         if (keys.contains(key)) {
             T opt = config.getValue(key, clazz);
             throw new AssertionError("Key '" + key + "' was found. Value was '" + opt + "'");
+        }
+    }
+
+    public static <T> void assertNotContains(Optional<T> optional, String key) {
+        if (optional.isPresent()) {
+            T value = optional.get();
+            throw new AssertionError("Key '" + key + "' was found. Value was '" + value + "'");
         }
     }
 

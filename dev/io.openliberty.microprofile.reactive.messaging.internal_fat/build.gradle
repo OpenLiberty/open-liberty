@@ -1,25 +1,8 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
-
-configurations {
-    kafkaClient
-    requiredLibs.extendsFrom kafkaClient
-}
+apply from: '../io.openliberty.microprofile.reactive.messaging.internal_fat.common/include-kafka-client.gradle'
 
 dependencies {
-    kafkaClient 'org.apache.kafka:kafka-clients:3.5.1'
-    kafkaClient 'org.lz4:lz4-java:1.8.0'
-    kafkaClient 'com.github.luben:zstd-jni:1.5.5-1'
-    kafkaClient 'org.xerial.snappy:snappy-java:1.1.10.1'
-    kafkaClient project(':com.ibm.ws.org.slf4j.api')
-    kafkaClient project(':com.ibm.ws.org.slf4j.jdk14')
     requiredLibs project(path: ':io.openliberty.microprofile.reactive.messaging.internal_fat.common', configuration: 'transformed')
 }
 
-task addKafkaClientLibs (type: Copy) {
-    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/libs')
-    from configurations.kafkaClient
-    shouldRunAfter autoFVT
-}
-
-zipAutoFVT.dependsOn addKafkaClientLibs
 addRequiredLibraries.dependsOn copyTestContainers

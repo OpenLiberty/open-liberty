@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,7 +21,9 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -30,13 +32,15 @@ import com.ibm.websphere.simplicity.config.Kerberos;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.DB2KerberosContainer;
-import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
+import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -49,12 +53,15 @@ public class ErrorPathTest extends FATServletClient {
     @Server("com.ibm.ws.jdbc.fat.krb5")
     public static LibertyServer server;
 
-    private static final DB2KerberosContainer db2 = DB2KerberosTest.db2;
+    public static final DB2KerberosContainer db2 = DB2KerberosTest.db2;
 
-    private static final String APP_NAME = DB2KerberosTest.APP_NAME;
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5");
 
     @ClassRule
-    public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
+    public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(db2);
+
+    private static final String APP_NAME = DB2KerberosTest.APP_NAME;
 
     private static ServerConfiguration originalConfig;
 
@@ -63,7 +70,9 @@ public class ErrorPathTest extends FATServletClient {
         Path krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
         FATSuite.krb5.generateConf(krbConfPath);
 
-        db2.start();
+        //TODO switch
+        Path krbKeytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab");
+//        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
 
@@ -74,6 +83,7 @@ public class ErrorPathTest extends FATServletClient {
         server.addEnvVar("DB2_PASS", db2.getPassword());
         server.addEnvVar("KRB5_USER", DB2KerberosTest.KRB5_USER);
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
+        server.addEnvVar("KRB5_KEYTAB", krbKeytabPath.toAbsolutePath().toString());
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
@@ -87,24 +97,7 @@ public class ErrorPathTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        Exception firstError = null;
-
-        try {
-            server.stopServer("CWWKS4345E: .*bogus.conf"); // expected by testConfigFileInvalid
-        } catch (Exception e) {
-            firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-        try {
-            db2.stop();
-        } catch (Exception e) {
-            if (firstError == null)
-                firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-
-        if (firstError != null)
-            throw firstError;
+        server.stopServer("CWWKS4345E: .*bogus.conf"); // expected by testConfigFileInvalid
     }
 
     /**
@@ -154,6 +147,7 @@ public class ErrorPathTest extends FATServletClient {
      * Expect that getConnection() in the test app fails with a LoginException
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @AllowedFFDC
     public void testPasswordInvalid() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();

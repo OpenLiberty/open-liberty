@@ -12,8 +12,11 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.cdi;
 
+import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
+
 import java.io.PrintWriter;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -23,13 +26,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicReference;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.data.internal.persistence.DataProvider;
+import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
 import io.openliberty.data.internal.persistence.Util;
@@ -57,29 +69,100 @@ import jakarta.enterprise.inject.spi.configurator.AnnotatedTypeConfigurator;
 public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, BeanAttributes<R> {
     private final static TraceComponent tc = Tr.register(RepositoryProducer.class);
 
-    private static final Set<Annotation> QUALIFIERS = Set.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
+    /**
+     * Amount of time in seconds to wait for an EntityManagerBuilder to become
+     * available.
+     */
+    private static final long INIT_TIMEOUT_SEC = TimeUnit.MINUTES.toSeconds(5);
 
+    /**
+     * Qualifiers for repository bean instances.
+     */
+    private static final Set<Annotation> QUALIFIERS = //
+                    Set.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
+
+    /**
+     * CDI bean manager.
+     */
     private final BeanManager beanMgr;
+
+    /**
+     * A set of the repository interface type.
+     */
     private final Set<Type> beanTypes;
-    private final FutureEMBuilder futureEMBuilder;
+
+    /**
+     * Future for the EntityManagerBuilder.
+     */
+    private FutureEMBuilder futureEMBuilder;
+
+    /**
+     * CDI extension for the Jakarta Data provider.
+     */
     private final DataExtension extension;
+
+    /**
+     * Map of intercepted instance to bean instance. Applies when a repository
+     * interface has methods with interceptor annotations, such as
+     * Asynchronous or Transactional.
+     */
     private final Map<R, R> intercepted = new ConcurrentHashMap<>();
-    private final Class<?> primaryEntityClass;
+
+    /**
+     * Primary entity class, if any, for the repository.
+     */
+    private Class<?> primaryEntityClass;
+
+    /**
+     * Jakarta Data provider.
+     */
     private final DataProvider provider;
-    private final Map<Class<?>, List<QueryInfo>> queriesPerEntityClass;
+
+    /**
+     * Information about each repository method, grouped by entity class.
+     */
+    final Map<Class<?>, List<QueryInfo>> queriesPerEntityClass;
+
+    /**
+     * Handler for the most recently created repository bean instance.
+     */
+    private final AtomicReference<RepositoryImpl<?>> repositoryImplRef = //
+                    new AtomicReference<>();
+
+    /**
+     * The repository interface.
+     */
     private final Class<?> repositoryInterface;
 
-    RepositoryProducer(Class<?> repositoryInterface, BeanManager beanMgr, DataProvider provider, DataExtension extension,
-                       FutureEMBuilder futureEMBuilder, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+    /**
+     * Indicates if the repository is stateful (true) or stateless (false).
+     * Default: false
+     */
+    private boolean stateful = false;
+
+    /**
+     * Construct an instance of RepositoryProducer.
+     * The instance is not usable until setFutureEMBuilder and setPrimaryEntityClass
+     * are invoked on it.
+     *
+     * @param repositoryInterface   the repository interface.
+     * @param beanMgr               the CDI bean manager.
+     * @param provider              Jakarta Data provider.
+     * @param extension             CDI extension for the Jakarta Data provider.
+     * @param queriesPerEntityClass information about each repository query,
+     *                                  grouped by entity class.
+     */
+    RepositoryProducer(Class<?> repositoryInterface,
+                       BeanManager beanMgr,
+                       DataProvider provider,
+                       DataExtension extension,
+                       Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         this.beanMgr = beanMgr;
         this.beanTypes = Set.of(repositoryInterface);
         this.extension = extension;
-        this.futureEMBuilder = futureEMBuilder;
-        this.primaryEntityClass = primaryEntityClass;
         this.provider = provider;
         this.queriesPerEntityClass = queriesPerEntityClass;
         this.repositoryInterface = repositoryInterface;
-        provider.producerCreated(futureEMBuilder.moduleName.getApplication(), this);
     }
 
     @Override
@@ -96,7 +179,45 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
             repository = r;
 
         RepositoryImpl<?> handler = (RepositoryImpl<?>) Proxy.getInvocationHandler(repository);
+        repositoryImplRef.compareAndSet(handler, null);
         handler.beanDisposed();
+    }
+
+    /**
+     * Error handling for a timeout that occurs when attempting to obtain an
+     * EntityManagerBuilder.
+     *
+     * @param repositoryInterface the repository interface.
+     * @param cause               the TimeoutException.
+     * @return DataException with an appropriate error message.
+     */
+    @Trivial
+    private DataException excTimedOut(Class<?> repositoryInterface,
+                                      Throwable cause) {
+        DataException x;
+        if (CheckpointPhase.getPhase().restored()) {
+            // No checkpoint in progress
+            x = exc(DataException.class,
+                    "CWWKD1106.init.timed.out",
+                    repositoryInterface.getName(),
+                    futureEMBuilder.dataStore,
+                    futureEMBuilder.jeeName,
+                    INIT_TIMEOUT_SEC);
+        } else { // during checkpoint
+            ComponentMetaData metadata = ComponentMetaDataAccessorImpl //
+                            .getComponentMetaDataAccessor() //
+                            .getComponentMetaData();
+            J2EEName jeeName = metadata == null //
+                            ? futureEMBuilder.jeeName //
+                            : metadata.getJ2EEName();
+
+            x = exc(DataException.class,
+                    "CWWKD1107.init.timed.out.checkpoint",
+                    jeeName,
+                    repositoryInterface.getName());
+        }
+        x.initCause(cause);
+        return x;
     }
 
     @Override
@@ -139,16 +260,25 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
      * Write information about this instance to the introspection file for
      * Jakarta Data.
      *
-     * @param writer writes to the introspection file.
-     * @param indent indentation for lines.
+     * @param writer          writes to the introspection file.
+     * @param indent          indentation for lines.
+     * @param repositoryImpls list to populate with a RepositoryImpl that is produced
+     *                            by this producer.
      * @return list of QueryInfo for the caller to log.
      */
     @Trivial
-    public List<QueryInfo> introspect(PrintWriter writer, String indent) {
+    public List<QueryInfo> introspect(PrintWriter writer,
+                                      String indent,
+                                      List<RepositoryImpl<?>> repositoryImpls) {
+        RepositoryImpl<?> repositoryImpl = repositoryImplRef.get();
+        if (repositoryImpl != null)
+            repositoryImpls.add(repositoryImpl);
+
         List<QueryInfo> queryInfos = new ArrayList<>();
 
         writer.println(indent + "RepositoryProducer@" + Integer.toHexString(hashCode()));
         writer.println(indent + "  repository: " + repositoryInterface.getName());
+        writer.println(indent + "  stateful? " + stateful);
         writer.println(indent + "  primary entity: " +
                        (primaryEntityClass == null ? null : primaryEntityClass.getName()));
         writer.println(indent + "  intercepted: " + intercepted);
@@ -176,7 +306,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         });
 
         writer.println();
-        futureEMBuilder.introspect(writer, "  " + indent);
+        if (futureEMBuilder != null)
+            futureEMBuilder.introspect(writer, "  " + indent);
 
         return queryInfos;
     }
@@ -219,7 +350,10 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                             Tr.debug(this, tc, "add " + anno + " for " + method.getAnnotated().getJavaMember());
                     }
 
-            RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, futureEMBuilder, //
+            EntityManagerBuilder builder = futureEMBuilder.get(INIT_TIMEOUT_SEC, //
+                                                               TimeUnit.SECONDS);
+
+            RepositoryImpl<?> handler = new RepositoryImpl<>(provider, extension, builder, //
                             repositoryInterface, primaryEntityClass, queriesPerEntityClass);
 
             R instance = repositoryInterface.cast(Proxy.newProxyInstance(repositoryInterface.getClassLoader(),
@@ -231,6 +365,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                 intercepted.put(r, instance);
                 instance = r;
             }
+
+            repositoryImplRef.set(handler);
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "produce", instance.toString());
@@ -244,9 +380,120 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                          repositoryInterface.getAnnotation(Repository.class),
                          primaryEntityClass == null ? null : primaryEntityClass.getName(),
                          x);
-            if (trace && tc.isEntryEnabled())
-                Tr.exit(this, tc, "produce", x);
-            throw x;
+
+            if (x instanceof TimeoutException) {
+                DataException dx = excTimedOut(repositoryInterface, x);
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "produce", DataException.class);
+                throw dx;
+            } else {
+                if (trace && tc.isEntryEnabled())
+                    Tr.exit(this, tc, "produce", x);
+                if (x instanceof RuntimeException)
+                    throw (RuntimeException) x;
+                else if (x instanceof Error)
+                    throw (Error) x;
+                else if (x instanceof ExecutionException)
+                    throw toRuntimeException((ExecutionException) x);
+                else // InterruptedException
+                    throw new DataException(x);
+            }
         }
+    }
+
+    /**
+     * Returns the Jakarta Data provider.
+     *
+     * @return the Jakarta Data provider.
+     */
+    @Trivial
+    public DataProvider provider() {
+        return provider;
+    }
+
+    /**
+     * Assigns the FutureEMBuilder for this repository producer.
+     *
+     * @param futureEMBuilder future for an EntityManagerBuilder.
+     */
+    @Trivial
+    void setFutureEMBuilder(FutureEMBuilder futureEMBuilder) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setFutureEMBuilder", futureEMBuilder);
+
+        this.futureEMBuilder = futureEMBuilder;
+
+        provider.producerCreated(futureEMBuilder.jeeName.getApplication(), this);
+    }
+
+    /**
+     * Assigns the primary entity class, if any, for this repository.
+     *
+     * @param primaryEntityClass primary entity class. Null if none.
+     */
+    @Trivial
+    void setPrimaryEntityClass(Class<?> primaryEntityClass) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setPrimaryEntityClass", primaryEntityClass);
+
+        this.primaryEntityClass = primaryEntityClass;
+    }
+
+    /**
+     * Indicates that the repository is stateful.
+     */
+    @Trivial
+    void setStateful() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setStateful");
+
+        stateful = true;
+    }
+
+    /**
+     * Returns whether the repository is stateful (true) or stateless (false).
+     *
+     * @return true if the repository is stateful; false if stateless.
+     */
+    @Trivial
+    public final boolean stateful() {
+        return stateful;
+    }
+
+    /**
+     * Converts an ExecutionException and its cause into a RuntimeException of the
+     * same type as the cause exception, or DataException if the cause is not a
+     * subtype of RuntimeException that has a constructor with arguments
+     * (String, Throwable).
+     *
+     * @param xx ExecutionException with a cause indicating a failure that occurred
+     *               during asynchronous initialization.
+     * @return DataException with the same cause.
+     */
+    @FFDCIgnore(Throwable.class)
+    @Trivial
+    private RuntimeException toRuntimeException(ExecutionException xx) {
+        RuntimeException x = null;
+        Throwable cause = xx.getCause();
+        if (cause instanceof RuntimeException)
+            try {
+                @SuppressWarnings("unchecked")
+                Class<RuntimeException> cl = (Class<RuntimeException>) cause.getClass();
+                // All known DataException subtypes and many other runtime exceptions
+                // such as UnsupportedOperationException have a constructor of the form,
+                Constructor<RuntimeException> cons = cl.getConstructor(String.class,
+                                                                       Throwable.class);
+                x = cons.newInstance(cause.getMessage(), cause);
+            } catch (Throwable t) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "no matching constructor for " +
+                                       cause.getClass());
+            }
+
+        if (x == null)
+            x = new DataException(cause.getMessage(), cause);
+
+        x.setStackTrace(xx.getStackTrace());
+        return x;
     }
 }

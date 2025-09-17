@@ -36,9 +36,10 @@ public class LibertyProxyInvocationHandler implements InvocationHandler {
                                   final Set<Object> providerInstances,
                                   final ResteasyClient client,
                                   final BeanManager beanManager,
-                                  final Map<Method, List<InterceptorInvoker>> interceptorInvokers) {
+                                  final Map<Method, List<InterceptorInvoker>> interceptorInvokers,
+                                  final ClassLoader classLoader) {
         this.interceptorInvokers = interceptorInvokers;
-        this.delegateHandler = new DefaultMethodInvocationHandler(restClientInterface, target, providerInstances, client, beanManager);
+        this.delegateHandler = new DefaultMethodInvocationHandler(restClientInterface, target, providerInstances, client, beanManager, classLoader);
     }
 
     @Override

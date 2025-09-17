@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,7 +17,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateFactory;
 import java.util.ArrayList;
@@ -93,7 +93,7 @@ public class CertificateEnvHelper {
 
         // If env_Value starts with the certificate tag assume a certificate otherwise treat like a file
         if (env_Value.startsWith(certBeginTag)) {
-            inputStream = new ByteArrayInputStream(env_Value.getBytes(Charset.forName("UTF-8")));
+            inputStream = new ByteArrayInputStream(env_Value.getBytes(StandardCharsets.UTF_8));
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.debug(this, tc, "The value from the environment did not start with -----BEGIN CERTIFICATE----- so treating it like a file");

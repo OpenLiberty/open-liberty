@@ -32,5 +32,4 @@
         <param-name>javax.faces.FACELETS_REFRESH_PERIOD</param-name>
         <param-value>1</param-value>
     </context-param>
-
 </web-app>

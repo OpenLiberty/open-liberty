@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.Locale;
@@ -174,7 +176,30 @@ public class LoggerOnThread implements LogFile {
                 this.fileinfo = this.myFullName;
                 this.extensioninfo = "";
             }
+        
+        /** 
+         * Manage existing backups: find files matching the pattern, sort by newest first, enforce limit, and delete excess.
+         * */ 
+        File directory = new File(this.myFullName).getParentFile();
+        if (directory != null && directory.isDirectory()) {
+            String fileinfoName = new File(this.fileinfo).getName();
+            File[] backupFiles = directory.listFiles((dir, name) -> name.startsWith(fileinfoName));
+            if (backupFiles != null) {
+                Arrays.sort(backupFiles, Comparator.comparingLong(File::lastModified));
+                this.backups.addAll(Arrays.asList(backupFiles));
+                while (this.backups.size() > getMaximumBackupFiles()) {
+                    File oldestFile = this.backups.poll();
+                    if (oldestFile != null && oldestFile.exists()) {
+                        oldestFile.delete();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Deleted old log file: " + oldestFile.getName());
+                        }
+                    }
+                }
+            }
         }
+        }
+
         this.state = State.RUNNING;
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, getFileName() + ": started\n" + this);
@@ -371,6 +396,9 @@ public class LoggerOnThread implements LogFile {
         String newname = this.fileinfo + this.myFormat.format(new Date(HttpDispatcher.getApproxTime())) + this.extensioninfo;
         File newFile = new File(newname);
         renameFile(this.myFile, newFile);
+        // Updating this.backups to include the newly rotated log file 
+        // Ensures the latest backup is tracked before deleting old ones
+        this.backups.addFirst(newFile);
         // now see if we need to delete an existing backup to make room
         if (this.backups.size() == getMaximumBackupFiles()) {
             File oldest = this.backups.removeLast();
@@ -381,7 +409,7 @@ public class LoggerOnThread implements LogFile {
                 oldest.delete();
             }
         }
-        this.backups.addFirst(newFile);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, getFileName() + ": number of backup files-> " + this.backups.size());
         }

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.7" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee https://xmlns.jcp.org/xml/ns/javaee/connector_1_7.xsd">
+  <display-name>Test RA</display-name>
+  <vendor-name>IBM</vendor-name>
+  <eis-type>Test RA</eis-type>
+  <resourceadapter-version>0.1</resourceadapter-version>
+  <resourceadapter>
+    <resourceadapter-class>io.openliberty.classloading.sharedclasses.resourceadaptor.TestResourceAdapter</resourceadapter-class>
+    <outbound-resourceadapter>
+      <transaction-support>NoTransaction</transaction-support>
+      <reauthentication-support>false</reauthentication-support>
+    </outbound-resourceadapter>
+  </resourceadapter>
+</connector>

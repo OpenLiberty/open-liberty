@@ -23,7 +23,8 @@ instrument.classesExcludes: io/openliberty/threading/virtual/resources/*.class
 
 publish.wlp.jar.disabled: true
 
-Export-Package: io.openliberty.threading.virtual
+Export-Package: io.openliberty.threading.virtual, \
+                com.ibm.wsspi.threading;provide:=true;-split-package:=merge-last
 
 -buildpath: \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

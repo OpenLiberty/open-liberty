@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,6 +44,9 @@ public class TestServletProcessor {
         Set<FrameworkField> servers = new HashSet<FrameworkField>();
         servers.addAll(testClass.getAnnotatedFields(TestServlet.class));
         servers.addAll(testClass.getAnnotatedFields(TestServlets.class));
+
+        List<FrameworkMethod> orderedTestMethods = new ArrayList<FrameworkMethod>();
+
         for (FrameworkField server : servers) {
             // Verify server is declared as "public static LibertyServer"
             if (!server.isStatic())
@@ -80,7 +83,6 @@ public class TestServletProcessor {
                 Log.info(c, m, "Added " + (testMethods.size() - initialSize) + " test methods from " + anno.servlet());
             }
 
-            List<FrameworkMethod> orderedTestMethods = new ArrayList<FrameworkMethod>();
             for (int i = 0; i < testMethods.size(); i++) {
                 for (FrameworkMethod fm : beforeMethods)
                     orderedTestMethods.add(fm);
@@ -90,9 +92,9 @@ public class TestServletProcessor {
                 for (FrameworkMethod fm : afterMethods)
                     orderedTestMethods.add(fm);
             }
-            return orderedTestMethods;
         }
-        return new ArrayList<FrameworkMethod>();
+
+        return orderedTestMethods;
     }
 
     private static String getQueryPath(TestServlet anno) {

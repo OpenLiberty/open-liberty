@@ -13,6 +13,7 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasName;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasNoParent;
@@ -43,6 +44,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -71,6 +73,7 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 @MaximumJavaLevel(javaLevel = 20)
+@SkipIfSysProp(OS_ZOS) //Agent119, 129, and 250 crashes on ZOS because it tries to read /proc as UTF-8
 public class AgentConfigMultiAppTest {
 
     public static final String SERVER_NAME = "TelemetryAgentMultiAppConfig";
@@ -131,7 +134,8 @@ public class AgentConfigMultiAppTest {
 
     @Test
     // Skipping for MP 5.0, 6.1 and 7.0 as JavaAgent 1.29 is sometimes successful and sometimes fails (possible classLoader issue in JavaAgent (BUG))
-    @SkipForRepeat({ TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID, TelemetryActions.MP50_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
+    @SkipForRepeat({ TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP61_ID, TelemetryActions.MP50_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID,
+                     TelemetryActions.MP50_MPTEL21_ID, MicroProfileActions.MP71_EE10_ID, MicroProfileActions.MP71_EE11_ID })
     public void testAgentMultiApp() throws Exception {
         PropertiesAsset app1Config = new PropertiesAsset().addProperty("otel.service.name", "multi-app-1");
         WebArchive app1 = ShrinkWrap.create(WebArchive.class, "multiApp1.war")
@@ -169,7 +173,7 @@ public class AgentConfigMultiAppTest {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             // MP6.0 uses JavaAgent 1.19 therefore the internal span is not created
             assertThat(serverSpan, hasName("/multiApp1/"));
-        } else if (TelemetryActions.EE7orEE8Mp20IsActive()) {
+        } else if (TelemetryActions.EE7orEE8IsActive()) {
             assertThat(serverSpan, hasName("GET /multiApp1"));
             assertThat(serverSpan, JaegerSpanMatcher.isSpan().withTraceId(traceId)
                                                     .withAttribute(SemanticAttributes.HTTP_ROUTE, "/multiApp1")
@@ -208,7 +212,7 @@ public class AgentConfigMultiAppTest {
                                                      .withAttribute(SemanticAttributes.HTTP_ROUTE, "/multiApp2/")
                                                      .withAttribute(SemanticAttributes.HTTP_TARGET, "/multiApp2")
                                                      .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
-        } else if (TelemetryActions.EE7orEE8Mp20IsActive()) {
+        } else if (TelemetryActions.EE7orEE8IsActive()) {
             assertThat(serverSpan2, hasName("GET /multiApp2"));
             assertThat(serverSpan2, JaegerSpanMatcher.isSpan().withTraceId(traceId2)
                                                      .withAttribute(SemanticAttributes.HTTP_ROUTE, "/multiApp2")

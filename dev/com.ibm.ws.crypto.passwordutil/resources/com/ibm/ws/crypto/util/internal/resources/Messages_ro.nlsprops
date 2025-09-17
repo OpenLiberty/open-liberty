@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=Parola nu a fost criptat\
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Verifica\u0163i istoricul serverului \u015fi dac\u0103 este folosit\u0103 criptarea de parol\u0103 personalizat\u0103 verifica\u0163i \u015fi istoricele serviciului de criptare parol\u0103 personalizat\u0103 pentru informa\u0163ii suplimentare.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: Parola nu a fost decriptat\u0103 deoarece a fost raportat\u0103 o eroare de decodificare.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=Parola criptat\u0103 nu a fost codificat\u0103 corect.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Verifica\u0163i c\u0103 parola criptat\u0103 nu este trunchiat\u0103 \u015fi codificat\u0103 folosind codificarea Base64.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Asigura\u021bi-v\u0103 c\u0103 parola criptat\u0103 nu este trunchiat\u0103 \u0219i codificat\u0103 cu codarea Base64.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 parolele criptate nu pot fi utilizate atunci c\u00e2nd FIPS 140-3 este activat. Regenerarea parolei cu AES-256 folosind comanda securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 este activat \u0219i nu accept\u0103 AES-128. Utiliza\u021bi comanda securityUtility pentru a cripta parola utiliz\u00e2nd AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Asigura\u021bi-v\u0103 c\u0103 parola este criptat\u0103 cu AES-256.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: Criptarea parolei AES a e\u0219uat. Verifica\u021bi set\u0103rile java.security \u0219i ad\u0103uga\u021bi algoritmul lips\u0103.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=Un algoritm de criptare lipse\u0219te din fi\u0219ierul java.security.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Asigura\u021bi-v\u0103 c\u0103 algoritmul este ad\u0103ugat la fi\u0219ierul java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: Decriptarea parolei AES a e\u0219uat. Verifica\u021bi set\u0103rile java.security \u0219i ad\u0103uga\u021bi algoritmul lips\u0103.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=Un algoritm de criptare lipse\u0219te din fi\u0219ierul java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Asigura\u021bi-v\u0103 c\u0103 algoritmul este ad\u0103ugat la fi\u0219ierul java.security.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: Nu pute\u021bi utiliza SHA1 parole cu cod hash atunci c\u00e2nd FIPS 140-3 este activat. Regenera\u021bi hash-ul parolei utiliz\u00e2nd comanda securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 este activat \u0219i nu accept\u0103 SHA1. Utiliza\u021bi comanda securityUtility encode pentru a genera un nou hash al parolei SHA512.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Asigura\u021bi-v\u0103 c\u0103 hash-ul parolei este generat cu SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Una sau mai multe valori ale parolei {0} stocate \u00een configura\u021bia serverului au fost generate cu un algoritm mai vechi {1}. Utiliza\u021bi comanda securityUtility encode pentru a re-gena parolele {0} cu cel mai recent algoritm {2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty utilizeaz\u0103 acum algoritmi mai puternici pentru parolele {aes} \u0219i {hash} nou generate.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Asigura\u021bi-v\u0103 c\u0103 valorile parolelor {aes} \u0219i {hash} sunt generate cu cea mai recent\u0103 versiune a Liberty.
 
 
 # ---------------- This is an exception message ------------
@@ -57,4 +72,4 @@ PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Au fost detectate mai multe implement\u
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=A fost raportat\u0103 o eroare la procesarea fi\u015fierului manifest extensie {0}. Acest fi\u015fier a fost ignorat. Criptarea personalizat\u0103 nu este disponibil\u0103. Mesajul de eroare este {1}.
 PASSWORDUTIL_ERROR_MISSING_HEADER=Antetul necesar {0} nu a fost g\u0103sit \u00een fi\u015fierul manifest extensie {1}. Criptarea personalizat\u0103 nu este disponibil\u0103.
 PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=Nu a fost g\u0103sit fi\u015fierul manifest caracteristic\u0103 care corespunde cu fi\u015fierul manifest extensie {0}. Criptarea personalizat\u0103 nu este disponibil\u0103.
-PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Opera\u0163ia de decriptare nu este suportat\u0103 de algoritmul hash. 
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Opera\u0163ia de decriptare nu este suportat\u0103 de algoritmul hash.

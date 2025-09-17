@@ -5,7 +5,8 @@ singleton=true
 -features=io.openliberty.servlet.api-5.0; apiJar=false; ibm.tolerates:="6.0, 6.1", \
   com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0", \
   com.ibm.websphere.appserver.ltpa-1.0, \
-  io.openliberty.jcache.internal-1.1
+  io.openliberty.jcache.internal-1.1, \
+  io.openliberty.jcache.internal1.1.ee-9.0
 -bundles=\
   com.ibm.ws.security.authentication, \
   com.ibm.ws.security.credentials.wscred, \

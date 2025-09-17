@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,8 +31,8 @@ public interface Animals extends CrudRepository<Animal, ScientificName> {
 
     boolean existsById(ScientificName id);
 
-    // Using @Find here would require @Select(ID),
-    // which is not available in Data 1.0 // TODO move to 1.1 tests
+    // Using @Find here would require @Select(ID), which isn't available
+    // until Data 1.1
     @Query("SELECT id WHERE id.genus = ?1")
     @OrderBy("id.species")
     Stream<ScientificName> ofGenus(String id_genus);

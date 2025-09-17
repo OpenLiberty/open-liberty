@@ -1,7 +1,8 @@
-import Footer from './footer.jsx';
+import {Footer, FooterContactEmail, FooterContactUrl, FooterLicense} from './footer.jsx';
 import React from 'react'
 import PropTypes from 'prop-types'
 import SimpleInfo from './simple-info.jsx'
+import SimpleInfo31 from './simple-info-31.jsx'
 
 class FooterContainer extends React.Component {
 
@@ -14,14 +15,13 @@ class FooterContainer extends React.Component {
       const {specSelectors, getComponent} = this.props
   
       const info = specSelectors.info()
-      const externalDocs = specSelectors.externalDocs()
   
-      const Footer = getComponent("Footer")
+      const Footer = getComponent("Footer", true)
   
       return (
         <div>
           {info && info.count() ? (
-            <Footer info={info} externalDocs={externalDocs} />
+            <Footer />
           ) : null}
         </div>
       )
@@ -33,7 +33,11 @@ export default () => {
         components: {
             FooterContainer,
             Footer,
+            FooterContactEmail,
+            FooterContactUrl,
+            FooterLicense,
             info: SimpleInfo, // Override original 'info' component with our SimpleInfo
+            OAS31Info: SimpleInfo31,
         }
     }
 }

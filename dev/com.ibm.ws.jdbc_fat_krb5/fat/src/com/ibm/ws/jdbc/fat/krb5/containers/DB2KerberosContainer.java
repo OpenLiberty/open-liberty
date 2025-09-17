@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5.containers;
 
-import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC;
+import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC_EXTERNAL;
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
 import java.time.Duration;
@@ -28,13 +28,20 @@ import componenttest.custom.junit.runner.FATRunner;
 public class DB2KerberosContainer extends Db2Container {
 
     private static final Class<?> c = DB2KerberosContainer.class;
+
+    //TODO Start using ImageBuilder
+//    private static final DockerImageName DB2_KRB5 = ImageBuilder
+//                    .build("db2-krb5:12.1.1.0")
+//                    .getDockerImageName()
+//                    .asCompatibleSubstituteFor("icr.io/db2_community/db2");
+
     // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
     private static final String IMAGE = "kyleaure/db2-krb5:2.0";
-    private static final DockerImageName db2Image = DockerImageName.parse(IMAGE)
+    private static final DockerImageName DB2_KRB5 = DockerImageName.parse(IMAGE)
                     .asCompatibleSubstituteFor("ibmcom/db2"); //TODO update .asCompatibleSubstituteFor("icr.io/db2_community/db2")
 
     public DB2KerberosContainer(Network network) {
-        super(db2Image);
+        super(DB2_KRB5);
         withNetwork(network);
     }
 
@@ -43,12 +50,12 @@ public class DB2KerberosContainer extends Db2Container {
         acceptLicense();
         withExposedPorts(50000);
         withEnv("KRB5_REALM", KRB5_REALM);
-        withEnv("KRB5_KDC", KRB5_KDC);
+        withEnv("KRB5_KDC", KRB5_KDC_EXTERNAL);
         withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 10 : 35)));
-        withLogConsumer(new SimpleLogConsumer(c, "DB2"));
+        withLogConsumer(new SimpleLogConsumer(c, "DB2-KRB5"));
     }
 
     @Override

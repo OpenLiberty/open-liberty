@@ -85,6 +85,10 @@ broadcast_remote_command_is_null=Avvertenza: {0}: ricevuto messaggio {1} contene
 
 broadcast_remote_command_wrong_type=Avvertenza: {0}: ricevuto messaggio {1} contenente un oggetto di tipo {2} invece del tipo previsto di RemoteCommand.
 
+cache_key_null_identity_map=CacheKey istanza: {0}, memorizzata nella mappa delle identit\u00e0, ha una chiave primaria nulla.
+
+cache_key_null_read_lock_manager=CacheKey istanza: {0}, bloccata dal gestore del blocco di lettura della cache, ha una chiave primaria nulla.
+
 cannot_get_nested_collection_type=Impossibile ottenere il tipo di raccolta nidificata.
 
 cannot_get_server_name_and_version=Impossibile ottenere il nome del server e la versione a causa della seguente eccezione.  {0}
@@ -114,10 +118,6 @@ connected_sdk=Connesso: SDK
 connected_user_database=Connesso: {3}{4} Utente: {0}{3}{4} Database: {1}  Versione: {2}
 
 connected_user_database_driver=Connesso: {0}{6} Utente: {1}{6} Database: {2}  Versione: {3}{6} Driver: {4}  Versione: {5}
-
-corrupt_object=oggetto danneggiato: {0}
-
-corrupt_object_referenced_through_mapping=Si fa riferimento al seguente oggetto danneggiato mediante l''associazione: {0}
 
 corrupted_session_announcement=ID sessione: {0} il gestore rilevamento ha ricevuto un annuncio di sessione corrotto, viene ignorato.
 
@@ -322,6 +322,8 @@ jpars_could_not_find_session_bean=Viene effettuata una chiamata a un bean di ses
 jta_cannot_be_disabled_in_cmp=Quando si utilizza CMP (Container Managed Persistence), JTA non pu\u00f2 essere disabilitato. EclipseLink agir\u00e0 come se JTA fosse abilitato.
 
 jta_duplicate_ctrl_property=Classe controller di transazione JTA definita in entrambe le propriet\u00e0 "eclipselink.target-server" e "eclipselink.jta.controller". Utilizzo del valore da "eclipselink.target-server".
+
+jta_tm_lookup_failure=Impossibile cercare l''istanza di TransactionManager : {0}
 
 jta_tsr_lookup_failure=Impossibile cercare l''istanza TransactionSynchronizationRegistry: {0}
 
@@ -657,18 +659,6 @@ retreived_null_message=Richiamato messaggio null dal topic: {0}; verr\u00e0 igno
 
 retreived_unknown_message_type=Richiamato tipo di messaggio sconosciuto: {0} dal topic: {1}; verr\u00e0 ignorato
 
-schema_default_create_tables_failed=Impossibile creare le tabelle nello schema di tabella predefinito: {0}
-
-schema_default_drop_tables_failed=Impossibile eliminare le tabelle nello schema di tabella predefinito: {0}
-
-schema_default_extend_tables_failed=Impossibile estendere le tabelle nello schema di tabella predefinito {0}
-
-schema_default_replace_tables_failed=Impossibile sostituire le tabelle nello schema tabella predefinito: {0}
-
-schema_default_truncate_tables_failed=Impossibile troncare le tabelle nello schema di tabella predefinito: {0}
-
-schema_drop_object_failed=Impossibile rilasciare l''oggetto nello schema di tabella predefinito: {0}
-
 sdo_classgenerator_exception={2} Si \u00e8 verificata un''eccezione [{0}] - il messaggio \u00e8 [{1}]
 
 sdo_error_deserialization=Tentativo di deserializzazione non autorizzato con classe {0}.
@@ -702,8 +692,6 @@ sop_object_not_found=sopObject serializzato non trovato in [{0}] in [{1}]
 sop_object_wrong_pk=Rimozione di sopObject serializzato dalla riga perch\u00e9 ha una chiave primaria errata [{0}] in [{1}] in [{2}]
 
 sop_object_wrong_version=Rimozione di sopObject serializzato dalla riga perch\u00e9 ha una versione errata [{0}] in [{1}] in [{2}]
-
-stack_of_visited_objects_that_refer_to_the_corrupt_object=stack di oggetti visitati che fanno riferimento all''oggetto danneggiato: {0}
 
 topLink_version=EclipseLink, versione: {0}
 
@@ -746,8 +734,6 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery non pu\u00f2
 validate_db_schema_with_not_supported=L''impostazione CMP nativa  WLS "validate-db-schema-with" non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
 validate_ejb_jar=Avvio convalida ejb-jar.xml, pu\u00f2 richiedere del tempo...
-
-validate_object_space=convalidare lo spazio oggetto.
 
 verifiy_columns_read_locking_not_supported=L''impostazione ottimistica "Read" su "verify-columns" nell''entit\u00e0\u00a0({0}) non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 

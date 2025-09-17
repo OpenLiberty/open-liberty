@@ -32,6 +32,7 @@ def additionalExports = """\
  org.jboss.weld.resolution;version=\\"${weldVersion}\\",\\\\
  org.jboss.weld.resources;version=\\"${weldVersion}\\",\\\\
  org.jboss.weld.util.collections;version=\\"${weldVersion}\\",\\\\
+ com.ibm.ws.cdi.impl.weld.validation;version=\\"1.0\\",\\\\
 """
 
 def additionalImports = """\

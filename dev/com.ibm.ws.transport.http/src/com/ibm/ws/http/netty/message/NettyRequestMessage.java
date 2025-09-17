@@ -1,0 +1,1005 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+package com.ibm.ws.http.netty.message;
+
+import java.net.InetSocketAddress;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.genericbnf.internal.GenericUtils;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
+import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
+import com.ibm.ws.http2.GrpcServletServices;
+import com.ibm.wsspi.genericbnf.BNFHeaders;
+import com.ibm.wsspi.genericbnf.HeaderField;
+import com.ibm.wsspi.genericbnf.HeaderStorage;
+import com.ibm.wsspi.genericbnf.exception.UnsupportedMethodException;
+import com.ibm.wsspi.genericbnf.exception.UnsupportedSchemeException;
+import com.ibm.wsspi.http.channel.HttpConstants;
+import com.ibm.wsspi.http.channel.HttpRequestMessage;
+import com.ibm.wsspi.http.channel.HttpTrailers;
+import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+import com.ibm.wsspi.http.channel.values.MethodValues;
+import com.ibm.wsspi.http.channel.values.SchemeValues;
+import com.ibm.wsspi.http.channel.values.VersionValues;
+import com.ibm.wsspi.http.ee8.Http2PushBuilder;
+
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.VoidChannelPromise;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpUtil;
+import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http2.DefaultHttp2Headers;
+import io.netty.handler.codec.http2.Http2Connection;
+import io.netty.handler.codec.http2.Http2Headers;
+import io.netty.handler.codec.http2.HttpConversionUtil;
+import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+
+/**
+ *
+ */
+public class NettyRequestMessage extends NettyBaseMessage implements HttpRequestMessage {
+
+    private static final TraceComponent tc = Tr.register(NettyRequestMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
+    private FullHttpRequest request;
+    private HttpHeaders headers;
+    private HttpInboundServiceContext context;
+
+    private String url;
+    private Boolean isGrpc = null;
+
+    private MethodValues method;
+    private SchemeValues scheme;
+
+    private QueryStringDecoder query;
+
+    private Map<String, String[]> parameters;
+
+    private ChannelHandlerContext nettyContext;
+
+    /** Value used when a search target is not present */
+    private static final int NOT_PRESENT = -1;
+    /** Value used before a search target has been tested */
+    private static final int NOT_TESTED = -2;
+
+    /** Port value in the request URL (if present) */
+    private transient int iUrlPort = HeaderStorage.NOTSET;
+    /** Port value parsed from Host header */
+    private transient int iHdrPort = NOT_TESTED;
+
+    /** Default URI is just a slash */
+    private static final byte[] SLASH = { '/' };
+    /** Static representation of a left bracket */
+    private static final byte LEFT_BRACKET = '[';
+    /** Static representation of a right bracket */
+    private static final byte RIGHT_BRACKET = ']';
+
+    /** Request-Resource as a byte[] */
+    private byte[] myURIBytes = SLASH;
+    /** URI as a string */
+    private transient String myURIString = null;
+    /** Host string in the request URL (if present) */
+    private transient String sUrlHost = null;
+    /** Host string parsed from Host header */
+    private transient String sHdrHost = null;
+
+    public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
+        init(request, isc, nettyContext);
+
+    }
+
+    public void init(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
+
+        Objects.requireNonNull(request);
+        Objects.requireNonNull(isc);
+
+        this.context = isc;
+        if (isc instanceof HttpInboundServiceContextImpl)
+            incoming(((HttpInboundServiceContextImpl) isc).isInboundConnection());
+
+        this.request = request;
+        this.headers = request.headers();
+        this.nettyContext = nettyContext;
+
+        parameters = new HashMap<String, String[]>();
+        this.scheme = isc.isSecure() ? SchemeValues.HTTPS : SchemeValues.HTTP;
+        processQuery();
+
+        HttpChannelConfig config = isc instanceof HttpInboundServiceContextImpl ? ((HttpInboundServiceContextImpl) isc).getHttpConfig() : null;
+
+        super.init(request, isc, config);
+        setAndGetIsGrpc();
+        setMessageType(MessageType.REQUEST);
+
+    }
+
+    /**
+     * Method for running request validation with our legacy logic to maintain
+     * behavior.
+     */
+    public void verifyRequest() {
+        if (!getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
+            // Additional verification for url host
+            String host = request.uri();
+            if (null == host || host.isEmpty()) {
+                throw new IllegalArgumentException("setRequestURL: null URL");
+            }
+            int start = 0;
+            // We should be looking at alpha chars and the scheme
+            if (isAlpha(host.charAt(0))) {
+                int colonIndex = host.indexOf(BNFHeaders.COLON);
+                if (colonIndex == -1 || SchemeValues.match(host, 0, colonIndex) == null) {
+                    // Throw exception here
+                    throw new IllegalArgumentException("Invalid scheme in URL: " + host);
+                }
+                // scheme should be followed by "://"
+                if ((colonIndex + 2) >= host.length() || ('/' != host.charAt(colonIndex + 1) || '/' != host.charAt(colonIndex + 2))) {
+                    throw new IllegalArgumentException("Invalid net_path: " + host);
+                }
+                start = colonIndex + 3;
+            }
+            // starts with "//". Only parse the authority if we are in a
+            // strict compliance setting, otherwise assume anything with a
+            // leading slash is just the URI
+            else if (host.length() > 1 && '/' == host.charAt(0) && '/' == host.charAt(1) && getServiceContext().getHttpConfig().isStrictURLFormat()) {
+                start = 2;
+            } else {
+                parseURI(host.getBytes(), 0);
+                return;
+            }
+            // authority is [userinfo@] host [:port] "/URI"
+            if (start >= host.length()) {
+                // nothing after the "//" which is invalid
+                throw new IllegalArgumentException("Invalid authority: " + host);
+            }
+            int i = start;
+            int host_start = start;
+            int slash_start = host.length();
+            for (; i < host.length(); i++) {
+                // find either a "@" or "/"
+                if ('@' == host.charAt(i)) {
+                    // Note: we're just cutting off the userinfo section for now
+                    host_start = i + 1;
+                } else if ('/' == host.charAt(i)) {
+                    slash_start = i;
+                    break;
+                }
+            }
+            parseURLHost(host, start, slash_start);
+            parseURI(host.getBytes(), slash_start);
+        }
+        // Need to check if Scheme is also verified by Netty coded or add that ourselves
+        // Probably need to add check of authority ourselves as well
+    }
+
+    /**
+     * Parse the URI information out of the input data, along with any query
+     * information found afterwards. If format errors are found, then an
+     * exception is thrown.
+     *
+     * @param data
+     * @throws IllegalArgumentException
+     */
+    private void parseURI(byte[] data, int start) {
+        // at this point, we're parsing /URI [?querystring]
+        if (start >= data.length) {
+            // PK22096 - default to "/" if not found, should have caught empty
+            // string inputs previously (http://host:port is valid)
+            this.myURIBytes = SLASH;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Defaulting to slash since no URI data found");
+            }
+            return;
+        }
+        int uri_end = data.length;
+        for (int i = start; i < data.length; i++) {
+            // look for the query string marker
+            if ('?' == data[i]) {
+                uri_end = i;
+                break;
+            }
+        }
+        // save off the URI
+        if (start == uri_end) {
+            // no uri found
+            throw new IllegalArgumentException("Missing URI: " + GenericUtils.getEnglishString(data));
+        }
+        if (0 == start && uri_end == data.length) {
+            this.myURIBytes = data;
+        } else {
+            this.myURIBytes = new byte[uri_end - start];
+            System.arraycopy(data, start, this.myURIBytes, 0, this.myURIBytes.length);
+        }
+    }
+
+    /**
+     * Using the pseudo headers set on this link, check to see if there is a matching gRPC service registered with
+     * the server. If a match is found, the PATH pseudo header will be updated with the correct application context.
+     *
+     * @return true if the request for this link maps to a registered gRPC service
+     */
+    public boolean setAndGetIsGrpc() {
+        if (isGrpc == null) {
+            if (GrpcServletServices.getServletGrpcServices() != null) {
+                Map<String, GrpcServletServices.ServiceInformation> servicePaths = GrpcServletServices.getServletGrpcServices();
+                if (servicePaths != null && !servicePaths.isEmpty()) {
+                    isGrpc = routeGrpcServletRequest(servicePaths);
+                } else {
+                    isGrpc = false;
+                }
+            } else {
+                isGrpc = false;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            String currentURL = request.uri();
+            Tr.exit(tc, "setAndGetIsGrpc returning " + isGrpc + " for request path " + currentURL);
+        }
+        return isGrpc;
+    }
+
+    /**
+     * Existing gRPC clients don't know anything about application context roots. For example, a request
+     * might come in to "/helloworld.Greeter/SayHello"; so as a convenience, we will automatically append
+     * the correct application context root to the request. For this example, the URL will change from
+     * "/helloworld.Greeter/SayHello" -> "/app_context_root/helloworld.Greeter/SayHello"
+     *
+     * @return true if the request for this link maps to a gRPC service regustered in servicePaths
+     */
+    private boolean routeGrpcServletRequest(Map<String, GrpcServletServices.ServiceInformation> servicePaths) {
+        String requestContentType = Objects.isNull(HttpUtil.getMimeType(request)) ? null : HttpUtil.getMimeType(request).toString();
+        if (requestContentType != null && servicePaths != null) {
+            requestContentType = requestContentType.toLowerCase();
+            if ("application/grpc".equalsIgnoreCase(requestContentType)) {
+
+                String currentURL = request.uri();
+
+                String searchURL = currentURL;
+                searchURL = searchURL.substring(1);
+                int index = searchURL.lastIndexOf('/');
+                searchURL = searchURL.substring(0, index);
+
+                GrpcServletServices.ServiceInformation info = servicePaths.get(searchURL);
+                if (info != null) {
+                    String contextRoot = info.getContextRoot();
+                    if (contextRoot != null && !!!"/".equals(contextRoot)) {
+                        String newPath = contextRoot + currentURL;
+                        this.request.setUri(newPath);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Inbound gRPC request translated from " + currentURL + " to " + newPath);
+                        }
+                    }
+                    return true;
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Inbound gRPC request URL did not match any registered services: " + currentURL);
+                }
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public void clear() {
+        request = null;
+        headers = null;
+        context = null;
+
+        url = null;
+
+        method = null;
+        scheme = null;
+
+        query = null;
+        parameters.clear();
+
+        super.clear();
+
+    }
+
+    @Override
+    public void destroy() {
+
+        super.destroy();
+
+    }
+
+    /**
+     * Query whether a body is expected to be present with this message. Note
+     * that this is only an expectation and not a definitive answer. This will
+     * check the necessary headers, status codes, etc, to see if any indicate
+     * a body should be present. Without actually reading for a body, this
+     * cannot be sure however.
+     *
+     * @return boolean (true -- a body is expected to be present)
+     */
+    @Override
+    public boolean isBodyExpected() {
+        if(super.isBodyExpected()) {
+            return !request.method().equals(HttpMethod.TRACE); // Trace method does not have a body
+        }
+        return false;
+    }
+
+    @Override
+    public VersionValues getVersionValue() {
+        return VersionValues.find(request.protocolVersion().text());
+
+    }
+
+    @Override
+    public String getMethod() {
+        if (Objects.isNull(method)) {
+            method = MethodValues.find(request.method().name());
+
+        }
+        return method.getName();
+    }
+
+    @Override
+    public MethodValues getMethodValue() {
+
+        if (Objects.isNull(method)) {
+            method = MethodValues.find(request.method().name());
+        }
+
+        return method;
+    }
+
+    @Override
+    public void setMethod(String method) throws UnsupportedMethodException {
+        this.method = MethodValues.find(method);
+        request.setMethod(HttpMethod.valueOf(method));
+
+    }
+
+    @Override
+    public void setMethod(byte[] method) throws UnsupportedMethodException {
+        setMethod(new String(method, StandardCharsets.UTF_8));
+
+    }
+
+    @Override
+    public void setMethod(MethodValues method) {
+        this.method = method;
+        request.setMethod(HttpMethod.valueOf(method.getName()));
+
+    }
+
+    @Override
+    public String getRequestURI() {
+        if (getMethod().equalsIgnoreCase(HttpMethod.CONNECT.toString())) {
+            return GenericUtils.getEnglishString(SLASH);
+        }
+        if (null == this.myURIString) {
+            this.myURIString = GenericUtils.getEnglishString(this.myURIBytes);
+        }
+        return this.myURIString;
+    }
+
+    @Override
+    public byte[] getRequestURIAsByteArray() {
+        return GenericUtils.getBytes(getRequestURI());
+    }
+
+    @Override
+    public StringBuffer getRequestURL() {
+
+        String host = context.getLocalAddr().getCanonicalHostName();
+        int port = context.getLocalPort();
+
+        return new StringBuffer(getScheme() + "://" + host + ":" + port + getRequestURI());
+
+    }
+
+    @Override
+    public String getRequestURLAsString() {
+        if (Objects.isNull(url)) {
+            url = getRequestURL().toString();
+        }
+        return url;
+    }
+
+    @Override
+    public byte[] getRequestURLAsByteArray() {
+        return GenericUtils.getBytes(getRequestURLAsString());
+    }
+
+    @Override
+    public String getQueryString() {
+
+        return Objects.isNull(parameters) || parameters.isEmpty() ? null : query.rawQuery();
+
+    }
+
+    @Override
+    public byte[] getQueryStringAsByteArray() {
+        return Objects.isNull(parameters) || parameters.isEmpty() ? null : GenericUtils.getBytes(getQueryString());
+    }
+
+    @Override
+    public String getParameter(String name) {
+
+        return parameters.containsKey(name) ? parameters.get(name)[0] : null;
+
+    }
+
+    @Override
+    public Map<String, String[]> getParameterMap() {
+        return parameters;
+    }
+
+    @Override
+    public Enumeration<String> getParameterNames() {
+        return Collections.enumeration(parameters.keySet());
+    }
+
+    @Override
+    public String[] getParameterValues(String name) {
+        return parameters.containsKey(name) ? parameters.get(name) : null;
+    }
+
+    @Override
+    public void setRequestURL(String url) {
+        setRequestURL(GenericUtils.getEnglishBytes(url));
+    }
+
+    @Override
+    public void setRequestURL(byte[] url) {
+        setRequestURL(new String(url, StandardCharsets.UTF_8));
+    }
+
+    @Override
+    public void setRequestURI(String uri) {
+        setRequestURI(GenericUtils.getEnglishBytes(uri));
+    }
+
+    @Override
+    public void setRequestURI(byte[] uri) {
+        if (null == uri || 0 == uri.length) {
+            throw new IllegalArgumentException("setRequestURI: null input");
+        }
+
+        if ('*' == uri[0]) {
+            // URI of "*" can only be one character long to be valid
+            if (1 != uri.length && '?' != uri[1]) {
+                String value = GenericUtils.getEnglishString(uri);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setRequestURI: invalid uri [" + value + "]");
+                }
+                throw new IllegalArgumentException("Invalid uri: " + value);
+            }
+        } else if ('/' != uri[0]) {
+            String value = GenericUtils.getEnglishString(uri);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "setRequestURI: invalid uri [" + value + "]");
+            }
+            throw new IllegalArgumentException("Invalid uri: " + value);
+        }
+        parseURI(uri, 0);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setRequestURI: finished parsing " + getRequestURI());
+        }
+    }
+
+    /**
+     * Parse out the host and possible port from the input bytes. The bytes in
+     * the range specified by the input could look like this:
+     * > hostname
+     * > hostname:port
+     * > IPv4Address
+     * > IPv4Address:port
+     * > [IPv6Address]
+     * > [IPv6Address]:port
+     * <p>
+     * Anything else will cause an IllegalArgumentException to be thrown.
+     *
+     * @param url
+     * @param start
+     * @param end
+     * @throws IllegalArgumentException
+     */
+    private void parseURLHost(String url, int start, int end) {
+        // save the host:port now, could be hostname, hostname:port, IP,
+        // IP:port, or [IPv6]:port
+        int length = end - start;
+        if (0 >= length) {
+            throw new IllegalArgumentException("Missing host/port");
+        }
+        int name_start = start;
+        int name_end = end;
+        int port_start = -1;
+        int port_end = -1;
+        if (LEFT_BRACKET != url.charAt(name_start)) {
+            // hostname plus optional port if colon is found
+            int colon_index = url.indexOf(BNFHeaders.COLON, name_start);
+            if (-1 != colon_index && colon_index <= end) {
+                name_end = colon_index;
+                port_start = colon_index + 1;
+                port_end = end;
+            }
+        } else {
+            // IPV6 IP and port
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "IPV6 host in the URL");
+            }
+            // find the right bracket marking the end of the IPV6 IP
+            // name_start++; // skip past the bracket
+            int index = url.indexOf(RIGHT_BRACKET, name_start);
+            if (-1 != index && index <= end) {
+                // save the ip, then check for port
+                // Note: reverse these 2 lines if we want to strip []s off
+                index++;
+                name_end = index;
+                if (index < end && BNFHeaders.COLON == url.charAt(index)) {
+                    port_start = index + 1;
+                    port_end = end;
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No end to the IPV6 IP");
+                }
+                throw new IllegalArgumentException("Invalid IPV6 IP");
+            }
+        }
+        // save the hostname information
+        length = name_end - name_start;
+        if (0 >= length) {
+            throw new IllegalArgumentException("Hostname not present");
+        }
+        this.sUrlHost = url.substring(name_start, name_end);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Found URL host: " + this.sUrlHost);
+        }
+        // save the port information
+        if (-1 != port_start && port_end > port_start) {
+            length = port_end - port_start;
+            this.iUrlPort = GenericUtils.asIntValue(url.getBytes(), port_start, length);
+        } else {
+            // PK06407
+            // if the port was not in the URL but the host was, then default the
+            // virtual host to match the scheme
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Defaulting URL port to match scheme: " + getScheme());
+            }
+            if (SchemeValues.HTTPS.equals(getSchemeValue())) {
+                this.iUrlPort = 443;
+            } else {
+                this.iUrlPort = 80;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Found URL port of " + this.iUrlPort);
+        }
+    }
+
+    @Override
+    public String getURLHost() {
+        return context.getLocalAddr().getHostName();
+    }
+
+    @Override
+    public int getURLPort() {
+        return context.getLocalPort();
+    }
+
+    @Override
+    public String getVirtualHost() {
+        if (Objects.nonNull(this.sUrlHost))
+            return this.sUrlHost;
+        String host = headers.get(HttpHeaderKeys.HDR_HOST.getName());
+        if (Objects.isNull(host) || host.length() <= 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualHost: No host header: [" + host + "]");
+            }
+            return null;
+//            host = host.substring(0, host.indexOf(":"));
+        }
+        int index = -1;
+        if (LEFT_BRACKET == host.charAt(0)) {
+            // IPv6 IP
+            index = host.indexOf(RIGHT_BRACKET);
+            if (-1 == index) {
+                // invalid IP
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getVirtualHost: Invalid IPv6 IP, missing right bracket");
+                }
+                return null;
+            }
+            index++; // keep the right bracket
+        } else {
+            index = host.indexOf(BNFHeaders.COLON);
+        }
+        if (-1 != index) {
+            host = host.substring(0, index);
+        }
+        // PK14634 - cache the parsed host
+        this.sHdrHost = host;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getVirtualHost: " + host);
+        }
+
+        return Objects.isNull(host) ? getURLHost() : host;
+    }
+
+    /**
+     * Check whether the input byte is an alphabetic character.
+     *
+     * @param b
+     * @return boolean
+     */
+    private static boolean isAlpha(char b) {
+        if ('a' <= b && 'z' >= b) {
+            return true;
+        }
+        return ('A' <= b && 'Z' >= b);
+    }
+
+    @Override
+    public int getVirtualPort() {
+        if (HeaderStorage.NOTSET != this.iUrlPort) {
+            // use the port from the parsed URL
+            return this.iUrlPort;
+        }
+        if (NOT_PRESENT <= this.iHdrPort) {
+            // already searched the header value and either found it or not,
+            // either way, return what we saved
+            return this.iHdrPort;
+        }
+        String host = headers.get(HttpHeaderKeys.HDR_HOST.getName());
+        if (Objects.isNull(host) || host.length() == 0) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualPort: No/empty host header");
+            }
+            return -1;
+        }
+        // default to not_present now
+        this.iHdrPort = NOT_PRESENT;
+        int start = -1;
+        int end = host.length();
+        if (LEFT_BRACKET == host.charAt(0)) {
+            start = host.indexOf(RIGHT_BRACKET);
+            if (-1 == start) {
+                // invalid IP
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getVirtualPort: Invalid IPV6 ip in host header");
+                }
+                return -1;
+            }
+            start++; // skip past the bracket
+        } else {
+            // everything but an IPV6 IP
+            start = host.indexOf(BNFHeaders.COLON);
+        }
+        if (-1 == start || host.length() <= start || BNFHeaders.COLON != host.charAt(start)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualPort: No port in host header");
+            }
+            return -1;
+        }
+        start++;
+        if (0 >= end - start) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualPort: No port after colon");
+            }
+            return -1;
+        }
+        try {
+            // PK14634 - cache the parsed port
+            this.iHdrPort = Integer.parseInt(host.substring(start, end));
+        } catch (NumberFormatException nfe) {
+            // no FFDC required
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getVirtualPort: Invalid port value: " + host);
+            }
+            return -1;
+        }
+
+        return this.iHdrPort;
+    }
+
+    @Override
+    public void setQueryString(String query) {
+        throw new UnsupportedOperationException("Set query delegated to http codec");
+
+    }
+
+    @Override
+    public void setQueryString(byte[] query) {
+        setQueryString(GenericUtils.getEnglishString(query));
+
+    }
+
+    @Override
+    public SchemeValues getSchemeValue() {
+        return this.scheme;
+    }
+
+    @Override
+    public String getScheme() {
+
+        return Objects.isNull(scheme) ? null : scheme.getName();
+    }
+
+    @Override
+    public void setScheme(SchemeValues scheme) {
+        this.scheme = scheme;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setScheme(v): " + scheme.getName());
+        }
+    }
+
+    @Override
+    public void setScheme(String scheme) throws UnsupportedSchemeException {
+        SchemeValues value = SchemeValues.match(scheme, 0, scheme.length());
+
+        if (Objects.isNull(value)) {
+            throw new UnsupportedSchemeException("Illegal scheme " + scheme);
+        }
+        setScheme(value);
+
+    }
+
+    @Override
+    public void setScheme(byte[] scheme) throws UnsupportedSchemeException {
+        Objects.requireNonNull(scheme);
+        SchemeValues value = SchemeValues.match(scheme, 0, scheme.length);
+        if (Objects.isNull(value)) {
+            throw new UnsupportedSchemeException("Illegal scheme " + GenericUtils.getEnglishString(scheme));
+        }
+        setScheme(value);
+
+    }
+
+    @Override
+    public HttpTrailers getTrailers() {
+//        if (request.trailingHeaders().isEmpty())
+//            return null;
+        return new NettyTrailers(this.request.trailingHeaders());
+    }
+
+    @Override
+    public HttpRequestMessage duplicate() {
+        throw new UnsupportedOperationException("The duplicate method is not supported.");
+
+    }
+
+    @Override
+    public boolean isPushSupported() {
+        HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
+        if (Objects.isNull(handler)) {
+            return false;
+        }
+        boolean canPush = handler.connection().remote().allowPushTo();
+        return canPush;
+    }
+
+    @Override
+    public void pushNewRequest(Http2PushBuilder pushBuilder) {
+        // path is equal to uri + queryString
+        String pbPath = null;
+        if (pushBuilder.getPathQueryString() != null) {
+            pbPath = pushBuilder.getURI() + pushBuilder.getPathQueryString();
+        } else {
+            pbPath = pushBuilder.getURI();
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "pushNewRequest() pbPath = " + pbPath);
+        }
+        HttpToHttp2ConnectionHandler handler = this.nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
+        Http2Connection connection = handler.connection();
+
+        int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
+        int currentStreamId = this.request.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+
+        Http2Headers headers = new DefaultHttp2Headers().clear();
+        String scheme = "https";
+        if (!context.isSecure()) {
+            scheme = "http";
+        }
+        headers.method(pushBuilder.getMethod()).scheme(scheme).path(pbPath);
+
+        // Encode authority
+        // If the :authority header was sent in the request, get the information from there
+        // If it was not, use getTargetHost and and getTargetPort to create it
+        // If it's still null, we have to bail, since it's a required header in a push_promise frame
+        String auth = getTargetHost();
+        if (null != auth) {
+            if (0 <= getTargetPort()) {
+                auth = auth + ":" + Integer.toString(getTargetPort());
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.exit(tc, "pushNewRequest(): Cannot find hostname for required :authority pseudo header");
+            }
+            return;
+        }
+        headers.authority(auth);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.debug(tc, "pushNewRequest(): Method is GET, authority is " + auth + ", scheme is " + scheme);
+        }
+
+        // Get all the headers from the PushBuilder and add them to the Http2Headers for Netty.
+        Set<HeaderField> pushBuilderHeaders = pushBuilder.getHeaders();
+        if (pushBuilderHeaders != null) {
+            Iterator<HeaderField> iterator = pushBuilderHeaders.iterator();
+            HeaderField hf = null;
+
+            while (iterator.hasNext()) {
+                hf = iterator.next();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "pushNewRequest() PushBuilder header: " + hf.getName() + " " + hf.asString());
+                }
+
+                /*
+                 * toLowerCase() must be used here otherwise Netty throws an Exception such as the following:
+                 * io.netty.handler.codec.http2.Http2Exception: invalid header name [Referer]
+                 */
+                headers.add(hf.getName().toLowerCase(), hf.asString());
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "pushNewRequest() no PushBuilder headers");
+            }
+        }
+
+        this.nettyContext.channel().eventLoop().execute(new Runnable() {
+            @Override
+            public void run() {
+                ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
+                                                                   new VoidChannelPromise(nettyContext.channel(), true));
+                promise.addListener(future -> {
+                    if (future.isSuccess()){
+                        // Should we process the new request here when we ensure we wrote out a push promise?
+                        // Follow up issue https://github.com/OpenLiberty/open-liberty/issues/31439
+                    }
+                });
+            }
+        });
+
+        DefaultFullHttpRequest newRequest = new DefaultFullHttpRequest(request.protocolVersion(), HttpMethod.GET, pbPath);
+        newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), nextPromisedStreamId);
+        newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(), scheme);
+        HttpUtil.setContentLength(newRequest, 0);
+        HttpDispatcher.getExecutorService().execute(new Runnable() {
+
+            @Override
+            public void run() {
+                try {
+                    ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpPipelineInitializer.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
+                                                                                                                                                        newRequest);
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "pushNewRequest() Unable to dispatch push request: " + e.getMessage(), e);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * Find the target host of the request. This checks the VirtualHost data but
+     * falls back on the socket layer target if need be.
+     *
+     * @return String
+     */
+    private String getTargetHost() {
+        String host = getVirtualHost();
+        if (null == host) {
+            InetSocketAddress local = (InetSocketAddress) this.nettyContext.channel().localAddress();
+            InetSocketAddress remote = (InetSocketAddress) this.nettyContext.channel().remoteAddress();
+            host = (isIncoming()) ? local.getAddress().getCanonicalHostName() : remote.getAddress().getCanonicalHostName();
+        }
+        return host;
+    }
+
+    /**
+     * Find the target port of the request. This checks the VirtualPort data and
+     * falls back on the socket port information if need be.
+     *
+     * @return int
+     */
+    private int getTargetPort() {
+        int port = getVirtualPort();
+        if (HeaderStorage.NOTSET == port) {
+            InetSocketAddress local = (InetSocketAddress) this.nettyContext.channel().localAddress();
+            InetSocketAddress remote = (InetSocketAddress) this.nettyContext.channel().remoteAddress();
+            port = (isIncoming()) ? local.getPort() : remote.getPort();
+        }
+        return port;
+    }
+
+    /**
+     *
+     * @return request start time with nanosecond precision (relative to the JVM instance as opposed to the time since epoch)
+     */
+    @Override
+    public long getStartTime() {
+
+        if (nettyContext.channel().hasAttr(NettyHttpConstants.REQUEST_START_TIME)) {
+            return nettyContext.channel().attr(NettyHttpConstants.REQUEST_START_TIME).get();
+        }
+
+        return 0;
+    }
+
+    /**
+     * Queries the Inbound Service Context for the remote user. If not set, an empty string
+     * is returned.
+     *
+     * @return
+     */
+    @Override
+    public String getRemoteUser() {
+
+        String remoteUser = null;
+
+        if (context instanceof HttpInboundServiceContextImpl) {
+            remoteUser = ((HttpInboundServiceContextImpl) context).getRemoteUser();
+        }
+        return Objects.nonNull(remoteUser) ? remoteUser : HttpConstants.EMPTY_STRING;
+    }
+
+    /**
+     * @return
+     */
+    @Override
+    public HttpServiceContextImpl getServiceContext() {
+
+        return (this.context instanceof HttpServiceContextImpl) ? (HttpServiceContextImpl) context : null;
+    }
+
+    @Override
+    public long getEndTime() {
+        return System.nanoTime();
+    }
+
+    private void processQuery() {
+        if (Objects.isNull(query)) {
+            query = new QueryStringDecoder(request.uri());
+
+            for (Map.Entry<String, List<String>> entry : query.parameters().entrySet()) {
+
+                List<String> value = entry.getValue();
+                this.parameters.put(entry.getKey(), value.toArray(new String[value.size()]));
+            }
+
+        }
+    }
+
+}

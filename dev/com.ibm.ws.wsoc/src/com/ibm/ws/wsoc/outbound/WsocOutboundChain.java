@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
 
@@ -24,6 +21,7 @@ import com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.channelfw.ChannelConfiguration;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
@@ -32,6 +30,11 @@ import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
+
+import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 public class WsocOutboundChain {
 
@@ -60,31 +63,70 @@ public class WsocOutboundChain {
     public static final String WS_CHAIN_NAME = "WsocOutboundHttp";
     public static final String WSS_CHAIN_NAME = "WsocOutboundHttpSecure";
 
-    public static VirtualConnection getVCFactory(WsocAddress addr) throws ChainException, ChannelException {
+    /** Required, static Netty framework reference */
+    private static NettyFramework nettyBundle;
+    private static NettyTlsProvider nettyTlsProvider;
 
+    private static boolean useNettyTransport = false;
+    protected static BootstrapExtended unsecureBootstrap;
+    protected static BootstrapExtended secureBootstrap;
+    protected static Map<String, Object> currentSSLOptions;
+    protected static Map<String, Object> currentHttpOptions;
+
+    public static VirtualConnection getVCFactory(WsocAddress addr) throws ChainException, ChannelException {
         if (addr.isSecure()) {
             return getCfw().getOutboundVCFactory(WSS_CHAIN_NAME).createConnection();
-        }
-        else {
+        } else {
             return getCfw().getOutboundVCFactory(WS_CHAIN_NAME).createConnection();
         }
 
     }
 
+    public static BootstrapExtended getBootstrap(WsocAddress addr) {
+        if (addr.isSecure()) {
+            return secureBootstrap;
+        }
+        return unsecureBootstrap;
+    }
+
+    public static boolean isUsingNetty() {
+        return useNettyTransport;
+    }
+
+    public static Map<String, Object> getCurrentSslOptions() {
+        return currentSSLOptions;
+    }
+    
+    public static Map<String, Object> getCurrentHttpOptions() {
+        return currentHttpOptions;
+    }
+
     /**
      * DS method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param properties : Map containing service & config properties
-     *            populated/provided by config admin
+     *                       populated/provided by config admin
      */
     protected void activate(Map<String, Object> properties, ComponentContext context) {
-
         sslOptions.activate(context);
         sslFactoryProvider.activate(context);
 
-        wsocChain.init(WS_CHAIN_NAME, chfw.getFramework());
-        wsocSecureChain.init(WSS_CHAIN_NAME, chfw.getFramework());
+        // TODO: Updated this to use constants
+        useNettyTransport = ProductInfo.getBetaEdition() &&
+                            MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", properties.get("useNettyTransport"), true);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "activate, Netty bundle: " + nettyBundle);
+        }
+
+        if (useNettyTransport) {
+            wsocChain.init(WS_CHAIN_NAME, nettyBundle);
+            wsocSecureChain.init(WSS_CHAIN_NAME, nettyBundle);
+        } else {
+            wsocChain.init(WS_CHAIN_NAME, chfw.getFramework());
+            wsocSecureChain.init(WSS_CHAIN_NAME, chfw.getFramework());
+        }
 
         modified(properties);
 
@@ -92,13 +134,25 @@ public class WsocOutboundChain {
 
     @Modified
     protected void modified(Map<String, Object> config) {
-        modified();
-
+        boolean usingNetty = ProductInfo.getBetaEdition() &&
+                             MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", config.get("useNettyTransport"), true);
+        boolean unchangedTransport = useNettyTransport && usingNetty;
+        useNettyTransport = usingNetty;
+        modified(unchangedTransport);
     }
 
-    private void modified() {
+    private void modified(boolean unchangedTransport) {
         if (sslFactoryProvider.getService() != null) {
             wsocSecureChain.setConfigured(true);
+        }
+        if (!unchangedTransport) {
+            if (useNettyTransport) {
+                wsocChain.init(WS_CHAIN_NAME, nettyBundle);
+                wsocSecureChain.init(WSS_CHAIN_NAME, nettyBundle);
+            } else {
+                wsocChain.init(WS_CHAIN_NAME, chfw.getFramework());
+                wsocSecureChain.init(WSS_CHAIN_NAME, chfw.getFramework());
+            }
         }
         wsocSecureChain.enable();
         wsocChain.enable();
@@ -122,7 +176,8 @@ public class WsocOutboundChain {
     }
 
     @Trivial
-    protected void unsetTcpOptions(ServiceReference<ChannelConfiguration> service) {}
+    protected void unsetTcpOptions(ServiceReference<ChannelConfiguration> service) {
+    }
 
     @Trivial
     public Map<String, Object> getTcpOptions() {
@@ -139,7 +194,8 @@ public class WsocOutboundChain {
     }
 
     @Trivial
-    protected void unsetHttpOptions(ServiceReference<ChannelConfiguration> service) {}
+    protected void unsetHttpOptions(ServiceReference<ChannelConfiguration> service) {
+    }
 
     public Map<String, Object> getHttpOptions() {
 
@@ -177,7 +233,7 @@ public class WsocOutboundChain {
 
     /**
      * DS method for setting the required channel framework service.
-     * 
+     *
      * @param bundle
      */
     @Reference(name = "chfwBundle")
@@ -188,10 +244,11 @@ public class WsocOutboundChain {
     /**
      * This is a required static reference, this won't
      * be called until the component has been deactivated
-     * 
+     *
      * @param bundle CHFWBundle instance to unset
      */
-    protected void unsetChfwBundle(CHFWBundle bundle) {}
+    protected void unsetChfwBundle(CHFWBundle bundle) {
+    }
 
     protected CHFWBundle getChfwBundle() {
         return chfw;
@@ -208,11 +265,54 @@ public class WsocOutboundChain {
 
     }
 
+    @Reference(name = "nettyTlsProvider")
+    protected void setNettyTlsProvider(NettyTlsProvider bundle) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Setting nettyTlsBundle " + bundle);
+        nettyTlsProvider = bundle;
+    }
+
+    /**
+     * @return ChannelFramework associated with the CHFWBundle service.
+     */
+    public static NettyTlsProvider getNettyTlsProvider() {
+        return nettyTlsProvider;
+    }
+
+    /**
+     * DS method for setting the required netty service.
+     *
+     * @param bundle
+     */
+    @Reference(name = "nettyBundle")
+    protected void setNettyBundle(NettyFramework bundle) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "Setting nettyBundle " + bundle);
+        nettyBundle = bundle;
+    }
+
+    /**
+     * This is a required static reference, this won't
+     * be called until the component has been deactivated
+     *
+     * @param bundle NettyBundle instance to unset
+     */
+    protected void unsetNettyBundle(NettyFramework bundle) {
+    }
+
+    /**
+     * @return ChannelFramework associated with the CHFWBundle service.
+     */
+    public static NettyFramework getNettyFramework() {
+        return nettyBundle;
+    }
+
     private void performAction(Runnable action) {
         action.run();
     }
 
-    private final Object actionLock = new Object() {};
+    private final Object actionLock = new Object() {
+    };
 
     private final Runnable stopAction = new Runnable() {
         @Override

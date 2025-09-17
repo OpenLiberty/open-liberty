@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ public interface TargetCache_BinaryConstants {
     byte TRAILER_BYTE    = 0x04;
 
     // Header table ...
-
 	int HEADER_WIDTH = 60;
 
     byte ENCODING_BYTE  = 0x11; // "Encoding"
@@ -42,25 +41,47 @@ public interface TargetCache_BinaryConstants {
 
     // Table and version ...
 
+    String VERSION_10 = "1.0";
+    String VERSION_20 = "2.0";
+    
+    String[] VERSIONS_10 = { VERSION_10 };
+    String[] VERSIONS_10_20 = { VERSION_10, VERSION_20 };
+    
+    int VERSION_VALUE_10 = 10;
+    int VERSION_VALUE_20 = 20;
+    
+    int[] VERSION_VALUES_10 = { VERSION_VALUE_10 };
+    int[] VERSION_VALUES_10_20 = { VERSION_VALUE_10, VERSION_VALUE_20 };
+    
     String STAMP_TABLE_NAME = "Stamp";
-    String STAMP_TABLE_VERSION = "1.0";
+    String STAMP_TABLE_VERSION = VERSION_10;
+    int STAMP_TABLE_VERSION_VALUE = VERSION_VALUE_10;
 
     String CLASSES_TABLE_NAME = "Classes";
-    String CLASSES_TABLE_VERSION = "1.0";
-
+    String CLASSES_TABLE_VERSION = VERSION_10;
+    int CLASSES_TABLE_VERSION_VALUE = VERSION_VALUE_10;
+    
     String TARGETS_TABLE_NAME = "Annotation Targets";
-    String TARGETS_TABLE_VERSION = "1.0";
-
+    String TARGETS_TABLE_VERSION = VERSION_10;
+    int TARGETS_TABLE_VERSION_VALUE = VERSION_VALUE_10;
+    
     String CONTAINER_TABLE_NAME = "Container";
-    String CONTAINER_TABLE_VERSION = "1.0";
+    String CONTAINER_TABLE_VERSION = VERSION_20; // Issue 30315
+    int CONTAINER_TABLE_VERSION_VALUE = VERSION_VALUE_20; // Issue 30315
 
+    String[] CONTAINER_TABLE_VERSIONS = VERSIONS_10_20; // Issue 30315
+    int[] CONTAINER_TABLE_VERSION_VALUES = VERSION_VALUES_10_20; // Issue 30315
+        
     String RESOLVED_REFS_NAME = "Resolved References";
-    String RESOLVED_REFS_VERSION = "1.0";
-
+    String RESOLVED_REFS_VERSION = VERSION_10;
+    int RESOLVED_REFS_VERSION_VALUE = VERSION_VALUE_10;
+    
     String UNRESOLVED_REFS_NAME = "Unresolved References";
-    String UNRESOLVED_REFS_VERSION = "1.0";
-
+    String UNRESOLVED_REFS_VERSION = VERSION_10;
+    int UNRESOLVED_REFS_VERSION_VALUE = VERSION_VALUE_10;
+    
     // Containers table: ...
+    byte SIGNATURE_BYTE           = 0x22; // "Signature" // Issue 30315; the byte value '22' is correct.
     byte POLICY_BYTE              = 0x21; // "Policy"
 
     // Module classes table ...

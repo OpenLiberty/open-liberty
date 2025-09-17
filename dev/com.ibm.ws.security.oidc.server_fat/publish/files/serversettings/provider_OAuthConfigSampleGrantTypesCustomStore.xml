@@ -31,7 +31,7 @@
 		<customStore storeId="mongoDbStore"/>
 	</oauthProvider>
 
-	<!-- <client name="client06" secret="{xor}LDo8LTor" displayname="client06" 
+	<!-- <client name="client06" secret="{xor}LDo8LTorbm1saw==" displayname="client06" 
 		redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp" 
 		grantTypes="urn:ietf:params:oauth:grant-type:jwt-bearer" scope="ALL_SCOPES" 
 		enabled="true"/> -->

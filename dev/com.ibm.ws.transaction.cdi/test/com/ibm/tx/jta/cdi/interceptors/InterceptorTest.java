@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,8 +23,10 @@ import java.util.Map;
 import javax.interceptor.InvocationContext;
 import javax.transaction.Transactional;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.cdi.interceptors.beans.BaseBean;
 import com.ibm.tx.jta.cdi.interceptors.beans.ComplexStereotypeInheritance;
 import com.ibm.tx.jta.cdi.interceptors.beans.ComplexStereotypeInheritanceOtherOrder;
@@ -35,6 +37,7 @@ import com.ibm.tx.jta.cdi.interceptors.beans.SimpleInterceptorMethodAnnotatedExt
 import com.ibm.tx.jta.cdi.interceptors.beans.SimpleStereotypeClassAnnotated;
 import com.ibm.tx.jta.cdi.interceptors.beans.SimpleStereotypeInheritance;
 import com.ibm.tx.jta.cdi.interceptors.beans.SimpleStereotypeMethodAnnotated;
+import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 
 // Tests ability to find interceptors on classes/methods in various situations
 // from simple interceptors up to complex trees of stereotypes. Note that for all
@@ -44,6 +47,11 @@ import com.ibm.tx.jta.cdi.interceptors.beans.SimpleStereotypeMethodAnnotated;
 public class InterceptorTest extends TransactionalInterceptor {
 
     private static final long serialVersionUID = 1L;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        ConfigurationProviderManager.setConfigurationProvider(new DefaultConfigurationProvider());
+    }
 
     @Test
     public void testNoAnnotation() {
@@ -80,7 +88,8 @@ public class InterceptorTest extends TransactionalInterceptor {
     public void testSimpleClassAnnotation() {
         try {
             assertEquals(RuntimeException.class,
-                         getTransactionalAnnotation(createContext(new SimpleInterceptorClassAnnotated() {}), Transactional.TxType.MANDATORY.toString()).dontRollbackOn()[0]);
+                         getTransactionalAnnotation(createContext(new SimpleInterceptorClassAnnotated() {
+                         }), Transactional.TxType.MANDATORY.toString()).dontRollbackOn()[0]);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -90,7 +99,8 @@ public class InterceptorTest extends TransactionalInterceptor {
     public void testSimpleClassAnnotationExtension() {
         try {
             assertEquals(RuntimeException.class,
-                         getTransactionalAnnotation(createContext(new SimpleInterceptorClassAnnotatedExtension() {}), Transactional.TxType.MANDATORY.toString()).dontRollbackOn()[0]);
+                         getTransactionalAnnotation(createContext(new SimpleInterceptorClassAnnotatedExtension() {
+                         }), Transactional.TxType.MANDATORY.toString()).dontRollbackOn()[0]);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -100,7 +110,8 @@ public class InterceptorTest extends TransactionalInterceptor {
     public void testSimpleStereotypeAnnotation() {
         try {
             assertEquals(NoSuchMethodException.class,
-                         getTransactionalAnnotation(createContext(new SimpleStereotypeClassAnnotated() {}), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
+                         getTransactionalAnnotation(createContext(new SimpleStereotypeClassAnnotated() {
+                         }), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -110,7 +121,8 @@ public class InterceptorTest extends TransactionalInterceptor {
     public void testSimpleStereotypeMethodAnnotation() {
         try {
             assertEquals(NoSuchMethodException.class,
-                         getTransactionalAnnotation(createContext(new SimpleStereotypeMethodAnnotated() {}), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
+                         getTransactionalAnnotation(createContext(new SimpleStereotypeMethodAnnotated() {
+                         }), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -120,7 +132,8 @@ public class InterceptorTest extends TransactionalInterceptor {
     public void testSimpleStereotypeAnnotationInheritance() {
         try {
             assertEquals(NoSuchMethodException.class,
-                         getTransactionalAnnotation(createContext(new SimpleStereotypeInheritance() {}), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
+                         getTransactionalAnnotation(createContext(new SimpleStereotypeInheritance() {
+                         }), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -130,7 +143,8 @@ public class InterceptorTest extends TransactionalInterceptor {
     public void testComplexStereotypeAnnotationInheritance() {
         try {
             assertEquals(NoSuchMethodException.class,
-                         getTransactionalAnnotation(createContext(new ComplexStereotypeInheritance() {}), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
+                         getTransactionalAnnotation(createContext(new ComplexStereotypeInheritance() {
+                         }), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -140,7 +154,8 @@ public class InterceptorTest extends TransactionalInterceptor {
     public void testComplexStereotypeAnnotationInheritanceOtherOrder() {
         try {
             assertEquals(NoSuchMethodException.class,
-                         getTransactionalAnnotation(createContext(new ComplexStereotypeInheritanceOtherOrder() {}), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
+                         getTransactionalAnnotation(createContext(new ComplexStereotypeInheritanceOtherOrder() {
+                         }), Transactional.TxType.REQUIRED.toString()).dontRollbackOn()[0]);
         } catch (Exception e) {
             fail(e.getMessage());
         }
@@ -150,7 +165,8 @@ public class InterceptorTest extends TransactionalInterceptor {
         return new InvocationContext() {
 
             @Override
-            public void setParameters(Object[] arg0) {}
+            public void setParameters(Object[] arg0) {
+            }
 
             @Override
             public Object proceed() throws Exception {

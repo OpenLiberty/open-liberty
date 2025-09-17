@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.identitystore;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
@@ -157,11 +158,11 @@ public class OidcIdentityStore implements IdentityStore {
         if (parts.length > 1) {
             try {
                 try {
-                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[0]), "UTF-8");
+                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[0]), StandardCharsets.UTF_8);
                     org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();
                     isJWT = true;
                 } catch (Exception e1) {
-                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), "UTF-8");
+                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), StandardCharsets.UTF_8);
                     jwtClaims = org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();
                     isJWT = true;
                 }
@@ -175,7 +176,7 @@ public class OidcIdentityStore implements IdentityStore {
         if (isJWT) {
             if (jwtClaims == null) { // grab the claims map if we haven't already
                 try {
-                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), "UTF-8");
+                    String claimsAsJsonString = new String(Base64.getDecoder().decode(parts[1]), StandardCharsets.UTF_8);
                     jwtClaims = org.jose4j.jwt.JwtClaims.parse(claimsAsJsonString).getClaimsMap();
                 } catch (Exception e1) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

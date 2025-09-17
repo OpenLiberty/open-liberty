@@ -32,7 +32,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin1,
 				https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oauth2Login1,
@@ -159,7 +159,7 @@
 		<localStore>
 			<client
 				name="client06"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client06"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodJwksUri,
 				https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_goodJwksUri_goodTrust,
@@ -191,7 +191,7 @@
 		<localStore>
 			<client
 				name="client02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client02"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_badScope_limitedOPScope"
 				scope="someScope"
@@ -219,7 +219,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_opMissingAuthCodeGrantType_codeResponseType"
 				scope="ALL_SCOPES"
@@ -248,7 +248,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_opMissingImplicitGrantType_idTokenTokenResponseType,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin_opMissingImplicitGrantType_idTokenResponseType,

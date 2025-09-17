@@ -82,7 +82,7 @@ src: \
 	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
 	com.ibm.ws.com.unboundid;version=latest,\
-	com.ibm.ws.security.fat.common;version=latest,\
 	com.unboundid:unboundid-ldapsdk;version=5.1.0
 	
-	
+# Copy in FIPS keys
+ltpa.fips.enabled: true

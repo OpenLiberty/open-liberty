@@ -33,7 +33,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS256,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignHS256EncryptRS384,

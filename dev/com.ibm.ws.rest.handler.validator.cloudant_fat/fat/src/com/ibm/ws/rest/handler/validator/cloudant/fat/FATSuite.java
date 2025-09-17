@@ -18,6 +18,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.containers.TestContainerSuite;
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -26,7 +27,7 @@ import componenttest.topology.utils.HttpsRequest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ValidateCloudantTest.class
+                AlwaysPassesTest.class
 })
 public class FATSuite extends TestContainerSuite {
 

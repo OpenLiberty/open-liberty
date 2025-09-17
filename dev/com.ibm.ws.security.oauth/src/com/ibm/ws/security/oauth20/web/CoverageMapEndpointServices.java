@@ -33,6 +33,7 @@ import com.ibm.oauth.core.internal.OAuthConstants;
 import com.ibm.oauth.core.internal.oauth20.OAuth20Constants;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
@@ -187,7 +188,7 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
         MessageDigest digest;
 
         try {
-            digest = MessageDigest.getInstance(ALG_MD5);
+            digest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ?  MessageDigest.getInstance(ALG_SHA256) : MessageDigest.getInstance(ALG_MD5);
 
             for (Object appRoot : appRootsList) {
                 digest.update((Base64Coder.getBytes((String) appRoot)));

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=Le mot de passe n'a pas \
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Examinez le journal du serveur et, si le chiffrement de mot de passe personnalis\u00e9 est utilis\u00e9, v\u00e9rifiez les journaux de chiffrement de mot de passe personnalis\u00e9 pour plus d'informations.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: Le mot de passe n'a pas \u00e9t\u00e9 d\u00e9chiffr\u00e9 car une exception de d\u00e9codage a \u00e9t\u00e9 renvoy\u00e9e.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=Le mot de passe chiffr\u00e9 n'a pas \u00e9t\u00e9 cod\u00e9 correctement.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=V\u00e9rifiez que le mot de passe chiffr\u00e9 n'a pas \u00e9t\u00e9 tronqu\u00e9 et cod\u00e9 en utilisant le codage Base64.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Assurez-vous que le mot de passe crypt\u00e9 n'est pas tronqu\u00e9 et qu'il est encod\u00e9 avec un codage de type \u00ab Base64 \u00bb.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 les mots de passe crypt\u00e9s ne peuvent pas \u00eatre utilis\u00e9s lorsque FIPS 140-3 est activ\u00e9. R\u00e9g\u00e9n\u00e9rez le mot de passe avec AES-256 en utilisant la commande securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 est activ\u00e9 et ne prend pas en charge l' AES-128. Utilisez la commande securityUtility pour chiffrer le mot de passe \u00e0 l'aide de AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Assurez-vous que le mot de passe est crypt\u00e9 avec l'algorithme AES-256.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: Le cryptage du mot de passe AES a \u00e9chou\u00e9. V\u00e9rifiez vos param\u00e8tres d' java.security s et ajoutez l'algorithme manquant.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=Un algorithme de chiffrement est manquant dans votre fichier d' java.security.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Assurez-vous que l'algorithme est ajout\u00e9 \u00e0 votre fichier d' java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: Le d\u00e9chiffrement du mot de passe AES a \u00e9chou\u00e9. V\u00e9rifiez vos param\u00e8tres d' java.security s et ajoutez l'algorithme manquant.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=Un algorithme de chiffrement est manquant dans votre fichier d' java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Assurez-vous que l'algorithme est ajout\u00e9 \u00e0 votre fichier d' java.security.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: Vous ne pouvez pas utiliser de mots de passe encod\u00e9s par hachage ( SHA1 ) lorsque FIPS 140-3 est activ\u00e9. R\u00e9g\u00e9n\u00e9rez le hachage du mot de passe \u00e0 l'aide de la commande securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 est activ\u00e9 et ne prend pas en charge l' SHA1. Utilisez la commande encode de l' securityUtility pour g\u00e9n\u00e9rer un nouveau hachage du mot de passe d' SHA512.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Assurez-vous que le hachage du mot de passe est g\u00e9n\u00e9r\u00e9 avec SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Une ou plusieurs valeurs de mot de passe d'' {0}, stock\u00e9es dans la configuration du serveur, ont \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9es avec un algorithme plus ancien {1}. Utilisez la commande encode d'' securityUtility pour r\u00e9g\u00e9n\u00e9rer les mots de passe d'' {0} avec le dernier algorithme {2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty utilise d\u00e9sormais des algorithmes plus puissants pour les mots de passe nouvellement g\u00e9n\u00e9r\u00e9s {aes} et {hash}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Assurez-vous que les mots de passe {aes} et {hash} sont g\u00e9n\u00e9r\u00e9s avec la derni\u00e8re version d'' Liberty.
 
 
 # ---------------- This is an exception message ------------
@@ -57,4 +72,4 @@ PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Plusieurs impl\u00e9mentations CustomPa
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Une erreur a \u00e9t\u00e9 signal\u00e9e lors du traitement du fichier manifeste d''extension {0}. Ce fichier sera ignor\u00e9. Le chiffrement personnalis\u00e9 n''est pas disponible. Le message d''erreur est le suivant : {1}.
 PASSWORDUTIL_ERROR_MISSING_HEADER=L''en-t\u00eate obligatoire {0} est introuvable dans le fichier manifeste {1}. Le chiffrement personnalis\u00e9 n''est pas disponible.
 PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=Le fichier manifeste de fonction correspondant au fichier manifeste d''extension {0} est introuvable. Le chiffrement personnalis\u00e9 n''est pas disponible.
-PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=L'op\u00e9ration de d\u00e9chiffrement n'est pas prise en charge par l'algorithme de hachage. 
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=L'op\u00e9ration de d\u00e9chiffrement n'est pas prise en charge par l'algorithme de hachage.

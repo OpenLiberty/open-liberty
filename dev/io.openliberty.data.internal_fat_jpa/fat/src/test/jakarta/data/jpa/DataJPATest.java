@@ -42,10 +42,12 @@ public class DataJPATest extends FATServletClient {
     static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
                                    "CWWKD1026E.*allSorted",
+                                   "CWWKD1046E.*publicDebtAsBigInteger",
                                    "CWWKD1046E.*publicDebtAsByte",
                                    "CWWKD1046E.*publicDebtAsDouble",
                                    "CWWKD1046E.*publicDebtAsFloat",
                                    "CWWKD1046E.*publicDebtAsInt",
+                                   "CWWKD1046E.*publicDebtAsLong",
                                    "CWWKD1046E.*publicDebtAsShort",
                                    "CWWKD1046E.*numFullTimeWorkersAsByte",
                                    "CWWKD1046E.*numFullTimeWorkersAsDouble",

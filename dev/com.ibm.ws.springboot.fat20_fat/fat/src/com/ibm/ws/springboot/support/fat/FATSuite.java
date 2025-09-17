@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,25 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 TemplateTests.class,
                 NonZipExtensionFilesInBootInfLibTests20.class,
                 MultiModuleProjectTests20.class,
-                ApplicationStartedEventTests.class
+                ApplicationStartedEventTests.class,
+                JTAAppTests20.class,
+                JTAAppTests20War.class,
+                JPAHibernateAppTests20War.class,
+                JPALibertyAppTests20War.class,
+                JPAEclipseLinkAppTests20War.class,
+                JPAEclipseLinkWeavingAppTests20War.class,
+                JmsWebAppTests20.class,
+                JmsSpringBootAppTests20.class,
+                ConcurrencyAppTests20.class,
+                ConcurrencyAppTests20War.class,
+                ValidationTests20.class,
+                ValidationTests20War.class,
+                AopWebAppTests20.class,
+                AopSpringBootAppTests20.class,
+                MBeanAppTests20.class,
+                MBeanAppTests20War.class,
+                HTTPMetricsNoContextRootTest.class,
+                HTTPMetricsWithContextRootTest.class
 })
 
 public class FATSuite {

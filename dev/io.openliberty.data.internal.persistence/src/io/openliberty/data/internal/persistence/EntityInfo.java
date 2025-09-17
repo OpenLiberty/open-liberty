@@ -17,12 +17,6 @@ import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import java.io.PrintWriter;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +28,6 @@ import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.util.UUID;
 
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Inheritance;
@@ -275,29 +268,22 @@ public class EntityInfo {
      */
     @Trivial
     private void validate() {
-        for (Entry<String, Class<?>> attrType : attributeTypes.entrySet())
-            if (Util.UNSUPPORTED_ATTR_TYPES.contains(attrType.getValue()))
+        // Unable to validate attribute types when we don't know which are converted
+        if (builder.convertibleTypes == null)
+            return;
+
+        for (Entry<String, Class<?>> attrTypeEntry : attributeTypes.entrySet()) {
+            Class<?> attrType = attrTypeEntry.getValue();
+            if (!builder.convertibleTypes.contains(attrType) &&
+                Util.UNSUPPORTED_ATTR_TYPES.contains(attrType))
                 throw exc(MappingException.class,
                           "CWWKD1055.unsupported.entity.attr",
-                          attrType.getKey(),
+                          attrTypeEntry.getKey(),
                           entityClass.getName(),
-                          attrType.getValue().getName(),
-                          List.of(Instant.class.getSimpleName(),
-                                  LocalDate.class.getSimpleName(),
-                                  LocalDateTime.class.getSimpleName(),
-                                  LocalTime.class.getSimpleName()),
-                          List.of(BigDecimal.class.getSimpleName(),
-                                  BigInteger.class.getSimpleName(),
-                                  Boolean.class.getSimpleName(), "boolean",
-                                  Byte.class.getSimpleName(), "byte",
-                                  "byte[]",
-                                  Character.class.getSimpleName(), "char",
-                                  Double.class.getSimpleName(), "double",
-                                  Float.class.getSimpleName(), "float",
-                                  Integer.class.getSimpleName(), "int",
-                                  Long.class.getSimpleName(), "long",
-                                  Short.class.getSimpleName(), "short",
-                                  String.class.getSimpleName(),
-                                  UUID.class.getSimpleName()));
+                          attrType.getName(),
+                          Util.SUPPORTED_TEMPORAL_TYPES,
+                          Util.SUPPORTED_BASIC_TYPES,
+                          "@Convert(converter=YourOwnAttributeConverter.class)");
+        }
     }
 }

@@ -1,0 +1,718 @@
+/*******************************************************************************
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+dependencies {
+  requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
+               'org.apache.httpcomponents:httpcore:4.1.2',
+               project(':com.ibm.ws.ejbcontainer.security.jacc_fat.common'),
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':com.ibm.json4j'),
+               project(':com.ibm.ws.security.audit_fat.common.tooling'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets')
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+/* 
+ * This is where all application will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejb.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejb_EAR (type: Zip) { 
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build ear file (securityejb.ear) for tests with role mapping in server.xml'
+  destinationDirectory = new File(appBuildDir)
+  archiveFileName = 'securityejb.ear'
+
+
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'securityejb.war', 'SecurityEJB.jar'
+  }
+  from ('publish/files/securityejb') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbinwar.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbinwar_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR (pure ann) ear file (securityejbinwar.ear) with role mapping in server.xml'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbinwar.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'ejbinwarservlet.war'
+  }
+  from ('publish/files/securityejbinwar') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbXML.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbXML_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build ear file for tests with role mapping in ibm-application-bnd.xml only'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbXML.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'securityejb.war', 'SecurityEJB.jar'
+  }
+  from ('publish/files/securityejbXML') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbInWarEarXML.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbInWarEarXML_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbInWarEarXML.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'ejbinwarservlet.war'
+  }
+  from ('publish/files/securityejbInWarEarXML') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbXMLmerge.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbXMLmerge_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build ear file (securityejbXMLmerge.ear) for pure ann tests with role mapping in mix of server.xml and ibm-application-bnd.xml'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbXMLmerge.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'securityejb.war', 'SecurityEJB.jar'
+  }
+  from ('publish/files/securityejbXMLmerge') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbInWarEarXMLMerge.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbInWarEarXMLMerge_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR ear file (securityejbInWarEarXMLMerge) for pure ann tests with role mapping in mix of server.xml and ibm-application-bnd.xml'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbInWarEarXMLMerge.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'ejbinwarservlet.war'
+  }
+  from ('publish/files/securityejbInWarEarXMLMerge') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbjar.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbjar_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build ear file (securityejbjar.ear) for tests with ejb-jar.xml testing with role mapping in server.xml'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbjar.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'securityejb.war'
+    include 'SecurityEJBX01.jar', 'SecurityEJBX02.jar', 'SecurityEJBX03.jar'
+    include 'SecurityEJBM01.jar', 'SecurityEJBM02.jar', 'SecurityEJBM03.jar'
+    include 'SecurityEJBM04.jar', 'SecurityEJBM05.jar', 'SecurityEJBM07.jar'
+    include 'SecurityEJBM08.jar', 'SecurityEJBM09.jar', 'SecurityEJBM10.jar'
+  }
+  from ('publish/files/securityejbjar') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbjarXMLmerge.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbjarXMLmerge_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build ear file (securityejbjarXMLmerge.ear) for tests with ejb-jar.xml testing with role mapping in server.xml and ibm-application-bnd.xml'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbjarXMLmerge.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'securityejb.war'
+    include 'SecurityEJBX01.jar', 'SecurityEJBX02.jar', 'SecurityEJBX03.jar'
+    include 'SecurityEJBM01.jar', 'SecurityEJBM02.jar', 'SecurityEJBM03.jar'
+    include 'SecurityEJBM04.jar', 'SecurityEJBM05.jar', 'SecurityEJBM07.jar'
+    include 'SecurityEJBM08.jar', 'SecurityEJBM09.jar', 'SecurityEJBM10.jar'
+  }
+  from ('publish/files/securityejbjarXMLmerge') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbjarMC.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbjarMC_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbjarMC.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'securityejb.war', 'SecurityEJBMC06.jar'
+  }
+  from ('publish/files/securityejbjarMC') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbjarInWarEarX01.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbjarInWarEarX01_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR ear file (securityejbjarInWarEarX01) for tests with ejb-jar.xml only'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbjarInWarEarX01.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'ejbinwarservletX01.war'
+  }
+  from ('publish/files/securityejbjarInWarEarX01') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbjarInWarEarM01.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbjarInWarEarM01_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR ear file (securityejbjarInWarEarM01) for tests with ejb-jar.xml and mixed annotations'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbjarInWarEarM01.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'ejbinwarservletM01.war'
+  }
+  from ('publish/files/securityejbjarInWarEarM01') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbjarInWarEarMC06.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbjarInWarEarMC06_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR ear file (securityejbInWarEarXML) for pure ann tests with role mapping in ibm-application-bnd.xml only'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbjarInWarEarMC06.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'ejbinwarservletMC06.war'
+  }
+  from ('publish/files/securityejbjarInWarEarMC06') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbjarInWarEarM07.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbjarInWarEarM07_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR ear file (securityejbjarInWarEarM07) for tests with ejb-jar.xml and mixed annotations and run-as extension file'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbjarInWarEarM07.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'ejbinwarservletM07.war'
+  }
+  from ('publish/files/securityejbjarInWarEarM07') {
+    include '**' 
+  }
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** securityejbjarInWarEarM07XMLmerge.ear
+ **
+ ******************************************************************
+ ******************************************************************/
+task securityejbjarInWarEarM07XMLmerge_EAR(type: Zip) {
+  dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+
+  description 'Build EJB in WAR ear file (securityejbjarInWarEarM07XMLmerge) for tests with ejb-jar.xml and mixed annotations and run-as extension file with bindings in server.xml and ibm-application-bnd'
+  destinationDirectory = file(appBuildDir)
+  archiveFileName = "securityejbjarInWarEarM07XMLmerge.ear"
+  
+  
+  from (new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application')) {
+    include 'ejbinwarservletM07.war'
+  }
+  from ('publish/files/securityejbjarInWarEarM07XMLmerge') {
+    include '**' 
+  }
+}
+
+
+/*
+ * The 'assemble' task should build all these applications.
+ */
+assemble { 
+  dependsOn securityejb_EAR
+  dependsOn securityejbinwar_EAR
+  dependsOn securityejbXML_EAR
+  dependsOn securityejbInWarEarXML_EAR
+  dependsOn securityejbXMLmerge_EAR
+  dependsOn securityejbInWarEarXMLMerge_EAR
+  dependsOn securityejbjar_EAR
+  dependsOn securityejbjar_EAR
+  dependsOn securityejbjarXMLmerge_EAR
+  dependsOn securityejbjarMC_EAR
+  dependsOn securityejbjarInWarEarX01_EAR
+  dependsOn securityejbjarInWarEarM01_EAR
+  dependsOn securityejbjarInWarEarMC06_EAR
+  dependsOn securityejbjarInWarEarM07_EAR
+  dependsOn securityejbjarInWarEarM07XMLmerge_EAR
+}
+
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Copy feature bundles and applications to specific servers.
+ **
+ ******************************************************************
+ ******************************************************************/
+autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
+autoFVT.dependsOn ':io.openliberty.security.authorization.jacc.testprovider:assemble'
+autoFVT.dependsOn ':com.ibm.ws.ejbcontainer.security_test.servlets:assemble'
+autoFVT.doLast {
+
+  /*
+   * Copy the JACC test provider feature.
+   */
+  copy {
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.authorization.jacc.testprovider.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_1.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.0.jar'
+  }
+  copy {
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.1.jar'
+  }
+  copy {
+     from new File(project(':io.openliberty.security.authorization.jacc.testprovider').projectDir, "/build/libs/io.openliberty.security.authorization.jacc.testprovider.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'io.openliberty.security.authorization.jacc.testprovider.jar', 'io.openliberty.security.authorization.jacc.testprovider_3.0.jar'
+  }
+
+  copy {
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
+     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.1.mf")  
+     from new File(project(':io.openliberty.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-3.0.mf")  
+     into new File(autoFvtDir, 'publish/features')
+  }
+
+  
+  /*
+   * Copy securityejb.ear into test servers.
+   */
+  def servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat',
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.audit'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejb.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+
+  
+  /*
+   * Copy securityejbinwar.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat',
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.audit',
+    'com.ibm.ws.security.authorization.jacc.dynamic_fat'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbinwar.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+
+  /*
+   * Copy ejbinstandalone.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat',
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.audit'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application/ejbinstandalone.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }  
+
+  
+  /*
+   * Copy securityejbXML.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.bindings'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbXML.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+
+  
+  /*
+   * Copy securityejbInWarEarXML.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.bindings'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbInWarEarXML.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+
+  
+  /*
+   * Copy securityejbXMLmerge.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.mergebindings'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbXMLmerge.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+
+  
+  /*
+   * Copy securityejbInWarEarXMLMerge.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.mergebindings'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbInWarEarXMLMerge.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  
+  /*
+   * Copy securityejbjar.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar',
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.audit'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbjar.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  
+  /*
+   * Copy securityejbjarXMLmerge.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.mergebindings'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbjarXMLmerge.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }  
+  
+  
+  /*
+   * Copy securityejbjarMC.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.mc'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbjarMC.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  
+  /*
+   * Copy securityejbjarInWarEarX01.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.inwar'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbjarInWarEarX01.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+
+  /*
+   * Copy ejbjarinstandaloneX02.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.inwar'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application/ejbjarinstandaloneX02.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }  
+  
+  
+  /*
+   * Copy securityejbjarInWarEarM01.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.inwar'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbjarInWarEarM01.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+
+  /*
+   * Copy ejbjarinstandaloneM02.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.inwar'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application/ejbjarinstandaloneM02.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }  
+  
+  
+  /*
+   * Copy securityejbjarInWarEarMC06.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.mc'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbjarInWarEarMC06.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+
+  /*
+   * Copy ejbjarinstandaloneMC06.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.mc'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application/ejbjarinstandaloneMC06.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }  
+  
+  
+  /*
+   * Copy securityejbjarInWarEarM07.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.inwar'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbjarInWarEarM07.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+  
+  /*
+   * Copy securityejbjarInWarEarM07XMLmerge.ear into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.mergebindings'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(appBuildDir, 'securityejbjarInWarEarM07XMLmerge.ear')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }
+  
+
+  /*
+   * Copy ejbjarinstandaloneMC06.war into test servers.
+   */
+  servers = [
+    'com.ibm.ws.ejbcontainer.security.jacc_fat.ejbjar.inwar'
+  ]
+  servers.each { server ->
+    copy { 
+      from new File(project(':com.ibm.ws.ejbcontainer.security_test.servlets').buildDir, 'test-application/ejbjarinstandaloneM08.war')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+    }
+  }  
+}

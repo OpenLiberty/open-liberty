@@ -303,6 +303,8 @@ metamodel_managed_type_attribute_type_incorrect=Tipo di attributo previsto [{2}]
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=L''attributo dichiarato [{0}] dal tipo gestito [{1}] non \u00e8 presente, tuttavia \u00e8 dichiarato in una superclasse.
 
+missing_jpql_parser_class=Impossibile caricare la classe parser JPQL.
+
 missing_parameter_value=L''argomento query {0} non trovato nell''elenco dei parametri forniti durante l''esecuzione della query.
 
 missing_toplink_bean_definition_for=Manca la definizione del bean TopLink per {0}

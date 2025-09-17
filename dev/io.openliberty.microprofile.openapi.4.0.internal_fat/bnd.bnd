@@ -18,6 +18,10 @@ src: \
 
 fat.project: true
 
+tested.features=\
+  mpOpenAPI-4.1,\
+  restfulws-4.0
+
 -buildpath: \
     com.ibm.websphere.javaee.jsonp.1.1,\
     io.openliberty.org.eclipse.microprofile.openapi.4.0;version=latest,\

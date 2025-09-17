@@ -11,7 +11,7 @@
     <file name="${shared.resource.dir}/jdbc/jcc.jar" />
   </library>
   
-  <kerberos keytab="${server.config.dir}security/krb5.keytab" configFile="${KRB5_CONF}"/>
+  <kerberos keytab="${KRB5_KEYTAB}" configFile="${KRB5_CONF}"/>
   
   <authData id="krb5Auth" krb5Principal="${KRB5_USER}"/>
   

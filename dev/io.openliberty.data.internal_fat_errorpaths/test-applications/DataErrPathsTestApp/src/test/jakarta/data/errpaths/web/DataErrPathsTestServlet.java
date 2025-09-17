@@ -16,13 +16,14 @@ import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
@@ -31,11 +32,14 @@ import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
+import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
+import jakarta.data.page.PageRequest.Mode;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -76,6 +80,10 @@ import test.jakarta.data.errpaths.web.Voters.NameAndZipCode;
 // a different entity type that is not in the persistence unit.
 @PersistenceUnit(name = "java:app/env/WrongPersistenceUnitRef",
                  unitName = "VoterPersistenceUnit")
+@Resource(name = "java:app/jdbc/env/DSForInvalidEntityRecordWithJPAAnnoRef",
+          lookup = "java:module/jdbc/DataSourceForInvalidEntity")
+@Resource(name = "java:comp/jdbc/env/DSForInvalidEntityClassWithoutAnnoRef",
+          lookup = "java:module/jdbc/DataSourceForInvalidEntity")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataErrPathsTestServlet extends FATServlet {
@@ -87,13 +95,19 @@ public class DataErrPathsTestServlet extends FATServlet {
     RepoWithoutDataStore errDefaultDataSourceNotConfigured;
 
     @Inject
+    Invitations errEntityClassMissingAnnoRepo;
+
+    @Inject
+    Inventions errEntityMissingIdRepo;
+
+    @Inject
     InvalidNonJNDIRepo errIncorrectDataStoreName;
 
     @Inject
     InvalidJNDIRepo errIncorrectJNDIName;
 
     @Inject
-    Inventions errInvalidEntityRepo;
+    Investments errRecordEnityWithJPAAnnoRepo;
 
     @Inject
     WrongPersistenceUnitRefRepo errWrongPersistenceUnitRef;
@@ -133,11 +147,14 @@ public class DataErrPathsTestServlet extends FATServlet {
 
                 em.persist(new Voter(987665432, "Vivian", //
                                 LocalDate.of(1971, Month.OCTOBER, 1), //
-                                "701 Silver Creek Rd NE, Rochester, MN 55906"));
+                                "701 Silver Creek Rd NE, Rochester, MN 55906", //
+                                "vivian@openliberty.io", //
+                                "vivian.voter@openliberty.io"));
 
                 em.persist(new Voter(789001234, "Vincent", //
                                 LocalDate.of(1977, Month.SEPTEMBER, 26), //
-                                "770 W Silver Lake Dr NE, Rochester, MN 55906"));
+                                "770 W Silver Lake Dr NE, Rochester, MN 55906", //
+                                "vincent@openliberty.io"));
             } finally {
                 tx.commit();
             }
@@ -165,6 +182,207 @@ public class DataErrPathsTestServlet extends FATServlet {
                 !x.getMessage().startsWith("CWWKD1019E:") ||
                 !x.getMessage().contains("livingAt"))
                 throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when the GreaterThanEqual keyword is applied to a
+     * collection of values.
+     */
+    @Test
+    public void testCollectionGreaterThanEqual() {
+        try {
+            List<Voter> found = voters.findByEmailAddressesGreaterThanEqual(1);
+            fail("Should not be able to compare a collection to a number." +
+                 " Found " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1110E:") ||
+                !x.getMessage().contains("GreaterThanEqual"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when the IgnoreCase keyword is applied to a
+     * collection of values.
+     */
+    @Test
+    public void testCollectionIgnoreCase() {
+        List<Voter> found;
+        try {
+            String mixedCaseEmail = "Vivian@OpenLiberty.io";
+            found = voters.findByEmailAddressesIgnoreCaseContains(mixedCaseEmail);
+            fail("Should not be able to compare a collection ignoring case." +
+                 " Found " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1110E:") ||
+                !x.getMessage().contains("IgnoreCase"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a value cannot be safely converted to byte.
+     */
+    @Test
+    public void testConvertToByte() {
+        try {
+            byte result = voters.ssnAsByte(123445678);
+            fail("Should not convert int value 123445678 to byte value " + result);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+
+        try {
+            Optional<Byte> result = voters.ssnAsByteWrapper(987665432);
+            fail("Should not convert int value 987665432 to Byte value " + result);
+        } catch (MappingException x) {
+            // expected - out of range
+        }
+    }
+
+    /**
+     * Verify an error is raised when a String cannot be safely converted to char
+     * because it contains more than 1 character.
+     */
+    @Test
+    public void testConvertToChar() {
+        try {
+            Optional<Character> found = voters.firstLetterOfName(987665432);
+            fail("Should not be able to return a 6 character String as a" +
+                 " single character: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1046E") &&
+                x.getMessage().contains("firstLetterOfName"))
+                ; // pass
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a value cannot be safely converted to float.
+     */
+    @Test
+    public void testConvertToFloat() {
+        try {
+            float[] floats = voters.minMaxSumCountAverageFloat(999999999);
+            fail("Allowed unsafe conversion from integer to float: " +
+                 Arrays.toString(floats));
+        } catch (MappingException x) {
+            if (x.getMessage().startsWith("CWWKD1046E") &&
+                x.getMessage().contains("float[]"))
+                ; // unsafe to convert double to float
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Repository method that returns the count as a boolean value,
+     * which is not an allowed return type. This must raise an error.
+     */
+    @Test
+    public void testCountAsBoolean() {
+        try {
+            boolean count = voters.countAsBooleanBySSNLessThan(420000000);
+            fail("Count queries cannot have a boolean return type: " + count);
+        } catch (MappingException x) {
+            if (x.getMessage().startsWith("CWWKD1049E") &&
+                x.getMessage().contains("boolean"))
+                ; // cannot convert number to boolean
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a count Query by Method Name method
+     * tries to return a long value as a Page of Long.
+     */
+    @Test
+    public void testCountAsPage() {
+        try {
+            LocalDate today = LocalDate.of(2025, Month.FEBRUARY, 18);
+            Page<Long> page = voters.countByBirthday(today);
+            fail("Should not be able to use a count query that returns a" +
+                 " Page rather than long. Page is: " + page);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1049E:") ||
+                !x.getMessage().contains("Page<java.lang.Long>"))
+                throw x;
+        }
+    }
+
+    /**
+     * Error path where a request for cursor-based pagination includes ordering on
+     * VERSION(THIS) when the entity has no version. Expect an error with an
+     * appropriate message.
+     */
+    @Test
+    public void testCursoredPageInvalidOrderNoVersion() {
+        PageRequest pageReq = PageRequest.ofSize(5).afterCursor(Cursor.forKey(0));
+        try {
+            CursoredPage<Voter> page = voters
+                            .selectByBirthday(LocalDate.of(2025, 5, 23),
+                                              pageReq,
+                                              Order.by(Sort.asc("VERSION(THIS)")));
+            fail("Should not be able to retrieve CursoredPage ordering on" +
+                 " VERSION(THIS) when the entity doesn't have a version. Found: " +
+                 page);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1093E:") ||
+                !x.getMessage().contains("VERSION(THIS)"))
+                throw x;
+        }
+    }
+
+    /**
+     * Error path where a request for cursor-based pagination includes ordering on
+     * an attribute that the entity does not have. Expect an error with an
+     * appropriate message.
+     */
+    @Test
+    public void testCursoredPageInvalidOrderUnknownSortAttribute() {
+        PageRequest pageReq = PageRequest.ofSize(6).afterCursor(Cursor.forKey(50000));
+        try {
+            CursoredPage<Voter> page = voters
+                            .selectByBirthday(LocalDate.of(2025, 5, 22),
+                                              pageReq,
+                                              Order.by(Sort.asc("income")));
+            fail("Should not be able to retrieve CursoredPage ordering on" +
+                 " an attribute that does not exist on the entity. Found: " +
+                 page);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1010E:") ||
+                !x.getMessage().contains("income"))
+                throw x;
+        }
+    }
+
+    /**
+     * Error path where a request for cursor-based pagination includes ordering on
+     * a function that does not exist. Expect an error from EclipseLink.
+     */
+    @Test
+    public void testCursoredPageInvalidOrderUnknownSortFunction() {
+        PageRequest pageReq = PageRequest.ofSize(7).afterCursor(Cursor.forKey(0.22));
+        try {
+            CursoredPage<Voter> page = voters
+                            .selectByBirthday(LocalDate.of(2025, 5, 21),
+                                              pageReq,
+                                              Order.by(Sort.asc("TAXBRACKET(THIS)")));
+            fail("Should not be able to retrieve CursoredPage ordering on" +
+                 " a function that does not exist on the entity. Found: " +
+                 page);
+        } catch (RuntimeException x) {
+            // error is from EclipseLink
         }
     }
 
@@ -351,7 +569,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  + " a PageRequest.");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1022E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardPage"))
                 throw x;
         }
@@ -370,7 +588,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities but does not return them");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardLimited"))
                 throw x;
         }
@@ -418,7 +636,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities but does not return them");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardOrdered"))
                 throw x;
         }
@@ -437,7 +655,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities and returns an update count: " + count);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardSorted"))
                 throw x;
         }
@@ -462,6 +680,23 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify MappingException is raised if attempting to supply an empty string
+     * value instead of a valid entity attribute name to the By annotation.
+     */
+    @Test
+    public void testEmptyBy() {
+        try {
+            List<Voter> found = voters.inPrecinct(2);
+            fail("Queried on an empty string attribute name and found " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1024E:") ||
+                !x.getMessage().contains("inPrecinct"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify IllegalArgumentException is raised if you attempt to delete an
      * empty list of entities.
      */
@@ -479,6 +714,23 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify MappingException is raised if the entity attribute name is omitted
+     * from a findBy comparison of a repository method name.
+     */
+    @Test
+    public void testEmptyFindComparison() {
+        try {
+            List<Voter> found = voters.findByIgnoreCaseContains("Civic Center Dr");
+            fail("Ordered by an empty string attribute name and returned " + found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1011E:") ||
+                !x.getMessage().contains("findByIgnoreCaseContains"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify IllegalArgumentException is raised if you attempt to delete an
      * empty array of entities.
      */
@@ -491,6 +743,88 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1092E:") ||
                 !x.getMessage().contains("register"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify MappingException is raised if attempting to supply an empty string
+     * value instead of a valid entity attribute name to the OrderBy annotation.
+     */
+    @Test
+    public void testEmptyOrderByAnno() {
+        try {
+            List<Voter> found = voters.inTownship("Haverhill");
+            fail("Ordered by an empty string attribute name and returned " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1024E:") ||
+                !x.getMessage().contains("inTownship"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify MappingException is raised if the entity attribute name is omitted
+     * from the OrderBy of a repository method name.
+     */
+    @Test
+    public void testEmptyOrderByInMethodName() {
+        try {
+            List<Voter> found = voters.findByAddressContainsOrderByAsc("Broadway Ave");
+            fail("Ordered by an empty string attribute name and returned " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1024E:") ||
+                !x.getMessage().contains("findByAddressContainsOrderByAsc"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify MappingException is raised if attempting to supply an empty string
+     * value instead of a valid named parameter name to the Param annotation.
+     */
+    @Test
+    public void testEmptyParam() {
+        try {
+            List<Voter> found = voters.inWard(3);
+            fail("Queried with an empty string named parameter and found " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1104E:") ||
+                !x.getMessage().contains("inWard"))
+                throw x;
+        }
+    }
+
+    /**
+     * Repository methods with return types requiring a single entity must
+     * raise EmptyResultException when no entity matches.
+     */
+    @Test
+    public void testEmptyResultException() {
+        try {
+            Voter v = voters.findBySSNBetweenAndNameNotNull(-28, -24);
+            fail("Unexpected SSN for " + v);
+        } catch (EmptyResultException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1053E") &&
+                x.getMessage().contains("findBySSNBetweenAndNameNotNull"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            long n = voters.findSSNAsLongBetween(-36, -32);
+            fail("Unexpected SSN " + n);
+        } catch (EmptyResultException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1053E") &&
+                x.getMessage().contains("findSSNAsLongBetween"))
+                ; // expected
+            else
                 throw x;
         }
     }
@@ -530,6 +864,33 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an error is raised when an entity class has Jakarta Persistence
+     * annotations on its members but lacks the Entity annotation on the
+     * entity class.
+     */
+    @Test
+    public void testEntityClassMissingAnno() {
+        Invitation inv = new Invitation();
+        inv.id = 50006;
+        inv.place = "Rochester, MN";
+        inv.time = LocalDateTime.now().plusHours(5);
+        inv.invitees = Set.of("invitee1@openliberty.io",
+                              "invitee2@openliberty.io");
+
+        try {
+            errEntityClassMissingAnnoRepo.invite(inv);
+
+            fail("Used an entity that has Jakarta Persistence annotations on" +
+                 " members, but lacks the Entity annotation.");
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1108E:") ||
+                !x.getMessage().contains("jakarta.persistence.Entity"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised when an exists Query by Method Name method
      * tries to return a true/false value as int.
      */
@@ -562,6 +923,26 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1003E:") ||
                 !x.getMessage().contains("CompletableFuture<java.lang.Long>"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when an exists Query by Method Name method
+     * tries to return a true/false value as a Page.
+     */
+    @Test
+    public void testExistsAsPage() {
+        try {
+            LocalDate today = LocalDate.of(2025, Month.FEBRUARY, 18);
+            Page<Boolean> page = voters.existsByBirthday(today,
+                                                         PageRequest.ofSize(5));
+            fail("Should not be able to use an exists query that returns a" +
+                 " Page rather than boolean. Page is: " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1003E:") ||
+                !x.getMessage().contains("Page<java.lang.Boolean>"))
                 throw x;
         }
     }
@@ -624,6 +1005,115 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Find-and-delete repository operations that return invalid types that are neither the entity class,
+     * record class, or id class.
+     */
+    @Test
+    public void testFindAndDeleteReturnsInvalidTypes() {
+
+        // test data includes an entity with this address:
+        final String address = "4051 E River Rd NE, Rochester, MN 55906";
+
+        Sort<Voter> sort = Sort.asc("ssn");
+
+        try {
+            char[] deleted = voters.deleteReturnCharByAddress(address,
+                                                              Limit.of(3),
+                                                              sort);
+            fail("Deleted with return type of char[]: " + Arrays.toString(deleted) +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            List<String> deleted = voters.deleteReturnStringByAddress(address,
+                                                                      Limit.of(4),
+                                                                      sort);
+            fail("Deleted with return type of List of String: " + deleted +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Page<Boolean> deleted = voters.deleteReturnBooleanByAddress(address,
+                                                                        Limit.of(5),
+                                                                        sort);
+            fail("Deleted with return type of Page of Boolean: " + deleted +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Find-and-delete repository operations that return invalid types that are neither the entity class,
+     * record class, or id class.
+     * In this case the table is empty and no results will have been deleted,
+     * we should still throw a mapping exception.
+     */
+    @Test
+    public void testFindAndDeleteReturnsInvalidTypesEmpty() {
+
+        // test data does not include any entities with this address:
+        final String address = "2800 37th St NW, Rochester, MN 55901";
+
+        Sort<Voter> sort = Sort.asc("ssn");
+
+        try {
+            char[] deleted = voters.deleteReturnCharByAddress(address,
+                                                              Limit.of(3),
+                                                              sort);
+            fail("Deleted with return type of char[]: " + Arrays.toString(deleted) +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            List<String> deleted = voters.deleteReturnStringByAddress(address,
+                                                                      Limit.of(4),
+                                                                      sort);
+            fail("Deleted with return type of List of String: " + deleted +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+
+        try {
+            Page<Boolean> deleted = voters.deleteReturnBooleanByAddress(address,
+                                                                        Limit.of(5),
+                                                                        sort);
+            fail("Deleted with return type of Page of Boolean: " + deleted +
+                 " even though the id type is int.");
+        } catch (MappingException x) {
+            // expected
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised for the invalid combination of the
+     * IgnoreCase and In keywords on a Query by Method Name method.
+     */
+    @Test
+    public void testIgnoreCaseIn() {
+        Set<String> addresses = Set.of("401 9th Ave NW, Rochester, MN 55901",
+                                       "88 23RD AVE SW, Rochester, MN 55902");
+        try {
+            List<Voter> found = voters.findByAddressIgnoreCaseIn(addresses);
+            fail("Should not be able to combine IgnoreCase and In keywords." +
+                 " Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1074E:") ||
+                !x.getMessage().contains("IgnoreCase") ||
+                !x.getMessage().contains("In"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised for a repository insert method with a parameter
      * that can insert multiple entities and a return type that can only return
      * one inserted entity.
@@ -632,10 +1122,12 @@ public class DataErrPathsTestServlet extends FATServlet {
     public void testInsertMultipleEntitiesButOnlyReturnOne() {
         Voter v1 = new Voter(100200300, "Valerie", //
                         LocalDate.of(1947, Month.NOVEMBER, 7), //
-                        "88 23rd Ave SW, Rochester, MN 55902");
+                        "88 23rd Ave SW, Rochester, MN 55902", //
+                        "valerie@openliberty.io");
         Voter v2 = new Voter(400500600, "Vinny", //
                         LocalDate.of(1988, Month.NOVEMBER, 8), //
-                        "2016 45th St SE, Rochester, MN 55904");
+                        "2016 45th St SE, Rochester, MN 55904", //
+                        "vinny@openliberty.io");
         try {
             Voter inserted = voters.register(v1, v2);
             fail("Insert method with singular return type should not be able to " +
@@ -751,6 +1243,49 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest and attempt to use a Limit parameter
+     * instead. This is not supported by the spec.
+     * Expect UnsupportedOperationException.
+     */
+    @Test
+    public void testLacksPageRequestUseLimitInstead() {
+        CursoredPage<Voter> page;
+        try {
+            page = voters.findBySsnBetweenAndAddressNotNull(150000000,
+                                                            450000000,
+                                                            Limit.of(5));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1041E") ||
+                !x.getMessage().contains("findBySsnBetweenAndAddressNotNull"))
+                throw x;
+        }
+    }
+
+    /**
+     * A repository might attempt to define a method that returns a CursoredPage
+     * without specifying a PageRequest and attempt to use a Sort parameter instead.
+     * This is not supported by the spec. Expect UnsupportedOperationException.
+     */
+    @Test
+    public void testLacksPageRequestUseSortInstead() {
+        CursoredPage<Voter> page;
+        try {
+            page = voters.findBySsnBetweenAndBirthdayNotNull(300000000, //
+                                                             400000000, //
+                                                             Sort.asc(ID));
+            fail("Able to obtain CursoredPage without a PageRequest: " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1041E") ||
+                !x.getMessage().contains("findBySsnBetweenAndBirthdayNotNull"))
+                throw x;
+        }
+    }
+
+    /**
      * Use a repository method with multiple entity parameters, which is not
      * allowed for life cycle methods such as Insert.
      */
@@ -759,11 +1294,13 @@ public class DataErrPathsTestServlet extends FATServlet {
         List<Voter> list = List //
                         .of(new Voter(999887777, "New Voter 1", //
                                         LocalDate.of(1999, Month.DECEMBER, 9), //
-                                        "213 13th Ave NW, Rochester, MN 55901"),
+                                        "213 13th Ave NW, Rochester, MN 55901", //
+                                        "voter1@openliberty.io"),
 
                             new Voter(777665555, "New Voter 2", //
                                             LocalDate.of(1987, Month.NOVEMBER, 7), //
-                                            "300 7th St SW, Rochester, MN 55902"));
+                                            "300 7th St SW, Rochester, MN 55902", //
+                                            "voter2@openliberty.io"));
 
         try {
             list = voters.addSome(list, Limit.of(1));
@@ -855,7 +1392,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " multiple parameters. Result: " + list);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1009E") ||
+                !x.getMessage().startsWith("CWWKD1014E") ||
                 !x.getMessage().contains("changeBoth"))
                 throw x;
         }
@@ -984,6 +1521,84 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Repository methods with return types allowing at most a single entity must
+     * raise NonUniqueResultException when multiple entities match.
+     */
+    @Test
+    public void testNonUniqueResultException() {
+        try {
+            Voter v = voters.findBySSNBetweenAndNameNotNull(700000000, 999999999);
+            fail("Should find more Voter entities than " + v);
+        } catch (NonUniqueResultException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1054E") &&
+                x.getMessage().contains("findBySSNBetweenAndNameNotNull"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            long n = voters.findSSNAsLongBetween(700000000, 999999999);
+            fail("Should find more numbers than " + n);
+        } catch (NonUniqueResultException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1054E") &&
+                x.getMessage().contains("findSSNAsLongBetween"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            Optional<Voter> v = voters.deleteByNameStartsWith("V");
+            fail("Should get NonUniqueResultException when there are multiple" +
+                 " results but a singular return type. Instead, result is: " + v);
+        } catch (NonUniqueResultException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1054E") &&
+                x.getMessage().contains("deleteByNameStartsWith"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            Optional<Voter> v = voters.deleteFirst();
+            fail("Expected voters.deleteFirst() to ignore the 'first' keyword" +
+                 " and attempt to delete and not return a singular result." +
+                 " Instead returned: " + v);
+        } catch (NonUniqueResultException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1054E") &&
+                x.getMessage().contains("deleteFirst"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Supply a null Limit results in NullPointerException.
+     */
+    @Test
+    public void testNullLimit() {
+        try {
+            List<Voter> found = voters
+                            .findBySsnLessThanEqualOrderBySsnDesc(999999999, null);
+            fail("Repository method with a null Limit must raise" +
+                 " NullPointerException. Instead: " + found);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Limit.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
      * BasicRepository.findAll(PageRequest, null) must raise NullPointerException.
      */
     @Test
@@ -1015,6 +1630,47 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() != null &&
                 x.getMessage().startsWith("CWWKD1087E") &&
                 x.getMessage().contains(PageRequest.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Attempt to supply a NULL Sort parameter.
+     */
+    @Test
+    public void testNullSortArgument() {
+        Page<Voter> page;
+        try {
+            page = voters.selectByName("Vincent",
+                                       PageRequest.ofSize(9),
+                                       null);
+            fail("Obtained a page sorted by NULL: " + page);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Sort.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Attempt to supply a NULL varargs Sort parameter.
+     */
+    @Test
+    public void testNullSortArray() {
+        Page<Voter> page;
+        try {
+            page = voters.selectAll(PageRequest.ofSize(3),
+                                    (Sort[]) null);
+            fail("Obtained a page sorted by NULL: " + page);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Sort.class.getName() + "[]"))
                 ; // expected
             else
                 throw x;
@@ -1096,11 +1752,11 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
-     * Supply a PageRequest that has a Cursor to a repository method that returns
-     * an offset-based Page rather than a CursoredPage. Expect an error.
+     * Supply a PageRequest that requires CURSOR_NEXT to a repository method that
+     * returns an offset-based Page rather than a CursoredPage. Expect an error.
      */
     @Test
-    public void testOffsetPageRequestedWithCursor() {
+    public void testOffsetPageRequestedWithCursorNext() {
         Order<Voter> nameAsc = Order.by(Sort.asc("name"), Sort.asc("ssn"));
         PageRequest after123456789 = PageRequest.ofSize(4) //
                         .afterCursor(Cursor.forKey("Voter Name", 123456789));
@@ -1114,7 +1770,30 @@ public class DataErrPathsTestServlet extends FATServlet {
         } catch (IllegalArgumentException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1035E:") ||
+                !x.getMessage().contains(Mode.CURSOR_NEXT.toString()) ||
                 !x.getMessage().contains("atAddress"))
+                throw x;
+        }
+    }
+
+    /**
+     * Supply a PageRequest that requires CURSOR_PREVIOUS to a repository method that
+     * returns an offset-based Page rather than a CursoredPage. Expect an error.
+     */
+    @Test
+    public void testOffsetPageRequestedWithCursorPrevious() {
+        Order<Voter> nameAsc = Order.by(Sort.asc("name"), Sort.asc("ssn"));
+        PageRequest before987654321 = PageRequest.ofSize(5) //
+                        .beforeCursor(Cursor.forKey("Voter Name", 987654321));
+        try {
+            Page<Voter> page = voters.findAll(before987654321, nameAsc);
+            fail("Obtained an offset page from a PageRequest that contains a" +
+                 " Cursor: " + page);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1035E:") ||
+                !x.getMessage().contains(Mode.CURSOR_PREVIOUS.toString()) ||
+                !x.getMessage().contains("findAll"))
                 throw x;
         }
     }
@@ -1134,6 +1813,115 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() != null &&
                 x.getMessage().startsWith("CWWKD1090E") &&
                 x.getMessage().contains("findByAddressOrderByName"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a repository method has an OrderBy annotation
+     * that attempts to sort by an invalid, non-existent function.
+     */
+    @Test
+    public void testOrderByInvalidFunction() {
+        try {
+            List<Voter> found = voters.sortedByEndOfAddress();
+            fail("OrderBy annotation with invalid function must cause an error." +
+                 " Instead, the repository method returned: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1010E") &&
+                x.getMessage().contains("last5DigitsOf(address)"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when a repository method has an OrderBy annotation
+     * that attempts to sort by an invalid, non-existent function.
+     */
+    @Test
+    public void testOrderByUnkownEntityAttribute() {
+        try {
+            List<Voter> found = voters.sortedByZipCode();
+            fail("OrderBy annotation with invalid entity attribute must cause an" +
+                 " error. Instead, the repository method returned: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1010E") &&
+                x.getMessage().contains("sortedByZipCode"))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Exceed the maximum offset allowed by JPA.
+     */
+    @Test
+    public void testOverflow() {
+        Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
+        try {
+            List<Voter> found = voters.findBySsnLessThanEqualOrderBySsnDesc(999999999,
+                                                                            range);
+            fail("Expected an error because starting position of range exceeds" +
+                 " Integer.MAX_VALUE. Found: " + found);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1073E") &&
+                x.getMessage().contains("Limit[maxResults=6, startAt=2147483652]"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            Stream<Voter> found = voters.findFirst2147483648BySsnGreaterThan(1);
+            fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " +
+                 found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1028E") &&
+                x.getMessage().contains("2147483648"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            PageRequest pageReqWithInvalidOffset = PageRequest
+                            .ofPage(33)
+                            .size(Integer.MAX_VALUE / 30);
+            CursoredPage<Voter> found = voters.selectByBirthday(LocalDate.of(2000, 3, 13),
+                                                                pageReqWithInvalidOffset,
+                                                                Order.by(Sort.asc("ssn")));
+            fail("Expected an error because offset for pagination exceeds" +
+                 " Integer.MAX_VALUE. Found: " + found);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1043E") &&
+                x.getMessage().contains("page=33"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            PageRequest pageReqWithInvalidOffset = PageRequest
+                            .ofPage(22)
+                            .size(Integer.MAX_VALUE / 20);
+            Page<Voter> found = voters.selectAll(pageReqWithInvalidOffset,
+                                                 Sort.desc("ssn"));
+            fail("Expected an error because offset for pagination exceeds" +
+                 " Integer.MAX_VALUE. Found: " + found);
+        } catch (IllegalArgumentException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1043E") &&
+                x.getMessage().contains("page=22"))
                 ; // expected
             else
                 throw x;
@@ -1241,6 +2029,28 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an error is raised when an entity class has Jakarta Persistence
+     * annotations on its members but lacks the Entity annotation on the
+     * entity class.
+     */
+    @Test
+    public void testRecordEntityWithJakartaPersistenceAnno() {
+        Investment ibm = new Investment(1, 232.64f, "IBM");
+
+        try {
+            errRecordEnityWithJPAAnnoRepo.invest(ibm);
+
+            fail("Used a record entity that has a Jakarta Persistence annotation" +
+                 " on a record component.");
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1109E:") ||
+                !x.getMessage().contains("jakarta.persistence.Column"))
+                throw x;
+        }
+    }
+
+    /**
      * Tests an error path where a repository method attempts to remove an entity
      * but return it as a record instead.
      */
@@ -1269,7 +2079,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                             .bornOn(LocalDate.of(1977, Month.SEPTEMBER, 26));
             fail("Should not be able to use repository that sets the dataStore " +
                  "to a JNDI name that does not exist. Found: " + found);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1079E:") ||
                 !x.getMessage().contains("<persistence-unit name=\"MyPersistenceUnit\">"))
@@ -1291,7 +2101,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                                             "5455 W River Rd NW, Rochester, MN 55901"));
             fail("Should not be able to use repository that sets the dataStore " +
                  "to a name that does not exist. Added: " + added);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1078E:") ||
                 !x.getMessage().contains("<dataSource id=\"MyDataSource\" jndiName=\"jdbc/ds\""))
@@ -1311,7 +2121,7 @@ public class DataErrPathsTestServlet extends FATServlet {
             fail("Should not be able to use repository that sets the dataStore" +
                  " to a DataSource that is configured to use a database that does" +
                  " not exist. Found: " + found);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1080E:") ||
                 !x.getMessage().contains(InvalidDatabaseRepo.class.getName()))
@@ -1326,11 +2136,11 @@ public class DataErrPathsTestServlet extends FATServlet {
     @Test
     public void testRepositoryWithInvalidEntity() {
         try {
-            Invention i = errInvalidEntityRepo //
+            Invention i = errEntityMissingIdRepo //
                             .save(new Invention(1, 2, "Perpetual Motion Machine"));
             fail("Should not be able to use a repository operation for an entity" +
                  " that is not valid because it has no Id attribute. Saved: " + i);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1080E:") ||
                 !x.getMessage().contains(Invention.class.getName()))
@@ -1351,10 +2161,31 @@ public class DataErrPathsTestServlet extends FATServlet {
             found = errDefaultDataSourceNotConfigured.findById(123445678);
             fail("Should not be able to use repository without DefaultDataSource " +
                  "being configured. Found: " + found);
-        } catch (CompletionException x) {
+        } catch (DataException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1077E:") ||
                 !x.getMessage().contains("<dataSource id=\"DefaultDataSource\""))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify that an appropriate error is raised when a repository method name for
+     * Query by Method Name includes a reserved keyword in the OrderBy part of the
+     * method name.
+     */
+    @Test
+    public void testReservedKeywordInOrderByOfMethodName() {
+        try {
+            List<Voter> found = voters.findByNameNotNullOrderByDescriptionAsc();
+            fail("Should not be able to OrderBy an entity attribute name that" +
+                 " contains a reserved keyword. Found: " + found);
+        } catch (MappingException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1105E") &&
+                x.getMessage().contains("findByNameNotNullOrderByDescriptionAsc"))
+                ; // expected
+            else
                 throw x;
         }
     }

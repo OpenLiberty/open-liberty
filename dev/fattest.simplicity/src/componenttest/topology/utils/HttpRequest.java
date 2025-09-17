@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -234,6 +234,7 @@ public class HttpRequest {
                 Log.info(c, "run", "Sending HTTP Request: " + request.getName() + " " + url);
             }
             httpClient.executeMethod(request);
+
             /*
              * Check for the expected response code.
              */
@@ -243,7 +244,9 @@ public class HttpRequest {
             }
             if (!expectedResponseCode.contains(responseCode)) {
                 Log.info(c, "run", "Got unexpected response code: " + responseCode);
-                throw new Exception("Unexpected response: " + responseCode);
+                String responseBody = request.getResponseBodyAsString();
+                printResponseContents(responseBody);
+                throw new Exception("Unexpected response: " + responseCode + "\nResponse Body: " + responseBody);
             }
 
             String responseBody = request.getResponseBodyAsString();

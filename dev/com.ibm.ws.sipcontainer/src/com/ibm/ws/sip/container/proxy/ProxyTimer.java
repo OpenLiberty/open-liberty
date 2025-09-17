@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.proxy;
 
@@ -134,7 +131,6 @@ public class ProxyTimer extends BaseTimer{
 	 *  @see com.ibm.ws.sip.container.timer.BaseTimer#priority()
 	 */
 	public int priority() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

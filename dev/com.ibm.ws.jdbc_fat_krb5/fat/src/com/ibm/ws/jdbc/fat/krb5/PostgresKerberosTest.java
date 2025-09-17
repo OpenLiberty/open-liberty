@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,16 +20,17 @@ import java.util.List;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
 import com.ibm.ws.jdbc.fat.krb5.containers.PostgresKerberosContainer;
+import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -37,6 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.pg.web.PgKerberosTestServlet;
 
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 @RunWith(FATRunner.class)
 public class PostgresKerberosTest extends FATServletClient {
 
@@ -44,13 +46,14 @@ public class PostgresKerberosTest extends FATServletClient {
 
     public static final String APP_NAME = "krb5-pg-app";
 
-    public static final PostgresKerberosContainer postgresql = new PostgresKerberosContainer(FATSuite.network);
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5.postgresql");
 
     @Server("com.ibm.ws.jdbc.fat.krb5.postgresql")
     @TestServlet(servlet = PgKerberosTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
-    @ClassRule
+    public static PostgresKerberosContainer postgresql = new PostgresKerberosContainer(FATSuite.network);
+
     public static RepeatTests repeat = RepeatTests.withoutModification()
                     .andWith(new JakartaEE9Action()
                                     .forServers("com.ibm.ws.jdbc.fat.krb5.postgresql")
@@ -60,14 +63,12 @@ public class PostgresKerberosTest extends FATServletClient {
                                     .fullFATOnly());
 
     @ClassRule
-    public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
+    public static RuleChain chain = RuleChain.outerRule(skipJavaSemeruWithFipsEnabled).around(KerberosPlatformRule.instance()).around(postgresql).around(repeat);
 
     @BeforeClass
     public static void setUp() throws Exception {
         Path krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
         FATSuite.krb5.generateConf(krbConfPath);
-
-        postgresql.start();
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.pg.web");
 
@@ -82,6 +83,7 @@ public class PostgresKerberosTest extends FATServletClient {
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
+        jvmOpts.add("-Dsun.security.jgss.debug=true");
 
         server.setJvmOptions(jvmOpts);
 
@@ -90,25 +92,8 @@ public class PostgresKerberosTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        Exception firstError = null;
-
-        try {
-            server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB", // expected by testBasicPassword
-                              "DSRA0304E", "DSRA0302E", "WTRN0048W"); // expected by testXARecovery
-        } catch (Exception e) {
-            firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-        try {
-            postgresql.stop();
-        } catch (Exception e) {
-            if (firstError == null)
-                firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-
-        if (firstError != null)
-            throw firstError;
+        server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB", // expected by testBasicPassword
+                          "DSRA0304E", "DSRA0302E", "WTRN0048W"); // expected by testXARecovery
     }
 
 }

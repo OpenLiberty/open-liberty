@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1078,7 +1078,7 @@ public abstract class WebContainer extends BaseContainer {
                 }
                 res.addHeader("Content-Type", "text/html;charset=UTF-8");
                 String output = webGroupVHostNotFound;
-                outBytes = output.getBytes("UTF-8"); // The custom property is stored in server.xml which is in UTF-8 and ISO-8859-1 is a subset of UTF-8 so it would work for anything in there.                  
+                outBytes = output.getBytes(StandardCharsets.UTF_8); // The custom property is stored in server.xml which is in UTF-8 and ISO-8859-1 is a subset of UTF-8 so it would work for anything in there.
 
             }
             //PK85685 End
@@ -1107,7 +1107,7 @@ public abstract class WebContainer extends BaseContainer {
                 }
 
                 res.addHeader("Content-Type", "text/html;charset=UTF-8");
-                outBytes = output.trim().getBytes("UTF-8");                  
+                outBytes = output.trim().getBytes(StandardCharsets.UTF_8);
             }
             else{
                 res.addHeader("Content-Type", "text/html");
@@ -1138,7 +1138,7 @@ public abstract class WebContainer extends BaseContainer {
                 }
 
                 res.addHeader("Content-Type", "text/html;charset=UTF-8");
-                outBytes = output.trim().getBytes("UTF-8");                
+                outBytes = output.trim().getBytes(StandardCharsets.UTF_8);
             }
             else {
                 res.addHeader("Content-Type", "text/html");
@@ -1172,7 +1172,7 @@ public abstract class WebContainer extends BaseContainer {
                 }
 
                 res.addHeader("Content-Type", "text/html;charset=UTF-8");
-                outBytes = output.trim().getBytes("UTF-8");                  
+                outBytes = output.trim().getBytes(StandardCharsets.UTF_8);
             }
             else { 
                 res.addHeader("Content-Type", "text/html");
@@ -1787,6 +1787,9 @@ public abstract class WebContainer extends BaseContainer {
             cipherData.put("SSL_DH_anon_WITH_AES_256_CBC_SHA", 256);
             cipherData.put("SSL_DH_anon_WITH_AES_256_GCM_SHA384", 256);
             cipherData.put("SSL_DH_anon_WITH_AES_256_CBC_SHA256", 256);
+
+            // FIPS 140-3: Algorithm assessment complete; no impact; future investigation needed.
+            // because we are unsure if clients are still using the older algorithms.
 
             // _3DES_ is 168
             cipherData.put("SSL_RSA_FIPS_WITH_3DES_EDE_CBC_SHA", 168);

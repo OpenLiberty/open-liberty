@@ -1,14 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2023 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
 repo.rasInstrumentation.path: ${path;\
@@ -22,7 +19,7 @@ repo.generateChecksums.path: ${path;\
     ${repo;com.ibm.websphere.org.osgi.core}}
     
 repo.nlsTasks.path: ${path;\
-    ${repo;commons-io:commons-io;2.11.0},\
+    ${repo;commons-io:commons-io;2.19.0},\
     ${repo;commons-lang:commons-lang;2.4},\
     ${repo;org.apache.commons:commons-math;2.2},\
     ${repo;com.ibm.ws.componenttest:mantis-collections;2.5.0},\
@@ -71,7 +68,7 @@ repo.repositoryGenerator.path: ${path;\
 repo.mavenRepoTasks.path: ${path;\
     ${repo;wlp-mavenRepoTasks},\
     ${repo;com.ibm.ws.org.apache.ant},\
-    ${repo;commons-io:commons-io;2.11.0},\
+    ${repo;commons-io:commons-io;2.19.0},\
     ${repo;commons-lang:commons-lang;2.4},\
     ${repo;javax.json:javax.json-api;1.1.2},\
     ${repo;org.glassfish:javax.json;1.1.2},\

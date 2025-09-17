@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +38,7 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
  */
 class OidcClientCache {
     private static final TraceComponent tc = Tr.register(OidcClientCache.class);
-    static final String UTF8 = "UTF-8";
+    static final Charset UTF8 = StandardCharsets.UTF_8;
 
     AuthCacheService authCache = null;
     OidcClientConfig clientCfg = null;

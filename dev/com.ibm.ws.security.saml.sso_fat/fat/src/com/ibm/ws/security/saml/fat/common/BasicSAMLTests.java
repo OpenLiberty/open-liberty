@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.HttpMethod;
@@ -35,6 +36,8 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -60,6 +63,9 @@ public class BasicSAMLTests extends SAMLCommonTest {
     private static final Class<?> thisClass = BasicSAMLTests.class;
 
     private static final String MSG_CWWKO0219I_SSL_PORT_READY = "CWWKO0219I:.*ssl.*";
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.saml.sso-2.0_fat");
 
     // example of updating Partner and Federation
     //	SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();
@@ -1021,6 +1027,8 @@ public class BasicSAMLTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
+    // TODO: Test is disabled from running when FIPS 140-3 is enabled, convert chained certificate to use SHA256withRSA signature algorithm
+    @SkipJavaSemeruWithFipsEnabledRule
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
     @Mode(TestMode.LITE)
     @Test
@@ -1066,6 +1074,8 @@ public class BasicSAMLTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
+    // TODO: Test is disabled from running when FIPS 140-3 is enabled, convert chained certificate to use SHA256withRSA signature algorithm
+    @SkipJavaSemeruWithFipsEnabledRule
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException" })
     @Test
     public void basicSAMLTests_chainedCert_noMetaData_rootInKeyStore() throws Exception {

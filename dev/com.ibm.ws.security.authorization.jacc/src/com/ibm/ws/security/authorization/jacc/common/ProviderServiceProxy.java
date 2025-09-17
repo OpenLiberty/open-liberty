@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@ package com.ibm.ws.security.authorization.jacc.common;
 
 import javax.security.jacc.PolicyConfigurationFactory;
 
+import com.ibm.ws.security.authorization.jacc.PolicyConfigurationManager;
+
 public interface ProviderServiceProxy {
 
     /**
@@ -19,7 +21,7 @@ public interface ProviderServiceProxy {
      *
      * @return An instance which implements PolicyProxy interface.
      */
-    public PolicyProxy getPolicyProxy();
+    public PolicyProxy getPolicyProxy(PolicyConfigurationManager pcm);
 
     /**
      * Returns the instance representing the provider-specific implementation

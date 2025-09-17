@@ -1,3 +1,5 @@
+@use "../original/style/type";
+
 .headerbar
 {
     padding: 8px 30px;
@@ -24,7 +26,7 @@
 
         flex: 1;
         align-items: center;
-        @include text_headline(#fff);
+        @include type.text_headline(#fff);
 
         span
         {

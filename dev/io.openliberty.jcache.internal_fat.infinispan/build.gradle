@@ -111,14 +111,6 @@ autoFVT.dependsOn ':io.openliberty.jcache.internal_fat.hazelcast:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.saml.sso_fat.common:samlclient_WAR'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:helloworld_war_ZIP'
 
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
 autoFVT.doLast {
   /*
    * Copy the basicauth.war into test servers.
@@ -237,9 +229,4 @@ autoFVT.doLast {
    */
   delete new File(autoFvtDir, 'lib/htmlunit-2.44.0.jar')
   delete new File(autoFvtDir, 'lib/com.ibm.ws.org.apache.commons.lang3.jar')
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
 }

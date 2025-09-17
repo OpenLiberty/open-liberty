@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=La password non \u00e8 st
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Per ulteriori informazioni, controllare il log del server e se \u00e8 utilizzata la codifica password personalizzata controllare i log della codifica password personalizzata.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: La password non \u00e8 stata decodificata perch\u00e9 \u00e8 stato notificato un errore di decodifica.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=La password non \u00e8 stata codificata correttamente.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Assicurarsi che la password codificata non sia troncata e codificata tramite Base64.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Assicurarsi che la password crittografata non sia troncata e codificata con una codific Base64.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 le password crittografate non possono essere utilizzate quando \u00e8 abilitato FIPS 140-3. Rigenerare la password con AES-256 utilizzando il comando securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 \u00e8 abilitato e non supporta l' AES-128. Utilizzare il comando securityUtility per criptare la password utilizzando AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Assicurati che la password sia criptata con AES-256.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: Crittografia password AES non riuscita. Controlla le impostazioni dell' java.security e e aggiungi l'algoritmo mancante.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=Nel file di installazione ( java.security ) manca un algoritmo di crittografia.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Assicurati che l'algoritmo sia stato aggiunto al tuo file di configurazione dell' java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: Decodifica password AES non riuscita. Controlla le impostazioni dell' java.security e e aggiungi l'algoritmo mancante.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=Nel file di installazione ( java.security ) manca un algoritmo di crittografia.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Assicurati che l'algoritmo sia stato aggiunto al tuo file di configurazione dell' java.security.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: Non \u00e8 possibile utilizzare password codificate con hash dell SHA1 e quando \u00e8 abilitato FIPS 140-3. Rigenerare l'hash della password utilizzando il comando securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 \u00e8 abilitato e non supporta l' SHA1. Utilizzare il comando encode (codifica) dell' securityUtility, per generare un nuovo hash della password dell' SHA512.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Assicurarsi che l'hash della password sia generato con SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Uno o pi\u00f9 valori di password dell'' {0}, memorizzati nella configurazione del server, sono stati generati con un algoritmo pi\u00f9 vecchio {1}. Utilizzare il comando encode dell'' securityUtility e per rigenerare le password dell'' {0} e con l''ultimo algoritmo {2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty ora utilizza algoritmi pi\u00f9 forti per le password appena generate {aes} e {hash}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Assicurarsi che i valori delle password {aes} e {hash} siano generati con l''ultima versione di Liberty.
 
 
 # ---------------- This is an exception message ------------

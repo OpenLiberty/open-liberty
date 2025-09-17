@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2024 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ encode.usage.options=\t{0} encode [opcje]
 encode.option-key.text=\ \ \ \ tekst_do_zakodowania
 encode.option-desc.text=\tJe\u015bli nie zostan\u0105 podane \u017cadne argumenty, narz\u0119dzie przejdzie w tryb\n\tinteraktywny. W przeciwnym razie zakodowany zostanie podany tekst.\n\tJe\u015bli tekst zawieraj\u0105cy spacje ma by\u0107 podany jako argument,\n\tnale\u017cy go uj\u0105\u0107 w cudzys\u0142\u00f3w.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tOkre\u015bl spos\u00f3b kodowania has\u0142a. Obs\u0142ugiwane kodowania to xor, aes\n\ti hash. Kodowanie domy\u015blne to xor. {2}
+encode.option-desc.encoding=\tOkre\u015bla spos\u00f3b kodowania has\u0142a. Obs\u0142ugiwane kodowania to xor, aes, aes-128, i hash. Kodowanie domy\u015blne to xor. Aes szyfruje przy u\u017cyciu klucza aes-256 bit.\n\taes-128 mo\u017ce by\u0107 u\u017cywana w celu zapewnienia kompatybilno\u015bci z wersjami serwera sprzed 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[klucz]
 encode.option-desc.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany w przypadku kodowania AES. \n \tTen \u0142a\u0144cuch zostanie przetworzony przy u\u017cyciu funkcji mieszaj\u0105cej\n\tw celu uzyskania klucza szyfrowania u\u017cywanego do szyfrowania\n\ti deszyfrowania has\u0142a. Ten klucz mo\u017cna udost\u0119pni\u0107 dla serwera,\n\tdefiniuj\u0105c zmienn\u0105 wlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105\n\tb\u0119dzie ten klucz. Je\u015bli ta opcja nie zostanie podana, powinien zosta\u0107\n\tu\u017cyty klucz domy\u015blny.
 encode.option-key.notrim=\ \ \ \ --notrim

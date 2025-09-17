@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -154,11 +154,11 @@ public class BaseFFDCService implements FFDCFilterService {
      * Process an exception
      *
      * @param th
-     *            The exception to be processed
+     *                     The exception to be processed
      * @param sourceId
-     *            The source id of the reporting code
+     *                     The source id of the reporting code
      * @param probeId
-     *            The probe of the reporting code
+     *                     The probe of the reporting code
      */
     @Override
     public void processException(Throwable th, String sourceId, String probeId) {
@@ -169,13 +169,13 @@ public class BaseFFDCService implements FFDCFilterService {
      * Process an exception
      *
      * @param th
-     *            The exception to be processed
+     *                       The exception to be processed
      * @param sourceId
-     *            The source id of the reporting code
+     *                       The source id of the reporting code
      * @param probeId
-     *            The probe of the reporting code
+     *                       The probe of the reporting code
      * @param callerThis
-     *            The instance of the reporting code
+     *                       The instance of the reporting code
      */
 
     @Override
@@ -187,13 +187,13 @@ public class BaseFFDCService implements FFDCFilterService {
      * Process an exception
      *
      * @param th
-     *            The exception to be processed
+     *                        The exception to be processed
      * @param sourceId
-     *            The source id of the reporting code
+     *                        The source id of the reporting code
      * @param probeId
-     *            The probe of the reporting code
+     *                        The probe of the reporting code
      * @param objectArray
-     *            An array of additional interesting objects
+     *                        An array of additional interesting objects
      */
     @Override
     public void processException(Throwable th, String sourceId, String probeId, Object[] objectArray) {
@@ -204,15 +204,15 @@ public class BaseFFDCService implements FFDCFilterService {
      * Process an exception
      *
      * @param th
-     *            The exception to be processed
+     *                        The exception to be processed
      * @param sourceId
-     *            The source id of the reporting code
+     *                        The source id of the reporting code
      * @param probeId
-     *            The probe of the reporting code
+     *                        The probe of the reporting code
      * @param callerThis
-     *            The instance of the reporting code
+     *                        The instance of the reporting code
      * @param objectArray
-     *            An array of additional interesting objects
+     *                        An array of additional interesting objects
      */
     @Override
     public void processException(Throwable th, String sourceId, String probeId, Object callerThis, Object[] objectArray) {
@@ -223,18 +223,18 @@ public class BaseFFDCService implements FFDCFilterService {
      * Log a problem to the global incident stream (creating it if necessary
      *
      * @param txt
-     *            A description of the incident (the name of the exception)
+     *                        A description of the incident (the name of the exception)
      * @param sourceId
-     *            The source id of the reporting code
+     *                        The source id of the reporting code
      * @param probeId
-     *            The probe id of the reporting code
+     *                        The probe id of the reporting code
      * @param th
-     *            The exception
+     *                        The exception
      * @param callerThis
-     *            The instance of the reporting code (null if no specific
-     *            instance)
+     *                        The instance of the reporting code (null if no specific
+     *                        instance)
      * @param objectArray
-     *            Additional interesting object (null if there aren't any)
+     *                        Additional interesting object (null if there aren't any)
      */
     @FFDCIgnore(PrivilegedActionException.class)
     private void log(String sourceId, String probeId, Throwable th, Object callerThis, Object[] objectArray) {
@@ -322,7 +322,9 @@ public class BaseFFDCService implements FFDCFilterService {
                 } catch (FileNotFoundException e) {
                     // This is FFDC not being able to find itself... we're in bad
                     // shape if this doesn't work..
-                    e.printStackTrace();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "A FileNotFoundException occurred when creating the FFDC incident summary file.", e);
+                    }
                 } catch (IOException e) {
                 } finally {
                     LoggingFileUtils.tryToClose(os);

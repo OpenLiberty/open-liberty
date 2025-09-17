@@ -33,7 +33,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_accessTokenShortLifetime_reAuthnTrue_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_accessTokenShortLifetime_reAuthnFalse_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_accessTokenShortLifetime_reAuthnTrue_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_accessTokenShortLifetime_reAuthnFalse_withCushion"
 				scope="ALL_SCOPES"
@@ -63,7 +63,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_idTokenShortLifetime_reAuthnTrue_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_idTokenShortLifetime_reAuthnFalse_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_idTokenShortLifetime_reAuthnTrue_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_idTokenShortLifetime_reAuthnFalse_withCushion"
 				scope="ALL_SCOPES"
@@ -94,7 +94,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothShortLifetime_reAuthnTrue_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothShortLifetime_reAuthnFalse_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothShortLifetime_reAuthnTrue_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothShortLifetime_reAuthnFalse_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_disableLtpaCookieFalse_bothShortLifetime_reAuthnTrue_withCushion"
 				scope="ALL_SCOPES"
@@ -127,7 +127,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothLongLifetime_reAuthnTrue_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothLongLifetime_reAuthnFalse_noCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothLongLifetime_reAuthnTrue_withCushion,http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/rp_bothLongLifetime_reAuthnFalse_withCushion"
 				scope="ALL_SCOPES"

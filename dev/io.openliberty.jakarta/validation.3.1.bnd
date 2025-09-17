@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2024 IBM Corporation and others.
+# Copyright (c) 2024, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -20,7 +20,7 @@ Bundle-SymbolicName: io.openliberty.jakarta.validation.3.1; singleton:=true
 Export-Package: jakarta.validation.*;version="3.1.0"
 
 -includeresource: \
-  @${repo;jakarta.validation:jakarta.validation-api;3.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @${repo;jakarta.validation:jakarta.validation-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-   dep1;groupId=jakarta.validation;artifactId=jakarta.validation-api;version=3.1.0;scope=runtime
+   dep1;groupId=jakarta.validation;artifactId=jakarta.validation-api;version=3.1.1;scope=runtime

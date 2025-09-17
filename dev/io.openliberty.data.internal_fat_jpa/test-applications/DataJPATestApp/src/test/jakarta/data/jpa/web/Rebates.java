@@ -16,11 +16,13 @@ import static jakarta.data.repository.By.ID;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
@@ -110,6 +112,20 @@ public interface Rebates { // Do not allow this interface to inherit from other 
     @Delete
     void removeMultiple(ArrayList<Rebate> r);
 
+    @Delete
+    void reset();
+
     @Find
     Optional<Rebate.Status> status(int id);
+
+    @Query("SELECT EXTRACT(TIME FROM updatedAt)")
+    @OrderBy("amount")
+    List<LocalTime> timeUpdated();
+
+    @Query("WHERE EXTRACT(DATE FROM updatedAt) = ?1 ORDER BY amount DESC")
+    Stream<Rebate> updatedOn(LocalDate date);
+
+    @Query("SELECT EXTRACT(YEAR FROM updatedAt)" +
+           " ORDER BY EXTRACT(YEAR FROM updatedAt) DESC")
+    List<Integer> yearUpdated();
 }

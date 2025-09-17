@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package trailers.servlets;
 
@@ -49,27 +46,38 @@ public class ServletGetTrailers extends HttpServlet {
 
         String test = request.getParameter("Test");
 
+        String netty = request.getParameter("usingNetty");
+
         pw.println("ServletGetTrailers : Test = " + test);
+        pw.println("ServletGetTrailers : usingNetty = " + netty);
 
         if (test != null && test.equals("RL")) {
             AsyncContext ac = request.startAsync();
             ServletInputStream input = request.getInputStream();
-            ReadListener readListener = new ReadListenerGetTrailers(input, response, ac, request);
+            ReadListener readListener = new ReadListenerGetTrailers(input, response, ac, request, Boolean.parseBoolean(netty));
             input.setReadListener(readListener);
 
         } else {
-
-            if (request.isTrailerFieldsReady()) {
-                pw.println("FAIL : isTrailerFieldsReady() returned true before data was read.");
-            } else {
-                pw.println("PASS : isTrailerFieldsReady() returned false before data was read.");
-                try {
-                    request.getTrailerFields();
-                    pw.println("FAIL : getTrailerFields() did not throw IllegalStateException before data was read.");
-                } catch (IllegalStateException ise) {
-                    pw.println("PASS : getTrailerFields() threw IllegalStateException before data was read.");
+            // If using Netty, we will always have the trailers available
+            // This should have the same functionality as Legacy once we implement
+            // https://github.com/OpenLiberty/open-liberty/issues/30702
+            if(!Boolean.parseBoolean(netty)){
+                if (request.isTrailerFieldsReady()) {
+                    pw.println("FAIL : isTrailerFieldsReady() returned true before data was read.");
+                } else {
+                    pw.println("PASS : isTrailerFieldsReady() returned false before data was read.");
+                    try {
+                        request.getTrailerFields();
+                        pw.println("FAIL : getTrailerFields() did not throw IllegalStateException before data was read.");
+                    } catch (IllegalStateException ise) {
+                        pw.println("PASS : getTrailerFields() threw IllegalStateException before data was read.");
+                    }
                 }
+            } else if(!request.isTrailerFieldsReady()){
+                pw.println("FAIL : isTrailerFieldsReady() returned false while using Netty.");
             }
+
+            
 
             ServletInputStream inStream = request.getInputStream();
             int len = -1;

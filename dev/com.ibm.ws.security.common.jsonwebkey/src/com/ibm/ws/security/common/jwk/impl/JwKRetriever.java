@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,9 +14,9 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.Key;
 import java.security.PrivateKey;
@@ -361,14 +361,12 @@ public class JwKRetriever {
     protected String getKeyAsString(InputStream fis) {
         StringBuilder sb = new StringBuilder();
         try {
-            InputStreamReader r = new InputStreamReader(fis, "UTF-8");
+            InputStreamReader r = new InputStreamReader(fis, StandardCharsets.UTF_8);
             int ch = r.read();
             while (ch >= 0) {
                 sb.append((char) ch);
                 ch = r.read();
             }
-        } catch (UnsupportedEncodingException UEE) {
-
         } catch (IOException ioe) {
         }
         return sb.toString();
@@ -691,8 +689,8 @@ public class JwKRetriever {
         jsonString = jsonString.trim();
         try {
             if (!jsonString.startsWith(JSON_START)) { //convert Base64 encoded String to JSON string
-                // jsonString=new String (Base64.getDecoder().decode(jsonString), "UTF-8");
-                jsonString = new String(Base64.decodeBase64(jsonString), "UTF-8");
+                // jsonString=new String (Base64.getDecoder().decode(jsonString), StandardCharsets.UTF_8);
+                jsonString = new String(Base64.decodeBase64(jsonString), StandardCharsets.UTF_8);
             }
             jsonObject = JSONObject.parse(jsonString);
         } catch (Exception e) {

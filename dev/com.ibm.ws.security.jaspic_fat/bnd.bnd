@@ -46,7 +46,9 @@ tested.features: audit-2.0, pages-3.0, appAuthentication-2.0, appAuthorization-2
 	com.ibm.ws.security.jaspic.1.1;version=latest,\
 	com.ibm.ws.security.jaspic.test;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
-	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

@@ -43,7 +43,9 @@ tested.features: \
   appsecurity-4.0, \
   expressionlanguage-4.0,\
   servlet-6.0,\
-  servlet-6.1
+  servlet-6.1,\
+  expressionlanguage-5.0,\
+  appsecurity-5.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2,\

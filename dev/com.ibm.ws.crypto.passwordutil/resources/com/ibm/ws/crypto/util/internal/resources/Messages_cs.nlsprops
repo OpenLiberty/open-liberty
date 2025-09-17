@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=Heslo nebylo za\u0161ifro
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Zkontrolujte protokol serveru a v p\u0159\u00edpad\u011b pou\u017eit\u00ed vlastn\u00edho \u0161ifrov\u00e1n\u00ed hesel ov\u011b\u0159te i protokoly tohoto vlastn\u00edho \u0161ifrov\u00e1n\u00ed hesel, kde jsou dal\u0161\u00ed informace.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: Heslo nebylo de\u0161ifrov\u00e1no, proto\u017ee byla nahl\u00e1\u0161ena chyba dek\u00f3dov\u00e1n\u00ed.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=\u0160ifrovan\u00e9 heslo nebylo spr\u00e1vn\u011b zak\u00f3dov\u00e1no.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Ujist\u011bte se, \u017ee \u0161ifrovan\u00e9 heslo nen\u00ed zkr\u00e1ceno a zak\u00f3dov\u00e1no pomoc\u00ed k\u00f3dov\u00e1n\u00ed Base64.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Ujist\u011bte se, \u017ee za\u0161ifrovan\u00e9 heslo nen\u00ed zkr\u00e1cen\u00e9 a je zak\u00f3dov\u00e1no pomoc\u00ed k\u00f3dov\u00e1n\u00ed Base64.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 \u0161ifrovan\u00e1 hesla nelze pou\u017e\u00edt, pokud je povolen standard FIPS 140-3. Heslo znovu vygenerujte pomoc\u00ed p\u0159\u00edkazu securityUtility na adrese AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 je povolen a nepodporuje AES-128. Pomoc\u00ed p\u0159\u00edkazu securityUtility za\u0161ifrujete heslo pomoc\u00ed AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Ujist\u011bte se, \u017ee je heslo za\u0161ifrov\u00e1no pomoc\u00ed AES-256.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: \u0160ifrov\u00e1n\u00ed hesla AES selhalo. Zkontrolujte nastaven\u00ed webu java.security a p\u0159idejte chyb\u011bj\u00edc\u00ed algoritmus.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=V souboru java.security chyb\u00ed \u0161ifrovac\u00ed algoritmus.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Ujist\u011bte se, \u017ee je algoritmus p\u0159id\u00e1n do souboru java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: De\u0161ifrov\u00e1n\u00ed hesla AES se nezda\u0159ilo. Zkontrolujte nastaven\u00ed webu java.security a p\u0159idejte chyb\u011bj\u00edc\u00ed algoritmus.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=V souboru java.security chyb\u00ed \u0161ifrovac\u00ed algoritmus.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Ujist\u011bte se, \u017ee je algoritmus p\u0159id\u00e1n do souboru java.security.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: P\u0159i zapnut\u00e9m syst\u00e9mu FIPS 140-3 nelze pou\u017e\u00edvat hesla s k\u00f3dov\u00e1n\u00edm hash SHA1. P\u0159egenerujte hash hesla pomoc\u00ed p\u0159\u00edkazu securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 je povolen a nepodporuje SHA1. Pomoc\u00ed p\u0159\u00edkazu securityUtility encode m\u016f\u017eete vygenerovat nov\u00fd hash hesla SHA512.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Ujist\u011bte se, \u017ee je hash hesla generov\u00e1n pomoc\u00ed SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Jedna nebo v\u00edce hodnot hesel {0} ulo\u017een\u00fdch v konfiguraci serveru byly vygenerov\u00e1ny pomoc\u00ed star\u0161\u00edho algoritmu {1}. Pomoc\u00ed p\u0159\u00edkazu securityUtility encode znovu vygenerujte hesla {0} s nejnov\u011bj\u0161\u00edm algoritmem {2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty nyn\u00ed pou\u017e\u00edv\u00e1 siln\u011bj\u0161\u00ed algoritmy pro nov\u011b generovan\u00e1 hesla {aes} a {hash}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Ujist\u011bte se, \u017ee hodnoty hesel {aes} a {hash} jsou generov\u00e1ny pomoc\u00ed nejnov\u011bj\u0161\u00ed verze Liberty.
 
 
 # ---------------- This is an exception message ------------
@@ -57,4 +72,4 @@ PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Byla zji\u0161t\u011bna v\u00edce ne\u0
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=P\u0159i zpracov\u00e1n\u00ed souboru typu manifest roz\u0161\u00ed\u0159en\u00ed {0} byla nahl\u00e1\u0161ena chyba. Tento soubor byl ignorov\u00e1n. Vlastn\u00ed \u0161ifrov\u00e1n\u00ed nen\u00ed dostupn\u00e9. Chybov\u00e1 zpr\u00e1va je {1}.
 PASSWORDUTIL_ERROR_MISSING_HEADER=V souboru typu manifest roz\u0161\u00ed\u0159en\u00ed {1} nebylo nalezeno povinn\u00e9 z\u00e1hlav\u00ed {0}. Vlastn\u00ed \u0161ifrov\u00e1n\u00ed nen\u00ed dostupn\u00e9.
 PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=Soubor typu manifest roz\u0161\u00ed\u0159en\u00ed, kter\u00fd by odpov\u00eddal souboru typu manifest roz\u0161\u00ed\u0159en\u00ed {0}, nebyl nalezen. Vlastn\u00ed \u0161ifrov\u00e1n\u00ed nen\u00ed dostupn\u00e9.
-PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Ha\u0161ovac\u00ed algoritmus nepodporuje operaci de\u0161ifrov\u00e1n\u00ed. 
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Ha\u0161ovac\u00ed algoritmus nepodporuje operaci de\u0161ifrov\u00e1n\u00ed.

@@ -99,7 +99,7 @@ public class JaxRsIntegration extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = TelemetryActions.allMPRepeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -227,7 +227,10 @@ public class JaxRsIntegration extends FATServletClient {
         } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else {
+        } else if (TelemetryActions.mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         }
@@ -244,7 +247,10 @@ public class JaxRsIntegration extends FATServletClient {
         } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else {
+        } else if (TelemetryActions.mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         }
@@ -261,7 +267,10 @@ public class JaxRsIntegration extends FATServletClient {
         } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else {
+        } else if (TelemetryActions.mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         }
@@ -278,7 +287,10 @@ public class JaxRsIntegration extends FATServletClient {
         } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else {
+        } else if (TelemetryActions.mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         }
@@ -291,7 +303,10 @@ public class JaxRsIntegration extends FATServletClient {
         if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspanswithspanmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else {
+        } else if (TelemetryActions.mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspanswithspanmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspanswithspan/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         }
@@ -308,7 +323,10 @@ public class JaxRsIntegration extends FATServletClient {
         }else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
-        } else {
+        } else if (TelemetryActions.mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        }else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         }
@@ -328,6 +346,9 @@ public class JaxRsIntegration extends FATServletClient {
         } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (TelemetryActions.mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
@@ -340,6 +361,9 @@ public class JaxRsIntegration extends FATServletClient {
         String traceId = readTraceId(pokeJax);
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (TelemetryActions.mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else if (TelemetryActions.mpTelemetry20IsActive()) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);

@@ -43,7 +43,7 @@ public class InternalRegistryTest {
         // Avoid writing to the developers docker config
         File testdir = new File(System.getProperty("java.io.tmpdir"), ".docker");
 
-        Field configDir = InternalRegistry.class.getDeclaredField("configDir");
+        Field configDir = InternalRegistry.class.getDeclaredField("CONFIG_DIR");
         configDir.setAccessible(true);
         configDir.set(null, testdir);
     }
@@ -87,8 +87,18 @@ public class InternalRegistryTest {
 
         assertFalse("Registry should not have been available", registry.isRegistryAvailable());
 
+        // invalid registry
+        System.setProperty(REGISTRY, "example.com");
+        registry = getConstructor().newInstance();
+
+        t = registry.getSetupException();
+        assertNotNull(t);
+        assertTrue("Throwable should have been an IllegalStateException", t instanceof IllegalStateException);
+
+        assertFalse("Registry should not have been available", registry.isRegistryAvailable());
+
         // no user
-        System.setProperty(REGISTRY, "127.0.0.1");
+        System.setProperty(REGISTRY, "example.fyre.ibm.com:0000");
         registry = getConstructor().newInstance();
 
         t = registry.getSetupException();
@@ -151,7 +161,7 @@ public class InternalRegistryTest {
         Map<DockerImageName, Boolean> testMap = new HashMap<>();
         // Supported repositories
         testMap.put(DockerImageName.parse("wasliberty-infrastructure-docker/arch:6.6"), Boolean.TRUE);
-        testMap.put(DockerImageName.parse("wasliberty-intops-docker-local/centos:5.4"), Boolean.TRUE);
+        testMap.put(DockerImageName.parse("websphere-automation/centos:5.4"), Boolean.TRUE);
         testMap.put(DockerImageName.parse("wasliberty-internal-docker-local/mint:4.12"), Boolean.TRUE);
 
         // Unsupported repositories

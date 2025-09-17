@@ -1,0 +1,3 @@
+#-Djava.security.debug=all
+#-Djavax.net.debug=all
+-Dio.openliberty.restfulws.prioritizeClientBuilderSSLConfig=true

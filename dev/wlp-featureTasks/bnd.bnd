@@ -32,4 +32,5 @@ generate.replacement: false
 	com.ibm.ws.org.apache.ant;version=latest,\
 	com.ibm.ws.org.apache.aries.util;version=latest,\
 	biz.aQute.bnd:biz.aQute.bnd;version=7.0.0;packages=**,\
-	com.ibm.ws.componenttest:infra.buildtasks-core;version=7.0.2
+	com.ibm.ws.componenttest:infra.buildtasks-core;version=7.0.2,\
+    com.ibm.ws.kernel.service;version=latest

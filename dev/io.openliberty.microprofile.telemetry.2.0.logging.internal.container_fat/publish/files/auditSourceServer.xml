@@ -1,0 +1,27 @@
+
+<server>
+    <featureManager>
+		<feature>audit-1.0</feature>
+		<feature>mpTelemetry-2.0</feature>
+		<feature>servlet-6.1</feature>
+		<feature>appSecurity-6.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <keyStore id="defaultKeyStore" password="Liberty"/>
+
+    <!-- To access this server from a remote client add a host attribute to the following element, e.g. host="*" -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}" />
+
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+    <applicationMonitor updateTrigger="mbean"/>
+
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+    
+   	<mpTelemetry source="audit"/>
+</server>

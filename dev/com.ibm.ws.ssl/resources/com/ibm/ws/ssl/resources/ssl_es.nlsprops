@@ -310,7 +310,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Los siguientes almacenes
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Este mensaje es meramente informativo.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=No se requiere ninguna acci\u00f3n.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: El sistema est\u00e1 a\u00f1adiendo el alias de firmante {0} al almac\u00e9n de claves local {1} con el siguiente resumen SHA: {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: El sistema a\u00f1ade el alias de firmante {0} al almac\u00e9n de claves local {1} con el siguiente resumen {3} : {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Este mensaje es meramente informativo.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=No se requiere ninguna acci\u00f3n.
 # -------------------------------------------------------------------------------------------------

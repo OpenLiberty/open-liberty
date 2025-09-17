@@ -1,5 +1,5 @@
 #/*******************************************************************************
-# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * Copyright (c) 2018, 2025 IBM Corporation and others.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
 # * which accompanies this distribution, and is available at
@@ -63,3 +63,7 @@ security.audit.ErrorLoadingKeystore=Hiba t\u00f6rt\u00e9nt a(z) {0} kulcst\u00e1
 security.audit.MismatchingEncKeystores=A fel\u00fclvizsg\u00e1lati rekordok visszafejt\u00e9s\u00e9re haszn\u00e1lt tan\u00fas\u00edtv\u00e1nyt tartalmaz\u00f3, megadott kulcst\u00e1rol\u00f3 {0} beviteli \u00e9rt\u00e9ke nem felel meg a fel\u00fclvizsg\u00e1lati napl\u00f3ban a kulcst\u00e1rol\u00f3 sz\u00e1m\u00e1ra megadott {1} \u00e9rt\u00e9knek.
 security.audit.MismatchingSigningKeystores=A fel\u00fclvizsg\u00e1lati rekordok al\u00e1\u00edr\u00e1s\u00e1nak visszavon\u00e1s\u00e1ra haszn\u00e1lt tan\u00fas\u00edtv\u00e1nyt tartalmaz\u00f3, megadott kulcst\u00e1rol\u00f3 {0} beviteli \u00e9rt\u00e9ke nem felel meg a fel\u00fclvizsg\u00e1lati napl\u00f3ban a kulcst\u00e1rol\u00f3 sz\u00e1m\u00e1ra megadott {1} \u00e9rt\u00e9knek.
 security.audit.CannotFindCertificate=A(z) {0} tan\u00fas\u00edtv\u00e1ny \u00e1ln\u00e9v nem l\u00e9tezik a(z) {1} kulcst\u00e1rol\u00f3ban.
+
+# Do not translate "auditRecord"
+security.audit.FailedToValidateSignature=A auditRecord al\u00e1\u00edr\u00e1s hiteles\u00edt\u00e9se sikertelen volt az index [ {0} ] indexn\u00e9l.
+security.audit.FailedToDecryptAuditRecord=A auditRecord titkos\u00edt\u00e1sa nem siker\u00fclt a [ {0} ] indexn\u00e9l.

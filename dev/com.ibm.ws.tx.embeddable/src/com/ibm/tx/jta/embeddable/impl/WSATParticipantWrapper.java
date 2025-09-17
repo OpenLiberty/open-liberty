@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2021 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +26,7 @@ import javax.transaction.xa.XAResource;
 import javax.transaction.xa.Xid;
 
 import com.ibm.tx.TranConstants;
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.XAResourceNotAvailableException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -46,7 +47,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     private ExecutorService _prepareExecutor;
     private ExecutorService _rollbackExecutor;
 
-    // TODO timeouts
+    private final int _threadpoolSize = ConfigurationProviderManager.getConfigurationProvider().getAsyncResponseThreadpoolSize();
 
     public WSATParticipantWrapper(WSATAsyncResource wsatAsyncResource) {
         if (tc.isEntryEnabled())
@@ -77,9 +78,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     @Override
     public void commit() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "commit", this);
-
-        int retVal = XAResource.XA_OK;
+            Tr.entry(tc, "commit", _asyncState, this);
 
         _stateProcessed = true;
 
@@ -89,19 +88,15 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
         XAException xae = null;
 
         try {
-            try {
-                _commitResult.get();
-                _commitExecutor.shutdown();
-                _commitExecutor = null;
-            } catch (Exception e) {
-                xae = new XAException(XAException.XAER_RMFAIL);
-                xae.initCause(e);
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "commit", xae);
-                throw xae;
-            }
-        } finally {
-            int rc = xae == null ? retVal : xae.errorCode;
+            _commitResult.get();
+            _commitExecutor.shutdown();
+            _commitExecutor = null;
+        } catch (Exception e) {
+            xae = new XAException(XAException.XAER_RMFAIL);
+            xae.initCause(e);
+            if (tc.isEntryEnabled())
+                Tr.exit(tc, "commit", xae);
+            throw xae;
         }
 
         if (tc.isEntryEnabled())
@@ -111,7 +106,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     @Override
     public int prepare() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "prepare", this);
+            Tr.entry(tc, "prepare", _asyncState, this);
 
         int retVal = XAResource.XA_OK;
 
@@ -156,7 +151,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     @Override
     public void rollback() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "rollback", this);
+            Tr.entry(tc, "rollback", _asyncState, this);
 
         _stateProcessed = true;
 
@@ -196,7 +191,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     @Override
     public void sendAsyncCommit() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "sendAsyncCommit", this);
+            Tr.entry(tc, "sendAsyncCommit", _asyncState, this);
 
         if (_asyncState != ASYNC_STATE_ABORTED && _asyncState != ASYNC_STATE_COMMITTED) {
             _commitResult = new FutureTask<Void>(new Callable<Void>() {
@@ -208,7 +203,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
             });
 
             if (_commitExecutor == null) {
-                _commitExecutor = Executors.newScheduledThreadPool(0);
+                _commitExecutor = Executors.newScheduledThreadPool(_threadpoolSize);
             }
             _commitExecutor.execute(_commitResult);
         }
@@ -220,7 +215,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     @Override
     public void sendAsyncPrepare() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "sendAsyncPrepare", this);
+            Tr.entry(tc, "sendAsyncPrepare", _asyncState, this);
 
         if (_asyncState == ASYNC_STATE_ACTIVE) {
             _prepareResult = new FutureTask<Integer>(new Callable<Integer>() {
@@ -231,7 +226,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
             });
 
             if (_prepareExecutor == null) {
-                _prepareExecutor = Executors.newScheduledThreadPool(0);
+                _prepareExecutor = Executors.newScheduledThreadPool(_threadpoolSize);
             }
             _prepareExecutor.execute(_prepareResult);
         }
@@ -243,7 +238,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     @Override
     public void sendAsyncRollback() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "sendAsyncRollback", this);
+            Tr.entry(tc, "sendAsyncRollback", _asyncState, this);
 
         if (_asyncState != ASYNC_STATE_ABORTED && _asyncState != ASYNC_STATE_COMMITTED) {
             _rollbackResult = new FutureTask<Void>(new Callable<Void>() {
@@ -255,7 +250,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
             });
 
             if (_rollbackExecutor == null) {
-                _rollbackExecutor = Executors.newScheduledThreadPool(0);
+                _rollbackExecutor = Executors.newScheduledThreadPool(_threadpoolSize);
             }
 
             _rollbackExecutor.execute(_rollbackResult);
@@ -276,7 +271,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     @Override
     public void forget() throws XAException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "forget", this);
+            Tr.entry(tc, "forget", _asyncState, this);
 
         _forgetResult = new FutureTask<Void>(new Callable<Void>() {
             @Override
@@ -286,7 +281,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
             }
         });
 
-        ExecutorService forgetExecutor = Executors.newScheduledThreadPool(0);
+        ExecutorService forgetExecutor = Executors.newScheduledThreadPool(_threadpoolSize);
         forgetExecutor.execute(_forgetResult);
         forgetExecutor.shutdown();
 
@@ -326,7 +321,7 @@ public final class WSATParticipantWrapper extends JTAAsyncResourceBase {
     @Override
     public void log(RecoverableUnitSection rus) throws javax.transaction.SystemException {
         if (tc.isEntryEnabled())
-            Tr.entry(tc, "log", new Object[] { rus, this });
+            Tr.entry(tc, "log", rus, this);
 
         // Log the WSATAsyncResource by serializing it
 

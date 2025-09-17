@@ -200,6 +200,15 @@ public class DataIntrospectorTest extends FATServletClient {
     }
 
     /**
+     * Verify that introspector output contains the a failure that occurred when
+     * attempting to initialize query information for a repository method.
+     */
+    @Test
+    public void testOutputContainsQueryInfoInitFailure() {
+        assertLineContains("java.lang.UnsupportedOperationException: CWWKD1003E:");
+    }
+
+    /**
      * Verify that introspector output contains method signatures from an
      * application-supplied record entity.
      */

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -94,8 +94,9 @@ public class AccessLogData extends GenericData {
 
     private static NameAliases jsonLoggingNameAliases = new NameAliases(NAMES_JSON);
     private static NameAliases jsonLoggingNameAliasesLogstash = new NameAliases(NAMES_LC);
+    private static NameAliases loggingNameAliasesTelemetry = new NameAliases(NAMES_LC);
 
-    private static NameAliases[] nameAliases = { jsonLoggingNameAliases, jsonLoggingNameAliasesLogstash };
+    private static NameAliases[] nameAliases = { jsonLoggingNameAliases, jsonLoggingNameAliasesLogstash, loggingNameAliasesTelemetry };
 
     // Each formatter represents one type of access log format, and is null if not applicable
     // { <default JSON logging>, <logFormat JSON logging>, <default logstashCollector>, <logFormat logstashCollector> }
@@ -192,6 +193,7 @@ public class AccessLogData extends GenericData {
     public String getRequestHost()               { return getStringValue(4); }
     public String getRequestPort()               { return getStringValue(5); }
     public String getRemoteHost()                { return getStringValue(6); }
+
     public String getUserAgent()                 { return getStringValue(7); }
     public String getRequestProtocol()           { return getStringValue(8); }
     public long getBytesReceived()               { return getLongValue(9); }

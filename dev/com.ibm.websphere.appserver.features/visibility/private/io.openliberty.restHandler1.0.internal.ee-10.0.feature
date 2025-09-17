@@ -6,8 +6,7 @@ visibility = private
 
 -features=\
   io.openliberty.servlet.internal-6.0; ibm.tolerates:="6.1", \
-  com.ibm.websphere.appserver.adminSecurity-2.0, \
-  io.openliberty.securityAPI.jakarta-1.0
+  com.ibm.websphere.appserver.adminSecurity-2.0
 
 -bundles= com.ibm.ws.rest.handler.jakarta
 

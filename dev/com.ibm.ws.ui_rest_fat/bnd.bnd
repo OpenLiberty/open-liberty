@@ -46,7 +46,9 @@ tested.features:\
     io.openliberty.org.apache.commons.codec;version=latest,\
     com.ibm.ws.org.slf4j.jdk14;version=latest,\
     com.ibm.websphere.org.osgi.core;version-=latest,\
-    com.ibm.ws.security.fat.common;version=latest,\
     com.ibm.ws.ui;version=latest,\
     io.openliberty.jsonsupport.internal;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

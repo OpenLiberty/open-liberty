@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,10 @@ import io.opentelemetry.context.propagation.TextMapSetter;
 import io.opentelemetry.sdk.trace.data.SpanData;
 import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
+//For MpTelemetry-2.1. Semanctic conventions are organised by root namespace
+import io.opentelemetry.semconv.HttpAttributes;
+import io.opentelemetry.semconv.UrlAttributes;
+import io.opentelemetry.semconv.ServerAttributes;
 /**
  * Tests MP Telemetry integration with restfulWS and mpRestClient.
  * <p>
@@ -273,6 +277,46 @@ public class JaxRsEndpoints extends Application {
 
     //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
     //spanExporter.reset() should be called at the start of each new test.
+    //For MpTelemetry-2.1
+    @GET
+    @Path("/readspansmptel21/{traceId}")
+    public Response readSpansMpTel21(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(3, traceId);
+
+        SpanData firstURL = spanData.get(0);
+        SpanData httpGet = spanData.get(1);
+        SpanData secondURL = spanData.get(2);
+
+        assertEquals(SERVER, firstURL.getKind());
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals(SERVER, secondURL.getKind());
+
+        assertEquals(firstURL.getSpanId(), httpGet.getParentSpanId());
+        assertEquals(httpGet.getSpanId(), secondURL.getParentSpanId());
+
+        assertEquals(HTTP_OK, firstURL.getAttributes().get(HttpAttributes.HTTP_RESPONSE_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, firstURL.getAttributes().get(HttpAttributes.HTTP_REQUEST_METHOD));
+        assertEquals("http", firstURL.getAttributes().get(UrlAttributes.URL_SCHEME));
+        assertThat(httpGet.getAttributes().get(UrlAttributes.URL_FULL), containsString("endpoints")); //There are many different URLs that will end up here. But all should contain "endpoints"
+
+        // The request used to call /readspans should have the same hostname and port as the test request
+        URI requestUri = uriInfo.getRequestUri();
+        assertEquals(requestUri.getHost(), firstURL.getAttributes().get(ServerAttributes.SERVER_ADDRESS));
+        assertEquals(Long.valueOf(requestUri.getPort()), firstURL.getAttributes().get(ServerAttributes.SERVER_PORT));
+
+        assertEquals(CLIENT, httpGet.getKind());
+        assertEquals("GET", httpGet.getName());
+        assertEquals(HTTP_OK, httpGet.getAttributes().get(HttpAttributes.HTTP_RESPONSE_STATUS_CODE).intValue());
+        assertEquals(HttpMethod.GET, httpGet.getAttributes().get(HttpAttributes.HTTP_REQUEST_METHOD));
+        assertEquals(requestUri.getHost(), httpGet.getAttributes().get(ServerAttributes.SERVER_ADDRESS));
+        assertEquals(Long.valueOf(requestUri.getPort()), httpGet.getAttributes().get(ServerAttributes.SERVER_PORT));
+        assertThat(httpGet.getAttributes().get(UrlAttributes.URL_FULL), containsString("endpoints"));
+
+        return Response.ok(TEST_PASSED).build();
+    }
+
+    //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
+    //spanExporter.reset() should be called at the start of each new test.
     @GET
     @Path("/readspanswithspan/{traceId}")
     public Response readSpansWithSpan(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
@@ -310,6 +354,30 @@ public class JaxRsEndpoints extends Application {
                         .withAttribute(HTTP_REQUEST_METHOD, "GET")
                         .withAttribute(URL_SCHEME, "http")
                         .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L));
+
+        assertThat(withSpan, isSpan()
+                        .withKind(SpanKind.INTERNAL)
+                        .withParentSpanId(firstURL.getSpanId()));
+
+        return Response.ok(TEST_PASSED).build();
+    }
+
+    //Gets a list of spans created by open telemetry when a test was running and confirms the spans are what we expected and IDs are propagated correctly
+    //spanExporter.reset() should be called at the start of each new test.
+    //For MpTelemetry-2.1
+    @GET
+    @Path("/readspanswithspanmptel21/{traceId}")
+    public Response readSpansWithSpanMpTel21(@Context UriInfo uriInfo, @PathParam("traceId") String traceId) {
+        List<SpanData> spanData = spanExporter.getFinishedSpanItems(2, traceId);
+
+        SpanData firstURL = spanData.get(0);
+        SpanData withSpan = spanData.get(1);
+
+        assertThat(firstURL, isSpan()
+                        .withKind(SpanKind.SERVER)
+                        .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "GET")
+                        .withAttribute(UrlAttributes.URL_SCHEME, "http")
+                        .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L));
 
         assertThat(withSpan, isSpan()
                         .withKind(SpanKind.INTERNAL)

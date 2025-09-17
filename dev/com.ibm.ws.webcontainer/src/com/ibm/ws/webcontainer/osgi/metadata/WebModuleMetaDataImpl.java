@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,12 +12,16 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.osgi.metadata;
 
+import java.util.List;
+
 import org.osgi.framework.ServiceRegistration;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.ws.javaee.dd.common.EnvEntry;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaDataImpl;
+import com.ibm.ws.runtime.metadata.SyncToOSThreadMetaData;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
 import com.ibm.wsspi.webcontainer.metadata.BaseJspComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebCollaboratorComponentMetaData;
@@ -27,7 +31,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 /**
  *  WAS impl also implements ComponentMetaDataFactory for dynamic creation of ComponentMetaData
  */
-public class WebModuleMetaDataImpl extends MetaDataImpl implements WebModuleMetaData {
+public class WebModuleMetaDataImpl extends MetaDataImpl implements WebModuleMetaData, SyncToOSThreadMetaData {
 
     private final ApplicationMetaData applicationMetaData;
     private J2EEName j2eeName;
@@ -180,5 +184,24 @@ public class WebModuleMetaDataImpl extends MetaDataImpl implements WebModuleMeta
     
     public void setHasHAM(boolean hamFound) {
         hasHAM = (hamFound ? Boolean.TRUE : Boolean.FALSE);
+    }
+
+    @Override
+    public boolean isSyncToOSThreadEnabled() {
+
+        boolean syncToOSThread = false;
+
+        List<EnvEntry> envEntries = webAppConfig.getEnvEntries();
+
+        // Copied from SecurityServletConfiguratorHelper.java.
+        final String SYNC_TO_OS_THREAD_ENV_ENTRY_KEY = "com.ibm.websphere.security.SyncToOSThread";
+
+        for (EnvEntry envEntry : envEntries) {
+            if (SYNC_TO_OS_THREAD_ENV_ENTRY_KEY.equals(envEntry.getName())) {
+                syncToOSThread = Boolean.parseBoolean(envEntry.getValue());
+                break;
+            }
+        }
+        return syncToOSThread;
     }
 }

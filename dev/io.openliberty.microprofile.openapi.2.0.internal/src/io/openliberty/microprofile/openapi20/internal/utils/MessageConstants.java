@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.utils;
 
@@ -42,6 +39,8 @@ public class MessageConstants {
     public static final String OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I = "OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I";
     public static final String OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W = "OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W";
     public static final String OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W = "OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W";
+    public static final String OPENAPI_CACHE_READ_ERROR_CWWKO1688W = "OPENAPI_CACHE_READ_ERROR_CWWKO1688W";
+    public static final String OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W = "OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W";
 
     private MessageConstants() {
         // This class is not meant to be instantiated.

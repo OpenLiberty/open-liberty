@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.springboot.support.fat;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,6 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.rules.TestName;
 
@@ -41,19 +43,27 @@ import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
+import com.ibm.websphere.simplicity.config.WebApplication;
 
+import componenttest.containers.TestContainerSuite;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-public abstract class AbstractSpringTests {
+public abstract class AbstractSpringTests extends TestContainerSuite {
 
     @Rule
     public TestName testName = new TestName();
 
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("SpringBootTests");
+
     static enum AppConfigType {
         DROPINS_SPRING,
         DROPINS_ROOT,
-        SPRING_BOOT_APP_TAG
+        SPRING_BOOT_APP_TAG,
+        DROPINS_ROOT_WAR,
+        WEB_APP_TAG
     }
 
     public static final String ID_DEFAULT_HOST = "default_host";
@@ -64,7 +74,6 @@ public abstract class AbstractSpringTests {
     public static final String ID_TRUST_STORE = "springBootTrustStore-";
 
     public static final String SPRING_BOOT_15_APP_BASE = "io.openliberty.springboot.test.version15.app-1.0.0.jar";
-
     public static final String SPRING_BOOT_20_APP_ACTUATOR = "com.ibm.ws.springboot.fat20.actuator.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_BASE = "com.ibm.ws.springboot.fat20.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_JAVA = "com.ibm.ws.springboot.fat20.java.app-0.0.1-SNAPSHOT.jar";
@@ -73,6 +82,13 @@ public abstract class AbstractSpringTests {
     public static final String SPRING_BOOT_20_APP_WEBANNO = "com.ibm.ws.springboot.fat20.webanno.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.fat20.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBSOCKET = "com.ibm.ws.springboot.fat20.websocket.app-0.0.1-SNAPSHOT.jar";
+    public static final String SPRING_BOOT_20_APP_TRANSACTIONS = "com.ibm.ws.springboot.fat20.transactions.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_DATA = "com.ibm.ws.springboot.fat20.data.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_JMS = "com.ibm.ws.springboot.fat20.jms.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_CONCURRENCY = "com.ibm.ws.springboot.fat20.concurrency.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_VALIDATION = "com.ibm.ws.springboot.fat20.validation.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_AOP = "com.ibm.ws.springboot.fat20.aop.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_MBEAN = "com.ibm.ws.springboot.fat20.mbean.app-0.0.1-SNAPSHOT.war";
 
     public static final String LIBERTY_USE_DEFAULT_HOST = "server.liberty.use-default-host";
     public static final String SPRING_LIB_INDEX_CACHE = "lib.index.cache";
@@ -84,9 +100,18 @@ public abstract class AbstractSpringTests {
     public static final int DEFAULT_HTTP_PORT;
     public static final int DEFAULT_HTTPS_PORT;
     public static final String javaVersion;
-    protected static final String DEFAULT_HOST_WITH_APP_PORT = "DefaultHostWithAppPort";
-
+    public static final AtomicBoolean serverStarted = new AtomicBoolean();
+    public static final Collection<RemoteFile> dropinFiles = new ArrayList<>();
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("SpringBootTests");
+    public static RemoteFile serverRootFile;
+    public static RemoteFile dropinsFile;
+
+    protected static final String DEFAULT_HOST_WITH_APP_PORT = "DefaultHostWithAppPort";
+    protected static final List<String> extraServerArgs = new ArrayList<>();
+
+    private static ServerConfiguration originalServerConfig;
+    private static final Properties bootStrapProperties = new Properties();
+    private static File bootStrapPropertiesFile;
 
     static {
         DEFAULT_HTTP_PORT = server.getHttpDefaultPort();
@@ -96,6 +121,11 @@ public abstract class AbstractSpringTests {
         server.setHttpDefaultPort(EXPECTED_HTTP_PORT);
         server.setHttpDefaultSecurePort(EXPECTED_HTTP_PORT);
         javaVersion = System.getProperty("java.version"); // Pre-JDK 9 the java.version is 1.MAJOR.MINOR, post-JDK 9 its MAJOR.MINOR
+    }
+
+    @BeforeClass
+    public static void saveServerConfiguration() throws Exception {
+        originalServerConfig = server.getServerConfiguration().clone();
     }
 
     public static void requireServerMessage(String msg, String regex) {
@@ -121,9 +151,6 @@ public abstract class AbstractSpringTests {
         return server.getFileFromLibertyServerRoot(name);
     }
 
-    public static RemoteFile serverRootFile;
-    public static RemoteFile dropinsFile;
-
     public static RemoteFile getServerRootFile() throws Exception {
         if (serverRootFile == null) {
             serverRootFile = getServerFile("");
@@ -138,21 +165,18 @@ public abstract class AbstractSpringTests {
         return dropinsFile;
     }
 
-    //
-
-    public static final AtomicBoolean serverStarted = new AtomicBoolean();
-    public static final Collection<RemoteFile> dropinFiles = new ArrayList<>();
-    private static final Properties bootStrapProperties = new Properties();
-    private static File bootStrapPropertiesFile;
-    protected static final List<String> extraServerArgs = new ArrayList<>();
-
     @AfterClass
     public static void stopServer() throws Exception {
-        stopServer(true);
+        try {
+            stopServer(true);
+        } finally {
+            server.updateServerConfiguration(originalServerConfig);
+        }
     }
 
     public static void stopServer(boolean cleanupApps, String... expectedFailuresRegExps) throws Exception {
         extraServerArgs.clear();
+        clearEnvVariables();
         boolean isActive = serverStarted.getAndSet(false);
         try {
             // don't archive until after stopping and removing the lib.index.cache
@@ -184,6 +208,19 @@ public abstract class AbstractSpringTests {
                 server.deleteDirectoryFromLibertyServerRoot("logs/");
             }
         }
+    }
+
+    public static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {
+        Properties serverEnvProperties = new Properties();
+        serverEnvProperties.putAll(newEnv);
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        try (OutputStream out = new FileOutputStream(serverEnvFile)) {
+            serverEnvProperties.store(out, "");
+        }
+    }
+
+    private static void clearEnvVariables() throws Exception {
+        configureEnvVariable(server, Collections.emptyMap());
     }
 
     public abstract Set<String> getFeatures();
@@ -227,6 +264,10 @@ public abstract class AbstractSpringTests {
     }
 
     public void modifyAppConfiguration(SpringBootApplication appConfig) {
+        // do nothing by default
+    }
+
+    public void modifyAppConfiguration(WebApplication appConfig) {
         // do nothing by default
     }
 
@@ -285,6 +326,18 @@ public abstract class AbstractSpringTests {
                     dropinsTest = true;
                     break;
                 }
+                case DROPINS_ROOT_WAR: {
+                    new File(new File(server.getServerRoot()), "dropins/").mkdirs();
+                    String appName = appFile.getName();
+                    if (!appName.endsWith(".war")) {
+                        fail("Wrong application type for WAR dropins test: " + appName);
+                    }
+                    RemoteFile dest = server.getMachine().getFile(server.getFileFromLibertyServerRoot("dropins/"), appName);
+                    appFile.copyToDest(dest);
+                    dropinFiles.add(dest);
+                    dropinsTest = true;
+                    break;
+                }
                 case SPRING_BOOT_APP_TAG: {
                     SpringBootApplication app = new SpringBootApplication();
                     app.setLocation(appFile.getName());
@@ -294,6 +347,15 @@ public abstract class AbstractSpringTests {
                         app.getApplicationArguments().add("--" + LIBERTY_USE_DEFAULT_HOST + "=false");
                     }
                     config.getSpringBootApplications().add(app);
+                    break;
+                }
+
+                case WEB_APP_TAG: {
+                    WebApplication app = new WebApplication();
+                    app.setLocation(appFile.getName());
+                    app.setName("testName");
+                    modifyAppConfiguration(app);
+                    config.getWebApplications().add(app);
                     break;
                 }
                 default:
@@ -353,10 +415,13 @@ public abstract class AbstractSpringTests {
 
     protected ServerConfiguration getServerConfiguration() throws Exception {
         ServerConfiguration config = server.getServerConfiguration();
-
+        server.removeAllInstalledAppsForValidation();
         // START CLEAR out configs from previous tests
         List<SpringBootApplication> applications = config.getSpringBootApplications();
         applications.clear();
+        List<WebApplication> webApps = config.getWebApplications();
+        webApps.clear();
+
         Set<String> features = config.getFeatureManager().getFeatures();
         features.clear();
         features.addAll(getFeatures());

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -159,7 +160,7 @@ public class PageLoader {
      * The HTTP ContentType header looks like <code>"text/html;charset=UTF-8"</code>.
      * This method extracts the contentEncoding portion (<code>"UTF-8"</code>) from
      * within the HTTP ContentEncoding header.
-     * 
+     *
      * @param ct The complete HTTP ContentType header.
      * @return
      */
@@ -186,7 +187,7 @@ public class PageLoader {
      * <p>
      * The system default encoding is lazy evaluated. This unsynchronized
      * method gets the system default encoding the first time it is needed.
-     * 
+     *
      * @return The system default encoding.
      */
     protected final String getDefaultContentEncoding() {
@@ -228,7 +229,7 @@ public class PageLoader {
         BufferedReader br = null;
         try {
             in = pageURL.openStream();
-            isr = new InputStreamReader(in, "ISO-8859-1");
+            isr = new InputStreamReader(in, StandardCharsets.ISO_8859_1);
             br = new BufferedReader(isr);
             String line = null;
             while ((line = br.readLine()) != null) {
@@ -246,8 +247,6 @@ public class PageLoader {
                     break;
                 }
             }
-        } catch (UnsupportedEncodingException e) {
-            Tr.error(tc, "SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR", new Object[] { e.getMessage() == null ? "UnsupportedEncodingException" : e.getMessage() });
         } catch (IOException e) {
             Tr.error(tc, "SPNEGO_CUSTOM_ERROR_PAGE_CONTENT_TYPE_ERROR", new Object[] { e.getMessage() == null ? "IOException" : e.getMessage() });
         } finally {

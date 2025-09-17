@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.PrivilegedAction;
@@ -175,7 +176,7 @@ public class ServerDumpPackager {
                             javacoreAscii.setWritable(true);
 
                             InputStreamReader reader = new InputStreamReader(new FileInputStream(javacoreEbcdic), Charset.forName("IBM-1047"));
-                            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(javacoreAscii), Charset.forName("US-ASCII"));
+                            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(javacoreAscii), StandardCharsets.US_ASCII);
                             int readInt;
                             while ((readInt = reader.read()) != -1) {
                                 writer.write(readInt);

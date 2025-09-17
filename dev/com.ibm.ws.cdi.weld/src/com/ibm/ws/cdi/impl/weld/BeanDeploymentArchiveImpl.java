@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -192,6 +192,10 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Override
     public Set<String> scanForBeanDefiningAnnotations(boolean includeAccessible) throws CDIException {
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "scanForBeanDefiningAnnotations [ " + getHumanReadableName() + " ] includeAccessible: " + includeAccessible);
+        }
+
         Set<String> beanDefiningAnnotations = new HashSet<String>(this.additionalBeanDefiningAnnotations);
 
         //these are the annotations directly in this BDA
@@ -217,6 +221,10 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 }
             }
             beanDefiningAnnotations.addAll(this.accessibleBeanDefiningAnnotations);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "scanForBeanDefiningAnnotations [ " + getHumanReadableName() + " ] { " + beanDefiningAnnotations + " }");
         }
 
         return beanDefiningAnnotations;

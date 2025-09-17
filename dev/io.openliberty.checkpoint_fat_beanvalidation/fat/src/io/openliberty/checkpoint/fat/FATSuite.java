@@ -24,7 +24,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -39,7 +41,11 @@ import com.ibm.websphere.simplicity.config.Variable;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.FeatureSet;
 import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatActions.EEVersion;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -134,5 +140,24 @@ public class FATSuite {
                 JakartaEEAction.transformApp(someArchive);
             }
         }
+    }
+
+    public static RepeatTests defaultEERepeat(String serverName) {
+        return eeRepeatStartingAt(serverName, EEVersion.EE11);
+    }
+
+    private static List<FeatureSet> descendingEEs = Arrays.asList(EERepeatActions.EE11, EERepeatActions.EE10, EERepeatActions.EE8);
+
+    public static RepeatTests eeRepeatStartingAt(String serverName, EEVersion highest) {
+        FeatureSet liteMode = null;
+        FeatureSet[] fullMode = {};
+        for (int i = 0; i < descendingEEs.size(); i++) {
+            liteMode = descendingEEs.get(i);
+            if (liteMode.getEEVersion() == highest || liteMode.getEEVersion().ordinal() < highest.ordinal()) {
+                fullMode = descendingEEs.subList(i + 1, descendingEEs.size()).toArray(new FeatureSet[0]);
+                break;
+            }
+        }
+        return EERepeatActions.repeat(serverName, liteMode, fullMode);
     }
 }

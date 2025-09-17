@@ -47,5 +47,7 @@ tested.features: appauthentication-3.0, appauthentication-3.1, pages-4.0
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	org.apache.httpcomponents:httpclient;version=4.1.2,\
-	com.ibm.ws.security.fat.common;version=latest,\
 	org.apache.httpcomponents:httpcore;version=4.1.2
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

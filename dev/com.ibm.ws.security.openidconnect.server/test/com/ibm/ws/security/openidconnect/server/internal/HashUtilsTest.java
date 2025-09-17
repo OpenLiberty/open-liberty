@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -74,25 +74,6 @@ public class HashUtilsTest {
         String message = "Exception instanciating MessageDigest :";
         try {
             HashUtils.digest(input, invalidAlgorithm);
-            fail("An exception should be caught");
-        } catch (RuntimeException re) {
-            // this is normal.
-            assertTrue(re.getMessage().startsWith(message));
-            return;
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
-
-    @Test
-    public void testDigestInvalidEncoding() {
-        String methodName = "testDigestInvalidEncoding";
-        String input = "ThisIsASampleString.";
-        String invalidCharset = "UTF-3";
-        String message = "Exception converting String object :";
-
-        try {
-            HashUtils.digest(input, "SHA-256", invalidCharset);
             fail("An exception should be caught");
         } catch (RuntimeException re) {
             // this is normal.

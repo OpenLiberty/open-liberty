@@ -11,6 +11,8 @@ package io.openliberty.microprofile.telemetry20.internal.info;
 
 import java.util.Map;
 import java.util.UUID;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 import org.osgi.service.component.annotations.Component;
@@ -46,6 +48,13 @@ public class OpenTelemetryInfoFactoryImpl extends AbstractOpenTelemetryInfoFacto
 
     private static final TraceComponent tc = Tr.register(OpenTelemetryInfoFactoryImpl.class);
 
+    private static final String DISABLED_RESOURCE_PROVIDERS = "otel.java.disabled.resource.providers";
+    private static final String RESOURCES_PACKAGE = "io.opentelemetry.instrumentation.resources.";
+    private static final String OS_RESOURCE_PROVIDER = RESOURCES_PACKAGE + "OsResourceProvider";
+    private static final String HOST_RESOURCE_PROVIDER = RESOURCES_PACKAGE + "HostResourceProvider";
+    private static final String PROCESS_RESOURCE_PROVIDER = RESOURCES_PACKAGE + "ProcessResourceProvider";
+    private static final String PROCESS_RUNTIME_RESOURCE_PROVIDER = RESOURCES_PACKAGE + "ProcessRuntimeResourceProvider";
+
     // Version specific API calls to AutoConfiguredOpenTelemetrySdk.builder()
     @Override
     public OpenTelemetry buildOpenTelemetry(Map<String, String> openTelemetryProperties,
@@ -66,10 +75,21 @@ public class OpenTelemetryInfoFactoryImpl extends AbstractOpenTelemetryInfoFacto
     protected ResourceBuilder customizeResource(Resource resource, ConfigProperties c, boolean isEnabled) {
         ResourceBuilder builder = super.customizeResource(resource, c, isEnabled);
         builder.put(OpenTelemetryConstants.KEY_SERVICE_INSTANCE_ID, UUID.randomUUID().toString());
-        builder.putAll(HostResource.get());
-        builder.putAll(OsResource.get());
-        builder.putAll(ProcessResource.get());
-        builder.putAll(ProcessRuntimeResource.get());
+        //Resource providers can be disabled with otel.java.disabled.resource.providers
+        Set<String> disabledProviders = new HashSet<>(c.getList(DISABLED_RESOURCE_PROVIDERS));
+
+        if(!disabledProviders.contains(OS_RESOURCE_PROVIDER)){
+            builder.putAll(OsResource.get());
+        }
+        if(!disabledProviders.contains(HOST_RESOURCE_PROVIDER)){
+            builder.putAll(HostResource.get());
+        }
+        if(!disabledProviders.contains(PROCESS_RESOURCE_PROVIDER)){
+            builder.putAll(ProcessResource.get());
+        }
+        if(!disabledProviders.contains(PROCESS_RUNTIME_RESOURCE_PROVIDER)){
+            builder.putAll(ProcessRuntimeResource.get());
+        }
         return builder;
     }
 

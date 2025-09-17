@@ -463,7 +463,7 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
 			if (accessToken != null) {
 				HttpURLConnection connection = prepareConnection(p,"http://localhost:" + opServerPort + "/oidc/providers/OidcConfigSample/introspect");
 				//TO DO: client_id and client_secret are hardcoded until APIs are available for getting the values.
-				writeToConnection(p, connection, "client_id=client01" + "&client_secret=secret" + "&token=" + accessToken);
+				writeToConnection(p, connection, "client_id=client01" + "&client_secret=secret1234" + "&token=" + accessToken);
 				connect(p, connection);
 				processResponse(p, connection);
 			}

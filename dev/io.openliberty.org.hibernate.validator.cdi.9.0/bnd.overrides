@@ -11,10 +11,10 @@ Import-Package: \
   *
 
 Export-Package: \
-  org.hibernate.validator.cdi.*;version="9.0.0.Beta3"
+  org.hibernate.validator.cdi.*;version="9.0.0.Final"
 
 Include-Resource: \
-  @${repo;org.hibernate.validator:hibernate-validator-cdi;9.0.0.Beta3;EXACT}!/META-INF/services/*,\
+  @${repo;org.hibernate.validator:hibernate-validator-cdi;9.0.0.Final;EXACT}!/META-INF/services/*,\
   META-INF=resources/META-INF
 
 -cdiannotations:

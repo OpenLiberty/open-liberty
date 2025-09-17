@@ -25,20 +25,20 @@
 		<autoAuthorizeClient>client_multipleResourceIds_implicit</autoAuthorizeClient>
 		
 		<localStore>			
-	   		<client name="client_oneResourceId_allGrantTypes" secret="{xor}LDo8LTor"
+	   		<client name="client_oneResourceId_allGrantTypes" secret="{xor}LDo8LTorbm1saw=="
 	    		displayname="client_oneResourceId_allGrantTypes"
 		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 		    	resourceIds="xx"
 				scope="ALL_SCOPES"
 				enabled="true"/>
-	   		<client name="client_oneResourceId_authCode" secret="{xor}LDo8LTor"
+	   		<client name="client_oneResourceId_authCode" secret="{xor}LDo8LTorbm1saw=="
 	    		displayname="client_oneResourceId_authCode"
 		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantType="authorization_code"
 		    	resourceIds="xx"
 				scope="ALL_SCOPES"
 				enabled="true"/>				
-			<client name="client_oneResourceId_implicit" secret="{xor}LDo8LTor"
+			<client name="client_oneResourceId_implicit" secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_oneResourceId_implicit"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantType="implicit"
@@ -46,38 +46,38 @@
 				responseTypes="id_token token"
 				scope="ALL_SCOPES"
 				enabled="true"/>
-	   		<client name="client_noResourceIds_allGrantTypes" secret="{xor}LDo8LTor"
+	   		<client name="client_noResourceIds_allGrantTypes" secret="{xor}LDo8LTorbm1saw=="
 	    		displayname="client_noResourceIds_allGrantTypes"
 		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				scope="ALL_SCOPES"
 				enabled="true"/>
-	   		<client name="client_noResourceIds_authCode" secret="{xor}LDo8LTor"
+	   		<client name="client_noResourceIds_authCode" secret="{xor}LDo8LTorbm1saw=="
 	    		displayname="client_noResourceIds_authCode"
 		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantType="authorization_code"
 				scope="ALL_SCOPES"
 				enabled="true"/>				
-			<client name="client_noResourceIds_implicit" secret="{xor}LDo8LTor"
+			<client name="client_noResourceIds_implicit" secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_noResourceIds_implicit"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantType="implicit"
 				responseTypes="id_token token"
 				scope="ALL_SCOPES"
 				enabled="true"/>
-	   		<client name="client_multipleResourceIds_allGrantTypes" secret="{xor}LDo8LTor"
+	   		<client name="client_multipleResourceIds_allGrantTypes" secret="{xor}LDo8LTorbm1saw=="
 	    		displayname="client_multipleResourceIds_allGrantTypes"
 		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 		    	resourceIds="xx, yy, zz"
 				scope="ALL_SCOPES"
 				enabled="true"/>
-	   		<client name="client_multipleResourceIds_authCode" secret="{xor}LDo8LTor"
+	   		<client name="client_multipleResourceIds_authCode" secret="{xor}LDo8LTorbm1saw=="
 	    		displayname="client_multipleResourceIds_authCode"
 		    	redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantType="authorization_code"
 		    	resourceIds="xx, yy, zz"
 				scope="ALL_SCOPES"
 				enabled="true"/>				
-			<client name="client_multipleResourceIds_implicit" secret="{xor}LDo8LTor"
+			<client name="client_multipleResourceIds_implicit" secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_multipleResourceIds_implicit"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantType="implicit"

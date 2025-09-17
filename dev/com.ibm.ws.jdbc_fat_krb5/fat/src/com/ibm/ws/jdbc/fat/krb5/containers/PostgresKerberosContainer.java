@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,47 +25,77 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 
 public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerberosContainer> {
 
     private static final Class<?> c = PostgresKerberosContainer.class;
 
-    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "kyleaure/postgres-krb5:1.0";
-    private static final DockerImageName postgresImage = DockerImageName.parse(IMAGE)
+    private static final DockerImageName POSTGRES_KRB5 = ImageBuilder
+                    .build("postgres-krb5:17.0.0.1")
+                    .getDockerImageName()
                     .asCompatibleSubstituteFor("postgres");
 
     public static final int PG_PORT = 5432;
 
     private final Map<String, String> options = new HashMap<>();
 
-    public PostgresKerberosContainer(Network network) {
-        super(postgresImage);
-        withNetwork(network);
+    private static final String KEYTAB_FILE = "/etc/krb5.keytab";
+    private static final String KERBEROS_TRACE = "/dev/stdout";
+    private static final String AUTH_METHOD = "gss";
 
+    public PostgresKerberosContainer(Network network) {
+        super(POSTGRES_KRB5);
+
+        // Network
+        withNetwork(network);
         withNetworkAliases("postgresql");
         withCreateContainerCmdModifier(cmd -> {
             cmd.withHostName("postgresql");
         });
-        if (!options.containsKey("fsync"))
-            withConfigOption("fsync", "off");
+        withExposedPorts(PG_PORT);
+
+        // Authentication
+        withUsername("nonkrbuser");
+        withPassword("password");
+
+        // Database
+        withDatabaseName("pg");
+
+        // Environment
+        withEnv("POSTGRES_HOST_AUTH_METHOD", AUTH_METHOD);
+        withEnv("KRB5_KTNAME", KEYTAB_FILE);
+        withEnv("KRB5_TRACE", KERBEROS_TRACE);
+
+        // Logging
+        withLogConsumer(new SimpleLogConsumer(c, "postgre-krb5"));
+
+        // Configuration
+
+        /**
+         * Performance improvement
+         */
+        withConfigOption("fsync", "off");
+
+        /**
+         * Since PostgreSQL 13 - krb_server_keyfile is set to a default location of
+         * FILE:/usr/local/pgsql/etc/krb5.keytab
+         * instead of using the kerberos environment variable KRB5_KTNAME.
+         */
+        withConfigOption("krb_server_keyfile", KEYTAB_FILE);
+    }
+
+    @Override
+    public void configure() {
+        super.configure();
+
         List<String> command = new ArrayList<>();
         for (Entry<String, String> e : options.entrySet()) {
             command.add("-c");
             command.add(e.getKey() + '=' + e.getValue());
         }
         setCommand(command.toArray(new String[command.size()]));
-        withUsername("nonkrbuser");
-        withPassword("password");
-        withDatabaseName("pg");
-
-        withEnv("POSTGRES_HOST_AUTH_METHOD", "gss");
-        withEnv("KRB5_KTNAME", "/etc/krb5.keytab");
-        withEnv("KRB5_TRACE", "/dev/stdout");
-
-        withExposedPorts(PG_PORT);
-        withLogConsumer(new SimpleLogConsumer(c, "postgre"));
     }
 
     @Override

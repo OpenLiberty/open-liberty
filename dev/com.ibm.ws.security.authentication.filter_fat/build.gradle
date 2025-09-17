@@ -31,14 +31,6 @@ addRequiredLibraries.dependsOn addJakartaTransformer
  */
 def appBuildDir = "${buildDir}/test-application"
 
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
 /******************************************************************
  ** Copy feature bundles and applications to specific servers.
  **
@@ -112,9 +104,7 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
+  
+  def publishBaseDir = new File(autoFvtDir, 'publish') 
+  defaultCopyLTPAFIPSKeys(publishBaseDir)
 }

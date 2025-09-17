@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,14 +59,11 @@ public class DB2Test extends FATServletClient {
         server.addEnvVar("DB2_USER", db2.getUsername());
         server.addEnvVar("DB2_PASS", db2.getPassword());
 
-        // TODO extract security files from container prior to server start
-        // TODO delete security files from git
-
         // Extract keystore from container
-//        db2.copyFileFromContainer("/certs/db2-keystore.p12", server.getServerRoot() + "/security/db2-keystore.p12");
+        db2.copyFileFromContainer("/certs/db2-keystore.p12", server.getServerRoot() + "/security/db2-keystore.p12");
 
         // Extract server cert from container
-//        db2.copyFileFromContainer("/certs/server.arm", server.getServerRoot() + "/security/server.crt");
+        db2.copyFileFromContainer("/certs/server.arm", server.getServerRoot() + "/security/server.crt");
 
         server.startServer();
 

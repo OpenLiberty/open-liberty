@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -195,6 +195,9 @@ public class SSLConfig {
 
     //static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?_WITH_([A-Z0-9]*)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
     //Made "WITH" as optional in the above pattern to accommodate ciphers without the substring "WITH" in their cipher-names
+
+    // FIPS 140-3: The following was assessed for FIPS 140-3 compliance and no changes were required.
+    // since the encryption and hashing algorithms are only being used to set filter criteria and in both cases the filter criteria aren't used (Options.strong is never set)
     static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)?(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?(_WITH_)?(AES|RC4|DES40|3DES|NULL)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
     //[1 null, 2 TLS, 3 ECDHE, 4 null, 5 _ECDSA, 6 null, 8 AES, 9 128, 10 _CBC, 11 SHA, 12 256, 13 null]
     
@@ -209,6 +212,8 @@ public class SSLConfig {
     private static final int ENCRYPTION_ALGORITHM_OTHER_INDEX = 10;
     private static final int SHA_ALGORITHM_INDEX = 11;
     private static final int SHA_KEY_LENGTH_INDEX = 12;
+    // FIPS 140-3: Algorithm assessment complete; no changes required.
+    // because the index below is a capture group index from a pattern defined earlier and it could look like an oversight if index 13 is missing.
     private static final int MD5_ALGORITHM_INDEX = 13;
 
     private static final int MINIMUM_STRONG_KEY_LENGTH = 128;

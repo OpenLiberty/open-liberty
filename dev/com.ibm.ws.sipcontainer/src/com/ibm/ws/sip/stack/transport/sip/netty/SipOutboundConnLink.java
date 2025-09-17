@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2023 IBM Corporation and others.
+ * Copyright (c) 2008, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -76,12 +76,11 @@ public abstract class SipOutboundConnLink extends SipConnLink {
               public void initChannel(SocketChannel ch) throws Exception {
                   final ChannelPipeline pipeline = ch.pipeline();
                   if (isSecure) {
-                      SslContext context = GenericEndpointImpl.getTlsProvider().getOutboundSSLContext(GenericEndpointImpl.getSslOptions(), peerHost, Integer.toString(peerPort));
+                      SslHandler handler = GenericEndpointImpl.getTlsProvider().getOutboundSSLContext(GenericEndpointImpl.getSslOptions(), peerHost, Integer.toString(peerPort), ch);
                       if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                          Tr.debug(this, tc, "SipOutboundConnLink", "context: " + context);
+                          Tr.debug(this, tc, "SipOutboundConnLink", "handler: " + handler);
                       }
-                      SSLEngine engine = context.newEngine(ch.alloc());
-                      pipeline.addFirst("ssl", new SslHandler(engine, false));
+                      pipeline.addFirst("ssl", handler);
                   }
                   pipeline.addLast("decoder", new SipMessageBufferStreamDecoder());
                   pipeline.addLast("handler", new SipStreamHandler());

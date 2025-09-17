@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -108,7 +108,7 @@ public class oAuth20MongoSetup extends HttpServlet {
     final static String ALGORITHM = "checkAlgorithm";
     final static String ITERATION = "checkIteration";
     final static String CLEAR_CLIENTS = "clearClients";
-
+    final static String KEYLENGTH = "checkKeyLength";
     // must match constants in OidcBaseClient
     public static final String HASH_SALT = "salt"; // must match constants in OidcBaseClient
     public static final String HASH_ALGORITHM = "hash_alg"; // must match constants in OidcBaseClient
@@ -136,6 +136,9 @@ public class oAuth20MongoSetup extends HttpServlet {
             String getSalt = request.getParameter(SALT);
             String getAlgorithm = request.getParameter(ALGORITHM);
             String getIteration = request.getParameter(ITERATION);
+            String getKeyLength = request.getParameter(KEYLENGTH);
+            String hashLen = request.getParameter(HASH_LENGTH);
+            String iterations = request.getParameter(HASH_ITERATIONS);
 
             connect(request.getParameter(DB_NAME), request.getParameter(DB_USER), request.getParameter(DB_HOST),
                     request.getParameter(DB_PORT), request.getParameter(DB_PWD));
@@ -168,7 +171,7 @@ public class oAuth20MongoSetup extends HttpServlet {
                 System.out.println("Request to add a new client " + clientID);
                 String secret = request.getParameter(SECRET_WEB);
                 String providerId = request.getParameter(COMP_ID);
-                addCustomEntryMongo(clientID, secret, port, providerId, getSalt, getAlgorithm);
+                addCustomEntryMongo(clientID, secret, port, providerId, getSalt, getAlgorithm, hashLen, iterations);
             } else if (getAlgorithm != null) {
                 String clientID = request.getParameter(CLIENT_ID_WEB);
                 String compID = request.getParameter(COMP_ID);
@@ -219,6 +222,17 @@ public class oAuth20MongoSetup extends HttpServlet {
                 dropClientConfigTableMongo();
             } else if ("true".equals(dropDB)) {
                 dropDatabase();
+            } else if (getKeyLength != null) {
+                String clientID = request.getParameter(CLIENT_ID_WEB);
+                String compID = request.getParameter(COMP_ID);
+                System.out.println("Request to get key length for client " + clientID + " compId " + compID);
+                String type = getKeyLength(clientID, compID);
+                System.out.println("Key Length is " + type);
+
+                PrintWriter writer = response.getWriter();
+                writer.write(type);
+                writer.flush();
+                writer.close();
             } else { // default setup
                 checkAndDrop();
                 System.out.println("Precheck on mongoDB -- ");
@@ -231,22 +245,22 @@ public class oAuth20MongoSetup extends HttpServlet {
 
                 // To make the common code easier, just leaving the
                 // OAuthConfigDerby references.
-                addEntryMongo(mongoDB, DEFAULT_COMPID, "dclient01", "secret", "dclient01", redirectUri, true,
+                addEntryMongo(mongoDB, DEFAULT_COMPID, "dclient01", "secret1234", "dclient01", redirectUri, true,
                               buildClientMetaData("dclient01", redirectUri, "true"));
-                addEntryMongo(mongoDB, DEFAULT_COMPID, "dclient02", "secret", "dclient02", redirectUri, true,
+                addEntryMongo(mongoDB, DEFAULT_COMPID, "dclient02", "secret1234", "dclient02", redirectUri, true,
                               buildClientMetaData("dclient02", redirectUri, "false"));
-                addEntryMongo(mongoDB, "OAuthConfigDerby2", "dclient01", "secret", "dclient01", redirectUri, true,
+                addEntryMongo(mongoDB, "OAuthConfigDerby2", "dclient01", "secret1234", "dclient01", redirectUri, true,
                               buildClientMetaData("dclient01", redirectUri, "true"));
-                addEntryMongo(mongoDB, "OAuthConfigDerby2", "dclient02", "secret", "dclient02", redirectUri, true,
+                addEntryMongo(mongoDB, "OAuthConfigDerby2", "dclient02", "secret1234", "dclient02", redirectUri, true,
                               buildClientMetaData("dclient02", redirectUri, "false"));
 
-                addEntryMongo(mongoDB, DEFAULT_COMPID, "dclient03", "secret", "dclient03", redirectUri, true,
+                addEntryMongo(mongoDB, DEFAULT_COMPID, "dclient03", "secret1234", "dclient03", redirectUri, true,
                               buildClientMetaData("dclient03", redirectUri, "true"));
-                addEntryMongo(mongoDB, DEFAULT_COMPID, "dclient04", "secret", "dclient04", redirectUri, true,
+                addEntryMongo(mongoDB, DEFAULT_COMPID, "dclient04", "secret1234", "dclient04", redirectUri, true,
                               buildClientMetaData("dclient03", redirectUri, "true"));
 
                 // client for OAuthGrantTypesCustomStoreTest
-                addEntryMongo(mongoDB, "OAuthConfigSampleGrantTypes", "client03", "{xor}LDo8LTor", "client03",
+                addEntryMongo(mongoDB, "OAuthConfigSampleGrantTypes", "client03", "{xor}LDo8LTorbm1saw==", "client03",
                               redirectUri2, true, buildClientMetaData("client03", redirectUri2, "true"));
 
                 queryTableMongo();
@@ -474,6 +488,27 @@ public class oAuth20MongoSetup extends HttpServlet {
 
     }
 
+    private String getKeyLength(String clientId, String providerId) throws Exception {
+
+        DBObject dbo = getDBObject(clientId, providerId);
+
+        if (dbo == null) {
+            System.out.println("getKeyLength: Could not find client " + clientId + " providerId " + providerId);
+            return "null_client";
+        }
+
+        String cs = (String) dbo.get(METADATA);
+
+        JSONObject clientMetadata = JSONObject.parse(cs);
+        String keyLen = (String) clientMetadata.get(HASH_LENGTH);
+
+        if (keyLen == null) {
+            return "null_hash_len";
+        }
+        return keyLen;
+
+    }
+
     /**
      * Drop the client table
      *
@@ -577,7 +612,7 @@ public class oAuth20MongoSetup extends HttpServlet {
 
         metaD.put("token_endpoint_auth_method", "client_secret_basic");
         metaD.put("client_id", clientId);
-        metaD.put("client_secret", "secret");
+        metaD.put("client_secret", "secret1234");
         metaD.put("client_name", clientId);
         metaD.put("introspect_tokens", introspectTokens);
         return metaD;
@@ -591,13 +626,13 @@ public class oAuth20MongoSetup extends HttpServlet {
      * @param port
      */
     private void addCustomEntryMongo(String clientID, String secret, String port, String providerID, String salt,
-                                     String algorithm) {
+                                     String algorithm, String hashLen, String iterations) {
 
         System.out.println(CLASS_NAME + "Create on OauthClient: " + clientID + " provider " + " providerID "
                            + providerID + " " + secret + " " + salt + " " + algorithm);
 
         if (clientID == null || secret.equals(null)) {
-            throw new IllegalArgumentException("Received null for " + (clientID.equals(null) ? "clientID" : "secret"));
+            throw new IllegalArgumentException("Received null for " + (clientID.equals(null) ? "clientID" : "secret1234"));
         }
 
         String redirectUri = "http://localhost:" + port + "/oauthclient/redirect.jsp";
@@ -645,8 +680,8 @@ public class oAuth20MongoSetup extends HttpServlet {
                 System.out.println("No algorithm provided");
             }
 
-            metaD.put(HASH_ITERATIONS, "2048");
-            metaD.put(HASH_LENGTH, "32");
+            metaD.put(HASH_ITERATIONS, iterations);
+            metaD.put(HASH_LENGTH, hashLen);
             d.append(METADATA, metaD.toString());
 
             col.insert(d);

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -61,7 +61,11 @@ final class TestUtil {
     static final String SERVLET_JAR_LOCATION = "servlet.jar.location";
 
     static final Container buildMockContainer(final String name, final URL url) {
-        return new MockContainer(name, url);
+        return buildMockContainer(name, url, false);
+    }
+
+    static final Container buildMockContainer(final String name, final URL url, boolean throwException) {
+        return new MockContainer(name, url, throwException);
     }
 
     static synchronized ClassLoadingServiceImpl getClassLoadingService(ClassLoader parentClassLoader) throws BundleException, InvalidSyntaxException {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,11 +20,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonPrimitive;
 import com.ibm.ws.security.oidc.common.AbstractOidcRegistrationBaseTest;
+
+import test.common.SharedOutputManager;
 
 /**
  * Unit test case to verify behavior integrity of OidcBaseClient bean
@@ -54,15 +54,14 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
         redirectUris.add(new JsonPrimitive(REDIRECT_URI_2));
 
         try {
-            OidcBaseClient testOidcBaseClient =
-                            new OidcBaseClient(CLIENT_ID,
-                                            CLIENT_SECRET,
-                                            redirectUris,
-                                            CLIENT_NAME,
-                                            COMPONENT_ID,
-                                            IS_ENABLED);
+            OidcBaseClient testOidcBaseClient = new OidcBaseClient(CLIENT_ID,
+                    CLIENT_SECRET,
+                    redirectUris,
+                    CLIENT_NAME,
+                    COMPONENT_ID,
+                    IS_ENABLED);
 
-            //Assert expected values
+            // Assert expected values
             assertEquals(CLIENT_ID, testOidcBaseClient.getClientId());
             assertEquals(CLIENT_SECRET, testOidcBaseClient.getClientSecret());
             assertEquals(redirectUris, testOidcBaseClient.getRedirectUris());
@@ -101,7 +100,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
         try {
             OidcBaseClient testOidcBaseClient = new OidcBaseClient("", "", new JsonArray(), "", "", false);
 
-            //Use modifiers to set all properties
+            // Use modifiers to set all properties
             testOidcBaseClient.setClientId(CLIENT_ID);
             testOidcBaseClient.setClientSecret(CLIENT_SECRET);
             testOidcBaseClient.setRedirectUris(redirectUris);
@@ -123,7 +122,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
             testOidcBaseClient.setTrustedUriPrefixes(trustedUriPrefixes);
             testOidcBaseClient.setFunctionalUserId(FUNCTIONAL_USER_ID);
 
-            //Assert expected values with accessors
+            // Assert expected values with accessors
             assertEquals(CLIENT_ID, testOidcBaseClient.getClientId());
             assertEquals(CLIENT_SECRET, testOidcBaseClient.getClientSecret());
             assertEquals(redirectUris, testOidcBaseClient.getRedirectUris());
@@ -163,7 +162,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
             JsonArray randomJsonArray = new JsonArray();
             randomJsonArray.add(new JsonPrimitive("randomPrimitive"));
 
-            //Modify original reference
+            // Modify original reference
             testOidcBaseClient.setClientId(randomString);
             testOidcBaseClient.setClientSecret(randomString);
             testOidcBaseClient.setRedirectUris(randomJsonArray);
@@ -185,7 +184,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
             testOidcBaseClient.setTrustedUriPrefixes(randomJsonArray);
             testOidcBaseClient.setFunctionalUserId(randomString);
 
-            //Assert that modified deep copy values don't equal the original copy values
+            // Assert that modified deep copy values don't equal the original copy values
             assertFalse(deepCopyTestOidcBaseClient.getClientId().equals(testOidcBaseClient.getClientId()));
             assertFalse(deepCopyTestOidcBaseClient.getClientSecret().equals(testOidcBaseClient.getClientSecret()));
             assertFalse(deepCopyTestOidcBaseClient.getRedirectUris() == testOidcBaseClient.getRedirectUris());
@@ -217,7 +216,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
         try {
             OidcBaseClient testOidcBaseClient = clientRegistrationHelper.getSampleOidcBaseClient();
 
-            //With sampleOidcBaseClient, clientSecret is not null or empty
+            // With sampleOidcBaseClient, clientSecret is not null or empty
             assertTrue(testOidcBaseClient.isConfidential());
 
             testOidcBaseClient.setClientSecret(null);
@@ -239,7 +238,7 @@ public class OidcBaseClientTest extends AbstractOidcRegistrationBaseTest {
 
             assertTrue(toStringValue.contains("_componentId=" + COMPONENT_ID));
             assertTrue(toStringValue.contains("_clientId=" + CLIENT_ID));
-            assertTrue(toStringValue.contains("_clientSecret=" + CLIENT_SECRET));
+            assertTrue(toStringValue.contains("_clientSecret=secret_removed"));
             assertTrue(toStringValue.contains("_displayName=" + CLIENT_NAME));
             assertTrue(toStringValue.contains("_redirectURIs=" + REDIRECT_URI_1 + " " + REDIRECT_URI_2));
             assertTrue(toStringValue.contains("_isEnabled=" + IS_ENABLED));

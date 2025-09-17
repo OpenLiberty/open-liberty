@@ -27,8 +27,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
 
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.websphere.logging.hpel.LogRecordContext;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.app.manager.internal.AppManagerConstants;
 
 @Component(service = ApplicationManager.class,

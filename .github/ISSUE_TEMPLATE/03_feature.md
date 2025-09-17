@@ -31,6 +31,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## Process Overview
 
+- [Sizing](#sizing)
 - [Prioritization](#prioritization)
 - [Design](#design)
 - [Implementation](#implementation)
@@ -51,6 +52,25 @@ Unless otherwise indicated, the tasks are the responsibility of the feature owne
 If you need assistance, reach out to the [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 
 **Important: Labels are used to trigger particular steps and must be added as indicated.**
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **Sizing** (Complete Before Development Starts)
+
+Sizing features helps inform prioritization decisions by telling us how much investment a given feature will require.
+
+- [ ] Feature owner determines the size of the feature.
+- [ ] Feature owner tells the [Open Liberty Project Manager](https://github.com/orgs/OpenLiberty/teams/project-manager), [Release Architect](https://github.com/orgs/OpenLiberty/teams/release-architect), or [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) what the size of the feature is.
+
+Consider this as the scale to use to gauge sizes:
+| Size | Guide |
+| ---- | ----- |
+| XS   | <= 1 person week's (PW) worth of work |
+| S    | 2-3 PW |
+| M    | 4-5 PW |
+| L    | 6-9 PW |
+| XL   | 10-15 PW |
+| 2XL  | 16-20 PW |
+| 3XL  | 21+ PW |
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Prioritization** (Complete Before Development Starts)
@@ -104,6 +124,16 @@ Design preliminaries determine whether a formal design, which will be provided b
   - Feature owner adds label `Product Management Approval Request` and notifies [OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management)
   - Approver adds label `Product Management Approved` ([OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management))
   - Note: For stabilized, superseded, and discontinued feature/capability, skip the [Beta](#beta) section of the template (you may delete it).  Otherwise, proceed as normal.
+
+### Design Approval Request
+
+Request design approval no later than **4 weeks before the Feature Complete date** for the release.
+
+Ideally, submit UFOs for design approval from the [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) as soon as possible after addressing any feedback from the socialization. But that should be no later than 4 weeks before Feature Complete.
+
+That gives the [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) time to review the design and have developers make any necessary updates before the Feature Complete date hits for the release you’re trying to go out in.
+
+See the [WebSphere Dates Monday.com board](https://ibm.monday.com/boards/7779679996) or [Current Liberty Release Schedule](https://github.ibm.com/websphere/WS-CD-Open/wiki/Current-Liberty-Release-Schedule) for relevant dates.
 
 ### **FAT Documentation**
 - [ ] "Feature Test Summary" child task created

@@ -36,7 +36,8 @@ fat.test.container.images: infinispan/server:13.0.10.Final, jboss/keycloak:16.1.
     io.openliberty.jcache.internal_fat.hazelcast;version=latest,\
     io.openliberty.org.testcontainers;version=latest,\
     com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
-    com.ibm.ws.security.fat.common;version=latest,\
     org.infinispan:infinispan-client-hotrod;version=13.0.10.Final,\
     org.infinispan:infinispan-commons;version=13.0.10.Final
     
+# Copy in FIPS keys
+ltpa.fips.enabled: true

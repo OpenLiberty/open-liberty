@@ -259,14 +259,6 @@ autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble
 autoFVT.dependsOn ':io.openliberty.security.authorization.jacc.testprovider:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:assemble'
 
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
 autoFVT.doLast {
 
   /*
@@ -419,9 +411,4 @@ autoFVT.doLast {
       include 'JASPIWrappingServlet.war'
     }
   }
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,11 +20,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.jsf23.fat.tests.Faces30Tests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIConfigByACPTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIFacesInMetaInfTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIFacesInWebXMLTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIGeneralTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23CDIInjectionTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ClassLevelBeanValidationTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23CommandScriptTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ComponentSearchTests;
@@ -37,7 +32,6 @@ import com.ibm.ws.jsf23.fat.tests.JSF23IterableSupportTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23JPA22Test;
 import com.ibm.ws.jsf23.fat.tests.JSF23MapSupportTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23SelectOneRadioGroupTests;
-import com.ibm.ws.jsf23.fat.tests.JSF23SpecIssueTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UIRepeatConditionTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23UISelectManyTests;
 import com.ibm.ws.jsf23.fat.tests.JSF23ViewParametersTests;
@@ -70,13 +64,12 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 JSF23FaceletVDLTests.class,
-                JSF23CDIGeneralTests.class,
                 JSF23GeneralTests.class,
                 JSF23WebSocketTests.class,
                 JSF23MapSupportTests.class,
                 JSF23IterableSupportTests.class,
                 JSF23ComponentSearchTests.class,
-                JSF23UIRepeatConditionTests.class,
+                JSF23UIRepeatConditionTests.class, // CheckPoint Enabled
                 JSF23FacesDataModelTests.class,
                 JSF23ClassLevelBeanValidationTests.class,
                 JSF23ExternalContextStartupShutdownTests.class,
@@ -88,12 +81,7 @@ import componenttest.rules.repeater.RepeatTests;
                 JSF23ViewParametersTests.class,
                 JSF23UISelectManyTests.class,
                 JSF23ViewResourceTests.class,
-                JSF23CDIInjectionTests.class,
-                JSF23CDIFacesInMetaInfTests.class,
-                JSF23CDIFacesInWebXMLTests.class,
-                JSF23CDIConfigByACPTests.class,
-                Faces30Tests.class,
-                JSF23SpecIssueTests.class
+                Faces30Tests.class
 })
 
 public class FATSuite extends TestContainerSuite {

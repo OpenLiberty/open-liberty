@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@
 package io.openliberty.data.internal.persistence.validation;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
@@ -76,6 +78,20 @@ public class EntityValidatorImpl implements EntityValidator {
     }
 
     /**
+     * Obtains the messages for a set of constraint violations.
+     *
+     * @param violations constraint violations.
+     * @return constraint violation messages.
+     */
+    @Trivial
+    private static List<String> toMessages(Set<ConstraintViolation<Object>> violations) {
+        List<String> violationMessages = new ArrayList<>(violations.size());
+        for (ConstraintViolation<Object> v : violations)
+            violationMessages.add(v.getPropertyPath() + ": " + v.getMessage());
+        return violationMessages;
+    }
+
+    /**
      * Validates method parameters where the method or its class is annotated with ValidateOnExecution.
      *
      * @param object instance that has the method with parameters to validate.
@@ -84,8 +100,13 @@ public class EntityValidatorImpl implements EntityValidator {
      * @throws ConstraintValidationException if any of the constraints are violated.
      */
     @Override
+    @Trivial // avoid logging customer data
     public <T> void validateParameters(T object, Method method, Object[] args) {
-        Set<ConstraintViolation<Object>> violations = methodValidator.validateParameters(object, method, args);
+        Set<ConstraintViolation<Object>> violations = //
+                        methodValidator.validateParameters(object, method, args);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "validateParameters violations: " +
+                               toMessages(violations));
         if (violations != null && !violations.isEmpty())
             throw new ConstraintViolationException(violations);
     }
@@ -99,8 +120,13 @@ public class EntityValidatorImpl implements EntityValidator {
      * @throws ConstraintValidationException if any of the constraints are violated.
      */
     @Override
+    @Trivial // avoid logging customer data
     public <T> void validateReturnValue(T object, Method method, Object returnValue) {
-        Set<ConstraintViolation<Object>> violations = methodValidator.validateReturnValue(object, method, returnValue);
+        Set<ConstraintViolation<Object>> violations = //
+                        methodValidator.validateReturnValue(object, method, returnValue);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "validateReturnValue violations: " +
+                               toMessages(violations));
         if (violations != null && !violations.isEmpty())
             throw new ConstraintViolationException(violations);
     }

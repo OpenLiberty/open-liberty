@@ -1073,11 +1073,28 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
             }
             Set<String> shouldAdd = new LinkedHashSet<>();
             for (ContainerInfo c : containerInfos) {
-                String name = c.getName();
-                if (!name.startsWith("/")) {
-                    name = "/" + name; // add leading slash
+                String name = null;
+                if (c.getType() == Type.EAR_LIB) {
+                    Entry e;
+                    try {
+                        // Cannot use the name for EAR_LIB because that is not the actual path
+                        // and will never match the names used from the manifest class-paths
+                        e = c.getContainer().adapt(Entry.class);
+                        name = e.getPath();
+                        // TODO consider using this approach for all container types?
+                    } catch (UnableToAdaptException u) {
+                        // auto FFDC here
+                    }
+                } else {
+                    name = c.getName();
                 }
-                shouldAdd.add(name);
+
+                if (name != null) {
+                    if (!name.startsWith("/")) {
+                        name = "/" + name; // add leading slash
+                    }
+                    shouldAdd.add(name);
+                }
             }
 
             for (ContainerInfo c : classPathInfos) {

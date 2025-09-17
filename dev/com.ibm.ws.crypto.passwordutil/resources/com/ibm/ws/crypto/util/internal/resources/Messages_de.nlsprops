@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=Das Kennwort wurde nicht 
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=\u00dcberpr\u00fcfen Sie das Serverprotokoll und suchen Sie, falls die angepasste Kennwortverschl\u00fcsselung verwendet wird, in den Protokollen zur angepassten Kennwortverschl\u00fcsselung nach weiteren Informationen.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: Das Kennwort wurde nicht entschl\u00fcsselt, weil ein Decodierungsfeler gemeldet wurde.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=Das verschl\u00fcsselte Kennwort wurde nicht ordnungsgem\u00e4\u00df codiert.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Stellen Sie sicher, dass das verschl\u00fcsselte Kennwort nicht abgeschnitten und dass es mit der Base64-Codierung codiert ist.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Stellen Sie sicher, dass das verschl\u00fcsselte Passwort nicht abgeschnitten und mit Base64 -Kodierung verschl\u00fcsselt ist.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 verschl\u00fcsselte Passw\u00f6rter k\u00f6nnen nicht verwendet werden, wenn FIPS 140-3 aktiviert ist. Erneuern Sie das Passwort mit AES-256 unter Verwendung des Befehls securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 ist aktiviert und unterst\u00fctzt AES-128 nicht. Verwenden Sie den Befehl securityUtility, um das Passwort mit AES-256 zu verschl\u00fcsseln.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Stellen Sie sicher, dass das Passwort mit AES-256 verschl\u00fcsselt ist.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: AES-Passwortverschl\u00fcsselung fehlgeschlagen. \u00dcberpr\u00fcfen Sie Ihre java.security -Einstellungen und f\u00fcgen Sie den fehlenden Algorithmus hinzu.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=In Ihrer java.security -Datei fehlt ein Verschl\u00fcsselungsalgorithmus.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Stellen Sie sicher, dass der Algorithmus zu Ihrer java.security -Datei hinzugef\u00fcgt wird.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: AES-Passwort-Entschl\u00fcsselung fehlgeschlagen. \u00dcberpr\u00fcfen Sie Ihre java.security -Einstellungen und f\u00fcgen Sie den fehlenden Algorithmus hinzu.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=In Ihrer java.security -Datei fehlt ein Verschl\u00fcsselungsalgorithmus.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Stellen Sie sicher, dass der Algorithmus zu Ihrer java.security -Datei hinzugef\u00fcgt wird.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: Sie k\u00f6nnen keine SHA1 -Passw\u00f6rter mit Hash-Verschl\u00fcsselung verwenden, wenn FIPS 140-3 aktiviert ist. Erneuern Sie den Passwort-Hash mit dem Befehl securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 ist aktiviert und unterst\u00fctzt SHA1 nicht. Verwenden Sie den Verschl\u00fcsselungsbefehl securityUtility, um einen neuen SHA512 -Passwort-Hash zu generieren.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Stellen Sie sicher, dass der Passwort-Hash mit SHA512 generiert wird.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Ein oder mehrere in der Serverkonfiguration gespeicherte {0} -Passwortwerte wurden mit einem \u00e4lteren Algorithmus {1} generiert. Verwenden Sie den Verschl\u00fcsselungsbefehl securityUtility, um die {0} -Passw\u00f6rter mit dem neuesten Algorithmus {2} neu zu generieren.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty verwendet jetzt st\u00e4rkere Algorithmen f\u00fcr neu generierte {aes} - und {hash} -Passw\u00f6rter.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Stellen Sie sicher, dass die Kennwortwerte f\u00fcr {aes} und {hash} mit der neuesten Version von Liberty generiert werden.
 
 
 # ---------------- This is an exception message ------------
@@ -57,4 +72,4 @@ PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Es wurden mehrere CustomPasswordEncrypt
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Bei der Verarbeitung der Erweiterungsmanifestdatei {0} wurde ein Fehler gemeldet. Diese Datei wurde ignoriert. Die angepasste Verschl\u00fcsselung ist nicht verf\u00fcgbar. Die Fehlernachricht ist {1}.
 PASSWORDUTIL_ERROR_MISSING_HEADER=Der erforderliche Header {0} wurde nicht in der Erweiterungsmanifestdatei {1} gefunden. Die angepasste Verschl\u00fcsselung ist nicht verf\u00fcgbar.
 PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=Die Featuremanifestdatei, die der Erweiterungsmanifestdatei {0} entspricht, wurde nicht gefunden. Die angepasste Verschl\u00fcsselung ist nicht verf\u00fcgbar.
-PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Die Entschl\u00fcsselungsoperation wird vom Hashalgorithmus nicht unterst\u00fctzt. 
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Die Entschl\u00fcsselungsoperation wird vom Hashalgorithmus nicht unterst\u00fctzt.

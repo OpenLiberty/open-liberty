@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -130,7 +130,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
     String keyStoreRef = null;
     String keyAlias = null;
     String keyPassword = null;
-    String signatureMethodAlgorithm = "SHA256";
+    String signatureMethodAlgorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
     String userIdentifier = "NameID";
     String groupIdentifier = null;
     String userUniqueIdentifier = "NameID";
@@ -311,11 +311,11 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
      */
     @Override
     public String getSignatureMethodAlgorithm() {
-        if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
+        if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.equalsIgnoreCase(signatureMethodAlgorithm)) {
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-        } else if ("SHA128".equalsIgnoreCase(signatureMethodAlgorithm)) {
-            return SignatureConstants.MORE_ALGO_NS + "rsa-sha128"; //???????
-        } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
+        } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            // FIPS 140-3: Algorithm assessment complete; no changes required.
+            // Already log insure algorithm at top of the class
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
         }
         return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;

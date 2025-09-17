@@ -11,9 +11,9 @@ IBM-API-Package: \
 -features=\
   io.openliberty.org.eclipse.microprofile.contextpropagation-1.3, \
   io.openliberty.concurrent-2.0; ibm.tolerates:="3.0,3.1", \
-  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1,7.0"
+  io.openliberty.mpCompatible-5.0; ibm.tolerates:="6.0,6.1,7.0,7.1"
 -bundles=\
   com.ibm.ws.microprofile.contextpropagation.1.0
 kind=ga
 edition=core
-WLP-Platform: microProfile-5.0,microProfile-6.0,microProfile-6.1,microProfile-7.0
+WLP-Platform: microProfile-5.0,microProfile-6.0,microProfile-6.1,microProfile-7.0,microProfile-7.1

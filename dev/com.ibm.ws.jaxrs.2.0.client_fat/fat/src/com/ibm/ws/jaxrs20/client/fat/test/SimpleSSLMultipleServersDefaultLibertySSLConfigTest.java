@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public class SimpleSSLMultipleServersDefaultLibertySSLConfigTest extends FATServ
         // already started server
         try {
             server.startServer("server.log", true);
+            server.waitForSSLStart();
             assertNotNull("The server did not start", server.waitForStringInLog("CWWKF0011I"));
             assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
 
@@ -65,6 +66,7 @@ public class SimpleSSLMultipleServersDefaultLibertySSLConfigTest extends FATServ
              */
             server2.useSecondaryHTTPPort();
             server2.startServer("server.log", true);
+            server2.waitForSSLStart();
             assertNotNull("The server did not start", server2.waitForStringInLog("CWWKF0011I"));
             assertNotNull("FeatureManager did not report update was complete", server2.waitForStringInLog("CWWKF0008I"));
         } catch (Exception e) {

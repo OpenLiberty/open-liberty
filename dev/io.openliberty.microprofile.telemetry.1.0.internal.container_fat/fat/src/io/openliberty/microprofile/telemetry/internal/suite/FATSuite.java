@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import io.openliberty.microprofile.telemetry.internal.tests.Agent129Test;
+import io.openliberty.microprofile.telemetry.internal.tests.Agent214Test;
 import io.openliberty.microprofile.telemetry.internal.tests.Agent250Test;
 import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigMultiAppTest;
 import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigTest;
@@ -41,6 +42,7 @@ import io.openliberty.microprofile.telemetry.internal.tests.MetricsApiOtelCollec
                 AlwaysPassesTest.class, //Must keep this test to run something in the Java 6 builds.
                 AgentTest.class,
                 Agent129Test.class,
+                Agent214Test.class,
                 Agent250Test.class,
                 AgentConfigTest.class,
                 AgentConfigMultiAppTest.class,

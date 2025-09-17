@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,11 @@
 
 package com.ibm.ws.jpa.diagnostics.puparser;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 public final class Constants {
     public final static String JVM_Property_PXML_DIGEST_ALGORITHM = "jpaormviewer.pxml.digest.algorithm";
-    public final static String DEFAULT_DIGEST_ALGORITHM = "MD5";
+    public final static String DEFAULT_DIGEST_ALGORITHM = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
 
     public final static String JPA_10_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.puparser.jaxb.puxml10";
     public final static String JPA_20_JAXB_PACKAGE = "com.ibm.ws.jpa.diagnostics.puparser.jaxb.puxml20";

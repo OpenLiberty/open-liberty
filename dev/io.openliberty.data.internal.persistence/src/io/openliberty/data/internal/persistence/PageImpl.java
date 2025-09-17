@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,12 +39,40 @@ import jakarta.persistence.TypedQuery;
 public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
 
+    /**
+     * Values that are supplied when invoking the repository method that
+     * requests the page.
+     */
     private final Object[] args;
+
+    /**
+     * The request for this page.
+     */
     private final PageRequest pageRequest;
+
+    /**
+     * Query information.
+     */
     private final QueryInfo queryInfo;
+
+    /**
+     * Results of the query for this page.
+     */
     private final List<T> results;
+
+    /**
+     * Total number of elements across all pages. This value is computed lazily,
+     * with -1 indicating it has not been computed yet.
+     */
     private long totalElements = -1;
 
+    /**
+     * Construct a new Page.
+     *
+     * @param queryInfo   query information.
+     * @param pageRequest the request for this page.
+     * @param args        values that are supplied to the repository method.
+     */
     @FFDCIgnore(Exception.class)
     @Trivial
     PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
@@ -58,7 +86,7 @@ public class PageImpl<T> implements Page<T> {
         if (pageRequest.mode() != Mode.OFFSET)
             throw exc(IllegalArgumentException.class,
                       "CWWKD1035.incompat.page.mode",
-                      Mode.OFFSET,
+                      pageRequest.mode(),
                       queryInfo.method.getName(),
                       queryInfo.repositoryInterface.getName(),
                       queryInfo.method.getGenericReturnType().getTypeName(),
@@ -70,15 +98,16 @@ public class PageImpl<T> implements Page<T> {
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
-            @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
+            jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
             queryInfo.setParameters(query, args);
 
             int maxPageSize = pageRequest.size();
             query.setFirstResult(queryInfo.computeOffset(pageRequest));
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
-            results = query.getResultList();
+            @SuppressWarnings("unchecked")
+            List<T> resultList = query.getResultList();
+            results = resultList;
         } catch (Exception x) {
             throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
         } finally {

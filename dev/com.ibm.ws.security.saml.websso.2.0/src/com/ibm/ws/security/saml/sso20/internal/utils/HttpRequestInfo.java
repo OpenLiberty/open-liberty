@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -234,7 +235,7 @@ public class HttpRequestInfo implements Serializable {
      *
      * @param request
      * @param response
-     * @param cookieName --
+     * @param cookieName  --
      * @param cookieValue --
      * @throws SamlException
      */
@@ -447,14 +448,7 @@ public class HttpRequestInfo implements Serializable {
         if (savePostIdBytes == null || savePostIdBytes.length < 8) // length ought to be 12
             return; // no cookie found
 
-        String savePostId = null;
-        try {
-            savePostId = new String(savePostIdBytes, Constants.UTF8);
-        } catch (UnsupportedEncodingException e) {
-            //
-            throw new SamlException(e);
-            // This should not happen since the encoding is utf-8
-        }
+        String savePostId = new String(savePostIdBytes, StandardCharsets.UTF_8);
         String cacheKey = SamlUtil.hash(savePostId);
         HttpRequestInfo requestInfo = (HttpRequestInfo) postCache.get(cacheKey);
         if (tc.isDebugEnabled()) {

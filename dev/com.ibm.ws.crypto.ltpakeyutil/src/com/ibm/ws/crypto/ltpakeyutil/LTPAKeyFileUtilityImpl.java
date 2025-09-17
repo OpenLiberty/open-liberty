@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Properties;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 
 /**
@@ -68,7 +69,7 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
 
             expProps.put(KEYIMPORT_REALM, realm);
             expProps.put(CREATION_HOST_PROPERTY, "localhost");
-            expProps.put(LTPA_VERSION_PROPERTY, "1.0");
+            expProps.put(LTPA_VERSION_PROPERTY, CryptoUtils.isFips140_3Enabled() ? "2.0" : "1.0");
             expProps.put(CREATION_DATE_PROPERTY, (new java.util.Date()).toString());
         } catch (Exception e) {
             throw e;

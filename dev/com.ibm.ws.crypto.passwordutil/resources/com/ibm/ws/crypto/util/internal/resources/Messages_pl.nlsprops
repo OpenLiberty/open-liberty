@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=Nie zaszyfrowano ani nie 
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Sprawd\u017a dziennik serwera. Je\u015bli u\u017cywane jest niestandardowe szyfrowanie has\u0142a, sprawd\u017a dodatkowe informacje w dzienniku niestandardowego szyfrowania has\u0142a.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: Nie zdeszyfrowano has\u0142a, poniewa\u017c zg\u0142oszono b\u0142\u0105d dekodowania.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=Zaszyfrowane has\u0142o nie zosta\u0142o poprawnie zakodowane.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Sprawd\u017a, czy zaszyfrowane has\u0142o nie zosta\u0142o obci\u0119te i zakodowane przy u\u017cyciu kodowania Base64.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Upewnij si\u0119, \u017ce zaszyfrowane has\u0142o nie jest obci\u0119te i zakodowane za pomoc\u0105 kodowania Base64.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 zaszyfrowane has\u0142a nie mog\u0105 by\u0107 u\u017cywane, gdy FIPS 140-3 jest w\u0142\u0105czony. Zregeneruj has\u0142o za pomoc\u0105 AES-256, u\u017cywaj\u0105c polecenia securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 jest w\u0142\u0105czony i nie obs\u0142uguje AES-128. U\u017cyj polecenia securityUtility, aby zaszyfrowa\u0107 has\u0142o za pomoc\u0105 AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Upewnij si\u0119, \u017ce has\u0142o jest zaszyfrowane za pomoc\u0105 AES-256.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: Szyfrowanie has\u0142a AES nie powiod\u0142o si\u0119. Sprawd\u017a ustawienia java.security i dodaj brakuj\u0105cy algorytm.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=W pliku java.security brakuje algorytmu szyfrowania.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Upewnij si\u0119, \u017ce algorytm zosta\u0142 dodany do pliku java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: Odszyfrowanie has\u0142a AES nie powiod\u0142o si\u0119. Sprawd\u017a ustawienia java.security i dodaj brakuj\u0105cy algorytm.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=W pliku java.security brakuje algorytmu szyfrowania.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Upewnij si\u0119, \u017ce algorytm zosta\u0142 dodany do pliku java.security.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: Nie mo\u017cna u\u017cywa\u0107 hash-kodowanych hase\u0142 SHA1, gdy w\u0142\u0105czony jest standard FIPS 140-3. Wygeneruj ponownie skr\u00f3t has\u0142a za pomoc\u0105 polecenia securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 jest w\u0142\u0105czony i nie obs\u0142uguje SHA1. U\u017cyj polecenia securityUtility encode, aby wygenerowa\u0107 nowy skr\u00f3t has\u0142a SHA512.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Upewnij si\u0119, \u017ce hash has\u0142a zosta\u0142 wygenerowany za pomoc\u0105 SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Co najmniej jedna warto\u015b\u0107 has\u0142a {0} przechowywana w konfiguracji serwera zosta\u0142a wygenerowana przy u\u017cyciu starszego algorytmu {1}. U\u017cyj polecenia securityUtility encode, aby ponownie wygenerowa\u0107 has\u0142a {0} przy u\u017cyciu najnowszego algorytmu {2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty u\u017cywa teraz silniejszych algorytm\u00f3w dla nowo generowanych hase\u0142 {aes} i {hash}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Upewnij si\u0119, \u017ce warto\u015bci hase\u0142 {aes} i {hash} zosta\u0142y wygenerowane przy u\u017cyciu najnowszej wersji Liberty.
 
 
 # ---------------- This is an exception message ------------
@@ -57,4 +72,4 @@ PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Wykryto wi\u0119cej ni\u017c jedn\u0105
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Zg\u0142oszono b\u0142\u0105d podczas przetwarzania pliku manifestu rozszerzenia {0}. Ten plik zosta\u0142 zignorowany. Szyfrowanie niestandardowe nie jest dost\u0119pne. Komunikat o b\u0142\u0119dzie: {1}.
 PASSWORDUTIL_ERROR_MISSING_HEADER=Nie znaleziono wymaganego nag\u0142\u00f3wka {0} w pliku manifestu rozszerzenia {1}. Szyfrowanie niestandardowe nie jest dost\u0119pne.
 PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=Nie znaleziono pliku manifestu sk\u0142adnika, kt\u00f3ry odwo\u0142uje si\u0119 do pliku manifestu rozszerzenia {0}. Szyfrowanie niestandardowe nie jest dost\u0119pne.
-PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Operacja deszyfrowania nie jest obs\u0142ugiwana przez algorytm hash. 
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=Operacja deszyfrowania nie jest obs\u0142ugiwana przez algorytm hash.

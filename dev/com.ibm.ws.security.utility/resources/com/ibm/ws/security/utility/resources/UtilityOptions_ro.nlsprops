@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2024 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ encode.usage.options=\t{0} encode [op\u0163iuni]
 encode.option-key.text=\ \ \ \ textToEncode
 encode.option-desc.text=\tDac\u0103 nu este specificat niciun argument, unealta va introduce modul\n\tinteractiv; altfel, textul furnizat va fi codificat.\n\tTextul cu spa\u0163ii trebuie pus \u00een \u00eentregime \u00eentre ghilimele dac\u0103 este \nspecificat ca argument.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tSpecifica\u0163i cum s\u0103 se codifice parola. Codific\u0103rile suportate sunt xor,\n\t aes \u015fi hash. Codificarea implicit\u0103 este xor. {2}
+encode.option-desc.encoding=\tSpecifica\u021bi modul de codare a parolei. Codurile acceptate sunt xor, aes, aes-128, \u0219i hash. Codificarea implicit\u0103 este xor. Aes cripteaz\u0103 folosind o cheie aes-256 bit.\n\taes-128 poate fi utilizat pentru compatibilitate cu versiunile serverului anterioare 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[key]
 encode.option-desc.key=\tSpecifica\u0163i o cheie de folosit c\u00e2nd codifica\u0163i folosind AES. Acest \u015fir\n\tva fi f\u0103cut hash pentru a produce o cheie de criptare ce va fi folosit\u0103\n\tpentru a cripta \u015fi a decripta parola. Cheia poate fi furnizat\u0103 serverului\n\tdefinind variabila wlp.password.encryption.key a c\u0103rei valoare este\n\tcheia. Dac\u0103 aceast\u0103 op\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
 encode.option-key.notrim=\ \ \ \ --notrim

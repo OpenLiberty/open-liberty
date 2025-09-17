@@ -12,12 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.annocache.targets.cache.internal;
 
+// import java.io.ByteArrayOutputStream; // 30315
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -119,7 +119,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
 
     //
 
-    private class CacheLock {
+    protected static class CacheLock {
         // EMPTY
     }
     private final CacheLock cacheLock = new CacheLock();
@@ -127,10 +127,99 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
     private TargetCache_Options options;
     private TargetCacheImpl_DataApps cache;
 
+    //
+
+    // 30315 Temporary logging.  Keeping for future use.
+    //
+    // See comments on:
+    //
+    // open-liberty/dev//com.ibm.ws.container.service/src/
+    //     com/ibm/ws/container/service/annocache/internal/ModuleAnnotationsImpl.java
+    //
+    // The use of 'getDeploymentName' instead of 'getName' caused creates of different
+    // application data which used the same application name.  That led to concurrent
+    // access to the same cache data file, which caused overlapping reads and writes
+    // of the same files.  A variety of data read exceptions occurs, generally because
+    // of reads of incompletely written data.
+    //
+    // The problem was timing sensitive, requiring the custom trace, below, to enable
+    // gathering of minimal trace output while reproducing the problem.
+    //
+    // I've left the trace code, commented out, for potential future use.
+    // 
+    // Calls were made from this class and from 'TargetCacheImpl_DataApps'.
+
+//    private static long nanoTime() {
+//        return System.nanoTime();
+//    }
+//    
+//    private final static long nanoStart = nanoTime();
+//
+//    private static long nanoStart() {
+//        return nanoStart;
+//    }
+//    
+//    private static long nanoElapsed() {
+//        return nanoTime() - nanoStart();
+//    }
+//
+//    private final List<String> cacheLog = new ArrayList<>();
+//
+//    protected static class LogLock {
+//        // EMPTY
+//    }
+//    private final LogLock logLock = new LogLock();
+//
+//    public static String addDetails(String activity) {
+//        return "ACL [" + nanoElapsed() + "] [ " + Thread.currentThread().getName() + " ] " + activity;
+//    }
+//    
+//    public String printStack(String message) {
+//        Throwable th = new Throwable(message);
+//
+//        ByteArrayOutputStream output = new ByteArrayOutputStream();
+//        PrintWriter writer = new PrintWriter(output);
+//        th.printStackTrace(writer);
+//        writer.flush();
+//
+//        return output.toString();
+//    }
+//    
+//    public void log(String activity) {
+//        String message = addDetails(activity);
+//        synchronized(logLock) {
+//            cacheLog.add(message);
+//        }
+//    }
+//
+//    public void logStack(String activity) {
+//        String message = addDetails(activity); 
+//        String stackText = printStack(message);
+//
+//        synchronized(logLock) {
+//            cacheLog.add(message);
+//            cacheLog.add(stackText);
+//        }
+//    }
+//
+//    public void dumpLog() {
+//        List<String> log;
+//
+//        synchronized(logLock) {
+//            log("dump annocache factory log");
+//            log = new ArrayList<>(cacheLog);
+//            cacheLog.clear();
+//        }
+//
+//        for ( String message : log ) {
+//            System.out.println(message);
+//        }
+//    }
+
     @Activate
     public TargetCacheImpl_Factory(BundleContext bundleContext) {
         this(createOptionsFromProperties());
-        
+
         if ( !options.getDisabled() ) {
             String workArea = getOsgiWorkArea(bundleContext);
             if ( workArea != null ) {
@@ -157,7 +246,6 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "Use Binary Format [ {0} ]",
                 Boolean.valueOf(options.getUseBinaryFormat()));
-            
         }
     }
 
@@ -241,8 +329,15 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
      * 
      * @param appName The name of the application. This should be the application's deployment name.
      */
+    @Override
     public boolean release(String appName) {
-        return getCache().release(appName);
+        boolean result = getCache().release(appName);
+
+        // logStack("Release [ " + appName + " ] [ " + result + " ]"); // 30315
+        //
+        // dumpLog(); // 30315
+
+        return result;
     }
 
     protected TargetCacheImpl_DataApps createCache() {
@@ -261,6 +356,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
     //
 
     protected TargetCacheImpl_DataApps createCache(String cacheName, String e_cacheName) {
+        // log("Create cache [ " + cacheName + " ]"); // 30315
         return new TargetCacheImpl_DataApps(this, cacheName, e_cacheName);
     }
 
@@ -270,6 +366,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
         TargetCacheImpl_DataApps appsData,
         String appName, String e_appName, File appDir) {
 
+        // log("Create app [ " + appName + " ]"); // 30315
         return new TargetCacheImpl_DataApp(appsData, appName, e_appName, appDir);
     }
 
@@ -277,6 +374,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
         TargetCacheImpl_DataApp appData,
         String modName, String e_modName, File modDir, boolean isLightweight) {
 
+        // log("Create mod [ " + appData.getName() + " ] [ " + modName + " ]"); // 30315        
         return new TargetCacheImpl_DataMod(appData, modName, e_modName, modDir, isLightweight);
     }
 
@@ -285,6 +383,7 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
         String conName, String e_conName, File conFile,
         boolean isSource) {
 
+        // log("Create con [ " + parentCache.getName() + " ] [ " + conName + " ]"); // 30315        
         return new TargetCacheImpl_DataCon(
             parentCache,
             conName, e_conName, conFile,
@@ -314,22 +413,13 @@ public class TargetCacheImpl_Factory implements TargetCache_Factory, TargetCache
     }
 
     protected TargetCacheImpl_Reader createReader(String path, InputStream stream) {
-        try {
-            return new TargetCacheImpl_Reader(this, path, stream, TargetCache_InternalConstants.SERIALIZATION_ENCODING);
-        } catch ( UnsupportedEncodingException e ) {
-            return null; // FFDC
-        }
+        return new TargetCacheImpl_Reader(this, path, stream, TargetCache_InternalConstants.SERIALIZATION_ENCODING);
     }
 
     protected TargetCacheImpl_Writer createWriter(String path, OutputStream stream) {
-        try {
-            return new TargetCacheImpl_Writer(this,
-                path, stream,
-                TargetCache_InternalConstants.SERIALIZATION_ENCODING);
-
-        } catch ( UnsupportedEncodingException e ) {
-            return null; // FFDC
-        }
+        return new TargetCacheImpl_Writer(this,
+            path, stream,
+            TargetCache_InternalConstants.SERIALIZATION_ENCODING);
     }
 
 

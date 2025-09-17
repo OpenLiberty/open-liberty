@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,11 @@ import java.util.Set;
 
 import javax.sql.DataSource;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
@@ -33,6 +36,7 @@ import jakarta.persistence.PersistenceException;
  * This builder is used when a persistence unit reference JNDI name is configured as the repository dataStore.
  */
 public class PUnitEMBuilder extends EntityManagerBuilder {
+    private static final TraceComponent tc = Tr.register(PUnitEMBuilder.class);
 
     private final EntityManagerFactory emf;
 
@@ -45,7 +49,8 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
      * @param repositoryInterfaces  repository interfaces that use the entities.
      * @param emf                   entity manager factory.
      * @param pesistenceUnitRef     persistence unit reference.
-     * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
+     * @param metadata              metadata of the application artifact that
+     *                                  contains the repository interface.
      * @param entityTypes           entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
      */
@@ -54,7 +59,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
                           Set<Class<?>> repositoryInterfaces,
                           EntityManagerFactory emf,
                           String persistenceUnitRef,
-                          String metadataIdentifier,
+                          ComponentMetaData metadata,
                           Set<Class<?>> entityTypes) throws Exception {
         super(provider, //
               repositoryClassLoader, //
@@ -62,12 +67,17 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
               persistenceUnitRef);
         this.emf = emf;
 
-        collectEntityInfo(entityTypes);
+        collectEntityInfo(entityTypes, null);
     }
 
     @Override
+    @Trivial
     public EntityManager createEntityManager() {
-        return emf.createEntityManager();
+        EntityManager em = emf.createEntityManager();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "createEntityManager: " + em);
+        return em;
     }
 
     @FFDCIgnore(PersistenceException.class)

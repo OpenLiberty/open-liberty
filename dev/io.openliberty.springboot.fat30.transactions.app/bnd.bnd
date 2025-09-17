@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+#*******************************************************************************
+-include= \
+  ~../cnf/resources/bnd/bundle.props, \
+  ~../cnf/resources/bnd/bundle.spring.props
+-nouses=true
+
+bVersion=1.0
+
+test.project: true
+instrument.disabled: true
+publish.wlp.jar.disabled: true
+
+javac.source: 17
+javac.target: 17
+
+src: \
+  src/main/java, \
+  src/main/resources
+
+# Specify bundles to be added to the classpath of a VM used in testing. 
+# Entries in the -testpath instruction enable the Eclipse Package Explorer 
+# to resolve compile dependencies for test classes. The instruction is not
+# required to build Spring Boot test artifacts. Each entry requies a 
+# corresponding entry in file cnf/oss_depenendcies.maven.
+# Ref: https://bndtools.org/manual/packageexplorer.html
+
+-testpath: \
+  org.springframework.boot:spring-boot;${springBootVersion30}, \
+  org.springframework.boot:spring-boot-autoconfigure;${springBootVersion30}, \
+\
+  org.springframework:spring-beans;${springVersion30}, \
+  org.springframework:spring-context;${springVersion30}, \
+  org.springframework:spring-core;${springVersion30}, \
+  org.springframework:spring-jdbc;${springVersion30}, \
+  org.springframework:spring-tx;${springVersion30}, \
+  org.springframework:spring-web;${springVersion30}, \
+  org.slf4j:slf4j-api;version=1.7.36, \
+\
+  io.openliberty.jakarta.servlet.6.0

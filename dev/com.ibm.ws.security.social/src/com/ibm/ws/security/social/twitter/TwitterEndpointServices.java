@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.social.twitter;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +38,7 @@ import org.jose4j.lang.JoseException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.CommonWebConstants;
 import com.ibm.ws.security.social.SocialLoginConfig;
@@ -120,6 +121,8 @@ public class TwitterEndpointServices {
      */
     public String computeSignature(String requestMethod, String targetUrl, Map<String, String> params, @Sensitive String consumerSecret, @Sensitive String tokenSecret) {
 
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
+        // The twitter OAuth v1.0 spec will not work with fips compliant algorithms. A new implementation of v2.0 spec would be required for FIPS 140-3.
         String signatureBaseString = createSignatureBaseString(requestMethod, targetUrl, params);
 
         // Hash the base string using the consumer secret (and request token secret, if known) as a key
@@ -137,11 +140,6 @@ public class TwitterEndpointServices {
 
         } catch (GeneralSecurityException e) {
             Tr.warning(tc, "TWITTER_ERROR_CREATING_SIGNATURE", new Object[] { e.getLocalizedMessage() });
-        } catch (UnsupportedEncodingException e) {
-            // Should be using UTF-8 encoding, so this should be highly unlikely
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught unexpected exception: " + e.getLocalizedMessage(), e);
-            }
         }
 
         return signature;
@@ -154,19 +152,18 @@ public class TwitterEndpointServices {
      * @param keyString
      * @return
      * @throws GeneralSecurityException
-     * @throws UnsupportedEncodingException
      */
-    protected String computeSha1Signature(String baseString, @Sensitive String keyString) throws GeneralSecurityException, UnsupportedEncodingException {
+    protected String computeSha1Signature(String baseString, @Sensitive String keyString) throws GeneralSecurityException {
 
-        byte[] keyBytes = keyString.getBytes(CommonWebConstants.UTF_8);
-        SecretKey secretKey = new SecretKeySpec(keyBytes, "HmacSHA1");
+        byte[] keyBytes = keyString.getBytes(StandardCharsets.UTF_8);
+        SecretKey secretKey = new SecretKeySpec(keyBytes, CryptoUtils.HMACSHA1);
 
-        Mac mac = Mac.getInstance("HmacSHA1");
+        Mac mac = Mac.getInstance(CryptoUtils.HMACSHA1);
         mac.init(secretKey);
 
-        byte[] text = baseString.getBytes(CommonWebConstants.UTF_8);
+        byte[] text = baseString.getBytes(StandardCharsets.UTF_8);
 
-        return new String(Base64.encodeBase64(mac.doFinal(text)), CommonWebConstants.UTF_8).trim();
+        return new String(Base64.encodeBase64(mac.doFinal(text)), StandardCharsets.UTF_8).trim();
     }
 
     /**

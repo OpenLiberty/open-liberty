@@ -1,0 +1,41 @@
+<server description="Server for testing Telemetry10">
+
+	<include location="../fatTestPorts.xml" />
+
+	<featureManager>
+		<feature>servlet-6.0</feature>
+		<feature>mpTelemetry-1.0</feature>
+		<feature>componentTest-2.0</feature>
+	</featureManager>
+	<variable name="otel.service.name" value="overrideThisServerVar"/>
+
+	<application type="war" location="InvalidExporterApp.war">
+    	   <classloader apiTypeVisibility="+third-party"/>
+	</application>
+
+	<application type="war" location="InvalidJaegerEndpointApp.war">
+    	   <classloader apiTypeVisibility="+third-party"/>
+	</application>
+
+	<application type="war" location="InvalidZipkinEndpointApp.war">
+    	   <classloader apiTypeVisibility="+third-party"/>
+	</application>
+	
+	<application type="war" location="InvalidOtlpEndpointApp.war">
+    	   <classloader apiTypeVisibility="+third-party"/>
+	</application>
+	
+	<application type="war" location="InvalidJaegerTimeoutApp.war">
+    	   <classloader apiTypeVisibility="+third-party"/>
+	</application>
+	
+	<application type="war" location="DoesNotExistEndpointApp.war">
+    	   <classloader apiTypeVisibility="+third-party"/>
+	</application>
+		
+	<application type="war" location="NotKnownEndpointApp.war">
+    	   <classloader apiTypeVisibility="+third-party"/>
+	</application>
+
+	<javaPermission className="java.util.PropertyPermission" name="jaxws.http.autoredirect" actions="read"/>
+</server>

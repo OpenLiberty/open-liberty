@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2020 IBM Corporation and others.
+ * Copyright (c) 2005,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,18 +20,33 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.security.AccessController;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.BundleEvent;
+import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
+import org.osgi.framework.SynchronousBundleListener;
 
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.channelfw.internal.ConnectionDescriptorImpl;
+import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.wsspi.channelfw.ConnectionDescriptor;
 import com.ibm.wsspi.channelfw.InboundVirtualConnectionFactory;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
 import com.ibm.wsspi.channelfw.exception.RetryableChannelException;
+import com.ibm.wsspi.kernel.service.location.VariableRegistry;
+import com.ibm.wsspi.kernel.service.utils.OnErrorUtil;
+import com.ibm.wsspi.kernel.service.utils.OnErrorUtil.OnError;
 import com.ibm.wsspi.tcpchannel.TCPConfigConstants;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPRequestContext;
@@ -57,6 +72,7 @@ public class TCPPort {
     private int portOpenRetries = 0;
     private final int timeBetweenRetriesMsec = 1000; // make this non-configurable
 
+    final static SecureAction priv = AccessController.doPrivileged(SecureAction.get());
     private static final TraceComponent tc = Tr.register(TCPPort.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
     /**
@@ -401,7 +417,7 @@ public class TCPPort {
                 return;
             }
 
-            // receieve buffer size for accepted sockets is set on serverSocket,
+            // receive buffer size for accepted sockets is set on serverSocket,
             // send buffer size is set on individual sockets
 
             if ((channelConfigX.getReceiveBufferSize() >= TCPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
@@ -521,6 +537,11 @@ public class TCPPort {
                          new Object[] { channelConfigX.getChannelData().getExternalName(), displayableHostName, String.valueOf(channelConfigX.getPort()),
                                         bindError.getMessage() });
 
+                OnError onError = ignoreWarnOrFail();
+                if (onError.equals(OnError.FAIL)) {
+                    quit();
+                }
+
                 throw new RetryableChannelException(bindError.getMessage());
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -541,8 +562,69 @@ public class TCPPort {
         }
     }
 
+    /**
+     * Utility method that gets the onError setting.
+     * This method should be invoked every time it is needed in order to allow for
+     * changes to the onError setting.
+     *
+     * @return the onError setting if configured. Otherwise the default value.
+     */
+    private static final OnError ignoreWarnOrFail() {
+        String value = null;
+        BundleContext bundleContext = priv.getBundleContext(FrameworkUtil.getBundle(VariableRegistry.class));
+        ServiceReference<VariableRegistry> ref = priv.getServiceReference(bundleContext, VariableRegistry.class);
+        VariableRegistry variableRegistry = priv.getService(bundleContext, ref);
+        try {
+            String key = "${" + OnErrorUtil.CFG_KEY_ON_ERROR + "}";
+            value = variableRegistry.resolveString(key);
+            if (!key.equals(value))
+                return OnError.valueOf(value.trim().toUpperCase());
+        } catch (Exception x) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "onError: " + value, x);
+        } finally {
+            bundleContext.ungetService(ref);
+        }
+        return OnErrorUtil.getDefaultOnError();
+    }
+
+    private void quit() {
+        try {
+            BundleContext bundleContext = getBundleContext();
+
+            Bundle bundle = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
+            if (bundle != null) {
+                CountDownLatch stopping = new CountDownLatch(1);
+                SynchronousBundleListener l = new SynchronousBundleListener() {
+                    @Override
+                    public void bundleChanged(BundleEvent e) {
+                        if (BundleEvent.STOPPING == e.getType() && e.getBundle().getBundleId() == 0) {
+                            stopping.countDown();
+                        }
+                    }
+                };
+                bundleContext.addBundleListener(l);
+                bundle.stop();
+                stopping.await(1000, TimeUnit.MILLISECONDS);
+                // no need to remove listener since we are stopping anyway
+            } 
+        } catch (Exception e) {
+            // Exception could happen here if bundle context is bad, or system bundle is 
+            // already stopping: not an exceptional condition, as we want to shutdown anyway.
+        }
+    }
+
+    private BundleContext getBundleContext() {
+        // Get the Bundle for the current class
+        Bundle bundle = FrameworkUtil.getBundle(getClass());
+        if (bundle != null) {
+            // Get the BundleContext from the Bundle
+            return bundle.getBundleContext();
+        }
+        return null; // Return null if the bundle or context is not available
+    }
+
     public void outputBindMessage(String channelName, String hostName, int port) {
         Tr.info(tc, TCPChannelMessageConstants.TCP_CHANNEL_STARTED, new Object[] { channelName, hostName, String.valueOf(port) });
     }
-
 }

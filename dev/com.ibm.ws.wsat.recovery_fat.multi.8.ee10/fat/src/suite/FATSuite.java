@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,31 +16,22 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+import com.ibm.ws.transaction.fat.util.PostgresqlContainerSuite;
+import com.ibm.ws.transaction.fat.util.TxTestDB;
 
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.database.container.PostgreSQLContainer;
 import tests.DBRerouteRecoveryTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 	DBRerouteRecoveryTest.class,
 })
-public class FATSuite extends TxTestContainerSuite {
+public class FATSuite extends PostgresqlContainerSuite {
 
-	static {
-	    testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_IMAGE)
-	                    .withDatabaseName(TxTestContainerSuite.POSTGRES_DB)
-	                    .withUsername(TxTestContainerSuite.POSTGRES_USER)
-	                    .withPassword(TxTestContainerSuite.POSTGRES_PASS)
-	                    .withSSL()
-	                    .withLogConsumer(new SimpleLogConsumer(DBRerouteRecoveryTest.class, "postgre-ssl"));
-
-        beforeSuite(DatabaseContainerType.Postgres);
-	}
+    @ClassRule
+    public static TxTestDB p = new TxTestDB(DatabaseContainerType.Postgres);
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()

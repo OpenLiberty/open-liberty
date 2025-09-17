@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
   requiredLibs {
@@ -25,7 +27,7 @@ dependencies {
       'net.sourceforge.htmlunit:webdriver:2.6',
       'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
       'org.brotli:dec:0.1.2',
-      'org.apache.commons:commons-lang3:3.14.0',
+      project(':com.ibm.ws.org.apache.commons.lang3'),
       project(':com.ibm.ws.org.apache.commons.io'),
       project(':io.openliberty.org.apache.commons.codec'),
       'org.apache.httpcomponents:httpmime:4.5.3',
@@ -42,6 +44,7 @@ dependencies {
       'org.apache.commons:commons-text:1.9',
       project(':io.openliberty.org.apache.xercesImpl'),
       'xalan:xalan:2.7.2',
+      'xalan:serializer:2.7.2',
       'xml-apis:xml-apis:1.4.01'
     }
 

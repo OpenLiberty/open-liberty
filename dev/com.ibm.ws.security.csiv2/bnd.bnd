@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -117,10 +117,7 @@ testsrc: test/src
 	com.ibm.ws.security.credentials;version=latest, \
 	com.ibm.ws.ssl;version=latest, \
 	com.ibm.ws.logging;version=latest, \
-	com.ibm.websphere.org.osgi.core;version=latest, \
-	com.ibm.ws.security.authentication.builtin;version=latest, \
 	com.ibm.websphere.org.osgi.service.component;version=latest, \
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
 	com.ibm.ws.kernel.boot.common;version=latest, \
 	com.ibm.ws.kernel.boot.logging;version=latest, \
 	com.ibm.ws.kernel.security.thread;version=latest, \

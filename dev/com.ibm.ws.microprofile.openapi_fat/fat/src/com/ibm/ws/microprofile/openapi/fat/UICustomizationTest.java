@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ public class UICustomizationTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
-    private final static int TIMEOUT = 10000; // in ms
+    private final static int TIMEOUT = 30000; // in ms
     private final static int START_TIMEOUT = 60000; // in ms
 
     private final static String WARNING_CUSTOM_CSS_NOT_PROCESSED = "CWWKO1655W";

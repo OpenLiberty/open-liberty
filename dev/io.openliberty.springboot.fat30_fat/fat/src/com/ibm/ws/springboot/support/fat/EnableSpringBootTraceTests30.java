@@ -12,8 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,7 +24,6 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 //@Mode(FULL)

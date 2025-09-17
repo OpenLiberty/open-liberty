@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,9 @@
 
 // https://plugins.gradle.org/plugin/org.springframework.boot
 plugins {
-  id 'org.springframework.boot' version '3.0.7'
+  id 'org.springframework.boot' version '3.5.3'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
-def sv = springVersions[ '3.0' ]
 
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
@@ -28,24 +27,12 @@ sourceCompatibility = 17
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-  implementation('org.springframework.boot:spring-boot' + ':' + sv['springBoot.fat'])
-  implementation('org.springframework.boot:spring-boot-autoconfigure' + ':' + sv['springBoot.fat'])
-
-  implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot']) // x
-  implementation('org.springframework.boot:spring-boot-starter-thymeleaf') // + ':' + sv['springBoot']) // x
-  implementation('org.springframework.boot:spring-boot-starter-security') // + ':' + sv['springBoot']) // x
+  implementation('org.springframework.boot:spring-boot')
+  implementation('org.springframework.boot:spring-boot-autoconfigure')
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  implementation('org.springframework.boot:spring-boot-starter-thymeleaf')
+  implementation('org.springframework.boot:spring-boot-starter-security')
   implementation('org.thymeleaf.extras:thymeleaf-extras-springsecurity6')
-
-  implementation('org.springframework:spring-beans' + ':' + sv['spring.fat'])
-  implementation('org.springframework:spring-core' + ':' + sv['spring.fat'])
-  implementation('org.springframework:spring-context' + ':' + sv['spring.fat'])
-  implementation('org.springframework:spring-web' + ':' + sv['spring.fat'])
-  implementation('org.springframework:spring-webmvc' + ':' + sv['spring.fat'])
-
-  implementation('org.springframework.security:spring-security-config' + ':' + sv['springSecurity.fat'])
-  implementation('org.springframework.security:spring-security-core' + ':' + sv['springSecurity.fat'])
-  implementation('org.springframework.security:spring-security-web' + ':' + sv['springSecurity.fat'])
-  
   implementation('org.webjars:bootstrap:5.2.3')
   implementation('org.webjars:webjars-locator:0.46')
   implementation('org.webjars:jquery:3.6.4')

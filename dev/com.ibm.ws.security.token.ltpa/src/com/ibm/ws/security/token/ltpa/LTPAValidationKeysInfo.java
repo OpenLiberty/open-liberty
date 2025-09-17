@@ -61,7 +61,7 @@ public class LTPAValidationKeysInfo {
         return ltpaPublicKey;
     }
 
-    // Check if the validUntilDate0dt has already passed the current time.
+    // Check if the validUntilDate0dt has already passed.
     // If so, then they key is expired, and will return true with a warning message.
     // Otherwise, the key is valid and will return false.
     // If the validUntilDateOdt is null, then the key is forever valid and will return false.

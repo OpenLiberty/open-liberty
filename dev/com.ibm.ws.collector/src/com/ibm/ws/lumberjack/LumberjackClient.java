@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2019 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.Deflater;
@@ -45,7 +47,7 @@ public class LumberjackClient {
     private static final TraceComponent tc = Tr.register(LumberjackClient.class);
     private static TraceNLS nls = TraceNLS.getTraceNLS(LumberjackClient.class, TraceConstants.MESSAGE_BUNDLE);
 
-    protected final String UTF_8 = "UTF-8";
+    protected final Charset UTF_8 = StandardCharsets.UTF_8;
 
     /* Constants used in lumberjack protocol */
     private final static String PROTOCOL_VERSION = "1";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2024 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import java.io.Writer;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
@@ -1354,7 +1355,7 @@ public class FrameworkManager {
             PrintWriter pw = null;
             try {
                 out = new FileOutputStream(introspectionFile);
-                pw = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
+                pw = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
 
                 // write header
                 if (introspectionDesc != null && !introspectionDesc.isEmpty()) {
@@ -1403,7 +1404,7 @@ public class FrameworkManager {
 
         Writer writer = null;
         try {
-            writer = new OutputStreamWriter(new FileOutputStream(statusFile), "UTF-8");
+            writer = new OutputStreamWriter(new FileOutputStream(statusFile), StandardCharsets.UTF_8);
             for (JavaDumpAction javaDumpAction : javaDumpActions) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Start javadump action " + javaDumpAction);

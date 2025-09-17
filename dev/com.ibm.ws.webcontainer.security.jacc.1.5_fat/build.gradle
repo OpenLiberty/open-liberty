@@ -406,14 +406,6 @@ autoFVT.dependsOn ':io.openliberty.security.authorization.jacc.testprovider:asse
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
 autoFVT.dependsOn ':com.ibm.ws.org.apache.directory.server:assemble' // Probably don't need.
 
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
 autoFVT.doLast {
 
   /*
@@ -733,9 +725,4 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
     rename 'server.xml', 'basicauthServlet31.server.orig.xml'
   }
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
 }

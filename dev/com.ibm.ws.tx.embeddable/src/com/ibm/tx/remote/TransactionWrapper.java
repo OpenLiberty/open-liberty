@@ -1,5 +1,5 @@
 /* *****************************************************************************
- * Copyright (c) 2003, 2024 IBM Corporation and others.
+ * Copyright (c) 2003, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -171,7 +171,9 @@ public final class TransactionWrapper implements ResourceCallback {
                 switch (state) {
                     case TransactionState.STATE_PREPARED:
                         // Start the in-doubt timer in case we never get a commit/rollback
-                        EmbeddableTimeoutManager.setTimeout(_transaction, EmbeddableTimeoutManager.IN_DOUBT_TIMEOUT, _clientInactivityTimeout);
+                        if (_clientInactivityTimeout > 0) {
+                            EmbeddableTimeoutManager.setTimeout(_transaction, EmbeddableTimeoutManager.IN_DOUBT_TIMEOUT, _clientInactivityTimeout);
+                        }
                         result = Vote.VoteCommit;
                         break;
                     case TransactionState.STATE_ROLLED_BACK: // one phase opt
@@ -988,4 +990,3 @@ public final class TransactionWrapper implements ResourceCallback {
         }
     }
 }
-

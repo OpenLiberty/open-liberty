@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
 package io.openliberty.microprofile.telemetry.internal.common.info;
 
 import java.util.HashMap;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.commons.lang3.concurrent.LazyInitializer;
@@ -21,6 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
 import com.ibm.ws.container.service.metadata.MetaDataSlotService;
@@ -35,6 +38,7 @@ import com.ibm.wsspi.kernel.feature.LibertyFeature;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryInfoFactory;
+import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
 
 @Component(service = { ApplicationStateListener.class, OpenTelemetryLifecycleManager.class }, property = { "service.vendor=IBM", "service.ranking:Integer=1500" })
 public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListener, OpenTelemetryLifecycleManager {
@@ -43,6 +47,9 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
 
     private final MetaDataSlot slotForOpenTelemetryInfoHolder;
     private final OpenTelemetryInfoFactory openTelemetryInfoFactory;
+
+    private final Set<String> warningsEmittedForInternalApps = ConcurrentHashMap.newKeySet();
+
     boolean telemetry2OrLater;
 
     //These three are set during activation, and refreshed on checkpoint restore. (runtimeInstance is only set if we need one)
@@ -183,11 +190,7 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
     @Override
     public OpenTelemetryInfoInternal getOpenTelemetryInfo() {
         try {
-            ApplicationMetaData metaData = null;
-            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            if (cmd != null) {
-                metaData = cmd.getModuleMetaData().getApplicationMetaData();
-            }
+            ApplicationMetaData metaData = getApplicationMetaData();
             return getOpenTelemetryInfo(metaData);
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
@@ -236,13 +239,28 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
             if (atomicRef == null) {
                 //If this is triggered by a WAB or internal code that doesn't have an associated app, and we're in app mode, return a no-op
                 //(in runtime mode we do want to have OpenTelemetry enabled for internal code, e.g., for tracing)
+                //Issue CWMOT5100 only once for WAB or internal code.
                 String j2EEName = metaData.getJ2EEName().toString();
-                Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
+
+                if (j2EEName != null && warningsEmittedForInternalApps.add(j2EEName)) {
+                    Tr.info(tc, "CWMOT5100.tracing.is.disabled", j2EEName);
+                }
+
                 return new DisabledOpenTelemetryInfo();
 
             }
             LazyInitializer<OpenTelemetryInfoInternal> supplier = atomicRef.get();
-            return supplier.get();
+            OpenTelemetryInfoInternal returnValue = supplier.get();
+
+            //This will only ever be OpenTelemetryLogHandler. See that class for comments on why this exists.
+            OpenTelemetryInfoReadyListener listener = infoReadyListener.get();
+            if (listener != null) {
+                listener.notifyOpenTelemetryInfoReady(returnValue);
+            }
+            infoReadyListener.set(null);
+
+            return returnValue;
+
         } catch (Exception e) {
             Tr.error(tc, Tr.formatMessage(tc, "CWMOT5002.telemetry.error", e));
             return new ErrorOpenTelemetryInfo();
@@ -254,5 +272,55 @@ public class OpenTelemtryLifecycleManagerImpl implements ApplicationStateListene
         checkThenSetRuntimeFields();
 
         return isRuntimeEnabled;
+    }
+
+    //Hidden API to work around the issue of OpenTelemetry logging triggering creation of OpenTelemetryInfo while logging methods busy creating OpenTelemetryInfo
+    private final ThreadLocal<OpenTelemetryInfoReadyListener> infoReadyListener = ThreadLocal.withInitial(() -> null);
+
+    public void setOpenTelemetryInfoReadyListener(OpenTelemetryInfoReadyListener infoReadyListener) {
+        this.infoReadyListener.set(infoReadyListener);
+    }
+
+    //Methods called via OpenTelemetryLogHandler.synchronousWrite must be Trivial to prevent enormous amounts of trace about trace.
+    @Trivial
+    public boolean isOpenTelemetryInitalized() {
+        if (isRuntimeEnabled) {
+            return runtimeInstance.isInitialized();
+        } else {
+            ApplicationMetaData metaData = getApplicationMetaData();
+
+            //This will be false when OpenTelemetryLogHandler attempts to write its early messages during its init()
+            if (metaData == null) {
+                return false;
+            }
+
+            OpenTelemetryInfoReference atomicRef = (OpenTelemetryInfoReference) metaData.getMetaData(slotForOpenTelemetryInfoHolder);
+
+            //This is true in app mode when this method is called during the startup routine of a WAB.
+            //However WABs have a disabled open telemetry anyway. This just delays checking that until after the risk
+            //of recursion in the startup routine is gone.
+            if (atomicRef == null) {
+                return false;
+            }
+
+            LazyInitializer<OpenTelemetryInfoInternal> supplier = atomicRef.get();
+            return supplier.isInitialized();
+        }
+    }
+
+    public interface OpenTelemetryInfoReadyListener {
+        public void notifyOpenTelemetryInfoReady(OpenTelemetryInfo otelInstance);
+    }
+    //End of hidden api
+
+    //Methods called via OpenTelemetryLogHandler.synchronousWrite must be Trivial to prevent enormous amounts of trace about trace.
+    @Trivial
+    private ApplicationMetaData getApplicationMetaData() {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd != null) {
+            return cmd.getModuleMetaData().getApplicationMetaData();
+        } else {
+            return null;
+        }
     }
 }

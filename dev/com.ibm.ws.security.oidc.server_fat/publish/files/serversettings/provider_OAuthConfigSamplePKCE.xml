@@ -29,14 +29,14 @@
 		<localStore>
 			<client
 				name="client_defaults"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_defaults"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
 				enabled="true" />
 			<client
 				name="client_proofKeyForCodeExchange_omitted_publicClient_true"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_proofKeyForCodeExchange_omitted_publicClient_true"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -44,7 +44,7 @@
 				publicClient="false" />
 			<client
 				name="client_proofKeyForCodeExchange_true_publicClient_false"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_proofKeyForCodeExchange_true_publicClient_false"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -53,7 +53,7 @@
 				publicClient="false" />
 			<client
 				name="client_proofKeyForCodeExchange_true_publicClient_true"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_proofKeyForCodeExchange_true_publicClient_true"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -62,7 +62,7 @@
 				publicClient="true" />
 			<client
 				name="client_proofKeyForCodeExchange_false_publicClient_false"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_proofKeyForCodeExchange_false_publicClient_false"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -71,7 +71,7 @@
 				publicClient="false" />
 			<client
 				name="client_proofKeyForCodeExchange_false_publicClient_true"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_proofKeyForCodeExchange_false_publicClient_true"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -95,7 +95,7 @@
 		<localStore>
 			<client
 				name="client_lifetime"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_defaults"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"

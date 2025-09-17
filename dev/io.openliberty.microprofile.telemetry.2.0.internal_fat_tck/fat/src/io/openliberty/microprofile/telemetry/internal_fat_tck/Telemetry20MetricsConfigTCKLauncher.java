@@ -28,6 +28,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  * There is a detailed output on specific
@@ -57,7 +58,14 @@ public class Telemetry20MetricsConfigTCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchTelemetry20MetricsConfigTck() throws Exception {
+
         String suiteName = "tck-suite-metrics-server-config.xml";
+
+        //JvmCpuTest should be excluded on AIX. Upstream issue: https://bugs.openjdk.org/browse/JDK-8030957
+        OperatingSystem os = server.getMachine().getOperatingSystem();
+        if(os == OperatingSystem.AIX){
+            suiteName = "tck-suite-metrics-server-config-aix.xml";
+        }
 
         TCKRunner.build(server, Type.MICROPROFILE, "Telemetry")
                         .withSuiteFileName(suiteName)

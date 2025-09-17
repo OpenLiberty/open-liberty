@@ -42,7 +42,7 @@ public class Config31TCKLauncher {
     private static final String SERVER_NAME = "Config31TCKServer";
 
     @ClassRule
-    public static RepeatTests r = ConfigRepeatActions.repeatDefault31(SERVER_NAME);
+    public static RepeatTests r = ConfigRepeatActions.repeatMp70(SERVER_NAME);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

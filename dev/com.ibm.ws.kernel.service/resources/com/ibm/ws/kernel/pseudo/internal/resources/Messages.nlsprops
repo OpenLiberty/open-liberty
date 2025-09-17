@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -62,3 +62,11 @@ CRYPTO_INSECURE_REPLACED.useraction=No action is required.
 CRYPTO_INSECURE_PROVIDER=CWWKS5902W: The {0} configuration element uses the {1} insecure cryptographic algorithm. Consider replacing the configuration with a different provider if security is a concern.
 CRYPTO_INSECURE_PROVIDER.explanation=The algorithm is no longer considered cryptographically secure.
 CRYPTO_INSECURE_PROVIDER.useraction=Consider replacing the configuration with a different provider if security is a concern.
+
+FIPS_140_3ENABLED=CWWKS5903I: FIPS 140-3 is enabled and using the FIPS provider {0}
+FIPS_140_3ENABLED.explanation=FIPS 140-3 is enabled.
+FIPS_140_3ENABLED.useraction=This message is for information purposes only. No action is needed.
+
+FIPS_140_3ENABLED_ERROR=CWWKS5904E: The FIPS 140-3 properties are configured, but the FIPS provider is not available.
+FIPS_140_3ENABLED_ERROR.explanation=FIPS 140-3 cannot be enabled because the FIPS provider is not available. Ensure that the operating system supports FIPS, the Java version is compatible with FIPS 140-3, and the FIPS provider is configured as the highest priority in the java.security file.
+FIPS_140_3ENABLED_ERROR.useraction=Use a FIPS 140-3 compliant Java version and OS platform.

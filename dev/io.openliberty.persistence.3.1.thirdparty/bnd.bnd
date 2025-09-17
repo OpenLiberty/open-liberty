@@ -14,10 +14,10 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=4.0.5
+eclVersion=4.0.7
 eclFullVersion=${eclVersion}
-eclPackageVersion=4.0.5
-asmFullVersion=9.7.1
+eclPackageVersion=4.0.7
+asmFullVersion=9.8.0
 
 Bundle-SymbolicName: io.openliberty.persistence.3.1.thirdparty
 Bundle-Description: EclipseLink JPA

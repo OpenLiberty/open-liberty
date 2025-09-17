@@ -80,6 +80,21 @@ public class DataStoreSecondServlet extends FATServlet {
     }
 
     /**
+     * Verifies that an EJB in the web module can have a method that observes the
+     * CDI Startup event, during which the method access a Jakarta Data repository.
+     */
+    @Test
+    public void testEJBInWARObservesStartupAndUsesRepository() {
+
+        // Entity that is written by the method that Observes Startup must be
+        // present in the database
+        ServerDSEntity e = serverDSResRefRepo.read("DataEJBInWebModule.onStartup")
+                        .orElseThrow();
+        assertEquals("DataEJBInWebModule.onStartup", e.id);
+        assertEquals(123, e.value);
+    }
+
+    /**
      * Use a repository that specifies a resource reference to a data source,
      * where the resource reference has a container managed authentication alias
      * that is defined in server.xml, ResRefAuth2, with user resrefuser2.

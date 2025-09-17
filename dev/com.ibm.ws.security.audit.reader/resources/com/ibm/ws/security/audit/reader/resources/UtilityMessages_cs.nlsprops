@@ -1,5 +1,5 @@
 #/*******************************************************************************
-# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * Copyright (c) 2018, 2025 IBM Corporation and others.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
 # * which accompanies this distribution, and is available at
@@ -63,3 +63,7 @@ security.audit.ErrorLoadingKeystore=Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed 
 security.audit.MismatchingEncKeystores=Vstupn\u00ed hodnota, {0}, pro uveden\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, kter\u00e9 m\u00e1 obsahovat certifik\u00e1t pou\u017eit\u00fd k de\u0161ifrov\u00e1n\u00ed z\u00e1znam\u016f auditu, neodpov\u00edd\u00e1 \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f, {1}, uveden\u00e9mu v protokolu auditu.
 security.audit.MismatchingSigningKeystores=Vstupn\u00ed hodnota, {0}, pro uveden\u00e9 \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, kter\u00e9 m\u00e1 obsahovat certifik\u00e1t pou\u017eit\u00fd ke zru\u0161en\u00ed podpisu z\u00e1znam\u016f auditu, neodpov\u00edd\u00e1 \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f, {1}, uveden\u00e9mu v protokolu auditu.
 security.audit.CannotFindCertificate=Alias certifik\u00e1tu {0} v \u00falo\u017ei\u0161ti kl\u00ed\u010d\u016f {1} neexistuje.
+
+# Do not translate "auditRecord"
+security.audit.FailedToValidateSignature=Ov\u011b\u0159en\u00ed podpisu auditRecord se nezda\u0159ilo na indexu [ {0} ].
+security.audit.FailedToDecryptAuditRecord=De\u0161ifrov\u00e1n\u00ed auditRecord se nezda\u0159ilo na indexu [ {0} ].

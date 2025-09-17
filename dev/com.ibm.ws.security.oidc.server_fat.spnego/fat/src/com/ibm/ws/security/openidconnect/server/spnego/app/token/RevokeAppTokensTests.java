@@ -52,7 +52,7 @@ public class RevokeAppTokensTests extends SpnegoAppPasswordsAndTokensCommonTest 
     	TestSettings updatedTestSettings = addLocalhostToEndpoint(testSettings.copyTestSettings());
         String testuserToken = getAccessTokenWithWebClient(updatedTestSettings);
         
-        updatedTestSettings = updateTestSettingsForAppTokensTests(testSettings, "genAppTok01", "secret", InitClass.SECOND_USER, InitClass.SECOND_USER_PWD, doNotOverrideProvider, doNotOverrideApp); 
+        updatedTestSettings = updateTestSettingsForAppTokensTests(testSettings, "genAppTok01", "secret1234", InitClass.SECOND_USER, InitClass.SECOND_USER_PWD, doNotOverrideProvider, doNotOverrideApp); 
         addLocalhostToEndpoint(updatedTestSettings);
         String diffuserToken = getAccessTokenWithWebClient(updatedTestSettings);
         TokenValues diffAppToken = createAppTokens(updatedTestSettings, diffuserToken, _testName + "2", ExpectSuccess, getGoodCreateAppTokensExpectations(updatedTestSettings));
@@ -75,7 +75,7 @@ public class RevokeAppTokensTests extends SpnegoAppPasswordsAndTokensCommonTest 
         
         TokenValues userAppToken = createAppTokens(updatedTestSettings, userAccessToken, _testName, ExpectSuccess, getGoodCreateAppTokensExpectations(testSettings));
         validateAppTokensCreateValues(userAppToken, ninetyDays);
-         updatedTestSettings = updateTestSettingsForAppTokensTests(testSettings, "genAppTok01", "secret", InitClass.SECOND_USER, InitClass.SECOND_USER_PWD, doNotOverrideProvider, doNotOverrideApp);
+         updatedTestSettings = updateTestSettingsForAppTokensTests(testSettings, "genAppTok01", "secret1234", InitClass.SECOND_USER, InitClass.SECOND_USER_PWD, doNotOverrideProvider, doNotOverrideApp);
          addLocalhostToEndpoint(updatedTestSettings);
         String tokenMgrToken = getAccessTokenWithWebClient(updatedTestSettings);
         
@@ -95,7 +95,7 @@ public class RevokeAppTokensTests extends SpnegoAppPasswordsAndTokensCommonTest 
     	
     	TestSettings updatedTestSettings = addLocalhostToEndpoint(testSettings.copyTestSettings());
     	
-    	updatedTestSettings = updateTestSettingsForAppPasswordsTests(testSettings, "genAppPw01", "secret",
+    	updatedTestSettings = updateTestSettingsForAppPasswordsTests(testSettings, "genAppPw01", "secret1234",
 				SpnegoOIDCConstants.NTLM_TOKEN, SpnegoOIDCConstants.NTLM_TOKEN, Constants.OIDCCONFIGSAMPLE_APP, Constants.HELLOWORLD_SERVLET);
 
        getAccessTokenWithWebClient(updatedTestSettings);

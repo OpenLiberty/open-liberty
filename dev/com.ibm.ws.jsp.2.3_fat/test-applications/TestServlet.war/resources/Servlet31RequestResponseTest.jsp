@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2015 IBM Corporation and others.
+    Copyright (c) 2015, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -58,7 +58,7 @@
 	<%	
 	
 		// Testing the response.setContentLengthLong method
-		long length = 10000;
+		long length = 2165; // (Actual content length) If too large, a "java.io.IOException: Premature EOF" occurs on Java 24. (See JDK-8335135)
 		response.setContentLengthLong(length);
 		
 		sos.print("Testing SC_NOT_FOUND static field from HttpServletResponse (Expected: 404): " + HttpServletResponse.SC_NOT_FOUND + "<br/>");

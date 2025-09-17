@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,17 +18,27 @@ package test.jakarta.data.web;
  */
 public class Participant {
 
-    public Integer id;
+    private Integer pID;
 
     public Name name;
 
     public static record Name(String first, String last) {
     }
 
+    // Exception Description: Could not load the field named [PID] on the class [class test.jakarta.data.web.Participant]. Ensure there is a corresponding field with that name defined on the class.
+
+    public Integer getPID() {
+        return pID;
+    }
+
     public static Participant of(String firstName, String lastName, int id) {
         Participant p = new Participant();
-        p.id = id;
+        p.pID = id;
         p.name = new Name(firstName, lastName);
         return p;
+    }
+
+    public void setPID(Integer value) {
+        pID = value;
     }
 }

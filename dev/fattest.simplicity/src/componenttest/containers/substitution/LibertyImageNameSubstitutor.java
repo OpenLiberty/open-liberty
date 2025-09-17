@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,18 +44,18 @@ public class LibertyImageNameSubstitutor extends ImageNameSubstitutor {
 
         do {
             // Priority 1: If we are using a synthetic image do not substitute nor cache
-            if (ImageHelper.isSyntheticImage(original) || ImageHelper.isCommittedImage(original)) {
+            if (ImageHelper.isSyntheticImage(original) || ImageHelper.isCommittedImage(original) || ImageHelper.isBuiltImage(original)) {
                 result = original;
-                reason = "Image name is known to be synthetic or a commit hash, cannot use Artifactory registry.";
+                reason = "Image name is known to be synthetic, prebuilt, or a commit hash, cannot use an alternative registry.";
                 break;
             }
 
             // Priority 2a: If the image is known to only exist in an Artifactory organization
             // This is now handled directly by the MIRROR substitutor
 
-            // Priority 2b: If the image is known to only exist in an Artifactory registry
-            if (original.getRegistry() != null && original.getRegistry().contains("artifactory.swg-devops.com")) {
-                throw new RuntimeException("Not all developers of Open Liberty have access to artifactory, must use a public registry.");
+            // Priority 2b: If the image is known to only exist in the Artifactory or Internal registry
+            if (ArtifactoryRegistry.instance().validDockerImageName(original) || InternalRegistry.instance().validDockerImageName(original)) {
+                throw new RuntimeException("Not all developers of Open Liberty have access to the Artifactory or Internal registries, must use a public registry.");
             }
 
             // Priority 3: If a public registry was explicitly set on an image, do not substitute
@@ -73,10 +73,17 @@ public class LibertyImageNameSubstitutor extends ImageNameSubstitutor {
             // This is now handled directly by the ArtifactoryRegistry
 
             // Priority 6: If mirror registry is available use it to avoid rate limits on other registries
-            if (ArtifactoryRegistry.instance().isRegistryAvailable() || InternalRegistry.instance().isRegistryAvailable()) {
+            if (ArtifactoryRegistry.instance().isRegistryAvailable() && ArtifactoryRegistry.instance().supportsRegistry(original)) {
                 ImageVerifier.collectImage(original);
                 result = REGISTRY.apply(MIRROR.apply(original));
-                reason = "Artifactory was available.";
+                reason = "Artifactory registry was available and supports " + original.getRegistry();
+                break;
+            }
+
+            if (InternalRegistry.instance().isRegistryAvailable() && InternalRegistry.instance().supportsRegistry(original)) {
+                ImageVerifier.collectImage(original);
+                result = REGISTRY.apply(MIRROR.apply(original));
+                reason = "Internal registry was available and supports " + original.getRegistry();
                 break;
             }
 

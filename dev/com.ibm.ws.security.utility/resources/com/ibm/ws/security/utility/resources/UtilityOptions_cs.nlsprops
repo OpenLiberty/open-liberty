@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2024 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ encode.usage.options=\t{0} encode [volby]
 encode.option-key.text=\ \ \ \ text_k_zak\u00f3dov\u00e1n\u00ed
 encode.option-desc.text=\tPokud nejsou zad\u00e1ny \u017e\u00e1dn\u00e9 argumenty, p\u0159ejde n\u00e1stroj do interaktivn\u00edho \n\tre\u017eimu. Jinak bude zak\u00f3dov\u00e1n zadan\u00fd text.\n\tPokud je jako argument zad\u00e1n text s mezerami, mus\u00ed b\u00fdt cel\u00fd uzav\u0159en\u00fd do uvozovek.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tUr\u010dete zp\u016fsob zak\u00f3dov\u00e1n\u00ed hesla. Podporovan\u00e1 k\u00f3dov\u00e1n\u00ed: xor, aes,\n\ta hash. V\u00fdchoz\u00ed k\u00f3dov\u00e1n\u00ed je xor. {2}
+encode.option-desc.encoding=\tZadejte zp\u016fsob k\u00f3dov\u00e1n\u00ed hesla. Podporovan\u00e1 k\u00f3dov\u00e1n\u00ed jsou xor, aes, aes-128, a hash. V\u00fdchoz\u00ed k\u00f3dov\u00e1n\u00ed je xor. Aes \u0161ifruje pomoc\u00ed aes-256 bitov\u00e9ho kl\u00ed\u010de.\n\taes-128 lze pou\u017e\u00edt pro kompatibilitu s verzemi serveru p\u0159ed 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[kl\u00ed\u010d]
 encode.option-desc.key=\tUr\u010dete kl\u00ed\u010d, kter\u00fd m\u00e1 b\u00fdt pou\u017eit pro zak\u00f3dov\u00e1n\u00ed metodou AES. Tento \u0159et\u011bzec bude\n\tha\u0161ov\u00e1n za \u00fa\u010delem vytvo\u0159en\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de, kter\u00fd bude pou\u017eit k \u0161ifrov\u00e1n\u00ed\n\ta de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze poskytnout serveru definov\u00e1n\u00edm prom\u011bnn\u00e9\n\twlp.password.encryption.key, jej\u00ed\u017e hodnotou bude\n\tkl\u00ed\u010d. Nen\u00ed-li tato volba zad\u00e1na, pou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.
 encode.option-key.notrim=\ \ \ \ --notrim

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=\u5bc6\u78bc\u672a\u52a0\
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u5982\u679c\u4f7f\u7528\u81ea\u8a02\u5bc6\u78bc\u52a0\u5bc6\uff0c\u8acb\u6aa2\u67e5\u81ea\u8a02\u5bc6\u78bc\u52a0\u5bc6\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u8cc7\u8a0a\u3002
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: \u5bc6\u78bc\u672a\u89e3\u5bc6\uff0c\u56e0\u70ba\u5831\u544a\u4e86\u89e3\u78bc\u932f\u8aa4\u3002
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=\u672a\u9069\u7576\u7de8\u78bc\u52a0\u5bc6\u5bc6\u78bc\u3002
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=\u8acb\u78ba\u5b9a\u52a0\u5bc6\u5bc6\u78bc\u672a\u622a\u65b7\uff0c\u4e26\u4e14\u662f\u4ee5 Base64 \u4f86\u7de8\u78bc\u3002
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=\u78ba\u4fdd\u52a0\u5bc6\u7684\u5bc6\u78bc\u672a\u88ab\u622a\u65b7\uff0c\u4e26\u4f7f\u7528 Base64 \u7de8\u78bc\u3002
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 \u555f\u7528 FIPS 140-3 \u6642\uff0c\u7121\u6cd5\u4f7f\u7528\u52a0\u5bc6\u5bc6\u78bc\u3002 \u4f7f\u7528 AES-256 securityUtility \u6307\u4ee4\u91cd\u65b0\u7522\u751f\u5bc6\u78bc\u3002
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 \u5df2\u555f\u7528\uff0c\u4e0d\u652f\u63f4 AES-128\u3002 \u4f7f\u7528 securityUtility \u6307\u4ee4\u4f7f\u7528 AES-256 \u52a0\u5bc6\u5bc6\u78bc\u3002
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=\u8acb\u78ba\u5b9a\u5bc6\u78bc\u5df2\u4f7f\u7528 AES-256 \u52a0\u5bc6\u3002
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: AES \u5bc6\u78bc\u52a0\u5bc6\u5931\u6557\u3002 \u6aa2\u67e5\u60a8\u7684 java.security \u8a2d\u5b9a\uff0c\u4e26\u52a0\u5165\u907a\u5931\u7684\u6f14\u7b97\u6cd5\u3002
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=\u60a8\u7684 java.security \u6a94\u6848\u4e2d\u7f3a\u5c11\u52a0\u5bc6\u7b97\u6cd5\u3002
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=\u78ba\u4fdd\u6f14\u7b97\u6cd5\u5df2\u52a0\u5165\u60a8\u7684 java.security \u6a94\u6848\u3002
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: AES \u5bc6\u78bc\u89e3\u5bc6\u5931\u6557\u3002 \u6aa2\u67e5\u60a8\u7684 java.security \u8a2d\u5b9a\uff0c\u4e26\u52a0\u5165\u907a\u5931\u7684\u6f14\u7b97\u6cd5\u3002
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=\u60a8\u7684 java.security \u6a94\u6848\u4e2d\u7f3a\u5c11\u52a0\u5bc6\u7b97\u6cd5\u3002
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=\u78ba\u4fdd\u6f14\u7b97\u6cd5\u5df2\u52a0\u5165\u60a8\u7684 java.security \u6a94\u6848\u3002
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: \u555f\u7528 FIPS 140-3 \u6642\uff0c\u60a8\u7121\u6cd5\u4f7f\u7528 SHA1 hash-encoded \u5bc6\u78bc\u3002 \u4f7f\u7528 securityUtility \u6307\u4ee4\u91cd\u65b0\u7522\u751f\u5bc6\u78bc\u5207\u7d30\u503c\u3002
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=FIPS 140-3 \u5df2\u555f\u7528\uff0c\u4e0d\u652f\u63f4 SHA1\u3002 \u4f7f\u7528 securityUtility encode \u6307\u4ee4\u7522\u751f\u65b0\u7684 SHA512 \u5bc6\u78bc\u96dc\u6e4a\u3002
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=\u78ba\u4fdd\u5bc6\u78bc\u96dc\u6e4a\u662f\u4ee5 SHA512 \u7522\u751f\u3002
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: \u4f3a\u670d\u5668\u7d44\u614b\u4e2d\u5132\u5b58\u7684\u4e00\u500b\u6216\u591a\u500b {0} \u5bc6\u78bc\u503c\u662f\u4f7f\u7528\u8f03\u820a\u7684\u6f14\u7b97\u6cd5 {1} \u7522\u751f\u7684\u3002 \u4f7f\u7528 securityUtility encode \u6307\u4ee4\u4ee5\u6700\u65b0\u6f14\u7b97\u6cd5\u91cd\u65b0\u7522\u751f {0} \u5bc6\u78bc {2}\u3002
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty \u73fe\u5728\u5c0d\u65b0\u7522\u751f\u7684 \u548c \u5bc6\u78bc\u4f7f\u7528\u66f4\u5f37\u7684\u6f14\u7b97\u6cd5\u3002 {aes} {hash}
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=\u8acb\u78ba\u5b9a {aes} \u548c {hash} \u5bc6\u78bc\u503c\u662f\u4ee5 Liberty \u7684\u6700\u65b0\u7248\u672c\u7522\u751f\u7684\u3002
 
 
 # ---------------- This is an exception message ------------

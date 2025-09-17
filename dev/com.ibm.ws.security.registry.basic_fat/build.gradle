@@ -27,14 +27,6 @@ dependencies {
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
 autoFVT.doLast {
   /*
    * Copy the clientcert.zip into test servers.
@@ -78,11 +70,6 @@ autoFVT.doLast {
      from new File(appBuildDir, 'com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar')
      into new File(autoFvtDir, 'publish/bundles')
    }
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
 }
 
 /*

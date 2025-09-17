@@ -13,10 +13,9 @@
 
 // https://plugins.gradle.org/plugin/org.springframework.boot
 plugins {
-  id 'org.springframework.boot' version '3.0.7'
+  id 'org.springframework.boot' version '3.5.3'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
-def sv = springVersions[ '3.0' ]
 
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
@@ -28,6 +27,6 @@ sourceCompatibility = 17
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-  implementation('org.springframework.boot:spring-boot-starter-actuator') // + ':' + sv['springBoot'])
-  implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot'])
+  implementation('org.springframework.boot:spring-boot-starter-actuator')
+  implementation('org.springframework.boot:spring-boot-starter-web')
 }

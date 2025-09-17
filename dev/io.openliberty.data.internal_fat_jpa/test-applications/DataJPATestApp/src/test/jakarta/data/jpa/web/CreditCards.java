@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,15 +51,19 @@ public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy("number")
     List<CreditCard> expiringInWeek(int weekNumber);
 
+    @Query("WHERE EXTRACT (QUARTER FROM expiresOn) <> :quarterToExclude")
     @OrderBy("number")
     Stream<CreditCard> findByExpiresOnWithQuarterNot(int quarterToExclude);
 
+    @Query("WHERE EXTRACT (WEEK FROM expiresOn) = :weekNumber")
     @OrderBy("number")
     List<CreditCard> findByExpiresOnWithWeek(int weekNumber);
 
+    @Query("WHERE EXTRACT (MONTH FROM expiresOn) IN :months")
     @OrderBy("number")
     Stream<CreditCard> findByIssuedOnWithMonthIn(Iterable<Integer> months);
 
+    @Query("WHERE EXTRACT (DAY FROM expiresOn) BETWEEN :minDayOfMonth AND :maxDayOfMonth")
     @OrderBy("number")
     Stream<CreditCard> findByIssuedOnWithDayBetween(int minDayOfMonth, int maxDayOfMonth);
 

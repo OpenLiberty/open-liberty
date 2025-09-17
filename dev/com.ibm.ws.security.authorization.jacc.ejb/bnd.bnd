@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -52,7 +52,6 @@ Import-Package: \
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
-	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.ws.componenttest;version=latest,\
 	com.ibm.ws.junit.extensions;version=latest,\
@@ -60,5 +59,4 @@ Import-Package: \
 	com.ibm.ws.logging;version=latest,\
 	io.openliberty.security.authorization.internal.jacc.1.5;project=com.ibm.ws.security.authorization.jacc;source=none,\
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
-	org.jmock:jmock;strategy=exact;version=2.5.1, \
-	com.ibm.ws.kernel.service;version=latest
+	org.jmock:jmock;strategy=exact;version=2.5.1

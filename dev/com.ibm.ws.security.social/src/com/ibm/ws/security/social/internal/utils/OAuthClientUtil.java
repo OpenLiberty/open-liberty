@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.security.social.internal.utils;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -438,7 +439,7 @@ public class OAuthClientUtil {
             params = new ArrayList<NameValuePair>();
         }
         //params.add(new BasicNameValuePair("format", "json"));
-        query = URLEncodedUtils.format(params, ClientConstants.CHARSET);
+        query = URLEncodedUtils.format(params, StandardCharsets.UTF_8);
 
         if (query != null && !query.isEmpty()) {
             if (!url.endsWith("?")) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.jwt.internal;
 
-import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.PublicKey;
@@ -209,16 +208,7 @@ public class ConsumerUtil {
             String msg = Tr.formatMessage(tc, "JWT_MISSING_SHARED_KEY");
             throw new KeyException(msg);
         }
-        try {
-            // TODO - use signature algorithm?
-            return new HmacKey(sharedKey.getBytes(Constants.UTF_8));
-        } catch (UnsupportedEncodingException e) {
-            // Should not happen - UTF-8 should be supported
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Caught exception getting shared key bytes: " + e.getLocalizedMessage());
-            }
-        }
-        return null;
+        return new HmacKey(sharedKey.getBytes(Constants.UTF_8));
     }
 
     boolean isPublicKeyPropsPresent(MpConfigProperties mpConfigProps) {

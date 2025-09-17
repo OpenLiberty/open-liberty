@@ -45,7 +45,7 @@ Subsystem-Name: Jakarta Server Faces 3.0
   io.openliberty.jakarta.cdi-3.0, \
   io.openliberty.jakarta.faces-3.0
 -bundles=io.openliberty.org.apache.myfaces.3.0, \
- com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
+ com.ibm.ws.org.apache.commons.beanutils, \
  com.ibm.ws.org.apache.commons.collections, \
  io.openliberty.org.apache.commons.digester, \
  io.openliberty.org.apache.commons.logging, \

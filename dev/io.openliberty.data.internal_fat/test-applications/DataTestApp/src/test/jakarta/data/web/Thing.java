@@ -23,7 +23,8 @@ public class Thing {
     // ending with "like" does not conflict with reserved word "Like" due to case difference.
     public Boolean alike;
 
-    // starting with reserved word "And" is okay in at least some cases - TODO test findByAttr1OrAttr2OrAndroid... to find out
+    // starting with reserved word "And" is okay in at least some cases.
+    // For example, "Android" in the method findByBrandOrNotesContainsOrAndroid
     public boolean android;
 
     // ending with "and" does not conflict with reserved word "And" due to case difference.
@@ -45,7 +46,8 @@ public class Thing {
     // Test with @Query instead.
     public int purchaseOrder;
 
-    // starting with reserved word "Or" is okay in at least some cases - TODO test findByAttr1AndAttr2AndOrderNumber... to find out
+    // starting with reserved word "Or" is okay in at least some cases.
+    // For example, "OrderNumber" in the method findByFloorNotAndInfoLikeAndOrderNumberLessThan
     public long orderNumber;
 
     // The algorithm that infers IDs should choose this as the ID over "android" (ends with "id")

@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.config.Fileset;
 import com.ibm.websphere.simplicity.config.JavaPermission;
 import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.Transaction;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -77,7 +78,7 @@ public final class DatabaseContainerUtil {
     private final ServerConfiguration serverClone;
     private final JdbcDatabaseContainer<?> databaseCont;
     private final DatabaseContainerType databaseType;
-    private final boolean isModifiable;
+   
 
     //Optional fields
     private boolean useGeneric = true;
@@ -89,6 +90,7 @@ public final class DatabaseContainerUtil {
     //Optional updates
     private Map<String, Fileset> libraries = Collections.emptyMap();
     private Set<JavaPermission> permissions = Collections.emptySet();
+    private boolean isModifiable = false;
 
     ///// Constructor /////
     private DatabaseContainerUtil(LibertyServer serv, JdbcDatabaseContainer<?> cont) throws Exception {
@@ -118,7 +120,13 @@ public final class DatabaseContainerUtil {
         for (DatabaseStore dbs : serverClone.getDatabaseStores()) {
             dsSet.addAll(dbs.getDataSources());
         }
-        
+
+        //Get datasources that are nested under transactions
+        Transaction tx = serverClone.getTransaction();
+        if (tx != null) {
+            dsSet.addAll(tx.getDataSources());
+        }
+
         this.datasources = dsSet.stream()
                         .filter(ds -> ds.getFatModify() != null)
                         .filter(ds -> ds.getFatModify().equalsIgnoreCase("true"))
@@ -133,7 +141,7 @@ public final class DatabaseContainerUtil {
         //TODO what about authData elements inside a <databaseStore> element?
         
         //If there is nothing to modify, this is not modifiable
-        this.isModifiable = !this.datasources.isEmpty() || !this.authDatas.isEmpty();
+        this.isModifiable |= !this.datasources.isEmpty() || !this.authDatas.isEmpty();
     }
 
     ///// Builder /////
@@ -145,9 +153,7 @@ public final class DatabaseContainerUtil {
      */
     public static DatabaseContainerUtil build(LibertyServer server, JdbcDatabaseContainer<?> cont) {
         try {
-            DatabaseContainerUtil instance = new DatabaseContainerUtil(server, cont);
-            Log.info(c, "build", instance.toString());
-            return instance;
+            return new DatabaseContainerUtil(server, cont);
         } catch (Exception e) {
             throw new RuntimeException("Failure while building database container util", e);
         }
@@ -184,6 +190,8 @@ public final class DatabaseContainerUtil {
         this.permissions = serverClone.getJavaPermissions().stream()
                         .filter(p -> p.getCodeBase().contains(toReplacementString(DRIVER_KEY)))
                         .collect(Collectors.toSet());
+        
+        this.isModifiable |= !this.libraries.isEmpty() || !this.permissions.isEmpty();
 
         return this;
     }
@@ -497,8 +505,11 @@ public final class DatabaseContainerUtil {
     public String toString() {
         return "DatabaseContainerUtil"
                         + System.lineSeparator() + "[server=" + server.getServerName() + ", databaseType=" + databaseType + ", isModifiable=" + isModifiable 
-                        + System.lineSeparator() + "datasources=" + datasources.stream().map(ds -> getElementId(ds)).collect(Collectors.toList())
-                        + System.lineSeparator() + "authDatas=" + authDatas.stream().map(ad -> getElementId(ad)).collect(Collectors.toList()) + "]";
+                        + System.lineSeparator() + "\tdatasources=" + datasources.stream().map(ds -> getElementId(ds)).collect(Collectors.toList())
+                        + System.lineSeparator() + "\tauthDatas=" + authDatas.stream().map(ad -> getElementId(ad)).collect(Collectors.toList()) 
+                        + System.lineSeparator() + "\tlibraries=" + libraries.keySet()
+                        + System.lineSeparator() + "\tpermissions=" + permissions.stream().map(ps -> getElementId(ps)).collect(Collectors.toList())
+                        + System.lineSeparator() + "]";
     }
     
     

@@ -27,14 +27,6 @@ autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.wim.repository_test.custom:assemble'
 addRequiredLibraries.dependsOn addJakartaTransformer
 
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
 autoFVT.doLast {
   /*
    * Copy sample CustomRepository user feature to this test bucket.
@@ -68,8 +60,3 @@ autoFVT.doLast {
     }
   }
 }  
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
-}

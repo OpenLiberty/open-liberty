@@ -79,11 +79,13 @@ DynamicImport-Package: \
 	com.ibm.websphere.org.eclipse.microprofile.rest.client.1.1;version=latest,\
 	io.openliberty.org.jboss.resteasy.common;version=latest,\
 	io.openliberty.microprofile.telemetry.internal.common;version=latest,\
+	io.openliberty.microprofile.telemetry.logging.internal.common;version=latest,\
 	io.openliberty.io.opentelemetry.2.0;version=latest,\
 	io.opentelemetry.semconv:opentelemetry-semconv;version='1.25.0.alpha';strategy=exact,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
 	io.openliberty.http.monitor,\
-	io.opentelemetry.instrumentation:opentelemetry-resources;version=2.1.0.alpha,\
-	com.ibm.ws.connectionpool.monitor
+	io.opentelemetry.instrumentation:opentelemetry-resources;version='2.1.0.alpha',\
+	com.ibm.ws.connectionpool.monitor,\
+	com.ibm.ws.kernel.service
 
 WS-TraceGroup: TELEMETRY

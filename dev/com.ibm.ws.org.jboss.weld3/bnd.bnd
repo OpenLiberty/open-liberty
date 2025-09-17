@@ -17,6 +17,7 @@ instrument.disabled: true
 instrument.ffdc: false
 
 -buildpath: \
-	org.jboss.weld:weld-osgi-bundle;version=3.1.9.Final, \
-	org.jboss.weld.se:weld-se-core;version=3.1.9.Final, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	org.jboss.weld:weld-osgi-bundle;version='3.1.9.Final',\
+	org.jboss.weld.se:weld-se-core;version='3.1.9.Final',\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0

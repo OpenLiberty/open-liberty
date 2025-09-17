@@ -94,7 +94,7 @@ public class GenerateEsas extends DownloadXmlGenerator {
             File englishLI = new File(licenseRoot, "LI_en");
             BufferedReader licenseReader = null;
             try {
-                licenseReader = new BufferedReader(new InputStreamReader(new FileInputStream(englishLI), "UTF-16"));
+                licenseReader = new BufferedReader(new InputStreamReader(new FileInputStream(englishLI), StandardCharsets.UTF_16));
                 String line = null;
                 while ((line = licenseReader.readLine()) != null) {
                     if (line.startsWith("L/N:")) {
@@ -390,6 +390,9 @@ public class GenerateEsas extends DownloadXmlGenerator {
 
             // Also add the correct checksum entry
             if (hasChecksum) {
+                // FIPS 140-3: Algorithm assessment complete; no changes required.
+                // MD5 is used for file comparison / checksums which isn't a cryptographic use case
+                // We can't update the hashing algorithm used here because Ifix/ESA's only provide MD5 checksums
                 String manifestMD5String = MD5Utils.getFileMD5String(tempManifestFile);
                 checksumOutput.put("OSGI-INF/SUBSYSTEM.MF", manifestMD5String);
             }

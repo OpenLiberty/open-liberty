@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src, \
+	test-applications/sharedClassesEarLib.jar/src, \
+	test-applications/sharedClassesEarLib2.jar/src, \
+	test-applications/sharedClassesEJB.jar/src, \
+	test-applications/sharedClassesResourceAdaptor.jar/src, \
+	test-applications/sharedClassesServerLib.jar/src, \
+	test-applications/sharedClassesWarLib.jar/src, \
+	test-applications/sharedClassesWarTest.war/src, \
+	test-resourceadapters/sharedClassesRar/src
+
+fat.project: true
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.4.0, \
+	com.ibm.websphere.javaee.ejb.3.2, \
+	com.ibm.websphere.javaee.connector.1.7,\
+	com.ibm.websphere.javaee.annotation.1.3

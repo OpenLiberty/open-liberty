@@ -23,20 +23,20 @@ public class DatabaseContainerTypeTest {
     @Test
     public void testValueOfContainer() {
         assertEquals(DatabaseContainerType.DB2, //
-                     DatabaseContainerType.valueOf(new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:11.5.9.0")
+                     DatabaseContainerType.valueOf(new Db2Container(DockerImageName.parse("icr.io/db2_community/db2:12.1.1.0")
                                      .asCompatibleSubstituteFor("icr.io/db2_community/db2"))));
         assertEquals(DatabaseContainerType.Derby, //
                      DatabaseContainerType.valueOf(new DerbyNoopContainer()));
         assertEquals(DatabaseContainerType.DerbyClient, //
                      DatabaseContainerType.valueOf(new DerbyClientContainer()));
         assertEquals(DatabaseContainerType.Oracle, //
-                     DatabaseContainerType.valueOf(new OracleContainer(DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23.5-full-faststart")
+                     DatabaseContainerType.valueOf(new OracleContainer(DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23-full-faststart")
                                      .asCompatibleSubstituteFor("gvenzl/oracle-free"))));
         assertEquals(DatabaseContainerType.Postgres, //
-                     DatabaseContainerType.valueOf(new PostgreSQLContainer(DockerImageName.parse("public.ecr.aws/docker/library/postgres:17.0-alpine")
+                     DatabaseContainerType.valueOf(new PostgreSQLContainer(DockerImageName.parse("public.ecr.aws/docker/library/postgres:17-alpine")
                                      .asCompatibleSubstituteFor("postgres"))));
         assertEquals(DatabaseContainerType.SQLServer,
-                     DatabaseContainerType.valueOf(new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2019-CU28-ubuntu-20.04")
+                     DatabaseContainerType.valueOf(new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2022-latest")
                                      .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server"))));
     }
 

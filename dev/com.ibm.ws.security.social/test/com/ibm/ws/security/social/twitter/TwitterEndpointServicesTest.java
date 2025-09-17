@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.security.GeneralSecurityException;
 import java.util.ArrayList;
@@ -104,7 +103,7 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
     static final String MY_JSON_FAILURE_MSG = "JSON failure message. Something went wrong.";
 
     public interface MockInterface {
-        public String mockComputeSha1Signature() throws GeneralSecurityException, UnsupportedEncodingException;
+        public String mockComputeSha1Signature() throws GeneralSecurityException;
 
         public Map<String, Object> mockExecuteRequest();
 
@@ -199,7 +198,7 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
     public void testComputeSignature_GeneralSecurityException() {
         TwitterEndpointServices mockTwitter = new TwitterEndpointServices() {
             @Override
-            protected String computeSha1Signature(String baseString, String keyString) throws GeneralSecurityException, UnsupportedEncodingException {
+            protected String computeSha1Signature(String baseString, String keyString) throws GeneralSecurityException {
                 return mockInterface.mockComputeSha1Signature();
             }
         };
@@ -217,41 +216,6 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
 
             String logMsg = CWWKS5409E_ERROR_CREATING_SIGNATURE;
             assertTrue("Did not find [" + logMsg + "] message in messages.log", outputMgr.checkForMessages(logMsg));
-
-            checkForSecretsInTrace();
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Method(s) under test:
-     * <ul>
-     * <li>{@link TwitterEndpointServices#computeSignature(String, String, Map)}</li>
-     * </ul>
-     * Tests results when underlying {@link TwitterEndpointServices#computeSha1Signature(String, String)} method throws an
-     * UnsupportedEncodingException.
-     */
-    @Test
-    public void testComputeSignature_UnsupportedEncodingException() {
-        TwitterEndpointServices mockTwitter = new TwitterEndpointServices() {
-            @Override
-            protected String computeSha1Signature(String baseString, String keyString) throws GeneralSecurityException, UnsupportedEncodingException {
-                return mockInterface.mockComputeSha1Signature();
-            }
-        };
-
-        try {
-            mockery.checking(new Expectations() {
-                {
-                    one(mockInterface).mockComputeSha1Signature();
-                    will(throwException(new UnsupportedEncodingException()));
-                }
-            });
-
-            HashMap<String, String> params = populateSignatureParameters();
-            assertEquals("", mockTwitter.computeSignature(POST, BASE_URL, params));
 
             checkForSecretsInTrace();
 
@@ -300,7 +264,7 @@ public class TwitterEndpointServicesTest extends CommonTestClass {
      * {@link https://dev.twitter.com/oauth/overview/creating-signatures}.
      */
     @Test
-    public void testCreateSignatureBaseString() throws UnsupportedEncodingException {
+    public void testCreateSignatureBaseString() {
 
         assertEquals("POST&&", twitter.createSignatureBaseString(null, null, null));
         assertEquals("GET&&", twitter.createSignatureBaseString("get", null, null));

@@ -30,11 +30,11 @@ import org.testcontainers.utility.ImageNameSubstitutor;
 
 public class CacheFiles {
 	
-	/**
-	 * Always maintain generated files with a new line separator to avoid git 
-	 * from complaining about carriage returns on windows. 
-	 */
-	private static final String LINE_SEPERATOR = "\n";
+    /**
+     * Always maintain generated files with a new line separator to avoid git 
+     * from complaining about carriage returns on windows. 
+     */
+    private static final String LINE_SEPERATOR = "\n";
     
     public static void main(String[] args) {
         long start = System.currentTimeMillis();
@@ -117,12 +117,13 @@ public class CacheFiles {
             }
         }
         
-        // Investigate all Dockerfiles and add the BASE_NAME to externals list
+        // Investigate all Dockerfiles and add the BASE_NAME and IMAGE_NAME to externals list
         Path commonPath = Paths.get(projectPath, "resources", "openliberty", "testcontainers");
         Dockerfile.findDockerfiles(commonPath).stream()
             .map(location -> new Dockerfile(location))
             .forEach(dockerfile -> {
                 externals.add(dockerfile.baseImageName.asCanonicalNameString());
+                externals.add(dockerfile.imageName.asCanonicalNameString());
             });
         
         String header = "# NOTICE: This file was automatically updated to reflect changes made to test projects." + LINE_SEPERATOR +  

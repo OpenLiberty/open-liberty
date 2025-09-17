@@ -1,25 +1,35 @@
+/*******************************************************************************
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.microprofile.openapi.validation.fat;
 
-import static org.junit.Assert.assertNotNull;
+import static com.ibm.ws.microprofile.openapi.validation.fat.ValidationSuite.server;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertThat;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.ibm.ws.microprofile.openapi.fat.FATSuite;
+import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.MicroProfileActions;
-import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.topology.utils.HttpRequest;
 
 /**
  * A class to test the OpenAPI validator. This class covers the scenario where the info and paths fields is missing from the OpenAPI model.
@@ -28,47 +38,39 @@ import componenttest.topology.utils.HttpUtils;
 @RunWith(FATRunner.class)
 public class OpenAPIValidationTestThree {
 
-    private static final String SERVER_NAME = "validationServerThree";
-
-    @Server(SERVER_NAME)
-    public static LibertyServer server;
-
-    @ClassRule
-    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
-
-    private static final String OPENAPI_VALIDATION_YAML = "Validation";
-
     @BeforeClass
     public static void setUpTest() throws Exception {
-        HttpUtils.trustAllCertificates();
-
-        server.startServer("OpenAPIValidationTestThree.log", true);
-
-        server.validateAppLoaded(OPENAPI_VALIDATION_YAML);
-
-        assertNotNull("The validation server did not start", server.waitForStringInLog("CWWKE0001I:.*"));
-        // wait for endpoint to become available
-        assertNotNull("Web application is not available at /Validation/",
-            server.waitForStringInLog("CWWKT0016I.*/Validation/"));
-        // wait for server is ready to run a smarter planet message
-        assertNotNull("CWWKF0011I.* not received on relationServer",
-            server.waitForStringInLog("CWWKF0011I.*"));
+        // set mark
+        ValidationSuite.server.setMarkToEndOfLog();
+        // deploy app and wait for start
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "validationThree.war")
+            .addAsManifestResource(OpenAPIValidationTestThree.class.getPackage(),
+                "validationTestThree.yaml",
+                "openapi.yaml");
+        ValidationSuite.deployApp(war);
+        // Log OpenAPI doc
+        String openApiDoc = new HttpRequest(server, "/openapi").run(String.class);
+        Log.info(OpenAPIValidationTestThree.class, "setUpTest", "OpenAPI doc:\n" + openApiDoc);
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer("CWWKO1650E");
+    public static void tearDownTest() throws Exception {
+        ValidationSuite.removeApp("validationThree.war");
     }
 
     @Test
     @SkipForRepeat({
         MicroProfileActions.MP70_EE10_ID, // paths field added automatically since SmallRye 4
         MicroProfileActions.MP70_EE11_ID,
+        MicroProfileActions.MP71_EE10_ID,
+        MicroProfileActions.MP71_EE11_ID,
     })
     public void testPaths() throws Exception {
-        assertNotNull("The OpenAPI Validator should have been triggered by the missing 'paths' field",
-            server.waitForStringInLog(
-                "Message: Required \"paths\" field is missing or is set to an invalid value, Location: #"));
+        assertThat("The OpenAPI Validator should have been triggered by the missing 'paths' field",
+            server.findStringsInLogsUsingMark(
+                "Message: Required \"paths\" field is missing or is set to an invalid value, Location: #",
+                server.getDefaultLogFile()),
+            not(empty()));
     }
 
     @Test
@@ -79,10 +81,10 @@ public class OpenAPIValidationTestThree {
         MicroProfileActions.MP61_ID,
         MicroProfileActions.MP70_EE10_ID,
         MicroProfileActions.MP70_EE11_ID,
+        MicroProfileActions.MP71_EE10_ID,
+        MicroProfileActions.MP71_EE11_ID,
     })
     public void testBlankInfo() throws Exception {
-        OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
         String openapiDoc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapiDoc);
         OpenAPITestUtil.checkInfo(openapiNode, "Deployed APIs", "1.0.0");
@@ -93,8 +95,6 @@ public class OpenAPIValidationTestThree {
         MicroProfileActions.MP22_ID, MicroProfileActions.MP33_ID
     })
     public void testBlankInfo20() throws Exception {
-        OpenAPITestUtil.waitForApplicationProcessorProcessedEvent(server, OPENAPI_VALIDATION_YAML);
-        OpenAPITestUtil.waitForApplicationProcessorAddedEvent(server, OPENAPI_VALIDATION_YAML);
         String openapiDoc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapiDoc);
         OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");

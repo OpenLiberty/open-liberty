@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -143,6 +143,9 @@ public class CommonBindTest {
             config.setTimeout(Integer.MAX_VALUE);
             conn = new KdcConnection(config);
         }
+
+        LDAP_PORT = FATSuite.ldap.getMappedPort(389);
+        Log.info(c, "setUp", "Setting LDAP_PORT to: " + LDAP_PORT);
 
         //createTicketCacheFile(); //ApacheDSandKDC.getDefaultTicketCacheFile();
         /// get ticket cache file from container for user17
@@ -573,8 +576,10 @@ public class CommonBindTest {
          * invalid krb.config file and couldn't find a realm name for the principal.
          */
         boolean foundBadPrincipalName = !server.findStringsInLogsAndTraceUsingMark("CWIML4512E").isEmpty();
+        boolean foundKerberosLoginFailed = !server.findStringsInLogsAndTraceUsingMark(failMessage).isEmpty();
         boolean foundRealmNotFound = !server.findStringsInLogsAndTraceUsingMark("Cannot locate default realm").isEmpty(); // java message, could change in future
-        assertTrue("Expected to find Kerberos bind failure: Either `CWIML4512E` or `Cannot locate default realm`", foundBadPrincipalName || foundRealmNotFound);
+        assertTrue("Expected to find Kerberos bind failure: Either `" + failMessage + "`, `CWIML4512E` or `Cannot locate default realm`",
+                   foundKerberosLoginFailed || foundBadPrincipalName || foundRealmNotFound);
 
         newServer.getKerberos().configFile = configFile; // reset to valid config file so the realm name is found
         ldap.setKrb5Principal("badPrincipalName2@" + DOMAIN);

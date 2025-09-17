@@ -981,14 +981,6 @@ assemble.dependsOn TechnologySamples_EAR
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
 autoFVT.doLast {
 
 
@@ -1194,9 +1186,4 @@ autoFVT.doLast {
       from new File(project.buildDir, 'test-application/BasicCalculator.ear')
       into new File(autoFvtDir, 'publish/servers/SSLnonIBMCipherTest/apps')
    }  
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
 }

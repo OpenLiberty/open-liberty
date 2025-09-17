@@ -1,0 +1,20 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication location="testParentLastLibraryFeature.war">
+        <classloader commonLibraryRef="testCommonLib" delegation="parentLast"/>
+    </webApplication>
+
+    <library id="testCommonLib">
+       <path name="libs/testLib6.jar"/>
+    </library>
+
+    <javaPermission codeBase="${server.config.dir}/apps/testParentLastLibraryFeature.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+</server>
+

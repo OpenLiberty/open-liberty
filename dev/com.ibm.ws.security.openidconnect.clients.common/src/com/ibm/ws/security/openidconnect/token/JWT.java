@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.token;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.SignatureException;
@@ -350,7 +350,7 @@ public class JWT {
 
     }
 
-    private String serializeAndSign(WSJsonToken token) throws InvalidKeyException, UnsupportedEncodingException, JoseException {
+    private String serializeAndSign(WSJsonToken token) throws InvalidKeyException, JoseException {
         JsonWebSignature jws = new JsonWebSignature();
         jws.setPayload(JsonTokenUtil.toJson(token.getPayload()));
         String alg = token.getHeader().get(ALGORITHM_HEADER).getAsString();
@@ -717,19 +717,18 @@ public class JWT {
      *
      * @param alg
      * @return
-     * @throws UnsupportedEncodingException
      * @throws InvalidKeyException
      */
     //@FFDCIgnore({InvalidKeyException.class})
     @Sensitive
-    private Key getKey(String alg) throws UnsupportedEncodingException, InvalidKeyException {
+    private Key getKey(String alg) throws InvalidKeyException {
         Key keyUsed = null;
         if ("RS256".equals(alg)) {
             keyUsed = (Key) getKey();
         } else if ("HS256".equals(alg)) {
             byte[] keyBytes = null;
             if (getKey() instanceof String) {
-                keyBytes = ((String) getKey()).getBytes("UTF-8"); //TODO
+                keyBytes = ((String) getKey()).getBytes(StandardCharsets.UTF_8); //TODO
             } else if (getKey() instanceof byte[]) {
                 keyBytes = (byte[]) getKey();
             } else {

@@ -18,6 +18,10 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
 import static io.opentelemetry.semconv.SemanticAttributes.URL_FULL;
 
+// In MpTelemetry-2.1 SemanticAttributes moved to their relative classes
+import io.opentelemetry.semconv.HttpAttributes;
+import io.opentelemetry.semconv.UrlAttributes;
+
 import io.opentracing.tag.Tags;
 
 import static io.opentelemetry.semconv.resource.attributes.ResourceAttributes.TELEMETRY_SDK_NAME;
@@ -149,15 +153,24 @@ public class CrossFeatureZipkinTest {
         for (ZipkinSpan span : spans) {
             Log.info(c, "testCrossFeatureFromTelemetry", span.toString());
         }
-        //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
-        if (TelemetryActions.mpTelemetry20IsActive()){
+        //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 and 2.1 use URL_FULL
+        if (TelemetryActions.mpTelemetry21IsActive()){
+            ZipkinSpan server1 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/1"));
+            ZipkinSpan client2 = findOneFrom(spans, span().withKind(SpanKind.CLIENT)
+                                                        .withTag(UrlAttributes.URL_FULL.getKey(), getUrl(opentracingServer) + "/2"));
+            ZipkinSpan server2 = findOneFrom(spans, span().withKind(SpanKind.SERVER)
+                                                        .withTag(Tags.HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
+            ZipkinSpan client3 = findOneFrom(spans, hasTag(Tags.HTTP_URL.getKey(), getUrl(telemetryServer) + "/3"));
+            ZipkinSpan server3 = findOneFrom(spans, hasTag(HttpAttributes.HTTP_ROUTE.getKey(), "/crossFeature/3"));
+
+            assertThat(server1, hasTag("otel.scope.name", "io.openliberty.microprofile.telemetry"));
+            assertThat(client2, hasTag("otel.scope.name", "Client filter"));
+        } else if (TelemetryActions.mpTelemetry20IsActive()){
             ZipkinSpan server1 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/1"));
             ZipkinSpan client2 = findOneFrom(spans, span().withKind(SpanKind.CLIENT)
                                                         .withTag(URL_FULL.getKey(), getUrl(opentracingServer) + "/2"));
             ZipkinSpan server2 = findOneFrom(spans, span().withKind(SpanKind.SERVER)
                                                         .withTag(Tags.HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
-
-            System.out.println("Server2 from MPTel20 " + server2);
             ZipkinSpan client3 = findOneFrom(spans, hasTag(Tags.HTTP_URL.getKey(), getUrl(telemetryServer) + "/3"));
             ZipkinSpan server3 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/3"));
 
@@ -169,7 +182,6 @@ public class CrossFeatureZipkinTest {
                                                         .withTag(SemanticAttributes.HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
             ZipkinSpan server2 = findOneFrom(spans, span().withKind(SpanKind.SERVER)
                                                         .withTag(SemanticAttributes.HTTP_URL.getKey(), getUrl(opentracingServer) + "/2"));
-            System.out.println("Server2 from MPTel10 or 11" + server2);
             ZipkinSpan client3 = findOneFrom(spans, hasTag(SemanticAttributes.HTTP_URL.getKey(), getUrl(telemetryServer) + "/3"));
             ZipkinSpan server3 = findOneFrom(spans, hasTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/crossFeature/3"));
 
@@ -196,8 +208,19 @@ public class CrossFeatureZipkinTest {
         for (ZipkinSpan span : spans) {
             Log.info(c, "testCrossFeatureFromOpenTracing", span.toString());
         }
-        //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 uses URL_FULL
-        if (TelemetryActions.mpTelemetry20IsActive()) {
+        //OpenTracing, MpTelemetry-1.0 and MpTelemetry-1.1 use HTTP_URL while MpTelemetry 2.0 and 2.1 use URL_FULL
+        if (TelemetryActions.mpTelemetry21IsActive()) {
+            ZipkinSpan server1 = findOneFrom(spans, span().withTag(Tags.HTTP_URL.getKey(), getUrl(opentracingServer) + "/1"));
+            ZipkinSpan client2 = findOneFrom(spans, span().withTag(Tags.HTTP_URL.getKey(), getUrl(telemetryServer) + "/2"));
+            ZipkinSpan server2 = findOneFrom(spans, hasTag(HttpAttributes.HTTP_ROUTE.getKey(), "/crossFeature/2"));
+            ZipkinSpan client3 = findOneFrom(spans, span().withKind(SpanKind.CLIENT)
+                                                        .withTag(UrlAttributes.URL_FULL.getKey(), getUrl(opentracingServer) + "/3"));
+            ZipkinSpan server3 = findOneFrom(spans, span().withKind(SpanKind.SERVER)
+                                                        .withTag(Tags.HTTP_URL.getKey(), getUrl(opentracingServer) + "/3"));
+
+            assertThat(server2, hasTag("otel.scope.name", "io.openliberty.microprofile.telemetry"));
+            assertThat(client3, hasTag("otel.scope.name", "Client filter"));
+        } else if (TelemetryActions.mpTelemetry20IsActive()) {
             ZipkinSpan server1 = findOneFrom(spans, span().withTag(Tags.HTTP_URL.getKey(), getUrl(opentracingServer) + "/1"));
             ZipkinSpan client2 = findOneFrom(spans, span().withTag(Tags.HTTP_URL.getKey(), getUrl(telemetryServer) + "/2"));
             ZipkinSpan server2 = findOneFrom(spans, hasTag(HTTP_ROUTE.getKey(), "/crossFeature/2"));

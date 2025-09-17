@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Represents an LTPA Public Key based on RSA/SHA-1. Its based on a 128 byte RSA
- * key. With FIPS enabled, it is based on RSA/SHA-256 (256 byte RSA key).
+ * key. With FIPS enabled, it is based on RSA/SHA-512 (256 byte RSA key).
  */
 public final class LTPAPublicKey implements PublicKey {
 
@@ -68,7 +68,7 @@ public final class LTPAPublicKey implements PublicKey {
 	/** {@inheritDoc} */
 	@Override
 	public final String getAlgorithm() {
-		return (fipsEnabled ? "RSA/SHA-256" : "RSA/SHA-1");
+		return (fipsEnabled ? CryptoUtils.RSA_SHA_512 : CryptoUtils.RSA_SHA_1);
 	}
 
 	/** {@inheritDoc} */

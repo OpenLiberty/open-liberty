@@ -27,7 +27,7 @@
 	<openidConnectClient
 		id="client_minimumConfig"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		inboundPropagation="required"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}/token"
@@ -50,7 +50,7 @@
 	<openidConnectClient
 		id="client_minimumConfig_jwt"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		inboundPropagation="required"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}/token"
@@ -68,7 +68,7 @@
 	<openidConnectClient
 		id="client_minimumConfig_jwt_jwk"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		inboundPropagation="required"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}/authorize"
 		tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/${providerSample}/token"

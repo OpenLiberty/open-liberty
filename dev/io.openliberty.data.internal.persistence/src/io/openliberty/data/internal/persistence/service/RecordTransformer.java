@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -310,15 +310,16 @@ public class RecordTransformer {
 
         byte[] classBytes = cw.toByteArray();
 
-        if (tc.isWarningEnabled()) {
-            StringWriter sw = new StringWriter();
-            CheckClassAdapter.verify(new ClassReader(classBytes), false, new PrintWriter(sw));
-            String result = sw.toString();
+        StringWriter sw = new StringWriter();
+        CheckClassAdapter.verify(new ClassReader(classBytes), false, new PrintWriter(sw));
+        String result = sw.toString();
 
-            if (!result.isBlank()) {
-                Tr.debug(tc, "Error found when verifying record entity class bytes", result); //TODO change to warning and NLS
-            }
-        }
+        if (!result.isBlank())
+            Tr.warning(tc, "CWWKD1112.record.entity.verify.err",
+                       recordClass.getName(),
+                       getClassNames(repositoryInterfaces),
+                       jeeName,
+                       result);
 
         return classBytes;
     }

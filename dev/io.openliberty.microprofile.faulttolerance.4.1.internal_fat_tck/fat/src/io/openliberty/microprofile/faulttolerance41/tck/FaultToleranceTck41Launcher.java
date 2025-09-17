@@ -50,7 +50,7 @@ public class FaultToleranceTck41Launcher {
     private static final boolean FAT_TEST_LOCALRUN = Boolean.getBoolean("fat.test.localrun");
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeatIf(SERVER_NAME, TCKUtilities::areAllFeaturesPresent, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
+    public static RepeatTests r = MicroProfileActions.repeatIf(SERVER_NAME, TCKUtilities::areAllFeaturesPresent, MicroProfileActions.MP71_EE10, MicroProfileActions.MP71_EE11, MicroProfileActions.MP70_EE10, MicroProfileActions.MP70_EE11);
 
     @Server(SERVER_NAME)
     public static LibertyServer server;

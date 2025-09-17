@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -438,8 +438,9 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
         // The query logger has its own reference to module data.
 
         TargetCacheImpl_DataApp appData = getAnnoCache().getAppForcing( getAppName() );
+        TargetCacheImpl_DataMod modData = appData.getModForcing(getModFullName(), getIsLightweight() );
 
-        putQueriesData(appData);
+        putQueriesData(appData, modData);
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ {0} ]", getHashName());
@@ -732,7 +733,7 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
 
         putInternalResults(useOverallScanner);
 
-        putQueriesData(appData);
+        putQueriesData(appData, modData);
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "RETURN [ {0} ]", getHashName());
@@ -2510,14 +2511,15 @@ public class AnnotationTargetsImpl_Targets implements AnnotationTargets_Targets 
      * {@link TargetCache_Options#getLogQueries()}.
      *
      * @param appData Application data for which to create query data.
+     * @param modData Module data for which to create query data.
      */
-    protected void putQueriesData(TargetCacheImpl_DataApp appData) {
+    protected void putQueriesData(TargetCacheImpl_DataApp appData, TargetCacheImpl_DataMod modData) {
         if ( !appData.shouldWrite("query data") ) {
             return;
         } else if ( !appData.getLogQueries() ) {
             return;
         } else {
-            this.queriesData = appData.getApps().getQueriesForcing( getAppName(), getModFullName() );
+            this.queriesData = modData.getQueriesForcing();
         }
         
     }

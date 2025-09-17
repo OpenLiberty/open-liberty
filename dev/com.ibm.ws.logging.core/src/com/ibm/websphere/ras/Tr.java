@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.logging.ResourceBundleSupport;
 import com.ibm.ws.logging.internal.TraceNLSResolver;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.TraceSpecification.TraceElement;
@@ -875,7 +876,7 @@ public class Tr {
         ResourceBundle rb;
         String msg;
         try {
-            rb = TraceNLSResolver.getInstance().getResourceBundle(tc.getTraceClass(), tc.getResourceBundleName(), locales);
+            rb = TraceNLSResolver.getInstance().getResourceBundle(ResourceBundleSupport.getTraceClassForResourceBundle(tc), tc.getResourceBundleName(), locales);
             msg = rb.getString(msgKey);
         } catch (Exception ex) {
             // no FFDC required

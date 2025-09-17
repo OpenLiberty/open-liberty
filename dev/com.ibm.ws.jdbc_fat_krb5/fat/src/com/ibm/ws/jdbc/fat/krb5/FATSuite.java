@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,7 +21,7 @@ import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
-import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
+import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -36,46 +36,42 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 })
 public class FATSuite extends TestContainerSuite {
 
-    public static Network network;
-    public static KerberosContainer krb5;
-
     static {
-        // Needed for IBM JDK 8 support.
+        Log.info(FATSuite.class, "<init>", "Setting overrideDefaultTLS to true, needed for IBM JDK 8 support.");
         java.lang.System.setProperty("com.ibm.jsse2.overrideDefaultTLS", "true");
     }
 
-    @BeforeClass
-    public static void startKerberos() throws Exception {
-        if (!KerberosPlatformRule.shouldRun(null)) {
-            // bucket will not run any tests, skip
-            return;
-        }
+    public static Network network;
+    public static KerberosContainer krb5;
 
-        network = Network.newNetwork();
-        krb5 = new KerberosContainer(network);
-        krb5.start();
+    @BeforeClass
+    public static void setup() throws Exception {
+        // Manually apply rule so that the AlwaysPassesTest runs since having zero test results is considered an error
+        if (KerberosPlatformRule.shouldRun(null)) {
+            network = Network.newNetwork();
+            krb5 = new KerberosContainer(network);
+            krb5.start();
+        }
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
-        if (!KerberosPlatformRule.shouldRun(null)) {
-            // bucket will not run any tests, skip
-            return;
+    public static void teardown() throws Exception {
+        if (krb5 == null && network == null) {
+            return; // Nothing to cleanup
         }
 
         Exception firstError = null;
 
         try {
             krb5.stop();
-            network.close();
         } catch (Exception e) {
-            if (firstError == null)
-                firstError = e;
-            Log.error(FATSuite.class, "tearDown", e);
+            firstError = e;
+            Log.error(FATSuite.class, "teardown", e);
+        } finally {
+            network.close();
         }
 
         if (firstError != null)
             throw firstError;
     }
-
 }

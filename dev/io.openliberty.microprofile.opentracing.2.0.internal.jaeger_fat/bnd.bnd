@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2022 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -38,7 +38,6 @@ tested.features: mpOpenTracing-2.0
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.ws.cdi.interfaces;version=latest,\
-    com.ibm.ws.componenttest,\
     io.openliberty.com.google.gson;version=latest,\
     io.opentracing:opentracing-util;version=0.33.0,\
     io.opentracing:opentracing-noop;version=0.33.0,\
@@ -47,5 +46,4 @@ tested.features: mpOpenTracing-2.0
     io.jaegertracing:jaeger-client;version=1.6.0,\
     io.jaegertracing:jaeger-tracerresolver;version=1.6.0,\
     org.apache.thrift:libthrift;version=0.14.1,\
-    com.ibm.ws.org.slf4j.simple;version=latest,\
-    com.ibm.ws.org.slf4j.api;version=latest
+    com.ibm.ws.org.slf4j.simple;version=latest

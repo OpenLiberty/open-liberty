@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2023 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -21,7 +21,8 @@ src: \
 fat.project: true
 
 tested.features: jaxrs-2.0, el-3.0, restfulwsclient-3.0, restfulws-3.0, appsecurity-4.0, cdi-2.0, expressionlanguage-4.0, pages-3.0, \
-                 jsonp-1.1, jaxrsclient-2.1, restfulws-3.1, appsecurity-5.0, pages-3.1, jaspic-1.1, appauthentication-2.0, appauthentication-3.0, xmlbinding-3.0, checkpoint
+                 jsonp-1.1, jaxrsclient-2.1, restfulws-3.1, appsecurity-5.0, pages-3.1, jaspic-1.1, appauthentication-2.0, appauthentication-3.0, xmlbinding-3.0, checkpoint, \
+                 expressionLanguage-6.0, appsecurity-6.0, appauthentication-3.1, cdi-4.1, pages-4.0, servlet-6.1, noship-1.0
 
 -buildpath: \
     com.ibm.json4j;version=latest,\
@@ -49,7 +50,6 @@ tested.features: jaxrs-2.0, el-3.0, restfulwsclient-3.0, restfulws-3.0, appsecur
     com.ibm.ws.net.oauth.jsontoken.1.1-r42;version=latest,\
     com.ibm.ws.org.openid4java.0.9.7;version=latest,\
     com.ibm.ws.security.fat.common.social;version=latest,\
-    com.ibm.ws.security.oauth.oidc_fat.common;version=latest,\
     com.ibm.ws.security.openidconnect.clients.common;version=latest,\
     com.ibm.ws.org.apache.directory.server;version=latest,\
     com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
@@ -61,7 +61,9 @@ tested.features: jaxrs-2.0, el-3.0, restfulwsclient-3.0, restfulws-3.0, appsecur
     com.ibm.ws.security.authorization.jacc.testprovider;version=latest,\
     com.ibm.ws.security.jaspic.1.1;version=latest,\
     com.ibm.ws.security.jaspic.test;version=latest,\
-    com.ibm.ws.security.token;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
     org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

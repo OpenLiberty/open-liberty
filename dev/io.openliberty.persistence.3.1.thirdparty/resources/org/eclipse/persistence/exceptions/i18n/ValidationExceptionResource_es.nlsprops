@@ -633,7 +633,7 @@
 
 7356=El procedimiento: [{1}] no puede ejecutarse porque {0} no da soporte actualmente a varios par\u00e1metros de salida
 
-7357=El "[{0} ]" URL para "[{1} ]" el recurso no pertenece a una ra\u00edz de persistencia v\u00e1lida, seg\u00fan lo definido por la especificaci\u00f3n de persistencia de Jakarta
+7357=La direcci\u00f3n "[ {0} ]" URL para el recurso "[ {1} ]" no pertenece a una ra\u00edz de persistencia v\u00e1lida, tal y como se define en la especificaci\u00f3n Jakarta Persistence.
 
 7358=Se ha proporcionado un nombre de servicio ASM incorrecto.
 

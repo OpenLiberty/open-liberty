@@ -12,8 +12,12 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 def grpcVersion='1.57.2'
 
 configurations {
+  semconv132
+  semconv123alpha
+  semconv119alpha
   telemetryAgent
   telemetryAgent129
+  telemetryAgent214
   telemetryAgent250
   jaegerClient
   zipkinTracer
@@ -30,8 +34,6 @@ dependencies {
   requiredLibs 'com.google.protobuf:protobuf-java:3.19.2'
   requiredLibs 'com.google.protobuf:protobuf-java-util:3.19.2'
   requiredLibs 'io.opentelemetry:opentelemetry-api:1.19.0'
-  requiredLibs 'io.opentelemetry:opentelemetry-semconv:1.19.0-alpha'
-  requiredLibs 'io.opentelemetry.semconv:opentelemetry-semconv:1.23.1-alpha'
   requiredLibs 'io.perfmark:perfmark-api:0.23.0'
   requiredLibs 'com.google.guava:failureaccess:1.0.1'
   requiredLibs project(':com.ibm.ws.com.google.guava')
@@ -39,12 +41,18 @@ dependencies {
   requiredLibs project(':com.ibm.ws.io.reactivex.rxjava.2.2')
   requiredLibs project(':com.ibm.websphere.org.reactivestreams.reactive-streams.1.0')
   requiredLibs project(':io.openliberty.microprofile.telemetry.internal_fat.common')
-  
+
+  semconv132 'io.opentelemetry.semconv:opentelemetry-semconv:1.32.0'
+  semconv123alpha 'io.opentelemetry.semconv:opentelemetry-semconv:1.23.1-alpha'
+  semconv119alpha 'io.opentelemetry:opentelemetry-semconv:1.19.0-alpha'
+
   telemetryAgent 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.19.0'
   
   telemetryAgent129 'io.opentelemetry.javaagent:opentelemetry-javaagent:1.29.0'
   
   telemetryAgent250 'io.opentelemetry.javaagent:opentelemetry-javaagent:2.5.0'
+
+  telemetryAgent214 'io.opentelemetry.javaagent:opentelemetry-javaagent:2.14.0'
   
   //Needed for opentracingZipkin-0.33 user feature
   zipkinTracer 'net.wasdev.wlp.tracer:liberty-opentracing-zipkintracer:3.0:sample@zip'
@@ -66,6 +74,21 @@ dependencies {
   jaegerClient 'org.jetbrains.kotlin:kotlin-stdlib-common:1.6.20'
 }
 
+task addSemconv132(type: Copy){
+  from configurations.semconv132
+  into new File(autoFvtDir, 'lib')
+}
+
+task addSemconv123alpha(type: Copy){
+  from configurations.semconv123alpha
+  into new File(autoFvtDir, 'lib')
+}
+
+task addSemconv119alpha(type: Copy){
+  from configurations.semconv119alpha
+  into new File(autoFvtDir, 'lib')
+}
+
 task addAgent(type: Copy) {
   from configurations.telemetryAgent
   into new File(autoFvtDir, 'publish/files/agent-119')
@@ -78,10 +101,15 @@ task addAgent129(type: Copy) {
   rename { 'opentelemetry-javaagent.jar' }
 }
 
-
 task addAgent250(type: Copy) {
   from configurations.telemetryAgent250
   into new File(autoFvtDir, 'publish/files/agent-250')
+  rename { 'opentelemetry-javaagent.jar' }
+}
+
+task addAgent214(type: Copy) {
+  from configurations.telemetryAgent214
+  into new File(autoFvtDir, 'publish/files/agent-214')
   rename { 'opentelemetry-javaagent.jar' }
 }
 
@@ -110,5 +138,9 @@ addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn addAgent
 addRequiredLibraries.dependsOn addAgent129
 addRequiredLibraries.dependsOn addAgent250
+addRequiredLibraries.dependsOn addAgent214
+addRequiredLibraries.dependsOn addSemconv132
+addRequiredLibraries.dependsOn addSemconv123alpha
+addRequiredLibraries.dependsOn addSemconv119alpha
 addRequiredLibraries.dependsOn addJaegerClientLibs
 addRequiredLibraries.dependsOn copyZipkinTracer

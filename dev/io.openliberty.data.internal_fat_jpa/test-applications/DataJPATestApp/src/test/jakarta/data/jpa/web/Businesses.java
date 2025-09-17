@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,24 +71,22 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     // embeddable 3 levels deep where @Column resolves name conflict
     Business[] findByLocation_Address_Street_NameIgnoreCaseEndsWithOrderByLocation_Address_Street_DirectionIgnoreCaseAscNameAsc(String streetName);
 
-    List<Business> findByLocationLongitudeAbsoluteValueBetween(float min, float max);
-
     // embeddable as result type
     @OrderBy("location.address.street")
     @OrderBy("location.address.houseNum")
-    Stream<Location> findByLocationAddressZip(int zipCode);
+    Stream<Location> findByLocationAddressZip(ZipCode zipCode);
 
     // embeddable 2 levels deep
     @OrderBy(value = "location.address.city", descending = true)
     @OrderBy("location.address.zip")
     @OrderBy("location.address.houseNum")
     @OrderBy("id")
-    CursoredPage<Business> findByLocationAddressZipIn(Iterable<Integer> zipCodes, PageRequest pagination);
+    CursoredPage<Business> findByLocationAddressZipIn(Iterable<ZipCode> zipCodes, PageRequest pagination);
 
     // embeddable 3 levels deep as result type
     @OrderBy("location.address.street")
     @OrderBy("location.address.houseNum")
-    Stream<Street> findByLocationAddressZipNotAndLocationAddressCity(int excludeZipCode, String city);
+    Stream<Street> findByLocationAddressZipNotAndLocationAddressCity(ZipCode excludeZipCode, String city);
 
     @OrderBy("id")
     Business findFirstByName(String name);
@@ -107,6 +105,9 @@ public interface Businesses extends BasicRepository<Business, Integer> {
                         String streetName,
                         String streetDir,
                         String businessName);
+
+    @Query("WHERE ABS(location.longitude) BETWEEN ?1 AND ?2")
+    List<Business> longitudeAbsoluteValueBetween(float min, float max);
 
     @Find
     @OrderBy("name") // Business.name, not Business.Location.Address.Street.name

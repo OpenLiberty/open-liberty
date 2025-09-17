@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=A jelsz\u00f3 nem ker\u00
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt ellen\u0151rizze a kiszolg\u00e1l\u00f3napl\u00f3t, \u00e9s az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s haszn\u00e1lata eset\u00e9n az egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1si napl\u00f3kat is vizsg\u00e1lja meg.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: A jelsz\u00f3 nem ker\u00fclt visszafejt\u00e9sre, mivel visszafejt\u00e9si hib\u00e1r\u00f3l \u00e9rkezett jelent\u00e9s.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=A titkos\u00edtott jelsz\u00f3 nem ker\u00fclt megfelel\u0151en k\u00f3dol\u00e1sra.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a titkos\u00edtott jelsz\u00f3 nincs csonkolva, illetve Base64 k\u00f3dol\u00e1s felhaszn\u00e1l\u00e1s\u00e1val k\u00f3dolva.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a titkos\u00edtott jelsz\u00f3 nem csonk\u00edtott \u00e9s a Base64 k\u00f3dol\u00e1ssal van k\u00f3dolva.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 a titkos\u00edtott jelszavak nem haszn\u00e1lhat\u00f3k, ha a FIPS 140-3 enged\u00e9lyezve van. A jelsz\u00f3 \u00fajragener\u00e1l\u00e1sa a AES-256 c\u00edmen a securityUtility paranccsal.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=A FIPS 140-3 enged\u00e9lyezve van, \u00e9s nem t\u00e1mogatja a AES-128. A securityUtility paranccsal titkos\u00edthatja a jelsz\u00f3t a AES-256 seg\u00edts\u00e9g\u00e9vel.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a jelsz\u00f3 a AES-256 c\u00edmmel van titkos\u00edtva.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: Az AES jelsz\u00f3 titkos\u00edt\u00e1sa nem siker\u00fclt. Ellen\u0151rizze a java.security be\u00e1ll\u00edt\u00e1sait, \u00e9s adja hozz\u00e1 a hi\u00e1nyz\u00f3 algoritmust.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=Hi\u00e1nyzik egy titkos\u00edt\u00e1si algoritmus a java.security f\u00e1jlb\u00f3l.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az algoritmus hozz\u00e1 lett adva a java.security f\u00e1jlhoz.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: Az AES jelsz\u00f3 visszafejt\u00e9se sikertelen. Ellen\u0151rizze a java.security be\u00e1ll\u00edt\u00e1sait, \u00e9s adja hozz\u00e1 a hi\u00e1nyz\u00f3 algoritmust.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=Hi\u00e1nyzik egy titkos\u00edt\u00e1si algoritmus a java.security f\u00e1jlb\u00f3l.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az algoritmus hozz\u00e1 lett adva a java.security f\u00e1jlhoz.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: A SHA1 hash-k\u00f3dolt jelszavak nem haszn\u00e1lhat\u00f3k, ha a FIPS 140-3 enged\u00e9lyezve van. A jelsz\u00f3 kivonat\u00e1t a securityUtility paranccsal gener\u00e1lja \u00fajra.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=A FIPS 140-3 enged\u00e9lyezve van, \u00e9s nem t\u00e1mogatja a SHA1. A securityUtility encode paranccsal \u00faj SHA512 jelsz\u00f3 hash-t hozhat l\u00e9tre.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a jelsz\u00f3 kivonat\u00e1t a SHA512 seg\u00edts\u00e9g\u00e9vel gener\u00e1lt\u00e1k.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban t\u00e1rolt egy vagy t\u00f6bb {0} jelsz\u00f3\u00e9rt\u00e9ket egy r\u00e9gebbi algoritmussal gener\u00e1lt\u00e1k {1}. A securityUtility encode paranccsal a {0} jelszavakat a {2} leg\u00fajabb algoritmus\u00e1val gener\u00e1lhatja \u00fajra.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty mostant\u00f3l er\u0151sebb algoritmusokat haszn\u00e1l az \u00fajonnan gener\u00e1lt {aes} \u00e9s {hash} jelszavakhoz.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a {aes} \u00e9s a {hash} jelsz\u00f3\u00e9rt\u00e9kek a Liberty leg\u00fajabb verzi\u00f3j\u00e1val lettek gener\u00e1lva.
 
 
 # ---------------- This is an exception message ------------
@@ -57,4 +72,4 @@ PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=T\u00f6bb CustomPasswordEncryption megv
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Hiba t\u00f6rt\u00e9nt a kiterjeszt\u00e9s le\u00edr\u00f3f\u00e1jl feldolgoz\u00e1sakor: {0}. A f\u00e1jl figyelmen k\u00edv\u00fcl maradt. Az egy\u00e9ni titkos\u00edt\u00e1s nem \u00e9rhet\u0151 el. A hiba\u00fczenet: {1}.
 PASSWORDUTIL_ERROR_MISSING_HEADER=A k\u00f6telez\u0151 {0} fejl\u00e9c nem tal\u00e1lhat\u00f3 a(z) {1} kiterjeszt\u00e9s le\u00edr\u00f3f\u00e1jlban. Az egy\u00e9ni titkos\u00edt\u00e1s nem \u00e9rhet\u0151 el.
 PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=A(z) {0} kiterjeszt\u00e9s le\u00edr\u00f3f\u00e1jlnak megfelel\u0151 szolg\u00e1ltat\u00e1s le\u00edr\u00f3f\u00e1jl nem tal\u00e1lhat\u00f3. Az egy\u00e9ni titkos\u00edt\u00e1s nem \u00e9rhet\u0151 el.
-PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=A kivonat algoritmus nem t\u00e1mogatja a visszafejt\u00e9si m\u0171veletet. 
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=A kivonat algoritmus nem t\u00e1mogatja a visszafejt\u00e9si m\u0171veletet.

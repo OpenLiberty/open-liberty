@@ -17,7 +17,7 @@
          scope="openid profile email"
          isClientSideRedirectSupported="false"
          clientId="rp"
-         clientSecret="secret"
+         clientSecret="secret1234"
          authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP/authorize"
          tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP/token"
          jwkEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP/jwk"

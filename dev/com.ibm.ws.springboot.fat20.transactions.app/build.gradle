@@ -1,0 +1,42 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ ********************************************************************************/
+
+plugins {
+  id 'org.springframework.boot' version '2.7.1'
+}
+apply from: '../wlp-gradle/subprojects/spring.gradle'
+def sv = springVersions[ '2.0' ]
+
+apply plugin: 'war'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ibm.ws.example.spring'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+dependencies {
+  implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot'])
+  implementation('org.springframework.boot:spring-boot-starter-data-jpa') // + ':' + sv['springBoot']) // x
+
+  providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+}
+
+bootJar {
+  duplicatesStrategy 'warn'
+}
+
+// Disable jar because it would need a dependency on ':com.ibm.ws.springboot.fat20.war.app:module:compileTestJava' and 
+// ':com.ibm.ws.springboot.fat20.war.app:module:processTestResources' which seems silly since we don't actually need a jar for this project.  We only need the war.
+jar {
+  enabled = false
+}

@@ -22,6 +22,8 @@ import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
 import jakarta.ejb.EJBException;
 import jakarta.ejb.Stateless;
+import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.event.Startup;
 import jakarta.inject.Inject;
 
 import javax.sql.DataSource;
@@ -38,6 +40,9 @@ import test.jakarta.data.datastore.lib.ServerDSEntity;
 public class DataStoreTestEJB {
 
     @Inject
+    EJBModuleDefaultDSRepo defaultDSRepo;
+
+    @Inject
     EJBModuleDSDRepo dsdRepo;
 
     // also exists in both web modules, but with different
@@ -51,6 +56,15 @@ public class DataStoreTestEJB {
 
     @Inject
     DSDRepoEJB dsdRepoEJB;
+
+    /**
+     * Populate the database before running the test.
+     */
+    public void setup(@Observes Startup event) {
+        System.out.println("DataStoreTestEJB observed Startup");
+
+        dsdRepo.store(EJBModuleDSDEntity.of(1, "startup has been observed"));
+    }
 
     /**
      * Use a repository, defined in an EJB, that specifies the JNDI name of a
@@ -76,6 +90,33 @@ public class DataStoreTestEJB {
                             .executeQuery(sql);
             assertEquals(true, result.next());
             assertEquals("sixty-four", result.getString(1));
+        } catch (SQLException x) {
+            throw new EJBException(x);
+        }
+    }
+
+    /**
+     * Use a repository, defined in an EJB, that uses the default data source,
+     * defined in server.xml, which has user defaultuser1.
+     */
+    public void testDefaultDataSourceInEJBModule() {
+
+        assertEquals(false, defaultDSRepo.existsByValueAndId("sixty-two", 62L));
+
+        EJBModuleDefaultDSEntity sixty_two = EJBModuleDefaultDSEntity.of(62, "sixty-two");
+        sixty_two = defaultDSRepo.save(sixty_two);
+
+        DataSource ds = defaultDSRepo.source();
+        try (Connection con = ds.getConnection()) {
+            assertEquals("defaultuser1",
+                         con.getMetaData().getUserName().toLowerCase());
+
+            String sql = "SELECT value FROM DefDSEntity WHERE id=62";
+            ResultSet result = con
+                            .createStatement()
+                            .executeQuery(sql);
+            assertEquals(true, result.next());
+            assertEquals("sixty-two", result.getString(1));
         } catch (SQLException x) {
             throw new EJBException(x);
         }
@@ -134,4 +175,14 @@ public class DataStoreTestEJB {
         }
     }
 
+    /**
+     * Verify that code in an EJB module can access a Jakarta Data repository from
+     * a CDI Startup event.
+     */
+    public void testStartupEventObserverInEJBModuleUsesRepository() {
+
+        EJBModuleDSDEntity found = dsdRepo.acquire(1).orElseThrow();
+        assertEquals(1, found.id);
+        assertEquals("startup has been observed", found.value);
+    }
 }

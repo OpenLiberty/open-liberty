@@ -36,9 +36,7 @@ import javax.naming.InitialContext;
 @Repository
 public interface Counties {
 
-    boolean deleteByNameAndLastUpdated(String name, Long version);
-    // TODO switch to the following once EclipseLink bug #30534 is fixed
-    // boolean deleteByNameAndLastUpdated(String name, LocalDateTime version);
+    boolean deleteByNameAndLastUpdated(String name, LocalDateTime version);
 
     int deleteByNameIn(List<String> names);
 
@@ -53,9 +51,7 @@ public interface Counties {
     @OrderBy("name")
     List<Set<CityId>> findCitiesByNameStartsWith(String beginning);
 
-    Long findLastUpdatedByName(String name);
-    // TODO switch to the following once EclipseLink bug #30534 is fixed
-    //LocalDateTime findLastUpdatedByName(String name);
+    LocalDateTime findLastUpdatedByName(String name);
 
     @Query("SELECT zipcodes WHERE name = ?1")
     Optional<int[]> findZipCodesByName(String name);
@@ -100,6 +96,9 @@ public interface Counties {
         }
     }
 
+    @Query("SELECT o.population FROM County o WHERE LOWER(id(o)) = ?1")
+    Optional<Integer> populationOf(String lowerCaseName);
+
     @Delete
     void remove(County c);
 
@@ -110,8 +109,16 @@ public interface Counties {
         EntityManager emOuter1 = getEntityManager();
         EntityManager emInner = getAutoClosedEntityManager();
         EntityManager emOuter2 = getEntityManager();
-        return new Object[] { emOuter1, emOuter2, emOuter1.isOpen(), emOuter2.isOpen(), emInner.isOpen() };
+        return new Object[] {
+                              emOuter1,
+                              emOuter2,
+                              emOuter1.isOpen(),
+                              emOuter2.isOpen(),
+                              emInner.isOpen()
+        };
     }
 
-    boolean updateByNameSetZipCodes(String name, int... zipcodes);
+    @Query("UPDATE County SET zipcodes=?2 WHERE name=?1")
+    boolean setZipCodesFor(String name,
+                           int... zipcodes);
 }

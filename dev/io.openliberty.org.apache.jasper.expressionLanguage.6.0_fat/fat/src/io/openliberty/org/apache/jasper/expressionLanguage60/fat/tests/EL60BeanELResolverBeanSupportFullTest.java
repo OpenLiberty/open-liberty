@@ -30,7 +30,7 @@ import componenttest.topology.utils.HttpUtils;
  * This test will use a server which does not set jakarta.el.BeanSupport.useStandalone=true in the
  * bootstrap.properties. Setting this property ensures the BeanELResolver does not have
  * any dependency on the java.beans.* package. Since the property is not set for this test
- * the java.bean.*s package will be used and the TestBeanBeanInfo will be used to determine
+ * the java.beans.* package will be used and the TestBeanBeanInfo will be used to determine
  * the read/write methods for the TestBean. A PropertyNotFoundException is not expected when trying to resolve
  * the "test" property of the TestBean because non standard read/write methods are used but are defined in the
  * TestBeanBeanInfo.

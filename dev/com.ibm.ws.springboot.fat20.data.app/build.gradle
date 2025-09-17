@@ -1,0 +1,43 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ ********************************************************************************/
+
+plugins {
+  id 'org.springframework.boot' version '2.7.1'
+}
+apply from: '../wlp-gradle/subprojects/spring.gradle'
+def sv = springVersions[ '2.0' ]
+
+apply plugin: 'war'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ibm.ws.example.spring'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+dependencies {
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+  runtimeOnly 'com.h2database:h2'
+  providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+  providedCompile 'org.hibernate:hibernate-core'
+  providedCompile 'jakarta.transaction:jakarta.transaction-api'
+  providedCompile 'jakarta.persistence:jakarta.persistence-api'
+}
+
+bootJar {
+  duplicatesStrategy 'warn'
+}
+
+jar {
+  enabled = false
+}

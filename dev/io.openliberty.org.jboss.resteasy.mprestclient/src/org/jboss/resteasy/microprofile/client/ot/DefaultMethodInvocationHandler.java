@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,10 +41,11 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
                                           final Object target,
                                           final Set<Object> providerInstances,
                                           final ResteasyClient client,
-                                          final BeanManager beanManager) {
+                                          final BeanManager beanManager,
+                                          final ClassLoader classLoader) {
         this.delegateHandler = new ProxyInvocationHandler(restClientInterface, target, providerInstances, client, beanManager);
         this.restClientInterface = restClientInterface;
-        this.target = createDefaultMethodTarget(restClientInterface);
+        this.target = createDefaultMethodTarget(restClientInterface, classLoader);
     }
 
     @Override
@@ -55,9 +56,9 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
         return delegateHandler.invoke(proxy, method, args);
     }
 
-    private static Object createDefaultMethodTarget(Class<?> interfaceClass) {
+    private static Object createDefaultMethodTarget(Class<?> interfaceClass, ClassLoader classLoader) {
         return AccessController.doPrivileged((PrivilegedAction<Object>) () -> 
-            Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),new Class[]{interfaceClass}, (Object proxy, Method method, Object[] arguments) -> null));
+            Proxy.newProxyInstance(classLoader, new Class[]{interfaceClass}, (Object proxy, Method method, Object[] arguments) -> null));
     }
 
     private static Object invokeDefaultMethod(Class<?> declaringClass, Object o, Method m, Object[] params)

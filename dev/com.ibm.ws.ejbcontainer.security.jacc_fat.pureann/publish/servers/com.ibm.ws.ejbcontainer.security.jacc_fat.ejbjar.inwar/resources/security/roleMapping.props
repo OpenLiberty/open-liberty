@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2020 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# <application name>::<role name>::<type : USER, GROUP or SPECIAL>::<accessid of user, group, or special subject name (either EVERYONE or ALLAUTHENTICATEDUSERS)):
+
+securityejbjarInWarEarX01::Employee::USER::user:BasicRealm/user99
+securityejbjarInWarEarX01::Employee::GROUP::group:BasicRealm/group1
+securityejbjarInWarEarX01::Manager::USER::user:BasicRealm/user2
+securityejbjarInWarEarX01::Manager::GROUP::group:BasicRealm/group2
+securityejbjarInWarEarX01::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+securityejbjarInWarEarX01::DeclaredRole01::USER::user:BasicRealm/user5
+
+ejbjarinstandaloneX02::Employee::USER::user:BasicRealm/user99
+ejbjarinstandaloneX02::Employee::GROUP::group:BasicRealm/group1
+ejbjarinstandaloneX02::Manager::USER::user:BasicRealm/user2
+ejbjarinstandaloneX02::Manager::GROUP::group:BasicRealm/group2
+ejbjarinstandaloneX02::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+ejbjarinstandaloneX02::DeclaredRole01::USER::user:BasicRealm/user5
+
+securityejbjarInWarEarM01::Employee::USER::user:BasicRealm/user99
+securityejbjarInWarEarM01::Employee::GROUP::group:BasicRealm/group1
+securityejbjarInWarEarM01::Manager::USER::user:BasicRealm/user2
+securityejbjarInWarEarM01::Manager::GROUP::group:BasicRealm/group2
+securityejbjarInWarEarM01::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+securityejbjarInWarEarM01::DeclaredRole01::USER::user:BasicRealm/user5
+
+ejbjarinstandaloneM02::Employee::USER::user:BasicRealm/user99
+ejbjarinstandaloneM02::Employee::GROUP::group:BasicRealm/group1
+ejbjarinstandaloneM02::Manager::USER::user:BasicRealm/user2
+ejbjarinstandaloneM02::Manager::GROUP::group:BasicRealm/group2
+ejbjarinstandaloneM02::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+ejbjarinstandaloneM02::DeclaredRole01::USER::user:BasicRealm/user5
+
+securityejbjarInWarEarM07::Employee::USER::user:BasicRealm/user99
+securityejbjarInWarEarM07::Employee::GROUP::group:BasicRealm/group1
+securityejbjarInWarEarM07::Manager::USER::user:BasicRealm/user2
+securityejbjarInWarEarM07::Manager::GROUP::group:BasicRealm/group2
+securityejbjarInWarEarM07::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+securityejbjarInWarEarM07::DeclaredRole01::USER::user:BasicRealm/user5
+
+ejbjarinstandaloneM08::Employee::USER::user:BasicRealm/user99
+ejbjarinstandaloneM08::Employee::GROUP::group:BasicRealm/group1
+ejbjarinstandaloneM08::Manager::USER::user:BasicRealm/user2
+ejbjarinstandaloneM08::Manager::GROUP::group:BasicRealm/group2
+ejbjarinstandaloneM08::AllAuthenticated::SPECIAL::ALLAUTHENTICATEDUSERS
+ejbjarinstandaloneM08::DeclaredRole01::USER::user:BasicRealm/user5
+

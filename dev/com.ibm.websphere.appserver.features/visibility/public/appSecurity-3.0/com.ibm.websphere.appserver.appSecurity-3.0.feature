@@ -10,6 +10,10 @@ IBM-API-Package: javax.security.enterprise; type="spec", \
  javax.security.auth.message.callback; type="spec", \
  javax.security.auth.message.config; type="spec", \
  javax.security.auth.message.module; type="spec", \
+ javax.servlet; type="spec", \
+ javax.servlet.annotation; type="spec", \
+ javax.servlet.descriptor; type="spec", \
+ javax.servlet.http; type="spec", \
  com.ibm.wsspi.security.tai; type="ibm-api", \
  com.ibm.wsspi.security.token; type="ibm-api", \
  com.ibm.wsspi.security.auth.callback; type="ibm-api", \
@@ -23,8 +27,7 @@ Subsystem-Name: Application Security 3.0
   com.ibm.websphere.appserver.eeCompatible-8.0, \
   com.ibm.websphere.appserver.el-3.0, \
   com.ibm.websphere.appserver.cdi-2.0, \
-  com.ibm.websphere.appserver.security-1.0, \
-  io.openliberty.securityAPI.javaee-1.0
+  com.ibm.websphere.appserver.security-1.0
 -bundles=com.ibm.websphere.javaee.security.1.0; location:=dev/api/spec/; mavenCoordinates="javax.security.enterprise:javax.security.enterprise-api:1.0", \
  com.ibm.ws.security.javaeesec.1.0, \
  com.ibm.ws.security.javaeesec.cdi, \

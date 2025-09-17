@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,7 @@ import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
@@ -37,6 +38,7 @@ import com.github.dockerjava.api.model.InternetProtocol;
 import com.github.dockerjava.api.model.Ports;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.FileUtils;
@@ -46,28 +48,28 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     private static final Class<?> c = KerberosContainer.class;
 
     public static final String KRB5_REALM = "EXAMPLE.COM";
-    public static final String KRB5_KDC = "kerberos";
+    public static final String KRB5_KDC_INTERNAL = "localhost";
+    public static final String KRB5_KDC_EXTERNAL = "kerberos";
     public static final String KRB5_PASS = "password";
 
-    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "kyleaure/krb5-server:1.0";
+    private static final DockerImageName KDC_JDBC_SERVER = ImageBuilder.build("kdc-jdbc-server:3.0.0.1").getDockerImageName();
 
     private int udp_99;
 
     public KerberosContainer(Network network) {
-        super(IMAGE);
+        super(KDC_JDBC_SERVER);
         withNetwork(network);
     }
 
     @Override
     protected void configure() {
         withExposedPorts(99, 464, 749);
-        withNetworkAliases(KRB5_KDC);
+        withNetworkAliases(KRB5_KDC_EXTERNAL);
         withCreateContainerCmdModifier(cmd -> {
-            cmd.withHostName(KRB5_KDC);
+            cmd.withHostName(KRB5_KDC_EXTERNAL);
         });
         withEnv("KRB5_REALM", KRB5_REALM);
-        withEnv("KRB5_KDC", "localhost");
+        withEnv("KRB5_KDC", KRB5_KDC_INTERNAL);
         withEnv("KRB5_PASS", KRB5_PASS);
 
         withLogConsumer(new SimpleLogConsumer(c, "krb5"));
@@ -87,7 +89,7 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
             Ports ports = cmd.getPortBindings();
             ports.bind(ExposedPort.udp(99), Ports.Binding.empty());
             cmd.withPortBindings(ports);
-            cmd.withHostName(KRB5_KDC);
+            cmd.withHostName(KRB5_KDC_EXTERNAL);
         });
     }
 

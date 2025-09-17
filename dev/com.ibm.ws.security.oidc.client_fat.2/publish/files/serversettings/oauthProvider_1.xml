@@ -39,7 +39,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01"
 				scope="ALL_SCOPES"
@@ -47,7 +47,7 @@
 		    <!-- !d becomes \d for regexp evaluation, any 4 digit port should be accepted. -->
 		   	<client
 				name="client02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client02"
 				allowRegexpRedirects="true"
 				redirect="regexp:http://localhost:!d!d!d!d/oidcclient/redirect/client02"

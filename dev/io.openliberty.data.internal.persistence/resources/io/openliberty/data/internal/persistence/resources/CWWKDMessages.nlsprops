@@ -124,7 +124,8 @@ CWWKD1009.lifecycle.param.err=CWWKD1009E: The {0} method of the {1} repository \
 CWWKD1009.lifecycle.param.err.explanation=Lifecycle methods must have a single \
  entity parameter.
 CWWKD1009.lifecycle.param.err.useraction=Update the repository method to have a \
- single parameter that is an entity or an array of List of the entity.
+ single parameter that is an entity, an array of the entity, or a List of the \
+ entity.
 
 CWWKD1010.unknown.entity.attr=CWWKD1010E: An entity attribute named {0} is \
  not found on the {1} entity class for the {2} method of the {3} repository \
@@ -174,18 +175,22 @@ CWWKD1013.cde.missing.param.anno.explanation=Parameters of repository count, \
 CWWKD1013.cde.missing.param.anno.useraction=Update the repository method such \
  that all parameters correspond to entity attributes.
 
-CWWKD1014.upd.missing.param.anno=CWWKD1014E: Parameter {0} of the {1} method of \
- the {2} repository interface does not match an entity attribute. Parameters that \
- do not match an entity attribute must have one of the parameter annotations: {3}. \
- To define a condition for the restriction of query results, the parameter must \
- be annotated with the By annotation and the By annotation value must be \
- assigned to be the entity attribute name. Alternatively, enable the \
- -parameters compile option and give the parameter the same name as the entity \
- attribute.
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: The {0} method of the {1} repository \
+ is not a valid lifecycle Update method because the method has {2} parameters. \
+ Repository methods that are annotated with a lifecycle annotation must have \
+ exactly 1 parameter, which must be the entity, an array of the entity, or a \
+ List of the entity. \
+ The {0} method is also not a valid parameter-based update operation because \
+ method parameter {3} does not have an annotation ({4}) that indicates the entity \
+ attribute name. Alternatively, enable the -parameters compile option and give the \
+ parameter the same name as the entity attribute.
 CWWKD1014.upd.missing.param.anno.explanation=Parameters of repository update \
- methods must correspond to entity attributes.
+ methods must correspond to entity attributes. Alternatively, lifecycle methods \
+ must have a single entity parameter.
 CWWKD1014.upd.missing.param.anno.useraction=Update the repository method such that \
- all parameters correspond to entity attributes.
+ all parameters correspond to entity attributes. Alternatively, update the \
+ repository method to have a single parameter that is an entity, an array of the \
+ entity, or a List of the entity.
 
 CWWKD1015.null.entity.param=CWWKD1015E: The {0} method of the {1} repository \
  interface cannot accept a null entity.
@@ -219,7 +224,7 @@ CWWKD1018.confl.special.param.useraction=Update the repository to not use \
 
 CWWKD1019.mixed.positional.named=CWWKD1019E: The {0} method of the {1} repository \
  interface cannot have a query that mixes positional and named parameters. \
- The interface defines a mix of {2} positional parameters and
+ The interface defines a mix of {2} positional parameters and \
  {3} named parameters {4} for the Query annotation value: {5}. A query with \
  positional parameters must reference each parameter by its ordinal value, \
  starting with ?1, and the method parameters must not have the Param annotation. \
@@ -296,15 +301,18 @@ CWWKD1026.ignore.case.not.text.useraction=Ensure the sort criteria is applied \
  to the correct entity attribute and remove the instruction to ignore case if the \
  entity attribute does not represent text.
 
-CWWKD1027.anno.missing.attr.name=CWWKD1027E: Parameter {0} of the {1} method of \
- the {2} repository interface is annotated with an {3} annotation that does not \
- specify an entity attribute name as its value. The annotation must either specify \
- the entity attribute name as its value, or the -parameters compile option must be \
- enabled and the parameter must have the same name as the entity attribute.
-CWWKD1027.anno.missing.attr.name.explanation=Parameters of repository update \
- methods must correspond to entity attributes.
-CWWKD1027.anno.missing.attr.name.useraction=Update the repository method to \
- indicate the entity attribute to which the parameter pertains.
+CWWKD1027.datastore.lacks.java.comp=CWWKD1027E: One or more repository interfaces \
+ ({0}) from the {1} application artifact specify a {2} dataStore value that \
+ does not match a data source resource reference or persistence unit reference \
+ because it lacks a java:comp/env/ namespace prefix. Consider changing the \
+ Repository annotation to specify {3}.
+CWWKD1027.datastore.lacks.java.comp.explanation=JNDI names of data source \
+ resource references and persistence unit references must include a java: \
+ namespace prefix.
+CWWKD1027.datastore.lacks.java.comp.useraction=Ensure that the data store value \
+ of the Repository annotation includes a java: namespace prefix when the value \
+ indicates the JNDI name of a data source resource reference or persistence unit \
+ reference.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: The {0} method of the {1} repository \
  interface requests the first {2} results, which exceeds the maximum allowed \
@@ -558,7 +566,10 @@ CWWKD1055.unsupported.entity.attr=CWWKD1055E: The {0} attribute of the {1} entit
  has an unsupported type: {2}. Jakarta Data supports Java enumeration types, \
  the {3} temporal types, and the following basic types: {4}. The built-in \
  Jakarta Data provider also supports some Jakarta Persistence types, such as \
- embeddables.
+ embeddables. Alternatively, if you are using a Jakarta Persistence entity, \
+ you can add the {5} annotation to the {0} attribute to provide an \
+ AttributeConverter implementation that converts an unsupported type to a \
+ supported type.
 CWWKD1055.unsupported.entity.attr.explanation=Jakarta Data does not support the \
  type used by the entity attribute.
 CWWKD1055.unsupported.entity.attr.useraction=Update the entity attribute to use \
@@ -610,9 +621,9 @@ CWWKD1060.name.out.of.scope.useraction=Update the Repository annotation to \
 
 CWWKD1061.comp.name.in.ejb=CWWKD1061E: One or more repository interfaces ({0}) \
  that are defined in the {1} enterprise bean module of the {2} application \
- configure a {2} value for the {3} attribute. However, {4} names are not accessible \
+ configure a {3} value for the {4} attribute. However, {5} names are not accessible \
  to enterprise bean modules. Use a name from one of the following \
- namespaces: {5}.
+ namespaces: {6}.
 CWWKD1061.comp.name.in.ejb.explanation=The specified namespace is not accessible \
  to the enterprise bean module where the repository interface is defined.
 CWWKD1061.comp.name.in.ejb.useraction=Update the Repository annotation to \
@@ -1050,3 +1061,144 @@ CWWKD1103.incompat.query.result.useraction=If the type of entity attributes that
  or a different set of entity attributes that the Jakarta Persistence provider \
  allows. If the type of entity attributes that the method selects is allowed, \
  check for other causes of incompatibility.
+
+CWWKD1104.empty.anno.value=CWWKD1104E: The empty value for the String class is \
+ not a valid value for the {0} annotation that is used on the {1} method of the \
+ {2} repository.
+CWWKD1104.empty.anno.value.explanation=The empty value for the String class is \
+ not a supported value. What the supported value is depends on the type of \
+ annotation. For example, if the annotation is a Param annotation, then valid \
+ values are the named parameter names that are used within the Query annotation \
+ value.
+CWWKD1104.empty.anno.value.useraction=If the annotation is not needed, \
+ remove it from the repository method. Otherwise, specify a valid value for \
+ the annotation.
+
+CWWKD1105.keyword.in.orderby=CWWKD1105E: The OrderBy clause of the {0} method \
+ of the {1} repository cannot be parsed because the {2} entity attribute of the \
+ {3} entity contains the {4} keyword of the Jakarta Data Query by Method Name \
+ pattern. Remove the OrderBy clause from the {0} method name and use the \
+ OrderBy annotation instead.
+CWWKD1105.keyword.in.orderby.explanation=Entity attribute names that contain \
+ Jakarta Data keywords cannot be used in the names of repository methods that \
+ follow the Jakarta Data Query by Method Name pattern.
+CWWKD1105.keyword.in.orderby.useraction=Rename the entity attribute or switch \
+ to the OrderBy annotation to specify the ordering.
+
+CWWKD1106.init.timed.out=CWWKD1106E: The {0} repository that requires the \
+ {1} data store and is provided or used by the {2} application artifact did not \
+ become available within {3} seconds. Confirm that the {2} application artifact \
+ starts and that the {1} data store resource that is specified as the dataStore \
+ value of the Repository annotation is configured correctly and is accessible to \
+ the application artifact at the point when the {0} repository is first accessed.
+CWWKD1106.init.timed.out.explanation=A repository did not become available \
+ within the allotted amount of time.
+CWWKD1106.init.timed.out.useraction=Check the configuration of the dataStore \
+ and confirm that it is accessible to application artifacts that define and use \
+ the repository. Also confirm that the application and all of its modules start \
+ successfully.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: The {0} application artifact \
+ accessed the {1} repository before a checkpoint of the application completed. \
+ Update the {0} application to avoid using the repository before a checkpoint.
+CWWKD1107.init.timed.out.checkpoint.explanation=Applications cannot use \
+ repositories before completion of a checkpoint.
+CWWKD1107.init.timed.out.checkpoint.useraction=Avoid using the repository \
+ until after the checkpoint completes.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: The {0} entity class requires the \
+ {1} annotation because the {2} annotation is applied to the {3} member of \
+ the entity class.
+CWWKD1108.missing.entity.anno.explanation=Entity classes that use annotations
+ from the jakarta.persistence package must also be annotated with the Entity
+ annotation from the Jakarta Persistence specification.
+CWWKD1108.missing.entity.anno.useraction=Apply the Entity annotation to the
+ entity class or remove the Jakarta Persistence annotations from its members.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: The {0} annotation is not allowed \
+ on the {1} method of the {2} entity class because the {2} entity class is \
+ a Java record.
+CWWKD1109.jpa.anno.on.record.explanation=Jakarta Persistence annotations \
+ are not allowed on Java records.
+CWWKD1109.jpa.anno.on.record.useraction=Switch to a Jakarta Persistence \
+ entity class or remove the Jakarta Persistence annotation from the \
+ Java record.
+
+CWWKD1110.incompat.with.collection=CWWKD1110E: The {0} method of the \
+ {1} repository interface has a name that includes the {2} keyword, which is \
+ incompatible with the {3} attribute of the {4} entity because the attribute \
+ has a collection type. The following Query by Method Name keywords can be \
+ used with entity attributes that have a collection type: {5}.
+CWWKD1110.incompat.with.collection.explanation=Some of the Query by Method Name \
+ keywords are not compatible with entity attributes that have a collection type.
+CWWKD1110.incompat.with.collection.useraction=Update the repository method \
+ to avoid using the keyword that is not compatible with the collection type.
+
+CWWKD1111.unsupported.convert=CWWKD1111E: The {0} AttributeConverter \
+ implementation converts {1} values to the {2} type, which is not supported \
+ by the Jakarta Data specification. The Jakarta Data specification supports \
+ Java enumeration types, the {3} temporal types, and the following basic \
+ types: {4}. The built-in Jakarta Data provider also supports some Jakarta \
+ Persistence types.
+CWWKD1111.unsupported.convert.explanation=The AttributeConverter implementation \
+ cannot be used with the built-in Jakarta Data provider because it converts \
+ values to an unsupported type.
+CWWKD1111.unsupported.convert.useraction=Update the AttributeConverter \
+ implementation to convert values to one of the supported types.
+
+CWWKD1112.record.entity.verify.err=CWWKD1112W: An entity class for the {0} record \
+ is defined but might not work. The verification of the bytes of the Jakarta \
+ Persistence entity class, which was generated for the entity class, failed. \
+ The defined entity class is used by one or more repository interfaces ({1}) \
+ in the {2} application artifact. The error is: {3}.
+CWWKD1112.record.entity.verify.err.explanation=When a repository uses a record \
+ entity, a Jakarta Persistence entity is generated to represent the record entity. \
+ The verification of the bytes of the generated Jakarta Persistence entity class \
+ failed.
+CWWKD1112.record.entity.verify.err.useraction=Verify that the implementation of \
+ the record entity adheres to the requirements and conventions for a record \
+ entity.
+
+CWWKD1113.server.stopping=CWWKD1113I: One or more repositories ({0}) did not \
+ initialize because the server is shutting down.
+CWWKD1113.server.stopping.explanation=The server is shutting down and will not \
+ attempt to initialize the repositories.
+CWWKD1113.server.stopping.useraction=No action is needed.
+
+CWWKD1114.app.stopping=CWWKD1114I: One or more repositories ({0}) did not \
+ initialize because the {1} application is in the {2} state.
+CWWKD1114.app.stopping.explanation=The application is stopping or has stopped \
+ and will not try to initialize the repositories.
+CWWKD1114.app.stopping.useraction=Start the application to make the repositories \
+ available.
+
+CWWKD1115.app.unavailable=CWWKD1115E: One or more repositories ({0}) did not \
+ initialize because the {1} application is not available.
+CWWKD1115.app.unavailable.explanation=The application that defines the \
+ repositories is not available. The repositories cannot initialize.
+CWWKD1115.app.unavailable.useraction=Start the application to make the \
+ repositories available.
+
+CWWKD1116.resource.unavailable=CWWKD1116E: One or more repositories ({0}) did not \
+ initialize because the {1} resource did not become available within {2} seconds.
+CWWKD1116.resource.unavailable.explanation=A resource that the repositories \
+ require did not become available.
+CWWKD1116.resource.unavailable.useraction=Verify the configuration of resources \
+ that the repositories use.
+
+CWWKD1117.anno.constraint.conflict=CWWKD1117E: Parameter {0} of the {1} method \
+ of the {2} repository interface cannot be annotated with the annotations: {3}. \
+ One or more of the annotations are incompatible with the {4} type of the \
+ repository method parameter.
+CWWKD1117.anno.constraint.conflict.explanation=Constraint and its subtypes \
+ cannot be combined with parameter annotations other than the By annotation.
+CWWKD1117.anno.constraint.conflict.useraction=Remove the conflicting annotation \
+ or specify the entity attribute type instead of a Constraint type.
+
+CWWKD1118.param.anno.conflict=CWWKD1118E: Parameter {0} of the {1} method \
+ of the {2} repository interface cannot be annotated with the annotations: {3}. \
+ Two or more of the annotations conflict with each other.
+CWWKD1118.param.anno.conflict.explanation=The combination of parameter \
+ annotations is not valid.
+CWWKD1118.param.anno.conflict.useraction=Remove one or more of the conflicting \
+ annotations from the repository method parameter.

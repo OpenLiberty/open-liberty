@@ -36,5 +36,6 @@ src: \
   org.springframework:spring-context;${springVersion30}, \
   org.springframework:spring-web;${springVersion30}, \
   org.springframework:spring-websocket;${springVersion30}, \
+  io.openliberty.jakarta.servlet.6.0;version=latest, \
   io.openliberty.jakarta.websocket.client.2.1;version=latest, \
   io.openliberty.jakarta.websocket.2.1;version=latest

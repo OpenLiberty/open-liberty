@@ -19,7 +19,7 @@ Fragment-Host: io.openliberty.org.apache.myfaces.4.0;bundle-version=1.0
 
 Bundle-Name: Open Liberty Jakarta MyFaces Third Party API
 Bundle-SymbolicName: io.openliberty.faces.4.0.thirdparty
-Implementation-Version: 4.0.1
+Implementation-Version: 4.0.3
 
 #Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the
 # org.apache.myfaces.buildtools package is from myfaces-builder-annotations-1.0.9.jar

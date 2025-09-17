@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB13;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB14;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB16;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB17;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB18;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB2;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB3;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB4;
@@ -58,6 +59,7 @@ public class ClassPathDefaultLoaderServletTest3 extends FATServlet{
         List<String> expectedOrder = Arrays.asList(TEST_EJB1, //
                                                    TEST_LIB14, //
                                                    TEST_EJB2, // Note this is duplicated later
+                                                   TEST_LIB18, // Note this is duplicated later
                                                    TEST_LIB4, //
                                                    TEST_LIB6, //
                                                    TEST_RAR1, //
@@ -71,6 +73,7 @@ public class ClassPathDefaultLoaderServletTest3 extends FATServlet{
                                                    TEST_LIB3, //
                                                    TEST_EJB2, // NOTE the duplicate here from before
                                                    TEST_LIB13, //
+                                                   TEST_LIB18, // NOTE the duplicate here from before
                                                    TEST_CLASS_PATH3_APP + "_webInf", //
                                                    TEST_LIB5, //
                                                    TEST_LIB11);
@@ -163,6 +166,11 @@ public class ClassPathDefaultLoaderServletTest3 extends FATServlet{
 
     @Test
     public void testLoadLibrary17Class() {
+        runTest(success_fromEARLoader);
+    }
+
+    @Test
+    public void testLoadLibrary18Class() {
         runTest(success_fromEARLoader);
     }
 

@@ -42,3 +42,6 @@ tested.features: jsp-2.3, el-3.0, restfulwsclient-3.0, restfulws-3.0,\
     io.openliberty.org.apache.commons.logging;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
     com.ibm.ws.org.apache.directory.server;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

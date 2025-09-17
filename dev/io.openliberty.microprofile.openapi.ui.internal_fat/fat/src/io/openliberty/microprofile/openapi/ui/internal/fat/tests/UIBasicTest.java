@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,8 +24,10 @@ import org.hamcrest.Matchers;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,6 +48,9 @@ import com.ibm.ws.fat.util.Props;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestApplication;
 import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestResource;
@@ -56,13 +61,21 @@ import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestResource;
 @RunWith(FATRunner.class)
 public class UIBasicTest {
 
+    /**  */
+    private static final String SERVER_NAME = "openapi-ui-test";
+
     /** Wait for "long" tasks like initial page load or making a test request to the server */
     private static final Duration LONG_WAIT = Duration.ofSeconds(30);
 
     public static final String APP_NAME = "app";
 
-    @Server("openapi-ui-test")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, true,
+                                                             MicroProfileActions.MP71_EE11,
+                                                             MicroProfileActions.MP61);
 
     @Rule
     public BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>().withCapabilities(new ChromeOptions())
@@ -84,6 +97,11 @@ public class UIBasicTest {
         server.startServer();
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
+    }
+
+    @AfterClass
+    public static void teardown() throws Exception {
+        server.stopServer();
     }
 
     @Before

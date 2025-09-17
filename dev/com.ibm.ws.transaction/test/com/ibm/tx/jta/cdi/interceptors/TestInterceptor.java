@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,8 +22,10 @@ import java.util.Map;
 
 import javax.interceptor.InvocationContext;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.cdi.interceptors.beans.BaseBean;
 import com.ibm.tx.jta.cdi.interceptors.beans.ComplexStereotypeInheritance;
 import com.ibm.tx.jta.cdi.interceptors.beans.ComplexStereotypeInheritanceOtherOrder;
@@ -33,6 +35,7 @@ import com.ibm.tx.jta.cdi.interceptors.beans.SimpleInterceptorMethodAnnotated;
 import com.ibm.tx.jta.cdi.interceptors.beans.SimpleInterceptorMethodAnnotatedExtension;
 import com.ibm.tx.jta.cdi.interceptors.beans.SimpleStereotypeClassAnnotated;
 import com.ibm.tx.jta.cdi.interceptors.beans.SimpleStereotypeInheritance;
+import com.ibm.tx.jta.config.DefaultConfigurationProvider;
 
 // Tests ability to find interceptors on classes/methods in various situations
 // from simple interceptors up to complex trees of stereotypes. Note that for all
@@ -42,6 +45,11 @@ import com.ibm.tx.jta.cdi.interceptors.beans.SimpleStereotypeInheritance;
 public class TestInterceptor extends com.ibm.tx.jta.cdi.interceptors.TransactionalInterceptor {
 
     private static final long serialVersionUID = 1L;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        ConfigurationProviderManager.setConfigurationProvider(new DefaultConfigurationProvider());
+    }
 
     @Test
     public void testNoAnnotation() throws Exception {
@@ -60,44 +68,52 @@ public class TestInterceptor extends com.ibm.tx.jta.cdi.interceptors.Transaction
 
     @Test
     public void testSimpleMethodAnnotationExtension() throws Exception {
-        assertEquals(Exception.class, getTransactionalAnnotation(createContext(new SimpleInterceptorMethodAnnotatedExtension() {}), "TEST").rollbackOn()[0]);
+        assertEquals(Exception.class, getTransactionalAnnotation(createContext(new SimpleInterceptorMethodAnnotatedExtension() {
+        }), "TEST").rollbackOn()[0]);
     }
 
     @Test
     public void testSimpleClassAnnotation() throws Exception {
-        assertEquals(RuntimeException.class, getTransactionalAnnotation(createContext(new SimpleInterceptorClassAnnotated() {}), "TEST").dontRollbackOn()[0]);
+        assertEquals(RuntimeException.class, getTransactionalAnnotation(createContext(new SimpleInterceptorClassAnnotated() {
+        }), "TEST").dontRollbackOn()[0]);
     }
 
     @Test
     public void testSimpleClassAnnotationExtension() throws Exception {
-        assertEquals(RuntimeException.class, getTransactionalAnnotation(createContext(new SimpleInterceptorClassAnnotatedExtension() {}), "TEST").dontRollbackOn()[0]);
+        assertEquals(RuntimeException.class, getTransactionalAnnotation(createContext(new SimpleInterceptorClassAnnotatedExtension() {
+        }), "TEST").dontRollbackOn()[0]);
     }
 
     @Test
     public void testSimpleStereotypeAnnotation() throws Exception {
-        assertEquals(NoSuchMethodException.class, getTransactionalAnnotation(createContext(new SimpleStereotypeClassAnnotated() {}), "TEST").dontRollbackOn()[0]);
+        assertEquals(NoSuchMethodException.class, getTransactionalAnnotation(createContext(new SimpleStereotypeClassAnnotated() {
+        }), "TEST").dontRollbackOn()[0]);
     }
 
     @Test
     public void testSimpleStereotypeAnnotationInheritance() throws Exception {
-        assertEquals(NoSuchMethodException.class, getTransactionalAnnotation(createContext(new SimpleStereotypeInheritance() {}), "TEST").dontRollbackOn()[0]);
+        assertEquals(NoSuchMethodException.class, getTransactionalAnnotation(createContext(new SimpleStereotypeInheritance() {
+        }), "TEST").dontRollbackOn()[0]);
     }
 
     @Test
     public void testComplexStereotypeAnnotationInheritance() throws Exception {
-        assertEquals(NoSuchMethodException.class, getTransactionalAnnotation(createContext(new ComplexStereotypeInheritance() {}), "TEST").dontRollbackOn()[0]);
+        assertEquals(NoSuchMethodException.class, getTransactionalAnnotation(createContext(new ComplexStereotypeInheritance() {
+        }), "TEST").dontRollbackOn()[0]);
     }
 
     @Test
     public void testComplexStereotypeAnnotationInheritanceOtherOrder() throws Exception {
-        assertEquals(NoSuchMethodException.class, getTransactionalAnnotation(createContext(new ComplexStereotypeInheritanceOtherOrder() {}), "TEST").dontRollbackOn()[0]);
+        assertEquals(NoSuchMethodException.class, getTransactionalAnnotation(createContext(new ComplexStereotypeInheritanceOtherOrder() {
+        }), "TEST").dontRollbackOn()[0]);
     }
 
     private InvocationContext createContext(final Object target) {
         return new InvocationContext() {
 
             @Override
-            public void setParameters(Object[] arg0) {}
+            public void setParameters(Object[] arg0) {
+            }
 
             @Override
             public Object proceed() throws Exception {

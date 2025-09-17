@@ -39,6 +39,8 @@ import com.ibm.websphere.simplicity.log.Log;
  */
 public abstract class Registry {
 
+    public static final File DEFAULT_CONFIG_DIR = new File(System.getProperty("user.home"), ".docker");
+
     private static final Class<?> c = Registry.class;
 
     /**
@@ -47,6 +49,16 @@ public abstract class Registry {
      * @return the registry location
      */
     public abstract String getRegistry();
+
+    /**
+     * Get the auth config file if it exists and is known to
+     * contain the auth data as an encoded token.
+     *
+     * @return Optional - empty if the file does not exist
+     *         or does not contain the auth data for this registry
+     *         or the auth data for this registry is not an encoded token.
+     */
+    public abstract Optional<File> getAuthConfigFile();
 
     /**
      * If this registry in unavailable this method
@@ -95,6 +107,22 @@ public abstract class Registry {
      * @throws IllegalArgumentException if this registry does not support the image
      */
     public abstract String getMirrorRepository(DockerImageName original) throws IllegalArgumentException;
+
+    /**
+     * Validates the name of the registry to ensure it was configured correctly.
+     *
+     * @param  registry the name of the registry that has been found
+     * @return          true if valid, false otherwise
+     */
+    public abstract boolean validRegistryName(String registry);
+
+    /**
+     * Validates the docker image name has a registry, and that the registry name is valid.
+     *
+     * @param  image the image name
+     * @return       true iff the docker image name has a registry and that registry is valid, false otherwise.
+     */
+    public abstract boolean validDockerImageName(DockerImageName image);
 
     // SETUP METHODS
 
@@ -156,11 +184,13 @@ public abstract class Registry {
      * First, find or create a config file (config.json) in the provided configDir location.
      *
      * Then, search the config file, and perform one of the following actions for the provided registry:
-     * - Append: If no auth element existed for this registry,
-     *           then add a new auth element with this authToken
+     * - Append:  If no auth element existed for this registry,
+     *            then add a new auth element with this authToken
      * - Replace: If an auth element existed for this registry but the auth tokens do not match,
      *            then replace it with the one provided to this method.
-     * - Return: If an auth element existed for this registry and the auth tokens match,
+     * - Return:  If an auth element existed for this registry and the auth tokens match,
+     *            then return without making any changes.
+     * - Skip:    If an auth element exists for this registry and no auth token is configured,
      *            then return without making any changes.
      * </pre>
      *
@@ -169,8 +199,11 @@ public abstract class Registry {
      * @param  configDir The directory where an config.json file should be located.
      *
      * @throws Exception For issues parsing the config file.
+     *
+     * @return           Optional of an auth config file if we Append, Replace, or Return.
+     *                   Empty if we Skip
      */
-    protected static File persistAuthToken(final String registry, final String authToken, final File configDir) throws Exception {
+    protected static Optional<File> persistAuthToken(final String registry, final String authToken, final File configDir) throws Exception {
 
         final String m = "persistAuthToken";
 
@@ -199,13 +232,13 @@ public abstract class Registry {
                 Optional<String> found = findExistingConfig(root, registry);
                 if (found.isPresent() && found.get().equals(authToken)) {
                     Log.info(c, m, "Config already contains the correct auth token for registry: " + registry);
-                    return configFile;
+                    return Optional.of(configFile); //RETURN
                 }
 
                 // Config contained registry, but not auth data, therefore do not attempt to store auth data, return original file.
                 if (found.isPresent() && found.get().isEmpty()) {
                     Log.info(c, m, "Config contains the registry with no auth data, cannot persist new auth data for registry: " + registry);
-                    return configFile;
+                    return Optional.empty(); //SKIP
                 }
             } catch (Exception e) {
                 Log.error(c, m, e);
@@ -222,9 +255,9 @@ public abstract class Registry {
         //Get existing nodes
         ObjectNode authsObject = root.has("auths") ? (ObjectNode) root.get("auths") : mapper.createObjectNode();
         ObjectNode registryObject = authsObject.has(registry) ? (ObjectNode) authsObject.get(registry) : mapper.createObjectNode();
-        TextNode registryAuthObject = TextNode.valueOf(authToken); //Replace existing auth token with this one.
+        TextNode registryAuthObject = TextNode.valueOf(authToken); //replace/append auth token with this one.
 
-        //Replace nodes with updated/new configuration
+        //replace/append nodes with updated/new configuration
         registryObject.replace("auth", registryAuthObject);
         authsObject.replace(registry, registryObject);
         root.set("auths", authsObject);
@@ -234,7 +267,7 @@ public abstract class Registry {
         logConfigContents(m, "New config.json contents are", newContent);
         writeFile(configFile, newContent);
 
-        return configFile;
+        return Optional.of(configFile); //APPEND or REPLACE
     }
 
     /**
@@ -379,6 +412,7 @@ public abstract class Registry {
     @Override
     public String toString() {
         return this.getClass().getName() + " [getRegistry=" + this.getRegistry() + ", isRegistryAvailable=" + this.isRegistryAvailable() +
+               ", getAuthConfigFile=" + (this.getAuthConfigFile().isPresent() ? this.getAuthConfigFile().get().getAbsolutePath() : "empty") +
                ", getSetupException=" + this.getSetupException() + "]";
     }
 }

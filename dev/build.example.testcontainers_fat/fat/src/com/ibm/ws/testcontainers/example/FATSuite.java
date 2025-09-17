@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,6 @@ import componenttest.rules.repeater.RepeatTests;
                 ContainersTest.class, //LITE
                 DatabaseRotationTest.class, //LITE
                 DockerfileTest.class, //FULL
-                ProgrammaticImageTest.class, //FULL
                 SyntheticImageTest.class //FULL
 })
 /**
@@ -44,8 +43,8 @@ public class FATSuite extends TestContainerSuite {
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES());
 
-    private static final DockerImageName PostgreSQLImage = DockerImageName.parse("public.ecr.aws/docker/library/postgres:17.0-alpine")
-                    .asCompatibleSubstituteFor("postgres:17.0-alpine");
+    private static final DockerImageName PostgreSQLImage = DockerImageName.parse("public.ecr.aws/docker/library/postgres:17-alpine")
+                    .asCompatibleSubstituteFor("postgres");
 
     /*
      * If you want to use the same container for the entire test suite you can

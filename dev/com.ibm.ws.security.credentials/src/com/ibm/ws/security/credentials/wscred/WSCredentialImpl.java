@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.credentials.wscred;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -24,7 +24,6 @@ import javax.security.auth.login.CredentialExpiredException;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.auth.CredentialDestroyedException;
 import com.ibm.websphere.security.cred.WSCredential;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.credentials.ExpirableCredential;
 
 public class WSCredentialImpl implements WSCredential, ExpirableCredential {
@@ -59,11 +58,11 @@ public class WSCredentialImpl implements WSCredential, ExpirableCredential {
      * Constructor used by the registry code to create the original WSCredential.
      * This constructor is used by IMS to reduce overhead when compared with using a Hashtable
      * in the Subject's public credentials.
-     * 
+     *
      * This is an IBM private-in-use API.
-     * 
+     *
      * DO NOT change the signature or the implementation of this ctor.
-     * 
+     *
      * @ibm-private-in-use
      * @param realmName
      * @param securityName
@@ -71,7 +70,7 @@ public class WSCredentialImpl implements WSCredential, ExpirableCredential {
      * @param unauthenticatedUserid
      * @param primaryUniqueGroupAccessId
      * @param accessId
-     * @param roles ignored for now
+     * @param roles                      ignored for now
      * @param uniqueGroupAccessIds
      */
     public WSCredentialImpl(String realmName,
@@ -124,10 +123,8 @@ public class WSCredentialImpl implements WSCredential, ExpirableCredential {
         hashTable = new Hashtable<String, Object>(32);
     }
 
-    @FFDCIgnore(UnsupportedEncodingException.class)
     @Sensitive
     private static byte[] getConvertedBytes(@Sensitive String in_String) {
-        byte[] convertedBytes = null;
         if (in_String == null) {
             return null;
         }
@@ -136,12 +133,7 @@ public class WSCredentialImpl implements WSCredential, ExpirableCredential {
             return emptyByteArray;
         }
 
-        try {
-            convertedBytes = in_String.getBytes("UTF-8");
-        } catch (java.io.UnsupportedEncodingException e) {
-            // UTF-8 should always be supported.
-        }
-        return convertedBytes;
+        return in_String.getBytes(StandardCharsets.UTF_8);
     }
 
     /**
@@ -245,7 +237,7 @@ public class WSCredentialImpl implements WSCredential, ExpirableCredential {
 
     /**
      * Sets the expiration in milliseconds.
-     * 
+     *
      * @param expiration credential expiration in milliseconds.
      */
     @Override

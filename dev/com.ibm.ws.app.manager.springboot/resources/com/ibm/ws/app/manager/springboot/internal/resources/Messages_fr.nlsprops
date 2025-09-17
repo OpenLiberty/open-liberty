@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=Configurez un fichier JAR de serve
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: L'application n'a pas pu d\u00e9marrer car l'application Spring Boot est introuvable dans le fichier JAR de serveur Liberty conditionn\u00e9.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Le fichier JAR de serveur Liberty conditionn\u00e9 doit contenir une application Spring Boot configur\u00e9e.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configurez un fichier JAR de serveur Liberty conditionn\u00e9 valide.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: La fonction {0} doit \u00eatre configur\u00e9e dans le fichier server.xml. La fonction {1} est configur\u00e9e et l''application a un contenu Spring Boot {2}.
+error.spring4.required.explanation=La fonction Spring Boot actuellement configur\u00e9e n'est pas compatible avec le contenu de l'application.
+error.spring4.required.useraction=Configurez une version de la fonction Spring Boot compatible avec le contenu de l'application.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: La fonction servlet-6.1 ou une version ult\u00e9rieure doit \u00eatre configur\u00e9e. La fonction springBoot-4.0 est configur\u00e9e et l'application utilise des servlets.
+error.spring4.requires.servlet61.or.later.application.explanation=L'application utilise des servlets, mais aucune fonction de servlet n'est configur\u00e9e.
+error.spring4.requires.servlet61.or.later.application.useraction=Configurez la fonction de servlet sp\u00e9cifi\u00e9e.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: La fonction websocket-2.2 ou une version ult\u00e9rieure doit \u00eatre configur\u00e9e. La fonction springBoot-4.0 est configur\u00e9e et l'application utilise WebSockets.
+error.spring4.requires.websocket22.or.later.application.explanation=L'application utilise WebSockets mais aucune fonction websocket n'est configur\u00e9e.
+error.spring4.requires.websocket22.or.later.application.useraction=Configure la fonctionnalit\u00e9 websocket sp\u00e9cifi\u00e9e.

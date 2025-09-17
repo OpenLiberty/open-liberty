@@ -129,16 +129,7 @@ assemble {
     
 }
 
-
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
-
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
 
 autoFVT.doLast {
   /*
@@ -200,9 +191,4 @@ autoFVT.doLast {
    */
   delete new File(autoFvtDir, 'lib/htmlunit-2.44.0.jar')
   delete new File(autoFvtDir, 'lib/com.ibm.ws.org.apache.commons.lang3.jar')
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
 }

@@ -122,4 +122,5 @@ instrument.disabled: true
 	io.openliberty.endpoint,\
 	io.openliberty.io.netty,\
 	io.openliberty.netty.internal,\
-	io.openliberty.io.netty.ssl
+	io.openliberty.io.netty.ssl,\
+  com.ibm.ws.kernel.service;version=latest

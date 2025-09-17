@@ -281,6 +281,13 @@ public class ApplicationProcessor {
                     newCacheEntry.setModel(openAPIModel);
                     newCacheEntry.write();
                 }
+            } else {
+                //We may have a cached copy, if we do we want to run the versionUseageChecker against it
+                //But only if we have an index, for performance reasons we don't want to build one just to run the checker
+                Index index = loadedCacheEntry.getIndex();
+                if (index != null) {
+                    versionUsageCheckers.forEach(checker -> checker.checkAnnotations(index, versionConfig.getVersion()));
+                }
             }
 
             if (openAPIModel != null) {

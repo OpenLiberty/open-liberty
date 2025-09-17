@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,24 +24,29 @@ import javax.management.remote.JMXConnector;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.CheckpointRule;
+import componenttest.rules.repeater.CheckpointRule.ServerMode;
+import componenttest.rules.repeater.EE7FeatureReplacementAction;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
+@CheckpointTest(alwaysRun = true)
 public class EJBJ2EEManagementTest {
     private static final String SERVER_NAME = "com.ibm.ws.ejbcontainer.management.j2ee.fat";
     private static final String APP_NAME = "EJBJ2EEManagement";
@@ -52,14 +57,24 @@ public class EJBJ2EEManagementTest {
     @Server("com.ibm.ws.ejbcontainer.management.j2ee.fat")
     public static LibertyServer server;
 
+    public static RepeatTests r = RepeatTests //
+                    .with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.management.j2ee.fat")) //
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.management.j2ee.fat"));
+
+    public static CheckpointRule checkpointRule = new CheckpointRule() //
+                    .setConsoleLogName(EJBJ2EEManagementTest.class.getSimpleName() + ".log") //
+                    .addUnsupportedRepeatIDs(EE7FeatureReplacementAction.ID, EmptyAction.ID) //
+                    .setServerSetup(EJBJ2EEManagementTest::serverSetUp)//
+                    .setServerStart(EJBJ2EEManagementTest::serverStart)//
+                    .setServerTearDown(EJBJ2EEManagementTest::serverTearDown)//
+                    .setAssertNoAppRestartOnRestore(false);
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.management.j2ee.fat")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.management.j2ee.fat"));
+    public static RuleChain chain = RuleChain.outerRule(r).around(checkpointRule);
 
     private static JMXConnector jmxConnector;
     private static MBeanServerConnection mbsc;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
+    public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
         // Use ShrinkHelper to build the EJBJ2EEManagement ear
         JavaArchive ExcEJBJ2EEManagementJar = ShrinkHelper.buildJavaArchive(MODULE_NAME, "com.ibm.ws.ejbcontainer.management.j2ee.fat.ejb.");
         ExcEJBJ2EEManagementJar = (JavaArchive) ShrinkHelper.addDirectory(ExcEJBJ2EEManagementJar, "test-applications/EJBJ2EEManagement.jar/resources");
@@ -70,14 +85,17 @@ public class EJBJ2EEManagementTest {
         ShrinkHelper.exportAppToServer(server, EJBJ2EEManagementApp, DeployOptions.SERVER_ONLY);
 
         server.setupForRestConnectorAccess();
-        server.startServer();
 
+        return server;
+    }
+
+    public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
+        server.startServer();
         jmxConnector = server.getJMXRestConnector();
         mbsc = jmxConnector.getMBeanServerConnection();
     }
 
-    @AfterClass
-    public static void afterClass() throws Exception {
+    public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {
         if (server != null && server.isStarted()) {
             if (jmxConnector != null) {
                 jmxConnector.close();

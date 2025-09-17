@@ -212,7 +212,7 @@ public class OidcClientUtilTest extends CommonTestClass {
         try {
             final String strTokenEndpoint = "https://unknown.ibm.com:8020/openidserver/token";
             final String strClientId = "client01";
-            final String strClientSecret = "secret";
+            final String strClientSecret = "secret1234";
             final OidcClientUtil oicu = new OidcClientUtil();
             oicu.oidcHttpUtil = oidcHttpUtil;
 

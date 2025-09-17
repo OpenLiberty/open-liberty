@@ -42,7 +42,9 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,9 +53,11 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
+import io.openliberty.microprofile.openapi40.fat.FATSuite;
 import io.openliberty.microprofile.openapi40.fat.versionwarning.app.VersionWarningApplication;
 import io.openliberty.microprofile.openapi40.fat.versionwarning.app.VersionWarningDataObject;
 
@@ -63,8 +67,14 @@ import io.openliberty.microprofile.openapi40.fat.versionwarning.app.VersionWarni
 @RunWith(FATRunner.class)
 public class VersionWarningTest extends FATServletClient {
 
-    @Server("OpenAPIVersionWarningServer")
+    private static final String SERVER_NAME = "OpenAPIVersionWarningServer";
+    private static final String APP_NAME = "testWarning";
+
+    @Server(SERVER_NAME)
     public static LibertyServer server;
+
+    @ClassRule
+    public static RepeatTests r = FATSuite.defaultRepeat(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -88,14 +98,25 @@ public class VersionWarningTest extends FATServletClient {
     public void testVersionWarning() throws Exception {
         setOpenAPIVersion("3.0");
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "testWarning.war")
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(VersionWarningApplication.class.getPackage());
 
         server.setMarkToEndOfLog();
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
+        //Assert the version warnings appear on app startup
+        assertVersionWarnings("Failed to find warning on app startup");
+
+        //Assert the version warnings appear on app restart
+        server.setMarkToEndOfLog();
+        Assert.assertTrue("failed to restart the test application", server.restartDropinsApplication(APP_NAME + ".war"));
+        assertVersionWarnings("Failed to find warning on app restart");
+    }
+
+    @SuppressWarnings("unchecked")
+    private void assertVersionWarnings(String message) throws Exception {
         // Assert that the correct warnings are produced
-        assertThat(server.findStringsInLogsUsingMark("CWWKO1687W", server.getDefaultLogFile()),
+        assertThat(message, server.findStringsInLogsUsingMark("CWWKO1687W", server.getDefaultLogFile()),
                    containsInAnyOrder(warningFor(Info.class, "summary", VersionWarningApplication.class),
                                       warningFor(License.class, "identifier", VersionWarningApplication.class),
                                       warningFor(Components.class, "pathItems", VersionWarningApplication.class),
@@ -155,14 +176,13 @@ public class VersionWarningTest extends FATServletClient {
         assertJsonPathMissing(openapiDoc, "components/schemas/VersionWarningDataObject/properties/encodedTest/contentEncoding");
         assertJsonPathMissing(openapiDoc, "components/schemas/VersionWarningDataObject/properties/encodedTest/contentMediaType");
         assertJsonPathMissing(openapiDoc, "components/schemas/VersionWarningDataObject/properties/encodedTest/contentSchema");
-
     }
 
     @Test
     public void testNoVersionWarning() throws Exception {
         setOpenAPIVersion("3.1");
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "testWarning.war")
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                                    .addPackage(VersionWarningApplication.class.getPackage());
 
         server.setMarkToEndOfLog();

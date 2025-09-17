@@ -12,6 +12,7 @@
     <featureManager>
         <feature>restfulWS-3.1</feature>
         <feature>mpOpenAPI-3.1</feature>
+        <feature>mpConfig-3.1</feature>
         <feature>transportSecurity-1.0</feature>
     </featureManager>
     

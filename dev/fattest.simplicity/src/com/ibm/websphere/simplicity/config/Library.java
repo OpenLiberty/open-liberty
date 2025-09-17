@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ public class Library extends ConfigElement {
     private String fileRef;
     private String filesetRef;
     private String folderRef;
+    private String pathRef;
     private String name;
 
     @XmlElement(name = "file")
@@ -39,6 +40,9 @@ public class Library extends ConfigElement {
 
     @XmlElement(name = "folder")
     private ConfigElementList<Folder> folders;
+
+    @XmlElement(name = "path")
+    private ConfigElementList<Path> paths;
 
     @XmlAttribute(name = "apiTypeVisibility")
     public void setApiTypeVisibility(String apiTypeVisibility) {
@@ -127,10 +131,35 @@ public class Library extends ConfigElement {
     }
 
     /**
+     * @param pathRef the ID of the path that this library uses
+     */
+    @XmlAttribute(name = "pathRef")
+    public void setPathRef(String pathRef) {
+        this.pathRef = ConfigElement.getValue(pathRef);
+    }
+
+    /**
+     * Convenience method for setting pathRef from a path
+     */
+    @XmlTransient
+    public void setPath(Path path) {
+        if (path != null) {
+            this.setPathRef(path.getId());
+        }
+    }
+
+    /**
      * @return the ID of the folder that this library uses
      */
     public String getFolderRef() {
         return this.folderRef;
+    }
+
+    /**
+     * @return the ID of the path that this library uses
+     */
+    public String getPathRef() {
+        return this.pathRef;
     }
 
     @XmlAttribute(name = "name")
@@ -161,6 +190,13 @@ public class Library extends ConfigElement {
             this.folders = new ConfigElementList<Folder>();
         }
         return this.folders;
+    }
+
+    public ConfigElementList<Path> getPaths() {
+        if (this.paths == null) {
+            this.paths = new ConfigElementList<Path>();
+        }
+        return this.paths;
     }
 
     /**

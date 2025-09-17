@@ -37,5 +37,6 @@ fat.project: true
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	com.ibm.ws.repository_fat_shared;version=latest,\
 	com.ibm.ws.repository.test.utils;version=latest,\
-	com.ibm.websphere.javaee.jsonp.1.0;version=latest
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.ws.kernel.service;version=latest
 	

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.LDAPFatUtils;
+import componenttest.annotation.SkipIfSysProp;
 
 /**
  * Tests Kerberos bind (GSSAPI) for Ldap, using primarily the krb5TicketCache.
@@ -124,6 +125,7 @@ public class TicketCacheBindTest extends CommonBindTest {
      */
     @AllowedFFDC({ "javax.naming.NamingException", "javax.security.auth.login.LoginException" })
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to readOnly setting not applied correctly on those systems
     public void readOnlyTicketCache() throws Exception {
         /*
          * Setting the file to unreadable only works on *nix systems.

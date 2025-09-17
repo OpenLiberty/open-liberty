@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package com.ibm.ws.ui.internal.persistence;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.NoSuchFileException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -216,7 +217,7 @@ public class FilePersistenceProvider implements IPersistenceProvider {
         try {
             synchronized (file) {
                 createParentIfNeeded(file);
-                org.apache.commons.io.FileUtils.writeStringToFile(file, content, "UTF-8");
+                org.apache.commons.io.FileUtils.writeStringToFile(file, content, StandardCharsets.UTF_8);
             }
         } catch (IOException e) {
             Tr.error(tc, "FILE_PERSISTENCE_STORE_IO_ERROR", file.getAbsolutePath(), e.getMessage());
@@ -273,7 +274,7 @@ public class FilePersistenceProvider implements IPersistenceProvider {
         final File file = getPersistenceFileLockObj(name);
         try {
             synchronized (file) {
-                return org.apache.commons.io.FileUtils.readFileToString(file, "UTF-8");
+                return org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             }
         } catch (FileNotFoundException e) {
             // This is an expected error flow, do not FFDC or log anything

@@ -24,7 +24,7 @@
 <%
 	boolean submit = false;
 	String clientId = "key";
-	String clientSecret = "secret";
+	String clientSecret = "secret1234";
 	String refreshToken = "ENTER HERE";
 	String urlBase = "https://localhost:9443";
 	String tokenEndpoint = urlBase + "/oauth/token.jsp";

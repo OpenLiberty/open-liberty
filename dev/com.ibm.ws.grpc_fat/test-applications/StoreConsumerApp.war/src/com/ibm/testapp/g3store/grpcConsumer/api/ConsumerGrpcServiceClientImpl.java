@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,7 +52,8 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ConsumerGrpcServiceClientImpl.class.getName());
 
-    private final int deadlineMs = 60 * 1000;
+    // Two minute timeout for server response
+    private final int deadline = 120;
 
     // gRPC client implementation(s)
 
@@ -75,7 +76,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 }
                 // get the data back from grpc service
                 resp = get_consumerService()
-                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .withDeadlineAfter(deadline, TimeUnit.SECONDS)
                                 .getAppNameSetBadRoles(Empty.getDefaultInstance());
             } else if (testMethodName.equalsIgnoreCase("testGetAppName_CookieAuth_GrpcClient")) {
                 if (log.isLoggable(Level.FINE)) {
@@ -83,7 +84,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 }
                 // get the data back from grpc service
                 resp = get_consumerService()
-                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .withDeadlineAfter(deadline, TimeUnit.SECONDS)
                                 .getNameCookieJWTHeader(Empty.getDefaultInstance());
             } else if (testMethodName.equalsIgnoreCase("testGetAppName_BadRole_CookieAuth_GrpcClient")) {
                 if (log.isLoggable(Level.FINE)) {
@@ -91,7 +92,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 }
                 // get the data back from grpc service
                 resp = get_consumerService()
-                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .withDeadlineAfter(deadline, TimeUnit.SECONDS)
                                 .getAppSetBadRoleCookieJWTHeader(Empty.getDefaultInstance());
             } else {
 
@@ -100,7 +101,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
                 }
                 // get the data back from grpc service
                 resp = get_consumerService()
-                                .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                                .withDeadlineAfter(deadline, TimeUnit.SECONDS)
                                 .getAllAppNames(Empty.getDefaultInstance());
             }
 
@@ -170,7 +171,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
             }
             // get the data back from grpc service
             NameResponse resp = get_consumerService()
-                            .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                            .withDeadlineAfter(deadline, TimeUnit.SECONDS)
                             .getAllAppNamesAuthHeaderViaCallCred(Empty.getDefaultInstance());
 
             if (log.isLoggable(Level.FINE)) {
@@ -220,7 +221,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
 
         try {
             appStruct_gRPCResponse = get_consumerService()
-                            .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                            .withDeadlineAfter(deadline, TimeUnit.SECONDS)
                             .getAppInfo(appReq)
                             .getRetailApp();
 
@@ -299,7 +300,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         // This is BIDI streaming call
 
         StreamObserver<AppNameRequest> requestObserver = get_asyncConsumerStub()
-                        .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                        .withDeadlineAfter(deadline, TimeUnit.SECONDS)
                         .getPrices(new StreamObserver<PriceResponse>() {
 
                             @Override
@@ -391,7 +392,7 @@ public class ConsumerGrpcServiceClientImpl extends ConsumerGrpcServiceClient {
         try {
             // Wait for the grpc service response to complete. If we return the client response too quickly (ie. this timeout is too small)
             // the connection will be closed  and the test will not get the correct response data and IOExceptions might be thrown.
-            latch.await(deadlineMs, TimeUnit.MILLISECONDS);
+            latch.await(deadline, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
 
             e.printStackTrace();

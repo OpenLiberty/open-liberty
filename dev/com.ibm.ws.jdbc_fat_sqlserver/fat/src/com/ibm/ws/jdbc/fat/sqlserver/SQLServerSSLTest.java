@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -54,12 +55,14 @@ public class SQLServerSSLTest extends FATServletClient {
     @TestServlet(servlet = SQLServerTestSSLServlet.class, path = APP_NAME + '/' + SERVLET_NAME)
     public static LibertyServer server;
 
-    private static final DockerImageName sqlserverImage = DockerImageName.parse("kyleaure/sqlserver-ssl:2019-CU18-ubuntu-20.04")//
+    private static final DockerImageName SQLSERVER_SSL = ImageBuilder //
+                    .build("sqlserver-ssl:2022.0.0.1-latest") //
+                    .getDockerImageName() //
                     .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server");
 
     @ClassRule
-    public static JdbcDatabaseContainer<?> sqlserver = new MSSQLServerContainer<>(sqlserverImage) //
-                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver")) //
+    public static JdbcDatabaseContainer<?> sqlserver = new MSSQLServerContainer<>(SQLSERVER_SSL) //
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "sqlserver-ssl")) //
                     .withInitScript("init-sqlserver.sql") // from fattest.simplicity
                     .withUrlParam("SSLProtocol", "TLSv1.2") // See documentation here: https://github.com/microsoft/mssql-jdbc/wiki/SSLProtocol
                     .acceptLicense();
@@ -78,10 +81,7 @@ public class SQLServerSSLTest extends FATServletClient {
         // Create a normal Java EE application and export to server
         ShrinkHelper.defaultApp(server, APP_NAME, "web.ssl");
 
-        // TODO extract security files from container prior to server start
-        // TODO delete security files from git
-
-//        sqlserver.copyFileFromContainer("/truststore.p12", server.getServerRoot() + "/security/truststore.p12");
+        sqlserver.copyFileFromContainer("/tmp/truststore.p12", server.getServerRoot() + "/security/truststore.p12");
 
         server.startServer();
     }
@@ -96,6 +96,7 @@ public class SQLServerSSLTest extends FATServletClient {
     @Test
     public void testConnectionWithSSLSecure() throws Exception {
         /*
+         * FIXME If we create the keystore in container using openssl is this still a concern?
          * Keystore is PKCS12 and was created using openjdk.
          * Our z/OS and SOE test systems use IBM JDK and will fail with
          * java.io.IOException: Invalid keystore format

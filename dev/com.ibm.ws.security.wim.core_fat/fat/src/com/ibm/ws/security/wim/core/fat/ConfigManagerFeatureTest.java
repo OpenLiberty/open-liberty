@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -62,7 +62,7 @@ public class ConfigManagerFeatureTest {
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
 
-        server.stopServer();
+        server.stopServer("CWWKE1102W"); //ignore server quiesce timeouts due to slow test machines
 
         server.uninstallUserBundle("com.ibm.ws.security.wim.repository_test.custom_1.0");
         server.uninstallUserFeature("customRepositorySample-1.0");

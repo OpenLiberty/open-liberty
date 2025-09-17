@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -167,7 +167,23 @@ public class BroadcasterTestServlet extends FATServlet {
                 events.clear();
                 clientListener.setLatch(latch);
             }
-            
+
+            int numOfClosedClients = target.path("numClosedClients").request().get().readEntity(Integer.class);
+
+            if (numOfClosedClients != 2) {
+                int retries = 0;
+
+                // if it isn't 2, retry 10 times with a 500 ms sleep between each retry
+                // closedSinkTest is run asynchronously so the close may not have finished yet so 
+                // retry until both are closed
+                do {
+                    Thread.sleep(500);
+                    numOfClosedClients = target.path("numClosedClients").request().get().readEntity(Integer.class);
+                    retries++;
+                } while (numOfClosedClients != 2 && retries < 10);
+            }
+            assertEquals(2, numOfClosedClients);
+
             target.request().put(Entity.text("Event1"));
             
             if (!latch.await(timeout, TimeUnit.SECONDS)) {
@@ -185,6 +201,19 @@ public class BroadcasterTestServlet extends FATServlet {
             assertEquals(2, numOfReceivedEvents);
             
             int numOfRegisteredClients = target.path("numSinks").request().get().readEntity(Integer.class);
+
+            if (numOfRegisteredClients != 2) {
+                int retries = 0;
+
+                // if it isn't 2, retry 10 times with a 500 ms sleep between each retry
+                // On RestEasy, the close doesn't remove the sink from the broadcaster until
+                // the broadcaster attempts to broadcast "Event1" on the closed sinks
+                do {
+                    Thread.sleep(500);
+                    numOfRegisteredClients = target.path("numSinks").request().get().readEntity(Integer.class);
+                    retries++;
+                } while (numOfRegisteredClients != 2 && retries < 10);
+            }
             assertEquals(2, numOfRegisteredClients);
         } finally {
             target.request().delete();

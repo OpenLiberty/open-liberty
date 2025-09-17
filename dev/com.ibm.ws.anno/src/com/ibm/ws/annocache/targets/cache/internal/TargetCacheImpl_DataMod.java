@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.ibm.ws.annocache.targets.internal.TargetsTableContainersImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableImpl;
 import com.ibm.ws.annocache.util.internal.UtilImpl_InternMap;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.wsspi.annocache.util.Util_Consumer;
 
@@ -95,6 +96,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
         this.consLock = new ConsLock();
         this.cons = new HashMap<String, TargetCacheImpl_DataCon>();
+        this.queriesLock = new QueriesLock();
 
         this.containersFile = getDataFile(TargetCache_ExternalConstants.CONTAINERS_NAME);
 
@@ -167,6 +169,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         if ( getUseBinaryFormat() ) {
             Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
                 new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
                         reader.readEntire(containerTable);
                     }
@@ -192,6 +195,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeAction = null;
             writeActionBinary =
                 new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_WriterBinary writer) throws IOException {
                         writer.writeEntire(containerTable);
                     }
@@ -199,6 +203,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             writeAction =
                 new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_Writer writer) throws IOException {
                         writer.write(containerTable);
                     }
@@ -213,7 +218,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
     //
 
-    private class ConsLock {
+    protected static class ConsLock {
         // EMPTY
     }
     private final ConsLock consLock;
@@ -387,6 +392,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         if ( getUseBinaryFormat() ) {
             Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
                 new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
                         reader.readEntireUnresolvedRefs(i_unresolvedClassNames, classNameInternMap);
                     }
@@ -440,6 +446,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeAction = null;
             writeActionBinary =
                 new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_WriterBinary writer) throws IOException {
                         writer.writeUnresolvedRefsEntire(useClassNames);
                     }
@@ -447,6 +454,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             writeAction =
                 new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_Writer writer) throws IOException {
                         writer.writeUnresolvedRefs(useClassNames);
                     }
@@ -494,6 +502,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         if ( getUseBinaryFormat() ) {
             Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
                 new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
                         reader.readEntireResolvedRefs(i_resolvedClassNames, classNameInternMap);
                     }
@@ -546,6 +555,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeAction = null;
             writeActionBinary =
                 new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_WriterBinary writer) throws IOException {
                         writer.writeResolvedRefsEntire(useClassNames);
                     }
@@ -553,6 +563,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             writeAction =
                 new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_Writer writer) throws IOException {
                         writer.writeResolvedRefs(useClassNames);
                     }
@@ -585,6 +596,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         if ( getUseBinaryFormat() ) {
             Util_Consumer<TargetCacheImpl_ReaderBinary, IOException> readAction =
                 new Util_Consumer<TargetCacheImpl_ReaderBinary, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_ReaderBinary reader) throws IOException {
                         reader.readEntire(classesTable);
                     }
@@ -612,6 +624,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
             writeAction = null;
             writeActionBinary =
                 new Util_Consumer<TargetCacheImpl_WriterBinary, IOException>() {
+                    @Override
                     public void accept (TargetCacheImpl_WriterBinary writer) throws IOException {
                         // See the comment on 'mergeClasses': This must be synchronized
                         // with updates to the class table which occur in 
@@ -624,6 +637,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         } else {
             writeAction =
                 new Util_Consumer<TargetCacheImpl_Writer, IOException>() {
+                    @Override
                     public void accept(TargetCacheImpl_Writer writer) throws IOException {
                         // See the comment on 'mergeClasses': This must be synchronized
                         // with updates to the class table which occur in 
@@ -694,5 +708,60 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         getApp().scheduleWrite(this,
             description, outputFile, doTruncate,
             writeAction, writeActionBinary);
+    }
+
+    // Query data storage.
+
+    private class QueriesLock {
+        // EMPTY
+    }
+    private final QueriesLock queriesLock;
+
+    private TargetCacheImpl_DataQueries queriesData;
+
+    /**
+     * Obtain query cache data for this module.
+     * 
+     * Create new data if the application is unnamed or the module is unnamed.
+     * 
+     * Otherwise, either retrieve data from the queries store,
+     * or create and store new data, and return the new data.
+     *
+     * @param appName The name of the application.
+     * @param modName The name of the module.
+     *
+     * @return Query cache data for the module.
+     */
+    public TargetCacheImpl_DataQueries getQueriesForcing() {
+        // Unnamed data always create new data.
+        if ( (app.getName() == ClassSource_Factory.UNNAMED_APP) ||
+             (getName() == ClassSource_Factory.UNNAMED_MOD) ) {
+            return createQueriesData();
+        }
+
+        synchronized( queriesLock ) {
+            if ( queriesData == null ) {
+                queriesData = createQueriesData();
+            }
+            return queriesData;
+        }
+    }
+
+    /**
+     * Factory method: Create queries data for a module.
+     *
+     * @param appName The name of the application.
+     * @param e_appName The encoded name of the application.
+     * @param modName The name of the module.
+     * @param e_modName The encoded name of the module.
+     * @param modDir The module cache directory.
+     *
+     * @return New queries data for the module.
+     */
+    @Trivial
+    private TargetCacheImpl_DataQueries createQueriesData() {
+        return getFactory().createQueriesData(
+            app.getName(), app.e_getName(),
+            getName(), e_getName(), getDataFile());
     }
 }

@@ -551,7 +551,7 @@ public class GuaranteedTargetStream extends ControllableStream implements Target
                     // target) see a gap appear, nack the gap (after a few milliseconds) then the
                     // message arrives anyway so we add it to the stream. Then the source receives
                     // the nack and re-sends the message. When that arrives at us we just ignore it
-                    // becuase we already have it.
+                    // because we already have it.
                     // You'd expect this to happen occasionally but if it happens too often it
                     // will add unnecessary traffic, reducing performance.
                     // There are a couple of reasons this can occur:

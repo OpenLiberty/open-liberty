@@ -9,8 +9,7 @@ IBM-SPI-Package: com.ibm.wsspi.rest.handler; type="ibm-spi", \
 
 -features=\
   io.openliberty.servlet.internal-5.0, \
-  com.ibm.websphere.appserver.adminSecurity-2.0, \
-  io.openliberty.securityAPI.jakarta-1.0
+  com.ibm.websphere.appserver.adminSecurity-2.0
 
 -bundles= com.ibm.ws.rest.handler.jakarta
 

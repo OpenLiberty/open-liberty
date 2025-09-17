@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2024 IBM Corporation and others.
+ * Copyright (c) 2015,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -234,10 +234,10 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             return;
         }
 
-        String minJava21 = "Java SE 21, Java SE 23";
-        String minJava17 = "Java SE 17, Java SE 21, Java SE 23";
-        String minJava11 = "Java SE 11, Java SE 17, Java SE 21, Java SE 23";
-        String minJava8 = "Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 23";
+        String minJava21 = "Java SE 21, Java SE 24";
+        String minJava17 = "Java SE 17, Java SE 21, Java SE 24";
+        String minJava11 = "Java SE 11, Java SE 17, Java SE 21, Java SE 24";
+        String minJava8 = "Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 24";
 
         // The min version should have been validated when the ESA was constructed
         // so checking for the version string should be safe

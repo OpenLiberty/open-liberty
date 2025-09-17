@@ -1,13 +1,10 @@
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME N/A
 #COMPONENTPREFIX CWWKO
@@ -173,3 +170,11 @@ OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Elimina\u021bi proprietatea Mi
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Elementul de adnotare {0} din clasa {1} este ignorat deoarece necesit\u0103 versiunea OpenAPI {2}, dar versiunea curent\u0103 OpenAPI este {3}.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=Elementul de adnotare se refer\u0103 la o caracteristic\u0103 ad\u0103ugat\u0103 la o versiune mai nou\u0103 a specifica\u021biei OpenAPI dec\u00e2t cea configurat\u0103. Versiunea OpenAPI \u00een uz nu poate reprezenta aceste informa\u021bii, astfel \u00eenc\u00e2t acestea sunt excluse din documenta\u021bia OpenAPI produs\u0103.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Lua\u021bi \u00een considerare eliminarea elementului de adnotare sau setarea elementului de configurare openAPIVersion la o versiune care \u00eel accept\u0103 \u00een fi\u0219ierul server.xml.
+
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W=CWWKO1688W: A ap\u0103rut o eroare la citirea cache-ului OpenAPI pentru aplica\u021bia {0}. Memoria cache nu va fi utilizat\u0103. Eroarea este {1}
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.explanation=Caracteristica MicroProfile OpenAPI stocheaz\u0103 anumite date calculate \u00een timpul pornirii aplica\u021biei pentru a evita recalcularea acestor date la viitoarele porniri ale serverului, dac\u0103 aplica\u021bia este neschimbat\u0103. S-a produs o eroare la \u00eencercarea de citire a acestor date, astfel \u00eenc\u00e2t acestea vor fi recalculate.
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W=CWWKO1689W: A ap\u0103rut o eroare la scrierea cache-ului OpenAPI pentru aplica\u021bia {0}. Cache-ul nu va fi disponibil la urm\u0103toarea pornire. Eroarea este {1}
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.explanation=Caracteristica MicroProfile OpenAPI stocheaz\u0103 anumite date calculate \u00een timpul pornirii aplica\u021biei pentru a evita recalcularea acestor date la viitoarele porniri ale serverului, dac\u0103 aplica\u021bia este neschimbat\u0103. A avut loc o eroare la \u00eencercarea de a scrie aceste date, astfel \u00eenc\u00e2t acestea vor fi recalculate data viitoare c\u00e2nd serverul este pornit.
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.

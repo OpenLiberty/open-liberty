@@ -243,6 +243,9 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     }
   }
+  
+  def publishBaseDir = new File(autoFvtDir, 'publish') 
+  defaultCopyLTPAFIPSKeys(publishBaseDir)
 }
 
 assemble { 

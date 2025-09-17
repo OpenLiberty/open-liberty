@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.utility.DockerImageName;
 
-import componenttest.containers.ArtifactoryImageNameSubstitutor;
+import componenttest.containers.ImageHelper;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
@@ -99,12 +99,12 @@ public class SyntheticImageTest {
 
     /**
      * If testcontainers ever changes the way that it names synthetic images we need
-     * to change the way we determine an image is synthetic in the ArtifactoryImageNameSubstitutor
+     * to change the way we determine an image is synthetic in the ImageHelper
      *
      * NOTE: this test was written due to a BUG: https://github.com/testcontainers/testcontainers-java/issues/5194
      * Expect this to be fixed in later versions
      *
-     * @see ArtifactoryImageNameSubstitutor#isSynthetic()
+     * @see ImageHelper#isSynthetic()
      */
 //    @Test
 //    public void ensureSyntheticImageNameWithRealContainer() {
@@ -120,7 +120,7 @@ public class SyntheticImageTest {
 
     /**
      * If docker-java ever changes the way that it names committed images we need
-     * to change the way we determine an image is committed in the ArtifactoryImageNameSubstitutor
+     * to change the way we determine an image is committed in the ImageHelper
      *
      * NOTE: This model of committing a container to an image, just to turn around and start it as a container
      * will result in VERY poor test performance. Please consider using a DockerFile or Programmatic image instead!
@@ -152,12 +152,12 @@ public class SyntheticImageTest {
 
     /**
      * If testcontainers ever changes the way that it names synthetic images we need
-     * to change the way we determine an image is synthetic in the ArtifactoryImageNameSubstitutor
+     * to change the way we determine an image is synthetic in the ImageHelper
      *
      * NOTE: this test was written due to a BUG: https://github.com/testcontainers/testcontainers-java/issues/5194
      * Expect this to be fixed in later versions
      *
-     * @see ArtifactoryImageNameSubstitutor#isSynthetic()
+     * @see ImageHelper#isSynthetic()
      */
     @Test
     public void ensureSyntheticImageName() {
@@ -171,7 +171,7 @@ public class SyntheticImageTest {
 
     /**
      * If docker-java ever changes the way that it names committed images we need
-     * to change the way we determine an image is committed in the ArtifactoryImageNameSubstitutor
+     * to change the way we determine an image is committed in the ImageHelper
      *
      * NOTE: This model of committing a container to an image, just to turn around and start it as a container
      * will result in VERY poor test performance. Please consider using a DockerFile or Programmatic image instead!

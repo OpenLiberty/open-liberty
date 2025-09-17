@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,8 @@ import javax.xml.bind.annotation.XmlElement;
  */
 public class HttpEndpoint extends ConfigElement {
 
+    @XmlElement(name = "httpOptions")
+    private HttpOptions httpOptions;
     @XmlElement(name = "tcpOptions")
     private TcpOptions tcpOptions;
     @XmlElement(name = "sslOptions")
@@ -37,6 +39,16 @@ public class HttpEndpoint extends ConfigElement {
     private String httpPort;
     private String httpsPort;
     private String protocolVersion;
+
+    /**
+     * @return HTTP options for this configuration
+     */
+    public HttpOptions getHttpOptions() {
+        if (this.httpOptions == null) {
+            this.httpOptions = new HttpOptions();
+        }
+        return this.httpOptions;
+    }
 
     /**
      * @return TCP options for this configuration
@@ -189,6 +201,8 @@ public class HttpEndpoint extends ConfigElement {
             buf.append(tcpOptions.toString());
         if (this.sslOptions != null)
             buf.append(sslOptions.toString());
+        if (this.httpOptions != null)
+            buf.append(httpOptions.toString());
         if (this.sameSite != null)
             buf.append(sameSite.toString());
         if (samesiteRef != null)

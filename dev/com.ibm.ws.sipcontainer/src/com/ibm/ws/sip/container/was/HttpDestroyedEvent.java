@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.was;
 
@@ -26,7 +23,6 @@ public class HttpDestroyedEvent extends EventObject {
 
 	public HttpDestroyedEvent(HttpSession source) {
 		super(source);
-		// TODO Auto-generated constructor stub
 	}
 
 	/**

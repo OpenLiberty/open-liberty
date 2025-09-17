@@ -3,41 +3,43 @@ product: Liberty
 name: Open Liberty Delivery Requirements Verification
 description: "Examines Open Liberty code changes for delivery standards compliance"
 triggers:
-- type: github
-  description: "Runs CI Orchestrator-managed Jenkins jobs to examine pull request changes and create required status checks"
+- type: manual
+  description: "Examines Open Liberty code changes for delivery standards compliance. Not a replacement for the Open Liberty Personal Build."
   triggerName: "libby"
   triggerRank: 50
   groups: ["LibertyDev"]
-  keyword: "!libby"
-  aliasKeywords:
-    - "#run-libby-bot"
-    - "#run-libby"
-    - "#libby"
   propertyDefinitions:
     - name: githubPRNumber
-      defaultValue: ${github_pr_number}
-    - name: githubPRApi
-      defaultValue: ${github_pr_api}
+      isRequired: true
+      description: "PR number to perform delivery requirement verification against e.g. 30188"
 
 steps:
 - stepName: PR Changes
   workType: PRChangesDetection
   timeoutInMinutes: 30
+  properties:
+    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
 
 - stepName: Copyright Header Check
   workType: Jenkins
   projectName: copyrightHeaderCheck
   timeoutInMinutes: 120
+  properties:
+    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"  
 
 - stepName: Prohibited Terms Check
   workType: Jenkins
   projectName: prohibitedTermsCheck
   timeoutInMinutes: 120
+  properties:
+    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
 
 - stepName: DHE Server Artifacts Check
   workType: Jenkins
   projectName: dheServerCheck
   timeoutInMinutes: 120
+  properties:
+    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
 
 - stepName: Code Checklist Creation
   workType: Jenkins
@@ -47,6 +49,7 @@ steps:
   - stepName: PR Changes
     awaitOutputProperties: true
   properties:
+    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
     isBvtCodeChanged: ${PR Changes:is.bvt.code.changed}
     isFatCodeChanged: ${PR Changes:is.fat.code.changed}
     isFeatureFilesChanged: ${PR Changes:is.feature.files.changed}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.containers.KeystoreBuilder;
+import componenttest.containers.KeystoreBuilder.STORE_TYPE;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -55,6 +57,14 @@ public class CloudantTest extends FATServletClient {
         server.addEnvVar("cloudant_databaseName", DB_NAME);
 
         cloudant.createDb(DB_NAME);
+
+        KeystoreBuilder.of(server, cloudant)
+                        .withCertificate("server", "/etc/couchdb/cert/server.crt")
+                        .withDirectory(server.getServerRoot() + "/security")
+                        .withFilename("keystore")
+                        .withStoreType(STORE_TYPE.JKS)
+                        .withPassword("liberty")
+                        .export();
 
         ShrinkHelper.defaultApp(server, JEE_APP, "cloudant.web");
         server.startServer();
@@ -144,7 +154,8 @@ public class CloudantTest extends FATServletClient {
 
     @Test
     @AllowedFFDC({ "java.security.cert.CertPathBuilderException",
-                   "sun.security.validator.ValidatorException" })
+                   "sun.security.validator.ValidatorException",
+                   "com.ibm.security.cert.IBMCertPathBuilderException" })
     public void testInvalidSSL() throws Exception {
         runTest();
     }

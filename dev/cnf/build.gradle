@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 configurations {
@@ -24,7 +21,7 @@ dependencies {
     binaries "com.fasterxml.jackson.core:jackson-databind:2.15.2"
     binaries "org.osgi:org.osgi.core:6.0.0"
     binaries "org.apache.aries:org.apache.aries.util:1.1.3"
-    binaries "commons-io:commons-io:2.11.0"
+    binaries "commons-io:commons-io:2.19.0"
     binaries "commons-lang:commons-lang:2.4"
     binaries "org.apache.commons:commons-math:2.2"
     binaries "org.eclipse.jdt:ecj:3.22.0"
@@ -33,11 +30,11 @@ dependencies {
     binaries "com.ibm.ws.javax.j2ee:servlet:3.1"
     binaries "org.jmockit:jmockit:1.25"
     binaries "org.apache.maven:maven-model:3.5.0"
-    binaries "javax.json:javax.json-api:1.1.2"
-    binaries "org.glassfish:javax.json:1.1.2"
+    binaries "javax.json:javax.json-api:1.1.4"
+    binaries "org.glassfish:javax.json:1.1.4" //TODO update to 1.1.5.ibm from DHE
     binaries "org.codehaus.plexus:plexus-utils:3.0.24"
     binaries "org.apache.ant:ant:1.10.10"
-    binaries "com.github.mwiede:jsch:0.2.18"
+    binaries "com.github.mwiede:jsch:2.27.0"
 }
 
 //TODO: move this function somewhere common

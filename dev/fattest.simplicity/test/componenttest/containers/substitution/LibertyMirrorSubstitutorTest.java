@@ -55,7 +55,7 @@ public class LibertyMirrorSubstitutorTest {
     public void testAlreadyMirrored() {
         LibertyMirrorSubstitutor substitutor = new LibertyMirrorSubstitutor();
 
-        DockerImageName expected = DockerImageName.parse("wasliberty-intops-docker-local/websphere/internal/image:1.0");
+        DockerImageName expected = DockerImageName.parse("websphere-automation/websphere/internal/image:1.0");
         DockerImageName actual = substitutor.apply(expected);
 
         assertEquals("Already mirrored images should have been the same after substitution.",

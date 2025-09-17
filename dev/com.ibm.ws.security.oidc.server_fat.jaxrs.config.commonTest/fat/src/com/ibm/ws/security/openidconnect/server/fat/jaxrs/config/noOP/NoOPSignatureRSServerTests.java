@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,8 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * Class for RS signature algorithm tests
@@ -52,6 +55,9 @@ public class NoOPSignatureRSServerTests extends MangleJWTTestTools {
 
     private static final JwtTokenActions actions = new JwtTokenActions();
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled(OPServerName);
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
@@ -505,10 +511,12 @@ public class NoOPSignatureRSServerTests extends MangleJWTTestTools {
 
     /**
      * Test shows that the RS can not consume a JWT signed with sigAlg RS256, but a different key
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
      *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientSignatureAlgTests_SignTokenRS256_RSVerifyRS256_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS256, Constants.SIGALG_RS256);
@@ -517,10 +525,12 @@ public class NoOPSignatureRSServerTests extends MangleJWTTestTools {
 
     /**
      * Test shows that the RS can not consume a JWT signed with sigAlg RS384, but a different key
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
      *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientSignatureAlgTests_SignTokenRS384_RSVerifyRS384_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS384, Constants.SIGALG_RS384);
@@ -529,10 +539,12 @@ public class NoOPSignatureRSServerTests extends MangleJWTTestTools {
 
     /**
      * Test shows that the RS can not consume a JWT signed with sigAlg RS512, but a different key
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
      *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientSignatureAlgTests_SignTokenRS512_RSVerifyRS512_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS512, Constants.SIGALG_RS512);

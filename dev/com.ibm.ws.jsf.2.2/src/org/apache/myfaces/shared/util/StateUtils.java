@@ -49,6 +49,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 import org.apache.myfaces.shared.util.serial.SerialFactory;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * <p>This Class exposes a handful of methods related to encryption,
  * compression and serialization of the view state.</p>
@@ -158,13 +160,13 @@ public final class StateUtils
             expectedValues="true,false",group="state",tags="performance")
     public static final String COMPRESS_STATE_IN_CLIENT = INIT_PREFIX + "COMPRESS_STATE_IN_CLIENT";
 
-    public static final String DEFAULT_MAC_ALGORITHM = "HmacSHA1";
+    public static final String DEFAULT_MAC_ALGORITHM = CryptoUtils.HMACSHA1;
 
     /**
      * Indicate the algorithm used to calculate the Message Authentication Code that is
      * added to the view state.
      */
-    @JSFWebConfigParam(name="org.apache.myfaces.MAC_ALGORITHM",defaultValue="HmacSHA1",
+    @JSFWebConfigParam(name="org.apache.myfaces.MAC_ALGORITHM",defaultValue=CryptoUtils.HMACSHA1,
             group="state",tags="performance")
     public static final String INIT_MAC_ALGORITHM = "org.apache.myfaces.MAC_ALGORITHM";
     

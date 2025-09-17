@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2010, 2024 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.util.Collections;
 import javax.naming.InvalidNameException;
 import javax.naming.NameClassPair;
 import javax.naming.NamingException;
+import javax.transaction.TransactionManager;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
 
@@ -32,11 +33,9 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
 import com.ibm.tx.jta.embeddable.UserTransactionDecorator;
-import com.ibm.tx.jta.embeddable.impl.EmbeddableUserTransactionImpl;
 import com.ibm.ws.container.service.naming.JavaColonNamingHelper;
 import com.ibm.ws.container.service.naming.NamingConstants.JavaColonNamespace;
 import com.ibm.ws.tx.embeddable.EmbeddableWebSphereUserTransaction;
-import com.ibm.ws.uow.embeddable.UOWManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
@@ -97,20 +96,27 @@ public class TransactionJavaColonHelper implements JavaColonNamingHelper {
     @Override
     public Object getObjectInstance(JavaColonNamespace namespace, String name) throws NamingException {
         switch (namespace) {
-        case COMP:
-            switch (name) {
-            case "TransactionManager": return getTransactionManager();
-            case "TransactionSynchronizationRegistry": return getTransactionSynchronizationRegistry();
-            // If we have a service reference we know it's safe to return a reference
-            case "UserTransaction": return userTranSvcRef == null ? null : getUserTransaction(false, null);
-            default: return null;
-            }
-        case COMP_WS:
-            switch (name) {
-            case "UOWManager": return getUOWManager();
-            default: return null;
-            }
-        default: return null;
+            case COMP:
+                switch (name) {
+                    case "TransactionManager":
+                        return getTransactionManager();
+                    case "TransactionSynchronizationRegistry":
+                        return getTransactionSynchronizationRegistry();
+                    // If we have a service reference we know it's safe to return a reference
+                    case "UserTransaction":
+                        return userTranSvcRef == null ? null : getUserTransaction(false, null);
+                    default:
+                        return null;
+                }
+            case COMP_WS:
+                switch (name) {
+                    case "UOWManager":
+                        return getUOWManager();
+                    default:
+                        return null;
+                }
+            default:
+                return null;
         }
     }
 
@@ -130,27 +136,33 @@ public class TransactionJavaColonHelper implements JavaColonNamingHelper {
     /** {@inheritDoc} */
     @Override
     public Collection<? extends NameClassPair> listInstances(JavaColonNamespace namespace, String nameInContext) {
-
-        if (JavaColonNamespace.COMP.equals(namespace) && "".equals(nameInContext)) {
-            ArrayList<NameClassPair> retVal = new ArrayList<>();
-            if (userTranSvcRef != null) {
-                NameClassPair pair = new NameClassPair(nameInContext, EmbeddableUserTransactionImpl.class.getName());
-                retVal.add(pair);
-            }
-
-            retVal.add(new NameClassPair(nameInContext, TransactionSynchronizationRegistry.class.getName()));
-            retVal.add(new NameClassPair(nameInContext, UOWManager.class.getName()));
-
-            return retVal;
-        } else {
+        if (!"".equals(nameInContext)) {
             return Collections.emptyList();
+        }
+        switch (namespace) {
+            case COMP:
+                ArrayList<NameClassPair> retVal = new ArrayList<>();
+                if (userTranSvcRef != null) {
+                    NameClassPair pair = new NameClassPair("UserTransaction", UserTransaction.class.getName());
+                    retVal.add(pair);
+                }
+
+                retVal.add(new NameClassPair("TransactionSynchronizationRegistry", TransactionSynchronizationRegistry.class.getName()));
+                retVal.add(new NameClassPair("TransactionManager", TransactionManager.class.getName()));
+
+                return retVal;
+            case COMP_WS:
+                // Using the API type for the class name here instead of non API type com.ibm.ws.uow.embeddable.UOWManager
+                return Collections.singleton(new NameClassPair("UOWManager", com.ibm.wsspi.uow.UOWManager.class.getName()));
+            default:
+                return Collections.emptyList();
         }
     }
 
     /**
      * Helper method for use with injection TransactionObjectFactoruy.
      *
-     * @param injection if the UserTransaction is being obtained for injection
+     * @param injection        if the UserTransaction is being obtained for injection
      * @param injectionContext the injection target context if injection is true, or null if unspecified
      * @return UserTransaction object with decorator applied if present
      * @throws NamingException if the decorator determines the UserTransaction is not available
@@ -165,4 +177,3 @@ public class TransactionJavaColonHelper implements JavaColonNamingHelper {
         }
     }
 }
-

@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#    IBM Corporation 
+# This wraps the external JAR.
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+-transformer: \
+   renames;value=${workspace}/io.openliberty.org.eclipse.microprofile.health.javax/resources/rules/mpHealth-javax-renames.properties
+
+Bundle-SymbolicName: io.openliberty.org.eclipse.microprofile.health.4.0.javax; singleton:=true
+
+publish.wlp.jar.suffix: lib
+
+Import-Package: \
+  *
+
+Export-Package: org.eclipse.microprofile.health;version=4.0, \
+                org.eclipse.microprofile.health.spi;version=4.0
+
+Include-Resource: \
+  @${repo;org.eclipse.microprofile.health:microprofile-health-api;4.0.1;EXACT}
+
+-maven-dependencies: \
+   dep1;groupId=org.eclipse.microprofile.health;artifactId=microprofile-health-api;version=4.0.1;scope=runtime
+
+WS-TraceGroup: HEALTH

@@ -25,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.MinimumJavaLevel;
-import componenttest.annotation.MaximumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
@@ -33,8 +32,6 @@ import componenttest.custom.junit.runner.Mode;
 @Mode(FULL)
 @MinimumJavaLevel(javaLevel = 17)
 public class MissingSslFeatureTests30 extends AbstractSpringTests {
-
-    private static final String TEST_MISSING_SSL_FOR_30 = "testMissingSslFeatureFor30";
 
     @Override
     public boolean expectApplicationSuccess() {

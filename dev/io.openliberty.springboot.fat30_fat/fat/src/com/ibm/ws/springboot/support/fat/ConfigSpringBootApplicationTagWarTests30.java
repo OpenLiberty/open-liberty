@@ -12,18 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012,2014 IBM Corporation and others.
+ * Copyright (c) 2012,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,15 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
+import com.ibm.ws.tests.anno.caching.AppReplaceTest;
 import com.ibm.ws.tests.anno.caching.CacheEnablementTest;
 import com.ibm.ws.tests.anno.caching.FragmentOrderTest;
 import com.ibm.ws.tests.anno.caching.LooseConfigTest;
 import com.ibm.ws.tests.anno.caching.MetadataCompleteTest;
 import com.ibm.ws.tests.anno.caching.MetadataIncompleteTest;
+import com.ibm.ws.tests.anno.caching.extrascan.AnnotationScanInJarTestModeAll;
+import com.ibm.ws.tests.anno.caching.extrascan.AnnotationScanInJarTestModeEarLib;
+import com.ibm.ws.tests.anno.caching.extrascan.AnnotationScanInJarTestModeManifestClassPath;
 import com.ibm.ws.tests.anno.caching.unused.BigAppTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppDefaultAppMgrDefaultTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppDefaultAppMgrTrueTest;
@@ -53,7 +57,7 @@ import com.ibm.ws.tests.anno.jandex.JandexAppTrueAppMgrTrueTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-    // Jandex tests
+//    // Jandex tests
     JandexAppDefaultAppMgrDefaultTest.class,
     JandexAppDefaultAppMgrTrueTest.class,
     JandexAppFalseAppMgrFalseTest.class,
@@ -67,8 +71,13 @@ import com.ibm.ws.tests.anno.jandex.JandexAppTrueAppMgrTrueTest;
     MetadataIncompleteTest.class,
     FragmentOrderTest.class,
     LooseConfigTest.class,
+    AppReplaceTest.class,
 
     // BigAppTest.class
+    AnnotationScanInJarTestModeAll.class,
+    AnnotationScanInJarTestModeEarLib.class,
+    AnnotationScanInJarTestModeManifestClassPath.class
+    
 })
 
 public class FATSuite {

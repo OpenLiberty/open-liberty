@@ -302,7 +302,7 @@ public class JmsConnectionImpl implements Connection, JmsConnInternals, ApiJmsCo
         {
             try
             {
-                // We potentially have a new coreConnection becuase the creation of the JcaSession
+                // We potentially have a new coreConnection because the creation of the JcaSession
                 // detected that the coreConnection is now invalid and so a new managedConnection
                 // and coreConnection was created. So reset the coreConnection for this JmsConnection
                 // to the new one or we just set the old one again.

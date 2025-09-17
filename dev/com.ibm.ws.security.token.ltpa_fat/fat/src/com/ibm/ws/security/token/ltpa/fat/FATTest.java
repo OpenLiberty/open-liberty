@@ -60,7 +60,8 @@ public class FATTest {
     private static String ALTERNATE_KEY_PATH_FIPS = "resources/security/alternateFIPS/testLtpa.keys";
     private static String REPLACEMENT_LTPA_KEYS_PATH = "alternate/ltpa.keys";
     private static String REPLACEMENT_FIPS_LTPA_KEYS_PATH = "alternateFIPS/ltpa.keys";
-    private static final String CORRUPTED_LTPA_KEYS_PATH = "corrupted/ltpa.keys";
+    private static String CORRUPTED_LTPA_KEYS_PATH = "corrupted/ltpa.keys";
+    private static String CORRUPTED_LTPA_KEYS_PATH_FIPS = "corruptedFIPS/ltpa.keys";
     private static final String DEFAULT_SERVER_XML = "server.xml";
     private static String ALTERNATE_SERVER_XML = "alternate/server.xml";
     private static String ALTERNATE_SERVER_XML_FIPS = "alternateFIPS/server.xml";
@@ -99,6 +100,7 @@ public class FATTest {
         fipsEnabled = isFipsEnabled;
 
         if (fipsEnabled) {
+            CORRUPTED_LTPA_KEYS_PATH = CORRUPTED_LTPA_KEYS_PATH_FIPS;
             ALTERNATE_KEY_PATH = ALTERNATE_KEY_PATH_FIPS;
             REPLACEMENT_LTPA_KEYS_PATH = REPLACEMENT_FIPS_LTPA_KEYS_PATH;
             ALTERNATE_SERVER_XML = ALTERNATE_SERVER_XML_FIPS;

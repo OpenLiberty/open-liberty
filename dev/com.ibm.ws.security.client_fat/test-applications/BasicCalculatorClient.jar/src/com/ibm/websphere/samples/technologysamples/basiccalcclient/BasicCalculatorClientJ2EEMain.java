@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2020 IBM Corporation and others.
+ * Copyright (c) 2001, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.websphere.samples.technologysamples.basiccalcclient.common.BasicC
 import com.ibm.websphere.samples.technologysamples.basiccalcclient.common.BasicCalculatorClientResultBean;
 
 public class BasicCalculatorClientJ2EEMain {
+    boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("win");
 
     /**
      * Displays a message to the user
@@ -170,11 +171,14 @@ public class BasicCalculatorClientJ2EEMain {
 
         for (int i = 0; i < maxCount; i++) {
             if (f.exists() || ff.exists()) {
-                System.out.println("The file exists. Resuming the operation after 1 second delay");
-                // this delay is for z/OS system. For some reason, if the code runs immediately after creating
-                // the keystore, the naming code throws a NameNotFoundException.
+                long orbWaitSeconds = isWindows ? 10 : 2; // delay for client orb to start in seconds
+                System.out.println("The file exists. Resuming the operation after " + orbWaitSeconds + " second delay");
+                // this delay is mostly for windows systems. For some reason, if the code runs immediately after creating
+                // the keystore, the naming code throws a NameNotFoundException; a smaller delay is used for other systems
+                // as the same error was also occurring elsewhere less frequently, especially z/OS.
+                // this delay provides time for the client side ORB to activate and register with naming.
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(orbWaitSeconds * 1000);
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace(); // do nothing

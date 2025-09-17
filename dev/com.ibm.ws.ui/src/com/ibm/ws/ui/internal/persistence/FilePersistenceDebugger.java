@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.security.PrivilegedAction;
 
 import com.ibm.websphere.ras.Tr;
@@ -33,7 +34,7 @@ public class FilePersistenceDebugger implements IPersistenceDebugger {
     /**
      * Try to close the Closeable object. This should never fail. If it does,
      * let it FFDC incase it matters down stream.
-     * 
+     *
      * @param c
      */
     private void tryClose(Closeable c) {
@@ -61,7 +62,7 @@ public class FilePersistenceDebugger implements IPersistenceDebugger {
                 BufferedReader br = null;
                 try {
                     fis = new FileInputStream(file);
-                    isr = new InputStreamReader(fis, "UTF-8");
+                    isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
                     br = new BufferedReader(isr);
 
                     String line = br.readLine();

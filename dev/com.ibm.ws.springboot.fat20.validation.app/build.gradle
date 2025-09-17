@@ -1,0 +1,43 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ ********************************************************************************/
+
+plugins {
+  id 'org.springframework.boot' version '2.7.1'
+}
+
+apply from: '../wlp-gradle/subprojects/spring.gradle'
+
+apply plugin: 'war'
+apply plugin: 'io.spring.dependency-management'
+
+group = 'com.ibm.ws.example.spring'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+
+dependencies {
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+  implementation ('org.springframework.boot:spring-boot-starter-validation') {
+    exclude group: 'org.hibernate.validator', module: 'hibernate-validator'
+  }
+  compileOnly 'jakarta.validation:jakarta.validation-api'
+}
+
+bootJar {
+  duplicatesStrategy 'warn'
+}
+
+jar {
+  enabled = false
+}

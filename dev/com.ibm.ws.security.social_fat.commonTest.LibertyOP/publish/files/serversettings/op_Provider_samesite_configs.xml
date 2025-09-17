@@ -33,7 +33,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://${fat.server.canonical.hostname}:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/oidcLogin1,https://${fat.server.canonical.hostname}:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin1,http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/oidcLogin1,https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oidcLogin1,http://${fat.server.canonical.hostname}:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/oauth2Login1,https://${fat.server.canonical.hostname}:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oauth2Login1,http://localhost:${bvt.prop.security_2_HTTP_default}/ibm/api/social-login/redirect/oauth2Login1,https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/oauth2Login1"
 				scope="ALL_SCOPES"

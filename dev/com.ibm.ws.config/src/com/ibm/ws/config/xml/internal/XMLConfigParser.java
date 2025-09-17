@@ -16,8 +16,12 @@ package com.ibm.ws.config.xml.internal;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Reader;
+import java.io.File;
+import java.io.FileFilter;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -401,15 +405,11 @@ public class XMLConfigParser {
 
                 } else if (includeResource.exists() &&
                            ((includeResource.isType(WsResource.Type.DIRECTORY)))) {
-                    Iterator<String> children = includeResource.getChildren();
-                    ArrayList<String> alphabeticalChildren = new ArrayList<String>();
-                    while (children.hasNext()) {
-                        alphabeticalChildren.add(children.next());
-                    }
-                    // Match sort used for configDropins. Reference ServerXMLConfiguration.java:parseDirectoryFiles()
-                    Collections.sort(alphabeticalChildren, String.CASE_INSENSITIVE_ORDER);
-                    for(String child : alphabeticalChildren){
-                        parseIncludeDir(parser, docLocation, child, includes, configuration);
+
+                    File[] children = getChildXMLFiles(includeResource);
+                    Arrays.sort(children, new AlphaComparator());
+                    for(File child : children){
+                        parseIncludeDir(parser, docLocation, child.getName(), includes, configuration);
                     }
 
                 } else {
@@ -781,6 +781,41 @@ public class XMLConfigParser {
             // If the message is null, assume we have already logged it.
             logError("error.parse.server", e.getMessage());
         }
+    }
+
+    /**
+     * To maintain the same order across platforms, we have to implement our own comparator.
+     * Otherwise, "aardvark.xml" would come before "Zebra.xml" on windows, and vice versa on unix.
+     */
+    private static class AlphaComparator implements Comparator<File> {
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
+         */
+        @Override
+        public int compare(File o1, File o2) {
+            return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+        }
+
+    }
+
+    private File[] getChildXMLFiles(WsResource directory) {
+        File dir = directory.asFile();
+
+        File[] dirFiles = dir.listFiles(new FileFilter() {
+
+            @Override
+            public boolean accept(File file) {
+                if (file != null && file.isFile()) {
+                    String name = file.getName().toLowerCase();
+                    return name.endsWith(".xml");
+                }
+                return false;
+            }
+        });
+        return dirFiles;
     }
 
     private String getMessage(XMLStreamException xse) {

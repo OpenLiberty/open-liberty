@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -620,7 +621,7 @@ public class IFixCompareCommandTask extends BaseCommandTask {
                 }
             } else if (entryName.startsWith("wlp/lib/versions/") && entryName.endsWith(".properties")) {
                 try {
-                    ProductInfo pi = ProductInfo.parseProductInfo(new InputStreamReader(installZipFile.getInputStream(entry), "UTF-8"), null);
+                    ProductInfo pi = ProductInfo.parseProductInfo(new InputStreamReader(installZipFile.getInputStream(entry), StandardCharsets.UTF_8), null);
                     if (pi != null && "com.ibm.websphere.appserver".equals(pi.getId())) {
                         info = pi;
                     }

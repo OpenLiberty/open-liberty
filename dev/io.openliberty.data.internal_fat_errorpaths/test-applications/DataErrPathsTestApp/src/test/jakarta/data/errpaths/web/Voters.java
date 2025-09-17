@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -112,11 +113,53 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     List<Voter> changeBoth(Voter v1, Voter v2);
 
     /**
+     * This invalid method attempts to return a long count result as Page of Long.
+     */
+    Page<Long> countByBirthday(LocalDate birthday);
+
+    /**
      * Invalid method. A method with a life cycle annotation must have exactly
      * 1 parameter.
      */
     @Update
     void changeNothing();
+
+    /**
+     * Boolean return type is not allowed for count methods.
+     */
+    boolean countAsBooleanBySSNLessThan(long ssnBelow);
+
+    /**
+     * Fails if more than one match.
+     */
+    Optional<Voter> deleteByNameStartsWith(String namePrefix);
+
+    /**
+     * 'first' should be ignored and this should delete all entities
+     * or cause failure if when the result would be non-unique
+     */
+    Optional<Voter> deleteFirst();
+
+    /**
+     * Invalid return type Boolean is not the entity or Id.
+     */
+    Page<Boolean> deleteReturnBooleanByAddress(String address,
+                                               Limit limit,
+                                               Sort<Voter> sort);
+
+    /**
+     * Invalid return type char is not the entity or id.
+     */
+    char[] deleteReturnCharByAddress(String address,
+                                     Limit limit,
+                                     Sort<Voter> sort);
+
+    /**
+     * Invalid return type String is not the entity or Id.
+     */
+    List<String> deleteReturnStringByAddress(String address,
+                                             Limit limit,
+                                             Sort<Voter> sort);
 
     /**
      * This invalid method defines a limit on results of a delete operation
@@ -146,16 +189,33 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     int discardSorted(@By("address") String mailingAddress, Sort<Voter> sort);
 
     /**
-     * This invalid method attempts to return a true/false exists results as int.
+     * This invalid method attempts to return a true/false exist result as int.
      */
     int existsByAddress(String homeAddress);
 
     /**
-     * This invalid method attempts to return a true/false exists results as a
+     * This invalid method attempts to return a true/false exists result as Page
+     * of Boolean.
+     */
+    Page<Boolean> existsByBirthday(LocalDate birthday, PageRequest pageReq);
+
+    /**
+     * This invalid method attempts to return a true/false exist result as a
      * Long value within a CompletableFuture. The CompletableFuture is fine, but
      * Long does not match the true/false result type.
      */
     CompletableFuture<Long> existsByName(String name);
+
+    /**
+     * This invalid method omits the entity attribute name from OrderBy in
+     * the method name.
+     */
+    List<Voter> findByAddressContainsOrderByAsc(String addressSubstring);
+
+    /**
+     * This invalid method attempts to combine the IgnoreCase and In keywords.
+     */
+    List<Voter> findByAddressIgnoreCaseIn(Set<String> addresses);
 
     /**
      * This invalid method has a conflict between its OrderBy annotation and
@@ -178,10 +238,62 @@ public interface Voters extends BasicRepository<Voter, Integer> {
                                                    PageRequest pageReq);
 
     /**
+     * This invalid method tries to apply the GreaterThanEqual keyword to a
+     * collection of values.
+     */
+    List<Voter> findByEmailAddressesGreaterThanEqual(int minEmailAddresses);
+
+    /**
+     * This invalid method tries to apply the IgnoreCase keyword to a collection.
+     */
+    List<Voter> findByEmailAddressesIgnoreCaseContains(String email);
+
+    /**
+     * This invalid method omits the entity attribute name from findBy in the
+     * method name.
+     */
+    List<Voter> findByIgnoreCaseContains(String address);
+
+    /**
+     * This invalid method name contains an entity attribute name "Description"
+     * that contains a reserved keyword, "Desc".
+     */
+    List<Voter> findByNameNotNullOrderByDescriptionAsc();
+
+    /**
+     * Unsupported pattern: lacks PageRequest parameter.
+     */
+    @OrderBy("ssn")
+    CursoredPage<Voter> findBySsnBetweenAndAddressNotNull(int min,
+                                                          int max,
+                                                          Limit limit);
+
+    /**
+     * Unsupported pattern: lacks PageRequest parameter.
+     */
+    @OrderBy("ssn")
+    CursoredPage<Voter> findBySsnBetweenAndBirthdayNotNull(int min,
+                                                           int max,
+                                                           Sort<?>... orderBy);
+
+    /**
+     * Only valid when the range has exactly 1 result.
+     */
+    Voter findBySSNBetweenAndNameNotNull(long min, long max);
+
+    List<Voter> findBySsnLessThanEqualOrderBySsnDesc(int max, Limit limit);
+
+    /**
      * This invalid method has both a First keyword and a Limit parameter.
      */
     @OrderBy("ssn")
     Voter[] findFirst2(Limit limit);
+
+    /**
+     * This invalid method attempts to retrieve a number of results that
+     * exceeds Integer.MAX_VALUE by 1
+     */
+    Stream<Voter> findFirst2147483648BySsnGreaterThan(int min);
 
     /**
      * This invalid method has both a First keyword and a PageRequest parameter.
@@ -195,6 +307,18 @@ public interface Voters extends BasicRepository<Voter, Integer> {
      */
     List<Voter> findFirst5ByAddress(Order<Voter> order,
                                     String address);
+
+    /**
+     * This method is invalid for all names with more than 1 character.
+     */
+    @Query("SELECT name WHERE ssn=?1")
+    Optional<Character> firstLetterOfName(int ssn);
+
+    /**
+     * Only valid when the range has exactly 1 result.
+     */
+    @Query("SELECT v.ssn FROM Voter v WHERE v.ssn >= ?1 AND v.ssn <= ?2")
+    long findSSNAsLongBetween(long min, long max);
 
     /**
      * This invalid method defines an ordering for results of a delete operation
@@ -218,6 +342,30 @@ public interface Voters extends BasicRepository<Voter, Integer> {
                            Limit limit,
                            Order<Voter> order,
                            PageRequest pageReq);
+
+    /**
+     * This invalid method has a By annotation where the value is an empty string
+     * instead of a valid entity attribute name.
+     */
+    @Find
+    List<Voter> inPrecinct(@By("") int precinct);
+
+    /**
+     * This invalid method has an OrderBy annotation where the value is an
+     * empty string instead of a valid entity attribute name.
+     */
+    @Query("WHERE address LIKE CONCAT('%;TOWNSHIP:', ?1, ';%')")
+    @OrderBy("address")
+    @OrderBy("")
+    @OrderBy("ssn")
+    List<Voter> inTownship(String name);
+
+    /**
+     * This invalid method has a Param annotation where the value is an empty string
+     * instead of a valid named parameter name.
+     */
+    @Query("WHERE address IS NOT NULL")
+    List<Voter> inWard(@Param("") int ward);
 
     /**
      * This invalid method has 2 Limit parameters.
@@ -267,6 +415,16 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     List<Voter> livingOn(@Param("street") String street,
                          @Param("city") String city, // extra, unused Param
                          @Param("state") String stateCode); // extra, unused Param
+
+    /**
+     * This invalid method returns values that cannot all be converted to float.
+     */
+    @Query("""
+                    SELECT MIN(o.ssn), MAX(o.ssn), SUM(o.ssn),
+                           COUNT(o.ssn), CAST(AVG(o.ssn) AS FLOAT)
+                      FROM Voter o WHERE o.ssn < ?1
+                    """)
+    float[] minMaxSumCountAverageFloat(long numBelow);
 
     /**
      * Find method that returns a record instead of an entity,
@@ -372,6 +530,34 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     CursoredPage<Voter> selectByName(@By("name") String name,
                                      PageRequest pageReq,
                                      Sort<Voter> sort);
+
+    /**
+     * Invalid method. A function that does not exist cannot be used within the
+     * sort criteria.
+     */
+    @Find
+    @OrderBy("last5DigitsOf(address)")
+    List<Voter> sortedByEndOfAddress();
+
+    /**
+     * Invalid method. The entity has no zipcode attribute upon which to sort.
+     */
+    @Find
+    @OrderBy("birthday")
+    @OrderBy("zipcode")
+    List<Voter> sortedByZipCode();
+
+    /**
+     * Invalid method for 9 digit SSN.
+     */
+    @Query("SELECT ssn WHERE ssn=?1")
+    byte ssnAsByte(long ssn);
+
+    /**
+     * Invalid method for 9 digit SSN.
+     */
+    @Query("SELECT ssn WHERE ssn=:s")
+    Optional<Byte> ssnAsByteWrapper(@Param("s") long ssn);
 
     /**
      * Invalid method. A method with a life cycle annotation must have exactly

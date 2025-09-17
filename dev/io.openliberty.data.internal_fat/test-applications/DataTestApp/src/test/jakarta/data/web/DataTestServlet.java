@@ -27,6 +27,7 @@ import static test.jakarta.data.web.Assertions.assertIterableEquals;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -67,7 +68,6 @@ import jakarta.data.Sort;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.EntityExistsException;
 import jakarta.data.exceptions.MappingException;
-import jakarta.data.exceptions.NonUniqueResultException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
@@ -139,7 +139,10 @@ public class DataTestServlet extends FATServlet {
     Personnel personnel;
 
     @Inject
-    PersonRepo persons;
+    PersonRepo personRepo;
+
+    @Inject
+    Persons persons;
 
     // Only add to this repository within the Servlet.init method so that all tests can rely on its data:
     @Inject
@@ -185,12 +188,67 @@ public class DataTestServlet extends FATServlet {
                        new Prime(41, "29", "101001", 3, "XLI", "forty-one"),
                        new Prime(43, "2B", "101011", 4, "XLIII", "forty-three"),
                        new Prime(47, "2F", "101111", 5, "XLVII", "forty-seven"),
-                       new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"), // romanNumeralSymbols null
-                       new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"), // romanNumeralSymbols null
-                       new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"), // romanNumeralSymbols null
-                       new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"), // empty list of romanNumeralSymbols
-                       new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"), // empty list of romanNumeralSymbols
-                       new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one ")); // extra blank space at beginning and end
+                       // romanNumeralSymbols null:
+                       new Prime(4001, "FA1", "111110100001", 7, null, "four thousand one"),
+                       // romanNumeralSymbols null:
+                       new Prime(4003, "FA3", "111110100011", 8, null, "four thousand three"),
+                       // romanNumeralSymbols null:
+                       new Prime(4007, "Fa7", "111110100111", 9, null, "four thousand seven"),
+                       // empty list of romanNumeralSymbols:
+                       new Prime(4013, "FAD", "111110101101", 9, "", "Four Thousand Thirteen"),
+                       // empty list of romanNumeralSymbols:
+                       new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"),
+                       // extra blank space at beginning and end:
+                       new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one "));
+    }
+
+    /**
+     * A repository default method that is annotated with the Jakarta Concurrency
+     * Asynchronous annotation must run on the specified executor, which can be
+     * used to constrain concurrency. In the case of this test, the executor must
+     * constraint of the asynchronous operations to 1, such that each reads and
+     * operates on the mostly recently updated value in the database, preventing
+     * operations on stale data.
+     */
+    @Test
+    public void testAsyncDefaultMethod() throws InterruptedException, //
+                    ExecutionException, //
+                    TimeoutException {
+        packages.deleteAll();
+
+        Package p1 = new Package(99001, 100.0f, 15.0f, 30.0f, "Package:99001");
+        Package p2 = new Package(99002, 120.0f, 25.0f, 20.0f, "Package:99002");
+        Package p3 = new Package(99003, 300.0f, 33.3f, 63.0f, "Package:99003");
+        Package p4 = new Package(99004, 240.0f, 40.0f, 54.0f, "Package:99004");
+
+        packages.saveAll(List.of(p1, p2, p3, p4));
+
+        CompletionStage<Boolean> s1 = packages.widen(99002, 2.0f, 0.25f)
+                        .thenCompose(b -> b //
+                                        ? packages.widen(99002, 1.4f, 0.25f) //
+                                        : CompletableFuture.completedStage(false));
+        CompletionStage<Boolean> s2 = packages.widen(99002, 2.5f, 0.5f);
+        CompletionStage<Boolean> s3 = packages.widen(99002, 1.5f, 0.33f);
+
+        CompletableFuture<Boolean> f1 = s1.toCompletableFuture();
+        CompletableFuture<Boolean> f2 = s2.toCompletableFuture();
+        CompletableFuture<Boolean> f3 = s3.toCompletableFuture();
+
+        CompletableFuture.allOf(f1, f2, f3)
+                        .get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+
+        p2 = packages.findById(99002).orElseThrow();
+        assertEquals(99002, p2.id);
+        assertEquals(120.0f, p2.length, 0.01f);
+        assertEquals(26.9f, p2.width, 0.01f);
+        assertEquals(20.0f, p2.height, 0.01f);
+        assertEquals("Package:99002", p2.description);
+
+        assertEquals(Boolean.TRUE, f1.getNow(null));
+        assertEquals(Boolean.TRUE, f2.getNow(null));
+        assertEquals(Boolean.TRUE, f3.getNow(null));
+
+        assertEquals(4, packages.deleteAll());
     }
 
     /**
@@ -477,17 +535,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Test the CharCount keyword to query based on string length.
-     */
-    @Test
-    public void testCharCountKeyword() {
-        assertIterableEquals(List.of("eleven", "nineteen", "seven", "thirteen", "three"),
-                             primes.findByNameCharCountBetween(5, 8)
-                                             .map(p -> p.name)
-                                             .collect(Collectors.toList()));
-    }
-
-    /**
      * Asynchronous repository method that returns a CompletableFuture of Page.
      */
     @Test
@@ -574,22 +621,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals((byte) 41,
                      primes.numberAsByte(41));
 
-        try {
-            byte result = primes.numberAsByte(4021);
-            fail("Should not convert long value 4021 to byte value " + result);
-        } catch (MappingException x) {
-            // expected - out of range
-        }
-
         assertEquals((byte) 37,
                      primes.numberAsByteWrapper(37).orElseThrow().byteValue());
-
-        try {
-            Optional<Byte> result = primes.numberAsByteWrapper(4019);
-            fail("Should not convert long value 4019 to Byte value " + result);
-        } catch (MappingException x) {
-            // expected - out of range
-        }
 
         assertEquals(4003.0, primes.numberAsDouble(4003), 0.01);
 
@@ -634,19 +667,6 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(false,
                      primes.singleHexDigit(12).isPresent());
-
-        try {
-            Optional<Character> found = primes.singleHexDigit(29);
-            fail("Should not be able to return hex 1D as a single character: " +
-                 found);
-        } catch (MappingException x) {
-            if (x.getMessage() != null &&
-                x.getMessage().startsWith("CWWKD1046E") &&
-                x.getMessage().contains("singleHexDigit"))
-                ; // pass
-            else
-                throw x;
-        }
     }
 
     /**
@@ -663,20 +683,6 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testCountAsBigInteger() {
         assertEquals(BigInteger.valueOf(13L), primes.countAsBigIntegerByNumberIdLessThan(43));
-    }
-
-    /**
-     * Repository method that returns the count as a boolean value,
-     * which is not an allowed return type. This must raise an error.
-     */
-    @Test
-    public void testCountAsBoolean() {
-        try {
-            boolean count = primes.countAsBooleanByNumberIdLessThan(42);
-            fail("Count queries cannot have a boolean return type: " + count);
-        } catch (MappingException x) {
-            // expected
-        }
     }
 
     /**
@@ -1084,14 +1090,6 @@ public class DataTestServlet extends FATServlet {
         packages.save(new Package(10003, 12.0f, 11.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10003"));
         packages.save(new Package(10004, 13.0f, 10.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10004"));
 
-        try {
-            Optional<Package> pkg = packages.deleteFirst();
-            fail("Expected packages.deleteFirst() to ignore the 'first' keyword" +
-                 " and fail to return a signular result. Instead returned: " + pkg);
-        } catch (NonUniqueResultException e) {
-            // pass
-        }
-
         Package pkg = packages.deleteFirst5ByWidthLessThan(10.5f);
         assertEquals(10004, pkg.id);
 
@@ -1221,6 +1219,52 @@ public class DataTestServlet extends FATServlet {
         assertEquals(3, products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%"));
 
         assertEquals(0, products.purge("TestDeleteQueryWithEntityIdentifierVariable-Product-%"));
+    }
+
+    /**
+     * Verify that a single JPQL query can use different escape characters
+     * for each LIKE comparison.
+     */
+    @Test
+    public void testDifferentEscapeCharactersInSameQuery() {
+        products.clear();
+
+        Product p1 = new Product();
+        p1.name = "DifferentEscapeCharactersInSameQuery-1";
+        p1.pk = UUID.nameUUIDFromBytes(p1.name.getBytes());
+        p1.price = 150.0f;
+        p1.description = "DISCOUNT$:10";
+        products.save(p1);
+
+        Product p2 = new Product();
+        p2.name = "DifferentEscapeCharactersInSameQuery-2";
+        p2.pk = UUID.nameUUIDFromBytes(p2.name.getBytes());
+        p2.price = 250.0f;
+        p2.description = "DISCOUNT%:20";
+        products.save(p2);
+
+        Product p3 = new Product();
+        p3.name = "DifferentEscapeCharactersInSameQuery-3";
+        p3.pk = UUID.nameUUIDFromBytes(p3.name.getBytes());
+        p3.price = 350.0f;
+        p3.description = "DISCOUNT%:10";
+        products.save(p3);
+
+        Product p4 = new Product();
+        p4.name = "DifferentEscapeCharactersInSameQuery-4";
+        p4.pk = UUID.nameUUIDFromBytes(p4.name.getBytes());
+        p4.price = 450.0f;
+        p4.description = "DISCOUNT$:20";
+        products.save(p4);
+
+        Stream<Product> found = products.discounted10or20Percent();
+
+        assertEquals(List.of("DifferentEscapeCharactersInSameQuery-3",
+                             "DifferentEscapeCharactersInSameQuery-2"),
+                     found.map(p -> p.name)
+                                     .collect(Collectors.toList()));
+
+        products.clear();
     }
 
     /**
@@ -1505,19 +1549,17 @@ public class DataTestServlet extends FATServlet {
 
         // Update embeddable attributes
 
-        assertEquals(true, houses.updateByParcelIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms("TestEmbeddable-304-3655-30", null, 180, 2, 4));
+        assertEquals(true, houses
+                        .updateHomeInfo("TestEmbeddable-304-3655-30",
+                                        null,
+                                        180,
+                                        2,
+                                        4));
 
         h = houses.findById("TestEmbeddable-304-3655-30");
         assertEquals("TestEmbeddable-304-3655-30", h.parcelId);
         assertEquals(1880, h.area);
-        // Null embeddables aren't required by JPA, but EclipseLink claims to support it as the default behavior.
-        // See https://wiki.eclipse.org/EclipseLink/UserGuide/JPA/Basic_JPA_Development/Entities/Embeddable#Nullable_embedded_values
-        // But it looks like EclipseLink has a bug here in that it only nulls out 1 of the fields of Garage, not all,
-        // JPQL: UPDATE House o SET o.garage=?2, o.area=o.area+?3, o.kitchen.length=o.kitchen.length+?4, o.numBedrooms=?5 WHERE (o.parcelId=?1)
-        // SQL:  UPDATE WLPHouse SET NUMBEDROOMS = 4, AREA = (AREA + 180), GARAGEAREA = NULL, KITCHENLENGTH = (KITCHENLENGTH + 2) WHERE (PARCELID = 'TestEmbeddable-304-3655-30')
-        // This causes the following assertion to fail:
-        // assertEquals(null, h.garage);
-        // TODO re-enable the above if fixed
+        assertEquals(null, h.garage);
         assertNotNull(h.kitchen);
         assertEquals(16, h.kitchen.length);
         assertEquals(12, h.kitchen.width);
@@ -1632,13 +1674,6 @@ public class DataTestServlet extends FATServlet {
         assertEquals(14.0f, p1.width, 0.01f);
         assertEquals(4.0f, p1.height, 0.01f);
         assertEquals("testFindAndDelete#40001", p1.description);
-
-        try {
-            Optional<Package> p = packages.deleteByDescription("testFindAndDelete#4001x");
-            fail("Should get NonUniqueResultException when there are multiple results but a singular return type. Instead, result is: " + p);
-        } catch (NonUniqueResultException x) {
-            // expected
-        }
 
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
@@ -1820,7 +1855,6 @@ public class DataTestServlet extends FATServlet {
     /**
      * Find-and-delete repository operations that return one or more IDs, corresponding to removed entities.
      */
-    @SkipIfSysProp(DB_Oracle) //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/30444
     @Test
     public void testFindAndDeleteReturnsIds() throws Exception {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
@@ -1856,74 +1890,6 @@ public class DataTestServlet extends FATServlet {
         ids = packages.delete2(Limit.of(2), sorts);
         assertEquals(Arrays.toString(ids), 1, ids.length);
         assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
-    }
-
-    /**
-     * Find-and-delete repository operations that return invalid types that are neither the entity class,
-     * record class, or id class.
-     */
-    @Test
-    public void testFindAndDeleteReturnsInvalidTypes() {
-        packages.deleteAll();
-
-        packages.save(new Package(60006, 16.0f, 61.1f, 6.0f, "testFindAndDeleteReturnsInvalidTypes#60006"));
-
-        Sort<Package> sort = Sort.asc("id");
-
-        try {
-            long[] deleted = packages.delete3(Limit.of(3), sort);
-            fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-
-        try {
-            List<String> deleted = packages.delete4(Limit.of(4), sort);
-            fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-
-        try {
-            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
-            fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-    }
-
-    /**
-     * Find-and-delete repository operations that return invalid types that are neither the entity class,
-     * record class, or id class.
-     * In this case the table is empty and no results will have been deleted,
-     * we should still throw a mapping exception.
-     */
-    @Test
-    public void testFindAndDeleteReturnsInvalidTypesEmpty() {
-        packages.deleteAll();
-
-        Sort<Package> sort = Sort.asc("id");
-
-        try {
-            long[] deleted = packages.delete3(Limit.of(3), sort);
-            fail("Deleted with return type of long[]: " + Arrays.toString(deleted) + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-
-        try {
-            List<String> deleted = packages.delete4(Limit.of(4), sort);
-            fail("Deleted with return type of List<String>: " + deleted + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
-
-        try {
-            Collection<Number> deleted = packages.delete5(Limit.of(5), sort);
-            fail("Deleted with return type of Collection<Number>: " + deleted + " even though the id type is int.");
-        } catch (MappingException x) {
-            // expected
-        }
     }
 
     /**
@@ -1999,7 +1965,6 @@ public class DataTestServlet extends FATServlet {
      * OrderBy annotation.
      */
     @Test
-    @SkipIfSysProp(DB_Oracle) //TODO Eclipse link SQL Generation bug on Oracle: https://github.com/OpenLiberty/open-liberty/issues/30444
     public void testFindAndDeleteWithOrderBy() {
         String testName = "TestFindAndDeleteWithOrderByKeyword";
         //                        id   length   width   height  description
@@ -2229,8 +2194,8 @@ public class DataTestServlet extends FATServlet {
                                      .map(p -> p.name)
                                      .collect(Collectors.toList()));
 
-        // Escape characters are not possible for the repository Like keyword, however,
-        // consider using JPQL escape characters and ESCAPE '\' clause for StartsWith, EndsWith, and Contains
+        // Escape characters are not allowed with the Query by Method Name keywords:
+        // Like, StartsWith, EndsWith, and Contains.
     }
 
     /**
@@ -2238,7 +2203,7 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindMultiple() throws Exception {
-        assertEquals(Collections.EMPTY_LIST, persons.find("TestFindMultiple"));
+        assertEquals(Collections.EMPTY_LIST, personRepo.find("TestFindMultiple"));
 
         Person jane = new Person();
         jane.firstName = "Jane";
@@ -2257,8 +2222,8 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            persons.save(List.of(jane, joe));
-            persons.save(List.of(jude));
+            personRepo.save(List.of(jane, joe));
+            personRepo.save(List.of(jude));
         } finally {
             if (tran.getStatus() == Status.STATUS_MARKED_ROLLBACK)
                 tran.rollback();
@@ -2266,7 +2231,7 @@ public class DataTestServlet extends FATServlet {
                 tran.commit();
         }
 
-        List<Person> found = persons.find("TestFindMultiple");
+        List<Person> found = personRepo.find("TestFindMultiple");
         assertNotNull(found);
         assertEquals(2, found.size());
 
@@ -2286,7 +2251,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(p2expected.firstName, p2.firstName);
         assertEquals(p2expected.ssn_id, p2.ssn_id);
 
-        found = persons.find("Test-FindMultiple");
+        found = personRepo.find("Test-FindMultiple");
         assertNotNull(found);
         assertEquals(1, found.size());
         assertEquals(jude.ssn_id, found.get(0).ssn_id);
@@ -2563,6 +2528,10 @@ public class DataTestServlet extends FATServlet {
         // Equals
         assertEquals("twenty-nine", primes.findByNameIgnoreCase("Twenty-Nine").name);
 
+        Prime prime = primes.findByNameIgnoreCase(" Four Thousand Twenty-One ");
+        assertEquals(4021L, prime.numberId);
+        assertEquals(" Four thousand twenty-one ", prime.name);
+
         // Not
         assertIterableEquals(List.of("two", "five", "seven"),
                              primes.findByNameIgnoreCaseNotAndNumberIdLessThanOrderByNumberIdAsc("Three", 10)
@@ -2671,13 +2640,13 @@ public class DataTestServlet extends FATServlet {
         isabelle.ssn_id = 999009003;
 
         try {
-            persons.insertAll(List.of(ian, ike, isabelle));
+            personRepo.insertAll(List.of(ian, ike, isabelle));
             fail("Did not detect duplicate insert of id within collection.");
         } catch (EntityExistsException x) {
             // pass
         }
 
-        persons.insertAll(List.of(ian, isabelle));
+        personRepo.insertAll(List.of(ian, isabelle));
 
         // insert varargs array:
         Person irene = new Person();
@@ -2775,7 +2744,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(null, personnel.insertAll(david, daniel, dorothy, dianne, dominic).join());
 
         assertEquals(List.of("Daniel", "David", "Dianne", "Dominic", "Dorothy"),
-                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+                     personRepo.findFirstNames("TestInsertAndDeleteMultiple"));
 
         Person dennis = new Person();
         dennis.firstName = "Dennis";
@@ -2797,14 +2766,14 @@ public class DataTestServlet extends FATServlet {
         }
 
         assertEquals(List.of("Daniel", "David", "Dianne", "Dominic", "Dorothy"),
-                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+                     personRepo.findFirstNames("TestInsertAndDeleteMultiple"));
 
         // delete multiple entities at once
 
         assertEquals(null, personnel.deleteMultiple(daniel, david).join());
 
         assertEquals(List.of("Dianne", "Dominic", "Dorothy"),
-                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+                     personRepo.findFirstNames("TestInsertAndDeleteMultiple"));
 
         // attempt deletion where one is not found:
 
@@ -2821,14 +2790,14 @@ public class DataTestServlet extends FATServlet {
         }
 
         assertEquals(List.of("Dianne", "Dominic", "Dorothy"),
-                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+                     personRepo.findFirstNames("TestInsertAndDeleteMultiple"));
 
         // delete remaining:
 
         assertEquals(Integer.valueOf(3), personnel.deleteSeveral(Stream.of(dianne, dorothy, dominic)).join());
 
         assertEquals(List.of(),
-                     persons.findFirstNames("TestInsertAndDeleteMultiple"));
+                     personRepo.findFirstNames("TestInsertAndDeleteMultiple"));
     }
 
     /**
@@ -3562,7 +3531,8 @@ public class DataTestServlet extends FATServlet {
     public void testFetchTypeDefault() {
         ratings.clear();
 
-        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestFetchTypeDefault", "rex@openliberty.io");
+        Rating.Reviewer.Name name1 = new Rating.Reviewer.Name("Rex", "TestFetchTypeDefault");
+        Rating.Reviewer user1 = new Rating.Reviewer(name1, "rex@openliberty.io");
         Rating.Item toaster = new Rating.Item("toaster", 28.98f);
         Set<String> comments = Set.of("Burns everything.", "Often gets stuck.", "Bagels don't fit.");
 
@@ -3575,41 +3545,6 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * A repository might attempt to define a method that returns a CursoredPage
-     * without specifying a PageRequest and attempt to use a Limit parameter
-     * instead. This is not supported by the spec.
-     * Expect UnsupportedOperationException.
-     */
-    @Test
-    public void testLacksPageRequestUseLimitInstead() {
-        CursoredPage<Prime> page;
-        try {
-            page = primes.findByNumberIdBetween(15L, 45L, Limit.of(5));
-            fail("Able to obtain CursoredPage without a PageRequest: " + page);
-        } catch (UnsupportedOperationException x) {
-            // pass
-        }
-    }
-
-    /**
-     * A repository might attempt to define a method that returns a CursoredPage
-     * without specifying a PageRequest and attempt to use a Sort parameter instead.
-     * This is not supported by the spec. Expect UnsupportedOperationException.
-     */
-    @Test
-    public void testLacksPageRequestUseSortInstead() {
-        CursoredPage<Prime> page;
-        try {
-            page = primes.findByNumberIdBetweenAndBinaryDigitsNotNull(30L, //
-                                                                      40L, //
-                                                                      Sort.asc(ID));
-            fail("Able to obtain CursoredPage without a PageRequest: " + page);
-        } catch (UnsupportedOperationException x) {
-            // pass
-        }
-    }
-
-    /**
      * Use a repository method that performs a JDQL query using LEFT function
      * to obtain the beginning of a String value.
      */
@@ -3617,6 +3552,21 @@ public class DataTestServlet extends FATServlet {
     public void testLeftFunction() {
         assertEquals(List.of("seven", "seventeen"),
                      primes.matchLeftSideOfName("seven"));
+    }
+
+    /**
+     * Test the LENGTH JDQL function to query based on string length.
+     */
+    @Test
+    public void testLengthFunction() {
+        assertIterableEquals(List.of("eleven",
+                                     "nineteen",
+                                     "seven",
+                                     "thirteen",
+                                     "three"),
+                             primes.findByLengthOfNameBetween(5, 8)
+                                             .map(p -> p.name)
+                                             .collect(Collectors.toList()));
     }
 
     /**
@@ -3747,7 +3697,7 @@ public class DataTestServlet extends FATServlet {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean databaseRounds = jdbcJarName.startsWith("ojdbc") || jdbcJarName.startsWith("postgre");
 
-        Object[] objects = primes.minMaxSumCountAverageObject(50);
+        Object[] objects = primes.minMaxSumCountAverageObjectArray(50);
         assertEquals(Long.valueOf(2L), objects[0]); // minimum
         assertEquals(Long.valueOf(47L), objects[1]); // maximum
         assertEquals(Long.valueOf(328L), objects[2]); // sum
@@ -3755,7 +3705,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(true, objects[4] instanceof Number); // average
         assertEquals(21.0, Math.floor(((Number) objects[4]).doubleValue()), 0.01);
 
-        Number[] numbers = primes.minMaxSumCountAverageNumber(45);
+        Number[] numbers = primes.minMaxSumCountAverageNumberArray(45);
         assertEquals(Long.valueOf(2L), numbers[0]); // minimum
         assertEquals(Long.valueOf(43L), numbers[1]); // maximum
         assertEquals(Long.valueOf(281L), numbers[2]); // sum
@@ -3775,18 +3725,6 @@ public class DataTestServlet extends FATServlet {
         assertEquals(197, ints[2]); // sum
         assertEquals(12, ints[3]); // count
         assertEquals(16, ints[4]); // average
-
-        try {
-            float[] floats = primes.minMaxSumCountAverageFloat(35);
-            fail("Allowed unsafe conversion from double to float: " +
-                 Arrays.toString(floats));
-        } catch (MappingException x) {
-            if (x.getMessage().startsWith("CWWKD1046E") &&
-                x.getMessage().contains("float[]"))
-                ; // unsafe to convert double to float
-            else
-                throw x;
-        }
 
         List<Long> list = primes.minMaxSumCountAverageList(30);
         assertEquals(Long.valueOf(2L), list.get(0)); // minimum
@@ -3822,6 +3760,21 @@ public class DataTestServlet extends FATServlet {
         assertEquals(58.0, deque.removeFirst(), 0.01); // sum
         assertEquals(7.0, deque.removeFirst(), 0.01); // count
         assertEquals(8.0, Math.floor(deque.removeFirst()), 0.01); // average
+
+        List<Number> numberList = primes.minMaxSumCountAverageNumberList(15);
+        assertEquals(Long.valueOf(2L), numberList.get(0)); // minimum
+        assertEquals(Long.valueOf(13L), numberList.get(1)); // maximum
+        assertEquals(Long.valueOf(41L), numberList.get(2)); // sum
+        assertEquals(Long.valueOf(6L), numberList.get(3)); // count
+        assertEquals(6.0, Math.floor(numberList.get(4).doubleValue()), 0.01);
+
+        List<Object> objectList = primes.minMaxSumCountAverageObjectList(10);
+        assertEquals(Long.valueOf(2L), objectList.get(0)); // minimum
+        assertEquals(Long.valueOf(7L), objectList.get(1)); // maximum
+        assertEquals(Long.valueOf(17L), objectList.get(2)); // sum
+        assertEquals(Long.valueOf(4L), objectList.get(3)); // count
+        assertEquals(true, objectList.get(4) instanceof Number); // average
+        assertEquals(4.0, Math.floor(((Number) objectList.get(4)).doubleValue()), 0.01);
     }
 
     /**
@@ -3973,6 +3926,52 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test implementation of methods that a repository inherits from
+     * java.lang.Object, some of which go through the proxy handler.
+     */
+    @SuppressWarnings("unlikely-arg-type")
+    @Test
+    public void testObjectMethods() throws InterruptedException {
+        // .equals is true for same instance and false for other instance
+        assertEquals(true, people.equals(people));
+        assertEquals(false, people.equals(personnel));
+
+        // .getClass returns the repository interface
+        assertEquals(true, People.class.isAssignableFrom(people.getClass()));
+
+        // .hashCode returns same value each time invoked
+        int hash = people.hashCode();
+        assertEquals(hash, people.hashCode());
+
+        // .notify and .notifyAll
+        synchronized (people) {
+            people.notify();
+            people.notifyAll();
+        }
+
+        // .toString
+        String str = people.toString();
+        assertEquals(str,
+                     true,
+                     str.contains(People.class.getName()));
+
+        // .wait
+        synchronized (people) {
+            people.wait(20); // 20 ms
+            people.wait(10, 500000); // 10.5 ms
+            Thread.currentThread().interrupt();
+            try {
+                // wait until interrupted, which should be immediately per above
+                people.wait();
+            } catch (InterruptedException x) {
+                // expected
+            } finally {
+                Thread.interrupted();
+            }
+        }
+    }
+
+    /**
      * Verify a repository method that supplies id(this) as the sort criteria
      * hard coded within a JDQL query.
      */
@@ -3993,38 +3992,16 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Exceed the maximum offset allowed by JPA.
+     * Test the Or keyword on a Query by Method Name query.
      */
     @Test
-    public void testOverflow() {
-        Limit range = Limit.range(Integer.MAX_VALUE + 5L, Integer.MAX_VALUE + 10L);
-        try {
-            List<Prime> found = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(9L, range);
-            fail("Expected an error because starting position of range exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (IllegalArgumentException x) {
-            // expected
-        }
-
-        try {
-            Stream<Prime> found = primes.findFirst2147483648ByNumberIdGreaterThan(1L);
-            fail("Expected an error because limit exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (UnsupportedOperationException x) {
-            // expected
-        }
-
-        try {
-            CursoredPage<Prime> found = primes.findByNumberIdBetween(5L, 15L, PageRequest.ofPage(33).size(Integer.MAX_VALUE / 30));
-            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (IllegalArgumentException x) {
-            // expected
-        }
-
-        try {
-            Page<Prime> found = primes.findByNumberIdLessThanEqualOrderByNumberIdDesc(52L, PageRequest.ofPage(22).size(Integer.MAX_VALUE / 20));
-            fail("Expected an error because when offset for pagination exceeds Integer.MAX_VALUE. Found: " + found);
-        } catch (IllegalArgumentException x) {
-            // expected
-        }
+    public void testOrKeyword() {
+        List<Long> l;
+        l = primes.findByNumberIdLessThanOrNumberIdGreaterThanAndNumberIdLessThan(10,
+                                                                                  40,
+                                                                                  50);
+        assertEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
+                     l);
     }
 
     /**
@@ -4149,7 +4126,7 @@ public class DataTestServlet extends FATServlet {
         a101.occupant.firstName = "Kyle";
         a101.occupant.lastName = "Smith";
         a101.isOccupied = true;
-        a101.aptId = 101L;
+        a101.APTID = 101L;
         a101.quarters = new Bedroom();
         a101.quarters.length = 10;
         a101.quarters.width = 10;
@@ -4160,7 +4137,7 @@ public class DataTestServlet extends FATServlet {
         a102.occupant.firstName = "Brent";
         a102.occupant.lastName = "Smith";
         a102.isOccupied = false;
-        a102.aptId = 102L;
+        a102.APTID = 102L;
         a102.quarters = new Bedroom();
         a102.quarters.length = 11;
         a102.quarters.width = 11;
@@ -4171,7 +4148,7 @@ public class DataTestServlet extends FATServlet {
         a103.occupant.firstName = "Brian";
         a103.occupant.lastName = "Smith";
         a103.isOccupied = false;
-        a103.aptId = 103L;
+        a103.APTID = 103L;
         a103.quarters = new Bedroom();
         a103.quarters.length = 11;
         a103.quarters.width = 12;
@@ -4182,7 +4159,7 @@ public class DataTestServlet extends FATServlet {
         a104.occupant.firstName = "Scott";
         a104.occupant.lastName = "Smith";
         a104.isOccupied = false;
-        a104.aptId = 104L;
+        a104.APTID = 104L;
         a104.quarters = new Bedroom();
         a104.quarters.length = 12;
         a104.quarters.width = 11;
@@ -4276,6 +4253,19 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(List.of("forty-one", "thirty-seven"), // ordered by name
                      primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter("thirty-seven", 41));
+    }
+
+    /**
+     * Use a repository method that has both AND and OR keywords.
+     * The AND keywords should take precedence over OR and be computed first.
+     */
+    @Test
+    public void testPrecedenceOfAndOverOr() {
+        assertEquals(List.of(41L, 37L, 31L, 11L, 7L),
+                     primes.findByNumberIdLessThanAndNameEndsWithOrNumberIdGreaterThanEqualAndNumberIdLessThanEqualAndNameEndsWith//
+                     (40L, "even", 30L, 50L, "one")
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -4840,10 +4830,15 @@ public class DataTestServlet extends FATServlet {
     public void testRecordWithEmbeddables() {
         ratings.clear();
 
-        Rating.Reviewer user1 = new Rating.Reviewer("Rex", "TestRecordWithEmbeddables", "rex@openliberty.io");
-        Rating.Reviewer user2 = new Rating.Reviewer("Rhonda", "TestRecordWithEmbeddables", "rhonda@openliberty.io");
-        Rating.Reviewer user3 = new Rating.Reviewer("Rachel", "TestRecordWithEmbeddables", "rachel@openliberty.io");
-        Rating.Reviewer user4 = new Rating.Reviewer("Ryan", "TestRecordWithEmbeddables", "ryan@openliberty.io");
+        Rating.Reviewer.Name name1 = new Rating.Reviewer.Name("Rex", "TestRecordWithEmbeddables");
+        Rating.Reviewer.Name name2 = new Rating.Reviewer.Name("Rhonda", "TestRecordWithEmbeddables");
+        Rating.Reviewer.Name name3 = new Rating.Reviewer.Name("Rachel", "TestRecordWithEmbeddables");
+        Rating.Reviewer.Name name4 = new Rating.Reviewer.Name("Ryan", "TestRecordWithEmbeddables");
+
+        Rating.Reviewer user1 = new Rating.Reviewer(name1, "rex@openliberty.io");
+        Rating.Reviewer user2 = new Rating.Reviewer(name2, "rhonda@openliberty.io");
+        Rating.Reviewer user3 = new Rating.Reviewer(name3, "rachel@openliberty.io");
+        Rating.Reviewer user4 = new Rating.Reviewer(name4, "ryan@openliberty.io");
 
         Rating.Item blender = new Rating.Item("blender", 41.99f);
         Rating.Item toaster = new Rating.Item("toaster", 28.98f);
@@ -4864,15 +4859,16 @@ public class DataTestServlet extends FATServlet {
         assertEquals(Set.of("Uneven cooking.", "Too noisy."),
                      ratings.getComments(1002));
 
-        // TODO enable once EclipseLink bug is fixed
+        // TODO enable once EclipseLink bug #28589 is fixed
         // java.lang.IllegalArgumentException: An exception occurred while creating a query in EntityManager:
         // Exception Description: Problem compiling
         // [SELECT NEW test.jakarta.data.web.Rating(o.id, o.item, o.numStars, o.reviewer, o.comments)
         //  FROM RatingEntity o WHERE (o.item.price BETWEEN ?1 AND ?2) ORDER BY o.reviewer.email]. [78, 88]
         // The state field path 'o.comments' cannot be resolved to a collection type.
         //assertEquals(List.of("Rachel", "Rex", "Ryan"),
-        //             ratings.findByItemPriceBetween(40.00f, 50.00f, Sort.asc("reviewer.email"))
-        //                             .map(r -> r.reviewer().firstName)
+        //             ratings.findByItemPriceBetween(40.00f, 50.00f,
+        //                                            Sort.asc("reviewer.email"))
+        //                             .map(r -> r.reviewer().firstName())
         //                             .collect(Collectors.toList()));
 
         //assertEquals(List.of(1007, 1002),
@@ -4889,7 +4885,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Use repository updateBy methods with multiplication and division,
+     * Use repository Query methods with multiplication and division,
      */
     @Test
     public void testRepositoryUpdateMethodsMultiplyAndDivide() {
@@ -4940,7 +4936,7 @@ public class DataTestServlet extends FATServlet {
         packages.saveAll(List.of(p1, p2, p3, p4, p5, p6));
 
         // multiply, divide, and add within same update
-        assertEquals(true, packages.updateByIdAddHeightMultiplyLengthDivideWidth(990003, 1.0f, 0.95f, 1.05f));
+        assertEquals(true, packages.increaseHeightAndLengthReduceWidth(990003, 1.0f, 0.95f, 1.05f));
 
         Package p = packages.findById(990003).get();
         assertEquals(11.4f, p.length, 0.01f);
@@ -4948,7 +4944,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(10.2f, p.height, 0.01f);
 
         // perform same type of update to multiple columns
-        packages.updateByIdDivideLengthDivideWidthDivideHeight(990005, 1.2f, 1.15f, 1.1375f);
+        packages.reduceDimensions(990005, 1.2f, 1.15f, 1.1375f);
 
         p = packages.findById(990005).get();
         assertEquals(4.0f, p.length, 0.01f);
@@ -4956,7 +4952,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(24.0f, p.height, 0.01f);
 
         // multiple conditions and multiple updates
-        assertEquals(2L, packages.updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(7.1f, 18.4f, 19.4f, 1.1f, 1.2f, 19.5f));
+        assertEquals(2L, packages.increaseLengthAndWidthAssignHeight(7.1f, 18.4f, 19.4f, 1.1f, 1.2f, 19.5f));
 
         List<Package> results = packages.findByHeightBetween(19.4999f, 19.5001f);
         assertEquals(results.toString(), 2, results.size());
@@ -4972,7 +4968,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(19.5f, p.height, 0.01f);
 
         // divide width and append to description via query by method name
-        assertEquals(true, packages.updateByIdDivideWidthAddDescription(990003, 2, " halved"));
+        assertEquals(true, packages.reduceWidthAppendDescription(990003, 2, " halved"));
 
         p = packages.findById(990003).orElseThrow();
         assertEquals(11.4f, p.length, 0.01f);
@@ -5020,37 +5016,37 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Haralson", thing.brand);
 
         // "like" is allowed at end of entity attribute name because the capitalization differs.
-        assertIterableEquals(List.of("Fireside", "Haralson", "Honeycrisp", "Honeygold"),
-                             things.findByAlike(true)
-                                             .map(o -> o.brand)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Fireside", "Haralson", "Honeycrisp", "Honeygold"),
+                     things.findByAlike(true)
+                                     .map(o -> o.brand)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         // "Like" is used as a reserved keyword here.
-        assertIterableEquals(List.of("A101"),
-                             things.findByALike("A1%") // include second character so that databases that compare independent of case don't match "apple"
-                                             .map(o -> o.a)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("A101"),
+                     things.findByALike("A1%") // include second character so that databases that compare independent of case don't match "apple"
+                                     .map(o -> o.a)
+                                     .collect(Collectors.toList()));
 
         // "Or" in middle of entity attribute name is possible when using @Query.
-        assertIterableEquals(List.of("Honeycrisp"),
-                             things.forPurchaseOrder(20)
-                                             .map(o -> o.brand)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Honeycrisp"),
+                     things.forPurchaseOrder(20)
+                                     .map(o -> o.brand)
+                                     .collect(Collectors.toList()));
 
         // "Or" is allowed at the beginning of an entity attribute name
         // because "find...By" immediately precedes it.
-        assertIterableEquals(List.of("Honeygold"),
-                             things.findByOrderNumber(100201L)
-                                             .map(o -> o.brand)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Honeygold"),
+                     things.findByOrderNumber(100201L)
+                                     .map(o -> o.brand)
+                                     .collect(Collectors.toList()));
 
         // "And" is allowed at the beginning of an entity attribute name
         // because "find...By" immediately precedes it.
-        assertIterableEquals(List.of("android"),
-                             things.findByAndroid(true)
-                                             .map(o -> o.a)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("android"),
+                     things.findByAndroid(true)
+                                     .map(o -> o.a)
+                                     .collect(Collectors.toList()));
 
         // "and" is allowed at end of entity attribute name "brand"
         // because the capitalization differs.
@@ -5058,11 +5054,11 @@ public class DataTestServlet extends FATServlet {
         // because the reserved word "Not" never appears prior to the attribute name.
         // "And" is allowed at the beginning of an entity attribute name
         // because "And" or "Or" immediately precedes it.
-        assertIterableEquals(List.of(2L, 3L, 5L, 6L),
-                             things.findByBrandOrNotesContainsOrAndroid("IBM", "October", true)
-                                             .map(o -> o.thingId)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(2L, 3L, 5L, 6L),
+                     things.findByBrandOrNotesContainsOrAndroid("IBM", "October", true)
+                                     .map(o -> o.thingId)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         // "or" is allowed at end of entity attribute name "floor"
         // because the capitalization differs.
@@ -5070,18 +5066,17 @@ public class DataTestServlet extends FATServlet {
         // because the reserved word "In" never appears prior to the attribute name.
         // "Or" is allowed at the beginning of an entity attribute name
         // because "And" or "Or" immediately precedes it.
-        assertIterableEquals(List.of("2nd floor conference room", "Golden Delicious x Haralson"),
-                             things.findByFloorNotAndInfoLikeAndOrderNumberLessThan(3, "%o%", 300000L)
-                                             .map(o -> o.info)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("2nd floor conference room", "Golden Delicious x Haralson"),
+                     things.findByFloorNotAndInfoLikeAndOrderNumberLessThan(3, "%o%", 300000L)
+                                     .map(o -> o.info)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
-        // TODO is "Desc" allowed in an entity attribute name in the OrderBy clause?
-        assertIterableEquals(List.of("A101", "android", "apple"),
-                             things.findByThingIdGreaterThan(3L)
-                                             .map(o -> o.a)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        // The OrderBy annotation can include entity attributes with "Desc" in the name
+        assertEquals(List.of("A101", "android", "apple"),
+                     things.findByThingIdGreaterThan(3L)
+                                     .map(o -> o.a)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -5096,7 +5091,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Use repository methods with Rounded, RoundedUp, and RoundedDown keywords.
+     * Use repository methods with ROUND, CEILING, and FLOOR functions in a Query.
      */
     @Test
     public void testRounding() {
@@ -5279,6 +5274,73 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * A repository method can also be a Scheduled Asynchronous Method, in which
+     * case the method must run after the next time on the schedule rather than
+     * immediately.
+     */
+    @Test
+    public void testScheduledAsyncMethod() throws ExecutionException, //
+                    InterruptedException, //
+                    TimeoutException {
+
+        participants.remove("TestScheduledAsyncMethod");
+
+        participants.add(Participant.of("Sam", "TestScheduledAsyncMethod", 10),
+                         Participant.of("Samson", "TestScheduledAsyncMethod", 20),
+                         Participant.of("Samuel", "TestScheduledAsyncMethod", 30));
+
+        LocalTime before = LocalTime.now().minusNanos(1);
+
+        // Schedule removal to occur on seconds that end in 5
+        CompletableFuture<Long> future = participants
+                        .scheduledRemoval("Sam", "TestScheduledAsyncMethod");
+
+        LocalTime after = LocalTime.now().plusNanos(1);
+
+        int s = before.getSecond() % 10;
+        if (s < 5)
+            s = 5 - s;
+        else
+            s = 15 - s;
+        LocalTime earliestExpected = before.plusSeconds(s).withNano(0);
+
+        // Ensure the entity is not removed too early
+        boolean found = true;
+        for (; found; TimeUnit.SECONDS.sleep(1)) {
+            found = participants.getFirstName(10).isPresent();
+            LocalTime current = LocalTime.now();
+            if (current.isBefore(earliestExpected))
+                assertEquals("Between " + before + " and " + after + ", we" +
+                             " scheduled removal. Removal must occur no sooner" +
+                             " than " + earliestExpected + ". Prior to that" +
+                             " point, at " + current + ", the entry was already" +
+                             " gone.",
+                             true,
+                             found);
+            else
+                break;
+        }
+
+        // Ensure the entity is removed with a reasonable amount of time
+        long timeout_ns = Duration.ofMinutes(TIMEOUT_MINUTES).toNanos();
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < timeout_ns && found; //
+                        TimeUnit.SECONDS.sleep(1)) {
+            found = participants.getFirstName(10).isPresent();
+        }
+
+        assertEquals(found,
+                     false);
+
+        assertEquals(Long.valueOf(1L),
+                     future.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // 2 entities must remain because 1 of the 3 was removed
+        assertEquals(2L,
+                     participants.remove("TestScheduledAsyncMethod"));
+    }
+
+    /**
      * Repository method having only a SELECT clause.
      */
     @Test
@@ -5329,43 +5391,11 @@ public class DataTestServlet extends FATServlet {
         Prime p = primes.findByNumberIdBetween(14L, 18L);
         assertEquals(17L, p.numberId);
 
-        // No result must raise EmptyResultException:
-        try {
-            p = primes.findByNumberIdBetween(24L, 28L);
-            fail("Unexpected prime " + p);
-        } catch (EmptyResultException x) {
-            // expected
-        }
-
-        // Multiple results must raise NonUniqueResultException:
-        try {
-            p = primes.findByNumberIdBetween(34L, 48L);
-            fail("Should find more primes than " + p);
-        } catch (NonUniqueResultException x) {
-            // expected
-        }
-
         // With custom return type:
 
         // Single result is fine:
         long n = primes.findAsLongBetween(12L, 16L);
         assertEquals(13L, n);
-
-        // No result must raise EmptyResultException:
-        try {
-            n = primes.findAsLongBetween(32L, 36L);
-            fail("Unexpected prime number " + n);
-        } catch (EmptyResultException x) {
-            // expected
-        }
-
-        // Multiple results must raise NonUniqueResultException:
-        try {
-            n = primes.findAsLongBetween(22L, 42L);
-            fail("Should find more prime numbers than " + n);
-        } catch (NonUniqueResultException x) {
-            // expected
-        }
     }
 
     /**
@@ -6059,60 +6089,60 @@ public class DataTestServlet extends FATServlet {
         p3.lastName = "TestTransactional";
         p3.ssn_id = 300201003;
 
-        persons.save(List.of(p1, p2, p3));
+        personRepo.save(List.of(p1, p2, p3));
 
         System.out.println("TxType.SUPPORTS in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, persons.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty")); // update with MANDATORY
-            assertEquals("Ty", persons.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName); // read value with SUPPORTS
+            assertEquals(true, personRepo.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty")); // update with MANDATORY
+            assertEquals("Ty", personRepo.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName); // read value with SUPPORTS
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Thomas", "Timothy", "Tyler"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.SUPPORTS from no transaction");
 
-        assertEquals("Tyler", persons.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName);
+        assertEquals("Tyler", personRepo.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName);
 
         System.out.println("TxType.REQUIRED in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, persons.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tommy"));
+            assertEquals(true, personRepo.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tommy"));
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Thomas", "Timothy", "Tyler"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.REQUIRED from no transaction");
 
-        assertEquals(true, persons.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tom"));
+        assertEquals(true, personRepo.setFirstNameInCurrentOrNewTransaction(p1.ssn_id, "Tom"));
 
         assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.MANDATORY in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, persons.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty"));
+            assertEquals(true, personRepo.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty"));
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Timothy", "Tom", "Tyler"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.MANDATORY from no transaction is an error");
 
         try {
-            boolean result = persons.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty");
+            boolean result = personRepo.setFirstNameInCurrentTransaction(p3.ssn_id, "Ty");
             fail("Invoked TxType.MANDATORY operation with no transaction on thread. Result: " + result);
         } catch (TransactionalException x) {
             if (!(x.getCause() instanceof TransactionRequiredException))
@@ -6123,26 +6153,26 @@ public class DataTestServlet extends FATServlet {
 
         tran.begin();
         try {
-            assertEquals(true, persons.setFirstNameInNewTransaction(p2.ssn_id, "Timmy"));
+            assertEquals(true, personRepo.setFirstNameInNewTransaction(p2.ssn_id, "Timmy"));
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Timmy", "Tom", "Tyler"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.REQUIRES_NEW from no transaction");
 
-        assertEquals(true, persons.setFirstNameInCurrentOrNewTransaction(p2.ssn_id, "Tim"));
+        assertEquals(true, personRepo.setFirstNameInCurrentOrNewTransaction(p2.ssn_id, "Tim"));
 
         assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.NEVER in transaction");
 
         tran.begin();
         try {
-            boolean result = persons.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty");
+            boolean result = personRepo.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty");
             fail("Invoked TxType.NEVER operation with transaction on thread. Result: " + result);
         } catch (TransactionalException x) {
             if (!(x.getCause() instanceof InvalidTransactionException))
@@ -6152,48 +6182,109 @@ public class DataTestServlet extends FATServlet {
         }
 
         assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.NEVER from no transaction");
 
-        assertEquals(true, persons.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty"));
+        assertEquals(true, personRepo.setFirstNameWhenNoTransactionIsPresent(p3.ssn_id, "Ty"));
 
         assertIterableEquals(List.of("Tim", "Tom", "Ty"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.NOT_SUPPORTED in transaction");
 
         tran.begin();
         try {
-            assertEquals(true, persons.setFirstNameWithCurrentTransactionSuspended(p3.ssn_id, "Tyler"));
+            assertEquals(true, personRepo.setFirstNameWithCurrentTransactionSuspended(p3.ssn_id, "Tyler"));
         } finally {
             tran.rollback();
         }
 
         assertIterableEquals(List.of("Tim", "Tom", "Tyler"),
-                             persons.findFirstNames("TestTransactional"));
+                             personRepo.findFirstNames("TestTransactional"));
 
         System.out.println("TxType.NOT_SUPPORTED from no transaction");
 
-        assertEquals("Tyler", persons.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName);
+        assertEquals("Tyler", personRepo.getPersonInCurrentOrNoTransaction(p3.ssn_id).firstName);
 
         personnel.removeAll().get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
     }
 
     /**
-     * Test the Trimmed keyword by querying against data that has leading and trailing blank space.
+     * Test that a repository interface can be annotated as Transactional, and the
+     * methods honor the specified transaction type of REQUIRES_NEW.
      */
     @Test
-    public void testTrimmedKeyword() {
-        List<Prime> found = primes.findByNameTrimmedCharCountAndNumberIdBetween(24, 4000L, 4025L);
+    public void testTransactionalRepository() throws Exception {
+        people.deleteBySSN_IdBetween(0L, 999999999L);
+
+        Person p1 = new Person();
+        p1.firstName = "Tabitha";
+        p1.lastName = "TestTransactionalRepository";
+        p1.ssn_id = 555331111;
+
+        Person p2 = new Person();
+        p2.firstName = "Todd";
+        p2.lastName = "TestTransactionalRepository";
+        p2.ssn_id = 444332222;
+
+        Person p3 = new Person();
+        p3.firstName = "Ted";
+        p3.lastName = "TestTransactionalRepository";
+        p3.ssn_id = 111223333;
+
+        tran.begin();
+        try {
+            persons.insert(p1); // runs in current transaction
+
+            persons.insertAll(p2, p3); // runs in its own transaction
+        } finally {
+            tran.rollback();
+        }
+
+        // insert again, because the previous should have rolled back
+        persons.insert(p1);
+
+        tran.begin();
+        try {
+            p1.lastName = "Test-TransactionalRepository";
+            assertEquals(true, persons.updateOne(p1));
+
+            p2.lastName = "TestTransactional-Repository";
+            p3.firstName = "Theodore";
+            assertEquals(2L, persons.updateSome(p2, p3));
+        } finally {
+            // The above must run in their own separate transactions,
+            // so they must not roll back along with the following:
+            tran.rollback();
+        }
+
+        p1 = personRepo.getPersonInCurrentOrNoTransaction(p1.ssn_id);
+        assertEquals("Tabitha", p1.firstName);
+        assertEquals("Test-TransactionalRepository", p1.lastName);
+
+        p2 = personRepo.getPersonInCurrentOrNoTransaction(p2.ssn_id);
+        assertEquals("Todd", p2.firstName);
+        assertEquals("TestTransactional-Repository", p2.lastName);
+
+        p3 = personRepo.getPersonInCurrentOrNoTransaction(p3.ssn_id);
+        assertEquals("Theodore", p3.firstName);
+        assertEquals("TestTransactionalRepository", p3.lastName);
+
+        assertEquals(3L, people.deleteBySSN_IdBetween(0L, 999999999L));
+    }
+
+    /**
+     * Test the TRIM function by querying against data that has leading and trailing
+     * blank space.
+     */
+    @Test
+    public void testTrimFunction() {
+        List<Prime> found = primes.withTrimmedNameLengthAndNumBetween(24, 4000L, 4025L);
         assertNotNull(found);
         assertEquals("Found: " + found, 1, found.size());
         assertEquals(4021L, found.get(0).numberId);
         assertEquals(" Four thousand twenty-one ", found.get(0).name);
-
-        Prime prime = primes.findByNameTrimmedIgnoreCase("FOUR THOUSAND TWENTY-ONE").orElseThrow();
-        assertEquals(4021L, prime.numberId);
-        assertEquals(" Four thousand twenty-one ", prime.name);
     }
 
     /**

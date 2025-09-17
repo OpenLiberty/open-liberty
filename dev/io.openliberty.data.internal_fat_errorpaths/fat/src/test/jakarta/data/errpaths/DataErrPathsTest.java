@@ -49,15 +49,21 @@ public class DataErrPathsTest extends FATServletClient {
                     new String[] {
                                    "CWWJP9991W.*4002", // 2 persistence units attempt to autocreate same table
                                    "CWWKD1003E.*existsByAddress", // exists method returning int
+                                   "CWWKD1003E.*existsByBirthday", // exists method returning Page<Boolean>
                                    "CWWKD1003E.*existsByName", // exists method returning CompletableFuture<Long>
+                                   "CWWKD1006E.*deleteReturn.*ByAddress", // invalid result type for delete
                                    "CWWKD1006E.*removeBySSN", // delete method attempts to return record
                                    "CWWKD1009E.*addNothing", // Insert method without parameters
                                    "CWWKD1009E.*addSome", // Insert method with multiple parameters
                                    "CWWKD1009E.*changeNothing", // Update method without parameters
-                                   "CWWKD1009E.*changeBoth", // Update method with multiple entity parameters
                                    "CWWKD1009E.*storeNothing", // Save method without parameters
                                    "CWWKD1009E.*storeInDatabase", // Save method with multiple parameters
                                    "CWWKD1010E.*nameAndZipCode", // Record return type with invalid attribute name
+                                   "CWWKD1010E.*selectByBirthday", // Sort with invalid attribute name
+                                   "CWWKD1010E.*sortedByEndOfAddress", // OrderBy with invalid function
+                                   "CWWKD1010E.*sortedByZipCode", // OrderBy with invalid attribute name
+                                   "CWWKD1011E.*findByIgnoreCaseContains", // missing entity attribute name
+                                   "CWWKD1014E.*changeBoth", // Update method with multiple entity parameters
                                    "CWWKD1015E.*addPollingLocation", // insert null entity
                                    "CWWKD1015E.*addOrUpdatePollingLocation", // save null entity
                                    "CWWKD1017E.*livesAt", // multiple Limit parameters
@@ -66,10 +72,28 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1018E.*occupying", // intermixed Limit and PageRequest
                                    "CWWKD1019E.*livingAt", // mix of named/positional parameters
                                    "CWWKD1019E.*residingAt", // unused parameters
-                                   "CWWKD1022E.*discardPage", // Delete operation with a PageRequest
+                                   "CWWKD1020E.*discardLimited", // Limit parameter on Delete method
+                                   "CWWKD1020E.*discardOrdered", // Order parameter on Delete method
+                                   "CWWKD1020E.*discardPage", // Delete operation with a PageRequest
+                                   "CWWKD1020E.*discardSorted", // Sort parameter on Delete method
+                                   "CWWKD1024E.*findByAddressContainsOrderByAsc", // missing entity attribute name
+                                   "CWWKD1024E.*inPrecinct", // @By with empty string value
+                                   "CWWKD1024E.*inTownship", // @OrderBy with empty string value
+                                   "CWWKD1028E.*findFirst2147483648", // exceeds Integer.MAX_VALUE
                                    "CWWKD1033E.*selectByFirstName", // CursoredPage with ORDER BY in Query
                                    "CWWKD1037E.*findByBirthdayOrderBySSN", // CursoredPage of non-entity
                                    "CWWKD1037E.*registrations", // CursoredPage of non-entity
+                                   "CWWKD1041E.*findBySsnBetweenAnd.*NotNull", // CursoredPage without PageRequest
+                                   "CWWKD1046E.*firstLetterOfName", // unsafe conversion to Character
+                                   "CWWKD1046E.*minMaxSumCountAverageFloat", // unsafe conversion to float
+                                   "CWWKD1047E.*ssnAsByte", // unsafe conversion to byte
+                                   "CWWKD1049E.*countAsBooleanBySSNLessThan", // count returning boolean
+                                   "CWWKD1049E.*countByBirthday", // count returning Page<Long>
+                                   "CWWKD1054E.*deleteByNameStartsWith", // NonUniqueResultException
+                                   "CWWKD1054E.*deleteFirst", // NonUniqueResultException
+                                   "CWWKD1054E.*findBySSNBetweenAndNameNotNull", // NonUniqueResultException
+                                   "CWWKD1054E.*findSSNAsLongBetween", // NonUniqueResultException
+                                   "CWWKD1074E.*findByAddressIgnoreCaseIn", // IgnoreCase and In combined
                                    "CWWKD1077E.*test.jakarta.data.errpaths.web.RepoWithoutDataStore",
                                    "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
                                    "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo",
@@ -83,11 +107,9 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1086E.*withAddressShorterThan", // Param used for positional parameter
                                    "CWWKD1090E.*findByAddressOrderBy", // OrderBy anno/keyword conflict
                                    "CWWKD1091E.*deleteByAddressOrderByName", // OrderBy without return type
+                                   "CWWKD1093E.*selectByBirthday", // VERSION(THIS) used when there is no version
                                    "CWWKD1094E.*register", // incompatible return type
                                    "CWWKD1096E.*discardInOrder", // OrderBy annotation without return type
-                                   "CWWKD1097E.*discardLimited", // Limit parameter on Delete method
-                                   "CWWKD1097E.*discardOrdered", // Order parameter on Delete method
-                                   "CWWKD1097E.*discardSorted", // Sort parameter on Delete method
                                    "CWWKD1098E.*findFirst5ByAddress", // Order ahead of query params
                                    "CWWKD1098E.*occupantsOf", // PageRequest/Order ahead of query params
                                    "CWWKD1098E.*withNameLongerThan", // Limit ahead of query params
@@ -95,7 +117,13 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1099E.*findFirst2", // Limit incompatible with First
                                    "CWWKD1099E.*findFirst3", // PageRequest incompatible with First
                                    "CWWKD1100E.*selectByLastName", // CursoredPage with ORDER BY clause
-                                   "CWWKD1101E.*nameAndZipCode" // Record return type with invalid attribute name
+                                   "CWWKD1101E.*nameAndZipCode", // Record return type with invalid attribute name
+                                   "CWWKD1104E.*inWard", // @Param with empty string value
+                                   "CWWKD1105E.*findByNameNotNullOrderByDescriptionAsc", // keyword in OrderBy
+                                   "CWWKD1108E.*Invitation", // JPA entity lacks @Entity
+                                   "CWWKD1109E.*Investment", // Record entity has JPA anno
+                                   "CWWKD1110E.*findByEmailAddressesGreaterThanEqual", // collection >=
+                                   "CWWKD1110E.*findByEmailAddressesIgnoreCaseContains" // collection IgnoreCase
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths")

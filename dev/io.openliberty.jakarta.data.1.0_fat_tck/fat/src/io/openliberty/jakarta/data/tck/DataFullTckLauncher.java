@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ public class DataFullTckLauncher {
                           "CWWKD0202E", // TODO : https://github.com/OpenLiberty/open-liberty/issues/30155
                           "CWWKD1054E", // tested error path
                           "CWWKD1080E", // TODO : https://github.com/OpenLiberty/open-liberty/issues/30155
+                          "CWWKZ0014W", // TODO : https://github.com/OpenLiberty/open-liberty/issues/30155 (seen alongside CWWKD1080E)
                           "CWWKE0955E" //websphere.java.security java 18+
         );
     }

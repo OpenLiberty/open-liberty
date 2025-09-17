@@ -23,7 +23,7 @@
     <oauthProvider id="ExternalOauth" httpsRequired="false" autoAuthorize="true">
         <autoAuthorizeClient>rp</autoAuthorizeClient>
         <localStore>
-            <client name="rp" secret="{xor}LDo8LTor" displayname="rp" resourceIds="abc123" introspectTokens="true" scope="openid profile scope1 email phone address" enabled="true">
+            <client name="rp" secret="{xor}LDo8LTorbm1saw==" displayname="rp" resourceIds="abc123" introspectTokens="true" scope="openid profile scope1 email phone address" enabled="true">
                 <redirect>http://localhost:${bvt.prop.security_1_HTTP_default}/ibm/api/social-login/redirect/oauth2Login1</redirect>
                 <redirect>https://localhost:${bvt.prop.security_1_HTTP_default.secure}/ibm/api/social-login/redirect/oauth2Login1</redirect>
                 <redirect>http://localhost:${bvt.prop.security_1_HTTP_default}/ibm/api/social-login/redirect/oidcLogin1</redirect>

@@ -633,7 +633,7 @@
 
 7356=Proceduru [{1}] nelze prov\u00e9st, proto\u017ee {0} aktu\u00e1ln\u011b nepodporuje v\u00edce v\u00fdstupn\u00edch parametr\u016f.
 
-7357="[{0} ]\u201c URL pro \u201e[{1} ]" zdroj nepat\u0159\u00ed do platn\u00e9ho ko\u0159ene persistence, jak je definov\u00e1no specifikac\u00ed Jakarta Persistence
+7357=Zdroj "[ {0} ]" URL pro zdroj "[ {1} ]" nepat\u0159\u00ed do platn\u00e9ho ko\u0159ene perzistence, jak je definov\u00e1no ve specifikaci Jakarta Persistence.
 
 7358=Byl zad\u00e1n nespr\u00e1vn\u00fd n\u00e1zev slu\u017eby ASM.
 

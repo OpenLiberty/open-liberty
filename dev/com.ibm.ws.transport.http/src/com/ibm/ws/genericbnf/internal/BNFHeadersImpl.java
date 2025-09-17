@@ -102,7 +102,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private static byte[] whitespace = null;
 
     /** Empty object used when a header is not present */
-    private static final HeaderField NULL_HEADER = new EmptyHeaderField();
+    public static final HeaderField NULL_HEADER = new EmptyHeaderField();
 
     private static final String FOR = "for";
 

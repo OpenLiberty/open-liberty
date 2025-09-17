@@ -5,7 +5,7 @@ bSymbolicName=io.openliberty.org.hibernate.validator.9.0
 
 Bundle-Name: Hibernate Validator Engine
 Bundle-SymbolicName: io.openliberty.org.hibernate.validator.9.0
-Bundle-Description: Hibernate's Jakarta Validation 3.1 reference implementation; version=9.0.0.Beta3
+Bundle-Description: Hibernate's Jakarta Validation 3.1 reference implementation; version=9.0.0.Final
 
 # Provide these as resources to applications
 #TODO add the 3.1 schemas when upgrading to the final Hibernate Validator 9.0
@@ -21,7 +21,7 @@ app-resources= \
   META-INF/validation-configuration-3.0.xsd
 
 Export-Package: \
-  org.hibernate.validator.*;version="9.0.0.Beta3";thread-context=true
+  org.hibernate.validator.*;version="9.0.0.Final";thread-context=true
 
 Import-Package: \
   !jakarta.persistence, \
@@ -59,8 +59,8 @@ DynamicImport-Package: \
  javafx.*
  
 Include-Resource: \
-  @${repo;org.hibernate.validator:hibernate-validator;9.0.0.Beta3;EXACT}!/META-INF/*.xsd, \
-  @${repo;org.hibernate.validator:hibernate-validator;9.0.0.Beta3;EXACT}!/META-INF/services/*, \
+  @${repo;org.hibernate.validator:hibernate-validator;9.0.0.Final;EXACT}!/META-INF/*.xsd, \
+  @${repo;org.hibernate.validator:hibernate-validator;9.0.0.Final;EXACT}!/META-INF/services/*, \
   org=resources/org
   
 Service-Component:\

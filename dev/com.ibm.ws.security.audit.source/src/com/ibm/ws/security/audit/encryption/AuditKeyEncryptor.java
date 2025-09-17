@@ -19,43 +19,32 @@ import com.ibm.ws.security.audit.source.utils.ByteArray;
  * A package local class for performing encryption and decryption of keys based on a key
  */
 public class AuditKeyEncryptor {
-    private String algorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA;
-    private int len = 24;
+    private final String algorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
     byte[] password;
-    byte[] desKey;
+    byte[] passwordDigestBytes;
     AuditCrypto des;
 
     public AuditKeyEncryptor(byte[] password) {
         this.password = password;
         java.security.MessageDigest md = null;
         try {
-            if (CryptoUtils.isFips140_3Enabled()) {
-                algorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
-                len = 32;
-            }
-
             md = java.security.MessageDigest.getInstance(algorithm);
-            desKey = new byte[len];
+            passwordDigestBytes = new byte[CryptoUtils.AES_256_KEY_LENGTH_BYTES];
             byte[] digest = md.digest(this.password);
-            ByteArray.copy(digest, 0, digest.length, desKey, 0);
-            if (!CryptoUtils.isFips140_3Enabled()) {
-                desKey[20] = (byte) 0x00;
-                desKey[21] = (byte) 0x00;
-                desKey[22] = (byte) 0x00;
-                desKey[23] = (byte) 0x00;
-            }
+            ByteArray.copy(digest, 0, digest.length, passwordDigestBytes, 0);
+
         } catch (java.security.NoSuchAlgorithmException e) {
-            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.ltpa.KeyEncryptor.KeyEncryptor", "21", this);
+            com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.security.audit.encryption.AuditKeyEncryptor", "21", this);
         }
         des = new AuditCrypto();
 
     }
 
     public byte[] decrypt(byte[] encrKey) {
-        return des.decrypt(encrKey, desKey);
+        return des.decrypt(encrKey, passwordDigestBytes);
     }
 
     public byte[] encrypt(byte[] key) {
-        return des.encrypt(key, desKey);
+        return des.encrypt(key, passwordDigestBytes);
     }
 }

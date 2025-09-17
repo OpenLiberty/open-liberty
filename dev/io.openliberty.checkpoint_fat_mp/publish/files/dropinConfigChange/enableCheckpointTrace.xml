@@ -1,0 +1,7 @@
+<server>
+  <logging
+    traceSpecification="*=info:logservice=all"
+    maxFileSize="20"
+    maxFiles="5"
+    logDirectory="restore_log_dir"/>
+</server>

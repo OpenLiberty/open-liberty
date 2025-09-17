@@ -9,7 +9,7 @@
 
   <variable name="onError" value="FAIL"/>
 
-  <keyStore id="defaultKeyStore" location="server.jks" password="{xor}Lz4sLCgwLTs="/>
+  <keyStore id="defaultKeyStore" location="server.p12" password="{xor}Lz4sLCgwLTs="/>
 
   <!-- Overriding the values of the properties used for wasJmsEndpoint port configuration in fatTestPorts.xml -->
   <variable name="bvt.prop.jms"      value="${bvt.prop.jms.1}"/>

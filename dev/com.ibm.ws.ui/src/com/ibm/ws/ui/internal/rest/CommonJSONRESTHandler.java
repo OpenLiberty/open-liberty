@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,7 @@ package com.ibm.ws.ui.internal.rest;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -275,13 +275,13 @@ public abstract class CommonJSONRESTHandler extends CommonRESTHandler {
             if (MEDIA_TYPE_TEXT_PLAIN.equals(contentType)) {
                 response.setStatus(e.getStatus());
                 response.setResponseHeader(HTTP_HEADER_CONTENT_TYPE, e.getContentType());
-                response.getOutputStream().write(e.getPayload().toString().getBytes(Charset.forName("UTF-8")));
+                response.getOutputStream().write(e.getPayload().toString().getBytes(StandardCharsets.UTF_8));
             } else if (contentType != null && contentType.indexOf(MEDIA_TYPE_APPLICATION_JSON_NO_CHARSET) > -1) {
                 setJSONResponse(response, e.getPayload(), e.getStatus());
             } else {
                 response.setStatus(HTTP_INTERNAL_ERROR);
                 response.setResponseHeader(HTTP_HEADER_CONTENT_TYPE, MEDIA_TYPE_TEXT_PLAIN);
-                response.getOutputStream().write(("An internal error occurred. RESTException had a set payload but did not specify content type").getBytes(Charset.forName("UTF-8")));
+                response.getOutputStream().write(("An internal error occurred. RESTException had a set payload but did not specify content type").getBytes(StandardCharsets.UTF_8));
             }
         } else {
             response.setStatus(e.getStatus());

@@ -37,6 +37,16 @@ public class CustomImages {
 
         // Get data from calling script
         String projectPath = args[0];
+        
+        if (System.getenv().containsKey("ARTIFACTORY_DOCKER_SERVER")) {
+            System.out.println("Setting fat.test.artifactory.docker.server=" + System.getenv().get("ARTIFACTORY_DOCKER_SERVER"));
+            System.setProperty("fat.test.artifactory.docker.server", System.getenv().get("ARTIFACTORY_DOCKER_SERVER"));
+        }
+        
+        if (System.getenv().containsKey("DOCKER_REGISTRY_SERVER")) {
+            System.out.println("Setting fat.test.docker.registry.server=" + System.getenv().get("DOCKER_REGISTRY_SERVER"));
+            System.setProperty("fat.test.docker.registry.server", System.getenv().get("DOCKER_REGISTRY_SERVER"));
+        }
 
         // Where to find instructions to build images
         Path commonPath = Paths.get(projectPath, "resources", "openliberty", "testcontainers");
@@ -44,14 +54,8 @@ public class CustomImages {
         // Find all dockerfiles and attempt to build their corresponding images
         Dockerfile.findDockerfiles(commonPath).stream()
                 .map(location -> new Dockerfile(location))
-                .forEach(dockerfile -> {
-                    // Find or build all images
-                    if(dockerfile.isCached()) {
-                        System.out.println("Skipping build: " + dockerfile.imageName.asCanonicalNameString());
-                        System.out.println("-----");
-                        return;
-                    }
-                    
+                .sorted() //Sort in case images end up depending on each other
+                .forEach(dockerfile -> {                    
                     ImageFromDockerfile img = new ImageFromDockerfile(dockerfile.imageName.asCanonicalNameString(), false)
                             .withDockerfile(dockerfile.location)
                             .withBuildArg(BASE_IMAGE, dockerfile.baseImageNameSubstituted.asCanonicalNameString());

@@ -28,8 +28,9 @@ Bundle-SymbolicName: io.openliberty.org.jboss.weld5; singleton:=true
 instrument.disabled: true
 
 -buildpath: \
-	org.jboss.weld:weld-osgi-bundle;version="[5.1,5.2)", \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	org.jboss.weld:weld-osgi-bundle;version='[5.1,5.2)',\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.jakarta.cdi.4.0
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

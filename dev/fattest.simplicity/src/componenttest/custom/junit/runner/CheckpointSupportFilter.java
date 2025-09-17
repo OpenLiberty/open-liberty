@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,18 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.custom.junit.runner;
+
+import static org.junit.Assert.fail;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
+import javax.json.spi.JsonProvider;
 
 import org.junit.runner.Description;
 import org.junit.runner.manipulation.Filter;
@@ -47,6 +59,27 @@ public class CheckpointSupportFilter extends Filter {
             checkpointTest = getTestClass(desc).getAnnotation(CheckpointTest.class);
         }
 
+        if (checkpointTest != null) {
+            File testedFeaturesFile = new File("fat-metadata.json");
+            JsonProvider provider = new org.glassfish.json.JsonProviderImpl();
+            JsonObject fatMetadata;
+            try {
+                boolean checkpointSet = false;
+                fatMetadata = provider.createReader(new FileInputStream(testedFeaturesFile)).readObject();
+                JsonArray testedFeaturesJson = fatMetadata.getJsonArray("feature-deps");
+                for (JsonValue testedFeature : testedFeaturesJson) {
+                    String name = ((JsonString) testedFeature).getString().trim().toLowerCase();
+                    if ("checkpoint".equals(name)) {
+                        checkpointSet = true;
+                    }
+                }
+                if (!checkpointSet) {
+                    fail("Must add 'checkpoint' to list of 'tested.features' in the 'bnd.bnd' file when using the CheckpointTest annotation on the class: " + desc.getClassName());
+                }
+            } catch (FileNotFoundException e) {
+                Log.error(getClass(), "shoudRun", e);
+            }
+        }
         // A system property is set on systems that support InstantOn and want
         // to only run Checkpoint Tests.
         if (CHECKPOINT_ONLY_PROPERTY_VALUE) {

@@ -61,7 +61,7 @@ public abstract class BaseTestCase extends TestCase {
         MockServletResponse response = new MockServletResponse();
 
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
 

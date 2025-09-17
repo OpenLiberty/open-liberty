@@ -45,7 +45,7 @@ public class ArtifactoryRegistryTest {
         // Avoid writing to the developers docker config
         File testdir = new File(System.getProperty("java.io.tmpdir"), ".docker");
 
-        Field configDir = ArtifactoryRegistry.class.getDeclaredField("configDir");
+        Field configDir = ArtifactoryRegistry.class.getDeclaredField("CONFIG_DIR");
         configDir.setAccessible(true);
         configDir.set(null, testdir);
     }
@@ -105,6 +105,16 @@ public class ArtifactoryRegistryTest {
         assertNotNull(t);
         assertTrue("Throwable should have been an IllegalStateException", t instanceof IllegalStateException);
         assertTrue("Throwable should have contained the registry property ", t.getMessage().contains(REGISTRY));
+
+        assertFalse("Registry should not have been available", registry.isRegistryAvailable());
+
+        // invalid registry
+        System.setProperty(REGISTRY, "example.com");
+        registry = getConstructor().newInstance();
+
+        t = registry.getSetupException();
+        assertNotNull(t);
+        assertTrue("Throwable should have been an IllegalStateException", t instanceof IllegalStateException);
 
         assertFalse("Registry should not have been available", registry.isRegistryAvailable());
 
@@ -178,11 +188,11 @@ public class ArtifactoryRegistryTest {
         testMap.put(DockerImageName.parse("wasliberty-icr-docker-remote/rhel:1.0"), Boolean.TRUE);
         testMap.put(DockerImageName.parse("wasliberty-mcr-docker-remote/debian:5.3.0"), Boolean.TRUE);
         testMap.put(DockerImageName.parse("wasliberty-aws-docker-remote/suse:4.5"), Boolean.TRUE);
-//        testMap.put(DockerImageName.parse("wasliberty-quay-docker-remote/fedora:8.7"), Boolean.TRUE);
+        testMap.put(DockerImageName.parse("wasliberty-quay-docker-remote/fedora:8.7"), Boolean.TRUE);
 
         // Unsupported repositories
         testMap.put(DockerImageName.parse("wasliberty-infrastructure-docker/arch:6.6"), Boolean.FALSE);
-        testMap.put(DockerImageName.parse("wasliberty-intops-docker-local/centos:5.4"), Boolean.FALSE);
+        testMap.put(DockerImageName.parse("websphere-automation/centos:5.4"), Boolean.FALSE);
         testMap.put(DockerImageName.parse("wasliberty-internal-docker-local/mint:4.12"), Boolean.FALSE);
 
         // Generated images

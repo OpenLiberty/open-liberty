@@ -59,3 +59,6 @@ src:\
   org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
   com.ibm.ws.security.audit_fat.common.tooling;version=latest,\
   com.ibm.ws.webcontainer.security_test.servlets;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

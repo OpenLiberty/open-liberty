@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -60,7 +60,8 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
     private static Logger log = Logger.getLogger(ProducerGrpcServiceClientImpl.class.getName());
 
-    private final int deadlineMs = 60 * 1000;
+    // Two minute timeout for server response
+    private final int deadline = 120;
 
     private static boolean CONCURRENT_TEST_ON = false;
 
@@ -92,7 +93,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         try {
             // and send the request
             // create the request
-            response = _producerBlockingStub.withDeadlineAfter(deadlineMs, TimeUnit.MILLISECONDS)
+            response = _producerBlockingStub.withDeadlineAfter(deadline, TimeUnit.SECONDS)
                             .createApp(AppRequest.newBuilder()
                                             .setRetailApp(app)
                                             .build());
@@ -122,7 +123,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             log.fine("Producer: deleteApp, prodcuer ,request sent  to grpc server to remove app " + name);
         }
         try {
-            appResp = _producerBlockingStub.withDeadlineAfter(deadlineMs, TimeUnit.MILLISECONDS).deleteApp(appReq);
+            appResp = _producerBlockingStub.withDeadlineAfter(deadline, TimeUnit.SECONDS).deleteApp(appReq);
 
             log.info("Producer: deleteApp,response received "
                      + "from grpc server ");
@@ -148,7 +149,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         }
 
         try {
-            _producerBlockingStub.withDeadlineAfter(deadlineMs, TimeUnit.MILLISECONDS)
+            _producerBlockingStub.withDeadlineAfter(deadline, TimeUnit.SECONDS)
                             .deleteAllApps(Empty.getDefaultInstance())
                             .forEachRemaining(DeleteResponse -> {
                                 response.addDeleteResults(DeleteResponse.getResult());
@@ -174,7 +175,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
 
         ProducerRestResponse response = new ProducerRestResponse();
         StreamObserver<AppRequest> requestObserver = _producerAsyncStub
-                        .withDeadlineAfter(deadlineMs, TimeUnit.SECONDS)
+                        .withDeadlineAfter(deadline, TimeUnit.SECONDS)
                         .createApps(new StreamObserver<MultiCreateResponse>() {
 
                             @Override
@@ -229,7 +230,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
         try {
             // Wait for the grpc service response to complete. If we return the client response too quickly (ie. this timeout is too small)
             // the connection will be closed  and the test will not get the correct response data and IOExceptions might be thrown.
-            latch.await(deadlineMs, TimeUnit.MILLISECONDS);
+            latch.await(deadline, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -903,6 +904,7 @@ public class ProducerGrpcServiceClientImpl extends ProducerGrpcServiceClient {
             // Error on the reply from the server service
             errorMessage = t.getMessage();
             log.info("grpcTwoWayStreamApp: onError received from server service: " + errorMessage);
+            log.log(Level.SEVERE, "Error received...", t);
             latch.countDown();
         }
 

@@ -24,7 +24,7 @@
 		id="hs256O"
 		scope="openid profile"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
@@ -34,7 +34,7 @@
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterHS256O"
 		signatureAlgorithm="HS256"
-		sharedKey="secret"
+		sharedKey="secret1234"
 	>
 	</openidConnectClient>	
 
@@ -49,7 +49,7 @@
 		id="hs256J"
 		scope="openid profile"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
@@ -59,7 +59,7 @@
 		userInfoEndpointEnabled="true"
 		authFilterRef="authFilterHS256J"
 		signatureAlgorithm="HS256"
-		sharedKey="secret"
+		sharedKey="secret1234"
 	>
 	</openidConnectClient>	
 	
@@ -74,7 +74,7 @@
 		id="rs256O"
 		scope="openid profile"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
@@ -100,7 +100,7 @@
 		id="rs256J"
 		scope="openid profile"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"

@@ -18,7 +18,7 @@ import java.time.LocalTime;
  * Java record that is used as an entity where record/entity includes a version.
  */
 public record Rebate(
-                Integer id, // TODO use @GeneratedValue
+                Integer id, // record entities cannot use @GeneratedValue
                 double amount,
                 String customerId,
                 LocalTime purchaseMadeAt,

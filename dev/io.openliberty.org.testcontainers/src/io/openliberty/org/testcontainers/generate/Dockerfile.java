@@ -1,3 +1,15 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package io.openliberty.org.testcontainers.generate;
 
 import java.io.File;
@@ -16,7 +28,7 @@ import org.testcontainers.utility.ImageNameSubstitutor;
 /**
  * A record that represents a Dockerfile
  */
-public class Dockerfile {
+public class Dockerfile implements Comparable<Dockerfile> {
     public final Path location;
     public final DockerImageName imageName;
     public final DockerImageName baseImageName;
@@ -26,7 +38,7 @@ public class Dockerfile {
         this.location = location;
         this.imageName = constructImageName(this.location);
         this.baseImageName = findBaseImageFrom(this.location);
-        this.baseImageNameSubstituted = substituteBaseImage(this.baseImageName);
+        this.baseImageNameSubstituted = ImageNameSubstitutor.instance().apply(baseImageName);
     }
     
     public boolean isCached() {
@@ -47,20 +59,22 @@ public class Dockerfile {
      * @return The DockerImageName for this Dockerfile
      */
     private static DockerImageName constructImageName(Path location) {
+        
+        final String SEPARATOR = "/";
 
         // io.openliberty.org.testcontainers/resources/openliberty/testcontainers/[repository]/[version]/Dockerfile
-        final String fullPath = location.toString();
+        final String fullPath = location.toString().replace("\\", SEPARATOR);
         
         System.out.println("Full path to dockerfile is: " + fullPath);
 
-        // Find version (between the last two seperator characters)
-        int end = fullPath.lastIndexOf(File.separator);
-        int start = fullPath.substring(0, end).lastIndexOf(File.separator) + 1;
+        // Find version (between the last two separator characters)
+        int end = fullPath.lastIndexOf(SEPARATOR);
+        int start = fullPath.substring(0, end).lastIndexOf(SEPARATOR) + 1;
         final String version = fullPath.substring(start, end);
 
         // Find repository (between "resources/" and version)
+        end = start - 1; //End where the version started (exclude the path separator)
         start = fullPath.lastIndexOf("resources/") + 10;
-        end = fullPath.indexOf(version) - 1;
         final String repository = fullPath.substring(start, end);
 
         // Construct and return name
@@ -94,11 +108,8 @@ public class Dockerfile {
     /**
      * Similar logic to ImageBuilder.findBaseImageFrom(resource)
      * 
-     * However, in this case we can only use the ArtifactoryMirrorSubstitutor so we
-     * have to manually put in the Artifactory registry (when available)
-     * 
      * @param location of Dockerfile the resource path of the Dockerfile
-     * @return The substituted docker image of the BASE_IMAGE argument
+     * @return The docker image of the BASE_IMAGE argument
      */
     private DockerImageName findBaseImageFrom(Path location) {
         final String BASE_IMAGE_PREFIX = "ARG BASE_IMAGE=\"";
@@ -122,34 +133,17 @@ public class Dockerfile {
 
     }
     
-    private DockerImageName substituteBaseImage(final DockerImageName original) {
-        final String ARTIFACTORY_REGISTRY = System.getenv("ARTIFACTORY_REGISTRY");
-        
-        DockerImageName substituted = ImageNameSubstitutor.instance().apply(original);
-
-        if (original.equals(substituted)) {
-            System.out.println("Keep original BASE_IMAGE: " + original.asCanonicalNameString());
-            return original;
-        } else {
-            // Substitutor was used, also prepend the registry.
-            System.out.println("Use substituted BASE_IMAGE: " + substituted.asCanonicalNameString());
-            return substituted.withRegistry(ARTIFACTORY_REGISTRY);
-        }
-    }
-    
     /**
      * A ImageNameSubstitutor for images built by this outer class.
      * TODO figure out if there is a way to use the ImageBuilderSubstitutor from the ImageBuilder class of fattest.simplicity
      */
     private static class ImageBuilderSubstitutor extends ImageNameSubstitutor {
 
-        private static final String INTERNAL_REGISTRY_ENV = "INTERNAL_REGISTRY";
+        private static final String INTERNAL_REGISTRY_ENV = "DOCKER_REGISTRY_SERVER";
 
         // Ensures when we look for cached images Docker only attempt to find images
         // locally or from an internally configured registry.
-        private static final String REGISTRY = System.getenv(INTERNAL_REGISTRY_ENV) == null 
-                ? "localhost"
-                : System.getenv(INTERNAL_REGISTRY_ENV);
+        private static final String REGISTRY = System.getenv().getOrDefault(INTERNAL_REGISTRY_ENV, "localhost");
 
         // The repository where all Open Liberty images are located
         private static final String REPOSITORY_PREFIX = "openliberty/testcontainers/";
@@ -185,5 +179,14 @@ public class Dockerfile {
             }
             return instance;
         }
+    }
+
+    @Override
+    public int compareTo(Dockerfile o) {
+        if(Objects.isNull(o)) {
+            throw new IllegalStateException("Cannot compare a Dockerfile object to a null object");
+        }
+        
+        return this.imageName.asCanonicalNameString().compareTo(o.imageName.asCanonicalNameString());
     }
 }

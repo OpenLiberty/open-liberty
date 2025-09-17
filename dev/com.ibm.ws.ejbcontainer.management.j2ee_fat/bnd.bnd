@@ -22,12 +22,15 @@ fat.project: true
 tested.features: \
 	ejbLite-3.2,\
 	servlet-3.1,\
-	servlet-4.0
+	servlet-4.0, \
+	checkpoint
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.ws.jmx.connector.client.rest;version=latest,\
 	com.ibm.ws.jmx.connector.client.restConnector;version=latest,\
-	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.jmx
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

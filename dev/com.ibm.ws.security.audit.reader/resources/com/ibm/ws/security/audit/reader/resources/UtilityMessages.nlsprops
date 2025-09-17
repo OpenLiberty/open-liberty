@@ -1,5 +1,5 @@
 #/*******************************************************************************
-# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * Copyright (c) 2018, 2025 IBM Corporation and others.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
 # * which accompanies this distribution, and is available at
@@ -63,3 +63,7 @@ security.audit.ErrorLoadingKeystore=Error loading the keystore {0}. The password
 security.audit.MismatchingEncKeystores=The input value, {0}, for the keystore specified to contain the certificate used to decrypt audit records does not match the keystore, {1}, specified in the audit log.
 security.audit.MismatchingSigningKeystores=The input value, {0}, for the keystore specified to contain the certificate used to unsign audit records does not match the keystore, {1}, specified in the audit log.
 security.audit.CannotFindCertificate=The {0} certificate alias does not exist in the {1} keystore.
+
+# Do not translate "auditRecord"
+security.audit.FailedToValidateSignature=The validation of the auditRecord signature failed at index [{0}].
+security.audit.FailedToDecryptAuditRecord=The decryption of the auditRecord failed at index [{0}].

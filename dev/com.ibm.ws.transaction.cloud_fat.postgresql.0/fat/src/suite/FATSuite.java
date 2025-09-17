@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,14 +17,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+import com.ibm.ws.transaction.fat.util.PostgresqlContainerSuite;
+import com.ibm.ws.transaction.fat.util.TxTestDB;
 
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.database.container.PostgreSQLContainer;
 import tests.DBRotationTest;
 
 @RunWith(Suite.class)
@@ -33,20 +30,8 @@ import tests.DBRotationTest;
                 AlwaysPassesTest.class,
                 DBRotationTest.class,
 })
-public class FATSuite extends TxTestContainerSuite {
-
-    static {
-        testContainer = new PostgreSQLContainer(POSTGRES_IMAGE)
-                        .withDatabaseName(POSTGRES_DB)
-                        .withUsername(POSTGRES_USER)
-                        .withPassword(POSTGRES_PASS)
-                        .withSSL()
-                        .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
-
-        beforeSuite(DatabaseContainerType.Postgres);
-    }
+public class FATSuite extends PostgresqlContainerSuite {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES().forServers(DBRotationTest.serverNames))
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().forServers(DBRotationTest.serverNames));
+    public static TxTestDB p = new TxTestDB(DatabaseContainerType.Postgres);
 }

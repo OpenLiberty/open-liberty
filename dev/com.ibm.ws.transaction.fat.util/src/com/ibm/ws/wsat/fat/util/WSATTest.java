@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public abstract class WSATTest extends FATServletClient {
 	// Normal number of seconds it takes a server to start up
 	// Transaction timeouts will be adjusted if actual startup
 	// time varies from this
-	protected final static Duration normalStartTime = Duration.ofSeconds(12);
+	protected final static Duration normalStartTime = Duration.ofSeconds(15);
 
 	public final static int REQUEST_TIMEOUT = 60;
 	public final static int START_TIMEOUT = 600000;

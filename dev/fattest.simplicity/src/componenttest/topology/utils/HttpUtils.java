@@ -15,7 +15,6 @@ package componenttest.topology.utils;
 import static org.junit.Assert.assertEquals;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -668,13 +667,12 @@ public class HttpUtils {
             // See if we can get the stream for the response, may be an input or error stream
             try {
                 is = con.getInputStream();
-            } catch (FileNotFoundException e) {
+            } catch (IOException e) {
                 // No input stream so try the error
                 is = con.getErrorStream();
-            } catch (IOException ioe) {
-                String errStream = read(con.getErrorStream());
-                Log.info(c, method, "rc=" + con.getResponseCode() + " response=" + LS + errStream);
-                throw new IOException(ioe.getMessage() + ": " + errStream, ioe);
+                if (is == null) {
+                    throw e;
+                }
             }
 
             String output = read(is);

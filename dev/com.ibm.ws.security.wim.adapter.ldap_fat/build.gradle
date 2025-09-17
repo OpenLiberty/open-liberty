@@ -44,14 +44,6 @@ autoFVT.dependsOn ':com.ibm.ws.security.wim_test.servlet:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.wim.repository_test.custom:assemble'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
 autoFVT.doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
@@ -257,11 +249,9 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     }
   }
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
+  
+  def publishBaseDir = new File(autoFvtDir, 'publish') 
+  defaultCopyLTPAFIPSKeys(publishBaseDir)
 }
 
 /*

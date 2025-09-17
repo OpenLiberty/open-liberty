@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.transport.http;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,6 +22,12 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.InflaterInputStream;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
@@ -52,6 +59,7 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Class to test the Auto Compression in Liberty
  * with the <autoCompression> configuration in the server.xml
+ * Also includes tests for compressing Server-Sent Events (SSE).
  */
 @RunWith(FATRunner.class)
 public class HttpCompressionTests {
@@ -59,13 +67,15 @@ public class HttpCompressionTests {
     private static final Class<?> ME = HttpCompressionTests.class;
     public static final String APP_NAME = "EndpointInformation";
     public static final String APP_SERVLET_NAME = "EndpointInformationServlet";
+    public static final String SSE_APP_SERVLET_NAME = "SSECompressionServlet";
     private static final String APP_MESSAGE = "Endpoint Information Servlet Test";
     private static final String APP_STARTED_MESSAGE = "CWWKT0016I:.*EndpointInformation.*";
 
-    //Accept-Encoding
+    // Accept-Encoding
     private static final String ACCEPT_ENCODING = "Accept-Encoding";
+    private static final String ACCEPT = "Accept";
 
-    //Base file location for configuration files
+    // Base file location for configuration files
     private static final String CONFIGURATION_FILES_DIR = "compressionConfig" + File.separator;
     private static final String XML_EXTENSION = ".xml";
     private static final String LOG_EXTENSION = ".log";
@@ -121,6 +131,9 @@ public class HttpCompressionTests {
     // Represents a request's body as a string object
     private static String responseString;
 
+    private static final String CONTENT_ENCODING_HEADER = "Content-Encoding";
+    private static final String CONTENT_TYPE_HEADER = "Content-Type";
+
     private static void cleanUp() {
         headerList.clear();
         configurationFileName = null;
@@ -130,9 +143,12 @@ public class HttpCompressionTests {
 
     @BeforeClass
     public static void setupOnlyOnce() throws Exception {
-        // Create a WebArchive that will have the file name 'EndpointInformation.war' once it's written to a file
-        // Include the 'com.ibm.ws.transport.http.servlets' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
+        // Create a WebArchive that will have the file name 'EndpointInformation.war'
+        // once it's written to a file
+        // Include the 'com.ibm.ws.transport.http.servlets' package and all of it's java
+        // classes and sub-packages
+        // Automatically includes resources under
+        // 'test-applications/APP_NAME/resources/' folder
         // Exports the resulting application to the ${server.config.dir}/apps/ directory
         ShrinkHelper.defaultApp(server, APP_NAME, "com.ibm.ws.transport.http.servlets");
     }
@@ -147,18 +163,18 @@ public class HttpCompressionTests {
     public void setup() throws Exception {
         cleanUp();
         RequestConfig requestConfig = RequestConfig.custom()
-                        .setLocalAddress(InetAddress.getByName("127.0.0.1"))
-                        .setConnectionRequestTimeout(30000)
-                        .setConnectTimeout(30000)
-                        .setSocketTimeout(30000)
-                        .build();
+                .setLocalAddress(InetAddress.getByName("127.0.0.1"))
+                .setConnectionRequestTimeout(30000)
+                .setConnectTimeout(30000)
+                .setSocketTimeout(30000)
+                .build();
         client = HttpClientBuilder
-                        .create()
-                        .setRetryHandler(new DefaultHttpRequestRetryHandler())
-                        .setDefaultRequestConfig(requestConfig)
-                        .disableContentCompression()
-                        .evictExpiredConnections()
-                        .build();
+                .create()
+                .setRetryHandler(new DefaultHttpRequestRetryHandler())
+                .setDefaultRequestConfig(requestConfig)
+                .disableContentCompression()
+                .evictExpiredConnections()
+                .build();
     }
 
     @After
@@ -189,33 +205,33 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First Request
+        // First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.75, gzip;q=0.5"));
 
         HttpResponse httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Second Request
+        // Second Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip;q=0.5, deflate;q=0.75"));
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Third Request
+        // Third Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "identity, deflate; q=0.75"));
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Fourth Request
+        // Fourth Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, ""));
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Fifth Request
+        // Fifth Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "*"));
 
@@ -234,7 +250,8 @@ public class HttpCompressionTests {
      * 1. Accept-Encoding: gzip;q=0, *
      * Expected outcome: Response is compressed as deflate.
      * 2. Accept-Encoding: *
-     * Expected outcome: Response is compressed as gzip (favored over deflate and identity)
+     * Expected outcome: Response is compressed as gzip (favored over deflate and
+     * identity)
      * 3. Accept-Encoding: gzip;q=0,deflate;q=0, *
      * Expected outcome: Response is not compressed.
      *
@@ -248,19 +265,19 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First Request
+        // First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip;q=0, *"));
 
         HttpResponse httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Second Request
+        // Second Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "*"));
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.GZIP);
 
-        //Third Request
+        // Third Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip;q=0,deflate;q=0,*"));
 
@@ -290,13 +307,13 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First Request
+        // First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0, *"));
 
         HttpResponse httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.GZIP);
 
-        //Second Request
+        // Second Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip;q=0,deflate;q=0,*"));
 
@@ -304,7 +321,6 @@ public class HttpCompressionTests {
         assertNotCompressed(httpResponse);
 
     }
-
 
     /**
      * Test that the server will favor compression of gzip over other
@@ -329,13 +345,13 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First Request
+        // First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=1, gzip;q=1"));
 
         HttpResponse httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.GZIP);
 
-        //Second Request
+        // Second Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "gzip;q=1, deflate;q=1"));
         httpResponse = execute(headerList, testName);
@@ -363,7 +379,7 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First Request
+        // First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "MostEfficientCompressionAlgorithm"));
 
         HttpResponse httpResponse = execute(headerList, testName);
@@ -390,31 +406,31 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First Request
+        // First Request
         headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.GZIP.name));
 
         HttpResponse httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.GZIP);
 
-        //Second Request
+        // Second Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.XGZIP.name));
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.XGZIP);
 
-        //Second Request
+        // Second Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.DEFLATE.name));
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Fourth Request
+        // Fourth Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.ZLIB.name));
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Fifth Request
+        // Fifth Request
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.IDENTITY.name));
         httpResponse = execute(headerList, testName);
@@ -440,34 +456,34 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First request - test multiple ";"
+        // First request - test multiple ";"
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;;q=1"));
 
         HttpResponse httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Second request - test bad q-value
+        // Second request - test bad q-value
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;qq=1, gzip;q=NOT_A_NUMBER"));
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Third request - contains ";" but no q-value
+        // Third request - contains ";" but no q-value
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;"));
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Fourth request - no compression type with defined q value
+        // Fourth request - no compression type with defined q value
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, ";q=1"));
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Fifth request - combination of good compression type with malformed
+        // Fifth request - combination of good compression type with malformed
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=1, gzip;q=NOT_A_NUMBER"));
 
@@ -517,56 +533,56 @@ public class HttpCompressionTests {
 
         HttpResponse httpResponse = null;
 
-        //First Request - Negative Number QValue
+        // First Request - Negative Number QValue
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=-1"));
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Second Request - Larger than 1 QValue
+        // Second Request - Larger than 1 QValue
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=1.1"));
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Third Request - 0 followed by one digit
+        // Third Request - 0 followed by one digit
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.1"));
 
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Fourth Request - 0 followed by two digits
+        // Fourth Request - 0 followed by two digits
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.11"));
 
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Fifth Request - 0 followed by three digits
+        // Fifth Request - 0 followed by three digits
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.111"));
 
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Sixth Request - 0 followed by four digits
+        // Sixth Request - 0 followed by four digits
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.1111"));
 
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Seventh Request - 1 followed by three 0 digits
+        // Seventh Request - 1 followed by three 0 digits
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=1.000"));
 
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Eighth Request - 0 followed by no digits
+        // Eighth Request - 0 followed by no digits
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0"));
 
@@ -596,7 +612,7 @@ public class HttpCompressionTests {
 
         HttpResponse httpResponse = null;
 
-        //First Request - Deflate set to 0.999, gzip set to no q-value
+        // First Request - Deflate set to 0.999, gzip set to no q-value
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.999, gzip"));
 
@@ -623,7 +639,8 @@ public class HttpCompressionTests {
      *
      * If the Vary header already existed with the 'Accept-Encoding' value,
      * the server should not try to append anything to the header. During the third
-     * request, the application will set a value of 'Accept-Encoding' to the Vary header.
+     * request, the application will set a value of 'Accept-Encoding' to the Vary
+     * header.
      *
      * @throws Exception
      */
@@ -637,16 +654,17 @@ public class HttpCompressionTests {
 
         HttpResponse httpResponse = null;
 
-        //First Request - ask for compression, look for Vary header
+        // First Request - ask for compression, look for Vary header
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate"));
 
         httpResponse = execute(headerList, testName);
         varyHeader = httpResponse.getFirstHeader("Vary");
 
-        assertTrue("Response does not contain a Vary header with Accept-Encoding set", varyHeader != null && ACCEPT_ENCODING.equals(varyHeader.getValue()));
+        assertTrue("Response does not contain a Vary header with Accept-Encoding set",
+                varyHeader != null && ACCEPT_ENCODING.equals(varyHeader.getValue()));
 
-        //Second Request - set Vary to 'example', then ask for compression
+        // Second Request - set Vary to 'example', then ask for compression
         headerList.clear();
         headerList.add(new BasicHeader("TestCondition", "Vary"));
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate"));
@@ -654,8 +672,9 @@ public class HttpCompressionTests {
         httpResponse = execute(headerList, testName);
         varyHeader = httpResponse.getFirstHeader("Vary");
 
-        assertTrue("Response does not contain a comma delimited Vary header. Value was: " + varyHeader, varyHeader != null &&
-                                                                                                        "test, Accept-Encoding".equalsIgnoreCase(varyHeader.getValue()));
+        assertTrue("Response does not contain a comma delimited Vary header. Value was: " + varyHeader,
+                varyHeader != null &&
+                        "test, Accept-Encoding".equalsIgnoreCase(varyHeader.getValue()));
     }
 
     /**
@@ -685,7 +704,7 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First Request - Ask for compression, set response to small
+        // First Request - Ask for compression, set response to small
         headerList.clear();
         headerList.add(new BasicHeader("TestCondition", "smallSize"));
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate"));
@@ -693,7 +712,7 @@ public class HttpCompressionTests {
         httpResponse = execute(headerList, testName);
         assertNotCompressed(httpResponse);
 
-        //Second Request - Ask for compression, set response to larger than 2048 bytes
+        // Second Request - Ask for compression, set response to larger than 2048 bytes
         headerList.clear();
         headerList.add(new BasicHeader("TestCondition", "regularSize"));
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate"));
@@ -709,7 +728,8 @@ public class HttpCompressionTests {
      * "test" to the acceptable compressable content types; while "text/plain" is
      * set as an excluded type.
      *
-     * First request will set an app-specific header, "TestCondition: testContentType",
+     * First request will set an app-specific header, "TestCondition:
+     * testContentType",
      * that will tell the app to set the Content-Type to "test"
      *
      * Expected Result: Since the server.xml specifies "test" as an acceptable type
@@ -731,9 +751,9 @@ public class HttpCompressionTests {
 
         startServer(configurationFileName, testName);
 
-        //First Request - Ask the server for compression, set app to add
-        //a Content-Type of "test", which should normally not compress. Since
-        //this was added as a custom filter, it should compress.
+        // First Request - Ask the server for compression, set app to add
+        // a Content-Type of "test", which should normally not compress. Since
+        // this was added as a custom filter, it should compress.
         headerList.clear();
         headerList.add(new BasicHeader("TestCondition", "testContentType"));
         headerList.add(new BasicHeader(ACCEPT_ENCODING, CompressionType.DEFLATE.name));
@@ -741,9 +761,9 @@ public class HttpCompressionTests {
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Second Request - Ask the server for compression, app will behave as
-        //usual, setting Content-Type to text/plain. Since filter types do
-        //not include text/plain, this should not be compressed.
+        // Second Request - Ask the server for compression, app will behave as
+        // usual, setting Content-Type to text/plain. Since filter types do
+        // not include text/plain, this should not be compressed.
         headerList.clear();
         headerList.add(new BasicHeader("TestCondition", "regularSize"));
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate"));
@@ -772,37 +792,37 @@ public class HttpCompressionTests {
         startServer(configurationFileName, testName);
 
         headerList.clear();
-        //Server Preferred Algorithm is set to deflate. Setting a smaller (yet
-        //larger than zero) quality value than gzip should still compress as
-        //deflate.
+        // Server Preferred Algorithm is set to deflate. Setting a smaller (yet
+        // larger than zero) quality value than gzip should still compress as
+        // deflate.
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate;q=0.5, gzip"));
 
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Second Request - With the server configured to prefer deflate, a request
-        //with no deflate algorithm should default to  the highest compression
-        //algorithm in the accept encoding header
+        // Second Request - With the server configured to prefer deflate, a request
+        // with no deflate algorithm should default to the highest compression
+        // algorithm in the accept encoding header
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "identity; q=0.5, gzip"));
 
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.GZIP);
 
-        //Third Request - With the server configured to prefer deflate, send a request
-        //with an Accept-Encoding that sets both deflate and gzip to the same quality
-        //value. While the server would typically chose gzip over deflate in ties,
-        //the server should now pick deflate.
+        // Third Request - With the server configured to prefer deflate, send a request
+        // with an Accept-Encoding that sets both deflate and gzip to the same quality
+        // value. While the server would typically chose gzip over deflate in ties,
+        // the server should now pick deflate.
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "deflate, gzip"));
 
         httpResponse = execute(headerList, testName);
         assertCompressed(httpResponse, CompressionType.DEFLATE);
 
-        //Fourth Request - With the server configured to prefer deflate, send a
-        //request with an Accept-Encoding that sets '*' as the value. While the server
-        //would typically choose gzip as the default algorithm when '*' is set, deflate
-        //should now be set.
+        // Fourth Request - With the server configured to prefer deflate, send a
+        // request with an Accept-Encoding that sets '*' as the value. While the server
+        // would typically choose gzip as the default algorithm when '*' is set, deflate
+        // should now be set.
         headerList.clear();
         headerList.add(new BasicHeader(ACCEPT_ENCODING, "*"));
 
@@ -814,13 +834,15 @@ public class HttpCompressionTests {
      * Test that the server will not attempt compressing a response that already
      * contains a Content-Encoded response.
      *
-     * Request will set an app-specific header, "TestCondition: testContentEncoding",
+     * Request will set an app-specific header, "TestCondition:
+     * testContentEncoding",
      * that will tell the app to set the Content-Encoded header to "gzip". This
      * will also set the Vary header to a value of "Accept-Encoding"
      *
      * Expected Result: Response contains a Content-Encoded header with the value
      * of gzip. Server should not attempt to compress the response, and as such,
-     * payload should contain plain text expected message. The vary header is expected
+     * payload should contain plain text expected message. The vary header is
+     * expected
      * to have the value of "Accept-Encoding".
      *
      * @throws Exception
@@ -839,17 +861,20 @@ public class HttpCompressionTests {
 
         httpResponse = execute(headerList, testName);
         varyHeader = httpResponse.getFirstHeader("Vary");
-        //Servlet should set Content-Encoding to gzip, which the server should
-        //not try to compress. As a result, we should see the APP_MESSAGE here.
+        // Servlet should set Content-Encoding to gzip, which the server should
+        // not try to compress. As a result, we should see the APP_MESSAGE here.
         responseString = getResponseAsString(httpResponse);
         assertTrue("Response is compressed.", responseString != null && responseString.contains(APP_MESSAGE));
 
         Header contentEncodingHeader = getContentEncodingHeader(httpResponse);
-        assertTrue("Response does not contain Content-Encoding: gzip", "gzip".equalsIgnoreCase(contentEncodingHeader.getValue()));
+        assertTrue("Response does not contain Content-Encoding: gzip",
+                "gzip".equalsIgnoreCase(contentEncodingHeader.getValue()));
 
-        //Vary header is added by the servlet, ensure that it contains exactly "Accept-Encoding"
+        // Vary header is added by the servlet, ensure that it contains exactly
+        // "Accept-Encoding"
 
-        assertTrue("Response expected to be [Accept-Encoding] but was: " + varyHeader, varyHeader != null && "Accept-Encoding".equalsIgnoreCase(varyHeader.getValue()));
+        assertTrue("Response expected to be [Accept-Encoding] but was: " + varyHeader,
+                varyHeader != null && "Accept-Encoding".equalsIgnoreCase(varyHeader.getValue()));
 
     }
 
@@ -882,7 +907,8 @@ public class HttpCompressionTests {
     }
 
     /**
-     * Test that a misconfiguration of the types attribute by attempting to add (+) the same
+     * Test that a misconfiguration of the types attribute by attempting to add (+)
+     * the same
      * content type more than once, will result in the CWWKT0031W warning message
      *
      * Expected Result: The CWWKT0031W is obtained from the server's logs.
@@ -902,12 +928,13 @@ public class HttpCompressionTests {
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor));
+                server.waitForStringInLog(stringToSearchFor));
 
     }
 
     /**
-     * Test that a misconfiguration of the types attribute by attempting to remove (-) the same
+     * Test that a misconfiguration of the types attribute by attempting to remove
+     * (-) the same
      * content type more than once, will result in the CWWKT0031W warning message
      *
      * Expected Result: The CWWKT0031W is obtained from the server's logs.
@@ -927,12 +954,13 @@ public class HttpCompressionTests {
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor));
+                server.waitForStringInLog(stringToSearchFor));
 
     }
 
     /**
-     * Test that a misconfiguration of the types attribute by attempting to add (+) and remove (-)
+     * Test that a misconfiguration of the types attribute by attempting to add (+)
+     * and remove (-)
      * the same content type, will result in the CWWKT0031W warning message
      *
      * Expected Result: The CWWKT0031W is obtained from the server's logs.
@@ -952,12 +980,13 @@ public class HttpCompressionTests {
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor));
+                server.waitForStringInLog(stringToSearchFor));
 
     }
 
     /**
-     * Test that a misconfiguration of the types attribute by attempting to both overwrite and use
+     * Test that a misconfiguration of the types attribute by attempting to both
+     * overwrite and use
      * the add (+) option, will result in the CWWKT0032W warning message
      *
      * Expected Result: The CWWKT0032W is obtained from the server's logs.
@@ -977,7 +1006,7 @@ public class HttpCompressionTests {
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor));
+                server.waitForStringInLog(stringToSearchFor));
 
     }
 
@@ -1002,18 +1031,238 @@ public class HttpCompressionTests {
 
         // There should be a match so fail if there is not.
         assertNotNull("The following string was not found in the access log: " + stringToSearchFor,
-                      server.waitForStringInLog(stringToSearchFor));
+                server.waitForStringInLog(stringToSearchFor));
 
+    }
+
+    /**
+     * Tests that Server-Sent Events (SSE) are correctly compressed using GZIP
+     * and that the compression buffer is flushed correctly, allowing subsequent
+     * events to be sent and received after a large, compressed event.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testSSECompressionFlushGzip() throws Exception {
+        executeSSECompressionTest(CompressionType.GZIP);
+    }
+
+    /**
+     * Tests that Server-Sent Events (SSE) are correctly compressed using DEFLATE
+     * and that the compression buffer is flushed correctly, allowing subsequent
+     * events to be sent and received after a large, compressed event.
+     *
+     * @throws Exception
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testSSECompressionFlushDeflate() throws Exception {
+        executeSSECompressionTest(CompressionType.DEFLATE);
+    }
+
+    /**
+     * Executes the core logic for testing SSE compression and flushing for a
+     * specific compression type (GZIP or DEFLATE).
+     *
+     * @param compressionType The compression type to request and verify (GZIP or
+     *                        DEFLATE).
+     * @throws Exception
+     */
+    private void executeSSECompressionTest(CompressionType compressionType) throws Exception {
+        configurationFileName = ConfigurationFiles.DEFAULT.name; // Use config with compression enabled
+        // Use the calling method's name for logging/reporting purposes
+        testName = name.getMethodName() + "_" + compressionType.name;
+
+        startServer(configurationFileName, testName);
+
+        // Construct the request URI for the SSE servlet
+        URI uri = new URI("http", null, "localhost", httpDefaultPort, "/" + APP_NAME + "/" + SSE_APP_SERVLET_NAME, null,
+                null);
+        HttpGet httpGet = new HttpGet(uri);
+
+        // Set headers to request specific compression and indicate SSE client
+        httpGet.addHeader(ACCEPT_ENCODING, compressionType.name); // Request specific compression
+        httpGet.addHeader(ACCEPT, "text/event-stream"); // Indicate SSE preference
+
+        Log.info(ME, testName, testName + ": Executing SSE request to " + uri + " requesting " + compressionType.name);
+        HttpResponse response = null;
+        HttpEntity entity = null;
+        InputStream rawInputStream = null;
+        InputStream decompressedInputStream = null;
+        BufferedReader reader = null;
+
+        try {
+            response = client.execute(httpGet);
+
+            // --- Initial Header Assertions ---
+
+            Header contentTypeHeader = response.getFirstHeader(CONTENT_TYPE_HEADER);
+            // check if Content-Type header is set
+            assertNotNull(testName + ": Content-Type header missing", contentTypeHeader);
+            // Check if Content-Type starts with text/event-stream
+            assertTrue(testName + ": Unexpected Content-Type: " + contentTypeHeader.getValue(),
+                    contentTypeHeader.getValue().toLowerCase().startsWith("text/event-stream"));
+
+            Header contentEncodingHeader = response.getFirstHeader(CONTENT_ENCODING_HEADER);
+            // Check if the CONTENT-ENCODING header is set
+            assertNotNull(testName + ": Content-Encoding header missing (compression not applied?)",
+                    contentEncodingHeader);
+
+            String actualEncoding = contentEncodingHeader.getValue().toLowerCase();
+            String expectedEncodingName = compressionType.name;
+            // Check if the response is compressed with the expected algorithm
+            assertEquals(testName + ": Unexpected Content-Encoding", expectedEncodingName, actualEncoding);
+            Log.info(ME, testName,
+                    testName + ": Received compressed SSE stream with expected encoding: " + actualEncoding);
+
+            // --- Stream Processing ---
+            entity = response.getEntity();
+            assertNotNull(testName + ": Response entity is null", entity);
+            rawInputStream = entity.getContent();
+
+            // Manually decompress based on the *expected* encoding
+            if (CompressionType.GZIP.equals(compressionType) || CompressionType.XGZIP.equals(compressionType)) {
+                decompressedInputStream = new GZIPInputStream(rawInputStream);
+                Log.info(ME, testName, testName + ": Applying GZIPInputStream");
+            } else if (CompressionType.DEFLATE.equals(compressionType)
+                    || CompressionType.ZLIB.equals(compressionType)) {
+                decompressedInputStream = new InflaterInputStream(rawInputStream);
+                Log.info(ME, testName, testName + ": Applying InflaterInputStream");
+            }
+
+            // Read and parse the decompressed SSE stream
+            List<String> receivedEventNames = new ArrayList<>();
+            String currentEventName = null;
+            StringBuilder currentEventData = new StringBuilder();
+            long startTime = System.currentTimeMillis();
+            long timeoutMillis = 15000; // 15 seconds timeout
+
+            reader = new BufferedReader(new InputStreamReader(decompressedInputStream, StandardCharsets.UTF_8));
+            String line;
+            Log.info(ME, testName, testName + ": Starting to read SSE stream...");
+
+            // Loop to read lines from the stream
+            while ((System.currentTimeMillis() - startTime < timeoutMillis)) {
+                // Check if reader is ready to avoid blocking indefinitely if stream closes
+                // unexpectedly
+                if (!reader.ready() && receivedEventNames.contains("finalEvent")) {
+                    // If we got the final event and there's no more immediate data, break.
+                    Log.info(ME, testName,
+                            testName + ": Reader not ready and finalEvent received, assuming stream end.");
+                    break;
+                }
+
+                line = reader.readLine(); // Read next line
+
+                if (line == null) {
+                    // End of stream reached
+                    Log.info(ME, testName, testName + ": End of stream reached.");
+                    break;
+                }
+
+                Log.info(ME, testName, testName + ": Received Line: " + line); // Debugging output
+
+                if (line.isEmpty()) {
+                    // Empty line marks the end of an event
+                    if (currentEventName != null || currentEventData.length() > 0) {
+                        String eventIdentifier = (currentEventName != null ? currentEventName : "message");
+                        Log.info(ME, testName,
+                                testName + ": Parsed Event -> Name: '" + eventIdentifier + "', Data Length: "
+                                        + currentEventData.length());
+                        receivedEventNames.add(eventIdentifier);
+
+                        // Reset for next event
+                        currentEventName = null;
+                        currentEventData.setLength(0);
+
+                        // Optimization: Stop reading if we have the last expected event
+                        if ("finalEvent".equals(eventIdentifier)) {
+                            Log.info(ME, testName, testName + ": Received finalEvent, stopping read loop.");
+                            break;
+                        }
+                    }
+                } else if (line.startsWith("event:")) {
+                    currentEventName = line.substring("event:".length()).trim();
+                } else if (line.startsWith("data:")) {
+                    if (currentEventData.length() > 0) {
+                        currentEventData.append("\n"); // Preserve multi-line data structure if needed
+                    }
+                    currentEventData.append(line.substring("data:".length()).trim());
+                } else {
+                    // Handle other SSE fields like id:, retry: if necessary, or log unexpected
+                    // lines
+                    Log.info(ME, testName, testName + ": Ignoring unexpected/unhandled line: " + line);
+                }
+            }
+
+            // --- Final Assertions ---
+            Log.info(ME, testName, testName + ": Finished reading stream. Received events: " + receivedEventNames);
+            assertTrue(testName + ": Did not receive 'event1'", receivedEventNames.contains("event1"));
+            assertTrue(testName + ": Did not receive 'event2'", receivedEventNames.contains("event2"));
+            assertTrue(testName + ": Did not receive 'largeEvent'", receivedEventNames.contains("largeEvent"));
+            assertTrue(testName + ": Did not receive 'finalEvent'", receivedEventNames.contains("finalEvent"));
+
+            // Verify order: finalEvent must come after largeEvent
+            int firstEventIndex = receivedEventNames.indexOf("event1");
+            int secondEventIndex = receivedEventNames.indexOf("event2");
+            int largeEventIndex = receivedEventNames.indexOf("largeEvent");
+            int finalEventIndex = receivedEventNames.indexOf("finalEvent");
+
+            assertTrue(
+                    testName + ": 'firstEvent' (index " + firstEventIndex
+                            + ") was not received after 'secondEvent' (index " + secondEventIndex + ")",
+                    secondEventIndex > firstEventIndex);
+            assertTrue(
+                    testName + ": 'secondEvent' (index " + secondEventIndex
+                            + ") was not received after 'largeEvent' (index " + largeEventIndex + ")",
+                    largeEventIndex > secondEventIndex);
+
+            assertTrue(
+                    testName + ": 'finalEvent' (index " + finalEventIndex
+                            + ") was not received after 'largeEvent' (index " + largeEventIndex + ")",
+                    finalEventIndex > largeEventIndex);
+
+            Log.info(ME, testName, testName + ": Successfully received all SSE events in expected order with "
+                    + compressionType.name + " compression.");
+
+        } catch (IOException e) {
+            Log.info(ME, testName, testName + ": IOException during SSE test execution: " + e.getMessage());
+        } finally {
+            // Ensure resources are cleaned up
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                    /* ignore */ }
+            }
+            if (decompressedInputStream != null) {
+                try {
+                    decompressedInputStream.close();
+                } catch (IOException e) {
+                    /* ignore */ }
+            }
+            if (rawInputStream != null) {
+                try {
+                    rawInputStream.close();
+                } catch (IOException e) {
+                    /* ignore */ }
+            }
+
+        }
     }
 
     /**
      * Private method to start a server.
      *
-     * Please look at publish/files/remoteIPConfig directory for the different server names.
+     * Please look at publish/files/remoteIPConfig directory for the different
+     * server names.
      *
-     * @param variation The name of the server that needs to be appended to "-server.xml"
-     * @param testname  The name of the test that is starting the server. This allows for easier test
-     *                      debug as the server console log will contain the test name.
+     * @param variation The name of the server that needs to be appended to
+     *                  "-server.xml"
+     * @param testname  The name of the test that is starting the server. This
+     *                  allows for easier test
+     *                  debug as the server console log will contain the test name.
      * @throws Exception
      */
     private void startServer(String variation, String testName) throws Exception {
@@ -1032,7 +1281,8 @@ public class HttpCompressionTests {
      */
     private HttpResponse execute(List<BasicHeader> headerList, String testName) throws Exception {
 
-        String urlString = "http://" + server.getHostname() + ":" + httpDefaultPort + "/" + APP_NAME + "/" + APP_SERVLET_NAME;
+        String urlString = "http://" + server.getHostname() + ":" + httpDefaultPort + "/" + APP_NAME + "/"
+                + APP_SERVLET_NAME;
         URI uri = URI.create(urlString);
         Log.info(ME, testName, "Execute request to " + uri);
 
@@ -1096,22 +1346,25 @@ public class HttpCompressionTests {
         assertTrue("Response is not compressed.", responseString != null && !responseString.contains(APP_MESSAGE));
 
         Header contentEncodingHeader = getContentEncodingHeader(httpResponse);
-        assertTrue("Response expected Content-Encoding of [" + type.name + "] but got [" + contentEncodingHeader.getValue() + "]",
-                   type.name.equals(contentEncodingHeader.getValue()));
+        assertTrue(
+                "Response expected Content-Encoding of [" + type.name + "] but got [" + contentEncodingHeader.getValue()
+                        + "]",
+                type.name.equals(contentEncodingHeader.getValue()));
 
     }
 
     private void assertNotCompressed(HttpResponse httpResponse) throws IOException {
-        //Since it is not encoded, there should not be a Content-Encoding header
+        // Since it is not encoded, there should not be a Content-Encoding header
         Header contentEncodingHeader = getContentEncodingHeader(httpResponse);
 
         assertTrue("Response contained a Content-Encoding", contentEncodingHeader == null);
 
-        //This also means that we should be able to see the plain text default response
-        //body provided by the application
+        // This also means that we should be able to see the plain text default response
+        // body provided by the application
         responseString = getResponseAsString(httpResponse);
         Log.info(ME, testName, "Response: " + responseString);
-        assertTrue("Response does not contain default message", responseString != null && responseString.contains(APP_MESSAGE));
+        assertTrue("Response does not contain default message",
+                responseString != null && responseString.contains(APP_MESSAGE));
 
     }
 

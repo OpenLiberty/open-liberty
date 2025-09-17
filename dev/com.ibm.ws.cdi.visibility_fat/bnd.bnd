@@ -62,7 +62,9 @@ tested.features:\
         jakartaee-11.0,\
         cdi-4.1,\
         validation-3.1,\
-        servlet-6.1
+        servlet-6.1,\
+        mpconfig-1.1,\
+        mpfaulttolerance-1.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\

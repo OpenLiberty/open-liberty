@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Server for testing CDI 4.1">
+    <featureManager>
+        <feature>componenttest-2.0</feature>
+        <feature>servlet-6.1</feature>
+        <feature>cdi-4.1</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+</server>

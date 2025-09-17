@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,8 @@ import jakarta.persistence.Version;
 /**
  * An entity with a generated id value.
  */
+@Convert(attributeName = "purchasedOn",
+         converter = OffsetDateTimeToStringConverter.class)
 @Entity(name = "Orders") // overrides the default name PurchaseOrder
 public class PurchaseOrder {
 
@@ -34,7 +36,6 @@ public class PurchaseOrder {
 
     public String purchasedBy;
 
-    @Convert(converter = OffsetDateTimeToStringConverter.class)
     public OffsetDateTime purchasedOn;
 
     public float total;

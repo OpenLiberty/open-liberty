@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -132,6 +132,7 @@ public class AddEntryToOverlayContainerAdapter implements ContainerAdapter<AddEn
 
         /** {@inheritDoc} */
         @Override
+	@Deprecated
         // no real location on disk so return null as per interface definition.
         public String getPhysicalPath() {
             return null;

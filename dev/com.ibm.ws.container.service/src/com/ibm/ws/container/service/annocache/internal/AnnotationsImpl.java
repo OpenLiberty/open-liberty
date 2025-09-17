@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,14 +53,8 @@ public abstract class AnnotationsImpl implements Annotations {
     public static final TraceComponent tc = Tr.register(AnnotationsImpl.class);
     // private static final String CLASS_NAME = AnnotationsImpl.class.getSimpleName();
 
-    private static final String JAVAX_RESOURCE = "javax.annotation.Resource";
-    private static final String JAVAX_RESOURCES = "javax.annotation.Resources";
-    private static final String JAVAX_POST_CONSTRUCT = "javax.annotation.PostConstruct";
-    private static final String JAVAX_PRE_DESTROY = "javax.annotation.PreDestroy";
-    private static final String JAKARTA_RESOURCE = "jakarta.annotation.Resource";
-    private static final String JAKARTA_POST_CONSTRUCT = "jakarta.annotation.PostConstruct";
-    private static final String JAKARTA_PRE_DESTROY = "jakarta.annotation.PreDestroy";
-
+    // TODO: This path data seems to be obsolete.
+    
     /**
      * Data from a path lookup.
      *
@@ -92,14 +86,6 @@ public abstract class AnnotationsImpl implements Annotations {
             this.spansBelowParent = spansBelowParent;
             this.spansAboveParent = spansAboveParent;
         }
-    }
-
-    public static ArtifactContainer getRootOfRoots(ArtifactContainer container) {
-        ArtifactEntry entry;
-        while ( (entry = container.getRoot().getEntryInEnclosingContainer()) != null ) {
-            container = entry.getEnclosingContainer();
-        }
-        return container;
     }
 
     /**
@@ -166,6 +152,54 @@ public abstract class AnnotationsImpl implements Annotations {
         }
     }
 
+    //
+
+    /**
+     * Answer the root of roots container of a container.
+     * 
+     * The root of roots container is found by walking upwards from the
+     * target container.  The entry of the target container is obtained,
+     * then the local root of the entry is obtained, then processing shifts
+     * to the local root container.
+     * 
+     * The root of roots container does not have an entry.  Processing halts
+     * when no entry is obtained for a container.
+     * 
+     * The target container is returned when it is the root of roots container.
+     * 
+     * @param container A container.
+     * 
+     * @return The root of roots container of the container.
+     */
+    public static ArtifactContainer getRootOfRoots(ArtifactContainer container) {
+        ArtifactEntry entry;
+        while ( (entry = container.getRoot().getEntryInEnclosingContainer()) != null ) {
+            container = entry.getEnclosingContainer();
+        }
+        return container;
+    }
+    
+    /**
+     * Answer the path to a container from the root of roots container.  This is
+     * contrasted with the path to a container from the local root of the container.
+     * 
+     * The path is computed by obtaining the entry of the container, appending
+     * the path to that entry, then shifting to the root container of that entry.
+     * 
+     * A container which is a root of roots has no entry.  Obtaining the
+     * path of a root-of-roots container obtains an empty string.
+     * 
+     * The entry of a container is never a root container.  The path of a non-root
+     * entry is the path to that entry relative to the local root container.
+     * 
+     * @param container A container.
+     * 
+     * @return The path to the container from the root of roots container.
+     * 
+     * @throws UnableToAdaptException Thrown if a container fails to adapt to
+     *     an entry.  (This is not the same as a container not having an associated
+     *     entry, for which the adapt call will answer null.)
+     */
     public static String getPath(Container container) throws UnableToAdaptException {
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, "getPath Initial [ " + container + " ]");
@@ -184,9 +218,22 @@ public abstract class AnnotationsImpl implements Annotations {
         return pathBuilder.toString();
     }
 
+    /**
+     * Obtain a path to a container.  Answer the path to the container from the root of roots
+     * container, if possible.  If the container is a root of roots container, answer the module
+     * name or the application name.  If the container is not relative to the module root container,
+     * answer the module name or the application name plus the container path.
+     * 
+     * Answer null if a failure occurs while retrieving container information.
+     * 
+     * @param targetContainer A container.
+     * 
+     * @return A path to a container.
+     */
     protected String getContainerPath(Container targetContainer) {
         String useAppName = getAppName();
         String useModName = getModName();
+
         Container modContainer = rootAdaptableContainer;
 
         if ( tc.isDebugEnabled() ) {
@@ -220,7 +267,7 @@ public abstract class AnnotationsImpl implements Annotations {
         try {
             targetDelegate = targetContainer.adapt(ArtifactContainer.class);
         } catch ( UnableToAdaptException e ) {
-            return null;
+            return null; // FFDC
         }
         if ( tc.isDebugEnabled() ) {
             Tr.debug(tc, "Target Delegate [ " + targetDelegate + " ]");
@@ -377,6 +424,10 @@ public abstract class AnnotationsImpl implements Annotations {
 
     private final AnnotationsAdapterImpl annotationsAdapter;
 
+    protected AnnotationsAdapterImpl getAnnotationsAdapter() {
+        return annotationsAdapter;
+    }
+    
     public AnnotationCacheService_Service getAnnoCacheService() {
         try {
             return annotationsAdapter.getAnnoCacheService();
@@ -403,9 +454,12 @@ public abstract class AnnotationsImpl implements Annotations {
 
     //
 
-    @SuppressWarnings("unused")
     private final Container rootContainer;
 
+    protected Container getRootContainer() {
+        return rootContainer;
+    }
+    
     //
 
     private final ArtifactContainer rootDelegateContainer;
@@ -421,6 +475,8 @@ public abstract class AnnotationsImpl implements Annotations {
     public OverlayContainer getRootOverlayContainer() {
         return rootOverlayContainer;
     }
+    
+    // TODO: These appear to be obsolete ...
 
     protected <T> T cacheGet(Class<T> targetClass) {
         return cacheGet(getRootOverlayContainer(), getContainerPath(), targetClass);
@@ -430,14 +486,57 @@ public abstract class AnnotationsImpl implements Annotations {
         cachePut( getRootOverlayContainer(), getContainerPath(), targetClass, targetObject);
     }
 
+    // TODO: ... except, this is used in:
+    //
+    // AnnotationsImpl.releaseInfoStore()
+    // AnnotationsImpl.releaseTargets()
+
     protected <T> void cacheRemove(Class<T> targetClass) {
         cacheRemove( getRootOverlayContainer(), getContainerPath(), targetClass);
     }
 
+    /**
+     * Adapt a target container to a target type.
+     * 
+     * While the target container is often the root overlay container, the target
+     * may be a parent container, for example, the parent application container of
+     * a web module.
+     * 
+     * Adapting a container usually means looking in the cache of the container and
+     * returning a previously created object of the target type.  If no target yet
+     * exists, one will be created by a registered adapter, stored in the cache,
+     * then returned.
+     * 
+     * @param <T> The target type.
+     * 
+     * @param container The container that is to be adapted to the target type.
+     * @param targetClass The class of the target type.
+     * 
+     * @return The result of adapting the container to the target type.  Null if the
+     *     adapt was not successful.
+     */
+    protected <T> T adapt(Container container, Class<T> targetClass) {
+        try {
+            return container.adapt(targetClass);
+        } catch (UnableToAdaptException e) {
+            return null; // FFDC
+        }
+    }
+    
     //
 
     private final Container rootAdaptableContainer;
 
+    /**
+     * Answer the version of the target container which has adapt function.
+     * 
+     * Caution: The target container is not the correct container for all
+     * adapt calls.  For example, when setting up scanning for a module,
+     * the container of the enclosing application must be used when retrieving
+     * application information.
+     * 
+     * @return The target container.
+     */
     @Override
     public Container getContainer() {
         return rootAdaptableContainer;
@@ -739,6 +838,14 @@ public abstract class AnnotationsImpl implements Annotations {
         }
         rootClassSource.addClassLoaderClassSource(classLoaderClassSource);
     }
+
+    private static final String JAVAX_RESOURCE = "javax.annotation.Resource";
+    private static final String JAVAX_RESOURCES = "javax.annotation.Resources";
+    private static final String JAVAX_POST_CONSTRUCT = "javax.annotation.PostConstruct";
+    private static final String JAVAX_PRE_DESTROY = "javax.annotation.PreDestroy";
+    private static final String JAKARTA_RESOURCE = "jakarta.annotation.Resource";
+    private static final String JAKARTA_POST_CONSTRUCT = "jakarta.annotation.PostConstruct";
+    private static final String JAKARTA_PRE_DESTROY = "jakarta.annotation.PreDestroy";
 
     /**
      * Check for use of the wrong package (javax.annotation instead of jakarta.annotation)

@@ -126,10 +126,6 @@ public class CxfSampleTests {
         //Environment variable values are not set before checkpoint.
         if (CheckpointRule.isActive()) {
             configureEnvVariable(server, emptyMap());
-            //Temporarily disabling CRIU security provider until CRIU security provider in OpenJ9 is enhanced to support wsSecurity
-            List<String> options = new ArrayList<>();
-            options.add("-XX:-CRIUSecProvider");
-            server.setJvmOptions(options);
         }
         return server;
     }

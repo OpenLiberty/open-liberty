@@ -15,6 +15,7 @@ package com.ibm.ws.webcontainer.osgi.request;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
@@ -45,6 +46,8 @@ import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
+import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
+import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 
 import io.openliberty.http.ext.HttpRequestExt;
@@ -983,5 +986,13 @@ public class IRequestImpl implements IRequestExtended
   @Override
   public HttpInboundConnection getHttpInboundConnection() {
       return this.conn;
+  }
+
+  @Override
+  public Socket getRequestSocket() {
+    HttpInboundConnectionExtended connExt = (HttpInboundConnectionExtended)conn;
+    TCPConnectionContext tcpConnCtx = connExt.getTCPConnectionContext();
+    TCPReadRequestContext tcpReadReqCtx = tcpConnCtx.getReadInterface();
+    return tcpReadReqCtx.getSocket();
   }
 }

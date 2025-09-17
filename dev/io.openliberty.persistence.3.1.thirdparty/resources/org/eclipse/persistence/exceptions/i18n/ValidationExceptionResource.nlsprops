@@ -633,7 +633,7 @@
 
 7356=Procedure: [{1}] cannot be executed because {0} does not currently support multiple out parameters
 
-7357=The "[{0}]" URL for the "[{1}]" resource does not belong to a valid persistence root, as defined by the Jakarta Persistence specification
+7357=The "[{0}]" URL for the "[{1}]" resource does not belong to a valid persistence root, as defined by the Jakarta Persistence specification.
 
 7358=Incorrect ASM service name provided.
 

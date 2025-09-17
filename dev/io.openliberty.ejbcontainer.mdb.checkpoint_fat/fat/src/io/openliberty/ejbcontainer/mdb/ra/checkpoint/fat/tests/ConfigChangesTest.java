@@ -251,7 +251,7 @@ public class ConfigChangesTest extends FATServletClient {
         // the JCA runtime invokes RA.endpointActivate(), after the EndpointActivationService has rebinded.
         testMsgs = server.findStringsInLogsUsingMark("JCA activation authData for endpoint named EndpointRestoreAuthDataNonJMS is user=ACTV1USER, password=ACTV1PW",
                                                      server.getDefaultLogFile());
-        assertFalse(testMsgs.isEmpty());
+        assertFalse("testMsgs: " + testMsgs, testMsgs.isEmpty());
 
         // Verify activation occurs exactly once
         testMsgs = server.findStringsInLogsUsingMark("J2CA8801I: .*ejb/EndpointRestoreAuthDataNonJMS .*MsgEndpointApp#MsgEndpointEJB.jar#EndpointRestoreAuthDataNonJMS",
@@ -262,7 +262,7 @@ public class ConfigChangesTest extends FATServletClient {
         runTest("MsgEndpointWeb/NonJMS_MDServlet");
         testMsgs = server.findStringsInLogsUsingMark("EndpointRestoreAuthDataNonJMS is in a global transaction",
                                                      server.getDefaultLogFile());
-        assertFalse(testMsgs.isEmpty());
+        assertFalse("testMsgs: " + testMsgs, testMsgs.isEmpty());
     }
 
     /**

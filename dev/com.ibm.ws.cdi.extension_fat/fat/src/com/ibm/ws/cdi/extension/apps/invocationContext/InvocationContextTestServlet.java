@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,7 @@ public class InvocationContextTestServlet extends FATServlet {
         imb.iExist();  //The real test takes place inisde the interceptors' methods.
         assertTrue(bindingInterceptorRan);
         assertTrue(nonBindingInterceptorRan);
-        assertFalse(nonBindingInterceptorAroundConstructRan); //Since we're reusing the interceptor it will not construct a second time.
+        assertFalse(nonBindingInterceptorAroundConstructRan); //Since the interceptor is bound to the method, we don't expect object construction interception to occur
         assertFalse(nonBindingInterceptorPostConstructRan);
     }
 

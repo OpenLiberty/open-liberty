@@ -22,7 +22,8 @@
 
     <basicRegistry id="alternate" realm="AlternateRealm">
         <user name="hashedUser" password="{hash}ATAAAAAId6vI62nuJqhAAAAAILwljlr66Kw64EAJK/DDxFGSyehzHSh24eQNH47WXVlh" />
-        <user name="customHashedUser" password="{hash}ASAAAAPnUAAAAgAwAAAABCRhbHRAAAAAQMZ+7ueY73Iz02CP1dZ0XzAPrkm9rsWTyT+ARBIBe2mLrCQpGV5LlcIN9zWxKWLTuYOYeHCBTZXmTJtXo6+WfOg=" />
+        <user name="hashedSHA512User" password="{hash}ARAAAAAUUEJLREYyV2l0aEhtYWNTSEE1MTIwAAAAIIQlhKPhN6B3ScaeZt+IEl2KfFqBiSEboEwTzUJ9fDBzQAAAACBWIeqgc+Lb9xJc+9qrKMDbA/Y6VPvprxrUcjyDGut2kA==" /> <!-- sha512hashpassword -->
+        <user name="customHashedUser" password="{hash}ARAAAAAUUEJLREYyV2l0aEhtYWNTSEEyNTYgAAAB9DAAAAAICc3/5EBfhnpAAAAAIGaOuUfsNQYb7+NIx8wU2Z7UgMuJEfRmmFLK24BQJGvk" />
     </basicRegistry>
 
 </server>

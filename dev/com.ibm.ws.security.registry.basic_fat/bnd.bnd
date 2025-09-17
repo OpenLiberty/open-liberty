@@ -32,5 +32,7 @@ tested.features: checkpoint
 	com.ibm.ws.security.registry.basic;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
-	com.ibm.ws.security.fat.common;version=latest,\
 	com.ibm.ws.security.registry_test.servlet;version=latest
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

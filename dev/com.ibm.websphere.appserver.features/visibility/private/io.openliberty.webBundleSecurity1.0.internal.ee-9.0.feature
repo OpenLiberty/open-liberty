@@ -6,7 +6,7 @@ visibility = private
 
 -features=\
   io.openliberty.servlet.internal-5.0, \
-  io.openliberty.securityAPI.jakarta-1.0
+  com.ibm.websphere.appserver.security-2.0
 
 -bundles= io.openliberty.webcontainer.security.internal; start-phase:=SERVICE_EARLY, \
           io.openliberty.security.authentication.internal.filter, \

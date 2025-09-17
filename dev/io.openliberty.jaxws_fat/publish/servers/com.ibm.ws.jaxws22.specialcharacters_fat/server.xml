@@ -1,0 +1,30 @@
+<server>
+	<featureManager>
+		<feature>servlet-3.1</feature>
+		<feature>jsp-2.2</feature>
+		<feature>jaxws-2.2</feature>
+		<feature>componenttest-1.0</feature>
+		<feature>monitor-1.0</feature> <!-- this feature was causing JMX IllegalArgumentException  -->
+	</featureManager>
+
+	<include location="../fatTestPorts.xml" />	
+	<javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
+  	<javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
+	<javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.org.apache.xerces.internal.dom" />
+  	<javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>    
+  	<javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+	<javaPermission className="java.lang.RuntimePermission" name="setContextClassLoader" />
+  	<javaPermission className="java.lang.RuntimePermission" name="setFactory"/>
+  	<javaPermission className="java.lang.RuntimePermission" name="org.apache.cxf.permission"/>
+	<javaPermission className="java.net.NetPermission" name="setDefaultAuthenticator" /> 
+  	<javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+  	<javaPermission className="java.net.URLPermission" name="http://localhost:8010/jaxws22mtom/MTOMAnnotationOnly"  actions="GET:"/>
+	<javaPermission className="java.security.SecurityPermission" name="getPolicy"/>
+	<javaPermission className="java.security.SecurityPermission" name="getPolicy"/>
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+  	<javaPermission className="org.osgi.framework.ServicePermission" name="*" actions="get" />
+	<javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="*" />
+  	<javaPermission className="javax.security.auth.AuthPermission" name="*" actions="getSubject" />
+</server>
+

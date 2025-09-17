@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 /*
  * JBoss, Home of Professional Open Source.
  *
@@ -20,6 +29,7 @@ package org.jboss.resteasy.microprofile.client;
 
 
 
+import java.io.Closeable; // Liberty change
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -374,6 +384,21 @@ public class RestClientDelegateBean<T> implements Bean<T>, PassivationCapable {
                 LOGGER.debugf(e, "Failed to close client %s", instance);
             }
         }
+        // Liberty change start
+        // The Proxy set of interfaces includes Closeable so we need to use
+        // it to close the underlying Restful Web Services Client instance
+        // to prevent RESTEASY004687 warnings from being written to the logs.
+        // AutoCloseable logic is left above in case the user's
+        // client interface was using AutoCloseable so we don't end up
+        // regressing someone depending on AutoCloseable.close() being called.
+        if (instance instanceof Closeable) {
+            try {
+                ((Closeable) instance).close();
+            } catch (Exception e) {
+                LOGGER.debugf(e, "Failed to close client %s", instance);
+            }
+        }
+        // Liberty change end
         // release all possibly created dependent objects of this creational context
         // this will most likely be a no-op
         creationalContext.release();

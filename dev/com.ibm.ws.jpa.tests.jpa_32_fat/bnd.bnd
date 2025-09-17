@@ -17,7 +17,8 @@ src: \
     fat/src,\
     test-applications/helpers/DatabaseManagement/src,\
     test-applications/jpabootstrap/src,\
-    test-applications/jakartadata/src
+    test-applications/jakartadata/src,\
+    test-applications/jakartapersistence/src
 
 fat.project: true
 tested.features: databaseRotation, persistence-3.2, persistencecontainer-3.2, servlet-6.1

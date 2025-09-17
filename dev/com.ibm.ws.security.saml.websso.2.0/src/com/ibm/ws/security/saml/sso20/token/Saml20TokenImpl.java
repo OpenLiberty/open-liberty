@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,8 +15,8 @@ package com.ibm.ws.security.saml.sso20.token;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
@@ -620,7 +620,7 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
     public String toString() {
         String holderOfKey = "";
         try {
-            holderOfKey = new String(holderOfKeyBytes, Constants.UTF8);
+            holderOfKey = new String(holderOfKeyBytes, StandardCharsets.UTF_8);
         } catch (Exception e) {
 
         }

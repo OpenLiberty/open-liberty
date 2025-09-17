@@ -1,15 +1,13 @@
-@import 'variables';
-.swagger-ui {
-    @import 'ie';
-}
-@import 'original/main';
+@use "sass:meta";
+@use 'variables';
+
+@include meta.load-css('../original/style/main');
 
 .swagger-ui
 {
-    @import 'original/type';
-    @import 'headerbar';
-    @import 'footer';
-    @import 'info';
+    @include meta.load-css('headerbar');
+    @include meta.load-css('footer');
+    @include meta.load-css('info');
 }
 
 html

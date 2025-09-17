@@ -3,30 +3,24 @@
 	<classpathentry kind="src" path="fat/src"/>
 	<classpathentry kind="src" path="test-applications/JSPWithEL/src"/>
 	<classpathentry kind="src" path="test-applications/appsecurity/src"/>
-	<classpathentry kind="src" path="test-applications/inventory/src/java"/>
-	<classpathentry kind="src" path="test-applications/system/src/java"/>
 	<classpathentry kind="src" path="test-applications/app1/src"/>
 	<classpathentry kind="src" path="test-applications/app2/src"/>
 	<classpathentry kind="src" path="test-applications/ejbapp1/src"/>
 	<classpathentry kind="src" path="test-applications/startupcode/src"/>
 	<classpathentry kind="src" path="test-bundles/test.checkpoint.config.bundle/src"/>
-	<classpathentry kind="src" path="test-applications/timeoutTest/src"/>
 	<classpathentry kind="src" path="test-applications/restClient/src"/>
 	<classpathentry kind="src" path="test-applications/jndiTest/src"/>
 	<classpathentry kind="src" path="test-applications/eventMgr/frontendUI/src/java"/>
 	<classpathentry kind="src" path="test-applications/eventMgr/backendServices/src/java"/>
 	<classpathentry kind="src" path="test-applications/webSocketTest/src"/>
 	<classpathentry kind="src" path="test-applications/openAPItest/src"/>
-	<classpathentry kind="src" path="test-applications/mpjwt/src"/>
 	<classpathentry kind="src" path="test-applications/EJBearApp/src"/>
 	<classpathentry kind="src" path="test-applications/ServletEARapp/src"/>
 	<classpathentry kind="src" path="test-applications/webEARapp/src"/>
-	<classpathentry kind="src" path="test-applications/mphealth/src"/>
 	<classpathentry kind="src" path="test-applications/facesApp/src"/>
 	<classpathentry kind="src" path="test-applications/jsonb/src"/>
 	<classpathentry kind="src" path="test-applications/jsonp/src"/>
 	<classpathentry kind="src" path="test-applications/managedBeans/src"/>
-	<classpathentry kind="src" path="test-applications/mpTelemetry/src"/>
 	<classpathentry kind="src" path="test-bundles/test.checkpoint.bells.bundle/src"/>
 	<classpathentry kind="src" path="test-applications/bells/src"/>
 	<classpathentry kind="src" path="test-applications/virtualhost/src"/>
@@ -35,8 +29,6 @@
 	<classpathentry kind="src" path="test-applications/mapCache/src"/>
 	<classpathentry kind="src" path="test-applications/webCacheApp/src"/>
 	<classpathentry kind="src" path="test-applications/xmlBindings/src"/>
-	<classpathentry kind="src" path="test-applications/jaxrspropagation/src"/>
-	<classpathentry kind="src" path="test-applications/mpOpenAPIConfig/src"/>
 	<classpathentry kind="src" path="test-bundles/test-mbeans/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">

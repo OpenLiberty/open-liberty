@@ -2149,32 +2149,32 @@ public class AppPasswordsAndTokensCommonTest extends CommonTest {
         //                boolean appPasswordAllowed, boolean appTokenAllowed, String scope, String preauthScope, List<String> grants, List<String> rspTypes, boolean introspect )
 
         // set the client values
-        JSONObject clientData_genAppPw01 = crTools.setRegistrationBody(testOPServer, "genAppPw01", "secret", "genAppPw01", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_genAppPw02 = crTools.setRegistrationBody(testOPServer, "genAppPw02", "secret", "genAppPw02", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_genAppPwAndAppToken = crTools.setRegistrationBody(testOPServer, "genAppPwAndAppToken", "secret", "genAppPwAndAppToken", true, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_NoAppPw01 = crTools.setRegistrationBody(testOPServer, "NoAppPw01", "secret", "NoAppPw01", false, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_NoAppPw02 = crTools.setRegistrationBody(testOPServer, "NoAppPw02", "secret", "NoAppPw02", false, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genAppPw01 = crTools.setRegistrationBody(testOPServer, "genAppPw01", "secret1234", "genAppPw01", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genAppPw02 = crTools.setRegistrationBody(testOPServer, "genAppPw02", "secret1234", "genAppPw02", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genAppPwAndAppToken = crTools.setRegistrationBody(testOPServer, "genAppPwAndAppToken", "secret1234", "genAppPwAndAppToken", true, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_NoAppPw01 = crTools.setRegistrationBody(testOPServer, "NoAppPw01", "secret1234", "NoAppPw01", false, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_NoAppPw02 = crTools.setRegistrationBody(testOPServer, "NoAppPw02", "secret1234", "NoAppPw02", false, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         // create all of the clients (associating them with the provider (first parm)
         crTools.createClientEntries(testSettings.getRegistrationEndpt(), headers, Arrays.asList(clientData_genAppPw01, clientData_genAppPw02, clientData_genAppPwAndAppToken, clientData_NoAppPw01, clientData_NoAppPw02));
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_copy"), headers, Arrays.asList(clientData_genAppPw01, clientData_genAppPw02, clientData_genAppPwAndAppToken, clientData_NoAppPw01, clientData_NoAppPw02));
 
-        JSONObject clientData_genShortLivedAccessToken = crTools.setRegistrationBody(testOPServer, "genShortLivedAccessToken", "secret", "genShortLivedAccessToken", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genShortLivedAccessToken = crTools.setRegistrationBody(testOPServer, "genShortLivedAccessToken", "secret1234", "genShortLivedAccessToken", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_shortLivedAccessToken"), headers, Arrays.asList(clientData_genShortLivedAccessToken));
 
-        JSONObject clientData_appPwExchangeNotAllowed = crTools.setRegistrationBody(testOPServer, "appPwExchangeNotAllowed", "secret", "appPwExchangeNotAllowed", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_appPwExchangeNotAllowed = crTools.setRegistrationBody(testOPServer, "appPwExchangeNotAllowed", "secret1234", "appPwExchangeNotAllowed", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_appPwExchangeNotAllowed"), headers, Arrays.asList(clientData_appPwExchangeNotAllowed));
 
-        JSONObject clientData_userClientTokenLimit1 = crTools.setRegistrationBody(testOPServer, "userClientTokenLimit1", "secret", "userClientTokenLimit1", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_userClientTokenLimit2 = crTools.setRegistrationBody(testOPServer, "userClientTokenLimit2", "secret", "userClientTokenLimit2", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_userClientTokenLimit1 = crTools.setRegistrationBody(testOPServer, "userClientTokenLimit1", "secret1234", "userClientTokenLimit1", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_userClientTokenLimit2 = crTools.setRegistrationBody(testOPServer, "userClientTokenLimit2", "secret1234", "userClientTokenLimit2", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_userClientTokenLimit"), headers, Arrays.asList(clientData_userClientTokenLimit1, clientData_userClientTokenLimit2));
 
-        JSONObject clientData_genShortLivedAppPw = crTools.setRegistrationBody(testOPServer, "genShortLivedAppPw", "secret", "genShortLivedAppPw", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genShortLivedAppPw = crTools.setRegistrationBody(testOPServer, "genShortLivedAppPw", "secret1234", "genShortLivedAppPw", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_shortLivedAppPw"), headers, Arrays.asList(clientData_genShortLivedAppPw));
 
-        JSONObject clientData_genAppPwLimitedNumAllowed = crTools.setRegistrationBody(testOPServer, "genAppPwLimitedNumAllowed", "secret", "genAppPwLimitedNumAllowed", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genAppPwLimitedNumAllowed = crTools.setRegistrationBody(testOPServer, "genAppPwLimitedNumAllowed", "secret1234", "genAppPwLimitedNumAllowed", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_maxAppPwAllowed"), headers, Arrays.asList(clientData_genAppPwLimitedNumAllowed));
 
-        JSONObject clientData_missingPasswordGrantType = crTools.setRegistrationBody(testOPServer, "missingPasswordGrantType", "secret", "missingPasswordGrantType", true, false, "openid scope1 scope2", "openid scope1 scope2", Arrays.asList("authorization_code", "implicit", "refresh_token", "client_credentials", "urn:ietf:params:oauth:grant-type:jwt-bearer"), rspTypes, true);
+        JSONObject clientData_missingPasswordGrantType = crTools.setRegistrationBody(testOPServer, "missingPasswordGrantType", "secret1234", "missingPasswordGrantType", true, false, "openid scope1 scope2", "openid scope1 scope2", Arrays.asList("authorization_code", "implicit", "refresh_token", "client_credentials", "urn:ietf:params:oauth:grant-type:jwt-bearer"), rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_missingPasswordGrantType"), headers, Arrays.asList(clientData_missingPasswordGrantType));
 
     }
@@ -2191,32 +2191,32 @@ public class AppPasswordsAndTokensCommonTest extends CommonTest {
         //                boolean appPasswordAllowed, boolean appTokenAllowed, String scope, String preauthScope, List<String> grants, List<String> rspTypes, boolean introspect )
 
         // set the client values
-        JSONObject clientData_genAppTok01 = crTools.setRegistrationBody(testOPServer, "genAppTok01", "secret", "genAppTok01", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_genAppTok02 = crTools.setRegistrationBody(testOPServer, "genAppTok02", "secret", "genAppTok02", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_genAppPwAndAppToken = crTools.setRegistrationBody(testOPServer, "genAppPwAndAppToken", "secret", "genAppPwAndAppToken", true, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_NoAppTok01 = crTools.setRegistrationBody(testOPServer, "NoAppTok01", "secret", "NoAppTok01", false, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_NoAppTok02 = crTools.setRegistrationBody(testOPServer, "NoAppTok02", "secret", "NoAppTok02", false, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genAppTok01 = crTools.setRegistrationBody(testOPServer, "genAppTok01", "secret1234", "genAppTok01", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genAppTok02 = crTools.setRegistrationBody(testOPServer, "genAppTok02", "secret1234", "genAppTok02", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genAppPwAndAppToken = crTools.setRegistrationBody(testOPServer, "genAppPwAndAppToken", "secret1234", "genAppPwAndAppToken", true, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_NoAppTok01 = crTools.setRegistrationBody(testOPServer, "NoAppTok01", "secret1234", "NoAppTok01", false, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_NoAppTok02 = crTools.setRegistrationBody(testOPServer, "NoAppTok02", "secret1234", "NoAppTok02", false, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         // create all of the clients (associating them with the provider (first parm)
         crTools.createClientEntries(testSettings.getRegistrationEndpt(), headers, Arrays.asList(clientData_genAppTok01, clientData_genAppTok02, clientData_genAppPwAndAppToken, clientData_NoAppTok01, clientData_NoAppTok02));
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_copy"), headers, Arrays.asList(clientData_genAppTok01, clientData_genAppTok02, clientData_genAppPwAndAppToken, clientData_NoAppTok01, clientData_NoAppTok02));
 
-        JSONObject clientData_genShortLivedAccessToken = crTools.setRegistrationBody(testOPServer, "genShortLivedAccessToken", "secret", "genShortLivedAccessToken", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genShortLivedAccessToken = crTools.setRegistrationBody(testOPServer, "genShortLivedAccessToken", "secret1234", "genShortLivedAccessToken", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_shortLivedAccessToken"), headers, Arrays.asList(clientData_genShortLivedAccessToken));
 
-        //        JSONObject clientData20 = crTools.setRegistrationBody(testOPServer, "appPwExchangeNotAllowed", "secret", "appPwExchangeNotAllowed", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        //        JSONObject clientData20 = crTools.setRegistrationBody(testOPServer, "appPwExchangeNotAllowed", "secret1234", "appPwExchangeNotAllowed", true, false, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         //        crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_appPwExchangeNotAllowed"), headers, Arrays.asList(clientData20));
 
-        JSONObject clientData_userClientTokenLimit1 = crTools.setRegistrationBody(testOPServer, "userClientTokenLimit1", "secret", "userClientTokenLimit1", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
-        JSONObject clientData_userClientTokenLimit2 = crTools.setRegistrationBody(testOPServer, "userClientTokenLimit2", "secret", "userClientTokenLimit2", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_userClientTokenLimit1 = crTools.setRegistrationBody(testOPServer, "userClientTokenLimit1", "secret1234", "userClientTokenLimit1", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_userClientTokenLimit2 = crTools.setRegistrationBody(testOPServer, "userClientTokenLimit2", "secret1234", "userClientTokenLimit2", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_userClientTokenLimit"), headers, Arrays.asList(clientData_userClientTokenLimit1, clientData_userClientTokenLimit2));
 
-        JSONObject clientData_genShortLivedAppTok = crTools.setRegistrationBody(testOPServer, "genShortLivedAppTok", "secret", "genShortLivedAppTok", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genShortLivedAppTok = crTools.setRegistrationBody(testOPServer, "genShortLivedAppTok", "secret1234", "genShortLivedAppTok", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_shortLivedAppTok"), headers, Arrays.asList(clientData_genShortLivedAppTok));
 
-        JSONObject clientData_genAppTokLimitedNumAllowed = crTools.setRegistrationBody(testOPServer, "genAppTokLimitedNumAllowed", "secret", "genAppTokLimitedNumAllowed", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
+        JSONObject clientData_genAppTokLimitedNumAllowed = crTools.setRegistrationBody(testOPServer, "genAppTokLimitedNumAllowed", "secret1234", "genAppTokLimitedNumAllowed", false, true, "openid scope1 scope2", "openid scope1 scope2", allGrantTypes, rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_maxAppTokAllowed"), headers, Arrays.asList(clientData_genAppTokLimitedNumAllowed));
 
-        JSONObject clientData_missingPasswordGrantType = crTools.setRegistrationBody(testOPServer, "missingPasswordGrantType", "secret", "missingPasswordGrantType", false, true, "openid scope1 scope2", "openid scope1 scope2", Arrays.asList("authorization_code", "implicit", "refresh_token", "client_credentials", "urn:ietf:params:oauth:grant-type:jwt-bearer"), rspTypes, true);
+        JSONObject clientData_missingPasswordGrantType = crTools.setRegistrationBody(testOPServer, "missingPasswordGrantType", "secret1234", "missingPasswordGrantType", false, true, "openid scope1 scope2", "openid scope1 scope2", Arrays.asList("authorization_code", "implicit", "refresh_token", "client_credentials", "urn:ietf:params:oauth:grant-type:jwt-bearer"), rspTypes, true);
         crTools.createClientEntries(testSettings.getRegistrationEndpt().replaceAll("OidcConfigSample", "OidcConfigSample_missingPasswordGrantType"), headers, Arrays.asList(clientData_missingPasswordGrantType));
 
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.security.authorization.jacc.PolicyConfigurationManager;
+import com.ibm.ws.security.authorization.jacc.common.PolicyContextUtil;
 import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
 import com.ibm.ws.security.authorization.jacc.common.ProviderServiceProxy;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -116,7 +117,7 @@ public class JaccServiceImpl implements JaccService {
             @Override
             public Boolean run() {
 
-                policyProxy = jaccProviderServiceProxy.getService().getPolicyProxy();
+                policyProxy = jaccProviderServiceProxy.getService().getPolicyProxy(pcm);
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "policy object" + policyProxy);
                 // in order to support the CTS provider, Policy object should be set prior to
@@ -151,12 +152,8 @@ public class JaccServiceImpl implements JaccService {
 
     @Override
     public String getContextId(String applicationName, String moduleName) {
-        StringBuffer output = new StringBuffer();
         WsLocationAdmin locationAdmin = locationAdminRef.getService();
-        output.append(getHostName()).append("#").append(locationAdmin.resolveString("${wlp.user.dir}").replace('\\',
-                                                                                                               '/')).append("#").append(locationAdmin.getServerName()).append("#");
-        output.append(applicationName).append("#").append(moduleName);
-        return output.toString();
+        return PolicyContextUtil.getContextId(locationAdmin, applicationName, moduleName);
     }
 
     @Override
@@ -185,25 +182,6 @@ public class JaccServiceImpl implements JaccService {
             }
         }
         return value;
-    }
-
-    /**
-     * Get the host name.
-     *
-     * @return String value of the host name or "localhost" if not able to resolve
-     */
-    private String getHostName() {
-        String hostName = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                try {
-                    return java.net.InetAddress.getLocalHost().getCanonicalHostName().toLowerCase();
-                } catch (java.net.UnknownHostException e) {
-                    return "localhost";
-                }
-            }
-        });
-        return hostName;
     }
 
     @Override

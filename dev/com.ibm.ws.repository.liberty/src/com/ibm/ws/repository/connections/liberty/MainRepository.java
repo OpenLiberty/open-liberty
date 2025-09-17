@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
@@ -178,7 +179,7 @@ public class MainRepository {
 
                             checkHttpResponseCodeValid(connection);
 
-                            Reader reader = new InputStreamReader(connection.getInputStream(), "UTF-8");
+                            Reader reader = new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8);
 
                             props = new Properties();
                             try {
@@ -203,7 +204,7 @@ public class MainRepository {
 
                         checkHttpResponseCodeValid(connection);
 
-                        Reader reader = new InputStreamReader(propertiesFileURL.openStream(), "UTF-8");
+                        Reader reader = new InputStreamReader(propertiesFileURL.openStream(), StandardCharsets.UTF_8);
                         props = new Properties();
                         try {
                             props.load(reader);

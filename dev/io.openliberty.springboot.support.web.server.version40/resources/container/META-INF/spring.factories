@@ -1,0 +1,1 @@
+org.springframework.boot.autoconfigure.template.TemplateAvailabilityProvider=io.openliberty.springboot.support.web.server.version40.container.LibertyJspTemplateProvider

@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2024 IBM Corporation and others.
+    Copyright (c) 2017, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -60,7 +60,7 @@
       databaseName="${DB2_DBNAME}" serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT_SECURE}"
       user="${DB2_USER}" password="${DB2_PASS}"
       sslTrustStoreLocation="${server.config.dir}/security/db2-keystore.p12" sslTrustStorePassword="db2test" sslTrustStoreType="PKCS12"
-      sslConnection="true" sslVersion="TLSv1.2"/>
+      sslConnection="true" sslVersion="TLSv1.2" sslClientHostnameValidation="OFF"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/db2-using-driver">
@@ -131,7 +131,8 @@
       user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
       clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
       maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
-      sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/server.crt"/>
+      sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/server.crt"
+      sslClientHostnameValidation="OFF"/>
   </dataSource>
   
   <!--
@@ -143,7 +144,8 @@
       user="${DB2_USER}" password="${DB2_PASS}" databaseName="${DB2_DBNAME}"
       clientRerouteAlternateServerName="${DB2_HOSTNAME}" clientRerouteAlternatePortNumber="${DB2_PORT_SECURE}"
       maxRetriesForClientReroute="1" retryIntervalForClientReroute="15"
-      sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/wrong.crt"/>
+      sslConnection="true" sslVersion="TLSv1.2" sslCertLocation="${server.config.dir}/security/wrong.crt"
+      sslClientHostnameValidation="OFF"/>
   </dataSource>
   
   <!-- 
@@ -158,5 +160,6 @@
   </dataSource>
 
   <javaPermission codebase="${shared.resource.dir}db2/*" className="java.security.AllPermission"/>
+  <javaPermission codebase="${server.config.dir}/apps/db2fat.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
   <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 </server>

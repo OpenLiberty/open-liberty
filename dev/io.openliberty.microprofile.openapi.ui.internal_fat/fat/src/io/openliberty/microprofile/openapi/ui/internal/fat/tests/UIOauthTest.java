@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,6 +43,9 @@ import com.ibm.ws.fat.util.Props;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.openapi.ui.internal.fat.app.SecureTestResource;
 import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestApplication;
@@ -49,6 +53,7 @@ import io.openliberty.microprofile.openapi.ui.internal.fat.app.TestApplication;
 @RunWith(FATRunner.class)
 public class UIOauthTest {
 
+    private static final String SERVER_NAME = "openapi-ui-custom-oauth-test";
     public static final String APP_NAME = "app";
     public static final String UI_PATH_PROPERTY = "uiPath";
     public static final String UI_PATH_VALUE = "/openapi/ui";
@@ -69,10 +74,15 @@ public class UIOauthTest {
     /** Wait for "long" tasks like initial page load or making a test request to the server */
     private static final Duration LONG_WAIT = Duration.ofSeconds(30);
 
-    @Server("openapi-ui-custom-oauth-test")
+    @Server(SERVER_NAME)
     public static LibertyServer server;
 
     private static ServerConfiguration baseConfig;
+
+    @ClassRule
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, TestMode.FULL, true,
+                                                             MicroProfileActions.MP71_EE11,
+                                                             MicroProfileActions.MP61);
 
     /**
      * During updates to view recordings regardless of result replace

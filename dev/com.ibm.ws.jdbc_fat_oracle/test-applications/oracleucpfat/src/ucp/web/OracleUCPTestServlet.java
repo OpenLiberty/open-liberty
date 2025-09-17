@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,6 +129,12 @@ public class OracleUCPTestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/ds-replay-xa")
     private DataSource ucpDSReplayXA;
+
+    @Resource(lookup = "jdbc/ds-autocommit-ltc")
+    private DataSource ucpDSAutoCommitLTC;
+
+    @Resource(lookup = "jdbc/ds-autocommit-global")
+    private DataSource ucpDSAutoCommitGlobal;
 
     private final ExecutorService executor = Executors.newFixedThreadPool(5);
 
@@ -731,6 +737,50 @@ public class OracleUCPTestServlet extends FATServlet {
         PoolXADataSource unwrappedXADS = ucpDSReplayXA.unwrap(PoolXADataSource.class);
         assertEquals("oracle.jdbc.replay.OracleXADataSourceImpl", unwrappedXADS.getConnectionFactoryClassName());
 
+    }
+
+    /**
+     * Verify that when a connection gets returned to the Liberty shared pool with autoCommit set to false.
+     * It comes back out with the default autoCommit set to true.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAutoCommitLTC() throws Exception {
+        try (Connection con = ucpDSAutoCommitLTC.getConnection()) {
+            assertTrue("New connection from UCP should have had autoCommit set to true.", con.getAutoCommit());
+            con.setAutoCommit(false);
+        }
+        // connection returned to Liberty shared connection pool
+        try (Connection con = ucpDSAutoCommitLTC.getConnection()) {
+            assertTrue("Shared connection from Liberty shared pool should have had autoCommit set to true.", con.getAutoCommit());
+        }
+    }
+
+    /**
+     * Exploit implementation bug with Oracle's UCP (universal connection pool) where connections returned to the UCP
+     * with autoCommit set to false, come back out with the default autoCommit setting ignored.
+     * The autoCommit state of the connection is persisted.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testAutoCommitGlobal() throws Exception {
+        tran.begin();
+        try (Connection con = ucpDSAutoCommitGlobal.getConnection()) {
+            assertTrue("New connection from UCP should have had autoCommit set to true.", con.getAutoCommit());
+            con.setAutoCommit(false);
+        }
+        tran.commit();
+        // connection purged from Liberty connection pool and returned to UCP
+        tran.begin();
+        try (Connection con = ucpDSAutoCommitGlobal.getConnection()) {
+            assertFalse("Cached connection from UCP should have persisted the autoCommit state. "
+                        + "If this test failed, it is likely that Oracle has patched this bug. "
+                        + "Update this test to assertTrue and make a note of what version of the driver fixed this bug.",
+                        con.getAutoCommit());
+        }
+        tran.commit();
     }
 
     //Used by config update tests to verify we are using a UCP datasource and

@@ -2271,45 +2271,25 @@
         <resolved-feature>io.openliberty.org.eclipse.microprofile.config.3.0.ee-9.0</resolved-feature>
         <resolved-feature>io.openliberty.org.eclipse.microprofile.config-3.0</resolved-feature>
         <resolved-feature>mpConfig-3.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.javaeePlatform-8.0</resolved-feature>
-        <resolved-feature>io.openliberty.jakartaeePlatform-9.0</resolved-feature>
-        <resolved-feature>io.openliberty.jakartaeePlatform-10.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.contextService-1.0</resolved-feature>
-        <resolved-feature>io.openliberty.jakarta.enterpriseBeans-4.0</resolved-feature>
-        <resolved-feature>io.openliberty.jsonpImpl-2.1.1</resolved-feature>
-        <resolved-feature>io.openliberty.jsonpInternal-2.1</resolved-feature>
-        <resolved-feature>io.openliberty.jakarta.persistence.base-3.1</resolved-feature>
-        <resolved-feature>io.openliberty.jakarta.persistence-3.1</resolved-feature>
-        <resolved-feature>io.openliberty.jakarta.activation-2.1</resolved-feature>
-        <resolved-feature>io.openliberty.jakarta.xmlBinding-4.0</resolved-feature>
-        <resolved-feature>io.openliberty.jakarta.xmlWS-4.0</resolved-feature>
-        <resolved-feature>io.openliberty.jakarta.expressionLanguage-5.0</resolved-feature>
-        <resolved-feature>io.openliberty.jakarta.pages-3.1</resolved-feature>
-        <resolved-feature>cdi-4.0</resolved-feature>
         <resolved-feature>io.openliberty.org.eclipse.microprofile.metrics-5.0</resolved-feature>
         <resolved-feature>monitor-1.0</resolved-feature>
         <resolved-feature>mpMetrics-5.0</resolved-feature>
         <resolved-feature>io.openliberty.microprofile.cdi.api-3.0</resolved-feature>
         <resolved-feature>io.openliberty.org.eclipse.microprofile.health-4.0</resolved-feature>
-        <resolved-feature>jsonp-2.1</resolved-feature>
+        <resolved-feature>jsonp-2.0</resolved-feature>
+        <resolved-feature>io.openliberty.mpHealth.4.0.ee-9.0</resolved-feature>
         <resolved-feature>mpHealth-4.0</resolved-feature>
+        <resolved-feature>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved-feature>
         <resolved-feature>com.ibm.websphere.appserver.mpMetrics2.2-cdi1.2</resolved-feature>
         <resolved-feature>com.ibm.websphere.appserver.cdi1.2-servlet3.1</resolved-feature>
         <resolved-feature>com.ibm.websphere.appserver.mpMetrics-2.2-monitor-1.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerApiDiscovery-1.0</resolved-feature>
         <resolved-feature>com.ibm.websphere.appserver.cdi1.2-jndi1.0</resolved-feature>
-        <resolved-feature>io.openliberty.cdi3.0-jndi1.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.mpConfig1.2-cdi1.2</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.distributedMapPMI-1.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.autoRestHandlerCollectivePlugins-1.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.securityContext-1.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.classloaderContext-1.0</resolved-feature>
-        <resolved-feature>com.ibm.websphere.appserver.waswelcomepage-1.0</resolved-feature>
         <resolved-feature>com.ibm.websphere.appserver.sessionMonitor-1.0</resolved-feature>
+        <resolved-feature>com.ibm.websphere.appserver.distributedMapPMI-1.0</resolved-feature>
+        <resolved-feature>com.ibm.websphere.appserver.mpConfig1.2-cdi1.2</resolved-feature>
         <resolved-feature>com.ibm.websphere.appserver.webcontainerMonitor-1.0</resolved-feature>
-        <resolved-feature>io.openliberty.internal.versionless.mpMetrics-5.0</resolved-feature>
         <resolved-feature>io.openliberty.servlet3.1-monitor1.0</resolved-feature>
+        <resolved-feature>io.openliberty.internal.versionless.mpMetrics-5.0</resolved-feature>
         <resolved-feature>mpMetrics</resolved-feature>
         <resolved-feature>io.openliberty.internal.versionless.mpHealth-4.0</resolved-feature>
         <resolved-feature>mpHealth</resolved-feature>
@@ -2317,9 +2297,11 @@
         <conflict-feature>com.ibm.websphere.appserver.injection</conflict-feature>
         <conflict-feature>io.openliberty.jakarta.cdi</conflict-feature>
         <conflict-feature>io.openliberty.mpCompatible</conflict-feature>
+        <conflict-feature>io.openliberty.jsonpInternal</conflict-feature>
         <conflict-feature>io.openliberty.servlet.internal</conflict-feature>
         <conflict-feature>com.ibm.websphere.appserver.eeCompatible</conflict-feature>
         <conflict-feature>com.ibm.websphere.appserver.transaction</conflict-feature>
+        <conflict-feature>io.openliberty.cdi</conflict-feature>
     </output>
 </case>
 

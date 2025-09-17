@@ -119,7 +119,9 @@ public class ZipkinOtelCollectorTest {
 
     @Test
     @SkipForRepeat({ TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
-                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
+                     TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID,
+                     TelemetryActions.MP14_MPTEL21_ID, TelemetryActions.MP41_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_JAVA8_ID,
+                     MicroProfileActions.MP71_EE10_ID, MicroProfileActions.MP71_EE11_ID })
     public void testBasicTelemetry1() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
 
@@ -138,7 +140,7 @@ public class ZipkinOtelCollectorTest {
 
     @Test
     @SkipForRepeat({ MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID,
-                     MicroProfileActions.MP61_ID })
+                     MicroProfileActions.MP61_ID, TelemetryActions.MP14_MPTEL21_ID, TelemetryActions.MP41_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_ID})
     public void testBasicTelemetry2() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
 

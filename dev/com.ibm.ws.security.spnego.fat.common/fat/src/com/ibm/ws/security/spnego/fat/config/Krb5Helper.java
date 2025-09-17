@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,8 +28,8 @@ import org.ietf.jgss.Oid;
 import com.ibm.websphere.security.auth.callback.WSCallbackHandlerImpl;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.common.encoder.Base64Coder;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 public class Krb5Helper {
@@ -146,9 +146,11 @@ public class Krb5Helper {
         String jaasLoginConfig = server.getServerRoot() + JAAS_CONF_FILE;
 
         if (realm != null && !realm.isEmpty()) {
-            Log.info(thisClass, thisMethod, "Setting system properties java.security.krb5.realm and java.security.krb5.kdc");
-            System.setProperty("java.security.krb5.realm", realm);
-            System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
+            //TODO: remove this block if it is not required
+            Log.info(thisClass, thisMethod, "NOT Setting system properties java.security.krb5.realm and java.security.krb5.kdc");
+            // NOTE: do not set the kdc and realm system properties, as they should be read from the krb5.conf file instead
+            //System.setProperty("java.security.krb5.realm", realm);
+            //System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
         } else if (krb5Config != null) {
             Log.info(thisClass, thisMethod, "Setting system property java.security.krb5.conf=" + krb5Config);
             System.setProperty("java.security.krb5.conf", krb5Config);
@@ -157,8 +159,9 @@ public class Krb5Helper {
         if (!IBM_KRB5_LOGIN_MODULE_AVAILABLE) {
             loginContextEntry = SUN_JDK_KRB5_LOGIN;
             System.setProperty("javax.security.auth.useSubjectCredsOnly", "false");
-            System.setProperty("java.security.krb5.realm", (realm == null) ? InitClass.KDC_REALM : realm);
-            System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
+            // NOTE: do not set the kdc and realm system properties, as they should be read from the krb5.conf file instead
+            //System.setProperty("java.security.krb5.realm", (realm == null) ? InitClass.KDC_REALM : realm);
+            //System.setProperty("java.security.krb5.kdc", (kdcHostName == null) ? InitClass.KDC_HOSTNAME : kdcHostName);
         }
 
         Log.info(thisClass, thisMethod, "Setting system property java.security.auth.login.config=" + jaasLoginConfig);

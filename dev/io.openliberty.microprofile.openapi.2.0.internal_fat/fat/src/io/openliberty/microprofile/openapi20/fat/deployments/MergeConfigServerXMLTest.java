@@ -12,6 +12,7 @@ package io.openliberty.microprofile.openapi20.fat.deployments;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.DISABLE_VALIDATION;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil.assertEqualIgnoringPropertyOrder;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -36,6 +37,7 @@ import org.junit.runner.RunWith;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.ibm.websphere.simplicity.PropertiesAsset;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.MpOpenAPIElement;
 import com.ibm.websphere.simplicity.config.MpOpenAPIInfoElement;
@@ -657,6 +659,38 @@ public class MergeConfigServerXMLTest {
         List<String> list = new ArrayList<>(Arrays.asList("CWWKO1678W", "CWWKO1679W")); //Expect both an invalid app and invalid module warning.
         server.waitForStringsInLogUsingMark(list);
 
+    }
+
+    //This test creates an openAPI doc with a map containing values from two apps, and checks they preserve their ordering
+    @Test
+
+    public void testMergePreservesMapOrdering() throws Exception {
+        setMergeConfig(list("test2", "test3"), null, null);
+
+        PropertiesAsset scanConfig = new PropertiesAsset().addProperty("mp.openapi.scan.disable",
+                                                                       "true");
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "test2.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .addAsResource(scanConfig, "META-INF/microprofile-config.properties")
+                                    .addAsManifestResource(DeploymentTestResource.class.getPackage(), "static-file-foo.json", "openapi.json");
+        deployApp(war2);
+
+        WebArchive war3 = ShrinkWrap.create(WebArchive.class, "test3.war")
+                                    .addClasses(DeploymentTestApp.class, DeploymentTestResource.class)
+                                    .addAsResource(scanConfig, "META-INF/microprofile-config.properties")
+                                    .addAsManifestResource(DeploymentTestResource.class.getPackage(), "static-file-bar.json", "openapi.json");
+        deployApp(war3);
+
+        // check that documentation includes all paths in the right order
+        String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc).get("paths");
+
+        List<String> pathNames = new ArrayList<>();
+        openapiNode.fieldNames().forEachRemaining(pathNames::add);
+
+        assertThat("Path names not found in expected order in " + doc,
+                   pathNames, contains("/test2/foo1", "/test2/foo2", "/test2/foo3", "/test3/bar1", "/test3/bar2", "/test3/bar3"));
     }
 
     private void setMergeConfig(List<String> included, List<String> excluded, MpOpenAPIInfoElement info) throws Exception {

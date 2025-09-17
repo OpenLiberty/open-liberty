@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.security.jacc.PolicyConfiguration;
 import javax.security.jacc.PolicyConfigurationFactory;
@@ -36,7 +37,7 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
     private final Map<String, List<PolicyConfiguration>> pcConfigsMap = new ConcurrentHashMap<String, List<PolicyConfiguration>>();
     private final Map<String, List<String>> pcModulesMap = new ConcurrentHashMap<String, List<String>>();
     private final Map<String, List<String>> pcEjbMap = new ConcurrentHashMap<String, List<String>>();
-    private final List<String> pcRunningList = new ArrayList<String>();
+    private final List<String> pcRunningList = new CopyOnWriteArrayList<String>();
 
     private PolicyConfigurationFactory pcf = null;
     private PolicyProxy policyProxy = null;
@@ -130,6 +131,7 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
         addModule(appName, contextId);
     }
 
+    @Override
     public boolean isApplicationRunning(String appName) {
         return pcRunningList.contains(appName);
     }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia i zd
 CWWKC1103.skip.run.failed=CWWKC1103E: Wykonanie zadania {0}, kt\u00f3re zosta\u0142o wprowadzone do us\u0142ugi wykonawcy {1}, zosta\u0142o pomini\u0119te, poniewa\u017c operacja Trigger.skipRun nie powiod\u0142a si\u0119 i zosta\u0142 zwr\u00f3cony nast\u0119puj\u0105cy b\u0142\u0105d: {2}.
 CWWKC1103.skip.run.failed.explanation=Operacja skipRun obiektu Trigger nie powiod\u0142a si\u0119, powoduj\u0105c pomini\u0119cie bie\u017c\u0105cej pr\u00f3by wykonania zadania.
 CWWKC1103.skip.run.failed.useraction=Usu\u0144 przyczyn\u0119 niepowodzenia i zdecyduj, czy ponownie uruchomi\u0107 zadanie.
+
+CWWKC1108.override.virtual=CWWKC1108I: Fabryka w\u0105tk\u00f3w zarz\u0105dzana przez {0} utworzy w\u0105tki platformy, poniewa\u017c tworzenie w\u0105tk\u00f3w wirtualnych przez serwer Liberty jest wy\u0142\u0105czone.
+CWWKC1108.override.virtual.explanation=SPI ThreadTypeOverride wy\u0142\u0105czy\u0142o tworzenie wirtualnych w\u0105tk\u00f3w przez serwer Liberty.
+CWWKC1108.override.virtual.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 CWWKC1110.task.canceled=CWWKC1110I: Zadanie {0} , kt\u00f3re zosta\u0142o przes\u0142ane do us\u0142ugi wykonawczej {1} , zosta\u0142o anulowane.
 CWWKC1110.task.canceled.explanation=Zadanie zosta\u0142o anulowane.

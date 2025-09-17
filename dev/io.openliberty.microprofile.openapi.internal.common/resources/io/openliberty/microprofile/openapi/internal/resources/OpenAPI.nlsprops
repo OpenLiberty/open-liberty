@@ -1,13 +1,10 @@
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME N/A
 #COMPONENTPREFIX CWWKO
@@ -173,3 +170,11 @@ OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Remove the MicroProfile Config
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: The {0} annotation element in the {1} class is ignored because it requires OpenAPI version {2} but the current OpenAPI version is {3}.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=The annotation element relates to a feature added to a newer version of the OpenAPI specification than the one configured. The OpenAPI version in use cannot represent this information, so it is excluded from the produced OpenAPI documentation.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Consider removing the annotation element or setting the openAPIVersion configuration element to a version which supports it in the server.xml file.
+
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W=CWWKO1688W: An error occurred when reading the OpenAPI cache for the {0} application. The cache will not be used. The error is {1}
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.explanation=The MicroProfile OpenAPI feature stores some data computed during application startup to avoid re-computing this data on future server starts if the application is unchanged. An error occurred when trying to read this data, so it will be recomputed.
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.useraction=Review the server message.log and FFDC logs to identify the problem.
+
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W=CWWKO1689W: An error occurred when writing the OpenAPI cache for the {0} application. The cache will not be available on next startup. The error is {1}
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.explanation=The MicroProfile OpenAPI feature stores some data computed during application startup to avoid re-computing this data on future server starts if the application is unchanged. An error occurred when trying to write this data, so it will be recomputed next time the server is started.
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.useraction=Review the server message.log and FFDC logs to identify the problem.

@@ -11,16 +11,11 @@ Java Key Store (JKS):
 - client-truststore.jks
 
 These files were generated when we built the database image:
-* kyleaure/oracle-21.3.0-faststart:1.0.full.ssl
+* openliberty/testcontainers/oracle-ssl:23-full-faststart
 
-This process has been automated so that future changes to this project will be easier.
-To build a new database image and re-generate these files go to:
-* /publish/files/oracle-ssl/
+These files are stored in the container under the following directories: 
+- Oracle Wallet: /client/oracle/wallet
+- Java Key Store (JKS): /client/oracle/store
 
-And run the script:
-* release.sh
-
-This will build the docker image, extract the security files, and push the image to dockerhub.
-
-It should be noted that this docker image SHOULD NOT be used for any production workload.
-This is only a test database image. The trusted certificates are kept in plain text within the docker image. 
+These security related files are copied out of the container after it has started.
+This process is automated as part of the test lifecycle.

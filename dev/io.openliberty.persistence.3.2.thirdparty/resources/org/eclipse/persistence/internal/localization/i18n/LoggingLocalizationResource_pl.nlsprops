@@ -85,6 +85,10 @@ broadcast_remote_command_is_null=Ostrze\u017cenie: {0}: otrzymano komunikat {1} 
 
 broadcast_remote_command_wrong_type=Ostrze\u017cenie: {0}: odebrano komunikat {1} zawieraj\u0105cy obiekt typu {2} zamiast oczekiwanego typu RemoteCommand.
 
+cache_key_null_identity_map=CacheKey instancja: {0} przechowywana w mapie to\u017csamo\u015bci ma klucz podstawowy null.
+
+cache_key_null_read_lock_manager=CacheKey instancja: {0}, zablokowana przez mened\u017cera blokady odczytu pami\u0119ci podr\u0119cznej ma klucz podstawowy null.
+
 cannot_get_nested_collection_type=Nie mo\u017cna uzyska\u0107 zagnie\u017cd\u017conego typu kolekcji.
 
 cannot_get_server_name_and_version=Nie mo\u017cna uzyska\u0107 nazwy i wersji serwera z powodu nast\u0119puj\u0105cego wyj\u0105tku.  {0}
@@ -114,10 +118,6 @@ connected_sdk=Nawi\u0105zano po\u0142\u0105czenie: pakiet SDK
 connected_user_database=Nawi\u0105zano po\u0142\u0105czenie: {3}{4} U\u017cytkownik: {0}{3}{4} Baza danych: {1} Wersja: {2}
 
 connected_user_database_driver=Nawi\u0105zano po\u0142\u0105czenie: {0}{6} U\u017cytkownik: {1}{6} Baza danych: {2} Wersja: {3}{6} Sterownik: {4} Wersja: {5}
-
-corrupt_object=uszkodzony obiekt: {0}
-
-corrupt_object_referenced_through_mapping=Nast\u0119puj\u0105cy uszkodzony obiekt jest przywo\u0142ywany przez odwzorowanie: {0}
 
 corrupted_session_announcement=Identyfikator sesji: {0} mened\u017cer wykrywania odebra\u0142 uszkodzone og\u0142oszenie sesji \u2013 zignorowano.
 
@@ -322,6 +322,8 @@ jpars_could_not_find_session_bean=Wykonywane jest wywo\u0142anie skierowane do k
 jta_cannot_be_disabled_in_cmp=Je\u015bli u\u017cywane jest zarz\u0105dzanie trwa\u0142o\u015bci\u0105 przez kontener (Container Managed Persistence \u2013 CMP), nie mo\u017cna wy\u0142\u0105czy\u0107 transakcji JTA. Produkt EclipseLink b\u0119dzie dzia\u0142a\u0142 z za\u0142o\u017ceniem, \u017ce transakcje JTA s\u0105 w\u0142\u0105czone.
 
 jta_duplicate_ctrl_property=Klasa kontrolera transakcji JTA jest zdefiniowana w obu w\u0142a\u015bciwo\u015bciach: "eclipselink.target-server" oraz "eclipselink.jta.controller". U\u017cywana jest warto\u015b\u0107 z w\u0142a\u015bciwo\u015bci "eclipselink.target-server".
+
+jta_tm_lookup_failure=Nie mo\u017cna wyszuka\u0107 instancji TransactionManager : {0}
 
 jta_tsr_lookup_failure=Nie mo\u017cna wyszuka\u0107 instancji TransactionSynchronizationRegistry: {0}
 
@@ -657,18 +659,6 @@ retreived_null_message=Otrzymano komunikat o warto\u015bci NULL z tematu: {0}; z
 
 retreived_unknown_message_type=Otrzymano nieznany typ komunikatu: {0} z tematu: {1}; zostanie on zignorowany.
 
-schema_default_create_tables_failed=Nie powiod\u0142o si\u0119 utworzenie tabel w domy\u015blnym schemacie tabeli: {0}
-
-schema_default_drop_tables_failed=Nie powiod\u0142o si\u0119 usuni\u0119cie tabel w domy\u015blnym schemacie tabeli: {0}
-
-schema_default_extend_tables_failed=Nie powiod\u0142o si\u0119 rozszerzenie tabel w domy\u015blnym schemacie tabel: {0}
-
-schema_default_replace_tables_failed=Nie powiod\u0142o si\u0119 zast\u0105pienie tabel w domy\u015blnym schemacie tabeli: {0}
-
-schema_default_truncate_tables_failed=Nie powiod\u0142o si\u0119 obci\u0119cie tabel w domy\u015blnym schemacie tabel: {0}
-
-schema_drop_object_failed=Nie powiod\u0142o si\u0119 usuni\u0119cie obiektu z domy\u015blnego schematu tabeli: {0}
-
 sdo_classgenerator_exception={2} Wyst\u0105pi\u0142 wyj\u0105tek [{0}] \u2013 komunikat: [{1}]
 
 sdo_error_deserialization=Nieautoryzowana pr\u00f3ba deserializacji z klas\u0105 {0}.
@@ -702,8 +692,6 @@ sop_object_not_found=Nie znaleziono obiektu sopObject przekszta\u0142conego do p
 sop_object_wrong_pk=Obiekt sopObject przekszta\u0142cony do postaci szeregowej zostanie usuni\u0119ty z wiersza, poniewa\u017c ma niepoprawny klucz podstawowy [{0}] w [{1}] w [{2}]
 
 sop_object_wrong_version=Obiekt sopObject przekszta\u0142cony do postaci szeregowej zostanie usuni\u0119ty z wiersza, poniewa\u017c ma niepoprawn\u0105 wersj\u0119 [{0}] w [{1}] w [{2}]
-
-stack_of_visited_objects_that_refer_to_the_corrupt_object=stos odwiedzonych obiekt\u00f3w, kt\u00f3re odwo\u0142uj\u0105 si\u0119 do uszkodzonego obiektu: {0}
 
 topLink_version=EclipseLink, wersja: {0}
 
@@ -746,8 +734,6 @@ update_all_query_cannot_use_binding_on_this_platform=Zapytanie UpdateAllQuery ni
 validate_db_schema_with_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS validate-db-schema-with nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
 
 validate_ejb_jar=Rozpocz\u0119to sprawdzanie poprawno\u015bci pliku ejb-jar.xml. Mo\u017ce to zaj\u0105\u0107 troch\u0119 czasu...
-
-validate_object_space=sprawd\u017a poprawno\u015b\u0107 przestrzeni obiektu.
 
 verifiy_columns_read_locking_not_supported=Ustawienie optymistyczne Read dla w\u0142a\u015bciwo\u015bci verify-columns w jednostce ({0}) nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
 

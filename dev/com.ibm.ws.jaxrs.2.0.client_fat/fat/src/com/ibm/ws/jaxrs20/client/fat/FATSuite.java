@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import com.ibm.ws.jaxrs20.client.fat.test.MatchingSSLCiphersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.MisMatchingSSLCiphersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.PathParamTest;
 import com.ibm.ws.jaxrs20.client.fat.test.ProxyClientTest;
+import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLMultipleServersClientAPITest;
 import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLMultipleServersDefaultLibertySSLConfigTest;
 import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLMultipleServersTest;
 import com.ibm.ws.jaxrs20.client.fat.test.SimpleSSLTest;
@@ -93,6 +94,7 @@ import componenttest.rules.repeater.RepeatTests;
                 MisMatchingSSLCiphersTest.class,
                 PathParamTest.class,
                 ProxyClientTest.class,
+                SimpleSSLMultipleServersClientAPITest.class,
                 SimpleSSLMultipleServersDefaultLibertySSLConfigTest.class,
                 SimpleSSLMultipleServersTest.class,
                 SimpleSSLTest.class,

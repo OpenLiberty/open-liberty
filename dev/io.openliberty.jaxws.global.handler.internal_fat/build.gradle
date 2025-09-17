@@ -35,16 +35,3 @@ dependencies {
     project(':com.ibm.ws.org.apache.ws.xmlschema.core')
 }
 addRequiredLibraries.dependsOn addJakartaTransformer
-
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
-}

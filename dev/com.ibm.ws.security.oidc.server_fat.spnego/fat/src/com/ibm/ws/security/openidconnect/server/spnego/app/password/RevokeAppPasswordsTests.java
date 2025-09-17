@@ -60,7 +60,7 @@ public class RevokeAppPasswordsTests extends SpnegoAppPasswordsAndTokensCommonTe
         TokenValues userAppPwd = createAppPasswordswebClient(updatedTestSettings, testuserToken, _testName + "1", ExpectSuccess, getGoodCreateAppPasswordsExpectations(updatedTestSettings));
         validateAppPasswordsCreateValues(userAppPwd, ninetyDays);
 
-        updatedTestSettings = updateTestSettingsForAppPasswordsTests(updatedTestSettings, "genAppPw01", "secret", "diffuser", "diffuserpwd", Constants.OIDCCONFIGSAMPLE_APP, Constants.HELLOWORLD_SERVLET);
+        updatedTestSettings = updateTestSettingsForAppPasswordsTests(updatedTestSettings, "genAppPw01", "secret1234", "diffuser", "diffuserpwd", Constants.OIDCCONFIGSAMPLE_APP, Constants.HELLOWORLD_SERVLET);
         updatedTestSettings=addLocalhostToEndpoint(updatedTestSettings);
         
         String diffuserToken = getAccessTokenWithWebClient(updatedTestSettings);
@@ -88,7 +88,7 @@ public class RevokeAppPasswordsTests extends SpnegoAppPasswordsAndTokensCommonTe
 				getGoodCreateAppPasswordsExpectations(updatedTestSettings));
 		validateAppPasswordsCreateValues(userAp, ninetyDays);
 
-		updatedTestSettings = updateTestSettingsForAppPasswordsTests(testSettings, "genAppPw01", "secret",
+		updatedTestSettings = updateTestSettingsForAppPasswordsTests(testSettings, "genAppPw01", "secret1234",
 				InitClass.SECOND_USER, InitClass.SECOND_USER_PWD, Constants.OIDCCONFIGSAMPLE_APP, Constants.HELLOWORLD_SERVLET);
 		updatedTestSettings=addLocalhostToEndpoint(updatedTestSettings);
 
@@ -113,7 +113,7 @@ public class RevokeAppPasswordsTests extends SpnegoAppPasswordsAndTokensCommonTe
         }
     	TestSettings updatedTestSettings = addLocalhostToEndpoint(testSettings.copyTestSettings());
 		
-		updatedTestSettings = updateTestSettingsForAppPasswordsTests(testSettings, "genAppPw01", "secret",
+		updatedTestSettings = updateTestSettingsForAppPasswordsTests(testSettings, "genAppPw01", "secret1234",
 				SpnegoOIDCConstants.NTLM_TOKEN, SpnegoOIDCConstants.NTLM_TOKEN, Constants.OIDCCONFIGSAMPLE_APP, Constants.HELLOWORLD_SERVLET);
 
 		getAccessTokenWithWebClient(updatedTestSettings);

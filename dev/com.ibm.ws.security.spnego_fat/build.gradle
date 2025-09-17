@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,10 +14,19 @@
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
+               'org.apache.directory.server:apacheds-all:2.0.0-M24',
                project(':com.ibm.ws.org.slf4j.jdk14'),
                project(':com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1'),
                project(':com.ibm.ws.security.spnego.fat.common'),
-               project(':io.openliberty.org.apache.commons.codec')
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets'),
+               project(':com.ibm.ws.security.jaas.common')
+}
+
+configurations {
+  requiredLibs {
+    transitive = false
+  }
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer
@@ -38,14 +47,6 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.spnego.fat.common:SPNEGOTokenHelperFVT_EAR'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
-
-// Apply macro from the shared Gradle script
-apply from: "${rootProject.projectDir}/com.ibm.ws.security.fat.common/publish/shared/config/common.gradle"
-
-// Use the macro to copy the keys
-autoFVT.doFirst {
-    defaultCopyLTPAFIPSKeys("${projectDir}/publish")
-}
 
 autoFVT.doLast {
   
@@ -276,9 +277,7 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
-}
-
-runfat.doLast {
-  // Use the macro to delete the keys
-  defaultDeleteLTPAFIPSKeys("${projectDir}/publish")
+  
+  def publishBaseDir = new File(autoFvtDir, 'publish') 
+  defaultCopyLTPAFIPSKeys(publishBaseDir)
 }

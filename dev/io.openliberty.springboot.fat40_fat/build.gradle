@@ -1,0 +1,94 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+repositories { 
+  mavenCentral()
+}
+
+dependencies {
+  requiredLibs 'jakarta.websocket:jakarta.websocket-api:2.2.0',
+  'jakarta.websocket:jakarta.websocket-client-api:2.2.0',
+  'org.eclipse.jetty.websocket:websocket-jakarta-common:11.0.26',
+  'org.eclipse.jetty.websocket:websocket-jakarta-client:11.0.26',
+  'org.eclipse.jetty.websocket:websocket-core-common:11.0.26',
+  'org.eclipse.jetty.websocket:websocket-core-client:11.0.26',
+  'org.eclipse.jetty.websocket:websocket-jetty-api:11.0.26',
+  'org.eclipse.jetty.websocket:websocket-jetty-client:11.0.26',
+  'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
+  'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+  'net.sourceforge.htmlunit:htmlunit:2.44.0',
+  'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
+  'net.sourceforge.htmlunit:webdriver:2.6',
+  'org.apache.httpcomponents:httpmime:4.5.14', 
+  'org.brotli:dec:0.1.2',
+  'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
+  'org.seleniumhq.webdriver:webdriver-common:0.9.7376',
+  'xalan:xalan:2.7.2',
+  'xml-apis:xml-apis:1.4.01',
+  project(':com.ibm.ws.org.apache.commons.lang3'),
+  project(':com.ibm.ws.org.apache.commons.io'),
+  project(':com.ibm.ws.org.apache.httpcomponents'),
+  project(':com.ibm.ws.org.apache.commons.lang3'),
+  project(':io.openliberty.org.apache.commons.codec'),
+  project(':io.openliberty.org.apache.xercesImpl')
+  implementation 'org.eclipse.jetty:jetty-client:12.1.0'
+  implementation 'org.eclipse.jetty:jetty-io:12.1.0'
+  implementation 'org.eclipse.jetty:jetty-util:12.1.0'
+  implementation 'org.eclipse.jetty:jetty-http:12.1.0'
+}
+
+def appDefs =
+  [ [ 'io.openliberty.springboot.fat40.app', '.jar' ],
+    [ 'io.openliberty.springboot.fat40.war.app', '.war' ],
+    [ 'io.openliberty.springboot.fat40.actuator.app', '.jar' ],
+    [ 'io.openliberty.springboot.fat40.webflux.app', '.jar' ],
+    [ 'io.openliberty.springboot.fat40.java.app', '.jar' ],
+    [ 'io.openliberty.springboot.fat40.multicontext.app', '.jar' ],
+    [ 'io.openliberty.springboot.fat40.webanno.app', '.jar' ],
+    [ 'io.openliberty.springboot.fat40.websocket.app', '.war' ],
+    [ 'io.openliberty.springboot.fat40.security.app', '.jar' ],
+    [ 'io.openliberty.springboot.fat40.concurrency.app', '.war'],
+    [ 'io.openliberty.springboot.fat40.mbean.app', '.war']]
+
+autoFVT.dependsOn ':wlp.lib.extract:build'
+appDefs.each { appDef ->
+  autoFVT.dependsOn ':' + appDef[0] + ':build'
+}
+
+autoFVT.doLast {
+  // Copy wlp.lib.extract.jar for doing bin/server package command
+  copy {
+    from new File('../wlp.lib.extract/build/libs', 'wlp.lib.extract.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
+  }
+
+  def server = 'SpringBootTests'
+  def appsDir = new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+
+  println 'Auto FVT directory [ ' + autoFvtDir + ' ]'
+  println 'FAT server [ ' + server + ' ]'
+  println 'Auto FVT applications [ ' + appsDir + ' ]'
+
+  appDefs.each { appDef ->
+    def appName = appDef[0]
+    def appExt = appDef[1]
+
+    println 'FAT application [ ' + appName + ' ] [ ' + appExt + ' ]'
+
+    copy {
+      from new File( '../' + appDef[0] + '/build/libs/' + appDef[0] + '-0.0.1-SNAPSHOT' + appDef[1] )
+      into appsDir
+    }
+  }
+}

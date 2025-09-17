@@ -641,3 +641,9 @@
 
 7360=La password del database \u00e8 stata crittografata da un algoritmo deprecato. Ricodificalo tramite `passwordUpdate.sh` da eclipselink.zip fascio.
 
+7361=Solo un campo dell''enumerazione pu\u00f2 essere contrassegnato dall''annotazione @EnumeratedValue. Controllare la classe enum [ {0} ].
+
+7362=Per un tipo enumerato ORDINAL, solo i tipi byte, short, int, log o wrapper possono essere utilizzati come tipo di attributo contrassegnato da @EnumeratedValue. Controllare l''attributo [ {0} ] nella classe enum [ {1} ].
+
+7363=Per un tipo enumerato STRING, solo il tipo java.lang.String pu\u00f2 essere utilizzato come tipo di attributo contrassegnato da @EnumeratedValue. Controllare l''attributo [ {0} ] nella classe enum [ {1} ].
+

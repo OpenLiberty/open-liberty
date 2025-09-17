@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.sp;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -377,16 +377,7 @@ public class Solicited {
                       HttpRequestInfo cachingRequestInfo)
                     throws WebTrustAssociationFailedException {
 
-        byte[] authnReqBytes = null;
-        try {
-            authnReqBytes = AuthnRequest.getBytes(Constants.UTF8);
-        } catch (UnsupportedEncodingException e1) {
-            // error handling, UTF8 should not have errors
-            SamlException samlException = new SamlException(e1); // let the SamlException to handle the Exception
-            WebTrustAssociationFailedException wtfae = new WebTrustAssociationFailedException(samlException.getMessage());
-            wtfae.initCause(samlException);
-            throw wtfae;
-        }
+        byte[] authnReqBytes = AuthnRequest.getBytes(StandardCharsets.UTF_8);
 
         //String samlRequest = Base64.encodeBytes(authnReqBytes, Base64.DONT_BREAK_LINES);
         String samlRequest = Base64Support.encode(authnReqBytes, Base64Support.UNCHUNKED); //v3
@@ -437,7 +428,7 @@ public class Solicited {
             XMLObjectBuilderFactory builderFactory = XMLObjectProviderRegistrySupport.getBuilderFactory();//v3
             XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>)builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
             Signature signature = signatureBuilder.buildObject(Signature.DEFAULT_ELEMENT_NAME);
-            signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());//SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256);// SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1); //               
+            signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm());
             signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
 
             signature.setSigningCredential(signingCredential);

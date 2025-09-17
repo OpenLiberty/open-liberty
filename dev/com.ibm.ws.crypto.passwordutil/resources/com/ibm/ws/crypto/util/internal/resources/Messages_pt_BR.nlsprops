@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016 IBM Corporation and others.
+# Copyright (c) 2016, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,22 @@ PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.explanation=A senha n\u00e3o foi crip
 PASSWORDUTIL_UNSUPPORTEDENCODING_EXCEPTION.useraction=Verifique o log do servidor e, se a criptografia de senha customizada for usada, verifique os logs de criptografia de senha customizada para obter informa\u00e7\u00f5es adicionais.
 PASSWORDUTIL_INVALID_BASE64_STRING=CWWKS1859E: A senha n\u00e3o foi decriptografada porque um erro de decodifica\u00e7\u00e3o foi relatado.
 PASSWORDUTIL_INVALID_BASE64_STRING.explanation=A senha criptografada n\u00e3o foi codificada corretamente.
-PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Certifique-se de que a senha criptografada n\u00e3o esteja truncada e codificada usando codifica\u00e7\u00e3o Base64.
+PASSWORDUTIL_INVALID_BASE64_STRING.useraction=Certifique-se de que a senha criptografada n\u00e3o esteja truncada e codificada com a codifica\u00e7\u00e3o Base64.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM=CWWKS1860E: AES-128 as senhas criptografadas n\u00e3o podem ser usadas quando o FIPS 140-3 est\u00e1 ativado. Gerar novamente a senha com AES-256 usando o comando securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.explanation=O FIPS 140-3 est\u00e1 ativado e n\u00e3o \u00e9 compat\u00edvel com AES-128. Use o comando securityUtility para criptografar a senha usando AES-256.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_AES128_UNAVAILABLE_ALGORITHM.useraction=Certifique-se de que a senha esteja criptografada com AES-256.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION=CWWKS1861E: Falha na criptografia de senha AES. Verifique as configura\u00e7\u00f5es do site java.security e adicione o algoritmo ausente.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.explanation=Um algoritmo de criptografia est\u00e1 faltando em seu arquivo java.security.
+PASSWORDUTIL_UNAVAILABLE_ENCRYPTION_ALGORITHM_EXCEPTION.useraction=Certifique-se de que o algoritmo seja adicionado ao seu arquivo java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION=CWWKS1862E: Falha na descriptografia da senha AES. Verifique as configura\u00e7\u00f5es do site java.security e adicione o algoritmo ausente.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.explanation=Um algoritmo de criptografia est\u00e1 faltando em seu arquivo java.security.
+PASSWORDUTIL_UNAVAILABLE_DECRYPTION_ALGORITHM_EXCEPTION.useraction=Certifique-se de que o algoritmo seja adicionado ao seu arquivo java.security.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM=CWWKS1863E: N\u00e3o \u00e9 poss\u00edvel usar senhas codificadas por hash SHA1 quando o FIPS 140-3 est\u00e1 ativado. Gerar novamente o hash da senha usando o comando securityUtility.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.explanation=O FIPS 140-3 est\u00e1 ativado e n\u00e3o \u00e9 compat\u00edvel com SHA1. Use o comando securityUtility encode para gerar um novo hash de senha SHA512.
+PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Certifique-se de que o hash da senha seja gerado com SHA512.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Um ou mais valores de senha {0} armazenados na configura\u00e7\u00e3o do servidor foram gerados com um algoritmo mais antigo {1}. Use o comando securityUtility encode para gerar novamente as senhas {0} com o algoritmo mais recente {2}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty agora usa algoritmos mais fortes para senhas rec\u00e9m-geradas {aes} e {hash}.
+PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Certifique-se de que os valores de senha {aes} e {hash} sejam gerados com a vers\u00e3o mais recente do Liberty.
 
 
 # ---------------- This is an exception message ------------
@@ -57,4 +72,4 @@ PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Mais de uma implementa\u00e7\u00e3o Cus
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Foi relatado um erro ao processar o arquivo manifest de extens\u00e3o {0}. Esse arquivo foi ignorado.  A criptografia customizada n\u00e3o est\u00e1 dispon\u00edvel. A mensagem de erro \u00e9 {1}.
 PASSWORDUTIL_ERROR_MISSING_HEADER=O cabe\u00e7alho necess\u00e1rio {0} n\u00e3o foi localizado no arquivo manifest de extens\u00e3o {1}. A criptografia customizada n\u00e3o est\u00e1 dispon\u00edvel.
 PASSWORDUTIL_ERROR_NO_FEATURE_MANIFEST=O arquivo manifest de recurso que corresponde ao arquivo manifest de extens\u00e3o {0} n\u00e3o foi localizado. A criptografia customizada n\u00e3o est\u00e1 dispon\u00edvel.
-PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=A opera\u00e7\u00e3o de decriptografia n\u00e3o \u00e9 suportada pelo algoritmo hash. 
+PASSWORDUTIL_ERROR_UNSUPPORTED_OPERATION=A\nopera\u00e7\u00e3o de decriptografia n\u00e3o \u00e9 suportada pelo algoritmo hash.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2024 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ encode.usage.options=\t{0} encode [Optionen]
 encode.option-key.text=\ \ \ \ textToEncode
 encode.option-desc.text=\tWenn Sie keine Argumente angeben, wird das Tool im interaktiven\n\tModus aufgerufen. Andernfalls wird der angegebene Text codiert.\n\tText mit Leerzeichen muss in Anf\u00fchrungszeichen gesetzt werden,\n\twenn er als Argument angegeben wird.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tGibt an, wie das Kennwort codiert wird. Die unterst\u00fctzten\n\tCodierungen sind xor, aes und hash. Die Standardcodierung ist xor. {2}
+encode.option-desc.encoding=\tGeben Sie an, wie das Kennwort verschl\u00fcsselt werden soll. Unterst\u00fctzte Kodierungen sind xor, aes, aes-128, und Hash. Die Standardcodierung ist xor. Aes verschl\u00fcsselt mit einem aes-256 Bit-Schl\u00fcssel.\n\taes-128 kann f\u00fcr die Kompatibilit\u00e4t mit Serverversionen vor 25.0.0.2 verwendet werden. {2}
 encode.option-key.key=\ \ \ \ --key=[Schl\u00fcssel]
 encode.option-desc.key=\tGibt den bei der Codierung mit AES zu verwendenden Schl\u00fcssel an. \n\tDie Zeichenfolge wird hashverschl\u00fcsselt, um einen Chiffrierschl\u00fcssel\n\tzu erzeugen, der zur Verschl\u00fcsselung und Entschl\u00fcsselung des\n\tKennworts verwendet wird. Der Schl\u00fcssel kann durch Definition \n\tder Variablen wlp.password.encryption.key, deren Wert der \n\tSchl\u00fcssel ist, an den Server \u00fcbergeben werden. Wenn Sie diese\n\tOption nicht angeben, wird ein Standardschl\u00fcssel verwendet.
 encode.option-key.notrim=\ \ \ \ --notrim

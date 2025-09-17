@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2024 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.logging.hpel.LogRecordContext;
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.logging.ResourceBundleSupport;
 import com.ibm.wsspi.logging.LogRecordExt;
 
 /**
@@ -524,7 +525,7 @@ public class WsLogRecord extends LogRecord implements java.io.Serializable, LogR
 
         retMe.setLoggerName(tc.getName());
         retMe.setParameters(msgParms);
-        retMe.setTraceClass(tc.getTraceClass());
+        retMe.setTraceClass(ResourceBundleSupport.getTraceClassForResourceBundle(tc));
         retMe.setResourceBundleName(tc.getResourceBundleName());
         
         // Only Messages/trace logged through BaseTraceService (Tr), call this method to construct the WsLogRecord object.

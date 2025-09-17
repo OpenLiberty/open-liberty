@@ -76,7 +76,8 @@ public class ClientWithNoCdi {
     //Our version of junit doesn't allow fixed test ordering.
     @Test
     @SkipForRepeat({ MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP61_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP41_MPTEL20_ID,
-        TelemetryActions.MP14_MPTEL20_ID })
+        TelemetryActions.MP14_MPTEL20_ID, MicroProfileActions.MP71_EE11_ID, MicroProfileActions.MP71_EE10_ID, TelemetryActions.MP50_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_JAVA8_ID, TelemetryActions.MP41_MPTEL21_ID,
+        TelemetryActions.MP14_MPTEL21_ID })
     public void testClientWithNoCDIAndLifecycleStarupShutdownCalled() throws Exception {
         HttpRequest httpRequest = new HttpRequest(server, "/" + NO_CDI_APP_NAME + "/ClientTriggeringServlet");
         assertEquals(io.openliberty.microprofile.telemetry.internal_fat.apps.clientnocdi.ClientInvokedServlet.TEST_PASSED, httpRequest.run(String.class));

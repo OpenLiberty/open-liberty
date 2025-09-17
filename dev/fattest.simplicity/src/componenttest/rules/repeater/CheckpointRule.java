@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -168,6 +168,7 @@ public class CheckpointRule implements TestRule {
     private final Set<String> unsupportedRepeatIDs = new HashSet<>(Arrays.asList(EE6FeatureReplacementAction.ID, EE7FeatureReplacementAction.ID));
     private String[] checkpointIgnoreMessages;
     private boolean runNormalTests = true;
+    private boolean checkrestart;
 
     /**
      * Sets the optional function to do class setup before running the normal and checkpoint mode for the test
@@ -273,6 +274,11 @@ public class CheckpointRule implements TestRule {
      */
     public CheckpointRule setPostCheckpointLambda(Consumer<LibertyServer> postCheckpointLambda) {
         this.postCheckpointLambda = postCheckpointLambda;
+        return this;
+    }
+
+    public CheckpointRule setAssertNoAppRestartOnRestore(boolean checkrestart) {
+        this.checkrestart = checkrestart;
         return this;
     }
 
@@ -421,6 +427,7 @@ public class CheckpointRule implements TestRule {
             String logName = ID + "_" + consoleLogName;
             log("checkpointSetup", "Configuring checkpoint phase '" + checkpointPhase + "' with log name: " + logName);
             CheckpointInfo checkpointInfo = new CheckpointInfo(checkpointPhase, true, postCheckpointLambda);
+            checkpointInfo.setAssertNoAppRestartOnRestore(checkrestart);
             server.setConsoleLogName(logName);
             server.setCheckpoint(checkpointInfo);
             if (checkpointIgnoreMessages != null) {

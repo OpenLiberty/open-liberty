@@ -63,7 +63,6 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
-import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -72,7 +71,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES }) // No value added
-public class AcmeCaRestHandlerTest extends TestContainerSuite {
+public class AcmeCaRestHandlerTest {
     @Server("com.ibm.ws.security.acme.fat.rest")
     public static LibertyServer server;
 

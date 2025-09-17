@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static io.openliberty.classloading.classpath.fat.FATSuite.LIB14_CLASS_NAM
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB15_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB16_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB17_CLASS_NAME;
+import static io.openliberty.classloading.classpath.fat.FATSuite.LIB18_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB1_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB2_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB3_CLASS_NAME;
@@ -56,7 +57,11 @@ public class TestUtils {
      * @param testClassPath1App
      */
     public static void assertCommonResourceFromArchive(Class<?> clazz, String expected) {
-        URL resource = clazz.getResource("/io/openliberty/classloading/test/resources/common.properties");
+        assertResourceFromArchive("common.properties", clazz, expected);
+    }
+
+    public static void assertResourceFromArchive(String resourceName, Class<?> clazz, String expected) {
+        URL resource = clazz.getResource("/io/openliberty/classloading/test/resources/" + resourceName);
         assertNotNull("No resource found for expected: " + expected, resource);
         assertEquals("Wrong resource found", expected, readFromArchive(resource));
     }
@@ -89,7 +94,7 @@ public class TestUtils {
         int i = 0;
         for (; i < expectedOrder.size(); i++) {
             assertTrue("No more resources found to match i=" + i + " for: " + expectedOrder.get(i), i < urls.size());
-            assertEquals("Wrong resource found for i=" + i, expectedOrder.get(i), readFromArchive(urls.get(i)));
+            assertEquals("Wrong resource found for i=" + i + " urls=" + urls, expectedOrder.get(i), readFromArchive(urls.get(i)));
         }
 
         if (i < urls.size()) {
@@ -100,7 +105,9 @@ public class TestUtils {
     public static void assertLoadClass(Class<?> fromClass, String className, ClassLoader expectedLoader) {
         try {
             Class<?> loaded = Class.forName(className, false, fromClass.getClassLoader());
-            assertEquals("Wrong classloader for class: " + loaded, expectedLoader, loaded.getClassLoader());
+            if (expectedLoader != null) {
+                assertEquals("Wrong classloader for class: " + loaded, expectedLoader, loaded.getClassLoader());
+            }
         } catch (ClassNotFoundException e) {
             throw createAssertionFailedError("Error Loading class: " + className, e);
         }
@@ -150,6 +157,7 @@ public class TestUtils {
         testLoadLibrary15Class(LIB15_CLASS_NAME),
         testLoadLibrary16Class(LIB16_CLASS_NAME),
         testLoadLibrary17Class(LIB17_CLASS_NAME),
+        testLoadLibrary18Class(LIB18_CLASS_NAME),
         testLoadRARLib1Class(RAR_LIB1_CLASS_NAME),
         testLoadRARLib2Class(RAR_LIB2_CLASS_NAME);
 
@@ -172,6 +180,9 @@ public class TestUtils {
                 case success_fromWARLoader:
                     assertLoadClass(fromClass, className, fromClass.getClassLoader());
                     break;
+                case success_fromLIBLoader:
+                    // TODO get the library loader?
+                    assertLoadClassNotLoadedWithLoaders(fromClass, className, fromClass.getClassLoader());
                 default:
                     break;
             }
@@ -181,6 +192,7 @@ public class TestUtils {
     public static enum TEST_LOAD_RESULT {
         success_fromEARLoader,
         success_fromWARLoader,
+        success_fromLIBLoader,
         failure
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,6 @@ public final class SharedLibraryConstants {
 
     @Trivial
     public enum SharedLibraryAttribute {
-        name, id, description, filesetRef, apiTypeVisibility, fileRef, folderRef
+        name, id, description, filesetRef, apiTypeVisibility, fileRef, folderRef, pathRef
     }
 }

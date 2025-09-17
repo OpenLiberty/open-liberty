@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.junit.runner.manipulation.Filter;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.FeatureRequiresMinimumJavaLevel;
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.JavaInfo;
@@ -60,7 +59,6 @@ public class JavaLevelFilter extends Filter {
         }
 
         MinimumJavaLevel minimumJavaLevelAnnotation = desc.getAnnotation(MinimumJavaLevel.class);
-        FeatureRequiresMinimumJavaLevel featureRequiresLevelAnnotation = desc.getAnnotation(FeatureRequiresMinimumJavaLevel.class);
         //check for a method level annotation first
 
         //method level annotations supercede any class level annotation
@@ -68,11 +66,6 @@ public class JavaLevelFilter extends Filter {
             //there was no method level annotation
             //check for a test class level annotation
             minimumJavaLevelAnnotation = FilterUtils.getTestClass(desc, getMyClass()).getAnnotation(MinimumJavaLevel.class);
-        }
-        if (featureRequiresLevelAnnotation == null) {
-            //there was no method level annotation
-            //check for a test class level annotation
-            featureRequiresLevelAnnotation = FilterUtils.getTestClass(desc, getMyClass()).getAnnotation(FeatureRequiresMinimumJavaLevel.class);
         }
 
         // If there's a minimum java level annotaton, that sets a global minimum level, so if we don't meet that, don't run tests
@@ -82,20 +75,6 @@ public class JavaLevelFilter extends Filter {
                                     + " from list to run, because it is too high for current java level "
                                     + JavaInfo.JAVA_VERSION);
             return false;
-        } else {
-            // Check if this is testing the feature with the minimum level
-            boolean applicableFeaturePresent = featureRequiresLevelAnnotation != null && featureRequiresLevelAnnotation.feature().equals(FEATURE_UNDER_TEST);
-            if (applicableFeaturePresent) {
-                // This feature has a minimum java level, do we meet it?
-
-                if (JavaInfo.JAVA_VERSION < featureRequiresLevelAnnotation.javaLevel()) {
-                    Log.debug(getMyClass(), "Removing test " + desc.getMethodName() + " because feature " + featureRequiresLevelAnnotation.feature()
-                                            + " from list to run, because it requires java level " + featureRequiresLevelAnnotation.javaLevel()
-                                            + " and we are running with "
-                                            + JavaInfo.JAVA_VERSION);
-                    return false;
-                }
-            }
         }
 
         return true;

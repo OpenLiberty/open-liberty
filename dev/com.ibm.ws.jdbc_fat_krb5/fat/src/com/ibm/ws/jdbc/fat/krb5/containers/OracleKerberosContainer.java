@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,48 +12,61 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5.containers;
 
-import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC;
+import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC_EXTERNAL;
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
 import java.time.Duration;
 
 import org.testcontainers.containers.Network;
+import org.testcontainers.oracle.OracleContainer;
 import org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.OracleXEContainer;
 
 /**
  * Custom Oracle Kerberos Container class
- * TODO replace with OracleFree
  */
-public class OracleKerberosContainer extends OracleXEContainer {
+public class OracleKerberosContainer extends OracleContainer {
 
     private static final Class<?> c = OracleKerberosContainer.class;
 
-    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE_NAME_STRING = "kyleaure/oracle-21.3.0-faststart:1.0.full.krb5";
-    private static final DockerImageName IMAGE_NAME = DockerImageName.parse(IMAGE_NAME_STRING).asCompatibleSubstituteFor("gvenzl/oracle-xe");
+    /*
+     * TODO: https://github.com/testcontainers/testcontainers-java/pull/10263
+     * If this ever get's merged consider passing the future (RemoteDockerImage)
+     * to the parent constructor so we can lazily start this image.
+     */
+    private static final DockerImageName ORACLE_KRB5 = ImageBuilder
+                    .build("oracle-krb5:23.0.0.1-full-faststart")
+                    .getDockerImageName()
+                    .asCompatibleSubstituteFor("gvenzl/oracle-free");
 
     public OracleKerberosContainer(Network network) {
-        super(IMAGE_NAME);
-        super.withPassword("oracle"); //Tell superclass the hardcoded password
-        super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
-        super.withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
-        super.withNetwork(network);
-        super.withLogConsumer(new SimpleLogConsumer(c, "oracle-krb5"));
-    }
+        super(ORACLE_KRB5);
 
-    @Override
-    protected void configure() {
+        // Network
+        withNetwork(network);
         withNetworkAliases("oracle");
         withCreateContainerCmdModifier(cmd -> {
             cmd.withHostName("oracle");
         });
+
+        // Authentication
+        super.withPassword("oracle");
+
+        // Connections
+        usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
+
+        // Startup
+        withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
+
+        // Logging
+        withLogConsumer(new SimpleLogConsumer(c, "oracle-krb5"));
+
+        // Environment
         withEnv("KRB5_REALM", KRB5_REALM);
-        withEnv("KRB5_KDC", KRB5_KDC);
-        super.configure();
+        withEnv("KRB5_KDC", KRB5_KDC_EXTERNAL);
     }
 
     @Override
@@ -66,7 +79,7 @@ public class OracleKerberosContainer extends OracleXEContainer {
     }
 
     @Override
-    public OracleXEContainer withUsername(String username) {
+    public OracleContainer withUsername(String username) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
@@ -76,17 +89,17 @@ public class OracleKerberosContainer extends OracleXEContainer {
     }
 
     @Override
-    public OracleXEContainer withPassword(String password) {
+    public OracleContainer withPassword(String password) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
     @Override
     public String getDatabaseName() {
-        return "XE";
+        return "FREE";
     }
 
     @Override
-    public OracleXEContainer withDatabaseName(String dbName) {
+    public OracleContainer withDatabaseName(String dbName) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 }

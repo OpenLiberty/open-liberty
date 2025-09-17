@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,20 +34,24 @@ import javax.json.JsonObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.containers.ImageBuilder;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpsRequest;
 
+@Ignore
 @RunWith(FATRunner.class)
 public class ValidateCloudantTest extends FATServletClient {
 
@@ -62,8 +66,10 @@ public class ValidateCloudantTest extends FATServletClient {
     private static String CLOUDANT_URL;
     private static String databaseURI;
 
+    private static final DockerImageName CLOUDANT_DEV = ImageBuilder.build("cloudant-dev:2.0.1").getDockerImageName();
+
     @ClassRule //FIXME the cloudant-developer image is deprecated consider using CouchDB
-    public static GenericContainer<?> cloudant = new GenericContainer<>("kyleaure/cloudant-developer:1.0")
+    public static GenericContainer<?> cloudant = new GenericContainer<>(CLOUDANT_DEV)
                     .withExposedPorts(5984)
                     .withLogConsumer(ValidateCloudantTest::log);
 

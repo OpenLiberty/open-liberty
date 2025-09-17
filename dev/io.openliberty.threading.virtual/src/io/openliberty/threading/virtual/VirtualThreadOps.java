@@ -19,7 +19,7 @@ import java.util.concurrent.ThreadFactory;
  * An interface for virtual thread-related operations that require Java 21.
  * Code that is compiled to earlier Java levels can compile against this interface
  * and use it to conditionally invoke into the Java 21 operations only when
- * running on Java 21+.
+ * running on Java 21+. This interface also checks for embedder's implementation of ThreadTypeOverride to disable creation of VirtualThreads.
  *
  * TODO Once Java 8, 11, and 17 are no longer supported, this interface should be
  * removed in favor of directly using the API from Java.
@@ -75,11 +75,18 @@ public interface VirtualThreadOps {
                                Runnable runnable);
 
     /**
-     * Indicates whether or not virtual threads are supported.
+     * Indicates whether or not virtual threads are supported by the java level.
      *
      * @return true if virtual threads are supported, otherwise false.
      */
     boolean isSupported();
+
+    /**
+     * Indicates whether or not virtual threads should be created by checking if a ThreadTypeOverride exists
+     *
+     * @return true if virtual threads should be created, otherwise false.
+     */
+    boolean isVirtualThreadCreationEnabled();
 
     /**
      * Invokes <code>isVirtual</code> on the supplied Thread.

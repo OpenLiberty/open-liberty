@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,7 @@ import com.ibm.ws.microprofile.config.fat.tests.BasicConfigTests;
 import com.ibm.ws.microprofile.config.fat.tests.CDIBrokenInjectionTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoaderCacheTest;
 import com.ibm.ws.microprofile.config.fat.tests.ClassLoadersTest;
+import com.ibm.ws.microprofile.config.fat.tests.VisibilityTest;
 import com.ibm.ws.microprofile.config.fat.tests.DefaultSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.DynamicSourcesTest;
 import com.ibm.ws.microprofile.config.fat.tests.LibertySpecificConfigTests;
@@ -47,6 +48,7 @@ import com.ibm.ws.microprofile.config.fat.tests.StressTest;
                 SimultaneousRequestsTest.class, //FULL
                 SharedLibTest.class, //FULL
                 StressTest.class, //FULL
+                VisibilityTest.class, //FULL
 
                 // The following don't repeat against mpConfig > 1.4. See classes for why.
                 LibertySpecificConfigTests.class, //FULL

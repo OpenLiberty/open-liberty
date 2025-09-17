@@ -23,7 +23,7 @@
 		<localStore>
 			<client
 				name="client05"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client05"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantTypes="password"

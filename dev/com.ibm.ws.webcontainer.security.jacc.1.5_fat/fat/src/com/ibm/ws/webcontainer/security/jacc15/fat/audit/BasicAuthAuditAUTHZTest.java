@@ -31,6 +31,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.audit.fat.common.tooling.AuditAsserts;
 import com.ibm.ws.security.audit.fat.common.tooling.AuditCommonTest;
@@ -128,7 +129,9 @@ public class BasicAuthAuditAUTHZTest {
 
         JACCFatUtils.installJaccUserFeature(myServer);
         JACCFatUtils.transformApps(myServer, "basicauth.war", "basicauthXMI.ear", "basicauthXMInoAuthz.ear", "basicauthXML.ear", "basicauthXMLnoAuthz.ear");
-
+        if (isWindows()) {
+            myServer.setAppStartTimeout(myServer.getAppStartTimeout() * 2);
+        }
         testConfig.startServerClean(DEFAULT_CONFIG_FILE);
 
         if (myServer.getValidateApps()) { // If this build is Java 7 or above
@@ -141,6 +144,14 @@ public class BasicAuthAuditAUTHZTest {
         myClient.setJaccValidation(true);
         mySSLClient.setJaccValidation(true);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
+    }
+
+    /**
+     * @return true if the test is running on a windows platform, false otherwise
+     * @throws Exception
+     */
+    private static boolean isWindows() throws Exception {
+        return myServer.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS;
     }
 
     protected static void verifyServerStartedWithJaccFeature(LibertyServer server) {

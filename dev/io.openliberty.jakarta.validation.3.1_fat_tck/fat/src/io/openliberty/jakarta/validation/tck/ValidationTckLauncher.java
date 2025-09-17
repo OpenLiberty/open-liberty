@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package io.openliberty.jakarta.validation.tck;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.time.Duration;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -103,6 +104,7 @@ public class ValidationTckLauncher {
                         .withPlatfromVersion("11")
                         .withSuiteFileName("tck-tests.xml")
                         .withAdditionalMvnProps(additionalProps)
+                        .withAppUndeployTimeout(Duration.ofSeconds(120))
                         .runTCK();
     }
 }

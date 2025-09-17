@@ -62,25 +62,25 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
 			<client
 				name="client02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client02"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
 			<client
 				name="client03"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client03"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
 			<client
 				name="client04"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client04"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
@@ -106,7 +106,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
@@ -126,25 +126,25 @@
 		<localStore>
 			<client
 				name="pclient01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="pclient01"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
 			<client
 				name="pclient02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="pclient02"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
 			<client
 				name="pclient03"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="pclient03"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
 			<client
 				name="pclient04"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="pclient04"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
@@ -162,7 +162,7 @@
 		<localStore>
 			<client
 				name="nclient01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="nclient01"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
@@ -180,7 +180,7 @@
 		<localStore>
 			<client
 				name="mediatorclient"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="mediatorclient"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />
@@ -197,7 +197,7 @@
 		<localStore>
 			<client
 				name="mediatorclient"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="mediatorclient"
 				redirect="http://localhost:${bvt.prop.HTTP_default}/oauthclient/redirect.jsp"
 				enabled="true" />

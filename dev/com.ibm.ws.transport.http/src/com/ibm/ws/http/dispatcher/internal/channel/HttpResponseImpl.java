@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal.channel;
 
@@ -339,6 +336,8 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     public void setTrailer(String name, String value) {
 
         HttpTrailers trailers = message.createTrailers();
+        if (trailers == null)// Netty implementation
+            trailers = message.getTrailers();
         HeaderKeys key = HttpHeaderKeys.find(name, false);
 
         if (trailers.containsDeferredTrailer(key)) {
@@ -359,6 +358,8 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     @Override
     public void writeTrailers() {
         HttpTrailers trailers = message.createTrailers();
+        if (trailers == null)// Netty implementation
+            trailers = message.getTrailers();
         trailers.computeRemainingTrailers();
 
     }

@@ -17,10 +17,12 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import io.openliberty.cdi41.internal.fat.el.ELTest;
+import io.openliberty.cdi41.internal.fat.invokers.InvokersTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ELTest.class
+                ELTest.class,
+                InvokersTest.class,
 })
 public class FATSuite {
 
