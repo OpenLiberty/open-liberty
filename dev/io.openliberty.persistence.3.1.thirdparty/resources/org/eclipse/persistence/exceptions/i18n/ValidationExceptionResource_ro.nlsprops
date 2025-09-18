@@ -633,7 +633,7 @@
 
 7356=Procedur\u0103: [{1}] nu poate fi executat deoarece {0} nu suport\u0103 momentan parametrii de ie\u015fire multiplii
 
-7357="[{0} ]" URL pentru "[{1} ]" nu apar\u021bine unei r\u0103d\u0103cini valide de persisten\u021b\u0103, a\u0219a cum este definit\u0103 de specifica\u021bia Jakarta Persistence
+7357="[ {0} ]" URL pentru resursa "[ {1} ]" nu apar\u021bine unei r\u0103d\u0103cini de persisten\u021b\u0103 valide, astfel cum este definit\u0103 de specifica\u021bia Jakarta Persistence.
 
 7358=A fost furnizat un nume de serviciu ASM incorect.
 

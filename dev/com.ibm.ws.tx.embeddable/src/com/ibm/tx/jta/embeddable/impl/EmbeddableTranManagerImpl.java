@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,11 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionRolledbackException;
 
-import com.ibm.ejs.ras.Tr;
-import com.ibm.ejs.ras.TraceComponent;
 import com.ibm.tx.TranConstants;
 import com.ibm.tx.config.ConfigurationProviderManager;
 import com.ibm.tx.jta.impl.TranManagerImpl;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCoordinator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.tx.UOWEventListener;
@@ -120,12 +120,12 @@ public class EmbeddableTranManagerImpl extends TranManagerImpl {
             final EmbeddableTransactionImpl t = (EmbeddableTransactionImpl) tx;
 
             if (!t.isResumable()) {
+                final Thread thread = t.getThread(); // avoid race condition where value becomes null after first check
                 final IllegalStateException ise;
-                Thread thread = t.getThread(); // avoid race condition where value becomes null after first check
                 if (thread != null) {
-                    ise = new IllegalStateException("Transaction already active on thread " + String.format("%08X", thread.getId()));
+                    ise = new IllegalStateException(Tr.formatMessage(tc, "WTRN0156_CANNOT_RESUME", String.format("%08X", thread.getId())));
                 } else {
-                    ise = new IllegalStateException("Transaction cannot be resumed on this thread");
+                    ise = new IllegalStateException(Tr.formatMessage(tc, "WTRN0157_CANNOT_RESUME"));
                 }
 
                 if (traceOn && tc.isEntryEnabled())

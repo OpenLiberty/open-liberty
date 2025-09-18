@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,6 +30,8 @@ import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.OnlyIfSysProp;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServer.CheckpointInfo;
@@ -45,6 +48,9 @@ public class JavaInfoIsCriuSupportedTest extends FATServletClient {
     @Server("checkpointFATServer")
     public static LibertyServer server;
 
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("checkpointFATServer");
+
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
         ShrinkHelper.defaultApp(server, APP_NAME, APP_NAME);
@@ -53,6 +59,7 @@ public class JavaInfoIsCriuSupportedTest extends FATServletClient {
 
     @Test
     @AllowedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testFailedCheckpointIfRunningOnNonCRIUJVM() throws Exception {
         int returnCode = 0;
         if (JavaInfo.forCurrentVM().isCriuSupported()) {

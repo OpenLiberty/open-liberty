@@ -359,3 +359,5 @@
 
 6183=Le type de mappage {1} pour l''attribut {2} de {0} n''est pas pris en charge avec l''exemple de fonctionnalit\u00e9 Query By.  Si l''attribut peut \u00eatre ignor\u00e9, ajoutez-le \u00e0 la liste des \u00e9l\u00e9ments \u00e0 ignorer ou d\u00e9finissez un exemple de validation sur false dans la strat\u00e9gie.
 
+6184=Un type de valeur incorrect {0} est transmis \u00e0 l''expression du constructeur. Les types complexes (par exemple, les tableaux, les collections ou les objets) ne sont pas pris en charge.
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package io.openliberty.netty.internal.tls.impl;
 import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.Map.Entry;
 
 import javax.net.ssl.*;
@@ -25,9 +26,17 @@ import org.osgi.service.component.annotations.Modified;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.*;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.netty.channel.Channel;
+import io.netty.handler.codec.http2.Http2SecurityUtil;
 import io.netty.handler.ssl.*;
+import io.netty.handler.ssl.ApplicationProtocolConfig.Protocol;
+import io.netty.handler.ssl.ApplicationProtocolConfig.SelectedListenerFailureBehavior;
+import io.netty.handler.ssl.ApplicationProtocolConfig.SelectorFailureBehavior;
+import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
+import io.openliberty.netty.internal.tls.impl.handler.LibertySslHandler;
 import io.netty.handler.ssl.SslContext;
 
 /**
@@ -35,13 +44,10 @@ import io.netty.handler.ssl.SslContext;
  * {@link io.netty.handler.ssl.JdkSslContext.JdkSslContext} using active Liberty
  * SSL configurations
  * 
- * TODO: this logic should be made generic and put in a separate bundle so that
- * the SIP feature does not have a SSL runtime dependency
- * 
  * Adapted from
  * {@link com.ibm.ws.channel.ssl.internal.SSLChannel.getSSLContextForLink(VirtualConnection,
  * String, String, String, Boolean, SSLConnectionLink)}
- *
+ * {@link com.ibm.ws.channel.ssl.internal.SSLChannelData}
  */
 @Component(configurationPid = "io.openliberty.netty.internal.tls", immediate = true, service = NettyTlsProvider.class)
 public class NettyTlsProviderImpl implements NettyTlsProvider {
@@ -49,6 +55,18 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
     private static final TraceComponent tc = Tr.register(NettyTlsProviderImpl.class);
 
     static final String ALIAS_KEY = "alias";
+    static final String SSLPROP_CLIENT_AUTHENTICATION = "com.ibm.ssl.clientAuthentication";
+    static final String SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED = "com.ibm.ssl.clientAuthenticationSupported";
+
+    private static final String SSLSESSION_CACHE_SIZE = "SSLSessionCacheSize";
+    private static final String SSLSESSION_TIMEOUT = "SSLSessionTimeout";
+    private static final String SSLSESSION_TIMEOUT_8500 = "sessionTimeout";
+
+    /** Defaults for some properties. */
+    private static final String DEFAULT_SSLSESSION_CACHE_SIZE = "100";
+    private static final String DEFAULT_SSLSESSION_TIMEOUT = "86400";
+
+
     
     /**
      * DS activate
@@ -98,14 +116,26 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
      * @param String port
      * @return SslContext
      */
-    public SslContext getOutboundSSLContext(Map<String, Object> sslOptions, String host,
-            String port) {
+    public SslHandler getOutboundSSLContext(Map<String, Object> sslOptions, String host,
+            String port, Channel channel) {
 
         SSLContext jdkContext;
+        SSLConfig sslConfig;
+        String[] protocols;
         try {
         	Properties props = createProps(sslOptions);
-            String alias = (String)props.getProperty(ALIAS_KEY);
-            jdkContext = getSSLContext(alias, props, false, host, port, port, null);
+        	String alias = (String)props.getProperty(ALIAS_KEY);
+            AbstractMap.SimpleEntry<SSLContext, SSLConfig> sslContextConfigPair = getSSLContextAndConfig(alias, props, true, host, port, port, false);
+            if (sslContextConfigPair == null){ 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "getInboundALPNSSLContext exception caught creating SSLContext");
+                }
+                return null;
+            }
+            jdkContext = sslContextConfigPair.getKey();
+            sslConfig = sslContextConfigPair.getValue();
+            String protocol = sslConfig.getProperty(Constants.SSLPROP_PROTOCOL);
+            protocols = getSSLProtocol(protocol);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "getOutboundSSLContext SSLContext:", jdkContext);
             }
@@ -117,9 +147,10 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         }
 
         try {
-            SslContext nettyContext = new JdkSslContext(jdkContext, true, null, SupportedCipherSuiteFilter.INSTANCE,
-                    null, ClientAuth.OPTIONAL, null, false);
-            return nettyContext;
+            SslContext nettyContext = new JdkSslContext(jdkContext, true, Arrays.asList(jdkContext.getDefaultSSLParameters().getCipherSuites()), SupportedCipherSuiteFilter.INSTANCE,
+                    null, getClientAuth(sslConfig), protocols, false);
+            preConfigureSslContext(sslConfig, nettyContext);
+            return new LibertySslHandler(nettyContext.newEngine(channel.alloc()), sslOptions, channel);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "getOutboundSSLContext exception caught creating JdkSslContext: " + e);
@@ -136,11 +167,25 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
      * @param String port
      * @return SslContext
      */
-    public SslContext getInboundSSLContext(Map<String, Object> sslOptions, String host, String port) {
+    public SslHandler getInboundSSLContext(Map<String, Object> sslOptions, String host, String port, Channel channel) {
 
         SSLContext jdkContext;
+        SSLConfig sslConfig;
+        String[] protocols;
         try {
-            jdkContext = getSSLContext(port, createProps(sslOptions), true, host, port, port, false);
+        	Properties props = createProps(sslOptions);
+        	String alias = (String)props.getProperty(ALIAS_KEY);
+            AbstractMap.SimpleEntry<SSLContext, SSLConfig> sslContextConfigPair = getSSLContextAndConfig(alias, props, true, host, port, port, false);
+            if (sslContextConfigPair == null){ 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "getInboundALPNSSLContext exception caught creating SSLContext");
+                }
+                return null;
+            }
+            jdkContext = sslContextConfigPair.getKey();
+            sslConfig = sslContextConfigPair.getValue();
+            String protocol = sslConfig.getProperty(Constants.SSLPROP_PROTOCOL);
+            protocols = getSSLProtocol(protocol);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "getInboundSSLContext exception caught creating SSLContext: " + e);
@@ -151,15 +196,186 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
             Tr.debug(tc, "getInboundSSLContext SSLContext: " + jdkContext);
         }
         try {
-            SslContext nettyContext = new JdkSslContext(jdkContext, false, null, SupportedCipherSuiteFilter.INSTANCE,
-                    null, ClientAuth.OPTIONAL, null, false);
-            return nettyContext;
+            SslContext nettyContext = new JdkSslContext(jdkContext, false, Arrays.asList(jdkContext.getDefaultSSLParameters().getCipherSuites()), SupportedCipherSuiteFilter.INSTANCE,
+                    null, getClientAuth(sslConfig), protocols, false);
+            preConfigureSslContext(sslConfig, nettyContext);
+            return new LibertySslHandler(nettyContext.newEngine(channel.alloc()), sslOptions, channel);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
                 Tr.warning(tc, "getInboundSSLContext exception caught creating JdkSslContext: " + e);
             }
             return null;
         }
+    }
+    
+    /**
+     * Build a {@link io.netty.handler.ssl.SslContext} for an H2 Inbound connection
+     * with ALPN for H1 and H2
+     * 
+     * @param Map<String, Object> sslOptions
+     * @param String host
+     * @param String port
+     * @return SslContext
+     */
+    public SslHandler getInboundALPNSSLContext(Map<String, Object> sslOptions, String host, String port, Channel channel) {
+
+        SSLContext jdkContext;
+        SSLConfig sslConfig;
+        String[] protocols;
+        try {
+        	Properties props = createProps(sslOptions);
+        	String alias = (String)props.getProperty(ALIAS_KEY);
+            AbstractMap.SimpleEntry<SSLContext, SSLConfig> sslContextConfigPair = getSSLContextAndConfig(alias, props, true, host, port, port, false);
+            if (sslContextConfigPair == null){ 
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "getInboundALPNSSLContext exception caught creating SSLContext");
+                }
+                return null;
+            }
+            jdkContext = sslContextConfigPair.getKey();
+            sslConfig = sslContextConfigPair.getValue();
+            String protocol = sslConfig.getProperty(Constants.SSLPROP_PROTOCOL);
+            protocols = getSSLProtocol(protocol);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "getInboundALPNSSLContext exception caught creating SSLContext: " + e);
+            }
+            return null;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getInboundALPNSSLContext SSLContext: " + jdkContext);
+        }
+        try {
+            ApplicationProtocolConfig apn = new ApplicationProtocolConfig(Protocol.ALPN,
+                    // NO_ADVERTISE is currently the only mode supported by both OpenSsl and JDK providers.
+                    SelectorFailureBehavior.NO_ADVERTISE,
+                    // ACCEPT is currently the only mode supported by both OpenSsl and JDK providers.
+                    SelectedListenerFailureBehavior.ACCEPT,
+                    // Add Supported Protocols here for negotiation
+                    ApplicationProtocolNames.HTTP_2,
+                    ApplicationProtocolNames.HTTP_1_1);
+            SslContext nettyContext = new JdkSslContext(jdkContext, false, Arrays.asList(jdkContext.getDefaultSSLParameters().getCipherSuites()), SupportedCipherSuiteFilter.INSTANCE,
+            apn, getClientAuth(sslConfig), protocols, false);
+            preConfigureSslContext(sslConfig, nettyContext);
+            return new LibertySslHandler(nettyContext.newEngine(channel.alloc()), sslOptions, channel);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                Tr.warning(tc, "getInboundALPNSSLContext exception caught creating JdkSslContext: " + e);
+            }
+            return null;
+        }
+    }
+
+    private void preConfigureSslContext(SSLConfig config, SslContext nettyContext) throws NettyException {
+        // Get SSL configurations
+        int sslSessionCacheSize = getSslSessionCacheSize(config);
+        if (sslSessionCacheSize == -1) {
+            throw new NettyException("Found invalid value for SSLSessionCacheSize!");
+        }
+        int sslSessionTimeout = getSslSessionTimeout(config);
+        if (sslSessionTimeout == -1) {
+            throw new NettyException("Found invalid value for SSLSessionTimeout!");
+        }
+        sslSessionTimeout = (int)TimeUnit.MILLISECONDS.toSeconds(sslSessionTimeout);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Property sslSessionTimout converted to seconds: " + sslSessionTimeout);
+        }
+        nettyContext.sessionContext().setSessionCacheSize(sslSessionCacheSize);
+        nettyContext.sessionContext().setSessionTimeout(sslSessionTimeout);
+    }
+    
+    private String[] getSSLProtocol(String protocol) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "getSSLProtocol");
+        }
+
+        // protocol(s) need to be in an array
+        String[] protocols = protocol.split(",");
+
+        // we only want to set the protocol on the socket if it a specific protocol name
+        // don't set to TLS or SSL
+        if (protocols.length == 1) {
+            if (protocols[0].equals(Constants.PROTOCOL_TLS) || protocols[0].equals(Constants.PROTOCOL_SSL)) {
+                protocols = null;
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "getSSLProtocol " + protocols);
+        }
+        return protocols;
+    }
+    
+    private ClientAuth getClientAuth(SSLConfig config) {
+    	boolean clientAuth = getBooleanProperty(SSLPROP_CLIENT_AUTHENTICATION, config);
+    	if(clientAuth)
+    		return ClientAuth.REQUIRE;
+    	else if(getBooleanProperty(SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED, config))
+    		return ClientAuth.OPTIONAL;
+    	return ClientAuth.NONE;
+    }
+
+    /**
+     * Gets the SSL Session Timeout using the keyword and default constant
+     * as established in {@link com.ibm.ws.channel.ssl.internal.SSLChannelData}
+     * 
+     * @param sslConfig the SSL configuration
+     * @return sslSessionTimeout or -1 if there was an error parsing the timeout
+     */
+    private int getSslSessionTimeout(SSLConfig sslConfig) {
+        String sslSessionTimeout = String.valueOf(sslConfig.getOrDefault(SSLSESSION_TIMEOUT, DEFAULT_SSLSESSION_TIMEOUT));
+        try {
+            int parsedValue = Integer.parseInt(sslSessionTimeout);
+            return parsedValue;
+        } catch (NumberFormatException nfe) {
+            // no FFDC required;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Property " + SSLSESSION_TIMEOUT + ", format error in [" + sslSessionTimeout + "]");
+            }
+            return -1;
+        }
+    }
+
+    /**
+     * Gets the SSL Session Cache Size using the keyword and default constant
+     * as established in {@link com.ibm.ws.channel.ssl.internal.SSLChannelData}
+     * 
+     * @param sslConfig the SSL configuration
+     * @return sslSessionCacheSize or -1 if there was an error parsing the cache size
+     */
+    private int getSslSessionCacheSize(SSLConfig sslConfig) {
+        String sslSessionCacheSize = String.valueOf(sslConfig.getOrDefault(SSLSESSION_CACHE_SIZE ,DEFAULT_SSLSESSION_CACHE_SIZE));
+        try {
+            int parsedValue = Integer.parseInt(sslSessionCacheSize);
+            return parsedValue;
+        } catch (NumberFormatException nfe) {
+            // no FFDC required;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Property " + SSLSESSION_CACHE_SIZE + ", format error in [" + sslSessionCacheSize + "]");
+            }
+            return -1;
+        }
+    }
+    
+    /**
+     * Query the boolean property value of the input name.
+     *
+     * @param propertyName
+     * @return boolean
+     */
+    private boolean getBooleanProperty(String propertyName, Properties sslConfig) {
+    	boolean booleanValue = false;
+
+    	// Pull the key from the property map
+    	Object objectValue = sslConfig.get(propertyName);
+    	if (objectValue != null) {
+    		if (objectValue instanceof Boolean) {
+    			booleanValue = ((Boolean) objectValue).booleanValue();
+    		} else if (objectValue instanceof String) {
+    			booleanValue = Boolean.parseBoolean((String) objectValue);
+    		}
+    	}
+    	return booleanValue;
     }
 
     /**
@@ -177,7 +393,8 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
      * @return
      * @throws Exception
      */
-    private static SSLContext getSSLContext(String alias, Properties properties, boolean isInbound, String host,
+    @FFDCIgnore({Exception.class})
+    private static AbstractMap.SimpleEntry<SSLContext, SSLConfig> getSSLContextAndConfig(String alias, Properties properties, boolean isInbound, String host,
             String port, String endPoint, Boolean isZWebContainerChain) throws Exception {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "host=" + host + " port=" + port + " endPoint=" + endPoint);
@@ -191,7 +408,6 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_HOST, host);
         connectionInfo.put(Constants.CONNECTION_INFO_REMOTE_PORT, port);
         connectionInfo.put(Constants.CONNECTION_INFO_ENDPOINT_NAME, endPoint);
-
         // PK40641 - handle channel props that do not need JSSEHelper
         Properties props = null;
         boolean useJSSEHelper = (null != alias);
@@ -253,20 +469,9 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         // repertoire based or on-thread config... merge the channel props into
         // them without overwriting any
         if (null != props) {
-            Enumeration<?> names = properties.propertyNames();
-            String key = null;
-            String value = null;
-            while (names.hasMoreElements()) {
-                key = (String) names.nextElement();
-                value = properties.getProperty(key);
-                if (value instanceof String && null != value && !props.containsKey(key)) {
-                    props.put(key, value);
-                }
-            }
-        } else {
-            // otherwise we just use the channel config
-            props = properties;
-        }
+            properties.putAll(props);
+        } 
+        props = properties;
 
         // "SSSL" is a zOS repertoire type that is not supported by SSLChannel
         // We only support "JSSE"
@@ -302,23 +507,38 @@ public class NettyTlsProviderImpl implements NettyTlsProvider {
         }
 
         SSLContext context = null;
+        SSLConfig config =  null;
         try {
-            SSLConfig config = new SSLConfig(props);
+            config = new SSLConfig(props);
             context = com.ibm.websphere.ssl.JSSEHelper.getInstance().getSSLContext(connectionInfo, config);
         } catch (Exception e) {
-            // no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception getting SSLContext from properties.", new Object[] { e });
             }
-            throw e;
+            return null;
         }
-        return context;
+        return new AbstractMap.SimpleEntry<SSLContext, SSLConfig>(context, config);
     }
 
     private static Properties createProps(Map<String, Object> map) {
         Properties properties = new Properties();
+        boolean realTimeoutSet = false;
         if (map != null) {
             for (Entry<String, Object> entry : map.entrySet()) {
+                if (entry.getKey().equalsIgnoreCase(SSLSESSION_CACHE_SIZE)) {
+                    properties.put(SSLSESSION_CACHE_SIZE, entry.getValue());
+                    continue;
+                }
+                if (entry.getKey().equalsIgnoreCase(SSLSESSION_TIMEOUT)) {
+                    properties.put(SSLSESSION_TIMEOUT, entry.getValue());
+                    realTimeoutSet = true;
+                    continue;
+                }
+                if ((realTimeoutSet == false) && (entry.getKey().equalsIgnoreCase(SSLSESSION_TIMEOUT_8500))) {
+                    // we only want the real timeout in the map
+                    properties.put(SSLSESSION_TIMEOUT, entry.getValue());
+                    continue;
+                }
                 properties.put(entry.getKey(), entry.getValue());
             }
         }

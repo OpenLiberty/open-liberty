@@ -10,15 +10,15 @@
     <include location="../fatTestPorts.xml"/>
     
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
-    <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" />
-    <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" />
+    <keyStore id="defaultKeyStore" location="defaultKey.p12" type="PKCS12" password="passw0rd" />
+    <keyStore id="defaultTrustStore" location="defaultTrust.p12" type="PKCS12" password="passw0rd" />
 
     <ssl id="myDefaultServerSSLSettings" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" >
      	<outboundConnection host="localhost" port="${bvt.prop.HTTP_default.secure}" />
      	<outboundConnection host="127.0.0.1" port="${bvt.prop.HTTP_default.secure}" />
     </ssl>
-    <keyStore id="serverKeyStore" location="key.jks" type="JKS" password="passw0rd" />
-    <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+    <keyStore id="serverKeyStore" location="key.p12" type="PKCS12" password="passw0rd" />
+    <keyStore id="serverTrustStore" location="trust.p12" type="PKCS12" password="passw0rd" />
     
     <application id="TransportSecurityClient" name="TransportSecurityClient" location="TransportSecurityClient.war"
         context="TransportSecurityClient" type="war" />

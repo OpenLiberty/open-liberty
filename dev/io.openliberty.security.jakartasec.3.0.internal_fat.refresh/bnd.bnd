@@ -43,7 +43,8 @@ javac.target: 11
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	jakarta.inject.jakarta.inject-api;version=latest,\
-	io.openliberty.jakarta.servlet.5.0
+	io.openliberty.jakarta.servlet.5.0,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest
 
 Bundle-Name: Jakarta Sec 3.0 Logout Fats
 Bundle-Description: Logout FAT for Jakarta EE10 Security 3.0

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -11,7 +11,7 @@
 
 -sub: *.bnd
 
-bVersion: 2.15
+bVersion: 2.16
 
 Import-Package: com.ibm.wsspi.webcontainer.extension,com.ibm.wsspi.webcontainer.webapp,com.ibm.wsspi.webcontainer.filter,com.ibm.wsspi.webcontainer.collaborator,com.ibm.wsspi.webcontainer.osgi.extension,com.ibm.wsspi.webcontainer.servlet,com.ibm.ws.webcontainer.extension,com.ibm.websphere.servlet.filter,com.ibm.wsspi.webcontainer,com.ibm.wsspi.webcontainer.metadata,com.ibm.websphere.servlet.response,com.ibm.ws.webcontainer.spiadapter.collaborator
 

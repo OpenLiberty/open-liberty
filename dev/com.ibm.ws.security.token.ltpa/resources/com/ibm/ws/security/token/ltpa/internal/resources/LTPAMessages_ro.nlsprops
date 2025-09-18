@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Set
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: Atributul updateTrigger este setat pe dezactivat, iar intervalul monitorului este mai mare dec\u00e2t {0}. Nu are loc o re\u00eenc\u0103rcare dinamic\u0103 atunci c\u00e2nd fi\u0219ierele cheie LTPA sunt modificate.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Atunci c\u00e2nd atributul updateTrigger este setat la dezactivat, fi\u0219ierele nu sunt monitorizate pentru orice modific\u0103ri cu privire la fi\u0219ierele cu sufixul .keys \u0219i re\u00eenc\u0103rcarea dinamic\u0103 nu are loc. Chiar dac\u0103 atributul monitorInterval este setat la un interval care este mai mare dec\u00e2t zero, atributul este ignorat, iar fi\u0219ierele nu sunt monitorizate.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Seta\u021bi valoarea atributului updateTrigger polled sau mbean.
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Cheile de validare {0} trebuie regenerate utiliz\u00e2nd algoritmi criptografici care sunt certifica\u021bi FIPS 140-3.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Cheile de validare LTPA care sunt create f\u0103r\u0103 activarea FIPS 140-3 e\u0219ueaz\u0103 atunci c\u00e2nd FIPS 140-3 este activat.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utiliza\u021bi comanda securityUtility createLTPAKeys pentru a crea cheile de validare aprobate de FIPS atunci c\u00e2nd FIPS 140-3 este configurat.

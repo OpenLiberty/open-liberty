@@ -2,7 +2,7 @@
 ###############################################################################
 # WebSphere Application Server liberty launch script
 #
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -400,6 +400,7 @@ serverEnvDefaults()
     unset PID_FILE
   fi
 
+   # Determine location of java command.
   if [ -z "${JAVA_HOME}" ]
   then
     if [ -z "${JRE_HOME}" ]
@@ -513,7 +514,6 @@ serverEnvAndJVMOptions()
 
   rc=0
 
-
   # The order of merging the jvm.option files sets the precedence.
   # Once a given jvm option is set, it will be overridden if a duplicate
   # is seen later. They will both be written in to the options parameter
@@ -550,31 +550,46 @@ serverEnvAndJVMOptions()
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
   fi
 
-  # Determine location of Java Platform Module System (JPMS) modules directory
-  # Set JAVA_HOME if it is not already set.
+  # Try to find and set JAVA_HOME.  Need JAVA_HOME to determine if we are running Java 9+.  Possibly other reasons.
   if [ -z "${JAVA_HOME}" ]; then
 
     # JAVA_HOME not set.  Locate java using the PATH.
     JAVA_PATH=$(command -v java)
     if [ -n "${JAVA_PATH}" ] ; then
-
+      
+      # Resolve symlinks.  JAVA_HOME is parent of parent of 'java'
       REAL_JAVA_PATH=$(findRealPath "${JAVA_PATH}")
       JAVA_HOME=$(dirname "${REAL_JAVA_PATH}")/..
-      # The "exit" will cause JAVA_HOME to be unset in the unlikely case that JAVA_HOME is not a directory
-      JAVA_HOME="$(unset CDPATH; cd "${JAVA_HOME}" || exit; pwd)"
-      export JAVA_HOME
 
-      if [ -n "${REAL_JAVA_PATH}" ]; then
-         JPMS_MODULE_FILE_LOCATION=$(dirname "$(dirname "${REAL_JAVA_PATH}")")/lib/modules
-      fi
-    fi
-  else
-    JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
+      # The next statement resolves the ".." and verifies JAVA_HOME is a directory.
+      # If JAVA_HOME is not a directory, the cd command will exit the subshell causing JAVA_HOME to be unset.
+      JAVA_HOME="$(unset CDPATH; cd "${JAVA_HOME}" || exit; pwd)"
+
+     # If JAVA_HOME does not appear to be a valid Java installation (missing 'lib' or 'include' directories), display a warning.
+     # Split into 3 tests for portability.  As a one-line test, it is problematic for IBM i and possibly other shells.
+     # Need to unset JAVA_HOME when location is not valid, otherwise it causes a hang on the warning message.
+     if [ -z "$JAVA_HOME" ]; then
+       issueMessage --message:warning.javaHomeNotSet
+     elif [ ! -d "$JAVA_HOME/lib" ] && [ ! -d "$JAVA_HOME/jre/lib" ]; then
+       unset JAVA_HOME
+       issueMessage --message:warning.javaHomeNotSet
+     elif [ ! -d "$JAVA_HOME/include" ]; then
+       unset JAVA_HOME
+       issueMessage --message:warning.javaHomeNotSet
+     else
+       export JAVA_HOME
+     fi
+
+    fi  # if JAVA_HOME is not set and java is not in the PATH, then we cannot find Java.
   fi
 
-  # If we are running on Java 9 and up, apply Liberty's built-in java 9 options  
-  if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
-    mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+  # If there is a lib/modules directory under JAVA_HOME, then it is at least Java 9.   Ensure java9.options gets loaded.
+  if [ -n "${JAVA_HOME}" ]; then
+    JPMS_MODULE_FILE_LOCATION=${JAVA_HOME}/lib/modules
+  
+    if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
+       mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+    fi
   fi
 
   return $rc
@@ -602,7 +617,6 @@ findRealPath() {
 
     # If unsuccessful, try cd -P command. 
     if [ -z "${resolvedPath}" ]; then
-
       resolvedPath=$(unset CDPATH; cd -P "${path}" >/dev/null 2>&1 && pwd)
     fi
 
@@ -646,6 +660,10 @@ findRealPath() {
 		  
           # Get the target of the symbolic link
           target=$(ls -l "$resolvedPath" | awk '{print $NF}')
+          # The line above might have problems with special characters. Possible replacement to consider and test:
+          # lsOutput=$(ls -ld "$resolvedPath")
+          # lsoutput should look something like: 'lrwxr-xr-x  1 user group  16 Jan  1 12:00 myLink -> /some/real/path'
+          # target=${lsOutput#* -> }
 
           # Don't lose the remaining path past the symlink
           if [ "$resolvedPath" = "$path" ]; then

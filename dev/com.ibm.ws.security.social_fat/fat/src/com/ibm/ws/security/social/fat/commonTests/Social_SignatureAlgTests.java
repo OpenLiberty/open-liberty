@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.security.social.fat.commonTests;
 
 import java.util.List;
 
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -31,6 +32,8 @@ import com.ibm.ws.security.social.fat.utils.SocialTestSettings;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * This is the test class that will run tests to verify the correct behavior with
@@ -57,6 +60,9 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
 
     protected static SignatureEncryptionUserinfoUtils signingUtils = null;
     public static boolean isTestingOidc = false; // subclasses may set this to true
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.social_fat.LibertyOP.opWithStub");
 
     /**
      * All of the test cases in this class perform the same steps - the only real differences are:
@@ -458,10 +464,12 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
 
     /**
      * Test shows that the Social client can not consume a JWT signed with sigAlg RS256, but a different key
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
      *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_SignatureAlgTests_SignTokenRS256_SocialVerifyRS256_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS256, Constants.SIGALG_RS256);
@@ -470,10 +478,12 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
 
     /**
      * Test shows that the Social client can not consume a JWT signed with sigAlg RS384, but a different key
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
      *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_SignatureAlgTests_SignTokenRS384_SocialVerifyRS384_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS384, Constants.SIGALG_RS384);
@@ -482,10 +492,12 @@ public class Social_SignatureAlgTests extends SocialCommonTest {
 
     /**
      * Test shows that the Social client can not consume a JWT signed with sigAlg RS512, but a different key
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
      *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_SignatureAlgTests_SignTokenRS512_SocialVerifyRS512_keyMismatch() throws Exception {
 
         genericSigAlgTest("short_" + Constants.SIGALG_RS512, Constants.SIGALG_RS512);

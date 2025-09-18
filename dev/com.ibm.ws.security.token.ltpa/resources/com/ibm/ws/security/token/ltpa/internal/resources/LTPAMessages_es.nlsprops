@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Est
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: El atributo updateTrigger se ha establecido en inhabilitado y el intervalo de supervisi\u00f3n es mayor que {0}. No se produce ninguna recarga din\u00e1mica cuando se modifican los archivos de claves LTPA.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Cuando el atributo updateTrigger se establece en inhabilitado, no se supervisan las modificaciones en los archivos con el sufijo .keys y no se produce la recarga din\u00e1mica. Incluso si el atributo monitorInterval se establece en un intervalo mayor que cero, el atributo se ignora y los archivos no se supervisan.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Establezca el valor del atributo updateTrigger en sondeado o mbean.
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Las claves de validaci\u00f3n de {0} deben regenerarse utilizando algoritmos criptogr\u00e1ficos que cuenten con la certificaci\u00f3n FIPS 140-3.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Las claves de validaci\u00f3n LTPA que se crean sin FIPS 140-3 activado fallan cuando FIPS 140-3 est\u00e1 activado.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utilice el comando securityUtility createLTPAKeys para crear las claves de validaci\u00f3n aprobadas por FIPS cuando FIPS 140-3 est\u00e9 configurado.

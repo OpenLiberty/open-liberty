@@ -1,0 +1,9 @@
+apply plugin: 'java'
+
+group = 'com.ibm.ws.example'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = 1.8
+
+jar {
+    enabled = true
+}

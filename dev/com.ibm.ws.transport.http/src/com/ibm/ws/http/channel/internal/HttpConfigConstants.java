@@ -415,9 +415,11 @@ public class HttpConfigConstants {
 
     public static final String PROPNAME_COMPRESSION = "useAutoCompressionInternal";
 
-    public static final String PROPNAME_COMPRESSION_CONTENT_TYPES = "compressionListByTypesInternal";
+    public static final String PROPNAME_COMPRESSION_CONTENT_TYPES = "types";
+    public static final String PROPNAME_COMPRESSION_PREFERRED_ALGORITHM = "serverPreferredAlgorithm";
 
-    public static final String PROPNAME_COMPRESSION_PREFERRED_ALGORITHM = "serverPreferredAlgorithmInternal";
+    public static final String PROPNAME_COMPRESSION_CONTENT_TYPES_INTERNAL = "compressionListByTypesInternal";
+    public static final String PROPNAME_COMPRESSION_PREFERRED_ALGORITHM_INTERNAL = "serverPreferredAlgorithmInternal";
 
     //Matches a 0 with optionally up to three decimal points or a 1 with up to three 0
     //decimal spaces.
@@ -434,11 +436,15 @@ public class HttpConfigConstants {
 
     public static final String PROPNAME_SAMESITE = "sameSiteInternal";
 
-    public static final String PROPNAME_SAMESITE_LAX = "sameSiteLaxInternal";
+    public static final String PROPNAME_SAMESITE_LAX = "lax";
+    public static final String PROPNAME_SAMESITE_NONE = "none";
+    public static final String PROPNAME_SAMESITE_STRICT = "strict";
+    //TODO -> change internal value for netty beta
+    public static final String PROPNAME_SAMESITE_PARTITION = "partitioned";
 
-    public static final String PROPNAME_SAMESITE_NONE = "sameSiteNoneInternal";
-
-    public static final String PROPNAME_SAMESITE_STRICT = "sameSiteStrictInternal";
+    public static final String PROPNAME_SAMESITE_LAX_INTERNAL = "sameSiteLaxInternal";
+    public static final String PROPNAME_SAMESITE_NONE_INTERNAL = "sameSiteNoneInternal";
+    public static final String PROPNAME_SAMESITE_STRICT_INTERNAL = "sameSiteStrictInternal";
 
     public static final String PROPNAME_SAMESITE_PARTITIONED = "sameSitePartitionedInternal";
 
@@ -446,13 +452,15 @@ public class HttpConfigConstants {
 
     public static final String PROPNAME_RESPONSE_HEADERS = "headersInternal";
 
-    public static final String PROPNAME_RESPONSE_HEADERS_ADD = "headersAddInternal";
+    public static final String PROPNAME_RESPONSE_HEADERS_ADD = "add";
+    public static final String PROPNAME_RESPONSE_HEADERS_SET = "set";
+    public static final String PROPNAME_RESPONSE_HEADERS_REMOVE = "remove";
+    public static final String PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING = "setIfMissing";
 
-    public static final String PROPNAME_RESPONSE_HEADERS_SET = "headersSetInternal";
-
-    public static final String PROPNAME_RESPONSE_HEADERS_REMOVE = "headersRemoveInternal";
-
-    public static final String PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING = "headersSetIfMissingInternal";
+    public static final String PROPNAME_RESPONSE_HEADERS_ADD_INTERNAL = "headersAddInternal";
+    public static final String PROPNAME_RESPONSE_HEADERS_SET_INTERNAL = "headersSetInternal";
+    public static final String PROPNAME_RESPONSE_HEADERS_REMOVE_INTERNAL = "headersRemoveInternal";
+    public static final String PROPNAME_RESPONSE_HEADERS_SET_IF_MISSING_INTERNAL = "headersSetIfMissingInternal";
 
     public static final String PROPNAME_IGNORE_WRITE_AFTER_COMMIT = "ignoreWriteAfterCommit";
 
@@ -490,4 +498,12 @@ public class HttpConfigConstants {
             return this.name;
         }
     }
+
+    //Endpoint element defaults
+    public static final String ID = "id";
+    public static final String DEFAULT_REMOTE_IP = "defaultRemoteIp";
+    public static final String DEFAULT_HEADERS = "defaultHeaders";
+    public static final String DEFAULT_COMPRESSION = "defaultCompression";
+    public static final String DEFAULT_SAMESITE = "defaultSameSite";
+
 }

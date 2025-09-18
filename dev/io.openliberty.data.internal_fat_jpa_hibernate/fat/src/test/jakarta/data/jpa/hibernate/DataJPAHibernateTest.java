@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,10 +21,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -32,7 +30,6 @@ import test.jakarta.data.jpa.hibernate.web.DataJPAHibernateTestServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
-@SkipIfSysProp(SkipIfSysProp.DB_Oracle) //TODO Hibernate fails to load oracle.jdbc.OracleConnection class
 public class DataJPAHibernateTest extends FATServletClient {
     private static final String APP_NAME = "DataJPAHibernateTestApp";
 
@@ -42,12 +39,11 @@ public class DataJPAHibernateTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(FATSuite.testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
-
         // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.testContainer);
+        DatabaseContainerUtil.build(server, FATSuite.testContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .modify();
 
         WebArchive war = ShrinkHelper.buildDefaultApp(APP_NAME, "test.jakarta.data.jpa.hibernate.web");
         ShrinkHelper.exportAppToServer(server, war);
@@ -57,7 +53,7 @@ public class DataJPAHibernateTest extends FATServletClient {
     //NOTE: Hibernate does not support the version of Derby we use during DatabaseRotation
     // HHH000511: The 10.11.1 version for [org.hibernate.community.dialect.DerbyDialect] is no longer supported, hence certain features may not work properly.
     // The minimum supported version is 10.15.2. Check the community dialects project for available legacy versions.
-    //for now this test still works, but it might start failing with future Hibernate versions
+    // for now this test still works, but it might start failing with future Hibernate versions
 
     @AfterClass
     public static void tearDown() throws Exception {

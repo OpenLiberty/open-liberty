@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,8 +20,7 @@ configurations {
 }
 
 dependencies {
-  requiredLibs 'org.glassfish:javax.json:1.0.4',
-               project(':com.ibm.ws.jca.cm')
+  requiredLibs project(':com.ibm.ws.jca.cm')
   derby40 'org.apache.derby:derby:10.7.1.1'
 }
 

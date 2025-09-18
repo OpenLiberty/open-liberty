@@ -18,6 +18,7 @@ Subsystem-Name: Messaging Server 3.0
  com.ibm.ws.messaging.runtime, \
  com.ibm.ws.messaging.comms.client, \
  com.ibm.websphere.security, \
+ io.openliberty.transport.config.internal, \
  io.openliberty.io.netty, \
  io.openliberty.io.netty.ssl, \
  io.openliberty.netty.internal, \

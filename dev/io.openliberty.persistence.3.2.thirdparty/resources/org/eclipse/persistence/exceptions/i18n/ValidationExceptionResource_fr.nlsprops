@@ -641,3 +641,9 @@
 
 7360=Le mot de passe de la base de donn\u00e9es a \u00e9t\u00e9 chiffr\u00e9 par un algorithme obsol\u00e8te. Rechiffrez-le en `passwordUpdate.sh` de eclipselink.zip paquet.
 
+7361=Un seul champ de l''\u00e9num\u00e9ration peut \u00eatre marqu\u00e9 par l''annotation @EnumeratedValue. V\u00e9rifiez la classe enum [ {0} ].
+
+7362=Pour un type \u00e9num\u00e9r\u00e9 ORDINAL, seuls les types byte, short, int, log ou wrapper peuvent \u00eatre utilis\u00e9s comme type d''attribut marqu\u00e9 par @EnumeratedValue. V\u00e9rifier l''attribut [ {0} ] dans la classe d''\u00e9num\u00e9ration [ {1} ].
+
+7363=Pour un type \u00e9num\u00e9r\u00e9 STRING, seul le type java.lang.String peut \u00eatre utilis\u00e9 comme type d''attribut marqu\u00e9 par @EnumeratedValue. V\u00e9rifier l''attribut [ {0} ] dans la classe d''\u00e9num\u00e9ration [ {1} ].
+

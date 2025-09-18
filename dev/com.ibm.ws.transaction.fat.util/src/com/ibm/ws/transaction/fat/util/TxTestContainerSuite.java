@@ -20,24 +20,19 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.stream.Stream;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
-import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.containers.ImageBuilder;
 import componenttest.containers.TestContainerSuite;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 
 public class TxTestContainerSuite extends TestContainerSuite {
-
-    public static final String POSTGRES_DB = "testdb";
-    public static final String POSTGRES_USER = "postgresUser";
-    public static final String POSTGRES_PASS = "superSecret";
-    
-    public static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17.0.0.1").getDockerImageName();
 
     private static DatabaseContainerType databaseContainerType;
     public static JdbcDatabaseContainer<?> testContainer;
@@ -93,21 +88,24 @@ public class TxTestContainerSuite extends TestContainerSuite {
     	Log.entering(TxTestContainerSuite.class, "dropTables");
     	if (testContainer != null && !isDerby()) {
     		try (Connection conn = testContainer.createConnection(""); Statement stmt = conn.createStatement()) {
-    			if (tables.length != 0) {
-    				Log.info(TxTestContainerSuite.class, "dropTables", "explicit");
-    				for (String table : tables) {
-    					dropTable(stmt, table);
-    				}
+    			final HashSet<String> existingTables = new HashSet<String>();
+				final DatabaseMetaData metaData = conn.getMetaData();
+				final String[] types = {"TABLE"};
+
+				try (ResultSet existing = metaData.getTables(null, null, "%", types)) {
+					while (existing.next()) {
+						existingTables.add(existing.getString("TABLE_NAME"));
+					}
+				}
+
+				final Stream<String> tablesToDrop;
+				if (tables != null) {
+					tablesToDrop = Arrays.asList(tables).stream().filter(s -> existingTables.contains(s));
     			} else {
-    				DatabaseMetaData metaData = conn.getMetaData();
-    				String[] types = {"TABLE"};
-    				//Retrieving the columns in the database
-    				try (ResultSet existing = metaData.getTables(null, null, "%", types)) {
-    					while (existing.next()) {
-    						dropTable(stmt, existing.getString("TABLE_NAME"));
-    					}
-    				}
+    				tablesToDrop = existingTables.stream();
     			}
+
+				tablesToDrop.forEach(s -> dropTable(stmt, s));
     		} catch (SQLException e) {
     			Log.error(TxTestContainerSuite.class, "dropTables", e);
     		}

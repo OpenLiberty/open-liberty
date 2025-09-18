@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.SyntheticServletTest;
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 public class TestServletProcessor {
@@ -70,6 +71,12 @@ public class TestServletProcessor {
 
             // For each @TestServlet for this server, add all @Test methods
             for (TestServlet anno : testServlets) {
+                if (JavaInfo.JAVA_VERSION < anno.minJavaLevel()) {
+                    Log.info(c, m, "Skipping scan of TestServlet " + anno.servlet()
+                                   + " because the current java level " + JavaInfo.JAVA_VERSION
+                                   + " did not meet the configured minimum " + anno.minJavaLevel());
+                    continue;
+                }
                 int initialSize = testMethods.size();
                 for (Method method : getTestServletMethods(anno)) {
                     if (method.isAnnotationPresent(Test.class)) {

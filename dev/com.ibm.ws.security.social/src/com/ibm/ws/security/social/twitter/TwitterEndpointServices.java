@@ -38,6 +38,7 @@ import org.jose4j.lang.JoseException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.web.CommonWebConstants;
 import com.ibm.ws.security.social.SocialLoginConfig;
@@ -120,6 +121,8 @@ public class TwitterEndpointServices {
      */
     public String computeSignature(String requestMethod, String targetUrl, Map<String, String> params, @Sensitive String consumerSecret, @Sensitive String tokenSecret) {
 
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
+        // The twitter OAuth v1.0 spec will not work with fips compliant algorithms. A new implementation of v2.0 spec would be required for FIPS 140-3.
         String signatureBaseString = createSignatureBaseString(requestMethod, targetUrl, params);
 
         // Hash the base string using the consumer secret (and request token secret, if known) as a key
@@ -153,9 +156,9 @@ public class TwitterEndpointServices {
     protected String computeSha1Signature(String baseString, @Sensitive String keyString) throws GeneralSecurityException {
 
         byte[] keyBytes = keyString.getBytes(StandardCharsets.UTF_8);
-        SecretKey secretKey = new SecretKeySpec(keyBytes, "HmacSHA1");
+        SecretKey secretKey = new SecretKeySpec(keyBytes, CryptoUtils.HMACSHA1);
 
-        Mac mac = Mac.getInstance("HmacSHA1");
+        Mac mac = Mac.getInstance(CryptoUtils.HMACSHA1);
         mac.init(secretKey);
 
         byte[] text = baseString.getBytes(StandardCharsets.UTF_8);

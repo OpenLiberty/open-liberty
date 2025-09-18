@@ -26,6 +26,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringTokenizer;
 
 import javax.naming.InitialContext;
@@ -33,7 +34,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.transaction.Status;
 
+import com.ibm.tx.jta.impl.UserTransactionImpl;
 import com.ibm.websphere.uow.UOWSynchronizationRegistry;
+import com.ibm.ws.uow.UOWScope;
+import com.ibm.ws.uow.UOWScopeCallback;
 import com.ibm.wsspi.uow.UOWAction;
 import com.ibm.wsspi.uow.UOWManager;
 
@@ -142,6 +146,45 @@ public class TxTestUtils {
         requestContext.put("com.sun.xml.ws.request.timeout", timeout);
         requestContext.put("javax.xml.ws.client.connectionTimeout", timeout);
         requestContext.put("javax.xml.ws.client.receiveTimeout", timeout);
+    }
+
+    public static UOWScopeCallback registerUOWScopeCallback() {
+    	UOWScopeCallback cb = new UOWScopeCallbackImpl();
+    	UserTransactionImpl.instance().registerCallback(cb);
+    	return cb;
+    }
+
+    public static void unregisterUOWScopeCallback(UOWScopeCallback cb) {
+    	UserTransactionImpl.instance().unregisterCallback(cb);
+    }
+
+    public static boolean allCallbacksCalled(UOWScopeCallback cb) {
+    	return ((UOWScopeCallbackImpl)cb).allCallbacksCalled();
+    }
+    
+    public static boolean onlyBeginCallbacksCalled(UOWScopeCallback cb) {
+    	return ((UOWScopeCallbackImpl)cb).onlyBeginCallbacksCalled();
+    }
+
+    private static class UOWScopeCallbackImpl implements UOWScopeCallback {
+
+    	private Set<Integer> _contextChanges = new HashSet<Integer>();
+
+    	public boolean allCallbacksCalled() {
+			return _contextChanges.contains(PRE_BEGIN) && _contextChanges.contains(POST_BEGIN) && _contextChanges.contains(PRE_END) && _contextChanges.contains(POST_END);
+		}
+    	
+    	public boolean onlyBeginCallbacksCalled() {
+			return _contextChanges.contains(PRE_BEGIN) && _contextChanges.contains(POST_BEGIN) && !_contextChanges.contains(PRE_END) && !_contextChanges.contains(POST_END);
+		}
+
+        @Override
+        public void contextChange(int changeType, UOWScope uowScope) throws IllegalStateException {
+        	
+            System.out.println("Change Type: " + changeType + ", UOWScope: " + uowScope);
+            _contextChanges.add(changeType);
+        }
+
     }
 }
 

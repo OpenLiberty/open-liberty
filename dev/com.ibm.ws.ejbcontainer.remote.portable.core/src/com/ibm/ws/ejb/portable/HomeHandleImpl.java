@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2021 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -130,18 +130,7 @@ public class HomeHandleImpl implements HomeHandle, Serializable {
                 InitialContext ctx = null;
                 try {
                     // Locate the home
-                    // 91851 begin
-                    if (this.ivInitialContextProperties == null) {
-                        ctx = new InitialContext();
-                    } else {
-                        try {
-                            ctx = new InitialContext(ivInitialContextProperties);
-                        } catch (NamingException ne) {
-                            // FFDCFilter.processException(ne, CLASS_NAME + ".getEJBHome", "161", this);
-                            ctx = new InitialContext();
-                        }
-                    }
-                    // 91851 end
+                    ctx = new InitialContext();
                     ivEjbHome = (EJBHome) PortableRemoteObject.narrow(ctx.lookup(ivJndiName), homeClass);
                 } catch (NoInitialContextException e) {
                     // FFDCFilter.processException(e, CLASS_NAME + ".getEJBHome", "172", this);

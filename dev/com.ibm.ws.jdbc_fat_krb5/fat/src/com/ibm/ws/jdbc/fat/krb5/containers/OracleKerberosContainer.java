@@ -28,7 +28,7 @@ import componenttest.custom.junit.runner.FATRunner;
 /**
  * Custom Oracle Kerberos Container class
  */
-public class OracleKerberosContainer extends OracleContainer {
+public class OracleKerberosContainer extends OracleContainer implements KerberosAuthContainer {
 
     private static final Class<?> c = OracleKerberosContainer.class;
 
@@ -42,40 +42,42 @@ public class OracleKerberosContainer extends OracleContainer {
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("gvenzl/oracle-free");
 
+    public static final String KRB5_USER = "ORACLEUSR";
+    public static final String KRB5_PASS = "password";
+
     public OracleKerberosContainer(Network network) {
         super(ORACLE_KRB5);
-
-        // Network
         withNetwork(network);
         withNetworkAliases("oracle");
         withCreateContainerCmdModifier(cmd -> {
             cmd.withHostName("oracle");
         });
+    }
 
-        // Authentication
+    @Override
+    protected void configure() {
+        // Superclass settings
         super.withPassword("oracle");
+        super.usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
 
-        // Connections
-        usingSid(); //Maintain current behavior of connecting with SID instead of pluggable database
+        // Additional env variables
+        withEnv("KRB5_REALM", KRB5_REALM);
+        withEnv("KRB5_KDC", KRB5_KDC_EXTERNAL);
 
-        // Startup
+        // Wait strategy
         withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 25));
 
         // Logging
         withLogConsumer(new SimpleLogConsumer(c, "oracle-krb5"));
 
-        // Environment
-        withEnv("KRB5_REALM", KRB5_REALM);
-        withEnv("KRB5_KDC", KRB5_KDC_EXTERNAL);
+        // Default configuration
+        super.configure();
+
     }
 
     @Override
-    public String getUsername() {
-        return "system";
-    }
-
-    public String getKerberosUsername() {
-        return "ORACLEUSR@" + KerberosContainer.KRB5_REALM;
+    public String getSid() {
+        return "FREE";
     }
 
     @Override
@@ -84,22 +86,27 @@ public class OracleKerberosContainer extends OracleContainer {
     }
 
     @Override
-    public String getPassword() {
-        return "oracle";
-    }
-
-    @Override
     public OracleContainer withPassword(String password) {
         throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
     @Override
-    public String getDatabaseName() {
-        return "FREE";
+    public OracleContainer withDatabaseName(String dbName) {
+        throw new UnsupportedOperationException("hardcoded setting, cannot change");
     }
 
     @Override
-    public OracleContainer withDatabaseName(String dbName) {
-        throw new UnsupportedOperationException("hardcoded setting, cannot change");
+    public String getKerberosPrinciple() {
+        return KRB5_USER + "@" + KerberosContainer.KRB5_REALM;
+    }
+
+    @Override
+    public String getKerberosUsername() {
+        return KRB5_USER;
+    }
+
+    @Override
+    public String getKerberosPassword() {
+        return KRB5_PASS;
     }
 }

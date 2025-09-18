@@ -311,7 +311,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Les magasins de cl\u00e9
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Aucune action n'est requise.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Le syst\u00e8me ajoute l''alias de signataire {0} au fichier de cl\u00e9s local {1} avec le Digest SHA suivant : {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Le syst\u00e8me ajoute l''alias de signature {0} \u00e0 la base de donn\u00e9es locale {1} avec l''extrait {3} suivant : {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Il s'agit d'un message \u00e0 caract\u00e8re informatif.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Aucune action n'est requise.
 # -------------------------------------------------------------------------------------------------

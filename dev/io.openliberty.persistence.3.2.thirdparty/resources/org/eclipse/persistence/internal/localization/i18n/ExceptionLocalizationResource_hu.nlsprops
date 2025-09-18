@@ -327,6 +327,8 @@ metamodel_managed_type_attribute_type_incorrect=A megl\u00e9v\u0151 [{0}] attrib
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=A deklar\u00e1lt [{0}] attrib\u00fatum a(z) [{1}] kezelt t\u00edpusb\u00f3l nincs jelen - azonban deklar\u00e1lva van egy sz\u00fcl\u0151oszt\u00e1lyon.
 
+missing_jpql_parser_class=Nem siker\u00fclt bet\u00f6lteni a JPQL elemz\u0151 oszt\u00e1lyt.
+
 missing_parameter_value=A(z) {0} lek\u00e9rdez\u00e9si argumentum nem tal\u00e1lhat\u00f3 a lek\u00e9rdez\u00e9s v\u00e9grehajt\u00e1sa sor\u00e1n a megadott param\u00e9terlist\u00e1ban.
 
 missing_toplink_bean_definition_for=Hi\u00e1nyz\u00f3 TopLink komponens meghat\u00e1roz\u00e1s a k\u00f6vetkez\u0151h\u00f6z: {0}

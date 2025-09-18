@@ -1915,6 +1915,36 @@
 		nonceEnabled="false"
 
 	>
+	</oidcLogin>
+
+	<authFilter id="authFilterES256ShortES256">
+		<requestUrl
+			id="requestUrlES256ShortES256"
+			urlPattern="/rest/helloworldSignES256EncryptShortES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256EncryptShortES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256ShortES256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="short_es256_pkcs8"
+		sslRef="ssl_allSigAlg"
+		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
+		nonceEnabled="false"
+
+	>
 	</oidcLogin>	
 		
 	<authFilter id="authFilterRS256PublicRS256">
@@ -1942,7 +1972,34 @@
 		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg_badKeyStore"
 	>
-	</oidcLogin>		
+	</oidcLogin>	
+
+	<authFilter id="authFilterES256PublicES256">
+		<requestUrl
+			id="requestUrlES256PublicES256"
+			urlPattern="/rest/helloworldSignES256EncryptPublicES256"
+			matchType="contains" />
+	</authFilter>
+
+	<oidcLogin
+		id="SignES256EncryptPublicES256"
+		scope="openid profile email"
+		userNameAttribute="sub"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		mapIdentityToRegistryUser="true"
+		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"  
+		userInfoEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/TokenEndpointServlet/getToken"
+		userInfoEndpointEnabled="true"
+		authFilterRef="authFilterES256PublicES256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg_badKeyStore"
+	>
+	</oidcLogin>	
 
 	<authFilter id="authFilterRP_trustStoreRefOmitted">
 		<requestUrl

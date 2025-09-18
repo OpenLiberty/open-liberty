@@ -716,7 +716,7 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
     if ((WCCustomProperties.SKIP_META_INF_RESOURCES_PROCESSING) && (searchMetaInf == true)){
 
         searchMetaInf = false;
-        logger.logp(Level.FINE, CLASS_NAME, "getResourcePaths", "override searchMetaInf to false becuase of custom property");
+        logger.logp(Level.FINE, CLASS_NAME, "getResourcePaths", "override searchMetaInf to false because of custom property");
     }
     
     

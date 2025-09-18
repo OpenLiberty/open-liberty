@@ -12,9 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.experimental.web;
 
-import static io.openliberty.data.repository.Is.Op.GreaterThanEqual;
-import static io.openliberty.data.repository.Is.Op.In;
-import static io.openliberty.data.repository.Is.Op.Substringed;
 import static io.openliberty.data.repository.function.Rounded.Direction.DOWN;
 import static io.openliberty.data.repository.function.Rounded.Direction.UP;
 import static jakarta.data.repository.By.ID;
@@ -22,9 +19,13 @@ import static jakarta.data.repository.By.ID;
 import java.util.List;
 import java.util.UUID;
 
+import jakarta.data.constraint.AtLeast;
+import jakarta.data.constraint.In;
+import jakarta.data.constraint.Like;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
+import jakarta.data.repository.Is;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -34,7 +35,6 @@ import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Is;
 import io.openliberty.data.repository.function.Rounded;
 import io.openliberty.data.repository.update.Add;
 import io.openliberty.data.repository.update.Divide;
@@ -67,7 +67,7 @@ public interface Items {
     long inflateAllPrices(@Multiply("price") float rateOfIncrease);
 
     @Update
-    long inflatePrices(@By("name") @Is(Substringed) String nameSubstring,
+    long inflatePrices(@By("name") Like namePattern,
                        @Multiply("price") float rateOfIncrease);
 
     @Exists
@@ -111,13 +111,13 @@ public interface Items {
     }
 
     @Update
-    long undoPriceIncrease(@By(ID) @Is(In) Iterable<UUID> productIds,
+    long undoPriceIncrease(@By(ID) @Is(In.class) Iterable<UUID> productIds,
                            @Divide("price") float divisor,
                            @SubtractFrom("version") int decrement);
 
     @Find
     @OrderBy("price")
-    Item[] versionedAtOrAbove(@By("version") @Is(GreaterThanEqual) long minVersion);
+    Item[] versionedAtOrAbove(@By("version") @Is(AtLeast.class) long minVersion);
 
     @Find
     @OrderBy("name")

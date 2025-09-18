@@ -13,6 +13,7 @@
 package test.jakarta.data.web;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.By;
@@ -23,6 +24,8 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.Schedule;
 
 import test.jakarta.data.web.Participant.Name;
 
@@ -46,6 +49,13 @@ public interface Participants extends DataRepository<Participant, Integer> {
 
     @Delete
     long remove(@By("name.last") String lastName);
+
+    @Asynchronous(runAt = @Schedule(hours = {}, // all
+                                    minutes = {}, // all
+                                    seconds = { 5, 15, 25, 35, 45, 55 }))
+    @Delete
+    CompletableFuture<Long> scheduledRemoval(String name_first,
+                                             String name_last);
 
     @Find
     @OrderBy("name.first")

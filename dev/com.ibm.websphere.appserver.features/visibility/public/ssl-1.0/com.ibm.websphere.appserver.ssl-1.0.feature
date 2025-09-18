@@ -20,7 +20,8 @@ Subsystem-Name: Secure Socket Layer 1.0
  io.openliberty.io.netty, \
  io.openliberty.io.netty.ssl, \
  io.openliberty.netty.internal, \
- io.openliberty.netty.internal.tls.impl
+ io.openliberty.netty.internal.tls.impl, \
+ io.openliberty.transport.config.internal
 -jars=com.ibm.websphere.appserver.spi.ssl; location:=dev/spi/ibm/, \
  com.ibm.websphere.appserver.api.ssl; location:=dev/api/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.ssl_1.6-javadoc.zip, \

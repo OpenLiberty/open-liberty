@@ -46,6 +46,7 @@ src: \
   org.springframework:spring-web;${springVersion30}, \
   org.slf4j:slf4j-api;version=1.7.36, \
   io.openliberty.jakarta.persistence.3.1;version=latest,\
+  io.openliberty.jakarta.servlet.6.0;version=latest, \
   org.springframework.data:spring-data-commons;version=3.3.0,\
   org.springframework.data:spring-data-jpa;version=3.3.0
   

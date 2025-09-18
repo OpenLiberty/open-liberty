@@ -296,7 +296,9 @@ public class Constants {
     // unknown cipher
     public static final String SSL_UNKNOWN_CIPHER = "UNKNOWN_CIPHER";
 
-    /** SSL V2 cipher specifications */
+    // FIPS 140-3: Algorithm assessment complete; no changes required.
+    // These constants are unused with FIPS enabled, but cannot update them as they would break the backward compatibility.
+   /** SSL V2 cipher specifications */
     public static final String SSL_CK_RC4_128_WITH_MD5 = "SSL_CK_RC4_128_WITH_MD5",
                     SSL_CK_RC4_128_EXPORT40_WITH_MD5 = "SSL_CK_RC4_128_EXPORT40_WITH_MD5",
                     SSL_CK_RC2_128_CBC_WITH_MD5 = "SSL_CK_RC2_128_CBC_WITH_MD5",

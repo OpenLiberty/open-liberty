@@ -1,11 +1,19 @@
 <server>
 
-	<sslDefault sslRef="DefaultSSLSettings" />
+	<sslDefault sslRef="DefaultSSLSettings_RSA" />
+	
 	<ssl
-		id="DefaultSSLSettings"
+		id="DefaultSSLSettings_RSA"
 		keyStoreRef="rsa_key"
 		trustStoreRef="rsa_trust"
 		clientAuthenticationSupported="true" />
+
+	<ssl 
+		id="DefaultSSLSettings_EC" 
+		keyStoreRef="ec_key" 
+		trustStoreRef="ec_trust"
+		clientAuthenticationSupported="true" />
+
 	<keyStore
 		id="myKeyStore"
 		password="Liberty"
@@ -35,6 +43,17 @@
 		type="jks"
 		location="${server.config.dir}/rsa_trust.jks" />
 
+	<keyStore
+		id="ec_trust"
+		password="LibertyServer"
+		type="PKCS12"
+		location="${server.config.dir}/ec_trust.p12" />
+
+	<keyStore
+		id="ec_key"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/ec_key.p12" />
 
 <include location="${shared.config.dir}/allAlgSSLSettings.xml" />
 

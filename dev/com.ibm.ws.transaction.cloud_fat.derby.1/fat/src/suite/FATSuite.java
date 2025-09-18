@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+import com.ibm.ws.transaction.fat.util.TxTestDB;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
+import tests.DBRotationTest;
 import tests.DualServerDynamicDBRotationTest1;
 
 @RunWith(Suite.class)
@@ -33,9 +35,8 @@ import tests.DualServerDynamicDBRotationTest1;
 })
 public class FATSuite extends TxTestContainerSuite {
 
-	static {
-		beforeSuite(DatabaseContainerType.Derby);
-	}
+	@ClassRule
+    public static TxTestDB p = new TxTestDB(DatabaseContainerType.Derby);
 
 	@ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()

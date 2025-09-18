@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
+import static com.ibm.ws.classloading.internal.LibertyLoader.DelegatePolicy.includeParent;
+
 import java.io.IOException;
 import java.lang.instrument.ClassFileTransformer;
 import java.net.URL;
@@ -84,8 +86,8 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
         // This is only used to place a non-class loader class on the call stack which is loaded from a bundle.
         // This is needed as a workaround for defect 89337.
         @Trivial
-        static Class<?> loadClass(String className, boolean resolve, boolean onlySearchSelf, boolean returnNull, UnifiedClassLoader loader) throws ClassNotFoundException {
-            return loader.loadClass0(className, resolve, onlySearchSelf, returnNull);
+        static Class<?> loadClass(String className, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull, UnifiedClassLoader loader) throws ClassNotFoundException {
+            return loader.loadClass0(className, resolve, delegatePolicy, returnNull);
         }
     }
 
@@ -104,18 +106,18 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
     @Override
     @Trivial
     protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        return Delegation.loadClass(name, resolve, false, false, this);
+        return Delegation.loadClass(name, resolve, includeParent, false, this);
     }
 
     @Override
     @Trivial
-    protected Class<?> loadClass(String name, boolean resolve, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
-        return Delegation.loadClass(name, resolve, onlySearchSelf, returnNull, this);
+    protected Class<?> loadClass(String name, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
+        return Delegation.loadClass(name, resolve, delegatePolicy, returnNull, this);
     }
 
     @Trivial
     @FFDCIgnore(ClassNotFoundException.class)
-    Class<?> loadClass0(String name, boolean resolve, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
+    Class<?> loadClass0(String name, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
         if (parent == null) {
             return super.loadClass(name, resolve);
         }
@@ -125,7 +127,7 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
             if (result != null) {
                 return result;
             }
-            if (!onlySearchSelf) {
+            if (delegatePolicy == includeParent) {
                 if (parent instanceof NoClassNotFoundLoader) {
                     result = ((NoClassNotFoundLoader) parent).loadClassNoException(name);
                 } else {
@@ -139,13 +141,13 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
                     return result;
                 }
             }
-            return findClass(name, returnNull);
+            return findClass(name, delegatePolicy, returnNull);
         }
     }
 
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
-    protected Class<?> findClass(String name, boolean returnNull) throws ClassNotFoundException {
+    protected Class<?> findClass(String name, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
         for (ClassLoader cl : followOnClassLoaders) {
             try {
                 if (cl instanceof NoClassNotFoundLoader) {

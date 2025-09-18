@@ -56,7 +56,6 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1009E.*addNothing", // Insert method without parameters
                                    "CWWKD1009E.*addSome", // Insert method with multiple parameters
                                    "CWWKD1009E.*changeNothing", // Update method without parameters
-                                   "CWWKD1009E.*changeBoth", // Update method with multiple entity parameters
                                    "CWWKD1009E.*storeNothing", // Save method without parameters
                                    "CWWKD1009E.*storeInDatabase", // Save method with multiple parameters
                                    "CWWKD1010E.*nameAndZipCode", // Record return type with invalid attribute name
@@ -64,6 +63,7 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1010E.*sortedByEndOfAddress", // OrderBy with invalid function
                                    "CWWKD1010E.*sortedByZipCode", // OrderBy with invalid attribute name
                                    "CWWKD1011E.*findByIgnoreCaseContains", // missing entity attribute name
+                                   "CWWKD1014E.*changeBoth", // Update method with multiple entity parameters
                                    "CWWKD1015E.*addPollingLocation", // insert null entity
                                    "CWWKD1015E.*addOrUpdatePollingLocation", // save null entity
                                    "CWWKD1017E.*livesAt", // multiple Limit parameters
@@ -72,7 +72,10 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1018E.*occupying", // intermixed Limit and PageRequest
                                    "CWWKD1019E.*livingAt", // mix of named/positional parameters
                                    "CWWKD1019E.*residingAt", // unused parameters
-                                   "CWWKD1022E.*discardPage", // Delete operation with a PageRequest
+                                   "CWWKD1020E.*discardLimited", // Limit parameter on Delete method
+                                   "CWWKD1020E.*discardOrdered", // Order parameter on Delete method
+                                   "CWWKD1020E.*discardPage", // Delete operation with a PageRequest
+                                   "CWWKD1020E.*discardSorted", // Sort parameter on Delete method
                                    "CWWKD1024E.*findByAddressContainsOrderByAsc", // missing entity attribute name
                                    "CWWKD1024E.*inPrecinct", // @By with empty string value
                                    "CWWKD1024E.*inTownship", // @OrderBy with empty string value
@@ -90,6 +93,7 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1054E.*deleteFirst", // NonUniqueResultException
                                    "CWWKD1054E.*findBySSNBetweenAndNameNotNull", // NonUniqueResultException
                                    "CWWKD1054E.*findSSNAsLongBetween", // NonUniqueResultException
+                                   "CWWKD1074E.*findByAddressIgnoreCaseIn", // IgnoreCase and In combined
                                    "CWWKD1077E.*test.jakarta.data.errpaths.web.RepoWithoutDataStore",
                                    "CWWKD1078E.*test.jakarta.data.errpaths.web.InvalidNonJNDIRepo",
                                    "CWWKD1079E.*test.jakarta.data.errpaths.web.InvalidJNDIRepo",
@@ -106,9 +110,6 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1093E.*selectByBirthday", // VERSION(THIS) used when there is no version
                                    "CWWKD1094E.*register", // incompatible return type
                                    "CWWKD1096E.*discardInOrder", // OrderBy annotation without return type
-                                   "CWWKD1097E.*discardLimited", // Limit parameter on Delete method
-                                   "CWWKD1097E.*discardOrdered", // Order parameter on Delete method
-                                   "CWWKD1097E.*discardSorted", // Sort parameter on Delete method
                                    "CWWKD1098E.*findFirst5ByAddress", // Order ahead of query params
                                    "CWWKD1098E.*occupantsOf", // PageRequest/Order ahead of query params
                                    "CWWKD1098E.*withNameLongerThan", // Limit ahead of query params

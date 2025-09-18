@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -210,6 +211,11 @@ public interface Voters extends BasicRepository<Voter, Integer> {
      * the method name.
      */
     List<Voter> findByAddressContainsOrderByAsc(String addressSubstring);
+
+    /**
+     * This invalid method attempts to combine the IgnoreCase and In keywords.
+     */
+    List<Voter> findByAddressIgnoreCaseIn(Set<String> addresses);
 
     /**
      * This invalid method has a conflict between its OrderBy annotation and

@@ -64,7 +64,6 @@ public class MaxOpenConnectionsTests {
 
         runningNetty = tcpChannelMessage.contains(NETTY_TCP_CLASS_NAME);
         LOG.info("Running Netty? " + runningNetty);
-
     }
 
     @AfterClass
@@ -178,7 +177,7 @@ public class MaxOpenConnectionsTests {
         assertNotNull("CWWKO0211E was not found and should have been!", server.waitForStringInLogUsingMark("CWWKO0211E"));
         assertNotNull("CWWKO0029E was not found and should have been!", server.waitForStringInLogUsingMark("CWWKO0029E"));
 
-        assertTrue("There were not at least two FFDCs created!", server.waitForMultipleStringsInLogUsingMark(2, "FFDC1015I") == 2);
+        assertTrue("There were not two FFDCs created!", server.waitForMultipleStringsInLogUsingMark(2, "FFDC1015I") == 2);
 
         List<String> ffdcFileNames = server.listFFDCFiles(server.getServerName());
 

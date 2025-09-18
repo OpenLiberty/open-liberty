@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -33,25 +30,32 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
-    com.ibm.wsspi.genericbnf*;provide:=true, \
-    com.ibm.wsspi.http*;provide:=true, \
-    com.ibm.ws.transport.access*;provide:=true, \
-    com.ibm.ws.genericbnf, \
-    com.ibm.ws.http.dispatcher.classify, \
-    com.ibm.ws.http.dispatcher.internal.channel, \
-    com.ibm.ws.http.channel.outstream, \
-    com.ibm.ws.http.channel.inputstream, \
-    com.ibm.ws.http.logging.source, \
-    com.ibm.ws.http2, \
-    com.ibm.ws.http2.upgrade, \
-    io.openliberty.http.ext
+	com.ibm.wsspi.genericbnf*;'provide:'=true,\
+	com.ibm.wsspi.http*;'provide:'=true,\
+	com.ibm.ws.transport.access*;'provide:'=true,\
+	com.ibm.ws.genericbnf,\
+	com.ibm.ws.http.dispatcher.classify,\
+	com.ibm.ws.http.dispatcher.internal.channel,\
+	com.ibm.ws.http.channel.outstream,\
+	com.ibm.ws.http.channel.inputstream,\
+	com.ibm.ws.http.logging.source,\
+	com.ibm.ws.http2,\
+	com.ibm.ws.http2.upgrade,\
+	com.ibm.ws.netty.upgrade,\
+	com.ibm.ws.http.netty.inbound,\
+	com.ibm.ws.http.netty,\
+	io.openliberty.http.options,\
+	io.openliberty.http.netty*,\
+	io.openliberty.http.ext
 
 Import-Package: \
-    !com.ibm.ws.http.logging.source, \
-    ${defaultPackageImport}
+	!com.ibm.ws.http.logging.source,\
+	io.openliberty.netty.internal*,\
+	${defaultPackageImport}
 
 Private-Package: \
 	com.ibm.ws.http.*, \
+	com.ibm.ws.tcpchannel.internal.resources, \
 	com.ibm.ws.genericbnf.internal
 
 -dsannotations: com.ibm.ws.http.channel.internal.inbound.HttpPipelineEventHandler,\
@@ -132,14 +136,20 @@ instrument.classesExcludes: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-    com.ibm.ws.kernel.boot.common,\
-    com.ibm.ws.kernel.boot.core,\
+	com.ibm.ws.kernel.boot.common,\
+	com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.runtime.update,\
 	com.ibm.ws.threading,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	io.openliberty.accesslists.internal
+	io.openliberty.accesslists.internal,\
+	io.openliberty.transport.config.internal;version=latest,\
+	io.openliberty.io.netty;version=latest,\
+	io.openliberty.netty.internal;version=latest,\
+	io.openliberty.netty.internal.impl;version=latest,\
+	io.openliberty.io.netty.ssl;version=latest,\
+	com.ibm.ws.wsbytebuffer
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \
@@ -152,4 +162,5 @@ instrument.classesExcludes: \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	com.ibm.ws.wsbytebuffer;version=latest, \
-	com.ibm.ws.kernel.boot;version=latest
+	com.ibm.ws.kernel.boot;version=latest, \
+	org.mockito.mockito-all;version=1.9.5

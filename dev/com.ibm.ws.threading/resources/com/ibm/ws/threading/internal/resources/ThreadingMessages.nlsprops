@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,9 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=Edit the 'server.xml' file and ch
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W:  All threads in the Liberty default executor appear to be hung, and no more threads can be added because the pool size has reached its limit.  The current pool size is {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=All default executor threads are busy, the threads have not completed any tasks recently, and tasks are waiting in queue. No more threads can be added because the pool size has reached its limit.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=Determine if there is a bottleneck, such as a locked database table, that might prevent threads from completing their tasks. If there is no bottleneck and the server just needs more threads, adjust the coreThreads and maxThreads attributes of the executor configuration element.
+
+CWWKE1208.override.virtual=CWWKE1208I: The {0} concurrency policy will create \
+ platform threads because virtual thread creation by the Liberty server is disabled.
+CWWKE1208.override.virtual.explanation=The ThreadTypeOverride SPI disabled \
+ creation of virtual threads by the Liberty server.
+CWWKE1208.override.virtual.useraction=No action is necessary.

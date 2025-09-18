@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 /*
  * JBoss, Home of Professional Open Source.
  *
@@ -100,7 +109,6 @@ public class RestClientBuilderImpl implements RestClientBuilder {
     private static final Logger LOGGER = Logger.getLogger(RestClientBuilderImpl.class);
     private static final DefaultMediaTypeFilter DEFAULT_MEDIA_TYPE_FILTER = new DefaultMediaTypeFilter();
     public static final MethodInjectionFilter METHOD_INJECTION_FILTER = new MethodInjectionFilter();
-    public static final ClientHeadersRequestFilter HEADERS_REQUEST_FILTER = new ClientHeadersRequestFilter();
 
     static ResteasyProviderFactory PROVIDER_FACTORY;
 
@@ -315,9 +323,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             this.executorService = Executors.newCachedThreadPool();
             resteasyClientBuilder.executorService(executorService, true);
         }
+        ClientHeaderProviders headerProviders = new ClientHeaderProviders(); // Liberty change
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
-        resteasyClientBuilder.register(HEADERS_REQUEST_FILTER);
+        resteasyClientBuilder.register(new ClientHeadersRequestFilter(headerProviders)); // Liberty change
         register(new MpPublisherMessageBodyReader(executorService));
         resteasyClientBuilder.sslContext(sslContext);
         resteasyClientBuilder.trustStore(trustStore);
@@ -360,7 +369,7 @@ public class RestClientBuilderImpl implements RestClientBuilder {
         final BeanManager beanManager = getBeanManager();
         T proxy = (T) Proxy.newProxyInstance(classLoader, interfaces,
                 new ProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager));
-        ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
+        headerProviders.registerForClass(aClass, proxy, beanManager); // Liberty change
         return proxy;
     }
 

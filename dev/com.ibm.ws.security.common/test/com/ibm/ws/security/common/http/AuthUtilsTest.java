@@ -100,4 +100,30 @@ public class AuthUtilsTest extends CommonTestClass {
         assertEquals("Returned value did not match the expected value", expectedValue, result);
     }
 
+    @Test
+    public void test_getBearerTokenFromHeader_caseInsensitive_lowercase() {
+        String expectedValue = "myToken";
+        String scheme = "Bearer ";
+        String rawHeaderValue = "bearer " + expectedValue;
+        String result = utils.getBearerTokenFromHeader(rawHeaderValue, scheme);
+        assertEquals("Returned value did not match the expected value with lowercase bearer", expectedValue, result);
+    }
+
+    @Test
+    public void test_getBearerTokenFromHeader_caseInsensitive_mixedCase() {
+        String expectedValue = "myToken";
+        String scheme = "Bearer ";
+        String rawHeaderValue = "BeArEr " + expectedValue;
+        String result = utils.getBearerTokenFromHeader(rawHeaderValue, scheme);
+        assertEquals("Returned value did not match the expected value with mixed case bearer", expectedValue, result);
+    }
+
+    @Test
+    public void test_getBearerTokenFromHeader_caseInsensitive_uppercase() {
+        String expectedValue = "myToken";
+        String scheme = "Bearer ";
+        String rawHeaderValue = "BEARER " + expectedValue;
+        String result = utils.getBearerTokenFromHeader(rawHeaderValue, scheme);
+        assertEquals("Returned value did not match the expected value with uppercase bearer", expectedValue, result);
+    }
 }

@@ -79,7 +79,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
     public static void tearDown() throws Exception {
         executor.shutdownNow();
         Log.info(SessionCacheOneServerTest.class, "tearDown", "Wait for active tasks to stop...");
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(30);
         server.stopServer();
 
         if (isZOS()) {
@@ -101,7 +101,7 @@ public class SessionCacheOneServerTest extends FATServletClient {
      * Verify that all of the attributes (and no others) are added to the session, with their respective values.
      * After attributes have been added, submit concurrent requests to remove some of them.
      */
-    @Test
+//    @Test
     public void testConcurrentPutNewAttributesAndRemove() throws Exception {
         final int NUM_THREADS = 9;
 

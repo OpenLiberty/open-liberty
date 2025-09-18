@@ -800,7 +800,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         Entry libEntry = moduleContainer.getEntry(manifest.getSpringBootLib());
         if (libEntry != null) {
             Container libContainer = libEntry.adapt(Container.class);
-            final SpringBootThinUtil.StarterFilter starterFilter = SpringBootThinUtil.getStarterFilter(stringStream(libContainer));
+            final SpringBootThinUtil.StarterFilter starterFilter = SpringBootThinUtil.getStarterFilter(stringStream(libContainer), manifest);
             if (libContainer != null) {
                 for (Entry entry : libContainer) {
                     if (!starterFilter.apply(entry.getName())) {

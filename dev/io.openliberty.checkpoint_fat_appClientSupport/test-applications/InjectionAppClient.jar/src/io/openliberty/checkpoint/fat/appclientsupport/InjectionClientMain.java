@@ -37,13 +37,13 @@ public class InjectionClientMain {
         System.out.println("main - entry");
 
         if (checkEJBWithLookup(injectedGlobalEjb))
-            System.out.println("injectGlobal_EJB-PASSED");
+            System.out.println("testInjectWithGlobalEJB-PASSED");
 
         if (checkEJB(injectedEjb))
-            System.out.println("inject_EJB-PASSED");
+            System.out.println("testInjectWithEJB-PASSED");
 
         if (checkCDI(cdiBean))
-            System.out.println("inject_CDI-PASSED");
+            System.out.println("testInjectionWithCDI-PASSED");
 
         System.out.println("main - exit");
     }

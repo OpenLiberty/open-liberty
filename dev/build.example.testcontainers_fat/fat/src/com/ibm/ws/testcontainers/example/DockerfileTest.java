@@ -35,9 +35,15 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import web.generic.ContainersTestServlet;
 
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+
+
 /**
  * Example test class showing how to setup a testcontainer that uses a custom dockerfile.
+ * Note: The annotation @SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule is used only when the build environment is eanbled with FIPS,
+ * which indicates the test is excluded as out of scope for FIPS compliant testing due to sample usage.
  */
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 @Mode(FULL)
 @RunWith(FATRunner.class)
 public class DockerfileTest {
@@ -83,6 +89,9 @@ public class DockerfileTest {
                                     .withRegEx(".*database system is ready to accept connections.*\\s")
                                     .withTimes(2)
                                     .withStartupTimeout(Duration.ofSeconds(60)));
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("build.example.testcontainers");
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -167,7 +168,7 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     private void setHeaderValues(JsonWebSignature jws) throws Exception {
         jws.setAlgorithmHeaderValue(clientAssertionSigningAlgorithm);
         jws.setHeader("typ", "JWT");
-        jws.setHeader("x5t", getX5tForPublicKey());
+        jws.setHeader(CryptoUtils.isFips140_3EnabledWithBetaGuard() ? "x5t#S256" : "x5t", getX5tForPublicKey());
     }
 
     String getX5tForPublicKey() throws Exception {
@@ -176,7 +177,7 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
         if (x509Cert == null) {
             x509Cert = getX509CertificateFromSslRef();
         }
-        return X509Util.x5t(x509Cert);
+        return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? X509Util.x5tS256(x509Cert) : X509Util.x5t(x509Cert);
     }
 
     @FFDCIgnore(Exception.class)

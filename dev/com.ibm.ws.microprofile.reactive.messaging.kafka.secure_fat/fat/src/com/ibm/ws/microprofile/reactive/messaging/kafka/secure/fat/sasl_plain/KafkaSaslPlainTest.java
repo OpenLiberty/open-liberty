@@ -18,6 +18,7 @@ import static com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaU
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.secure.fat.suite.SaslPlainTests;
 import componenttest.annotation.MaximumJavaLevel;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -47,6 +48,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @MaximumJavaLevel(javaLevel = 22)
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class KafkaSaslPlainTest {
 
     private static final String APP_NAME = "kafkaSaslTest";
@@ -59,6 +61,9 @@ public class KafkaSaslPlainTest {
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeatDefault(SERVER_NAME);
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

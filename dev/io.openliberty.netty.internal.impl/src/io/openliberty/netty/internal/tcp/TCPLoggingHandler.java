@@ -148,6 +148,7 @@ class TCPLoggingHandler extends LoggingHandler{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
 			Tr.event(ctx.channel(), tc, "SocketChannel closed, local: " + ctx.channel().localAddress() + " remote: " + ctx.channel().remoteAddress());
 		}
+		
 		ctx.fireChannelInactive();
 	}
 

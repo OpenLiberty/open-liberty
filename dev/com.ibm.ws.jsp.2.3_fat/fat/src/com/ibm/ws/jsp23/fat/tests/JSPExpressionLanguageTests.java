@@ -43,7 +43,7 @@ import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * Tests to execute on the jspServer that use HttpUnit/HttpClient
+ * Expression Language tests using JSPs.
  */
 
 @SkipForRepeat("CDI-2.0")

@@ -49,3 +49,6 @@
 
 3010=Niepoprawna warto\u015b\u0107 daty [ RRRR-MM-DD]: [{0}].
 
+3011=Nie mo\u017cna pobra\u0107 warto\u015bci z wyliczenia : [ {0} ] z pola [ {1} ] z powodu 
+ [{2}].
+

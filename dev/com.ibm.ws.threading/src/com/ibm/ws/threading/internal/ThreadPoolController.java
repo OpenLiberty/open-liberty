@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -740,20 +740,12 @@ public final class ThreadPoolController {
         if (!initialStartupCompleted) {
             // make sure pool size during startup is not greater than maxThreads
             setPoolSize(Math.min(startupPoolSize, this.maxThreads));
-            // controller cycle only needs to run during startup to monitor for possible hang condition,
-            // and checking for hang is only useful if increasing the pool size is permitted
-            if (startupPoolSize < maxThreads) {
-                activeTask = new IntervalTask(this);
-                timer.schedule(activeTask, interval, interval);
-            }
         } else {
             setPoolSize(coreThreads);
-            if (coreThreads != maxThreads) {
-                // start controller cycle
-                activeTask = new IntervalTask(this);
-                timer.schedule(activeTask, interval, interval);
-            }
         }
+        // The controller cycle will always run, even if (coreThreads == maxThreads), to enable trace to show the pool stats
+        activeTask = new IntervalTask(this);
+        timer.schedule(activeTask, interval, interval);
 
         targetPoolSize = coreThreads;
         resetStatistics(true);
@@ -819,20 +811,12 @@ public final class ThreadPoolController {
                 return;
             }
             setPoolSize(coreThreads);
-            // make sure the controller cycle is running or not, as per core/max thread values
-            if (coreThreads < maxThreads) {
-                // cycle should already be running? anyway check and start if needed
-                if (activeTask == null && !paused) {
-                    activeTask = new IntervalTask(this);
-                    timer.schedule(activeTask, interval, interval);
-                }
-            } else {
-                // fixed pool size, cancel the controller cycle if it is running
-                if (activeTask != null) {
-                    activeTask.cancel();
-                    activeTask = null;
-                }
+            // The controller cycle will always run, even if (coreThreads == maxThreads), to enable trace to show the pool stats
+            if (activeTask == null && !paused) {
+                activeTask = new IntervalTask(this);
+                timer.schedule(activeTask, interval, interval);
             }
+
         }
     }
 
@@ -1443,6 +1427,7 @@ public final class ThreadPoolController {
      * Evaluate the throughput for the current interval and apply heuristics
      * to modify the thread pool size in an attempt to maximize throughput.
      */
+    @Trivial
     synchronized String evaluateInterval() {
         // During shutdown, threadpool may have been nulled out. In that case, don't bother analyzing.
         // (We could log this in FFDC, but it isn't clear that it's worth doing so.)
@@ -1479,180 +1464,191 @@ public final class ThreadPoolController {
         long deltaTime = Math.max(currentTime - lastTimerPop, interval);
         long deltaCompleted = completedWork - previousCompleted;
         double throughput = 1000.0 * deltaCompleted / deltaTime;
+        queueDepth = threadPool.getQueue().size();
+        activeThreads = threadPool.getActiveCount();
+
+        double forecast = 0;
+        double shrinkScore = 0;
+        double growScore = 0;
+        int poolAdjustment = 0;
+        LastAction traceLastAction = lastAction;
 
         try {
-            // check for hang during server/app startup
-            if (!initialStartupCompleted) {
-                if (poolSize < startupPoolSize) {
-                    // That's odd - let's try setting the pool size again
-                    setPoolSize(startupPoolSize);
-                    return "poolSize " + poolSize + " < startupPoolSize " + startupPoolSize;
-                }
-                if (startupCycleSkipCount > 0) {
-                    /**
-                     * We do not check for startup hang until a couple of controller cycles have passed
-                     * to avoid false startup hang detection caused by startup anomalies
-                     */
-                    if (tc.isEventEnabled()) {
-                        Tr.event(tc, "     skipping startup hang check - cycles remaining to skip: " + startupCycleSkipCount,
-                                 "       " + threadPool);
+            // Only do the work of figuring out how to adjust the pool size if the size is adjustable
+            if (coreThreads != maxThreads) {
+
+                // check for hang during server/app startup
+                if (!initialStartupCompleted) {
+                    if (poolSize < startupPoolSize) {
+                        // That's odd - let's try setting the pool size again
+                        setPoolSize(startupPoolSize);
+                        return "poolSize " + poolSize + " < startupPoolSize " + startupPoolSize;
                     }
-                    startupCycleSkipCount--;
-                    return "server startup in progress";
-                }
-
-                String cpuUtilString = "";
-                if (tc.isEventEnabled()) {
-                    cpuUtilString = String.format(" cpuUtil = %.2f", Double.valueOf(processCpuUtil));
-                }
-                if (deltaCompleted <= 0) {
-                    if (processCpuUtil < normalizedStartupHangCpuUtilThreshold && !cpuHigh) {
+                    if (startupCycleSkipCount > 0) {
+                        /**
+                         * We do not check for startup hang until a couple of controller cycles have passed
+                         * to avoid false startup hang detection caused by startup anomalies
+                         */
                         if (tc.isEventEnabled()) {
-                            Tr.event(tc, "     hang detected during startup, process " + cpuUtilString + "%, cpuHigh: " + cpuHigh + " - switching to normal controller operation");
+                            Tr.event(tc, "     skipping startup hang check - cycles remaining to skip: " + startupCycleSkipCount,
+                                     "       " + threadPool);
                         }
+                        startupCycleSkipCount--;
+                        return "server startup in progress";
+                    }
 
-                        // startup has hung - switch to post-startup mode to allow hang resolution to work
-                        initialStartupCompleted = true;
-                        setPoolSize(coreThreads);
-                        poolSize = threadPool.getPoolSize();
+                    String cpuUtilString = "";
+                    if (tc.isEventEnabled()) {
+                        cpuUtilString = String.format(" cpuUtil = %.2f", Double.valueOf(processCpuUtil));
+                    }
+                    if (deltaCompleted <= 0) {
+                        if (processCpuUtil < normalizedStartupHangCpuUtilThreshold && !cpuHigh) {
+                            if (tc.isEventEnabled()) {
+                                Tr.event(tc,
+                                         "     hang detected during startup, process " + cpuUtilString + "%, cpuHigh: " + cpuHigh + " - switching to normal controller operation");
+                            }
+
+                            // startup has hung - switch to post-startup mode to allow hang resolution to work
+                            initialStartupCompleted = true;
+                            setPoolSize(coreThreads);
+                            poolSize = threadPool.getPoolSize();
+                        } else {
+                            if (tc.isEventEnabled()) {
+                                Tr.event(tc, "     no tasks completed this interval, process " + cpuUtilString + "%",
+                                         "       " + threadPool);
+                            }
+                            return "server startup in progress";
+                        }
                     } else {
                         if (tc.isEventEnabled()) {
-                            Tr.event(tc, "     no tasks completed this interval, process " + cpuUtilString + "%",
+                            Tr.event(tc, "     tasks completed: " + deltaCompleted + ", process " + cpuUtilString + "%",
                                      "       " + threadPool);
                         }
                         return "server startup in progress";
                     }
+                }
+
+                boolean queueEmpty = (queueDepth <= 0);
+                // Count the number of consecutive times we've seen an empty queue
+                if (!queueEmpty) {
+                    consecutiveQueueEmptyCount = 0;
+                } else if (lastAction != LastAction.SHRINK) { // 9/5/2012
+                    consecutiveQueueEmptyCount++;
+                }
+
+                deepQueue = (queueDepth > deepQueueMultiple * poolIncrement);
+                // Count the number of consecutive times we've seen a deep queue
+                if (deepQueue) {
+                    consecutiveDeepQueueCycles++;
                 } else {
+                    consecutiveDeepQueueCycles = 0;
+                }
+
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "deepQueue: " + deepQueue + ", queueDepth: " + queueDepth + ", deepQueueMultiple: "
+                                 + deepQueueMultiple + ", poolIncrement: " + poolIncrement);
+                }
+
+                // Handle pausing the task if the pool has been idle
+                if (manageIdlePool(threadPool, deltaCompleted)) {
+                    return "monitoring paused";
+                }
+
+                if (resolveHang(deltaCompleted, queueEmpty, poolSize, cpuHigh)) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "     tasks completed: " + deltaCompleted + ", process " + cpuUtilString + "%",
-                                 "       " + threadPool);
+                        Tr.event(tc, "Executor hang detected - poolSize: " + poolSize + ", activeThreads: " + activeThreads +
+                                     ", queueDepth: " + queueDepth + ", cpuUtil: " + df.format(cpuUtil) + ", processCpuUtil: " +
+                                     df.format(processCpuUtil) + ", systemCpuUtil: " + df.format(systemCpuUtil));
                     }
-                    return "server startup in progress";
+                    /**
+                     * Sleep the controller thread briefly after increasing the pool size
+                     * then update task count before returning to reduce the likelihood
+                     * of a false negative hang check next cycle due to a few non-hung
+                     * tasks executing on the newly created threads
+                     */
+                    try {
+                        Thread.sleep(10);
+                    } catch (Exception ex) {
+                        // do nothing
+                    }
+                    completedWork = threadPool.getCompletedTaskCount();
+                    return "action taken to resolve hang";
                 }
-            }
 
-            queueDepth = threadPool.getQueue().size();
-            boolean queueEmpty = (queueDepth <= 0);
-            // Count the number of consecutive times we've seen an empty queue
-            if (!queueEmpty) {
-                consecutiveQueueEmptyCount = 0;
-            } else if (lastAction != LastAction.SHRINK) { // 9/5/2012
-                consecutiveQueueEmptyCount++;
-            }
-
-            deepQueue = (queueDepth > deepQueueMultiple * poolIncrement);
-            // Count the number of consecutive times we've seen a deep queue
-            if (deepQueue) {
-                consecutiveDeepQueueCycles++;
-            } else {
-                consecutiveDeepQueueCycles = 0;
-            }
-
-            if (tc.isEventEnabled()) {
-                Tr.event(tc, "deepQueue: " + deepQueue + ", queueDepth: " + queueDepth + ", deepQueueMultiple: "
-                             + deepQueueMultiple + ", poolIncrement: " + poolIncrement);
-            }
-
-            activeThreads = threadPool.getActiveCount();
-
-            // Handle pausing the task if the pool has been idle
-            if (manageIdlePool(threadPool, deltaCompleted)) {
-                return "monitoring paused";
-            }
-
-            if (resolveHang(deltaCompleted, queueEmpty, poolSize, cpuHigh)) {
-                if (tc.isEventEnabled()) {
-                    Tr.event(tc, "Executor hang detected - poolSize: " + poolSize + ", activeThreads: " + activeThreads +
-                                 ", queueDepth: " + queueDepth + ", cpuUtil: " + df.format(cpuUtil) + ", processCpuUtil: " +
-                                 df.format(processCpuUtil) + ", systemCpuUtil: " + df.format(systemCpuUtil));
+                if (checkTargetPoolSize(poolSize)) {
+                    return "poolSize != targetPoolSize";
                 }
-                /**
-                 * Sleep the controller thread briefly after increasing the pool size
-                 * then update task count before returning to reduce the likelihood
-                 * of a false negative hang check next cycle due to a few non-hung
-                 * tasks executing on the newly created threads
-                 */
-                try {
-                    Thread.sleep(10);
-                } catch (Exception ex) {
-                    // do nothing
+
+                controllerCycle++;
+                ThroughputDistribution currentStats = getThroughputDistribution(poolSize, true);
+
+                // handleOutliers will mark this 'true' if it resets the distribution
+                distributionReset = false;
+
+                // Reset statistics based on abnormal data points
+                if (handleOutliers(currentStats, throughput)) {
+                    return "aberrant workload";
                 }
-                completedWork = threadPool.getCompletedTaskCount();
-                return "action taken to resolve hang";
-            }
 
-            if (checkTargetPoolSize(poolSize)) {
-                return "poolSize != targetPoolSize";
-            }
-
-            controllerCycle++;
-            ThroughputDistribution currentStats = getThroughputDistribution(poolSize, true);
-
-            // handleOutliers will mark this 'true' if it resets the distribution
-            distributionReset = false;
-
-            // Reset statistics based on abnormal data points
-            if (handleOutliers(currentStats, throughput)) {
-                return "aberrant workload";
-            }
-
-            // If the distribution was reset we don't need to add the datapoint because
-            // handleOutliers already did that.
-            // If throughput was 0 we will not include that datapoint
-            if (!distributionReset && throughput > 0) {
-                currentStats.addDataPoint(throughput, controllerCycle);
-            }
-
-            boolean lowActivity = false;
-            if (queueEmpty && ((throughput < (poolSize * lowTputThreadsRatio)) || (activeThreads < (poolSize * activeThreadsGrowthRatio)))) {
-                lowActivity = true;
-                if (tc.isEventEnabled()) {
-                    Tr.event(tc, "low activity flag set: throughput: " + df.format(throughput) + ", poolSize: "
-                                 + poolSize + ", activeThreads: " + activeThreads + ", queueDepth: " + queueDepth +
-                                 ", tasks completed: " + deltaCompleted);
+                // If the distribution was reset we don't need to add the datapoint because
+                // handleOutliers already did that.
+                // If throughput was 0 we will not include that datapoint
+                if (!distributionReset && throughput > 0) {
+                    currentStats.addDataPoint(throughput, controllerCycle);
                 }
-            }
 
-            setPoolIncrementDecrement(poolSize);
-
-            double forecast = currentStats.getMovingAverage();
-            double shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowActivity, systemCpuNA);
-            double growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowActivity, systemCpuNA);
-
-            // Adjust the poolsize only if one of the scores is both larger than the scoreFilterLevel
-            // and sufficiently larger than the other score. These conditions reduce poolsize fluctuation
-            // which might arise due to a weak or noisy signal from the historical throughput data.
-            int poolAdjustment = 0;
-            if (growScore >= growScoreFilterLevel && (growScore - growShrinkDiffFilter) > shrinkScore) {
-                poolAdjustment = poolIncrement;
-                // with available cpu and a persistently deep queue, grow the pool by more than usual
-                if (!cpuHigh && !systemCpuNA && deepQueue) {
-                    if (consecutiveDeepQueueCycles > consecutiveDeepQueueThreshold) {
-                        poolAdjustment = Math.min(poolAdjustment * deepQueuePoolIncrementMultiple, maxThreads - poolSize);
+                boolean lowActivity = false;
+                if (queueEmpty && ((throughput < (poolSize * lowTputThreadsRatio)) || (activeThreads < (poolSize * activeThreadsGrowthRatio)))) {
+                    lowActivity = true;
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "low activity flag set: throughput: " + df.format(throughput) + ", poolSize: "
+                                     + poolSize + ", activeThreads: " + activeThreads + ", queueDepth: " + queueDepth +
+                                     ", tasks completed: " + deltaCompleted);
                     }
                 }
 
-            } else if (shrinkScore >= shrinkScoreFilterLevel && (shrinkScore - growShrinkDiffFilter) > growScore) {
-                poolAdjustment = -poolDecrement;
-            }
+                setPoolIncrementDecrement(poolSize);
 
-            // Force some random variation into the pool size algorithm
-            poolAdjustment = forceVariation(poolSize, poolAdjustment, deltaCompleted, lowActivity);
+                forecast = currentStats.getMovingAverage();
+                shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowActivity, systemCpuNA);
+                growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowActivity, systemCpuNA);
+
+                // Adjust the poolsize only if one of the scores is both larger than the scoreFilterLevel
+                // and sufficiently larger than the other score. These conditions reduce poolsize fluctuation
+                // which might arise due to a weak or noisy signal from the historical throughput data.
+
+                if (growScore >= growScoreFilterLevel && (growScore - growShrinkDiffFilter) > shrinkScore) {
+                    poolAdjustment = poolIncrement;
+                    // with available cpu and a persistently deep queue, grow the pool by more than usual
+                    if (!cpuHigh && !systemCpuNA && deepQueue) {
+                        if (consecutiveDeepQueueCycles > consecutiveDeepQueueThreshold) {
+                            poolAdjustment = Math.min(poolAdjustment * deepQueuePoolIncrementMultiple, maxThreads - poolSize);
+                        }
+                    }
+
+                } else if (shrinkScore >= shrinkScoreFilterLevel && (shrinkScore - growShrinkDiffFilter) > growScore) {
+                    poolAdjustment = -poolDecrement;
+                }
+
+                // Force some random variation into the pool size algorithm
+                poolAdjustment = forceVariation(poolSize, poolAdjustment, deltaCompleted, lowActivity);
+
+                // Change the pool size and save the result, will check it at start of next control cycle
+                targetPoolSize = adjustPoolSize(poolSize, poolAdjustment);
+            }
 
             // Format an event level trace point with some useful data
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Interval data", toIntervalData(throughput, forecast, deltaCompleted, shrinkScore, growScore,
-                                                             poolSize, poolAdjustment));
+                                                             poolSize, poolAdjustment, traceLastAction));
             }
-
-            // Change the pool size and save the result, will check it at start of next control cycle
-            targetPoolSize = adjustPoolSize(poolSize, poolAdjustment);
 
         } finally {
             lastTimerPop = currentTime;
             previousCompleted = completedWork;
             previousThroughput = throughput;
         }
+
         return "";
     }
 
@@ -1661,8 +1657,10 @@ public final class ThreadPoolController {
      */
     @Trivial
     private String toIntervalData(double throughput, double forecast, long deltaCompleted, double shrinkScore,
-                                  double growScore, int poolSize, int poolAdjustment) {
+                                  double growScore, int poolSize, int poolAdjustment, LastAction lastAction) {
         final int RANGE = 25;
+
+        boolean fixedSize = (coreThreads == maxThreads);
 
         StringBuilder sb = new StringBuilder();
         sb.append("\nThroughput:");
@@ -1673,18 +1671,22 @@ public final class ThreadPoolController {
 
         sb.append("\nHeuristics:");
         sb.append(String.format(" queueDepth = %8d", Integer.valueOf(queueDepth)));
-        sb.append(String.format(" consecutiveQueueEmptyCount = %2d", Integer.valueOf(consecutiveQueueEmptyCount)));
-        sb.append(String.format(" consecutiveDeepQueueCycles = %2d", Integer.valueOf(consecutiveDeepQueueCycles)));
-        sb.append(String.format(" consecutiveNoAdjustment = %2d", Integer.valueOf(consecutiveNoAdjustment)));
+        if (!fixedSize) {
+            sb.append(String.format(" consecutiveQueueEmptyCount = %2d", Integer.valueOf(consecutiveQueueEmptyCount)));
+            sb.append(String.format(" consecutiveDeepQueueCycles = %2d", Integer.valueOf(consecutiveDeepQueueCycles)));
+            sb.append(String.format(" consecutiveNoAdjustment = %2d", Integer.valueOf(consecutiveNoAdjustment)));
+        }
 
-        sb.append("\nOutliers:  ");
-        sb.append(String.format(" consecutiveOutlierAfterAdjustment = %2d", Integer.valueOf(consecutiveOutlierAfterAdjustment)));
-        sb.append(String.format(" hangBufferPoolSize = %2d", Integer.valueOf(hangBufferPoolSize)));
+        if (!fixedSize) {
+            sb.append("\nOutliers:  ");
+            sb.append(String.format(" consecutiveOutlierAfterAdjustment = %2d", Integer.valueOf(consecutiveOutlierAfterAdjustment)));
+            sb.append(String.format(" hangBufferPoolSize = %2d", Integer.valueOf(hangBufferPoolSize)));
 
-        sb.append("\nAttraction:");
-        sb.append(String.format(" shrinkScore = %.6f", Double.valueOf(shrinkScore)));
-        sb.append(String.format(" growScore = %.6f", Double.valueOf(growScore)));
-        sb.append(String.format(" lastAction = %s", lastAction));
+            sb.append("\nAttraction:");
+            sb.append(String.format(" shrinkScore = %.6f", Double.valueOf(shrinkScore)));
+            sb.append(String.format(" growScore = %.6f", Double.valueOf(growScore)));
+            sb.append(String.format(" lastAction = %s", lastAction));
+        }
 
         sb.append("\nCPU:");
         sb.append(String.format(" cpuUtil = %.2f", Double.valueOf(cpuUtil)));
@@ -1694,51 +1696,57 @@ public final class ThreadPoolController {
         sb.append("\nIncrement:");
         sb.append(String.format(" poolSize = %2d", Integer.valueOf(poolSize)));
         sb.append(String.format(" activeThreads = %2d", Integer.valueOf(activeThreads)));
-        sb.append(String.format(" poolIncrement = %2d", Integer.valueOf(poolIncrement)));
-        sb.append(String.format(" poolDecrement = %2d", Integer.valueOf(poolDecrement)));
-        sb.append(String.format(" poolAdjustment = %2d", Integer.valueOf(poolAdjustment)));
-        sb.append(String.format(" compareRange = %2d", Integer.valueOf(compareRange)));
+        if (!fixedSize) {
+            sb.append(String.format(" poolIncrement = %2d", Integer.valueOf(poolIncrement)));
+            sb.append(String.format(" poolDecrement = %2d", Integer.valueOf(poolDecrement)));
+            sb.append(String.format(" poolAdjustment = %2d", Integer.valueOf(poolAdjustment)));
+            sb.append(String.format(" compareRange = %2d", Integer.valueOf(compareRange)));
+        }
 
         sb.append("\nConfig:");
         sb.append(String.format(" coreThreads = %2d", Integer.valueOf(coreThreads)));
         sb.append(String.format(" maxThreads = %2d", Integer.valueOf(maxThreads)));
-        sb.append(String.format(" currentMinimumPoolSize = %2d", Integer.valueOf(currentMinimumPoolSize)));
-
-        sb.append("\nStatistics:\n");
-
-        Integer[] poolSizes = new Integer[2 * RANGE + 1];
-        ThroughputDistribution[] tputDistros = new ThroughputDistribution[2 * RANGE + 1];
-        Integer poolSizeInteger = Integer.valueOf(poolSize);
-        int start = RANGE;
-        int end = RANGE;
-        poolSizes[RANGE] = poolSizeInteger;
-        tputDistros[RANGE] = getThroughputDistribution(poolSize, false);
-        Integer prior = threadStats.lowerKey(poolSizeInteger);
-        Integer next = threadStats.higherKey(poolSizeInteger);
-        for (int i = 1; i <= RANGE; i++) {
-            if (prior != null) {
-                start--;
-                poolSizes[start] = prior;
-                tputDistros[start] = getThroughputDistribution(prior, false);
-                prior = threadStats.lowerKey(prior);
-            }
-            if (next != null) {
-                end++;
-                poolSizes[end] = next;
-                tputDistros[end] = getThroughputDistribution(next, false);
-                next = threadStats.higherKey(next);
-            }
-        }
-        for (int i = start; i <= end; i++) {
-            sb.append(String.format("%s%3d threads: %s%n", (poolSizes[i] == poolSizeInteger) ? "-->" : "   ", poolSizes[i], String.valueOf(tputDistros[i])));
+        if (!fixedSize) {
+            sb.append(String.format(" currentMinimumPoolSize = %2d", Integer.valueOf(currentMinimumPoolSize)));
         }
 
-        if (poolAdjustment == 0) {
-            sb.append("### No pool adjustment ###");
-        } else if (poolAdjustment < 0) {
-            sb.append("--- Shrinking to " + (poolSize + poolAdjustment) + " ---");
-        } else {
-            sb.append("+++ Growing to " + (poolSize + poolAdjustment) + " +++");
+        if (!fixedSize) {
+            sb.append("\nStatistics:\n");
+
+            Integer[] poolSizes = new Integer[2 * RANGE + 1];
+            ThroughputDistribution[] tputDistros = new ThroughputDistribution[2 * RANGE + 1];
+            Integer poolSizeInteger = Integer.valueOf(poolSize);
+            int start = RANGE;
+            int end = RANGE;
+            poolSizes[RANGE] = poolSizeInteger;
+            tputDistros[RANGE] = getThroughputDistribution(poolSize, false);
+            Integer prior = threadStats.lowerKey(poolSizeInteger);
+            Integer next = threadStats.higherKey(poolSizeInteger);
+            for (int i = 1; i <= RANGE; i++) {
+                if (prior != null) {
+                    start--;
+                    poolSizes[start] = prior;
+                    tputDistros[start] = getThroughputDistribution(prior, false);
+                    prior = threadStats.lowerKey(prior);
+                }
+                if (next != null) {
+                    end++;
+                    poolSizes[end] = next;
+                    tputDistros[end] = getThroughputDistribution(next, false);
+                    next = threadStats.higherKey(next);
+                }
+            }
+            for (int i = start; i <= end; i++) {
+                sb.append(String.format("%s%3d threads: %s%n", (poolSizes[i] == poolSizeInteger) ? "-->" : "   ", poolSizes[i], String.valueOf(tputDistros[i])));
+            }
+
+            if (poolAdjustment == 0) {
+                sb.append("### No pool adjustment ###");
+            } else if (poolAdjustment < 0) {
+                sb.append("--- Shrinking to " + (poolSize + poolAdjustment) + " ---");
+            } else {
+                sb.append("+++ Growing to " + (poolSize + poolAdjustment) + " +++");
+            }
         }
 
         return sb.toString();

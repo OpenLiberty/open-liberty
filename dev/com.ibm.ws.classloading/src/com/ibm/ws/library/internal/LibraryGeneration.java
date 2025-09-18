@@ -14,7 +14,6 @@ package com.ibm.ws.library.internal;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.library.internal.SharedLibraryImpl.ClasspathType;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.classloading.ApiType;

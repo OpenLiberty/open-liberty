@@ -360,3 +360,5 @@
 
 6183=Typ mapov\u00e1n\u00ed {1} pro atribut {2} z {0} se u funkce dotazu pomoc\u00ed p\u0159\u00edkladu nepodporuje. Pokud lze tento atribut bezpe\u010dn\u011b ignorovat, p\u0159idejte ho do seznamu k ignorov\u00e1n\u00ed nebo v z\u00e1sad\u011b nastavte ov\u011b\u0159ov\u00e1n\u00ed p\u0159\u00edklad\u016f na hodnotu false.
 
+6184=Do v\u00fdrazu konstruktoru je p\u0159ed\u00e1na nespr\u00e1vn\u00e1 hodnota typu {0}. Slo\u017een\u00e9 typy (nap\u0159\u00edklad pole, kolekce nebo objekty) nejsou podporov\u00e1ny.
+

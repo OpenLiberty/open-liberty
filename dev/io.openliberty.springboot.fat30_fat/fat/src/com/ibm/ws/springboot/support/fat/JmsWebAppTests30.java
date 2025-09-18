@@ -20,6 +20,7 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
@@ -41,6 +42,7 @@ public class JmsWebAppTests30 extends JmsAbstractTests {
 
     @ExpectedFFDC("jakarta.servlet.ServletException")
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testJmsWebApplicationWithTransaction() throws Exception {
         testJmsWithTransaction();
     }

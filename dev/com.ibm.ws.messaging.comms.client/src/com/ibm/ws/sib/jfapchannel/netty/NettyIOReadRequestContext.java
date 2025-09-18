@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.netty;
 
-import java.io.IOException;
+import java.io.EOFException;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
@@ -72,7 +72,7 @@ public class NettyIOReadRequestContext extends NettyIOBaseContext implements IOR
 		if(chan.isActive())
 			this.conn.getVirtualConnection().read();
 		else 
-			completionCallback.error(getNetworkConnectionInstance(chan), this, new IOException("Read was attempted on a channel that is not active!! " + chan));
+			completionCallback.error(getNetworkConnectionInstance(chan), this, new EOFException("Read was attempted on a channel that is not active!! " + chan));
 		
 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "read", null);

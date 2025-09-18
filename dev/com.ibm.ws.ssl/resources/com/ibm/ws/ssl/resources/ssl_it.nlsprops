@@ -310,7 +310,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Le seguenti voci keystor
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Questo messaggio \u00e8 solo a scopo informativo.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Non \u00e8 richiesta alcuna azione.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Il sistema sta aggiungendo l''alias del firmatario {0} al keystore locale {1} con il seguente digest SHA: {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Il sistema sta aggiungendo l''alias del firmatario {0} al keystore locale {1} con il seguente digest {3} : {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Questo messaggio \u00e8 solo a scopo informativo.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Non \u00e8 richiesta alcuna azione.
 # -------------------------------------------------------------------------------------------------

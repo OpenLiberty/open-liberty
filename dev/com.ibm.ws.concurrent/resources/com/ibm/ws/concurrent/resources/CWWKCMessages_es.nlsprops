@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=Corrija la causa del error y decida si se v
 CWWKC1103.skip.run.failed=CWWKC1103E: Se omite la ejecuci\u00f3n de la tarea {0}, enviada por el servicio ejecutor {1}, debido a que ha fallado la operaci\u00f3n Trigger.skipRun con el error siguiente: {2}.
 CWWKC1103.skip.run.failed.explanation=La operaci\u00f3n skipRun para Trigger ha fallado, por lo que se ha omitido el intento de ejecuci\u00f3n actual de la tarea.
 CWWKC1103.skip.run.failed.useraction=Corrija la causa del error y decida si se vuelve a enviar la tarea.
+
+CWWKC1108.override.virtual=CWWKC1108I: La f\u00e1brica de hilos gestionada {0} crear\u00e1 hilos de plataforma porque la creaci\u00f3n de hilos virtuales por el servidor Liberty est\u00e1 desactivada.
+CWWKC1108.override.virtual.explanation=El SPI ThreadTypeOverride desactiv\u00f3 la creaci\u00f3n de hilos virtuales por el servidor Liberty.
+CWWKC1108.override.virtual.useraction=No se requiere ninguna acci\u00f3n.
 
 CWWKC1110.task.canceled=CWWKC1110I: La tarea {0}, que fue enviada al servicio ejecutor {1}, es cancelada.
 CWWKC1110.task.canceled.explanation=La tarea se cancel\u00f3.

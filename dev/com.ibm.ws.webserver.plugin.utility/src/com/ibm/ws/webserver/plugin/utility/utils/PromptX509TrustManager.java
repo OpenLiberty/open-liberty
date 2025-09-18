@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webserver.plugin.utility.utils;
 
@@ -40,7 +37,7 @@ public class PromptX509TrustManager implements X509TrustManager {
     private final TrustManager[] trustManagers;
     private final boolean autoAccept;
     private static Map<String, Boolean> answeredCertificates = new HashMap<String, Boolean>();
-
+    private static boolean FIPS_ENABLED;
     /**
      * Clears the cache of certificates which were either accepted or rejected by the user.
      */
@@ -53,6 +50,8 @@ public class PromptX509TrustManager implements X509TrustManager {
         this.stdout = stdout;
         this.trustManagers = trustManagers;
         this.autoAccept = autoAccept;
+
+        this.FIPS_ENABLED = CryptoUtils.isFips140_3EnabledWithBetaGuard();
     }
 
     @Override
@@ -65,6 +64,8 @@ public class PromptX509TrustManager implements X509TrustManager {
     /**
      * This method is used to create a "SHA1" or "MD5" digest on an
      * X509Certificate as the "fingerprint".
+     * 
+     * If FIPS 140-3 is enabled, then it will opt to use SHA-256.
      * 
      * @param algorithmName
      * 
@@ -136,22 +137,26 @@ public class PromptX509TrustManager implements X509TrustManager {
         }
         logger.fine("None of the default trust managers trusts the certificate...");
 
-        // Compute the full MD5 digest. This does not have to be perfectly unique,
+        // Compute the full MD5 or SHA256 digest. This does not have to be perfectly unique,
         // it just has to be unique enough to know if we've seen this certificate
         // before. If we have, we do not have to prompt again. This entire class
         // will eventually be replaced when we have a client-side SSL solution.
-        StringBuilder fullMD5Buf = new StringBuilder();
+        StringBuilder messageDigestBuilder = new StringBuilder();
         for (int i = 0; i < chain.length; i++) {
-            fullMD5Buf.append(generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5, chain[i]));
+            if(FIPS_ENABLED){
+                messageDigestBuilder.append(generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, chain[i]));
+            } else {
+                messageDigestBuilder.append(generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5, chain[i]));
+            }
             if (i < (chain.length - 1)) {
                 // Still more to go, so append a comma
-                fullMD5Buf.append(',');
+                messageDigestBuilder.append(',');
             }
         }
-        final String fullMD5 = fullMD5Buf.toString();
+        final String generatedDigest = messageDigestBuilder.toString();
 
         // If we have already provided an accept answer, do not prompt again
-        final Boolean previousAnswer = answeredCertificates.get(fullMD5);
+        final Boolean previousAnswer = answeredCertificates.get(generatedDigest);
         if (previousAnswer != null) {
             if (previousAnswer) {
                 return;
@@ -165,7 +170,7 @@ public class PromptX509TrustManager implements X509TrustManager {
             stdout.println();
             stdout.println(getMessage("sslTrust.autoAccept", chain[0].getSubjectDN()));
             stdout.println();
-            answeredCertificates.put(fullMD5, Boolean.TRUE);
+            answeredCertificates.put(generatedDigest, Boolean.TRUE);
             return;
         }
 
@@ -180,17 +185,21 @@ public class PromptX509TrustManager implements X509TrustManager {
             stdout.println(getMessage("sslTrust.certIssueDN", chain[i].getIssuerDN()));
             stdout.println(getMessage("sslTrust.certSerial", chain[i].getSerialNumber()));
             stdout.println(getMessage("sslTrust.certExpires", chain[i].getNotAfter()));
-            stdout.println(getMessage("sslTrust.certSHADigest", generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1, chain[i])));
-            stdout.println(getMessage("sslTrust.certMD5Digest", generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5, chain[i])));
+            if(FIPS_ENABLED) {
+                stdout.println(getMessage("sslTrust.certSHA256Digest", generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, chain[i])));
+            } else {
+                stdout.println(getMessage("sslTrust.certSHADigest", generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1, chain[i])));
+                stdout.println(getMessage("sslTrust.certMD5Digest", generateDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5, chain[i])));
+            }
             stdout.println();
         }
 
         String read = stdin.readText(getMessage("sslTrust.promptToAcceptTrust"));
         if (isYes(read)) {
             // We are trusted
-            answeredCertificates.put(fullMD5, Boolean.TRUE);
+            answeredCertificates.put(generatedDigest, Boolean.TRUE);
         } else {
-            answeredCertificates.put(fullMD5, Boolean.FALSE);
+            answeredCertificates.put(generatedDigest, Boolean.FALSE);
             throw new CertificateException(getMessage("sslTrust.rejectTrust"));
         }
     }

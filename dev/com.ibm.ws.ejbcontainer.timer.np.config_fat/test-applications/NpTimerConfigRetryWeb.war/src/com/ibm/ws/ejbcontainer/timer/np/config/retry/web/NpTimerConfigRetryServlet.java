@@ -42,7 +42,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     private static final boolean isMacOSX = System.getProperty("os.name", "unknown").toLowerCase().indexOf("mac os x") >= 0;
 
     private static final int TIMER_DELAY = 2500;
-    private static final int MIN_TIMER_DELAY = isMacOSX ? 15000 : TIMER_DELAY;
+    private static final int MIN_TIMER_DELAY = isMacOSX ? 25000 : TIMER_DELAY;
     private static final int LONG_TIMER_DELAY = isMacOSX ? 150000 : 5000;
     private static final long NO_CANCEL_DELAY = 0;
 

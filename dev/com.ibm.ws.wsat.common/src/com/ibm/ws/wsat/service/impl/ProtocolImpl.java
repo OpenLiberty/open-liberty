@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.wsat.service.impl;
 
+import java.util.HashSet;
+
 import javax.xml.bind.JAXBElement;
 
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
@@ -54,6 +56,9 @@ public class ProtocolImpl {
     private static boolean reroutable = false;
 
     private static String recoveryId;
+
+    // Participants in transactions we never logged but we received prepared messages from and we told to rollback
+    private final HashSet<WSATParticipant> replayers = new HashSet<WSATParticipant>();
 
     public static ProtocolImpl getInstance() {
         if (recoveryId == null) {
@@ -327,6 +332,8 @@ public class ProtocolImpl {
 
         WebClient client = WebClient.getWebClient(part, coord);
         client.rollback();
+        replayers.add(part);
+        part.waitResponse(WSATConfigServiceImpl.getInstance().getAsyncResponseTimeout(), WSATParticipantState.ABORTED);
     }
 
     private void participantResponse(WSATTransaction tran, String globalId, EndpointReferenceType fromEpr, WSATParticipantState response) throws WSATException {
@@ -480,6 +487,24 @@ public class ProtocolImpl {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
             if (participant != null) {
                 participant.setResponse(WSATParticipantState.ABORTED);
+            } else {
+                // Response to a replay completion
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Response to replay completion for: {0}", wrapper.getTxID());
+                }
+                for (WSATParticipant part : replayers) {
+                    if (wrapper.getTxID().equals(part.getGlobalId()) && wrapper.getPartID().equals(part.getId())) {
+                        if (TC.isDebugEnabled()) {
+                            Tr.debug(TC, "Found a waiting thread");
+                        }
+                        participant = part;
+                        break;
+                    }
+                }
+                if (null != participant) {
+                    participant.setResponse(WSATParticipantState.ABORTED);
+                    replayers.remove(participant);
+                }
             }
         }
     }

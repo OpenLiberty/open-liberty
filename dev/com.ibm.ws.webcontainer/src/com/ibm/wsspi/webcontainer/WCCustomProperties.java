@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -342,6 +342,9 @@ public class WCCustomProperties {
 
     //24.0.0.10 -- jakarta.servlet.http.Part#write( filename ) -- treat filename as absolute (when specified)
     public static boolean ALLOW_ABSOLUTE_FILENAME_FOR_WRITE; // PH62271
+    
+    //25.0.0.9
+    public static int MAX_PART_HEADER_SIZE;
 
     static {
         setCustomPropertyVariables(); //initializes all the variables
@@ -442,6 +445,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("donotcloseoutputonforwardforservleterror", "com.ibm.ws.webcontainer.donotcloseoutputonforwardforservleterror");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("set400scontoomanyparentdirs", "com.ibm.ws.webcontainer.set400scontoomanyparentdirs");
         WCCustomProperties.FullyQualifiedPropertiesMap.put("allowabsolutefilenameforpartwrite", "com.ibm.ws.webcontainer.allowabsolutefilenameforpartwrite");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("maxpartheadersize", "com.ibm.ws.webcontainer.maxpartheadersize");
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -842,6 +846,9 @@ public class WCCustomProperties {
 
         //24.0.0.10 -- true for servlet 6.1+ and false for 6.0 and lower
         ALLOW_ABSOLUTE_FILENAME_FOR_WRITE = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.allowabsolutefilenameforpartwrite", IS_SERVLET_61_OR_HIGHER ? "true" :"false")).booleanValue();
+
+        //25.0.0.9
+        MAX_PART_HEADER_SIZE = Integer.valueOf(customProps.getProperty("com.ibm.ws.webcontainer.maxpartheadersize", "512")).intValue();
         
         //Default for Servlet 5.0 +
         if(com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_50) {

@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: Knihovna [ {0} ] ur\u010duje cestu s n\u00e
 cls.library.path.invalid.explanation=Chcete-li p\u0159idat cestu ke knihovn\u011b v konfiguraci serveru, mus\u00edte zadat existuj\u00edc\u00ed cestu.
 cls.library.path.invalid.useraction=Upravte konfiguraci serveru a zm\u011b\u0148te atribut cesty prvku knihovny.
 
+app.classloader.removed=CWWKL0020W: Zavad\u011b\u010d t\u0159\u00edd kontextu vl\u00e1kna pro vl\u00e1kno [ {0} ] ji\u017e neodkazuje na aplikaci [ {1} ], kter\u00e1 je zastavena.
+app.classloader.removed.explanation=app.classloader.removed.explanation =Kdy\u017e aplikace spust\u00ed vl\u00e1kno, nov\u00e9 vl\u00e1kno zd\u011bd\u00ed zavad\u011b\u010d t\u0159\u00eddy kontextu aplika\u010dn\u00edho vl\u00e1kna.  Pokud vl\u00e1kno pokra\u010duje v b\u011bhu i po zastaven\u00ed aplikace, jeho zavad\u011b\u010d kontextov\u00fdch t\u0159\u00edd ji\u017e neodkazuje na zastavenou aplikaci.
+app.classloader.removed.useraction=Ov\u011b\u0159te, zda aplikace p\u0159i ukon\u010den\u00ed zastav\u00ed v\u0161echna spu\u0161t\u011bn\u00e1 vl\u00e1kna. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

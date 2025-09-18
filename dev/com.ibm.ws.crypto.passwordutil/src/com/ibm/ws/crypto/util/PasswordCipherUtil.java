@@ -91,8 +91,6 @@ public class PasswordCipherUtil {
     static final String KEY_ENCRYPTION_SERVICE = "customPasswordEncryption";
     private static AtomicServiceReference<CustomPasswordEncryption> customPasswordEncryption = new AtomicServiceReference<CustomPasswordEncryption>(KEY_ENCRYPTION_SERVICE);
 
-    private static final String HW_PROVIDER = "IBMJCECCA";
-
     private static CustomPasswordEncryption cpeImpl = null;
     private static List<CustomManifest> cms = null;
 
@@ -544,20 +542,12 @@ public class PasswordCipherUtil {
      */
     private static EncryptedInfo aesEncipherV0(byte[] decrypted_bytes, String cryptoKey, EncryptedInfo info,
                                                byte[] encrypted_bytes) throws InvalidKeySpecException, InvalidPasswordCipherException, NoSuchAlgorithmException, UnsupportedCryptoAlgorithmException {
-        byte[] seed = null;
-        SecureRandom rand = new SecureRandom();
-        Provider provider = rand.getProvider();
-        String providerName = provider.getName();
-        if (providerName.equals(HW_PROVIDER)) {
-            seed = new byte[20];
-            rand.nextBytes(seed);
-        } else {
-            seed = rand.generateSeed(20);
-        }
-        byte[] preEncrypted = new byte[decrypted_bytes.length + 21];
-        preEncrypted[0] = 20; // how many seed bytes there are.
-        System.arraycopy(seed, 0, preEncrypted, 1, 20);
-        System.arraycopy(decrypted_bytes, 0, preEncrypted, 21, decrypted_bytes.length);
+        byte seedSize = 20;
+        byte[] seed = CryptoUtils.generateRandomBytes(seedSize);
+        byte[] preEncrypted = new byte[decrypted_bytes.length + seedSize + 1];
+        preEncrypted[0] = seedSize; // how many seed bytes there are.
+        System.arraycopy(seed, 0, preEncrypted, 1, seedSize);
+        System.arraycopy(decrypted_bytes, 0, preEncrypted, seedSize + 1, decrypted_bytes.length);
         try {
             Cipher c = Cipher.getInstance("AES/CBC/PKCS5Padding");
             c.init(Cipher.ENCRYPT_MODE, AESKeyManager.getKey(cryptoKey), AESKeyManager.getIV(cryptoKey));
@@ -627,12 +617,7 @@ public class PasswordCipherUtil {
 
         byte seedSize = 64;
 
-        if (providerName.equals(HW_PROVIDER)) {
-            seed = new byte[seedSize];
-            rand.nextBytes(seed);
-        } else {
-            seed = rand.generateSeed(seedSize);
-        }
+        seed = CryptoUtils.generateRandomBytes(seedSize);
         byte[] preEncrypted = new byte[decrypted_bytes.length + seedSize + 1];
         preEncrypted[0] = seedSize; // how many seed bytes there are.
         System.arraycopy(seed, 0, preEncrypted, 1, seedSize);

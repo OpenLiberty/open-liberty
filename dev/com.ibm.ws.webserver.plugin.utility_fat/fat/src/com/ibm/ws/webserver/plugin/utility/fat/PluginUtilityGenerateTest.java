@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * This class will test the Plugin utility generate functions where the inputs provided are
  * valid for connection to an app server.
@@ -52,6 +54,8 @@ public class PluginUtilityGenerateTest {
     public static final String SERVER_PASSWORD = "mrPassword";
     
     public static final String PLUGIN_CFG_FILENAME = "plugin-cfg.xml";
+
+    private static boolean AUTO_ACCEPT_CERTIFICATES = true;
     
     @BeforeClass
     public static void setUp() throws Exception {
@@ -190,6 +194,37 @@ public class PluginUtilityGenerateTest {
 
         Log.exiting(c, methodName);
     }
+
+    /*
+     * Verifies the SHA256 digiest it outputed when FIPS 140-3 is enabled.
+     * The plugin-cfg.xml generation does not matter here.
+     * Note: No asserts occur when FIP 140-3 is not enabled.
+     */
+    @Mode(TestMode.FULL)
+    @Test
+    public void verifyDigestAlgorithmsWhenFIPSEnabled() throws Exception {
+
+        final String methodName = "verifyDigestAlgorithmsWhenFIPSEnabled";
+        Log.entering(c, methodName);
+
+        if(CryptoUtils.isFips140_3EnabledWithBetaGuard()){
+            AUTO_ACCEPT_CERTIFICATES = false; // For a prompt
+            
+            File PcfgFile = eraseExistingFiles(PLUGIN_CFG_FILENAME,remoteAccessServer,null);
+            
+            String commandOutput  = this.generateRemotePluginXmlFileReturnCommandOutput(PcfgFile, remoteAccessServer, null, null);
+            
+            Log.info(c, "Output: " + commandOutput, methodName);
+
+            assertTrue("SHA256 Digest Not Found In Command Output!", commandOutput.contains("SHA256"));
+
+
+            AUTO_ACCEPT_CERTIFICATES = true; // reset to avoid failures in other tests
+        } else {
+            Log.info(c, "FIPS NOT ENABLED, skipping... ", methodName);
+        }
+        Log.exiting(c, methodName);
+    }
     
     /*
      * Test plugin-cfg.xml generation for a remote app server where the targetPath is specified
@@ -273,21 +308,41 @@ public class PluginUtilityGenerateTest {
      */
     private boolean generateRemotePluginXmlFile(File cfgFile, LibertyServer server, String cluster, String targetPath) throws Exception {
 
-        Log.info(c, "generateRemotePluginXmlFile", "Call Utility to generate config file, targetPath = " + targetPath);
-        String serverId = SERVER_USER + ":" + SERVER_PASSWORD + "@" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
-
-        Properties env = new Properties();
-        env.put("JVM_ARGS", "-Dcom.ibm.webserver.plugin.utility.autoAcceptCertificates=true");
-        env.put("JAVA_HOME", server.getMachineJavaJDK());
-
-        runCommand(server, serverId, cluster, targetPath, env);
+        generateRemotePluginXmlFileReturnCommandOutput(cfgFile, server, cluster, targetPath);
 
         return cfgFile.exists();
     }
 
+    /*
+     * Test sending a request for a cluster merged plugin-cfg.xml file to a cluster member. The MBean should return false.
+     * 
+     * This method returns the output of the command. Used for digest test.
+     */
+    private String generateRemotePluginXmlFileReturnCommandOutput(File cfgFile, LibertyServer server, String cluster, String targetPath) throws Exception {
+
+        Log.info(c, "generateRemotePluginXmlFile", "Call Utility to generate config file, targetPath = " + targetPath);
+        String serverId = SERVER_USER + ":" + SERVER_PASSWORD + "@" + server.getHostname() + ":" + server.getHttpDefaultSecurePort();
+
+        Properties env = new Properties();
+        env.put("JVM_ARGS", "-Dcom.ibm.webserver.plugin.utility.autoAcceptCertificates=" + AUTO_ACCEPT_CERTIFICATES);
+        env.put("JAVA_HOME", server.getMachineJavaJDK());
+
+        return runCommandWithReturnedOutput(server, serverId, cluster, targetPath, env);
+    }
     
     
     private void runCommand(LibertyServer server, String serverId, String cluster,String targetPath, Properties env) throws Exception {
+
+        String outputResult = runCommandWithReturnedOutput(server,serverId,cluster,targetPath,env);
+
+        Log.info(c, "runCommand", "Resulting output : \n" + outputResult);
+
+    }
+
+    /*
+     * Used to return commnand output in order to verify Digest Alogrithms used. 
+     */
+    private String runCommandWithReturnedOutput(LibertyServer server, String serverId, String cluster,String targetPath, Properties env) throws Exception {
 
         String pluginUtilityCommand = server.getInstallRoot() + "/bin/pluginUtility";
 
@@ -314,10 +369,11 @@ public class PluginUtilityGenerateTest {
         for (String arg : args) {
             Log.info(c, "runCommand", "argument :" + arg);
         }
-
-        Log.info(c, "runCommand", "Resulting output : \n" + po.getStdout());
-
+         Log.info(c, "runCommand", "Resulting output : \n" + po.getStdout());
+        return po.getStdout();
     }
+
+
 
     private File eraseExistingFiles(String fileName, LibertyServer server, String targetPath) {
 

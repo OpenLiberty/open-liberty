@@ -78,6 +78,8 @@ import io.openliberty.jpa.data.tests.models.Segment;
 import io.openliberty.jpa.data.tests.models.ShippingAddress;
 import io.openliberty.jpa.data.tests.models.Store;
 import io.openliberty.jpa.data.tests.models.StreetAddress;
+import io.openliberty.jpa.data.tests.models.Student;
+import io.openliberty.jpa.data.tests.models.TaxPayer;
 import io.openliberty.jpa.data.tests.models.Triangle;
 import io.openliberty.jpa.data.tests.models.Vehicle;
 import io.openliberty.jpa.data.tests.models.Door;
@@ -451,7 +453,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28931")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28931
     public void testOLGH28931() throws Exception {
         Business ibmRoc = Business.of(44.05887f, -92.50355f, "Rochester", "Minnesota", 55901, 2800, "37th St", "NW",
                                       "IBM Rochester");
@@ -795,7 +797,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore
     //Reference issue : https://github.com/OpenLiberty/open-liberty/issues/30444
     public void testOLGH30444() throws Exception {
         deleteAllEntities(Package.class); 
@@ -812,7 +813,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         tx.begin();
         try {
-            results = em.createQuery("SELECT ID FROM Package ORDER BY WIDTH DESC", Integer.class)
+            results = em.createQuery("SELECT id FROM Package ORDER BY width DESC", Integer.class)
                             .setLockMode(LockModeType.PESSIMISTIC_WRITE)
                             .setMaxResults(1)
                             .getResultList();
@@ -1224,7 +1225,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/24926
+    //Original issue: https://github.com/OpenLiberty/open-liberty/issues/24926
+    @SkipIfSysProp({ 
+        DB_Postgres    //Additional issue: https://github.com/OpenLiberty/open-liberty/issues/32848
+    }) 
     public void testOLGH24926() throws Exception {
         Line unitRadius = Line.of(0, 0, 1, 1);
 
@@ -1451,7 +1455,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28905")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28905
     public void testOLGH28905() throws Exception {
         Triangle t1_0 = Triangle.of((byte) 13, (byte) 84, (byte) 85);
 
@@ -1471,11 +1475,12 @@ public class JakartaDataRecreateServlet extends FATServlet {
                             .setParameter(3, (short) (198))
                             .executeUpdate();
 
+            tx.commit();
+            
             t1_1 = em.createQuery("SELECT o FROM Triangle o WHERE o.distinctKey=?1", Triangle.class)
-                            .setParameter(0, t1_0.distinctKey)
+                            .setParameter(1, t1_0.distinctKey)
                             .getSingleResult();
 
-            tx.commit();
         } catch (Exception e) {
             tx.rollback();
             /*
@@ -1786,6 +1791,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30501")
+    //Issue closed. Error is valid and now provides a meaningful message
     public void testOLGH30501() throws Exception{
         deleteAllEntities(Prime.class); 
 
@@ -1813,7 +1819,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }   
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475")
+    //Original issue: https://github.com/OpenLiberty/open-liberty/issues/29475
+    @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28589")
     public void testOLGH29475() throws Exception {
         Rating.Reviewer jimmy = Rating.Reviewer.of("Jimothy", "Scramble", "J.Scramble@example.com");
         Rating.Item blueBerry = Rating.Item.of("BlueBerry 10", 299.99f);
@@ -2072,7 +2079,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30534")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30534
     public void testOLGH30534() throws Exception {
 
         County county1 = new County("CountyA");
@@ -2172,7 +2179,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
     
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30789")
+    //Original issue: https://github.com/OpenLiberty/open-liberty/issues/30789
+    @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28925")
     public void testOLGH30789() throws Exception {
         try {
             deleteAllEntities(House.class);
@@ -2245,14 +2253,46 @@ public class JakartaDataRecreateServlet extends FATServlet {
             assertEquals(4, h1.getNumBedrooms());
 
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException();
+            throw e;
         }
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31558")
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32263")
+    //Issue closed. Error is valid and now provides a meaningful message
+    public void testOLGH32263() throws Exception {
+        deleteAllEntities(TaxPayer.class);
+
+        AccountId account1 = new AccountId(123456789L, 111000000L);
+        AccountId account2 = new AccountId(987654321L, 222000000L);
+
+        TaxPayer tp1 = new TaxPayer(101L, TaxPayer.FilingStatus.Single, 0, 40000f, account1);
+        TaxPayer tp2 = new TaxPayer(102L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 60000f, account1);
+        TaxPayer tp3 = new TaxPayer(103L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 50000f, account2);
+
+        tx.begin();
+        em.persist(tp1);
+        em.persist(tp2);
+        em.persist(tp3);
+        tx.commit();
+
+        List<TaxPayer> result;
+
+        try {
+            result = em.createQuery(
+                                    "SELECT o FROM TaxPayer o WHERE (o.bankAccounts IS NOT EMPTY) ORDER BY o.ssn", TaxPayer.class)
+                            .setParameter(1, account1)
+                            .getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31558
     public void testOLGH31558() throws Exception {
+        deleteCollectionTable("ShippingAddress_RECIPIENTINFO");
         deleteAllEntities(ShippingAddress.class);
 
         ShippingAddress a1 = new ShippingAddress();
@@ -2314,6 +2354,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31559")
     public void testOLGH31559() throws Exception {
+        deleteCollectionTable("ShippingAddress_RECIPIENTINFO");
         deleteAllEntities(ShippingAddress.class);
 
         ShippingAddress a1 = new ShippingAddress();
@@ -2372,6 +2413,66 @@ public class JakartaDataRecreateServlet extends FATServlet {
             throw e;
         }
     }
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32204")
+    public void testOLGH32204() throws Exception {
+        deleteAllEntities(TaxPayer.class);
+
+        AccountId account1 = new AccountId(123456789L, 111000000L);
+        AccountId account2 = new AccountId(987654321L, 222000000L);
+
+        TaxPayer tp1 = new TaxPayer(101L, TaxPayer.FilingStatus.Single, 0, 40000f, account1);
+        TaxPayer tp2 = new TaxPayer(102L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 60000f, account1);
+        TaxPayer tp3 = new TaxPayer(103L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 50000f, account2);
+
+        tx.begin();
+        em.persist(tp1);
+        em.persist(tp2);
+        em.persist(tp3);
+        tx.commit();
+
+        List<TaxPayer> result = em.createQuery(
+            "SELECT o FROM TaxPayer o WHERE (?1 MEMBER OF o.bankAccounts) ORDER BY o.income, o.ssn",
+            TaxPayer.class
+        ).setParameter(1, account1).getResultList();
+
+        assertEquals(2, result.size());
+        assertEquals(40000f, result.get(0).income, 0.01);
+        assertEquals(60000f, result.get(1).income, 0.01);
+    }
+    
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32246") 
+    //Error due to valid behavioural change introduced in B09. Passes for B08 and below.
+    public void testOLGH32246() throws Exception {
+        deleteAllEntities(Student.class);
+
+        Student s1 = new Student(1L, "Achu", new int[] { 90, 85, 88 });
+        Student s2 = new Student(2L, "Appu", new int[] { 75, 80, 70 });
+        Student s3 = new Student(3L, "Ammu", new int[] { 70, 90, 75 });
+
+        tx.begin();
+        em.persist(s1);
+        em.persist(s2);
+        em.persist(s3);
+        tx.commit();
+
+        List<?> resultStudents;
+        try {
+            resultStudents = em.createQuery("SELECT s.marks FROM Student s WHERE s.rollNo = ?1", Student.class) // Forcing ConversionException by giving wrong entity class
+                            .setParameter(1, 3L)
+                            .getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals(
+                     List.of(Arrays.toString(new int[] { 70, 90, 75 })),
+                     resultStudents.stream()
+                                     .map(o -> Arrays.toString((int[]) o))
+                                     .collect(Collectors.toList()));
+
+    }
 
     /**
      * Utility method to drop all entities from table.
@@ -2404,5 +2505,17 @@ public class JakartaDataRecreateServlet extends FATServlet {
                         .executeUpdate();
         tx.commit();
     }
+    
+    /**
+     * Deletes all rows from the specified collection table using native SQL.
+     *
+     * @param tableName the exact name of the table to delete from (e.g., "ShippingAddress_RECIPIENTINFO")
+     */
+    private void deleteCollectionTable(String tableName) throws Exception{
+        tx.begin();
+        em.createNativeQuery("DELETE FROM " + tableName).executeUpdate();
+        tx.commit();
+    }
+
 
 }

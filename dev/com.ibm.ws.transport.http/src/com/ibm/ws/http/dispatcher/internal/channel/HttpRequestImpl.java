@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal.channel;
 
@@ -30,6 +27,7 @@ import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import com.ibm.wsspi.http.ee8.Http2Request;
 
+import io.netty.handler.codec.http.FullHttpRequest;
 import io.openliberty.http.ext.HttpRequestExt;
 
 /**
@@ -67,6 +65,22 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
             this.body = new HttpInputStreamEE7(context);
         } else {
             this.body = new HttpInputStreamImpl(context);
+        }
+    }
+
+    /**
+     * Initialize with a new connection.
+     *
+     * @param context
+     */
+    public void init(FullHttpRequest request, HttpInboundServiceContext context) {
+
+        this.message = context.getRequest();
+
+        if (this.useEE7Streams) {
+            this.body = new HttpInputStreamEE7(context, request);
+        } else {
+            this.body = new HttpInputStreamImpl(context, request);
         }
     }
 
@@ -281,9 +295,15 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      */
     @Override
     public boolean isTrailersReady() {
+        boolean trailersNull;
+        if (message instanceof HttpBaseMessageImpl) {
+            trailersNull = ((HttpBaseMessageImpl) message).getTrailersImpl() != null;
+        } else
+            trailersNull = message.getTrailers() != null;
+
         if (!message.isChunkedEncodingSet()
             || !message.containsHeader(HttpHeaderKeys.HDR_TRAILER)
-            || ((HttpBaseMessageImpl) message).getTrailersImpl() != null
+            || trailersNull
             || (message.getVersionValue().getMajor() <= 1 && message.getVersionValue().getMinor() < 1))
             return true;
         return false;

@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: La libreria [ {0} ] specifica un percorso c
 cls.library.path.invalid.explanation=Per aggiungere un percorso a una libreria nella configurazione del server, \u00e8 necessario specificare un percorso esistente.
 cls.library.path.invalid.useraction=Modificare la configurazione del server e modificare l'attributo del percorso dell'elemento libreria.
 
+app.classloader.removed=CWWKL0020W: Il caricatore di classi del contesto del thread [ {0} ] non fa pi\u00f9 riferimento all''applicazione [ {1} ], che \u00e8 stata interrotta.
+app.classloader.removed.explanation=app.classloader.removed.explanation =Quando un'applicazione avvia un thread, il caricatore di classe del contesto del thread dell'applicazione viene ereditato dal nuovo thread.  Se il thread continua a essere eseguito dopo l'arresto dell'applicazione, il suo caricatore di classi di contesto non fa pi\u00f9 riferimento all'applicazione interrotta.
+app.classloader.removed.useraction=Convalidare che l'applicazione interrompa tutti i thread avviati all'arresto dell'applicazione. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

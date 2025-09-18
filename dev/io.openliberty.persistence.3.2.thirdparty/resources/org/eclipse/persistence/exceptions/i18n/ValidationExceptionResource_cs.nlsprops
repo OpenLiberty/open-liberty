@@ -641,3 +641,9 @@
 
 7360=Heslo datab\u00e1ze bylo za\u0161ifrov\u00e1no zastaral\u00fdm algoritmem. Znovu to za\u0161ifrujte pomoc\u00ed `passwordUpdate.sh` od eclipselink.zip svazek.
 
+7361=Pouze jedno pole ve v\u00fd\u010dtu m\u016f\u017ee b\u00fdt ozna\u010deno anotac\u00ed @EnumeratedValue. Zkontrolujte t\u0159\u00eddu enum [ {0} ].
+
+7362=U v\u00fd\u010dtov\u00e9ho typu ORDINAL lze jako typ atributu ozna\u010den\u00fd @EnumeratedValue pou\u017e\u00edt pouze typy byte, short, int, log nebo wrapper. Zkontrolujte atribut [ {0} ] ve v\u00fd\u010dtov\u00e9 t\u0159\u00edd\u011b [ {1} ].
+
+7363=U v\u00fd\u010dtov\u00e9ho typu STRING lze jako typ atributu ozna\u010den\u00e9 @EnumeratedValue pou\u017e\u00edt pouze typ java.lang.String. Zkontrolujte atribut [ {0} ] ve v\u00fd\u010dtov\u00e9 t\u0159\u00edd\u011b [ {1} ].
+

@@ -169,7 +169,7 @@ elements={0}{1} elemente
 
 enable_batch_operations_as_true_not_supported=Setarea WLS native CMP "enable-batch-operations-as-true" nu este suportat\u0103 direct \u00een EclipseLink CMP. Vede\u0163i documentul migr\u0103rii pentru detalii.
 
-encryptor_script_description=Aceast\u0103 aplica\u021bie decripteaz\u0103 intern o veche parol\u0103 criptat\u0103 care a fost folosit\u0103 de o parol\u0103 anterioar\u0103 EclipseLink versiune \u0219i o cripteaz\u0103 cu cel mai recent algoritm.
+encryptor_script_description=Aceast\u0103 aplica\u021bie are o parol\u0103 criptat\u0103 veche care a fost utilizat\u0103 de o versiune anterioar\u0103 a EclipseLink. Cripta\u021bi-l din nou cu cel mai recent algoritm.
 
 encryptor_script_output=Parola recriptat\u0103 este: {0}
 
@@ -318,6 +318,8 @@ jpars_could_not_find_session_bean=Se face un apel la un bean de sesiune cu numel
 jta_cannot_be_disabled_in_cmp=C\u00e2nd se folose\u015fte Container Managed Persistence (CMP), JTA nu poate fi dezactivat. EclipseLink se va comporta ca \u015fi cum JTA este activat.
 
 jta_duplicate_ctrl_property=Clasa de controler de tranzac\u021bii JTA este definit\u0103 \u00een ambele propriet\u0103\u021bi "eclipselink.target-server" \u0219i "eclipselink.jta.controller". Se utilizeaz\u0103 valoarea de la "eclipselink.target-server".
+
+jta_tm_lookup_failure=Nu se poate c\u0103uta instan\u021ba TransactionManager : {0}
 
 jta_tsr_lookup_failure=Nu se poate c\u0103uta instan\u021ba TransactionSynchronizationRegistry: {0}
 

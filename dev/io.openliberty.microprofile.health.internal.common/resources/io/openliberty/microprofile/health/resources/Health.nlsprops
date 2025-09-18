@@ -70,6 +70,9 @@ file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Unable to wr
 file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=The runtime requires write permissions to the /health directory to create the "live", "ready" and "started" files for the file-based health checks to function properly.
 file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=The user must identify the root cause of the permission issue.
 
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W=CWMMH0102W: The runtime cannot resolve the path for the /health directory. The file-based health check function will be disabled.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.explanation=The runtime requires the internal server.output.dir property or WLP_OUTPUT_DIR environment variable to be set to determine the location of the /health directory.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.useraction=Ensure that the WLP_OUTPUT_DIR environment variable is properly set.
 
 file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: The runtime has detected the presence of the following directory [{0}]. A file with the same name is required for the file-based health check function at this path. The file-based health check function will be disabled.
 file.healthcheck.file.name.conflict.CWMMH0105W.explanation=The file-based health checks require the creation and use of the files "live", "ready" and "started" in the /health directory. An existing directory with one of those names is already present in the /health directory which prevents the required files from being created.

@@ -119,9 +119,13 @@
 				<and> <equals arg1="11" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
 				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java.level}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java.level}"/> <equals arg1="21"  arg2="${java.specification.version}"/> </and>
 		    </or>
 		</condition>
 
@@ -285,11 +289,6 @@
 			<fileset dir="${local.java}/build/libs/lib/" erroronmissingdir="false">
 				<include name="fattest.simplicity.jar" />
 				<include name="com.ibm.ws.componenttest.jar" />
-			</fileset>
-
-			<!-- shared libraries from bootstrapping.properties -->
-			<fileset dir="${local.sharedLib}" erroronmissingdir="false">
-				<include name="**/*.jar" />
 			</fileset>
 
 			<!-- java libraries for secure SSH authentication -->

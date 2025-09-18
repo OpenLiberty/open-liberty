@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@
 package jakarta.data.page;
 
 import java.util.Optional;
+
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from jakarta.data.repository.PageRequest from the Jakarta Data repo.
@@ -30,7 +32,7 @@ record Pagination(long page,
         if (size < 1)
             throw new IllegalArgumentException("maxPageSize: " + size);
         if (mode != Mode.OFFSET && (type == null || type.size() == 0))
-            throw new IllegalArgumentException("No key values were provided.");
+            throw new IllegalArgumentException(Messages.get("006.zero.size.key"));
     }
 
     @Override
@@ -46,6 +48,11 @@ record Pagination(long page,
     @Override
     public Optional<Cursor> cursor() {
         return type == null ? Optional.empty() : Optional.of(type);
+    }
+
+    @Override
+    public PageRequest page(long pageNum) {
+        return new Pagination(pageNum, size, mode, type, requestTotal);
     }
 
     @Override
@@ -76,4 +83,5 @@ record Pagination(long page,
     public PageRequest withTotal() {
         return new Pagination(page, size, mode, type, true);
     }
+
 }

@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=Configure un archivo JAR de servid
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: No se ha podido iniciar la aplicaci\u00f3n porque no se ha encontrado la aplicaci\u00f3n Spring Boot dentro del archivo JAR del servidor de Liberty empaquetado.
 error.application.not.found.inside.packaged.liberty.jar.explanation=El archivo JAR del servidor de Liberty empaquetado debe contener una aplicaci\u00f3n Spring Boot configurada.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configure un archivo JAR de servidor de Liberty empaquetado v\u00e1lido.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: La caracter\u00edstica {0} debe estar configurada en el archivo server.xml. La funci\u00f3n {1} est\u00e1 configurada y la aplicaci\u00f3n tiene Spring Boot {2} contenido.
+error.spring4.required.explanation=La caracter\u00edstica Spring Boot configurada actualmente no es compatible con el contenido de la aplicaci\u00f3n.
+error.spring4.required.useraction=Configure una versi\u00f3n de la caracter\u00edstica Spring Boot que sea compatible con el contenido de la aplicaci\u00f3n.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: Debe configurarse la funci\u00f3n servlet-6.1 o posterior. La funci\u00f3n springBoot-4.0 est\u00e1 configurada y la aplicaci\u00f3n utiliza servlets.
+error.spring4.requires.servlet61.or.later.application.explanation=La aplicaci\u00f3n utiliza servlets, pero no se ha configurado ninguna caracter\u00edstica de servlet.
+error.spring4.requires.servlet61.or.later.application.useraction=Configure la caracter\u00edstica de servlet especificada.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: Debe configurarse la funci\u00f3n websocket-2.2 o posterior. La funci\u00f3n springBoot-4.0 est\u00e1 configurada y la aplicaci\u00f3n utiliza WebSockets.
+error.spring4.requires.websocket22.or.later.application.explanation=La aplicaci\u00f3n utiliza WebSockets pero no se ha configurado ninguna funci\u00f3n de websocket.
+error.spring4.requires.websocket22.or.later.application.useraction=Configura la funci\u00f3n websocket especificada.

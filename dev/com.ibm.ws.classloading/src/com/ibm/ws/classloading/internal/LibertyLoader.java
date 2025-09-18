@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
+import static com.ibm.ws.classloading.internal.LibertyLoader.DelegatePolicy.includeParent;
+
 import java.io.IOException;
 import java.net.URL;
 import java.security.SecureClassLoader;
@@ -19,15 +21,32 @@ import java.util.Enumeration;
 
 import org.osgi.framework.Bundle;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import com.ibm.ws.classloading.LibertyClassLoader;
 import com.ibm.ws.kernel.boot.classloader.NameBasedClassLoaderLock;
 import com.ibm.ws.kernel.boot.utils.KeyBasedLockStore;
 
+@Trivial
 public abstract class LibertyLoader extends SecureClassLoader implements NoClassNotFoundLoader, LibertyClassLoader, DeclaredApiAccess {
     static {
         ClassLoader.registerAsParallelCapable();
     }
 
+    public enum DelegatePolicy {
+        /**
+         * Always search parent
+         */
+        includeParent,
+        /**
+         * Parent has been searched
+         */
+        searchedParent,
+        /**
+         * Always exclude parent search
+         */
+        excludeParent,
+    }
     final ClassLoader parent;
 
     public LibertyLoader(ClassLoader parent) {
@@ -50,7 +69,7 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
     @Override
     public final Class<?> loadClassNoException(String name) {
         try {
-            return loadClass(name, false, false, true);
+            return loadClass(name, false, includeParent, true);
         } catch (ClassNotFoundException cnfe) {
             return null;
         }
@@ -58,20 +77,28 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
 
     @Override
     protected final Class<?> findClass(String className) throws ClassNotFoundException {
-        return findClass(className, false);
+        return findClass(className, includeParent, false);
     }
 
-    protected abstract Class<?> loadClass(String className, boolean resolve, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException;
+    protected abstract Class<?> loadClass(String className, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException;
 
-    protected abstract Class<?> findClass(String className, boolean returnNull) throws ClassNotFoundException;
+    protected abstract Class<?> findClass(String className, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException;
     
     @Override
     protected URL findResource(String resName) {
         return super.findResource(resName);
     }
 
+    protected URL delegateFindResource(String resName) {
+        return super.findResource(resName);
+    }
+
     @Override
     protected Enumeration<URL> findResources(String resName) throws IOException {
+        return super.findResources(resName);
+    }
+
+    protected Enumeration<URL> delegateFindResources(String resName) throws IOException {
         return super.findResources(resName);
     }
 

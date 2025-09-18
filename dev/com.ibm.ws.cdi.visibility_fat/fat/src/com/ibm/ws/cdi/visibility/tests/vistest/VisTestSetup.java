@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,6 +64,8 @@ import com.ibm.ws.cdi.visibility.tests.vistest.ejbWarLib.EjbWarLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbWarLib.EjbWarLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.nonLib.NonLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.nonLib.NonLibTestingBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.overrideLib.OverrideLibTargetBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.overrideLib.OverrideLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTargetBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.standaloneWar.StandaloneWarTargetBean;
@@ -274,6 +276,11 @@ public class VisTestSetup {
                                                       .addClass(PrivateLibTestingBean.class)
                                                       .addAsManifestResource(PrivateLibTestingBean.class.getResource("beans.xml"), "beans.xml");
 
+        JavaArchive visTestOverrideLibrary = ShrinkWrap.create(JavaArchive.class, "visTestOverrideLib.jar")
+                                                       .addClass(OverrideLibTargetBean.class)
+                                                       .addClass(OverrideLibTestingBean.class)
+                                                       .addAsManifestResource(OverrideLibTestingBean.class.getResource("beans.xml"), "beans.xml");
+
         JavaArchive visTestStandaloneWarLib = ShrinkWrap.create(JavaArchive.class, "visTestStandaloneWarLib.jar")
                                                         .addClass(StandaloneWarLibTargetBean.class)
                                                         .addClass(StandaloneWarLibTestingBean.class);
@@ -289,10 +296,12 @@ public class VisTestSetup {
         ShrinkHelper.exportAppToServer(server, visTest, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, visTestStandaloneWar, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "/", visTestPrivateLibrary, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToServer(server, "/", visTestOverrideLibrary, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToServer(server, "/", visTestCommonLibrary, DeployOptions.SERVER_ONLY);
 
         ShrinkHelper.exportAppToClient(client, visTest, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToClient(client, "/", visTestPrivateLibrary, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportToClient(client, "/", visTestOverrideLibrary, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportToClient(client, "/", visTestCommonLibrary, DeployOptions.SERVER_ONLY);
 
         server.installSystemBundle("visTest.framework");
@@ -360,6 +369,7 @@ public class VisTestSetup {
         InWar2,
         InCommonLib,
         InPrivateLib,
+        InOverrideLib,
         InRuntimeExtRegular,
         InRuntimeExtSeeApp,
         InStandaloneWar,
@@ -382,6 +392,7 @@ public class VisTestSetup {
                                                                                     Location.InAppClientAsEjbLib,
                                                                                     Location.InCommonLib,
                                                                                     Location.InPrivateLib,
+                                                                                    Location.InOverrideLib,
                                                                                     Location.InRuntimeExtRegular,
                                                                                     Location.InRuntimeExtSeeApp)));
 
@@ -406,6 +417,7 @@ public class VisTestSetup {
                                                                                     Location.InAppClientAsWarLib,
                                                                                     Location.InCommonLib,
                                                                                     Location.InPrivateLib,
+                                                                                    Location.InOverrideLib,
                                                                                     Location.InRuntimeExtRegular,
                                                                                     Location.InRuntimeExtSeeApp)));
 
@@ -423,6 +435,7 @@ public class VisTestSetup {
                                                                                     Location.InAppClientAsAppClientLib,
                                                                                     Location.InCommonLib,
                                                                                     Location.InPrivateLib,
+                                                                                    Location.InOverrideLib,
                                                                                     Location.InRuntimeExtRegular,
                                                                                     Location.InRuntimeExtSeeApp)));
 
@@ -460,6 +473,7 @@ public class VisTestSetup {
                                                                                     Location.InAppClientAsWarLib,
                                                                                     Location.InCommonLib,
                                                                                     Location.InPrivateLib,
+                                                                                    Location.InOverrideLib,
                                                                                     Location.InRuntimeExtRegular,
                                                                                     Location.InRuntimeExtSeeApp,
                                                                                     Location.InWar2)));
@@ -478,6 +492,7 @@ public class VisTestSetup {
                                                 new HashSet<Location>(Arrays.asList(Location.InEarLib,
                                                                                     Location.InCommonLib,
                                                                                     Location.InPrivateLib,
+                                                                                    Location.InOverrideLib,
                                                                                     Location.InRuntimeExtRegular,
                                                                                     Location.InRuntimeExtSeeApp)));
 
@@ -492,6 +507,7 @@ public class VisTestSetup {
                                                                                                  Location.InStandaloneWarLib,
                                                                                                  Location.InCommonLib,
                                                                                                  Location.InPrivateLib,
+                                                                                                 Location.InOverrideLib,
                                                                                                  Location.InRuntimeExtRegular,
                                                                                                  Location.InRuntimeExtSeeApp)));
 
@@ -571,6 +587,11 @@ public class VisTestSetup {
     public static void doTestVisibilityFromPrivateLib(LibertyServer server) throws Exception {
         doTestWithServlet(server, Location.InPrivateLib, EJB_VISIBLE_LOCATIONS);
         doTestWithStandaloneServlet(server, Location.InPrivateLib, STANDALONE_WAR_VISIBLE_LOCATIONS);
+    }
+
+    public static void doTestVisibilityFromOverrideLib(LibertyServer server) throws Exception {
+        doTestWithServlet(server, Location.InOverrideLib, EJB_VISIBLE_LOCATIONS);
+        doTestWithStandaloneServlet(server, Location.InOverrideLib, STANDALONE_WAR_VISIBLE_LOCATIONS);
     }
 
     public static void doTestVisibilityFromRuntimeExtRegular(LibertyServer server, Map<Location, String> appClientResults) throws Exception {
@@ -658,6 +679,11 @@ public class VisTestSetup {
     public static void doTestModuleForPrivateLib(LibertyServer server) throws Exception {
         assertEquals("NONE", getJ2eeNameForLocation(server, Location.InPrivateLib));
         assertEquals("NONE", getJ2eeNameForStandaloneLocation(server, Location.InPrivateLib));
+    }
+
+    public static void doTestModuleForOverrideLib(LibertyServer server) throws Exception {
+        assertEquals("NONE", getJ2eeNameForLocation(server, Location.InOverrideLib));
+        assertEquals("NONE", getJ2eeNameForStandaloneLocation(server, Location.InOverrideLib));
     }
 
     public static void doTestModuleForRuntimeExtRegular(LibertyServer server) throws Exception {

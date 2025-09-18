@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractRe
 public class KafkaReceptionBean extends AbstractReceptionBean<String> {
 
     public final static String CHANNEL_NAME = "reception-test-input";
+    public final static String GROUP_ID = "reception-test-input-group";
 
     @Incoming(CHANNEL_NAME)
     @Acknowledgment(Strategy.MANUAL)

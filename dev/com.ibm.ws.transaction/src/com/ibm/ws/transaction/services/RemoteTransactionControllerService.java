@@ -25,6 +25,7 @@ import javax.transaction.SystemException;
 import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -49,7 +50,7 @@ import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.Transaction.JTA.HeuristicHazardException;
 import com.ibm.ws.Transaction.JTS.Configuration;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.recoverylog.spi.RecLogServiceImpl;
+import com.ibm.ws.recoverylog.spi.RecLogService;
 import com.ibm.ws.recoverylog.spi.SharedServerLeaseLog;
 
 /**
@@ -63,25 +64,27 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
     private final ThreadLocal<LocalTransactionCoordinator> _suspendedLTC = new ThreadLocal<LocalTransactionCoordinator>();
     private final ThreadLocal<DistributableTransaction> _threadImportedTran = new ThreadLocal<DistributableTransaction>();
 
-    private UOWCurrent _uowc;
+    private final UOWCurrent _uowc;
+    private final TransactionManager _tm;
+    private final RecLogService _rls;
 
-    private TransactionManager _tm;
+    @Activate
+    public RemoteTransactionControllerService(@Reference UOWCurrent uowc,
+                                              @Reference TransactionManager tm,
+                                              @Reference RecLogService rls) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "RemoteTransactionControllerService activation");
 
-    private RecLogServiceImpl _rls;
-
-    @Reference
-    protected void setUOWCurrent(UOWCurrent uowc) {
         _uowc = uowc;
-    }
-
-    @Reference
-    protected void setTransactionManager(TransactionManager tm) {
         _tm = tm;
-    }
-
-    @Reference
-    protected void setRecLogServiceImpl(RecLogServiceImpl rls) {
         _rls = rls;
+
+        try {
+            TMHelper.checkTMState();
+        } catch (NotSupportedException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "RemoteTransactionControllerService", e);
+        }
     }
 
     /*
@@ -95,14 +98,6 @@ public class RemoteTransactionControllerService implements RemoteTransactionCont
         // Make sure TM is open for business
         if (((EmbeddableTranManagerSet) EmbeddableTranManagerSet.instance()).isQuiesced()) {
             final SystemException se = new SystemException();
-            throw se;
-        }
-
-        try {
-            TMHelper.checkTMState();
-        } catch (NotSupportedException e) {
-            final SystemException se = new SystemException();
-            se.initCause(e);
             throw se;
         }
 

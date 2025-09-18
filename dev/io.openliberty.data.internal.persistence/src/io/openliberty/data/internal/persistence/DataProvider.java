@@ -106,7 +106,8 @@ import jakarta.persistence.EntityManagerFactory;
                        ApplicationStateListener.class,
                        ComponentMetaDataListener.class,
                        Introspector.class,
-                       ModuleStateListener.class },
+                       ModuleMetaDataListener.class, // TODO remove before GA
+                       ModuleStateListener.class }, // TODO remove before GA
            property = { "deferredMetaData=DATA" })
 public class DataProvider implements //
                 CDIExtensionMetadata, //
@@ -118,7 +119,8 @@ public class DataProvider implements //
                 ApplicationStateListener, //
                 ComponentMetaDataListener, //
                 Introspector, //
-                ModuleStateListener {
+                ModuleMetaDataListener, // TODO remove before GA
+                ModuleStateListener { // TODO remove before GA
     private static final TraceComponent tc = Tr.register(DataProvider.class);
 
     private static final Set<Class<?>> beanClasses = //
@@ -318,12 +320,21 @@ public class DataProvider implements //
     }
 
     @Override
-    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-
+    @Trivial
+    public void applicationStarting(ApplicationInfo appInfo) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "applicationStarting " + appInfo.getDeploymentName() +
+                               " (" + appInfo.getName() + ')');
     }
 
     @Override
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
+    @Trivial
+    public void applicationStarted(ApplicationInfo appInfo) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "applicationStarted " + appInfo.getDeploymentName() +
+                               " (" + appInfo.getName() + ')');
+
         //Use deployment name but fall back to generated name
         String appName = appInfo.getDeploymentName() == null ? appInfo.getName() : appInfo.getDeploymentName();
         Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
@@ -334,8 +345,10 @@ public class DataProvider implements //
                     // This delays createEMBuilder until restore.
                     // While this works by avoiding all connections to the data source, it does make restore much slower.
                     // TODO figure out how to do more work on restore without having to make a connection to the data source
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "completing futureEMBuilder " + futureEMBuilder, futureEMBuilder.jeeName);
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc,
+                                 "completing futureEMBuilder " + futureEMBuilder,
+                                 futureEMBuilder.jeeName);
 
                     CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
 
@@ -347,17 +360,31 @@ public class DataProvider implements //
                 futureEMBuilder.registerDDLGenerationParticipant(appName);
             }
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "applicationStarted");
     }
 
     @Override
+    @Trivial
     public void applicationStopping(ApplicationInfo appInfo) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "applicationStopping " + appInfo.getDeploymentName() +
+                               " (" + appInfo.getName() + ')');
     }
 
     @Override
+    @Trivial
     public void applicationStopped(ApplicationInfo appInfo) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "applicationStopped" + appInfo.getDeploymentName() +
+                               " (" + appInfo.getName() + ')');
 
-        String appName = appInfo.getName();
+        // Prefer deployment name (from J2EEName)
+        String appName = appInfo.getDeploymentName();
+        if (appName == null) // fall back to generated name
+            appName = appInfo.getName();
 
         // Try to order removals based on dependencies, so that we remove first
         // what might depend on the others.
@@ -400,46 +427,66 @@ public class DataProvider implements //
                 it.remove();
             }
         }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "applicationStopped");
     }
 
+    /**
+     * This method is notified when component metadata is created.
+     * Eagerly requests processing of repositories from modules that have EJBs
+     * instead of waiting for the application to start.
+     */
     @Override
     @Trivial
     public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
         ComponentMetaData metadata = event.getMetaData();
         J2EEName jeeName = metadata.getJ2EEName();
-
-        boolean isEJBmetadata = metadata instanceof IdentifiableComponentMetaData i &&
-                                i.getPersistentIdentifier().startsWith("EJB");
-
-        // Jakarta Data repositories can be in modules, applications, or libraries,
-        // but never in components.
-        if (metadata.getJ2EEName().getComponent() == null)
-            componentMetadatasForModules.put(jeeName, metadata);
+        String appName = jeeName.getApplication();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "componentMetaDataCreated " + jeeName, metadata);
 
-        String appName = jeeName.getApplication();
-
-        Set<FutureEMBuilder> processed = futureEMBuildersInEJB.get(appName);
+        // Jakarta Data repositories can be in modules, applications, or libraries,
+        // but never in components.
+        if (jeeName.getComponent() == null)
+            componentMetadatasForModules.put(jeeName, metadata);
 
         // TODO it would be more direct to map from appName+moduleName -> FutureEMBuilder,
         // but we would need to take into account the difference in module names
         // including or not including .jar at the end.
         Set<FutureEMBuilder> futures = futureEMBuilders.get(appName);
 
-        if (futures != null && isEJBmetadata)
+        if (futures != null && // repositories are defined somewhere in the app
+            metadata instanceof IdentifiableComponentMetaData i &&
+            i.getPersistentIdentifier().startsWith("EJB")) {
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, i.getPersistentIdentifier() + " is an EJB");
+
+            Set<FutureEMBuilder> processed = futureEMBuildersInEJB.get(appName);
+
             for (FutureEMBuilder futureEMBuilder : futures) {
-                // only complete the future here if the module matches, since an EJB may be in a separate module
-                if (futureEMBuilder.jeeName.getModule() != null && futureEMBuilder.jeeName.getModule().equals(jeeName.getModule())) {
-                    // This delays createEMBuilder until restore.
-                    // While this works by avoiding all connections to the data source, it does make restore much slower.
-                    // TODO figure out how to do more work on restore without having to make a connection to the data source
+                // only request completion of processing here if the module matches
+                // and if we haven't already requested completion
+                String m = futureEMBuilder.jeeName.getModule();
+                if (m != null && m.equals(jeeName.getModule()) &&
+                    (processed == null || !processed.contains(futureEMBuilder))) {
 
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "completing futureEMBuilder " + futureEMBuilder, futureEMBuilder.jeeName, metadata);
+                        Tr.debug(this, tc,
+                                 "request completion of " + futureEMBuilder,
+                                 futureEMBuilder.jeeName,
+                                 metadata);
 
-                    CheckpointPhase.onRestore(() -> futureEMBuilder.completeAsync(futureEMBuilder::createEMBuilder, executor));
+                    // Allow CheckpointPhase to override the eager processing and
+                    // defer it to restore (in order to avoid DataSource access
+                    // prior to application start).
+                    // TODO This is undesirable because it slows down restore and
+                    // makes checkpoint/restore less useful.
+                    CheckpointPhase.onRestore(() -> futureEMBuilder //
+                                    .completeAsync(futureEMBuilder::createEMBuilder,
+                                                   executor));
 
                     if (processed == null) {
                         processed = new ConcurrentSkipListSet<>();
@@ -451,9 +498,8 @@ public class DataProvider implements //
 
                     processed.add(futureEMBuilder);
                 }
-
             }
-
+        }
     }
 
     @Override
@@ -914,32 +960,79 @@ public class DataProvider implements //
 
     @Override
     @Trivial
-    public void moduleStarted(ModuleInfo moduleInfo) throws StateChangeException {
+    public void moduleMetaDataCreated(MetaDataEvent<ModuleMetaData> event) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "moduleStarted " + moduleInfo);
+            Tr.debug(this, tc, "moduleMetaDataCreated " +
+                               event.getMetaData().getJ2EEName());
+    }
+
+    @Override
+    @Trivial
+    public void moduleMetaDataDestroyed(MetaDataEvent<ModuleMetaData> event) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "moduleMetaDataDestroyed " +
+                               event.getMetaData().getJ2EEName());
+    }
+
+    @Override
+    @Trivial
+    public void moduleStarted(ModuleInfo moduleInfo) throws StateChangeException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            String jeeAppName = moduleInfo.getApplicationInfo().getDeploymentName();
+            if (jeeAppName == null)
+                Tr.debug(this, tc, "moduleStarted " +
+                                   moduleInfo.getApplicationInfo().getName() + '/' +
+                                   moduleInfo.getName());
+            else
+                Tr.debug(this, tc, "moduleStarted " +
+                                   jeeAppName + '#' + moduleInfo.getName());
+        }
     }
 
     @Override
     @Trivial
     public void moduleStarting(ModuleInfo moduleInfo) throws StateChangeException {
         // TODO get rid of ModuleStateListener entirely. It appears we don't need it anymore
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "moduleStarting " + moduleInfo);
-
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            String jeeAppName = moduleInfo.getApplicationInfo().getDeploymentName();
+            if (jeeAppName == null)
+                Tr.debug(this, tc, "moduleStarting " +
+                                   moduleInfo.getApplicationInfo().getName() + '/' +
+                                   moduleInfo.getName());
+            else
+                Tr.debug(this, tc, "moduleStarting " +
+                                   jeeAppName + '#' + moduleInfo.getName());
+        }
     }
 
     @Override
     @Trivial
     public void moduleStopped(ModuleInfo moduleInfo) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "moduleStopped " + moduleInfo);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            String jeeAppName = moduleInfo.getApplicationInfo().getDeploymentName();
+            if (jeeAppName == null)
+                Tr.debug(this, tc, "moduleStopped " +
+                                   moduleInfo.getApplicationInfo().getName() + '/' +
+                                   moduleInfo.getName());
+            else
+                Tr.debug(this, tc, "moduleStopped " +
+                                   jeeAppName + '#' + moduleInfo.getName());
+        }
     }
 
     @Override
     @Trivial
     public void moduleStopping(ModuleInfo moduleInfo) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "moduleStopping " + moduleInfo);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            String jeeAppName = moduleInfo.getApplicationInfo().getDeploymentName();
+            if (jeeAppName == null)
+                Tr.debug(this, tc, "moduleStopping " +
+                                   moduleInfo.getApplicationInfo().getName() + '/' +
+                                   moduleInfo.getName());
+            else
+                Tr.debug(this, tc, "moduleStopping " +
+                                   jeeAppName + '#' + moduleInfo.getName());
+        }
     }
 
     /**

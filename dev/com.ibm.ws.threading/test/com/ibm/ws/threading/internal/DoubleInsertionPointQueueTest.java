@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
@@ -50,7 +51,7 @@ public class DoubleInsertionPointQueueTest {
     //boolean expeditedOfferIsPush() {
     //    return true;
     //}
-    class DoubleInsertionPointQueue<T> extends DoubleQueue<T> {
+    class DoubleInsertionPointQueue<T> extends ConcurrentPriorityBlockingQueue<T> {
         boolean expeditedOfferIsPush() {
             return false;
         }
@@ -467,7 +468,7 @@ public class DoubleInsertionPointQueueTest {
         TimeUnit.NANOSECONDS.sleep(durationOfTestNS);
         done.set(true);
         for (Future<?> future : f)
-            future.get();
+            future.get(1000, TimeUnit.MILLISECONDS);
 
         assertEquals(size.get(), q.size());
 
@@ -539,6 +540,34 @@ public class DoubleInsertionPointQueueTest {
         assertEquals(25, q.poll().intValue());
         assertEquals(0, q.size());
         assertNull(q.poll());
+        assertEquals(0, q.size());
+    }
+
+    @Test
+    public void testOperationsOnEmptyQueue() {
+        DoubleInsertionPointQueue<String> q = new DoubleInsertionPointQueue<String>();
+        assertFalse(q.contains("key"));
+        assertFalse(q.containsAll(Collections.singleton("key")));
+        assertEquals(0, q.drainTo(new ArrayList<>()));
+        assertEquals(0, q.drainTo(new ArrayList<>()), 100);
+        try {
+            q.element();
+            fail("Exception expected");
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+        assertFalse(q.iterator().hasNext());
+        assertTrue(q.isEmpty());
+        assertNull(q.peek());
+        assertNull(q.poll());
+        try {
+            q.remove();
+            fail("Exception expected");
+        } catch (NoSuchElementException e) {
+            // expected
+        }
+        assertFalse(q.remove("key"));
+        assertFalse(q.removeAll(Collections.singleton("key")));
         assertEquals(0, q.size());
     }
 }

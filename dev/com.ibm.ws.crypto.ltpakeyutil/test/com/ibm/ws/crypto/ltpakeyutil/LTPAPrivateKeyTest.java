@@ -19,6 +19,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 import test.common.SharedOutputManager;
 
@@ -131,7 +132,7 @@ public class LTPAPrivateKeyTest {
     public void testGetAlgorithm() {
         final String methodName = "testGetAlgorithm";
         try {
-            String expectedAlgorithm = "RSA/SHA-1";
+            String expectedAlgorithm = CryptoUtils.RSA_SHA_1;
             byte[][] rawKey = getRawKey();
             LTPAPrivateKey ltpaPrivateKey = new LTPAPrivateKey(rawKey);
             String actualAlgorithm = ltpaPrivateKey.getAlgorithm();
@@ -236,3 +237,4 @@ public class LTPAPrivateKeyTest {
         return LTPAPrivateKey.toInt(lengthBytes);
     }
 }
+

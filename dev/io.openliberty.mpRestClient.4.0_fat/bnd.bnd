@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/prototype/src,\
+	test-applications/prototypeClientApp/src,\
+	test-applications/multipart/src,\
+	test-applications/multipartClientApp/src
+	
+fat.project: true
+
+javac.source: 11
+javac.target: 11
+    
+fat.project: true
+# These features get added programmatically
+tested.features: \
+  mpRestClient-4.0,\
+  restfulWS-3.1,\
+  servlet-6.0,\
+  ssl-1.0,\
+  componenttest-2.0
+
+-buildpath: \
+    io.openliberty.jakarta.annotation.2.1;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest,\
+    io.openliberty.jakarta.restfulWS.3.1;version=latest,\
+    io.openliberty.jakarta.servlet.6.0;version=latest,\
+    io.openliberty.jakarta.validation.3.0;version=latest,\
+    io.openliberty.jakarta.xmlBinding.4.0;version=latest,\
+    io.openliberty.jakarta.jsonp.2.1;version=latest,\
+    io.openliberty.org.eclipse.microprofile.rest.client.4.0;version=latest,\
+    com.ibm.ws.componenttest.2.0;version=latest

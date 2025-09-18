@@ -52,6 +52,15 @@ public class PolicyVirtualThreadServlet extends HttpServlet {
     // Maximum number of nanoseconds to wait for a task to complete
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
 
+    Callable<Thread> dummyTask = new Callable<Thread>() {
+
+        @Override
+        public Thread call() throws Exception {
+            return Thread.currentThread();
+        }
+
+    };
+
     @Resource(lookup = "test/TestPolicyExecutorProvider")
     private PolicyExecutorProvider provider;
 
@@ -316,6 +325,33 @@ public class PolicyVirtualThreadServlet extends HttpServlet {
 
         // The submitting thread will run 1 or 2 of the tasks. All others must run on different virtual threads,
         assertEquals(threadNames.toString(), true, threadNames.size() == 5 || threadNames.size() == 4);
+
+        executor.shutdownNow();
+    }
+
+    /**
+     * Tests a vt override is implemented via a userFeature (or any stackproduct feature)
+     *
+     */
+    public void testDisableVirtualThreads() throws Exception {
+
+        Map<String, Object> config = new TreeMap<>();
+        config.put("max", 3);
+        config.put("maxPolicy", MaxPolicy.strict.name());
+        config.put("virtual", true);
+        // defaults:
+        config.put("expedite", 0);
+        config.put("maxWaitForEnqueue", 0L);
+        config.put("runIfQueueFull", false);
+
+        PolicyExecutor executor = provider.create("testDisableVirtualThreads");
+
+        Future<Thread> future1 = executor.submit(dummyTask);
+
+        Thread thread1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        //This should return false with vt override in place
+        assertEquals(false, isVirtual(thread1));
 
         executor.shutdownNow();
     }

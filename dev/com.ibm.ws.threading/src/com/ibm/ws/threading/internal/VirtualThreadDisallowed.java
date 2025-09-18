@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,8 @@ import com.ibm.ws.kernel.service.util.JavaInfo;
 import io.openliberty.threading.virtual.VirtualThreadOps;
 
 /**
- * Makes Jakarta Data's Repository annotation into a bean defining annotation.
+ * Rejects operations related to virtual threads because the Java level is less
+ * than Java SE 21.
  */
 @Component(name = "com.ibm.ws.threading.internal.VirtualThreadDisallowed",
            configurationPolicy = ConfigurationPolicy.IGNORE,
@@ -51,6 +52,11 @@ public class VirtualThreadDisallowed implements VirtualThreadOps {
 
     @Override
     public boolean isSupported() {
+        return false;
+    }
+
+    @Override
+    public boolean isVirtualThreadCreationEnabled() {
         return false;
     }
 

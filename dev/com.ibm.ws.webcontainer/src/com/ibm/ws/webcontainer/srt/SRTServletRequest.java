@@ -216,6 +216,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
     //PI43752 end
     
     protected static final boolean SERVLET_PATH_FOR_DEFAULT_MAPPING = Boolean.valueOf(WCCustomProperties.SERVLET_PATH_FOR_DEFAULT_MAPPING).booleanValue();
+    
+    //PH67132
+    private static int MAX_PART_HEADER_SIZE = WCCustomProperties.MAX_PART_HEADER_SIZE; 
 
     public SRTServletRequest(SRTConnectionContext context)
     {
@@ -3912,6 +3915,12 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "maxFileCount set to ["+maxFileCount+"]");
 
         sfu.setFileCountMax(maxFileCount);
+        
+        //PH67132
+        int maxPartHeaderSize = ((maxPartHeaderSize = MAX_PART_HEADER_SIZE) < 0) ? -1 : maxPartHeaderSize;
+        sfu.setPartHeaderSizeMax(maxPartHeaderSize);
+        if (isTraceOn) 
+            logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "maxPartHeaderSize set to [" + sfu.getPartHeaderSizeMax()+ "]");
 
         List list=null;
         try {
@@ -4004,11 +4013,17 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             throw (IllegalStateException)_srtRequestHelper.multipartException;
         }
         catch(FileSizeLimitExceededException fileSizeException) {
+            if (isTraceOn) {
+                logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "FileSizeLimitExceededException [" + fileSizeException + "]");
+            }
             _srtRequestHelper.multipartException = new IllegalStateException(nls.getString("multipart.file.size.too.big"));
             _srtRequestHelper.multipartISEException = true;
             throw (IllegalStateException)_srtRequestHelper.multipartException;
         }
         catch (SizeLimitExceededException sizeException) {
+            if (isTraceOn) {
+                logger.logp(Level.FINE, CLASS_NAME,"parseMultipart", "SizeLimitExceededException [" + sizeException + "]"); 
+            }
             _srtRequestHelper.multipartException = new IllegalStateException(nls.getString("multipart.request.size.too.big"));
             _srtRequestHelper.multipartISEException = true;
             throw (IllegalStateException)_srtRequestHelper.multipartException;                
@@ -4100,7 +4115,9 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
                 // has cipher to bit size map                                           
 
                 keySize = com.ibm.ws.webcontainer.WebContainer.getWebContainer().getKeySizefromCipherMap(cipherSuite);
-
+                
+                // FIPS 140-3: Algorithm assessment complete; no impact; future investigation needed.
+                // because we are unsure if clients are still using the older algorithms.
                 if (keySize == null) {
                     if (cipherSuite.contains("_AES_256_")) {
                         keySize = 256;

@@ -53,7 +53,7 @@ public class XMLSecurityConstants {
     static {
         try {
             // Liberty Change Start: Use SecureRandom with default algorithm instead of SHA1PRNG when FIPS 140-3 is enabled.
-            SECURE_RANDOM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new SecureRandom() : SecureRandom.getInstance("SHA1PRNG");
+            SECURE_RANDOM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new SecureRandom() : SecureRandom.getInstance(CryptoUtils.SHA1PRNG);
             // Liberty Change End
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
@@ -251,6 +251,8 @@ public class XMLSecurityConstants {
     public static final String NS_C14N_EXCL = "http://www.w3.org/2001/10/xml-exc-c14n#";
     public static final String NS_XMLDSIG_FILTER2 = "http://www.w3.org/2002/06/xmldsig-filter2";
     public static final String NS_XMLDSIG_ENVELOPED_SIGNATURE = NS_DSIG + "enveloped-signature";
+    // FIPS 140-3: Algorithm assessment complete; no changes required.
+    // The classes which use these SHA-1 constants need attention, the constants on their own are harmless
     public static final String NS_XMLDSIG_SHA1 = NS_DSIG + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase();
     public static final String NS_XMLDSIG_HMACSHA1 = NS_DSIG + "hmac-sha1";
     public static final String NS_XMLDSIG_RSASHA1 = NS_DSIG + "rsa-sha1";

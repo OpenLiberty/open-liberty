@@ -12,6 +12,7 @@ package componenttest.annotation.processor;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.junit.Assume.assumeTrue;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,6 +26,7 @@ import org.junit.runners.model.TestClass;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.app.FATServlet;
+import componenttest.app.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import jakarta.servlet.annotation.WebServlet;
 
@@ -197,6 +199,44 @@ public class TestServletProcessorTests {
         List<FrameworkMethod> methods = TestServletProcessor.getServletTests(new TestClass(ManyToOneServletTestClass.class));
         //Order not guarenteed
         List<String> expectedNames = Arrays.asList("test1_1", "test1_2", "test2_1", "test2_2");
+        for (FrameworkMethod method : methods) {
+            assertTrue(expectedNames.contains(method.getMethod().getName()));
+        }
+    }
+
+    public static class MinJavaLevelTestClass {
+        @TestServlets({
+                        @TestServlet(servlet = Java8Servlet.class, minJavaLevel = 8),
+                        @TestServlet(servlet = Java999Servlet.class, minJavaLevel = 999)
+        })
+        public static LibertyServer NOOP;
+
+        @WebServlet("/*")
+        public static class Java8Servlet extends FATServlet {
+            @Test
+            public void test1_1() {}
+
+            @Test
+            public void test1_2() {}
+        }
+
+        @WebServlet("/*")
+        public static class Java999Servlet extends FATServlet {
+            @Test
+            public void test2_1() {}
+
+            @Test
+            public void test2_2() {}
+        }
+    }
+
+    @Test
+    public void testServletMinJavaLevel() {
+        assumeTrue(8 < JavaInfo.JAVA_VERSION && JavaInfo.JAVA_VERSION < 999);
+
+        List<FrameworkMethod> methods = TestServletProcessor.getServletTests(new TestClass(MinJavaLevelTestClass.class));
+        //Order not guarenteed
+        List<String> expectedNames = Arrays.asList("test1_1", "test1_2");
         for (FrameworkMethod method : methods) {
             assertTrue(expectedNames.contains(method.getMethod().getName()));
         }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Set
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: The updateTrigger attribute is set to disabled and the monitor interval is greater than {0}. No dynamic reload occurs when LTPA key files are modified.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=When the updateTrigger attribute is set to disabled, the files are not monitored for any modifications on files with the .keys suffix and dynamic reload does not occur. Even if the monitorInterval attribute is set to an interval that is greater than zero, the attribute is ignored, and the files are not monitored.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Set the value of the updateTrigger attribute to polled or mbean.
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: The {0} validation keys must be regenerated using cryptographic algorithms that are FIPS 140-3 certified.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=The LTPA validation keys that are created without FIPS 140-3 enabled fail when FIPS 140-3 is enabled.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use the securityUtility createLTPAKeys command to create the FIPS approved validation keys when FIPS 140-3 is configured.

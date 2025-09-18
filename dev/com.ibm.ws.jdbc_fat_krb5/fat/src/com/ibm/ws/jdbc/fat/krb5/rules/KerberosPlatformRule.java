@@ -24,7 +24,6 @@ import org.junit.runners.model.Statement;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.DB2KerberosTest;
-import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
@@ -74,7 +73,7 @@ public class KerberosPlatformRule implements TestRule {
         JavaInfo java = JavaInfo.forCurrentVM();
         if (java.majorVersion() == 8 && java.vendor() == Vendor.SUN_ORACLE) {
             File keytabFile = new File(System.getProperty("user.dir") + "/publish/servers/com.ibm.ws.jdbc.fat.krb5/security/krb5.keytab");
-            KerberosPrincipal princ = new KerberosPrincipal(DB2KerberosTest.KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
+            KerberosPrincipal princ = new KerberosPrincipal(DB2KerberosTest.db2.getKerberosPrinciple());
             KeyTab kt = KeyTab.getInstance(princ, keytabFile);
             Log.info(c, m, "Loaded keytab: " + kt);
             KerberosKey[] kks = kt.getKeys(princ);

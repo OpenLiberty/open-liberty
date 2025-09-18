@@ -19,7 +19,7 @@
     # Pattern causes us to only execute the z/OS unittests.
     fatPatternToMatch: .*_ztest
     runZosTests: true
-    command: ant -f build-zunittest.xml unittest -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib/ecj-4.3.1.jar -lib ../ant_build/lib.antClasspath -lib ../prereq.published/lib -lib ../ant_build/lib/biz.aQute.bnd-3.3.0.jar -lib ../ant_build/lib/jsoup-1.7.2.jar
+    command: ant -f build-zunittest.xml unittest ${extra.fat.ant.options} -propertyfile ../../../buildandbucket.properties -DhaltOnFailure=false -lib ../ant_build/lib/ecj-4.3.1.jar -lib ../ant_build/lib.antClasspath -lib ../prereq.published/lib -lib ../ant_build/lib/biz.aQute.bnd-3.3.0.jar -lib ../ant_build/lib/jsoup-1.7.2.jar
     runner_threshold: 5
     runner_minimum_total: 2
     runner_max_total: 2
