@@ -76,7 +76,7 @@ public final class SignatureUtils {
         Set<String> result = new LinkedHashSet<>();
         Node parent = target;
         while (parent.getParentNode() != null
-            && Node.DOCUMENT_NODE != parent.getParentNode().getNodeType()) {
+            && !(Node.DOCUMENT_NODE == parent.getParentNode().getNodeType())) {
             parent = parent.getParentNode();
             NamedNodeMap attributes = parent.getAttributes();
             for (int i = 0; i < attributes.getLength(); i++) {

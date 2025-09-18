@@ -66,7 +66,7 @@ class WSSCrypto {
             }
         } else {
             try {
-                crypto = cryptoClass.getDeclaredConstructor().newInstance();
+                crypto = cryptoClass.newInstance();
                 crypto.setDefaultX509Identifier(ConfigurationProperties.getProperty("DefaultX509Alias"));
                 crypto.setCryptoProvider(ConfigurationProperties.getProperty("CertProvider"));
                 crypto.setKeyStore(this.getKeyStore());

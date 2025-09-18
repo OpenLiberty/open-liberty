@@ -43,16 +43,12 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
-
 import org.apache.cxf.attachment.AttachmentUtil;
 import org.apache.cxf.binding.soap.SoapFault;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.SoapVersion;
 import org.apache.cxf.binding.soap.saaj.SAAJInInterceptor;
 import org.apache.cxf.binding.soap.saaj.SAAJUtils;
-import org.apache.cxf.common.classloader.ClassLoaderUtils; // Liberty Change
-import org.apache.cxf.common.classloader.ClassLoaderUtils.ClassLoaderHolder; // Liberty Change
 import org.apache.cxf.common.i18n.Message;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.PropertyUtils;
@@ -243,17 +239,13 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
             config = engine.getWssConfig();
         }
         reqData.setWssConfig(config);
-        //Liberty code change start, for debug only
-        boolean doDebug = LOG.isLoggable(Level.FINE);
-        
-        if (doDebug) {
-            LOG.fine("WSS4JInInterceptor: saml audience restriction validation = " + SecurityUtils.getSecurityPropertyBoolean(SecurityConstants.AUDIENCE_RESTRICTION_VALIDATION,                                                                                                                msg, true));
-        }
-        //Liberty code change end
+
         // Add Audience Restrictions for SAML
         reqData.setAudienceRestrictions(SAMLUtils.getAudienceRestrictions(msg, true));
 
         SOAPMessage doc = getSOAPMessage(msg);
+
+        boolean doDebug = LOG.isLoggable(Level.FINE);
 
         SoapVersion version = msg.getVersion();
         try {
@@ -392,8 +384,6 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
             throw new SoapFault(new Message("STAX_EX", LOG), e, version.getSender());
         } catch (SOAPException e) {
             throw new SoapFault(new Message("SAAJ_EX", LOG), e, version.getSender());
-        } finally {
-            reqData = null;
         }
     }
     private void importNewDomToSAAJ(SOAPMessage doc, Element elem,
@@ -417,25 +407,18 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
                     Node newNode = DOMUtils.getDomElement(document.importNode(node, true));
                     elem.getOwnerDocument().getDocumentElement().getFirstChild().
                         getNextSibling().replaceChild(newNode, node);
-                    // Liberty Change Start
-                    List<WSSecurityEngineResult> encryptResults = new ArrayList<>();
-                    if (wsResult.getActionResults().containsKey(WSConstants.ENCR)) {
-                        encryptResults.addAll(wsResult.getActionResults().get(WSConstants.ENCR));
-                    }               
-                    // List<WSSecurityEngineResult> encryptResults = wsResult.getActionResults().get(WSConstants.ENCR);               
-                    if (!encryptResults.isEmpty()) {
-                        for (WSSecurityEngineResult result : encryptResults) {
+                    List<WSSecurityEngineResult> encryptResults = wsResult.getActionResults().get(WSConstants.ENCR);
+                    if (encryptResults != null) {
+                        for (WSSecurityEngineResult result : wsResult.getActionResults().get(WSConstants.ENCR)) {
                             List<WSDataRef> dataRefs = CastUtils.cast((List<?>)result
                                                                       .get(WSSecurityEngineResult.TAG_DATA_REF_URIS));
-                            if (dataRefs != null) {
-                                for (WSDataRef dataRef : dataRefs) {
-                                    if (dataRef.getProtectedElement() == node) {
-                                        dataRef.setProtectedElement((Element)newNode);
-                                    }
+                            for (WSDataRef dataRef : dataRefs) {
+                                if (dataRef.getProtectedElement() == node) {
+                                    dataRef.setProtectedElement((Element)newNode);
                                 }
                             }
                         }
-                    } // Liberty Change End
+                    }
 
                     List<WSSecurityEngineResult> signedResults = new ArrayList<>();
                     if (wsResult.getActionResults().containsKey(WSConstants.SIGN)) {
@@ -450,13 +433,11 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
                     for (WSSecurityEngineResult result : signedResults) {
                         List<WSDataRef> dataRefs = CastUtils.cast((List<?>)result
                                                                   .get(WSSecurityEngineResult.TAG_DATA_REF_URIS));
-                        if (dataRefs != null) { // Liberty Change Start
-                            for (WSDataRef dataRef :dataRefs) {
-                                if (dataRef.getProtectedElement() == node) {
-                                    dataRef.setProtectedElement((Element)newNode);
-                                }
+                        for (WSDataRef dataRef :dataRefs) {
+                            if (dataRef.getProtectedElement() == node) {
+                                dataRef.setProtectedElement((Element)newNode);
                             }
-                        } //Liberty Change End
+                        }
                     }
                 } catch (Exception ex) {
                     //just to the best try
@@ -649,38 +630,18 @@ public class WSS4JInInterceptor extends AbstractWSS4JInterceptor {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex);
         }
     }
-    @FFDCIgnore(ClassNotFoundException.class)
+
     protected CallbackHandler getCallback(RequestData reqData) throws WSSecurityException, TokenStoreException {
         Object o =
             SecurityUtils.getSecurityPropertyValue(SecurityConstants.CALLBACK_HANDLER,
                                                    (SoapMessage)reqData.getMsgContext());
-        CallbackHandler cbHandler = null;
-        ClassLoaderHolder origLoader = null;
+        CallbackHandler cbHandler;
         try {
             cbHandler = SecurityUtils.getCallbackHandler(o);
-        } catch (ClassNotFoundException cnfe) { //Liberty code change start
-            SoapMessage message = ((SoapMessage)reqData.getMsgContext());
-            boolean inboundAndRequester = (!MessageUtils.isOutbound(message)) && (MessageUtils.isRequestor(message));
-            boolean isAsync = message != null && message.getExchange() != null && !message.getExchange().isSynchronous();
-            if (inboundAndRequester && isAsync) {                
-                ClassLoader loader = ((SoapMessage)reqData.getMsgContext()).getExchange().getBus().getExtension(ClassLoader.class);
-                LOG.log(Level.FINE, "async and requester, we are in the cnfe path, tccl = " + loader);
-                if (loader != null) {
-                    origLoader = ClassLoaderUtils.setThreadContextClassloader(loader);
-                }
-                try {
-                    cbHandler = SecurityUtils.getCallbackHandler(o);
-                } catch (Exception ex2) {
-                    throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex2);
-                } finally {
-                    if (origLoader != null) {
-                        origLoader.reset();
-                    }
-                }
-            } //Liberty code change end
         } catch (Exception ex) {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex);
         }
+
         if (cbHandler == null) {
             try {
                 cbHandler = getPasswordCallbackHandler(reqData);

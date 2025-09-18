@@ -70,7 +70,7 @@ public class DefaultSpnegoServiceAction implements SpnegoServiceAction {
             LOG.debug("Error in obtaining a Kerberos token", e);
         }
 
-        return new byte[0];
+        return null;
     }
 
     /**

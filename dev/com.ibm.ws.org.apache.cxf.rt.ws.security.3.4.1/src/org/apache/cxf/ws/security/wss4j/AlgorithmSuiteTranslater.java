@@ -49,7 +49,7 @@ import org.apache.wss4j.policy.model.SupportingTokens;
 public final class AlgorithmSuiteTranslater {
     private static final Logger LOG = LogUtils.getLogger(AlgorithmSuiteTranslater.class); // Liberty Change
 
-    
+    // Liberty Change Start: Backport 4.x
     private final Map<String, Object> customAlgSuiteProperties;
 
     public AlgorithmSuiteTranslater() {
@@ -59,6 +59,7 @@ public final class AlgorithmSuiteTranslater {
     public AlgorithmSuiteTranslater(Map<String, Object> customAlgorithmSuiteProperties) {
         this.customAlgSuiteProperties = customAlgorithmSuiteProperties;
     }
+    // Liberty Change End
 
     public void translateAlgorithmSuites(AssertionInfoMap aim, RequestData data) throws WSSecurityException {
         if (aim == null) {
@@ -110,6 +111,7 @@ public final class AlgorithmSuiteTranslater {
             if (algorithmSuite == null) {
                 algorithmSuite = new AlgorithmSuite();
             }
+    		// Liberty Change Start: Backport 4.x
             AlgorithmSuiteType customAlgSuite =
                     DefaultAlgorithmSuiteLoader.customize(cxfAlgorithmSuite.getAlgorithmSuiteType(),
                             customAlgSuiteProperties);
@@ -162,7 +164,7 @@ public final class AlgorithmSuiteTranslater {
             algorithmSuite.addDerivedKeyAlgorithm("http://www.w3.org/2021/04/xmldsig-more#hkdf");
             algorithmSuite.addKeyAgreementMethodAlgorithm(SPConstants.KA_ECDH_ES);
         }
-        LOG.info("@TJJ algorithmSuite =" + algorithmSuite);
+    	// Liberty Change End
         return algorithmSuite;
     }
 

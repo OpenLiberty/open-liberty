@@ -100,20 +100,6 @@ public class WSSecUsernameToken extends WSSecBase {
         }
     }
 
-    // Liberty Change Start: Add 4.1 method signature
-    /**
-     * Add a derived key to the UsernameToken
-     * @param iteration The number of iterations to use in deriving a key
-     */
-    public void addDerivedKey(int iteration) {
-        passwordType = null;
-        useDerivedKey = true;
-        if (iteration > 0) {
-            this.iteration = iteration;
-        }
-    }
-    // Liberty Change End
-    
     /**
      * Get the derived key.
      *
@@ -127,9 +113,7 @@ public class WSSecUsernameToken extends WSSecBase {
      */
     public byte[] getDerivedKey(byte[] saltValue) throws WSSecurityException {
         if (ut == null || !useDerivedKey) {
-        	 // Liberty Change Start: return empty byte array
-        	 return new byte[0];
-        	 // Liberty Change End
+            return null;
         }
         if (passwordsAreEncoded) {
             return UsernameTokenUtil.generateDerivedKey(org.apache.xml.security.utils.XMLUtils.decode(password),

@@ -19,16 +19,19 @@
 
 package org.apache.wss4j.common.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * The abstraction this class provides is a push down stack of variable
- * length frames of prefix to namespace mappings. Used for keeping track
+ * length frames of prefix to namespace mappings.  Used for keeping track
  * of what namespaces are active at any given point as an XML document is
  * traversed or produced.
  * <p/>
  * From a performance point of view, this data will both be modified frequently
  * (at a minimum, there will be one push and pop per XML element processed),
  * and scanned frequently (many of the "good" mappings will be at the bottom
- * of the stack). The one saving grace is that the expected maximum
+ * of the stack).  The one saving grace is that the expected maximum
  * cardinalities of the number of frames and the number of total mappings
  * is only in the dozens, representing the nesting depth of an XML document
  * and the number of active namespaces at any point in the processing.
@@ -101,7 +104,22 @@ public class NSStack {
             LOG.trace("NSPop (" + stack.length + ")");
         }
     }
-
+	// Liberty Change Start: Backport 4.x
+    /**
+     * Return a copy of the current frame.  Returns null if none are present.
+     */
+    public List<Mapping> cloneFrame() {
+        if (stack[top] == null) {
+            return null;
+        }
+        List<Mapping> clone = new ArrayList<>();
+        for (Mapping map = topOfFrame(); map != null; map = next()) {
+            clone.add(map);
+        }
+        return clone;
+    }
+	// Liberty Change End
+	
     /**
      * Remove all mappings from the current frame.
      */
@@ -113,8 +131,8 @@ public class NSStack {
 
     /**
      * Reset the embedded iterator in this class to the top of the current
-     * (i.e., last) frame. Note that this is not threadsafe, nor does it
-     * provide multiple iterators, so don't use this recursively. Nor
+     * (i.e., last) frame.  Note that this is not threadsafe, nor does it
+     * provide multiple iterators, so don't use this recursively.  Nor
      * should you modify the stack while iterating over it.
      */
     public Mapping topOfFrame() {
@@ -139,7 +157,7 @@ public class NSStack {
 
     /**
      * Add a mapping for a namespaceURI to the specified prefix to the top
-     * frame in the stack. If the prefix is already mapped in that frame,
+     * frame in the stack.  If the prefix is already mapped in that frame,
      * remap it to the (possibly different) namespaceURI.
      */
     public void add(String namespaceURI, String prefix) {
@@ -166,10 +184,10 @@ public class NSStack {
     }
 
     /**
-     * Return an active prefix for the given namespaceURI. NOTE : This
+     * Return an active prefix for the given namespaceURI.  NOTE : This
      * may return null even if the namespaceURI was actually mapped further
      * up the stack IF the prefix which was used has been repeated further
-     * down the stack. I.e.:
+     * down the stack.  I.e.:
      * <p/>
      * <pre:outer xmlns:pre="namespace">
      * <pre:inner xmlns:pre="otherNamespace">

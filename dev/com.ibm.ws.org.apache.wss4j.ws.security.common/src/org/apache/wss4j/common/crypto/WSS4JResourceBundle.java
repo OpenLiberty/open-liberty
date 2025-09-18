@@ -23,10 +23,9 @@ import java.util.Enumeration;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
 import org.apache.xml.security.utils.Constants;
 import org.apache.xml.security.utils.I18n;
-
-import com.ibm.ws.ffdc.annotation.FFDCIgnore; //Liberty code change
 
 /**
  * ResourceBundle for WSS4J
@@ -60,7 +59,6 @@ public class WSS4JResourceBundle extends ResourceBundle {
     }
 
     @Override
-    @FFDCIgnore(MissingResourceException.class) //Liberty code change
     protected Object handleGetObject(String key) {
         Object value = null;
         try {

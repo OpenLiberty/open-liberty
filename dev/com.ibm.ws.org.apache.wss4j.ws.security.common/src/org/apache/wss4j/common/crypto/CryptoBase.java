@@ -340,7 +340,7 @@ public abstract class CryptoBase implements Crypto {
             LOG.debug("The certificate is null so no constraints matching was possible");
             return false;
         }
-        String issuerDn = cert.getIssuerX500Principal().getName();
+        String issuerDn = cert.getIssuerDN().getName();
         return matchesName(issuerDn, issuerDNPatterns);
     }
 
@@ -393,7 +393,7 @@ public abstract class CryptoBase implements Crypto {
     protected byte[] getNameConstraints(final X509Certificate cert) throws WSSecurityException {
         byte[] bytes = cert.getExtensionValue(NAME_CONSTRAINTS_OID);
         if (bytes == null || bytes.length <= 0) {
-            return new byte[0];
+            return null;
         }
 
         switch (bytes[0]) {

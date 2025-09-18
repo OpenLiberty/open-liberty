@@ -102,7 +102,7 @@ public class SignatureDerivedAction extends AbstractDerivedAction implements Act
                 symmetricKey = keyGen.generateKey();
             }
 
-            tokenElement = setupEncryptedKeyTokenReference(reqData, signatureToken, wsSign, symmetricKey);
+            tokenElement = setupEncryptedKeyTokenReference(reqData, signatureToken, wsSign, passwordCallback, doc, symmetricKey);
         } else if ("SecurityContextToken".equals(derivedKeyTokenReference)) {
             tokenElement = setupSCTTokenReference(reqData, signatureToken, wsSign, passwordCallback, doc);
         } else {
@@ -170,14 +170,16 @@ public class SignatureDerivedAction extends AbstractDerivedAction implements Act
 
     private Element setupEncryptedKeyTokenReference(
                                         RequestData reqData, SignatureActionToken signatureToken,
-                                        WSSecDKSign wsSign, SecretKey symmetricKey
+                                        WSSecDKSign wsSign, WSPasswordCallback passwordCallback,
+                                        Document doc, SecretKey symmetricKey
     ) throws WSSecurityException {
 
         if (symmetricKey == null) {
             setupEKReference(wsSign, reqData.getEncryptionToken());
             return null;
         } else {
-            return setupEKReference(wsSign, reqData.getSecHeader(), signatureToken, null, null, symmetricKey);
+            return setupEKReference(wsSign, reqData.getSecHeader(), passwordCallback, signatureToken,
+                                              reqData.isUse200512Namespace(), doc, null, null, symmetricKey);
         }
     }
 

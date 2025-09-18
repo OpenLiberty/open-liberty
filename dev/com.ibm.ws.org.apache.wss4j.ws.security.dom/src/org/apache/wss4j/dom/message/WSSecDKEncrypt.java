@@ -29,7 +29,6 @@ import org.apache.wss4j.common.derivedKey.ConversationConstants;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.common.token.Reference;
 import org.apache.wss4j.common.token.SecurityTokenReference;
-import org.apache.wss4j.common.util.FIPSUtils;
 import org.apache.wss4j.common.util.KeyUtils;
 import org.apache.wss4j.dom.WSConstants;
 import org.apache.wss4j.dom.util.WSSecurityUtil;
@@ -45,8 +44,7 @@ import org.w3c.dom.Node;
  */
 public class WSSecDKEncrypt extends WSSecDerivedKeyBase {
 
-    private String symEncAlgo = FIPSUtils.isFIPSEnabled()
-        ? WSConstants.AES_128_GCM : WSConstants.AES_128;
+    private String symEncAlgo = WSConstants.AES_128;
     private int derivedKeyLength = -1;
 
     private List<Element> attachmentEncryptedDataElements;

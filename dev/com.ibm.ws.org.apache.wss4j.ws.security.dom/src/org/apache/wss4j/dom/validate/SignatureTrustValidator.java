@@ -55,19 +55,16 @@ public class SignatureTrustValidator implements Validator {
         X509Certificate[] certs = credential.getCertificates();
         PublicKey publicKey = credential.getPublicKey();
         Crypto crypto = getCrypto(data);
+        if (crypto == null) {
+            throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "noSigCryptoFile");
+        }
 
         if (certs != null && certs.length > 0) {
             validateCertificates(certs);
-            if (crypto == null) {
-                throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "noSigCryptoFile");
-            }
             verifyTrustInCerts(certs, crypto, data, data.isRevocationEnabled());
             return credential;
         }
         if (publicKey != null) {
-            if (crypto == null) {
-                throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "noSigCryptoFile");
-            }
             validatePublicKey(publicKey, crypto);
             return credential;
         }

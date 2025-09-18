@@ -320,7 +320,10 @@ public class Timestamp {
         if (!compare(timestamp.getCreated(), getCreated())) {
             return false;
         }
-        return compare(timestamp.getExpires(), getExpires());
+        if (!compare(timestamp.getExpires(), getExpires())) {
+            return false;
+        }
+        return true;
     }
 
     private boolean compare(Instant item1, Instant item2) {

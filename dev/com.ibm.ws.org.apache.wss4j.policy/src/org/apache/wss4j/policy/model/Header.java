@@ -52,8 +52,12 @@ public class Header {
             return false;
         }
 
-        return !(namespace != null && !namespace.equals(that.namespace)
-            || namespace == null && that.namespace != null);
+        if (namespace != null && !namespace.equals(that.namespace)
+            || namespace == null && that.namespace != null) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

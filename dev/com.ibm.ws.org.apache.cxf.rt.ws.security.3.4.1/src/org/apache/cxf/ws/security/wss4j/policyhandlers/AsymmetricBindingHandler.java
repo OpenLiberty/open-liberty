@@ -240,7 +240,7 @@ private void doSignBeforeEncrypt() {
 
             if (encToken != null) {
                 if (encToken.getToken() != null && !enc.isEmpty()) {
-                    final WSSecBase encr;
+                    final WSSecBase encr; // Liberty Change: Backport 4.x
                     if (encToken.getToken().getDerivedKeys() == DerivedKeys.RequireDerivedKeys) {
                         encr = doEncryptionDerived(encToken, enc);
                     } else {

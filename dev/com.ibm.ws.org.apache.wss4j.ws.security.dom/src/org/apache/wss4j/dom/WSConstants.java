@@ -341,12 +341,6 @@ public final class WSConstants extends WSS4JConstants {
      */
     public static final int ISSUER_SERIAL_QUOTE_FORMAT = 15;
 
-    /**
-     * <code>X509_SKI</code> is used to set a ds:X509Data/ds:KeyValue element to refer to
-     * the base64 encoded plain value of a X509 V.3 SubjectKeyIdentifier extension
-     */
-    public static final int X509_SKI = 16;
-
     /*
      * The following values are bits that can be combined to form a set.
      * Be careful when adding new constants.

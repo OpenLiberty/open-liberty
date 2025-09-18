@@ -341,24 +341,6 @@ public class UsernameToken {
         elementSalt.appendChild(doc.createTextNode(org.apache.xml.security.utils.XMLUtils.encodeToString(saltValue)));
         element.appendChild(elementSalt);
     }
-    
-    // Liberty Change Start: keep 2.3.4 method signature
-    /**
-     * Adds a Salt element to this UsernameToken.
-     *
-     * @param doc The Document for the UsernameToken
-     * @param saltValue The salt to add.
-     */
-    public void addSalt(Document doc, byte[] saltValue) {
-        elementSalt =
-            doc.createElementNS(
-                WSConstants.WSSE11_NS, WSConstants.WSSE11_PREFIX + ":" + WSConstants.SALT_LN
-            );
-        XMLUtils.setNamespace(element, WSConstants.WSSE11_NS, WSConstants.WSSE11_PREFIX);
-        elementSalt.appendChild(doc.createTextNode(org.apache.xml.security.utils.XMLUtils.encodeToString(saltValue)));
-        element.appendChild(elementSalt);
-    }
-    // Liberty Change End
 
     /**
      * Creates and adds a Iteration element to this UsernameToken

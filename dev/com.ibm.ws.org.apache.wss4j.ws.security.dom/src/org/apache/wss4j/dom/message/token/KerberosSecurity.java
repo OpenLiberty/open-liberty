@@ -87,9 +87,12 @@ public class KerberosSecurity extends BinarySecurity {
      */
     public boolean isV5ApReq() {
         String type = getValueType();
-        return WSConstants.WSS_KRB_V5_AP_REQ.equals(type)
+        if (WSConstants.WSS_KRB_V5_AP_REQ.equals(type)
             || WSConstants.WSS_KRB_V5_AP_REQ1510.equals(type)
-            || WSConstants.WSS_KRB_V5_AP_REQ4120.equals(type);
+            || WSConstants.WSS_KRB_V5_AP_REQ4120.equals(type)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -97,9 +100,12 @@ public class KerberosSecurity extends BinarySecurity {
      */
     public boolean isGssV5ApReq() {
         String type = getValueType();
-        return WSConstants.WSS_GSS_KRB_V5_AP_REQ.equals(type)
+        if (WSConstants.WSS_GSS_KRB_V5_AP_REQ.equals(type)
             || WSConstants.WSS_GSS_KRB_V5_AP_REQ1510.equals(type)
-            || WSConstants.WSS_GSS_KRB_V5_AP_REQ4120.equals(type);
+            || WSConstants.WSS_GSS_KRB_V5_AP_REQ4120.equals(type)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -297,12 +303,15 @@ public class KerberosSecurity extends BinarySecurity {
      * @return true if the valueType represents a Kerberos Token
      */
     public static boolean isKerberosToken(String valueType) {
-        return WSConstants.WSS_KRB_V5_AP_REQ.equals(valueType)
+        if (WSConstants.WSS_KRB_V5_AP_REQ.equals(valueType)
             || WSConstants.WSS_GSS_KRB_V5_AP_REQ.equals(valueType)
             || WSConstants.WSS_KRB_V5_AP_REQ1510.equals(valueType)
             || WSConstants.WSS_GSS_KRB_V5_AP_REQ1510.equals(valueType)
             || WSConstants.WSS_KRB_V5_AP_REQ4120.equals(valueType)
-            || WSConstants.WSS_GSS_KRB_V5_AP_REQ4120.equals(valueType);
+            || WSConstants.WSS_GSS_KRB_V5_AP_REQ4120.equals(valueType)) {
+            return true;
+        }
+        return false;
     }
 
     @Override

@@ -28,8 +28,8 @@ import java.util.logging.Logger;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.xml.namespace.QName;
-
 import javax.xml.soap.SOAPException;
+
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
@@ -38,7 +38,6 @@ import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.rt.security.utils.SecurityUtils;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.SecurityConstants;
-import org.apache.cxf.ws.security.policy.custom.DefaultAlgorithmSuiteLoader;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreException;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreUtils;
@@ -115,10 +114,6 @@ public class StaxSymmetricBindingHandler extends AbstractStaxBindingHandler {
         AssertionInfoMap aim = getMessage().get(AssertionInfoMap.class);
         configureTimestamp(aim);
         assertPolicy(sbinding.getName());
-
-        //apply custom parameters (if needed)
-        DefaultAlgorithmSuiteLoader.customize(sbinding.getAlgorithmSuite().getAlgorithmSuiteType(),
-                getMessage());
 
         String asymSignatureAlgorithm =
             (String)getMessage().getContextualProperty(SecurityConstants.ASYMMETRIC_SIGNATURE_ALGORITHM);

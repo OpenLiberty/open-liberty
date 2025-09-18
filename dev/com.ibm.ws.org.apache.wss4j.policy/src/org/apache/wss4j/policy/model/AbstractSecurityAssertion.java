@@ -90,8 +90,12 @@ public abstract class AbstractSecurityAssertion implements Assertion {
             return false;
         }
 
-        return !(version != null && !version.equals(that.version)
-            || version == null && that.version != null);
+        if (version != null && !version.equals(that.version)
+            || version == null && that.version != null) {
+            return false;
+        }
+
+        return true;
     }
 
     @Override

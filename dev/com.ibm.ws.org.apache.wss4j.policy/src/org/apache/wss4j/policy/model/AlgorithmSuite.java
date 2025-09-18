@@ -220,38 +220,8 @@ public class AlgorithmSuite extends AbstractSecurityAssertion implements PolicyC
         private String encryptionDigest;
         private String symmetricSignature = SPConstants.HMAC_SHA1;
         private String asymmetricSignature = SPConstants.RSA_SHA1;
-        
-        // Liberty Change Start: 
-        private String keyAgreementAlgorithm;
-        private int maximumEllipticCurveKeyLength = 512;
-        private int minimumEllipticCurveKeyLength = 160;
-        
-        public AlgorithmSuiteType(String name, String digest, String encryption, String symmetricKeyWrap, //NOPMD
-                String asymmetricKeyWrap, String encryptionKeyDerivation,
-                String signatureKeyDerivation,String keyAgreementAlgorithm, 
-                int encryptionDerivedKeyLength,int signatureDerivedKeyLength, int minimumSymmetricKeyLength,
-                int maximumSymmetricKeyLength, int minimumAsymmetricKeyLength,
-                int maximumAsymmetricKeyLength, int minimumEllipticCurveKeyLength, int maximumEllipticCurveKeyLength) {
-			this.name = name;
-			this.digest = digest;
-			this.encryption = encryption;
-			this.symmetricKeyWrap = symmetricKeyWrap;
-			this.asymmetricKeyWrap = asymmetricKeyWrap;
-			this.encryptionKeyDerivation = encryptionKeyDerivation;
-			this.signatureKeyDerivation = signatureKeyDerivation;
-			this.keyAgreementAlgorithm = keyAgreementAlgorithm;
-			this.encryptionDerivedKeyLength = encryptionDerivedKeyLength;
-			this.signatureDerivedKeyLength = signatureDerivedKeyLength;
-			this.minimumSymmetricKeyLength = minimumSymmetricKeyLength;
-			this.maximumSymmetricKeyLength = maximumSymmetricKeyLength;
-			this.minimumAsymmetricKeyLength = minimumAsymmetricKeyLength;
-			this.maximumAsymmetricKeyLength = maximumAsymmetricKeyLength;
-			this.minimumEllipticCurveKeyLength = minimumEllipticCurveKeyLength;
-			this.maximumEllipticCurveKeyLength = maximumEllipticCurveKeyLength;
-        }
-        // Liberty Change End
 
-        public AlgorithmSuiteType(String name, String digest, String encryption, String symmetricKeyWrap, //NOPMD
+        public AlgorithmSuiteType(String name, String digest, String encryption, String symmetricKeyWrap,
                                   String asymmetricKeyWrap, String encryptionKeyDerivation,
                                   String signatureKeyDerivation, int encryptionDerivedKeyLength,
                                   int signatureDerivedKeyLength, int minimumSymmetricKeyLength,
@@ -263,7 +233,7 @@ public class AlgorithmSuite extends AbstractSecurityAssertion implements PolicyC
                  minimumAsymmetricKeyLength, maximumAsymmetricKeyLength);
         }
 
-        public AlgorithmSuiteType(String name, String digest, String encryption, String symmetricKeyWrap, //NOPMD
+        public AlgorithmSuiteType(String name, String digest, String encryption, String symmetricKeyWrap,
                                   String asymmetricKeyWrap, String encryptionKeyDerivation,
                                   String signatureKeyDerivation, String symmetricSignature,
                                   String asymmetricSignature, int encryptionDerivedKeyLength,
@@ -366,12 +336,16 @@ public class AlgorithmSuite extends AbstractSecurityAssertion implements PolicyC
                 return false;
             }
 
-            return !(encryptionDerivedKeyLength != that.encryptionDerivedKeyLength
+            if (encryptionDerivedKeyLength != that.encryptionDerivedKeyLength
                 || signatureDerivedKeyLength != that.signatureDerivedKeyLength
                 || minimumSymmetricKeyLength != that.minimumSymmetricKeyLength
                 || maximumSymmetricKeyLength != that.maximumSymmetricKeyLength
                 || minimumAsymmetricKeyLength != that.minimumAsymmetricKeyLength
-                || maximumAsymmetricKeyLength != that.maximumAsymmetricKeyLength);
+                || maximumAsymmetricKeyLength != that.maximumAsymmetricKeyLength) {
+                return false;
+            }
+
+            return true;
         }
 
         @Override
@@ -432,49 +406,25 @@ public class AlgorithmSuite extends AbstractSecurityAssertion implements PolicyC
         public String getDigest() {
             return digest;
         }
-        
-        public void setDigest(String digest) {
-            this.digest = digest;
-        }
 
         public String getEncryption() {
             return encryption;
-        }
-        
-        public void setEncryption(String encryption) {
-            this.encryption = encryption;
         }
 
         public String getSymmetricKeyWrap() {
             return symmetricKeyWrap;
         }
-        
-        public void setSymmetricKeyWrap(String symmetricKeyWrap) {
-            this.symmetricKeyWrap = symmetricKeyWrap;
-        }
 
         public String getAsymmetricKeyWrap() {
             return asymmetricKeyWrap;
-        }
-        
-        public void setAsymmetricKeyWrap(String asymmetricKeyWrap) {
-            this.asymmetricKeyWrap = asymmetricKeyWrap;
         }
 
         public String getEncryptionKeyDerivation() {
             return encryptionKeyDerivation;
         }
-        
-        public void setEncryptionKeyDerivation(String encryptionKeyDerivation) {
-            this.encryptionKeyDerivation = encryptionKeyDerivation;
-        }
 
         public String getSignatureKeyDerivation() {
             return signatureKeyDerivation;
-        }
-        
-        public void setSignatureKeyDerivation(String signatureKeyDerivation) {
-            this.signatureKeyDerivation = signatureKeyDerivation;
         }
 
         public String getSymmetricSignature() {
@@ -496,49 +446,25 @@ public class AlgorithmSuite extends AbstractSecurityAssertion implements PolicyC
         public int getEncryptionDerivedKeyLength() {
             return encryptionDerivedKeyLength;
         }
-        
-        public void getEncryptionDerivedKeyLength(int encryptionDerivedKeyLength) {
-            this.encryptionDerivedKeyLength = encryptionDerivedKeyLength;
-        }
 
         public int getSignatureDerivedKeyLength() {
             return signatureDerivedKeyLength;
         }
-        
-        public void setSignatureDerivedKeyLength(int signatureDerivedKeyLength) {
-            this.signatureDerivedKeyLength = signatureDerivedKeyLength;
-        }
 
         public int getMinimumSymmetricKeyLength() {
             return minimumSymmetricKeyLength;
-        }
-        
-        public void setMinimumSymmetricKeyLength(int minimumSymmetricKeyLength) {
-            this.minimumSymmetricKeyLength = minimumSymmetricKeyLength;
         }
 
         public int getMaximumSymmetricKeyLength() {
             return maximumSymmetricKeyLength;
         }
 
-        public void setMaximumSymmetricKeyLength(int maximumSymmetricKeyLength) {
-            this.maximumSymmetricKeyLength = maximumSymmetricKeyLength;
-        }
-        
         public int getMinimumAsymmetricKeyLength() {
             return minimumAsymmetricKeyLength;
-        }
-        
-        public void setMinimumAsymmetricKeyLength(int minimumAsymmetricKeyLength) {
-            this.minimumAsymmetricKeyLength = minimumAsymmetricKeyLength;
         }
 
         public int getMaximumAsymmetricKeyLength() {
             return maximumAsymmetricKeyLength;
-        }
-        
-        public void setMaximumAsymmetricKeyLength(int maximumAsymmetricKeyLength) {
-            this.maximumAsymmetricKeyLength = maximumAsymmetricKeyLength;
         }
 
         public void setNamespace(String ns) {
@@ -564,32 +490,6 @@ public class AlgorithmSuite extends AbstractSecurityAssertion implements PolicyC
         public String getEncryptionDigest() {
             return encryptionDigest;
         }
-        
-        // Liberty Change Start: Add getters/setters for KeyAgreement parameters
-        public void setMinimumEllipticCurveKeyLength(int minimumEllipticCurveKeyLength) {
-    		this.minimumEllipticCurveKeyLength = minimumEllipticCurveKeyLength;
-        }
-
-        public int getMinimumEllipticCurveKeyLength() {
-    		return minimumEllipticCurveKeyLength;
-        }
-        
-        public void setMaximumEllipticCurveKeyLength(int maximumEllipticCurveKeyLength) {
-    		this.maximumEllipticCurveKeyLength = maximumEllipticCurveKeyLength;
-        }
-
-        public int getMaximumEllipticCurveKeyLength() {
-    		return maximumEllipticCurveKeyLength;
-        }
-
-        public void setKeyAgreement(String keyAgreementAlgorithm) {
-        	this.keyAgreementAlgorithm = keyAgreementAlgorithm;
-        }
-
-        public String getKeyAgreement() {
-        	return keyAgreementAlgorithm;
-        }
-        // Liberty Change End
     }
 
     public enum XPathType {

@@ -257,26 +257,30 @@ public class WSSSignatureEndingOutputProcessor extends AbstractSignatureEndingOu
         loop:
         while (!xmlSecEventDeque.isEmpty()) {
             XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();
-            if (XMLStreamConstants.START_ELEMENT == xmlSecEvent.getEventType()
-                    && WSSUtils.isSecurityHeaderElement(xmlSecEvent, actor)) {
-                OutputProcessorUtils.updateSecurityHeaderOrder(
-                        outputProcessorChain, WSSConstants.TAG_dsig_Signature, getAction(), true);
+            switch (xmlSecEvent.getEventType()) {
+                case XMLStreamConstants.START_ELEMENT:
+                    if (WSSUtils.isSecurityHeaderElement(xmlSecEvent, actor)) {
 
-                List<SecurityHeaderOrder> securityHeaderOrderList =
-                        outputProcessorChain.getSecurityContext().getAsList(SecurityHeaderOrder.class);
-                List<SecurityHeaderOrder> tmpList = null;
-                if (securityHeaderOrderList != null) {
-                    tmpList = new ArrayList<>(securityHeaderOrderList);
-                    securityHeaderOrderList.clear();
-                }
+                        OutputProcessorUtils.updateSecurityHeaderOrder(
+                                outputProcessorChain, WSSConstants.TAG_dsig_Signature, getAction(), true);
 
-                outputProcessorChain.reset();
-                outputProcessorChain.processEvent(xmlSecEvent);
+                        List<SecurityHeaderOrder> securityHeaderOrderList =
+                                outputProcessorChain.getSecurityContext().getAsList(SecurityHeaderOrder.class);
+                        List<SecurityHeaderOrder> tmpList = null;
+                        if (securityHeaderOrderList != null) {
+                            tmpList = new ArrayList<>(securityHeaderOrderList);
+                            securityHeaderOrderList.clear();
+                        }
 
-                if (securityHeaderOrderList != null) {
-                    securityHeaderOrderList.addAll(tmpList);
-                }
-                break loop;
+                        outputProcessorChain.reset();
+                        outputProcessorChain.processEvent(xmlSecEvent);
+
+                        if (securityHeaderOrderList != null) {
+                            securityHeaderOrderList.addAll(tmpList);
+                        }
+                        break loop;
+                    }
+                    break;
             }
             outputProcessorChain.reset();
             outputProcessorChain.processEvent(xmlSecEvent);

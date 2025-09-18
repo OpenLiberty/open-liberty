@@ -21,7 +21,6 @@ package org.apache.wss4j.dom.message;
 
 import java.security.NoSuchProviderException;
 import java.security.Provider;
-import java.security.PublicKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -47,7 +46,6 @@ import org.apache.wss4j.common.WSEncryptionPart;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.crypto.CryptoType;
-import org.apache.wss4j.common.crypto.DERDecoder;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.common.token.BinarySecurity;
 import org.apache.wss4j.common.token.DOMX509Data;
@@ -113,12 +111,8 @@ public class WSSecSignature extends WSSecSignatureBase {
     private Provider signatureProvider;
 
     public WSSecSignature(WSSecHeader securityHeader) {
-        this(securityHeader, null);
-    }
-
-    public WSSecSignature(WSSecHeader securityHeader, Provider provider) {
         super(securityHeader);
-        init(provider);
+        init(null);
     }
 
     public WSSecSignature(Document doc) {
@@ -761,7 +755,7 @@ public class WSSecSignature extends WSSecSignatureBase {
     }
 
     /**
-     * Get the id of the BST generated during <code>prepare()</code>.
+     * Get the id of the BST generated  during <code>prepare()</code>.
      *
      * @return Returns the the value of wsu:Id attribute of the
      * BinaruSecurityToken element.
@@ -889,12 +883,6 @@ public class WSSecSignature extends WSSecSignatureBase {
                     sigAlgo = WSConstants.RSA;
                 } else if (pubKeyAlgo.equalsIgnoreCase("EC")) {
                     sigAlgo = WSConstants.ECDSA_SHA256;
-                } else if (pubKeyAlgo.equalsIgnoreCase("Ed25519")) {
-                    sigAlgo = WSConstants.ED25519;
-                } else if (pubKeyAlgo.equalsIgnoreCase("ED448")) {
-                    sigAlgo = WSConstants.ED448;
-                } else if (pubKeyAlgo.equalsIgnoreCase("EdDSA")) {
-                    sigAlgo = getSigAlgorithmForEdDSAKey(certs[0].getPublicKey());
                 } else {
                     throw new WSSecurityException(
                         WSSecurityException.ErrorCode.FAILURE,
@@ -904,51 +892,6 @@ public class WSSecSignature extends WSSecSignatureBase {
             }
         }
         return certs;
-    }
-
-    /**
-     * The method returns EdDSA signature algorithm URI for public key type (Ed25519 or Ed448).
-     *
-     * @param publicKey the public key to get the algorithm from
-     * @return the signature algorithm URI (ED25519 or ED448) for the EdDSA public key
-     * @throws WSSecurityException if the algorithm cannot be determined
-     */
-    private static String getSigAlgorithmForEdDSAKey(PublicKey publicKey) throws WSSecurityException {
-
-        if (!"x.509".equalsIgnoreCase(publicKey.getFormat())) {
-            throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "unknownAlgorithm",
-                    new Object[]{"Unknown cert format!"});
-        }
-
-        DERDecoder decoder = new DERDecoder(publicKey.getEncoded());
-        // find TYPE_OBJECT_IDENTIFIER (OID) for the public key algorithm
-        decoder.expect(decoder.TYPE_SEQUENCE);
-        decoder.getLength();
-        decoder.expect(decoder.TYPE_SEQUENCE);
-        decoder.getLength();
-        decoder.expect(decoder.TYPE_OBJECT_IDENTIFIER);
-        int size = decoder.getLength();
-        if (size != 3) {
-            LOG.debug("Invalid ECDSA Public key OID byte size: [{}]", size);
-            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, "invalidCert");
-        }
-
-        //  The first two nodes 1.3 of the OID are encoded onto a single byte. The first node is multiplied by 40
-        //  and the result is added to the value of the second node 3 which gives 43 or 0x2B.
-        decoder.expect(43);
-        // The second byte is expected 101 from the OID 1.3.101 (EdDSA)
-        decoder.expect(101);
-        // The third byte defines algorithm 112 is for Ed25519 and 113 is for Ed448
-        byte algDef = decoder.getBytes(1)[0];
-        switch (algDef) {
-            case 112:
-                return WSConstants.ED25519;
-            case 113:
-                return WSConstants.ED448;
-            default:
-                throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, "unknownAlgorithm",
-                        new Object[]{"Invalid ECDSA Public key OID!"});
-        }
     }
 
     public boolean isIncludeSignatureToken() {

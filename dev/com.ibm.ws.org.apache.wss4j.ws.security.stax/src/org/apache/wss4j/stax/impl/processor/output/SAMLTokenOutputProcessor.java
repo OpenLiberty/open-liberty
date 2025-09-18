@@ -335,7 +335,7 @@ public class SAMLTokenOutputProcessor extends AbstractOutputProcessor {
                             return key;
                         }
                         byte[] secretKey = getSecretKeyUsingCallback();
-                        if (secretKey != null && secretKey.length > 0) {
+                        if (secretKey != null) {
                             String algoFamily = JCEAlgorithmMapper.getJCEKeyAlgorithmFromURI(algorithmURI);
                             key = new SecretKeySpec(secretKey, algoFamily);
                             setSecretKey(algorithmURI, key);
@@ -398,7 +398,7 @@ public class SAMLTokenOutputProcessor extends AbstractOutputProcessor {
                 }
             }
 
-            return new X509Certificate[0];
+            return null;
         }
 
 
@@ -413,7 +413,7 @@ public class SAMLTokenOutputProcessor extends AbstractOutputProcessor {
                 }
             }
 
-            return new byte[0];
+            return null;
         }
 
         @Override
@@ -488,12 +488,15 @@ public class SAMLTokenOutputProcessor extends AbstractOutputProcessor {
         }
 
         private boolean includeBST() {
-            return senderVouches
+            if (senderVouches
                 && getSecurityProperties().getSignatureKeyIdentifiers().contains(
                     WSSecurityTokenConstants.KEYIDENTIFIER_SECURITY_TOKEN_DIRECT_REFERENCE)
                 && securityToken != null
                 && !(WSSConstants.SAML_TOKEN_SIGNED.equals(action)
-                    && ((WSSSecurityProperties)getSecurityProperties()).isIncludeSignatureToken());
+                    && ((WSSSecurityProperties)getSecurityProperties()).isIncludeSignatureToken())) {
+                return true;
+            }
+            return false;
         }
     }
 

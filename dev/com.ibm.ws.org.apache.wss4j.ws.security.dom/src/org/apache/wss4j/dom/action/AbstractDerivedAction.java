@@ -121,7 +121,10 @@ public abstract class AbstractDerivedAction {
 
     protected Element setupEKReference(WSSecDerivedKeyBase derivedKeyBase,
                                        WSSecHeader securityHeader,
+                                        WSPasswordCallback passwordCallback,
                                         SignatureEncryptionActionToken actionToken,
+                                        boolean use200512Namespace,
+                                        Document doc,
                                         String keyTransportAlgorithm,
                                         String mgfAlgorithm,
                                         SecretKey symmetricKey) throws WSSecurityException {

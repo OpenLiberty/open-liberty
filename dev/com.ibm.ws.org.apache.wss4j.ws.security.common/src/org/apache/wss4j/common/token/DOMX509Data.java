@@ -59,20 +59,13 @@ public final class DOMX509Data {
     }
 
     /**
-     * Constructor.
-     */
-    public DOMX509Data(Document doc, DOMX509SKI x509SKI) {
-        element =
-                doc.createElementNS(WSS4JConstants.SIG_NS, "ds:X509Data");
-
-        element.appendChild(x509SKI.getElement());
-    }
-
-    /**
      * Return true if this X509Data element contains a X509IssuerSerial element
      */
     public boolean containsIssuerSerial() {
-        return x509IssuerSerial != null;
+        if (x509IssuerSerial == null) {
+            return false;
+        }
+        return true;
     }
 
     /**

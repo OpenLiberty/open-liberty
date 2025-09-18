@@ -158,7 +158,10 @@ public class Reference {
         if (!compare(getURI(), reference.getURI())) {
             return false;
         }
-        return compare(getValueType(), reference.getValueType());
+        if (!compare(getValueType(), reference.getValueType())) {
+            return false;
+        }
+        return true;
     }
 
     private boolean compare(String item1, String item2) {

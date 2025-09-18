@@ -92,7 +92,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         this.phase = phase;
     }
 
-    @Trivial
+    @Trivial // Liberty Change
     public Object getOption(String key) {
         return properties.get(key);
     }
@@ -233,7 +233,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         RequestData reqData
     ) throws WSSecurityException {
         Message message = (Message)reqData.getMsgContext();
-        ClassLoader classLoader = this.getClassLoader();
+        ClassLoader classLoader = this.getClassLoader(reqData.getMsgContext());
         PasswordEncryptor passwordEncryptor = getPasswordEncryptor(reqData);
         return
             WSS4JUtils.loadCryptoFromPropertiesFile(

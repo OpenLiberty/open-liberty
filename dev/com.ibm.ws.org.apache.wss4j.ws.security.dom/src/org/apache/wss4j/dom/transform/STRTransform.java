@@ -37,6 +37,7 @@ import javax.xml.crypto.dsig.TransformException;
 import javax.xml.crypto.dsig.TransformService;
 import javax.xml.crypto.dsig.spec.TransformParameterSpec;
 
+import org.apache.jcp.xml.dsig.internal.dom.ApacheNodeSetData;
 import org.apache.wss4j.common.bsp.BSPEnforcer;
 import org.apache.wss4j.common.token.PKIPathSecurity;
 import org.apache.wss4j.common.token.SecurityTokenReference;
@@ -46,7 +47,6 @@ import org.apache.wss4j.dom.WSConstants;
 import org.apache.wss4j.dom.WSDocInfo;
 import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.signature.XMLSignatureStreamInput;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -160,8 +160,8 @@ public class STRTransform extends TransformService {
                 }
             } else {
                 try {
-                    XMLSignatureInput xmlSignatureInput = //NOPMD
-                        new XMLSignatureStreamInput(((OctetStreamData)data).getOctetStream());
+                    XMLSignatureInput xmlSignatureInput =
+                        new XMLSignatureInput(((OctetStreamData)data).getOctetStream());
                     str = (Element)xmlSignatureInput.getSubNode();
                 } catch (Exception ex) {
                     throw new TransformException(ex);
@@ -215,7 +215,7 @@ public class STRTransform extends TransformService {
             //
             if (os != null) {
                 canon.canonicalizeSubtree(dereferencedToken, "#default", true, os);
-                return null;
+                return new ApacheNodeSetData(new XMLSignatureInput((byte[])null));
             }
 
             try (ByteArrayOutputStream writer = new ByteArrayOutputStream()) {

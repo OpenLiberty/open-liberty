@@ -202,8 +202,11 @@ public class WSUsernameTokenPrincipalImpl implements java.io.Serializable, Usern
             : !this.createdTime.equals(that.getCreatedTime())) {
             return false;
         }
-        return this.passwordType == null ? that.getPasswordType() == null
-            : this.passwordType.equals(that.getPasswordType());
+        if (this.passwordType == null ? that.getPasswordType() != null
+            : !this.passwordType.equals(that.getPasswordType())) {
+            return false;
+        }
+        return true;
     }
 
     /**

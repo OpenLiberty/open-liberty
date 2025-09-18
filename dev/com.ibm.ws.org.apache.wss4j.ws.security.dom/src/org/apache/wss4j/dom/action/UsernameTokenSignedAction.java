@@ -68,12 +68,12 @@ public class UsernameTokenSignedAction implements Action {
         builder.setExpandXopInclude(reqData.isExpandXopInclude());
 
         int iterations = reqData.getDerivedKeyIterations();
-        builder.addDerivedKey(iterations);
+        boolean useMac = reqData.isUseDerivedKeyForMAC();
+        builder.addDerivedKey(useMac, iterations);
 
         builder.setUserInfo(reqData.getUsername(), passwordCallback.getPassword());
         builder.addCreated();
         builder.addNonce();
-        boolean useMac = reqData.isUseDerivedKeyForMAC();
         byte[] salt = UsernameTokenUtil.generateSalt(useMac);
         builder.prepare(salt);
 
