@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.wssecurity.cxf.validator;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,6 @@ import org.apache.wss4j.common.ext.WSSecurityException.ErrorCode;
 import org.apache.wss4j.dom.handler.RequestData;
 import org.apache.wss4j.common.saml.SamlAssertionWrapper;
 import org.apache.wss4j.dom.validate.Credential;
-import org.joda.time.DateTime;
 import org.opensaml.saml.common.SAMLVersion;
 
 import com.ibm.websphere.ras.Tr;
@@ -115,9 +116,9 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
      */
     @Override
     protected void checkConditions(SamlAssertionWrapper assertion) throws WSSecurityException {
-        DateTime validFrom = null;
-        DateTime validTill = null;
-        DateTime issueInstant = null;
+        Instant validFrom = null;
+        Instant validTill = null;
+        Instant issueInstant = null;
 
         if (assertion.getSamlVersion().equals(SAMLVersion.VERSION_20)
             && assertion.getSaml2().getConditions() != null) {
@@ -136,8 +137,8 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
         }
 
         if (validFrom != null) {
-            DateTime currentTime = new DateTime();
-            DateTime currentTimePlusSkew = currentTime.plusSeconds(iFutureTTL);
+            Instant currentTime = Instant.now();
+            Instant currentTimePlusSkew = currentTime.plusSeconds(iFutureTTL);
             if (validFrom.isAfter(currentTimePlusSkew)) {
                 // The current time is before the SAML token's NotBefore assertion value; this assertion is not yet valid
                 Tr.error(tc, "saml_token_not_yet_valid", validFrom, currentTime, iFutureTTL);
@@ -147,17 +148,17 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
 
         if (validTill != null) {
             // newly added the clockSkew
-            DateTime validTillPlusSkew = validTill.plusSeconds(iFutureTTL); // add the clockSkew
-            DateTime currentTime = new DateTime();
-            if (validTillPlusSkew.isBeforeNow()) {
+            Instant validTillPlusSkew = validTill.plusSeconds(iFutureTTL); // add the clockSkew
+            Instant currentTime = Instant.now();
+            if (validTillPlusSkew.isBefore(currentTime)) {
                 // SAML token has expired - the NotOnOrAfter time has passed
                 Tr.error(tc, "saml_token_expired", validTill, currentTime, iFutureTTL);
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "invalidSAMLsecurity");
             }
         } else { // move here since findbug complains
             if (issueInstant != null) {
-                DateTime currentTime = new DateTime();
-                DateTime earliestAllowedIssuance = currentTime.minusSeconds(ttl + iFutureTTL); // also minus the clockSkew
+                Instant currentTime = Instant.now();
+                Instant earliestAllowedIssuance = currentTime.minus(ttl + iFutureTTL, ChronoUnit.SECONDS); // also minus the clockSkew
 
                 if (issueInstant.isBefore(earliestAllowedIssuance)) {
                     // SAML token issued too long ago - TTL has passed
@@ -167,13 +168,13 @@ public class WssSamlAssertionValidator extends org.apache.wss4j.dom.validate.Sam
             }
         }
 
-        // IssueInstant is not strictly in Conditions, but it has similar semantics to 
+        // IssueInstant is not strictly in Conditions, but it has similar semantics to
         // NotBefore, so including it here
 
         // Check the IssueInstant is not in the future, subject to the future TTL
         if (issueInstant != null) {
-            DateTime currentTime = new DateTime();
-            DateTime currentTimePlusSkew = currentTime.plusSeconds(iFutureTTL);
+            Instant currentTime = Instant.now();
+            Instant currentTimePlusSkew = currentTime.plusSeconds(iFutureTTL);
             if (issueInstant.isAfter(currentTimePlusSkew)) {
                 // SAML token's IssueInstant assertion is in the future - the token is not yet valid
                 Tr.error(tc, "saml_token_issue_instant_in_future", issueInstant, currentTime, iFutureTTL);
