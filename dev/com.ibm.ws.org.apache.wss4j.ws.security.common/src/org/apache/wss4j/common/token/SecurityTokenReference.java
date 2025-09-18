@@ -315,7 +315,7 @@ public class SecurityTokenReference {
      */
     public X509Certificate[] getKeyIdentifier(Crypto crypto) throws WSSecurityException {
         if (crypto == null) {
-            return new X509Certificate[0];
+            return null;
         }
 
         Element elem = getFirstElement();
@@ -338,13 +338,13 @@ public class SecurityTokenReference {
                 CryptoType cryptoType = new CryptoType(CryptoType.TYPE.THUMBPRINT_SHA1);
                 cryptoType.setBytes(thumb);
                 X509Certificate[] certs = crypto.getX509Certificates(cryptoType);
-                if (certs != null && certs.length > 0) {
+                if (certs != null) {
                     return new X509Certificate[]{certs[0]};
                 }
             }
         }
 
-        return new X509Certificate[0];
+        return null;
     }
 
     public String getKeyIdentifierValue() {
@@ -384,7 +384,7 @@ public class SecurityTokenReference {
         CryptoType cryptoType = new CryptoType(CryptoType.TYPE.SKI_BYTES);
         cryptoType.setBytes(skiBytes);
         X509Certificate[] certs = crypto.getX509Certificates(cryptoType);
-        if (certs != null && certs.length > 0) {
+        if (certs != null) {
             return certs[0];
         }
         return null;
@@ -424,13 +424,13 @@ public class SecurityTokenReference {
      */
     public X509Certificate[] getX509IssuerSerial(Crypto crypto) throws WSSecurityException {
         if (crypto == null) {
-            return new X509Certificate[0];
+            return null;
         }
 
         if (issuerSerial == null) {
             issuerSerial = getIssuerSerial();
             if (issuerSerial == null) {
-                return new X509Certificate[0];
+                return null;
             }
         }
         CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ISSUER_SERIAL);

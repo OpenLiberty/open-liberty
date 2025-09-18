@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,8 +31,8 @@ import org.apache.wss4j.policy.model.AlgorithmSuite;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.wssecurity.internal.WSSecurityConstants;
 import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.ws.wssecurity.internal.WSSecurityConstants;
 
 public class SignatureAlgorithms {
 
@@ -46,8 +46,7 @@ public class SignatureAlgorithms {
     static final String hmac_sha256 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256";
     static final String hmac_sha384 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha384";
     static final String hmac_sha512 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512";
-
-    private static final String sha256_sha256 = "http://www.w3.org/2001/04/xmldsig-more#sha256-sha256";
+    static final String ecdsa_sha256 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
 
     static Map<String, String> RSA_MAP = new HashMap<String, String>();
     static {
@@ -84,11 +83,12 @@ public class SignatureAlgorithms {
                 algorithmSuite.getAlgorithmSuiteType().setSymmetricSignature(HMAC_MAP.get(algorithm));
                 //algorithmSuite.setSymmetricSignature(HMAC_MAP.get(algorithm)); //v3
             }
-            if(algorithm.contains("sha256-sha256")) {
+            if (algorithm.contains("sha256-sha256")) {
                 algorithmSuite.getAlgorithmSuiteType().setSymmetricSignature(sha256_sha256);
             }
         }
     }
+
     public static AbstractBinding getAbstractBinding(AssertionInfoMap aim, String binding) {
         Collection<AssertionInfo> ais = null;
         AbstractBinding absBinding = null;
@@ -97,7 +97,7 @@ public class SignatureAlgorithms {
             if (ais == null) {
                 ais = getMatchingAssertionInfo(aim, SP11Constants.TRANSPORT_BINDING);
             }
-        } else if("asymmetric".equals(binding)) {
+        } else if ("asymmetric".equals(binding)) {
             ais = getMatchingAssertionInfo(aim, SP12Constants.ASYMMETRIC_BINDING);
             if (ais == null) {
                 ais = getMatchingAssertionInfo(aim, SP11Constants.ASYMMETRIC_BINDING);
@@ -115,6 +115,7 @@ public class SignatureAlgorithms {
         }
         return absBinding;
     }
+
     public static Collection<AssertionInfo> getMatchingAssertionInfo(AssertionInfoMap aim, QName qname) {
         return aim.get(qname);
 

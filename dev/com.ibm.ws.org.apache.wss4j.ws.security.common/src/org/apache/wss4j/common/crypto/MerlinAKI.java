@@ -101,7 +101,7 @@ public class MerlinAKI extends Merlin {
             // If a certificate has been found, the certificates must be compared
             // to ensure against phony DNs (compare encoded form including signature)
             //
-            if (foundCerts != null && foundCerts.length > 0 && foundCerts[0] != null && foundCerts[0].equals(certs[0])) {
+            if (foundCerts != null && foundCerts[0] != null && foundCerts[0].equals(certs[0])) {
                 try {
                     certs[0].checkValidity();
                 } catch (CertificateExpiredException | CertificateNotYetValidException e) {
@@ -210,7 +210,7 @@ public class MerlinAKI extends Merlin {
         byte[] keyIdentifierBytes
     ) throws WSSecurityException, NoSuchAlgorithmException, CertificateEncodingException {
         if (keyIdentifierBytes == null) {
-            return new X509Certificate[0];
+            return null;
         }
 
         Certificate[] certs = null;
@@ -224,7 +224,7 @@ public class MerlinAKI extends Merlin {
         }
 
         if (certs == null || certs.length == 0) {
-            return new X509Certificate[0];
+            return null;
         }
 
         return Arrays.copyOf(certs, certs.length, X509Certificate[].class);

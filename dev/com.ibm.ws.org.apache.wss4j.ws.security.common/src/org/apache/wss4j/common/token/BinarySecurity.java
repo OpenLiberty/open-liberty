@@ -193,7 +193,7 @@ public class BinarySecurity {
         }
         String text = XMLUtils.getElementText(element);
         if (text == null) {
-            return new byte[0];
+            return null;
         }
 
         return org.apache.xml.security.utils.XMLUtils.decode(text);
@@ -328,7 +328,10 @@ public class BinarySecurity {
             return false;
         }
         String encodingType = binarySecurity.getEncodingType();
-        return encodingType.equals(getEncodingType());
+        if (!encodingType.equals(getEncodingType())) {
+            return false;
+        }
+        return true;
     }
 
     public boolean isStoreBytesInAttachment() {

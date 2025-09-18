@@ -74,7 +74,7 @@ public class SignatureConfirmation {
         element =
             doc.createElementNS(
                 WSConstants.WSSE11_NS,
-                WSConstants.WSSE11_PREFIX + ":" + WSConstants.SIGNATURE_CONFIRMATION_LN
+                WSConstants.WSSE11_PREFIX + ":"  + WSConstants.SIGNATURE_CONFIRMATION_LN
             );
         XMLUtils.setNamespace(element, WSConstants.WSSE11_NS, WSConstants.WSSE11_PREFIX);
         if (signVal != null) {
@@ -148,7 +148,10 @@ public class SignatureConfirmation {
         }
         SignatureConfirmation signatureConfirmation = (SignatureConfirmation)object;
         byte[] sigValue = signatureConfirmation.getSignatureValue();
-        return Arrays.equals(sigValue, getSignatureValue());
+        if (!Arrays.equals(sigValue, getSignatureValue())) {
+            return false;
+        }
+        return true;
     }
 
 }

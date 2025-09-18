@@ -665,7 +665,7 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
     ) throws WSSecurityException {
         if (endorse && isTokenRequired(token.getIncludeTokenType())) {
             byte[] salt = UsernameTokenUtil.generateSalt(true);
-            WSSecUsernameToken utBuilder = addDKUsernameToken(token, salt);
+            WSSecUsernameToken utBuilder = addDKUsernameToken(token, salt); // Liberty Change: Backport 4.x
             if (utBuilder != null) {
                 utBuilder.prepare(salt);
                 addSupportingElement(utBuilder.getUsernameTokenElement());
@@ -916,7 +916,7 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
         return null;
     }
 
-    protected WSSecUsernameToken addDKUsernameToken(UsernameToken token, byte[] salt) {
+    protected WSSecUsernameToken addDKUsernameToken(UsernameToken token, byte[] salt) { // Liberty Change: Backport 4.x
         assertToken(token);
         if (!isTokenRequired(token.getIncludeTokenType())) {
             return null;
@@ -937,7 +937,7 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
             if (!StringUtils.isEmpty(password)) {
                 // If the password is available then build the token
                 utBuilder.setUserInfo(userName, password);
-                utBuilder.addDerivedKey(1000);
+                utBuilder.addDerivedKey(1000); // Liberty Change: Backport 4.x
                 utBuilder.prepare(salt);
             } else {
                 unassertPolicy(token, "No password available");
@@ -1504,7 +1504,7 @@ public abstract class AbstractBindingBuilder extends AbstractCommonBindingHandle
 
                         if (!found.contains(el)) {
                             found.add(el);
-                            final WSEncryptionPart part;
+                            final WSEncryptionPart part; // Liberty Change: Backport 4.x
                             boolean saml1 = WSS4JConstants.SAML_NS.equals(el.getNamespaceURI())
                                 && "Assertion".equals(el.getLocalName());
                             boolean saml2 = WSS4JConstants.SAML2_NS.equals(el.getNamespaceURI())

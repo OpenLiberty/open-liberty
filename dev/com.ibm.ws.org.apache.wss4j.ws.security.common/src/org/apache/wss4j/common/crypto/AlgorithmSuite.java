@@ -37,7 +37,7 @@ public class AlgorithmSuite {
 
     private Set<String> encryptionMethods = Collections.emptySet();
     private Set<String> keyWrapAlgorithms = Collections.emptySet();
-    private Set<String> keyAgreementAlgorithms = Collections.emptySet();
+
     private Set<String> derivedKeyAlgorithms = Collections.emptySet();
 
     private int maximumSymmetricKeyLength = 256;
@@ -114,17 +114,6 @@ public class AlgorithmSuite {
 
     public Set<String> getKeyWrapAlgorithms() {
         return keyWrapAlgorithms;
-    }
-
-    public void addKeyAgreementMethodAlgorithm(String keyAgreementAlgorithm) {
-        if (keyAgreementAlgorithms.isEmpty()) {
-            keyAgreementAlgorithms = new HashSet<>();
-        }
-        keyAgreementAlgorithms.add(keyAgreementAlgorithm);
-    }
-
-    public Set<String> getKeyAgreementMethodAlgorithms() {
-        return keyAgreementAlgorithms;
     }
 
     public void addDerivedKeyAlgorithm(String derivedKeyAlgorithm) {

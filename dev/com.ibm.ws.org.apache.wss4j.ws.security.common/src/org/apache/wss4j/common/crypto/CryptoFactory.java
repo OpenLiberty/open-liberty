@@ -267,7 +267,8 @@ public abstract class CryptoFactory {
         ClassLoader loader
     ) throws WSSecurityException {
         Properties properties = new Properties();
-        try (InputStream is = Loader.loadInputStream(loader, propFilename)) {
+        try {
+            InputStream is = Loader.loadInputStream(loader, propFilename);
             if (is == null) {
                 throw new WSSecurityException(
                     WSSecurityException.ErrorCode.FAILURE,
@@ -276,6 +277,7 @@ public abstract class CryptoFactory {
                 );
             }
             properties.load(is);
+            is.close();
         } catch (IOException e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug("Cannot find resource: " + propFilename, e);

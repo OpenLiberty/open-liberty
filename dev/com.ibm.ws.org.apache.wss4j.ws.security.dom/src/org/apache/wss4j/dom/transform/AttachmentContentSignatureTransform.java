@@ -18,6 +18,7 @@
  */
 package org.apache.wss4j.dom.transform;
 
+import org.apache.jcp.xml.dsig.internal.dom.ApacheNodeSetData;
 import org.apache.jcp.xml.dsig.internal.dom.ApacheOctetStreamData;
 import org.apache.wss4j.common.ext.Attachment;
 import org.apache.wss4j.common.ext.AttachmentRequestCallback;
@@ -31,7 +32,6 @@ import org.apache.xml.security.c14n.Canonicalizer;
 import org.apache.xml.security.c14n.InvalidCanonicalizerException;
 import org.apache.xml.security.parser.XMLParserException;
 import org.apache.xml.security.signature.XMLSignatureInput;
-import org.apache.xml.security.signature.XMLSignatureStreamInput;
 
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -165,7 +165,7 @@ public class AttachmentContentSignatureTransform extends TransformService {
                                      Attachment attachment) throws TransformException {
         try {
             //try to reuse the inputStream in the hope that the provided inputStream is backed by a disk storage
-            InputStream inputStream = attachment.getSourceStream(); //NOPMD
+            InputStream inputStream = attachment.getSourceStream();
             if (!inputStream.markSupported()) {
                 inputStream = new BufferedInputStream(inputStream);
             }
@@ -179,7 +179,7 @@ public class AttachmentContentSignatureTransform extends TransformService {
 
             OutputStream outputStream = os;
             if (outputStream == null) {
-                outputStream = new ByteArrayOutputStream(); //NOPMD
+                outputStream = new ByteArrayOutputStream();
             }
 
             String mimeType = attachment.getMimeType();
@@ -200,11 +200,11 @@ public class AttachmentContentSignatureTransform extends TransformService {
                  */
                 Canonicalizer canon = Canonicalizer.getInstance(WSConstants.C14N_EXCL_OMIT_COMMENTS);
 
-                XMLSignatureInput xmlSignatureInput = new XMLSignatureStreamInput(inputStream); //NOPMD
+                XMLSignatureInput xmlSignatureInput = new XMLSignatureInput(inputStream);
                 canon.canonicalizeXPathNodeSet(xmlSignatureInput.getNodeSet(), outputStream);
 
             } else if (mimeType != null && mimeType.matches("(?i)(text/).*")) {
-                CRLFOutputStream crlfOutputStream = new CRLFOutputStream(outputStream); //NOPMD
+                CRLFOutputStream crlfOutputStream = new CRLFOutputStream(outputStream);
                 int numBytes;
                 byte[] buf = new byte[8192];
                 while ((numBytes = inputStream.read(buf)) != -1) {
@@ -237,7 +237,7 @@ public class AttachmentContentSignatureTransform extends TransformService {
                         ),
                         attachmentUri, mimeType);
             }
-            return null;
+            return new ApacheNodeSetData(new XMLSignatureInput((byte[])null));
         } catch (IOException | InvalidCanonicalizerException | CanonicalizationException
             | XMLParserException e) {
             throw new TransformException(e);

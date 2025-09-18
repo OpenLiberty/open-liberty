@@ -81,7 +81,7 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
             
             //apply customization properties before validation
             DefaultAlgorithmSuiteLoader.customize(algorithmSuite.getAlgorithmSuiteType(),
-                    parameters.getMessage());
+                    parameters.getMessage()); // Liberty Change: Backport 4.x
 
 
             boolean valid = validatePolicy(ai, algorithmSuite, parameters.getResults().getResults());
@@ -295,7 +295,6 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
         AssertionInfo ai
     ) {
         AlgorithmSuiteType algorithmSuiteType = algorithmPolicy.getAlgorithmSuiteType();
-        LOG.info("@TJJ Public Key = " + publicKey);
         // Liberty Change Start: Assert ECPublicKey min and max length
         if (publicKey instanceof RSAPublicKey) {
             int modulus = ((RSAPublicKey)publicKey).getModulus().bitLength();
@@ -323,7 +322,7 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
             );
             return false;
         }
-        // Liberty Change Stop
+        // Liberty Change End
         return true;
     }
 

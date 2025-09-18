@@ -295,7 +295,10 @@ public class SecurityContextToken {
             return false;
         }
         SecurityContextToken securityToken = (SecurityContextToken)object;
-        return compare(getIdentifier(), securityToken.getIdentifier());
+        if (!compare(getIdentifier(), securityToken.getIdentifier())) {
+            return false;
+        }
+        return true;
     }
 
     private boolean compare(String item1, String item2) {

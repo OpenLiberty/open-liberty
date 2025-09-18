@@ -67,7 +67,7 @@ public class PolicyBasedWSS4JOutInterceptor extends AbstractPhaseInterceptor<Soa
     public static final String SECURITY_PROCESSED = PolicyBasedWSS4JOutInterceptor.class.getName() + ".DONE";
     public static final PolicyBasedWSS4JOutInterceptor INSTANCE = new PolicyBasedWSS4JOutInterceptor();
 
-    private static final Logger LOG = LogUtils.getLogger(PolicyBasedWSS4JOutInterceptor.class);
+    private static final Logger LOG = LogUtils.getL7dLogger(PolicyBasedWSS4JOutInterceptor.class);
 
 
     private PolicyBasedWSS4JOutInterceptorInternal ending;
@@ -167,9 +167,9 @@ public class PolicyBasedWSS4JOutInterceptor extends AbstractPhaseInterceptor<Soa
                 }
                 translateProperties(message);
 
+               // Liberty Change Start: Backport 4.x
                 if (binding.getAlgorithmSuite() != null) {
                     //filter custom alg suite properties:
-                	// Liberty Change Start:
                 	// TO-DO: Remove lamda operator
                     Map<String, Object> customAlgSuiteParameters = message.getContextualPropertyKeys()
                             .stream()
@@ -184,23 +184,17 @@ public class PolicyBasedWSS4JOutInterceptor extends AbstractPhaseInterceptor<Soa
                 String asymSignatureAlgorithm =
                     (String)message.getContextualProperty(SecurityConstants.ASYMMETRIC_SIGNATURE_ALGORITHM);
                 
-                LOG.info("@TJJ asymSignatureAlgorithm =" + binding.getAlgorithmSuite().getAlgorithmSuiteType().getAsymmetricSignature());
                 if (asymSignatureAlgorithm != null && binding.getAlgorithmSuite() != null) {
                     binding.getAlgorithmSuite().getAlgorithmSuiteType().setAsymmetricSignature(asymSignatureAlgorithm);
                 }
 
                 String symSignatureAlgorithm =
                     (String)message.getContextualProperty(SecurityConstants.SYMMETRIC_SIGNATURE_ALGORITHM);
-                
-                LOG.info("@TJJ symSignatureAlgorithm =" + binding.getAlgorithmSuite().getAlgorithmSuiteType().getSymmetricSignature());
                 if (symSignatureAlgorithm != null && binding.getAlgorithmSuite() != null) {
                     binding.getAlgorithmSuite().getAlgorithmSuiteType().setSymmetricSignature(symSignatureAlgorithm);
                 }
-
-                LOG.info("@TJJ getKeyAgreement =" + binding.getAlgorithmSuite().getAlgorithmSuiteType().getKeyAgreement());
-                LOG.info("@TJJ getMinimumEllipticCurveKeyLength =" + binding.getAlgorithmSuite().getAlgorithmSuiteType().getMinimumEllipticCurveKeyLength());
-                LOG.info("@TJJ getMaximumEllipticCurveKeyLength =" + binding.getAlgorithmSuite().getAlgorithmSuiteType().getMaximumEllipticCurveKeyLength());
-                try {
+	
+				try {
                     if (binding instanceof TransportBinding) {
                         new TransportBindingHandler(config, (TransportBinding)binding, saaj,
                                                     secHeader, aim, message).handleBinding();

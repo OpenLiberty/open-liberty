@@ -84,11 +84,13 @@ public class EHCacheTokenStore implements TokenStore, Closeable, BusLifeCycleLis
                 template = key.substring(0, key.lastIndexOf('-'));
             }
 
+			// Liberty Change Start: Backport 4.x
             // Set class loader cache of template object to SecurityToken classloader
             Map<String, ClassLoader> cacheClassLoaders = new HashMap<>();
             cacheClassLoaders.put(template, SecurityToken.class.getClassLoader());
             XmlConfiguration xmlConfig = new XmlConfiguration(configFileURL, ClassLoading.getDefaultClassLoader(),
                     cacheClassLoaders);
+			// Liberty Change End
 
             CacheConfigurationBuilder<String, SecurityToken> configurationBuilder =
                     xmlConfig.newCacheConfigurationBuilderFromTemplate(template,

@@ -108,7 +108,7 @@ public class BinarySecurityTokenProcessor implements Processor {
                 }
             } else if (credential.getPrincipal() != null) {
                 result.put(WSSecurityEngineResult.TAG_PRINCIPAL, credential.getPrincipal());
-            } else if (certs != null && certs.length > 0 && certs[0] != null) {
+            } else if (certs != null && certs[0] != null) {
                 result.put(WSSecurityEngineResult.TAG_PRINCIPAL, certs[0].getSubjectX500Principal());
             }
             result.put(WSSecurityEngineResult.TAG_SUBJECT, credential.getSubject());
@@ -139,7 +139,7 @@ public class BinarySecurityTokenProcessor implements Processor {
             X509Certificate cert = ((X509Security) token).getX509Certificate(crypto);
             return new X509Certificate[]{cert};
         }
-        return new X509Certificate[0];
+        return null;
     }
 
     /**

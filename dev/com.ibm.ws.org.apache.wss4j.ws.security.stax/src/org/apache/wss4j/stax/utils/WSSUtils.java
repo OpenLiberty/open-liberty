@@ -100,7 +100,7 @@ public class WSSUtils extends XMLSecurityUtils {
      * @param callbackHandler a CallbackHandler implementation
      * @throws WSSecurityException
      */
-    public static void doSecretKeyCallback(CallbackHandler callbackHandler, Callback callback)
+    public static void doSecretKeyCallback(CallbackHandler callbackHandler, Callback callback, String id)
             throws WSSecurityException {
 
         if (callbackHandler != null) {

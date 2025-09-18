@@ -368,7 +368,7 @@ public final class ConfigurationConverter {
             );
         }
         try {
-            cbHandler = cbClass.getDeclaredConstructor().newInstance();
+            cbHandler = cbClass.newInstance();
         } catch (Exception e) {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, e,
                     "empty",
@@ -576,19 +576,19 @@ public final class ConfigurationConverter {
             }
         }
 
-        ReplayCache nonceCache =    //NOPMD
+        ReplayCache nonceCache =
             (ReplayCache)config.get(ConfigurationConstants.NONCE_CACHE_INSTANCE);
         if (nonceCache != null) {
             properties.setNonceReplayCache(nonceCache);
         }
 
-        ReplayCache timestampCache = //NOPMD
+        ReplayCache timestampCache =
             (ReplayCache)config.get(ConfigurationConstants.TIMESTAMP_CACHE_INSTANCE);
         if (timestampCache != null) {
             properties.setTimestampReplayCache(timestampCache);
         }
 
-        ReplayCache samlOneTimeUseCache = //NOPMD
+        ReplayCache samlOneTimeUseCache =
             (ReplayCache)config.get(ConfigurationConstants.SAML_ONE_TIME_USE_CACHE_INSTANCE);
         if (samlOneTimeUseCache != null) {
             properties.setSamlOneTimeUseReplayCache(samlOneTimeUseCache);

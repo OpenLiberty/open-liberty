@@ -124,7 +124,7 @@ public class WSSSignatureReferenceVerifyInputProcessor extends AbstractSignature
 
             final Attachment attachment = attachments.get(0);
 
-            InputStream attachmentInputStream = attachment.getSourceStream();   //NOPMD
+            InputStream attachmentInputStream = attachment.getSourceStream();
             if (!attachmentInputStream.markSupported()) {
                 attachmentInputStream = new BufferedInputStream(attachmentInputStream);
             }
@@ -134,27 +134,30 @@ public class WSSSignatureReferenceVerifyInputProcessor extends AbstractSignature
             try {
                 DigestOutputStream digestOutputStream =
                         createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
-                try (UnsyncBufferedOutputStream bufferedDigestOutputStream =
-                        new UnsyncBufferedOutputStream(digestOutputStream)) {
-                    if (referenceType.getTransforms() != null) {
-                        Transformer transformer =
-                                buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain, null);
-                        if (!(transformer instanceof AttachmentContentSignatureTransform)) {
-                            throw new WSSecurityException(
-                                    WSSecurityException.ErrorCode.INVALID_SECURITY,
-                                    "empty",
-                                    new Object[]{"First transform must be Attachment[Content|Complete]SignatureTransform"}
-                            );
-                        }
-                        Map<String, Object> transformerProperties = new HashMap<>(2);
-                        transformerProperties.put(
-                                AttachmentContentSignatureTransform.ATTACHMENT, attachment);
-                        transformer.setProperties(transformerProperties);
+                UnsyncBufferedOutputStream bufferedDigestOutputStream =
+                        new UnsyncBufferedOutputStream(digestOutputStream);
 
-                        transformer.transform(attachmentInputStream);
-                    } else {
-                        XMLSecurityUtils.copy(attachmentInputStream, bufferedDigestOutputStream);
+                if (referenceType.getTransforms() != null) {
+                    Transformer transformer =
+                            buildTransformerChain(referenceType, bufferedDigestOutputStream, inputProcessorChain, null);
+                    if (!(transformer instanceof AttachmentContentSignatureTransform)) {
+                        throw new WSSecurityException(
+                                WSSecurityException.ErrorCode.INVALID_SECURITY,
+                                "empty",
+                                new Object[] {"First transform must be Attachment[Content|Complete]SignatureTransform"}
+                        );
                     }
+                    Map<String, Object> transformerProperties = new HashMap<>(2);
+                    transformerProperties.put(
+                            AttachmentContentSignatureTransform.ATTACHMENT, attachment);
+                    transformer.setProperties(transformerProperties);
+
+                    transformer.transform(attachmentInputStream);
+
+                    bufferedDigestOutputStream.close();
+                } else {
+                    XMLSecurityUtils.copy(attachmentInputStream, bufferedDigestOutputStream);
+                    bufferedDigestOutputStream.close();
                 }
                 compareDigest(digestOutputStream.getDigestValue(), referenceType);
 
@@ -300,14 +303,14 @@ public class WSSSignatureReferenceVerifyInputProcessor extends AbstractSignature
     protected InternalSignatureReferenceVerifier getSignatureReferenceVerifier(
             XMLSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
             ReferenceType referenceType, XMLSecStartElement startElement) throws XMLSecurityException {
-        return new WSS4JInternalSignatureReferenceVerifier((WSSSecurityProperties) securityProperties,
+        return new InternalSignatureReferenceVerifier((WSSSecurityProperties) securityProperties,
                 inputProcessorChain, referenceType, startElement);
     }
 
     private void detectReplayAttack(InputProcessorChain inputProcessorChain) throws WSSecurityException {
         TimestampSecurityEvent timestampSecurityEvent =
                 inputProcessorChain.getSecurityContext().get(WSSConstants.PROP_TIMESTAMP_SECURITYEVENT);
-        ReplayCache replayCache =   //NOPMD
+        ReplayCache replayCache =
             ((WSSSecurityProperties)getSecurityProperties()).getTimestampReplayCache();
         if (timestampSecurityEvent != null && replayCache != null) {
             final String cacheKey =
@@ -434,10 +437,9 @@ public class WSSSignatureReferenceVerifyInputProcessor extends AbstractSignature
         return parentTransformer;
     }
 
-    class WSS4JInternalSignatureReferenceVerifier
-            extends AbstractSignatureReferenceVerifyInputProcessor.InternalSignatureReferenceVerifier {
+    class InternalSignatureReferenceVerifier extends AbstractSignatureReferenceVerifyInputProcessor.InternalSignatureReferenceVerifier {
 
-        WSS4JInternalSignatureReferenceVerifier(WSSSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
+        InternalSignatureReferenceVerifier(WSSSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
                                            ReferenceType referenceType, XMLSecStartElement startElement) throws XMLSecurityException {
             super(securityProperties, inputProcessorChain, referenceType, startElement);
             this.addAfterProcessor(WSSSignatureReferenceVerifyInputProcessor.class.getName());
