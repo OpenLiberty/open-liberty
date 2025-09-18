@@ -70,6 +70,9 @@ file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Impossibile 
 file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=Il runtime richiede i permessi di scrittura alla directory /health per creare i file "live", "ready" e "started" affinch\u00e9 i controlli di salute basati sui file funzionino correttamente.
 file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=L'utente deve identificare la causa principale del problema di autorizzazione.
 
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W=CWMMH0102W: Il runtime non riesce a risolvere il percorso della cartella /health. La funzione di controllo dello stato di salute basata su file sar\u00e0 disattivata.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.explanation=Il runtime richiede l'impostazione della propriet\u00e0 interna server.output.dir o della variabile d'ambiente WLP_OUTPUT_DIR per determinare la posizione della directory /health.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.useraction=Assicurarsi che la variabile d'ambiente WLP_OUTPUT_DIR sia impostata correttamente.
 
 file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: Il runtime ha rilevato la presenza della seguente directory [ {0} ]. Per la funzione di controllo dello stato di salute basata su file \u00e8 necessario un file con lo stesso nome in questo percorso. La funzione di controllo dello stato di salute basata su file sar\u00e0 disattivata.
 file.healthcheck.file.name.conflict.CWMMH0105W.explanation=I controlli dello stato di salute basati su file richiedono la creazione e l'uso dei file "live", "ready" e "started" nella directory /health. Nella directory /health \u00e8 gi\u00e0 presente una directory con uno di questi nomi, che impedisce la creazione dei file necessari.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,13 +39,13 @@ import com.google.gson.reflect.TypeToken;
 import com.ibm.oauth.core.api.error.OidcServerException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.oauth20.util.CharsetRange;
 import com.ibm.ws.security.oauth20.util.DateUtil;
 import com.ibm.ws.security.oauth20.util.MediaRange;
 import com.ibm.ws.security.oauth20.util.OIDCConstants;
 import com.ibm.ws.security.oauth20.util.OidcOAuth20Util;
 import com.ibm.ws.security.oauth20.util.StringUtil;
-import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  *
@@ -89,9 +89,10 @@ public abstract class AbstractOidcEndpointServices {
     protected static final String HTTP_METHOD_PUT = "PUT";
     protected static final String HTTP_METHOD_DELETE = "DELETE";
 
+    // FIPS 140-3: Algorithm assessment complete; no changes required.
+    // ALG_MD5 is not used with FIPS enabled.
     protected static final String ALG_MD5 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
     protected static final String ALG_SHA256 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
-
 
     private static TraceComponent tc = Tr.register(AbstractOidcEndpointServices.class);
 

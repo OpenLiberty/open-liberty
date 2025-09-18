@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.http2.test;
 
@@ -322,6 +319,10 @@ public class H2StreamResultManager {
                         LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has not received goaway.");
                     return false;
                 }
+            } else if (Http2Client.lockWaitFor.get()) {
+                if (LOGGER.isLoggable(Level.FINEST))
+                    LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "Still waiting on frames for Http2Client. Test has not finished");
+                return false;
             }
             if (LOGGER.isLoggable(Level.FINEST))
                 LOGGER.logp(Level.FINEST, CLASS_NAME, "receivedAllFrames", "StreamID: " + lookupStreamResult(streamId).getStreamId() + " has finished.");

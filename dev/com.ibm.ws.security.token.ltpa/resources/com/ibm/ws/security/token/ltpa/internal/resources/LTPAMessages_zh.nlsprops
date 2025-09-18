@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=\u5
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: updateTrigger \u5c5e\u6027\u8bbe\u7f6e\u4e3a disabled \uff0c\u5e76\u4e14\u76d1\u89c6\u65f6\u95f4\u95f4\u9694\u5927\u4e8e {0}\u3002 \u4fee\u6539 LTPA \u5bc6\u94a5\u6587\u4ef6\u65f6\uff0c\u4e0d\u4f1a\u53d1\u751f\u52a8\u6001\u91cd\u65b0\u88c5\u5165\u3002
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=\u5f53 updateTrigger \u5c5e\u6027\u8bbe\u7f6e\u4e3a disabled \u65f6\uff0c\u4e0d\u4f1a\u76d1\u89c6\u8fd9\u4e9b\u6587\u4ef6\u5bf9\u5177\u6709 .keys \u540e\u7f00\u7684\u6587\u4ef6\u8fdb\u884c\u7684\u4efb\u4f55\u4fee\u6539\uff0c\u5e76\u4e14\u4e0d\u4f1a\u53d1\u751f\u52a8\u6001\u91cd\u65b0\u88c5\u5165\u3002 \u5373\u4f7f monitorInterval \u5c5e\u6027\u8bbe\u7f6e\u4e3a\u5927\u4e8e\u96f6\u7684\u65f6\u95f4\u95f4\u9694\uff0c\u4e5f\u4f1a\u5ffd\u7565\u8be5\u5c5e\u6027\uff0c\u5e76\u4e14\u4e0d\u4f1a\u76d1\u89c6\u6587\u4ef6\u3002
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=\u5c06 updateTrigger \u5c5e\u6027\u7684\u503c\u8bbe\u7f6e\u4e3a polled \u6216 mbean\u3002
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: {0} \u9a8c\u8bc1\u5bc6\u94a5\u5fc5\u987b\u4f7f\u7528\u7ecf FIPS 140-3 \u8ba4\u8bc1\u7684\u52a0\u5bc6\u7b97\u6cd5\u91cd\u65b0\u751f\u6210\u3002
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=\u5728\u672a\u542f\u7528 FIPS 140-3 \u7684\u60c5\u51b5\u4e0b\u521b\u5efa\u7684 LTPA \u9a8c\u8bc1\u5bc6\u94a5\u5728\u542f\u7528 FIPS 140-3 \u540e\u4f1a\u5931\u6548\u3002
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=\u914d\u7f6e FIPS 140-3 \u65f6\uff0c\u4f7f\u7528 securityUtility createLTPAKeys \u547d\u4ee4\u521b\u5efa FIPS \u6279\u51c6\u7684\u9a8c\u8bc1\u5bc6\u94a5\u3002

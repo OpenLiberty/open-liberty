@@ -85,6 +85,10 @@ broadcast_remote_command_is_null=Warnung: {0}: Empfangene Nachricht {1} enth\u00
 
 broadcast_remote_command_wrong_type=Warnung: {0}: Empfangene Nachricht {1} enh\u00e4lt ein Objekt vom Typ {2} anstelle des erwarteten Typs RemoteCommand.
 
+cache_key_null_identity_map=CacheKey instanz: {0}, die in der Identit\u00e4tskarte gespeichert ist, hat einen Null-Prim\u00e4rschl\u00fcssel.
+
+cache_key_null_read_lock_manager=CacheKey instanz: {0}, gesperrt durch den Cache-Lesesperr-Manager, hat einen Null-Prim\u00e4rschl\u00fcssel.
+
 cannot_get_nested_collection_type=Der Typ der verschachtelten Datensammlung kann nicht abgerufen werden.
 
 cannot_get_server_name_and_version=Servername und Version k\u00f6nnen aufgrund der folgenden Ausnahme nicht abgerufen werden. {0}
@@ -114,10 +118,6 @@ connected_sdk=Verbunden: SDK
 connected_user_database=Verbunden: {3}{4}Benutzer: {0}{3}{4}Datenbank: {1} Version: {2}
 
 connected_user_database_driver=Verbunden: {0}{6}Benutzer: {1}{6}Datenbank: {2}  Version: {3}{6}Treiber: {4}  Version: {5}
-
-corrupt_object=besch\u00e4digtes Objekt: {0}
-
-corrupt_object_referenced_through_mapping=Das folgende besch\u00e4digte Objekt wird \u00fcber die Zuordnung referenziert: {0}
 
 corrupted_session_announcement=Sitzungs-ID: {0}  Discovery Manager hat eine fehlerhafte Sitzungsank\u00fcndigung empfangen. Wird ignoriert.
 
@@ -322,6 +322,8 @@ jpars_could_not_find_session_bean=Es wurde eine Session-Bean mit dem folgenden J
 jta_cannot_be_disabled_in_cmp=Wenn CMP (Container Managed Persistence) verwendet wird, kann JTA nicht inaktiviert werden. EclipseLink betrachtet JTA als aktiviert.
 
 jta_duplicate_ctrl_property=Die JTA-Transaktionscontrollerklasse ist sowohl in der Eigenschaft "eclipselink.target-server" als auch in "eclipselink.jta.controller" definiert. Es wird der Wert aus "eclipselink.target-server" verwendet.
+
+jta_tm_lookup_failure=Die Instanz TransactionManager kann nicht aufgerufen werden: {0}
 
 jta_tsr_lookup_failure=Die TransactionSynchronizationRegistry-Instanz {0} kann nicht per Lookup gesucht werden.
 
@@ -657,18 +659,6 @@ retreived_null_message=Nullnachricht von Topic {0} abgerufen. Wird ignoriert.
 
 retreived_unknown_message_type=Unbekannten Nachrichtentyp abgerufen: {0} von Topic: {1}. Wird ignoriert.
 
-schema_default_create_tables_failed=Erstellen von Tabellen im Standardtabellenschema fehlgeschlagen: {0}
-
-schema_default_drop_tables_failed=L\u00f6schen der Tabellen im Standardtabellenschema fehlgeschlagen: {0}
-
-schema_default_extend_tables_failed=Erweitern der Tabellen im Standardtabellenschema fehlgeschlagen: {0}
-
-schema_default_replace_tables_failed=Fehler beim Ersetzen von Tabellen im Standardtabellenschema: {0}
-
-schema_default_truncate_tables_failed=Tabellen im Standardtabellenschema konnten nicht abgeschnitten werden: {0}
-
-schema_drop_object_failed=Fehler beim L\u00f6schen des Objekts im Standardtabellenschema: {0}
-
 sdo_classgenerator_exception={2} Eine [{0}]-Ausnahme ist eingetreten. Die Nachricht ist: [{1}]
 
 sdo_error_deserialization=Nicht autorisierter Deserialisierungsversuch mit der Klasse {0}.
@@ -702,8 +692,6 @@ sop_object_not_found=Es wurde kein serialisiertes sopOject in [{0}] in [{1}] gef
 sop_object_wrong_pk=Serialisiertes sopObject wird aufgrund eines falschen Prim\u00e4rschl\u00fcssels [{0}] in [{1}] in [{2}] aus der Zeile entfernt.
 
 sop_object_wrong_version=Serialisiertes sopObject wird aufgrund einer falschen Version [{0}] in [{1}] in [{2}] aus der Zeile entfernt.
-
-stack_of_visited_objects_that_refer_to_the_corrupt_object=Stapel besuchter Objekte, die auf das besch\u00e4digte Objekt verweisen: {0}
 
 topLink_version=EclipseLink Version: {0}
 
@@ -746,8 +734,6 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery kann f\u00fc
 validate_db_schema_with_not_supported=Die native WLS-CMP-Einstellung "validate-db-schema-with" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 
 validate_ejb_jar=Die Validierung der Datei ejb-jar.xml beginnt. Die Verarbeitung kann einige Zeit dauern...
-
-validate_object_space=Objektbereich validieren.
 
 verifiy_columns_read_locking_not_supported=Die optimistische Einstellung "Read" f\u00fcr "verify-columns" f\u00fcr entity({0}) wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 

@@ -49,4 +49,3 @@
 
 5012=One or more objects of the {0} class with the {1} parameter list cannot be updated for the {2} SQL query because it changed or was deleted since it was last read
 
-

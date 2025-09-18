@@ -359,3 +359,5 @@
 
 6183=Il tipo di associazione {1} per l''attributo {2} da {0} non \u00e8 supportato con la funzionalit\u00e0 Query per esempio.  Se l''attributo pu\u00f2 essere tranquillamente ignorato, aggiungerlo all''elenco degli elementi da ignorare o impostare la convalida di esempio su false nella politica.
 
+6184=All''espressione del costruttore viene passato un tipo di valore errato {0}. I tipi complessi (ad esempio, array, collezioni o oggetti) non sono supportati.
+

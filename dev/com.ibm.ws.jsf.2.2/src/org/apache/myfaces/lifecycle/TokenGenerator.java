@@ -22,6 +22,7 @@ import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.concurrent.atomic.AtomicLong;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  *
@@ -42,7 +43,7 @@ class TokenGenerator
         try
         {
             // try SHA1 first
-            rng = SecureRandom.getInstance("SHA1PRNG");
+            rng = SecureRandom.getInstance(CryptoUtils.SHA1PRNG);
         }
         catch (NoSuchAlgorithmException e)
         {

@@ -44,10 +44,10 @@
       <properties.derby.embedded  createDatabase="create" databaseName="${shared.resource.dir}/data/transactionFATCloud"/>
     </dataSource>
     
-    <authData id="auth0" user="dby" password="dbnot"/> 
-    <authData id="auth1" user="dbuser" password="dbpass" fat.modify="true"/>
-    <authData id="auth2" user="dby" password="dbnot"/>
-    <authData id="auth3" user="dbuser" password="dbpass" fat.modify="true"/>
+    <authData id="auth0" user="dby" password="dbnotpassword"/> 
+    <authData id="auth1" user="dbuser" password="dbpassword" fat.modify="true"/>
+    <authData id="auth2" user="dby" password="dbnotpassword"/>
+    <authData id="auth3" user="dbuser" password="dbpassword" fat.modify="true"/>
      
     <application location="containerAuth.war">
         <classloader commonLibraryRef="AnonymousJDBCLib"/>

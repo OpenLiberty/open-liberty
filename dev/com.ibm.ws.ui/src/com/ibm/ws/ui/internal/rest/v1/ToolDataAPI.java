@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,20 +33,23 @@ import com.ibm.ws.ui.internal.v1.pojo.ToolEntry;
 import com.ibm.ws.ui.internal.v1.utils.Utils;
 import com.ibm.wsspi.rest.handler.RESTRequest;
 import com.ibm.wsspi.rest.handler.RESTResponse;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * <p>Defines the per user tool data API for the version 1 of the adminCenter REST API.</p>
- * <p>Http header ETag (entity tag) is used in the response header to send back the MD5 checksum of
+ * <p>Http header ETag (entity tag) is used in the response header to send back the SHA512 checksum of
  * the tool data.</p>
- * <p>When a client performs a GET call, the response header's ETag contains the MD5 checksum of the
+ * <p>When a client performs a GET call, the response header's ETag contains the SHA512 checksum of the
  * returned tool data. When the same client tries to perform a PUT (update data) call, the "IF-Match"
- * request header must contain the MD5 checksum of the original tool data. If the MD5 checksum
- * ("IF-Match" request header value) does not match the MD5 checksum of the tool data in the storage
+ * request header must contain the SHA512 checksum of the original tool data. If the SHA512 checksum
+ * ("IF-Match" request header value) does not match the SHA512 checksum of the tool data in the storage
  * layer, HTTP BAD REQUEST (error 400) will be returned.</p>
- * <p>GET, POST and PUT responses contain ETag response header, the value is the MD5 checksum of
+ * <p>GET, POST and PUT responses contain ETag response header, the value is the SHA512 checksum of
  * the returned tool data.</p>
  *
  * <p>Maps to host:port/ibm/api/adminCenter/v1/tooldata</p>
+ *
+ * The algorithm assessment of FIPS 140-3 by updating SHA512 checksum is based on slack discussion with component SMEs.
  */
 public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
     private final IToolDataService toolDataService;
@@ -94,7 +97,7 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
 
     /**
      * Gets the tool data of for the giving tool/user.
-     * When the tool data is returned, a md5 checksum of the data is also returned using the Response's HTTP header Etag.
+     * When the tool data is returned, a sha512 checksum of the data is also returned using the Response's HTTP header Etag.
      *
      *
      * {@inheritDoc}
@@ -118,8 +121,8 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
                     throw new RESTException(HTTP_INTERNAL_ERROR);
                 }
 
-                String md5 = Utils.getMD5String(object.toString());
-                response.setResponseHeader(HTTP_HEADER_ETAG, md5);
+                String sha512 = Utils.getSHA512String(object.toString());
+                response.setResponseHeader(HTTP_HEADER_ETAG, sha512);
                 return object;
             }
             // Return 204 (no content) so as to get rid of the 404 console error
@@ -170,8 +173,8 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
                 POSTResponse postResponse = new POSTResponse();
                 postResponse.createdURL = request.getURL() + "/" + child;
                 postResponse.jsonPayload = td;
-                String md5 = Utils.getMD5String(td);
-                response.setResponseHeader(HTTP_HEADER_ETAG, md5);
+                String sha512 = Utils.getSHA512String(td);
+                response.setResponseHeader(HTTP_HEADER_ETAG, sha512);
                 return postResponse;
             } catch (IOException e) {
                 if (tc.isDebugEnabled()) {
@@ -216,8 +219,8 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
      * Updates the tool data for the giving tool/user.
      *
      * The pre-condition for the update operation is the http request header "If-Match".
-     * The "If-Match" should contain the MD5 checksum of the tool data that is being updated.
-     * The GET response of the tool contains response header Etag. The value of Etag is the MD5 checksum
+     * The "If-Match" should contain the SHA512 checksum of the tool data that is being updated.
+     * The GET response of the tool contains response header Etag. The value of Etag is the SHA512 checksum
      * of the tool data returned to the caller.
      *
      * {@inheritDoc}
@@ -226,8 +229,8 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
      *         code {@link Response.Status.OK} if the tool data is updated successfully;
      *         or code {@link Response.Status.HTTP_NOT_FOUND} if the tool data does not exist;
      *         or code {@link Response.Status.HTTP_PRECONDITION_FAILED } if the request doesn't contain If-Match header;
-     *         or code {@link Response.Status.HTTP_PRECONDITION_FAILED } if the MD5 checksum (ETag value of the request header) passed
-     *         in doesn't match the MD5 checksum of the data being replaced;
+     *         or code {@link Response.Status.HTTP_PRECONDITION_FAILED } if the SHA512 checksum (ETag value of the request header) passed
+     *         in doesn't match the SHA512 checksum of the data being replaced;
      *         or code {@link Response.Status.HTTP_INTERNAL_ERROR } if other failure occurred.
      *
      */
@@ -239,8 +242,8 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
         if (isKnownChildResource(child, request)) {
 
             try {
-                String md5In = request.getHeader(HTTP_HEADER_IF_MATCH);
-                if (md5In == null)
+                String sha512In = request.getHeader(HTTP_HEADER_IF_MATCH);
+                if (sha512In == null)
                     throw new RESTException(HTTP_PRECONDITION_FAILED);
                 boolean exists = toolDataService.exists(request.getUserPrincipal().getName(), child);
                 if (!exists) {
@@ -253,9 +256,9 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
                     throw new RESTException(HTTP_INTERNAL_ERROR);
                 }
 
-                String md5 = Utils.getMD5String(originalData.toString());
+                String sha512 = Utils.getSHA512String(originalData.toString());
 
-                if (md5In.equals(md5) == false) {
+                if (sha512In.equals(sha512) == false) {
                     throw new RESTException(HTTP_PRECONDITION_FAILED, MEDIA_TYPE_TEXT_PLAIN, RequestNLS.formatMessage(tc, "TOOLDATA_UPDATE_CHECKSUM_NOT_MATCH",
                                                                                                                       request.getUserPrincipal().getName(),
                                                                                                                       child));
@@ -272,8 +275,8 @@ public class ToolDataAPI extends CommonRESTHandler implements V1Constants {
                 if (td == null)
                     throw new RESTException(HTTP_INTERNAL_ERROR);
 
-                md5 = Utils.getMD5String(td);
-                response.setResponseHeader(HTTP_HEADER_ETAG, md5);
+                sha512 = Utils.getSHA512String(td);
+                response.setResponseHeader(HTTP_HEADER_ETAG, sha512);
 
                 return td;
             } catch (IOException e) {

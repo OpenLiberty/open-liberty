@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.wsoc.outbound;
@@ -24,6 +24,10 @@ import com.ibm.wsspi.channelfw.exception.ChainException;
 import com.ibm.wsspi.channelfw.exception.ChannelException;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
+import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.exception.NettyException;
+
 /**
  * Encapsulation of steps for starting/stopping an http chain in a controlled/predictable
  * manner with a minimum of synchronization.
@@ -40,6 +44,11 @@ public class WsocChain {
     private String httpName;
     private String chainName;
     private ChannelFramework cfw;
+
+    // Netty items
+    private NettyFramework nettyBundle;
+    private boolean useNettyTransport;
+    private BootstrapExtended nettyBootstrap;
 
     /**
      * Will set the chain to enabled after a customer needs a wsoc outbound chain - so when they use the JSR 356 API
@@ -87,6 +96,7 @@ public class WsocChain {
         httpName = "HTTP-" + chainId;
         chainName = chainId;
         this.cfw = cfw;
+        useNettyTransport = false;
 
         // If there is a chain that is in the CFW with this name, it was potentially
         // left over from a previous instance of the endpoint. There is no way to get
@@ -105,6 +115,17 @@ public class WsocChain {
                 Tr.debug(this, tc, "Error stopping chain " + chainName, this, e);
             }
         }
+    }
+
+    public void init(String chainId, NettyFramework nettyBundle) {
+
+        tcpName = "TCP-" + chainId;
+        sslName = "SSL-" + chainId;
+        httpName = "HTTP-" + chainId;
+        chainName = chainId;
+        this.nettyBundle = nettyBundle;
+        useNettyTransport = true;
+
     }
 
     /**
@@ -151,6 +172,16 @@ public class WsocChain {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "stop chain " + this);
         }
+        if (useNettyTransport)
+            nettyStop();
+        else
+            legacyStop();
+    }
+
+    public synchronized void legacyStop() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "stop legacy chain " + this);
+        }
 
         // We don't have to check enabled/disabled here: chains are always allowed to stop.
         if (currentConfig == null)
@@ -172,10 +203,26 @@ public class WsocChain {
         }
     }
 
+    public synchronized void nettyStop() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "stop netty chain " + this);
+        }
+
+        // We don't have to check enabled/disabled here: chains are always allowed to stop.
+        if (currentConfig == null)
+            return;
+        owner.currentHttpOptions = null;
+        if (isHttps) {
+            owner.secureBootstrap = null;
+            owner.currentSSLOptions = null;
+        }
+        else
+            owner.unsecureBootstrap = null;
+    }
+
     /**
      * Update/start the chain configuration.
      */
-    @FFDCIgnore({ ChannelException.class, ChainException.class })
     public synchronized void update() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "update chain " + this);
@@ -201,17 +248,19 @@ public class WsocChain {
             // save the new/changed configuration before we start setting up the new chain
             currentConfig = newConfig;
 
-            // Stop the chain-- will have to be recreated when port is updated
-            // notification/follow-on of stop operation is in the chainStopped listener method
-            try {
-                ChainData cd = cfw.getChain(chainName);
-                if (cd != null) {
-                    cfw.removeChain(cd);
-                }
+            if (!useNettyTransport) {
+                // Stop the chain-- will have to be recreated when port is updated
+                // notification/follow-on of stop operation is in the chainStopped listener method
+                try {
+                    ChainData cd = cfw.getChain(chainName);
+                    if (cd != null) {
+                        cfw.removeChain(cd);
+                    }
 
-            } catch (ChainException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Error stopping chain " + chainName, oldConfig, e);
+                } catch (ChainException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Error stopping chain " + chainName, oldConfig, e);
+                    }
                 }
             }
         } else {
@@ -223,90 +272,128 @@ public class WsocChain {
                 }
             }
 
-            try {
-                ChainData cd = cfw.getChain(chainName);
-                if (cd != null) {
-                    cfw.removeChain(cd);
-                }
+            if (useNettyTransport) {
+                nettyUpdate(newConfig, tcpOptions, sslOptions, httpOptions);
+            } else {
+                legacyUpdate(newConfig, tcpOptions, sslOptions, httpOptions);
+            }
+        }
 
-                // Remove any channels that have to be rebuilt..
-                if (newConfig.tcpChanged(oldConfig)) {
-                    removeChannel(tcpName);
-                }
+    }
 
-                if (newConfig.sslChanged(oldConfig)) {
-                    removeChannel(sslName);
-                }
+    @FFDCIgnore({ ChannelException.class, ChainException.class })
+    public synchronized void legacyUpdate(ActiveConfiguration newConfig, Map<String, Object> tcpOptions, Map<String, Object> sslOptions, Map<String, Object> httpOptions) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "update chain " + this);
+        }
 
-                if (newConfig.httpChanged(oldConfig)) {
-                    removeChannel(httpName);
-                }
+        final ActiveConfiguration oldConfig = currentConfig;
 
-            } catch (ChainException e) {
-                e.printStackTrace();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Error stopping chain " + chainName, oldConfig, e);
+        try {
+            ChainData cd = cfw.getChain(chainName);
+            if (cd != null) {
+                cfw.removeChain(cd);
+            }
+
+            // Remove any channels that have to be rebuilt..
+            if (newConfig.tcpChanged(oldConfig)) {
+                removeChannel(tcpName);
+            }
+
+            if (newConfig.sslChanged(oldConfig)) {
+                removeChannel(sslName);
+            }
+
+            if (newConfig.httpChanged(oldConfig)) {
+                removeChannel(httpName);
+            }
+
+        } catch (ChainException e) {
+            e.printStackTrace();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Error stopping chain " + chainName, oldConfig, e);
+            }
+        }
+
+        // save the new/changed configuration before we start setting up the new chain
+        currentConfig = newConfig;
+        try {
+            Map<Object, Object> chanProps;
+
+            // TCP Channel
+            ChannelData tcpChannel = cfw.getChannel(tcpName);
+            if (tcpChannel == null) {
+                String typeName = (String) tcpOptions.get("type");
+                chanProps = new HashMap<Object, Object>(tcpOptions);
+
+                tcpChannel = cfw.addChannel(tcpName, cfw.lookupFactory(typeName), chanProps);
+            }
+
+            // SSL Channel
+            if (isHttps) {
+                ChannelData sslChannel = cfw.getChannel(sslName);
+                if (sslChannel == null) {
+                    sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslOptions));
                 }
             }
 
-            // save the new/changed configuration before we start setting up the new chain
-            currentConfig = newConfig;
-            try {
-                Map<Object, Object> chanProps;
-
-                // TCP Channel
-                ChannelData tcpChannel = cfw.getChannel(tcpName);
-                if (tcpChannel == null) {
-                    String typeName = (String) tcpOptions.get("type");
-                    chanProps = new HashMap<Object, Object>(tcpOptions);
-
-                    tcpChannel = cfw.addChannel(tcpName, cfw.lookupFactory(typeName), chanProps);
-                }
-
-                // SSL Channel
-                if (isHttps) {
-                    ChannelData sslChannel = cfw.getChannel(sslName);
-                    if (sslChannel == null) {
-                        sslChannel = cfw.addChannel(sslName, cfw.lookupFactory("SSLChannel"), new HashMap<Object, Object>(sslOptions));
-                    }
-                }
-
-                // HTTP Channel
-                ChannelData httpChannel = cfw.getChannel(httpName);
-                if (httpChannel == null) {
-                    chanProps = new HashMap<Object, Object>(httpOptions);
-                    // Put the endpoint id, which allows us to find the registered access log
-                    // dynamically
-                    httpChannel = cfw.addChannel(httpName, cfw.lookupFactory("HTTPOutboundChannel"), chanProps);
-                }
-
-                // Add chain
-                ChainData cd = cfw.getChain(chainName);
-                if (null == cd) {
-                    final String[] chanList;
-                    if (isHttps)
-                        chanList = new String[] { httpName, sslName, tcpName };
-                    else
-                        chanList = new String[] { httpName, tcpName };
-
-                    cd = cfw.addChain(chainName, FlowType.OUTBOUND, chanList);
-                    cd.setEnabled(enabled);
-
-                }
-
-                // We configured the chain successfully
-                newConfig.validConfiguration = true;
-
-            } catch (ChannelException e) {
-                // handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
-            } catch (ChainException e) {
-                // handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
-            } catch (Exception e) {
-                // The exception stack for this is all internals and does not belong in messages.log.
-                //  Question: need error message here?
-                //  Tr.error(tc, "config.httpChain.error", tcpName, e.toString());
-                //  handleStartupError(e, newConfig);
+            // HTTP Channel
+            ChannelData httpChannel = cfw.getChannel(httpName);
+            if (httpChannel == null) {
+                chanProps = new HashMap<Object, Object>(httpOptions);
+                // Put the endpoint id, which allows us to find the registered access log
+                // dynamically
+                httpChannel = cfw.addChannel(httpName, cfw.lookupFactory("HTTPOutboundChannel"), chanProps);
             }
+
+            // Add chain
+            ChainData cd = cfw.getChain(chainName);
+            if (null == cd) {
+                final String[] chanList;
+                if (isHttps)
+                    chanList = new String[] { httpName, sslName, tcpName };
+                else
+                    chanList = new String[] { httpName, tcpName };
+
+                cd = cfw.addChain(chainName, FlowType.OUTBOUND, chanList);
+                cd.setEnabled(enabled);
+
+            }
+
+            // We configured the chain successfully
+            newConfig.validConfiguration = true;
+
+        } catch (ChannelException e) {
+            // handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
+        } catch (ChainException e) {
+            // handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
+        } catch (Exception e) {
+            // The exception stack for this is all internals and does not belong in messages.log.
+            //  Question: need error message here?
+            //  Tr.error(tc, "config.httpChain.error", tcpName, e.toString());
+            //  handleStartupError(e, newConfig);
+        }
+
+    }
+
+    public synchronized void nettyUpdate(ActiveConfiguration newConfig, Map<String, Object> tcpOptions, Map<String, Object> sslOptions, Map<String, Object> httpOptions) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "update chain " + this);
+        }
+
+        try {
+            nettyBootstrap = nettyBundle.createTCPBootstrapOutbound(tcpOptions);
+            owner.currentHttpOptions = httpOptions;
+            if (isHttps) {
+                owner.secureBootstrap = nettyBootstrap;
+                owner.currentSSLOptions = sslOptions;
+            }
+            else
+                owner.unsecureBootstrap = nettyBootstrap;
+        } catch (NettyException e) {
+            // When updating the legacy chain, no error processing took place
+            // due to already logged exceptions from channel framework. 
+            // https://github.com/OpenLiberty/open-liberty/issues/31815
         }
 
     }

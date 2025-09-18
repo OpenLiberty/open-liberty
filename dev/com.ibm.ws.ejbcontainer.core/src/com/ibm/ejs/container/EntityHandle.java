@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2021 IBM Corporation and others.
+ * Copyright (c) 1998, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -125,25 +125,7 @@ public class EntityHandle implements Handle, Serializable {
                 EJBHome home = null;
                 try {
                     // Locate the home
-                    //91851 begin
-                    if (this.initialContextProperties == null) {
-                        ctx = new InitialContext();
-                    } else {
-                        try {
-                            ctx = new InitialContext(this.initialContextProperties);
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) // d144064
-                                Tr.debug(tc, "Created an initial context with the " +
-                                             "initialContextProperties, providerURL = " +
-                                             (String) initialContextProperties.get("java.naming.provider.url") +
-                                             " INITIAL_CONTEXT_FACTORY = " +
-                                             (String) initialContextProperties.get(Context.INITIAL_CONTEXT_FACTORY));
-                        } catch (NamingException ne) {
-                            //                     FFDCFilter.processException(ne, CLASS_NAME + ".getEJBObject",
-                            //"186", this);
-                            ctx = new InitialContext();
-                        }
-                    }
-                    //91851 end
+                    ctx = new InitialContext();
                     home = (EJBHome) PortableRemoteObject.narrow(ctx.lookup(homeJNDIName), homeClass);
                 } catch (NoInitialContextException e) {
                     //               FFDCFilter.processException(e, CLASS_NAME + ".getEJBObject", "197", this);

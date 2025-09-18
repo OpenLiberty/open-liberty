@@ -127,7 +127,8 @@ instrument.disabled: true
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.serialization;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

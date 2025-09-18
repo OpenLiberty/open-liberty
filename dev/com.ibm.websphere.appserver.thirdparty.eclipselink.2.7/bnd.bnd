@@ -14,8 +14,8 @@
 bVersion=1.0
 
 # Eclipselink version info
-eclVersion=2.7.15
-eclHash=53511fd
+eclVersion=2.7.16
+eclHash=47773a3
 eclFullVersion=${eclVersion}
 eclPackageVersion=2.0.16
 asmFullVersion=9.8.0

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012-2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,33 +68,41 @@ public class CustomMatchingStrategy extends MatchingStrategy {
     }
 
     /**
-     * Gets the collection match for the web resource collection based on the following custom method algorithm.
+     * getCollectionMatchForWebResourceCollection method in CustomMatchingStrategy is the same as StandardMatchingStrategy 
+     * Both denyUncovered and omissionMethod keywords are applicable as well. 
      * <pre>
-     * Custom method matching use case.
-     * Happy path:
-     * 1. Validate the resource name matches one of the URL patterns
-     * 2. Validate the method matches
-     * 3. Return the collection match found
-     * 
-     * Exceptional path:
-     * 1.a If resource name does not match, return RESPONSE_NO_MATCH.
-     * 2.a If method does not match, determine that it is listed and return RESPONSE_NO_MATCH.
-     * 2.b When method is not listed, the match is null and it is processed by method getMatchResponse turning it into a CUSTOM_NO_MATCH_RESPONSE.
+     * 1. Determine if the method matches
+     * 2. Perform a URL match
      * </pre>
      */
     @Override
     protected CollectionMatch getCollectionMatchForWebResourceCollection(WebResourceCollection webResourceCollection, String resourceName, String method) {
         CollectionMatch match = null;
-        CollectionMatch collectionMatchFound = webResourceCollection.performUrlMatch(resourceName);
-        if (collectionMatchFound != null) {
-            if (webResourceCollection.isMethodMatched(method)) {
-                match = collectionMatchFound;
-            } else if (webResourceCollection.isMethodListed(method)) {
+        if (webResourceCollection.isMethodMatched(method)) {
+            match = webResourceCollection.performUrlMatch(resourceName);
+            if (match == null) {
                 match = CollectionMatch.RESPONSE_NO_MATCH;
             }
-        } else {
-            match = CollectionMatch.RESPONSE_NO_MATCH;
+
+        } else if (webResourceCollection.deniedDueToDenyUncoveredHttpMethods(method)) {
+
+            if (webResourceCollection.isSpecifiedOmissionMethod(method)) {
+                match = webResourceCollection.performUrlMatch(resourceName);
+                if (match != null && !CollectionMatch.RESPONSE_NO_MATCH.equals(match) && !CollectionMatch.RESPONSE_DENY_MATCH.equals(match)) {
+                    // meaning we have a match, so the url matches but the method is uncovered.  We return response deny by omission
+                    match = CollectionMatch.RESPONSE_DENY_MATCH_BY_OMISSION;
+                }
+
+            } else {
+                match = webResourceCollection.performUrlMatch(resourceName);
+                if (match != null && !CollectionMatch.RESPONSE_NO_MATCH.equals(match) && !CollectionMatch.RESPONSE_DENY_MATCH.equals(match)) {
+                    // meaning we have a match, so the url matches but the method is uncovered.  We return response deny
+                    match = CollectionMatch.RESPONSE_DENY_MATCH;
+                }
+
+            }
         }
         return match;
     }
+    
 }

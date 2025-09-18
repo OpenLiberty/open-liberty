@@ -1,16 +1,27 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 window.addEventListener("message", receiveMessage, false);
+
+/**
+ * Generate a cryptographic hash of a string.
+ */
+function hash(string) {
+    const encodedString = new TextEncoder().encode(string);
+    return crypto.subtle.digest('SHA-256', encodedString).then((hashBuffer) => {
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const hashHex = hashArray
+            .map((bytes) => bytes.toString(16).padStart(2, '0'))
+            .join('');
+        return hashHex;
+    });
+}
 
 /**
  * Get the current browser state value from the browser state cookie.
@@ -41,13 +52,13 @@ function getBrowserState() {
  * @returns A Base64-encoded SHA-256 hash of the concatenation of all of the
  * provided arguments.
  */
-function calculateSessionState(clientId, browserState, salt) {
+async function calculateSessionState(clientId, browserState, salt) {
 	var stringToHash = clientId + '' + browserState;
 	if (salt) {
 		stringToHash = stringToHash + '' + salt;
 	}
-	var sessionState = CryptoJS.SHA256(stringToHash);
-	sessionState = sessionState.toString(CryptoJS.enc.Base64);
+	var sessionState = await hash(stringToHash);
+	sessionState = btoa(sessionState);
 	if (salt) {
 		sessionState = sessionState + '.' + salt;
 	}
@@ -65,7 +76,7 @@ function calculateSessionState(clientId, browserState, salt) {
  * 
  * @param message
  */
-function receiveMessage(message) {
+async function receiveMessage(message) {
 	if (message.origin !== EXPECTED_ORIGIN) {
 		console.log("Unable to complete request from " + message.origin);
 		return;
@@ -94,7 +105,7 @@ function receiveMessage(message) {
 		salt = stateAndSalt[1];
 	}
 
-	var sessionState = calculateSessionState(clientId, browserState, salt);
+	var sessionState = await calculateSessionState(clientId, browserState, salt);
 
 	var msg = "changed";
 	// Ensure both the type and value of the two session states are equivalent

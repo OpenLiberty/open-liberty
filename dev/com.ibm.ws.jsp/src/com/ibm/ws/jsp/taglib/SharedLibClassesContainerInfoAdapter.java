@@ -35,6 +35,7 @@ import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.app.deploy.ContainerInfo;
 import com.ibm.ws.container.service.app.deploy.NestedConfigHelper;
 import com.ibm.ws.container.service.app.deploy.extended.ExtendedApplicationInfo;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
@@ -137,7 +138,10 @@ public class SharedLibClassesContainerInfoAdapter implements ContainerAdapter<Sh
             Configuration cfg = classloaderConfigs[0];
             Dictionary<String, Object> props = cfg.getProperties();
             if (props != null) {
-                String[] libraryPIDs = (String[]) props.get("privateLibraryRef");
+                String[] libraryPIDs = (String[]) props.get("overrideLibraryRef");
+                processLibraryPIDs(sharedLibContainers, libraryPIDs);
+
+                libraryPIDs = (String[]) props.get("privateLibraryRef");
                 processLibraryPIDs(sharedLibContainers, libraryPIDs);
 
                 libraryPIDs = (String[]) props.get("commonLibraryRef");

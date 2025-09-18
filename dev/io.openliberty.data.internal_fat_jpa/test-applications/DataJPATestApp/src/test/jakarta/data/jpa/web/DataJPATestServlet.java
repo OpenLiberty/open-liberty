@@ -1332,20 +1332,27 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
-        // TODO Enable once EclipseLink bug #31558 is fixed:
-        // List<ShippingAddress> found = shippingAddresses
-        //                .findByStreetAddressRecipientInfoNotEmpty();
+        List<ShippingAddress> found = shippingAddresses
+                        .findByStreetAddressRecipientInfoNotEmpty();
+        ShippingAddress a = null;
+        for (ShippingAddress s : found) {
+            if (a1.id.equals(s.id))
+                a = s;
+        }
+        // TODO Replace above for loop with the following once EclipseLink bug #31559 is fixed
         // assertEquals(1, found.size());
-        // ShippingAddress a = found.get(0);
-        // assertEquals(a1.id, a.id);
-        // assertEquals(a1.city, a.city);
-        // assertEquals(a1.state, a.state);
-        // assertEquals(a1.zipCode, a.zipCode);
-        // assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
-        // assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
-        // assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
+        // a = found.get(0);
+        assertEquals(a1.id, a.id);
+        assertEquals(a1.city, a.city);
+        assertEquals(a1.state, a.state);
+        assertEquals(a1.zipCode, a.zipCode);
+        assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
+        assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
+        assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
 
-        // assertEquals(3L, shippingAddresses.countByStreetAddressRecipientInfoEmpty());
+        long count = shippingAddresses.countByStreetAddressRecipientInfoEmpty();
+        // TODO Enable once EclipseLink bug #31559 is fixed:
+        // assertEquals(3L, count);
 
         // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
         //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
@@ -1432,19 +1439,22 @@ public class DataJPATestServlet extends FATServlet {
                 throw x;
         }
 
-        // TODO report EclipseLink bug that occurs on the following
+        // TODO enable once issue #32204 is fixed in EclipseLink
         if (false)
             assertIterableEquals(List.of(345003450L, 678006780L),
                                  taxpayers.findByBankAccountsContains(AccountId.of(26122300, 410224))
                                                  .map(t -> t.ssn)
                                                  .collect(Collectors.toList()));
 
-        // TODO also fails with EclipseLink error
-        if (false)
-            assertIterableEquals(List.of(789007890L),
-                                 taxpayers.findByBankAccountsNotEmpty()
-                                                 .map(t -> t.ssn)
-                                                 .collect(Collectors.toList()));
+        assertEquals(List.of(123001230L,
+                             234002340L,
+                             345003450L,
+                             456004560L,
+                             567005670L,
+                             678006780L),
+                     taxpayers.findByBankAccountsNotEmpty()
+                                     .map(t -> t.ssn)
+                                     .collect(Collectors.toList()));
 
         taxpayers.delete();
     }
@@ -2006,8 +2016,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Verify that JPQL can be used to EXTRACT the DATE from a LocalDateTime.
      */
-    // TODO enable once EclipseLink bug #31802 is fixed
-    //@Test
+    @Test
     public void testExtractDate() {
         rebates.reset();
 
@@ -2130,8 +2139,7 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Verify that JPQL can be used to EXTRACT the TIME from a LocalDateTime.
      */
-    // TODO enable once EclipseLink bug #31802 is fixed
-    //@Test
+    @Test
     public void testExtractTime() {
         rebates.reset();
 
@@ -2572,6 +2580,40 @@ public class DataJPATestServlet extends FATServlet {
                              cities.withNameOf("Rochester")
                                              .map(c -> c.name + ' ' + c.stateName)
                                              .collect(Collectors.toList()));
+    }
+
+    /**
+     * Repository method with a Query based on multiple IdClass parameters.
+     */
+    // TODO enable once #29073 is fixed
+    // SELECT o FROM City o WHERE (o.name=?1 AND id(o)<>?2) ORDER BY o.stateName
+    // is wrongly interpreted as:
+    // SELECT STATENAME, NAME, AREACODES, CHANGECOUNT, POPULATION FROM City
+    //  WHERE ((NAME = ?) AND (STATENAME <> ?)) ORDER BY STATENAME
+    //@Test
+    public void testIdClassInQuery() {
+
+        assertEquals(List.of("Springfield Illinois",
+                             "Springfield Massachusetts",
+                             "Springfield Missouri",
+                             "Springfield Ohio"),
+                     cities.byNameButNotId("Springfield",
+                                           CityId.of("Springfield",
+                                                     "Oregon"))
+                                     .map(c -> c.name + ' ' + c.stateName)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(List.of("Kansas City Missouri",
+                             "Rochester Minnesota",
+                             "Springfield Illinois"),
+                     cities.whereIdIsOneOf(CityId.of("Rochester",
+                                                     "Minnesota"),
+                                           CityId.of("springfield",
+                                                     "illinois"),
+                                           CityId.of("Kansas City",
+                                                     "Missouri"))
+                                     .map(c -> c.name + ' ' + c.stateName)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -4600,7 +4642,7 @@ public class DataJPATestServlet extends FATServlet {
             Thread.sleep(Duration.ofMillis(1).toMillis());
 
         dodgeZipCodes = new int[] { 55917, 55924, 55927, 55940, 55944, 55955, 55963, 55985 };
-        assertEquals(true, counties.updateByNameSetZipCodes("Dodge", dodgeZipCodes));
+        assertEquals(true, counties.setZipCodesFor("Dodge", dodgeZipCodes));
 
         // Try to update with outdated version/LocalDateTime:
         try {
@@ -4774,7 +4816,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(false, counties.findZipCodesByPopulationLessThanEqual(1).hasNext());
 
         // update array value to empty
-        assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", new int[0]));
+        assertEquals(true, counties.setZipCodesFor("Wabasha", new int[0]));
 
         // query on array value
         assertEquals(Arrays.toString(new int[0]),
@@ -4782,7 +4824,7 @@ public class DataJPATestServlet extends FATServlet {
 
         // update array value to non-empty
         int[] wabashaZipCodesDescending = new int[] { 55991, 55981, 55968, 55964, 55957, 55956, 55945, 55932, 55910, 55041 };
-        assertEquals(true, counties.updateByNameSetZipCodes("Wabasha", wabashaZipCodesDescending));
+        assertEquals(true, counties.setZipCodesFor("Wabasha", wabashaZipCodesDescending));
 
         // query on array value
         assertEquals(Arrays.toString(wabashaZipCodesDescending),
@@ -4900,23 +4942,21 @@ public class DataJPATestServlet extends FATServlet {
 
         boolean updated;
         try {
-            // TODO Uncomment the following 3 lines of code to reproduce this EclipseLink error:
-            // jakarta.persistence.PersistenceException: Exception [EclipseLink-4002] ...
-            // Call: UPDATE WLPBusiness SET LATITUDE = ?, NAME = ? WHERE (ID = ?)
-            // ...
-            // Caused by: java.sql.SQLDataException: An attempt was made to get a data value of type 'DECIMAL' from a data value of type 'test.jakarta.data.jpa.web.Location'.
-            //   ...
-            //   at org.apache.derby.iapi.jdbc.BrokeredPreparedStatement.setObject(Unknown Source)
-            //   at com.ibm.ws.rsadapter.jdbc.WSJdbcPreparedStatement.setObject(WSJdbcPreparedStatement.java:1687)
-            //   at org.eclipse.persistence.internal.databaseaccess.DatabasePlatform.setParameterValueInDatabaseCall(DatabasePlatform.java:2462)
-            //   at org.eclipse.persistence.platform.database.DerbyPlatform.setParameterValueInDatabaseCall(DerbyPlatform.java:985)
-            //   at org.eclipse.persistence.internal.databaseaccess.DatabaseCall.prepareStatement(DatabaseCall.java:799)
-            //   at org.eclipse.persistence.internal.databaseaccess.DatabaseAccessor.basicExecuteCall(DatabaseAccessor.java:630)
+            // TODO enable once #32185 is fixed in EclipseLink
+            // jakarta.persistence.PersistenceException:
+            // Exception [EclipseLink-26] (Eclipse Persistence Services -
+            // 5.0.0-B08.v202505280949-dfc411d38767f696ce9f2741de051aef050cbeba):
+            // org.eclipse.persistence.exceptions.DescriptorException
+            // Exception Description: Trying to get value for instance variable [street]
+            //   of type [test.jakarta.data.jpa.web.Street] from the object
+            //   [test.jakarta.data.jpa.web.Location]. The specified object is not an
+            //   instance of the class or interface declaring the underlying field.
+            // Internal Exception: java.lang.IllegalArgumentException:
+            //   Can not get test.jakarta.data.jpa.web.Street field
+            //   test.jakarta.data.jpa.web.Address.street on test.jakarta.data.jpa.web.Location
             //Address newAddress = new Address("Rochester", "MN", 55901, 3605, new Street("US 52", "N"));
             //Location newLocation = new Location(newAddress, 44.05881f, -92.50556f);
             //assertEquals(true, businesses.updateWithJPQL(newLocation, "IBM", ibm.id));
-
-            // Jakarta Data was able to avoid the above error by generating a query to set each attribute individually,
 
             ibm.location.latitude = 44.05881f;
             ibm.location.longitude = -92.50556f;

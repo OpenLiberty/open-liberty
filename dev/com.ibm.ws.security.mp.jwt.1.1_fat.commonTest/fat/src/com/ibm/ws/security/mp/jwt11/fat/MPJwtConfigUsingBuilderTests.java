@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -47,6 +48,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
@@ -86,6 +89,9 @@ import componenttest.topology.impl.LibertyServer;
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
+    
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.mp.jwt.1.1.fat.builder");
 
     protected static Class<?> thisClass = MPJwtBasicTests.class;
 
@@ -1246,9 +1252,12 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
      * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
      *
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
+     * 
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
@@ -1262,9 +1271,12 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
      * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
      *
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
+     * 
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
@@ -1278,9 +1290,12 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * Test that we receive access when we use a token built with the same signature algorithm (and private/public key pair)
      * as the mpJwt config and receive a 401 in all other cases (including using a mis-matched private/public key pair with the same sig alg)
      *
+     * Skip test on FIPS 140-3 because it requires RSA keys to be at least 2048 bit
+     * 
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MpJwtConfigUsingBuilderTests_sigAlg_mpJWTusingRS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
 
@@ -1376,3 +1391,4 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
     /******************************** End signatureAlgorithm (new Algorithms) ***************************************/
 
 }
+

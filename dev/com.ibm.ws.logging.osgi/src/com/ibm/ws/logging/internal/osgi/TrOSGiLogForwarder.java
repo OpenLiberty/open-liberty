@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,20 +37,30 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.logging.ResourceBundleSupport;
 
 public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBundleListener {
     private static final TraceComponent _tc = Tr.register(TrOSGiLogForwarder.class,OsgiLogConstants.TRACE_GROUP, OsgiLogConstants.MESSAGE_BUNDLE);
 
-    final static class OSGiTraceComponent extends TraceComponent {
+    final static class OSGiTraceComponent extends TraceComponent implements ResourceBundleSupport {
         private final String ffdcMe;
 
-        protected OSGiTraceComponent(String logName, Class<?> aClass, String[] groups, String ffdcMe) {
-            super("LogService-" + logName, aClass, groups, OsgiLogConstants.MESSAGE_BUNDLE);
+        protected OSGiTraceComponent(String logName, String[] groups, String ffdcMe) {
+            // Purposely pass in null for the Class object so that we don't try to instrument this class
+            // since all OSGiTraceComponent would have this class as its associated Class
+            // Because we are passing in a null Class, this class also implements ResourceBundleSupport
+            // in order to provide a Class to use for resolving the ResourceBundle
+            super("LogService-" + logName, null, groups, OsgiLogConstants.MESSAGE_BUNDLE);
             this.ffdcMe = ffdcMe;
         }
 
         public String getFfdcMe() {
             return ffdcMe;
+        }
+
+        @Override
+        public Class<?> getClassForResourceBundle() {
+            return TrOSGiLogForwarder.class;
         }
     }
 
@@ -105,7 +115,7 @@ public class TrOSGiLogForwarder implements SynchronousLogListener, SynchronousBu
                     groups.addAll(getEquinoxTraceGroups(b));
                 }
 
-                tc = new OSGiTraceComponent(logName, this.getClass(), groups.toArray(new String[0]), ffdcMe);
+                tc = new OSGiTraceComponent(logName, groups.toArray(new String[0]), ffdcMe);
                 traceComponents.put(b, tc);
                 TrConfigurator.registerTraceComponent(tc);
                 if (TraceComponent.isAnyTracingEnabled() && _tc.isDebugEnabled()) {

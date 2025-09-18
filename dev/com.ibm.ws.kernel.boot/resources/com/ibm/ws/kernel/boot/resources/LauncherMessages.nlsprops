@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -441,6 +441,10 @@ warning.unableToPackageLooseConfigFileMissingPath.useraction=Modify the paths in
 warning.tooManySymbolicLinks=CWWKE0096W: Too many symbolic links were encountered when the system tried to resolve the following path: {0}.
 warning.tooManySymbolicLinks.explanation=Symbolic links are shortcuts that point to other files or directories. This error occurs when the system encounters too many symbolic links in a chain and it is unable to resolve the path.
 warning.tooManySymbolicLinks.useraction=To resolve this issue, check the symbolic links in the path and ensure that they do not create circular references. You might also use the 'readlink' command to inspect individual links in the chain.
+
+warning.javaHomeNotSet=CWWKE0097W: The JAVA_HOME environment variable is not set.
+warning.javaHomeNotSet.explanation=The server script cannot determine the location of the Java installation. This issue does not occur if the JAVA_HOME environment variable is set properly, or if the "java" executable, found by searching the PATH, is located in a complete Java installation. The Java installation location is needed to find version-specific configuration files, such as java9.options. If the Java installation cannot be found, these files are not loaded, and applications that rely on them might not behave as expected.
+warning.javaHomeNotSet.useraction=Set the JAVA_HOME environment variable.
 
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Unable to use option --include={0}, will use --include=wlp instead.
 warn.packageRuntime.include.unknownOption.explanation=The option was ignored because it was not recognized.

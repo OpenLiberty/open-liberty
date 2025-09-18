@@ -47,10 +47,14 @@ import com.ibm.websphere.simplicity.config.VirtualHost;
 import com.ibm.websphere.simplicity.config.WebApplication;
 
 import componenttest.containers.TestContainerSuite;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 public abstract class AbstractSpringTests extends TestContainerSuite {
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("SpringBootTests");
 
     // All current FAT application names.
     public static final String SPRING_BOOT_30_APP_ACTUATOR = "io.openliberty.springboot.fat30.actuator.app-0.0.1-SNAPSHOT.jar";
@@ -67,6 +71,8 @@ public abstract class AbstractSpringTests extends TestContainerSuite {
     public static final String SPRING_BOOT_30_APP_JMS = "io.openliberty.springboot.fat30.jms.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_30_APP_CONCURRENCY = "io.openliberty.springboot.fat30.concurrency.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_30_APP_VALIDATION = "io.openliberty.springboot.fat30.validation.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_30_APP_AOP = "io.openliberty.springboot.fat30.aop.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_30_APP_MBEAN = "io.openliberty.springboot.fat30.mbean.app-0.0.1-SNAPSHOT.war";
 
     // Various spring configuration property fragments.
     public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";

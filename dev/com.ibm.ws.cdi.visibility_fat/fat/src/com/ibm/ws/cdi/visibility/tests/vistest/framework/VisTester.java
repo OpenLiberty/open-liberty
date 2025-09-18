@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbAsWarLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InEjbWarLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InNonLib;
+import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InOverrideLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InPrivateLib;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtRegular;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtSeeApp;
@@ -136,6 +137,9 @@ public class VisTester {
 
         class InPrivateLibQualifier extends AnnotationLiteral<InPrivateLib> implements InPrivateLib {};
         qualifiers.add(new InPrivateLibQualifier());
+
+        class InOverrideLibQualifier extends AnnotationLiteral<InOverrideLib> implements InOverrideLib {};
+        qualifiers.add(new InOverrideLibQualifier());
 
         class InRuntimeExtRegularQualifier extends AnnotationLiteral<InRuntimeExtRegular> implements InRuntimeExtRegular {};
         qualifiers.add(new InRuntimeExtRegularQualifier());

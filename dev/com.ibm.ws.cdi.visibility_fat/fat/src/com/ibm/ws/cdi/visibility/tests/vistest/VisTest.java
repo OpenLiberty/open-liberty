@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestModuleF
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestModuleForEjbAsWarLib;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestModuleForEjbLib;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestModuleForEjbWarLib;
+import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestModuleForOverrideLib;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestModuleForPrivateLib;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestModuleForRuntimeExtRegular;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestModuleForRuntimeExtSeeApp;
@@ -43,6 +44,7 @@ import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestVisibil
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestVisibilityFromEjbAsWarLib;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestVisibilityFromEjbLib;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestVisibilityFromEjbWarLib;
+import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestVisibilityFromOverrideLib;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestVisibilityFromPrivateLib;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestVisibilityFromRuntimeExtRegular;
 import static com.ibm.ws.cdi.visibility.tests.vistest.VisTestSetup.doTestVisibilityFromRuntimeExtSeeAll;
@@ -194,6 +196,11 @@ public class VisTest extends FATServletClient {
     }
 
     @Test
+    public void testVisibilityFromOverrideLib() throws Exception {
+        doTestVisibilityFromOverrideLib(server);
+    }
+
+    @Test
     public void testVisibilityFromRuntimeExtRegular() throws Exception {
         doTestVisibilityFromRuntimeExtRegular(server, appClientResults);
     }
@@ -291,6 +298,11 @@ public class VisTest extends FATServletClient {
     @Test
     public void testModuleForPrivateLib() throws Exception {
         doTestModuleForPrivateLib(server);
+    }
+
+    @Test
+    public void testModuleForOverrideLib() throws Exception {
+        doTestModuleForOverrideLib(server);
     }
 
     @Test

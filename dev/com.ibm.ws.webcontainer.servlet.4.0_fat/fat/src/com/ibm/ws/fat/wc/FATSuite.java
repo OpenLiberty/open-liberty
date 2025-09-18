@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.ws.fat.wc.tests.WCContextRootPrecedence;
 import com.ibm.ws.fat.wc.tests.WCEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCFileUpLoadFileCountMaxPropertyTest;
 import com.ibm.ws.fat.wc.tests.WCFileUpLoadFileCountMaxTest;
+import com.ibm.ws.fat.wc.tests.WCFileUpLoadPartHeaderSizeMaxPropertyTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingSlashStarTest;
 import com.ibm.ws.fat.wc.tests.WCGetMappingTest;
 import com.ibm.ws.fat.wc.tests.WCPushBuilderTest;
@@ -83,6 +84,7 @@ import componenttest.rules.repeater.RepeatTests;
                 WCEncodingTest.class,
                 WCFileUpLoadFileCountMaxPropertyTest.class,
                 WCFileUpLoadFileCountMaxTest.class,
+                WCFileUpLoadPartHeaderSizeMaxPropertyTest.class,
                 WCServerTest.class,
                 WC5JakartaServletTest.class,
                 WCGetMappingTest.class,

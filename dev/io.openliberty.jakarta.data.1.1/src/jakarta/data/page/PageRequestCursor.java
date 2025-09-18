@@ -15,6 +15,8 @@ package jakarta.data.page;
 import java.util.Arrays;
 import java.util.List;
 
+import jakarta.data.messages.Messages;
+
 /**
  */
 public class PageRequestCursor implements PageRequest.Cursor {
@@ -24,7 +26,7 @@ public class PageRequestCursor implements PageRequest.Cursor {
         this.keyComponents = keyComponents;
 
         if (keyComponents == null || keyComponents.length < 1)
-            throw new IllegalArgumentException("No values were provided.");
+            throw new IllegalArgumentException(Messages.get("006.zero.size.key"));
     }
 
     @Override

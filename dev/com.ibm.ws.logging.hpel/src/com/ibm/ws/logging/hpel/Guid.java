@@ -3,18 +3,18 @@ package com.ibm.ws.logging.hpel;
 //package org.eclipse.hyades.logging.core;
 
 /**********************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  * All rights reserved.   This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  * $Id: Guid.java,v 1.9 2006/07/24 20:01:06 paules Exp $
- * 
- * Contributors: 
+ *
+ * Contributors:
  * IBM - Initial API and implementation
- * 
+ *
  * Note: This class originates from Eclipse and only contains modifications to the package name.
  **********************************************************************/
 
@@ -27,7 +27,9 @@ import java.security.MessageDigest;
 import java.security.PrivilegedAction;
 import java.security.SecureRandom;
 import java.util.Random;
+
 import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * Universally Unique IDentifier (UUID) or Globally Unique IDentifier (GUID) implementation for
  * generating a hexadecimal string representation of a GUID.
@@ -52,9 +54,10 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  * <p>
  * For example:
  * <p>
+ *
  * <pre>
  * |&lt;------------------------- 32 bits --------------------------&gt;| Octet Note
- * 
+ *
  * +--------------------------------------------------------------+
  * | low 32 bits of time | 0-3 Low field of the time stamp
  * +-------------------------------+-------------------------------
@@ -69,6 +72,7 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  * | node ID | 8-16 Unique node identifier
  * +--------------------------...-----+
  * </pre>
+ *
  * <p>
  * GUIDs are generated using the following programming model:
  * <p>
@@ -99,9 +103,9 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  * <li>Free memory in the JVM (bytes)</li>
  * <li>Total memory in the JVM (bytes)</li>
  * </ul>
- * The MD5 hash algorithm is used to generate pseudo IEEE 802 MAC address. This hash algorithm is invoked through the
- * <code>java.security.MessageDigest</code> which requires a provider for the MD5 hash algorithm
- * (see Java Cryptography Architecture (JCA)). If the provider for the MD5 hash algorithm is not available in the run-time
+ * The hash algorithm SHA-256 is used to generate pseudo IEEE 802 MAC address. This hash algorithm is invoked through the
+ * <code>java.security.MessageDigest</code> which requires a provider for the hash algorithm
+ * (see Java Cryptography Architecture (JCA)). If the provider for the hash algorithm is not available in the run-time
  * environment, a simple additive hash algorithm is used over the random data. However, it is computationally feasible for
  * this simple additive hash algorithm to generate the same output for two different inputs thereby increasing the probability
  * of duplicate GUIDs.
@@ -125,7 +129,7 @@ import com.ibm.ws.common.crypto.CryptoUtils;
  * Internet organizations, except as needed for the purpose of
  * </i>
  * <p>
- * 
+ *
  * @author Paul E. Slauenwhite
  * @version July 24, 2006
  * @since January 26, 2005
@@ -204,9 +208,10 @@ public final class Guid {
      * <p>
      * For example:
      * <p>
+     *
      * <pre>
      * |&lt;------------------------- 32 bits --------------------------&gt;| Octet Note
-     * 
+     *
      * +--------------------------------------------------------------+
      * | low 32 bits of time | 0-3 Low field of the time stamp
      * +-------------------------------+-------------------------------
@@ -221,14 +226,15 @@ public final class Guid {
      * | node ID | 8-16 Unique node identifier
      * +--------------------------...-----+
      * </pre>
+     *
      * <p>
      */
     public Guid() {
 
         long adjustedTimestamp = 0;
 
-        // Instead of having small synchronized blocks, synchronize the 
-        // initialization phase (e.g. prevent multiple access to the clockSequenceAdjustment 
+        // Instead of having small synchronized blocks, synchronize the
+        // initialization phase (e.g. prevent multiple access to the clockSequenceAdjustment
         // and lastTimeStamp values).
         synchronized (LOCK) {
 
@@ -243,20 +249,9 @@ public final class Guid {
                 pseudoIEEE802MACAddress = getPseudoIEEE802MACAddress(uniqueTimeStamp);
 
                 //Instantiate and seed the random number generator:
-                try {
-
-                    randomNumberGenerator = SecureRandom.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
-                    randomNumberGenerator.setSeed(uniqueTimeStamp);
-                } catch (Throwable t) {
-
-                    //If a provider for the MD5 hash algorithm (see Java Cryptography Architecture (JCA) APIs) 
-                    //is not available in the run-time environment, use the java.util.Random class as the
-                    //random number generator:  
-                    randomNumberGenerator = new Random(uniqueTimeStamp);
-                }
-
+                randomNumberGenerator = new SecureRandom();
+                randomNumberGenerator.setSeed(uniqueTimeStamp);
                 clockSequence = randomNumberGenerator.nextLong();
-
                 isInitialized = true;
             }
 
@@ -292,8 +287,7 @@ public final class Guid {
                     //Only adjust the clock sequence by at most 9999:
                     if (clockSequenceAdjustment < 9999) {
                         clockSequenceAdjustment++;
-                    }
-                    else {
+                    } else {
                         timeIsValid = false;
                     }
                 }
@@ -331,7 +325,7 @@ public final class Guid {
      * the internal components of the <code>Guid</code> object, covert each
      * byte to its hexadecimal character equivalent, and return the string.
      * <p>
-     * 
+     *
      * @return The hexadecimal string representation of the 128 bit
      *         <code>Guid</code>, which is 32 characters long.
      */
@@ -411,14 +405,14 @@ public final class Guid {
      * <li>Free memory in the JVM (bytes)</li>
      * <li>Total memory in the JVM (bytes)</li>
      * </ul>
-     * The MD5 hash algorithm is used to generate pseudo IEEE 802 MAC address. This hash
+     * The hash algorithm SHA-256 is used to generate pseudo IEEE 802 MAC address. This hash
      * algorithm is invoked through the <code>java.security.MessageDigest</code> which requires
-     * a provider for the MD5 hash algorithm (see Java Cryptography Architecture (JCA)). If the
-     * provider for the MD5 hash algorithm is not available in the run-time environment, a simple
+     * a provider for the hash algorithm (see Java Cryptography Architecture (JCA)). If the
+     * provider for the hash algorithm is not available in the run-time environment, a simple
      * additive hash algorithm is used over the random data. However, it is computationally feasible
      * for this simple additive hash algorithm to generate the same output for two different inputs.
      * <p>
-     * 
+     *
      * @param uniqueTimeStamp Cross-thread and cross-process unique time stamp (milliseconds)
      * @return 6 byte pseudo IEEE 802 MAC address.
      */
@@ -460,23 +454,23 @@ public final class Guid {
         try {
 
             //Compute the message digest:
-            MessageDigest md5 = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
+            MessageDigest digest = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
 
-            md5.reset();
+            digest.reset();
 
-            System.arraycopy(md5.digest(messageDigestInput), 0, ieee802Addr, 0, 6);
+            System.arraycopy(digest.digest(messageDigestInput), 0, ieee802Addr, 0, 6);
         } catch (Throwable t) {
 
-            //If a provider for the MD5 hash algorithm (see Java Cryptography Architecture (JCA) APIs) 
-            //is not available in the run-time environment, a simple additive hash algorithm is used over the random 
-            //data.  The simple additive hash algorithm is similar to that used in java.lang.String#hashCode(). 
+            //If a provider for the hash algorithm (see Java Cryptography Architecture (JCA) APIs)
+            //is not available in the run-time environment, a simple additive hash algorithm is used over the random
+            //data.  The simple additive hash algorithm is similar to that used in java.lang.String#hashCode().
             //That is:
             //	b[0]*31^(n-1) + b[1]*31^(n-2) + ... + b[n-1]
             //where:
             //	b[i] = i-th byte
             //	n = total number of bytes
             //	^ = exponentiation
-            //Note:  It is computationally feasible for this simple additive hash algorithm to generate the same output 
+            //Note:  It is computationally feasible for this simple additive hash algorithm to generate the same output
             //for two different inputs.
 
             int hashCode = 0;
@@ -515,7 +509,7 @@ public final class Guid {
      * multiplying by 10**4 (0x01B21DD213814000L == 122192928000000000
      * 100 nanosecond resolution).
      * <p>
-     * 
+     *
      * @return Adjusted current time stamp.
      */
     private synchronized long getAdjustedTimestamp() {
@@ -534,7 +528,7 @@ public final class Guid {
      * ensure the atomic generation of unique time stamps between processes (e.g. JVM)
      * on the same host.
      * <p>
-     * 
+     *
      * @return Unique current time stamp.
      */
     private synchronized long getUniqueTimeStamp() {
@@ -555,32 +549,32 @@ public final class Guid {
 
             //Maximum absolute time stamp to execute the lock file algorithm:
             //NOTE: This upper bound (1000 milliseconds or 1 second) provides an escape mechanism for the
-            //scenario where a previous instance of the JVM crashed and a stray lock file persists on the 
+            //scenario where a previous instance of the JVM crashed and a stray lock file persists on the
             //local file system.
             long maxWaitTimeStamp = (System.currentTimeMillis() + 1000);
 
             //Loop until we can create the lock file (e.g. exclusive rights)
-            //since creating a file is atomic or the maximum absolute time 
+            //since creating a file is atomic or the maximum absolute time
             //stamp to execute the lock file algorithm has expired:
             while (true) {
 
                 try {
 
                     //After the lock file has been created, we have exclusive
-                    //rights to the lock file and enter the process 
+                    //rights to the lock file and enter the process
                     //synchronized block:
                     if (lockFile.createNewFile()) {
                         break;
                     }
 
                     //If we cannot create the lock file, only continue until
-                    //the maximum absolute time stamp to execute the lock 
+                    //the maximum absolute time stamp to execute the lock
                     //file algorithm has expired:
                     else if (System.currentTimeMillis() > maxWaitTimeStamp) {
 
                         //If the lock file has not been updated before the
-                        //maximum absolute time stamp to execute the lock 
-                        //file algorithm has expired, delete the lock file 
+                        //maximum absolute time stamp to execute the lock
+                        //file algorithm has expired, delete the lock file
                         //and attempt to execute the lock algorithm again:
                         if (fileLastModified(lockFile) <= lastModified) {
 
@@ -592,8 +586,8 @@ public final class Guid {
                         }
 
                         //If a lock cannot be obtained before the maximum
-                        //absolute time stamp to execute the lock file 
-                        //algorithm has expired, return the non-atomic 
+                        //absolute time stamp to execute the lock file
+                        //algorithm has expired, return the non-atomic
                         //current time stamp:
                         else {
                             return timeStamp;
@@ -601,7 +595,7 @@ public final class Guid {
                     }
                 } catch (IOException i) {
 
-                    //Return the non-atomic current time stamp since the 
+                    //Return the non-atomic current time stamp since the
                     //lock file could not be created.
                     return timeStamp;
                 }
@@ -623,7 +617,7 @@ public final class Guid {
 
             try {
 
-                //After the lock file has been atomically deleted, we release 
+                //After the lock file has been atomically deleted, we release
                 //the exclusive rights to the lock file exit the process
                 //synchronized block:
                 if (lockFile != null) {
@@ -675,7 +669,7 @@ public final class Guid {
      * object, covert each byte to its hexadecimal character equivalent and
      * return the string.
      * <p>
-     * 
+     *
      * @return The hexadecimal string representation of a new <code>Guid</code>
      *         object, which is 32 characters long.
      */

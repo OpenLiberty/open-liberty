@@ -53,6 +53,7 @@
          <AD id="amrInclude" name="%amrInclude" description="%amrInclude.desc" required="false" type="String" cardinality="400" ibm:beta="true"/>
          <AD id="keyManagementKeyAlgorithm" name="%keyManagementKeyAlgorithm" description="%keyManagementKeyAlgorithm.desc" required="false" type="String" >
              <Option label="%keyManagementKeyAlgorithm.RSA-OAEP" value="RSA-OAEP" />
+             <Option label="%keyManagementKeyAlgorithm.ECDH-ES" value="ECDH-ES" />
          </AD>
          <AD id="keyManagementKeyAlias" name="%keyManagementKeyAlias" description="%keyManagementKeyAlias.desc" required="false" type="String" />
          <AD id="contentEncryptionAlgorithm" name="%contentEncryptionAlgorithm" description="%contentEncryptionAlgorithm.desc" required="false" type="String" >

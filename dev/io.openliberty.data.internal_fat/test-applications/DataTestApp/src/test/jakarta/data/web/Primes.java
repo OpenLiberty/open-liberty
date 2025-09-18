@@ -201,6 +201,14 @@ public interface Primes {
     @OrderBy("sumOfBits")
     Page<Prime> findByNumberIdLessThan(long max, Sort<Prime> sort, PageRequest pagination);
 
+    @OrderBy(value = "numberId", descending = true)
+    Stream<Prime> findByNumberIdLessThanAndNameEndsWithOrNumberIdGreaterThanEqualAndNumberIdLessThanEqualAndNameEndsWith//
+    (long numLessThan,
+     String firstSuffix,
+     long lowerLimit,
+     long upperLimit,
+     String secondSuffix);
+
     List<Prime> findByNumberIdLessThanEqualOrderByNumberIdAsc(long max, PageRequest pagination);
 
     List<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, Limit limit);
@@ -213,6 +221,11 @@ public interface Primes {
 
     @Asynchronous
     CompletionStage<CursoredPage<Prime>> findByNumberIdLessThanOrderByNumberIdDesc(long max, PageRequest pagination);
+
+    @OrderBy(ID)
+    List<Long> findByNumberIdLessThanOrNumberIdGreaterThanAndNumberIdLessThan(int exclusiveMax,
+                                                                              int exclusiveRangeMin,
+                                                                              int exclusiveRangeMax);
 
     Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort<?>... order);
 

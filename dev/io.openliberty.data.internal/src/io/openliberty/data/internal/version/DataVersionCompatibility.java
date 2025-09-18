@@ -17,6 +17,8 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.util.Set;
 
+import io.openliberty.data.internal.AttributeConstraint;
+import io.openliberty.data.internal.QueryType;
 import jakarta.data.repository.Find;
 
 /**
@@ -29,41 +31,43 @@ public interface DataVersionCompatibility {
     final String[] NO_SELECTIONS = new String[0];
 
     /**
-     * Append a condition such as o.myAttribute < ?1 to the JPQL query.
+     * Error condition returned by inspectMethodParam indicating that an annotation
+     * of the method parameter conflicts with the constraint type of the method
+     * parameter.
+     */
+    final int PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT = -1;
+
+    /**
+     * Error condition returned by inspectMethodParam indicating that two or more
+     * annotations on the method parameter conflict with each other.
+     */
+    final int PARAM_ANNOS_CONFLICT = -2;
+
+    /**
+     * Return code for inspectMethodParam that indicates that the Constraint subtype
+     * is not determined until method invocation.
+     */
+    final int PARAM_CONSTRAINT_DEFERRED = -3;
+
+    /**
+     * Append a constraint such as o.myAttribute < ?1 to the JPQL query.
      *
      * @param q            JPQL query to which to append.
-     * @param qp           query parameter position (1-based).
-     * @param method       the repository method.
-     * @param p            method parameter position (0-based).
      * @param o_           entity identifier variable.
      * @param attrName     entity attribute name.
+     * @param constraint   type of constraint to apply to the entity attribute.
+     * @param qp           query parameter position (1-based).
      * @param isCollection whether the entity attribute is a collection.
      * @param annos        method parameter annotations.
      * @return the updated JPQL query.
      */
-    StringBuilder appendCondition(StringBuilder q, int qp,
-                                  Method method, int p,
-                                  String o_, String attrName,
-                                  boolean isCollection, Annotation[] annos);
-
-    /**
-     * Append conditions for an IdClass attribute such as
-     * (o.idClassAttr1 = ?1 AND o.idClassAttr2 = ?2)
-     * to the JPQL query.
-     *
-     * @param q                JPQL query to which to append.
-     * @param qp               query parameter position (1-based).
-     * @param method           the repository method.
-     * @param p                method parameter position (0-based).
-     * @param o_               entity identifier variable.
-     * @param idClassAttrNames entity attribute names for the IdClass.
-     * @param annos            method parameter annotations.
-     * @return the updated JPQL query.
-     */
-    StringBuilder appendConditionsForIdClass(StringBuilder q, int qp,
-                                             Method method, int p,
-                                             String o_, String[] idClassAttrNames,
-                                             Annotation[] annos);
+    StringBuilder appendConstraint(StringBuilder q,
+                                   String o_,
+                                   String attrName,
+                                   AttributeConstraint constraint,
+                                   int qp,
+                                   boolean isCollection,
+                                   Annotation[] annos);
 
     /**
      * Indicates whether the enabled version of Jakarta Data is at the requested
@@ -124,12 +128,54 @@ public interface DataVersionCompatibility {
     String[] getUpdateAttributeAndOperation(Annotation[] annos);
 
     /**
-     * True if any of the annotations represent Or.
+     * Inspects the type and annotations of a method parameter to a parameter-based
+     * Find/Delete/Update method to determine its meaning. Based on the meaning,
+     * updates one or more of (attrNames, constraints, updateOps) at position p.
      *
-     * @param annos annotations on the method parameter. Must not be null.
-     * @return True if any of the annotations represent Or. Otherwise false.
+     * @param p           repository method parameter index (0-based).
+     * @param paramType   class of the repository method parameter at index p.
+     *                        When generating the query upfront, this comes from
+     *                        the repository method signature. When generating the
+     *                        query at invocation time and a Constraint subtype is
+     *                        supplied, this is the class of the supplied instance.
+     *                        The latter should be done in response to receiving a
+     *                        PARAM_CONSTRAINT_DEFERRED return code during the
+     *                        attempt at upfront query generation.
+     * @param paramAnnos  annotations on the repository method parameter at index p.
+     * @param attrNames   the implementer can update this at position p to supply
+     *                        the entity attribute name from the value of an
+     *                        assignment annotation.
+     * @param constraints the implementer can update this at position p to supply
+     *                        the constraint type indicated by the Is annotation or
+     *                        a constraint type method parameter.
+     * @param updateOps   the implementer can update this at position p to supply
+     *                        the update operation indicated by an assignment
+     *                        annotation.
+     * @param qpNext      the next JQPL query parameter index to use (1-based)
+     *                        for the current repository method parameter.
+     * @return the next JPQL query parameter index to use (1-based) for the
+     *         subsequent repository method parameter. Otherwise returns an
+     *         error code: PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT or
+     *         PARAM_ANNOS_CONFLICT or PARAM_CONSTRAINT_DEFERRED.
      */
-    boolean hasOrAnnotation(Annotation[] annos);
+    int inspectMethodParam(int p,
+                           Class<?> paramType,
+                           Annotation[] paramAnnos,
+                           String[] attrNames,
+                           AttributeConstraint[] constraints,
+                           char[] updateOps,
+                           int qpNext);
+
+    /**
+     * Determines if the special parameter type is valid for the type of
+     * repository method.
+     *
+     * @param paramType type of special parameter.
+     * @param queryType type of repository method.
+     * @return true if valid. False if not valid.
+     */
+    boolean isSpecialParamValid(Class<?> paramType,
+                                QueryType queryType);
 
     /**
      * Returns the repository method annotations that represent life cycle
@@ -150,6 +196,14 @@ public interface DataVersionCompatibility {
      * @return the annotation classes.
      */
     Set<Class<? extends Annotation>> operationAnnoTypes(boolean stateful);
+
+    /**
+     * Returns the names of annotations that are valid on the parameters of a
+     * parameter-based update method.
+     *
+     * @return the annotation names.
+     */
+    String paramAnnosForUpdate();
 
     /**
      * List of valid return types for resource accessor methods.
@@ -182,4 +236,15 @@ public interface DataVersionCompatibility {
      * @return the Jakarta Data defined special parameter types.
      */
     Set<Class<?>> specialParamTypes();
+
+    /**
+     * Temporary method that obtains the literal value(s) from a constraint if the
+     * supplied value is a constraint for a literal expression.
+     *
+     * @param constraintOrValue a jakarta.data.constraint.Constraint subtype or a
+     *                              literal value.
+     * @return array of literal values obtained from the constraint.
+     *         Null if not a constraint.
+     */
+    Object[] toConstraintValues(Object constraintOrValue);
 }

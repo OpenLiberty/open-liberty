@@ -394,4 +394,11 @@ public interface ConfigurationProvider {
      * @return
      */
     public boolean isUTAsSpecified();
+
+    /**
+     * Whether UOWScopeCallbacks are called correctly for end events
+     *
+     * @return
+     */
+    public boolean isCorrectUOWScopeCallbacks();
 }

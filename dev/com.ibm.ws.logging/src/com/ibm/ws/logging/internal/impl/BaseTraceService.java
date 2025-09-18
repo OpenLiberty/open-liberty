@@ -242,6 +242,9 @@ public class BaseTraceService implements TrService {
     /** The maximum FFDC file age before deletion. */
     private volatile long maxFfdcAge = -1;
 
+    /** The trace file name */
+    private volatile String traceFileName = "trace.log";
+
     /** Early msgs issued before MessageRouter is started. */
     protected volatile Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     protected volatile Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
@@ -1425,15 +1428,17 @@ public class BaseTraceService implements TrService {
     private void scheduleTimeBasedLogRollover(LogProviderConfigImpl config) {
         String rolloverStartTime = config.getRolloverStartTime();
         long rolloverInterval = config.getRolloverInterval();
+        String traceFileName = config.getTraceFileName();
 
-        //if the rollover has already been scheduled, cancel it
-        //this is either a reschedule, or a unschedule
+        // If the rollover has already been scheduled, cancel it
+        // This is either a reschedule, or a unschedule
         if (this.isLogRolloverScheduled) {
             //null and empty rolloverStartTime are the same
             if (rolloverStartTime == null)
                 rolloverStartTime = "";
-            //if neither of the rollover attributes change, return without rescheduling
-            if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval) {
+            // If neither of the rollover attributes change, return without rescheduling.
+            // Also, if the traceFileName attribute value did NOT change, return without rescheduling
+            if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval && this.traceFileName.equals(traceFileName)) {
                 return;
             } else {
                 timedLogRollover_Timer.cancel();
@@ -1478,6 +1483,7 @@ public class BaseTraceService implements TrService {
 
         this.rolloverStartTime = rolloverStartTime;
         this.rolloverInterval = rolloverInterval;
+        this.traceFileName = traceFileName; // Preserve the previous traceFileName, in order to check if the attribute changed.
 
         //parse startTimeField
         String[] hourMinPair = rolloverStartTime.split(":");
@@ -1517,7 +1523,14 @@ public class BaseTraceService implements TrService {
         }
         //schedule rollover
         timedLogRollover_Timer = new Timer(true);
-        TimedLogRoller tlr = new TimedLogRoller(messagesLog, traceLog);
+        TimedLogRoller tlr;
+        if (traceFileName.equals("stdout")) {
+            // If traceFileName is configured to stdout, that means there will be no trace.log to rollover,
+            // omit the trace.log, when scheduling the rollover.
+            tlr = new TimedLogRoller(messagesLog);
+        } else {
+            tlr = new TimedLogRoller(messagesLog, traceLog);
+        }
         timedLogRollover_Timer.scheduleAtFixedRate(tlr, firstRollover, rolloverInterval * 60000);
         this.isLogRolloverScheduled = true;
     }
@@ -1591,9 +1604,44 @@ public class BaseTraceService implements TrService {
         String sequenceNumber = getSequenceNumber();
         //indicate that we're using json fields
         int jsonKey = CollectorConstants.KEYS_JSON;
+        //get field names
+        List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES_JSON);
+        Map<String, String> messageMap = new HashMap<>();
         //construct json header
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
+        //get field mappings
+        String fieldMappings = config.getjsonFields();
 
+        //apply json fields
+        if (fieldMappings != null && !fieldMappings.isEmpty() && fieldMappings != "") {
+            String[] keyValuePairs = fieldMappings.split(",");
+            for (String pair : keyValuePairs) {
+                pair = pair.trim();
+                if (pair.endsWith(":"))
+                    pair = pair + OMIT_FIELDS_STRING;
+
+                String[] entry = pair.split(":");
+                entry[0] = entry[0].trim();
+
+                if (entry.length == 2) {
+                    entry[1] = entry[1].trim();
+                    if (LogTraceList.contains(entry[0])) {
+                        messageMap.put(entry[0], entry[1]);
+                    }
+                } 
+                else if (entry.length == 3) {
+                    entry[1] = entry[1].trim();
+                    entry[2] = entry[2].trim();
+                    //add properties to their respective hashmaps and trim whitespaces
+                    if (CollectorConstants.MESSAGES_CONFIG_VAL.equals(entry[0])) {
+                        if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                            messageMap.put(entry[1], entry[2]);
+                        }
+                    } 
+                }
+            }
+        }
+        LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
         //@formatter:off
         jsonBuilder.addField(LogTraceData.getTypeKey(jsonKey, true), "liberty_message", false, false)
                    .addField(LogTraceData.getHostKey(jsonKey, true), serverHostName, false, true)
@@ -1603,7 +1651,7 @@ public class BaseTraceService implements TrService {
                    .addField(LogTraceData.getDatetimeKey(jsonKey, true), datetime, false, true)
                    .addField(LogTraceData.getSequenceKey(jsonKey, true), sequenceNumber, false, true);
         //@formatter:on
-
+        
         return jsonBuilder.build().toString().concat("\n");
     }
 
@@ -2252,10 +2300,16 @@ public class BaseTraceService implements TrService {
             flhTrace = (FileLogHolder) trace;
         }
 
+        TimedLogRoller(TraceWriter messages) {
+            flhMessages = (FileLogHolder) messages;
+            // This means when traceFileName="stdout", there will be no trace.log file to rollover.
+            flhTrace = null;
+        }
+
         @Override
         public void run() {
             flhMessages.createStream(true);
-            if (TraceComponent.isAnyTracingEnabled()) {
+            if (flhTrace != null && TraceComponent.isAnyTracingEnabled()) {
                 flhTrace.createStream(true);
             }
         }

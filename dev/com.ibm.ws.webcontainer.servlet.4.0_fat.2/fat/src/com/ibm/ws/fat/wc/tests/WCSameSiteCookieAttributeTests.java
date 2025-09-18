@@ -532,7 +532,7 @@ public class WCSameSiteCookieAttributeTests {
                         splitSameSiteHeaderFound = true;
                     }
                 }
-
+                client.close(); // close connection now. The waitForStringInTraceUsingMark times out (forces connection to remain open)
                 assertNull("The Channel Framework incorrectly added the Secure attribute.",
                            sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
                 assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
@@ -1825,7 +1825,7 @@ public class WCSameSiteCookieAttributeTests {
                         splitSameSiteHeaderFound = true;
                     }
                 }
-
+                client.close(); // close connection now. The waitForStringInTraceUsingMark times out (forces connection to remain open)
                 assertNull("The Channel Framework incorrectly added the Secure attribute.",
                            sameSiteServer.waitForStringInTraceUsingMark("Setting the Secure attribute for SameSite=None"));
                 assertTrue("The response did not contain the expected Servlet output: " + expectedResponse,
@@ -1835,6 +1835,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
+            
             sameSiteServer.setMarkToEndOfLog();
             sameSiteServer.restoreServerConfiguration();
             sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");

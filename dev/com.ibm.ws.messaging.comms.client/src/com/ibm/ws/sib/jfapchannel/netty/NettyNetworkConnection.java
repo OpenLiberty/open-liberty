@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -307,16 +307,15 @@ public class NettyNetworkConnection implements NetworkConnection{
 				String host = target.getRemoteAddress().getAddress().getHostAddress();
 				String port = Integer.toString(target.getRemoteAddress().getPort());
 				if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL", new Object[] {tlsProvider, host, port, sslOptions});
-				SslContext context = tlsProvider.getOutboundSSLContext(sslOptions, host, port);
-				if(context == null) {
+				SslHandler handler = tlsProvider.getOutboundSSLContext(sslOptions, host, port, ch);
+				if(handler == null) {
 					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "initChannel","Error adding TLS Support");
 					listener.connectRequestFailedNotification(new NettyException("Problems creating SSL context"));
 					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "initChannel");
 					ch.close();
 					return;
 				}
-				SSLEngine engine = context.newEngine(ch.alloc());
-				pipeline.addFirst(NettyNetworkConnectionFactory.SSL_HANDLER_KEY, new SslHandler(engine, false));
+				pipeline.addFirst(NettyNetworkConnectionFactory.SSL_HANDLER_KEY, handler);
 			}
 			pipeline.addLast(NettyNetworkConnectionFactory.DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
 			pipeline.addLast(NettyNetworkConnectionFactory.ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());

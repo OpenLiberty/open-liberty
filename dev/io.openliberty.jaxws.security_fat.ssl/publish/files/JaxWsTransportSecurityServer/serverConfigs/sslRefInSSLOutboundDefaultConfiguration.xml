@@ -12,12 +12,12 @@
     <!-- outbound default SSL Configuration -->
     <sslDefault outboundSSLRef="myDefaultServerSSLSettings" />
     <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" trustStoreRef="defaultTrustStore" />
-    <keyStore id="defaultKeyStore" location="defaultKey.jks" type="JKS" password="passw0rd" />
-    <keyStore id="defaultTrustStore" location="defaultTrust.jks" type="JKS" password="passw0rd" />
+    <keyStore id="defaultKeyStore" location="defaultKey.p12" type="PKCS12" password="passw0rd" />
+    <keyStore id="defaultTrustStore" location="defaultTrust.p12" type="PKCS12" password="passw0rd" />
 
     <ssl id="myDefaultServerSSLSettings" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" />
-    <keyStore id="serverKeyStore" location="key.jks" type="JKS" password="passw0rd" />
-    <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+    <keyStore id="serverKeyStore" location="key.p12" type="PKCS12" password="passw0rd" />
+    <keyStore id="serverTrustStore" location="trust.p12" type="PKCS12" password="passw0rd" />
     
     <application id="TransportSecurityClient" name="TransportSecurityClient" location="TransportSecurityClient.war"
         context="TransportSecurityClient" type="war" />

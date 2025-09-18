@@ -633,7 +633,7 @@
 
 7356=Procedura: [{1}] non pu\u00f2 essere eseguito perch\u00e9 {0} attualmente non supporta pi\u00f9 parametri out.
 
-7357=IL "[{0} ]" URL per "[{1} ]" la risorsa non appartiene a una radice di persistenza valida, come definito dalla specifica Jakarta Persistence
+7357=La risorsa "[ {0} ]" URL per la risorsa "[ {1} ]" non appartiene a una radice di persistenza valida, come definito dalle specifiche di Jakarta Persistence.
 
 7358=\u00c8 stato fornito un nome servizio ASM errato.
 

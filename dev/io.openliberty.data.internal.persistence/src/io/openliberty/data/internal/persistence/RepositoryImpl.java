@@ -12,6 +12,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence;
 
+import static io.openliberty.data.internal.QueryType.RESOURCE_ACCESS;
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
 import java.lang.reflect.InvocationHandler;
@@ -44,7 +45,7 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
-import io.openliberty.data.internal.persistence.QueryInfo.Type;
+import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
 import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.data.exceptions.DataConnectionException;
@@ -164,7 +165,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 entityInfoFutures.add(entityInfoFuture);
 
                 for (QueryInfo queryInfo : entry.getValue()) {
-                    if (queryInfo.type == QueryInfo.Type.RESOURCE_ACCESS) {
+                    if (queryInfo.type == RESOURCE_ACCESS) {
                         queryInfo.validateParams = validator != null &&
                                                    validator.isValidatable(queryInfo.method)[1];
                         queries.put(queryInfo.method,
@@ -539,7 +540,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
             Object returnValue;
             boolean failed = true;
-            Type queryType = null;
+            QueryType queryType = null;
             boolean startedTransaction = false;
 
             try {
@@ -559,7 +560,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     startedTransaction = true;
                 }
 
-                if (queryType != Type.RESOURCE_ACCESS)
+                if (queryType != RESOURCE_ACCESS)
                     em = entityInfo.builder.createEntityManager();
 
                 returnValue = switch (queryType) {
@@ -601,12 +602,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
 
             if (trace && tc.isEntryEnabled()) {
-                boolean hideValue = queryType == Type.FIND ||
-                                    queryType == Type.FIND_AND_DELETE ||
-                                    queryType == Type.INSERT ||
-                                    queryType == Type.SAVE ||
-                                    queryType == Type.LC_UPDATE_RET_ENTITY;
-                Object valueToLog = hideValue //
+                Object valueToLog = queryType.hideReturnValue //
                                 ? provider.loggable(repositoryInterface, method, returnValue) //
                                 : returnValue;
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() +

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2025 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ generate.replacement: true
     com.ibm.ws.security.token;version=latest, \
     com.ibm.ws.security.jwt;version=latest, \
     com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
-    org.glassfish:javax.json;version=1.0
+    com.ibm.ws.org.glassfish.json.1.0;version=latest
 
 -testpath: \
     org.jmock:jmock-legacy;version=2.5.0, \

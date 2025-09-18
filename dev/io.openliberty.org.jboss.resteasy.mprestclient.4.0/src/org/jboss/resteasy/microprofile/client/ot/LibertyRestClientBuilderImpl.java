@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 /*
  * JBoss, Home of Professional Open Source.
  *
@@ -136,7 +145,6 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
     private static final DefaultMediaTypeFilter DEFAULT_MEDIA_TYPE_FILTER = new DefaultMediaTypeFilter();
     private static final Collection<Method> IGNORED_METHODS = new ArrayList<>();
     public static final MethodInjectionFilter METHOD_INJECTION_FILTER = new MethodInjectionFilter();
-    public static final ClientHeadersRequestFilter HEADERS_REQUEST_FILTER = new ClientHeadersRequestFilter();
 
     private static final Class<?> FT_ANNO_CLASS = getFTAnnotationClass(); // Liberty Change
     private static final ClassLoader thisClassLoader; // Liberty Change 
@@ -426,11 +434,15 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
             }
             resteasyClientBuilder.executorService(new AsyncClientExecutorService(executorService), cleanupExecutor);
         }
+
+        // Before ClientHeaderProviders was a static store of header providers which causes
+        // a memory leak for applications that are stopped since it references Classes and Methods.
+        ClientHeaderProviders headerProviders = new ClientHeaderProviders();
         //Liberty Change end
 
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
-        resteasyClientBuilder.register(new ClientHeadersRequestFilter(headers));
+        resteasyClientBuilder.register(new ClientHeadersRequestFilter(headers, headerProviders)); // Liberty change
         register(new MpPublisherMessageBodyReader(executorService));
         resteasyClientBuilder.sslContext(sslContext);
         resteasyClientBuilder.trustStore(trustStore);
@@ -496,7 +508,7 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
         Map<Method, List<InterceptorInvoker>> interceptorInvokers = initInterceptorInvokers(beanManager, aClass); // Liberty Change
         T proxy = (T) Proxy.newProxyInstance(classLoader, interfaces,
                 new LibertyProxyInvocationHandler(aClass, actualClient, getLocalProviderInstances(), client, beanManager, interceptorInvokers, classLoader)); // Liberty Change
-        ClientHeaderProviders.registerForClass(aClass, proxy, beanManager);
+        headerProviders.registerForClass(aClass, proxy, beanManager); // Liberty Change
         return proxy;
         // Liberty Change End
     }

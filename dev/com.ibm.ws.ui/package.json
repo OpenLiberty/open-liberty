@@ -5,6 +5,6 @@
   "author": "OpenLiberty",
   "dependencies": {
     "d3": "3.5.10",
-    "dojo": "1.12.11"
+    "dojo": "1.13.10"
   }
 }

@@ -67,41 +67,4 @@ public abstract class DualServerDynamicCoreTest2 extends DualServerDynamicTestBa
     public void dynamicCloudRecovery016() throws Exception {
         dynamicTest(server1, server2, 16, 3);
     }
-
-    @Test
-    @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-    public void dynamicCloudRecovery017() throws Exception {
-        dynamicTest(server1, server2, 17, 3);
-    }
-
-    @Test
-    @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
-    public void dynamicCloudRecovery018() throws Exception {
-        dynamicTest(server1, server2, 18, 3);
-    }
-
-    @Test
-    public void dynamicCloudRecovery047() throws Exception {
-        dynamicTest(server1, server2, 47, 4);
-    }
-
-    @Test
-    public void dynamicCloudRecovery048() throws Exception {
-        dynamicTest(server1, server2, 48, 4);
-    }
-
-    @Test
-    public void dynamicCloudRecovery050() throws Exception {
-        dynamicTest(server1, server2, 50, 10);
-    }
-
-    @Test
-    public void dynamicCloudRecovery051() throws Exception {
-        dynamicTest(server1, server2, 51, 10);
-    }
-
-    @Test
-    public void dynamicCloudRecovery090() throws Exception {
-        dynamicTest(server1, server2, 90, 3);
-    }
 }

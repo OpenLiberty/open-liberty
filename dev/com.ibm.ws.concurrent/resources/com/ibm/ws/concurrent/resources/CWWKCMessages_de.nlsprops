@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=Beheben Sie die Fehlerursache und entscheid
 CWWKC1103.skip.run.failed=CWWKC1103E: Die Ausf\u00fchrung der Task {0}, die an den Steuerprogrammservice {1} \u00fcbergeben wurde, wird \u00fcbersprungen, weil die Operation Trigger.skipRun mit dem folgenden Fehler fehlgeschlagen ist: {2}
 CWWKC1103.skip.run.failed.explanation=Die Operation skipRun f\u00fcr den Ausl\u00f6ser ist fehlgeschlagen, was dazu gef\u00fchrt hat, dass der aktuelle Ausf\u00fchrungsversuch f\u00fcr die Task \u00fcbersprungen wird.
 CWWKC1103.skip.run.failed.useraction=Beheben Sie die Fehlerursache und entscheiden Sie dann, ob Sie die Task erneut \u00fcbergeben.
+
+CWWKC1108.override.virtual=CWWKC1108I: Die verwaltete Thread-Fabrik {0} erstellt Plattform-Threads, da die Erstellung virtueller Threads durch den Server Liberty deaktiviert ist.
+CWWKC1108.override.virtual.explanation=Die ThreadTypeOverride SPI hat die Erstellung von virtuellen Threads durch den Liberty Server deaktiviert.
+CWWKC1108.override.virtual.useraction=Es ist keine Aktion erforderlich.
 
 CWWKC1110.task.canceled=CWWKC1110I: Die Aufgabe {0}, die dem ausf\u00fchrenden Dienst {1} vorgelegt wurde, wird abgebrochen.
 CWWKC1110.task.canceled.explanation=Die Aufgabe wurde storniert.

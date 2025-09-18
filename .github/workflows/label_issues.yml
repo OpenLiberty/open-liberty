@@ -1,0 +1,27 @@
+# This workflow will apply a label to new issues under certain conditions.
+
+name: Label Opened Issues Workflow
+
+# Run workflow when a new issue is opened
+on:
+  issues:
+     types:
+       - opened
+       #- edited
+
+jobs:
+  check_issue_creator_status:
+    runs-on: ubuntu-latest
+    name: A job to check status of issue creator
+    steps:
+    # Comment out to debug.
+    #- name: Print the GitHub event
+    #  run: echo "$GITHUB_CONTEXT"
+    #  env:
+    #    GITHUB_CONTEXT: ${{ toJson(github) }}
+
+    - name: Add label to the new issue
+      uses: actions-ecosystem/action-add-labels@v1
+      if: ${{ github.event.issue.author_association == 'NONE' }}
+      with:
+        labels: "Opened by external contributor"

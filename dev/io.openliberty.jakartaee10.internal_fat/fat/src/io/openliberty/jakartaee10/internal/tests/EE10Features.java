@@ -224,6 +224,7 @@ public class EE10Features {
         features.remove("sipServlet-1.1"); // purposely not supporting EE 10
         features.remove("springBoot-1.5"); // springBoot 3.0 only supports EE10
         features.remove("springBoot-2.0");
+        features.remove("springBoot-4.0");
 
         features.remove("mpHealth"); //versionless features in development
         features.remove("mpMetrics");
@@ -299,6 +300,7 @@ public class EE10Features {
         // remove client features
         features.remove("jakartaeeClient-10.0");
         features.remove("appSecurityClient-1.0");
+        features.remove("xmlWSClient-4.0");
 
         // remove acmeCA-2.0 since it requires additional resources and configuration
         features.remove("acmeCA-2.0");
@@ -314,7 +316,7 @@ public class EE10Features {
 
         features.remove("audit-2.0");
 
-        // springBoot-3.0 and nosql-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
+        // springBoot-4.0 and nosql-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("springBoot-3.0");
             features.remove("nosql-1.0");

@@ -310,7 +310,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Na okre\u015blonym klien
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: System dodaje alias osoby podpisuj\u0105cej {0} do lokalnego magazynu kluczy {1} z nast\u0119puj\u0105cym skr\u00f3tem SHA: {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: System dodaje alias podpisuj\u0105cego {0} do lokalnego magazynu kluczy {1} z nast\u0119puj\u0105cym skr\u00f3tem {3} : {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 # -------------------------------------------------------------------------------------------------

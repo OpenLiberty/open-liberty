@@ -67,9 +67,11 @@ triggers:
   description: "Runs an optimised Open Liberty Personal Pipeline, including building the IM and z/OS images, then running all FATs using the CI Orchestrator/Jenkins."
   triggerRank: 50
   groups: ["LibertyDev"]
-  keyword: "!fullpbbeta"
+  keyword: "!fullbuild"
   aliasKeywords:
     - "!fullpb"
+    - "!fullpbbeta"
+    - "#fullbuild"
     - "#fullpbbeta"
     - "#fullpb"
   propertyDefinitions:
@@ -122,6 +124,14 @@ steps:
 - stepName: Prohibited Terms Check
   workType: Jenkins
   projectName: prohibitedTermsCheck
+  timeoutInMinutes: 120
+  properties:
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
+
+- stepName: GenAI Assistance Code Check
+  workType: Jenkins
+  projectName: genAICodeCheck
   timeoutInMinutes: 120
   properties:
     githubPRApi: ${github_pr_api}

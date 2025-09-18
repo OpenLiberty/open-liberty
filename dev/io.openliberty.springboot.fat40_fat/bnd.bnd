@@ -1,0 +1,72 @@
+#*******************************************************************************
+# Copyright (c) 2018, 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+fat.project: true
+
+src: \
+  fat/src
+
+tested.features: \
+  springBoot-4.0, \
+  servlet-6.1, \
+  cdi-4.1, \
+  transportSecurity-1.0, \
+  ssl-1.0, \
+  springBoot-3.0, \
+  servlet-6.0, \
+  jakartaee-11.0, \
+  pages-4.0, \
+  websocket-2.2, \
+  websocket-2.1, \
+  appSecurity-6.0, \
+  concurrent-3.1, \
+  connectors-2.1, \
+  jndi-1.0, \
+  localConnector-1.0
+  
+-buildpath: \
+  com.ibm.ws.componenttest.2.0;version=latest,\
+  io.openliberty.jakarta.servlet.6.1;version=latest, \
+  com.ibm.ws.org.apache.httpcomponents;version=latest, \
+  com.ibm.ws.org.apache.commons.lang3;version=latest,\
+  io.openliberty.org.apache.commons.logging;version=latest,\
+  io.openliberty.org.apache.commons.codec;version=latest,\
+  io.openliberty.org.apache.xercesImpl;version=latest,\
+  org.brotli:dec;version='0.1.2',\
+  io.openliberty.jakarta.websocket.2.2;version=latest, \
+  io.openliberty.jakarta.websocket.client.2.2;version=latest, \
+  net.sourceforge.htmlunit:htmlunit;version=latest, \
+  net.sourceforge.htmlunit:htmlunit-cssparser;version=latest, \
+  net.sourceforge.htmlunit:neko-htmlunit;version=latest, \
+  net.sourceforge.htmlunit:webdriver;version=latest, \
+  net.sourceforge.htmlunit:htmlunit-core-js;version=latest, \
+  net.sourceforge.htmlunit:webdriver;version='2.6', \
+  org.seleniumhq.webdriver:webdriver-common;version='0.9.7376', \
+  \
+  io.openliberty.springboot.fat40.app;version=latest, \
+  io.openliberty.springboot.fat40.war.app;version=latest, \
+  io.openliberty.springboot.fat40.actuator.app;version=latest, \
+  io.openliberty.springboot.fat40.webflux.app;version=latest, \
+  io.openliberty.springboot.fat40.java.app;version=latest, \
+  io.openliberty.springboot.fat40.multicontext.app;version=latest, \
+  io.openliberty.springboot.fat40.webanno.app;version=latest, \
+  io.openliberty.springboot.fat40.websocket.app;version=latest, \
+  io.openliberty.springboot.fat40.security.app;version=latest, \
+  io.openliberty.springboot.fat40.concurrency.app;version=latest, \
+  io.openliberty.springboot.fat40.mbean.app;version=latest
+

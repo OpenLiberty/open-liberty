@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,9 +31,6 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest {
 	
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException"})
-	// Need Jon Review:
-	// Got Exception WTRN0049W during test
-	// Report javax.transaction.SystemException
 	public void WSTXMPR001BFVT() throws Exception {
 		recoveryTest(server1, server2, "102","server2");
 	}
@@ -51,9 +48,6 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest {
 	
 	@Test
 	@ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException"})
-	// Need Jon Review:
-	// Got Exception WTRN0049W and Warning WTRN0046E during test
-	// Report javax.transaction.SystemException 
 	public void WSTXMPR002BFVT() throws Exception {
 		recoveryTest(server1, server2, "202","server2");
 	}
@@ -66,7 +60,7 @@ public class MultiRecoveryTest1 extends MultiRecoveryTest {
 	@Test
 	@AllowedFFDC(value = {"javax.xml.ws.WebServiceException", "com.ibm.ws.wsat.service.WSATException" })
 	public void WSTXMPR003AFVT() throws Exception {
-		recoveryTest(server1, server2, "301","server1");
+		recoveryTest(server1, server2, "301", "server1", "server1", "Set response from ACTIVE to ABORTED", null);
 	}
 
 	@Test

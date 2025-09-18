@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,22 +15,40 @@ dependencies {
   requiredLibs project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                project(':com.ibm.ws.security.jaas.common'),
                project(':com.ibm.ws.security.oauth.oidc_fat.common'),
+               project(':io.openliberty.org.apache.xercesImpl'),
+               project(':io.openliberty.org.apache.commons.codec'), // 1.15 (was 1.4)
+               project(':com.ibm.ws.org.apache.commons.lang3'), // 3.8 (was ????)
+               project(':com.ibm.ws.security.spnego.fat.common'),
+               project(':com.ibm.ws.security.fat.common'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets'),
+               project(':com.ibm.ws.net.oauth.jsontoken'),
+               project(':com.ibm.ws.org.joda.time'),
+               project(':com.ibm.ws.org.apache.httpcomponents'),
+               project(':com.ibm.ws.kernel.service'),
+               project(':com.ibm.ws.kernel.boot'),
                'jtidy:jtidy:4aug2000r7-dev',
                'org.apache.sshd:sshd-common:2.12.1',
                'org.apache.sshd:sshd-core:2.12.1',
                'org.apache.sshd:sshd-scp:2.12.1',
+               'org.bouncycastle:bcprov-jdk18on:1.78.1', // required for sshd and cannot use io.openliberty.org.bouncycastle.bcprov-jdk18on
                'net.sourceforge.htmlunit:htmlunit:2.44.0',
                'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
                'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
+               'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
                'rhino:js:1.6R5',
                'xalan:xalan:2.7.2',
                'org.brotli:dec:0.1.2',
-               project(':io.openliberty.org.apache.xercesImpl'),
-               project(':io.openliberty.org.apache.commons.codec'), // 1.15 (was 1.4)
                'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
-               project(':com.ibm.ws.org.apache.commons.lang3'), // 3.8 (was ????)
-               project(':com.ibm.ws.security.spnego.fat.common')
+               'org.apache.httpcomponents:httpmime:4.3.1',
+               'org.eclipse.birt.runtime.3_7_1:org.apache.xml.serializer:2.7.1',
+               'xml-apis:xml-apis:1.4.01'
+}
+
+configurations {
+  requiredLibs {
+    transitive = false
+  }
 }
 
 /******************************************************************

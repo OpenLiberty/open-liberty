@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
     
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
@@ -42,6 +39,8 @@
         <AD id="sslOptions.target" name="internal" description="internal use only" 
             ibm:final="true" required="false" type="String" 
             default="(|(service.pid=${sslOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.sslchannel.options)(|(id=com.ibm.ws.wsoc.outbound.wsocOutbound-${id}/*)(id=defaultSSLOptions))))" />
+            
+		<AD id="useNettyTransport" name="internal" description="internal" required="false" type="Boolean" default="true"/>
 
    </OCD>
 

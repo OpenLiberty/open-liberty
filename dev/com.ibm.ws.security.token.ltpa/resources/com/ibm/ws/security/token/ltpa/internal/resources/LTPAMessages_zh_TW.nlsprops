@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=\u5
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: updateTrigger \u5c6c\u6027\u8a2d\u70ba disabled \uff0c\u4e14\u76e3\u8996\u9593\u9694\u5927\u65bc {0}\u3002 \u7576\u4fee\u6539 LTPA \u91d1\u9470\u6a94\u6642\uff0c\u4e0d\u6703\u9032\u884c\u52d5\u614b\u91cd\u65b0\u8f09\u5165\u3002
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=\u7576 updateTrigger \u5c6c\u6027\u8a2d\u70ba disabled \u6642\uff0c\u4e0d\u6703\u76e3\u8996\u6a94\u6848\u662f\u5426\u5c0d\u5177\u6709 .keys \u5b57\u5c3e\u7684\u6a94\u6848\u9032\u884c\u4efb\u4f55\u4fee\u6539\uff0c\u4e14\u4e0d\u6703\u9032\u884c\u52d5\u614b\u91cd\u65b0\u8f09\u5165\u3002 \u5373\u4f7f monitorInterval \u5c6c\u6027\u8a2d\u70ba\u5927\u65bc\u96f6\u7684\u9593\u9694\uff0c\u4e5f\u6703\u5ffd\u7565\u8a72\u5c6c\u6027\uff0c\u4e14\u4e0d\u6703\u76e3\u8996\u6a94\u6848\u3002
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=\u5c07 updateTrigger \u5c6c\u6027\u7684\u503c\u8a2d\u70ba polled \u6216 mbean\u3002
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: {0} \u9a57\u8b49\u91d1\u9470\u5fc5\u9808\u4f7f\u7528\u7d93 FIPS 140-3 \u8a8d\u8b49\u7684\u52a0\u5bc6\u6f14\u7b97\u6cd5\u91cd\u65b0\u7522\u751f\u3002
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=\u7576 FIPS 140-3 \u555f\u7528\u6642\uff0c\u672a\u555f\u7528 FIPS 140-3 \u800c\u5efa\u7acb\u7684 LTPA \u9a57\u8b49\u91d1\u9470\u6703\u5931\u6557\u3002
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=\u8a2d\u5b9a FIPS 140-3 \u6642\uff0c\u4f7f\u7528 securityUtility createLTPAKeys \u6307\u4ee4\u5efa\u7acb FIPS \u6838\u51c6\u7684\u9a57\u8b49\u91d1\u9470\u3002

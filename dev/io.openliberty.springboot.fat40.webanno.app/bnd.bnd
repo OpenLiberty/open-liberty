@@ -1,0 +1,39 @@
+#*******************************************************************************
+# Copyright (c) 2017, 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= \
+  ~../cnf/resources/bnd/bundle.props, \
+  ~../cnf/resources/bnd/bundle.spring.props
+-nouses=true
+
+bVersion=1.0
+
+test.project: true
+instrument.disabled: true
+publish.wlp.jar.disabled: true
+
+javac.source: 17
+javac.target: 17
+
+src: \
+  src/main/java, \
+  src/main/resources
+
+-testpath: \
+  org.springframework.boot:spring-boot;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-autoconfigure;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-web-server;${springBootVersion40}, \
+\
+  org.springframework:spring-beans;${springVersion40}, \
+  org.springframework:spring-context;${springVersion40}, \
+  org.springframework:spring-web;${springVersion40}, \
+  io.openliberty.jakarta.servlet.6.1

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Http2Config31H2Off.class, // FULL
                 Http2Config31H2On.class, // FULL
                 Http2WindowUpdateTests.class, //FULL
-                Http2CompressionTests.class //FULL
+                Http2CompressionTests.class, //FULL
+                Http2RequestSocketTests.class, // FULL
 //MultiSessionTests.class // FULL; disabled for now
 })
 

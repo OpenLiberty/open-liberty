@@ -46,6 +46,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.Util;
@@ -219,7 +220,7 @@ public class DataExtension implements Extension {
                                 producer, //
                                 repositoryInterface, //
                                 method, //
-                                QueryInfo.Type.RESOURCE_ACCESS);
+                                QueryType.RESOURCE_ACCESS);
 
                 List<QueryInfo> queries = queriesPerEntity.get(Void.class);
                 if (queries == null)

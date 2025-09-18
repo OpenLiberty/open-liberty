@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -33,7 +35,7 @@ import org.osgi.service.component.ComponentContext;
  * <p>
  * Usage (following OSGi DS naming conventions/patterns):
  * <code>
- * 
+ *
  * <pre>
  * private final ConcurrentServiceReferenceSet&ltT&gt serviceSet = new ConcurrentServiceReferenceSet&ltT&gt("referenceName");
  *
@@ -57,7 +59,7 @@ import org.osgi.service.component.ComponentContext;
  * &nbsp;return serviceSet.getServices();
  * }
  * </pre>
- * 
+ *
  * </code>
  *
  */
@@ -72,6 +74,7 @@ public class ConcurrentServiceReferenceSet<T> {
      * while holding a lock on this field.
      */
     private final Map<ServiceReference<T>, ConcurrentServiceReferenceElement<T>> elementMap = new LinkedHashMap<ServiceReference<T>, ConcurrentServiceReferenceElement<T>>();
+    private final ReadWriteLock elementMapLock = new ReentrantReadWriteLock();
 
     /**
      * Set of services in {@link #elementMap}, sorted by descending service
@@ -146,7 +149,8 @@ public class ConcurrentServiceReferenceSet<T> {
 
         ConcurrentServiceReferenceElement<T> element = new ConcurrentServiceReferenceElement<T>(referenceName, reference);
 
-        synchronized (elementMap) {
+        elementMapLock.writeLock().lock();
+        try {
             ConcurrentServiceReferenceElement<T> oldElement = elementMap.put(reference, element);
             if (oldElement != null) {
                 if (!element.getRanking().equals(oldElement.getRanking())) {
@@ -156,6 +160,8 @@ public class ConcurrentServiceReferenceSet<T> {
             }
 
             elementSet.add(element);
+        } finally {
+            elementMapLock.writeLock().unlock();
         }
         return false;
     }
@@ -167,7 +173,8 @@ public class ConcurrentServiceReferenceSet<T> {
      * @return true if this set contained the service reference
      */
     public boolean removeReference(ServiceReference<T> reference) {
-        synchronized (elementMap) {
+        elementMapLock.writeLock().lock();
+        try {
             ConcurrentServiceReferenceElement<T> element = elementMap.remove(reference);
             if (element == null) {
                 return false;
@@ -175,6 +182,8 @@ public class ConcurrentServiceReferenceSet<T> {
 
             elementSet.remove(element);
             return true;
+        } finally {
+            elementMapLock.writeLock().unlock();
         }
     }
 
@@ -188,7 +197,12 @@ public class ConcurrentServiceReferenceSet<T> {
      *
      */
     public boolean isEmpty() {
-        return elementSet.isEmpty();
+        elementMapLock.readLock().lock();
+        try {
+            return elementMap.isEmpty();
+        } finally {
+            elementMapLock.readLock().unlock();
+        }
     }
 
     public boolean isActive() {
@@ -208,8 +222,11 @@ public class ConcurrentServiceReferenceSet<T> {
             ComponentContext ctx = contextRef.get();
             if (ctx != null) {
                 ConcurrentServiceReferenceElement<T> element;
-                synchronized (elementMap) {
+                elementMapLock.readLock().lock();
+                try {
                     element = elementMap.get(serviceReference);
+                } finally {
+                    elementMapLock.readLock().unlock();
                 }
                 if (element != null) {
                     return element.getService(ctx);
@@ -237,7 +254,7 @@ public class ConcurrentServiceReferenceSet<T> {
      * @return The "first" service reference according to the ranking
      */
     public ServiceReference<T> getHighestRankedReference() {
-        Iterator<ConcurrentServiceReferenceElement<T>> iterator = elementSet.iterator();
+        Iterator<ConcurrentServiceReferenceElement<T>> iterator = elements();
         return iterator.hasNext() ? iterator.next().getReference() : null;
     }
 
@@ -245,13 +262,26 @@ public class ConcurrentServiceReferenceSet<T> {
      * Return an iterator for the elements in service ranking order.
      */
     private Iterator<ConcurrentServiceReferenceElement<T>> elements() {
-        Collection<ConcurrentServiceReferenceElement<T>> set;
-        synchronized (elementMap) {
-            if (elementSetUnsorted) {
-                elementSet = new ConcurrentSkipListSet<ConcurrentServiceReferenceElement<T>>(elementMap.values());
-                elementSetUnsorted = false;
+        Collection<ConcurrentServiceReferenceElement<T>> set = null;
+        elementMapLock.readLock().lock();
+        try {
+            if (!elementSetUnsorted) {
+                set = elementSet;
             }
-            set = elementSet;
+        } finally {
+            elementMapLock.readLock().unlock();
+        }
+        if (set == null) {
+            elementMapLock.writeLock().lock();
+            try {
+                if (elementSetUnsorted) {
+                    elementSet = new ConcurrentSkipListSet<ConcurrentServiceReferenceElement<T>>(elementMap.values());
+                    elementSetUnsorted = false;
+                }
+                set = elementSet;
+            } finally {
+                elementMapLock.writeLock().unlock();
+            }
         }
 
         return set.iterator();

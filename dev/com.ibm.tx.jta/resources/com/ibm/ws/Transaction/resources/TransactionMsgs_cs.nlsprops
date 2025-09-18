@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -882,6 +882,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Aplikace zah\u00e1jila nebo vy\u017e
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=Trasov\u00e1n\u00ed z\u00e1sobn\u00edku bylo zachyceno p\u0159i vytvo\u0159en\u00ed transakce. Trasov\u00e1n\u00ed z\u00e1sobn\u00edku pom\u00e1h\u00e1 u\u017eivatel\u016fm ur\u010dit, kter\u00e9 aplikace zah\u00e1j\u00ed transakce b\u011bhem spu\u0161t\u011bn\u00ed aplikace, a pak zp\u016fsob\u00ed selh\u00e1n\u00ed po\u017eadavku kontroln\u00edho bodu.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Prov\u011b\u0159te trasov\u00e1n\u00ed z\u00e1sobn\u00edku a ur\u010dete, kter\u00e1 aplikace zah\u00e1jila novou transakci b\u011bhem po\u017eadavku kontroln\u00edho bodu serveru.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: Transakci nelze v aktu\u00e1ln\u00edm vl\u00e1kn\u011b obnovit, proto\u017ee je aktivn\u00ed v jin\u00e9m vl\u00e1kn\u011b ( {0} ).
+WTRN0156_CANNOT_RESUME.explanation=Liberty neumo\u017e\u0148uje, aby transakce byla aktivn\u00ed sou\u010dasn\u011b ve v\u00edce vl\u00e1knech.
+WTRN0156_CANNOT_RESUME.useraction=Pozastaven\u00ed transakce p\u0159ed jej\u00edm obnoven\u00edm v jin\u00e9m vl\u00e1kn\u011b.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: V aktu\u00e1ln\u00edm vl\u00e1kn\u011b nelze v transakci pokra\u010dovat, proto\u017ee je aktivn\u00ed jinde.
+WTRN0157_CANNOT_RESUME.explanation=Liberty neumo\u017e\u0148uje, aby transakce byla aktivn\u00ed sou\u010dasn\u011b ve v\u00edce vl\u00e1knech.
+WTRN0157_CANNOT_RESUME.useraction=Pozastaven\u00ed transakce p\u0159ed jej\u00edm obnoven\u00edm v jin\u00e9m vl\u00e1kn\u011b.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

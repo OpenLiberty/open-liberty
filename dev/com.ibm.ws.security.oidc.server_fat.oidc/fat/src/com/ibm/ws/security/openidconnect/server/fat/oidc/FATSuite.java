@@ -24,6 +24,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonRemoteLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCInvokeNonexistentPathTest;
+import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCJWKRotationTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCPublicClientAuthCodeTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCertRequiredTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OIDC.OIDCWebClientAuthCertTest;
@@ -43,7 +44,6 @@ import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesClientCredent
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesImplicitTest;
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesPasswordTest;
 import com.ibm.ws.security.openidconnect.server.fat.OIDC.OIDCScopesTest;
-
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -64,6 +64,7 @@ import componenttest.rules.repeater.RepeatTests;
                 OIDCPublicClientAuthCodeTest.class,
                 OIDCWebClientImplicitTest.class,
                 OIDCWebClientCredentialTest.class,
+                OIDCJWKRotationTest.class,
 
                 // Specific OIDC tests
                 OIDCPromptLoginTest.class,

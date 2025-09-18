@@ -14,7 +14,6 @@ package tests;
 
 import java.util.Arrays;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -43,11 +42,6 @@ public class DualServerDynamicDBRotationTest1 extends DualServerDynamicCoreTest1
     @BeforeClass
     public static void setUp() throws Exception {
         setup(s1, s2, "Simple2PCCloudServlet", "cloud001");
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        dropTables();
     }
 
     @Before

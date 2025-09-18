@@ -94,7 +94,8 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                                                                       new FeatureFilter(),
                                                                       new SystemPropertyFilter(),
                                                                       new JavaLevelFilter(),
-                                                                      new CheckpointSupportFilter()
+                                                                      new CheckpointSupportFilter(),
+                                                                      new SecurityFilter()
     };
 
     private static EE9PackageReplacementHelper ee9Helper;

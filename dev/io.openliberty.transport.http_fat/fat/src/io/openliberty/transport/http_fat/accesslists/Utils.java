@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.n
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,8 +30,13 @@ import org.apache.hc.client5.http.classic.methods.HttpUriRequestBase;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
+import org.apache.hc.client5.http.ssl.SSLConnectionSocketFactoryBuilder;
+import org.apache.hc.client5.http.ssl.TrustAllStrategy;
 import org.apache.hc.core5.http.NoHttpResponseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
+import org.apache.hc.core5.ssl.SSLContextBuilder;
 import org.junit.Assert;
 
 import com.ibm.websphere.simplicity.RemoteFile;
@@ -76,6 +81,63 @@ public class Utils {
 
         String result = null;
         try (final CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (final CloseableHttpResponse response = client.execute(method)) {
+                String responseText = EntityUtils.toString(response.getEntity());
+                String responseCode = String.valueOf(response.getCode());
+
+                debug("\n" + "##### Response Text ##### \n[" + responseText + "]");
+                debug("##### Response Code ###### [" + responseCode + "]");
+
+                if (resExpectedStatusCode != null && !resExpectedStatusCode.isEmpty())
+                    assertTrue("The response did not contain the status code " + resExpectedStatusCode, responseCode.equals(resExpectedStatusCode));
+
+                if (resExpectedText != null && !resExpectedText.isEmpty())
+                    assertTrue("The response did not contain the following text: " + resExpectedText + " it was " + responseText, responseText.contains(resExpectedText));
+
+                if (resNotExpectedText != null && !resNotExpectedText.isEmpty())
+                    assertFalse("The response did not contain the following text: " + resNotExpectedText, responseText.contains(resNotExpectedText));
+                result = responseText;
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * Do a simple https get to a server uri with trace
+     *
+     * @param server                target server
+     * @param reqURI                'ContextRoot/path'
+     * @param resExpectedStatusCode
+     * @param resExpectedText
+     * @param resNotExpectedText    will fail if this is in what is returned
+     * @return the response text
+     * @throws Exception
+     */
+    public static String getSecure(LibertyServer server,
+                                   String reqURI, String resExpectedStatusCode, String resExpectedText, String resNotExpectedText) throws Exception {
+
+        String url = "https://" + server.getHostname() + ":" + server.getHttpDefaultSecurePort() + reqURI;
+        debug("Expecting response text [" + resExpectedText + "]");
+        debug("Expecting NO response text [" + resNotExpectedText + "]");
+        debug("Expecting status code [" + resExpectedStatusCode + "]");
+        debug("Sending --> GET" + " [" + url + "]");
+
+        HttpUriRequestBase method = new HttpGet(url);
+
+        String result = null;
+
+        HttpClientBuilder builder = HttpClients.custom()
+                        .setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+                                        .setSSLSocketFactory(SSLConnectionSocketFactoryBuilder.create()
+                                                        .setSslContext(SSLContextBuilder.create()
+                                                                        .loadTrustMaterial(TrustAllStrategy.INSTANCE)
+                                                                        .build())
+                                                        .build())
+                                        .build())
+                        .disableRedirectHandling();
+
+        try (final CloseableHttpClient client = builder.build()) {
             try (final CloseableHttpResponse response = client.execute(method)) {
                 String responseText = EntityUtils.toString(response.getEntity());
                 String responseCode = String.valueOf(response.getCode());

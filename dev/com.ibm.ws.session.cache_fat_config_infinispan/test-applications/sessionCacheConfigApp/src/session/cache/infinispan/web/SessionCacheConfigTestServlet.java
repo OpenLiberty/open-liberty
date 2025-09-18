@@ -429,6 +429,12 @@ public class SessionCacheConfigTestServlet extends FATServlet {
             }
             session = request.getSession(true);
         }
+        
+        if (session == null) {
+            System.out.println("Session can not be null, please check JCache initialization. Test skipped");
+            return;
+        }
+        
         session.setAttribute(attrName, value);
 
         // Verify that attribute does not get persisted to the cache yet

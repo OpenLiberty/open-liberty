@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,7 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=Bearbeiten Sie die Datei 'server.
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ Alle Threads im Standard-Executor Liberty scheinen zu h\u00e4ngen, und es k\u00f6nnen keine weiteren Threads hinzugef\u00fcgt werden, da die Poolgr\u00f6\u00dfe ihr Limit erreicht hat.  Die aktuelle Poolgr\u00f6\u00dfe ist {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=Alle Standardausf\u00fchrungs-Threads sind ausgelastet, die Threads haben in letzter Zeit keine Aufgaben abgeschlossen, und die Aufgaben warten in der Warteschlange. Es k\u00f6nnen keine weiteren Threads hinzugef\u00fcgt werden, da die Poolgr\u00f6\u00dfe ihre Grenze erreicht hat.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=Stellen Sie fest, ob es einen Engpass gibt, wie z. B. eine gesperrte Datenbanktabelle, die Threads an der Erledigung ihrer Aufgaben hindern k\u00f6nnte. Wenn es keinen Engpass gibt und der Server einfach mehr Threads ben\u00f6tigt, passen Sie die Attribute coreThreads und maxThreads des Executor-Konfigurationselements an.
+
+CWWKE1208.override.virtual=CWWKE1208I: Die Gleichzeitigkeitsrichtlinie {0} erstellt Plattform-Threads, da die Erstellung virtueller Threads durch den Server Liberty deaktiviert ist.
+CWWKE1208.override.virtual.explanation=Die ThreadTypeOverride SPI hat die Erstellung von virtuellen Threads durch den Liberty Server deaktiviert.
+CWWKE1208.override.virtual.useraction=Es ist keine Aktion erforderlich.

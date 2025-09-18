@@ -70,6 +70,9 @@ file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: No se puede 
 file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=El tiempo de ejecuci\u00f3n requiere permisos de escritura en el directorio /health para crear los archivos "live", "ready" y "started" para que las comprobaciones de salud basadas en archivos funcionen correctamente.
 file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=El usuario debe identificar la causa ra\u00edz del problema de permisos.
 
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W=CWMMH0102W: El motor de ejecuci\u00f3n no puede resolver la ruta del directorio /health. La funci\u00f3n de comprobaci\u00f3n de estado basada en archivos se desactivar\u00e1.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.explanation=El tiempo de ejecuci\u00f3n requiere que se establezca la propiedad interna server.output.dir o la variable de entorno WLP_OUTPUT_DIR para determinar la ubicaci\u00f3n del directorio /health.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.useraction=Aseg\u00farese de que la variable de entorno WLP_OUTPUT_DIR est\u00e1 correctamente configurada.
 
 file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: El runtime ha detectado la presencia del siguiente directorio [ {0} ]. Se requiere un archivo con el mismo nombre para la funci\u00f3n de comprobaci\u00f3n de estado basada en archivos en esta ruta. La funci\u00f3n de comprobaci\u00f3n de estado basada en archivos se desactivar\u00e1.
 file.healthcheck.file.name.conflict.CWMMH0105W.explanation=Las comprobaciones de salud basadas en archivos requieren la creaci\u00f3n y el uso de los archivos "live", "ready" y "started" en el directorio /health. En el directorio /health ya existe un directorio con uno de esos nombres, lo que impide que se creen los archivos necesarios.

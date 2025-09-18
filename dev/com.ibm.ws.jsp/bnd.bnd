@@ -168,4 +168,5 @@ instrument.classesExcludes: com/ibm/ws/jsp/resources/*.class
 	com.ibm.ws.javaee.version;version=latest, \
 	io.openliberty.jakarta.servlet.jsp.jstl.2.0.internal;version=latest, \
 	io.openliberty.jakarta.servlet.jsp.tags.3.0.internal;version=latest, \
-	io.openliberty.el.internal.cdi;version=latest
+	io.openliberty.el.internal.cdi;version=latest, \
+	com.ibm.ws.kernel.boot.core;version=latest

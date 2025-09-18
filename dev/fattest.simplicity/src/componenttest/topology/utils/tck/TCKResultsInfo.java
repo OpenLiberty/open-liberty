@@ -218,6 +218,24 @@ public class TCKResultsInfo {
         return specName.toLowerCase().replace(" ", "-");
     }
 
+    private String getSpecNameForTCKURL() {
+        if(specName.equals("Open API")){
+            return specName.toLowerCase().replace(" ", "");
+        }
+        return specName.toLowerCase().replace(" ", "-");
+    }    
+    private String getSpecNameForTCKURLDirectory() {
+        if(specName.equals("Open API")){
+            return specName.toLowerCase().replace(" ", "");
+        }
+        if(specName.equals("Rest Client")){
+            return specName.toLowerCase().replace(" ", "/");
+        }
+        if(specName.equals("JWT Auth")){
+            return "jwt";
+        }
+        return specName.toLowerCase().replace(" ", "-");
+    }
     /**
      * Returns url where the specification can be found
      *
@@ -249,9 +267,9 @@ public class TCKResultsInfo {
                        + platformVersion + "/promoted/eftl/" + getSpecNameForURL() + "-tck-"
                        + getSpecVersion() + ".zip";
             case MICROPROFILE:
-                return "https://repo1.maven.org/maven2/org/eclipse/microprofile/" + getSpecNameForURL()
-                       + "/microprofile-" + getSpecNameForURL() + "-tck/" + getSpecVersion()
-                       + "/microprofile-" + getSpecNameForURL() + "-tck-" + getSpecVersion() + ".jar";
+                return "https://repo1.maven.org/maven2/org/eclipse/microprofile/" + getSpecNameForTCKURLDirectory()
+                       + "/microprofile-" + getSpecNameForTCKURL() + "-tck/" + getSpecVersion()
+                       + "/microprofile-" + getSpecNameForTCKURL() + "-tck-" + getSpecVersion() + ".jar";
             default:
                 return "UNKNOWN";
         }

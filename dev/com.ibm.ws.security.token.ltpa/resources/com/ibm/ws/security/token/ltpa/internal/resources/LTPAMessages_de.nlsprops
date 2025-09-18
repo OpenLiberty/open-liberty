@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=Set
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: Das Attribut updateTrigger ist inaktiviert und das \u00dcberwachungsintervall ist gr\u00f6\u00dfer als {0}. Es findet kein dynamisches erneutes Laden statt, wenn LTPA-Schl\u00fcsseldateien ge\u00e4ndert werden.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Wenn das Attribut updateTrigger auf "disabled" gesetzt ist, werden die Dateien nicht auf \u00c4nderungen an Dateien mit dem Suffix .keys \u00fcberwacht und es findet kein dynamisches Neuladen statt. Selbst wenn das Attribut monitorInterval auf ein Intervall gr\u00f6\u00dfer als null gesetzt ist, wird das Attribut ignoriert und die Dateien werden nicht \u00fcberwacht.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=Setzen Sie den Wert des Attributs updateTrigger auf "polled" oder "mbean".
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Die Validierungsschl\u00fcssel von {0} m\u00fcssen mit kryptografischen Algorithmen, die nach FIPS 140-3 zertifiziert sind, neu generiert werden.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Die LTPA-Validierungsschl\u00fcssel, die ohne aktiviertes FIPS 140-3 erstellt wurden, schlagen fehl, wenn FIPS 140-3 aktiviert ist.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Verwenden Sie den Befehl securityUtility createLTPAKeys, um die von FIPS genehmigten Validierungsschl\u00fcssel zu erstellen, wenn FIPS 140-3 konfiguriert ist.

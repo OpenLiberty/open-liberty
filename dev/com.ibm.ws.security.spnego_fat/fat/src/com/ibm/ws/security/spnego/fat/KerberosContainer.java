@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,14 +24,15 @@ import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.images.RemoteDockerImage;
 
 import com.github.dockerjava.api.command.InspectContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.InternetProtocol;
-import com.github.dockerjava.api.model.PortBinding;
 import com.github.dockerjava.api.model.Ports;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 
@@ -44,19 +45,19 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static final String KRB5_PASS = "password";
     public static String KDC_HOSTNAME = "notSetYet";
 
-    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "fbicodex/spnego-kdc-server:1.0";
+    private static final RemoteDockerImage SPNEGO_KDC_SERVER = ImageBuilder.build("spnego-kdc-server:1.0.0.1").getFuture();
 
     private int udp_99;
 
     public KerberosContainer(Network network) {
-        super(IMAGE);
+        super(SPNEGO_KDC_SERVER);
         withNetwork(network);
     }
 
     @SuppressWarnings("deprecation")
     @Override
     protected void configure() {
+        withExposedPorts(99, 464, 749);
         withNetworkAliases(KRB5_KDC);
         withCreateContainerCmdModifier(cmd -> {
             cmd.withHostName(KRB5_KDC);
@@ -82,15 +83,19 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
             // Add previous port bindings and UDP port binding
             Ports ports = cmd.getPortBindings();
-            int containerPort = 99;
-            int hostPort = 88;
-
-            String kdcPortMapping = String.format("%d:%d/%s", hostPort, containerPort, InternetProtocol.UDP);
-            Log.info(c, "configure", "adding KDC port mapping: " + kdcPortMapping);
-
-            Log.info(c, "configure", "PortBinding.parse(kdcPortMapping): " + PortBinding.parse(kdcPortMapping));
-            ports.add(PortBinding.parse(kdcPortMapping));
-
+            ports.bind(ExposedPort.udp(99), Ports.Binding.empty());
+            /*
+             * uncomment to hardcode port to 88
+             * Ports ports = cmd.getPortBindings();
+             * int containerPort = 99;
+             * int hostPort = 88;
+             *
+             * String kdcPortMapping = String.format("%d:%d/%s", hostPort, containerPort, InternetProtocol.UDP);
+             * Log.info(c, "configure", "adding KDC port mapping: " + kdcPortMapping);
+             *
+             * Log.info(c, "configure", "PortBinding.parse(kdcPortMapping): " + PortBinding.parse(kdcPortMapping));
+             * ports.add(PortBinding.parse(kdcPortMapping));
+             */
             Log.info(c, "configure", "ports: " + ports);
             cmd.withPortBindings(ports);
             cmd.withHostName(KRB5_KDC);
@@ -130,7 +135,6 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
                       "        ticket_lifetime = 24h\n" +
                       "        dns_lookup_realm = false\n" +
                       "        default_realm = " + KRB5_REALM.toUpperCase() + "\n" +
-                      "        kdc_ports = " + getMappedPort(99) + "\n" +
                       "\n" +
                       "# The following krb5.conf variables are only for MIT Kerberos.\n" +
                       "        kdc_timesync = 1\n" +

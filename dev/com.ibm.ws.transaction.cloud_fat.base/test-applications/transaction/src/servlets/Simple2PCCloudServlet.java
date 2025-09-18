@@ -602,4 +602,39 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         setupBatchOfOrphanLeases(10, 20);
     }
+
+    public void emptyServer2Tables(HttpServletRequest request,
+                                   HttpServletResponse response) throws Exception {
+
+        final List<String> tables = Arrays.asList("WAS_TRAN_LOGCLOUD0021", "WAS_PARTNER_LOGCLOUD0021");
+
+        try (Connection con = getConnection(dsTranLog); Statement stmt = con.createStatement()) {
+            for (String table : tables) {
+                final String truncateTableString = "TRUNCATE TABLE " + table +
+                                                   ((DBProduct.DB2 == dbProduct) ? " IMMEDIATE;" : "");
+                final int truncateReturn = stmt.executeUpdate(truncateTableString);
+                System.out.println("emptyServer2Tables: " + truncateTableString + " returned " + truncateReturn);
+            }
+        }
+    }
+
+    // Run a tran that is expected to succeed
+    public void normalTran(HttpServletRequest request,
+                           HttpServletResponse response) throws Exception {
+        final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
+        XAResourceImpl.clear();
+        final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
+        final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
+
+        tm.begin();
+        final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1);
+        int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+        tm.enlist(xaRes1, recoveryId1);
+
+        final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
+        int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+        tm.enlist(xaRes2, recoveryId2);
+
+        tm.commit();
+    }
 }

@@ -13,16 +13,21 @@
     </featureManager>
     
     <enterpriseApplication location="visTest.ear" defaultClientModule="visTestAppClient.jar" webModuleClassPathLoader="ear">
-        <classloader commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
+        <classloader overrideLibraryRef="visTestOverrideLib" commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
     </enterpriseApplication>
     
     <webApplication location="visTestStandaloneWar.war">
-        <classloader commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
+        <classloader overrideLibraryRef="visTestOverrideLib" commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
     </webApplication>
 
     <library id="visTestPrivateLib">
        <fileset includes="visTestPrivateLib.jar"/>
     </library>
+
+    <library id="visTestOverrideLib">
+       <fileset includes="visTestOverrideLib.jar"/>
+    </library>
+
     
     <library id="visTestCommonLib">
        <fileset includes="visTestCommonLib.jar"/>

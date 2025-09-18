@@ -31,7 +31,45 @@ public class HealthFileUtils {
     public static File getHealthDirFile() {
 
         if (healthDirFile == null) {
-            File serverConfigDirFile = new File(System.getProperty("server.output.dir"));
+
+            String serverOutputDir = System.getProperty("server.output.dir");
+
+            File serverConfigDirFile;
+
+            /*
+             * server.output.dir may not be set.
+             * Construct the directory with WLP_OUTPUT_DIR and wlp.server.name or SERVER_NAME
+             */
+            if (serverOutputDir == null || serverOutputDir.trim().isEmpty()) {
+                String wlpOutputDirEnv = System.getenv("WLP_OUTPUT_DIR");
+
+                if (wlpOutputDirEnv == null || wlpOutputDirEnv.trim().isEmpty()) {
+                    Tr.warning(tc, "file.healthcheck.health.directory.resolution.fail.CWMMH0102W");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc,
+                                 "The server was unable to resolve server.output.dir property nor the WLP_OUTPUT_DIR environment variable.");
+                    }
+                    return null;
+                }
+
+                String serverName = System.getProperty("wlp.server.name");
+
+                if (serverName == null || serverName.trim().isEmpty()) {
+                    serverName = System.getenv("SERVER_NAME");
+                    if (serverName == null || serverName.trim().isEmpty()) {
+                        Tr.warning(tc, "file.healthcheck.health.directory.resolution.fail.CWMMH0102W");
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc,
+                                     "The server was unable to resolve wlp.server.name property nor the SERVER_NAME environment variable.");
+                        }
+                        return null;
+                    }
+                }
+
+                serverOutputDir = wlpOutputDirEnv.trim() + System.getProperty("file.separator") + serverName.trim();
+            }
+            serverConfigDirFile = new File(serverOutputDir);
+
             healthDirFile = new File(serverConfigDirFile, "health");
         }
 
@@ -98,6 +136,13 @@ public class HealthFileUtils {
      */
     public static boolean isValidSystem() throws IOException {
         healthDirFile = getHealthDirFile();
+
+        /*
+         * Failed to resolve the Health directory File object. (i.e., could not resolve the path to create the path)
+         */
+        if (healthDirFile == null) {
+            return false;
+        }
 
         //Health Dir does not exist -> create and test write
         if (!healthDirFile.exists()) {

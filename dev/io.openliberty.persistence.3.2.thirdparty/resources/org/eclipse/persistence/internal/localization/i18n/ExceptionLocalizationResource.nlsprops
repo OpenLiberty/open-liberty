@@ -327,6 +327,8 @@ metamodel_managed_type_attribute_type_incorrect=Expected attribute type [{2}] on
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=The declared attribute [{0}] from the managed type [{1}] is not present - however, it is declared on a superclass.
 
+missing_jpql_parser_class=Could not load the JPQL parser class.
+
 missing_parameter_value=Query argument {0} not found in the list of parameters provided during query execution.
 
 missing_toplink_bean_definition_for=Missing TopLink bean definition for {0}
@@ -411,7 +413,7 @@ schema_validation=Schema validation
 
 schema_validation_failed=Schema validation failed
 
-schema_validation_missing_table=The {0} table vas not found in the schema
+schema_validation_missing_table=The {0} table is not found in the schema
 
 schema_validation_table_different_columns=The {0} table has different columns in the schema
 

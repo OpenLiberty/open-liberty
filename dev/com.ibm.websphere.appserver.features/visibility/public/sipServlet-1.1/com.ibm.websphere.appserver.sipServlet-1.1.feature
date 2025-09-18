@@ -26,6 +26,7 @@ Subsystem-Name: SIP Servlet 1.1
   com.ibm.websphere.javaee.jaxws.2.2; apiJar=false; require-java:="9"; location:="dev/api/spec/,lib/",\
   com.ibm.ws.sipcontainer, \
   com.ibm.ws.app.manager.sar, \
+  io.openliberty.transport.config.internal, \
   io.openliberty.endpoint, \
   io.openliberty.netty.internal, \
   io.openliberty.netty.internal.impl, \

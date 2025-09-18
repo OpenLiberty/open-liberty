@@ -679,9 +679,9 @@ public class JSF22MiscellaneousTests {
 
         assertTrue("XML Validation Error found erroneously.", jsf22MiscellaneousServer.findStringsInLogsAndTraceUsingMark(".*org.xml.sax.SAXParseException.*").isEmpty());
 
-        jsf22MiscellaneousServer.resetLogMarks();
-
         jsf22MiscellaneousServer.removeAndStopDropinsApplications(APP_NAME_XML_VALIDATION_GOOD + ".war");
+
+        jsf22MiscellaneousServer.resetLogMarks();
     }
 
     /*
@@ -700,10 +700,9 @@ public class JSF22MiscellaneousTests {
         assertTrue("XML Validation Error not found!.",
                    jsf22MiscellaneousServer.findStringsInLogsAndTraceUsingMark(".*cvc-complex-type.2.4.a: Invalid content was found starting with element.*").size() >= 1);
 
-        jsf22MiscellaneousServer.resetLogMarks();
-
         jsf22MiscellaneousServer.removeAndStopDropinsApplications(APP_NAME_XML_VALIDATION_BAD + ".war");
 
+        jsf22MiscellaneousServer.resetLogMarks();
     }
 
 }

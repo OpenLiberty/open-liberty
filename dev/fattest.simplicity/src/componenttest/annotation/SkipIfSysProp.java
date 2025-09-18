@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -82,6 +82,7 @@ public @interface SkipIfSysProp {
     public static final String OS_ZOS = "os.name=z/OS";
     public static final String OS_IBMI = "os.name=OS/400";
     public static final String OS_ISERIES = "os.name=ISERIES";
+    public static final String OS_AIX = "os.name=AIX";
 
     // Network system properties
     public static final String NETWORK_AWS = "global.network.location=AWS";

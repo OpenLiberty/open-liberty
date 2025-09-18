@@ -185,7 +185,7 @@ null sessionDatabase # 1.0                #
 null sipServlet # 1.1                     #
 null socialLogin # 1.0                    #
 null spnego # 1.0                         #
-null springBoot 1.5 # 2.0 3.0             #
+null springBoot 1.5 # 2.0 3.0 4.0         #
 null ssl # 1.0                            #
 null timedexit # 1.0                      # isTest
 null transportSecurity # 1.0              #

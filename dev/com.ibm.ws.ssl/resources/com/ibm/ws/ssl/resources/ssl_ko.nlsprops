@@ -311,7 +311,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: \ub2e4\uc74c\uacfc \uac1
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: {0} \uc11c\uba85\uc790 \ubcc4\uba85\uc744 SHA \uc694\uc57d {2}\uc640(\uacfc) \ud568\uaed8 \ub85c\uceec \ud0a4 \uc800\uc7a5\uc18c {1}\uc5d0 \ucd94\uac00 \uc911
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: \uc2dc\uc2a4\ud15c\uc740 \ub2e4\uc74c {3} \ub2e4\uc774\uc81c\uc2a4\ud2b8\ub97c \uc0ac\uc6a9\ud558\uc5ec \ub85c\uceec \ud0a4 \uc800\uc7a5\uc18c {1} \uc5d0 \uc11c\uba85\uc790 \ubcc4\uce6d {0} \uc744 \ucd94\uac00\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4: {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uc81c\uacf5 \ubaa9\uc801\uc73c\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 # -------------------------------------------------------------------------------------------------

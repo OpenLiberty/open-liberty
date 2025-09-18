@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,9 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 configurations {
   derbyJar
   mongoJavaDriver
+  requiredLibs {
+    transitive = false
+  }
 }
 
 dependencies {
@@ -28,7 +31,19 @@ dependencies {
                project(':com.ibm.ws.security.oauth.oidc_fat.common'),
                project(':io.openliberty.org.apache.xercesImpl'),
                project(':com.ibm.ws.security.spnego.fat.common'),
+               project(':com.ibm.ws.security.fat.common'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets'),
+               project(':com.ibm.ws.net.oauth.jsontoken'),
+               project(':com.ibm.ws.org.joda.time'),
+               project(':com.ibm.ws.org.apache.httpcomponents'),
+               project(':com.ibm.ws.kernel.service'),
+               project(':com.ibm.ws.kernel.boot'),
+               project(':com.ibm.ws.security.oauth'),
                'jtidy:jtidy:4aug2000r7-dev',
+               'org.apache.sshd:sshd-common:2.12.1',
+               'org.apache.sshd:sshd-core:2.12.1',
+               'org.bouncycastle:bcprov-jdk18on:1.78.1', // required for sshd and cannot use io.openliberty.org.bouncycastle.bcprov-jdk18on
+               'net.sourceforge.htmlunit:htmlunit:2.44.0',
                'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
                'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
                'net.sourceforge.htmlunit:htmlunit-cssparser:1.6.0',
@@ -38,7 +53,8 @@ dependencies {
                'org.brotli:dec:0.1.2',
                'rhino:js:1.6R5',
                'xalan:xalan:2.7.2',
-               'xml-apis:xml-apis:1.4.01'
+               'xml-apis:xml-apis:1.4.01',
+               'org.eclipse.birt.runtime.3_7_1:org.apache.xml.serializer:2.7.1'
 }
 
 /******************************************************************

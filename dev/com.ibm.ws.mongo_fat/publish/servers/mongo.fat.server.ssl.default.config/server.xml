@@ -19,8 +19,8 @@
     </application>
     
     <!-- Default SSL config is valid for both password and certificate authentication -->
-    <keyStore password="passw0rd" id="myDefaultKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_good_keystore.jks"></keyStore>
-    <keyStore password="passw0rd" id="myDefaultTrustStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/truststore.jks"></keyStore>
+    <keyStore password="passw0rd" id="myDefaultKeyStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/client_good_keystore.p12"></keyStore>
+    <keyStore password="passw0rd" id="myDefaultTrustStore" location="${server.output.dir}/resources/mongo-auth-encrypted/security/truststore.p12"></keyStore>
     <ssl id="defaultSSLConfig" keyStoreRef="myDefaultKeyStore" trustStoreRef="myDefaultTrustStore" />
 
     <mongo id="mongo-no-sslRef" libraryRef="mongo-lib" hostNames="mongo-auth-encrypted" ports="0" user="user" password="password" sslEnabled="true" connectTimeout="20000"/>

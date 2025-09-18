@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2024 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,12 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
-import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.DELEGATES;
+import static com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration.LibraryPrecedence.beforeApp;
+import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.AFTER_DELEGATES;
+import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.BEFORE_DELEGATES;
 import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.PARENT;
 import static com.ibm.ws.classloading.internal.AppClassLoader.SearchLocation.SELF;
+import static com.ibm.ws.classloading.internal.LibertyLoader.DelegatePolicy.includeParent;
 import static com.ibm.ws.classloading.internal.Util.freeze;
 import static com.ibm.ws.classloading.internal.Util.list;
 
@@ -31,6 +34,7 @@ import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
+import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
 
 /**
  * A version of the standard URLClassLoader that checks the child level first
@@ -44,7 +48,7 @@ class ParentLastClassLoader extends AppClassLoader {
         super(parent, config, urls, access, redefiner, generator, globalConfig, systemTransformers);
     }
 
-    static final List<SearchLocation> PARENT_LAST_SEARCH_ORDER = freeze(list(SELF, DELEGATES, PARENT));
+    static final List<SearchLocation> PARENT_LAST_SEARCH_ORDER = freeze(list(BEFORE_DELEGATES, SELF, AFTER_DELEGATES, PARENT));
 
     /** Provides the search order so the {@link ShadowClassLoader} can use it. */
     @Override
@@ -59,23 +63,35 @@ class ParentLastClassLoader extends AppClassLoader {
 
     @Override
     @Trivial
-    public URL getResource(String resName) {
-        // search order: 1) my class path 2) parent loader
-        URL result = findResource(resName);
-        return result == null ? this.parent.getResource(resName) : result;
+    public URL getResource(String name) {
+        URL result = findResourceCommonLibraryClassLoaders(name, beforeApp);
+        if (result == null) {
+            result = findResource(name);
+        }
+        if (result == null) {
+            result = parent.getResource(name);
+        }
+        return result;
     }
 
     @Override
     @Trivial
     public Enumeration<URL> getResources(String resName) throws IOException {
-        // search order: 1) my class path 2) parent loader
-        return super.findResources(resName).add(this.parent.getResources(resName));
+        // search order: 1) beforeApp common libraries 2)  my class path and afterApp common libraries 3) parent loader
+        return findResourcesCommonLibraryClassLoaders(resName, new CompositeEnumeration<>(), beforeApp) //
+                        .add(this.findResources(resName)) //
+                        .add(this.parent.getResources(resName));
     }
 
     @FFDCIgnore(ClassNotFoundException.class)
     @Override
     @Trivial
-    protected Class<?> findOrDelegateLoadClass(String className, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
+    protected Class<?> findOrDelegateLoadClass(String className, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
+        final boolean RETURN_NULL_FOR_NO_CLASS = true;
+        Class<?> beforeAppLoad = findClassCommonLibraryClassLoaders(className, RETURN_NULL_FOR_NO_CLASS, beforeApp, delegatePolicy);
+        if (beforeAppLoad != null) {
+            return beforeAppLoad;
+        }
         ClassNotFoundException findClassException = null;
         // search order: 1) my class path 2) parent loader
         Class<?> rc = null;
@@ -87,7 +103,7 @@ class ParentLastClassLoader extends AppClassLoader {
             if (rc == null) {
                 // first check our classpath
                 try {
-                    rc = findClass(className, returnNull);
+                    rc = findClass(className, delegatePolicy, returnNull);
                 } catch (ClassNotFoundException cnfe) {
                     findClassException = cnfe;
                 }
@@ -104,7 +120,7 @@ class ParentLastClassLoader extends AppClassLoader {
         }
 
         // no luck? try the parent next unless we are only checking ourself
-        if (onlySearchSelf) {
+        if (delegatePolicy != includeParent) {
             if (returnNull) {
                 return null;
             }
@@ -128,5 +144,11 @@ class ParentLastClassLoader extends AppClassLoader {
         }
         
         return this.parent.loadClass(className);
+    }
+
+    @Override
+    @Trivial
+    protected boolean isParentFirst() {
+        return false;
     }
 }

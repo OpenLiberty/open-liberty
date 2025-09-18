@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,7 @@ public class WebServicesCacheProcessor extends FragmentCacheProcessor {
    // id constants for type=BODY
    public static final String HASH = "Hash";
    public static final String LITERAL = "Literal";
+   private static final String HASH_TYPE = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256 : CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA;
 
    SAXParserFactory factory = null;
    SAXParser parser = null;
@@ -219,7 +220,7 @@ public class WebServicesCacheProcessor extends FragmentCacheProcessor {
                // else if(c.id.equalsIgnoreCase(HASH)){
                else { //default is hash value.
                   if (md == null)
-                     md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA);
+                     md = MessageDigest.getInstance(HASH_TYPE);
                   byte[] reqHash = md.digest(reqContent);
                   return Base64Coder.encode(reqHash);
                }

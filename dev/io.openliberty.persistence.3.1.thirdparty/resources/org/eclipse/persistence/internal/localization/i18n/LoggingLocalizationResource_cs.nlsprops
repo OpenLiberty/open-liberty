@@ -169,7 +169,7 @@ elements={0}{1} prvk\u016f
 
 enable_batch_operations_as_true_not_supported=Nativn\u00ed nastaven\u00ed WLS CMP "enable-batch-operations-as-true" EclipseLink CMP p\u0159\u00edmo nepodporuje. Podrobnosti viz dokumentace k migraci.
 
-encryptor_script_description=Tato aplikace intern\u011b de\u0161ifruje star\u00e9 za\u0161ifrovan\u00e9 heslo, kter\u00e9 bylo pou\u017eito d\u0159\u00edve EclipseLink verzi a za\u0161ifruje ji nejnov\u011bj\u0161\u00edm algoritmem.
+encryptor_script_description=Tato aplikace m\u00e1 star\u00e9 za\u0161ifrovan\u00e9 heslo, kter\u00e9 bylo pou\u017eito v p\u0159edchoz\u00ed verzi EclipseLink. Znovu jej za\u0161ifrujte pomoc\u00ed nejnov\u011bj\u0161\u00edho algoritmu.
 
 encryptor_script_output=Znovu za\u0161ifrovan\u00e9 heslo je: {0}
 
@@ -318,6 +318,8 @@ jpars_could_not_find_session_bean=Bylo provedeno vol\u00e1n\u00ed na objekt typu
 jta_cannot_be_disabled_in_cmp=P\u0159i pou\u017eit\u00ed perzistence Container Managed Persistence (CMP) nelze zak\u00e1zat JTA. EclipseLink bude pracovat, jako kdyby bylo JTA povoleno.
 
 jta_duplicate_ctrl_property=T\u0159\u00edda \u0159adi\u010de transakc\u00ed JTA je definovan\u00e1 ve vlastnostech "eclipselink.target-server" a "eclipselink.jta.controller". Pou\u017eije se hodnota z vlastnosti "eclipselink.target-server".
+
+jta_tm_lookup_failure=Nelze vyhledat instanci TransactionManager : {0}
 
 jta_tsr_lookup_failure=Nelze vyhledat instanci TransactionSynchronizationRegistry: {0}
 

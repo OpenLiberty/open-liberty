@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=Configura\u0163i un fi\u015fier JA
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: Pornirea aplica\u0163iei a e\u015fuat, deoarece nu a fost g\u0103sit\u0103 aplica\u0163ia Spring Boot \u00een fi\u015fierul JAR de server Liberty.
 error.application.not.found.inside.packaged.liberty.jar.explanation=Fi\u015fierul JAR al serverului Liberty \u00eempachetat trebuie s\u0103 con\u0163in\u0103 o aplica\u0163ie Spring Boot configurat\u0103.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configura\u0163i un fi\u015fier JAR de server Liberty \u00eempachetat valid.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: Trebuie s\u0103 fie configurat\u0103 caracteristica {0} \u00een fi\u0219ierul server.xml. Caracteristica {1} este configurat\u0103, iar aplica\u021bia are con\u021binut Spring Boot {2}.
+error.spring4.required.explanation=Caracteristica Spring Boot configurat\u0103 \u00een prezent nu este compatibil\u0103 cu con\u021binutul aplica\u021biei.
+error.spring4.required.useraction=Configura\u021bi o versiune a caracteristicii Spring Boot care este compatibil\u0103 cu con\u021binutul aplica\u021biei.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: Trebuie s\u0103 fie configurat\u0103 func\u021bia servlet-6.1 sau ulterioar\u0103. Caracteristica springBoot-4.0 este configurat\u0103, iar aplica\u021bia utilizeaz\u0103 servlete.
+error.spring4.requires.servlet61.or.later.application.explanation=Aplica\u021bia utilizeaz\u0103 servleturi, dar nu este configurat\u0103 nicio caracteristic\u0103 de servlet.
+error.spring4.requires.servlet61.or.later.application.useraction=Configura\u021bi caracteristica de servlet specificat\u0103.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: Trebuie s\u0103 fie configurat\u0103 func\u021bia websocket-2.2 sau ulterioar\u0103. Caracteristica springBoot-4.0 este configurat\u0103, iar aplica\u021bia utilizeaz\u0103 WebSockets.
+error.spring4.requires.websocket22.or.later.application.explanation=Aplica\u021bia utilizeaz\u0103 WebSockets, dar nu este configurat\u0103 nicio caracteristic\u0103 websocket.
+error.spring4.requires.websocket22.or.later.application.useraction=Configura\u021bi caracteristica websocket specificat\u0103.

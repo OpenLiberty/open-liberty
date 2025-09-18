@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -436,6 +436,10 @@ warning.tooManySymbolicLinks=CWWKE0096W: Es wurden zu viele symbolische Links ge
 warning.tooManySymbolicLinks.explanation=Symbolische Links sind Verkn\u00fcpfungen, die auf andere Dateien oder Verzeichnisse verweisen. Dieser Fehler tritt auf, wenn das System zu viele symbolische Verbindungen in einer Kette findet und den Pfad nicht aufl\u00f6sen kann.
 warning.tooManySymbolicLinks.useraction=\u00dcberpr\u00fcfen Sie zur Behebung des Problems die symbolischen Links im Pfad und stellen Sie sicher, dass sie keine zirkul\u00e4ren Referenzen erstellen. Sie k\u00f6nnen auch den Befehl 'readlink' verwenden, um einzelne Links in der Kette zu \u00fcberpr\u00fcfen.
 
+warning.javaHomeNotSet=CWWKE0097W: Die Umgebungsvariable JAVA_HOME ist nicht gesetzt.
+warning.javaHomeNotSet.explanation=Das Serverskript kann den Ort der Java-Installation nicht ermitteln. Dieses Problem tritt nicht auf, wenn die Umgebungsvariable JAVA_HOME richtig gesetzt ist oder wenn sich die ausf\u00fchrbare Datei "java", die durch die Suche im PATH gefunden wird, in einer vollst\u00e4ndigen Java-Installation befindet. Der Java-Installationsort wird ben\u00f6tigt, um versionsspezifische Konfigurationsdateien zu finden, z. B. java9.options. Wenn die Java-Installation nicht gefunden werden kann, werden diese Dateien nicht geladen, und Anwendungen, die auf sie angewiesen sind, verhalten sich m\u00f6glicherweise nicht wie erwartet.
+warning.javaHomeNotSet.useraction=Legen Sie die Umgebungsvariable 'JAVA_HOME' fest.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Die Option --include={0} konnte nicht verwendet werden. Es wird stattdessen die Option --include=wlp verwendet.
 warn.packageRuntime.include.unknownOption.explanation=Die Option wurde ignoriert, da sie nicht erkannt wurde.
 warn.packageRuntime.include.unknownOption.useraction=Wiederholen Sie den Befehl mit g\u00fcltigen Optionen. Mit --help k\u00f6nnen Sie eine Liste der g\u00fcltigen Optionen anzeigen.
@@ -865,3 +869,7 @@ info.list.of.defined.servers=Die folgenden Server sind relativ zum Benutzerverze
 info.communicate.server=Es ist ein Kommunikationsfehler zwischen dem Befehl {0} und dem Server {1} aufgetreten.
 
 info.serialFilterLoaded=Der Agent f\u00fcr seriellen Filter wurde geladen.
+
+# {0} The full path to a configured logs directory.
+# Displayed when creating a server dump, if an alternate server logs directory has been configured.
+info.dump.server.alt.logs=Das konfigurierte Verzeichnis f\u00fcr Serverprotokolle wurde unter {0} gefunden.

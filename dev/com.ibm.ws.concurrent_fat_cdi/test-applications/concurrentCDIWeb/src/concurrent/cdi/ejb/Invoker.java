@@ -18,4 +18,5 @@ public interface Invoker {
 
     public <T> T runInEJB(Callable<T> testCode) throws Exception;
 
+    public void runTaskUsingDefaultManagedThreadFactory(Runnable task);
 }

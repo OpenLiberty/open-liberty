@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import org.eclipse.microprofile.reactive.messaging.Incoming;
 public class KafkaPostProcessReceptionBean {
 
     public static final String POST_PROCESS_CHANNEL = "kafka-ack-post-process";
+    public static final String GROUP_ID = "kafka-ack-post-process-group";
 
     @Incoming(POST_PROCESS_CHANNEL)
     public void process(String message) {

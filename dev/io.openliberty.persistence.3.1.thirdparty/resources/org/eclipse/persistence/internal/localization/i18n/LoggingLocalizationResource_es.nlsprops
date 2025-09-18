@@ -169,7 +169,7 @@ elements={0}{1} elementos
 
 enable_batch_operations_as_true_not_supported=El valor CMP nativa de WLS "habilitar-operaciones-lotes-como-verdadero" no est\u00e1 soportado directamente en la CMP de EclipseLink. Consulte el documento de migraci\u00f3n para ver detalles.
 
-encryptor_script_description=Esta aplicaci\u00f3n descifra internamente una contrase\u00f1a cifrada antigua que fue utilizada por un usuario anterior. EclipseLink versi\u00f3n y la cifra mediante el \u00faltimo algoritmo.
+encryptor_script_description=Esta aplicaci\u00f3n tiene una antigua contrase\u00f1a encriptada que fue utilizada por una versi\u00f3n anterior de EclipseLink. Reencriptarlo con el \u00faltimo algoritmo.
 
 encryptor_script_output=La contrase\u00f1a reencriptada es: {0}
 
@@ -318,6 +318,8 @@ jpars_could_not_find_session_bean=Se est\u00e1 realizando una llamada a un bean 
 jta_cannot_be_disabled_in_cmp=Al utilizar la persistencia gestionada por contenedor (CMP), no se puede inhabilitar JTA. EclipseLink actuar\u00e1 como si JTA estuviera habilitado.
 
 jta_duplicate_ctrl_property=Clase de controlador de transacciones JTA definida en las propiedades "eclipselink.target-server" y "eclipselink.jta.controller". Utilizando el valor de "eclipselink.target-server".
+
+jta_tm_lookup_failure=No se puede buscar la instancia TransactionManager : {0}
 
 jta_tsr_lookup_failure=No se puede buscar la instancia de TransactionSynchronizationRegistry: {0}
 

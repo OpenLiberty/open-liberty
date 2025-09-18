@@ -515,4 +515,9 @@ public class DefaultConfigurationProvider implements ConfigurationProvider {
     public boolean isUTAsSpecified() {
         return false;
     }
+
+    @Override
+    public boolean isCorrectUOWScopeCallbacks() {
+        return false;
+    }
 }

@@ -50,6 +50,8 @@ import org.apache.myfaces.spi.ViewScopeProvider;
 import org.apache.myfaces.spi.ViewScopeProviderFactory;
 import org.apache.myfaces.view.ViewScopeProxyMap;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 class ServerSideStateCacheImpl extends StateCache<Object, Object>
 {
     private static final Logger log = Logger.getLogger(ServerSideStateCacheImpl.class.getName());
@@ -176,7 +178,7 @@ class ServerSideStateCacheImpl extends StateCache<Object, Object>
      * Sets the random algorithm to initialize the secure random id generator. 
      * By default is SHA1PRNG
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue=CryptoUtils.SHA1PRNG, group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
     

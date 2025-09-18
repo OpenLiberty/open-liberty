@@ -19,7 +19,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
@@ -325,6 +324,9 @@ public class ArtifactDownloaderUtils {
      * @throws MalformedURLException
      */
     public static void setProxyAuthenticator(Map<String, Object> envMap) throws MalformedURLException {
+        if (envMap == null) {
+            return;
+        }
         if (envMap.get("https.proxyUser") != null) {
             Authenticator.setDefault(new SystemPropertiesProxyAuthenticator((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword")));
         } else if (envMap.get("http.proxyUser") != null) {

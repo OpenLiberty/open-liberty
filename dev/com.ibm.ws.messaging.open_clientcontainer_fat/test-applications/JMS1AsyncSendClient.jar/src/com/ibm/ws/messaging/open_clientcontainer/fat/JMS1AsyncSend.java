@@ -113,6 +113,8 @@ public class JMS1AsyncSend extends ClientMain {
             
             connection.start();
             
+            // Take a copy of the message details in case we have to output it in an Exception message later
+            String sentMessageString = sentMessage.toString();
             
             Util.LOG("Sending Message with CompletionListener");
             producer.send(sentMessage, completionListener);
@@ -120,7 +122,18 @@ public class JMS1AsyncSend extends ClientMain {
             Util.LOG("Message sent. Waiting for CompletionListener to be invoked");
 
             if (!completionListener.waitFor(1, 0)) {
-                throw new TestException("Completion listener not notified, sent:" + sentMessage + " completionListener.formattedState:" + completionListener.formattedState());
+            	
+            	// We expected to see the message passed to the CompletionListener, but that hasn't happened. If somethign went wrong and the ExceptionListener was invoked then
+            	// we ought to be able to access the message, but if not then the message is still in an indeterminate state so we can't safely query it
+            	if (completionListener.exceptionCount_ == 1) {
+            		TestException t = new TestException("CompletionListener notified through onException, sent:" + sentMessage + " completionListener.formattedState:" + completionListener.formattedState());
+            	}
+            	else {
+            		// The best we can do here is throw an Exception with the message details before send was called
+                    throw new TestException("Completion listener not notified, sent:" + sentMessageString + " completionListener.formattedState:" + completionListener.formattedState());
+            	}
+            	
+            	
             }
             
             Util.TRACE("Sent Message: ", sentMessage);
