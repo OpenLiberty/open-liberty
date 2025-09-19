@@ -20,6 +20,7 @@
 package org.apache.cxf.ws.security.tokenstore;
 
 import org.apache.cxf.message.Message;
+import org.apache.wss4j.common.cache.WSS4JCacheUtil;
 
 /**
  * An abstract factory to return a TokenStore instance. It returns an EHCacheTokenStoreFactory
@@ -47,9 +48,9 @@ public abstract class TokenStoreFactory {
     public static TokenStoreFactory newInstance() {
         if (isEhCacheInstalled()) {
             return new EHCacheTokenStoreFactory();
+        } else {
+            return new MemoryTokenStoreFactory();
         }
-
-        return new MemoryTokenStoreFactory();
     }
 
     public abstract TokenStore newTokenStore(String key, Message message) throws TokenStoreException;

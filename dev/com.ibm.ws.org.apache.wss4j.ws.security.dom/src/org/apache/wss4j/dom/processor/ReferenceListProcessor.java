@@ -119,7 +119,7 @@ public class ReferenceListProcessor implements Processor {
         // Find the encrypted data element referenced by dataRefURI
         //
         Element encryptedDataElement =
-            EncryptionUtils.findEncryptedDataElement(doc, data.getWsDocInfo(), dataRefURI);
+            EncryptionUtils.findEncryptedDataElement(data.getWsDocInfo(), dataRefURI); // Liberty Change; Backport 4.x
 
         if (encryptedDataElement != null && data.isRequireSignedEncryptedDataElements()) {
             List<WSSecurityEngineResult> signedResults =

@@ -100,7 +100,7 @@ public class EncryptionDerivedAction extends AbstractDerivedAction implements Ac
                 symmetricKey = keyGen.generateKey();
             }
 
-            tokenElement = setupEncryptedKeyTokenReference(reqData, encryptionToken, wsEncrypt, passwordCallback, doc, symmetricKey);
+            tokenElement = setupEncryptedKeyTokenReference(reqData, encryptionToken, wsEncrypt, symmetricKey); // Liberty Change: Backport 4.x
         } else if ("SecurityContextToken".equals(derivedKeyTokenReference)) {
             tokenElement = setupSCTTokenReference(reqData, encryptionToken, wsEncrypt, passwordCallback, doc);
         }
@@ -167,15 +167,13 @@ public class EncryptionDerivedAction extends AbstractDerivedAction implements Ac
 
     private Element setupEncryptedKeyTokenReference(
         RequestData reqData, EncryptionActionToken encryptionToken,
-        WSSecDKEncrypt wsEncrypt, WSPasswordCallback passwordCallback,
-        Document doc, SecretKey symmetricKey
-    ) throws WSSecurityException {
+        WSSecDKEncrypt wsEncrypt, SecretKey symmetricKey 
+    ) throws WSSecurityException { // Liberty Change: Backport 4.x
         if (symmetricKey == null) {
             setupEKReference(wsEncrypt, reqData.getSignatureToken());
             return null;
         } else {
-            return setupEKReference(wsEncrypt, reqData.getSecHeader(), passwordCallback, encryptionToken,
-                                              reqData.isUse200512Namespace(), doc, null, null, symmetricKey);
+            return setupEKReference(wsEncrypt, reqData.getSecHeader(), encryptionToken, null, null, symmetricKey); // Liberty Change: Backport 4.x
         }
     }
 

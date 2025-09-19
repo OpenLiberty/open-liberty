@@ -47,6 +47,8 @@ import org.w3c.dom.ls.LSInput;
 import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * This is the central class of the streaming webservice-security framework.<br/>
  * Instances of the inbound and outbound security streams can be retrieved
@@ -55,34 +57,80 @@ import org.xml.sax.SAXException;
 public class WSSec {
 
     //todo outgoing client setup per policy
+    private static final org.slf4j.Logger LOG =
+                    org.slf4j.LoggerFactory.getLogger(WSSec.class);
 
     static {
         WSProviderConfig.init();
+        ClassLoader cl = null; //Liberty code change
         try {
             Init.init(ClassLoaderUtils.getResource("wss/wss-config.xml", WSSec.class).toURI(), WSSec.class);
 
             WSSConstants.setJaxbContext(
-                    JAXBContext.newInstance(
-                            org.apache.wss4j.binding.wss10.ObjectFactory.class,
-                            org.apache.wss4j.binding.wss11.ObjectFactory.class,
-                            org.apache.wss4j.binding.wsu10.ObjectFactory.class,
-                            org.apache.wss4j.binding.wssc13.ObjectFactory.class,
-                            org.apache.wss4j.binding.wssc200502.ObjectFactory.class,
-                            org.apache.xml.security.binding.xmlenc.ObjectFactory.class,
-                            org.apache.xml.security.binding.xmlenc11.ObjectFactory.class,
-                            org.apache.xml.security.binding.xmldsig.ObjectFactory.class,
-                            org.apache.xml.security.binding.xmldsig11.ObjectFactory.class,
-                            org.apache.xml.security.binding.excc14n.ObjectFactory.class,
-                            org.apache.xml.security.binding.xop.ObjectFactory.class
-                    )
-            );
-
+                                        JAXBContext.newInstance(
+                                                                org.apache.wss4j.binding.wss10.ObjectFactory.class,
+                                                                org.apache.wss4j.binding.wss11.ObjectFactory.class,
+                                                                org.apache.wss4j.binding.wsu10.ObjectFactory.class,
+                                                                org.apache.wss4j.binding.wssc13.ObjectFactory.class,
+                                                                org.apache.wss4j.binding.wssc200502.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xmlenc.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xmlenc11.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xmldsig.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xmldsig11.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.excc14n.ObjectFactory.class,
+                                                                org.apache.xml.security.binding.xop.ObjectFactory.class));
             Schema schema = loadWSSecuritySchemas();
             WSSConstants.setJaxbSchemas(schema);
         } catch (XMLSecurityException | JAXBException
-            | SAXException | URISyntaxException e) {
-            throw new RuntimeException(e.getMessage(), e);
+                        | SAXException | URISyntaxException e) {
+
+            // Liberty Change Start
+            // TODO: investigate why we are not finding this provider
+            ClassLoader jaxbimplcl = null;
+            try {
+                jaxbimplcl = org.glassfish.jaxb.runtime.v2.JAXBContextFactory.class.getClassLoader();
+            } catch (Throwable t) {
+                // ncdfe
+            }
+            if (jaxbimplcl != null) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug("setting up the glassfish classes loader!");
+                }
+                cl = Thread.currentThread().getContextClassLoader();
+                Thread.currentThread().setContextClassLoader(jaxbimplcl);
+                try {
+                    Init.init(ClassLoaderUtils.getResource("wss/wss-config.xml", WSSec.class).toURI(), WSSec.class);
+
+                    WSSConstants.setJaxbContext(
+                                                JAXBContext.newInstance(
+                                                                        org.apache.wss4j.binding.wss10.ObjectFactory.class,
+                                                                        org.apache.wss4j.binding.wss11.ObjectFactory.class,
+                                                                        org.apache.wss4j.binding.wsu10.ObjectFactory.class,
+                                                                        org.apache.wss4j.binding.wssc13.ObjectFactory.class,
+                                                                        org.apache.wss4j.binding.wssc200502.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xmlenc.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xmlenc11.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xmldsig.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xmldsig11.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.excc14n.ObjectFactory.class,
+                                                                        org.apache.xml.security.binding.xop.ObjectFactory.class));
+                    Schema schema = loadWSSecuritySchemas();
+                    WSSConstants.setJaxbSchemas(schema);
+                } catch (XMLSecurityException | JAXBException
+                                | SAXException | URISyntaxException e2) {
+                    throw new RuntimeException(e2.getMessage(), e2);
+                } finally {
+                    if (cl != null) {
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug("setting back the original class loader!");
+                        }
+                        Thread.currentThread().setContextClassLoader(cl);
+                    }
+                } // Liberty Change End
+            }
+
         }
+
     }
 
     public static void init() {
@@ -209,10 +257,10 @@ public class WSSec {
                     throw new WSSConfigurationException(WSSConfigurationException.ErrorCode.FAILURE, "noCallback");
                 }
                 if (securityProperties.getSignatureAlgorithm() == null) {
-                    securityProperties.setSignatureAlgorithm(WSSConstants.NS_XMLDSIG_HMACSHA1);
+                    securityProperties.setSignatureAlgorithm(getHmacSignatureAlgorithm());
                 }
                 if (securityProperties.getSignatureDigestAlgorithm() == null) {
-                    securityProperties.setSignatureDigestAlgorithm(WSSConstants.NS_XMLDSIG_SHA1);
+                    securityProperties.setSignatureDigestAlgorithm(getSignatureDigestAlgorithm());
                 }
                 if (securityProperties.getSignatureCanonicalizationAlgorithm() == null) {
                     securityProperties.setSignatureCanonicalizationAlgorithm(WSSConstants.NS_C14N_EXCL);
@@ -234,10 +282,10 @@ public class WSSec {
                     throw new WSSConfigurationException(WSSConfigurationException.ErrorCode.FAILURE, "noSAMLCallbackHandler");
                 }
                 if (securityProperties.getSignatureAlgorithm() == null) {
-                    securityProperties.setSignatureAlgorithm(WSSConstants.NS_XMLDSIG_RSASHA1);
+                    securityProperties.setSignatureAlgorithm(getRsaSignatureAlgorithm());
                 }
                 if (securityProperties.getSignatureDigestAlgorithm() == null) {
-                    securityProperties.setSignatureDigestAlgorithm(WSSConstants.NS_XMLDSIG_SHA1);
+                    securityProperties.setSignatureDigestAlgorithm(getSignatureDigestAlgorithm());
                 }
                 if (securityProperties.getSignatureCanonicalizationAlgorithm() == null) {
                     securityProperties.setSignatureCanonicalizationAlgorithm(WSSConstants.NS_C14N_EXCL);
@@ -254,10 +302,10 @@ public class WSSec {
                     throw new WSSConfigurationException(WSSConfigurationException.ErrorCode.FAILURE, "noCallback");
                 }
                 if (securityProperties.getSignatureAlgorithm() == null) {
-                    securityProperties.setSignatureAlgorithm(WSSConstants.NS_XMLDSIG_HMACSHA1);
+                    securityProperties.setSignatureAlgorithm(getHmacSignatureAlgorithm());
                 }
                 if (securityProperties.getSignatureDigestAlgorithm() == null) {
-                    securityProperties.setSignatureDigestAlgorithm(WSSConstants.NS_XMLDSIG_SHA1);
+                    securityProperties.setSignatureDigestAlgorithm(getSignatureDigestAlgorithm());
                 }
                 if (securityProperties.getSignatureCanonicalizationAlgorithm() == null) {
                     securityProperties.setSignatureCanonicalizationAlgorithm(WSSConstants.NS_C14N_EXCL);
@@ -283,6 +331,8 @@ public class WSSec {
     }
 
     private static void checkOutboundSignatureProperties(WSSSecurityProperties securityProperties) throws WSSConfigurationException {
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
+        // This checks if the signature algorithm matches hmac-sha1, with FIPS this shouldn't be the case.
         if (!WSSConstants.NS_XMLDSIG_HMACSHA1.equals(securityProperties.getSignatureAlgorithm())) {
             if (securityProperties.getSignatureKeyStore() == null
                 && securityProperties.getSignatureCryptoProperties() == null
@@ -297,10 +347,10 @@ public class WSSec {
             }
         }
         if (securityProperties.getSignatureAlgorithm() == null) {
-            securityProperties.setSignatureAlgorithm(WSSConstants.NS_XMLDSIG_RSASHA1);
+            securityProperties.setSignatureAlgorithm(getRsaSignatureAlgorithm());
         }
         if (securityProperties.getSignatureDigestAlgorithm() == null) {
-            securityProperties.setSignatureDigestAlgorithm(WSSConstants.NS_XMLDSIG_SHA1);
+            securityProperties.setSignatureDigestAlgorithm(getSignatureDigestAlgorithm());
         }
         if (securityProperties.getSignatureCanonicalizationAlgorithm() == null) {
             securityProperties.setSignatureCanonicalizationAlgorithm(WSSConstants.NS_C14N_EXCL);
@@ -316,10 +366,10 @@ public class WSSec {
             throw new WSSConfigurationException(WSSConfigurationException.ErrorCode.FAILURE, "noCallback");
         }
         if (securityProperties.getSignatureAlgorithm() == null) {
-            securityProperties.setSignatureAlgorithm(WSSConstants.NS_XMLDSIG_HMACSHA1);
+            securityProperties.setSignatureAlgorithm(getHmacSignatureAlgorithm());
         }
         if (securityProperties.getSignatureDigestAlgorithm() == null) {
-            securityProperties.setSignatureDigestAlgorithm(WSSConstants.NS_XMLDSIG_SHA1);
+            securityProperties.setSignatureDigestAlgorithm(getSignatureDigestAlgorithm());
         }
         if (securityProperties.getSignatureCanonicalizationAlgorithm() == null) {
             securityProperties.setSignatureCanonicalizationAlgorithm(WSSConstants.NS_C14N_EXCL);
@@ -512,5 +562,30 @@ public class WSSec {
                 }
         );
         return schema;
+    }
+
+	 // Liberty Change: Backport 4.x
+    /**
+     * @return If FIPS 140-3 is enabled "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512", "http://www.w3.org/2000/09/xmldsig#rsa-sha1" otherwise.
+     */
+    private static String getRsaSignatureAlgorithm() {
+        // FIPS 140-3: rsa-sha1 not compliant with FIPS 140-3. If FIPS is enabled then use rsa-sha512 signature algorithm.
+        return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? WSSConstants.NS_XMLDSIG_RSASHA512: WSSConstants.NS_XMLDSIG_RSASHA1;
+    }
+
+    /**
+     * @return If FIPS 140-3 is enabled "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512", "http://www.w3.org/2000/09/xmldsig#hmac-sha1" otherwise.
+     */
+    private static String getHmacSignatureAlgorithm() {
+        // FIPS 140-3: SHA-1 not compliant with FIPS 140-3. If FIPS is enabled then use hmac-sha512 signature algorithm.
+        return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? WSSConstants.NS_XMLDSIG_HMACSHA512 : WSSConstants.NS_XMLDSIG_HMACSHA1;
+    }
+
+    /**
+     * @return If FIPS 140-3 is enabled "http://www.w3.org/2000/09/xmldsig#sha512", "http://www.w3.org/2000/09/xmldsig#sha1" otherwise.
+     */
+    private static String getSignatureDigestAlgorithm() {
+        // FIPS 140-3: SHA-1 not compliant with FIPS 140-3. If FIPS is enabled then use SHA-512 digest.
+        return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? WSSConstants.NS_XENC_SHA512 : WSSConstants.NS_XMLDSIG_SHA1;
     }
 }

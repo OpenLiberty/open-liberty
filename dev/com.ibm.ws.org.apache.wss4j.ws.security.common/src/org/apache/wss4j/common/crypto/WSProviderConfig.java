@@ -26,6 +26,8 @@ import java.security.PrivilegedExceptionAction;
 import java.security.Provider;
 import java.security.Security;
 
+
+import org.apache.wss4j.common.util.FIPSUtils;
 import org.apache.wss4j.common.util.Loader;
 import org.apache.xml.security.utils.I18n;
 import org.apache.xml.security.utils.XMLUtils;
@@ -58,7 +60,8 @@ public final class WSProviderConfig {
     private static boolean santuarioProviderAdded;
     private static boolean bcProviderAdded;
     private static boolean tlProviderAdded;
-
+    
+    
     private WSProviderConfig() {
         // complete
     }
@@ -78,7 +81,20 @@ public final class WSProviderConfig {
                 santuarioProviderAdded = true;
                 bcProviderAdded = false;
                 tlProviderAdded = false;
+            }            
+            // Liberty Change Start: Back Port Enable FIPS support - Does not work with Semaru FIPS
+            if (FIPSUtils.isFIPSEnabled()) {
+                //So far the in-JDK security provider in FIPS mode
+                //doesn't support RSA-OAEP padding, try use the one 
+                //from BC-FIPS as last resort
+                AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                    public Boolean run() {
+                        addJceProvider("BCFIPS", "org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider");
+                        return true;
+                    }
+                });
             }
+            // Liberty Change End
             staticallyInitialized = true;
         }
     }
@@ -105,8 +121,23 @@ public final class WSProviderConfig {
                         return true;
                     }
                 });
-            }
+            }            
+            // Liberty Change Start: Enable FIPS support
+            if (FIPSUtils.isFIPSEnabled()) {
+                //So far the in-JDK security provider in FIPS mode
+                //doesn't support RSA-OAEP padding, try use the one 
+                //from BC-FIPS as last resort
+                
 
+                AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                    public Boolean run() {
+                        addJceProvider("BCFIPS", "org.bouncycastle.jcajce.provider.BouncyCastleFipsProvider");
+                        return true;
+                    }
+                });
+                
+            }
+            // Liberty Change End
             tlProviderAdded = addTLProv;
             if (addTLProv) {
                 AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
@@ -153,15 +184,20 @@ public final class WSProviderConfig {
     public static void setXmlSecIgnoreLineBreak() {
         //really need to make sure ignoreLineBreaks is set to
         boolean wasSet = false;
+        String sysPropertySet = "false"; // Liberty Change
         try {
             // Don't override if it was set explicitly
+
             wasSet = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
                 public Boolean run() {
                     String lineBreakPropName = "org.apache.xml.security.ignoreLineBreaks";
                     if (System.getProperty(lineBreakPropName) == null) {
                         System.setProperty(lineBreakPropName, "true");
                         return false;
-                    }
+                    } else if (System.getProperty(lineBreakPropName).equals("true")) { // Liberty Change Start
+                        return false;
+                    } // End Liberty Change
+                    
                     return true;
                 }
             });
@@ -183,6 +219,7 @@ public final class WSProviderConfig {
                 //ignore
             }
         }
+        
     }
 
     private static void addXMLDSigRIInternal() {
@@ -191,6 +228,20 @@ public final class WSProviderConfig {
     }
 
     private static void initializeResourceBundles() {
+     // Liberty Change Start
+        try {
+            AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
+                public Boolean run() throws Exception {
+                    Field f = I18n.class.getDeclaredField("alreadyInitialized");
+                    f.setAccessible(true);
+                    f.set(null, Boolean.FALSE);
+                    return false;
+                }
+            });
+        } catch (Throwable t) { //NOPMD
+            //ignore
+        }
+     // Liberty Change End
         I18n.init(new WSS4JResourceBundle());
     }
 

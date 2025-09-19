@@ -320,10 +320,7 @@ public class Timestamp {
         if (!compare(timestamp.getCreated(), getCreated())) {
             return false;
         }
-        if (!compare(timestamp.getExpires(), getExpires())) {
-            return false;
-        }
-        return true;
+        return compare(timestamp.getExpires(), getExpires()); // Liberty Change: Backport 4.x
     }
 
     private boolean compare(Instant item1, Instant item2) {

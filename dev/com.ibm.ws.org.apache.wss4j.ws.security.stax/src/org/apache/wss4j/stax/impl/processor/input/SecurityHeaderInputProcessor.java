@@ -18,6 +18,7 @@
  */
 package org.apache.wss4j.stax.impl.processor.input;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -85,7 +86,7 @@ public class SecurityHeaderInputProcessor extends AbstractInputProcessor {
             subInputProcessorChain.reset();
             xmlSecEvent = subInputProcessorChain.processHeaderEvent();
 
-            switch (xmlSecEvent.getEventType()) {
+            switch (xmlSecEvent.getEventType()) {   //NOPMD
                 case XMLStreamConstants.START_ELEMENT:
                     XMLSecStartElement xmlSecStartElement = xmlSecEvent.asStartElement();
                     int documentLevel = xmlSecStartElement.getDocumentLevel();
@@ -214,10 +215,12 @@ public class SecurityHeaderInputProcessor extends AbstractInputProcessor {
             return;
         }
         try {
-            XMLSecurityHeaderHandler xmlSecurityHeaderHandler = clazz.newInstance();
+			// Liberty Change Start: Backport 4.x
+            XMLSecurityHeaderHandler xmlSecurityHeaderHandler = clazz.getDeclaredConstructor().newInstance();
             xmlSecurityHeaderHandler.handle(inputProcessorChain, securityProperties, eventQueue, index);
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, e);
+        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+			throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, e);
+			// Liberty Change End
         } catch (WSSecurityException e) {
             throw e;
         } catch (XMLSecurityException e) {

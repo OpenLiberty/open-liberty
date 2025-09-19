@@ -90,12 +90,8 @@ public abstract class AbstractSecurityAssertion implements Assertion {
             return false;
         }
 
-        if (version != null && !version.equals(that.version)
-            || version == null && that.version != null) {
-            return false;
-        }
-
-        return true;
+        return !(version != null && !version.equals(that.version)
+            || version == null && that.version != null); // Liberty Change: Backport 4.x
     }
 
     @Override

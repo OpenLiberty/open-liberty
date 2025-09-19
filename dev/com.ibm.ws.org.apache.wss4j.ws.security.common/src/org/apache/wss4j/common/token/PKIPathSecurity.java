@@ -68,7 +68,7 @@ public class PKIPathSecurity extends BinarySecurity {
         throws WSSecurityException {
         byte[] data = getToken();
         if (data == null) {
-            return null;
+            return new X509Certificate[0]; // Liberty Change: Backport 4.x
         }
         if (crypto == null) {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "noSigCryptoFile");

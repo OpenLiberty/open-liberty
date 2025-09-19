@@ -267,10 +267,7 @@ public class SupportingTokens extends AbstractSecurityAssertion implements Polic
      */
     public boolean isEncryptedToken() {
         QName name = getName();
-        if (name != null && name.getLocalPart().contains("Encrypted")) {
-            return true;
-        }
-        return false;
+        return name != null && name.getLocalPart().contains("Encrypted"); // Liberty Change: Backport 4.x
     }
 
     /**
@@ -278,10 +275,7 @@ public class SupportingTokens extends AbstractSecurityAssertion implements Polic
      */
     public boolean isEndorsing() {
         QName name = getName();
-        if (name != null && name.getLocalPart().contains("Endorsing")) {
-            return true;
-        }
-        return false;
+        return name != null && name.getLocalPart().contains("Endorsing"); // Liberty Change: Backport 4.x
     }
 
 }

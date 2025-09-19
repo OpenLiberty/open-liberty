@@ -340,6 +340,18 @@ public abstract class SPConstants {
     public static final String STRT10 =
         "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-soap-message-security-1.0#STR-Transform";
 
+    // Liberty Change: Add ECDH-ES Key Agreement algorithm
+    public static final String KA_ECDH_ES =
+            "http://www.w3.org/2009/xmlenc11#ECDH-ES";
+    
+    // see RFC 9231 for these algorithm definitions
+    public static final String ED25519 =
+            "http://www.w3.org/2021/04/xmldsig-more#eddsa-ed25519";
+    public static final String ED448 =
+            "http://www.w3.org/2021/04/xmldsig-more#eddsa-ed448";
+    // Liberty Change End
+    
+
     // /////////////////////////////////////////////////////////////////////////////////////////////
 
     public static final String INCLUSIVE_C14N = "InclusiveC14N";

@@ -158,10 +158,7 @@ public class Reference {
         if (!compare(getURI(), reference.getURI())) {
             return false;
         }
-        if (!compare(getValueType(), reference.getValueType())) {
-            return false;
-        }
-        return true;
+        return compare(getValueType(), reference.getValueType()); // Liberty Change: Backport 4.x
     }
 
     private boolean compare(String item1, String item2) {

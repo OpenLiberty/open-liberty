@@ -72,10 +72,10 @@ public class CertificateStore extends CryptoBase {
      */
     public X509Certificate[] getX509Certificates(CryptoType cryptoType) throws WSSecurityException {
         if (cryptoType == null) {
-            return null;
+            return new X509Certificate[0]; // Liberty Change: Backport 4.x
         }
         CryptoType.TYPE type = cryptoType.getType();
-        X509Certificate[] certs = null;
+        X509Certificate[] certs = new X509Certificate[0]; // Liberty Change: Backport 4.x
         switch (type) {
         case ISSUER_SERIAL:
             certs = getX509Certificates(cryptoType.getIssuer(), cryptoType.getSerial());
@@ -108,7 +108,7 @@ public class CertificateStore extends CryptoBase {
      * @throws WSSecurityException
      */
     public String getX509Identifier(X509Certificate cert) throws WSSecurityException {
-        return cert.getSubjectDN().toString();
+        return cert.getSubjectX500Principal().toString(); // Liberty Change: Backport 4.x
     }
 
     /**
@@ -180,7 +180,7 @@ public class CertificateStore extends CryptoBase {
             // If a certificate has been found, the certificates must be compared
             // to ensure against phony DNs (compare encoded form including signature)
             //
-            if (foundCerts != null && foundCerts[0] != null && foundCerts[0].equals(certs[0])) {
+            if (foundCerts != null && foundCerts.length > 0 && foundCerts[0] != null && foundCerts[0].equals(certs[0])) {
                 LOG.debug(
                     "Direct trust for certificate with {}", certs[0].getSubjectX500Principal().getName()
                 );
@@ -352,7 +352,7 @@ public class CertificateStore extends CryptoBase {
             }
         }
 
-        return null;
+        return new X509Certificate[0]; // Liberty Change: Backport 4.x
     }
 
     /**
@@ -366,7 +366,7 @@ public class CertificateStore extends CryptoBase {
         MessageDigest sha = null;
 
         if (trustedCerts == null) {
-            return null;
+            return new X509Certificate[0]; // Liberty Change: Backport 4.x
         }
 
         try {
@@ -390,7 +390,7 @@ public class CertificateStore extends CryptoBase {
                 return new X509Certificate[]{trustedCert};
             }
         }
-        return null;
+        return new X509Certificate[0]; // Liberty Change: Backport 4.x
     }
 
     /**
@@ -401,7 +401,7 @@ public class CertificateStore extends CryptoBase {
      */
     private X509Certificate[] getX509CertificatesSKI(byte[] skiBytes) throws WSSecurityException {
         if (trustedCerts == null) {
-            return null;
+            return new X509Certificate[0]; // Liberty Change: Backport 4.x
         }
         for (X509Certificate trustedCert : trustedCerts) {
             byte[] data = getSKIBytesFromCert(trustedCert);
@@ -409,7 +409,7 @@ public class CertificateStore extends CryptoBase {
                 return new X509Certificate[]{trustedCert};
             }
         }
-        return null;
+        return new X509Certificate[0]; // Liberty Change: Backport 4.x
     }
 
     /**
@@ -448,7 +448,7 @@ public class CertificateStore extends CryptoBase {
             }
         }
 
-        return null;
+        return new X509Certificate[0]; // Liberty Change: Backport 4.x
     }
 
 }

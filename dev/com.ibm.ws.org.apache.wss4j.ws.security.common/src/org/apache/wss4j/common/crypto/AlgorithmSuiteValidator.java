@@ -21,9 +21,7 @@ package org.apache.wss4j.common.crypto;
 
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
-import java.security.interfaces.DSAPublicKey;
-import java.security.interfaces.ECPublicKey;
-import java.security.interfaces.RSAPublicKey;
+import java.security.interfaces.*;
 import java.util.Set;
 
 import javax.xml.crypto.dsig.Reference;
@@ -31,6 +29,9 @@ import javax.xml.crypto.dsig.Transform;
 import javax.xml.crypto.dsig.XMLSignature;
 
 import org.apache.wss4j.common.ext.WSSecurityException;
+import org.apache.xml.security.exceptions.DERDecodingException;
+import org.apache.xml.security.utils.DERDecoderUtils;
+import org.apache.xml.security.utils.KeyUtils;
 
 /**
  * Validate signature/encryption/etc. algorithms against an AlgorithmSuite policy.
@@ -137,6 +138,47 @@ public class AlgorithmSuiteValidator {
             throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
         }
     }
+	// Liberty Change Start: Backport 4.x
+    public void checkKeyAgreementMethodAlgorithm(
+            String keyAgreementMethodAlgorithm
+    ) throws WSSecurityException {
+        Set<String> keyAgreementMethodAlgorithms = algorithmSuite.getKeyAgreementMethodAlgorithms();
+        if (!keyAgreementMethodAlgorithms.isEmpty()
+                && !keyAgreementMethodAlgorithms.contains(keyAgreementMethodAlgorithm)) {
+            LOG.warn(
+                    "The Key agreement method does not match the requirement"
+            );
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+        }
+    }
+
+    /**
+     * Method to check the Key Derivation algorithm is on the approved list  of the
+     * AlgorithmSuite configuration.
+     * @param keyDerivationFunction the key derivation function to be validated
+     * @throws WSSecurityException if the approved list is not empty and the key
+     * derivation function is not on the list
+     */
+    public void checkKeyDerivationFunction(
+            String keyDerivationFunction
+    ) throws WSSecurityException {
+        Set<String> keyDerivationFunctions = algorithmSuite.getDerivedKeyAlgorithms();
+        
+        LOG.info("@TJJ keyDerivationFunction = " + keyDerivationFunction + " is the set empty? "  + keyDerivationFunctions.isEmpty());
+        
+        for (String function : keyDerivationFunctions) {
+            // Process each string element in the set
+            LOG.info("@TJJ function = " + function);
+        }
+        if (!keyDerivationFunctions.isEmpty()
+                && !keyDerivationFunctions.contains(keyDerivationFunction)) {
+            LOG.warn(
+                    "The Key derivation function does not match the requirement"
+            );
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+        }
+    }
+	// Liberty Change End
 
     public void checkSymmetricEncryptionAlgorithm(
         String symmetricAlgorithm
@@ -216,12 +258,78 @@ public class AlgorithmSuiteValidator {
                 throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
             }
         } else {
-            LOG.warn(
-                "An unknown public key was provided"
-            );
-            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+		
+	// Liberty Change Start: Backport 4.x
+            // Try with last supported key types EdEC and XDH
+            int keySize = getEdECndXDHKeyLength(publicKey);
+            if (keySize < algorithmSuite.getMinimumEllipticCurveKeyLength()
+                    || keySize > algorithmSuite.getMaximumEllipticCurveKeyLength()) {
+                LOG.warn(
+                        "The asymmetric key length does not match the requirement"
+                );
+                throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+            }
         }
     }
+
+    /**
+     * A generic method to determinate key length for keys x25519, x448, ed25519 and ed448 keys. Method does not rely on
+     * any specific implementation of the key, but uses OID to determine the key type.
+     *
+     * @param publicKey the public key to check the key length
+     * @return the key length in bits
+     * @throws WSSecurityException if the key is not  EdEC or XDH or if length can not be determined
+     */
+    private int getEdECndXDHKeyLength(PublicKey publicKey) throws  WSSecurityException {
+        String keyAlgorithmOId;
+        try {
+            keyAlgorithmOId = DERDecoderUtils.getAlgorithmIdFromPublicKey(publicKey);
+        } catch (DERDecodingException e) {
+            LOG.warn("Can not parse the public key to determine key size!", e);
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+        }
+        KeyUtils.KeyType keyType = KeyUtils.KeyType.getByOid(keyAlgorithmOId);
+        
+        LOG.info("@TJJ keyType = " + keyType);
+        if (keyType == null) {
+            LOG.warn("An unknown public key was provided");
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+        }
+
+        int edECndXDHKeyLength = 0;
+
+        switch (keyType) {
+        case ED25519:
+            edECndXDHKeyLength = 256;
+            break;
+        case X25519:
+            edECndXDHKeyLength = 256;
+            break;
+        case ED448:
+            edECndXDHKeyLength = 456;
+            break;
+        case X448:
+            edECndXDHKeyLength = 456;
+            break;
+        default:
+            LOG.warn("An unknown public key was provided");
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+        }
+
+        return edECndXDHKeyLength;
+        // return switch (keyType) {
+        //     case ED25519, X25519 -> 256;
+        //     case ED448, X448 -> 456;
+        //     default -> {
+        //         LOG.warn(
+        //                 "An unknown public key was provided"
+        //         );
+        //         throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+        //     }
+        // };
+    }
+	
+	// Liberty Change End
 
     /**
      * Check the symmetric key length

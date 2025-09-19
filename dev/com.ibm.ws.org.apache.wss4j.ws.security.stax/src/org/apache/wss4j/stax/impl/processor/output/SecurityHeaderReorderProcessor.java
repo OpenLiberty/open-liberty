@@ -153,30 +153,26 @@ public class SecurityHeaderReorderProcessor extends AbstractOutputProcessor {
             }
             outputProcessorChain.processEvent(xmlSecEvent);
             return;
-        } else if (documentLevel == 4) {
-            switch (xmlSecEvent.getEventType()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    XMLSecStartElement xmlSecStartElement = xmlSecEvent.asStartElement();
+        } else if (documentLevel == 4 && XMLStreamConstants.START_ELEMENT == xmlSecEvent.getEventType()) {  // Liberty Change: Backport 4.x
+            XMLSecStartElement xmlSecStartElement = xmlSecEvent.asStartElement();
 
-                    List<SecurityHeaderOrder> securityHeaderOrderList =
-                        outputProcessorChain.getSecurityContext().getAsList(SecurityHeaderOrder.class);
-                    SecurityHeaderOrder securityHeaderOrder = securityHeaderOrderList.get(securityHeaderIndex);
-                    if (!xmlSecStartElement.getName().equals(WSSConstants.TAG_xenc_EncryptedData)
-                        && !xmlSecStartElement.getName().equals(securityHeaderOrder.getSecurityHeaderElementName())) {
-                        throw new WSSecurityException(
-                                WSSecurityException.ErrorCode.FAILURE, "empty",
-                                new Object[] {"Invalid security header order. Expected "
+            List<SecurityHeaderOrder> securityHeaderOrderList =
+                    outputProcessorChain.getSecurityContext().getAsList(SecurityHeaderOrder.class);
+            SecurityHeaderOrder securityHeaderOrder = securityHeaderOrderList.get(securityHeaderIndex);
+            if (!xmlSecStartElement.getName().equals(WSSConstants.TAG_xenc_EncryptedData)
+                    && !xmlSecStartElement.getName().equals(securityHeaderOrder.getSecurityHeaderElementName())) {
+                throw new WSSecurityException(
+                        WSSecurityException.ErrorCode.FAILURE, "empty",
+                        new Object[]{"Invalid security header order. Expected "
                                 + securityHeaderOrder.getSecurityHeaderElementName()
                                 + " but got " + xmlSecStartElement.getName()});
-                    }
-
-                    Map<SecurityHeaderOrder, Deque<XMLSecEvent>> map = actionEventMap.get(securityHeaderOrder.getAction());
-                    currentDeque = new ArrayDeque<>();
-                    map.put(securityHeaderOrder, currentDeque);
-
-                    securityHeaderIndex++;
-                    break;
             }
+
+            Map<SecurityHeaderOrder, Deque<XMLSecEvent>> map = actionEventMap.get(securityHeaderOrder.getAction());
+            currentDeque = new ArrayDeque<>();
+            map.put(securityHeaderOrder, currentDeque);
+
+            securityHeaderIndex++;
         }
         currentDeque.offer(xmlSecEvent);
     }

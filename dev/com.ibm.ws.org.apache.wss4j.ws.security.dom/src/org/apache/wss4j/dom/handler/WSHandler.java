@@ -47,6 +47,7 @@ import org.apache.wss4j.common.util.Loader;
 import org.apache.wss4j.dom.message.WSSecHeader;
 import org.apache.wss4j.dom.message.token.SignatureConfirmation;
 import org.apache.wss4j.dom.util.WSSecurityUtil;
+import org.apache.xml.security.encryption.params.KeyDerivationParameters;
 import org.w3c.dom.Document;
 
 /**
@@ -384,11 +385,7 @@ public abstract class WSHandler {
             }
         }
 
-        if (ai != size) {
-            return false;
-        }
-
-        return true;
+        return ai == size; // Liberty Change: Backport 4.x
     }
 
     protected boolean checkReceiverResultsAnyOrder(
@@ -418,11 +415,7 @@ public abstract class WSHandler {
             }
         }
 
-        if (!recordedActions.isEmpty()) {
-            return false;
-        }
-
-        return true;
+        return recordedActions.isEmpty();
     }
 
     @SuppressWarnings("unchecked")
@@ -655,17 +648,27 @@ public abstract class WSHandler {
             algorithmSuite.addSignatureMethod(signatureAlgorithm);
         }
         String signatureDigestAlgorithm = getString(WSHandlerConstants.SIG_DIGEST_ALGO, mc);
-        if (signatureDigestAlgorithm != null && signatureDigestAlgorithm.length() != 0) {
+        if (signatureDigestAlgorithm != null && !signatureDigestAlgorithm.isEmpty()) {
             algorithmSuite.addDigestAlgorithm(signatureDigestAlgorithm);
         }
 
         String encrAlgorithm = getString(WSHandlerConstants.ENC_SYM_ALGO, mc);
-        if (encrAlgorithm != null && encrAlgorithm.length() != 0) {
+        if (encrAlgorithm != null && !encrAlgorithm.isEmpty()) {
             algorithmSuite.addEncryptionMethod(encrAlgorithm);
         }
         String transportAlgorithm = getString(WSHandlerConstants.ENC_KEY_TRANSPORT, mc);
-        if (transportAlgorithm != null && transportAlgorithm.length() != 0) {
+        if (transportAlgorithm != null && !transportAlgorithm.isEmpty()) {
             algorithmSuite.addKeyWrapAlgorithm(transportAlgorithm);
+        }
+
+        String keyAgreementMethodAlgorithm = getString(WSHandlerConstants.ENC_KEY_AGREEMENT_METHOD, mc);
+        if (keyAgreementMethodAlgorithm != null && !keyAgreementMethodAlgorithm.isEmpty()) {
+            algorithmSuite.addKeyAgreementMethodAlgorithm(keyAgreementMethodAlgorithm);
+        }
+
+        String keyDerivationAlgorithm = getString(WSHandlerConstants.ENC_KEY_DERIVATION_FUNCTION, mc);
+        if (keyDerivationAlgorithm != null && !keyDerivationAlgorithm.isEmpty()) {
+            algorithmSuite.addDerivedKeyAlgorithm(keyDerivationAlgorithm);
         }
 
         reqData.setAlgorithmSuite(algorithmSuite);
@@ -716,6 +719,19 @@ public abstract class WSHandler {
         String encKeyTransport =
             getString(WSHandlerConstants.ENC_KEY_TRANSPORT, mc);
         actionToken.setKeyTransportAlgorithm(encKeyTransport);
+
+        String encKeyAgreementMethod =
+                getString(WSHandlerConstants.ENC_KEY_AGREEMENT_METHOD, mc);
+        actionToken.setKeyAgreementMethodAlgorithm(encKeyAgreementMethod);
+
+        String encKeyDerivationAlgorithm =
+                getString(WSHandlerConstants.ENC_KEY_DERIVATION_FUNCTION, mc);
+        actionToken.setKeyDerivationFunction(encKeyDerivationAlgorithm);
+
+        Object obj = getProperty(mc, WSHandlerConstants.ENC_KEY_DERIVATION_PARAMS);
+        if (obj instanceof KeyDerivationParameters) {
+            actionToken.setKeyDerivationParameters((KeyDerivationParameters)obj);
+        }
 
         String derivedKeyReference = getString(WSHandlerConstants.DERIVED_TOKEN_REFERENCE, mc);
         actionToken.setDerivedKeyTokenReference(derivedKeyReference);
@@ -1010,7 +1026,7 @@ public abstract class WSHandler {
         String propFilename,
         RequestData reqData
     ) throws WSSecurityException {
-        ClassLoader classLoader = this.getClassLoader(reqData.getMsgContext());
+        ClassLoader classLoader = this.getClassLoader();
         Properties properties = CryptoFactory.getProperties(propFilename, classLoader);
         return
             CryptoFactory.getInstance(
@@ -1042,7 +1058,7 @@ public abstract class WSHandler {
         if (cbHandler == null) {
             String callback = getString(callbackHandlerClass, mc);
             if (callback != null) {
-                cbHandler = loadCallbackHandler(callback, requestData);
+                cbHandler = loadCallbackHandler(callback);
             }
         }
         return cbHandler;
@@ -1067,20 +1083,18 @@ public abstract class WSHandler {
     /**
      * Load a CallbackHandler instance.
      * @param callbackHandlerClass The class name of the CallbackHandler instance
-     * @param requestData The RequestData which supplies the message context
      * @return a CallbackHandler instance
      * @throws WSSecurityException
      */
     private CallbackHandler loadCallbackHandler(
-        String callbackHandlerClass,
-        RequestData requestData
+        String callbackHandlerClass
     ) throws WSSecurityException {
 
         Class<? extends CallbackHandler> cbClass = null;
         CallbackHandler cbHandler = null;
         try {
             cbClass =
-                Loader.loadClass(getClassLoader(requestData.getMsgContext()),
+                Loader.loadClass(getClassLoader(),
                                  callbackHandlerClass,
                                  CallbackHandler.class);
         } catch (ClassNotFoundException e) {
@@ -1091,7 +1105,7 @@ public abstract class WSHandler {
             );
         }
         try {
-            cbHandler = cbClass.newInstance();
+            cbHandler = cbClass.getDeclaredConstructor().newInstance();
         } catch (Exception e) {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, e,
                     "empty",
@@ -1226,6 +1240,7 @@ public abstract class WSHandler {
             break;
         default:
             reason = WSPasswordCallback.UNKNOWN;
+            break;
         }
         return new WSPasswordCallback(username, reason);
     }
@@ -1457,10 +1472,9 @@ public abstract class WSHandler {
 
     /**
      * Returns the classloader to be used for loading the callback class
-     * @param msgCtx The MessageContext
      * @return class loader
      */
-    public ClassLoader getClassLoader(Object msgCtx) {
+    public ClassLoader getClassLoader() {
         try {
             return Loader.getTCL();
         } catch (Exception ex) {

@@ -22,13 +22,8 @@ package org.apache.wss4j.dom.processor;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
-import java.security.PrivateKey;
-import java.security.Provider;
-import java.security.PublicKey;
+import java.security.*;
 import java.security.cert.X509Certificate;
-import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,9 +32,22 @@ import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.OAEPParameterSpec;
-import javax.crypto.spec.PSource;
-import javax.xml.crypto.dsig.XMLSignatureFactory;
 
+import org.apache.wss4j.common.WSS4JConstants;
+import org.apache.wss4j.common.token.DOMX509SKI;
+import org.apache.xml.security.encryption.AgreementMethod;
+import org.apache.xml.security.encryption.KeyDerivationMethod;
+import org.apache.xml.security.encryption.XMLCipherUtil;
+import org.apache.xml.security.encryption.keys.RecipientKeyInfo;
+import org.apache.xml.security.encryption.keys.content.AgreementMethodImpl;
+import org.apache.xml.security.encryption.params.KeyAgreementParameters;
+import org.apache.xml.security.exceptions.XMLSecurityException;
+import org.apache.xml.security.keys.content.keyvalues.DSAKeyValue;
+import org.apache.xml.security.keys.content.keyvalues.ECKeyValue;
+import org.apache.xml.security.keys.content.keyvalues.KeyValueContent;
+import org.apache.xml.security.keys.content.keyvalues.RSAKeyValue;
+import org.apache.xml.security.utils.Constants;
+import org.apache.xml.security.utils.EncryptionConstants;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -73,14 +81,7 @@ public class EncryptedKeyProcessor implements Processor {
     private static final org.slf4j.Logger LOG =
         org.slf4j.LoggerFactory.getLogger(EncryptedKeyProcessor.class);
 
-    private final Provider provider;
-
     public EncryptedKeyProcessor() {
-        this(null);
-    }
-
-    public EncryptedKeyProcessor(Provider provider) {
-        this.provider = provider;
     }
 
     public List<WSSecurityEngineResult> handleToken(
@@ -99,7 +100,7 @@ public class EncryptedKeyProcessor implements Processor {
 
         // See if this key has already been processed. If so then just return the result
         String id = elem.getAttributeNS(null, "Id");
-        if (id.length() != 0) {
+        if (!id.isEmpty()) { // Liberty Change: Backport 4.x
              WSSecurityEngineResult result = data.getWsDocInfo().getResult(id);
              if (result != null
                  && WSConstants.ENCR == (Integer)result.get(WSSecurityEngineResult.TAG_ACTION)
@@ -131,9 +132,11 @@ public class EncryptedKeyProcessor implements Processor {
             throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
         }
 
+		// Liberty Change Start: Backport 4.x
+        Element keyInfoChildElement = getKeyInfoChildElement(elem, data);
+        boolean isDHKeyWrap = isDiffieHellmanKeyWrap(keyInfoChildElement);
         // Check BSP Compliance
-        checkBSPCompliance(elem, encryptedKeyTransportMethod, data.getBSPEnforcer());
-
+        checkBSPCompliance(elem, encryptedKeyTransportMethod, isDHKeyWrap, data.getBSPEnforcer());
         //
         // Now lookup CipherValue.
         //
@@ -142,55 +145,29 @@ public class EncryptedKeyProcessor implements Processor {
             throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, "noCipher");
         }
 
-        Element keyInfoChildElement = getKeyInfoChildElement(elem, data);
-
         X509Certificate[] certs = null;
         STRParser.REFERENCE_TYPE referenceType = null;
         PublicKey publicKey = null;
         boolean symmetricKeyWrap = isSymmetricKeyWrap(encryptedKeyTransportMethod);
-        if (!symmetricKeyWrap) {
-            if (SecurityTokenReference.SECURITY_TOKEN_REFERENCE.equals(keyInfoChildElement.getLocalName())
-                && WSConstants.WSSE_NS.equals(keyInfoChildElement.getNamespaceURI())) {
-                STRParserParameters parameters = new STRParserParameters();
-                parameters.setData(data);
-                parameters.setStrElement(keyInfoChildElement);
-
-                STRParser strParser = new EncryptedKeySTRParser();
-                STRParserResult parserResult = strParser.parseSecurityTokenReference(parameters);
-
-                certs = parserResult.getCertificates();
-                publicKey = parserResult.getPublicKey();
-                referenceType = parserResult.getCertificatesReferenceType();
-            } else {
-                certs = getCertificatesFromX509Data(keyInfoChildElement, data);
-                if (certs == null) {
-                    XMLSignatureFactory signatureFactory;
-                    if (provider == null) {
-                        // Try to install the Santuario Provider - fall back to the JDK provider if this does
-                        // not work
-                        try {
-                            signatureFactory = XMLSignatureFactory.getInstance("DOM", "ApacheXMLDSig");
-                        } catch (NoSuchProviderException ex) {
-                            signatureFactory = XMLSignatureFactory.getInstance("DOM");
-                        }
-                    } else {
-                        signatureFactory = XMLSignatureFactory.getInstance("DOM", provider);
-                    }
-
-                    publicKey = X509Util.parseKeyValue((Element)keyInfoChildElement.getParentNode(),
-                                                       signatureFactory);
-                }
-            }
-
-            if (publicKey == null && (certs == null || certs.length < 1 || certs[0] == null)) {
+        AgreementMethod agreementMethod = null;
+        KeyDerivationMethod keyDerivationMethod = null;
+        if (isDHKeyWrap) {
+            // get key agreement method value
+            agreementMethod = getAgreementMethodFromElement(keyInfoChildElement);
+            keyDerivationMethod = getKeyDerivationFunction(agreementMethod);
+            //  get the recipient key info element
+            keyInfoChildElement = getRecipientKeyInfoChildElement(agreementMethod);
+            if (keyInfoChildElement == null) {
                 throw new WSSecurityException(
-                                          WSSecurityException.ErrorCode.FAILURE,
-                                          "noCertsFound",
-                                          new Object[] {"decryption (KeyId)"});
+                        WSSecurityException.ErrorCode.INVALID_SECURITY, "noRecipientSecTokRef"
+                );
             }
-            if (certs != null && certs.length > 0) {
-                publicKey = certs[0].getPublicKey();
-            }
+        }
+        if (!symmetricKeyWrap || isDHKeyWrap) {
+            CertificateResult certificateResult = getPublicKey(keyInfoChildElement, data);
+            certs = certificateResult.getCerts();
+            publicKey = certificateResult.getPublicKey();
+            referenceType = certificateResult.getCertificatesReferenceType();
         }
 
         // Check for compliance against the defined AlgorithmSuite
@@ -204,6 +181,16 @@ public class EncryptedKeyProcessor implements Processor {
             algorithmSuiteValidator.checkEncryptionKeyWrapAlgorithm(
                 encryptedKeyTransportMethod
             );
+            if (agreementMethod != null) {
+                algorithmSuiteValidator.checkKeyAgreementMethodAlgorithm(
+                        agreementMethod.getAlgorithm()
+                );
+            }
+            if (keyDerivationMethod != null) {
+                algorithmSuiteValidator.checkKeyDerivationFunction(
+                        keyDerivationMethod.getAlgorithm()
+                );
+            }
         }
 
         byte[] encryptedEphemeralKey = null;
@@ -219,7 +206,12 @@ public class EncryptedKeyProcessor implements Processor {
             encryptedEphemeralKey = EncryptionUtils.getDecodedBase64EncodedData(xencCipherValue);
         }
 
-        if (symmetricKeyWrap) {
+        if (isDHKeyWrap) {
+            PrivateKey privateKey = getPrivateKey(data, certs, publicKey);
+            decryptedBytes = getDiffieHellmanDecryptedBytes(data, agreementMethod,
+                    encryptedKeyTransportMethod, encryptedEphemeralKey, privateKey);
+        } else if (symmetricKeyWrap) {
+		// Liberty Change End
             decryptedBytes = getSymmetricDecryptedBytes(data, data.getWsDocInfo(), keyInfoChildElement, refList);
         } else {
             PrivateKey privateKey = getPrivateKey(data, certs, publicKey);
@@ -255,13 +247,78 @@ public class EncryptedKeyProcessor implements Processor {
         data.getWsDocInfo().addResult(result);
         data.getWsDocInfo().addTokenElement(elem);
         return Collections.singletonList(result);
+		
     }
 
+	// Liberty Change Start; Backport 4.x
+    /**
+     * Resolve the KeyInfoType child element to locate the public key (with the X509Certificate chain if given )
+     * to use to decrypt the EncryptedKey.
+     *
+     * @param keyValueElement The element to get the child element from
+     * @param data            The RequestData context
+     * @return The CertificateResult object containing the public key and optionally X509Certificate chain
+     * @throws WSSecurityException an error occurred when trying to resolve the key info
+     */
+    private CertificateResult getPublicKey(Element keyValueElement, RequestData data) throws WSSecurityException {
+        CertificateResult.Builder builder = CertificateResult.Builder.create();
+
+        if (SecurityTokenReference.SECURITY_TOKEN_REFERENCE.equals(keyValueElement.getLocalName())
+                && WSConstants.WSSE_NS.equals(keyValueElement.getNamespaceURI())) {
+            STRParserParameters parameters = new STRParserParameters();
+            parameters.setData(data);
+            parameters.setStrElement(keyValueElement);
+
+            STRParser strParser = new EncryptedKeySTRParser();
+            STRParserResult result = strParser.parseSecurityTokenReference(parameters);
+            builder.certificates(result.getCertificates());
+            builder.publicKey(result.getPublicKey());
+            builder.certificatesReferenceType(result.getCertificatesReferenceType());
+        } else {
+            X509Certificate[] certs = getCertificatesFromX509Data(keyValueElement, data);
+            builder.certificates(certs);
+            if (certs == null || certs.length == 0) {
+                PublicKey publicKey = getPublicKeyFromKeyValue(keyValueElement);
+                builder.publicKey(publicKey);
+            }
+        }
+        return builder.build();
+    }
+
+    private PublicKey getPublicKeyFromKeyValue(Element keyValueElement) throws WSSecurityException {
+        PublicKey publicKey = null;
+        KeyValueContent keyValue;
+        try {
+            Element keyValueChild = getFirstElement(keyValueElement);
+            if (keyValueChild == null) {
+                throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, "unsupportedKeyInfo");
+            }
+            switch (keyValueChild.getLocalName()) {
+                case "ECKeyValue":
+                    keyValue = new ECKeyValue(keyValueChild, Constants.SignatureSpec11NS);
+                    break;
+                case "RSAKeyValue":
+                    keyValue = new RSAKeyValue(keyValueChild, Constants.SignatureSpecNS);
+                    break;
+                case "DSAKeyValue":
+                    keyValue = new DSAKeyValue(keyValueChild, Constants.SignatureSpecNS);
+                    break;
+                default:
+                    throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, "unsupportedKeyInfo");
+            }
+
+            publicKey = keyValue.getPublicKey();
+        } catch (XMLSecurityException e) {
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, "unsupportedKeyInfo");
+        }
+        return publicKey;
+    }
+	// Liberty Change End
     private PrivateKey getPrivateKey(
         RequestData data, X509Certificate[] certs, PublicKey publicKey
     ) throws WSSecurityException {
         try {
-            if (certs != null) {
+            if (certs != null && certs.length > 0) { // Liberty Change; Backport 4.x
                 return data.getDecCrypto().getPrivateKey(certs[0], data.getCallbackHandler());
             }
             return data.getDecCrypto().getPrivateKey(publicKey, data.getCallbackHandler());
@@ -281,8 +338,7 @@ public class EncryptedKeyProcessor implements Processor {
         String algorithmURI = null;
         if (uri != null) {
             Element ee =
-                EncryptionUtils.findEncryptedDataElement(refList.getOwnerDocument(),
-                                                         wsDocInfo, uri);
+                EncryptionUtils.findEncryptedDataElement(wsDocInfo, uri); // Liberty Change; Backport 4.x
             algorithmURI = X509Util.getEncAlgo(ee);
         }
         return X509Util.getSecretKey(keyInfoChildElement, algorithmURI, data.getCallbackHandler());
@@ -308,35 +364,10 @@ public class EncryptedKeyProcessor implements Processor {
                 || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(encryptedKeyTransportMethod)) {
                 // Get the DigestMethod if it exists
                 String digestAlgorithm = EncryptionUtils.getDigestAlgorithm(encryptedKeyElement);
-                String jceDigestAlgorithm = "SHA-1";
-                if (digestAlgorithm != null && digestAlgorithm.length() != 0) {
-                    jceDigestAlgorithm = JCEMapper.translateURItoJCEID(digestAlgorithm);
-                }
-
-                MGF1ParameterSpec mgfParameterSpec = new MGF1ParameterSpec("SHA-1");
-                if (WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(encryptedKeyTransportMethod)) {
-                    String mgfAlgorithm = EncryptionUtils.getMGFAlgorithm(encryptedKeyElement);
-                    if (WSConstants.MGF_SHA224.equals(mgfAlgorithm)) {
-                        mgfParameterSpec = new MGF1ParameterSpec("SHA-224");
-                    } else if (WSConstants.MGF_SHA256.equals(mgfAlgorithm)) {
-                        mgfParameterSpec = new MGF1ParameterSpec("SHA-256");
-                    } else if (WSConstants.MGF_SHA384.equals(mgfAlgorithm)) {
-                        mgfParameterSpec = new MGF1ParameterSpec("SHA-384");
-                    } else if (WSConstants.MGF_SHA512.equals(mgfAlgorithm)) {
-                        mgfParameterSpec = new MGF1ParameterSpec("SHA-512");
-                    }
-                }
-
-                PSource.PSpecified pSource = PSource.PSpecified.DEFAULT;
+                String mgfAlgorithm = EncryptionUtils.getMGFAlgorithm(encryptedKeyElement);
                 byte[] pSourceBytes = EncryptionUtils.getPSource(encryptedKeyElement);
-                if (pSourceBytes != null) {
-                    pSource = new PSource.PSpecified(pSourceBytes);
-                }
-
-                oaepParameterSpec =
-                    new OAEPParameterSpec(
-                        jceDigestAlgorithm, "MGF1", mgfParameterSpec, pSource
-                    );
+                oaepParameterSpec = XMLCipherUtil.constructOAEPParameters(encryptedKeyTransportMethod,
+                        digestAlgorithm, mgfAlgorithm, pSourceBytes); // Liberty Change; Backport 4.x
             }
 
             if (oaepParameterSpec == null) {
@@ -357,6 +388,114 @@ public class EncryptedKeyProcessor implements Processor {
             return getRandomKey(refList, wsDocInfo);
         }
     }
+	// Liberty Change Start; Backport 4.x
+    /**
+     * Method decrypts encryptedEphemeralKey using Key Agreement algorithm to derive symmetric key
+     * for decryption of the key.
+     *
+     * @param data RequestData context
+     * @param agreementMethod AgreementMethod element
+     * @param encryptedKeyTransportMethod Algorithm used to encrypt the key
+     * @param encryptedEphemeralKey Encrypted ephemeral/transport key
+     * @param privateKey Private key of the recipient
+     * @return Decrypted bytes of the ephemeral/transport key
+     * @throws WSSecurityException if the key decryption fails
+     */
+    private static byte[] getDiffieHellmanDecryptedBytes(
+            RequestData data,
+            AgreementMethod agreementMethod,
+            String encryptedKeyTransportMethod,
+            byte[] encryptedEphemeralKey,
+            PrivateKey privateKey
+    ) throws WSSecurityException {
+
+        SecretKey kek;
+        try {
+            KeyAgreementParameters parameterSpec = XMLCipherUtil.constructRecipientKeyAgreementParameters(
+                    encryptedKeyTransportMethod, agreementMethod, privateKey);
+
+            kek = org.apache.xml.security.utils.KeyUtils.aesWrapKeyWithDHGeneratedKey(parameterSpec);
+        } catch (XMLSecurityException ex) {
+            LOG.debug("Error occurred while resolving the Diffie Hellman key: " + ex.getMessage());
+            throw new WSSecurityException(WSSecurityException.ErrorCode.FAILED_CHECK, ex);
+        }
+
+        String cryptoProvider = data.getDecCrypto().getCryptoProvider();
+        Cipher cipher = KeyUtils.getCipherInstance(encryptedKeyTransportMethod, cryptoProvider);
+
+        try {
+            cipher.init(Cipher.UNWRAP_MODE, kek);
+            String keyAlgorithm = JCEMapper.translateURItoJCEID(encryptedKeyTransportMethod);
+            return cipher.unwrap(encryptedEphemeralKey, keyAlgorithm, Cipher.SECRET_KEY).getEncoded();
+        } catch (InvalidKeyException | NoSuchAlgorithmException ex) {
+            throw new WSSecurityException(WSSecurityException.ErrorCode.FAILED_CHECK, ex);
+        }
+    }
+
+    /**
+     * if keyInfo element contains AgreementMethod element then check if it is supported EC Diffie-Hellman key agreement algorithm
+     *
+     * @param keyInfoChildElement The KeyInfo child element
+     * @return true if AgreementMethod element is present and DH algorithm supported and false if AgreementMethod element is not present
+     * @throws WSSecurityException if AgreementMethod element is present but DH algorithm is not supported
+     */
+    private boolean isDiffieHellmanKeyWrap(Element keyInfoChildElement) throws WSSecurityException {
+        if (EncryptionConstants._TAG_AGREEMENTMETHOD.equals(keyInfoChildElement.getLocalName())
+                && WSConstants.ENC_NS.equals(keyInfoChildElement.getNamespaceURI())) {
+            String algorithmURI = keyInfoChildElement.getAttributeNS(null, "Algorithm");
+            // Only ECDH_ES is supported for AgreementMethod
+            if (!(WSConstants.AGREEMENT_METHOD_ECDH_ES.equals(algorithmURI)
+                || WSConstants.AGREEMENT_METHOD_X25519.equals(algorithmURI)
+                || WSConstants.AGREEMENT_METHOD_X448.equals(algorithmURI))) {
+                throw new WSSecurityException(
+                        WSSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM,
+                        "unknownAlgorithm", new Object[]{algorithmURI});
+            }
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Parse keyInfo content to AgreementMethod object.
+     *
+     * @param keyInfoChildElement The KeyInfo child element containing AgreementMethod data.
+     * @return the {@link AgreementMethod} object.
+     * @throws WSSecurityException if AgreementMethod element is invalid.
+     */
+    private AgreementMethod getAgreementMethodFromElement(Element keyInfoChildElement) throws WSSecurityException {
+        try {
+            return new AgreementMethodImpl(keyInfoChildElement);
+        } catch (XMLSecurityException ex) {
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, ex);
+        }
+    }
+
+    /**
+     * Get the RecipientKeyInfo child element from the AgreementMethod element.
+     *
+     * @param agreementMethod The AgreementMethod element
+     * @return the RecipientKeyInfo child element which contains the recipient's public key.
+     * @throws WSSecurityException if the agreementMethod is null or RecipientKeyInfo element can not be retrieved.
+     */
+    private Element getRecipientKeyInfoChildElement(AgreementMethod agreementMethod) throws WSSecurityException {
+        if (agreementMethod == null) {
+            throw new WSSecurityException(
+                    WSSecurityException.ErrorCode.INVALID_SECURITY, "noAgreementMethod"
+            );
+        }
+        try {
+            RecipientKeyInfo recipientKeyInfo = agreementMethod.getRecipientKeyInfo();
+            if (recipientKeyInfo == null) {
+                throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, "noRecipientKeyInfo");
+            }
+            Element receiverKeyInfoElement = recipientKeyInfo.getElement();
+            return getFirstElement(receiverKeyInfoElement);
+        } catch (XMLSecurityException ex) {
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, ex);
+        }
+    }
+	// Liberty Change End
 
     private static boolean isSymmetricKeyWrap(String transportAlgorithm) {
         return XMLCipher.AES_128_KeyWrap.equals(transportAlgorithm)
@@ -381,8 +520,7 @@ public class EncryptedKeyProcessor implements Processor {
 
             if (uri != null) {
                 Element ee =
-                    EncryptionUtils.findEncryptedDataElement(refList.getOwnerDocument(),
-                                                                    wsDocInfo, uri);
+                    EncryptionUtils.findEncryptedDataElement(wsDocInfo, uri); // Liberty Change Start; Backport 4.x
                 String algorithmURI = X509Util.getEncAlgo(ee);
                 alg = JCEMapper.getJCEKeyAlgorithmFromURI(algorithmURI);
                 size = KeyUtils.getKeyLength(algorithmURI);
@@ -452,44 +590,74 @@ public class EncryptedKeyProcessor implements Processor {
         }
     }
 
+	// Liberty Change Start; Backport 4.x
+    /**
+     * Method retrieved the KeyDerivationMethod child element from the AgreementMethod object.
+     *
+     * @param agreementMethod object containing th KeyDerivationMethod.
+     * @return the {@link KeyDerivationMethod} object or null if no KeyDerivation element is specified in the agreementMethod.
+     * @throws WSSecurityException if KeyDerivationMethod can not be parsed from Element structure.
+     */
+    private KeyDerivationMethod getKeyDerivationFunction(AgreementMethod agreementMethod) throws WSSecurityException {
+        if (agreementMethod == null) {
+            return null;
+        }
+        try {
+            return agreementMethod.getKeyDerivationMethod();
+        } catch (XMLSecurityException ex) {
+            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY, ex);
+        }
+    }
+
     private X509Certificate[] getCertificatesFromX509Data(
         Element keyInfoChildElement,
         RequestData data
     ) throws WSSecurityException {
+        X509Certificate[] certs = new X509Certificate[0];
 
         if (WSConstants.SIG_NS.equals(keyInfoChildElement.getNamespaceURI())
             && WSConstants.X509_DATA_LN.equals(keyInfoChildElement.getLocalName())) {
             data.getBSPEnforcer().handleBSPRule(BSPRule.R5426);
 
-            Element x509Child = getFirstElement(keyInfoChildElement);
+            Element issuerSerialElement = XMLUtils.getDirectChildElement(keyInfoChildElement, WSS4JConstants.X509_ISSUER_SERIAL_LN,
+                    WSS4JConstants.SIG_NS);
+            if (issuerSerialElement != null) {
+                DOMX509IssuerSerial issuerSerial = new DOMX509IssuerSerial(issuerSerialElement);
+                CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ISSUER_SERIAL);
+                cryptoType.setIssuerSerial(issuerSerial.getIssuer(), issuerSerial.getSerialNumber());
+                certs = data.getDecCrypto().getX509Certificates(cryptoType);
+            }
 
-            if (x509Child != null && WSConstants.SIG_NS.equals(x509Child.getNamespaceURI())) {
-                if (WSConstants.X509_ISSUER_SERIAL_LN.equals(x509Child.getLocalName())) {
-                    DOMX509IssuerSerial issuerSerial = new DOMX509IssuerSerial(x509Child);
-                    CryptoType cryptoType = new CryptoType(CryptoType.TYPE.ISSUER_SERIAL);
-                    cryptoType.setIssuerSerial(issuerSerial.getIssuer(), issuerSerial.getSerialNumber());
-                    return data.getDecCrypto().getX509Certificates(cryptoType);
-                } else if (WSConstants.X509_CERT_LN.equals(x509Child.getLocalName())) {
-                    byte[] token = EncryptionUtils.getDecodedBase64EncodedData(x509Child);
-                    if (token == null) {
-                        throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "invalidCertData",
-                                                      new Object[] {"0"});
+            Element skiElement = XMLUtils.getDirectChildElement(keyInfoChildElement, WSS4JConstants.X509_SKI_LN, WSS4JConstants.SIG_NS);
+            if (skiElement != null && certs.length == 0) {
+                DOMX509SKI x509SKI = new DOMX509SKI(skiElement);
+                CryptoType cryptoType = new CryptoType(CryptoType.TYPE.SKI_BYTES);
+                cryptoType.setBytes(x509SKI.getSKIBytes());
+                certs = data.getDecCrypto().getX509Certificates(cryptoType);
+            }
+
+            Element x509CertElement = XMLUtils.getDirectChildElement(keyInfoChildElement,
+                WSS4JConstants.X509_CERT_LN, WSS4JConstants.SIG_NS);
+            if (x509CertElement != null && certs.length == 0) {
+                byte[] token = EncryptionUtils.getDecodedBase64EncodedData(x509CertElement);
+                if (token == null || token.length == 0) {
+                    throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "invalidCertData",
+                                                  new Object[] {"0"});
+                }
+                try (InputStream in = new ByteArrayInputStream(token)) {
+                    X509Certificate cert = data.getDecCrypto().loadCertificate(in);
+                    if (cert != null) {
+                        certs = new X509Certificate[]{cert};
                     }
-                    try (InputStream in = new ByteArrayInputStream(token)) {
-                        X509Certificate cert = data.getDecCrypto().loadCertificate(in);
-                        if (cert != null) {
-                            return new X509Certificate[]{cert};
-                        }
-                    } catch (IOException e) {
-                        throw new WSSecurityException(
-                            WSSecurityException.ErrorCode.SECURITY_TOKEN_UNAVAILABLE, e, "parseError"
-                        );
-                    }
+                } catch (IOException e) {
+                    throw new WSSecurityException(
+                        WSSecurityException.ErrorCode.SECURITY_TOKEN_UNAVAILABLE, e, "parseError"
+                    );
                 }
             }
         }
 
-        return null;
+        return certs;
     }
 
     private Element getFirstElement(Element element) {
@@ -507,7 +675,7 @@ public class EncryptedKeyProcessor implements Processor {
     /**
      * Decrypt all data references
      */
-    private List<WSDataRef> decryptDataRefs(Element refList, WSDocInfo docInfo,
+    protected List<WSDataRef> decryptDataRefs(Element refList, WSDocInfo docInfo,
                                             byte[] decryptedBytes, RequestData data
     ) throws WSSecurityException {
         //
@@ -515,7 +683,7 @@ public class EncryptedKeyProcessor implements Processor {
         // to W3C XML-Enc this key is used to decrypt _any_ references contained in
         // the reference list
         if (refList == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         List<WSDataRef> dataRefs = new ArrayList<>();
@@ -538,7 +706,7 @@ public class EncryptedKeyProcessor implements Processor {
     /**
      * Decrypt an EncryptedData element referenced by dataRefURI
      */
-    private WSDataRef decryptDataRef(
+    protected WSDataRef decryptDataRef(
         Document doc,
         String dataRefURI,
         WSDocInfo docInfo,
@@ -550,7 +718,7 @@ public class EncryptedKeyProcessor implements Processor {
         // Find the encrypted data element referenced by dataRefURI
         //
         Element encryptedDataElement =
-            EncryptionUtils.findEncryptedDataElement(doc, docInfo, dataRefURI);
+            EncryptionUtils.findEncryptedDataElement(docInfo, dataRefURI);
         if (encryptedDataElement != null && data.isRequireSignedEncryptedDataElements()) {
             List<WSSecurityEngineResult> signedResults =
                 docInfo.getResultsByTag(WSConstants.SIGN);
@@ -604,34 +772,45 @@ public class EncryptedKeyProcessor implements Processor {
 
     /**
      * A method to check that the EncryptedKey is compliant with the BSP spec.
-     * @throws WSSecurityException
+     * @throws WSSecurityException if the EncryptedKey is not BSP compliant
      */
     private void checkBSPCompliance(
-        Element elem, String encAlgo, BSPEnforcer bspEnforcer
+            Element elem, String encAlgo,
+            boolean useKeyWrap,
+            BSPEnforcer bspEnforcer
     ) throws WSSecurityException {
         String attribute = elem.getAttributeNS(null, "Type");
-        if (attribute != null && attribute.length() != 0) {
+        if (attribute != null && !attribute.isEmpty()) {
             bspEnforcer.handleBSPRule(BSPRule.R3209);
         }
         attribute = elem.getAttributeNS(null, "MimeType");
-        if (attribute != null && attribute.length() != 0) {
+        if (attribute != null && !attribute.isEmpty()) {
             bspEnforcer.handleBSPRule(BSPRule.R5622);
         }
         attribute = elem.getAttributeNS(null, "Encoding");
-        if (attribute != null && attribute.length() != 0) {
+        if (attribute != null && !attribute.isEmpty()) {
             bspEnforcer.handleBSPRule(BSPRule.R5623);
         }
         attribute = elem.getAttributeNS(null, "Recipient");
-        if (attribute != null && attribute.length() != 0) {
+        if (attribute != null && !attribute.isEmpty()) {
             bspEnforcer.handleBSPRule(BSPRule.R5602);
         }
 
-        // EncryptionAlgorithm must be RSA15, or RSAOEP.
-        if (!(WSConstants.KEYTRANSPORT_RSA15.equals(encAlgo)
-            || WSConstants.KEYTRANSPORT_RSAOAEP.equals(encAlgo)
-            || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(encAlgo))) {
-            bspEnforcer.handleBSPRule(BSPRule.R5621);
+        if (useKeyWrap) {
+            if (!(WSConstants.KEYWRAP_AES128.equals(encAlgo)
+                    || WSConstants.KEYWRAP_AES192.equals(encAlgo)
+                    || WSConstants.KEYWRAP_AES256.equals(encAlgo)
+                    || WSConstants.KEYWRAP_TRIPLEDES.equals(encAlgo))) {
+                bspEnforcer.handleBSPRule(BSPRule.R5625);
+            }
+        } else {
+            // EncryptionAlgorithm must be RSA15, or RSAOEP.
+            if (!(WSConstants.KEYTRANSPORT_RSA15.equals(encAlgo)
+                    || WSConstants.KEYTRANSPORT_RSAOAEP.equals(encAlgo)
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(encAlgo))) {
+                bspEnforcer.handleBSPRule(BSPRule.R5621);
+            }
         }
     }
-
+	// Liberty Change End
 }

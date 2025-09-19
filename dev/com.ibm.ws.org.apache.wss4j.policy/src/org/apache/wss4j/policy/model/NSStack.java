@@ -20,8 +20,6 @@
 package org.apache.wss4j.policy.model;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * The abstraction this class provides is a push down stack of variable
@@ -92,20 +90,6 @@ class NSStack {
         if (top == 0) {
             return;
         }
-    }
-
-    /**
-     * Return a copy of the current frame.  Returns null if none are present.
-     */
-    public List<Mapping> cloneFrame() {
-        if (stack[top] == null) {
-            return null;
-        }
-        List<Mapping> clone = new ArrayList<>();
-        for (Mapping map = topOfFrame(); map != null; map = next()) {
-            clone.add(map);
-        }
-        return clone;
     }
 
     /**

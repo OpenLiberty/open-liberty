@@ -46,11 +46,13 @@ import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.policy.EffectivePolicy;
 import org.apache.cxf.ws.security.SecurityConstants;
 import org.apache.cxf.ws.security.policy.PolicyUtils;
+import org.apache.cxf.ws.security.policy.custom.DefaultAlgorithmSuiteLoader;
 import org.apache.wss4j.common.WSSPolicyException;
 import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.policy.SP12Constants;
 import org.apache.wss4j.policy.SPConstants;
+import org.apache.wss4j.policy.model.AbstractBinding;
 import org.apache.wss4j.policy.model.AlgorithmSuite;
 import org.apache.wss4j.policy.stax.OperationPolicy;
 import org.apache.wss4j.policy.stax.enforcer.PolicyEnforcer;
@@ -259,18 +261,45 @@ public class PolicyBasedWSS4JStaxInInterceptor extends WSS4JStaxInInterceptor {
         checkAsymmetricBinding(aim, msg, securityProperties);
         checkSymmetricBinding(aim, msg, securityProperties);
         checkTransportBinding(aim, msg, securityProperties);
+		// Liberty Change Start: Backport 4.x
+        AssertionInfo assertionInfo = PolicyUtils.getFirstAssertionByLocalname(aim, SPConstants.ASYMMETRIC_BINDING);
+        AbstractBinding abstractBinding = null;
+        if (assertionInfo == null) {
+            assertionInfo = PolicyUtils.getFirstAssertionByLocalname(aim, SPConstants.SYMMETRIC_BINDING);
+            if (assertionInfo == null) {
+                assertionInfo = PolicyUtils.getFirstAssertionByLocalname(aim, SPConstants.TRANSPORT_BINDING);
+            }
+        }
+        if (assertionInfo != null) {
+            abstractBinding = (AbstractBinding)assertionInfo.getAssertion();
+        }
+        AlgorithmSuite.AlgorithmSuiteType originalAlgSuite = null;
+        if (abstractBinding != null) {
+            originalAlgSuite = abstractBinding.getAlgorithmSuite().getAlgorithmSuiteType();
+        }
+
+        AlgorithmSuite.AlgorithmSuiteType customAlgSuite = DefaultAlgorithmSuiteLoader
+                .customize(originalAlgSuite, msg);
 
         // Allow for setting non-standard signature algorithms
         String asymSignatureAlgorithm =
-            (String)msg.getContextualProperty(SecurityConstants.ASYMMETRIC_SIGNATURE_ALGORITHM);
+                msg.getContextualProperty(SecurityConstants.ASYMMETRIC_SIGNATURE_ALGORITHM) != null
+                        ? (String)msg.getContextualProperty(SecurityConstants.ASYMMETRIC_SIGNATURE_ALGORITHM)
+                        : (customAlgSuite != null ? customAlgSuite.getAsymmetricSignature() : null);
         String symSignatureAlgorithm =
-            (String)msg.getContextualProperty(SecurityConstants.SYMMETRIC_SIGNATURE_ALGORITHM);
+                msg.getContextualProperty(SecurityConstants.SYMMETRIC_SIGNATURE_ALGORITHM) != null
+                        ? (String)msg.getContextualProperty(SecurityConstants.SYMMETRIC_SIGNATURE_ALGORITHM)
+                        : (customAlgSuite != null ? customAlgSuite.getSymmetricSignature() : null);
         if (asymSignatureAlgorithm != null || symSignatureAlgorithm != null) {
             Collection<AssertionInfo> algorithmSuites =
                 aim.get(SP12Constants.ALGORITHM_SUITE);
             if (algorithmSuites != null && !algorithmSuites.isEmpty()) {
                 for (AssertionInfo algorithmSuite : algorithmSuites) {
                     AlgorithmSuite algSuite = (AlgorithmSuite)algorithmSuite.getAssertion();
+                    //customize Alg suite (if possible)
+                    DefaultAlgorithmSuiteLoader.customize(algSuite.getAlgorithmSuiteType(), msg);
+					// Liberty Change End
+
                     if (asymSignatureAlgorithm != null) {
                         algSuite.getAlgorithmSuiteType().setAsymmetricSignature(asymSignatureAlgorithm);
                     }

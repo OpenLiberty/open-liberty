@@ -69,22 +69,24 @@ public class SignatureConfirmationInputProcessor extends AbstractInputProcessor 
                     throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
                 }
 
-                for (int i = 0; i < signatureValueSecurityEventList.size(); i++) {
-                    SignatureValueSecurityEvent signatureValueSecurityEvent = signatureValueSecurityEventList.get(i);
-                    byte[] signatureValue = signatureValueSecurityEvent.getSignatureValue();
+                if (signatureValueSecurityEventList != null) { // Liberty Change: Backport 4.x
+                    for (int i = 0; i < signatureValueSecurityEventList.size(); i++) {
+                        SignatureValueSecurityEvent signatureValueSecurityEvent = signatureValueSecurityEventList.get(i);
+                        byte[] signatureValue = signatureValueSecurityEvent.getSignatureValue();
 
-                    boolean found = false;
+                        boolean found = false;
 
-                    for (int j = 0; j < signatureConfirmationTypeList.size(); j++) {
-                        SignatureConfirmationType signatureConfirmationType = signatureConfirmationTypeList.get(j);
-                        byte[] sigConfValue = signatureConfirmationType.getValue();
-                        if (Arrays.equals(signatureValue, sigConfValue)) {
-                            found = true;
+                        for (int j = 0; j < signatureConfirmationTypeList.size(); j++) {
+                            SignatureConfirmationType signatureConfirmationType = signatureConfirmationTypeList.get(j);
+                            byte[] sigConfValue = signatureConfirmationType.getValue();
+                            if (Arrays.equals(signatureValue, sigConfValue)) {
+                                found = true;
+                            }
                         }
-                    }
 
-                    if (!found) {
-                        throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+                        if (!found) {
+                            throw new WSSecurityException(WSSecurityException.ErrorCode.INVALID_SECURITY);
+                        }
                     }
                 }
             }

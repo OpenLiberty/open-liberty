@@ -108,6 +108,26 @@ public class WSS4JConstants {
         "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
     public static final String KEYTRANSPORT_RSAOAEP_XENC11 =
         "http://www.w3.org/2009/xmlenc11#rsa-oaep";
+	// Liberty Change Start: Backport 4.x
+    public static final String KEYWRAP_AES128 =
+            "http://www.w3.org/2001/04/xmlenc#kw-aes128";
+    public static final String KEYWRAP_AES192 =
+            "http://www.w3.org/2001/04/xmlenc#kw-aes192";
+    public static final String KEYWRAP_AES256 =
+            "http://www.w3.org/2001/04/xmlenc#kw-aes256";
+    public static final String KEYWRAP_TRIPLEDES =
+            "http://www.w3.org/2001/04/xmlenc#kw-tripledes";
+    public static final String KEYDERIVATION_CONCATKDF =
+            "http://www.w3.org/2009/xmlenc11#ConcatKDF";
+    public static final String KEYDERIVATION_HKDF =
+            "http://www.w3.org/2021/04/xmldsig-more#hkdf";
+    public static final String AGREEMENT_METHOD_ECDH_ES =
+            "http://www.w3.org/2009/xmlenc11#ECDH-ES";
+    public static final String AGREEMENT_METHOD_X25519 =
+            "http://www.w3.org/2021/04/xmldsig-more#x25519";
+    public static final String AGREEMENT_METHOD_X448 =
+            "http://www.w3.org/2021/04/xmldsig-more#x448";
+	// Liberty Change End
     public static final String TRIPLE_DES =
         "http://www.w3.org/2001/04/xmlenc#tripledes-cbc";
     public static final String AES_128 =
@@ -158,6 +178,13 @@ public class WSS4JConstants {
             "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
     public static final String ECDSA_SHA512 =
             "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512";
+	// Liberty Change Start: Backport 4.x
+    // see RFC 9231 for these algorithm definitions
+    public static final String ED25519 =
+            "http://www.w3.org/2021/04/xmldsig-more#eddsa-ed25519";
+    public static final String ED448 =
+            "http://www.w3.org/2021/04/xmldsig-more#eddsa-ed448";
+	// Liberty Change End
 
     public static final String MGF_SHA1 = "http://www.w3.org/2009/xmlenc11#mgf1sha1";
     public static final String MGF_SHA224 = "http://www.w3.org/2009/xmlenc11#mgf1sha224";
@@ -216,6 +243,7 @@ public class WSS4JConstants {
     public static final String X509_ISSUER_SERIAL_LN = "X509IssuerSerial";
     public static final String X509_ISSUER_NAME_LN = "X509IssuerName";
     public static final String X509_SERIAL_NUMBER_LN = "X509SerialNumber";
+    public static final String X509_SKI_LN = "X509SKI"; // Liberty Change: Backport 4.x
     public static final String X509_DATA_LN = "X509Data";
     public static final String X509_CERT_LN = "X509Certificate";
     public static final String KEYINFO_LN = "KeyInfo";

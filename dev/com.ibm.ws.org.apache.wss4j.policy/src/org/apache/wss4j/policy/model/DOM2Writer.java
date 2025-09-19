@@ -225,7 +225,7 @@ final class DOM2Writer {
     private static void printNamespaceDecl(Node node,
                                            NSStack namespaceStack,
                                            PrintWriter out) {
-        switch (node.getNodeType()) {
+        switch (node.getNodeType()) {   //NOPMD
             case Node.ATTRIBUTE_NODE:
                 printNamespaceDecl(((Attr) node).getOwnerElement(), node,
                                    namespaceStack, out);
@@ -273,10 +273,9 @@ final class DOM2Writer {
                 case '"':
                     fOut.print("&quot;");
                     break;
-                case '\r':
-                case '\n':
                 default:
                     fOut.print(c);
+                    break; // Liberty Change: Backport 4.x
             }
         }
     }

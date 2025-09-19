@@ -35,12 +35,12 @@ public class EHCacheExpiry implements ExpiryPolicy<String, EHCacheValue> {
     /**
      * The default time to live in seconds (60 minutes)
      */
-    public static final long DEFAULT_TTL = 3600L;
+    public long DEFAULT_TTL = 3600L;  // Liberty Change
 
     /**
      * The max time to live in seconds (12 hours)
      */
-    public static final long MAX_TTL = DEFAULT_TTL * 12L;
+    public long MAX_TTL = DEFAULT_TTL * 12L;   // Liberty Change
 
 
     @Override
@@ -65,5 +65,13 @@ public class EHCacheExpiry implements ExpiryPolicy<String, EHCacheValue> {
         return null;
     }
 
+ // Liberty Change
+    public void setDefaultTTL(long ttl) {
+        DEFAULT_TTL = ttl;
+    }
+    public void setMaxTTL(long ttl) {
+        MAX_TTL = ttl;
+    }
+ // End Liberty Change
 
 }

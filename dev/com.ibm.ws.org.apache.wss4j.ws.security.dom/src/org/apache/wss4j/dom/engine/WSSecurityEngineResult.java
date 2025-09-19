@@ -259,7 +259,7 @@ public class WSSecurityEngineResult extends java.util.HashMap<String, Object> {
         put(TAG_PRINCIPAL, princ);
         put(TAG_X509_CERTIFICATES, certs);
         put(TAG_SIGNATURE_VALUE, sv);
-        if (certs != null) {
+        if (certs != null && certs.length > 0) {
             put(TAG_X509_CERTIFICATE, certs[0]);
         }
         put(TAG_VALIDATED_TOKEN, Boolean.FALSE);
@@ -302,7 +302,7 @@ public class WSSecurityEngineResult extends java.util.HashMap<String, Object> {
         put(TAG_ENCRYPTED_EPHEMERAL_KEY, encryptedKeyBytes);
         put(TAG_DATA_REF_URIS, dataRefUris);
         put(TAG_X509_CERTIFICATES, certs);
-        if (certs != null) {
+        if (certs != null && certs.length > 0) {
             put(TAG_X509_CERTIFICATE, certs[0]);
         }
         put(TAG_VALIDATED_TOKEN, Boolean.FALSE);
@@ -351,7 +351,7 @@ public class WSSecurityEngineResult extends java.util.HashMap<String, Object> {
         put(TAG_ACTION, act);
         put(TAG_BINARY_SECURITY_TOKEN, token);
         put(TAG_X509_CERTIFICATES, certs);
-        if (certs != null) {
+        if (certs != null && certs.length > 0) { // Liberty Change: Backport 4.x
             put(TAG_X509_CERTIFICATE, certs[0]);
         }
         put(TAG_VALIDATED_TOKEN, Boolean.FALSE);

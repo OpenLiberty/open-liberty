@@ -25,14 +25,15 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
-import javax.xml.soap.SOAPException;
 
+import javax.xml.soap.SOAPException;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.rt.security.utils.SecurityUtils;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.SecurityConstants;
+import org.apache.cxf.ws.security.policy.custom.DefaultAlgorithmSuiteLoader;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreUtils;
 import org.apache.cxf.ws.security.wss4j.TokenStoreCallbackHandler;
@@ -84,6 +85,10 @@ public class StaxAsymmetricBindingHandler extends AbstractStaxBindingHandler {
         AssertionInfoMap aim = getMessage().get(AssertionInfoMap.class);
         configureTimestamp(aim);
         assertPolicy(abinding.getName());
+
+        //apply custom parameters (if needed)
+        DefaultAlgorithmSuiteLoader.customize(abinding.getAlgorithmSuite().getAlgorithmSuiteType(),
+                getMessage()); // Liberty Change: Backport 4.x
 
         String asymSignatureAlgorithm =
             (String)getMessage().getContextualProperty(SecurityConstants.ASYMMETRIC_SIGNATURE_ALGORITHM);
@@ -437,8 +442,8 @@ public class StaxAsymmetricBindingHandler extends AbstractStaxBindingHandler {
         AbstractToken sigToken = wrapper.getToken();
         configureSignature(sigToken, false);
 
-        if (abinding.isProtectTokens() && (sigToken instanceof X509Token)
-            && sigToken.getIncludeTokenType() != IncludeTokenType.INCLUDE_TOKEN_NEVER) {
+        if (abinding.isProtectTokens() && sigToken instanceof X509Token 
+            && sigToken.getIncludeTokenType() != IncludeTokenType.INCLUDE_TOKEN_NEVER) { // Liberty Change: Backport 4.x
             SecurePart securePart =
                 new SecurePart(new QName(WSSConstants.NS_WSSE10, "BinarySecurityToken"), Modifier.Element);
             properties.addSignaturePart(securePart);

@@ -82,12 +82,9 @@ public class XPath {
         if (version != that.version) {
             return false;
         }
-        if (filter != null && !filter.equals(that.filter)
-            || filter == null && that.filter != null) {
-            return false;
-        }
 
-        return true;
+        return !(filter != null && !filter.equals(that.filter)
+            || filter == null && that.filter != null); // Liberty Change: Backport 4.x
     }
 
     @Override

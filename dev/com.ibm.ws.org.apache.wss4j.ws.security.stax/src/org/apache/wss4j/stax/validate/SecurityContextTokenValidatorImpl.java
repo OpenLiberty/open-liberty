@@ -61,7 +61,7 @@ public class SecurityContextTokenValidatorImpl implements SecurityContextTokenVa
                 WSPasswordCallback passwordCallback = new WSPasswordCallback(
                         identifier, WSPasswordCallback.SECURITY_CONTEXT_TOKEN);
                 WSSUtils.doSecretKeyCallback(
-                        tokenContext.getWssSecurityProperties().getCallbackHandler(), passwordCallback, null);
+                        tokenContext.getWssSecurityProperties().getCallbackHandler(), passwordCallback); // Liberty Change: Backport 4.x
                 if (passwordCallback.getKey() == null) {
                     throw new WSSecurityException(WSSecurityException.ErrorCode.SECURITY_TOKEN_UNAVAILABLE,
                             "noKey", new Object[] {securityContextTokenType.getId()});
