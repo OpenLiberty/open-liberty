@@ -26,7 +26,7 @@ public class EntityManagerProducers {
     public EntityManager getShortScopedEM() {
         return defaultEM;
     }
-     @Produces
+    @Produces
     @ApplicationScoped
     @LongScoped
     public EntityManager getLongScopedEM() {
