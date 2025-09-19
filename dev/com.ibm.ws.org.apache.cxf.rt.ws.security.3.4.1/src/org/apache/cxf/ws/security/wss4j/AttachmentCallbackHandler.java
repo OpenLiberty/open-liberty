@@ -28,14 +28,17 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.activation.DataHandler;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.UnsupportedCallbackException;
 
+import javax.activation.DataHandler;
 import org.apache.cxf.attachment.AttachmentDataSource;
+import org.apache.cxf.attachment.AttachmentUtil;
+import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.message.MessageUtils;
 import org.apache.wss4j.common.ext.AttachmentRemovalCallback;
 import org.apache.wss4j.common.ext.AttachmentRequestCallback;
 import org.apache.wss4j.common.ext.AttachmentResultCallback;
@@ -46,16 +49,21 @@ import org.apache.wss4j.common.ext.AttachmentResultCallback;
 public class AttachmentCallbackHandler implements CallbackHandler {
 
     private final Collection<org.apache.cxf.message.Attachment> attachments;
+    private final String defaultMimeType; // Liberty Change: Backport 4.x
 
     public AttachmentCallbackHandler(Message message) {
         if (message.getAttachments() == null) {
             message.setAttachments(new ArrayList<Attachment>());
         }
         attachments = message.getAttachments();
+        defaultMimeType = (String) MessageUtils.getContextualProperty(message, 
+                                                           AttachmentUtil.ATTACHMENT_CONTENT_TYPE,
+                                                           "application/octet-stream"); // Liberty Change: Backport 4.x
     }
 
     public AttachmentCallbackHandler(Collection<org.apache.cxf.message.Attachment> attachments) {
         this.attachments = attachments;
+        this.defaultMimeType = null; // Liberty Change: Backport 4.x
     }
 
     @Override
@@ -76,15 +84,20 @@ public class AttachmentCallbackHandler implements CallbackHandler {
             } else if (callback instanceof AttachmentResultCallback) {
                 AttachmentResultCallback attachmentResultCallback = (AttachmentResultCallback) callback;
 
+                String mimeType = attachmentResultCallback.getAttachment().getMimeType(); // Liberty Change: Backport 4.x
+                if (StringUtils.isEmpty(mimeType)) {
+                    mimeType = defaultMimeType; // Liberty Change: Backport 4.x
+                }
+
                 org.apache.cxf.attachment.AttachmentImpl securedAttachment =
                     new org.apache.cxf.attachment.AttachmentImpl(
                         attachmentResultCallback.getAttachmentId(),
                         new DataHandler(
                             new AttachmentDataSource(
-                                attachmentResultCallback.getAttachment().getMimeType(),
+                                mimeType,
                                 attachmentResultCallback.getAttachment().getSourceStream())
                         )
-                    );
+                    ); // Liberty Change: Backport 4.x
 
                 Map<String, String> headers = attachmentResultCallback.getAttachment().getHeaders();
                 for (Map.Entry<String, String> entry : headers.entrySet()) {
@@ -121,7 +134,7 @@ public class AttachmentCallbackHandler implements CallbackHandler {
         boolean removeAttachments
     ) throws IOException {
         // Calling LazyAttachmentCollection.size() here to force it to load the attachments
-        if (attachments != null && attachments.size() > 0) { // NOPMD
+        if (attachments != null && attachments.size() > 0) {
             for (Iterator<org.apache.cxf.message.Attachment> iterator = attachments.iterator();
                 iterator.hasNext();) {
                 org.apache.cxf.message.Attachment attachment = iterator.next();

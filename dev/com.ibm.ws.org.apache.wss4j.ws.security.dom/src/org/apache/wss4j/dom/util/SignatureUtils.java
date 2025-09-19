@@ -75,8 +75,9 @@ public final class SignatureUtils {
     public static List<String> getInclusivePrefixes(Element target, boolean excludeVisible) {
         Set<String> result = new LinkedHashSet<>();
         Node parent = target;
+		// Liberty Change: Backport 4.x
         while (parent.getParentNode() != null
-            && !(Node.DOCUMENT_NODE == parent.getParentNode().getNodeType())) {
+            && Node.DOCUMENT_NODE != parent.getParentNode().getNodeType()) {
             parent = parent.getParentNode();
             NamedNodeMap attributes = parent.getAttributes();
             for (int i = 0; i < attributes.getLength(); i++) {

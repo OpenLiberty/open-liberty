@@ -37,7 +37,7 @@ public class AlgorithmSuite {
 
     private Set<String> encryptionMethods = Collections.emptySet();
     private Set<String> keyWrapAlgorithms = Collections.emptySet();
-
+    private Set<String> keyAgreementAlgorithms = Collections.emptySet(); // Liberty Change: Backport 4.x
     private Set<String> derivedKeyAlgorithms = Collections.emptySet();
 
     private int maximumSymmetricKeyLength = 256;
@@ -115,6 +115,19 @@ public class AlgorithmSuite {
     public Set<String> getKeyWrapAlgorithms() {
         return keyWrapAlgorithms;
     }
+
+	// Liberty Change Start: Backport 4.x
+    public void addKeyAgreementMethodAlgorithm(String keyAgreementAlgorithm) {
+        if (keyAgreementAlgorithms.isEmpty()) {
+            keyAgreementAlgorithms = new HashSet<>();
+        }
+        keyAgreementAlgorithms.add(keyAgreementAlgorithm);
+    }
+
+    public Set<String> getKeyAgreementMethodAlgorithms() {
+        return keyAgreementAlgorithms;
+    }
+	// Liberty Change End
 
     public void addDerivedKeyAlgorithm(String derivedKeyAlgorithm) {
         if (derivedKeyAlgorithms.isEmpty()) {

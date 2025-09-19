@@ -67,7 +67,7 @@ public class EncryptedKeySha1SecurityTokenImpl
         WSPasswordCallback secretKeyCallback =
                 new WSPasswordCallback(getSha1Identifier(), null,
                         WSSConstants.NS_ENCRYPTED_KEY_SHA1, WSPasswordCallback.SECRET_KEY);
-        WSSUtils.doSecretKeyCallback(callbackHandler, secretKeyCallback, getSha1Identifier());
+        WSSUtils.doSecretKeyCallback(callbackHandler, secretKeyCallback); // Liberty Change: Backport 4.x
         if (secretKeyCallback.getKey() == null) {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "noKey",
                                           new Object[] {getSha1Identifier()});

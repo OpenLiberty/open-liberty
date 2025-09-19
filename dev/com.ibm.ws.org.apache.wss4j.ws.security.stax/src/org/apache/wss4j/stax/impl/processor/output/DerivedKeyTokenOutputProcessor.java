@@ -118,8 +118,7 @@ public class DerivedKeyTokenOutputProcessor extends AbstractOutputProcessor {
             byte[] secret;
             if (WSSecurityTokenConstants.SECURITY_CONTEXT_TOKEN.equals(wrappingSecurityToken.getTokenType())) {
                 WSPasswordCallback passwordCallback = new WSPasswordCallback(wsuIdDKT, WSPasswordCallback.SECRET_KEY);
-                WSSUtils.doSecretKeyCallback(((WSSSecurityProperties)securityProperties).getCallbackHandler(),
-                                             passwordCallback, wsuIdDKT);
+                WSSUtils.doSecretKeyCallback(((WSSSecurityProperties)securityProperties).getCallbackHandler(), passwordCallback); // Liberty Change: Backport 4.x
                 if (passwordCallback.getKey() == null) {
                     throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, "noKey",
                                                   new Object[] {wsuIdDKT});

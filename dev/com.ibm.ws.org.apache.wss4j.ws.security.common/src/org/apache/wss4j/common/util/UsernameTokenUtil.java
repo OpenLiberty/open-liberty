@@ -31,6 +31,7 @@ import javax.security.auth.callback.UnsupportedCallbackException;
 import org.apache.wss4j.common.ext.WSPasswordCallback;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.stax.ext.XMLSecurityConstants;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public final class UsernameTokenUtil {
     public static final int DEFAULT_ITERATION = 1000;
@@ -64,7 +65,9 @@ public final class UsernameTokenUtil {
 
         MessageDigest sha = null;
         try {
-            sha = MessageDigest.getInstance("SHA1");
+            // Liberty Change Start: FIPS default to SHA256
+            sha = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1);
+            // Liberty Change End
         } catch (NoSuchAlgorithmException e) {
             LOG.debug(e.getMessage(), e);
             throw new WSSecurityException(
@@ -120,7 +123,7 @@ public final class UsernameTokenUtil {
             saltValue = generateNonce(16);
         } catch (WSSecurityException ex) {
             LOG.debug(ex.getMessage(), ex);
-            return null;
+            return new byte[0]; // Liberty Change: Backport 4.x
         }
         if (useForMac) {
             saltValue[0] = 0x01;
@@ -131,13 +134,13 @@ public final class UsernameTokenUtil {
     }
 
     /**
-     * Generate a nonce of the given length using the SHA1PRNG algorithm. The SecureRandom
+     * Generate a nonce of the given length using a secure random algorithm. The SecureRandom
      * instance that backs this method is cached for efficiency.
      *
      * @return a nonce of the given length
      * @throws WSSecurityException
      */
-    private static byte[] generateNonce(int length) throws WSSecurityException {
+    public static byte[] generateNonce(int length) throws WSSecurityException { // Liberty Change: Backport 4.x
         try {
             return XMLSecurityConstants.generateBytes(length);
         } catch (Exception ex) {

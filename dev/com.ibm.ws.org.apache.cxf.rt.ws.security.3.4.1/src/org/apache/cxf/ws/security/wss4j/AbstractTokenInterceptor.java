@@ -22,6 +22,7 @@ package org.apache.cxf.ws.security.wss4j;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import java.util.logging.Level;  // Liberty Change
 import java.util.logging.Logger;
 
 import javax.security.auth.callback.CallbackHandler;
@@ -169,13 +170,40 @@ public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
         el.setAttributeNS(WSS4JConstants.XMLNS_NS, "xmlns:wsse", WSS4JConstants.WSSE_NS);
 
         SoapHeader sh = new SoapHeader(new QName(WSS4JConstants.WSSE_NS, "Security"), el);
-        sh.setMustUnderstand(true);
+        // Liberty Change Start
+        boolean mustunderstand = true;
+        mustunderstand = translateMustUnderstandProperty(message);
+        sh.setMustUnderstand(mustunderstand);
+		// Liberty Change End
         if (actor != null && actor.length() > 0) {
             sh.setActor(actor);
         }
         message.getHeaders().add(sh);
         return sh;
     }
+    
+	// Liberty Change Start
+    /**
+     * @param message
+     * @return
+     */
+    private boolean translateMustUnderstandProperty(SoapMessage message) {
+        String mustunderstand = (String)message.getContextualProperty("ws-security.must-understand");
+        boolean doDebug = LOG.isLoggable(Level.FINE);
+        if (mustunderstand != null && !mustunderstand.isEmpty()) {         
+            if ("0".equals(mustunderstand) || "false".equals(mustunderstand)) {
+                if (doDebug) {
+                    LOG.fine("AbstractTokenInterceptor: OLGH23255 - mustUnderstand is set = " + mustunderstand);
+                }  
+                return false;
+            }
+        }
+        if (doDebug) {
+            LOG.fine("AbstractTokenInterceptor: OLGH23255 - mustUnderstand is true");
+        } 
+        return true;
+    }
+	// Liberty Change End
 
     protected String getPassword(String userName, AbstractToken info,
                                  int usage, SoapMessage message) {

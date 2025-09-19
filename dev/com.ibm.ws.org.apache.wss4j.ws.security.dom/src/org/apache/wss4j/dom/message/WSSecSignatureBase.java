@@ -175,8 +175,7 @@ public class WSSecSignatureBase extends WSSecBase {
                         if (callbackLookup == null) {
                             callbackLookup = new DOMCallbackLookup(doc);
                         }
-                        elementsToSign =
-                            WSSecurityUtil.findElements(encPart, callbackLookup, doc);
+                        elementsToSign = WSSecurityUtil.findElements(encPart, callbackLookup); // Liberty Change: Backport 4.x
                     }
                     if (elementsToSign == null || elementsToSign.isEmpty()) {
                         if (!encPart.isRequired()) {

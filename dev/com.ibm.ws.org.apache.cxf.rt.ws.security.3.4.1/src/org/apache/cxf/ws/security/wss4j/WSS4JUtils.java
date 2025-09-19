@@ -50,7 +50,6 @@ import org.apache.cxf.ws.security.cache.CXFEHCacheReplayCache;
 import org.apache.cxf.ws.security.tokenstore.SecurityToken;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreException;
 import org.apache.cxf.ws.security.tokenstore.TokenStoreUtils;
-import org.apache.cxf.ws.security.utils.JCacheUtil;
 import org.apache.wss4j.common.cache.MemoryReplayCache;
 import org.apache.wss4j.common.cache.ReplayCache;
 import org.apache.wss4j.common.cache.WSS4JCacheUtil;

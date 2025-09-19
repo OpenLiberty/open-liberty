@@ -52,12 +52,8 @@ public class Header {
             return false;
         }
 
-        if (namespace != null && !namespace.equals(that.namespace)
-            || namespace == null && that.namespace != null) {
-            return false;
-        }
-
-        return true;
+        return !(namespace != null && !namespace.equals(that.namespace)
+            || namespace == null && that.namespace != null); // Liberty Change: Backport 4.x
     }
 
     @Override

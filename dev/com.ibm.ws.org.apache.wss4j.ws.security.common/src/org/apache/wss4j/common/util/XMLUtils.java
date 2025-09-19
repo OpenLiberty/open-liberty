@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.xml.XMLConstants;
@@ -63,8 +64,8 @@ public final class XMLUtils {
      * Gets a direct child with specified localname and namespace. <p/>
      *
      * @param parentNode the node where to start the search
-     * @param localName  local name of the child to get
-     * @param namespace  the namespace of the child to get
+     * @param localName local name of the child to get
+     * @param namespace the namespace of the child to get
      * @return the node or <code>null</code> if not such node found
      */
     public static Element getDirectChildElement(Node parentNode, String localName, String namespace) {
@@ -402,7 +403,7 @@ public final class XMLUtils {
         // lookup
         //
         if (startNode == null) {
-            return null;
+            return Collections.emptyList(); // Liberty Change: Backport 4.x
         }
         Node startParent = startNode.getParentNode();
         Node processedNode = null;

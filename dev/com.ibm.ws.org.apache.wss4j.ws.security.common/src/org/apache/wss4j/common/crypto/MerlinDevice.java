@@ -97,7 +97,7 @@ public class MerlinDevice extends Merlin {
         if (keyStoreLocation == null) {
             keyStoreLocation = properties.getProperty(prefix + OLD_KEYSTORE_FILE);
         }
-        String keyStorePassword = properties.getProperty(prefix + KEYSTORE_PASSWORD, "security");
+        String keyStorePassword = properties.getProperty(prefix + KEYSTORE_PASSWORD);
         if (keyStorePassword != null) {
             keyStorePassword = keyStorePassword.trim();
             keyStorePassword = decryptPassword(keyStorePassword, passwordEncryptor);
@@ -122,7 +122,7 @@ public class MerlinDevice extends Merlin {
         //
         // Load the TrustStore
         //
-        String trustStorePassword = properties.getProperty(prefix + TRUSTSTORE_PASSWORD, "changeit");
+        String trustStorePassword = properties.getProperty(prefix + TRUSTSTORE_PASSWORD); // Liberty Change: Backport 4.x
         if (trustStorePassword != null) {
             trustStorePassword = trustStorePassword.trim();
             trustStorePassword = decryptPassword(trustStorePassword, passwordEncryptor);

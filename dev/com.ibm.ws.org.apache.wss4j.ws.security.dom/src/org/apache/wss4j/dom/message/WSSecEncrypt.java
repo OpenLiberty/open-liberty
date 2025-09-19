@@ -19,6 +19,7 @@
 
 package org.apache.wss4j.dom.message;
 
+import java.security.Provider;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +32,7 @@ import org.apache.wss4j.common.crypto.Crypto;
 import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.common.token.Reference;
 import org.apache.wss4j.common.token.SecurityTokenReference;
+import org.apache.wss4j.common.util.FIPSUtils;
 import org.apache.wss4j.common.util.XMLUtils;
 import org.apache.wss4j.dom.WSConstants;
 import org.apache.wss4j.dom.message.token.KerberosSecurity;
@@ -40,6 +42,8 @@ import org.apache.xml.security.encryption.Serializer;
 import org.apache.xml.security.keys.KeyInfo;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Encrypts a parts of a message according to WS Specification, X509 profile,
@@ -76,10 +80,13 @@ public class WSSecEncrypt extends WSSecEncryptedKey {
 
     private Serializer encryptionSerializer;
 
+    // Liberty Change Start
     /**
      * Algorithm to be used with the ephemeral key
      */
-    private String symEncAlgo = WSConstants.AES_128;
+    private String symEncAlgo = FIPSUtils.isFIPSEnabled()
+        ? WSConstants.AES_128_GCM : WSConstants.AES_128; 
+    // Liberty Change End
 
     public WSSecEncrypt(WSSecHeader securityHeader) {
         super(securityHeader);
@@ -89,6 +96,11 @@ public class WSSecEncrypt extends WSSecEncryptedKey {
         super(doc);
     }
 
+    // Liberty Change Start
+    public WSSecEncrypt(Document doc, Provider provider) {
+        super(doc, provider);
+    }
+    // Liberty Change End
     /**
      * Initialize a WSSec Encrypt.
      *
@@ -185,6 +197,7 @@ public class WSSecEncrypt extends WSSecEncryptedKey {
      * @return Returns the updated <code>xenc:Reference</code> element
      * @throws WSSecurityException
      */
+    @FFDCIgnore(DestroyFailedException.class) // Liberty Change
     public Element encryptForRef(
         Element dataRef,
         List<WSEncryptionPart> references,

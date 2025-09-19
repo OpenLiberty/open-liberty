@@ -25,6 +25,8 @@ import org.apache.xml.security.encryption.XMLCipher;
 import org.apache.xml.security.signature.XMLSignature;
 import org.apache.xml.security.utils.JavaUtils;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.NoSuchPaddingException;
@@ -209,7 +211,7 @@ public final class KeyUtils {
                         new Object[]{"No such algorithm: \"" + RSA_ECB_OAEPWITH_SHA1_AND_MGF1_PADDING + "\""});
                 }
             } else {
-                if (e instanceof NoSuchAlgorithmException) {
+                if (e instanceof NoSuchAlgorithmException) {    //NOPMD
                     throw new WSSecurityException(
                         WSSecurityException.ErrorCode.UNSUPPORTED_ALGORITHM, e, "unsupportedKeyTransp",
                         new Object[]{"No such algorithm: \"" + keyAlgorithm + "\""});
@@ -235,9 +237,11 @@ public final class KeyUtils {
      */
     public static synchronized byte[] generateDigest(byte[] inputBytes) throws WSSecurityException {
         try {
+            // Liberty Change Start: set FIPS default
             if (digest == null) {
-                digest = MessageDigest.getInstance("SHA-1");
+                digest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1); // Liberty Change: Backport 4.x
             }
+            // Liberty Change End:
             return digest.digest(inputBytes);
         } catch (Exception e) {
             throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, e, "empty",

@@ -54,10 +54,13 @@ import java.util.List;
 
 import javax.security.auth.callback.CallbackHandler;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore; //Liberty code change
+
 
 /**
  * WS-Security Utility methods. <p/>
  */
+// No Liberty code change, debug only
 public final class WSSecurityUtil {
 
     private static boolean isSAAJ14 = false;
@@ -67,6 +70,7 @@ public final class WSSecurityUtil {
 
     private static final ClassValue<Method> GET_DOM_ELEMENTS_METHODS = new ClassValue<Method>() {
         @Override
+        @FFDCIgnore(NoSuchMethodException.class) // Liberty Change
         protected Method computeValue(Class<?> type) {
             try {
                 return getMethod(type, "getDomElement");
@@ -79,6 +83,7 @@ public final class WSSecurityUtil {
 
     private static final ClassValue<Method> GET_ENVELOPE_METHODS = new ClassValue<Method>() {
         @Override
+        @FFDCIgnore(NoSuchMethodException.class) // Liberty Change
         protected Method computeValue(Class<?> type) {
             try {
                 return getMethod(type, "getEnvelope");
@@ -123,6 +128,7 @@ public final class WSSecurityUtil {
         // Complete
     }
 
+    @FFDCIgnore(PrivilegedActionException.class) // Liberty Change
     private static Method getMethod(final Class<?> clazz, final String name,
                                    final Class<?>... parameterTypes) throws NoSuchMethodException {
         try {
@@ -237,11 +243,7 @@ public final class WSSecurityUtil {
             return true;
         }
 
-        if (hActor != null && actor != null && hActor.equalsIgnoreCase(actor)) {
-            return true;
-        }
-
-        return false;
+        return hActor != null && actor != null && hActor.equalsIgnoreCase(actor); // Liberty Change: Backport 4.x
     }
 
     /**
@@ -287,17 +289,18 @@ public final class WSSecurityUtil {
     }
 
 
+
     /**
      * Find the DOM Element in the SOAP Envelope that is referenced by the
      * WSEncryptionPart argument. The "Id" is used before the Element localname/namespace.
      *
      * @param part The WSEncryptionPart object corresponding to the DOM Element(s) we want
      * @param callbackLookup The CallbackLookup object used to find Elements
-     * @param doc The owning document
      * @return the DOM Element in the SOAP Envelope that is found
      */
+	 // Liberty Change; Backport 4.x
     public static List<Element> findElements(
-        WSEncryptionPart part, CallbackLookup callbackLookup, Document doc
+        WSEncryptionPart part, CallbackLookup callbackLookup
     ) throws WSSecurityException {
         // See if the DOM Element is stored in the WSEncryptionPart first
         if (part.getElement() != null) {

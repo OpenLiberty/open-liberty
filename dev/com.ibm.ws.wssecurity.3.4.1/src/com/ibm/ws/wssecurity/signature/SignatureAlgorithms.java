@@ -46,7 +46,6 @@ public class SignatureAlgorithms {
     static final String hmac_sha256 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256";
     static final String hmac_sha384 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha384";
     static final String hmac_sha512 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512";
-    static final String ecdsa_sha256 = "http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256";
 
     static Map<String, String> RSA_MAP = new HashMap<String, String>();
     static {
@@ -82,9 +81,6 @@ public class SignatureAlgorithms {
             if (HMAC_MAP.containsKey(algorithm)) {
                 algorithmSuite.getAlgorithmSuiteType().setSymmetricSignature(HMAC_MAP.get(algorithm));
                 //algorithmSuite.setSymmetricSignature(HMAC_MAP.get(algorithm)); //v3
-            }
-            if (algorithm.contains("sha256-sha256")) {
-                algorithmSuite.getAlgorithmSuiteType().setSymmetricSignature(sha256_sha256);
             }
         }
     }

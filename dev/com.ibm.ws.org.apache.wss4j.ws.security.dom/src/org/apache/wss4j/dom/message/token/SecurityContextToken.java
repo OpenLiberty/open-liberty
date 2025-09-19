@@ -295,10 +295,7 @@ public class SecurityContextToken {
             return false;
         }
         SecurityContextToken securityToken = (SecurityContextToken)object;
-        if (!compare(getIdentifier(), securityToken.getIdentifier())) {
-            return false;
-        }
-        return true;
+        return compare(getIdentifier(), securityToken.getIdentifier()); // Liberty Change: Backport 4.x
     }
 
     private boolean compare(String item1, String item2) {

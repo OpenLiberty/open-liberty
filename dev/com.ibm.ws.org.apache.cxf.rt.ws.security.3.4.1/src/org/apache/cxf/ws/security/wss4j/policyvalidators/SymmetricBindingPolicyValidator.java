@@ -21,7 +21,9 @@ package org.apache.cxf.ws.security.wss4j.policyvalidators;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger; // Liberty Change Start
 
+import org.apache.cxf.common.logging.LogUtils; // Liberty Change Start
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.policy.AssertionInfoMap;
 import org.apache.cxf.ws.security.policy.PolicyUtils;
@@ -35,7 +37,7 @@ import org.apache.wss4j.policy.model.SymmetricBinding;
  * Validate a SymmetricBinding policy.
  */
 public class SymmetricBindingPolicyValidator extends AbstractBindingPolicyValidator {
-
+    private static final Logger LOG = LogUtils.getL7dLogger(SymmetricBindingPolicyValidator.class); //Liberty code change, for debug only
     /**
      * Return true if this SecurityPolicyValidator implementation is capable of validating a
      * policy defined by the AssertionInfo parameter

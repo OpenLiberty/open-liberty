@@ -233,7 +233,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         RequestData reqData
     ) throws WSSecurityException {
         Message message = (Message)reqData.getMsgContext();
-        ClassLoader classLoader = this.getClassLoader(reqData.getMsgContext());
+        ClassLoader classLoader = this.getClassLoader();
         PasswordEncryptor passwordEncryptor = getPasswordEncryptor(reqData);
         return
             WSS4JUtils.loadCryptoFromPropertiesFile(

@@ -45,6 +45,8 @@ public class DERDecoder {
     public static final byte TYPE_OCTET_STRING = 0x04;
     /** DER type identifier for a sequence value */
     public static final byte TYPE_SEQUENCE = 0x30;
+    /** DER type identifier for ASN.1 "OBJECT IDENTIFIER" value. */
+    public static final byte TYPE_OBJECT_IDENTIFIER = 0x06; // Liberty Change: Backport 4.x
 
     private byte[] arr;
     private int pos;

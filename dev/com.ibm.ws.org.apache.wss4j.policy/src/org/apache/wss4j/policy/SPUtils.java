@@ -55,10 +55,7 @@ public final class SPUtils {
 
     public static boolean hasChildElementWithName(Element element, QName elementName) {
         Element child = SPUtils.getFirstChildElement(element, elementName);
-        if (child != null) {
-            return true;
-        }
-        return false;
+        return child != null; // Liberty Change: Backport 4.x
     }
 
     public static Element getFirstChildElement(Node parent, String childNodeName) {
@@ -80,13 +77,10 @@ public final class SPUtils {
     }
 
     private static boolean isNodeEqualToQName(Node node, QName nodeName) {
-        if ((node.getNamespaceURI() == null && nodeName.getNamespaceURI() == null
+        return (node.getNamespaceURI() == null && nodeName.getNamespaceURI() == null
             || node.getNamespaceURI() != null
                 && node.getNamespaceURI().equals(nodeName.getNamespaceURI()))
-            && node.getLocalName().equals(nodeName.getLocalPart())) {
-            return true;
-        }
-        return false;
+            && node.getLocalName().equals(nodeName.getLocalPart()); // Liberty Change: Backport 4.x
     }
 
     public static String getFirstChildElementText(Node parent, QName childNodeName) {

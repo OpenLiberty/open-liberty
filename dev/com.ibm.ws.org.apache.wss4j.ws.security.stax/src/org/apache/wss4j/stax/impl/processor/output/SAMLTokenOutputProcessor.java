@@ -335,7 +335,7 @@ public class SAMLTokenOutputProcessor extends AbstractOutputProcessor {
                             return key;
                         }
                         byte[] secretKey = getSecretKeyUsingCallback();
-                        if (secretKey != null) {
+                        if (secretKey != null && secretKey.length > 0) { // Liberty Change: Backport 4.x
                             String algoFamily = JCEAlgorithmMapper.getJCEKeyAlgorithmFromURI(algorithmURI);
                             key = new SecretKeySpec(secretKey, algoFamily);
                             setSecretKey(algorithmURI, key);
@@ -398,7 +398,7 @@ public class SAMLTokenOutputProcessor extends AbstractOutputProcessor {
                 }
             }
 
-            return null;
+            return new X509Certificate[0];  // Liberty Change: Backport 4.x
         }
 
 
@@ -413,7 +413,7 @@ public class SAMLTokenOutputProcessor extends AbstractOutputProcessor {
                 }
             }
 
-            return null;
+            return new byte[0];  // Liberty Change: Backport 4.x
         }
 
         @Override
@@ -488,15 +488,12 @@ public class SAMLTokenOutputProcessor extends AbstractOutputProcessor {
         }
 
         private boolean includeBST() {
-            if (senderVouches
+            return senderVouches
                 && getSecurityProperties().getSignatureKeyIdentifiers().contains(
                     WSSecurityTokenConstants.KEYIDENTIFIER_SECURITY_TOKEN_DIRECT_REFERENCE)
                 && securityToken != null
                 && !(WSSConstants.SAML_TOKEN_SIGNED.equals(action)
-                    && ((WSSSecurityProperties)getSecurityProperties()).isIncludeSignatureToken())) {
-                return true;
-            }
-            return false;
+                    && ((WSSSecurityProperties)getSecurityProperties()).isIncludeSignatureToken());  // Liberty Change: Backport 4.x
         }
     }
 

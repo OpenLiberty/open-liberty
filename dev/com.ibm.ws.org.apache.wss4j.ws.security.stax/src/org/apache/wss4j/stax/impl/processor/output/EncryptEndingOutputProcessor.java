@@ -66,32 +66,28 @@ public class EncryptEndingOutputProcessor extends AbstractEncryptEndingOutputPro
         loop:
         while (!xmlSecEventDeque.isEmpty()) {
             XMLSecEvent xmlSecEvent = xmlSecEventDeque.pop();
-            switch (xmlSecEvent.getEventType()) {
-                case XMLStreamConstants.START_ELEMENT:
-                    if (WSSUtils.isSecurityHeaderElement(xmlSecEvent, actor)) {
+            if (XMLStreamConstants.START_ELEMENT == xmlSecEvent.getEventType() 
+                    && WSSUtils.isSecurityHeaderElement(xmlSecEvent, actor)) { // Liberty Change: Backport 4.x
+                int attachmentCount = attachmentCount(outputProcessorChain);
+                for (int i = 0; i < attachmentCount; i++) {
+                    OutputProcessorUtils.updateSecurityHeaderOrder(
+                            outputProcessorChain, WSSConstants.TAG_xenc_EncryptedData, getAction(), true);
+                }
+                List<SecurityHeaderOrder> securityHeaderOrderList =
+                        outputProcessorChain.getSecurityContext().getAsList(SecurityHeaderOrder.class);
+                List<SecurityHeaderOrder> tmpList = null;
+                if (securityHeaderOrderList != null) {
+                    tmpList = new ArrayList<>(securityHeaderOrderList);
+                    securityHeaderOrderList.clear();
+                }
 
-                        int attachmentCount = attachmentCount(outputProcessorChain);
-                        for (int i = 0; i < attachmentCount; i++) {
-                            OutputProcessorUtils.updateSecurityHeaderOrder(
-                                    outputProcessorChain, WSSConstants.TAG_xenc_EncryptedData, getAction(), true);
-                        }
-                        List<SecurityHeaderOrder> securityHeaderOrderList =
-                                outputProcessorChain.getSecurityContext().getAsList(SecurityHeaderOrder.class);
-                        List<SecurityHeaderOrder> tmpList = null;
-                        if (securityHeaderOrderList != null) {
-                            tmpList = new ArrayList<>(securityHeaderOrderList);
-                            securityHeaderOrderList.clear();
-                        }
+                outputProcessorChain.reset();
+                outputProcessorChain.processEvent(xmlSecEvent);
 
-                        outputProcessorChain.reset();
-                        outputProcessorChain.processEvent(xmlSecEvent);
-
-                        if (securityHeaderOrderList != null) {
-                            securityHeaderOrderList.addAll(tmpList);
-                        }
-                        break loop;
-                    }
-                    break;
+                if (securityHeaderOrderList != null) {
+                    securityHeaderOrderList.addAll(tmpList);
+                }
+                break loop;
             }
             outputProcessorChain.reset();
             outputProcessorChain.processEvent(xmlSecEvent);

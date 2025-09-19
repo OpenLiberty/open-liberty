@@ -81,7 +81,7 @@ public class CommaDelimiterRfc2253Name {
 
     private String convertToDoubleQuotes(String rdnString) {
         StringBuilder quotedString = new StringBuilder();
-        int indexEquals = rdnString.indexOf("=");
+        int indexEquals = rdnString.indexOf('='); // Liberty Change: Backport 4.x
         String firstPart = rdnString.substring(0, indexEquals + 1);
         String lastPart = rdnString.substring(indexEquals + 1);
         String secondPart = unEscapeRfc2253RdnSubPart(lastPart);

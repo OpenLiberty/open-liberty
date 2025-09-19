@@ -124,13 +124,12 @@ public class WSSSignatureReferenceVerifyInputProcessor extends AbstractSignature
 
             final Attachment attachment = attachments.get(0);
 
-            InputStream attachmentInputStream = attachment.getSourceStream();
+            InputStream attachmentInputStream = attachment.getSourceStream();   //NOPMD
             if (!attachmentInputStream.markSupported()) {
                 attachmentInputStream = new BufferedInputStream(attachmentInputStream);
             }
             //todo workaround 2GB limit somehow?
             attachmentInputStream.mark(Integer.MAX_VALUE); //we can process at maximum 2G with the standard jdk streams
-
             try {
                 DigestOutputStream digestOutputStream =
                         createMessageDigestOutputStream(referenceType, inputProcessorChain.getSecurityContext());
@@ -303,14 +302,14 @@ public class WSSSignatureReferenceVerifyInputProcessor extends AbstractSignature
     protected InternalSignatureReferenceVerifier getSignatureReferenceVerifier(
             XMLSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
             ReferenceType referenceType, XMLSecStartElement startElement) throws XMLSecurityException {
-        return new InternalSignatureReferenceVerifier((WSSSecurityProperties) securityProperties,
-                inputProcessorChain, referenceType, startElement);
+        return new WSS4JInternalSignatureReferenceVerifier((WSSSecurityProperties) securityProperties, 
+                inputProcessorChain, referenceType, startElement); // Liberty Change: Backport 4.x
     }
 
     private void detectReplayAttack(InputProcessorChain inputProcessorChain) throws WSSecurityException {
         TimestampSecurityEvent timestampSecurityEvent =
                 inputProcessorChain.getSecurityContext().get(WSSConstants.PROP_TIMESTAMP_SECURITYEVENT);
-        ReplayCache replayCache =
+        ReplayCache replayCache =   //NOPMD
             ((WSSSecurityProperties)getSecurityProperties()).getTimestampReplayCache();
         if (timestampSecurityEvent != null && replayCache != null) {
             final String cacheKey =
@@ -436,13 +435,15 @@ public class WSSSignatureReferenceVerifyInputProcessor extends AbstractSignature
         }
         return parentTransformer;
     }
+	// Liberty Change Start: Backport 4.x
+    class WSS4JInternalSignatureReferenceVerifier
+            extends AbstractSignatureReferenceVerifyInputProcessor.InternalSignatureReferenceVerifier {
 
-    class InternalSignatureReferenceVerifier extends AbstractSignatureReferenceVerifyInputProcessor.InternalSignatureReferenceVerifier {
-
-        InternalSignatureReferenceVerifier(WSSSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
+        WSS4JInternalSignatureReferenceVerifier(WSSSecurityProperties securityProperties, InputProcessorChain inputProcessorChain,
                                            ReferenceType referenceType, XMLSecStartElement startElement) throws XMLSecurityException {
             super(securityProperties, inputProcessorChain, referenceType, startElement);
             this.addAfterProcessor(WSSSignatureReferenceVerifyInputProcessor.class.getName());
         }
     }
+	// Liberty Change End
 }

@@ -30,7 +30,8 @@ import javax.security.auth.callback.CallbackHandler;
 
 import org.apache.wss4j.common.ext.WSSecurityException;
 
-public interface Crypto {
+//Liberty Change to extend out API name
+public interface Crypto extends org.apache.ws.security.components.crypto.Crypto {
 
     //
     // Accessor methods

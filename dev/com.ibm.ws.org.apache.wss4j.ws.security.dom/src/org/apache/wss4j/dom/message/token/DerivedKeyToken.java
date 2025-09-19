@@ -20,6 +20,7 @@
 package org.apache.wss4j.dom.message.token;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -322,7 +323,7 @@ public class DerivedKeyToken {
             }
             return table;
         }
-        return null;
+        return Collections.emptyMap(); // Liberty Change: Backport 4.x
     }
 
     /**
@@ -592,7 +593,7 @@ public class DerivedKeyToken {
         }
 
         Map<String, String> properties = getProperties();
-        if (properties != null) {
+        if (!properties.isEmpty()) { // Liberty Change: Backport 4.x
             result = 31 * result + properties.hashCode();
         }
         int generation = getGeneration();
@@ -653,10 +654,7 @@ public class DerivedKeyToken {
         if (!compare(getLabel(), token.getLabel())) {
             return false;
         }
-        if (!compare(getNonce(), token.getNonce())) {
-            return false;
-        }
-        return true;
+        return compare(getNonce(), token.getNonce()); // Liberty Change: Backport 4.x
     }
 
     private boolean compare(String item1, String item2) {

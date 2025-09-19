@@ -424,7 +424,7 @@ public final class WSSConfig {
 
         if (actionObject instanceof Class<?>) {
             try {
-                return (Action)((Class<?>)actionObject).newInstance();
+                return (Action)((Class<?>)actionObject).getDeclaredConstructor().newInstance();
             } catch (Exception ex) {
                 LOG.debug(ex.getMessage(), ex);
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex,
@@ -514,7 +514,7 @@ public final class WSSConfig {
 
         if (validatorObject instanceof Class<?>) {
             try {
-                return (Validator)((Class<?>)validatorObject).newInstance();
+                return (Validator)((Class<?>)validatorObject).getDeclaredConstructor().newInstance(); // Liberty Change: Backport 4.x
             } catch (Exception ex) {
                 LOG.debug(ex.getMessage(), ex);
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex,
@@ -538,7 +538,7 @@ public final class WSSConfig {
 
         if (processorObject instanceof Class<?>) {
             try {
-                return (Processor)((Class<?>)processorObject).newInstance();
+                return (Processor)((Class<?>)processorObject).getDeclaredConstructor().newInstance(); // Liberty Change: Backport 4.x
             } catch (Exception ex) {
                 LOG.debug(ex.getMessage(), ex);
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex,

@@ -57,15 +57,22 @@ public final class DOMX509Data {
 
         element.appendChild(domIssuerSerial.getElement());
     }
+	// Liberty Change Start: Backport 4.x
+    /**
+     * Constructor.
+     */
+    public DOMX509Data(Document doc, DOMX509SKI x509SKI) {
+        element =
+                doc.createElementNS(WSS4JConstants.SIG_NS, "ds:X509Data");
 
+        element.appendChild(x509SKI.getElement());
+    }
+	// Liberty Change End
     /**
      * Return true if this X509Data element contains a X509IssuerSerial element
      */
     public boolean containsIssuerSerial() {
-        if (x509IssuerSerial == null) {
-            return false;
-        }
-        return true;
+        return x509IssuerSerial != null; // Liberty Change: Backport 4.x
     }
 
     /**

@@ -34,6 +34,7 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.common.token.Reference;
 import org.apache.wss4j.common.token.SecurityTokenReference;
 import org.apache.wss4j.common.util.KeyUtils;
+import org.apache.wss4j.common.util.UsernameTokenUtil;
 import org.apache.wss4j.dom.WSConstants;
 import org.apache.wss4j.dom.message.token.DerivedKeyToken;
 import org.apache.wss4j.dom.message.token.KerberosSecurity;
@@ -199,7 +200,7 @@ public abstract class WSSecDerivedKeyBase extends WSSecSignatureBase {
         byte[] label;
         String labelText = clientLabel + serviceLabel;
         label = labelText.getBytes(StandardCharsets.UTF_8);
-        byte[] nonce = WSSecurityUtil.generateNonce(16);
+        byte[] nonce = UsernameTokenUtil.generateNonce(16); // Liberty Change: Backport 4.x
 
         byte[] seed = new byte[label.length + nonce.length];
         System.arraycopy(label, 0, seed, 0, label.length);
@@ -231,7 +232,7 @@ public abstract class WSSecDerivedKeyBase extends WSSecSignatureBase {
 
             X509Certificate[] certs = getSigningCerts();
 
-            switch (keyIdentifierType) {
+                switch (keyIdentifierType) {
 
             case WSConstants.X509_KEY_IDENTIFIER:
                 secRef.setKeyIdentifier(certs[0]);
@@ -285,6 +286,7 @@ public abstract class WSSecDerivedKeyBase extends WSSecSignatureBase {
                 }
 
                 secRef.setReference(ref);
+                break; // Liberty Change: Backport 4.x
             }
 
             dkt.setSecurityTokenReference(secRef);

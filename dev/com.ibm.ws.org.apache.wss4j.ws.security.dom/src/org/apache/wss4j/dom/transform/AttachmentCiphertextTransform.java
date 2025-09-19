@@ -48,6 +48,6 @@ public class AttachmentCiphertextTransform extends TransformSpi {
                                                        boolean secureValidation)
         throws IOException, CanonicalizationException, InvalidCanonicalizerException, TransformationException,
         ParserConfigurationException, SAXException {
-        return new XMLSignatureInput((byte[])null);
+        return null; // Liberty Change Start; Backport 4.x
     }
 }
