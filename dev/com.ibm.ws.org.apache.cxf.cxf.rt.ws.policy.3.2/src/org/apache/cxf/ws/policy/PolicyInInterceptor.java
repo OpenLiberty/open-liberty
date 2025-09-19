@@ -40,6 +40,7 @@ import org.apache.cxf.transport.Destination;
 import org.apache.neethi.Assertion;
 import org.apache.neethi.Policy;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  *
  */
@@ -52,7 +53,7 @@ public class PolicyInInterceptor extends AbstractPolicyInterceptor {
         super(PolicyConstants.POLICY_IN_INTERCEPTOR_ID, Phase.RECEIVE);
     }
 
-    protected void handle(Message msg) {
+    protected void handle(@Sensitive Message msg) {
         Exchange exchange = msg.getExchange();
         Bus bus = exchange.getBus();
         Endpoint e = exchange.getEndpoint();

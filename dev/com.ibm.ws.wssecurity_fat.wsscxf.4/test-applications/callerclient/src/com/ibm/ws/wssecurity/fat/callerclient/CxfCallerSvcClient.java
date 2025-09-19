@@ -242,7 +242,7 @@ public class CxfCallerSvcClient extends HttpServlet {
             // set properties into requestContext when necessary
             if (untID != null && untID.length() > 0) {
                 Map<String, Object> requestContext = dispSOAPMsg.getRequestContext();
-                System.out.println("Setting untID: " + "secp256r1" + " with password: " + "security");
+                System.out.println("Setting untID: " + untID + " with password: " + untPassword);
                 requestContext.put("ws-security.username", untID);
                 requestContext.put("ws-security.password", untPassword);
             }
