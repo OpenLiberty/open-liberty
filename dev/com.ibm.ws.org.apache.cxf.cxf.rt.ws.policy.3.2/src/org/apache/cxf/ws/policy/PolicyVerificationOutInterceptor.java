@@ -27,6 +27,7 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.Phase;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  *
  */
@@ -47,7 +48,7 @@ public class PolicyVerificationOutInterceptor extends AbstractPolicyInterceptor 
      * @param message
      * @throws PolicyException if none of the alternatives is supported
      */
-    protected void handle(Message message) {
+    protected void handle(@Sensitive Message message) {
         boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
         
         if (MessageUtils.isPartialResponse(message)) {

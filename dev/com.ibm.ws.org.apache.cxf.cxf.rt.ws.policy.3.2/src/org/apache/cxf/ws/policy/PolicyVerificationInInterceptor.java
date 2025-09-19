@@ -37,6 +37,7 @@ import org.apache.cxf.service.model.BindingOperationInfo;
 import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.neethi.Assertion;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  *
  */
@@ -71,7 +72,7 @@ public class PolicyVerificationInInterceptor extends AbstractPolicyInterceptor {
      * @param message
      * @throws PolicyException if none of the alternatives is supported
      */
-    protected void handle(Message message) {
+    protected void handle(@Sensitive Message message) {
 
         boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
             
