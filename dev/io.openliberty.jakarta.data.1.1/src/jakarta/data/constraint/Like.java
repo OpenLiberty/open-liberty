@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import static jakarta.data.constraint.LikeRecord.CHAR_WILDCARD;
 import static jakarta.data.constraint.LikeRecord.ESCAPE;
 import static jakarta.data.constraint.LikeRecord.STRING_WILDCARD;
 import static jakarta.data.constraint.LikeRecord.translate;
@@ -25,7 +26,7 @@ import jakarta.data.spi.expression.literal.StringLiteral;
  */
 public interface Like extends Constraint<String> {
 
-    Character escape();
+    char escape();
 
     static Like literal(String value) {
 
@@ -40,16 +41,19 @@ public interface Like extends Constraint<String> {
 
     static Like pattern(String pattern) {
 
-        Messages.requireNonNull(pattern, "pattern");
-
-        StringLiteral expression = StringLiteral.of(pattern);
-
-        return new LikeRecord(expression, null);
+        return pattern(pattern, CHAR_WILDCARD, STRING_WILDCARD);
     }
 
     static Like pattern(String pattern, char charWildcard, char stringWildcard) {
+        Messages.requireNonNull(pattern, "pattern");
 
-        return Like.pattern(pattern, charWildcard, stringWildcard, ESCAPE);
+        StringLiteral expression = StringLiteral.of(translate(pattern,
+                                                              charWildcard,
+                                                              stringWildcard,
+                                                              ESCAPE,
+                                                              false));
+
+        return new LikeRecord(expression, ESCAPE);
     }
 
     static Like pattern(String pattern,
@@ -62,7 +66,8 @@ public interface Like extends Constraint<String> {
         StringLiteral expression = StringLiteral.of(translate(pattern,
                                                               charWildcard,
                                                               stringWildcard,
-                                                              escape));
+                                                              escape,
+                                                              true));
 
         return new LikeRecord(expression, escape);
     }

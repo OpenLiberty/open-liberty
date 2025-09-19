@@ -238,12 +238,13 @@ public interface DataVersionCompatibility {
     Set<Class<?>> specialParamTypes();
 
     /**
-     * Temporary method that obtains the literal value from a constraint if the
-     * supplied value is a constraint. Otherwise, returns the original value.
+     * Temporary method that obtains the literal value(s) from a constraint if the
+     * supplied value is a constraint for a literal expression.
      *
      * @param constraintOrValue a jakarta.data.constraint.Constraint subtype or a
      *                              literal value.
-     * @return literal value.
+     * @return array of literal values obtained from the constraint.
+     *         Null if not a constraint.
      */
-    Object toLiteralValue(Object constraintOrValue);
+    Object[] toConstraintValues(Object constraintOrValue);
 }

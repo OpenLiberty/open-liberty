@@ -18,6 +18,8 @@ javac.target: 17
 
 fat.project: true
 
+fat.test.container.images: icr.io/ibm-messaging/mq:9.3.2.0-r2
+
 src: \
   fat/src
 
@@ -37,7 +39,8 @@ tested.features: \
   concurrent-3.1, \
   connectors-2.1, \
   jndi-1.0, \
-  localConnector-1.0
+  localConnector-1.0, \
+  messaging-3.1
   
 -buildpath: \
   com.ibm.ws.componenttest.2.0;version=latest,\
@@ -57,6 +60,7 @@ tested.features: \
   net.sourceforge.htmlunit:htmlunit-core-js;version=latest, \
   net.sourceforge.htmlunit:webdriver;version='2.6', \
   org.seleniumhq.webdriver:webdriver-common;version='0.9.7376', \
+  io.openliberty.org.testcontainers;version=latest, \
   \
   io.openliberty.springboot.fat40.app;version=latest, \
   io.openliberty.springboot.fat40.war.app;version=latest, \
@@ -68,5 +72,6 @@ tested.features: \
   io.openliberty.springboot.fat40.websocket.app;version=latest, \
   io.openliberty.springboot.fat40.security.app;version=latest, \
   io.openliberty.springboot.fat40.concurrency.app;version=latest, \
-  io.openliberty.springboot.fat40.mbean.app;version=latest
+  io.openliberty.springboot.fat40.mbean.app;version=latest, \
+  io.openliberty.springboot.fat40.jms.app;version=latest
 

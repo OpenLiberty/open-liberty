@@ -46,7 +46,7 @@ public class ConcurrentCDITest extends FATServletClient {
 
     @Server("concurrent_fat_cdi")
     @TestServlets({
-                    @TestServlet(servlet = ConcurrentCDIServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = ConcurrentCDIServlet.class, contextRoot = APP_NAME, minJavaLevel = 17),
                     @TestServlet(servlet = ConcurrentCDI4Servlet.class, contextRoot = APP_NAME_EE10),
                     @TestServlet(servlet = ConcurrentCDIAdditionalServlet.class, contextRoot = WEBAPP_NAME_EE10)
     })

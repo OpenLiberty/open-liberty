@@ -66,7 +66,6 @@ import jakarta.data.constraint.NotIn;
 import jakarta.data.constraint.NotLike;
 import jakarta.data.constraint.NotNull;
 import jakarta.data.constraint.Null;
-import jakarta.data.expression.Expression;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
@@ -261,6 +260,12 @@ public class Data_1_1 implements DataVersionCompatibility {
                 q.append(attributeExpr).append(constraint.operator());
                 appendParam(q, ignoreCase, qp);
                 break;
+            case LikeEscaped:
+                q.append(attributeExpr).append(constraint.operator());
+                appendParam(q, ignoreCase, qp);
+                q.append(" ESCAPE ");
+                appendParam(q, false, qp + 1);
+                break;
             case Null:
                 q.append(attributeExpr).append(constraint.operator());
                 break;
@@ -390,7 +395,7 @@ public class Data_1_1 implements DataVersionCompatibility {
 
         for (Annotation anno : paramAnnos)
             if (anno instanceof Is) {
-                constraints[p] = toAttributeConstraint(((Is) anno).value());
+                constraints[p] = toAttributeConstraint(((Is) anno).value(), paramType);
             } else if (anno instanceof Assign) {
                 attrNames[p] = ((Assign) anno).value();
                 updateOps[p] = '=';
@@ -413,12 +418,8 @@ public class Data_1_1 implements DataVersionCompatibility {
                 qpNext++;
             }
 
-        if (Constraint.class.isAssignableFrom(paramType)) {
-            if (constraints[p] == null)
-                constraints[p] = toAttributeConstraint(paramType);
-
-            // TODO 1.1 implement handling of Constraint, check for collisions,
-            // and merge with subsequent code
+        if (constraints[p] == null && Constraint.class.isAssignableFrom(paramType)) {
+            constraints[p] = toAttributeConstraint(null, paramType);
         }
 
         if (qpNext == qpOriginal) {
@@ -511,10 +512,21 @@ public class Data_1_1 implements DataVersionCompatibility {
     /**
      * Convert a constraint subtype to its AttributeConstraint representation.
      *
-     * @param type subtype of Constraint.
+     * @param isAnnoConstraintType subtype of Constraint indicated by Is anno.
+     *                                 Otherwise null.
+     * @param methodParamType      repository method parameter type.
      * @return AttributeConstraint representation.
      */
-    private static final AttributeConstraint toAttributeConstraint(Class<?> type) {
+    private static AttributeConstraint toAttributeConstraint(Class<?> isAnnoConstraintType,
+                                                             Class<?> methodParamType) {
+        Class<?> type = isAnnoConstraintType == null ||
+                        Constraint.class.isAssignableFrom(methodParamType) //
+                                        ? methodParamType //
+                                        : isAnnoConstraintType;
+
+        if (isAnnoConstraintType != null && type != isAnnoConstraintType)
+            ; // TODO 1.1 error for collisions
+
         AttributeConstraint constraint;
         if (AtLeast.class.equals(type))
             constraint = AttributeConstraint.GreaterThanEqual;
@@ -531,7 +543,9 @@ public class Data_1_1 implements DataVersionCompatibility {
         else if (LessThan.class.equals(type))
             constraint = AttributeConstraint.LessThan;
         else if (Like.class.equals(type))
-            constraint = AttributeConstraint.Like;
+            constraint = Like.class.equals(methodParamType) //
+                            ? AttributeConstraint.LikeEscaped //
+                            : AttributeConstraint.Like;
         else if (NotBetween.class.equals(type))
             constraint = AttributeConstraint.NotBetween;
         else if (NotEqualTo.class.equals(type))
@@ -539,65 +553,75 @@ public class Data_1_1 implements DataVersionCompatibility {
         else if (NotIn.class.equals(type))
             constraint = AttributeConstraint.NotIn;
         else if (NotLike.class.equals(type))
-            constraint = AttributeConstraint.NotLike;
+            constraint = Like.class.equals(methodParamType) //
+                            ? AttributeConstraint.NotLikeEscaped //
+                            : AttributeConstraint.NotLike;
         else if (NotNull.class.equals(type))
             constraint = AttributeConstraint.NotNull;
         else if (Null.class.equals(type))
             constraint = AttributeConstraint.Null;
         else
+            // TODO 1.1 if isAnnoConstraintType == null handle generic Constraint else
             throw new UnsupportedOperationException("Constraint: " + type.getName()); // TODO NLS
+
+        // TODO 1.1: errors for types the Is annotation cannot support
 
         return constraint;
     }
 
     @Override
-    @Trivial
-    public Object toLiteralValue(Object constraintOrValue) {
+    @Trivial // avoid logging customer data
+    public Object[] toConstraintValues(Object constraintOrValue) {
         // TODO 1.1 this is not the correct implementation (doesn't account for
         // other types of expressions than literals) and is only here temporarily
         // so that we can complete remove some experimental code elsewhere without
         // breaking tests.
-        Expression<?, ?> exp = null;
+        boolean isList = false;
+        Object[] values;
         if (constraintOrValue instanceof AtLeast c)
-            exp = c.bound();
+            values = new Object[] { c.bound() };
         else if (constraintOrValue instanceof AtMost c)
-            exp = c.bound();
+            values = new Object[] { c.bound() };
+        else if (constraintOrValue instanceof Between c)
+            values = new Object[] { c.lowerBound(), c.upperBound() };
         else if (constraintOrValue instanceof EqualTo c)
-            exp = c.expression();
+            values = new Object[] { c.expression() };
         else if (constraintOrValue instanceof GreaterThan c)
-            exp = c.bound();
-        else if (constraintOrValue instanceof In c)
-            return toLiteralValues(c.expressions());
+            values = new Object[] { c.bound() };
+        else if (isList = constraintOrValue instanceof In)
+            values = ((In) constraintOrValue).expressions().toArray();
         else if (constraintOrValue instanceof LessThan c)
-            exp = c.bound();
+            values = new Object[] { c.bound() };
         else if (constraintOrValue instanceof Like c)
-            exp = c.pattern();
+            values = new Object[] { c.pattern(), c.escape() };
+        else if (constraintOrValue instanceof NotBetween c)
+            values = new Object[] { c.lowerBound(), c.upperBound() };
         else if (constraintOrValue instanceof NotEqualTo c)
-            exp = c.expression();
-        else if (constraintOrValue instanceof NotIn c)
-            return toLiteralValues(c.expressions());
+            values = new Object[] { c.expression() };
+        else if (isList = constraintOrValue instanceof NotIn)
+            values = ((NotIn) constraintOrValue).expressions().toArray();
         else if (constraintOrValue instanceof NotLike c)
-            exp = c.pattern();
+            values = new Object[] { c.pattern(), c.escape() };
+        else if (constraintOrValue instanceof NotNull ||
+                 constraintOrValue instanceof Null)
+            values = new Object[0];
         else if (constraintOrValue instanceof Constraint)
             throw new UnsupportedOperationException("Constraint: " +
                                                     constraintOrValue.getClass().getName());
         else
-            return constraintOrValue;
+            return null;
 
-        if (exp instanceof Literal)
-            return ((Literal) exp).value();
-        else
-            throw new UnsupportedOperationException(exp.getClass().getName());
-    }
-
-    @Trivial
-    private List<Object> toLiteralValues(List<Expression<?, ?>> exps) {
-        List<Object> list = new ArrayList<>(exps.size());
-        for (Expression<?, ?> exp : exps)
-            if (exp instanceof Literal)
-                list.add(((Literal) exp).value());
+        for (int i = 0; i < values.length; i++)
+            if (values[i] instanceof Literal)
+                values[i] = ((Literal) values[i]).value();
+            else if (values[i] instanceof Character)
+                ; // the escape character for Like and NotLike
             else
-                throw new UnsupportedOperationException(exp.getClass().getName());
-        return list;
+                throw new UnsupportedOperationException(values[i].getClass().getName());
+
+        if (isList)
+            values = new Object[] { List.of(values) };
+
+        return values;
     }
 }

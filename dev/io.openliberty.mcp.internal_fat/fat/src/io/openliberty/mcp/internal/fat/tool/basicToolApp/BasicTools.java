@@ -308,4 +308,44 @@ public class BasicTools {
     public boolean testToolArgNotRequired(@ToolArg(name = "value", description = "boolean value", required = false) boolean value) {
         return false;
     }
+
+    /////////////////////////////////////////////
+    // Special characters in Tool and  parameters
+
+    @Tool(name = "specialCharactersInToolName@!><={}'().%:")
+    public String specialCharactersInToolName(@ToolArg(name = "arg1", description = "specialCharactersInToolName") String arg1) {
+        return arg1;
+    }
+
+    @Tool(name = "specialCharactersInToolArgName")
+    public String specialCharactersInToolArgName(@ToolArg(name = "@arg1!><", description = "specialCharactersInToolArgName") String arg1,
+                                                 @ToolArg(name = "@arg2={}", description = "specialCharactersInToolArgName") String arg2) {
+        return arg1;
+    }
+
+    @Tool(name = "specialCharactersInToolArgNameVariant2")
+    public String specialCharactersInToolArgNameVariant2(@ToolArg(name = "@arg1'()", description = "specialCharactersInToolArgName") String arg1,
+                                                         @ToolArg(name = "@arg2.%:", description = "specialCharactersInToolArgName") String arg2) {
+        return arg1;
+    }
+
+    ////////////////////////////////////////
+    // reserved names in Tool and parameters
+
+    @Tool(name = "package")
+    public String reservedWordInToolName(@ToolArg(name = "arg1", description = "reservedWordsInToolName") String arg1) {
+        return arg1;
+    }
+
+    @Tool(name = "reservedNamesInToolArgName")
+    public String reservedNamesInToolArgName(@ToolArg(name = "package", description = "reservedNamesInToolArgName") String arg1,
+                                             @ToolArg(name = "int", description = "reservedNamesInToolArgName") String arg2) {
+        return arg1;
+    }
+
+    @Tool(name = "reservedNamesInToolArgNameVariant")
+    public String reservedNamesInToolArgNameVariant(@ToolArg(name = "class", description = "reservedNamesInToolArgName") String arg1,
+                                                    @ToolArg(name = "void", description = "reservedNamesInToolArgName") String arg2) {
+        return arg1;
+    }
 }

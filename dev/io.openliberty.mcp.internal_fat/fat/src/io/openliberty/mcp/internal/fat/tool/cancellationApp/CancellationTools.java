@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import io.openliberty.mcp.annotations.Tool;
+import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.messaging.Cancellation;
 import io.openliberty.mcp.messaging.Cancellation.OperationCancellationException;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -30,9 +31,10 @@ public class CancellationTools {
     private ToolStatus toolStatus;
 
     @Tool(name = "cancellationTool", title = "Cancellable tool", description = "A tool that waits to be cancelled")
-    public String cancellationTool(Cancellation cancellation) throws InterruptedException {
+    public String cancellationTool(Cancellation cancellation, @ToolArg(name = "latchName", description = "name of countdown latch to use for test") String latchName)
+                    throws InterruptedException {
         LOG.info("[cancellationTool] Starting");
-        toolStatus.setRunning();
+        toolStatus.setRunning(latchName);
         int counter = 0;
         while (counter++ < 20) {
             TimeUnit.MILLISECONDS.sleep(500);

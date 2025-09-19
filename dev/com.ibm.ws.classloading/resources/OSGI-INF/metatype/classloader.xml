@@ -37,7 +37,6 @@
 
     <AD name="%classloader.override.library.ref" description="%classloader.override.library.ref.desc"
         id="overrideLibraryRef"
-        ibm:beta="true"
         required="false"
         type="String"
         cardinality="10000"

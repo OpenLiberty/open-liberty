@@ -313,6 +313,8 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
     public String getSignatureMethodAlgorithm() {
         if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.equalsIgnoreCase(signatureMethodAlgorithm)) {
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+        } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA128.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            return SignatureConstants.MORE_ALGO_NS + "rsa-sha128"; //???????
         } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.equalsIgnoreCase(signatureMethodAlgorithm)) {
             // FIPS 140-3: Algorithm assessment complete; no changes required.
             // Already log insure algorithm at top of the class

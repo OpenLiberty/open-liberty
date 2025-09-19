@@ -202,6 +202,7 @@ io.openliberty.checkpoint_fat_persistence
 io.openliberty.checkpoint_fat_session_cache_infinispan_container
 io.openliberty.checkpoint_fat_springboot_data
 io.openliberty.data.internal_fat
+io.openliberty.data.internal_fat_1_1
 io.openliberty.data.internal_fat_ddlgen
 io.openliberty.data.internal_fat_jpa
 io.openliberty.data.internal_fat_jpa_hibernate

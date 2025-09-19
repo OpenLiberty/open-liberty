@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.cancellationApp;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -20,13 +22,22 @@ import jakarta.enterprise.context.ApplicationScoped;
 @ApplicationScoped
 public class ToolStatus {
 
-    private CountDownLatch latch = new CountDownLatch(1);
+    Map<String, CountDownLatch> latches = new HashMap<>();
 
-    public void setRunning() {
+    private CountDownLatch getOrCreateCountDownLatch(String latchName) {
+        // ensures only one thread at a time can safely get or add a latch to the map of latches
+        synchronized (this) {
+            return latches.computeIfAbsent(latchName, l -> new CountDownLatch(1));
+        }
+    }
+
+    public void setRunning(String latchName) {
+        CountDownLatch latch = getOrCreateCountDownLatch(latchName);
         latch.countDown();
     }
 
-    public void awaitRunning() throws InterruptedException {
+    public void awaitRunning(String latchName) throws InterruptedException {
+        CountDownLatch latch = getOrCreateCountDownLatch(latchName);
         boolean toolStarted = latch.await(10, TimeUnit.SECONDS);
         if (!toolStarted) {
             throw new RuntimeException("Tool did not start");

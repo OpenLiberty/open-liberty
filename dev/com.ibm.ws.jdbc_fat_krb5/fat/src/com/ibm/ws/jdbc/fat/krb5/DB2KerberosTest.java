@@ -12,6 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import static componenttest.annotation.SkipForSecurity.FIPS_140_3;
+import static componenttest.annotation.SkipForSecurity.SEMERU;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -41,32 +44,28 @@ import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForSecurity;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.db2.web.DB2KerberosTestServlet;
 
-@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
+@SkipForSecurity(property = FIPS_140_3, runtimeName = SEMERU)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DB2KerberosTest extends FATServletClient {
 
     private static final Class<?> c = DB2KerberosTest.class;
 
-    public static final String KRB5_USER = "dbuser";
-
     public static final String APP_NAME = "krb5-db2-app";
 
     public static final DB2KerberosContainer db2 = new DB2KerberosContainer(FATSuite.network);
 
-    private static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.krb5");
-
     @ClassRule
-    public static RuleChain chain = RuleChain.outerRule(skipJavaSemeruWithFipsEnabled).around(KerberosPlatformRule.instance()).around(db2);
+    public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(db2);
 
     @Server("com.ibm.ws.jdbc.fat.krb5")
     @TestServlet(servlet = DB2KerberosTestServlet.class, contextRoot = APP_NAME)
@@ -78,12 +77,10 @@ public class DB2KerberosTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
-
-        //TODO switch
-        krbKeytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab");
-//        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
-
         FATSuite.krb5.generateConf(krbConfPath);
+
+        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
+        FATSuite.krb5.copyUserKeytab(krbKeytabPath, db2.getKerberosUsername());
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
 
@@ -92,20 +89,16 @@ public class DB2KerberosTest extends FATServletClient {
         server.addEnvVar("DB2_PORT", "" + db2.getMappedPort(50000));
         server.addEnvVar("DB2_USER", db2.getUsername());
         server.addEnvVar("DB2_PASS", db2.getPassword());
-        server.addEnvVar("KRB5_USER", KRB5_USER);
+        server.addEnvVar("KRB5_PRIN", db2.getKerberosPrinciple());
+        server.addEnvVar("KRB5_USER", db2.getKerberosUsername());
+        server.addEnvVar("KRB5_PASS", db2.getKerberosPassword());
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
         server.addEnvVar("KRB5_KEYTAB", krbKeytabPath.toAbsolutePath().toString());
+
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
         jvmOpts.add("-Dsun.security.jgss.debug=true"); // Hotspot/OpenJ9
-
-        // TODO extract security files from container prior to server start
-        // TODO delete security files from git
-
-        // Extract keytab from container
-//        db2.copyFileFromContainer("/tmp/krb5.keytab", krbKeytabPath.toAbsolutePath().toString());
-
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
@@ -126,7 +119,7 @@ public class DB2KerberosTest extends FATServletClient {
     @Test
     @Mode(TestMode.FULL)
     public void testTicketCache() throws Exception {
-        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + KRB5_USER).toAbsolutePath().toString();
+        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + db2.getKerberosUsername()).toAbsolutePath().toString();
         try {
             generateTicketCache(ccPath, false);
         } catch (UnsupportedOperationException e) {
@@ -166,7 +159,7 @@ public class DB2KerberosTest extends FATServletClient {
     @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.resource.ResourceException", "javax.security.auth.login.LoginException" })
     public void testTicketCacheExpired() throws Exception {
-        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCacheExpired_" + KRB5_USER).toAbsolutePath().toString();
+        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCacheExpired_" + db2.getKerberosUsername()).toAbsolutePath().toString();
         try {
             generateTicketCache(ccPath, true);
         } catch (UnsupportedOperationException e) {
@@ -232,7 +225,7 @@ public class DB2KerberosTest extends FATServletClient {
         pb.command("kinit", "-k", "-t", krbKeytabPath.toAbsolutePath().toString(), //
                    "-c", "FILE:" + ccPath, //Some linux kinit installs require FILE:
                    "-l", expired ? "1" : "604800", //Ticket lifetime, if expired set the minimum of 1s, otherwise 7 days.
-                   KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
+                   db2.getKerberosUsername() + "@" + KerberosContainer.KRB5_REALM);
 
         pb.redirectErrorStream(true);
         Process p = null;

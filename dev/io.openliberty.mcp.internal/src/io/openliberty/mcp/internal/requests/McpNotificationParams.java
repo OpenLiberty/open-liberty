@@ -15,14 +15,14 @@ import jakarta.json.bind.annotation.JsonbNillable;
 public class McpNotificationParams {
 
     //Cancelled Notification params
-    private String requestId;
+    private McpRequestId requestId;
     private String reason;
 
-    public String getRequestId() {
+    public McpRequestId getRequestId() {
         return requestId;
     }
 
-    public void setRequestId(String requestId) {
+    public void setRequestId(McpRequestId requestId) {
         this.requestId = requestId;
     }
 

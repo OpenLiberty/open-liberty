@@ -20,9 +20,19 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
+import jakarta.data.constraint.AtMost;
+import jakarta.data.constraint.Between;
+import jakarta.data.constraint.In;
+import jakarta.data.constraint.Like;
+import jakarta.data.constraint.NotBetween;
+import jakarta.data.constraint.NotNull;
 import jakarta.data.expression.TextExpression;
+import jakarta.data.page.CursoredPage;
+import jakarta.data.page.PageRequest;
+import jakarta.data.page.PageRequest.Cursor;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -53,6 +63,32 @@ public class Data_1_1_Servlet extends FATServlet {
                 fractionsToAdd.add(f);
             }
         fractions.supply(fractionsToAdd);
+    }
+
+    /**
+     * Tests that the Between and NotBetween constraint types can be assigned to
+     * repository method parameters to enforce that matching entity attributes
+     * are either within or not within a range.
+     */
+    @Test
+    public void testBetweenAndNotBetweenConstraints() {
+
+        assertEquals(List.of("One Fourteenth",
+                             "Eleven Fourteenths",
+                             "One Fifteenth",
+                             "Four Fifteenths",
+                             "Eleven Fifteenths",
+                             "Fourteen Fifteenths",
+                             "One Sixteenth",
+                             "Eleven Sixteenths",
+                             "Fifteen Sixteenths"),
+                     fractions.withDenominatorBetweenNamedBeforeAndNumeratorNotBetween //
+                     (Between.bounds(14, 16),
+                      "Thirteen",
+                      NotBetween.bounds(5, 10),
+                      true)
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -95,6 +131,172 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Tests that the Is annotation can be applied to repository method parameters
+     * to enforce matching a pattern. Use cursor-based pagination to obtain results.
+     */
+    @Test
+    public void testIsAnnoLike() {
+
+        Order<Fraction> descendingNumerator = //
+                        Order.by(Sort.desc(_Fraction.NUMERATOR));
+
+        Cursor threeFifths = Cursor.forKey(5, 3);
+
+        PageRequest page2Req = PageRequest.ofSize(5)
+                        .afterCursor(threeFifths)
+                        .page(2)
+                        .withoutTotal();
+
+        CursoredPage<Fraction> page2 = fractions.namedLike("%fths",
+                                                           descendingNumerator,
+                                                           page2Req);
+        assertEquals(List.of("Two Fifths",
+                             "Eleven Twelfths",
+                             "Ten Twelfths",
+                             "Nine Twelfths",
+                             "Eight Twelfths"),
+                     page2.stream()
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(2L, page2.pageRequest().page());
+        assertEquals(5L, page2.numberOfElements());
+        assertEquals(true, page2.hasPrevious());
+        assertEquals(true, page2.hasNext());
+
+        CursoredPage<Fraction> page1 = fractions.namedLike("%fths",
+                                                           descendingNumerator,
+                                                           page2.previousPageRequest());
+
+        assertEquals(List.of("Four Fifths",
+                             "Three Fifths"),
+                     page1.stream()
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(1L, page1.pageRequest().page());
+        assertEquals(2L, page1.numberOfElements());
+        assertEquals(false, page1.hasPrevious());
+        assertEquals(true, page1.hasNext());
+
+        CursoredPage<Fraction> page3 = fractions.namedLike("%fths",
+                                                           descendingNumerator,
+                                                           page2.nextPageRequest());
+
+        assertEquals(List.of("Seven Twelfths",
+                             "Six Twelfths",
+                             "Five Twelfths",
+                             "Four Twelfths",
+                             "Three Twelfths"),
+                     page3.stream()
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(3L, page3.pageRequest().page());
+        assertEquals(5L, page3.numberOfElements());
+        assertEquals(true, page3.hasPrevious());
+        assertEquals(true, page3.hasNext());
+
+        CursoredPage<Fraction> page4 = fractions.namedLike("%fths",
+                                                           descendingNumerator,
+                                                           page3.nextPageRequest());
+
+        assertEquals(List.of("Two Twelfths"),
+                     page4.stream()
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(4L, page4.pageRequest().page());
+        assertEquals(1L, page4.numberOfElements());
+        assertEquals(true, page4.hasPrevious());
+        assertEquals(false, page4.hasNext());
+    }
+
+    /**
+     * Tests that the Like constraint types can be assigned to a repository
+     * method parameter to enforce that an entity attributes is matched
+     * according to a literal value.
+     */
+    @Test
+    public void testLikeConstraintWithLiteral() {
+
+        assertEquals(List.of("Seven Eighths"),
+                     fractions.named(Like.literal("Seven Eighths"),
+                                     Order.by(),
+                                     Limit.of(7)));
+
+        assertEquals(List.of(),
+                     fractions.named(Like.literal("Seven %"),
+                                     Order.by(),
+                                     Limit.of(8)));
+    }
+
+    /**
+     * Tests that the Like constraint types can be assigned to a repository
+     * method parameter to enforce that an entity attributes is matched
+     * according to an escaped pattern.
+     */
+    @Test
+    public void testLikeConstraintWithCustomEscapedPattern() {
+
+        assertEquals(List.of("Five Sixteenths",
+                             "Five Sixths",
+                             "Four Sixteenths",
+                             "Four Sixths"),
+                     fractions.named(Like.pattern("Fccc Sixxsthxs",
+                                                  'c', // char wildcard, normally _
+                                                  's', // string wildcard, normally %
+                                                  'x'), // escape char, normally \
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(6)));
+    }
+
+    /**
+     * Tests that the Like constraint types can be assigned to a repository
+     * method parameter to enforce that an entity attributes is matched
+     * according to a simple pattern with wildcards. Also use a Limit parameter
+     * to restrict the number of results returned.
+     */
+    @Test
+    public void testLikeConstraintWithPatternAndLimit() {
+
+        assertEquals(List.of("Three Fifths",
+                             "Three Ninths",
+                             "Three Sixths",
+                             "Two Fifths",
+                             "Two Ninths",
+                             "Two Sixths"),
+                     fractions.named(Like.pattern("T% _i_ths"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(10)));
+
+        // reversing the order and limiting to 4 results:
+        assertEquals(List.of("Two Sixths",
+                             "Two Ninths",
+                             "Two Fifths",
+                             "Three Sixths"),
+                     fractions.named(Like.pattern("T% _i_ths"),
+                                     Order.by(Sort.desc(_Fraction.NAME)),
+                                     Limit.of(4)));
+    }
+
+    /**
+     * Tests that a Constraint parameter and Is annotation parameter can be
+     * intermixed on a single repository method.
+     */
+    @Test
+    public void testMixConstraintAndIsAnno() {
+        Sort<Fraction> alphabetizedByName = Sort.asc(_Fraction.NAME);
+
+        assertEquals(List.of("Eight Ninths",
+                             "Five Ninths",
+                             "Three Ninths"),
+                     fractions.withNumeratorsAndDenominator(In.values(3, 5, 8, -12),
+                                                            9,
+                                                            alphabetizedByName));
+    }
+
+    /**
      * Attempt to use the static metamodel to create an expression for a
      * negative length prefix of an entity attribute value. Verify that
      * IllegalArgumentException is raised for the negative length and that
@@ -117,5 +319,27 @@ public class Data_1_1_Servlet extends FATServlet {
             else
                 throw x;
         }
+    }
+
+    /**
+     * Tests that the NotNull and AtMost constraint types can be assigned to
+     * repository method parameters to enforce that matching entity attributes
+     * are not null and less than or equal to a provided value.
+     */
+    @Test
+    public void testNotNullAndAtMostConstraints() {
+
+        assertEquals(List.of("One Fourth",
+                             "Two Fourths",
+                             "Three Fourths",
+                             "One Third",
+                             "Two Thirds",
+                             "One Half"),
+                     fractions.denominatoredUpTo(NotNull.instance(),
+                                                 AtMost.max(4),
+                                                 Sort.desc(_Fraction.DENOMINATOR),
+                                                 Sort.asc(_Fraction.NUMERATOR)) //
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
     }
 }

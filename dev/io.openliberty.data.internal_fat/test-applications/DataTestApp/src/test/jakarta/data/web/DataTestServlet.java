@@ -2801,6 +2801,24 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Verifies that an INTERSECT statement can be used within a JPQL query.
+     */
+    @Test
+    public void testIntersection() {
+
+        assertEquals(List.of("twenty-three",
+                             "twenty-nine",
+                             "thirty-seven",
+                             "thirty-one"),
+                     primes.withinBoth(10L, 40L,
+                                       20L, 50L)
+                                     .stream()
+                                     .map(p -> p.name)
+                                     .sorted(Comparator.reverseOrder())
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Repository method that returns IntStream.
      */
     @Test
@@ -6285,6 +6303,30 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found: " + found, 1, found.size());
         assertEquals(4021L, found.get(0).numberId);
         assertEquals(" Four thousand twenty-one ", found.get(0).name);
+    }
+
+    /**
+     * Verifies that a UNION statement can be used within a JPQL query.
+     */
+    @Test
+    public void testUnion() {
+
+        assertEquals(List.of("eleven",
+                             "five",
+                             "forty-one",
+                             "forty-three",
+                             "nineteen",
+                             "seven",
+                             "seventeen",
+                             "thirteen",
+                             "thirty-one",
+                             "thirty-seven"),
+                     primes.withinEither(5L, 20L,
+                                         30L, 45L)
+                                     .stream()
+                                     .map(p -> p.name)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
     }
 
     /**

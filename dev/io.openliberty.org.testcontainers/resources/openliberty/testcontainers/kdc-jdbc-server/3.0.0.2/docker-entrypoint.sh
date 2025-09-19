@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Checking environment settings"
+echo "(*) Checking environment settings"
 if [ -z ${KRB5_REALM} ]; then
     echo "No KRB5_REALM Provided. Exiting ..."
     exit 1
@@ -21,7 +21,7 @@ if [ -z ${EXTERNAL_HOSTNAME} ]; then
     EXTERNAL_HOSTNAME=localhost
 fi
 
-echo "Creating Krb5 Client Configuration"
+echo "(*) Creating Krb5 Client Configuration"
 cat <<EOT > /etc/krb5.conf
 [libdefaults]
  dns_lookup_realm = false
@@ -38,7 +38,9 @@ cat <<EOT > /etc/krb5.conf
  }
 EOT
 
-echo "Removing existing Krb5 Database"
+cat /etc/krb5.conf
+
+echo "(*) Removing existing Krb5 Database"
 rm -rf /var/lib/krb5kdc/principal*
 
 if [ ! -f "/var/lib/krb5kdc/principal" ]; then
@@ -50,7 +52,7 @@ if [ ! -f "/var/lib/krb5kdc/principal" ]; then
         echo "Using Password ${KRB5_PASS}"
     fi
 
-    echo "Creating KDC Configuration"
+    echo "(*) Creating KDC Configuration"
 cat <<EOT > /var/lib/krb5kdc/kdc.conf
 [kdcdefaults]
     kdc_listen = 99
@@ -67,67 +69,71 @@ cat <<EOT > /var/lib/krb5kdc/kdc.conf
     }
     
 [logging]
-    kdc = FILE:/var/log/krb5kdc.log
-    admin_server = FILE:/var/log/kadmin.log
-    default = FILE:/var/log/krb5lib.log
+    kdc = FILE:/dev/stdout
+    admin_server = FILE:/dev/stdout
+    default = FILE:/dev/stdout
+    debug = true
 EOT
 
-    echo "Creating Default Policy - Admin Access to */admin"
+    cat /var/lib/krb5kdc/kdc.conf
+
+    echo "(*) Creating Default Policy - Admin Access to */admin"
     echo "*/admin@${KRB5_REALM} *" > /var/lib/krb5kdc/kadm5.acl
     echo "*/service@${KRB5_REALM} aci" >> /var/lib/krb5kdc/kadm5.acl
+    cat /var/lib/krb5kdc/kadm5.acl
 
-    echo "Creating temporary pass file"
+    echo "(*) Creating temporary pass file"
 cat <<EOT > /etc/krb5_pass
 ${KRB5_PASS}
 ${KRB5_PASS}
 EOT
 
-    echo "Creating krb5util database"
+    echo "(*) Creating krb5util database"
     kdb5_util create -r ${KRB5_REALM} < /etc/krb5_pass
     rm /etc/krb5_pass
 
-    echo "Creating Admin Account"
+    echo "(*) Creating Admin Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} admin/admin@${KRB5_REALM}"
 
-    echo "Creating db2srvc Account"
+    echo "(*) Creating db2srvc Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} db2srvc@${KRB5_REALM}"
 
-    echo "Creating db2inst1 Account"
-    kadmin.local -q "addprinc -pw ${KRB5_PASS} db2inst1@${KRB5_REALM}"
+    echo "(*) Creating db2inst1 Account"
+    kadmin.local -q "addprinc -pw ${KRB5_PASS} db2inst1/db2@${KRB5_REALM}"
 
-    echo "Creating dbuser Account"
+    echo "(*) Creating dbuser Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} dbuser@${KRB5_REALM}"
     
-    echo "Creating FREE/oracle Account"
+    echo "(*) Creating FREE/oracle Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} FREE/oracle@${KRB5_REALM}"
     
-    echo "Creating oracle kerberos principal"
+    echo "(*) Creating oracle kerberos principal"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} ORACLEUSR@${KRB5_REALM}"
 
-    echo "Creating wsadmin Account"
+    echo "(*) Creating wsadmin Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} wsadmin@${KRB5_REALM}"
 
-    echo "Creating wassrvc/websphere Account"
+    echo "(*) Creating wassrvc/websphere Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} wassrvc/websphere@${KRB5_REALM}"
 
-    echo "Creating sqluser/sqlserver Account"
+    echo "(*) Creating sqluser/sqlserver Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} sqluser/sqlserver@${KRB5_REALM}"
 
-    echo "Creating MSSQLSvc/sqlserver Account"
+    echo "(*) Creating MSSQLSvc/sqlserver Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} MSSQLSvc/sqlserver:1433@${KRB5_REALM}"
     
-    echo "Creating postgres/postgresql Account"
+    echo "(*) Creating postgres/postgresql Account"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} postgres/postgresql@${KRB5_REALM}"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} postgres/${EXTERNAL_HOSTNAME}@${KRB5_REALM}"
     
-    echo "Creating principal for PostgreSQL user"
+    echo "(*) Creating principal for PostgreSQL user"
     kadmin.local -q "addprinc -pw ${KRB5_PASS} pguser@${KRB5_REALM}"
     
     echo "KERB SETUP COMPLETE"
 else
-    echo "Existing Krb5 Database removal failed"
+    echo "(*) Existing Krb5 Database removal failed"
     exit 1
 fi
 
-echo "Start monitoring service for container lifecycle"
+echo "(*) Start monitoring service for container lifecycle"
 /usr/bin/supervisord -c /etc/supervisord.conf

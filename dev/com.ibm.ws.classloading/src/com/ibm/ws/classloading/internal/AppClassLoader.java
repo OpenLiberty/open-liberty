@@ -52,7 +52,6 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.Bundle;
@@ -68,7 +67,6 @@ import com.ibm.ws.classloading.internal.providers.Providers.LoaderInfo;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.classloading.internal.util.FeatureSuggestion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.classloading.ApiType;
@@ -84,7 +82,6 @@ import com.ibm.wsspi.library.Library;
  */
 public class AppClassLoader extends ContainerClassLoader implements SpringLoader {
     static final TraceComponent tc = Tr.register(AppClassLoader.class);
-    private static final AtomicBoolean issuedOverrideBetaMessage = new AtomicBoolean(false);
 
     private static final Set<String> forbiddenClassNames = Collections.unmodifiableSet( loadForbidden() );
 
@@ -185,21 +182,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         for (Container container : config.getNativeLibraryContainers())
             addNativeLibraryContainer(container);
 
-        List<Library> foundOverrideLibraries = Providers.getOverrideLibraries(config);
-        if (foundOverrideLibraries != null && !foundOverrideLibraries.isEmpty()) {
-            // beta guard check
-            if (!ProductInfo.getBetaEdition()) {
-                foundOverrideLibraries  = Collections.emptyList();
-                if (issuedOverrideBetaMessage.compareAndSet(false, true)) {
-                    Tr.info(tc, "BETA: Override libraries can only be used with the Open Liberty BETA.");
-                }
-            } else {
-                if (issuedOverrideBetaMessage.compareAndSet(false, true)) {
-                    Tr.info(tc, "BETA: Override libraries are being used.");
-                }
-            }
-        }
-        this.overrideLibraries = new AtomicReference<>(foundOverrideLibraries);
+        this.overrideLibraries = new AtomicReference<>(Providers.getOverrideLibraries(config));
         this.privateLibraries = new AtomicReference<>(Providers.getPrivateLibraries(config));
 
         List<LibertyLoader> tmpBeforeApp = new ArrayList<>();

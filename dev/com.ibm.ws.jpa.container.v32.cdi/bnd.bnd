@@ -18,6 +18,10 @@ bVersion=1.0
 
 WS-TraceGroup: JPA, CDI
 
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 -dsannotations: com.ibm.ws.jpa.container.v32.cdi.internal.JPACDIExtensionMetaData
 

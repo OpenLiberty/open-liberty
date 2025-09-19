@@ -12,6 +12,8 @@
  *******************************************************************************/
 package io.openliberty.jpaContainer.v32.tck;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -23,6 +25,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -71,6 +74,7 @@ public class JPAContainerV32Launcher {
      */
     @Test
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
+    @SkipIfSysProp(OS_ZOS) //https://wasrtc.hursley.ibm.com:9443/jazz/web/projects/WS-CD#action=com.ibm.team.workitem.viewWorkItem&id=306306 is likely an encoding issue on ZOS. Until its fixed, skip on ZOS.
     public void launchFaultTolerance40TCK() throws Exception {
 
         Map<String, String> additionalProps = new HashMap<>();

@@ -4098,17 +4098,6 @@ public class QueryInfo {
                             }
                         }
                     }
-                } else {
-                    String queryType = selectLen > 0 ? "SELECT" : "FROM";
-                    String example = (selectLen > 0 ? "SELECT [select_list] " : "") +
-                                     "FROM [entity_name] WHERE [conditional_expression]";
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1030.ql.lacks.entity",
-                              ql,
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              queryType,
-                              example);
                 }
             }
 
@@ -4200,64 +4189,88 @@ public class QueryInfo {
                 }
             }
 
-            StringBuilder q;
+            boolean insertConstructor = false;
+            String selection = null;
             if (selectLen > 0) {
-                String selection = ql.substring(select0, select0 + selectLen);
-                q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
-                q.append("SELECT");
-                // TODO 1.1 use Jakarta Persistence enhancement issue 420 instead of
-                // editing the query
-                boolean insertConstructor = compat.atLeast(1, 1) &&
-                                            singleType.isRecord() &&
-                                            !selection.toUpperCase().contains(" NEW ");
-                if (insertConstructor)
-                    q.append(" NEW ").append(singleType.getName()).append('(');
-                if (insertEntityVar) {
-                    appendWithIdentifierName(ql, select0, select0 + selectLen, entityVar_, q);
-                } else {
-                    q.append(selection);
-                }
-                if (insertConstructor)
-                    q.append(") ");
-                if (fromLen == 0 && whereLen == 0 && orderLen == 0 &&
-                    !Character.isWhitespace(q.charAt(q.length() - 1)))
-                    q.append(' ');
-            } else {
-                q = generateSelectClause().append(' ');
+                selection = ql.substring(select0, select0 + selectLen);
+                insertConstructor = compat.atLeast(1, 1) &&
+                                    singleType.isRecord() &&
+                                    !selection.toUpperCase().contains(" NEW ");
             }
 
-            q.append("FROM");
-            if (fromLen > 0) {
-                if (entityName0 > 0) {
-                    q.append(ql.substring(from0, entityName0));
-                    q.append(entityName);
-                    q.append(ql.substring(entityName0 + entityNameLen, from0 + fromLen));
+            // TODO Eventually send everything through the if block path and
+            // remove the else block entirely. The following is just enough to
+            // get a couple of test cases working
+            if (fromLen > 0 && // TODO insert FROM clause if not present
+                (entityInfo.recordClass == null ||
+                 !ql.contains(entityInfo.recordClass.getSimpleName()))
+                && // TODO replace record types with generated class type
+                !insertConstructor && // temporary
+                !insertEntityVar) { // temporary
+                if (selectLen > 0) {
+                    jpql = ql;
                 } else {
-                    q.append(ql.substring(from0, from0 + fromLen));
+                    // TODO only add a SELECT clause if needed for something other
+                    // than selecting the entity, such as individual attributes or
+                    // Java records with multiple.
+                    jpql = generateSelectClause().append(' ').append(ql).toString();
                 }
             } else {
-                q.append(' ').append(entityName).append(' ');
-                if (hasEntityVar)
-                    q.append(entityVar).append(' ');
-            }
-
-            if (whereLen > 0)
-                // TODO once fixed, test #30351 by adding: && !"this.".equalsIgnoreCase(entityVar_)
-                // and running DataJPATestServlet.testCountQueryWithFromAndWhereClausesOnly
-                if (insertEntityVar) {
-                    q.append("WHERE");
-                    appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, q);
+                StringBuilder q;
+                if (selectLen > 0) {
+                    q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
+                    q.append("SELECT");
+                    // TODO 1.1 use Jakarta Persistence enhancement issue 420 instead of
+                    // editing the query
+                    if (insertConstructor)
+                        q.append(" NEW ").append(singleType.getName()).append('(');
+                    if (insertEntityVar) {
+                        appendWithIdentifierName(ql, select0, select0 + selectLen, entityVar_, q);
+                    } else {
+                        q.append(selection);
+                    }
+                    if (insertConstructor)
+                        q.append(") ");
+                    if (fromLen == 0 && whereLen == 0 && orderLen == 0 &&
+                        !Character.isWhitespace(q.charAt(q.length() - 1)))
+                        q.append(' ');
                 } else {
-                    q.append("WHERE").append(ql.substring(where0, where0 + whereLen));
+                    q = generateSelectClause().append(' ');
                 }
 
-            if (orderLen > 0)
-                if (insertEntityVar)
-                    appendWithIdentifierName(ql, order0, order0 + orderLen, entityVar_, q);
-                else
-                    q.append(ql.substring(order0, order0 + orderLen));
+                q.append("FROM");
+                if (fromLen > 0) {
+                    if (entityName0 > 0) {
+                        q.append(ql.substring(from0, entityName0));
+                        q.append(entityName);
+                        q.append(ql.substring(entityName0 + entityNameLen, from0 + fromLen));
+                    } else {
+                        q.append(ql.substring(from0, from0 + fromLen));
+                    }
+                } else {
+                    q.append(' ').append(entityName).append(' ');
+                    if (hasEntityVar)
+                        q.append(entityVar).append(' ');
+                }
 
-            jpql = q.toString();
+                if (whereLen > 0)
+                    // TODO once fixed, test #30351 by adding: && !"this.".equalsIgnoreCase(entityVar_)
+                    // and running DataJPATestServlet.testCountQueryWithFromAndWhereClausesOnly
+                    if (insertEntityVar) {
+                        q.append("WHERE");
+                        appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, q);
+                    } else {
+                        q.append("WHERE").append(ql.substring(where0, where0 + whereLen));
+                    }
+
+                if (orderLen > 0)
+                    if (insertEntityVar)
+                        appendWithIdentifierName(ql, order0, order0 + orderLen, entityVar_, q);
+                    else
+                        q.append(ql.substring(order0, order0 + orderLen));
+
+                jpql = q.toString();
+            }
         }
 
         // Find out how many parameters the method supplies to the query
@@ -5277,18 +5290,28 @@ public class QueryInfo {
         DataVersionCompatibility compat = producer.provider().compat;
         Iterator<String> namedParams = jpqlParamNames.iterator();
         for (int i = 0, p = 0; i < jpqlParamCount; i++) {
-            Object arg = compat.toLiteralValue(args[i]);
-
-            if (namedParams.hasNext()) {
-                String paramName = namedParams.next();
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "set :" + paramName + ' ' + loggable(arg));
-                query.setParameter(paramName, arg);
-                p++;
-            } else { // positional parameter
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + loggable(arg));
-                query.setParameter(++p, arg);
+            Object[] values = compat.toConstraintValues(args[i]);
+            if (values == null) {
+                // normal value, not a Constraint
+                if (namedParams.hasNext()) {
+                    String paramName = namedParams.next();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set :" + paramName + ' ' + loggable(args[i]));
+                    query.setParameter(paramName, args[i]);
+                    p++;
+                } else { // positional parameter
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + loggable(args[i]));
+                    query.setParameter(++p, args[i]);
+                }
+            } else { // Constraint
+                // TODO 1.1 reject erroneous attempt to supply a Constraint to JPQL here?
+                for (Object value : values) {
+                    // always a positional parameter
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "set ?" + (p + 1) + ' ' + loggable(value));
+                    query.setParameter(++p, value);
+                }
             }
         }
     }

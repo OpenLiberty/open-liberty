@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import static jakarta.data.constraint.LikeRecord.CHAR_WILDCARD;
 import static jakarta.data.constraint.LikeRecord.ESCAPE;
 import static jakarta.data.constraint.LikeRecord.STRING_WILDCARD;
 import static jakarta.data.constraint.LikeRecord.translate;
@@ -25,7 +26,7 @@ import jakarta.data.spi.expression.literal.StringLiteral;
  */
 public interface NotLike extends Constraint<String> {
 
-    Character escape();
+    char escape();
 
     static NotLike literal(String value) {
         Messages.requireNonNull(value, "value");
@@ -38,16 +39,21 @@ public interface NotLike extends Constraint<String> {
     TextExpression<?> pattern();
 
     static NotLike pattern(String pattern) {
-        Messages.requireNonNull(pattern, "pattern");
-
-        StringLiteral expression = StringLiteral.of(pattern);
-        return new NotLikeRecord(expression, null);
+        return pattern(pattern, CHAR_WILDCARD, STRING_WILDCARD);
     }
 
     static NotLike pattern(String pattern,
                            char charWildcard,
                            char stringWildcard) {
-        return NotLike.pattern(pattern, charWildcard, stringWildcard, ESCAPE);
+        Messages.requireNonNull(pattern, "pattern");
+
+        StringLiteral expression = StringLiteral.of(translate(pattern,
+                                                              charWildcard,
+                                                              stringWildcard,
+                                                              ESCAPE,
+                                                              false));
+
+        return new NotLikeRecord(expression, ESCAPE);
     }
 
     static NotLike pattern(String pattern,
@@ -59,7 +65,8 @@ public interface NotLike extends Constraint<String> {
         StringLiteral expression = StringLiteral.of(translate(pattern,
                                                               charWildcard,
                                                               stringWildcard,
-                                                              escape));
+                                                              escape,
+                                                              true));
         return new NotLikeRecord(expression, escape);
     }
 

@@ -331,8 +331,8 @@ CWWKD1029.first.neg.or.zero.useraction=Update the repository method to specify \
  a positive maximum number of results.
 
 CWWKD1030.ql.lacks.entity=CWWKD1030E: The entity name is missing from the {0} \
- query that is specified for the {1} method of the {2} repository. In Jakarta \
- Data Query Language, {3} queries should be formed like: {4}.
+ query that is specified for the {1} method of the {2} repository. \
+ For {3} queries, use the form: {4}.
 CWWKD1030.ql.lacks.entity.explanation=The query contains a clause that requires \
  the entity name.
 CWWKD1030.ql.lacks.entity.useraction=Update the query for repository method to \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -94,6 +94,10 @@ public class TestConstants {
      * Path to the client CA for OTLP secure connections
      */
     public static final String ENV_OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE = "OTEL_EXPORTER_OTLP_CLIENT_CERTIFICATE";
+
+    public static final String ENV_OTEL_TRACES_SAMPLER = "OTEL_TRACES_SAMPLER";
+
+    public static final String ENV_OTEL_BSP_MAX_EXPORT_BATCH_SIZE = "OTEL_BSP_MAX_EXPORT_BATCH_SIZE";
 
     /*
      * Private constructor, no instances

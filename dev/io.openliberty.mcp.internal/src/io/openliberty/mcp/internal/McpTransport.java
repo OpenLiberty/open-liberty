@@ -25,6 +25,7 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.McpRequest;
+import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
 import io.openliberty.mcp.internal.responses.McpResponse;
 import io.openliberty.mcp.internal.responses.McpResultResponse;
@@ -191,7 +192,7 @@ public class McpTransport {
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? "" : mcpRequest.id(), e);
+        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? new McpRequestId("") : mcpRequest.id(), e);
         jsonb.toJson(mcpResponse, writer);
     }
 

@@ -58,14 +58,17 @@ public class ExpectedAppFailureValidator {
     }
 
     /**
-     * @param errMsg the error message if the expected error is not found in the logs
+     * @param noErrorsFoundMsg the error message if the expected errors are not found in the logs
+     * @param expectedErrorHeader each list of error messages is preceded by a header with details about the error list
      * @param expectedErrorList a list of expected error messages
      * @param server the liberty server
      * @throws Exception
      */
-    public static void findAndAssertExpectedErrorsInLogs(String errMsg, List<String> expectedErrorList, LibertyServer server) throws Exception {
+    public static void findAndAssertExpectedErrorsInLogs(String noErrorsFoundMsg, String expectedErrorHeader, List<String> expectedErrorList, LibertyServer server)
+                    throws Exception {
+        assertTrue("Expected header not found: " + expectedErrorHeader, !server.findStringsInLogs(expectedErrorHeader).isEmpty());
         for (String err : expectedErrorList) {
-            assertTrue(errMsg + " [" + err + "] expected and not found", !server.findStringsInLogs(err).isEmpty());
+            assertTrue(noErrorsFoundMsg + " [" + err + "] expected and not found", !server.findStringsInLogs(err).isEmpty());
         }
     }
 }

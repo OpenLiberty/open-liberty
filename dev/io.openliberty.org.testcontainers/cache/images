@@ -14,6 +14,7 @@ wasliberty-ghcr-docker-remote/testcontainers/ryuk:0.12.0
 wasliberty-ghcr-docker-remote/testcontainers/sshd:1.3.0
 wasliberty-ghcr-docker-remote/testcontainers/vnc-recorder:1.4.0
 wasliberty-icr-docker-remote/db2_community/db2:12.1.1.0
+wasliberty-icr-docker-remote/db2_community/db2:12.1.2.0
 wasliberty-icr-docker-remote/ibm-messaging/mq:9.3.2.0-r2
 wasliberty-infrastructure-docker/confluentinc/cp-kafka:7.1.1
 wasliberty-infrastructure-docker/elastic/logstash:7.16.3
@@ -25,7 +26,6 @@ wasliberty-infrastructure-docker/jboss/keycloak:16.1.1
 wasliberty-infrastructure-docker/jiwoo/nexus:1.0
 wasliberty-infrastructure-docker/jiwoo/simple-keyserver:1.0
 wasliberty-infrastructure-docker/jiwoo/squid-proxy:1.0
-wasliberty-infrastructure-docker/kyleaure/db2-krb5:2.0
 wasliberty-infrastructure-docker/letsencrypt/pebble-challtestsrv:v2.3.1
 wasliberty-infrastructure-docker/letsencrypt/pebble:v2.3.1
 wasliberty-infrastructure-docker/mariadb:10.3
@@ -36,9 +36,9 @@ wasliberty-infrastructure-docker/ryanesch/acme-boulder:1.2
 wasliberty-infrastructure-docker/seleniarm/standalone-chromium:4.8.3
 wasliberty-infrastructure-docker/selenium/standalone-chrome:4.8.3
 wasliberty-internal-docker-local/openliberty/testcontainers/couchdb-ssl:3.0.0.1
-wasliberty-internal-docker-local/openliberty/testcontainers/db2-krb5:12.1.1.0
+wasliberty-internal-docker-local/openliberty/testcontainers/db2-krb5:12.1.2.0
 wasliberty-internal-docker-local/openliberty/testcontainers/db2-ssl:12.1.1.0
-wasliberty-internal-docker-local/openliberty/testcontainers/kdc-jdbc-server:3.0.0.1
+wasliberty-internal-docker-local/openliberty/testcontainers/kdc-jdbc-server:3.0.0.2
 wasliberty-internal-docker-local/openliberty/testcontainers/kdc-security-server:3.17
 wasliberty-internal-docker-local/openliberty/testcontainers/keyserver-simple:3.11.6
 wasliberty-internal-docker-local/openliberty/testcontainers/ldap-kdc-server:1.0.0.1

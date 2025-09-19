@@ -14,6 +14,7 @@ import static org.hamcrest.Matchers.arrayContaining;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.io.StringReader;
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
 
@@ -38,14 +39,17 @@ import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbException;
 
 /**
  *
  */
 public class MessageParsingTest {
+    private static Jsonb jsonb;
 
     @BeforeClass
     public static void setup() {
+        jsonb = JsonbBuilder.create();
         ToolRegistry registry = new ToolRegistry();
         ToolRegistry.set(registry);
 
@@ -65,7 +69,6 @@ public class MessageParsingTest {
 
     @Test
     public void parseToolCallMethod() {
-        Jsonb jsonb = JsonbBuilder.create();
         StringReader reader = new StringReader("""
                         {
                           "jsonrpc": "2.0",
@@ -80,7 +83,8 @@ public class MessageParsingTest {
                         }
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(((Number) request.id()).intValue(), equalTo(2));
+        assertThat(request.id().getNumVal(), equalTo(new BigDecimal(2)));
+        assertThat(request.id().getStrVal(), equalTo(null));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.TOOLS_CALL));
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         assertThat(toolCallRequest.getArguments(jsonb), arrayContaining("Hello"));
@@ -88,7 +92,6 @@ public class MessageParsingTest {
 
     @Test
     public void parseStringIdType() {
-        Jsonb jsonb = JsonbBuilder.create();
         StringReader reader = new StringReader("""
                         {
                           "jsonrpc": "2.0",
@@ -103,7 +106,8 @@ public class MessageParsingTest {
                         }
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.id(), equalTo("2"));
+        assertThat(request.id().getStrVal(), equalTo("2"));
+        assertThat(request.id().getNumVal(), equalTo(null));
     }
 
     @Test(expected = JSONRPCException.class)
@@ -123,6 +127,25 @@ public class MessageParsingTest {
                         """);
 
         McpRequest.createValidMCPRequest(reader);
+    }
+
+    @Test(expected = JsonbException.class)
+    public void validateFalseIdTypeWithDeserialization() throws JsonException, JSONRPCException {
+        StringReader reader = new StringReader("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": false,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echo",
+                            "arguments": {
+                              "input": "Hello"
+                            }
+                          }
+                        }
+                        """);
+
+        jsonb.fromJson(reader, McpRequest.class);
     }
 
     @Test(expected = JSONRPCException.class)
@@ -163,6 +186,25 @@ public class MessageParsingTest {
         McpRequest.createValidMCPRequest(reader);
     }
 
+    @Test(expected = JsonbException.class)
+    public void validateEmptyIdWithDeserialization() throws JsonException, JSONRPCException {
+        StringReader reader = new StringReader("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echo",
+                            "arguments": {
+                              "input": "Hello"
+                            }
+                          }
+                        }
+                        """);
+
+        jsonb.fromJson(reader, McpRequest.class);
+    }
+
     @Test(expected = JSONRPCException.class)
     public void validateMissingMethod() throws JsonException, JSONRPCException {
         StringReader reader = new StringReader("""
@@ -183,8 +225,7 @@ public class MessageParsingTest {
 
     @Test
     public void parseInitilizationMessage() {
-        Jsonb jsonb = JsonbBuilder.create();
-        var reader = new StringReader("""
+        StringReader reader = new StringReader("""
                         {
                           "jsonrpc": "2.0",
                           "id": "1",
@@ -208,7 +249,7 @@ public class MessageParsingTest {
                         """);
 
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.id(), equalTo("1"));
+        assertThat(request.id().getStrVal(), equalTo("1"));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.INITIALIZE));
         McpInitializeParams params = request.getParams(McpInitializeParams.class, jsonb);
         assertThat(params.getProtocolVersion(), equalTo("2024-11-05"));
@@ -224,46 +265,60 @@ public class MessageParsingTest {
 
     @Test
     public void parseInitializedNotification() throws Exception {
-        McpRequest request;
-        try (Jsonb jsonb = JsonbBuilder.create()) {
-            var reader = new StringReader("""
-                            {
-                              "jsonrpc": "2.0",
-                              "method": "notifications/initialized"
-                            }
-                            """);
+        StringReader reader = new StringReader("""
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/initialized"
+                        }
+                        """);
 
-            request = jsonb.fromJson(reader, McpRequest.class);
-            assertThat(request.getRequestMethod(), equalTo(RequestMethod.INITIALIZED));
-        }
+        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
+        assertThat(request.getRequestMethod(), equalTo(RequestMethod.INITIALIZED));
+
     }
 
     @Test
-    public void parseCancelledNotification() throws Exception {
-        McpRequest request;
-        try (Jsonb jsonb = JsonbBuilder.create()) {
-            var reader = new StringReader("""
-                            {
-                               "jsonrpc": "2.0",
-                               "method": "notifications/cancelled",
-                               "params": {
-                                 "requestId": "123",
-                                 "reason": "User requested cancellation"
-                               }
-                             }
-                            """);
-            request = jsonb.fromJson(reader, McpRequest.class);
-            assertThat(request.getRequestMethod(), equalTo(RequestMethod.CANCELLED));
+    public void parseCancelledNotificationWithStringId() throws Exception {
+        StringReader reader = new StringReader("""
+                        {
+                           "jsonrpc": "2.0",
+                           "method": "notifications/cancelled",
+                           "params": {
+                             "requestId": "123",
+                             "reason": "User requested cancellation"
+                           }
+                         }
+                        """);
+        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
+        assertThat(request.getRequestMethod(), equalTo(RequestMethod.CANCELLED));
 
-            McpNotificationParams notificationRequest = request.getParams(McpNotificationParams.class, jsonb);
-            assertThat(notificationRequest.getRequestId(), equalTo("123"));
-            assertThat(notificationRequest.getReason(), equalTo("User requested cancellation"));
-        }
+        McpNotificationParams notificationRequest = request.getParams(McpNotificationParams.class, jsonb);
+        assertThat(notificationRequest.getRequestId().getStrVal(), equalTo("123"));
+        assertThat(notificationRequest.getReason(), equalTo("User requested cancellation"));
+    }
+
+    @Test
+    public void parseCancelledNotificationWithNumericId() throws Exception {
+        StringReader reader = new StringReader("""
+                        {
+                           "jsonrpc": "2.0",
+                           "method": "notifications/cancelled",
+                           "params": {
+                             "requestId": 5,
+                             "reason": "User requested cancellation"
+                           }
+                         }
+                        """);
+        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
+        assertThat(request.getRequestMethod(), equalTo(RequestMethod.CANCELLED));
+
+        McpNotificationParams notificationRequest = request.getParams(McpNotificationParams.class, jsonb);
+        assertThat(notificationRequest.getRequestId().getNumVal(), equalTo(new BigDecimal(5)));
+        assertThat(notificationRequest.getReason(), equalTo("User requested cancellation"));
     }
 
     @Test
     public void parseIntArgumentType() {
-        Jsonb jsonb = JsonbBuilder.create();
         StringReader reader = new StringReader("""
                         {
                           "jsonrpc": "2.0",
@@ -285,7 +340,6 @@ public class MessageParsingTest {
 
     @Test
     public void parseBooleanArgumentType() {
-        Jsonb jsonb = JsonbBuilder.create();
         StringReader reader = new StringReader("""
                         {
                           "jsonrpc": "2.0",

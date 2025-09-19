@@ -33,6 +33,7 @@ public enum AttributeConstraint {
     LessThan("<", 1, false),
     LessThanEqual("<=", 1, false, "AtMost"),
     Like(" LIKE ", 1, false),
+    LikeEscaped(" LIKE ", 2, false),
     Not("<>", 1, Supports.COLLECTIONS, "NotEqualTo"),
     NotBetween(" NOT BETWEEN ", 2, false),
     NotContains(null, 1, Supports.COLLECTIONS),
@@ -40,6 +41,7 @@ public enum AttributeConstraint {
     NotEndsWith(null, 1, false),
     NotIn(" NOT IN ", 1, false),
     NotLike(" NOT LIKE ", 1, false),
+    NotLikeEscaped(" NOT LIKE ", 2, false),
     NotNull(" IS NOT NULL", 0, false),
     NotStartsWith(null, 1, false),
     Null(" IS NULL", 0, false),
@@ -170,6 +172,7 @@ public enum AttributeConstraint {
             case LessThan -> GreaterThanEqual;
             case LessThanEqual -> GreaterThan;
             case Like -> NotLike;
+            case LikeEscaped -> NotLikeEscaped;
             case Not -> Equal;
             case NotBetween -> Between;
             case NotContains -> Contains;
@@ -177,6 +180,7 @@ public enum AttributeConstraint {
             case NotEndsWith -> EndsWith;
             case NotIn -> In;
             case NotLike -> Like;
+            case NotLikeEscaped -> LikeEscaped;
             case NotNull -> Null;
             case NotStartsWith -> StartsWith;
             case Null -> NotNull;

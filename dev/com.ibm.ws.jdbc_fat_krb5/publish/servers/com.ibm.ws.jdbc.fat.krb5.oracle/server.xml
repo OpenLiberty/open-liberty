@@ -13,30 +13,30 @@
   
   <kerberos keytab="${KRB5_KEYTAB}" configFile="${KRB5_CONF}"/>
   
-  <variable name="oracle.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=${ORACLE_HOSTNAME})(PORT=${ORACLE_PORT}))(CONNECT_DATA=(SERVICE_NAME=${ORACLE_DBNAME})))"/>
+  <variable name="oracle.url" value="jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS=(PROTOCOL=tcp)(HOST=${ORACLE_HOSTNAME})(PORT=${ORACLE_PORT}))(CONNECT_DATA=(SERVICE_NAME=${ORACLE_SID})))"/>
   
   <dataSource jndiName="jdbc/krb/basic">
     <jdbcDriver libraryRef="OracleLib"/>
     <properties.oracle URL="${oracle.url}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}"/>
+    <containerAuthData krb5Principal="${KRB5_PRIN}"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/krb/userpass">
     <jdbcDriver libraryRef="OracleLib"/>
     <properties.oracle URL="${oracle.url}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}" password="password"/>
+    <containerAuthData krb5Principal="${KRB5_PRIN}" password="password"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">
     <jdbcDriver libraryRef="OracleLib" />
     <properties.oracle URL="${oracle.url}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}"/>
+    <containerAuthData krb5Principal="${KRB5_PRIN}"/>
   </dataSource>
 
   <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource">
     <jdbcDriver libraryRef="OracleLib" />
     <properties.oracle URL="${oracle.url}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}"/>
+    <containerAuthData krb5Principal="${KRB5_PRIN}"/>
   </dataSource>
   
   <!-- Mis-configured datasource: bogus name for krb5Principal -->
@@ -49,7 +49,7 @@
   <!-- basic user/password authentication -->
   <dataSource jndiName="jdbc/nokrb5">
     <jdbcDriver libraryRef="OracleLib"/>
-    <properties.oracle databaseName="${ORACLE_DBNAME}" serverName="${ORACLE_HOSTNAME}" portNumber="${ORACLE_PORT}" driverType="thin"/>
+    <properties.oracle databaseName="${ORACLE_SID}" serverName="${ORACLE_HOSTNAME}" portNumber="${ORACLE_PORT}" driverType="thin"/>
     <containerAuthData user="${ORACLE_USER}" password="${ORACLE_PASS}"/>
   </dataSource>
     

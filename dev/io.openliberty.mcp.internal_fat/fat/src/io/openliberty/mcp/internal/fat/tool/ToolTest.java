@@ -160,7 +160,7 @@ public class ToolTest extends FATServletClient {
                             "id must be a string or number"
                             ],
                         "message":"Invalid request"},
-                        "id":"",
+                        "id":null,
                         "jsonrpc":"2.0"}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
@@ -181,7 +181,7 @@ public class ToolTest extends FATServletClient {
                         {"error":{"code":-32700,
                         "message":"Parse error",
                         "data":["Invalid token=CURLYCLOSE at (line no=1, column no=3, offset=2). Expected tokens are: [CURLYOPEN, SQUAREOPEN, STRING, NUMBER, TRUE, FALSE, NULL]"]},
-                        "id":"",
+                        "id":null,
                         "jsonrpc":"2.0"}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, false);
@@ -523,6 +523,86 @@ public class ToolTest extends FATServletClient {
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {
+                                                "@arg1!><": {
+                                                    "description": "specialCharactersInToolArgName",
+                                                    "type": "string"
+                                                },
+                                                "@arg2={}": {
+                                                    "description": "specialCharactersInToolArgName",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "@arg1!><",
+                                                "@arg2={}"
+                                            ]
+                                        },
+                                        "name": "specialCharactersInToolArgName",
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "@arg1'()": {
+                                                    "description": "specialCharactersInToolArgName",
+                                                    "type": "string"
+                                                },
+                                                "@arg2.%:": {
+                                                    "description": "specialCharactersInToolArgName",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "@arg1'()",
+                                                "@arg2.%:"
+                                            ]
+                                        },
+                                        "name": "specialCharactersInToolArgNameVariant2",
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "package": {
+                                                    "description": "reservedNamesInToolArgName",
+                                                    "type": "string"
+                                                },
+                                                "int": {
+                                                    "description": "reservedNamesInToolArgName",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "package",
+                                                "int"
+                                            ]
+                                        },
+                                        "name": "reservedNamesInToolArgName",
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "class": {
+                                                    "description": "reservedNamesInToolArgName",
+                                                    "type": "string"
+                                                },
+                                                "void": {
+                                                    "description": "reservedNamesInToolArgName",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "class",
+                                                "void"
+                                            ]
+                                        },
+                                        "name": "reservedNamesInToolArgNameVariant",
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
                                                 "input": {
                                                     "description": "input to echo",
                                                     "type": "string"
@@ -535,6 +615,36 @@ public class ToolTest extends FATServletClient {
                                         "name": "privateEcho",
                                         "description": "Returns the input unchanged",
                                         "title": "Echoes the input"
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "arg1": {
+                                                    "description": "reservedWordsInToolName",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "arg1"
+                                            ]
+                                        },
+                                        "name": "package"
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "arg1": {
+                                                    "description": "specialCharactersInToolName",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "arg1"
+                                            ]
+                                        },
+                                        "name": "specialCharactersInToolName@!><={}'().%:"
                                     },
                                     {
                                         "inputSchema": {
@@ -1802,4 +1912,181 @@ public class ToolTest extends FATServletClient {
         JSONAssert.assertEquals(expectedResponseString, response, false);
     }
 
+    public void testSpecialCharactersInToolName() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "specialCharactersInToolName@!><={}'().%:",
+                            "arguments": {
+                              "arg1": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        JSONObject jsonResponse = new JSONObject(response);
+
+        // Lenient mode tests
+        JSONAssert.assertEquals("{ \"jsonrpc\": \"2.0\", \"id\": \"2\"}", response, false);
+        JSONAssert.assertEquals("{\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Hello\"}]}}", jsonResponse, false);
+
+        // Strict Mode tests
+        String expectedResponseString = """
+                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    public void testSpecialCharactersInToolArgName() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "specialCharactersInToolArgName",
+                            "arguments": {
+                              "@arg1!><": "Hello",
+                              "@arg2={}": "Hello2"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        JSONObject jsonResponse = new JSONObject(response);
+
+        // Lenient mode tests
+        JSONAssert.assertEquals("{ \"jsonrpc\": \"2.0\", \"id\": \"2\"}", response, false);
+        JSONAssert.assertEquals("{\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Hello\"}]}}", jsonResponse, false);
+
+        // Strict Mode tests
+        String expectedResponseString = """
+                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    public void testSpecialCharactersInToolArgNameVariant2() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "specialCharactersInToolArgNameVariant2",
+                            "arguments": {
+                              "@arg1!><": "Hello",
+                              "@arg2={}": "Hello2"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        JSONObject jsonResponse = new JSONObject(response);
+
+        // Lenient mode tests
+        JSONAssert.assertEquals("{ \"jsonrpc\": \"2.0\", \"id\": \"2\"}", response, false);
+        JSONAssert.assertEquals("{\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Hello\"}]}}", jsonResponse, false);
+
+        // Strict Mode tests
+        String expectedResponseString = """
+                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    public void testReservedWordInToolName() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "package",
+                            "arguments": {
+                              "arg1": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        JSONObject jsonResponse = new JSONObject(response);
+
+        // Lenient mode tests
+        JSONAssert.assertEquals("{ \"jsonrpc\": \"2.0\", \"id\": \"2\"}", response, false);
+        JSONAssert.assertEquals("{\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Hello\"}]}}", jsonResponse, false);
+
+        // Strict Mode tests
+        String expectedResponseString = """
+                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    public void testReservedNamesInToolArgName() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "package",
+                            "arguments": {
+                              "package": "Hello",
+                              "int": "Hello2"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        JSONObject jsonResponse = new JSONObject(response);
+
+        // Lenient mode tests
+        JSONAssert.assertEquals("{ \"jsonrpc\": \"2.0\", \"id\": \"2\"}", response, false);
+        JSONAssert.assertEquals("{\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Hello\"}]}}", jsonResponse, false);
+
+        // Strict Mode tests
+        String expectedResponseString = """
+                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    public void testReservedNamesInToolArgNameVariant() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "package",
+                            "arguments": {
+                              "class": "Hello",
+                              "void": "Hello2"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = HttpTestUtils.callMCP(server, "/toolTest", request);
+        JSONObject jsonResponse = new JSONObject(response);
+
+        // Lenient mode tests
+        JSONAssert.assertEquals("{ \"jsonrpc\": \"2.0\", \"id\": \"2\"}", response, false);
+        JSONAssert.assertEquals("{\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Hello\"}]}}", jsonResponse, false);
+
+        // Strict Mode tests
+        String expectedResponseString = """
+                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
 }

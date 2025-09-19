@@ -138,7 +138,7 @@ public class SharedLibClassesContainerInfoAdapter implements ContainerAdapter<Sh
             Configuration cfg = classloaderConfigs[0];
             Dictionary<String, Object> props = cfg.getProperties();
             if (props != null) {
-                String[] libraryPIDs = ProductInfo.getBetaEdition() ? (String[]) props.get("overrideLibraryRef") : null;
+                String[] libraryPIDs = (String[]) props.get("overrideLibraryRef");
                 processLibraryPIDs(sharedLibContainers, libraryPIDs);
 
                 libraryPIDs = (String[]) props.get("privateLibraryRef");

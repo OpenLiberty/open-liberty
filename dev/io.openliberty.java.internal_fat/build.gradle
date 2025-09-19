@@ -32,7 +32,7 @@ configurations {
     app22 'io.openliberty:java-apps:22.1.0'
     app23 'io.openliberty:java-apps:23.1.0'
     app24 'io.openliberty:java-apps:24.1.0'
-    app25 'io.openliberty:java-apps:25.0.0'
+    app25 'io.openliberty:java-apps:25.1.0'
  }
 
 task copyKernelService(type: Copy) {

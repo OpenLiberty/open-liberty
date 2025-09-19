@@ -235,8 +235,8 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Object toLiteralValue(Object value) {
-        return value;
+    public Object[] toConstraintValues(Object value) {
+        return null;
     }
 
 }

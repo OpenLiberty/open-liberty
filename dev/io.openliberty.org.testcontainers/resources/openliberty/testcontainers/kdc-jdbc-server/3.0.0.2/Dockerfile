@@ -11,9 +11,13 @@ RUN apk add --no-cache krb5-server krb5 supervisor tini
 # Copy configuration and entrypoint
 COPY supervisord.conf /etc/supervisord.conf
 COPY docker-entrypoint.sh /
+COPY client-keytab.sh /tmp/client-keytab.sh
 
 # Make entrypoint executable
 RUN chmod +x /docker-entrypoint.sh
+
+# Make client-keytab executable
+RUN chmod +x /tmp/client-keytab.sh
 
 # Expose ports
 EXPOSE 749 464 88

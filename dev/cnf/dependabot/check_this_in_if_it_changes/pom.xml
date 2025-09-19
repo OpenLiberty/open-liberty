@@ -4943,6 +4943,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
       <version>5.3.39</version>
     </dependency>
@@ -4950,6 +4955,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jms</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4970,6 +4980,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

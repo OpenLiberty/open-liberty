@@ -55,7 +55,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 MultiContextTests40.class,
                 WebAnnotationTests40.class,
                 WebSocketSpringBootAppTests40.class,
-//                WebSocketWebAppTests40.class,
+                WebSocketWebAppTests40.class,
                 SpringSecurityTests40.class,
                 InvalidAppTests.class,
                 ApplicationArgsTests40.class,
@@ -63,7 +63,9 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 TemplateTests40.class,
                 ApplicationStartedEventTests40.class,
                 ConcurrencyAppTests40.class,
-                MBeanAppTests40.class
+                MBeanAppTests40.class,
+                JmsSpringBootAppTests40.class,
+                JmsWebAppTests40.class
 
 })
 

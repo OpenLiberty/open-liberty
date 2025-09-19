@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.responses;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
+import io.openliberty.mcp.internal.requests.McpRequestId;
 
 /**
  *
@@ -22,13 +23,13 @@ public class McpErrorResponse extends McpResponse {
      */
     private Error error;
 
-    public McpErrorResponse(Object id, JSONRPCException e) {
+    public McpErrorResponse(McpRequestId id, JSONRPCException e) {
         super("2.0", id);
         this.error = new Error(e.getErrorCode().getCode(), e.getErrorCode().getMessage(), e.getData());
 
     }
 
-    public McpErrorResponse(Object id, Error e) {
+    public McpErrorResponse(McpRequestId id, Error e) {
         super("2.0", id);
         this.error = e;
 

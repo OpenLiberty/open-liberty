@@ -10,10 +10,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-addRequiredLibraries.dependsOn addJakartaTransformer
+addRequiredLibraries.dependsOn addDerby
+addRequiredLibraries.dependsOn copyJdbcDrivers
+addRequiredLibraries.dependsOn copyTestContainers
 
 repositories { 
   mavenCentral()
+}
+
+configurations {
+  derby16 // See derby/java compatibility matrix https://db.apache.org/derby/derby_downloads.html
+  mq
 }
 
 dependencies {
@@ -46,7 +53,29 @@ dependencies {
   implementation 'org.eclipse.jetty:jetty-io:12.1.0'
   implementation 'org.eclipse.jetty:jetty-util:12.1.0'
   implementation 'org.eclipse.jetty:jetty-http:12.1.0'
+  mq 'com.ibm.mq:wmq.jakarta.jmsra:9.4.3.1@rar'
+  derby16 'org.apache.derby:derby:10.16.1.1',
+          'org.apache.derby:derbytools:10.16.1.1'
 }
+
+task addMQ(type: Copy) {
+  shouldRunAfter jar
+  from configurations.mq
+  into new File(autoFvtDir, 'publish/shared/resources/mq')
+  rename 'wmq.*.rar', 'wmq.jakarta.jmsra.rar'
+}
+
+task addDerby16(type: Copy) {
+  shouldRunAfter jar
+  from configurations.derby16
+  into new File(autoFvtDir, 'publish/shared/resources/derby16')
+  rename 'derby-.*.jar', 'derby.jar'
+  rename 'derbyshared-.*.jar', 'derbyshared.jar'
+  rename 'derbytools-.*.jar', 'derbytools.jar'
+}
+
+addRequiredLibraries.dependsOn addDerby16
+addRequiredLibraries.dependsOn addMQ
 
 def appDefs =
   [ [ 'io.openliberty.springboot.fat40.app', '.jar' ],
@@ -59,7 +88,8 @@ def appDefs =
     [ 'io.openliberty.springboot.fat40.websocket.app', '.war' ],
     [ 'io.openliberty.springboot.fat40.security.app', '.jar' ],
     [ 'io.openliberty.springboot.fat40.concurrency.app', '.war'],
-    [ 'io.openliberty.springboot.fat40.mbean.app', '.war']]
+    [ 'io.openliberty.springboot.fat40.mbean.app', '.war'],
+    [ 'io.openliberty.springboot.fat40.jms.app', '.war']]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

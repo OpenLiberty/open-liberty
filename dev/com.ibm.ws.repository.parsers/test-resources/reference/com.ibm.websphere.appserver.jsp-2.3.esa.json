@@ -53,7 +53,7 @@
                     "io.openliberty.org.eclipse.jdt.core.java11_1.0.92.jar: (&(osgi.ee=JavaSE)(version=11))",
                     "com.ibm.ws.org.apache.taglibs.standard_1.0.92.jar: (&(osgi.ee=JavaSE)(version=1.8))"
                 ],
-                "versionDisplayString": "Java SE 17, Java SE 21, Java SE 24"
+                "versionDisplayString": "Java SE 17, Java SE 21, Java SE 25"
             },
             "links": [
                 {

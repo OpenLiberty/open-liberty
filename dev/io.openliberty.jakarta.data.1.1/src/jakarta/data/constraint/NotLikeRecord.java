@@ -19,7 +19,7 @@ import jakarta.data.expression.TextExpression;
  */
 record NotLikeRecord(
                 TextExpression<?> pattern,
-                Character escape)
+                char escape)
                 implements NotLike {
 
     @Override
@@ -29,7 +29,6 @@ record NotLikeRecord(
 
     @Override
     public String toString() {
-        return "NOT LIKE " + pattern +
-               (escape == null ? "" : " ESCAPE '" + escape + "'");
+        return "NOT LIKE " + pattern + " ESCAPE '" + escape + "'";
     }
 }

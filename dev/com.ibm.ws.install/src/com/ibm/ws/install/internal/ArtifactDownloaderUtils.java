@@ -44,10 +44,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
-import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class ArtifactDownloaderUtils {
 
@@ -158,6 +158,8 @@ public class ArtifactDownloaderUtils {
     public static String getChecksum(String filename, String format) throws NoSuchAlgorithmException, IOException {
         if (format.equals(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256)) {
             format = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+        } else if (format.equals(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512)) {
+            format = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512;
         }
         byte[] b = createChecksum(filename, format);
         String result = "";

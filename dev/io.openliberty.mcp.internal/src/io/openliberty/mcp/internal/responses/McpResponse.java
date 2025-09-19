@@ -9,19 +9,22 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.responses;
 
+import io.openliberty.mcp.internal.requests.McpRequestId;
+import jakarta.json.bind.annotation.JsonbNillable;
+
 /**
  * An MCP Response message
- *
  */
+@JsonbNillable
 public abstract class McpResponse {
     private String jsonrpc;
-    private Object id;
+    private McpRequestId id;
 
-    public McpResponse(String jsonrpc, Object id) {
+    public McpResponse(String jsonrpc, McpRequestId id) {
         if (jsonrpc == null || !jsonrpc.equals("2.0"))
             throw new IllegalArgumentException("jsonrpc field must be present. Only JSONRPC 2.0 is currently supported");
-        if (id == null || !(id instanceof String || id instanceof Number))
-            throw new IllegalArgumentException("id must be a string or number");
+        if (id == null)
+            throw new IllegalArgumentException("id must not be null");
 
         this.jsonrpc = jsonrpc;
         this.id = id;
@@ -31,7 +34,7 @@ public abstract class McpResponse {
         return jsonrpc;
     }
 
-    public Object getId() {
+    public McpRequestId getId() {
         return id;
     }
 }

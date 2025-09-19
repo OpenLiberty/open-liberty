@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.responses;
 
+import io.openliberty.mcp.internal.requests.McpRequestId;
+
 /**
  *
  */
@@ -20,9 +22,9 @@ public class McpResultResponse extends McpResponse {
      */
     private Object result;
 
-    public McpResultResponse(Object id, Object result) {
+    public McpResultResponse(McpRequestId id, Object result) {
         super("2.0", id);
-        if (id instanceof String && ((String) id).isBlank())
+        if (id.getStrVal() != null && id.getStrVal().isBlank())
             throw new IllegalArgumentException("id must not be empty");
         if (result == null)
             throw new IllegalArgumentException("Result field must be present");
