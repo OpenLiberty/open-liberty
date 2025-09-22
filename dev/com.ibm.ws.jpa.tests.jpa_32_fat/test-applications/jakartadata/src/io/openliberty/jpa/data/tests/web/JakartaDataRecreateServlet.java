@@ -49,6 +49,8 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.data.tests.models.Account;
 import io.openliberty.jpa.data.tests.models.AccountId;
+import io.openliberty.jpa.data.tests.models.Animal;
+import io.openliberty.jpa.data.tests.models.AnimalEntity;
 import io.openliberty.jpa.data.tests.models.Annuity;
 import io.openliberty.jpa.data.tests.models.AsciiCharacter;
 import io.openliberty.jpa.data.tests.models.Box;
@@ -212,6 +214,36 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals(60, segmentResults.get(1).pointB.y());
     }
 
+    @Test
+    @Ignore("The instance variable [genus] in the object [io.openliberty.jpa.data.tests.models.Animal$ScientificName] is inaccessible.")
+    public void testQueryAnimal() throws Exception {
+
+        Animal cat = Animal.of("Domestic Cat", "Felis", "catus");
+        Animal dog = Animal.of("Domestic Dog", "Canis", "lupus");
+
+        tx.begin();
+        em.persist(new AnimalEntity(cat));
+        em.persist(new AnimalEntity(dog));
+        tx.commit();
+        
+        em.clear();
+        
+        List<?> results;
+        try {
+            results = em.createQuery("SELECT this.id FROM AnimalEntity WHERE this.id.genus = ?1 ORDER BY this.id.species") //ofGenus in Animals.java
+                    .setParameter(1, "Felis")
+                    .getResultList();
+            
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        assertEquals(1, results.size());
+        Animal.ScientificName name = (Animal.ScientificName) results.get(0);
+        assertEquals("Felis", name.genus());
+        assertEquals("catus", name.species());
+    }
+    
     @Test
     @SkipIfSysProp({ DB_Postgres })
     public void testOLGH28912() throws Exception {

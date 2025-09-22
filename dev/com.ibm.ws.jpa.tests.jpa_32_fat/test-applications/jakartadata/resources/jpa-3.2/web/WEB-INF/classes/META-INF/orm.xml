@@ -21,6 +21,25 @@
 		</attributes>
 	</entity>
 
+	<entity class="io.openliberty.jpa.data.tests.models.AnimalEntity">
+		<table name="Animal" />
+		<attributes>
+			<basic name="commonName">
+			</basic>
+			<embedded-id name="id">
+				<attribute-override name="genus">
+					<column name="ID_GENUS" />
+				</attribute-override>
+				<attribute-override name="species">
+					<column name="ID_SPECIES" />
+				</attribute-override>
+			</embedded-id>
+			<version name="version">
+				<column nullable="false" />
+			</version>
+		</attributes>
+	</entity>
+
 	<embeddable class="io.openliberty.jpa.data.tests.models.ParticipantOrm$NameOrm">
 		<attributes>
 			<basic name="first">
@@ -29,4 +48,15 @@
 			</basic>
 		</attributes>
 	</embeddable>
+
+	<embeddable
+		class="io.openliberty.jpa.data.tests.models.Animal$ScientificName">
+		<attributes>
+			<basic name="genus">
+			</basic>
+			<basic name="species">
+			</basic>
+		</attributes>
+	</embeddable>
+
 </entity-mappings>
