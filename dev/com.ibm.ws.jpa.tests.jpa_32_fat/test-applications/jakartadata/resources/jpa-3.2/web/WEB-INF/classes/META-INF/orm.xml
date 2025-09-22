@@ -40,6 +40,40 @@
 		</attributes>
 	</entity>
 
+	<entity class="io.openliberty.jpa.data.tests.models.Shipment">
+		<table name="Shipment" />
+		<attributes>
+			<basic name="canceledAt">
+			</basic>
+			<basic name="deliveredAt">
+			</basic>
+			<basic name="destination">
+			</basic>
+			<id name="id">
+				<column nullable="false" />
+			</id>
+			<embedded name="instructions">
+				<attribute-override name="deliveryRequirements">
+					<column name="INSTRUCTIONS_DELIVERYREQUIREMENTS" />
+				</attribute-override>
+				<attribute-override name="handlingRequirements">
+					<column name="INSTRUCTIONS_HANDLINGREQUIREMENTS" />
+				</attribute-override>
+				<attribute-override name="needsSignature">
+					<column name="INSTRUCTIONS_NEEDSSIGNATURE" />
+				</attribute-override>
+			</embedded>
+			<basic name="location">
+			</basic>
+			<basic name="orderedAt">
+			</basic>
+			<basic name="shippedAt">
+			</basic>
+			<basic name="status">
+			</basic>
+		</attributes>
+	</entity>
+
 	<embeddable class="io.openliberty.jpa.data.tests.models.ParticipantOrm$NameOrm">
 		<attributes>
 			<basic name="first">
@@ -55,6 +89,17 @@
 			<basic name="genus">
 			</basic>
 			<basic name="species">
+			</basic>
+		</attributes>
+	</embeddable>
+
+	<embeddable class="io.openliberty.jpa.data.tests.models.Shipment$Instructions">
+		<attributes>
+			<basic name="deliveryRequirements">
+			</basic>
+			<basic name="handlingRequirements">
+			</basic>
+			<basic name="needsSignature">
 			</basic>
 		</attributes>
 	</embeddable>

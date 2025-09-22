@@ -30,6 +30,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
@@ -85,6 +86,7 @@ import io.openliberty.jpa.data.tests.models.RomanNumeral;
 import io.openliberty.jpa.data.tests.models.Segment;
 import io.openliberty.jpa.data.tests.models.SegmentLine;
 import io.openliberty.jpa.data.tests.models.SegmentPoint;
+import io.openliberty.jpa.data.tests.models.Shipment;
 import io.openliberty.jpa.data.tests.models.ShippingAddress;
 import io.openliberty.jpa.data.tests.models.Showtime;
 import io.openliberty.jpa.data.tests.models.Store;
@@ -242,6 +244,57 @@ public class JakartaDataRecreateServlet extends FATServlet {
         Animal.ScientificName name = (Animal.ScientificName) results.get(0);
         assertEquals("Felis", name.genus());
         assertEquals("catus", name.species());
+    }
+    
+    @Test
+    @Ignore("The instance variable [deliveryRequirements] in the object [io.openliberty.jpa.data.tests.models.Shipment$Instructions] is inaccessible.")
+    public void testQueryShipmentInstructions() throws Exception {
+        
+        Shipment shipment1 = new Shipment();
+        shipment1.setId(10);
+        shipment1.setDestination("New York");
+        shipment1.setLocation("Warehouse A");
+        shipment1.setStatus("Processing");
+        shipment1.setOrderedAt(OffsetDateTime.now().minusDays(2));
+        shipment1.setInstructions(new Shipment.Instructions("Handle with care", "Deliver to front door", true));
+        
+        Shipment shipment2 = new Shipment();
+        shipment2.setId(20);
+        shipment2.setDestination("Los Angeles");
+        shipment2.setLocation("Warehouse B");
+        shipment2.setStatus("Shipped");
+        shipment2.setOrderedAt(OffsetDateTime.now().minusDays(1));
+        shipment2.setInstructions(new Shipment.Instructions("Fragile items", "Leave at reception", false));
+        
+        Shipment shipment3 = new Shipment();
+        shipment3.setId(30);
+        shipment3.setDestination("Chicago");
+        shipment3.setLocation("Warehouse C");
+        shipment3.setStatus("Delivered");
+        shipment3.setOrderedAt(OffsetDateTime.now().minusDays(3));
+        shipment3.setInstructions(new Shipment.Instructions("Temperature controlled", "Ring doorbell", true));
+        
+        tx.begin();
+        em.persist(shipment1);
+        em.persist(shipment2);
+        em.persist(shipment3);
+        tx.commit();
+        
+        List<?> results;
+        try {
+
+            results = em.createQuery("SELECT o.instructions FROM Shipment o WHERE (o.id=?1)") //getInstructions in Shipments.java
+                .setParameter(1, 10)
+                .getResultList();
+            
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        Shipment.Instructions result = (Shipment.Instructions) results.get(0);
+        assertEquals("Handle with care", result.handlingRequirements());
+        assertEquals("Deliver to front door", result.deliveryRequirements());
+        assertEquals(true, result.needsSignature());
     }
     
     @Test
