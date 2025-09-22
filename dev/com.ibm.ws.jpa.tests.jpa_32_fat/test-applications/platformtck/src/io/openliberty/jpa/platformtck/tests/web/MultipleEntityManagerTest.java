@@ -17,8 +17,12 @@ import jakarta.transaction.Transactional;
 import io.openliberty.jpa.platformtck.tests.models.TestEntity;
 
 /**
- * This class demonstrates injecting and using EntityManager in multiple places
- * within a CDI bean.
+ * This class demonstrates injecting and using multiple EntityManager instances with different scopes
+ * within a single CDI bean.
+ *
+ * This test is important for validating that the JPA provider correctly handles
+ * multiple EntityManager instances from the same persistence unit but with different
+ * CDI scopes, ensuring they all operate on the same underlying persistence context.
  */
 @RequestScoped
 public class MultipleEntityManagerTest {

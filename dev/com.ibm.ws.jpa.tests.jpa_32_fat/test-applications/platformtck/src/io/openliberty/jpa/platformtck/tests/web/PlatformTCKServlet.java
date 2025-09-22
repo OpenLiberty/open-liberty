@@ -31,6 +31,18 @@ import jakarta.transaction.UserTransaction;
 import jakarta.inject.Inject;
 import org.junit.Ignore;
 
+/**
+ * Main test servlet for testing the jpa cdi integration changes in jpa 3.2.
+ *
+ * This servlet contains tests that verify the proper behavior of EntityManager injection
+ * and usage in various CDI contexts. It tests:
+ * 
+ * 1. Basic EntityManager injection via CDI
+ * 2. EntityManager instances with different scopes (shorter and longer than TransactionScoped)
+ * 3. Multiple EntityManager instances from the same persistence unit
+ * 4. EntityManager usage in complex bean hierarchies
+ * Specification link https://jakarta.ee/specifications/webprofile/11/jakarta-webprofile-spec-11.0#obtaining-an-entity-manager-using-cdi
+ */
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/PlatformTCK32")
 public class PlatformTCKServlet extends FATServlet {

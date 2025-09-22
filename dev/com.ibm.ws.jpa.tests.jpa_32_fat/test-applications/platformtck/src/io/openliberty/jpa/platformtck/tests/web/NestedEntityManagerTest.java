@@ -17,8 +17,12 @@ import jakarta.transaction.Transactional;
 import io.openliberty.jpa.platformtck.tests.models.TestEntity;
 
 /**
- * This class demonstrates a parent bean that injects EntityManager and also injects
- * child beans that each inject their own EntityManager instances.
+ * This class demonstrates a hierarchical CDI bean structure where both parent and child beans
+ * inject and use EntityManager instances.
+ *
+ * This test is important for validating that the JPA provider correctly handles
+ * EntityManager instances across a CDI bean hierarchy, ensuring proper persistence
+ * context propagation between parent and child beans.
  */
 @RequestScoped
 public class NestedEntityManagerTest {
