@@ -70,6 +70,7 @@ import io.openliberty.jpa.data.tests.models.Line.Point;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
 import io.openliberty.jpa.data.tests.models.Participant;
+import io.openliberty.jpa.data.tests.models.ParticipantOrm;
 import io.openliberty.jpa.data.tests.models.Person;
 import io.openliberty.jpa.data.tests.models.Prime;
 import io.openliberty.jpa.data.tests.models.Product;
@@ -110,6 +111,50 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     public void alwaysPasses() {
         assertTrue(true);
+    }
+    
+    @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
+    public void testOLGH29460WithORM() throws Exception {
+        ParticipantOrm p1 = ParticipantOrm.of("John", "Doe", 1);
+        ParticipantOrm p2 = ParticipantOrm.of("Jane", "Smith", 2);
+        ParticipantOrm p3 = ParticipantOrm.of("Emily", "Doe", 3);
+
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        em.persist(p3);
+        tx.commit();
+
+        
+        List<?> resultsThis;
+        try {
+            resultsThis = em.createQuery("SELECT this.name.first FROM ParticipantOrm WHERE this.id = ?1") //findNameById in Participants.java
+                            .setParameter(1, 2)
+                            .getResultList();
+            
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals("Jane", resultsThis.get(0));
+        
+        List<?> resultsO;
+        try {
+            resultsO = em.createQuery("SELECT o FROM ParticipantOrm o WHERE (o.name.last = ?1) ORDER BY o.name.first, o.id") //withSurname in Participants.java
+                            .setParameter(1, "Doe")
+                            .getResultList();
+            
+        } catch (Exception e) {
+            throw e;
+        }
+
+        ParticipantOrm result0 = (ParticipantOrm) resultsO.get(0);
+        ParticipantOrm result1 = (ParticipantOrm) resultsO.get(1);
+        assertEquals(2, resultsO.size());
+        assertEquals("Doe", result0.name.last());
+        assertEquals("Emily", result0.name.first());
+        assertEquals("Doe", result1.name.last());
+        assertEquals("John", result1.name.first());
     }
 
     @Test
