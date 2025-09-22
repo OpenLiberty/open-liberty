@@ -81,6 +81,8 @@ import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import io.openliberty.jpa.data.tests.models.Reciept;
 import io.openliberty.jpa.data.tests.models.RomanNumeral;
 import io.openliberty.jpa.data.tests.models.Segment;
+import io.openliberty.jpa.data.tests.models.SegmentLine;
+import io.openliberty.jpa.data.tests.models.SegmentPoint;
 import io.openliberty.jpa.data.tests.models.ShippingAddress;
 import io.openliberty.jpa.data.tests.models.Showtime;
 import io.openliberty.jpa.data.tests.models.Store;
@@ -124,7 +126,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
         em.persist(p2);
         em.persist(p3);
         tx.commit();
-
         
         List<?> resultsThis;
         try {
@@ -155,6 +156,60 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals("Emily", result0.name.first());
         assertEquals("Doe", result1.name.last());
         assertEquals("John", result1.name.first());
+    }
+    
+    @Test
+    public void testQuerySegmentPointBY() throws Exception{
+        tx.begin();
+
+        SegmentLine s1 = new SegmentLine();
+        s1.pointA = new SegmentPoint(0, 0);
+        s1.pointB = new SegmentPoint(120, 209); // length 241
+        em.persist(s1);
+
+        SegmentLine s2 = new SegmentLine();
+        s2.pointA = new SegmentPoint(-20, 0);
+        s2.pointB = new SegmentPoint(120, 171); // length 221
+        em.persist(s2);
+
+        SegmentLine s3 = new SegmentLine();
+        s3.pointA = new SegmentPoint(24, 7);
+        s3.pointB = new SegmentPoint(180, 140); // length 205
+        em.persist(s3);
+
+        SegmentLine s4 = new SegmentLine();
+        s4.pointA = new SegmentPoint(12, 45);
+        s4.pointB = new SegmentPoint(180, 140); // length 193
+        em.persist(s4);
+
+        SegmentLine s5 = new SegmentLine();
+        s5.pointA = new SegmentPoint(4, 3);
+        s5.pointB = new SegmentPoint(180, 60); // length 185
+        em.persist(s5);
+
+        SegmentLine s6 = new SegmentLine();
+        s6.pointA = new SegmentPoint(0, 41);
+        s6.pointB = new SegmentPoint(180, 60); // length 181
+        em.persist(s6);
+
+        tx.commit();
+
+        em.clear();
+        
+        List<?> results;
+        try {
+            results = em.createQuery("FROM SegmentLine WHERE this.pointB.y < :yExclusiveMax ORDER BY this.pointB.y ASC, this.id ASC") //endingSouthOf in Segments.java
+                .setParameter("yExclusiveMax", 100)
+                .getResultList();
+
+        } catch (Exception e) {
+            throw e;
+        }
+        List<SegmentLine> segmentResults = (List<SegmentLine>) results;
+
+        assertEquals(2, segmentResults.size());
+        assertEquals(60, segmentResults.get(0).pointB.y());
+        assertEquals(60, segmentResults.get(1).pointB.y());
     }
 
     @Test
