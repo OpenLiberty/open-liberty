@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
 
     private final String CLASS_DEFAULT_SP = "sp_enc_aes128";
     private final String SP_ENCRYPTION_AES_128 = "sp_enc_aes128";
+    private final String SP_ENCRYPTION_AES_128_NO_SIGN = "sp_enc_aes128_no_sign";
     private final String SP_ENCRYPTION_AES_192 = "sp_enc_aes192";
     private final String SP_ENCRYPTION_AES_256 = "sp_enc_aes256";
     private final String DEFAULT_ENCRYPTION_KEY_USER = "CN=new_user2, O=IBM, C=US";
@@ -430,6 +431,30 @@ public class BasicEncryptionTests extends SAMLCommonTest {
         SAMLTestSettings updatedTestSettings = getTestSettings(testSettings, SP_ENCRYPTION_AES_128);
         updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES128);
         successfulFlow(updatedTestSettings, SP_ENCRYPTION_AES_128);
+    }
+    
+    /**
+     * Test description:
+     * - The standard SAML flow is followed using an SP that is configured to encrypt assertions using the AES-128-GCM, AES-KEY-WRAP and uses EC-DH key agreement algorithms
+     * TODO : generate SP metadata in such a way that it should specify specific encryption and key wrap algorithms (and even signature algorithms) based on the configuration or if there is a requirement (such as server is in FIPS140-3 mode)
+     * for now, sp metadata (sp_enc_aes128_nosignatureMetadata.xml.orig) has aes128-gcm and kw_aes128 as supported EncryptionMethod algorithms and includes EC certificate
+     * - No Signature involved
+     * Expected results:
+     * - Access to the protected resource should be successful.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEncryptionAlgorithm_AES128_ECDH_noSignature() throws Exception {
+    	if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
+            Log.info(thisClass, _testName, "Skipping test. idp v3 does not support EC-DH");
+            return;
+    	}
+
+        testSAMLServer.reconfigServer(buildSPServerName("server_enc_aes128_no_sign.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+        SAMLTestSettings updatedTestSettings = getTestSettings(testSettings, SP_ENCRYPTION_AES_128_NO_SIGN);
+        updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES128);
+        successfulFlow(updatedTestSettings, SP_ENCRYPTION_AES_128_NO_SIGN);
     }
 
     /**
