@@ -383,7 +383,7 @@
         <AD id="displayCustomizedExceptionText"
             name="%displayCustomizedExceptionText.name" 
             description="%displayCustomizedExceptionText.desc" 
-            required="false" type="String"/>
+            required="false" type="String" ibm:beta="true"/>
 
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"

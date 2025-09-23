@@ -15,4 +15,7 @@
         <feature>servlet-3.1</feature>
     </featureManager>
 
+    <webContainer displaycustomizedexceptiontext="Custom error message"/>
+
+
 </server>
