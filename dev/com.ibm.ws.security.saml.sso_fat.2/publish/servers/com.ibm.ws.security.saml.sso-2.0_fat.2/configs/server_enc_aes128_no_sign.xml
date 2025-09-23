@@ -1,6 +1,6 @@
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,14 +17,14 @@
 	<include location="${server.config.dir}/imports/BasicRegistry_withoutIDPUsers.xml" />
 	<include location="${server.config.dir}/imports/misc.xml" />
 	<include
-		location="${server.config.dir}/imports/samlProvider_enc_aes128_multiCertKeyStore_noKeyAlias.xml" />
+		location="${server.config.dir}/imports/samlProvider_enc_aes128_multiCertKeyStore_noKeyAlias_noSignature.xml" />
 	<include location="${server.config.dir}/imports/samlTestApplication.xml" />
 	<include location="${server.config.dir}/imports/goodSSLSettings.xml" />
 
 	<keyStore
 		id="multiCertKeyStore"
-		password="Liberty"
-		type="jks"
-		location="${server.config.dir}/samlspKeyStore.jks" />
+		password="Password"
+		type="pkcs12"
+		location="${server.config.dir}/ec_key.p12" />
 
 </server>
