@@ -114,7 +114,7 @@ public class JMS1AsyncSend extends ClientMain {
             connection.start();
             
             
-            Util.LOG("Sending Message with CompletionListener");
+            Util.LOG("Sending Message with CompletionListener: " + completionListener.toString());
             producer.send(sentMessage, completionListener);
             
             Util.LOG("Message sent. Waiting for CompletionListener to be invoked");
