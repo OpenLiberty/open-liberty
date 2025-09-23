@@ -119,6 +119,7 @@ Import-Package: \
  javax.annotation,\
  javax.crypto,\
  javax.crypto.*,\
+ javax.security.auth.x500,\
  javax.servlet.http,\
  javax.xml.namespace;version=!,\
  javax.xml.transform;version=!,\
@@ -135,6 +136,7 @@ Import-Package: \
  !com.beust.jcommander.converters,\
  com.google.common.base,\
  com.google.common.primitives,\
+ com.google.common.collect,\
  !com.google.appengine.api,\
  !com.google.apphosting.api,\
  !com.google.common.util.concurrent.internal,\
@@ -145,8 +147,8 @@ Import-Package: \
  net.shibboleth.utilities.java.support.*,\
  org.apache.commons.codec,\
  org.apache.commons.codec.*,\
- org.apache.xml.security,\
- org.apache.xml.security.*,\
+ org.apache.xml.security; version="[2.3.0,3.0.0)",\
+ org.apache.xml.security.*; version="[2.3.0,3.0.0)",\
  !org.apache.http.client.cache,\
  !org.apache.http.impl.client.cache,\
  !org.apache.velocity.*,\
@@ -167,15 +169,14 @@ Import-Package: \
  org.slf4j.*,; version=!,\
  org.w3c.dom;version=!,\
  org.w3c.dom.ls;version=!,\
- org.xml.sax;version=!,\
+ org.xml.sax,\
  *
  
 DynamicImport-Package: \
- com.google.common.base,\
- com.google.common.collect,\
  org.w3c.dom,\
  org.w3c.dom.ls,\
  org.xml.sax
+ 
 
 
 Include-Resource: \
