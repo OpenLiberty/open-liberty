@@ -251,7 +251,7 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
       release = release.substring(2);
     }
 
-    def sp = files()
+    def sp = files(bndWorkspace.getProject(project.name).getSourcePath())
     def cp = files()
     bndWorkspace.getProject(project.name)?.getBuildpath().each {
       def proj = it.getProject()
