@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
+import componenttest.topology.impl.LibertyServerFactory;
+
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
  * There is a detailed output on specific
@@ -53,19 +55,34 @@ public class RestClientTckPackageTest {
                                                              MicroProfileActions.MP61, // 3.0+EE10
                                                              MicroProfileActions.MP50); // 3.0+EE9
 
-    @Server(SERVER_NAME)
-    public static LibertyServer server;
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+
+    // Define fipsEnabled
+    private static final boolean fipsEnabled;
+
+    static {
+        boolean isFipsEnabled = false;
+        try {
+            isFipsEnabled = server.isFIPS140_3EnabledAndSupported();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        fipsEnabled = isFipsEnabled;
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
         String javaVersion = System.getProperty("java.version");
         Log.info(RestClientTckPackageTest.class, "setup", "javaVersion: " + javaVersion);
+        Log.info(RestClientTckPackageTest.class, "setup", "fipsEnabled: " + fipsEnabled);
         System.out.println("java.version = " + javaVersion);
         if (javaVersion.startsWith("1.8")) {
             useTCKSuite("java8");
-        } else if (TestModeFilter.shouldRun(TestMode.FULL)) {
+        } else if ((!fipsEnabled) && (TestModeFilter.shouldRun(TestMode.FULL))) {
             useTCKSuite("FULL");
-        }
+        } else if (fipsEnabled) {
+            useTCKSuite("fips");  
+        }    
         server.startServer();
     }
 

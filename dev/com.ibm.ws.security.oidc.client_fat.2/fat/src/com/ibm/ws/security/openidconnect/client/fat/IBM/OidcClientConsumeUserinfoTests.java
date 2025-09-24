@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -664,8 +664,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_userinfoMismatch() throws Exception {
 
         for (String alg : Constants.ALL_TEST_ENCRYPTALGS) {
-            // TODO skip ES Algs for encryption until (issue 17485) is resolved
-            if (!(alg.equals(Constants.SIGALG_RS256) || alg.startsWith("ES"))) {
+            if (!(alg.equals(Constants.SIGALG_RS256))) {
                 genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(alg, alg), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), ExpectedBehavior.ENCRYPT_MISMATCH);
             }
         }

@@ -16,61 +16,67 @@ import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_KDC_EXT
 import static com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer.KRB5_REALM;
 
 import java.time.Duration;
+import java.util.TimeZone;
 
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.Network;
 import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 
-public class DB2KerberosContainer extends Db2Container {
+public class DB2KerberosContainer extends Db2Container implements KerberosAuthContainer {
 
     private static final Class<?> c = DB2KerberosContainer.class;
 
-    //TODO Start using ImageBuilder
-//    private static final DockerImageName DB2_KRB5 = ImageBuilder
-//                    .build("db2-krb5:12.1.1.0")
-//                    .getDockerImageName()
-//                    .asCompatibleSubstituteFor("icr.io/db2_community/db2");
+    private static final DockerImageName DB2_KRB5 = ImageBuilder
+                    .build("db2-krb5:12.1.2.0")
+                    .getDockerImageName()
+                    .asCompatibleSubstituteFor("icr.io/db2_community/db2");
 
-    // NOTE: If this is ever updated, don't forget to push to docker hub, but DO NOT overwrite existing versions
-    private static final String IMAGE = "kyleaure/db2-krb5:2.0";
-    private static final DockerImageName DB2_KRB5 = DockerImageName.parse(IMAGE)
-                    .asCompatibleSubstituteFor("ibmcom/db2"); //TODO update .asCompatibleSubstituteFor("icr.io/db2_community/db2")
+    private static final String KRB5_USER = "dbuser";
+    private static final String KRB5_PASS = "password";
 
     public DB2KerberosContainer(Network network) {
         super(DB2_KRB5);
         withNetwork(network);
+        withNetworkAliases("db2");
+        withCreateContainerCmdModifier(cmd -> {
+            cmd.withHostName("db2");
+        });
     }
 
     @Override
     protected void configure() {
         acceptLicense();
-        withExposedPorts(50000);
+
+        // Superclass settings
+        super.withUsername("db2inst1");
+        super.withPassword("password");
+        super.withDatabaseName("testdb");
+
+        // Run as privilaged
+        setPrivilegedMode(true);
+
+        // Additional env variables
         withEnv("KRB5_REALM", KRB5_REALM);
         withEnv("KRB5_KDC", KRB5_KDC_EXTERNAL);
         withEnv("DB2_KRB5_PRINCIPAL", "db2srvc@EXAMPLE.COM");
+        withEnv("KRB5_TRACE", "/dev/stdout");
+        withEnv("TZ", TimeZone.getDefault().getID());
+
+        // Wait strategy
         waitingFor(new LogMessageWaitStrategy()
                         .withRegEx("^.*SETUP SCRIPT COMPLETE.*$")
                         .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 10 : 35)));
-        withLogConsumer(new SimpleLogConsumer(c, "DB2-KRB5"));
-    }
 
-    @Override
-    public String getUsername() {
-        return "db2inst1";
-    }
+        // Logging
+        withLogConsumer(new SimpleLogConsumer(c, "db2-krb5"));
 
-    @Override
-    public String getPassword() {
-        return "password";
-    }
-
-    @Override
-    public String getDatabaseName() {
-        return "testdb";
+        // Default configuration
+        super.configure();
     }
 
     @Override
@@ -86,5 +92,20 @@ public class DB2KerberosContainer extends Db2Container {
     @Override
     public Db2Container withDatabaseName(String dbName) {
         throw new UnsupportedOperationException("DB name is hardcoded in container");
+    }
+
+    @Override
+    public String getKerberosPrinciple() {
+        return KRB5_USER + "@" + KerberosContainer.KRB5_REALM;
+    }
+
+    @Override
+    public String getKerberosUsername() {
+        return KRB5_USER;
+    }
+
+    @Override
+    public String getKerberosPassword() {
+        return KRB5_PASS;
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,18 @@
 
 configurations {
     oracle11 { transitive = false; }
+    db2Legacy
 }
 
 dependencies {
     oracle11 'com.oracle.database.jdbc:ojdbc11:23.4.0.24.05'
+    
+    // FIXME Upgrade to latest JCC driver version once the following are resolved:
+    // 11.5.*.* - does not support Java 24+ because it attempts to load the removed class sun.security.action.GetPropertyAction
+    // 11.5.9.0 - has a regression that in an error path that causes incorrect error to be thrown.
+    // 12.1.*.* - has a regression that makes successful kerberos authentication to fail.
+    // Expect the version after 12.1.2.0 to work
+    db2Legacy 'com.ibm.db2:jcc:11.5.7.0'
 }
 
 task addOracle11(type: Copy) {
@@ -26,10 +34,18 @@ task addOracle11(type: Copy) {
   rename 'ojdbc11.*.jar', 'ojdbc11.jar'
 }
 
+task addDb2Legacy(type: Copy) {
+    mustRunAfter jar
+    from configurations.db2Legacy
+    into new File(autoFvtDir, 'publish/shared/resources/jcc')
+    rename 'jcc.*.jar', 'jcc.jar'
+}
+
 
 addRequiredLibraries {
   dependsOn copyJdbcDrivers
   dependsOn addOracle11
+  dependsOn addDb2Legacy
   dependsOn addJakartaTransformer
   dependsOn copyTestContainers
 }

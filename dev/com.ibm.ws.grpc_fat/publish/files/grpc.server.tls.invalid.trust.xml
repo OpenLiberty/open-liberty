@@ -40,17 +40,17 @@
     <keyStore
         id="rsa_key"
         password="passw0rd"
-        type="jks"
-        location="${server.config.dir}/key.jks" />
+        type="PKCS12"
+        location="${server.config.dir}/key.p12" />
     <keyStore
         id="rsa_trust"
         password="passw0rd"
-        type="jks"
-        location="${server.config.dir}/trust.jks" />
+        type="PKCS12"
+        location="${server.config.dir}/trust.p12" />
     <keyStore
         id="invalid_rsa_trust"
         password="passw0rd"
-        type="jks"
-        location="${server.config.dir}/clientInvalidTrust.jks" />
+        type="PKCS12"
+        location="${server.config.dir}/clientInvalidTrust.p12" />
 
 </server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,6 +65,13 @@ public class InstallException extends Exception {
     public InstallException(String message, int rc) {
         super(message);
         this.rc = rc;
+    }
+
+    /**
+     * Wrap original exception as InstallException
+     */
+    public InstallException(Throwable cause) {
+        super(cause);
     }
 
     /**

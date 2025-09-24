@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=\u8acb\u914d\u7f6e\u6709\u6548\u76
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: \u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5728 Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u5167\u627e\u4e0d\u5230 Spring Boot \u61c9\u7528\u7a0b\u5f0f\u3002
 error.application.not.found.inside.packaged.liberty.jar.explanation=Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u5fc5\u9808\u5305\u542b\u6240\u914d\u7f6e\u7684 Spring Boot \u61c9\u7528\u7a0b\u5f0f\u3002
 error.application.not.found.inside.packaged.liberty.jar.useraction=\u8acb\u914d\u7f6e\u6709\u6548\u7684 Liberty \u4f3a\u670d\u5668 JAR \u5957\u88dd\u6a94\u3002
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: \u5fc5\u9808\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e {0} \u7279\u6027\u3002 {1} \u529f\u80fd\u5df2\u8a2d\u5b9a\uff0c\u61c9\u7528\u7a0b\u5f0f\u6709 Spring Boot {2} \u5167\u5bb9\u3002
+error.spring4.required.explanation=\u76ee\u524d\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u4e0d\u76f8\u5bb9\u3002
+error.spring4.required.useraction=\u914d\u7f6e\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u76f8\u5bb9\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: \u5fc5\u9808\u8a2d\u5b9a servlet-6.1 \u6216\u66f4\u65b0\u7248\u672c\u7684\u529f\u80fd\u3002 springBoot-4.0 \u529f\u80fd\u5df2\u8a2d\u5b9a\uff0c\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 servlets\u3002
+error.spring4.requires.servlet61.or.later.application.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 Servlet\uff0c\u4f46\u672a\u914d\u7f6e\u4efb\u4f55 Servlet \u7279\u6027\u3002
+error.spring4.requires.servlet61.or.later.application.useraction=\u914d\u7f6e\u6307\u5b9a\u7684 Servlet \u7279\u6027\u3002
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: \u5fc5\u9808\u8a2d\u5b9a websocket-2.2 \u6216\u66f4\u65b0\u7248\u672c\u7684\u529f\u80fd\u3002 springBoot-4.0 \u529f\u80fd\u5df2\u8a2d\u5b9a\uff0c\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 WebSockets\u3002
+error.spring4.requires.websocket22.or.later.application.explanation=\u61c9\u7528\u7a0b\u5f0f\u4f7f\u7528 WebSockets \uff0c\u4f46\u672a\u8a2d\u5b9a websocket \u529f\u80fd\u3002
+error.spring4.requires.websocket22.or.later.application.useraction=\u8a2d\u5b9a\u6307\u5b9a\u7684 websocket \u529f\u80fd\u3002

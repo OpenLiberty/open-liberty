@@ -81,11 +81,6 @@ public class TCKRunner {
 
     private static final Class<TCKRunner> c = TCKRunner.class;
 
-    private static final String DEFAULT_FAILSAFE_UNDEPLOYMENT = "true";
-    private static final String DEFAULT_APP_DEPLOY_TIMEOUT = "180";
-    private static final String DEFAULT_APP_UNDEPLOY_TIMEOUT = "60";
-    private static final int DEFAULT_MBEAN_TIMEOUT = 60000;
-
     private static final String RELATIVE_POM_FILE = "tck/pom.xml";
     private static final String RELATIVE_POM_FILE2 = "pom.xml";
 
@@ -123,6 +118,12 @@ public class TCKRunner {
     private boolean isTestNG = false;
     private File tckRunnerDir = new File("publish/tckRunner").getAbsoluteFile();
     private File loggingPropertiesFile = new File(tckRunnerDir, "logging.properties");
+    
+    // Default timeout and boolean settings
+    private Boolean failSafeUndeployment = Boolean.TRUE;
+    private Duration appDeployTimeout = Duration.ofSeconds(180);
+    private Duration appUndeployTimeout = Duration.ofSeconds(60);
+    private Duration mbeanTimeout = Duration.ofSeconds(60);
 
     /////////// Builder methods //////////////////
 
@@ -253,6 +254,50 @@ public class TCKRunner {
         loggingProperties.put("java.util.logging.FileHandler.formatter", "java.util.logging.SimpleFormatter");
         loggingProperties.put("java.util.logging.FileHandler.level", "ALL");
 
+        return this;
+    }
+    
+    /**
+     * @param failSafeUndeployment whether to use failsafe undeployment
+     * @return this TCKRunner
+     */
+    public TCKRunner withFailSafeUndeployment(Boolean failSafeUndeployment) {
+        Objects.requireNonNull(failSafeUndeployment);
+        
+        this.failSafeUndeployment = failSafeUndeployment;
+        return this;
+    }
+    
+    /**
+     * @param appDeployTimeout the timeout for app deployment
+     * @return this TCKRunner
+     */
+    public TCKRunner withAppDeployTimeout(Duration appDeployTimeout) {
+        Objects.requireNonNull(appDeployTimeout);
+        
+        this.appDeployTimeout = appDeployTimeout;
+        return this;
+    }
+    
+    /**
+     * @param appUndeployTimeout the timeout for app undeployment
+     * @return this TCKRunner
+     */
+    public TCKRunner withAppUndeployTimeout(Duration appUndeployTimeout) {
+        Objects.requireNonNull(appUndeployTimeout);
+        
+        this.appUndeployTimeout = appUndeployTimeout;
+        return this;
+    }
+    
+    /**
+     * @param mbeanTimeout the timeout for MBean operations
+     * @return this TCKRunner
+     */
+    public TCKRunner withMBeanTimeout(Duration mbeanTimeout) {
+        Objects.requireNonNull(mbeanTimeout);
+        
+        this.mbeanTimeout = mbeanTimeout;
         return this;
     }
 
@@ -459,14 +504,14 @@ public class TCKRunner {
         stringArrayList.add("-Dwlp=" + getWLPInstallRoot());
         stringArrayList.add("-Dtck_server=" + getServerName());
         stringArrayList.add("-Dtck_hostname=" + getServerHostName());
-        stringArrayList.add("-Dtck_failSafeUndeployment=" + DEFAULT_FAILSAFE_UNDEPLOYMENT);
-        stringArrayList.add("-Dtck_appDeployTimeout=" + DEFAULT_APP_DEPLOY_TIMEOUT);
-        stringArrayList.add("-Dtck_appUndeployTimeout=" + DEFAULT_APP_UNDEPLOY_TIMEOUT);
+        stringArrayList.add("-Dtck_failSafeUndeployment=" + failSafeUndeployment.toString());
+        stringArrayList.add("-Dtck_appDeployTimeout=" + appDeployTimeout.getSeconds());
+        stringArrayList.add("-Dtck_appUndeployTimeout=" + appUndeployTimeout.getSeconds());
         stringArrayList.add("-Dtck_port=" + getPort());
         stringArrayList.add("-Dtck_port_secure=" + getPortSecure());
         stringArrayList.add("-DtargetDirectory=" + getTargetDir().getAbsolutePath());
         stringArrayList.add("-DcomponentRootDir=" + getComponentRootDir());
-        stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + DEFAULT_MBEAN_TIMEOUT);
+        stringArrayList.add("-Dsun.rmi.transport.tcp.responseTimeout=" + mbeanTimeout.toMillis());
 
         stringArrayList.addAll(getJarCliProperties());
 

@@ -147,3 +147,18 @@ error.invalid.packaged.liberty.jar.useraction=Configure a valid packaged Liberty
 error.application.not.found.inside.packaged.liberty.jar=CWWKC0266E: The application failed to start because the Spring Boot application was not found inside the packaged Liberty Server JAR file.
 error.application.not.found.inside.packaged.liberty.jar.explanation=The packaged Liberty Server JAR file must contain a configured Spring Boot application.
 error.application.not.found.inside.packaged.liberty.jar.useraction=Configure a valid packaged Liberty server JAR file.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.required=CWWKC0276E: The {0} feature must be configured in the server.xml file. The {1} feature is configured and the application has Spring Boot {2} content.
+error.spring4.required.explanation=The currently configured Spring Boot feature is not compatible with application content.
+error.spring4.required.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.servlet61.or.later.application=CWWKC0277E: The servlet-6.1 or later feature must be configured. The springBoot-4.0 feature is configured and the application uses servlets.
+error.spring4.requires.servlet61.or.later.application.explanation=The application uses servlets but no servlet feature is configured.
+error.spring4.requires.servlet61.or.later.application.useraction=Configure the specified servlet feature.
+
+#ADDED for SpringBoot 4.0:
+error.spring4.requires.websocket22.or.later.application=CWWKC0278E: The websocket-2.2 or later feature must be configured. The springBoot-4.0 feature is configured and the application uses WebSockets.
+error.spring4.requires.websocket22.or.later.application.explanation=The application uses WebSockets but no websocket feature is configured.
+error.spring4.requires.websocket22.or.later.application.useraction=Configure the specified websocket feature.

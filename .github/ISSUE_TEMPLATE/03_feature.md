@@ -56,13 +56,10 @@ If you need assistance, reach out to the [OpenLiberty/release-architect](https:/
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Sizing** (Complete Before Development Starts)
 
-Add a sizing to the feature. Sizing features helps inform prioritization decisions by telling us how much investment a given feature will require.
+Sizing features helps inform prioritization decisions by telling us how much investment a given feature will require.
 
-To add a size to a feature:
-- Find the **Projects** section in the right sidebar of the issue.
-- Add the issue to the **Open Liberty Roadmap** project (if not already done).
-- Expand the dropdown for the project.
-- Find the "T-Shirt Size" field and select the appropriate value, or work with the [Open Liberty Project Manager](https://github.com/orgs/OpenLiberty/teams/project-manager) or [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) to have them add the size for you.
+- [ ] Feature owner determines the size of the feature.
+- [ ] Feature owner tells the [Open Liberty Project Manager](https://github.com/orgs/OpenLiberty/teams/project-manager), [Release Architect](https://github.com/orgs/OpenLiberty/teams/release-architect), or [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) what the size of the feature is.
 
 Consider this as the scale to use to gauge sizes:
 | Size | Guide |

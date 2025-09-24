@@ -20,6 +20,6 @@ Subsystem-Name: MicroProfile 7.1
   io.openliberty.mpJwt-2.1, \
   io.openliberty.mpRestClient-4.0, \
   io.openliberty.mpTelemetry-2.1
-kind=beta
+kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

@@ -80,7 +80,7 @@ public class RecoveryDirectorFactory {
      *
      * @return RecoveryDirector instance
      */
-    public static RecoveryDirector createRecoveryDirector(RecLogServiceImpl recLogService) {
+    public static RecoveryDirector createRecoveryDirector(RecLogService recLogService) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "createRecoveryDirector", recLogService);
         _recoveryDirector = RecoveryDirectorImpl.instance(recLogService);

@@ -25,7 +25,6 @@
 		<feature>appSecurity-2.0</feature>
 		<feature>servlet-3.1</feature>
 		<feature>wsSecuritySaml-1.1</feature>
-		<feature>samlWeb-2.0</feature>
 	</featureManager>
 
 	<!--  3/2021 <include location="imports/cxf_features.xml" /> -->

@@ -108,6 +108,13 @@ public class JWKProviderTest {
             assertEquals("Rotation time was not the expected value.", defaultRotationTime, provider.rotationTimeInMilliseconds);
             assertEquals("Number of generated JWKs was not expected value.", 0, provider.jwks.size());
 
+            // Allow 0m rotation time, resulting in keys never rotating
+            provider = new JWKProvider(defaultKeySize, RS256, 0);
+            assertEquals("Key size was not the expected length.", defaultKeySize, provider.size);
+            assertEquals("Did not get expected algorithm.", RS256, provider.alg);
+            assertEquals("Rotation time was not the expected value.", 0, provider.rotationTimeInMilliseconds);
+            assertEquals("Number of generated JWKs was not expected value.", 0, provider.jwks.size());
+            assertEquals("Timer was not expected value.", null, provider.timer);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

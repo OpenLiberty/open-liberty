@@ -15,7 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+import com.ibm.ws.transaction.fat.util.PostgresqlContainerSuite;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -28,10 +28,7 @@ import tests.ContainerAuthTest;
 @SuiteClasses({
                 ContainerAuthTest.class,
 })
-public class FATSuite extends TxTestContainerSuite {
-    private static final String POSTGRES_DB = "testdb";
-    private static final String POSTGRES_USER = "postgresUser";
-    private static final String POSTGRES_PASS = "superSecret";
+public class FATSuite extends PostgresqlContainerSuite {
 
     static {
         /*
@@ -39,7 +36,7 @@ public class FATSuite extends TxTestContainerSuite {
          * The command used in that directory was: docker build -t jonhawkes/postgresql-ssl:1.0 .
          * With the resulting image being pushed to docker hub.
          */
-        testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_SSL)
+        testContainer = new PostgreSQLContainer(getPostgresqlImageName())
                         .withDatabaseName(POSTGRES_DB)
                         .withUsername(POSTGRES_USER)
                         .withPassword(POSTGRES_PASS)

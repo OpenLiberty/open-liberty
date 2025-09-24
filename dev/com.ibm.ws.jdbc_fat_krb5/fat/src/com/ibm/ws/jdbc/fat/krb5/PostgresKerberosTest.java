@@ -12,6 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import static componenttest.annotation.SkipForSecurity.FIPS_140_3;
+import static componenttest.annotation.SkipForSecurity.SEMERU;
+
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import com.ibm.ws.jdbc.fat.krb5.containers.PostgresKerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForSecurity;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEE10Action;
@@ -37,10 +41,9 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.pg.web.PgKerberosTestServlet;
 
+@SkipForSecurity(property = FIPS_140_3, runtimeName = SEMERU)
 @RunWith(FATRunner.class)
 public class PostgresKerberosTest extends FATServletClient {
-
-    private static final Class<?> c = PostgresKerberosTest.class;
 
     public static final String APP_NAME = "krb5-pg-app";
 
@@ -70,16 +73,18 @@ public class PostgresKerberosTest extends FATServletClient {
 
         server.addEnvVar("PG_DBNAME", postgresql.getDatabaseName());
         server.addEnvVar("PG_HOSTNAME", postgresql.getHost());
-        server.addEnvVar("PG_PORT", "" + postgresql.getMappedPort(PostgresKerberosContainer.PG_PORT));
+        server.addEnvVar("PG_PORT", "" + postgresql.getFirstMappedPort());
         server.addEnvVar("PG_USER", postgresql.getUsername());
         server.addEnvVar("PG_PASS", postgresql.getPassword());
+        server.addEnvVar("KRB5_PRIN", postgresql.getKerberosPrinciple());
         server.addEnvVar("KRB5_USER", postgresql.getKerberosUsername());
         server.addEnvVar("KRB5_PASS", postgresql.getKerberosPassword());
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
+
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
-
+        jvmOpts.add("-Dsun.security.jgss.debug=true");
         server.setJvmOptions(jvmOpts);
 
         server.startServer();

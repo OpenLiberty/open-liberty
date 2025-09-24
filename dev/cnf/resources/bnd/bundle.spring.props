@@ -43,6 +43,10 @@ springBootVersion30=strategy=exact;version=3.3.5
 springVersion30=strategy=exact;version=6.1.14
 springSecurityVersion30=strategy=exact;version=6.3.4
 
+springBootVersion40=version=latest
+springVersion40=version=latest
+springSecurityVersion40=version=latest
+
 checkpointSpringBootVersion30=strategy=exact;version=3.3.5
 checkpointSpringVersion30=strategy=exact;version=6.1.14
 

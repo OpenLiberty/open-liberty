@@ -26,6 +26,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * NOTE: Class taken from tomcat 7 org.apache.catalina.util.SessionIdGenerator
  * and used here as an alternative for server side state token encryption.
@@ -61,7 +63,7 @@ class SessionIdGenerator
      * will be created using the defaults. If that fails, the {@link
      * SecureRandom} instances will be created using platform defaults.
      */
-    private String secureRandomAlgorithm = "SHA1PRNG";
+    private String secureRandomAlgorithm = CryptoUtils.SHA1PRNG;
     /**
      * The name of the provider to use to create instances of
      * {@link SecureRandom} which are used to generate session IDs. If no
@@ -254,7 +256,7 @@ class SessionIdGenerator
             // Invalid provider / algorithm
             try
             {
-                result = SecureRandom.getInstance("SHA1PRNG");
+                result = SecureRandom.getInstance(CryptoUtils.SHA1PRNG);
             }
             catch (NoSuchAlgorithmException e)
             {

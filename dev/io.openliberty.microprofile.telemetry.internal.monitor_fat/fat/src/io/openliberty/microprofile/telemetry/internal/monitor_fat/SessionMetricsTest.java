@@ -97,6 +97,11 @@ public class SessionMetricsTest extends BaseTestClass {
 
         checkStrings(requestHttpServlet("/testSessionApp/testSessionServlet", server), new String[] { "Session id:" });
         Log.info(c, testName, "------- session metrics should be available ------");
+        
+		// Ensure metrics are registered.
+		String sessionStatsNotification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=SessionStats,name=default_host/testSessionApp\\]");
+		sessionStatsNotification = (sessionStatsNotification != null) ? "Found trace: " + sessionStatsNotification.trim() : "Could not find SessionStats MBean Registration notification.";
+		Log.info(c, "waitForStringInTrace", sessionStatsNotification);
 
 		// Allow time for the collector to receive and expose metrics
 		matchStringsWithRetries(() -> getContainerCollectorMetrics(container),

@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: La biblioth\u00e8que [ {0} ] sp\u00e9cifie 
 cls.library.path.invalid.explanation=Pour ajouter un chemin d'acc\u00e8s \u00e0 une biblioth\u00e8que dans la configuration du serveur, vous devez sp\u00e9cifier un chemin d'acc\u00e8s qui existe.
 cls.library.path.invalid.useraction=Modifier la configuration du serveur et modifier l'attribut path de l'\u00e9l\u00e9ment library.
 
+app.classloader.removed=CWWKL0020W: Le chargeur de classe du contexte du thread [ {0} ] ne fait plus r\u00e9f\u00e9rence \u00e0 l''application [ {1} ], qui est arr\u00eat\u00e9e.
+app.classloader.removed.explanation=app.classloader.removed.explanation =Lorsqu'une application d\u00e9marre un thread, le chargeur de classe du contexte du thread de l'application est h\u00e9rit\u00e9 par le nouveau thread.  Si le thread continue \u00e0 s'ex\u00e9cuter apr\u00e8s l'arr\u00eat de l'application, son chargeur de classe de contexte ne fait plus r\u00e9f\u00e9rence \u00e0 l'application arr\u00eat\u00e9e.
+app.classloader.removed.useraction=Validez que l'application arr\u00eate tous les threads qu'elle d\u00e9marre lorsque l'application s'arr\u00eate. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

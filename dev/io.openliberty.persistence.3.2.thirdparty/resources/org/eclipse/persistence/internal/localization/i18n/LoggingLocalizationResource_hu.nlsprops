@@ -85,6 +85,10 @@ broadcast_remote_command_is_null=Figyelmeztet\u00e9s: {0}: a fogadott {1} \u00fc
 
 broadcast_remote_command_wrong_type=Figyelmeztet\u00e9s: {0}: a fogadott {1} \u00fczenet a v\u00e1rt RemoteCommand t\u00edpus\u00fa objektum helyett {2} t\u00edpus\u00fa objektumot tartalmaz.
 
+cache_key_null_identity_map=CacheKey p\u00e9ld\u00e1ul: {0}, az identit\u00e1st\u00e9rk\u00e9pben t\u00e1rolt, null els\u0151dleges kulccsal rendelkezik.
+
+cache_key_null_read_lock_manager=CacheKey p\u00e9ld\u00e1ul: {0}, a gyors\u00edt\u00f3t\u00e1r olvas\u00e1si z\u00e1rol\u00e1skezel\u0151je \u00e1ltal z\u00e1rolt, null els\u0151dleges kulcs.
+
 cannot_get_nested_collection_type=A be\u00e1gyazott gy\u0171jtem\u00e9nyt\u00edpus nem k\u00e9rdezhet\u0151 le.
 
 cannot_get_server_name_and_version=A kiszolg\u00e1l\u00f3n\u00e9v \u00e9s -v\u00e1ltozat a k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem k\u00e9rhet\u0151 le.  {0}
@@ -114,10 +118,6 @@ connected_sdk=Csatlakoztatott: SDK
 connected_user_database=Csatlakoztatott: {3}{4}Felhaszn\u00e1l\u00f3: {0}{3}{4}Adatb\u00e1zis: {1}  V\u00e1ltozat: {2}
 
 connected_user_database_driver=Csatlakoztatott: {0}{6}Felhaszn\u00e1l\u00f3: {1}{6}Adatb\u00e1zis: {2}  V\u00e1ltozat: {3}{6}Meghajt\u00f3: {4}  V\u00e1ltozat: {5}
-
-corrupt_object=s\u00e9r\u00fclt objektum: {0}
-
-corrupt_object_referenced_through_mapping=A k\u00f6vetkez\u0151 s\u00e9r\u00fclt objektumra a lek\u00e9pez\u00e9s hivatkozik: {0}
 
 corrupted_session_announcement=SessionID: {0}  Felt\u00e9rk\u00e9pez\u00e9s-kezel\u0151 s\u00e9r\u00fclt munkamenet-k\u00f6zlem\u00e9nyt kapott - mell\u0151z\u00e9s.
 
@@ -322,6 +322,8 @@ jpars_could_not_find_session_bean=H\u00edv\u00e1s ker\u00fclt v\u00e9grehajt\u00
 jta_cannot_be_disabled_in_cmp=T\u00e1rol\u00f3vez\u00e9relt megmarad\u00e1s (CMP) haszn\u00e1lata eset\u00e9n a JTA nem tilthat\u00f3. Az EclipseLink \u00fagy fog m\u0171k\u00f6dni, mintha a JTA enged\u00e9lyezett lenne.
 
 jta_duplicate_ctrl_property=A JTA tranzakci\u00f3vez\u00e9rl\u0151 oszt\u00e1ly az "eclipselink.target-server" \u00e9s az "eclipselink.jta.controller" tulajdons\u00e1gokban egyar\u00e1nt meg van hat\u00e1rozva. Az "eclipselink.target-server" \u00e9rt\u00e9ke ker\u00fcl alkalmaz\u00e1sra.
+
+jta_tm_lookup_failure=Nem lehet megn\u00e9zni a TransactionManager p\u00e9ld\u00e1nyt: {0}
 
 jta_tsr_lookup_failure=A TransactionSynchronizationRegistry p\u00e9ld\u00e1nyban nem v\u00e9gezhet\u0151 kikeres\u00e9s: {0}
 
@@ -657,18 +659,6 @@ retreived_null_message=Null \u00fczenet lek\u00e9rve a t\u00e9mak\u00f6rb\u0151l
 
 retreived_unknown_message_type=Ismeretlen {0} \u00fczenett\u00edpus lek\u00e9r\u00e9se a(z) {1} t\u00e9mak\u00f6rb\u0151l; figyelmen k\u00edv\u00fcl hagy\u00e1s
 
-schema_default_create_tables_failed=Nem siker\u00fclt t\u00e1bl\u00e1kat l\u00e9trehozni az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
-
-schema_default_drop_tables_failed=Nem siker\u00fclt megsz\u00fcntetni a t\u00e1bl\u00e1kat az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
-
-schema_default_extend_tables_failed=A t\u00e1bl\u00e1k kiterjeszt\u00e9se az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban meghi\u00fasult: {0}
-
-schema_default_replace_tables_failed=Nem siker\u00fclt lecser\u00e9lni a t\u00e1bl\u00e1kat az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
-
-schema_default_truncate_tables_failed=Nem siker\u00fclt a t\u00e1bl\u00e1k csonkol\u00e1sa az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
-
-schema_drop_object_failed=Nem siker\u00fclt eldobni az objektumot az alap\u00e9rtelmezett t\u00e1bla s\u00e9m\u00e1ban: {0}
-
 sdo_classgenerator_exception={2} [{0}] kiv\u00e9tel t\u00f6rt\u00e9nt - \u00fczenet: [{1}]
 
 sdo_error_deserialization=Jogosulatlan visszaalak\u00edt\u00e1si k\u00eds\u00e9rlet a(z) {0} oszt\u00e1llyal.
@@ -702,8 +692,6 @@ sop_object_not_found=A soros\u00edtott sopObject nem tal\u00e1lhat\u00f3 a k\u00
 sop_object_wrong_pk=Soros\u00edtott sopObject elt\u00e1vol\u00edt\u00e1sa a sorb\u00f3l, mert rossz [{0}] els\u0151dleges kulccsal rendelkezik a k\u00f6vetkez\u0151ben: [{1}], [{2}]
 
 sop_object_wrong_version=Soros\u00edtott sopObject elt\u00e1vol\u00edt\u00e1sa a sorb\u00f3l, mert rossz [{0}] els\u0151dleges verzi\u00f3val rendelkezik a k\u00f6vetkez\u0151ben: [{1}], [{2}]
-
-stack_of_visited_objects_that_refer_to_the_corrupt_object=a s\u00e9r\u00fclt objektumra hivatkoz\u00f3 l\u00e1togatott objektumokat tartalmaz\u00f3 verem: {0}
 
 topLink_version=EclipseLink, verzi\u00f3: {0}
 
@@ -746,8 +734,6 @@ update_all_query_cannot_use_binding_on_this_platform=Az UpdateAllQuery nem haszn
 validate_db_schema_with_not_supported=A WLS "validate-db-schema-with" nat\u00edv CMP be\u00e1ll\u00edt\u00e1s\u00e1t az EclipseLink CMP nem t\u00e1mogatja k\u00f6zvetlen\u00fcl. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 
 validate_ejb_jar=Az ejb-jar.xml \u00e9rv\u00e9nyes\u00edt\u00e9se indul, eltarthat egy ideig...
-
-validate_object_space=objektumter\u00fclet \u00e9rv\u00e9nyes\u00edt\u00e9se.
 
 verifiy_columns_read_locking_not_supported=A "Read" optimista be\u00e1ll\u00edt\u00e1s a "verify-columns" elemhez a(z) ({0}) entit\u00e1sban nem k\u00f6zvetlen\u00fcl t\u00e1mogatott az EclipseLink CMP-ben. A r\u00e9szletek\u00e9rt tanulm\u00e1nyozza az \u00e1ttelep\u00edt\u00e9si dokument\u00e1ci\u00f3t.
 

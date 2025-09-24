@@ -11,14 +11,14 @@
 	  <!--  3/2021 update with cxf-ehcache_ee8.xml -->
 	  
 		<signatureProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="Liberty"
 			org.apache.ws.security.crypto.merlin.keystore.alias="sslspservercert"
-			org.apache.ws.security.crypto.merlin.keystore.file="samlKey.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.file="samlKey.p12" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="jks"
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyServer"
-			org.apache.ws.security.crypto.merlin.keystore.file="${server.config.dir}/samlSslServerTrust.jks" />
+			org.apache.ws.security.crypto.merlin.keystore.file="${server.config.dir}/samlSslServerTrust.p12" />
 
 	</wsSecurityProvider>
 

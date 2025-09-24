@@ -19,15 +19,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
-
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.cdi.CDIServiceUtils;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
@@ -68,11 +65,6 @@ public class ConcurrencyExtension implements Extension {
     private static final Set<Annotation> DEFAULT_QUALIFIER_SET = Set.of(Default.Literal.INSTANCE);
 
     /**
-     * OSGi service for the Concurrency extension;
-     */
-    private ConcurrencyExtensionMetadata extSvc;
-
-    /**
      * Indicates if we were able to create a default ManagedThreadFactory bean.
      * If so, an instance of the bean is obtained during afterDeploymentValidation
      * to force context capture to occur.
@@ -106,40 +98,43 @@ public class ConcurrencyExtension implements Extension {
             throw new IllegalStateException(); // should be unreachable
 
         J2EEName jeeName = cmd.getJ2EEName();
-
-        BundleContext bundleContext = FrameworkUtil.getBundle(ConcurrencyExtension.class).getBundleContext();
-        ServiceReference<QualifiedResourceFactories> ref = bundleContext.getServiceReference(QualifiedResourceFactories.class);
-        extSvc = (ConcurrencyExtensionMetadata) bundleContext.getService(ref);
-
-        // Add beans for Concurrency default resources if not already present:
-
         CDI<Object> cdi = CDI.current();
 
-        if (!cdi.select(ContextService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ContextServiceBean(extSvc.defaultContextServiceFactory, DEFAULT_QUALIFIER_SET));
+        boolean successState = ServiceCaller.callOnce(ConcurrencyExtension.class, QualifiedResourceFactories.class, service -> {
+            ConcurrencyExtensionMetadata extSvc = (ConcurrencyExtensionMetadata) service;
 
-        if (!cdi.select(ManagedExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ManagedExecutorBean(extSvc.defaultManagedExecutorFactory, DEFAULT_QUALIFIER_SET));
+            // Add beans for Concurrency default resources if not already present:
+            if (!cdi.select(ContextService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+                event.addBean(new ContextServiceBean(extSvc.defaultContextServiceFactory, DEFAULT_QUALIFIER_SET));
 
-        if (!cdi.select(ManagedScheduledExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
-            event.addBean(new ManagedScheduledExecutorBean(extSvc.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
+            if (!cdi.select(ManagedExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+                event.addBean(new ManagedExecutorBean(extSvc.defaultManagedExecutorFactory, DEFAULT_QUALIFIER_SET));
 
-        if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
-            event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
-            producedDefaultMTF = true;
+            if (!cdi.select(ManagedScheduledExecutorService.class, DEFAULT_QUALIFIER_ARRAY).isResolvable())
+                event.addBean(new ManagedScheduledExecutorBean(extSvc.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
+
+            if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
+                event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
+                producedDefaultMTF = true;
+            }
+
+            // Look for beans from the module and the application.
+            // TODO EJBs and component level?
+
+            List<Map<List<String>, QualifiedResourceFactory>> listFromModule = extSvc.removeAll(cmd.getJ2EEName().toString());
+            if (listFromModule != null)
+                addBeans(event, listFromModule, extSvc);
+
+            List<Map<List<String>, QualifiedResourceFactory>> listFromApp = extSvc.removeAll(jeeName.getApplication());
+            if (listFromApp != null)
+                addBeans(event, listFromApp, extSvc);
+        });
+
+        //TODO add NLS message
+        if (!successState) {
+            throw new IllegalStateException("Could not register all managed service beans because the "
+                                            + "ConcurrencyExtensionMetadata service was unavailable.");
         }
-
-        // Look for beans from the module and the application.
-        // TODO EJBs and component level?
-
-        List<Map<List<String>, QualifiedResourceFactory>> listFromModule = extSvc.removeAll(cmd.getJ2EEName().toString());
-
-        if (listFromModule != null)
-            addBeans(event, listFromModule);
-
-        List<Map<List<String>, QualifiedResourceFactory>> listFromApp = extSvc.removeAll(jeeName.getApplication());
-        if (listFromApp != null)
-            addBeans(event, listFromApp);
     }
 
     /**
@@ -152,7 +147,7 @@ public class ConcurrencyExtension implements Extension {
      *                  . . . . . . qualifiers -> ResourceFactory for ManagedScheduledExecutorService,
      *                  . . . . . . qualifiers -> ResourceFactory for ManagedThreadFactory ]
      */
-    private void addBeans(AfterBeanDiscovery event, List<Map<List<String>, QualifiedResourceFactory>> list) {
+    private void addBeans(AfterBeanDiscovery event, List<Map<List<String>, QualifiedResourceFactory>> list, ConcurrencyExtensionMetadata extSvc) {
         Map<List<String>, QualifiedResourceFactory> qualifiedContextServices = //
                         list.get(QualifiedResourceFactory.Type.ContextService.ordinal());
 

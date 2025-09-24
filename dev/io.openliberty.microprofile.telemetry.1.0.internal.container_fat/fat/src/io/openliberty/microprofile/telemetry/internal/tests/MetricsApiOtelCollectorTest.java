@@ -146,8 +146,16 @@ public class MetricsApiOtelCollectorTest {
      * For more info on the Prometheus metrics format: 
      * https://github.com/prometheus/docs/blob/main/content/docs/instrumenting/exposition_formats.md#text-format-details
      */
+    
     public void getApiMetrics(String name, String type, String value) throws Exception {
         String result = client.dumpMetrics();
+        
+        // Add null check for result before using it
+        if (result == null) {
+            fail("No metrics data returned from collector");
+            return;
+        }
+        
         List<String> splits = Arrays.asList(result.split("((?=# HELP))"));
         for (String s : splits) {
             if (s.contains(name)) {

@@ -42,4 +42,5 @@ src: \
   org.springframework:spring-tx;${springVersion20}, \
   org.springframework:spring-web;${springVersion20}, \
   org.slf4j:slf4j-api;version=1.7.36, \
-  com.ibm.websphere.javaee.jms.2.0;version=latest
+  com.ibm.websphere.javaee.jms.2.0;version=latest, \
+  com.ibm.websphere.javaee.servlet.3.1

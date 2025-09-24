@@ -34,5 +34,6 @@ publish.wlp.jar.disabled: true
  	com.ibm.websphere.org.osgi.service.component;version=latest,\
  	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
  	com.ibm.ws.kernel.service;version=latest,\
+ 	com.ibm.ws.kernel.boot;version=latest,\
  	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.threading.virtual;version=latest

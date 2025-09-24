@@ -409,3 +409,127 @@ task verifyBundleNLS {
             throw new GradleException("Missing nlsprops files: " + badProjectsNLS )
     }
 }
+
+/**
+ * Utility task that will autoformat your bnd files including:
+ * - (1) tabs to spaces
+ * - (2) remove trailing spaces
+ * - (3) alphabetize lists
+ * 
+ * This is experimental and might have bugs, useful when making 
+ * changes to an existing bnd file and you want to prettify it.
+ * 
+ * Needs to be manually run like: 
+ * ./gradlew [your-project]:formatBndFiles
+ */
+import java.util.stream.Collectors;
+task formatBndFiles() {
+  doLast { // For THIS project
+
+    // Find bnd files
+    def bndFiles = []
+    fileTree(project.projectDir).visit { FileVisitDetails d ->
+      if(d.file.name.endsWith(".bnd")) {
+        bndFiles << d.file.path
+      }
+    }
+    
+    //Iterate over bnd files
+    bndFiles.each { String p ->
+      // Evaluate path
+      java.nio.file.Path path = java.nio.file.Paths.get(p)
+      println "Parsing file: ${path}"
+      
+      // Read original lines, and allocate space for updated lines
+      List<String> original = java.nio.file.Files.readAllLines(path)
+      List<String> updated  = new ArrayList<>(original.size())
+      
+      // Allocate space for lists
+      boolean inList = false
+      String listKey;
+      List<String> listItems = new ArrayList<>()
+      
+      // Parse bnd file
+      for (String line : original) {
+        // Space between content - trim extra blank space
+        // TODO consider removing multiple empty lines
+        if (line.trim().isEmpty() && !inList) {
+          updated.add("")
+          continue
+        }
+        
+        // Comment line - tab -> space, trim trailing space
+        if (line.trim().startsWith("#") && !inList) {
+          updated.add(line.replaceAll("\t", "    ").replaceAll("\\s+\$", ""))
+          continue
+        }
+        
+        // Start of list
+        if(line.indexOf(':') != -1 && !inList) {
+          // find list key
+          listKey = line.split(':')[0]
+          
+          // find list items on same line as list key
+          String lineWithoutKey = line.substring(line.indexOf(':') + 1);
+          listItems.addAll(lineWithoutKey.split(","))
+          
+          // does list continue onto next line?
+          if(line.trim().endsWith("\\")) {
+            inList = true
+            continue
+          }
+        }
+        
+        // In list
+        if(inList) {
+          // split list items by [,]
+          // note: some lines might end with ,\
+          //       deal with that when adding items back
+          listItems.addAll(line.split(","))
+          
+          // does list continue onto next line?
+          if(line.trim().endsWith("\\")) {
+            continue
+          } else {
+            inList = false;
+          }
+        }
+        
+        // End list
+        if(listKey != null && !inList) {
+          // list is only one item, keep key and item on same line
+          if(listItems.size() == 1) {
+            updated.add(listKey.trim() + ": " + listItems.get(0).trim())
+            listKey = null
+            listItems.clear()
+            continue;
+          }
+          
+          // output list items in alphebetical order
+          updated.add(listKey.trim() + ":\\")
+          updated.add(listItems.stream()
+            .map(i -> i.trim())           // remove flanking white space
+            .filter(i -> !i.equals("\\")) // filter trailing \
+            .filter(i -> !i.isEmpty())    // filter trailing white space
+            .sorted()                     // sort list
+            .collect(Collectors.joining(",\\\n    ", "    ", "")))
+
+          listKey = null
+          listItems.clear()
+          continue;
+        }
+        
+        // Any other line - tab -> space, trim trailing space
+        updated.add(line.replaceAll("\t", "    ").replaceAll("\\s+\$", ""))
+      }
+      
+      // Ensure file ends with a new line
+      if(!updated.get(updated.size() - 1).isEmpty()) {
+        updated.add("")
+      }
+      
+      // overwrite the file with the updated lines
+      java.nio.file.Files.write(path, updated)
+    }
+  }  
+}

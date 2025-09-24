@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: A biblioteca [ {0} ] especifica um caminho 
 cls.library.path.invalid.explanation=Para adicionar um caminho a uma biblioteca na configura\u00e7\u00e3o do servidor, voc\u00ea deve especificar um caminho existente.
 cls.library.path.invalid.useraction=Edite a configura\u00e7\u00e3o do servidor e modifique o atributo path do elemento library.
 
+app.classloader.removed=CWWKL0020W: O carregador de classe de contexto de thread para o thread [ {0} ] n\u00e3o faz mais refer\u00eancia ao aplicativo [ {1} ], que foi interrompido.
+app.classloader.removed.explanation=app.classloader.removed.explanation =Quando um aplicativo inicia um thread, o carregador de classe do contexto do thread do aplicativo \u00e9 herdado pelo novo thread.  Se o thread continuar a ser executado depois que o aplicativo for interrompido, seu carregador de classe de contexto n\u00e3o far\u00e1 mais refer\u00eancia ao aplicativo interrompido.
+app.classloader.removed.useraction=Valide se o aplicativo interrompe todos os threads que ele inicia quando o aplicativo \u00e9 interrompido. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

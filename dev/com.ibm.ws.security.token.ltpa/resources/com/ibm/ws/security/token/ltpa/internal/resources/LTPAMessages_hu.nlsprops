@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=\u0
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: A updateTrigger attrib\u00fatum le van tiltva, \u00e9s a megfigyel\u00e9si id\u0151k\u00f6z nagyobb, mint {0}. Az LTPA kulcsf\u00e1jlok m\u00f3dos\u00edt\u00e1sa eset\u00e9n nincs dinamikus \u00fajrabet\u00f6lt\u00e9s.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Ha a updateTrigger attrib\u00fatum le van tiltva, akkor a f\u00e1jlok nem ker\u00fclnek megfigyel\u00e9sre a .keys ut\u00f3taggal \u00e9s dinamikus \u00fajrabet\u00f6lt\u00e9ssel rendelkez\u0151 f\u00e1jlok m\u00f3dos\u00edt\u00e1saihoz. M\u00e9g akkor is, ha a monitorInterval attrib\u00fatum \u00e9rt\u00e9ke null\u00e1n\u00e1l nagyobb, az attrib\u00fatum figyelmen k\u00edv\u00fcl marad, \u00e9s a f\u00e1jlok nem ker\u00fclnek megfigyel\u00e9sre.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=\u00c1ll\u00edtsa be az updateTrigger attrib\u00fatumot lek\u00e9rdez\u00e9sre vagy mbean \u00e9rt\u00e9kre.
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: A {0} \u00e9rv\u00e9nyes\u00edt\u00e9si kulcsokat FIPS 140-3 tan\u00fas\u00edtv\u00e1nnyal rendelkez\u0151 kriptogr\u00e1fiai algoritmusok seg\u00edts\u00e9g\u00e9vel kell \u00fajrateremteni.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=A FIPS 140-3 enged\u00e9lyez\u00e9se n\u00e9lk\u00fcl l\u00e9trehozott LTPA \u00e9rv\u00e9nyes\u00edt\u00e9si kulcsok nem m\u0171k\u00f6dnek, ha a FIPS 140-3 enged\u00e9lyezve van.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=A securityUtility createLTPAKeys paranccsal hozhatja l\u00e9tre a FIPS 140-3 konfigur\u00e1l\u00e1sa eset\u00e9n a FIPS \u00e1ltal j\u00f3v\u00e1hagyott \u00e9rv\u00e9nyes\u00edt\u00e9si kulcsokat.

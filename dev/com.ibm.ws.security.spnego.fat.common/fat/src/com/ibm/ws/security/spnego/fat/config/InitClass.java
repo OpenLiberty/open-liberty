@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.client.session.ClientSession;
-import org.junit.Assume;
 
 import com.ibm.websphere.simplicity.ConnectionInfo;
 import com.ibm.websphere.simplicity.Machine;
@@ -263,8 +262,10 @@ public class InitClass {
                                     "\n SPNEGO tests cannot run on this machine. This is a machine set up issue with the host name. "
                                     + "\n This can be fixed by updating the hosts file or DNS server registration."
                                     + asciiArtLineBreak);
-            Assume.assumeTrue(false); //This will stop the rest of tests from executing
-            return serverCanonicalHostName = "tests cannot run";
+
+            throw new UnknownHostException("Can not resolve the hostname for IP address " + ipAddress +
+                                           "\n SPNEGO tests cannot run on this machine. " +
+                                           "\n This can be fixed by updating the hosts file or DNS server registration.");
         }
         if (canonicalHostName != null && canonicalHostName.length() > CANONICAL_HOST_NAME_CHAR_LIMIT) {
             Log.info(c, methodName, "Canonical host name [" + canonicalHostName + "] is longer than allowed character limit. Using a substring as the host name");

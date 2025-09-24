@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Java22Test.class,
                 Java23Test.class,
                 Java24Test.class,
+                Java25Test.class,
                 JavaIllegalAccessTest.class,
                 AlwaysPassesTest.class
 })

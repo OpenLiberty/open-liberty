@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2024 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
+import static com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration.LibraryPrecedence.beforeApp;
 import static com.ibm.ws.classloading.internal.ClassLoadingConstants.SHARED_LIBRARY_DOMAIN;
 import static com.ibm.ws.classloading.internal.ClassLoadingConstants.SPI_SHARED_LIBRARY_DOMAIN;
 import static org.osgi.service.component.annotations.ReferenceCardinality.MULTIPLE;
@@ -73,7 +74,6 @@ import com.ibm.ws.classloading.LibertyClassLoadingService;
 import com.ibm.ws.classloading.MetaInfServicesProvider;
 import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
 import com.ibm.ws.classloading.internal.ClassLoaderFactory.PostCreateAction;
-import com.ibm.ws.classloading.internal.GatewayConfigurationImpl;
 import com.ibm.ws.classloading.internal.providers.WeakLibraryListener;
 import com.ibm.ws.classloading.internal.util.CanonicalStore;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
@@ -476,6 +476,8 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         EnumSet<ApiType> apiTypeVisibility = lib.getApiTypeVisibility();
 
         ClassLoaderConfiguration clsCfg = createClassLoaderConfiguration()
+                        // if the library is searched before app then we must use parentLast for the shared library
+                        .setDelegateToParentAfterCheckingLocalClasspath(globalConfig.libraryPrecedence() == beforeApp)
                         .setId(clId)
                         .setSharedLibraries(lib.id()); // Configure lib binaries
 

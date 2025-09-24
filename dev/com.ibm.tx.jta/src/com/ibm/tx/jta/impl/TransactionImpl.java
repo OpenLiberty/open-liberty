@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2024 IBM Corporation and others.
+ * Copyright (c) 2002, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -258,7 +258,7 @@ public class TransactionImpl implements Transaction, ResourceCallback, UOWScopeL
 
     private final TransactionSynchronizationRegistry tsr = TransactionSynchronizationRegistryFactory.getTransactionSynchronizationRegistry();
 
-    protected boolean _alarmsCancelled;
+    protected volatile boolean _alarmsCancelled;
 
     private static TraceComponent tc = Tr.register(com.ibm.tx.jta.impl.TransactionImpl.class, TranConstants.TRACE_GROUP, TranConstants.NLS_FILE);
 

@@ -73,4 +73,5 @@ javac.target: 11
 	com.ibm.websphere.javaee.security.1.0,\
 	jakarta.servlet-api,\
 	com.ibm.ws.org.jose4j;version=latest,\
-	org.bitbucket.b_c.jose4j
+	org.bitbucket.b_c.jose4j,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest

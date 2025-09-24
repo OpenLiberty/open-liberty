@@ -11,13 +11,14 @@
   conditionalRun:
     - type: ifSet
       value: ${fat.buckets.to.run}
-  timeoutInMinutes: 120
+  timeoutInMinutes: 1440 # 1 day
   properties:
-    fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
     aggregationId: ${Compile Liberty Images:execution_id}
-    buildType: personal
     bndFilesZipUrl: ${Compile Liberty Images:bndFilesZipUrl}
-    imageUrl: ${Compile Liberty Images:imageUrl}
+    buildType: personal
     changeDetectorImageUrl: ${Compile FATs:changeDetectorImageUrl}
+    ebcShortlist: jenkins-child.yml
+    fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
     fatFeatureJsonUrl: ${Compile FATs:fatFeatureJsonUrl}
     githubPRApi: ${github_pr_api}
+    imageUrl: ${Compile Liberty Images:imageUrl}

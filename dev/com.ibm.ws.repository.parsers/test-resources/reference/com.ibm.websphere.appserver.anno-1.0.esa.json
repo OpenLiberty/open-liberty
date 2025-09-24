@@ -47,7 +47,7 @@
             "rawRequirements":[
                 "com.ibm.ws.anno_1.0.9.jar: (&(osgi.ee=JavaSE)(version>=1.6))"
             ],
-            "versionDisplayString":"Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 24"
+            "versionDisplayString":"Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 25"
         },
         "links":[
             {

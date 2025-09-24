@@ -1,0 +1,45 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>jca-1.7</feature>
+        <feature>jms-2.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication location="testOverrideLib.war">
+        <classloader overrideLibraryRef="testOverrideA,testOverrideB" privateLibraryRef="testOverrideC,testOverrideD" classProviderRef="DummyRA1"/>
+    </webApplication>
+
+    <resourceAdapter id="DummyRA1" location="${server.config.dir}/ras/testDummyRA.rar">
+      <classloader overrideLibraryRef="testOverrideE"/>
+    </resourceAdapter>
+
+    <library id="testOverrideA">
+       <path name="libs/testLib1.jar"/>
+       <path name="libs/testLib2.jar"/>
+    </library>
+    <library id="testOverrideB">
+       <path name="libs/testLib3.jar"/>
+       <path name="libs/testLib4.jar"/>
+    </library>
+    <library id="testOverrideC">
+       <path name="libs/testLib5.jar"/>
+       <path name="libs/testLib6.jar"/>
+    </library>
+    <library id="testOverrideD">
+       <path name="libs/testLib7.jar"/>
+       <path name="libs/testLib8.jar"/>
+    </library>
+    <library id="testOverrideE">
+       <path name="libs/testLib9.jar"/>
+    </library>
+
+    <javaPermission codeBase="${server.config.dir}/apps/testOverrideLib.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}/apps/testOverrideLib.war" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codeBase="${server.config.dir}/libs/testLib1.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+</server>
+

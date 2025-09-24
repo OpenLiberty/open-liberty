@@ -169,9 +169,9 @@ elements={0}{1} \u00e9l\u00e9ments
 
 enable_batch_operations_as_true_not_supported=Le param\u00e8tre CMP natif WLS "enable-batch-operations-as-true" n''est pas directement pris en charge dans EclipseLink CMP. Pour plus de d\u00e9tails, voir la doc de migration.
 
-encryptor_script_description=Cette application d\u00e9chiffre en interne un ancien mot de passe crypt\u00e9 utilis\u00e9 par un pr\u00e9c\u00e9dent EclipseLink version et le crypte par le dernier algorithme.
+encryptor_script_description=Cette application poss\u00e8de un ancien mot de passe crypt\u00e9 qui \u00e9tait utilis\u00e9 par une version pr\u00e9c\u00e9dente de EclipseLink. Recryptez-le avec l''algorithme le plus r\u00e9cent.
 
-encryptor_script_output=Le mot de passe rechiffr\u00e9 est\u00a0: {0}
+encryptor_script_output=Le mot de passe recrypt\u00e9 est le suivant : {0}
 
 encryptor_script_usage=L''utilisation est `passwordUpdate.sh|.cmd -ip <ancien mot de passe crypt\u00e9>`
 
@@ -318,6 +318,8 @@ jpars_could_not_find_session_bean=Un appel est effectu\u00e9 \u00e0 un bean sess
 jta_cannot_be_disabled_in_cmp=Lors de l''utilisation de Container Managed Persistence (CMP), JTA ne peut pas \u00eatre d\u00e9sactiv\u00e9. EclipseLink agira comme JTA \u00e9tait activ\u00e9.
 
 jta_duplicate_ctrl_property=Classe de contr\u00f4leur de transaction JTA d\u00e9finie dans les propri\u00e9t\u00e9s "eclipselink.target-server" et "eclipselink.jta.controller". Utilisation de la valeur de "eclipselink.target-server".
+
+jta_tm_lookup_failure=Impossible de consulter l''instance TransactionManager : {0}
 
 jta_tsr_lookup_failure=Impossible de rechercher l''instance TransactionSynchronizationRegistry : {0}
 

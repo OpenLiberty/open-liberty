@@ -1,0 +1,24 @@
+<server>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jdbc-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>apiTestFeature-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication location="testParentLibraryInconsistent.war">
+        <classloader commonLibraryRef="testCommonLib" delegation="parentLast"/>
+    </webApplication>
+
+    <library id="testCommonLib">
+       <path name="libs/testLib1.jar"/>
+       <path name="libs/testLib2.jar"/>
+    </library>
+
+    <javaPermission codeBase="${server.config.dir}/apps/testParentLibraryInconsistent.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codeBase="${server.config.dir}/apps/testParentLibraryInconsistent.war" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+    <javaPermission codeBase="${server.config.dir}/libs/testLib1.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
+</server>
+

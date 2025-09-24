@@ -1,5 +1,5 @@
 /*************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,7 +23,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @SuiteClasses({
                 FfdcCleanupTest.class,
-                TimeBasedLogRolloverTest.class
+                TimeBasedLogRolloverTest.class,
+                MessageTraceFileNameTimedRolloverTest.class
 })
 
 public class FATSuite {

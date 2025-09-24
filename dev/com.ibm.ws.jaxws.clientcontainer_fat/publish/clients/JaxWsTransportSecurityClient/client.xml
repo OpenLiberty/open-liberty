@@ -8,7 +8,7 @@
     <orb id="defaultOrb" orbSSLInitTimeout="60"/>
     
     <!-- use the default SSL configuration -->
-    <keyStore id="defaultKeyStore" password="passw0rd" location="serverKey.jks"/>
+    <keyStore id="defaultKeyStore" password="passw0rd" location="serverKey.p12"/>
     
    <application id="JaxWsTransportSecurityClient" name="JaxWsTransportSecurityClient" type="ear" location="JaxWsTransportSecurityClient.ear"/>
   	<javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>

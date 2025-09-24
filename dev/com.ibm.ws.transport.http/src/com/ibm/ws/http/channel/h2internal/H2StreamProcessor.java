@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -363,14 +363,14 @@ public class H2StreamProcessor {
                 }
 
                 if (addFrame == null || addFrame == ADDITIONAL_FRAME.FIRST_TIME) {
-                    if (h2rs.isControlRatioExceeded() || h2rs.isInboundResetsInTimeExceeded() || h2rs.isStreamMisbehaving()) {
+                    if (h2rs.isControlRatioExceeded() || h2rs.isResetsInTimeExceeded() || h2rs.isStreamMisbehaving()) {
                         addFrame = ADDITIONAL_FRAME.GOAWAY;
                         if (h2rs.isStreamMisbehaving()) {
                             addFrameException = new EnhanceYourCalmException("too many empty frames received");
                             Tr.debug(tc, "processNextFrame: too many empty frames received on stream " + this.myID + ", sending GOAWAY");
-                        } else if (h2rs.isInboundResetsInTimeExceeded()) {
-                            addFrameException = new EnhanceYourCalmException("too many reset frames received");
-                            Tr.debug(tc, "processNextFrame: too many reset frames received on stream " + this.myID + ", sending GOAWAY");
+                        } else if (h2rs.isResetsInTimeExceeded()) {
+                            addFrameException = new EnhanceYourCalmException("too many reset frames processed");
+                            Tr.debug(tc, "processNextFrame: too many reset frames sent/received on stream " + this.myID + ", sending GOAWAY");
                         } else {
                             addFrameException = new EnhanceYourCalmException("too many control frames received");
                             Tr.debug(tc, "processNextFrame: too many control frames received on stream " + this.myID + ", sending GOAWAY");
@@ -637,7 +637,7 @@ public class H2StreamProcessor {
                 writeFrameSync();
             } finally {
                 rstStreamSent = true;
-                muxLink.getH2RateState().setStreamReset();
+                muxLink.getH2RateState().incrementResetFrameCount();
                 this.updateStreamState(StreamState.CLOSED);
                 if (currentFrame.getFrameType() == FrameTypes.GOAWAY) {
                     muxLink.closeConnectionLink(e);
@@ -1948,7 +1948,7 @@ public class H2StreamProcessor {
                 firstReadLatch.countDown();
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "not counting down firstReadLatch: " + firstReadLatch.hashCode() + " becuase "
+                    Tr.debug(tc, "not counting down firstReadLatch: " + firstReadLatch.hashCode() + " because "
                                  + this.streamReadSize + " bytes remain on stream " + myID);
                 }
             }

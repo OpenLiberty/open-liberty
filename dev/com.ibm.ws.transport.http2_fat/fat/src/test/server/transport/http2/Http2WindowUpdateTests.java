@@ -1,18 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.server.transport.http2;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,10 +42,8 @@ public class Http2WindowUpdateTests extends FATServletClient {
     private final static LibertyServer runtimeServer = LibertyServerFactory.getLibertyServer("http2ClientRuntime.tracing");
     private final static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.transport.http2.fat.window.update");
 
-    String dataServletPath = "H2FATDriver/DataFrameTests?hostName=";
-
     @Rule
-    public TestName testName = new TestName();
+    public TestName testName = new Utils.CustomTestName();
 
     @BeforeClass
     public static void before() throws Exception {
@@ -60,6 +57,32 @@ public class Http2WindowUpdateTests extends FATServletClient {
 
         server.startServer(true, true);
         runtimeServer.startServer(true, true);
+        // Go through Logs and check if Netty is being used
+        boolean runningNetty = false;
+        // Wait for endpoints to finish loading and get the endpoint started messages
+        server.waitForStringInLog("CWWKO0219I.*");
+        runtimeServer.waitForStringInLog("CWWKO0219I.*");
+        List<String> test = server.findStringsInLogs("CWWKO0219I.*");
+        if (LOGGER.isLoggable(Level.INFO)) {
+            LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Got port list...... " + Arrays.toString(test.toArray()));
+            LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Looking for port: " + server.getHttpSecondaryPort());
+        }
+        for (String endpoint : test) {
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Endpoint: " + endpoint);
+            }
+            if (!endpoint.contains("port " + Integer.toString(server.getHttpSecondaryPort())))
+                continue;
+            if (LOGGER.isLoggable(Level.INFO)) {
+                LOGGER.logp(Level.INFO, CLASS_NAME, "test()", "Netty? " + endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils"));
+            }
+            runningNetty = endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils");
+            break;
+        }
+        if (runningNetty)
+            FATServletClient.runTest(runtimeServer,
+                                     Http2FullModeTests.defaultServletPath + server.getHostname() + "&port=" + server.getHttpSecondaryPort() + "&testdir=" + Utils.TEST_DIR,
+                                     "setUsingNetty");
     }
 
     @AfterClass
@@ -91,7 +114,7 @@ public class Http2WindowUpdateTests extends FATServletClient {
      */
     @Test
     public void testSimpleWindowUpdatesReceivedLimitWindowUpdateFrames() throws Exception {
-        runTest(dataServletPath, testName.getMethodName());
+        runTest(Http2FullModeTests.dataServletPath, testName.getMethodName());
     }
 
     /**
@@ -102,7 +125,7 @@ public class Http2WindowUpdateTests extends FATServletClient {
      */
     @Test
     public void testMultiStreamWindowUpdatesReceivedLimitWindowUpdateFrames() throws Exception {
-        runTest(dataServletPath, testName.getMethodName());
+        runTest(Http2FullModeTests.dataServletPath, testName.getMethodName());
     }
 
 }

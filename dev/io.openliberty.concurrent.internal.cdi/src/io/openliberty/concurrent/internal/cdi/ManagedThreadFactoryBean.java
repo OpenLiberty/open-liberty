@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,17 +15,14 @@ package io.openliberty.concurrent.internal.cdi;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.Set;
-
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloading.ClassLoaderIdentifierService;
-import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
@@ -84,19 +81,23 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
     ManagedThreadFactoryBean(ComponentMetaData cmd, ConcurrencyExtensionMetadata extSvc, Set<Annotation> qualifiers) {
         this.factory = extSvc.defaultManagedThreadFactoryFactory;
         this.qualifiers = qualifiers;
+        this.declaringClassLoader = ServiceCaller.runOnce(ManagedThreadFactoryBean.class, ClassLoaderIdentifierService.class, service -> {
+            // Check if an EAR Classloader exists for this component
+            ClassLoader found = service.getClassLoader("EARApplication:" + cmd.getJ2EEName().getApplication());
+            if (Objects.nonNull(found)) {
+                return found;
+            }
 
-        // TODO find out how to get the class loader for the application.
-        // It is not correct to use whichever application component's classloader happens to be on the thread.
-        if (cmd instanceof IdentifiableComponentMetaData) {
-            String identifier = ((IdentifiableComponentMetaData) cmd).getPersistentIdentifier();
+            // If no EAR Classloader, then check if a WEB Classloader exists
+            found = service.getClassLoader("WebModule:" + cmd.getJ2EEName().getApplication() + "#" + cmd.getJ2EEName().getModule());
+            if (Objects.nonNull(found)) {
+                return found;
+            }
 
-            BundleContext bc = FrameworkUtil.getBundle(ClassLoaderIdentifierService.class).getBundleContext();
-            ServiceReference<ClassLoaderIdentifierService> ref = bc.getServiceReference(ClassLoaderIdentifierService.class);
-            ClassLoaderIdentifierService classloaderIdSvc = bc.getService(ref);
-            this.declaringClassLoader = classloaderIdSvc.getClassLoader(identifier);
-        } else {
-            throw new IllegalArgumentException(cmd.toString()); // internal error
-        }
+            return null; // Should be unreachable
+            //TODO add NLS message
+        }).orElseThrow(() -> new IllegalStateException("Could not find the classloader for the application " + cmd.getJ2EEName()
+                                                       + " during the creation of the default managed thread factory bean."));
 
         // The Concurrency extension could be running under any module/component of the application.
         ApplicationMetaData amd = cmd.getModuleMetaData().getApplicationMetaData();

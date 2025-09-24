@@ -19,7 +19,9 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -319,8 +321,19 @@ public class JavaInfo {
         // the specified paths cover criu installed on a range of supported systems where we may run checkpoint FATs
         String libLoadPathSpec = "-Djava.library.path=" + System.getProperty("java.library.path") +
                                  ":/usr/local/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/lib/x86_64-linux-gnu";
-        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", libLoadPathSpec, //
-                        "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
+
+        List<String> command = new ArrayList<>();
+        command.add(javaHome() + "/bin/java");
+        command.add("-XX:+EnableCRIUSupport");
+        if (majorVersion() >= 24) {
+            command.add("--enable-native-access=ALL-UNNAMED");
+        }
+        command.add(libLoadPathSpec);
+        command.add("-cp");
+        command.add(simplicityJar);
+        command.add("componenttest.topology.impl.probe.CriuSupport");
+
+        ProcessBuilder procBuilder = new ProcessBuilder(command);
         Process proc;
         try {
             proc = procBuilder.start();

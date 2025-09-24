@@ -1788,6 +1788,9 @@ public abstract class WebContainer extends BaseContainer {
             cipherData.put("SSL_DH_anon_WITH_AES_256_GCM_SHA384", 256);
             cipherData.put("SSL_DH_anon_WITH_AES_256_CBC_SHA256", 256);
 
+            // FIPS 140-3: Algorithm assessment complete; no impact; future investigation needed.
+            // because we are unsure if clients are still using the older algorithms.
+
             // _3DES_ is 168
             cipherData.put("SSL_RSA_FIPS_WITH_3DES_EDE_CBC_SHA", 168);
             cipherData.put("SSL_RSA_FIPS_WITH_3DES_EDE_CBC_SHA", 168);

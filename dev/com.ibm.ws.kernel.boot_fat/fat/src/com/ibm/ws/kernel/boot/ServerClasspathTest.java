@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016,2022 IBM Corporation and others.
+ * Copyright (c) 2016,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,9 @@ public class ServerClasspathTest {
                                                         "openj9",
                                                         "com.ibm.gpu", // Semeru 11.0.15
                                                         "io.openliberty.checkpoint.spi", // added checkpoint stuff
-                                                        "org.w3c.dom.ls" // Java 22 Hotspot
+                                                        "org.w3c.dom.ls", // Java 22 Hotspot
+                                                        "org.xml.sax.helpers", // IBM Semeru Runtime Open Edition 17.0.15.0 - FIPS 140-3
+                                                        "org.jcp.xml.dsig.internal.dom" // IBM Semeru Runtime Open Edition 17.0.15.0 - FIPS 140-3
     };
 
     @BeforeClass

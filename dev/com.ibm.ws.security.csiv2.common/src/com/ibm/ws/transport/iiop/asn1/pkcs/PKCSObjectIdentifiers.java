@@ -69,6 +69,10 @@ public interface PKCSObjectIdentifiers
     // md2 OBJECT IDENTIFIER ::=
     //      {iso(1) member-body(2) US(840) rsadsi(113549) digestAlgorithm(2) 2}
     //
+
+    //We reviewed this as part of the FIPS 140-3: Algorithm assessment; no changes required.
+    //Older algorithms are not used because of spec requirements.
+
     static final DERObjectIdentifier    md2                     = new DERObjectIdentifier(digestAlgorithm + ".2");
 
     //

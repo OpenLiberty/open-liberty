@@ -64,7 +64,7 @@ CWWKD1008.ambig.rtrn.err.useraction=Aggiornare il metodo del repository per util
 
 CWWKD1009.lifecycle.param.err=CWWKD1009E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere parametri {2} perch\u00e9 il metodo \u00e8 annotato con l''annotazione {3} del ciclo di vita. I metodi del repository annotati con un''annotazione del ciclo di vita devono avere esattamente 1 parametro, che deve essere l''entit\u00e0 o un array o un elenco dell''entit\u00e0.
 CWWKD1009.lifecycle.param.err.explanation=I metodi del ciclo di vita devono avere un unico parametro di entit\u00e0.
-CWWKD1009.lifecycle.param.err.useraction=Aggiornare il metodo del repository per avere un singolo parametro che sia un'entit\u00e0 o un array di elenchi dell'entit\u00e0.
+CWWKD1009.lifecycle.param.err.useraction=Aggiornare il metodo del repository per avere un singolo parametro che sia un'entit\u00e0, un array di entit\u00e0 o un elenco di entit\u00e0.
 
 CWWKD1010.unknown.entity.attr=CWWKD1010E: Un attributo di entit\u00e0 denominato {0} non \u00e8 presente nella classe di entit\u00e0 {1} per il metodo {2} dell''interfaccia del deposito {3}. I nomi degli attributi validi per l''entit\u00e0 sono: {4}.
 CWWKD1010.unknown.entity.attr.explanation=Il metodo del repository sta tentando di usare un attributo dell'entit\u00e0 che non esiste.
@@ -82,9 +82,9 @@ CWWKD1013.cde.missing.param.anno=CWWKD1013E: Il parametro {0} del metodo {1} del
 CWWKD1013.cde.missing.param.anno.explanation=I parametri dei metodi count, delete ed exists dei repository devono corrispondere agli attributi delle entit\u00e0.
 CWWKD1013.cde.missing.param.anno.useraction=Aggiornare il metodo del repository in modo che tutti i parametri corrispondano agli attributi dell'entit\u00e0.
 
-CWWKD1014.upd.missing.param.anno=CWWKD1014E: Il parametro {0} del metodo {1} dell''interfaccia del deposito {2} non corrisponde a un attributo di entit\u00e0. I parametri che non corrispondono a un attributo di entit\u00e0 devono avere una delle annotazioni dei parametri: {3}. Per definire una condizione per la restrizione dei risultati della query, il parametro deve essere annotato con l''annotazione By e il valore dell''annotazione By deve essere assegnato al nome dell''attributo dell''entit\u00e0. In alternativa, si pu\u00f2 attivare l''opzione di compilazione -parametri e dare al parametro lo stesso nome dell''attributo dell''entit\u00e0.
-CWWKD1014.upd.missing.param.anno.explanation=I parametri dei metodi di aggiornamento del repository devono corrispondere agli attributi delle entit\u00e0.
-CWWKD1014.upd.missing.param.anno.useraction=Aggiornare il metodo del repository in modo che tutti i parametri corrispondano agli attributi dell'entit\u00e0.
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: Il metodo {0} del repository {1} non \u00e8 un metodo di aggiornamento del ciclo di vita valido perch\u00e9 il metodo ha i parametri {2}. I metodi del repository annotati con un''annotazione del ciclo di vita devono avere esattamente 1 parametro, che deve essere l''entit\u00e0, un array dell''entit\u00e0 o un elenco dell''entit\u00e0. Anche il metodo {0} non \u00e8 un''operazione di aggiornamento valida basata su parametri, perch\u00e9 il parametro del metodo {3} non ha un''annotazione ( {4} ) che indica il nome dell''attributo dell''entit\u00e0. In alternativa, si pu\u00f2 attivare l''opzione di compilazione -parametri e dare al parametro lo stesso nome dell''attributo dell''entit\u00e0.
+CWWKD1014.upd.missing.param.anno.explanation=I parametri dei metodi di aggiornamento del repository devono corrispondere agli attributi delle entit\u00e0. In alternativa, i metodi del ciclo di vita devono avere un singolo parametro di entit\u00e0.
+CWWKD1014.upd.missing.param.anno.useraction=Aggiornare il metodo del repository in modo che tutti i parametri corrispondano agli attributi dell'entit\u00e0. In alternativa, aggiornare il metodo del repository per avere un singolo parametro che sia un'entit\u00e0, un array di entit\u00e0 o un elenco di entit\u00e0.
 
 CWWKD1015.null.entity.param=CWWKD1015E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 accettare un''entit\u00e0 nulla.
 CWWKD1015.null.entity.param.explanation=I metodi del ciclo di vita richiedono un'istanza di entit\u00e0 non nulla.
@@ -102,8 +102,7 @@ CWWKD1018.confl.special.param=CWWKD1018E: Il metodo {0} del deposito {1} non pu\
 CWWKD1018.confl.special.param.explanation=Alcuni dei parametri speciali di Jakarta Data, come Limit e PageRequest, non possono essere combinati in una firma di metodo di un singolo repository.
 CWWKD1018.confl.special.param.useraction=Aggiornare il repository per non usare entrambi i tipi di parametri speciali di Jakarta Data nella stessa firma del metodo.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere una query che mescola parametri posizionali e parametri denominati. L''interfaccia definisce una combinazione di {2} parametri posizionali e di
- {3} parametri denominati {4} per il valore dell''annotazione Query: {5}. Una query con parametri posizionali deve fare riferimento a ciascun parametro con il suo valore ordinale, a partire da ?1, e i parametri del metodo non devono avere l''annotazione Param. In una query con parametri denominati, ogni parametro deve essere referenziato dal suo nome, come {6}, e i parametri del metodo devono avere l''annotazione Param, come {7}. In alternativa, abilitando l''opzione di compilazione -parametri, i parametri del metodo possono indicare il parametro chiamato corrispondendo al suo nome, ad esempio {8}.
+CWWKD1019.mixed.positional.named=CWWKD1019E: Il metodo {0} dell''interfaccia del repository {1} non pu\u00f2 avere una query che mescola parametri posizionali e parametri denominati. L''interfaccia definisce un mix di {2} parametri posizionali e {3} parametri denominati {4} per il valore dell''annotazione Query: {5}. Una query con parametri posizionali deve fare riferimento a ciascun parametro con il suo valore ordinale, a partire da?1, e i parametri del metodo non devono avere l''annotazione Param. In una query con parametri denominati, ogni parametro deve essere referenziato dal suo nome, come {6}, e i parametri del metodo devono avere l''annotazione Param, come {7}. In alternativa, abilitando l''opzione di compilazione -parametri, i parametri del metodo possono indicare il parametro nominato, facendo corrispondere il suo nome, ad esempio {8}.
 CWWKD1019.mixed.positional.named.explanation=Le query con parametri devono utilizzare tutti i parametri denominati o tutti i parametri posizionali, non una combinazione.
 CWWKD1019.mixed.positional.named.useraction=Aggiornare il metodo del repository per utilizzare solo parametri denominati o solo parametri posizionali.
 
@@ -135,9 +134,9 @@ CWWKD1026.ignore.case.not.text=CWWKD1026E: L''attributo {0} dell''entit\u00e0 {1
 CWWKD1026.ignore.case.not.text.explanation=L'ordinamento con caso ignorato \u00e8 possibile solo con attributi di entit\u00e0 che rappresentano testo.
 CWWKD1026.ignore.case.not.text.useraction=Assicurarsi che i criteri di ordinamento siano applicati all'attributo corretto dell'entit\u00e0 e rimuovere l'istruzione di ignorare il caso se l'attributo dell'entit\u00e0 non rappresenta un testo.
 
-CWWKD1027.anno.missing.attr.name=CWWKD1027E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} \u00e8 annotato con un''annotazione {3} che non specifica un nome di attributo di entit\u00e0 come valore. L''annotazione deve specificare il nome dell''attributo dell''entit\u00e0 come valore, oppure deve essere abilitata l''opzione di compilazione -parameters e il parametro deve avere lo stesso nome dell''attributo dell''entit\u00e0.
-CWWKD1027.anno.missing.attr.name.explanation=I parametri dei metodi di aggiornamento del repository devono corrispondere agli attributi delle entit\u00e0.
-CWWKD1027.anno.missing.attr.name.useraction=Aggiornare il metodo del repository per indicare l'attributo dell'entit\u00e0 a cui si riferisce il parametro.
+CWWKD1027.datastore.lacks.java.comp=CWWKD1027E: Una o pi\u00f9 interfacce di repository ( {0} ) dell''artefatto applicativo {1} specificano un valore {2} dataStore che non corrisponde a un riferimento di risorsa dell''origine dati o a un riferimento di unit\u00e0 di persistenza perch\u00e9 manca il prefisso dello spazio dei nomi java:comp/env/. Si consideri la possibilit\u00e0 di modificare l''annotazione Repository per specificare {3}.
+CWWKD1027.datastore.lacks.java.comp.explanation=I nomi JNDI dei riferimenti alle risorse dell'origine dati e alle unit\u00e0 di persistenza devono includere un prefisso java: namespace.
+CWWKD1027.datastore.lacks.java.comp.useraction=Assicurarsi che il valore dell'archivio dati dell'annotazione Repository includa un prefisso java: namespace quando il valore indica il nome JNDI di un riferimento di risorsa dell'origine dati o di un riferimento di unit\u00e0 di persistenza.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: Il metodo {0} dell''interfaccia del repository {1} richiede i primi {2} risultati, superando il numero massimo consentito di risultati: {3}.
 CWWKD1028.first.exceeds.max.explanation=Il numero massimo di risultati della query \u00e8 limitato dai vincoli del sistema e dal valore specificato.
@@ -271,7 +270,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: L''interfaccia del repository {0} nell''
 CWWKD1060.name.out.of.scope.explanation=Lo spazio dei nomi specificato non \u00e8 accessibile dall'artefatto in cui \u00e8 definita l'interfaccia del repository.
 CWWKD1060.name.out.of.scope.useraction=Aggiornare l'annotazione Repository per specificare un nome di archivio dati visibile al modulo o alla libreria che fornisce l'interfaccia del repository.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: Una o pi\u00f9 interfacce di repository{0}) definite nel modulo enterprise bean {1} dell''applicazione {2} configurano un valore {2} per l''attributo {3}. Tuttavia, i nomi {4} non sono accessibili ai moduli enterprise bean. Utilizzare un nome appartenente a uno dei seguenti spazi dei nomi: {5}.
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Una o pi\u00f9 interfacce di repository ( {0} ) definite nel modulo {1} enterprise bean dell''applicazione {2} configurano un valore {3} per l''attributo {4}. Tuttavia, i nomi di {5} non sono accessibili ai moduli dei bean aziendali. Utilizzare un nome da uno dei seguenti spazi dei nomi: {6}.
 CWWKD1061.comp.name.in.ejb.explanation=Lo spazio dei nomi specificato non \u00e8 accessibile al modulo enterprise bean in cui \u00e8 definita l'interfaccia del repository.
 CWWKD1061.comp.name.in.ejb.useraction=Aggiornare l'annotazione Repository per specificare un nome di archivio dati visibile al modulo enterprise bean che fornisce l'interfaccia del repository.
 
@@ -484,3 +483,27 @@ CWWKD1111.unsupported.convert.useraction=Aggiornare l'implementazione di Attribu
 CWWKD1112.record.entity.verify.err=CWWKD1112W: Una classe di entit\u00e0 per il record {0} \u00e8 definita, ma potrebbe non funzionare. La verifica dei byte della classe entit\u00e0 Jakarta Persistence, generata per la classe entit\u00e0, non \u00e8 riuscita. La classe di entit\u00e0 definita \u00e8 utilizzata da una o pi\u00f9 interfacce di repository ( {1} ) nell''artefatto applicativo {2}. L''errore \u00e8: {3}.
 CWWKD1112.record.entity.verify.err.explanation=Quando un repository utilizza un'entit\u00e0 record, viene generata un'entit\u00e0 Jakarta Persistence per rappresentare l'entit\u00e0 record. La verifica dei byte della classe entit\u00e0 Jakarta Persistence generata non \u00e8 riuscita.
 CWWKD1112.record.entity.verify.err.useraction=Verificare che l'implementazione dell'entit\u00e0 di registrazione sia conforme ai requisiti e alle convenzioni per un'entit\u00e0 di registrazione.
+
+CWWKD1113.server.stopping=CWWKD1113I: Uno o pi\u00f9 repository ( {0} ) non sono stati inizializzati perch\u00e9 il server si sta spegnendo.
+CWWKD1113.server.stopping.explanation=Il server si sta spegnendo e non tenter\u00e0 di inizializzare i repository.
+CWWKD1113.server.stopping.useraction=Non \u00e8 necessaria alcuna azione.
+
+CWWKD1114.app.stopping=CWWKD1114I: Uno o pi\u00f9 repository ( {0} ) non sono stati inizializzati perch\u00e9 l''applicazione {1} si trova nello stato {2}.
+CWWKD1114.app.stopping.explanation=L'applicazione si sta fermando o si \u00e8 fermata e non cercher\u00e0 di inizializzare i repository.
+CWWKD1114.app.stopping.useraction=Avviare l'applicazione per rendere disponibili i repository.
+
+CWWKD1115.app.unavailable=CWWKD1115E: Uno o pi\u00f9 repository ( {0} ) non sono stati inizializzati perch\u00e9 l''applicazione {1} non \u00e8 disponibile.
+CWWKD1115.app.unavailable.explanation=L'applicazione che definisce i repository non \u00e8 disponibile. I repository non possono essere inizializzati.
+CWWKD1115.app.unavailable.useraction=Avviare l'applicazione per rendere disponibili i repository.
+
+CWWKD1116.resource.unavailable=CWWKD1116E: Uno o pi\u00f9 repository ( {0} ) non sono stati inizializzati perch\u00e9 la risorsa {1} non \u00e8 diventata disponibile entro {2} secondi.
+CWWKD1116.resource.unavailable.explanation=Una risorsa richiesta dai repository non \u00e8 stata resa disponibile.
+CWWKD1116.resource.unavailable.useraction=Verificare la configurazione delle risorse utilizzate dai repository.
+
+CWWKD1117.anno.constraint.conflict=CWWKD1117E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere annotato con le annotazioni: {3}. Una o pi\u00f9 annotazioni sono incompatibili con il tipo {4} del parametro del metodo del repository.
+CWWKD1117.anno.constraint.conflict.explanation=Il vincolo e i suoi sottotipi non possono essere combinati con annotazioni di parametri diverse dall'annotazione By.
+CWWKD1117.anno.constraint.conflict.useraction=Rimuovere l'annotazione in conflitto o specificare il tipo di attributo dell'entit\u00e0 invece del tipo di vincolo.
+
+CWWKD1118.param.anno.conflict=CWWKD1118E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere annotato con le annotazioni: {3}. Due o pi\u00f9 annotazioni sono in conflitto tra loro.
+CWWKD1118.param.anno.conflict.explanation=La combinazione di annotazioni dei parametri non \u00e8 valida.
+CWWKD1118.param.anno.conflict.useraction=Rimuovere una o pi\u00f9 annotazioni in conflitto dal parametro del metodo del repository.

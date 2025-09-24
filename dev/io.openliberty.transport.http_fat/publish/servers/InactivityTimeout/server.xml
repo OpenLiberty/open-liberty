@@ -1,0 +1,27 @@
+<!--
+    Copyright (c) 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server description="Test tcpOptions inactivityTimeout configuration.">
+
+    <include location="../fatTestCommon.xml"/>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions portOpenRetries="60"/>
+        <!--  Set the readTimeout, and writeTimeout to 0 to force the use of the inactivityTimeout. -->
+        <httpOptions readTimeout="0" writeTimeout="0"/>
+    </httpEndpoint>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+</server>

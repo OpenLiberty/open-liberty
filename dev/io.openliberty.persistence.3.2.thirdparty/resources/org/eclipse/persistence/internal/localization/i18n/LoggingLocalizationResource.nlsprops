@@ -85,6 +85,10 @@ broadcast_remote_command_is_null=Warning: {0}: received message {1} containing n
 
 broadcast_remote_command_wrong_type=Warning: {0}: received message {1} containing an object of type {2} instead of expected type RemoteCommand.
 
+cache_key_null_identity_map=CacheKey instance: {0} , stored into identity map has, a null primary key.
+
+cache_key_null_read_lock_manager=CacheKey instance: {0} , locked by cache read lock manager has, a null primary key.
+
 cannot_get_nested_collection_type=The nested collection type cannot be obtained.
 
 cannot_get_server_name_and_version=Cannot get server name and version because of the following exception.  {0}
@@ -114,10 +118,6 @@ connected_sdk=Connected: SDK
 connected_user_database=Connected: {3}{4}User: {0}{3}{4}Database: {1}  Version: {2}
 
 connected_user_database_driver=Connected: {0}{6}User: {1}{6}Database: {2}  Version: {3}{6}Driver: {4}  Version: {5}
-
-corrupt_object=corrupt object: {0}
-
-corrupt_object_referenced_through_mapping=The following corrupt object is referenced through mapping: {0}
 
 corrupted_session_announcement=SessionID: {0}  Discovery manager received corrupted session announcement - ignoring.
 
@@ -322,6 +322,8 @@ jpars_could_not_find_session_bean=A call is being made to a session bean with JN
 jta_cannot_be_disabled_in_cmp=When using Container Managed Persistence (CMP), JTA cannot be disabled. EclipseLink will act as if JTA is enabled.
 
 jta_duplicate_ctrl_property=JTA transaction controller class defined in both "eclipselink.target-server" and "eclipselink.jta.controller" properties. Using value from "eclipselink.target-server".
+
+jta_tm_lookup_failure=Cannot look up TransactionManager instance: {0}
 
 jta_tsr_lookup_failure=Cannot look up TransactionSynchronizationRegistry instance: {0}
 
@@ -657,18 +659,6 @@ retreived_null_message=Retreived null message from topic: {0}; ignoring
 
 retreived_unknown_message_type=Retreived unknown message type: {0} from topic: {1}; ignoring
 
-schema_default_create_tables_failed=Failed to create tables in the default table schema: {0}
-
-schema_default_drop_tables_failed=Failed to drop tables in the default table schema: {0}
-
-schema_default_extend_tables_failed=Failed to extend tables in the default table schema: {0}
-
-schema_default_replace_tables_failed=Failed to replace tables in the default table schema: {0}
-
-schema_default_truncate_tables_failed=Failed to truncate tables in the default table schema: {0}
-
-schema_drop_object_failed=Failed to drop object in the default table schema: {0}
-
 sdo_classgenerator_exception={2} A [{0}] Exception occurred - message is [{1}]
 
 sdo_error_deserialization=Unauthorized deserialization attempt with class {0}.
@@ -702,8 +692,6 @@ sop_object_not_found=Serialized sopObject is not found in [{0}] in [{1}]
 sop_object_wrong_pk=Removing serialized sopObject from the row because it has a wrong primary key [{0}] in [{1}] in [{2}]
 
 sop_object_wrong_version=Removing serialized sopObject from the row because it has a wrong version [{0}] in [{1}] in [{2}]
-
-stack_of_visited_objects_that_refer_to_the_corrupt_object=stack of visited objects that refer to the corrupt object: {0}
 
 topLink_version=EclipseLink, version: {0}
 
@@ -746,8 +734,6 @@ update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery cannot use b
 validate_db_schema_with_not_supported=WLS native CMP setting "validate-db-schema-with" is not directly supported in EclipseLink CMP. See migration doc for details.
 
 validate_ejb_jar=Validating ejb-jar.xml starts, it may take some times...
-
-validate_object_space=validate object space.
 
 verifiy_columns_read_locking_not_supported=Optimistic setting "Read" on "verify-columns" in entity ({0}) is not directly supported in EclipseLink CMP. See migration doc for details.
 

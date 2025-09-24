@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src, \
+	test-applications/RestartStartupSingletonApp.ear/src, \
+	test-applications/RestartStartupSingletonEjb.jar/src, \
+	test-applications/RestartStartupSingletonIntf.jar/src, \
+	test-applications/RestartStartupSingletonWeb.war/src, \
+	test-applications/SingletonPropertyIntf.jar/src, \
+	test-applications/SingletonPropertyNoStartupBean.jar/src, \
+	test-applications/SingletonPropertyNoStartupWeb.war/src, \
+	test-applications/SingletonPropertyStartupBean.jar/src, \
+	test-applications/SingletonPropertyTest.war/src
+
+fat.project: true
+
+tested.features: \
+	ejbLite-3.2,\
+	ejbHome-3.2,\
+	ejbRemote-3.2,\
+	enterpriseBeansLite-4.0,\
+	enterpriseBeansHome-4.0,\
+	enterpriseBeansRemote-4.0,\
+	servlet-3.1,\
+	servlet-4.0,\
+	servlet-5.0,\
+	servlet-6.0,\
+	servlet-6.1
+
+-buildpath: \
+	com.ibm.ws.org.apache.yoko.corba.spec.1.5;version=latest,\
+	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1917,6 +1917,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         return getServiceContext().getStartNanoTime();
     }
 
+    @Override
     public String getRemoteUser() {
         String remoteUser = "";
 
@@ -2203,5 +2204,16 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             return false;
         }
         return true;
+    }
+
+    /**
+     * Obtains the request end time by leveraging the recorded start of the response. 
+     * The service context marks the start of the response time when it is done 
+     * processing the request, so the start of the response coincides with the end 
+     * time for the request.
+     */
+    @Override
+    public long getEndTime() {
+        return this.getServiceContext().getResponseStartTime();
     }
 }

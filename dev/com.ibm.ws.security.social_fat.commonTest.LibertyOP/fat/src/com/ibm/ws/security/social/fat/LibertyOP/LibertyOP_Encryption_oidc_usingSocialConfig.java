@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Rule;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -31,6 +32,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 @RunWith(FATRunner.class)
@@ -44,6 +47,9 @@ public class LibertyOP_Encryption_oidc_usingSocialConfig extends Social_Encrypti
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification();
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled(SocialConstants.SERVER_NAME + ".LibertyOP.opWithStub");
 
     @BeforeClass
     public static void setUp() throws Exception {

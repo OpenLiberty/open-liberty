@@ -111,7 +111,9 @@
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384Encryptnone,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512Encryptnone,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptShortRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptShortES256,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptPublicRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptPublicES256,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP_trustStoreRefOmitted,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP_sslRefOmitted"
 				scope="ALL_SCOPES"

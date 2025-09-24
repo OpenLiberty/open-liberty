@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.security.MessageDigest;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Digest-generation utilities for the digest code. This class contains code
@@ -68,7 +69,7 @@ public class DigestUtils {
 	}
 	
 	/**
-	 * Caculate the MD5 digest of the given byte array. 
+	 * Caculate the MD5 or SHA256 digest (based on whether fips is enabled) of the given byte array. 
 	 * @param msg The message to hash
 	 * @param digester The digester object to use.
 	 * @return A hashed representation of the message.
@@ -119,14 +120,15 @@ public class DigestUtils {
 
 	/**
 	 * Calculate the A1 (username-realm-password) value for the digest.
-	 * This is the 'plain md5' version, as opposed to the 'md5-sess' value,
-	 * calculated by the method createA1MD5Sess.
+	 * This is the 'plain md5'/'sha256' version, as opposed to the 'md5-sess'/'sha256-sess' value (based on whether fips is enabled),
+	 * calculated by the method createA1MD5Sess/createA1SHA256Sess.
 	 * 
 	 * @param user The username
 	 * @param realm The authentication realm.
 	 * @param passwd The user password.
 	 * @return A1 value as a string.
 	 * @see #createA1MD5Sess(String, String, String, String, String, 
+	 * MessageDigest)/#createA1SHA256Sess(String, String, String, String, String, 
 	 * MessageDigest)
 	 */
 	public static String createHashedA1(String user, String realm, 
@@ -184,6 +186,40 @@ public class DigestUtils {
 
 		if (c_logger.isTraceEntryExitEnabled()) {
 			c_logger.traceExit(null, "createA1MD5Sess", hexHash);
+		}
+		return  hexHash;
+	}
+
+	/**
+	 * Calculate the A1 (username-realm-password) value for the digest.
+	 * This is the 'SHA256-sess' version, which hashes the value username and
+	 * password along with the server and client nonces
+	 *
+	 * @param ha1 The non-sha256-sess value for a1 (hashed once)
+	 * @param nonce The server-side nonce.
+	 * @param cnonce The client-side nonce.
+	 * @param digester The digester to use for hashing.
+	 * 
+	 * @return A1 value as a string.
+	 * @see #createA1(String, String, String)
+	 */
+	private static String createA1SHA256Sess(String ha1, String nonce, 
+			String cnonce, MessageDigest digester)
+	{
+		if (c_logger.isTraceEntryExitEnabled()) {
+			c_logger.traceEntry(null, "createA1SHA256Sess", 
+					new Object[] {ha1, nonce, cnonce, digester});        	
+		}
+		StringBuffer buff = new StringBuffer(BUFFER_INITIAL_SIZE);
+		buff.append(ha1);
+		buff.append(":");
+		buff.append(nonce);
+		buff.append(":");
+		buff.append(cnonce);
+		String hexHash = buff.toString(); 
+
+		if (c_logger.isTraceEntryExitEnabled()) {
+			c_logger.traceExit(null, "createA1SHA256Sess", hexHash);
 		}
 		return  hexHash;
 	}
@@ -307,7 +343,7 @@ public class DigestUtils {
 	 * @param cnonce The client-side nonce
 	 * @param uri The request URI
 	 * @param algorithm The algorithm to use. Could be either 'MD5' or 
-	 * 'MD5-sess'
+	 * 'MD5-sess' / 'SHA256' or 'SHA256-sess'
 	 * @param sipMethod The sip method of the client request.
 	 * @param body The message body to authenticate. Only needed if 
 	 * qop="auth-int"
@@ -355,7 +391,7 @@ public class DigestUtils {
 	 * @param cnonce The client-side nonce
 	 * @param uri The request URI
 	 * @param algorithm The algorithm to use. Could be either 'MD5' or 
-	 * 'MD5-sess'
+	 * 'MD5-sess'/ 'SHA256' or 'SHA256-sess'
 	 * @param sipMethod The sip method of the client request.
 	 * @param body The message body to authenticate. Only needed if 
 	 * qop="auth-int"
@@ -371,11 +407,14 @@ public class DigestUtils {
 					cnonce, uri, algorithm, sipMethod, body});        	
 		}
         MessageDigest digester = ThreadLocalStorage.getMessageDigest();
-        if (algorithm != null && algorithm.equals(DigestConstants.ALG_MD5_SESS)) {
-        	String A1 = createA1MD5Sess(ha1, nonce, cnonce, digester);
-			ha1 = textDigest(A1, digester);
+        String A1 = createA1MD5Sess(ha1, nonce, cnonce, digester);	
+
+		//if fips is enabled
+		if (CryptoUtils.isFips140_3EnabledWithBetaGuard() && algorithm != null && algorithm.equals(DigestConstants.ALG_SHA256_SESS)) {
+        	A1 = createA1SHA256Sess(ha1, nonce, cnonce, digester);
 		}
 
+		ha1 = textDigest(A1, digester);
 		String A2 = null;
 		if (sipMethod == null)
 			sipMethod = DigestConstants.METHOD_DEFAULT;

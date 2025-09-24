@@ -184,7 +184,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         return numMsgs;
     }
 
-    private static final long defaultTestDeliveryDelay = 10000;
+    private static final long defaultTestDeliveryDelay = 5000;
     
     
     /**

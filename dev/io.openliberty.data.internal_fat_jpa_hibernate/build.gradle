@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,11 @@
  // Always pull from Maven Central so we don't have to upload transitive dependencies to artifactory
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
+//Enable the parameters compiler argument
+apply plugin: 'java'
+
 ext {
-  hibernateVersion = '7.0.0.Beta1' //TODO update to final
+  hibernateVersion = '7.0.9.Final'
 }
 
 configurations {
@@ -24,30 +27,112 @@ configurations {
 
 dependencies {
   def withoutJakartaAPI = { 
-  	exclude group: 'jakarta.activation', module: 'jakarta.activation-api'
-  	exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
-  	exclude group: 'jakarta.persistence', module: 'jakarta.persistence-api'
-  	exclude group: 'jakarta.transaction', module: 'jakarta.transaction-api'
-  	exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
+      exclude group: 'jakarta.activation', module: 'jakarta.activation-api'
+      exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
+      exclude group: 'jakarta.persistence', module: 'jakarta.persistence-api'
+      exclude group: 'jakarta.transaction', module: 'jakarta.transaction-api'
+      exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
+      exclude group: 'org.glassfish.jaxb', module: 'jaxb-runtime'
   }
   
   hibernateJPA32 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
+  hibernateJPA32 "org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}", withoutJakartaAPI
   
   derby16 "org.apache.derby:derby:10.16.1.1",
           "org.apache.derby:derbytools:10.16.1.1"
 
   //Annotation processor - generates .java files in build/libs/generated/sources
   //Some generated .java files import hibernate dependencies, need this compileOnly dependency
-  annotationProcessor "org.hibernate.orm:hibernate-jpamodelgen:${hibernateVersion}"
+  annotationProcessor "org.hibernate.orm:hibernate-processor:${hibernateVersion}"
   compileOnly "org.hibernate.orm:hibernate-core:${hibernateVersion}"
 }
 
+/*
+ * Copy Hibernate and transitive dependencies into shared resources
+ */
 task addHibernateJPA32(type: Copy) {
   shouldRunAfter jar
   from configurations.hibernateJPA32
   into new File(autoFvtDir, 'publish/shared/resources/jpa32_hibernate')
 }
 
+/*
+ * Add Hibernate and transitive dependencies into the permissions section of server.xml(s) 
+ */
+task addHibernatePermissions() {
+  // Do not execute this task during our builds
+  onlyIf {
+    !isAutomatedBuild
+  }
+
+  // Find server.xml files
+  def serverConfigs = []
+  fileTree(project.file('publish/servers')).visit { FileVisitDetails d ->
+    if(d.file.name == "server.xml") {
+      serverConfigs << d.file.path
+    }
+  }
+  
+  println "serverConfigs: "
+  serverConfigs.sort()
+  serverConfigs.each { serverConfig -> println "- " + serverConfig }
+
+  // Generate permissions
+  def permissions = []
+  configurations.hibernateJPA32.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact a ->
+    permissions << "<javaPermission className=\"java.security.AllPermission\" codebase=\"\${shared.resource.dir}/jpa32_hibernate/${a.file.name}\"/>"
+  }
+  
+  println "permissions: "
+  permissions.sort()
+  permissions.each { permission -> println "- " + permission }
+
+  // Replace existing permissions
+  serverConfigs.each { String p ->
+    String START_TAG = "<!-- START:"
+    String END_TAG   = "<!-- END:"
+    
+    java.nio.file.Path path = java.nio.file.Paths.get(p)
+
+    List<String> original = java.nio.file.Files.readAllLines(path)
+    List<String> updated  = new ArrayList<>(original.size())
+
+    boolean inSection = false
+    for (String line : original) {
+      // Keep start tag, mark in section, and add in all new permissions
+      if (line.contains(START_TAG)) {
+        updated.add(line)
+        inSection = true
+        String whitespace = line.substring(0, line.indexOf(START_TAG));
+        for (String permission : permissions) {
+            updated.add(whitespace + permission)
+        }
+        continue;
+      }
+      
+      // Keep end tag, mark out of section
+      if (line.contains(END_TAG)) {
+        inSection = false
+        updated.add(line)
+        continue
+      }
+      
+      // Keep all lines outside the tagged section
+      if (!inSection) {
+        updated.add(line)
+      }
+      
+      // Ignore all lines inside the tagged section
+    }
+
+    // overwrite the file with the updated lines
+    java.nio.file.Files.write(path, updated)
+  }
+}
+
+/*
+ * Copy Derby 16 into shared resources
+ */
 task addDerby16(type: Copy) {
   shouldRunAfter jar
   from configurations.derby16
@@ -57,24 +142,44 @@ task addDerby16(type: Copy) {
   rename 'derbytools-.*.jar', 'derbytools.jar'
 }
 
-// Copy bundle io.openliberty.org.testcontainers to AutoFVT/lib/
-// This bundle is required both at compiletime and runtime.
+/*
+ * Copy generated source code into a source folder for Eclipse
+ */
+def generated_src = new File('generated-src')
+
+task clearGeneratedSources() {
+    doLast {
+      delete {
+        delete fileTree(generated_src)
+      }
+      println "Deleted generated sources directory to allow for new files to be copied"
+    }
+}
+
+task addGeneratedSources() {
+    dependsOn clearGeneratedSources
+    doLast {
+      copy {
+        from 'build/libs/generated/sources/annotationProcessor/java/main'
+        into generated_src
+      }
+      println "Copied generated sources to source folder for version control"
+    }
+}
+
+/*
+ * Define gradle lifecycle
+ */
+
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn copyJdbcDrivers
 
 addRequiredLibraries.dependsOn addHibernateJPA32
 addRequiredLibraries.dependsOn addDerby16
 
-apply plugin: 'java'
+jar.dependsOn addHibernatePermissions
 
 compileJava {
-  options.compilerArgs << '-parameters'
-}
-
-assemble.doLast {
-  // update the generated-src dir with the generated code
-  copy {
-    from "build/libs/generated/sources/annotationProcessor/java/main"
-      into "generated-src"
-  }
+    finalizedBy addGeneratedSources
+    options.compilerArgs << '-parameters'
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -470,7 +470,6 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
         }
         parms.add(new NameValuePair("sub", "testuser"));
         parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
-        parms = setParmsForECWorkaround(parms, builderId);
         return parms;
 
     }
@@ -488,34 +487,10 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
 
         parms.add(new NameValuePair("sub", "testuser"));
-        parms = setParmsForECWorkaround(parms, builderId);
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, testOPServer.getServer(), builderId, parms);
         Log.info(thisClass, _testName, jwtToken);
 
         return jwtToken;
-    }
-
-    /**
-     * Create extra parms to work around issue 17485 (where we can't just use the jwt builder to create a token encrypted with an
-     * EC alg)
-     *
-     * @param parms
-     *            - current list of parms (ad EC parms to this list)
-     * @param builderId
-     *            - the builder that we'll be using (for the tests in this class, we can create the alg name based on the builder
-     *            name)
-     * @return - an updated list of parms
-     * @throws Exception
-     */
-    public List<NameValuePair> setParmsForECWorkaround(List<NameValuePair> parms, String builderId) throws Exception {
-
-        if (builderId.contains("EncryptES")) {
-            String alg = builderId.split("Encrypt")[1].replace("Builder", "");
-            testOPServer.addIgnoredServerException(MessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE);
-            parms.add(new NameValuePair(JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_ES));
-            parms.add(new NameValuePair(JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), alg)));
-        }
-        return parms;
     }
 
     /******************************* tests *******************************/

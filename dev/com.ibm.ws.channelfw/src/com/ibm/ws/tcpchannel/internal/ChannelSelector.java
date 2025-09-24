@@ -18,9 +18,11 @@ import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
@@ -71,7 +73,7 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
     // removes from the queues are only performed by the single selector thread
     private Queue<Object> workQueue1 = null;
     private Queue<Object> workQueue2 = null;
-    private final Object queueLock = new QueueLock();
+    private final ReadWriteLock queueLock = new ReentrantReadWriteLock();
 
     protected boolean wakeupPending = false;
 
@@ -89,8 +91,8 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
         this.selector = Selector.open();
         this.selectorYield = TCPFactoryConfiguration.getSelectorYield();
         this.checkCancel = _checkCancel;
-        this.workQueue1 = new LinkedList<Object>();
-        this.workQueue2 = new LinkedList<Object>();
+        this.workQueue1 = new ConcurrentLinkedQueue<Object>();
+        this.workQueue2 = new ConcurrentLinkedQueue<Object>();
     }
 
     /**
@@ -103,8 +105,8 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
         this.selector = Selector.open();
         this.selectorYield = TCPFactoryConfiguration.getSelectorYield();
         this.checkCancel = _checkCancel;
-        this.workQueue1 = new LinkedList<Object>();
-        this.workQueue2 = new LinkedList<Object>();
+        this.workQueue1 = new ConcurrentLinkedQueue<Object>();
+        this.workQueue2 = new ConcurrentLinkedQueue<Object>();
         this.startSelectorImmediately = _startImmediately;
     }
 
@@ -349,9 +351,12 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
      * @return boolean
      */
     private boolean areQueuesEmpty() {
-        synchronized (this.queueLock) {
+        queueLock.readLock().lock();
+        try {
             return this.workQueue1.isEmpty() && this.workQueue2.isEmpty();
-        } // end-sync
+        } finally {
+            queueLock.readLock().unlock();
+        }
     }
 
     /**
@@ -360,9 +365,12 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
      * @param work
      */
     protected void addToWorkQueue(Object work) {
-        synchronized (this.queueLock) {
+        queueLock.readLock().lock();
+        try {
             this.workQueue1.add(work);
-        } // end-sync
+        } finally {
+            queueLock.readLock().unlock();
+        }
     }
 
     /**
@@ -387,13 +395,16 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
      * @return Queue<Object>
      */
     protected Queue<Object> getWorkQueue() {
-        synchronized (this.queueLock) {
+        queueLock.writeLock().lock();
+        try {
             // swap the primary and secondary queues
             Queue<Object> tmp = this.workQueue1;
             this.workQueue1 = this.workQueue2;
             this.workQueue2 = tmp;
             return tmp;
-        } // end-sync
+        } finally {
+            queueLock.writeLock().unlock();
+        }
     }
 
     /**
@@ -549,23 +560,6 @@ public abstract class ChannelSelector implements Runnable, FFDCSelfIntrospectabl
                 Tr.event(this, tc, "resetTimeout waking up selector");
             }
             wakeup();
-        }
-    }
-
-    /**
-     * Lock for the queue access.
-     */
-    private static class QueueLock {
-        protected QueueLock() {
-            // nothing to do
-        }
-
-        /*
-         * @see java.lang.Object#toString()
-         */
-        @Override
-        public String toString() {
-            return "Selector queue lock";
         }
     }
 }

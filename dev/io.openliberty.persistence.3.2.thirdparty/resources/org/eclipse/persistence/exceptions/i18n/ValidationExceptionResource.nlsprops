@@ -641,3 +641,9 @@
 
 7360=Database password was encrypted by deprecated algorithm. Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle.
 
+7361=Only one field in the enumeration can be marked by @EnumeratedValue annotation. Check the [{0}] enum class.
+
+7362=For an ORDINAL enumerated type, only byte, short, int, log or wrapper types can be used as an attribute type marked by @EnumeratedValue. Check attribute [{0}] in the [{1}] enum class.
+
+7363=For a STRING enumerated type, only the java.lang.String type can be used as an attribute type marked by @EnumeratedValue. Check attribute [{0}] in the [{1}] enum class.
+

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2023 IBM Corporation and others.
+# Copyright (c) 2011, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,3 +83,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_VALIDATION_KEYS_DIR_TRUE.useraction=D\u
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO=CWWKS4115W: L''attribut updateTrigger est d\u00e9fini sur d\u00e9sactiv\u00e9 et l''intervalle de surveillance est sup\u00e9rieur \u00e0 {0}. Aucun rechargement dynamique n''est effectu\u00e9 lorsque les fichiers de cl\u00e9s LTPA sont modifi\u00e9s.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.explanation=Lorsque l'attribut updateTrigger est d\u00e9fini sur d\u00e9sactiv\u00e9, les fichiers ne sont pas surveill\u00e9s pour les modifications apport\u00e9es aux fichiers avec le suffixe .keys et le rechargement dynamique n'a pas lieu. M\u00eame si l'attribut monitorInterval est d\u00e9fini sur un intervalle sup\u00e9rieur \u00e0 z\u00e9ro, l'attribut est ignor\u00e9 et les fichiers ne sont pas surveill\u00e9s.
 LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=D\u00e9finissez la valeur de l'attribut updateTrigger sur interroger ou mbean.
+
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Les cl\u00e9s de validation {0} doivent \u00eatre r\u00e9g\u00e9n\u00e9r\u00e9es \u00e0 l''aide d''algorithmes cryptographiques certifi\u00e9s FIPS 140-3.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Les cl\u00e9s de validation LTPA cr\u00e9\u00e9es sans que la norme FIPS 140-3 soit activ\u00e9e \u00e9chouent lorsque la norme FIPS 140-3 est activ\u00e9e.
+LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utilisez la commande securityUtility createLTPAKeys pour cr\u00e9er les cl\u00e9s de validation approuv\u00e9es par la FIPS lorsque la FIPS 140-3 est configur\u00e9e.

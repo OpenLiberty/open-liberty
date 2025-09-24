@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class Resource extends Application {
     static SseBroadcaster broadcaster;
     final static AtomicInteger registeredClients = new AtomicInteger();
     final static AtomicBoolean closeAfterRegister = new AtomicBoolean(true);
+    final static AtomicInteger closedClients = new AtomicInteger();
 
     @POST
     @Produces(MediaType.TEXT_PLAIN)
@@ -99,6 +100,12 @@ public class Resource extends Application {
     }
 
     @GET
+    @Path("/numClosedClients")
+    @Produces(MediaType.TEXT_PLAIN)
+    public int getNumOfClosedClients() throws Exception {
+        return closedClients.get();
+    }
+    @GET
     @Path("/numSinks")
     @Produces(MediaType.TEXT_PLAIN)
     public int getNumOfSinksInBroadcaster() throws Exception {
@@ -133,13 +140,31 @@ public class Resource extends Application {
     @Path("/closedSinkTest")
     public void registerForClosedSinkTest(@Context Sse sse, @Context SseEventSink sink) {  
         register(sse, sink);
-        synchronized (closeAfterRegister) {
-            if (closeAfterRegister.getAndSet(!closeAfterRegister.get())) {
+
+        if (doClose()) {
+            try {
                 //automatically close every other client sink
                 _log.info("registerForClosedSinkTest - closing new sink: " + sink);
                 sink.close();
+                _log.info("registerForClosedSinkTest - closed new sink: " + sink);
+            } finally {
+                closedClients.incrementAndGet();
             }
         }
         
-    }   
+    }
+
+    /**
+     * Returns true every other time this method is called.
+     *
+     * @return whether to close the sink
+     */
+    private boolean doClose() {
+        boolean current;
+        do {
+            current = closeAfterRegister.get();
+        } while (!closeAfterRegister.compareAndSet(current, !current));
+        return current;
+        
+    }
 }

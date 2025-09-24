@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2024 IBM Corporation and others.
+ * Copyright (c) 2020,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * Verify that ACME will check the revocation status of the certificate and
@@ -100,6 +102,9 @@ public class AcmeRevocationTest {
             + AcmeCaRestHandler.OP_REVOKE_CERT + "\",\"" + AcmeCaRestHandler.REASON_KEY + "\":\"invalid\"}";
 
     private static final String CONTENT_TYPE_JSON = "application/json";
+    
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.acme.fat.revocation");
 
     @Rule
     public TestName testName = new TestName();
@@ -131,6 +136,7 @@ public class AcmeRevocationTest {
      * @throws Exception
      *             if the test failed for some unforeseen reason.
      */
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void ocsp_revocation_check_startup() throws Exception {
         final String methodName = testName.getMethodName();
@@ -166,7 +172,7 @@ public class AcmeRevocationTest {
              * the certificate is replaced since it was revoked.
              */
             long markStop = System.currentTimeMillis();
-            stopServer();
+           	stopServer();
 
             // account for possible time from Boulder: welcome-to-the-purge, purge expected in: 153s
             long sleepFor = (153 * 1000) - (System.currentTimeMillis() - markStop);
@@ -380,6 +386,7 @@ public class AcmeRevocationTest {
      * Revoke the certificate and ensure that the scheduler thread renews it.
      * 
      */
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     @CheckForLeakedPasswords(AcmeFatUtils.CACERTS_TRUSTSTORE_PASSWORD)
     public void autoRenewOnRevoke() throws Exception {
@@ -440,7 +447,7 @@ public class AcmeRevocationTest {
             /*
              * Stop the server.
              */
-            stopServer();
+           	stopServer(); 
         }
     }
 

@@ -43,5 +43,27 @@
 		keyManagementKeyAlgorithm="RSA-OAEP"
 		keyManagementKeyAlias="rs384"
         contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+		id="encryptJwtES256"
+		issuer="testIssuer"
+		signatureAlgorithm="ES256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="es256"
+		keyManagementKeyAlgorithm="ECDH-ES"
+		keyManagementKeyAlias="es256"
+        contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+		id="encryptJwtES384"
+		issuer="testIssuer"
+		signatureAlgorithm="ES384"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="es384"
+		keyManagementKeyAlgorithm="ECDH-ES"
+		keyManagementKeyAlias="es384"
+        contentEncryptionAlgorithm="A256GCM" />
                         
 </server>

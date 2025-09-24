@@ -45,8 +45,8 @@ public class ThreadContextClassLoaderForBundles extends ThreadContextClassLoader
     /** Override classloading related methods so this class shows up in stacktraces **/
     /*********************************************************************************/
     @Override
-    protected Class<?> loadClass(String name, boolean resolve, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
-        return super.loadClass(name, resolve, onlySearchSelf, returnNull);
+    protected Class<?> loadClass(String name, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
+        return super.loadClass(name, resolve, delegatePolicy, returnNull);
     }
 
     @Override

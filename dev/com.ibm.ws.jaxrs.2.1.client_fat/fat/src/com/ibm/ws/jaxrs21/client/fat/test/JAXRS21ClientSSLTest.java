@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Rule;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -31,6 +32,10 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
+
 
 @RunWith(FATRunner.class)
 public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
@@ -82,6 +87,10 @@ public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
         serverRef = null;
     }
 
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("jaxrs21.client.JAXRS21ClientSSLTest");
+
+
     @Test
     public void testClientBasicSSL_ClientBuilder() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
@@ -110,6 +119,7 @@ public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
         this.runTestOnServer(target, "testClientBasicSSL_InvalidSSLRef", p, "the SSL configuration reference \"invalidSSLConfig\" is invalid.");
     }
 
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     @SkipForRepeat({SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES}) // Needs more investigation, but also runs into the same issue with SSLContext only being set from ClientBuilder
     public void testClientBasicSSL_CustomizedSSLContext() throws Exception {

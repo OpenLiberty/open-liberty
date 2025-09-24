@@ -10,12 +10,12 @@
     
 	<sslDefault sslRef="defaultSSLConfig" />
 	<ssl id="defaultSSLConfig" keyStoreRef="serverKeyStore1" trustStoreRef="serverTrustStore1" />
-	<keyStore id="serverKeyStore1" location="myKey.jks" type="JKS" password="passw0rd" />
-	<keyStore id="serverTrustStore1" location="myKey.jks" type="JKS" password="passw0rd" />
+	<keyStore id="serverKeyStore1" location="myKey.p12" type="PKCS12" password="passw0rd" />
+	<keyStore id="serverTrustStore1" location="myKey.p12" type="PKCS12" password="passw0rd" />
 	
 	<ssl id="customizeSSLConfig" keyStoreRef="serverKeyStore2" trustStoreRef="serverTrustStore2" />
-	<keyStore id="serverKeyStore2" location="myKey.jks" type="JKS" password="passw0rd" />
-	<keyStore id="serverTrustStore2" location="myKey.jks" type="JKS" password="passw0rd" />
+	<keyStore id="serverKeyStore2" location="myKey.p12" type="PKCS12" password="passw0rd" />
+	<keyStore id="serverTrustStore2" location="myKey.p12" type="PKCS12" password="passw0rd" />
 
     <include location="../fatTestPorts.xml"/>
     

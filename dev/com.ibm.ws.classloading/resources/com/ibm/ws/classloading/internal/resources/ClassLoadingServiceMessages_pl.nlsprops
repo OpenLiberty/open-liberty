@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: Biblioteka [ {0} ] okre\u015bla \u015bcie\u
 cls.library.path.invalid.explanation=Aby doda\u0107 \u015bcie\u017ck\u0119 do biblioteki w konfiguracji serwera, nale\u017cy okre\u015bli\u0107 istniej\u0105c\u0105 \u015bcie\u017ck\u0119.
 cls.library.path.invalid.useraction=Edytuj konfiguracj\u0119 serwera i zmodyfikuj atrybut path elementu library.
 
+app.classloader.removed=CWWKL0020W: Program \u0142aduj\u0105cy klasy kontekstu w\u0105tku dla w\u0105tku [ {0} ] nie odwo\u0142uje si\u0119 ju\u017c do aplikacji [ {1} ], kt\u00f3ra zosta\u0142a zatrzymana.
+app.classloader.removed.explanation=app.classloader.removed.explanation =Gdy aplikacja uruchamia w\u0105tek, program \u0142aduj\u0105cy klasy kontekstu w\u0105tku aplikacji jest dziedziczony przez nowy w\u0105tek.  Je\u015bli w\u0105tek nadal dzia\u0142a po zatrzymaniu aplikacji, jego program \u0142aduj\u0105cy klasy kontekstu nie odwo\u0142uje si\u0119 ju\u017c do zatrzymanej aplikacji.
+app.classloader.removed.useraction=Sprawd\u017a, czy aplikacja zatrzymuje wszystkie w\u0105tki, kt\u00f3re uruchamia po zatrzymaniu aplikacji. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

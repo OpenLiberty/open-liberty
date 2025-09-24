@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -95,14 +95,27 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests repeatTest = FATSuite.mpTelemetryRepeat2(SERVER_NAME);
+    public static RepeatTests repeatTest = FATSuite.mpTelemetryRepeat(SERVER_NAME);
+
+    public static String getTelemetryVersionUnderTest() {
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
+            return "1.0";
+        } else if (RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID)) {
+            return "2.0";
+        } else if (RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP71_EE11_ID, MicroProfileActions.MP71_EE10_ID)) {
+            return "2.1";
+        } else {
+            return "1.1";
+        }
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
         PropertiesAsset appConfig = new PropertiesAsset()
-                        .addProperty("otel.sdk.disabled", "true")
+                        .addProperty("otel.sdk.disabled", "false")
                         .addProperty("otel.traces.exporter", "oltp")
-                        .addProperty("otel.bsp.schedule.delay", "100");
+                        .addProperty("otel.bsp.schedule.delay", "100")
+                        .addProperty("feature.version", getTelemetryVersionUnderTest());
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(JaxRsEndpoints.class.getPackage())
                         .addPackage(InMemorySpanExporter.class.getPackage())
@@ -196,7 +209,6 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
         try {
             server.saveServerConfiguration();
             Map<String, String> config = new HashMap<>();
-            config.put("OTEL_SDK_DISABLED", "false");
             config.put("OTEL_TRACES_EXPORTER", "in-memory");
             configureEnvVariable(server, config);
         } catch (Exception e) {
@@ -204,13 +216,34 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
         }
     }
 
+    public static boolean mpTelemetry21IsActive() {
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP71_EE10_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP71_EE11_ID)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean mpTelemetry20IsActive() {
+        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) ||
+            RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
+            return true;
+        }
+        return false;
+    }
+
     @Test
     public void testIntegrationWithJaxRsClient() throws Exception {
         HttpRequest pokeJax = new HttpRequest(server, "/" + APP_NAME + "/endpoints/jaxrsclient");
         String traceId = readTraceId(pokeJax);
-
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (mpTelemetry20IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
@@ -226,6 +259,12 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (mpTelemetry20IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
@@ -240,6 +279,12 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (mpTelemetry20IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
@@ -253,6 +298,12 @@ public class MPTelemetryJaxRsIntegrationTest extends FATServletClient {
 
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspans/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (mpTelemetry20IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel20/" + traceId);
+            assertEquals(TEST_PASSED, readspans.run(String.class));
+        } else if (mpTelemetry21IsActive()) {
+            HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel21/" + traceId);
             assertEquals(TEST_PASSED, readspans.run(String.class));
         } else {
             HttpRequest readspans = new HttpRequest(server, "/" + APP_NAME + "/endpoints/readspansmptel11/" + traceId);

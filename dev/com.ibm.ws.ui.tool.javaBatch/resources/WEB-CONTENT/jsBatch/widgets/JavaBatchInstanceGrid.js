@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -104,7 +104,7 @@ function(array, declare, lang,
         },
         setCellValue : function(name, storeVal, cellWidget) {
           if(! name) {
-             // Do not add <a> if we do not have a name to turn into a clickable link.  
+             // Do not add <a> if we do not have a name to turn into a clickable link.
              // It is a batchScan violations when there is a link with no text (text being the name)
             this.jobName.innerHTML = "";
             return;
@@ -233,6 +233,11 @@ function(array, declare, lang,
         setCellValue : function(fullAppName, storeVal, cellWidget) {
           if (fullAppName) {
             var shortAppName = fullAppName;
+            shortAppName = shortAppName.replace(/&/g, "&amp;")  // Escape ampersands first to prevent double-escaping
+                        .replace(/</g, "&lt;")   // Escape less than signs
+                        .replace(/>/g, "&gt;")   // Escape greater than signs
+                        .replace(/"/g, "&quot;") // Escape double quotes
+                        .replace(/'/g, "&#039;"); // Escape single quotes (&#039; for HTML4 compatibility)
             // Application Name is the 'application' piece of the AMC trio (application#module#component)
             if (shortAppName.indexOf('#') > -1) {
               shortAppName = shortAppName.substr(0, shortAppName.indexOf('#'));

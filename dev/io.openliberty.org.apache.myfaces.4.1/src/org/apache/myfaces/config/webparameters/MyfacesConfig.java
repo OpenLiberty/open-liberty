@@ -38,6 +38,8 @@ import org.apache.myfaces.util.lang.ClassUtils;
 import org.apache.myfaces.util.lang.StringUtils;
 import org.apache.myfaces.view.facelets.ELExpressionCacheMode;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * Holds all configuration init parameters (from web.xml) that are independent
  * from the core implementation. The parameters in this class are available to
@@ -474,10 +476,10 @@ public class MyfacesConfig
      * Sets the random algorithm to initialize the secure random id generator. 
      * By default is SHA1PRNG
      */
-    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue="SHA1PRNG", group="state")
+    @JSFWebConfigParam(since="2.1.9, 2.0.15", defaultValue=CryptoUtils.SHA1PRNG, group="state")
     public static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM
             = "org.apache.myfaces.RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM";
-    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = "SHA1PRNG";
+    private static final String RANDOM_KEY_IN_VIEW_STATE_SESSION_TOKEN_SECURE_RANDOM_ALGORITHM_DEFAULT = CryptoUtils.SHA1PRNG;
     
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM = "secureRandom";
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_RANDOM = "random";

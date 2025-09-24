@@ -230,7 +230,7 @@ public class EE11Features {
         features.remove("opentracing-1.3");
         features.remove("opentracing-2.0");
         features.remove("sipServlet-1.1"); // purposely not supporting EE 11
-        features.remove("springBoot-1.5"); // springBoot 3.0 only supports EE11
+        features.remove("springBoot-1.5");
         features.remove("springBoot-2.0");
 
         // Stabilized features were changed to not support EE 11 even though
@@ -308,6 +308,7 @@ public class EE11Features {
         // remove client features
         features.remove("jakartaeeClient-11.0");
         features.remove("appSecurityClient-1.0");
+        features.remove("xmlWSClient-4.0");
 
         // remove acmeCA-2.0 since it requires additional resources and configuration
         features.remove("acmeCA-2.0");
@@ -322,6 +323,10 @@ public class EE11Features {
         // remove logAnalysis-1.0.  It depends on hpel being configured
         features.remove("logAnalysis-1.0");
         features.remove("audit-2.0");
+
+        //Removing springBoot-3.0 here because springBoot-4.0 and 3.0 cannot be loaded at the same time.
+        //Also removing the feature would mean springBoot-3.0 is not being tested for EE11 compatibility giving priority to test the springBoot-4.0 feature for EE11 compatibility.
+        features.remove("springBoot-3.0");
 
         return features;
     }

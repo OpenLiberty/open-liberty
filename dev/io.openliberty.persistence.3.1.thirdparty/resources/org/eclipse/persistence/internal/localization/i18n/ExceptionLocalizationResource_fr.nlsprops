@@ -303,6 +303,8 @@ metamodel_managed_type_attribute_type_incorrect=Type d''attribut attendu [{2}] s
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=L''attribut d\u00e9clar\u00e9 [{0}] du type g\u00e9r\u00e9 [{1}] n''est pas pr\u00e9sent - toutefois, il est d\u00e9clar\u00e9 sur une superclasse.
 
+missing_jpql_parser_class=Impossible de charger la classe d''analyseur JPQL.
+
 missing_parameter_value=Argument de requ\u00eate {0} non trouv\u00e9 dans la liste de param\u00e8tres fournie pendant l''ex\u00e9cution de requ\u00eate.
 
 missing_toplink_bean_definition_for=D\u00e9finition de bean TopLink manquante pour {0}

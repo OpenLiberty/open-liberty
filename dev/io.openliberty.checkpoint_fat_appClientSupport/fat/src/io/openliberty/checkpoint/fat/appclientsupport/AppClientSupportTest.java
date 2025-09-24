@@ -67,28 +67,27 @@ public class AppClientSupportTest {
      * java:global lookup.
      */
     @Test
-    public void injectGlobal_EJB() throws Exception {
-        checkInjection();
+    public void testInjectWithGlobalEJB() throws Exception {
+        testInjection();
     }
 
     /**
      * Tests that a remote EJB is injected.
      */
     @Test
-    public void inject_EJB() throws Exception {
-        checkInjection();
+    public void testInjectWithEJB() throws Exception {
+        testInjection();
     }
 
-    // Assisted by watsonx Code Assistant
     /**
      * This method tests the injection of CDI.
      */
     @Test
-    public void inject_CDI() throws Exception {
-        checkInjection();
+    public void testInjectionWithCDI() throws Exception {
+        testInjection();
     }
 
-    private void checkInjection() throws Exception {
+    private void testInjection() throws Exception {
         String methodName = testName.getMethodName();
         int idx = -1;
         if ((idx = methodName.indexOf("_EE")) != -1) {

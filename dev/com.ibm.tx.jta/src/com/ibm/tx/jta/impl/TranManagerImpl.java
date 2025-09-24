@@ -1,7 +1,7 @@
 package com.ibm.tx.jta.impl;
 
 /*******************************************************************************
- * Copyright (c) 2002, 2021 IBM Corporation and others.
+ * Copyright (c) 2002,  2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -249,8 +249,7 @@ public class TranManagerImpl {
         } catch (Throwable e) {
             // Either the supplied transaction is not a TransactionImpl or it is an invalid state for resume
             FFDCFilter.processException(e, "com.ibm.tx.jta.impl.TranManagerImpl.resume", "201", this);
-            InvalidTransactionException ite = new InvalidTransactionException();
-            ite.initCause(e);
+            final InvalidTransactionException ite = new InvalidTransactionException(e.getMessage());
 
             if (tc.isEntryEnabled())
                 Tr.exit(tc, "resume (SPI)", ite);

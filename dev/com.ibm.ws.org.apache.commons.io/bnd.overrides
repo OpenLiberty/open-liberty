@@ -13,12 +13,12 @@ Import-Package: \
 !org.apache.commons.io.*, *
 
 Export-Package: \
-org.apache.commons.io;version="2.15.1",org.apache.commons.io.comparator;version="2.15.1", \
-org.apache.commons.io.file;version="2.15.1",org.apache.commons.io.file.spi;version="2.15.1", \
-org.apache.commons.io.filefilter;version="2.15.1",org.apache.commons.io.function;version="2.15.1", \
-org.apache.commons.io.input;version="2.15.1",org.apache.commons.io.input.buffer;version="2.15.1", \
-org.apache.commons.io.monitor;version="2.15.1",org.apache.commons.io.output;version="2.15.1", \
-org.apache.commons.io.serialization;version="2.15.1"
+org.apache.commons.io;version="2.19.0",org.apache.commons.io.comparator;version="2.19.0", \
+org.apache.commons.io.file;version="2.19.0",org.apache.commons.io.file.spi;version="2.19.0", \
+org.apache.commons.io.filefilter;version="2.19.0",org.apache.commons.io.function;version="2.19.0", \
+org.apache.commons.io.input;version="2.19.0",org.apache.commons.io.input.buffer;version="2.19.0", \
+org.apache.commons.io.monitor;version="2.19.0",org.apache.commons.io.output;version="2.19.0", \
+org.apache.commons.io.serialization;version="2.19.0"
 
-Include-Resource: @${repo;commons-io:commons-io;2.15.1;EXACT}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+Include-Resource: @${repo;commons-io:commons-io;2.19.0;EXACT}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/versions/9/module-info.class)
 

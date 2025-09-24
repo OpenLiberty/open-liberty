@@ -9,7 +9,7 @@
     
     <!-- use the shared/common keystore pwd: Liberty, expires 1/4/2099 -->
     <!-- keystore is in build.sharedResources and is copied into wlp image before tests are run -->
-    <keyStore id="defaultKeyStore" password="Liberty" type="jks" location="${shared.resource.dir}/security/key.jks"/>
+    <keyStore id="defaultKeyStore" password="Liberty" type="PKCS12" location="${shared.resource.dir}/security/key.p12"/>
     
     <javaPermission className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
     

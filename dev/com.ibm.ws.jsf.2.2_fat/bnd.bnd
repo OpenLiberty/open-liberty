@@ -93,4 +93,5 @@ tested.features: \
     org.seleniumhq.selenium:selenium-support;version=4.8.3,\
     org.seleniumhq.webdriver:webdriver-common;version=0.9.7376,\
     io.openliberty.faces.fat.selenium.util.internal;version=latest,\
-    xml-apis:xml-apis;version=1.4.01
+    xml-apis:xml-apis;version=1.4.01,\
+    com.ibm.ws.org.apache.commons.lang3;version=latest

@@ -35,6 +35,14 @@ task addDerbyToSharedDir2(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+autoFVT.doLast {
+  copy {
+    from project(':com.ibm.ws.transaction.cloud_fat.base').file('publish/baseservers')
+    into new File(autoFvtDir, 'publish/servers')
+    include '**'
+  }
+}
+
 addRequiredLibraries.dependsOn addDerbyToSharedDir
 addRequiredLibraries.dependsOn addDerbyToSharedDir2
 addRequiredLibraries.dependsOn copyJdbcDrivers

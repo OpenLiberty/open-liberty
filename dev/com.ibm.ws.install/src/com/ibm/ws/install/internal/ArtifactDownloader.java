@@ -42,10 +42,10 @@ import java.util.concurrent.Future;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
-import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class ArtifactDownloader implements AutoCloseable {
 
@@ -205,11 +205,12 @@ public class ArtifactDownloader implements AutoCloseable {
     public void synthesizeAndDownload(String mavenCoords, String filetype, String dLocation, MavenRepository repository, boolean individualDownload) throws InstallException {
         String urlLocation;
 
-        String[] checksumFormats = new String[3];
+        String[] checksumFormats = new String[4];
 
-        checksumFormats[0] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
-        checksumFormats[1] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1;
-        checksumFormats[2] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+        checksumFormats[3] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
+        checksumFormats[2] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1;
+        checksumFormats[1] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+        checksumFormats[0] = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512;
 
         dLocation = FormatPathSuffix(dLocation);
         String repo = FormatUrlSuffix(repository.getRepositoryUrl());
@@ -281,9 +282,9 @@ public class ArtifactDownloader implements AutoCloseable {
                 fine("No checksums found for file in remote repository");
             }
         } catch (URISyntaxException e) {
-            throw new InstallException(e.getMessage());
+            throw new InstallException(e);
         } catch (NoSuchAlgorithmException e) {
-            throw new InstallException(e.getMessage());
+            throw new InstallException(e);
         }
     }
 
