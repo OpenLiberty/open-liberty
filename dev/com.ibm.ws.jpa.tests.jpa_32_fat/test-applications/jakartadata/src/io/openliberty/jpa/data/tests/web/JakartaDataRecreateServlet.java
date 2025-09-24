@@ -100,6 +100,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceException;
+import jakarta.persistence.Query;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.RollbackException;
 import jakarta.transaction.UserTransaction;
@@ -2262,6 +2263,134 @@ public class JakartaDataRecreateServlet extends FATServlet {
         assertEquals("Doe", results.get(1).getName().getLast());
         assertEquals("John", results.get(1).getName().getFirst());
 
+    }
+    
+    @Test
+    public void testOLGH29460_2() throws Exception {
+
+        SegmentLine s1 = new SegmentLine();
+        s1.pointA = new SegmentPoint(0, 0);
+        s1.pointB = new SegmentPoint(40, 399); // length 401
+
+        SegmentLine s2 = new SegmentLine();
+        s2.pointA = new SegmentPoint(-36, 0);
+        s2.pointB = new SegmentPoint(40, 357); // length 365
+
+        SegmentLine s3 = new SegmentLine();
+        s3.pointA = new SegmentPoint(84, 7);
+        s3.pointB = new SegmentPoint(220, 280); // length 305
+
+        SegmentLine s4 = new SegmentLine();
+        s4.pointA = new SegmentPoint(60, 49);
+        s4.pointB = new SegmentPoint(220, 280); // length 281
+
+        SegmentLine s5 = new SegmentLine();
+        s5.pointA = new SegmentPoint(12, 5);
+        s5.pointB = new SegmentPoint(220, 110); // length 233
+
+        SegmentLine s6 = new SegmentLine();
+        s6.pointA = new SegmentPoint(0, 89);
+        s6.pointB = new SegmentPoint(220, 110); // length 221
+
+        tx.begin();
+        try {
+            s1 = em.merge(s1);
+            em.flush();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try {
+            s2 = em.merge(s2);
+            em.flush();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try {
+            s3 = em.merge(s3);
+            em.flush();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try {
+            s4 = em.merge(s4);
+            em.flush();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try {
+            s5 = em.merge(s5);
+            em.flush();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try {
+            s6 = em.merge(s6);
+            em.flush();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try {
+            Query count = em.createQuery("SELECT COUNT(o)" +
+                                       " FROM SegmentLine o" +
+                                       " WHERE (o.pointA.x<?1)");
+            count.setParameter(1, 1);
+
+            @SuppressWarnings("unchecked")
+            List<Long> countResult = count.getResultList();
+            assertEquals(1, countResult.size());
+            assertEquals(Long.valueOf(3L), countResult.get(0));
+        } finally {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+        }
+
+        tx.begin();
+        try {
+            Query query = em.createQuery("FROM SegmentLine" +
+                                       " WHERE this.pointB.y < :yExclusiveMax" +
+                                       " ORDER BY this.pointB.y ASC, this.id ASC");
+            query.setParameter("yExclusiveMax", 200);
+
+            // TODO enable once #29460 is fixed
+            @SuppressWarnings("unchecked")
+            Stream<SegmentLine> results = query.getResultStream();
+
+            assertEquals(List.of(s5.id, s6.id),
+                         results
+                                         .map(s -> s.id)
+                                         .collect(Collectors.toList()));
+            
+        } finally {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+        }
+
+        tx.begin();
+        try {
+            Query delete = em.createQuery("DELETE FROM SegmentLine o");
+            assertEquals(6L, delete.executeUpdate());
+        } finally {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+        }
     }
 
     @Test
