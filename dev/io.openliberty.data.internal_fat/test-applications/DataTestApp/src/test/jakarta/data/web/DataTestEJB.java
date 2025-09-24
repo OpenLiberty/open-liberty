@@ -29,6 +29,7 @@ public class DataTestEJB {
 
     @PostConstruct
     public void init() {
+        System.out.println("Singleton Startup EJB PostConstruct");
         animals.findAll();
     }
 }

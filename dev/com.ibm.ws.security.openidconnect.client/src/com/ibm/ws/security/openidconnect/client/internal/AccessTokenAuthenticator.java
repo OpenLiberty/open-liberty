@@ -69,7 +69,7 @@ public class AccessTokenAuthenticator {
     private static final String INVALID_TOKEN = "invalid_token";
     private static final String JWT_SEGMENTS = "-segments";
     private static final String JWT_SEGMENT_INDEX = "-";
-    private static final String BEARER_SCHEME = "Bearer ";
+    private static final String BEARER_SCHEME = "bearer ";
 
     OidcClientUtil oidcClientUtil = new OidcClientUtil();
     SSLSupport sslSupport = null;
@@ -1010,7 +1010,7 @@ public class AccessTokenAuthenticator {
 
     @Trivial
     private static boolean isBearerToken(String hdrValue) {
-        return hdrValue != null && hdrValue.startsWith(BEARER_SCHEME);
+        return hdrValue != null && hdrValue.toLowerCase().startsWith(BEARER_SCHEME);
     }
 
     public boolean canUseIssuerAsSelectorForInboundPropagation(HttpServletRequest req, OidcClientConfig clientConfig) {

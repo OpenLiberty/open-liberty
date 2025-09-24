@@ -3,8 +3,8 @@
 bVersion=1.0
 
 Bundle-Name: Apache Commons BeanUtils
-Bundle-SymbolicName: com.ibm.ws.org.apache.commons.beanutils.1.9.4
-Bundle-Description: Apache Commons BeanUtils; version=1.9.4
+Bundle-SymbolicName: com.ibm.ws.org.apache.commons.beanutils
+Bundle-Description: Apache Commons BeanUtils; version=1.11.0
 
 Private-Package:
 
@@ -18,4 +18,4 @@ Export-Package: \
   org.apache.commons.beanutils.*
 
 Include-Resource: \
-    @${repo;commons-beanutils:commons-beanutils;1.9.4}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/NOTICE.txt|META-INF/LICENSE.txt
+    @${repo;commons-beanutils:commons-beanutils;1.11.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/NOTICE.txt|META-INF/LICENSE.txt

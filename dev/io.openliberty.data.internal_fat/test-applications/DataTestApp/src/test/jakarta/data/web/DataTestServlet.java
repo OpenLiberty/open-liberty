@@ -27,6 +27,7 @@ import static test.jakarta.data.web.Assertions.assertIterableEquals;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Duration;
+import java.time.LocalTime;
 import java.time.Year;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -199,6 +200,55 @@ public class DataTestServlet extends FATServlet {
                        new Prime(4019, "FB3", "111110110011", 9, "", "four thousand nineteen"),
                        // extra blank space at beginning and end:
                        new Prime(4021, "FB5", "111110110101", 9, "", " Four thousand twenty-one "));
+    }
+
+    /**
+     * A repository default method that is annotated with the Jakarta Concurrency
+     * Asynchronous annotation must run on the specified executor, which can be
+     * used to constrain concurrency. In the case of this test, the executor must
+     * constraint of the asynchronous operations to 1, such that each reads and
+     * operates on the mostly recently updated value in the database, preventing
+     * operations on stale data.
+     */
+    @Test
+    public void testAsyncDefaultMethod() throws InterruptedException, //
+                    ExecutionException, //
+                    TimeoutException {
+        packages.deleteAll();
+
+        Package p1 = new Package(99001, 100.0f, 15.0f, 30.0f, "Package:99001");
+        Package p2 = new Package(99002, 120.0f, 25.0f, 20.0f, "Package:99002");
+        Package p3 = new Package(99003, 300.0f, 33.3f, 63.0f, "Package:99003");
+        Package p4 = new Package(99004, 240.0f, 40.0f, 54.0f, "Package:99004");
+
+        packages.saveAll(List.of(p1, p2, p3, p4));
+
+        CompletionStage<Boolean> s1 = packages.widen(99002, 2.0f, 0.25f)
+                        .thenCompose(b -> b //
+                                        ? packages.widen(99002, 1.4f, 0.25f) //
+                                        : CompletableFuture.completedStage(false));
+        CompletionStage<Boolean> s2 = packages.widen(99002, 2.5f, 0.5f);
+        CompletionStage<Boolean> s3 = packages.widen(99002, 1.5f, 0.33f);
+
+        CompletableFuture<Boolean> f1 = s1.toCompletableFuture();
+        CompletableFuture<Boolean> f2 = s2.toCompletableFuture();
+        CompletableFuture<Boolean> f3 = s3.toCompletableFuture();
+
+        CompletableFuture.allOf(f1, f2, f3)
+                        .get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+
+        p2 = packages.findById(99002).orElseThrow();
+        assertEquals(99002, p2.id);
+        assertEquals(120.0f, p2.length, 0.01f);
+        assertEquals(26.9f, p2.width, 0.01f);
+        assertEquals(20.0f, p2.height, 0.01f);
+        assertEquals("Package:99002", p2.description);
+
+        assertEquals(Boolean.TRUE, f1.getNow(null));
+        assertEquals(Boolean.TRUE, f2.getNow(null));
+        assertEquals(Boolean.TRUE, f3.getNow(null));
+
+        assertEquals(4, packages.deleteAll());
     }
 
     /**
@@ -1172,6 +1222,52 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Verify that a single JPQL query can use different escape characters
+     * for each LIKE comparison.
+     */
+    @Test
+    public void testDifferentEscapeCharactersInSameQuery() {
+        products.clear();
+
+        Product p1 = new Product();
+        p1.name = "DifferentEscapeCharactersInSameQuery-1";
+        p1.pk = UUID.nameUUIDFromBytes(p1.name.getBytes());
+        p1.price = 150.0f;
+        p1.description = "DISCOUNT$:10";
+        products.save(p1);
+
+        Product p2 = new Product();
+        p2.name = "DifferentEscapeCharactersInSameQuery-2";
+        p2.pk = UUID.nameUUIDFromBytes(p2.name.getBytes());
+        p2.price = 250.0f;
+        p2.description = "DISCOUNT%:20";
+        products.save(p2);
+
+        Product p3 = new Product();
+        p3.name = "DifferentEscapeCharactersInSameQuery-3";
+        p3.pk = UUID.nameUUIDFromBytes(p3.name.getBytes());
+        p3.price = 350.0f;
+        p3.description = "DISCOUNT%:10";
+        products.save(p3);
+
+        Product p4 = new Product();
+        p4.name = "DifferentEscapeCharactersInSameQuery-4";
+        p4.pk = UUID.nameUUIDFromBytes(p4.name.getBytes());
+        p4.price = 450.0f;
+        p4.description = "DISCOUNT$:20";
+        products.save(p4);
+
+        Stream<Product> found = products.discounted10or20Percent();
+
+        assertEquals(List.of("DifferentEscapeCharactersInSameQuery-3",
+                             "DifferentEscapeCharactersInSameQuery-2"),
+                     found.map(p -> p.name)
+                                     .collect(Collectors.toList()));
+
+        products.clear();
+    }
+
+    /**
      * Query-by-Method-Name query with a Contains restriction applied to an
      * ElementCollection.
      */
@@ -1454,11 +1550,11 @@ public class DataTestServlet extends FATServlet {
         // Update embeddable attributes
 
         assertEquals(true, houses
-                        .updateByParcelIdSetGarageAddAreaAddKitchenLengthSetNumBedrooms("TestEmbeddable-304-3655-30",
-                                                                                        null,
-                                                                                        180,
-                                                                                        2,
-                                                                                        4));
+                        .updateHomeInfo("TestEmbeddable-304-3655-30",
+                                        null,
+                                        180,
+                                        2,
+                                        4));
 
         h = houses.findById("TestEmbeddable-304-3655-30");
         assertEquals("TestEmbeddable-304-3655-30", h.parcelId);
@@ -2098,8 +2194,8 @@ public class DataTestServlet extends FATServlet {
                                      .map(p -> p.name)
                                      .collect(Collectors.toList()));
 
-        // Escape characters are not possible for the repository Like keyword, however,
-        // consider using JPQL escape characters and ESCAPE '\' clause for StartsWith, EndsWith, and Contains
+        // Escape characters are not allowed with the Query by Method Name keywords:
+        // Like, StartsWith, EndsWith, and Contains.
     }
 
     /**
@@ -2702,6 +2798,24 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(List.of(),
                      personRepo.findFirstNames("TestInsertAndDeleteMultiple"));
+    }
+
+    /**
+     * Verifies that an INTERSECT statement can be used within a JPQL query.
+     */
+    @Test
+    public void testIntersection() {
+
+        assertEquals(List.of("twenty-three",
+                             "twenty-nine",
+                             "thirty-seven",
+                             "thirty-one"),
+                     primes.withinBoth(10L, 40L,
+                                       20L, 50L)
+                                     .stream()
+                                     .map(p -> p.name)
+                                     .sorted(Comparator.reverseOrder())
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -3896,6 +4010,19 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Test the Or keyword on a Query by Method Name query.
+     */
+    @Test
+    public void testOrKeyword() {
+        List<Long> l;
+        l = primes.findByNumberIdLessThanOrNumberIdGreaterThanAndNumberIdLessThan(10,
+                                                                                  40,
+                                                                                  50);
+        assertEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
+                     l);
+    }
+
+    /**
      * Repository method where the page request type (Prime entity) differs
      * from the data type of the page that is returned (String) due to the use
      * of query language that asks for results to be returned a String
@@ -4144,6 +4271,19 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(List.of("forty-one", "thirty-seven"), // ordered by name
                      primes.matchAnyExceptLiteralValueThatLooksLikeANamedParameter("thirty-seven", 41));
+    }
+
+    /**
+     * Use a repository method that has both AND and OR keywords.
+     * The AND keywords should take precedence over OR and be computed first.
+     */
+    @Test
+    public void testPrecedenceOfAndOverOr() {
+        assertEquals(List.of(41L, 37L, 31L, 11L, 7L),
+                     primes.findByNumberIdLessThanAndNameEndsWithOrNumberIdGreaterThanEqualAndNumberIdLessThanEqualAndNameEndsWith//
+                     (40L, "even", 30L, 50L, "one")
+                                     .map(p -> p.numberId)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -4763,7 +4903,7 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Use repository updateBy methods with multiplication and division,
+     * Use repository Query methods with multiplication and division,
      */
     @Test
     public void testRepositoryUpdateMethodsMultiplyAndDivide() {
@@ -4814,7 +4954,7 @@ public class DataTestServlet extends FATServlet {
         packages.saveAll(List.of(p1, p2, p3, p4, p5, p6));
 
         // multiply, divide, and add within same update
-        assertEquals(true, packages.updateByIdAddHeightMultiplyLengthDivideWidth(990003, 1.0f, 0.95f, 1.05f));
+        assertEquals(true, packages.increaseHeightAndLengthReduceWidth(990003, 1.0f, 0.95f, 1.05f));
 
         Package p = packages.findById(990003).get();
         assertEquals(11.4f, p.length, 0.01f);
@@ -4822,7 +4962,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(10.2f, p.height, 0.01f);
 
         // perform same type of update to multiple columns
-        packages.updateByIdDivideLengthDivideWidthDivideHeight(990005, 1.2f, 1.15f, 1.1375f);
+        packages.reduceDimensions(990005, 1.2f, 1.15f, 1.1375f);
 
         p = packages.findById(990005).get();
         assertEquals(4.0f, p.length, 0.01f);
@@ -4830,7 +4970,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(24.0f, p.height, 0.01f);
 
         // multiple conditions and multiple updates
-        assertEquals(2L, packages.updateByLengthLessThanEqualAndHeightBetweenMultiplyLengthMultiplyWidthSetHeight(7.1f, 18.4f, 19.4f, 1.1f, 1.2f, 19.5f));
+        assertEquals(2L, packages.increaseLengthAndWidthAssignHeight(7.1f, 18.4f, 19.4f, 1.1f, 1.2f, 19.5f));
 
         List<Package> results = packages.findByHeightBetween(19.4999f, 19.5001f);
         assertEquals(results.toString(), 2, results.size());
@@ -4846,7 +4986,7 @@ public class DataTestServlet extends FATServlet {
         assertEquals(19.5f, p.height, 0.01f);
 
         // divide width and append to description via query by method name
-        assertEquals(true, packages.updateByIdDivideWidthAddDescription(990003, 2, " halved"));
+        assertEquals(true, packages.reduceWidthAppendDescription(990003, 2, " halved"));
 
         p = packages.findById(990003).orElseThrow();
         assertEquals(11.4f, p.length, 0.01f);
@@ -5149,6 +5289,73 @@ public class DataTestServlet extends FATServlet {
         assertEquals(25500f, found.get().price, 0.001f);
 
         vehicles.removeAll();
+    }
+
+    /**
+     * A repository method can also be a Scheduled Asynchronous Method, in which
+     * case the method must run after the next time on the schedule rather than
+     * immediately.
+     */
+    @Test
+    public void testScheduledAsyncMethod() throws ExecutionException, //
+                    InterruptedException, //
+                    TimeoutException {
+
+        participants.remove("TestScheduledAsyncMethod");
+
+        participants.add(Participant.of("Sam", "TestScheduledAsyncMethod", 10),
+                         Participant.of("Samson", "TestScheduledAsyncMethod", 20),
+                         Participant.of("Samuel", "TestScheduledAsyncMethod", 30));
+
+        LocalTime before = LocalTime.now().minusNanos(1);
+
+        // Schedule removal to occur on seconds that end in 5
+        CompletableFuture<Long> future = participants
+                        .scheduledRemoval("Sam", "TestScheduledAsyncMethod");
+
+        LocalTime after = LocalTime.now().plusNanos(1);
+
+        int s = before.getSecond() % 10;
+        if (s < 5)
+            s = 5 - s;
+        else
+            s = 15 - s;
+        LocalTime earliestExpected = before.plusSeconds(s).withNano(0);
+
+        // Ensure the entity is not removed too early
+        boolean found = true;
+        for (; found; TimeUnit.SECONDS.sleep(1)) {
+            found = participants.getFirstName(10).isPresent();
+            LocalTime current = LocalTime.now();
+            if (current.isBefore(earliestExpected))
+                assertEquals("Between " + before + " and " + after + ", we" +
+                             " scheduled removal. Removal must occur no sooner" +
+                             " than " + earliestExpected + ". Prior to that" +
+                             " point, at " + current + ", the entry was already" +
+                             " gone.",
+                             true,
+                             found);
+            else
+                break;
+        }
+
+        // Ensure the entity is removed with a reasonable amount of time
+        long timeout_ns = Duration.ofMinutes(TIMEOUT_MINUTES).toNanos();
+        for (long start = System.nanoTime(); //
+                        System.nanoTime() - start < timeout_ns && found; //
+                        TimeUnit.SECONDS.sleep(1)) {
+            found = participants.getFirstName(10).isPresent();
+        }
+
+        assertEquals(found,
+                     false);
+
+        assertEquals(Long.valueOf(1L),
+                     future.get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
+
+        // 2 entities must remain because 1 of the 3 was removed
+        assertEquals(2L,
+                     participants.remove("TestScheduledAsyncMethod"));
     }
 
     /**
@@ -5606,6 +5813,54 @@ public class DataTestServlet extends FATServlet {
         AtomicLong sumRef = new AtomicLong();
         streamable.iterator().forEachRemaining(p -> sumRef.addAndGet(p.numberId));
         assertEquals(326L, sumRef.get());
+    }
+
+    /**
+     * Tests JPQL DELETE with a subquery, such that there are two FROM clauses:
+     * one in the main query and one in the subquery.
+     */
+    @Test
+    public void testSubqueryInDelete() {
+        receipts.removeIfTotalUnder(Float.MAX_VALUE);
+
+        receipts.insertAll(List.of(new Receipt(7001, "TSID-1", 13.99f),
+                                   new Receipt(7002, "TSID-2", 82.99f),
+                                   new Receipt(7003, "TSID-3", 93.99f),
+                                   new Receipt(7004, "TSID-4", 24.99f),
+                                   new Receipt(7005, "TSID-5", 75.99f)));
+
+        assertEquals(2L,
+                     receipts.removeByBelowAverageTotal());
+
+        assertEquals(3L,
+                     receipts.removeIfTotalUnder(Float.MAX_VALUE));
+    }
+
+    /**
+     * Tests JPQL UPDATE with a subquery, such that there are two FROM clauses:
+     * one in the main query and one in the subquery.
+     */
+    @Test
+    public void testSubqueryInUpdate() {
+        receipts.removeIfTotalUnder(Float.MAX_VALUE);
+
+        receipts.insertAll(List.of(new Receipt(8001, "TSIU-1", 61.98f),
+                                   new Receipt(8002, "TSIU-2", 32.98f),
+                                   new Receipt(8003, "TSIU-3", 23.98f),
+                                   new Receipt(8004, "TSIU-4", 74.98f),
+                                   new Receipt(8005, "TSIU-5", 65.98f)));
+
+        assertEquals(3L,
+                     receipts.increaseIfAboveAverageTotal(1.08f));
+
+        Receipt r3 = receipts.findById(8003L).orElseThrow();
+        assertEquals(23.98f, r3.total(), 0.01f);
+
+        Receipt r4 = receipts.findById(8004L).orElseThrow();
+        assertEquals(80.98f, r4.total(), 0.01f);
+
+        assertEquals(5L,
+                     receipts.removeIfTotalUnder(Float.MAX_VALUE));
     }
 
     /**
@@ -6096,6 +6351,30 @@ public class DataTestServlet extends FATServlet {
         assertEquals("Found: " + found, 1, found.size());
         assertEquals(4021L, found.get(0).numberId);
         assertEquals(" Four thousand twenty-one ", found.get(0).name);
+    }
+
+    /**
+     * Verifies that a UNION statement can be used within a JPQL query.
+     */
+    @Test
+    public void testUnion() {
+
+        assertEquals(List.of("eleven",
+                             "five",
+                             "forty-one",
+                             "forty-three",
+                             "nineteen",
+                             "seven",
+                             "seventeen",
+                             "thirteen",
+                             "thirty-one",
+                             "thirty-seven"),
+                     primes.withinEither(5L, 20L,
+                                         30L, 45L)
+                                     .stream()
+                                     .map(p -> p.name)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
     }
 
     /**

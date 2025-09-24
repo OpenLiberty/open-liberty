@@ -55,7 +55,8 @@ instrument.disabled: true
 	org.bouncycastle:bcpg-jdk18on;version=1.78.1,\
 	org.bouncycastle:bcprov-jdk18on;version=1.78.1,\
 	org.bouncycastle:bcutil-jdk18on;version=1.78.1,\
-	org.glassfish.javax.json
+	org.glassfish.javax.json,\
+	com.ibm.ws.kernel.service;version=latest
 
 
 -testpath: \

@@ -59,6 +59,7 @@ Service-Component=com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl;
     com.ibm.ws.threading.internal.ExecutorServiceImpl, \
     com.ibm.ws.threading.internal.ThreadingIntrospector, \
     com.ibm.ws.threading.internal.VirtualThreadDisallowed, \
+    com.ibm.wsspi.threading.ThreadTypeOverride, \
     io.openliberty.threading.virtual.internal.VirtualThreadOperations
 
 instrument.classesExcludes: com/ibm/ws/threading/internal/resources/*.class

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class TelemetryConfigRuntimeModeIgnoresMPConfigTest extends FATServletCli
 
     //This test is for the runtime mode, introduced in OTel 2.0
     @ClassRule
-    public static RepeatTests r = TelemetryActions.telemetry20and21Repeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.telemetry21andLatest20Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

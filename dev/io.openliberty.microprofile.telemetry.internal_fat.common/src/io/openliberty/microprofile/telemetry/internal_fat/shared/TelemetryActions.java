@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -22,7 +23,6 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatActions;
 import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 
 public class TelemetryActions {
     public static final String MP14_MPTEL11_ID = MicroProfileActions.MP14_ID + "_MPTEL11";
@@ -124,7 +124,7 @@ public class TelemetryActions {
                                                                MP41_MPTEL11,
                                                                MP14_MPTEL21,
                                                                MP14_MPTEL20,
-                                                               MP14_MPTEL11};
+                                                               MP14_MPTEL11 };
 
     private static final List<FeatureSet> ALL_MPTEL_SETS_LIST = Arrays.asList(ALL_MPTEL_SETS_ARRAY);
 
@@ -186,18 +186,24 @@ public class TelemetryActions {
     }
 
     public static RepeatTests telemetry21Repeats() {
-        return telemetry20Repeats(FeatureReplacementAction.ALL_SERVERS);
+        return telemetry21Repeats(FeatureReplacementAction.ALL_SERVERS);
     }
 
-
-    public static RepeatTests telemetry20and21Repeats(String serverName) {
+    public static RepeatTests telemetry21andLatest20Repeats(String serverName) {
         return repeat(serverName, MicroProfileActions.MP71_EE11, MP14_MPTEL21, MP41_MPTEL21, MP50_MPTEL21,
-                      MP50_MPTEL21_JAVA8, MicroProfileActions.MP71_EE10, MicroProfileActions.MP70_EE11, MP14_MPTEL20, MP41_MPTEL20, MP50_MPTEL20,
-                      MP50_MPTEL20_JAVA8, MP61_MPTEL20, MicroProfileActions.MP70_EE10);
+                      MP50_MPTEL21_JAVA8, MicroProfileActions.MP70_EE10);
     }
 
-    public static RepeatTests telemetry20and21Repeats() {
-        return telemetry20Repeats(FeatureReplacementAction.ALL_SERVERS);
+    public static RepeatTests telemetry21andLatest20Repeats() {
+        return telemetry21andLatest20Repeats(FeatureReplacementAction.ALL_SERVERS);
+    }
+
+    public static RepeatTests latestTelemetry21and20Repeats() {
+        return latestTelemetry21and20Repeats(FeatureReplacementAction.ALL_SERVERS);
+    }
+
+    public static RepeatTests latestTelemetry21and20Repeats(String serverName) {
+        return repeat(serverName, MicroProfileActions.MP71_EE11, MicroProfileActions.MP71_EE10, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10);
     }
 
     /*
@@ -215,10 +221,30 @@ public class TelemetryActions {
     }
 
     /*
-     * This returns one repeat for every released version of MPTelemetry >= 2.0; the latest 2.0, and more to come when they exist.
+     * This returns one repeat for every released version of MPTelemetry >= 2.0; the latest 2.1, and more to come when they exist.
      * It also returns a repeat to cover ongoing development if that is not covered by one of the above.
      */
     public static RepeatTests latestTelemetry20Repeats() {
+        return latestTelemetry20Repeats(FeatureReplacementAction.ALL_SERVERS);
+    }
+
+    /*
+     * This returns one repeat for every released version of MPTelemetry before the 2.1 release; the latest 1.0, 1.1, etc.
+     * It also returns a repeat to cover ongoing development if that is not covered by one of the above.
+     */
+    public static RepeatTests latestTelemetryRepeatsBefore21(String serverName) {
+        return repeat(serverName,
+                      MicroProfileActions.MP70_EE11,
+                      MicroProfileActions.MP70_EE10,
+                      MicroProfileActions.MP61,
+                      MicroProfileActions.MP60);
+    }
+
+    /*
+     * This returns one repeat for every released version of MPTelemetry >= 2.0; the latest 2.0, and more to come when they exist.
+     * It also returns a repeat to cover ongoing development if that is not covered by one of the above.
+     */
+    public static RepeatTests latestTelemetryRepeatsBefore21() {
         return latestTelemetry20Repeats(FeatureReplacementAction.ALL_SERVERS);
     }
 
@@ -254,7 +280,8 @@ public class TelemetryActions {
                       MP50_MPTEL20_JAVA8,
                       MicroProfileActions.MP70_EE10);
     }
-    public static boolean mpTelemetry21IsActive(){
+
+    public static boolean mpTelemetry21IsActive() {
         if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL21_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP41_MPTEL21_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP50_MPTEL21_ID) ||
@@ -262,10 +289,11 @@ public class TelemetryActions {
             RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP71_EE10_ID) ||
             RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP71_EE11_ID)) {
             return true;
-       }
-       return false;
+        }
+        return false;
     }
-    public static boolean mpTelemetry20IsActive(){
+
+    public static boolean mpTelemetry20IsActive() {
         if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP41_MPTEL20_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP50_MPTEL20_ID) ||
@@ -274,22 +302,22 @@ public class TelemetryActions {
             RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) ||
             RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
             return true;
-       }
-       return false;
+        }
+        return false;
     }
 
-    public static boolean mpTelemetry20BelowEE10IsActive(){
+    public static boolean mpTelemetry20BelowEE10IsActive() {
         if (RepeatTestFilter.isRepeatActionActive(MP50_MPTEL20_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP50_MPTEL20_JAVA8_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP61_MPTEL20_ID) ||
             RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE10_ID) ||
             RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP70_EE11_ID)) {
             return true;
-       }
-       return false;
+        }
+        return false;
     }
 
-    public static boolean EE7orEE8IsActive(){
+    public static boolean EE7orEE8IsActive() {
         if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL21_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP41_MPTEL21_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
@@ -297,40 +325,41 @@ public class TelemetryActions {
             RepeatTestFilter.isRepeatActionActive(MP14_MPTEL11_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP41_MPTEL11_ID)) {
             return true;
-       }
-       return false;
+        }
+        return false;
     }
 
-    public static boolean mpTelemetry20EE7orEE8IsActive(){
+    public static boolean mpTelemetry20EE7orEE8IsActive() {
         if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP41_MPTEL20_ID)) {
             return true;
-       }
-       return false;
+        }
+        return false;
     }
 
-    public static boolean mpTelemetry21EE7orEE8IsActive(){
+    public static boolean mpTelemetry21EE7orEE8IsActive() {
         if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL21_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP41_MPTEL21_ID)) {
             return true;
-       }
-       return false;
+        }
+        return false;
     }
 
-    public static boolean mpTelemetryEE7IsActive(){
+    public static boolean mpTelemetryEE7IsActive() {
         if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL21_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP14_MPTEL20_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP14_MPTEL11_ID)) {
             return true;
-       }
-       return false;
+        }
+        return false;
     }
 
-    public static boolean mpTelemetry11EE7orEE8IsActive(){
+    public static boolean mpTelemetry11EE7orEE8IsActive() {
         if (RepeatTestFilter.isRepeatActionActive(MP14_MPTEL11_ID) ||
             RepeatTestFilter.isRepeatActionActive(MP41_MPTEL11_ID)) {
             return true;
-       }
-       return false;
+        }
+        return false;
     }
+
 }

@@ -32,6 +32,12 @@
         <AD name="%OnePCOptimization" description="%OnePCOptimization.desc"
             id="OnePCOptimization" required="false" type="Boolean" default="true" />
 
+        <AD name="%ut.as.specified" description="%ut.as.specified.desc"
+            id="enableUserTransactionAsSpecified" required="false" type="Boolean" default="false" />
+
+        <AD name="%correct.uowscope.callbacks" description="%correct.uowscope.callbacks.desc"
+            id="correctUOWScopeCallbacks" required="false" type="Boolean" default="false" />
+
         <AD name="%recover.on.startup" description="%recover.on.startup.desc"
             id="recoverOnStartup" required="false" type="Boolean" default="false" />
 

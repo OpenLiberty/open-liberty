@@ -43,7 +43,7 @@ public class OAuth2MediatorTest extends TestCase {
     protected static final String SIMPLE_ACCESS_TOKEN = "TEST_TOKEN";
     protected static final String PUBLIC_CLIENT_ID = "key";
     protected static final String CONF_CLIENT_ID = "key";
-    protected static final String CONF_CLIENT_SECRET = "secret";
+    protected static final String CONF_CLIENT_SECRET = "secret1234";
 
     protected static final String PUBLIC_REDIRECT_URI = "http://localhost:9080/oauth/client.jsp";
     protected static final String CONF_REDIRECT_URI = "http://localhost:9080/oauth/client.jsp";

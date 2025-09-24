@@ -20,6 +20,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.HttpClient;
@@ -57,6 +60,8 @@ public class AsyncReadListenerHttpUnit {
     private static final String READ_LISTENER_SERVLET_FALSE_URL = "/LibertyReadWriteListenerTest/BasicReadListenerAsyncFalseServlet";
     private static final String READ_LISTENER__FILTER_SERVLET_URL = "/LibertyReadListenerFilterTest/ReadListenerFilterServlet";
 
+    private static boolean runningNetty = false;
+
     @BeforeClass
     public static void setupClass() throws Exception {
         // Build the war apps and add the dependencies
@@ -83,6 +88,29 @@ public class AsyncReadListenerHttpUnit {
         if (FATSuite.isWindows) {
             FATSuite.setDynamicTrace(server, "*=info=enabled");
         }
+
+        // Go through Logs and check if Netty is being used
+        // Wait for endpoints to finish loading and get the endpoint started messages
+        server.waitForStringInLog("CWWKO0219I.*");
+        List<String> test = server.findStringsInLogs("CWWKO0219I.*");
+        String CLASS_NAME = AsyncReadListenerHttpUnit.class.getName();
+        if (LOG.isLoggable(Level.INFO)) {
+            LOG.logp(Level.INFO, CLASS_NAME, "test()", "Got port list...... " + Arrays.toString(test.toArray()));
+            LOG.logp(Level.INFO, CLASS_NAME, "test()", "Looking for port: " + server.getHttpDefaultPort());
+        }
+        for (String endpoint : test) {
+            if (LOG.isLoggable(Level.INFO)) {
+                LOG.logp(Level.INFO, CLASS_NAME, "test()", "Endpoint: " + endpoint);
+            }
+            if (!endpoint.contains("port " + Integer.toString(server.getHttpDefaultPort())))
+                continue;
+            if (LOG.isLoggable(Level.INFO)) {
+                LOG.logp(Level.INFO, CLASS_NAME, "test()", "Netty? " + endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils"));
+            }
+            runningNetty = endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils");
+            break;
+        }
+
     }
 
     @AfterClass
@@ -314,6 +342,13 @@ public class AsyncReadListenerHttpUnit {
         LOG.info("\n /************************************************************************************/");
         LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onReadingData_isReadyFalse Start");
         LOG.info("\n /************************************************************************************/");
+
+        if(runningNetty){
+            LOG.info("\n /************************************************************************************/");
+            LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: test_Exception_onReadingData_isReadyFalse Skipped due to Netty difference");
+            LOG.info("\n /************************************************************************************/");
+            return;
+        }
 
         final String EXPECTED_DATA = "java.lang.IllegalStateException: SRVE9010E: An attempt to read failed because isReady API returns false";
         String URLString = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + READ_LISTENER_SERVLET_URL;

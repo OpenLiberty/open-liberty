@@ -1,0 +1,2 @@
+-Dcom.ibm.tools.attach.enable=yes
+-Dcom.ibm.ws.beta.edition=true

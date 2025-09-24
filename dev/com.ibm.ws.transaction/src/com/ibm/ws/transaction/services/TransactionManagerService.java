@@ -64,6 +64,7 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.tx.UOWEventListener;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 @Component(service = { TransactionManager.class, EmbeddableWebSphereTransactionManager.class, UOWCurrent.class, ServerQuiesceListener.class }, immediate = true)
 public class TransactionManagerService implements ExtendedTransactionManager, TransactionManager, EmbeddableWebSphereTransactionManager, UOWCurrent, ServerQuiesceListener {
@@ -517,7 +518,7 @@ public class TransactionManagerService implements ExtendedTransactionManager, Tr
             // On Liberty concatenate the user directory, the server name and the host name. Then add in the time.
             String s = userDir + serverName + hostName + System.currentTimeMillis();
             // Create a 32-byte hash value using a secure one-way hash function
-            result = java.security.MessageDigest.getInstance("SHA-256").digest(s.getBytes());
+            result = java.security.MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256).digest(s.getBytes());
             // Truncate the byte array to size a size of 20
             // The applicationId returned by this function is used by a global transaction id with a byte size of 20.
             // Creating a byte size > 20 will cause a runtime issue.

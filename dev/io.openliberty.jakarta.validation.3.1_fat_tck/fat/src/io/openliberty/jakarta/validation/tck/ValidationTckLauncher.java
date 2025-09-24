@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,11 +12,13 @@
  *******************************************************************************/
 package io.openliberty.jakarta.validation.tck;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -54,6 +56,13 @@ public class ValidationTckLauncher {
     public static void setUp() throws Exception {
 
         final OperatingSystem os = server.getMachine().getOperatingSystem();
+
+        /**
+         * Existing issue with the liberty Arquillian plugin running on windows: https://github.com/OpenLiberty/liberty-arquillian/issues/25
+         * Hence skipping the test if the OS is Windows.
+         */
+        Assume.assumeTrue(os != OperatingSystem.WINDOWS);
+
         /*
          * Server config:
          * - Path that jimage will output modules for signature testing
@@ -103,6 +112,7 @@ public class ValidationTckLauncher {
                         .withPlatfromVersion("11")
                         .withSuiteFileName("tck-tests.xml")
                         .withAdditionalMvnProps(additionalProps)
+                        .withAppUndeployTimeout(Duration.ofSeconds(120))
                         .runTCK();
     }
 }

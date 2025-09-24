@@ -36,7 +36,7 @@ Export-Package: \
     io.smallrye.openapi.spi.*;version=4.1
 
 -buildpath: \
-    io.smallrye:smallrye-open-api-core;version=4.1.0.alpha3,\
+    io.smallrye:smallrye-open-api-core;version=4.1.0,\
     io.openliberty.io.smallrye.openapi41.model;version=latest,\
     io.openliberty.jakarta.validation.3.0;version=latest,\
     io.openliberty.org.eclipse.microprofile.openapi.4.1;version=latest,\

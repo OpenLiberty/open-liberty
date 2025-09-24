@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -226,17 +226,10 @@ autoFVT.doLast {
   copy {
      from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jar')
      into new File(autoFvtDir, 'publish/bundles')
-     rename 'com.ibm.ws.security.jaspic.test.jar', 'com.ibm.ws.security.jaspic.test_1.0.jar'
   }
   copy {
      from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jakarta.jar')
      into new File(autoFvtDir, 'publish/bundles')
-     rename 'com.ibm.ws.security.jaspic.test.jakarta.jar', 'com.ibm.ws.security.jaspic.test_2.0.jar'
-  }
-  copy {
-     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jakarta.jar')
-     into new File(autoFvtDir, 'publish/bundles')
-     rename 'com.ibm.ws.security.jaspic.test.jakarta.jar', 'com.ibm.ws.security.jaspic.test_3.0.jar'
   }
   
   /*

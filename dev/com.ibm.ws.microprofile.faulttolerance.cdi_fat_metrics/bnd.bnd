@@ -48,6 +48,7 @@ tested.features: mpfaulttolerance-1.0,\
                  servlet-6.0,\
                  servlet-6.1,\
                  mpTelemetry-2.0,\
+                 mpTelemetry-2.1,\
                  restfulwsclient-4.0,\
                  restfulws-4.0
 

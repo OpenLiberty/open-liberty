@@ -36,7 +36,7 @@ public abstract class AbstractOidcRegistrationBaseTest extends CommonTestClass {
      */
     public static final String COMPONENT_ID = "OP";
     public static final String CLIENT_ID = "123456789";
-    public static final String CLIENT_SECRET = "secret";
+    public static final String CLIENT_SECRET = "secret1234";
     public static final String CLIENT_NAME = "test client";
 
     public static final String REDIRECT_URI_1 = "http://www.redirect1.com";

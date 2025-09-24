@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: Biblioteca [ {0} ] specific\u0103 o cale cu
 cls.library.path.invalid.explanation=Pentru a ad\u0103uga o cale c\u0103tre o bibliotec\u0103 \u00een configura\u021bia serverului, trebuie s\u0103 specifica\u021bi o cale care exist\u0103.
 cls.library.path.invalid.useraction=Edita\u021bi configura\u021bia serverului \u0219i modifica\u021bi atributul path al elementului library.
 
+app.classloader.removed=CWWKL0020W: \u00cenc\u0103rc\u0103torul de clas\u0103 al contextului firului pentru firul [ {0} ] nu mai face trimitere la aplica\u021bia [ {1} ], care este oprit\u0103.
+app.classloader.removed.explanation=app.classloader.removed.explanation =C\u00e2nd o aplica\u021bie porne\u0219te un fir, \u00eenc\u0103rc\u0103torul de clas\u0103 al contextului firului aplica\u021biei este mo\u0219tenit de noul fir.  Dac\u0103 firul continu\u0103 s\u0103 ruleze dup\u0103 oprirea aplica\u021biei, \u00eenc\u0103rc\u0103torul s\u0103u de clas\u0103 context nu mai face referire la aplica\u021bia oprit\u0103.
+app.classloader.removed.useraction=Confirma\u021bi c\u0103 aplica\u021bia opre\u0219te toate firele pe care le porne\u0219te atunci c\u00e2nd aplica\u021bia se opre\u0219te. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

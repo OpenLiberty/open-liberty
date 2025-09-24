@@ -1012,7 +1012,7 @@ public class MapToUserRegistryNoRegIntrospect2ServerTests extends MapToRegistryC
         // the realm name (ISS) in the access token
         TestSettings errorTestSettings = testSettings.copyTestSettings();
         errorTestSettings.setClientName("client02");
-        errorTestSettings.setClientSecret("secret");
+        errorTestSettings.setClientSecret("secret1234");
         errorTestSettings = rsTools.updateRSProtectedResource(errorTestSettings, "helloworld_testISSErr");
 
         // Verify authentication fails with 401 error and the RS messages.log contains a message indicating the ISS does not match the issuerIdentifier

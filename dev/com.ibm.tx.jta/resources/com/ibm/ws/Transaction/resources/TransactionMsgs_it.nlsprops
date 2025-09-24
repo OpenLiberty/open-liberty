@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -882,6 +882,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Un''applicazione ha avviato o richie
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=La traccia di stack \u00e8 stata acquisita quando \u00e8 stata creata la transazione. La traccia di stack consente agli utenti di determinare quali applicazioni avviano le transazioni durante l'avvio dell'applicazione e quindi causano l'esito negativo della richiesta del punto di controllo.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Esaminare la traccia di stack per stabilire quale applicazione ha avviato una nuova transazione durante la richiesta di checkpoint del server.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: La transazione non pu\u00f2 essere ripresa sul thread corrente perch\u00e9 \u00e8 attiva su un thread diverso ( {0} ).
+WTRN0156_CANNOT_RESUME.explanation=Liberty non consente a una transazione di essere attiva contemporaneamente su pi\u00f9 thread.
+WTRN0156_CANNOT_RESUME.useraction=Sospende la transazione prima di riprenderla su un altro thread.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: La transazione non pu\u00f2 essere ripresa sul thread corrente perch\u00e9 \u00e8 attiva altrove.
+WTRN0157_CANNOT_RESUME.explanation=Liberty non consente a una transazione di essere attiva contemporaneamente su pi\u00f9 thread.
+WTRN0157_CANNOT_RESUME.useraction=Sospende la transazione prima di riprenderla su un altro thread.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

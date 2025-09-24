@@ -32,10 +32,13 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.common.ssl.SecuritySSLUtils;
 import com.ibm.ws.security.test.common.CommonTestClass;
 import com.ibm.ws.ssl.KeyStoreService;
@@ -149,6 +152,30 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
     }
 
     @Test
+    public void test_getPrivateKeyJwtParameters_withFips140_3() throws Exception {
+        try (MockedStatic<CryptoUtils> cryptoUtilsMock = setupMockFips140_3()) {
+
+            authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, null, sslRef, keyAliasName) {
+                @Override
+                String getX5tForPublicKey() throws Exception {
+                    return "x5t#S256_" + testName.getMethodName();
+                }
+            };
+            authMethod.setKeyStoreService(keyStoreService);
+            PrivateKey privateKey = keyPair.getPrivate();
+            getPrivateKeyFromKeystoreExpectations(privateKey);
+
+            HashMap<String, String> parameters = authMethod.getPrivateKeyJwtParameters();
+            assertEquals(TokenConstants.CLIENT_ASSERTION_TYPE + " paramter value did not match expected value.", TokenConstants.CLIENT_ASSERTION_TYPE_JWT_BEARER,
+                        parameters.get(TokenConstants.CLIENT_ASSERTION_TYPE));
+            assertTrue("Parameters did not include the required " + TokenConstants.CLIENT_ASSERTION + " parameter. Parameters were: " + parameters,
+                    parameters.containsKey(TokenConstants.CLIENT_ASSERTION));
+            String jwt = parameters.get(TokenConstants.CLIENT_ASSERTION);
+            verifyPrivateKeyJwt(jwt);
+        }
+    }
+
+    @Test
     public void test_createPrivateKeyJwt_missingKey() throws Exception {
         getPrivateKeyFromKeystoreExpectations(null);
         try {
@@ -168,6 +195,27 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
 
         verifyPrivateKeyJwt(jwt);
     }
+
+    @Test
+    public void test_createPrivateKeyJwt_withFips140_3() throws Exception {
+        try (MockedStatic<CryptoUtils> cryptoUtilsMock = setupMockFips140_3()) {
+
+            authMethod = new PrivateKeyJwtAuthMethod(configurationId, clientId, tokenEndpointUrl, clientAssertionSigningAlgorithm, null, sslRef, keyAliasName) {
+                @Override
+                String getX5tForPublicKey() throws Exception {
+                    return "x5t#S256_" + testName.getMethodName();
+                }
+            };
+            authMethod.setKeyStoreService(keyStoreService);
+
+            PrivateKey privateKey = keyPair.getPrivate();
+            getPrivateKeyFromKeystoreExpectations(privateKey);
+
+            String jwt = authMethod.createPrivateKeyJwt();
+            
+            verifyPrivateKeyJwt(jwt);
+    }
+}
 
     @SuppressWarnings("unchecked")
     @Test
@@ -224,8 +272,11 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
         JsonWebSignature jws = (JsonWebSignature) JsonWebSignature.fromCompactSerialization(jwt);
         assertEquals("JWT's alg header did not match expected value.", clientAssertionSigningAlgorithm, jws.getAlgorithmHeaderValue());
         assertEquals("JWT's typ header did not match expected value.", "JWT", jws.getHeader("typ"));
-        assertEquals("JWT's x5t header did not match expected value.", "x5t_" + testName.getMethodName(), jws.getHeader("x5t"));
-
+        if (CryptoUtils.isFips140_3EnabledWithBetaGuard()){
+            assertEquals("JWT's x5t#S256 header did not match expected value.", "x5t#S256_" + testName.getMethodName(), jws.getHeader("x5t#S256"));
+        } else {
+            assertEquals("JWT's x5t header did not match expected value.", "x5t_" + testName.getMethodName(), jws.getHeader("x5t"));
+        }
         String rawPayload = jws.getUnverifiedPayload();
         JSONObject jsonPayload = JSONObject.parse(rawPayload);
         // Verify required claims
@@ -240,4 +291,9 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
         assertNotNull("Expected JWT to include a jti claim, but it did not.", jsonPayload.get("jti"));
     }
 
+    private MockedStatic<CryptoUtils> setupMockFips140_3() {
+        MockedStatic<CryptoUtils> cryptoUtilsMock = Mockito.mockStatic(CryptoUtils.class);
+        cryptoUtilsMock.when(CryptoUtils::isFips140_3EnabledWithBetaGuard).thenReturn(true);
+        return cryptoUtilsMock;
+    }
 }

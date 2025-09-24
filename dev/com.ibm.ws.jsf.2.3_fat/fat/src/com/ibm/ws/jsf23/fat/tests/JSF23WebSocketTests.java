@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -127,7 +127,7 @@ public class JSF23WebSocketTests {
 
         // Verify that the page contains the expected messages.
         assertTrue(page.isInPage("JSF 2.3 WebSocket - Test message pushed from server to client"));
-        assertTrue(page.isInPage("Called onopen listener"));
+        page.waitForCondition(driver -> page.isInPage("Called onopen listener"));
 
         // Verify that the correct message is found in the logs
         String result1 = server.waitForStringInLogUsingMark("Channel myChannel was opened successfully!");

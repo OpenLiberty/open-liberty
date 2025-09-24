@@ -23,7 +23,7 @@
     <oauthProvider id="Oauth" httpsRequired="false" autoAuthorize="true">
         <autoAuthorizeClient>rp</autoAuthorizeClient>
         <localStore>
-            <client name="rp" secret="{xor}LDo8LTor" displayname="rp" resourceIds="abc123" introspectTokens="true" scope="openid profile scope1 email phone address" enabled="true">
+            <client name="rp" secret="{xor}LDo8LTorbm1saw==" displayname="rp" resourceIds="abc123" introspectTokens="true" scope="openid profile scope1 email phone address" enabled="true">
                 <redirect>http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP</redirect>
                 <redirect>https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/RP</redirect>
             </client>

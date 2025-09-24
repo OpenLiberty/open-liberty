@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -86,6 +86,14 @@ public class BootstrapConfig {
     protected File logDir = null;
 
     /**
+     * Record of whether the log dir is the default or has been configured.
+     *
+     * The dump command (com.ibm.ws.kernel.boot.internal.commands.DumpProcessor)
+     * needs to know this.
+     */
+    protected boolean logDirIsConfigured = false;
+
+    /**
      * Location of active/current log file (e.g., wlp/usr/servers/serverName/logs/console.log),
      * if the process was started using the server script.
      */
@@ -144,10 +152,8 @@ public class BootstrapConfig {
 
     /**
      * Light processing: find main locations
-     *
      */
     protected void findLocations(BootstrapLocations locations) throws LocationException {
-
         // Server name only found via command line
         setProcessName(locations.getProcessName());
 
@@ -212,7 +218,7 @@ public class BootstrapConfig {
             // Ignore.
         }
 
-        if (locations.getServerDir() == null) {
+        if ( locations.getServerDir() == null ) {
             outputRoot = processesRoot;
             outputDir = configDir;
         } else {
@@ -222,22 +228,38 @@ public class BootstrapConfig {
         }
 
         // Logs could be redirected to a place other than the server output dir (like /var/log.. )
-        if (locations.getLogDir() == null)
+        if ( locations.getLogDir() == null ) {
             logDir = new File(outputDir, BootstrapConstants.LOC_AREA_NAME_LOGS);
-        else
+            logDirIsConfigured = false;
+        } else {
             logDir = assertDirectory(FileUtils.normalize(locations.getLogDir()), BootstrapConstants.ENV_LOG_DIR);
+            logDirIsConfigured = true;
+        }
+        
+        // The console log can be renamed ... but, it is still located relative to the
+        // logs directory.
         consoleLogFile = new File(logDir, locations.getConsoleLogFile() != null ? locations.getConsoleLogFile() : BootstrapConstants.CONSOLE_LOG);
 
+        // The workarea can be shifted to a subdirectory!
+        
+        // TODO: Shifting to a subdirectory will cause problems for the dump processor, which
+        //       excludes files expecting their path to be relative to the default "workarea" path.
+
+        if ( locations.getWorkAreaDir() == null ) {
+            workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING;
+        } else {
+            workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING + "/" + locations.getWorkAreaDir();
+        }
+        
         // Server workarea always a child of outputDir
-        if (locations.getWorkAreaDir() == null)
-            this.workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING;
-        else
-            this.workareaDirStr = BootstrapConstants.LOC_AREA_NAME_WORKING + "/" + locations.getWorkAreaDir();
+
         workarea = new File(outputDir, this.workareaDirStr);
 
-        if (locations.getVariableSourceDirs() != null)
-            this.variableSourceDirs = locations.getVariableSourceDirs();
+        // TODO: Is this variables directory something that should be collected?
 
+        if ( locations.getVariableSourceDirs() != null ) {
+            variableSourceDirs = locations.getVariableSourceDirs();
+        }
     }
 
     /**
@@ -632,6 +654,13 @@ public class BootstrapConfig {
         return logDir;
     }
 
+    /**
+     * @return Whether the log dir is configured.
+     */
+    public boolean getLogDirIsConfigured() {
+        return logDirIsConfigured;
+    }
+    
     /**
      * @return console log file
      */
@@ -1228,5 +1257,4 @@ public class BootstrapConfig {
         }
         return ReturnCode.OK;
     }
-
 }

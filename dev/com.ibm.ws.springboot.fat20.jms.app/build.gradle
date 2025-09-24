@@ -28,6 +28,7 @@ dependencies {
   implementation('org.springframework.boot:spring-boot-starter-integration')
   implementation('org.springframework.integration:spring-integration-core')
   implementation('org.springframework.integration:spring-integration-jms')
+  implementation('org.springframework.boot:spring-boot-starter-jdbc')
   providedCompile('javax.jms:javax.jms-api:2.0.1')
   providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
 }

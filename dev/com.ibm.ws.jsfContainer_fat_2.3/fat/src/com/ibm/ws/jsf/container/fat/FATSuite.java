@@ -87,12 +87,12 @@ public class FATSuite extends TestContainerSuite {
     public static final String MOJARRA_API_IMP_40 = "publish/files/mojarra40/jakarta.faces-4.0.0.jar";
     public static final String MOJARRA_API_IMP_41 = "publish/files/mojarra41/jakarta.faces-4.1.0.jar";
     public static final String MYFACES_IMP = "publish/files/myfaces/myfaces-impl-2.3.11.jar";
-    public static final String MYFACES_IMP_30 = "publish/files/myfaces30/myfaces-impl-3.0.2.jar";
+    public static final String MYFACES_IMP_30 = "publish/files/myfaces30/myfaces-impl-3.0.3.jar";
     public static final String MYFACES_IMP_40 = "publish/files/myfaces40/myfaces-impl-4.0.3.jar";
     public static final String MYFACES_IMP_41 = "publish/files/myfaces41/myfaces-impl-4.1.1.jar";
     // For ErrorPathsTest#testBadImplVersion_MyFaces Test (apps need the correct api since the tests checks for a bad implementation)
     public static final String MYFACES_API = "publish/files/myfaces/myfaces-api-2.3.11.jar";
-    public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.2.jar";
+    public static final String MYFACES_API_30 = "publish/files/myfaces30/myfaces-api-3.0.3.jar";
     public static final String MYFACES_API_40 = "publish/files/myfaces40/myfaces-api-4.0.3.jar";
     public static final String MYFACES_API_41 = "publish/files/myfaces41/myfaces-api-4.1.1.jar";
 

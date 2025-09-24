@@ -119,9 +119,23 @@ public class SessionCacheConfigTestServlet extends FATServlet {
      * Obtains the session id for the current session and writes it to the servlet response
      */
     public void getSessionId(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String sessionId = request.getSession().getId();
-        System.out.println("session id is " + sessionId);
-        response.getWriter().write("session id: [" + sessionId + "]");
+        HttpSession session = request.getSession();
+        if (session == null) {
+            try {
+                // Retry getSession(), most likely due to SESN0307E: Unable to start JGroups Channel
+                System.out.println("Sleep 5 seconds due to session return null ...");
+                TimeUnit.SECONDS.sleep(5);                
+            } catch (Exception e) {
+            }
+            session = request.getSession();
+        }
+        if (session != null) {
+            String sessionId = session.getId();
+            System.out.println("session id is " + sessionId);
+            response.getWriter().write("session id: [" + sessionId + "]");            
+        } else {
+            System.out.println("Unable to get session from the servlet request, most likely due to exception occurred when initializing the cache. Return instead of NPE, please check the logs.");
+        }
     }
 
     /**
@@ -407,11 +421,20 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         HttpSession session = request.getSession(true);
         if (session == null) {
-            // Retry getSession() as request.getSession(true) can not be null in the production world
-            System.out.println("Sleep 5 seconds due to session return null");
-            TimeUnit.SECONDS.sleep(5);
+            try {
+                // Retry getSession() as request.getSession(true) can not be null in the production world
+                System.out.println("Sleep 5 seconds due to session return null");
+                TimeUnit.SECONDS.sleep(5);                
+            } catch (Exception e) {
+            }
             session = request.getSession(true);
         }
+        
+        if (session == null) {
+            System.out.println("Session can not be null, please check JCache initialization. Test skipped");
+            return;
+        }
+        
         session.setAttribute(attrName, value);
 
         // Verify that attribute does not get persisted to the cache yet

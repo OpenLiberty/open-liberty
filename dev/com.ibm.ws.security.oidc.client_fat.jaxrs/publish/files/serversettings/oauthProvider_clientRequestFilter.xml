@@ -36,7 +36,7 @@
 		<localStore>
 			<client
 				name="client01_noJWT"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01_noJWT"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01_noJWT"
 				scope="ALL_SCOPES"
@@ -45,7 +45,7 @@
 				enabled="true" />
 			<client
 				name="client01_injecter"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01_injecter"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01_injecter,
 								http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01_noClaims,

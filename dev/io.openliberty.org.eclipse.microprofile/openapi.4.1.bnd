@@ -22,6 +22,6 @@ Include-Resource: \
   @${repo;org.eclipse.microprofile.openapi:microprofile-openapi-api;[4.1,4.2)}
 
 -maven-dependencies: \
-   dep1;groupId=org.eclipse.microprofile.openapi;artifactId=microprofile-openapi-api;version=4.1-RC1;scope=runtime
+   dep1;groupId=org.eclipse.microprofile.openapi;artifactId=microprofile-openapi-api;version=4.1;scope=runtime
 
 WS-TraceGroup: MPOPENAPI

@@ -14,6 +14,8 @@
 package com.ibm.ws.security.token.ltpa.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -66,9 +68,12 @@ public class LTPAValidationKeyTests {
     private static final String validUser = "user1";
     private static final String validPassword = "user1pwd";
 
-    private static final String[] serverShutdownMessages = { "CWWKS9113E", "CWWKS4102E", "CWWKG0058E", "CWWKG0083W", "CWWKS4106E", "CWWKS4109W", "CWWKS4110E", "CWWKS4111E", "CWWKS4112E",
+    private static final String[] serverShutdownMessages = { "CWWKS9113E", "CWWKS4102E", "CWWKG0058E", "CWWKG0083W", "CWWKS4106E", "CWWKS4109W", "CWWKS4110E", "CWWKS4111E",
+                                                             "CWWKS4112E",
                                                              "CWWKS4113W",
-                                                             "CWWKS4114W", "CWWKS4115W", "CWWKS1859E" };
+                                                             "CWWKS4114W", "CWWKS4115W", "CWWKS1859E",
+                                                             "CWWKS4116W" // Warning for validation keys v1
+                                                             };
 
     // Initialize the FormLogin Clients
     private static FormLoginClient server1FlClient1;
@@ -101,6 +106,7 @@ public class LTPAValidationKeyTests {
                                                VALIDATION_KEY2_PATH, VALIDATION_KEY1_PATH, BAD_PRIVATE_VALIDATION_KEY2_PATH);
 
     // Define the paths to the alternate key files
+    private static String ALT_VALIDATION_KEY1_VER1_PATH = "alternate/validation1.keys";
     private static String ALT_VALIDATION_KEY1_PATH = "alternate/validation1.keys";
     private static String ALT_VALIDATION_KEY2_PATH = "alternate/validation2.keys";
     private static String ALT_VALIDATION_KEY3_PATH = "alternate/validation3.keys";
@@ -697,6 +703,12 @@ public class LTPAValidationKeyTests {
             // Configure the server, and replace the LTPA key with the fips key
             configureServer("true", "10", true, server1);
             renameKeyAndWaitForMessage(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, server1, "CWWKS4102E");
+
+            assertNull("Warning message for validation key should not be found in the log when fips 140-3 is NOT enabled.",
+                    server1.waitForStringInLogUsingMark("CWWKS4116W", 5000));
+
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".noFips", server1);
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".noFips.1", server1);
         }
 
         else {
@@ -709,6 +721,10 @@ public class LTPAValidationKeyTests {
             configureServer("true", "10", true, server1);
             renameKeyAndWaitForMessage(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, server1, "CWWKS4102E");
 
+            assertNotNull("Expected warning message for validation key not found in the log when fips 140-3 is enabled.",
+                    server1.waitForStringInLogUsingMark("CWWKS4116W", 5000));
+
+            assertFileWasCreated(DEFAULT_KEY_PATH + ".noFips", server1);
         }
     }
 
@@ -933,6 +949,17 @@ public class LTPAValidationKeyTests {
     private void assertFileWasCreated(String filePath, LibertyServer server) throws Exception {
         assertTrue("The file was not created as expected. If this is an intermittent failure, then increase the wait time.",
                    fileExists(filePath, server));
+    }
+
+    /**
+     * Assert that file was not created
+     *
+     * @param filePath
+     *
+     * @throws Exception
+     */
+    private void assertFileWasNotCreated(String filePath, LibertyServer server) throws Exception {
+        assertFalse(fileExists(filePath, server));
     }
 
     /**

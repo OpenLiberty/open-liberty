@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -67,7 +67,7 @@ public class LogoutTokenValidatorTest extends CommonTestClass {
 
     final String CONFIG_ID = "myConfigId";
     final String CLIENT_ID = "client01";
-    final String SHARED_SECRET = "secret";
+    final String SHARED_SECRET = "secret1234";
     final String ISSUER = "https://localhost/oidc/provider/OP";
     final String TOKEN_ENDPOINT = ISSUER + "/token";
     final String SUBJECT = "testuser";

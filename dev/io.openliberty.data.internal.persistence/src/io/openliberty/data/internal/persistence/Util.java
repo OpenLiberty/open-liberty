@@ -24,8 +24,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Year;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -35,17 +37,19 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.util.UUID;
 
+import io.openliberty.data.internal.AttributeConstraint;
+import io.openliberty.data.internal.persistence.cdi.RepositoryProducer;
+import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.Order;
 import jakarta.data.Sort;
-import jakarta.data.repository.Delete;
-import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
-import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.persistence.AttributeConverter;
@@ -66,13 +70,27 @@ public class Util {
     public static final String EOLN = String.format("%n");
 
     /**
-     * Type of life cycle methods (by annotation name) that are capable of
-     * returning entities.
+     * Types of life cycle methods (by annotation name) that are capable of
+     * returning entities for stateless repositories.
      */
-    static final List<String> LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES = //
+    static final List<String> LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES_STATELESS = //
                     List.of(Insert.class.getSimpleName(),
                             Save.class.getSimpleName(),
                             Update.class.getSimpleName());
+
+    /**
+     * List of valid prefixes for Query by Method Name methods of a stateful
+     * repository.
+     */
+    private static final Set<String> METHOD_NAME_PREFIXES_STATEFUL = //
+                    Set.of("count", "exists", "find");
+
+    /**
+     * List of valid prefixes for Query by Method Name methods of a stateless
+     * repository.
+     */
+    private static final Set<String> METHOD_NAME_PREFIXES_STATELESS = //
+                    Set.of("count", "delete", "exists", "find");
 
     /**
      * Commonly used result types that are not entities.
@@ -87,9 +105,25 @@ public class Util {
                            double.class, float.class);
 
     /**
-     * List of Jakarta Data operation annotations for use in NLS messages.
+     * Query language keywords that can appear immediately after the entity name when
+     * there is no entity identifier variable specified.
+     *
+     * DELETE FROM MyEntity WHERE ...
+     * FROM MyEntity UNION ...
+     * FROM MyEntity ORDER BY ...
+     * UPDATE MyEntity SET ...
      */
-    static final String OP_ANNOS = "Delete, Find, Insert, Query, Save, Update";
+    public static final Set<String> QL_KEYWORDS_AFTER_ENTITY_NAME = new HashSet<>();
+    static {
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("EXCEPT");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("GROUP");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("HAVING");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("INTERSECT");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("ORDER");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("SET");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("UNION");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("WHERE");
+    }
 
     /**
      * Return types for deleteBy that distinguish delete-only from find-and-delete.
@@ -132,7 +166,8 @@ public class Util {
                     List.of(Instant.class.getSimpleName(),
                             LocalDate.class.getSimpleName(),
                             LocalDateTime.class.getSimpleName(),
-                            LocalTime.class.getSimpleName());
+                            LocalTime.class.getSimpleName(),
+                            Year.class.getSimpleName());
 
     /**
      * These types are never supported for entity attributes.
@@ -222,25 +257,42 @@ public class Util {
     }
 
     /**
+     * Returns names of all Query by Method Name constraint keywords that are
+     * supported for collection attributes. This is used in error reporting
+     * to display which keywords are valid.
+     *
+     * @return names of all constraints that are supported for collection attributes.
+     */
+    @Trivial
+    static Set<String> constraintsThatSupportCollections() {
+        Set<String> supported = new TreeSet<>();
+        for (AttributeConstraint c : AttributeConstraint.values())
+            if (c.supportsCollections() && c.lengthWithinMethodName() > 0) {
+                String name = c.name();
+                supported.add(name);
+            }
+        return supported;
+    }
+
+    /**
      * Identifies whether a method is annotated with a Jakarta Data annotation
      * that performs and operation, such as Query, Find, or Save. This method is
      * for use by error reporting only, so it does not need to be very efficient.
      *
-     * @param method repository method.
+     * @param method   repository method.
+     * @param producer producer of the repository bean instance.
      * @return if the repository method has an annotation indicating an operation.
      */
     @Trivial
-    static final boolean hasOperationAnno(Method method) {
-        Set<Class<? extends Annotation>> operationAnnos = //
-                        Set.of(Delete.class,
-                               Insert.class,
-                               Find.class,
-                               Query.class,
-                               Save.class,
-                               Update.class);
+    static final boolean hasOperationAnno(Method method,
+                                          RepositoryProducer<?> producer) {
+        DataVersionCompatibility compat = producer.provider().compat;
+        Set<Class<? extends Annotation>> statefulAnnos = compat.operationAnnoTypes(true);
+        Set<Class<? extends Annotation>> statelessAnnos = compat.operationAnnoTypes(false);
 
         for (Annotation anno : method.getAnnotations())
-            if (operationAnnos.contains(anno.annotationType()))
+            if (statefulAnnos.contains(anno.annotationType()) ||
+                statelessAnnos.contains(anno.annotationType()))
                 return true;
 
         return false;
@@ -276,6 +328,23 @@ public class Util {
     }
 
     /**
+     * List of names of repository method life cycle annotations.
+     * Enclosed in brackets and delimited by comma.
+     *
+     * @param producer producer of the repository bean, from which it can be
+     *                     determined if the repository is stateful or stateless.
+     */
+    @Trivial
+    static String lifeCycleAnnoNames(RepositoryProducer<?> producer) {
+        Set<Class<? extends Annotation>> annoClasses = producer.provider().compat //
+                        .lifeCycleAnnoTypes(producer.stateful());
+
+        return annoClasses.stream() //
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
+    }
+
+    /**
      * Returns some of the more commonly used return types that are valid
      * for a life cycle method.
      *
@@ -307,6 +376,41 @@ public class Util {
         }
 
         return validReturnTypes;
+    }
+
+    static Set<String> methodNamePrefixes(RepositoryProducer<?> producer) {
+        return producer.stateful() ? METHOD_NAME_PREFIXES_STATEFUL //
+                        : METHOD_NAME_PREFIXES_STATELESS;
+    }
+
+    /**
+     * Returns a String containing the names of classes delimited by commas.
+     *
+     * @param classes Java classes.
+     * @return the names of classes delimited by commas.
+     */
+    public static String names(Collection<Class<?>> classes) {
+        StringBuilder b = new StringBuilder();
+        for (Class<?> c : classes)
+            b.append(b.isEmpty() ? "" : ", ").append(c.getName());
+        return b.toString();
+    }
+
+    /**
+     * List of names of repository method annotations that represent operations.
+     * Enclosed in brackets and delimited by comma.
+     *
+     * @param producer producer of the repository bean, from which it can be
+     *                     determined if the repository is stateful or stateless.
+     */
+    @Trivial
+    static String operationAnnoNames(RepositoryProducer<?> producer) {
+        Set<Class<? extends Annotation>> annoClasses = producer.provider().compat //
+                        .operationAnnoTypes(producer.stateful());
+
+        return annoClasses.stream() //
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
     }
 
     /**
@@ -373,6 +477,23 @@ public class Util {
                                cause.getClass().getName() + ']');
             }
         }
+    }
+
+    /**
+     * List of class names of valid return types for resource accessor mtehods.
+     * Enclosed in brackets and delimited by comma.
+     *
+     * @param producer producer of the repository bean, from which it can be
+     *                     determined if the repository is stateful or stateless.
+     */
+    @Trivial
+    static String resourceAccessorTypeNames(RepositoryProducer<?> producer) {
+        Set<Class<?>> types = producer.provider().compat //
+                        .resourceAccessorTypes(producer.stateful());
+
+        return types.stream() //
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
     }
 
     /**

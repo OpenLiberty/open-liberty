@@ -34,7 +34,7 @@ import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-@AllowedFFDC(value = { "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+@AllowedFFDC(value = { "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.resource.spi.ResourceAllocationException" })
 public class DBRerouteTest extends SimpleTest {
 
 	@Server("MigrationServer3")

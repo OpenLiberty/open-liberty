@@ -23,11 +23,15 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AccessListsTests.class,
+                InactivityTimeoutTests.class,
                 MaxOpenConnectionsTests.class,
                 PortOpenRetriesTests.class,
+                RequestSocketTest.class,
                 SoLingerTests.class,
                 SoReuseAddrTest.class,
-                TcpOptionsDefaultTests.class
+                TcpOptionsDefaultTests.class,
+                ContentTypeResponseHeaderTests.class,
+                AccessLogRolloverTest.class
 })
 
 public class FATSuite {

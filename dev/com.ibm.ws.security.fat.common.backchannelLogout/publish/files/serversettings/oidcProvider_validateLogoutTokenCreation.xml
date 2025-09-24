@@ -27,7 +27,7 @@
 		<localStore>
 			<client
 				name="client_jtiInOP"
-				secret="secret"
+				secret="secret1234"
 				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_jtiInOP"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_jtiInOP"
 				scope="ALL_SCOPES"
@@ -55,7 +55,7 @@
 		<localStore>
 			<client
 				name="client_nonDefaultIssuer"
-				secret="secret"
+				secret="secret1234"
 				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonDefaultIssuer"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonDefaultIssuer"
 				scope="ALL_SCOPES"
@@ -81,7 +81,7 @@
 		<localStore>
 			<client
 				name="client_nonDefaultAudienceAll"
-				secret="secret"
+				secret="secret1234"
 				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonDefaultAudienceAll"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonDefaultAudienceAll"
 				scope="ALL_SCOPES"
@@ -107,7 +107,7 @@
 		<localStore>
 			<client
 				name="client_nonDefaultAudienceOne"
-				secret="secret"
+				secret="secret1234"
 				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonDefaultAudienceOne"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonDefaultAudienceOne"
 				scope="ALL_SCOPES"
@@ -134,7 +134,7 @@
 		<localStore>
 			<client
 				name="client_nonDefaultAudienceMultiple"
-				secret="secret"
+				secret="secret1234"
 				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonDefaultAudienceMultiple"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonDefaultAudienceMultiple"
 				scope="ALL_SCOPES"
@@ -160,7 +160,7 @@
 		<localStore>
 			<client
 				name="client_hs256"
-				secret="secret"
+				secret="secret1234"
 				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_hs256"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_hs256"
 				scope="ALL_SCOPES"
@@ -187,7 +187,7 @@
 		<localStore>
 			<client
 				name="client_rs256"
-				secret="secret"
+				secret="secret1234"
 				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_rs256"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_rs256"
 				scope="ALL_SCOPES"
@@ -213,7 +213,7 @@
 		<localStore>
 			<client
 				name="client_nonceInOP"
-				secret="secret"
+				secret="secret1234"
 				backchannelLogoutUri="http://localhost:${bvt.prop.security_2_HTTP_default}/backchannelLogoutTestApp/backChannelLogoutUri/client_nonceInOP"
 				redirect="https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_nonceInOP"
 				scope="ALL_SCOPES"

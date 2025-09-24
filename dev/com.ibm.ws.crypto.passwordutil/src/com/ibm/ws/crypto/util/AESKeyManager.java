@@ -24,6 +24,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.SecretKeySpec;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.wsspi.security.crypto.KeyStringResolver;
 
 /**
@@ -31,15 +32,20 @@ import com.ibm.wsspi.security.crypto.KeyStringResolver;
  */
 public class AESKeyManager {
     private static final AtomicReference<KeyStringResolver> _resolver = new AtomicReference<KeyStringResolver>();
+    private static final byte[] AES_V0_SALT = new byte[] { -89, -94, -125, 57, 76, 90, -77, 79, 50, 21, 10, -98, 47, 23, 17, 56, -61, 46, 125, -128 };
+    private static final byte[] AES_V1_SALT = new byte[] { -89, -63, 22, 15, -121, 11, 102, 75, -91, 68, -94, -89, 96, 83, -21, -69, -45, 29, 26, 106, -18, 69, 60, -6, 108, 73,
+                                                           111, 122, 41, -19, -78, -79, -28, 102, 57, -10, 66, 48, 54, 111, 35, 92, 59, -121, 36, 15, 14, -63, -43, 107, 63, -18,
+                                                           87, 43, -57, 74, 0, 107, -119, -2, -7, -7, -46, -95, -44, 36, -10, 86, -119, -80, -114, 10, 85, 24, 24, -121, -30, 63,
+                                                           59, 49, 52, -76, -122, 108, -84, 16, 4, -39, 58, 75, 9, -25, 126, 127, -96, 122, -62, -94, 71, -8, -101, -33, 57, -44,
+                                                           -93, 86, 76, -115, 113, -124, 104, -40, -121, -9, 86, 121, -48, -57, -77, -58, 73, 7, 12, 4, 24, -81, -64, 107 };
 
     public static enum KeyVersion {
-        AES_V0("PBKDF2WithHmacSHA1", 84756, 128, new byte[] { -89, -94, -125, 57, 76, 90, -77, 79, 50, 21, 10, -98, 47, 23, 17, 56, -61, 46, 125, -128 }),
-        AES_V1("PBKDF2WithHmacSHA512", 210000, 256, new byte[] { -89, -63, 22, 15, -121, 11, 102, 75, -91, 68, -94, -89, 96, 83, -21, -69, -45, 29, 26, 106, -18, 69, 60, -6,
-                                                                 108, 73, 111, 122, 41, -19, -78, -79, -28, 102, 57, -10, 66, 48, 54, 111, 35, 92, 59, -121, 36, 15, 14, -63,
-                                                                 -43, 107, 63, -18, 87, 43, -57, 74, 0, 107, -119, -2, -7, -7, -46, -95, -44, 36, -10, 86, -119, -80, -114,
-                                                                 10, 85, 24, 24, -121, -30, 63, 59, 49, 52, -76, -122, 108, -84, 16, 4, -39, 58, 75, 9, -25, 126, 127, -96,
-                                                                 122, -62, -94, 71, -8, -101, -33, 57, -44, -93, 86, 76, -115, 113, -124, 104, -40, -121, -9, 86, 121, -48,
-                                                                 -57, -77, -58, 73, 7, 12, 4, 24, -81, -64, 107 });
+
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
+        // AES_V0 is only used for backward compatibility, newly created passwords will use AES_V1. If FIPS is enabled, AES_V0 will not be tolerated
+        // and users must recreate their password
+        AES_V0(CryptoUtils.PBKDF2_WITH_HMAC_SHA1, CryptoUtils.PBKDF2HMACSHA1_ITERATIONS, CryptoUtils.AES_128_KEY_LENGTH_BITS, AES_V0_SALT),
+        AES_V1(CryptoUtils.PBKDF2_WITH_HMAC_SHA512, CryptoUtils.PBKDF2HMACSHA512_ITERATIONS, CryptoUtils.AES_256_KEY_LENGTH_BITS, AES_V1_SALT);
 
         private final AtomicReference<KeyHolder> _key = new AtomicReference<KeyHolder>();
 
@@ -61,7 +67,8 @@ public class AESKeyManager {
                 SecretKeyFactory keyFactory = SecretKeyFactory.getInstance(alg);
                 KeySpec aesKey = new PBEKeySpec(keyChars, salt, iterations, keyLength);
                 byte[] data = keyFactory.generateSecret(aesKey).getEncoded();
-                KeyHolder holder2 = new KeyHolder(keyChars, new SecretKeySpec(data, "AES"), new IvParameterSpec(data));
+                byte[] iv = Arrays.copyOfRange(data, 0, 16);
+                KeyHolder holder2 = new KeyHolder(keyChars, new SecretKeySpec(data, "AES"), new IvParameterSpec(iv));
                 _key.compareAndSet(holder, holder2);
                 // Still use this holder for returns even if I do not end up caching it.
                 holder = holder2;
@@ -144,11 +151,7 @@ public class AESKeyManager {
      * @return
      */
     public static IvParameterSpec getIV(KeyVersion version, String cryptoKey) throws NoSuchAlgorithmException, InvalidKeySpecException {
-        if (version == KeyVersion.AES_V0) {
-            return getHolder(version, cryptoKey).getIv();
-        } else {
-            return null;
-        }
+        return getHolder(version, cryptoKey).getIv();
     }
 
     /**

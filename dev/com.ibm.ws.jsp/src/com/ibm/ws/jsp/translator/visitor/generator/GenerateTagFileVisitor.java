@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -364,8 +364,12 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
 
         if (!(jspOptions.isUsePageTagPool() || jspOptions.isUseThreadTagPool())) {
             GeneratorUtils.generate_tagCleanUp_methods(writer, !jspOptions.isDisableResourceInjection()); // PH49514
+        } else { // OLGH31609
+            // Tags may be used within Simple tags, do the '_jsp_cleanUpTag' may be called.
+            GeneratorUtils.generate_single_tag_cleanup_method(writer, !jspOptions.isDisableResourceInjection());
         }
 
+        // May not always be called, but best to define it to avoid compilation errors
         GeneratorUtils.generate_finalCleanUp_method(writer, jspOptions);
 
         if(!jspOptions.isDisableResourceInjection()){
@@ -480,6 +484,10 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
 
         writer.println();
 
+        // jsp2.1ELwork
+        writer.println("_jspInit(config);"); // inittag needs to initalize _jspx_iaHelper before initTaglibLookup is called
+        writer.println();
+
         // 247815 Start
         if (jspOptions.isUsePageTagPool()) {
             writer.println("java.util.HashMap _jspx_TagLookup = initTaglibLookup();");
@@ -489,10 +497,6 @@ public class GenerateTagFileVisitor extends GenerateVisitor {
             writer.println();
         }
         // 247815 End
-
-        // jsp2.1ELwork
-        writer.println("_jspInit(config);");
-        writer.println();
 
         // defect 386311 begin
         // set current JspContext on ELContext

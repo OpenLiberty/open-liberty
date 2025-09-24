@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,6 +41,7 @@ import com.ibm.ws.security.spnego.fat.config.SPNEGOConstants;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.ApacheDSandKDC;
 import com.ibm.ws.security.wim.adapter.ldap.fat.krb5.utils.LdapKerberosUtils;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
@@ -102,7 +103,7 @@ public class KdcResource extends ExternalResource {
         final String thisMethod = "before";
         Log.info(c, thisMethod, "Configuring " + c.getSimpleName() + ".");
 
-        runTests = isSupportedJDK();
+        runTests = isSupportedJDK() && isSupportedOS();
 
         /*
          * Start the KDC if we are running tests.
@@ -173,6 +174,39 @@ public class KdcResource extends ExternalResource {
 
         return runTests;
     };
+
+    /**
+     * Is this a supported OS for testing?
+     *
+     * @return True if the OS is supported.
+     * @throws IOException if there is an error determing whether the OS is supported.
+     */
+    private boolean isSupportedOS() throws IOException {
+        String thisMethod = "isSupportedOS";
+        boolean runTests = true;
+
+        // The ApacheDSAndKDC does not work correctly on MacOS
+        // Skip the tests if we are not on one of the supported OSes
+        String os = System.getProperty("os.name", "UNKNOWN").toUpperCase();
+        if (os.contains("MAC") || os.contains("OSX")) {
+            if (FATRunner.FAT_TEST_LOCALRUN) {
+                throw new RuntimeException("Running on an unsupported os: " + os);
+            } else {
+                Log.info(c, thisMethod, "Skipping test because of unsupported os: " + os);
+                runTests = false;
+            }
+        }
+
+        if (!runTests) {
+            Log.info(c, thisMethod, "=== OS NOT SUPPORTED FOR ApacheDSAndKDC SPNEGO FAT TESTS ===");
+            Log.info(c, thisMethod, "=== SKIPPING ApacheDSAndKDC SPNEGO FAT TESTS ===");
+        } else {
+            Log.info(c, thisMethod, "Operating System is supported: " + os);
+        }
+
+        return runTests;
+
+    }
 
     /**
      * Are we using the IBM/Oracle hybrid JDK?

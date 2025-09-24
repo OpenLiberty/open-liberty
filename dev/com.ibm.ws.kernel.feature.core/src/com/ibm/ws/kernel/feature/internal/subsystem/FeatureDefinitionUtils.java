@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,9 @@ public class FeatureDefinitionUtils {
                                                                                            "io.openliberty.jakartaeeClient-9.1",
                                                                                            "io.openliberty.jakartaeeClient-10.0",
                                                                                            "io.openliberty.jakartaeeClient-11.0",
-                                                                                           "com.ibm.websphere.appserver.appSecurityClient-1.0");
+                                                                                           "com.ibm.websphere.appserver.appSecurityClient-1.0",
+                                                                                           "io.openliberty.xmlWSClient-4.0" // Removed from the platform in EE 11
+    );
 
     public static final String NL = "\r\n";
     static final String SPLIT_CHAR = ";";

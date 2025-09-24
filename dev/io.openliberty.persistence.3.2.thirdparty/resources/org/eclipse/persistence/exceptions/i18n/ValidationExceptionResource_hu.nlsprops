@@ -641,3 +641,9 @@
 
 7360=Az adatb\u00e1zis jelszav\u00e1t egy elavult algoritmus titkos\u00edtotta. \u00dajratitkos\u00edtja `passwordUpdate.sh` innen eclipselink.zip csomag.
 
+7361=A felsorol\u00e1sban csak egy mez\u0151t lehet megjel\u00f6lni a @EnumeratedValue megjegyz\u00e9ssel. Ellen\u0151rizze a [ {0} ] enum oszt\u00e1lyt.
+
+7362=Az ORDINAL felsorol\u00e1sos t\u00edpusok eset\u00e9ben csak a byte, short, int, log vagy wrapper t\u00edpusok haszn\u00e1lhat\u00f3k a @EnumeratedValue \u00e1ltal jel\u00f6lt attrib\u00fatumt\u00edpusk\u00e9nt. A [ {0} ] attrib\u00fatum ellen\u0151rz\u00e9se a [ {1} ] enum oszt\u00e1lyban.
+
+7363=A STRING felsorol\u00e1sos t\u00edpus eset\u00e9ben csak a java.lang.String t\u00edpus haszn\u00e1lhat\u00f3 a @EnumeratedValue \u00e1ltal jel\u00f6lt attrib\u00fatumt\u00edpusk\u00e9nt. A [ {0} ] attrib\u00fatum ellen\u0151rz\u00e9se a [ {1} ] enum oszt\u00e1lyban.
+

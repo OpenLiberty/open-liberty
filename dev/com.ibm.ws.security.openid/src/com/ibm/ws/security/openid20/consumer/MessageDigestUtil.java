@@ -18,6 +18,7 @@ import java.security.SecureRandom;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class MessageDigestUtil {
 
@@ -31,7 +32,7 @@ public class MessageDigestUtil {
     private static final SecureRandom srandom = new SecureRandom();
     static {
         try {
-            md = MessageDigest.getInstance("SHA-256");
+            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
         } catch (NoSuchAlgorithmException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Internal error initializing message digest", e);

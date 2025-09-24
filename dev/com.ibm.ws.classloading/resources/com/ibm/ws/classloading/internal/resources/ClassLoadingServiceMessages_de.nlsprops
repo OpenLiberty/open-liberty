@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: Die [ {0} ] Bibliothek gibt einen Pfad mit 
 cls.library.path.invalid.explanation=Um einen Pfad zu einer Bibliothek in der Serverkonfiguration hinzuzuf\u00fcgen, m\u00fcssen Sie einen existierenden Pfad angeben.
 cls.library.path.invalid.useraction=Bearbeiten Sie die Serverkonfiguration und \u00e4ndern Sie das Pfadattribut des Bibliothekselements.
 
+app.classloader.removed=CWWKL0020W: Der Thread-Kontext-Klassenlader f\u00fcr den [ {0} ] Thread verweist nicht mehr auf die [ {1} ] Anwendung, die angehalten wurde.
+app.classloader.removed.explanation=app.classloader.removed.explanation =Wenn eine Anwendung einen Thread startet, wird der Thread-Kontextklassenlader der Anwendung an den neuen Thread vererbt.  Wenn der Thread nach dem Anhalten der Anwendung weiterl\u00e4uft, verweist sein Kontextklassenlader nicht mehr auf die angehaltene Anwendung.
+app.classloader.removed.useraction=\u00dcberpr\u00fcfen Sie, ob die Anwendung alle von ihr gestarteten Threads anh\u00e4lt, wenn die Anwendung beendet wird. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

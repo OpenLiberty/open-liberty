@@ -61,10 +61,10 @@ public class InstallPackagesTest extends InstallPackagesToolTest {
         Boolean testsPassed = false;
 
         Log.info(c, METHOD_NAME, "Installing package:" + packageExt);
-        ProgramOutput po1 = installOldPackage(METHOD_NAME, packageExt);
+        ProgramOutput po1 = retryInstallOldPackage(METHOD_NAME, packageExt);
 
         Log.info(c, METHOD_NAME, "Updating package");
-        ProgramOutput po2 = installCurrentPackage(METHOD_NAME, packageExt);
+        ProgramOutput po2 = retryInstallCurrentPackage(METHOD_NAME, packageExt);
 
         Log.info(c, METHOD_NAME, "Roll back package");
         ProgramOutput po3 = rollbackPackage(METHOD_NAME, packageExt);

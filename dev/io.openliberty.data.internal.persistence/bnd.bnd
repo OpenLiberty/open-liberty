@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ DynamicImport-Package: \
 Import-Package: \
   !*.internal.*, \
   !com.ibm.ws.beanvalidation.service, \
+  io.openliberty.data.internal, \
   io.openliberty.data.internal.version, \
   !jakarta.validation, \
   !jakarta.validation.executable, \
@@ -58,12 +59,13 @@ instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*
 
 -buildpath: \
 	com.ibm.tx.jta.jakarta;version=latest,\
-	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.beanvalidation.jakarta;version=latest,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
@@ -80,7 +82,7 @@ instrument.classesExcludes: io/openliberty/data/internal/persistence/resources/*
 	io.openliberty.jakarta.cdi.4.0,\
 	io.openliberty.jakarta.data.1.0,\
 	io.openliberty.jakarta.interceptor.2.1,\
-	io.openliberty.jakarta.persistence.3.1,\
+	io.openliberty.jakarta.persistence.3.2,\
 	io.openliberty.jakarta.transaction.2.0,\
 	io.openliberty.jakarta.validation.3.0,\
 	com.ibm.ws.jdbc

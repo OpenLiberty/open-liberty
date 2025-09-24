@@ -641,3 +641,9 @@
 
 7360=A senha do banco de dados foi criptografada por um algoritmo obsoleto. Recriptografe-o por `passwordUpdate.sh` de eclipselink.zip pacote.
 
+7361=Apenas um campo na enumera\u00e7\u00e3o pode ser marcado pela anota\u00e7\u00e3o @EnumeratedValue. Verifique a classe enum [ {0} ].
+
+7362=Para um tipo enumerado ORDINAL, somente os tipos byte, short, int, log ou wrapper podem ser usados como um tipo de atributo marcado por @EnumeratedValue. Verifique o atributo [ {0} ] na classe enum [ {1} ].
+
+7363=Para um tipo enumerado STRING, somente o tipo java.lang.String pode ser usado como um tipo de atributo marcado por @EnumeratedValue. Verifique o atributo [ {0} ] na classe enum [ {1} ].
+

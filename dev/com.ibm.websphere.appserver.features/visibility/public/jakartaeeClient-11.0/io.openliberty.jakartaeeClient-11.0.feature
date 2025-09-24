@@ -61,17 +61,6 @@ IBM-API-Package: \
   org.omg.SendingContext; type="spec", \
   org.omg.SendingContext.CodeBasePackage; type="spec", \
   org.omg.TimeBase; type="spec", \
-  jakarta.jws; type="spec", \
-  jakarta.jws.soap; type="spec", \
-  jakarta.xml.soap; type="spec", \
-  jakarta.xml.ws; type="spec", \
-  jakarta.xml.ws.handler; type="spec", \
-  jakarta.xml.ws.handler.soap; type="spec", \
-  jakarta.xml.ws.http; type="spec", \
-  jakarta.xml.ws.soap; type="spec", \
-  jakarta.xml.ws.spi; type="spec", \
-  jakarta.xml.ws.spi.http; type="spec", \
-  jakarta.xml.ws.wsaddressing; type="spec", \
   jakarta.annotation; type="spec", \
   jakarta.annotation.security; type="spec", \
   jakarta.annotation.sql; type="spec", \

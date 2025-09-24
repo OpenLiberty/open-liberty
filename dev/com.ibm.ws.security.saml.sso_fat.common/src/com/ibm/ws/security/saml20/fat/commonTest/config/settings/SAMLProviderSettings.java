@@ -17,6 +17,7 @@ import java.util.Map;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.fat.common.config.settings.BaseConfigSettings;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class SAMLProviderSettings extends BaseConfigSettings {
 
@@ -105,7 +106,7 @@ public class SAMLProviderSettings extends BaseConfigSettings {
     protected String id = "sp1";
     protected String inboundPropagation = null;
     protected String wantAssertionsSigned = null;
-    protected String signatureMethodAlgorithm = "SHA1";
+    protected String signatureMethodAlgorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1;
     protected String createSession = null;
     protected String authnRequestsSigned = null;
     protected String forceAuthn = null;

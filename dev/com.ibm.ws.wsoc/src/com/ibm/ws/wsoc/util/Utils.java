@@ -35,6 +35,7 @@ import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.wsoc.Constants;
 import com.ibm.ws.wsoc.WsocBufferException;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 // Utils is excluded from auto instrumented tracing via the build.xml
 
@@ -466,7 +467,7 @@ public class Utils {
 
         String inputKey = key + Constants.GUID;
 
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
+        MessageDigest md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1);
         byte[] arrayKey = inputKey.getBytes(StandardCharsets.ISO_8859_1);
         // Question: should it be:  "utf-8" above?
         md.update(arrayKey, 0, arrayKey.length);

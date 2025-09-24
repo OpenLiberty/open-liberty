@@ -20,7 +20,8 @@ src: \
 	test-applications/basicfat/src,\
 	test-applications/dsdfat/src,\
 	test-applications/setupfat/src,\
-	test-applications/dsdfat_global_lib/src
+	test-applications/dsdfat_global_lib/src,\
+	test-applications/dsdfat_override_lib/src
 
 fat.project: true
 tested.features: databaseRotation

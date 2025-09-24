@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -606,6 +606,20 @@ public class GeneratorUtils {
     }
 
     public static void generate_tagCleanUp_methods(JavaCodeWriter writer, boolean resourceInjectionEnabled) {
+
+        generate_single_tag_cleanup_method(writer, resourceInjectionEnabled);
+        
+        writer.println("public void _jsp_cleanUpTagArrayList(java.util.ArrayList tagList) {");
+        writer.println("  if(!tagList.isEmpty()) {");
+        writer.println("    for(int i = 0; i < tagList.size(); i++ ) {");
+        writer.println("      _jsp_cleanUpTag(tagList.get(i), null);");
+        writer.println("    }");
+        writer.println("  }");
+        writer.println("}");
+        writer.println();
+    }
+
+    public static void generate_single_tag_cleanup_method(JavaCodeWriter writer, boolean resourceInjectionEnabled) {
         writer.println("public void _jsp_cleanUpTag(Object tag, java.util.ArrayList tagList) {");
         if(resourceInjectionEnabled) { // if not disabled, then the _jspx_iaHelper is not available
             writer.println("  _jspx_iaHelper.doPreDestroy(tag);");
@@ -616,14 +630,6 @@ public class GeneratorUtils {
         writer.println("  }");
         writer.println("  if(tagList != null){");
         writer.println("    tagList.remove(tag);");
-        writer.println("  }");
-        writer.println("}");
-        writer.println();
-        writer.println("public void _jsp_cleanUpTagArrayList(java.util.ArrayList tagList) {");
-        writer.println("  if(!tagList.isEmpty()) {");
-        writer.println("    for(int i = 0; i < tagList.size(); i++ ) {");
-        writer.println("      _jsp_cleanUpTag(tagList.get(i), null);");
-        writer.println("    }");
         writer.println("  }");
         writer.println("}");
         writer.println();

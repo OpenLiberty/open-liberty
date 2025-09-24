@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,6 +34,7 @@ import com.ibm.ws.cdi.visibility.tests.vistest.ejbAsWarLib.EjbAsWarLibTestingBea
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbLib.EjbLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.ejbWarLib.EjbWarLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.framework.TestingBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.overrideLib.OverrideLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtRegular;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtSeeApp;
@@ -105,6 +106,9 @@ public class VisibilityTestServlet extends FATServlet {
     @Inject
     private Instance<PrivateLibTestingBean> privateLibTestingInstance;
 
+    @Inject
+    private Instance<OverrideLibTestingBean> overrideLibTestingInstance;
+
     // Using a qualifier to look this up so that we don't have to have the runtime extension export this package as API
     @Inject
     @InRuntimeExtRegular
@@ -153,6 +157,8 @@ public class VisibilityTestServlet extends FATServlet {
                 result = appClientAsWarLibTestingInstance.get().doTest();
             } else if (location.equals("InCommonLib")) {
                 result = commonLibTestingInstance.get().doTest();
+            } else if (location.equals("InOverrideLib")) {
+                result = overrideLibTestingInstance.get().doTest();
             } else if (location.equals("InPrivateLib")) {
                 result = privateLibTestingInstance.get().doTest();
             } else if (location.equals("InRuntimeExtRegular")) {
@@ -160,7 +166,7 @@ public class VisibilityTestServlet extends FATServlet {
             } else if (location.equals("InRuntimeExtSeeApp")) {
                 result = runtimeExtSeeAppTestingInstance.get().doTest();
             } else {
-                result = "ERROR: unrecognised qualifier\n";
+                result = "ERROR: unrecognised qualifier: " + location + "\n";
             }
         } catch (UnsatisfiedResolutionException ex) {
             result = "ERROR: unable to resolve test class\n" + ex.toString() + "\n";

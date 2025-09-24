@@ -28,7 +28,8 @@ Export-Package: com.ibm.ws.dynamic.bundle;provide:=true
 	com.ibm.ws.kernel.boot.common,\
 	com.ibm.ws.org.eclipse.equinox.region, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.logging
+	com.ibm.ws.logging, \
+	com.ibm.ws.kernel.service
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

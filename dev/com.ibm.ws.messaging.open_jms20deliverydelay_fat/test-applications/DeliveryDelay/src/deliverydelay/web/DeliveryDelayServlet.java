@@ -1,5 +1,5 @@
 /* =============================================================================
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,6 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
-import javax.jms.StreamMessage;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.QueueConnection;
@@ -64,6 +63,25 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+
+/**
+ * DeliveryDelayServlet
+
+ * The JMS spec defines the delivery delay as the minimum amount of time that
+ * must elapse before a message becomes available to be received. This can
+ * introduce a few complications when testing. In particular, if a short delivery
+ * delay value is specified on a send operation, factors such as resource
+ * restriction might mean that this time could elapse before the send call itself
+ * has completed and returned. In such cases, it is not possible to determine
+ * whether the delivery delay time expired before the message became available.
+ * One approach to addressing this would be to use longer delivery delay values,
+ * but this could add up and cause the test bucket to take too long to run.
+ * Instead, assuming that such restrictions are likely to be transient environmental
+ * issues, the tests will record in the httpResponse instances where the message
+ * send took longer than the delivery delay time. This can then be used by the
+ * calling test to determine that, while the test didn't explicitly fail, it did
+ * not obtain a meaningful result.
+ */
 
 @SuppressWarnings("serial")
 public class DeliveryDelayServlet extends HttpServlet {
@@ -166,7 +184,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         return numMsgs;
     }
 
-    private static final long defaultTestDeliveryDelay = 10000;
+    private static final long defaultTestDeliveryDelay = 5000;
     
     
     /**
@@ -316,35 +334,48 @@ public class DeliveryDelayServlet extends HttpServlet {
         }
     }
 
+    private void testNotValid(HttpServletResponse response) throws TestException{
+    	
+    	PrintWriter out;
+		try {
+            out = response.getWriter();
+            out.println("TEST NOT VALID.");
+		} catch (IOException e) {
+			TestException t = new TestException(e.getMessage());
+			t.initCause(e);
+			throw t;
+		}
+    }
+    
     
     // Simple deliveryDelay tests using the JMS2.0 Simplified API
 
     public void testSetDeliveryDelay(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFBindings, jmsQueue);
-        testSetDeliveryDelay(jmsQCFBindings, jmsQueue, false);
+         if (!testSetDeliveryDelay(jmsQCFBindings, jmsQueue, false)) testNotValid(response);
     }
 
     public void testSetDeliveryDelay_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
         emptyQueue(jmsQCFTCP, jmsQueue);
-        testSetDeliveryDelay(jmsQCFTCP, jmsQueue, false);
+        if (!testSetDeliveryDelay(jmsQCFTCP, jmsQueue, false)) testNotValid(response);
     }
 
     public void testSetDeliveryDelayTopic(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-        testSetDeliveryDelay(jmsTCFBindings, jmsTopic, false);
+        if (!testSetDeliveryDelay(jmsTCFBindings, jmsTopic, false)) testNotValid(response);
     }
 
     public void testSetDeliveryDelayTopic_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-        testSetDeliveryDelay(jmsTCFTCP, jmsTopic, false);
+        if (!testSetDeliveryDelay(jmsTCFTCP, jmsTopic, false)) testNotValid(response);
     }
     
     public void testSetDeliveryDelayTopicDurSub(
             HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-    	testSetDeliveryDelay(jmsTCFBindings, jmsTopic, true);
+    	if (!testSetDeliveryDelay(jmsTCFBindings, jmsTopic, true)) testNotValid(response);
     }
     
     public void testSetDeliveryDelayTopicDurSub_Tcp(
             HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-    	testSetDeliveryDelay(jmsTCFTCP, jmsTopic, true);
+    	if (!testSetDeliveryDelay(jmsTCFTCP, jmsTopic, true)) testNotValid(response);
     }
     
     /**
@@ -359,11 +390,14 @@ public class DeliveryDelayServlet extends HttpServlet {
      * @param connectionFactory
      * @param destination
      * @param useDurableSubscriber
+     * @return whether the test run was valid, that is, the send operation completed in less time than the delivery delay value
      * @throws JMSException
      * @throws TestException
      */
-    private void testSetDeliveryDelay(ConnectionFactory connectionFactory, Destination destination, boolean useDurableSubscriber) throws JMSException, TestException {
+    private boolean testSetDeliveryDelay(ConnectionFactory connectionFactory, Destination destination, boolean useDurableSubscriber) throws JMSException, TestException {
 
+    	boolean testIsValid = true;
+    	
     	// Do an initial check that we haven't been asked for a durableSubscriber but only been given a Queue destination
     	if ( useDurableSubscriber && !(destination instanceof Topic)) {
     		throw new TestException("Incompatible parameters. useDurablSubscriber specified, but destination was not a Topic: " + destination);
@@ -389,6 +423,10 @@ public class DeliveryDelayServlet extends HttpServlet {
 
             long beforeSend = this.sendAndCheckDeliveryTime(jmsProducer, destination, sentMessage);
 
+            // If we took longer to send the message than the delivery delay value, then we don't know whether the delivery delay was honoured or not
+            // We can continue with the rest of the test, just in case something else goes wrong.
+            if (System.currentTimeMillis() - beforeSend > defaultTestDeliveryDelay) testIsValid = false;
+            
             TextMessage receivedMessage = (TextMessage) jmsConsumer.receive(defaultTestDeliveryDelay * 2 );
             long afterReceive = System.currentTimeMillis();
 
@@ -413,11 +451,9 @@ public class DeliveryDelayServlet extends HttpServlet {
             if(afterReceive - beforeSend < defaultTestDeliveryDelay )
                 throw new TestException("Message received too soon, beforeSend: " + beforeSend + " afterReceive: " + afterReceive + " deliveryDelay: " + defaultTestDeliveryDelay
                         + "\nreceivedMessage:\n" + receivedMessage);            
-
-            
             
         }
-        return;
+        return testIsValid;
     }
 
     
@@ -429,7 +465,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             HttpServletRequest request, HttpServletResponse response) throws Exception {
     	
     	emptyQueue(jmsQCFBindings, jmsQueue1);
-    	testSetDeliveryDelayQueueClassicApi(jmsQCFBindings, jmsQueue1);
+    	if (!testSetDeliveryDelayQueueClassicApi(jmsQCFBindings, jmsQueue1)) testNotValid(response);
   
     }
     
@@ -437,7 +473,7 @@ public class DeliveryDelayServlet extends HttpServlet {
             HttpServletRequest request, HttpServletResponse response) throws Exception {
     	
     	emptyQueue(jmsQCFTCP, jmsQueue1);
-    	testSetDeliveryDelayQueueClassicApi(jmsQCFTCP, jmsQueue1);
+    	if(!testSetDeliveryDelayQueueClassicApi(jmsQCFTCP, jmsQueue1)) testNotValid(response);
     	
     }
     
@@ -446,10 +482,12 @@ public class DeliveryDelayServlet extends HttpServlet {
      * 
      * @param queueConnectionFactory
      * @param queue
+     * @return whether the test run was valid, that is, the send operation completed in less time than the delivery delay value
      * @throws Exception
      */
-    private void testSetDeliveryDelayQueueClassicApi(QueueConnectionFactory connectionFactory, Queue queue) throws Exception {
+    private boolean testSetDeliveryDelayQueueClassicApi(QueueConnectionFactory connectionFactory, Queue queue) throws Exception {
     	
+    	boolean testIsValid = true;
     	
     	try ( QueueConnection connection = connectionFactory.createQueueConnection();
     		  QueueSession session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);) {
@@ -465,6 +503,10 @@ public class DeliveryDelayServlet extends HttpServlet {
         	
             long beforeSend = sendAndCheckDeliveryTime(sender, queue, sentMessage);
             
+            // If we took longer to send the message than the delivery delay value, then we don't know whether the delivery delay was honoured or not
+            // We can continue with the rest of the test, just in case something else goes wrong.
+            if (System.currentTimeMillis() - beforeSend > defaultTestDeliveryDelay) testIsValid = false;
+
             TextMessage receivedMessage = (TextMessage) receiver.receive(defaultTestDeliveryDelay * 2);
             long afterReceive = System.currentTimeMillis();
 
@@ -478,7 +520,7 @@ public class DeliveryDelayServlet extends HttpServlet {
     		
     	}
     	
-    	return;
+    	return testIsValid;
     }
     
 
@@ -487,29 +529,29 @@ public class DeliveryDelayServlet extends HttpServlet {
     
     public void testSetDeliveryDelayTopicClassicApi(
             HttpServletRequest request, HttpServletResponse response) throws Exception {
-    	
-    	testSetDeliveryDelayTopicClassicApi(jmsTCFBindings, jmsTopic, false);
-    	
+
+    	if (!testSetDeliveryDelayTopicClassicApi(jmsTCFBindings, jmsTopic, false)) testNotValid(response);
+
     }
     
     public void testSetDeliveryDelayTopicClassicApi_Tcp(
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    	testSetDeliveryDelayTopicClassicApi(jmsTCFTCP, jmsTopic, false);
+    	if (!testSetDeliveryDelayTopicClassicApi(jmsTCFTCP, jmsTopic, false)) testNotValid(response);
 
     }
 
     public void testSetDeliveryDelayTopicDurSubClassicApi(
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    	testSetDeliveryDelayTopicClassicApi(jmsTCFBindings, jmsTopic, true);
+    	if (!testSetDeliveryDelayTopicClassicApi(jmsTCFBindings, jmsTopic, true)) testNotValid(response);
 
     }
 
     public void testSetDeliveryDelayTopicDurSubClassicApi_Tcp(
             HttpServletRequest request, HttpServletResponse response) throws Exception {
 
-    	testSetDeliveryDelayTopicClassicApi(jmsTCFTCP, jmsTopic, true);
+    	if (!testSetDeliveryDelayTopicClassicApi(jmsTCFTCP, jmsTopic, true)) testNotValid(response);
 
     }
     
@@ -519,10 +561,12 @@ public class DeliveryDelayServlet extends HttpServlet {
      * @param connnectionFactory
      * @param topic
      * @param useDurableSubscriber whether to create a durable or nondurable subscriber
+     * @return whether the test run was valid, that is, the send operation completed in less time than the delivery delay value
      * @throws Exception
      */
-    private void testSetDeliveryDelayTopicClassicApi( TopicConnectionFactory connectionFactory, Topic topic, boolean useDurableSubscriber) throws Exception {
+    private boolean testSetDeliveryDelayTopicClassicApi( TopicConnectionFactory connectionFactory, Topic topic, boolean useDurableSubscriber) throws Exception {
 
+    	boolean testIsValid = true;
     	String durableSubscriberName = methodName() + "_dursub";
 
     	try (TopicConnection connection = connectionFactory.createTopicConnection();
@@ -544,7 +588,10 @@ public class DeliveryDelayServlet extends HttpServlet {
 
             TextMessage sentMessage = session.createTextMessage(methodName() + " at " + timeStamp());
             long beforeSend = sendAndCheckDeliveryTime(publisher, topic, sentMessage);
-            
+
+            // If we took longer to send the message than the delivery delay value, then we don't know whether the delivery delay was honoured or not
+            // We can continue with the rest of the test, just in case something else goes wrong.
+            if (System.currentTimeMillis() - beforeSend > defaultTestDeliveryDelay) testIsValid = false;
             
             TextMessage receivedMessage = (TextMessage) subscriber.receive(defaultTestDeliveryDelay * 2);
             long afterReceive = System.currentTimeMillis();
@@ -576,7 +623,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 
     	}
     	
-    	return;
+    	return testIsValid;
     	
      }
     
@@ -660,7 +707,7 @@ public class DeliveryDelayServlet extends HttpServlet {
 		return;
 	}
     
-	// Externally visible variants oftestDeliveryDelayForDifferentDelays()
+	// Externally visible variants of testDeliveryDelayForDifferentDelays()
 	
 	// Simplified API variants
 	

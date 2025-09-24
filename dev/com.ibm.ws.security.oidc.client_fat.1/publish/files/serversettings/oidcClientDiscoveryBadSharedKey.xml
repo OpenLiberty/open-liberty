@@ -23,7 +23,7 @@
 		id="badSharedKey"
 		scope="openid profile"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		sharedKey="badsecret"
 		signatureAlgorithm="${oidcSignAlg}"
 		mapIdentityToRegistryUser="true"

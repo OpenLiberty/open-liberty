@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,14 @@ public interface Products {
 
     @Query("DELETE FROM Product WHERE pk IN ?1")
     int discontinueProducts(Set<UUID> ids);
+
+    @Query("""
+                    WHERE description LIKE 'DISCOUNT^%:10' ESCAPE '^'
+                       OR description LIKE 'DISCOUNT~%:20' ESCAPE '~'
+                    ORDER BY price DESC,
+                             pk ASC
+                    """)
+    Stream<Product> discounted10or20Percent();
 
     @OrderBy("name")
     List<Product> findByNameLike(String namePattern);

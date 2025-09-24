@@ -1,0 +1,36 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.0
+
+javac.source: 11
+javac.target: 11
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
+
+Bundle-SymbolicName: io.openliberty.org.jctools; singleton:=true
+                  
+jctoolsVersion=4.0.5   
+
+Export-Package: \
+  org.jctools.counters; version=${jctoolsVersion}, \
+  org.jctools.maps; version=${jctoolsVersion}, \
+  org.jctools.queues; version=${jctoolsVersion}, \
+  org.jctools.queues.atomic; version=${jctoolsVersion}, \
+  org.jctools.queues.atomic.unpadded; version=${jctoolsVersion}, \
+  org.jctools.queues.unpadded; version=${jctoolsVersion}, \
+  org.jctools.util; version=${jctoolsVersion}
+
+
+instrument.disabled: true
+
+-buildpath: \
+  org.jctools:jctools-core;version=latest

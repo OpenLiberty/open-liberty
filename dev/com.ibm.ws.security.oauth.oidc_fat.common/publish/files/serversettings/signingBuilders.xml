@@ -17,7 +17,7 @@
 		id="HS256Builder"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		signatureAlgorithm="HS256"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		audiences="client01"
 		/>
 		
@@ -25,7 +25,7 @@
 		id="HS384Builder"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		signatureAlgorithm="HS384"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		audiences="client01"
 		/>
 		
@@ -33,7 +33,7 @@
 		id="HS512Builder"
 		issuer="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet"
 		signatureAlgorithm="HS512"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		audiences="client01"
 		/>
 		

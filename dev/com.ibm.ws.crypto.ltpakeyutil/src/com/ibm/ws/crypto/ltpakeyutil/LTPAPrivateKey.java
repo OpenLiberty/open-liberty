@@ -141,7 +141,7 @@ public final class LTPAPrivateKey implements PrivateKey {
 	 */
 	@Override
 	public final String getAlgorithm() {
-		return (fipsEnabled ? "RSA/SHA-512" : "RSA/SHA-1");
+		return (fipsEnabled ? CryptoUtils.RSA_SHA_512 : CryptoUtils.RSA_SHA_1);
 	}
 
 	/** {@inheritDoc} */

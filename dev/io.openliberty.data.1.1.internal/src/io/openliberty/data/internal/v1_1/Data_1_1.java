@@ -15,11 +15,14 @@ package io.openliberty.data.internal.v1_1;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.sql.DataSource;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -28,11 +31,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import io.openliberty.data.internal.AttributeConstraint;
+import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Is;
-import io.openliberty.data.repository.Or;
+import io.openliberty.data.repository.IgnoreCase;
 import io.openliberty.data.repository.function.AbsoluteValue;
 import io.openliberty.data.repository.function.CharCount;
 import io.openliberty.data.repository.function.ElementCount;
@@ -47,10 +51,33 @@ import io.openliberty.data.repository.update.SubtractFrom;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
-import jakarta.data.exceptions.MappingException;
+import jakarta.data.constraint.AtLeast;
+import jakarta.data.constraint.AtMost;
+import jakarta.data.constraint.Between;
+import jakarta.data.constraint.Constraint;
+import jakarta.data.constraint.EqualTo;
+import jakarta.data.constraint.GreaterThan;
+import jakarta.data.constraint.In;
+import jakarta.data.constraint.LessThan;
+import jakarta.data.constraint.Like;
+import jakarta.data.constraint.NotBetween;
+import jakarta.data.constraint.NotEqualTo;
+import jakarta.data.constraint.NotIn;
+import jakarta.data.constraint.NotLike;
+import jakarta.data.constraint.NotNull;
+import jakarta.data.constraint.Null;
 import jakarta.data.page.PageRequest;
+import jakarta.data.repository.By;
+import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Is;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Save;
 import jakarta.data.repository.Select;
+import jakarta.data.repository.Update;
+import jakarta.data.spi.expression.literal.Literal;
+import jakarta.persistence.EntityManager;
 
 /**
  * Capability that is specific to the version of Jakarta Data.
@@ -82,6 +109,63 @@ public class Data_1_1 implements DataVersionCompatibility {
         FUNCTION_CALLS.put(Extract.Field.YEAR.name(), "EXTRACT (YEAR FROM ");
     }
 
+    /**
+     * Annotations that represent lifecycle operations that are allowed for
+     * methods of a stateful repository.
+     */
+    private static final Set<Class<? extends Annotation>> LIFECYCLE_ANNOS_STATEFUL = //
+                    Set.of(); // TODO 1.1 Detach, Merge, Persist, Refresh, Remove
+
+    /**
+     * Annotations that represent lifecycle operations that are allowed for
+     * methods of a stateless repository.
+     */
+    private static final Set<Class<? extends Annotation>> LIFECYCLE_ANNOS_STATELESS = //
+                    Set.of(Delete.class,
+                           Insert.class,
+                           Update.class,
+                           Save.class);
+
+    /**
+     * Annotations that represent operations that are allowed for methods of a
+     * stateful repository.
+     */
+    private static final Set<Class<? extends Annotation>> OP_ANNOS_STATEFUL = //
+                    Set.of(Find.class,
+                           // TODO 1.1 Merge, Persist, ...
+                           Query.class);
+
+    /**
+     * Annotations that represent operations that are allowed for methods of a
+     * stateless repository.
+     */
+    private static final Set<Class<? extends Annotation>> OP_ANNOS_STATELESS = //
+                    Set.of(Delete.class,
+                           Find.class,
+                           Insert.class,
+                           Query.class,
+                           Save.class,
+                           Update.class);
+
+    /**
+     * Classes that are valid as return types of resource accessor methods for a
+     * stateful repository.
+     */
+    private static final Set<Class<?>> RESOURCE_ACCESSOR_CLASSES_STATEFUL = //
+                    Set.of(Connection.class,
+                           DataSource.class,
+                           EntityManager.class);
+
+    /**
+     * Classes that are valid as return types of resource accessor methods for a
+     * stateless repository.
+     */
+    private static final Set<Class<?>> RESOURCE_ACCESSOR_CLASSES_STATELESS = //
+                    RESOURCE_ACCESSOR_CLASSES_STATEFUL; // TODO 1.1 entity agent
+
+    /**
+     * Types that are valid as repository method special parameters.
+     */
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = //
                     Set.of(Limit.class, Order.class,
                            Sort.class, Sort[].class,
@@ -90,23 +174,28 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public StringBuilder appendCondition(StringBuilder q, int qp,
-                                         Method method, int p,
-                                         String o_, String attrName,
-                                         boolean isCollection, Annotation[] annos) {
+    public StringBuilder appendConstraint(StringBuilder q,
+                                          String o_,
+                                          String attrName,
+                                          AttributeConstraint constraint,
+                                          int qp,
+                                          boolean isCollection,
+                                          Annotation[] annos) {
         StringBuilder attributeExpr = new StringBuilder();
 
-        Is.Op comparison = Is.Op.Equal;
         List<Annotation> functionAnnos = new ArrayList<>();
+        boolean ignoreCase = false;
         for (int a = annos.length - 1; a >= 0; a--) {
-            if (annos[a] instanceof Is) {
-                comparison = ((Is) annos[a]).value();
+            if (annos[a] instanceof IgnoreCase) {
+                ignoreCase = true;
             } else {
                 String annoPackage = annos[a].annotationType().getPackageName();
                 if (FUNCTION_ANNO_PACKAGE.equals(annoPackage)) {
                     functionAnnos.add(annos[a]);
-                    String functionType = annos[a] instanceof Extract ? ((Extract) annos[a]).value().name() //
-                                    : annos[a] instanceof Rounded ? ((Rounded) annos[a]).value().name() //
+                    String functionType = annos[a] instanceof Extract //
+                                    ? ((Extract) annos[a]).value().name() //
+                                    : annos[a] instanceof Rounded //
+                                                    ? ((Rounded) annos[a]).value().name() //
                                                     : annos[a].annotationType().getSimpleName();
                     String functionCall = FUNCTION_CALLS.get(functionType);
                     attributeExpr.append(functionCall);
@@ -114,9 +203,10 @@ public class Data_1_1 implements DataVersionCompatibility {
             }
         }
 
-        Is.Op baseOp = comparison.base();
-        boolean ignoreCase = comparison.ignoreCase();
-        boolean negated = comparison.isNegative();
+        boolean negated = constraint.isNegative();
+        AttributeConstraint baseConstraint = negated //
+                        ? constraint.negate() //
+                        : constraint;
 
         if (ignoreCase)
             attributeExpr.append("LOWER(");
@@ -138,40 +228,64 @@ public class Data_1_1 implements DataVersionCompatibility {
 
         if (isCollection)
             if (ignoreCase ||
-                baseOp != Is.Op.Equal) // TODO also have an operation for collection containing?
-                throw new UnsupportedOperationException("The " + comparison.name() +
-                                                        " comparison that is applied to entity attribute " +
+                baseConstraint != AttributeConstraint.Equal) // TODO also have an operation for collection containing?
+                throw new UnsupportedOperationException("The " + constraint.constraintName() +
+                                                        " constraint that is applied to entity attribute " +
                                                         attrName +
                                                         " is not supported for collection attributes."); // TODO NLS (future)
 
-        switch (baseOp) {
+        switch (baseConstraint) {
             case Equal:
-                q.append(attributeExpr).append(negated ? "<>" : '=');
-                appendParam(q, ignoreCase, qp);
-                break;
             case GreaterThan:
-                q.append(attributeExpr).append('>');
+            case GreaterThanEqual:
+            case LessThan:
+            case LessThanEqual:
+                q.append(attributeExpr).append(constraint.operator());
                 appendParam(q, ignoreCase, qp);
                 break;
-            case GreaterThanEqual:
-                q.append(attributeExpr).append(">=");
+            case Between:
+                q.append(attributeExpr).append(constraint.operator());
                 appendParam(q, ignoreCase, qp);
+                q.append(" AND ");
+                appendParam(q, ignoreCase, qp + 1);
                 break;
             case In:
                 if (ignoreCase)
                     throw new UnsupportedOperationException(); // should be unreachable
+                q.append(attributeExpr).append(constraint.operator());
+                appendParam(q, ignoreCase, qp);
+                break;
+            // TODO 1.1: escape characters and custom wildcards
+            case Like:
+                q.append(attributeExpr).append(constraint.operator());
+                appendParam(q, ignoreCase, qp);
+                break;
+            case LikeEscaped:
+                q.append(attributeExpr).append(constraint.operator());
+                appendParam(q, ignoreCase, qp);
+                q.append(" ESCAPE ");
+                appendParam(q, false, qp + 1);
+                break;
+            case Null:
+                q.append(attributeExpr).append(constraint.operator());
+                break;
+            case Contains:
                 q.append(attributeExpr) //
                                 .append(negated ? " NOT" : "") //
-                                .append(" IN ");
-                appendParam(q, ignoreCase, qp);
+                                .append(" LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, qp).append(", '%')");
                 break;
-            case LessThan:
-                q.append(attributeExpr).append('<');
-                appendParam(q, ignoreCase, qp);
+            case EndsWith:
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" LIKE CONCAT('%', ");
+                appendParam(q, ignoreCase, qp).append(')');
                 break;
-            case LessThanEqual:
-                q.append(attributeExpr).append("<=");
-                appendParam(q, ignoreCase, qp);
+            case StartsWith:
+                q.append(attributeExpr) //
+                                .append(negated ? " NOT" : "") //
+                                .append(" LIKE CONCAT(");
+                appendParam(q, ignoreCase, qp).append(", '%')");
                 break;
             // TODO operation for collection containing?
             //case ???:
@@ -179,84 +293,9 @@ public class Data_1_1 implements DataVersionCompatibility {
             //                    .append(negated ? " NOT" : "") //
             //                    .append(" MEMBER OF ").append(attributeExpr);
             //    break;
-            case Like:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT" : "") //
-                                .append(" LIKE ");
-                appendParam(q, ignoreCase, qp);
-                break;
-            case Prefixed:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT(");
-                appendParam(q, ignoreCase, qp).append(", '%')");
-                break;
-            case Substringed:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT('%', ");
-                appendParam(q, ignoreCase, qp).append(", '%')");
-                break;
-            case Suffixed:
-                q.append(attributeExpr) //
-                                .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT('%', ");
-                appendParam(q, ignoreCase, qp).append(')');
-                break;
             default:
-                throw new UnsupportedOperationException(comparison.name());
+                throw new UnsupportedOperationException(constraint.constraintName());
         }
-
-        return q;
-    }
-
-    @Override
-    @Trivial
-    public StringBuilder appendConditionsForIdClass(StringBuilder q, int qp,
-                                                    Method method, int p,
-                                                    String o_, String[] idClassAttrNames,
-                                                    Annotation[] annos) {
-        boolean ignoreCase = false;
-        for (int a = annos.length - 1; a >= 0; a--) {
-            if (annos[a] instanceof Is) {
-                Is.Op comparison = ((Is) annos[a]).value();
-                if (comparison.base() != Is.Op.Equal)
-                    throw new MappingException("The " + annos[a] +
-                                               " annotation cannot be applied to a parameter of the " +
-                                               method.getName() + " method of the " +
-                                               method.getDeclaringClass().getName() +
-                                               " repository because the parameter type is an IdClass."); // TODO NLS
-                ignoreCase = comparison.ignoreCase();
-                if (comparison.isNegative())
-                    q.append(" NOT ");
-            } else {
-                String annoPackage = annos[a].annotationType().getPackageName();
-                if (FUNCTION_ANNO_PACKAGE.equals(annoPackage))
-                    throw new MappingException("The " + annos[a].annotationType().getSimpleName() +
-                                               " annotation cannot be applied to a parameter of the " +
-                                               method.getName() + " method of the " +
-                                               method.getDeclaringClass().getName() +
-                                               " repository because the parameter type is an IdClass."); // TODO NLS
-            }
-        }
-
-        q.append('(');
-
-        int count = 0;
-        for (String name : idClassAttrNames) {
-            if (count != 0)
-                q.append(" AND ");
-
-            if (ignoreCase)
-                q.append("LOWER(").append(o_).append(name).append(')');
-            else
-                q.append(o_).append(name);
-
-            q.append('=');
-            appendParam(q, ignoreCase, count++ + qp);
-        }
-
-        q.append(')');
 
         return q;
     }
@@ -345,12 +384,111 @@ public class Data_1_1 implements DataVersionCompatibility {
     }
 
     @Override
+    public int inspectMethodParam(int p,
+                                  Class<?> paramType,
+                                  Annotation[] paramAnnos,
+                                  String[] attrNames,
+                                  AttributeConstraint[] constraints,
+                                  char[] updateOps,
+                                  int qpNext) {
+        int qpOriginal = qpNext;
+
+        for (Annotation anno : paramAnnos)
+            if (anno instanceof Is) {
+                constraints[p] = toAttributeConstraint(((Is) anno).value(), paramType);
+            } else if (anno instanceof Assign) {
+                attrNames[p] = ((Assign) anno).value();
+                updateOps[p] = '=';
+                qpNext++;
+            } else if (anno instanceof Add) {
+                attrNames[p] = ((Add) anno).value();
+                updateOps[p] = '+';
+                qpNext++;
+            } else if (anno instanceof Multiply) {
+                attrNames[p] = ((Multiply) anno).value();
+                updateOps[p] = '*';
+                qpNext++;
+            } else if (anno instanceof Divide) {
+                attrNames[p] = ((Divide) anno).value();
+                updateOps[p] = '/';
+                qpNext++;
+            } else if (anno instanceof SubtractFrom) {
+                attrNames[p] = ((SubtractFrom) anno).value();
+                updateOps[p] = '-';
+                qpNext++;
+            }
+
+        if (constraints[p] == null && Constraint.class.isAssignableFrom(paramType)) {
+            constraints[p] = toAttributeConstraint(null, paramType);
+        }
+
+        if (qpNext == qpOriginal) {
+            if (constraints[p] == null)
+                constraints[p] = AttributeConstraint.Equal;
+
+            // no annotation indicating a constraint or update
+            if (false) { // TODO 1.1 check if paramType is a Constraint
+                // qpNext increment will vary by Constraint subtype
+                // TODO 1.1: if Constraint.class and generated upfront,
+                // qpNext = PARAM_CONSTRAINT_DEFERRED;
+            } else {
+                qpNext += constraints[p].numMethodParams();
+            }
+        } else if (qpNext - qpOriginal > 1) {
+            // TODO possibly allow a redundant Constraint that matches the Is annotation.
+            qpNext = PARAM_ANNOS_CONFLICT;
+        } else if (false) { // TODO 1.1 check if paramType is a Constraint
+            qpNext = PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT;
+        }
+
+        return qpNext;
+    }
+
+    @Override
     @Trivial
-    public boolean hasOrAnnotation(Annotation[] annos) {
-        for (Annotation anno : annos)
-            if (anno instanceof Or)
-                return true;
-        return false;
+    public boolean isSpecialParamValid(Class<?> paramType,
+                                       QueryType queryType) {
+        return switch (queryType) {
+            case FIND -> true;
+            case FIND_AND_DELETE -> !PageRequest.class.equals(paramType);
+            case COUNT, EXISTS -> Order.class.equals(paramType) ||
+                // TODO 1.1 Restriction.class.equals(paramType) ||
+                                  Sort.class.equals(paramType) ||
+                                  Sort[].class.equals(paramType);
+            case QM_DELETE, QM_UPDATE -> false; // TODO 1.1 Restriction.class.equals(paramType)
+            default -> false;
+        };
+    }
+
+    @Override
+    @Trivial
+    public Set<Class<? extends Annotation>> lifeCycleAnnoTypes(boolean stateful) {
+        return stateful ? LIFECYCLE_ANNOS_STATEFUL : LIFECYCLE_ANNOS_STATELESS;
+    }
+
+    @Override
+    @Trivial
+    public Set<Class<? extends Annotation>> operationAnnoTypes(boolean stateful) {
+        return stateful ? OP_ANNOS_STATEFUL : OP_ANNOS_STATELESS;
+    }
+
+    @Override
+    @Trivial
+    public String paramAnnosForUpdate() {
+        // TODO 1.1
+        return By.class.getSimpleName() + ", " +
+               Add.class.getSimpleName() + ", " +
+               Assign.class.getSimpleName() + ", " +
+               Divide.class.getSimpleName() + ", " +
+               Multiply.class.getSimpleName() + ", " +
+               SubtractFrom.class.getSimpleName();
+    }
+
+    @Override
+    @Trivial
+    public Set<Class<?>> resourceAccessorTypes(boolean stateful) {
+        return stateful ? RESOURCE_ACCESSOR_CLASSES_STATEFUL //
+                        : RESOURCE_ACCESSOR_CLASSES_STATELESS;
     }
 
     @Override
@@ -369,5 +507,121 @@ public class Data_1_1 implements DataVersionCompatibility {
     @Trivial
     public Set<Class<?>> specialParamTypes() {
         return SPECIAL_PARAM_TYPES;
+    }
+
+    /**
+     * Convert a constraint subtype to its AttributeConstraint representation.
+     *
+     * @param isAnnoConstraintType subtype of Constraint indicated by Is anno.
+     *                                 Otherwise null.
+     * @param methodParamType      repository method parameter type.
+     * @return AttributeConstraint representation.
+     */
+    private static AttributeConstraint toAttributeConstraint(Class<?> isAnnoConstraintType,
+                                                             Class<?> methodParamType) {
+        Class<?> type = isAnnoConstraintType == null ||
+                        Constraint.class.isAssignableFrom(methodParamType) //
+                                        ? methodParamType //
+                                        : isAnnoConstraintType;
+
+        if (isAnnoConstraintType != null && type != isAnnoConstraintType)
+            ; // TODO 1.1 error for collisions
+
+        AttributeConstraint constraint;
+        if (AtLeast.class.equals(type))
+            constraint = AttributeConstraint.GreaterThanEqual;
+        else if (AtMost.class.equals(type))
+            constraint = AttributeConstraint.LessThanEqual;
+        else if (Between.class.equals(type))
+            constraint = AttributeConstraint.Between;
+        else if (EqualTo.class.equals(type))
+            constraint = AttributeConstraint.Equal;
+        else if (GreaterThan.class.equals(type))
+            constraint = AttributeConstraint.GreaterThan;
+        else if (In.class.equals(type))
+            constraint = AttributeConstraint.In;
+        else if (LessThan.class.equals(type))
+            constraint = AttributeConstraint.LessThan;
+        else if (Like.class.equals(type))
+            constraint = Like.class.equals(methodParamType) //
+                            ? AttributeConstraint.LikeEscaped //
+                            : AttributeConstraint.Like;
+        else if (NotBetween.class.equals(type))
+            constraint = AttributeConstraint.NotBetween;
+        else if (NotEqualTo.class.equals(type))
+            constraint = AttributeConstraint.Not;
+        else if (NotIn.class.equals(type))
+            constraint = AttributeConstraint.NotIn;
+        else if (NotLike.class.equals(type))
+            constraint = Like.class.equals(methodParamType) //
+                            ? AttributeConstraint.NotLikeEscaped //
+                            : AttributeConstraint.NotLike;
+        else if (NotNull.class.equals(type))
+            constraint = AttributeConstraint.NotNull;
+        else if (Null.class.equals(type))
+            constraint = AttributeConstraint.Null;
+        else
+            // TODO 1.1 if isAnnoConstraintType == null handle generic Constraint else
+            throw new UnsupportedOperationException("Constraint: " + type.getName()); // TODO NLS
+
+        // TODO 1.1: errors for types the Is annotation cannot support
+
+        return constraint;
+    }
+
+    @Override
+    @Trivial // avoid logging customer data
+    public Object[] toConstraintValues(Object constraintOrValue) {
+        // TODO 1.1 this is not the correct implementation (doesn't account for
+        // other types of expressions than literals) and is only here temporarily
+        // so that we can complete remove some experimental code elsewhere without
+        // breaking tests.
+        boolean isList = false;
+        Object[] values;
+        if (constraintOrValue instanceof AtLeast c)
+            values = new Object[] { c.bound() };
+        else if (constraintOrValue instanceof AtMost c)
+            values = new Object[] { c.bound() };
+        else if (constraintOrValue instanceof Between c)
+            values = new Object[] { c.lowerBound(), c.upperBound() };
+        else if (constraintOrValue instanceof EqualTo c)
+            values = new Object[] { c.expression() };
+        else if (constraintOrValue instanceof GreaterThan c)
+            values = new Object[] { c.bound() };
+        else if (isList = constraintOrValue instanceof In)
+            values = ((In) constraintOrValue).expressions().toArray();
+        else if (constraintOrValue instanceof LessThan c)
+            values = new Object[] { c.bound() };
+        else if (constraintOrValue instanceof Like c)
+            values = new Object[] { c.pattern(), c.escape() };
+        else if (constraintOrValue instanceof NotBetween c)
+            values = new Object[] { c.lowerBound(), c.upperBound() };
+        else if (constraintOrValue instanceof NotEqualTo c)
+            values = new Object[] { c.expression() };
+        else if (isList = constraintOrValue instanceof NotIn)
+            values = ((NotIn) constraintOrValue).expressions().toArray();
+        else if (constraintOrValue instanceof NotLike c)
+            values = new Object[] { c.pattern(), c.escape() };
+        else if (constraintOrValue instanceof NotNull ||
+                 constraintOrValue instanceof Null)
+            values = new Object[0];
+        else if (constraintOrValue instanceof Constraint)
+            throw new UnsupportedOperationException("Constraint: " +
+                                                    constraintOrValue.getClass().getName());
+        else
+            return null;
+
+        for (int i = 0; i < values.length; i++)
+            if (values[i] instanceof Literal)
+                values[i] = ((Literal) values[i]).value();
+            else if (values[i] instanceof Character)
+                ; // the escape character for Like and NotLike
+            else
+                throw new UnsupportedOperationException(values[i].getClass().getName());
+
+        if (isList)
+            values = new Object[] { List.of(values) };
+
+        return values;
     }
 }

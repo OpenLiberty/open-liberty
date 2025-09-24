@@ -49,7 +49,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -59,8 +59,11 @@ public class BasicVisibilityTests extends FATServletClient {
 
     public static final String SERVER_NAME = "cdi12BasicServer";
 
+    //While not really an MicroProfile test this does have an MP feature (fault tolerance) on the server.xml because that creates a CDI extension which can see all app classes
+    //and we want to ensure that doesn't break anything
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat(SERVER_NAME, EERepeatActions.EE10, EERepeatActions.EE11, EERepeatActions.EE9, EERepeatActions.EE7);
+    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME, MicroProfileActions.MP70_EE11, MicroProfileActions.MP60, MicroProfileActions.MP50,
+                                                             MicroProfileActions.MP12);
 
     public static final String CLASS_LOAD_APP_NAME = "classloadPrereq";
     public static final String ROOT_CLASSLOADER_APP_NAME = "rootClassLoader";

@@ -28,11 +28,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.common.encoding.EncodingUtils;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class TAIEncryptionUtils {
 
@@ -235,19 +237,23 @@ public class TAIEncryptionUtils {
 
     Key getSecretKey(SocialLoginConfig config) throws Exception {
         byte[] clientSecretHash = getClientSecretHash(config.getClientSecret());
-        return AESKeyManager.getKey(encodingUtils.bytesToHexString(clientSecretHash));
+        return AESKeyManager.getKey(getAesKeyVersion(), encodingUtils.bytesToHexString(clientSecretHash));
     }
 
     IvParameterSpec getIvSpec(SocialLoginConfig config) throws Exception {
         byte[] clientSecretHash = getClientSecretHash(config.getClientSecret());
-        return AESKeyManager.getIV(encodingUtils.bytesToHexString(clientSecretHash));
+        return AESKeyManager.getIV(getAesKeyVersion(), encodingUtils.bytesToHexString(clientSecretHash));
+    }
+    
+    KeyVersion getAesKeyVersion() {
+    	return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? KeyVersion.AES_V1 : KeyVersion.AES_V0;
     }
 
     byte[] getClientSecretHash(@Sensitive String clientSecret) {
         if (clientSecret == null) {
             return null;
         }
-        MessageDigest md = getMessageDigest("SHA-256");
+        MessageDigest md = getMessageDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
         if (md == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "The secret key and initialization vector couldn't be initialized because a MessageDigest could not be created");

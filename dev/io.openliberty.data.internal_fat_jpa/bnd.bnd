@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -13,9 +13,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-src: \
-  fat/src,\
-  test-applications/DataJPATestApp/src
+src:\
+    fat/src,\
+    test-applications/DataJPATestApp/src
 
 javac.source: 17
 javac.target: 17
@@ -23,7 +23,9 @@ javac.target: 17
 fat.minimum.java.level: 17
 fat.project: true
 
-tested.features: databaseRotation, checkpoint
+tested.features:\
+    checkpoint,\
+    databaseRotation
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
@@ -32,24 +34,25 @@ tested.features: databaseRotation, checkpoint
 # Options: Derby, Postgres, DB2, Oracle, SQLServer
 #fat.bucket.db.type: Postgres
 
--buildpath: \
-  com.ibm.tx.jta.jakarta;version=latest,\
-  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
-  com.ibm.websphere.appserver.spi.logging,\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.websphere.org.osgi.service.component,\
-  com.ibm.wsspi.org.osgi.service.component.annotations,\
-  com.ibm.ws.cdi.interfaces.jakarta;version=latest, \
-  com.ibm.ws.componenttest.2.0;version=latest,\
-  com.ibm.ws.kernel.service;version=latest,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  com.ibm.ws.persistence.jakarta;version=latest,\
-  com.ibm.ws.tx.embeddable.jakarta;version=latest,\
-  io.openliberty.jakarta.annotation.2.1,\
-  io.openliberty.jakarta.cdi.4.0,\
-  io.openliberty.jakarta.data.1.0,\
-  io.openliberty.jakarta.interceptor.2.1,\
-  io.openliberty.jakarta.persistence.3.1,\
-  io.openliberty.jakarta.servlet.6.0;version=latest,\
-  io.openliberty.jakarta.transaction.2.0;version=latest,\
-  io.openliberty.org.testcontainers;version=latest
+-buildpath:\
+    com.ibm.tx.jta.jakarta;version=latest,\
+    com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+    com.ibm.websphere.appserver.spi.logging,\
+    com.ibm.websphere.org.osgi.core,\
+    com.ibm.websphere.org.osgi.service.component,\
+    com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+    com.ibm.ws.componenttest.2.0;version=latest,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.persistence.jakarta;version=latest,\
+    com.ibm.ws.tx.embeddable.jakarta;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations,\
+    io.openliberty.jakarta.annotation.2.1,\
+    io.openliberty.jakarta.cdi.4.0,\
+    io.openliberty.jakarta.data.1.0,\
+    io.openliberty.jakarta.interceptor.2.1,\
+    io.openliberty.jakarta.persistence.3.1,\
+    io.openliberty.jakarta.servlet.6.0;version=latest,\
+    io.openliberty.jakarta.transaction.2.0;version=latest,\
+    io.openliberty.org.testcontainers;version=latest
+

@@ -187,7 +187,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
 
     private boolean _isSQLRecoveryLog;
 
-    private final RecLogServiceImpl _recLogService;
+    private final RecLogService _recLogService;
 
     //------------------------------------------------------------------------------
     // Method: RecoveryDirectorImpl.RecoveryDirectorImpl
@@ -201,7 +201,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      *
      * @param recLogService
      */
-    protected RecoveryDirectorImpl(RecLogServiceImpl recLogService) {
+    protected RecoveryDirectorImpl(RecLogService recLogService) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "RecoveryDirectorImpl", recLogService);
 
@@ -254,7 +254,7 @@ public class RecoveryDirectorImpl implements RecoveryDirector {
      *
      * @return The singleton instance of the RecoveryDirectorImpl class.
      */
-    public static synchronized RecoveryDirector instance(RecLogServiceImpl recLogService) {
+    public static synchronized RecoveryDirector instance(RecLogService recLogService) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "instance", recLogService);
 

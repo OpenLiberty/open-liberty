@@ -1,13 +1,10 @@
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME N/A
 #COMPONENTPREFIX CWWKO
@@ -173,3 +170,11 @@ OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Rimuovere la propriet\u00e0 Mi
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: L''elemento di annotazione {0} nella classe {1} viene ignorato perch\u00e9 richiede la versione {2} di OpenAPI, ma la versione corrente OpenAPI \u00e8 {3}.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=L'elemento di annotazione si riferisce a una caratteristica aggiunta a una versione pi\u00f9 recente delle specifiche OpenAPI rispetto a quella configurata. La versione di OpenAPI in uso non \u00e8 in grado di rappresentare queste informazioni, pertanto sono escluse dalla documentazione OpenAPI prodotta.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Considerare la rimozione dell'elemento di annotazione o l'impostazione dell'elemento di configurazione openAPIVersion a una versione che lo supporta nel file server.xml.
+
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W=CWWKO1688W: Si \u00e8 verificato un errore durante la lettura della cache di OpenAPI per l''applicazione {0}. La cache non verr\u00e0 utilizzata. L''errore \u00e8 {1}
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.explanation=La funzione MicroProfile OpenAPI memorizza alcuni dati calcolati durante l'avvio dell'applicazione per evitare di calcolarli nuovamente agli avvii futuri del server se l'applicazione \u00e8 invariata. Si \u00e8 verificato un errore durante il tentativo di lettura di questi dati, che verranno quindi ricalcolati.
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W=CWWKO1689W: Si \u00e8 verificato un errore durante la scrittura della cache di OpenAPI per l''applicazione {0}. La cache non sar\u00e0 disponibile al prossimo avvio. L''errore \u00e8 {1}
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.explanation=La funzione MicroProfile OpenAPI memorizza alcuni dati calcolati durante l'avvio dell'applicazione per evitare di calcolarli nuovamente agli avvii futuri del server se l'applicazione \u00e8 invariata. Si \u00e8 verificato un errore durante il tentativo di scrivere questi dati, che verranno quindi ricalcolati al prossimo avvio del server.
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.

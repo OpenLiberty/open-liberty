@@ -1,0 +1,39 @@
+type: pipeline_definition
+product: Liberty
+name: Open Liberty External Contributor New Issues Notification
+description: Creates notification of a new issue opened by an external contributor
+triggers:
+- type: event
+  triggerName: external-contributor-label-trigger
+  groups: ["LibertyDev"]
+  eventType: GitHubIssueData
+  eventFilters:
+  - property: action
+    include: labeled
+  - property: repo
+    include: open-liberty
+  - property: labels
+    include: "Opened by external contributor"
+  - property: labels
+    exclude: "test"
+  propertyDefinitions:
+    - name: user
+      isRequired: true
+      description: "User who created issue"
+    - name: number
+      isRequired: true
+      description: "Issue number"
+    - name: githubUrl
+      isRequired: true
+      description: "Issue HTML URL"
+
+steps:
+- stepName: New Issue Notice
+  workType: Jenkins
+  projectName: externalContribNewIssueNotify
+  timeoutInMinutes: 120
+  properties:
+    githubIssueApi: "https://api.github.com/repos/OpenLiberty/open-liberty/issues/${number}"
+    githubIssueCreator: ${user}
+    githubIssueNumber: ${number}
+    githubIssueHtml: ${githubUrl}

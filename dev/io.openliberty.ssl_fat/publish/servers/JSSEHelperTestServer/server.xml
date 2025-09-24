@@ -13,8 +13,8 @@
     <ssl id="mySSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore"
         enabledCiphers="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256" />
 
-    <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
-    <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+    <keyStore id="clientKeyStore" location="key.p12" type="PKCS12" password="passw0rd" />
+    <keyStore id="clientTrustStore" location="trust.p12" type="PKCS12" password="passw0rd" />
 
     <quickStartSecurity userName="test" userPassword="testpwd" />
 

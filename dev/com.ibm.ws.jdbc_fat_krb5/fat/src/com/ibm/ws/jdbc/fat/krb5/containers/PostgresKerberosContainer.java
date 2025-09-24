@@ -28,7 +28,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 
-public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerberosContainer> {
+public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerberosContainer> implements KerberosAuthContainer {
 
     private static final Class<?> c = PostgresKerberosContainer.class;
 
@@ -37,7 +37,8 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("postgres");
 
-    public static final int PG_PORT = 5432;
+    public static final String KRB5_USER = "pguser";
+    public static final String KRB5_PASS = "password";
 
     private final Map<String, String> options = new HashMap<>();
 
@@ -47,23 +48,21 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
 
     public PostgresKerberosContainer(Network network) {
         super(POSTGRES_KRB5);
-
-        // Network
         withNetwork(network);
         withNetworkAliases("postgresql");
         withCreateContainerCmdModifier(cmd -> {
             cmd.withHostName("postgresql");
         });
-        withExposedPorts(PG_PORT);
+    }
 
-        // Authentication
-        withUsername("nonkrbuser");
-        withPassword("password");
+    @Override
+    public void configure() {
+        // Superclass settings
+        super.withUsername("nonkrbuser");
+        super.withPassword("password");
+        super.withDatabaseName("pg");
 
-        // Database
-        withDatabaseName("pg");
-
-        // Environment
+        // Additional env variables
         withEnv("POSTGRES_HOST_AUTH_METHOD", AUTH_METHOD);
         withEnv("KRB5_KTNAME", KEYTAB_FILE);
         withEnv("KRB5_TRACE", KERBEROS_TRACE);
@@ -84,10 +83,7 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
          * instead of using the kerberos environment variable KRB5_KTNAME.
          */
         withConfigOption("krb_server_keyfile", KEYTAB_FILE);
-    }
 
-    @Override
-    public void configure() {
         super.configure();
 
         List<String> command = new ArrayList<>();
@@ -124,11 +120,18 @@ public class PostgresKerberosContainer extends PostgreSQLContainer<PostgresKerbe
         return self();
     }
 
-    public String getKerberosUsername() {
-        return "pguser@" + KerberosContainer.KRB5_REALM;
+    @Override
+    public String getKerberosPrinciple() {
+        return KRB5_USER + "@" + KerberosContainer.KRB5_REALM;
     }
 
+    @Override
+    public String getKerberosUsername() {
+        return KRB5_USER;
+    }
+
+    @Override
     public String getKerberosPassword() {
-        return "password";
+        return KRB5_PASS;
     }
 }

@@ -218,8 +218,9 @@ public class SimpleFileBasedHealthCheckTest {
     @Test
     /*
      * Startup check is long at 30 seconds.
-     * The `StartupCheckUpAfterFive` only returns UP after five seconds has elapsed after servlet init
-     * Guarantees that first startup check fails.
+     * The `StartupCheckUpAfterSecondQuery` servlet only returns UP after second query.
+     * This ensures that first query (i.e. first check of the startup check process will fail).
+     *
      */
     public void StartedHealthCheckTestLongStartupInterval() throws Exception {
         final String METHOD_NAME = "StartedHealthCheckTestLongStartupInterval";
@@ -228,7 +229,7 @@ public class SimpleFileBasedHealthCheckTest {
                         .create(WebArchive.class, FAIL_START_APP_WAR)
                         .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
                         .addPackage("io.openliberty.microprofile.health.file.healthcheck.app")
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app.start.wait.five");
+                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app.start.after");
 
         ShrinkHelper.exportDropinAppToServer(serverLongStart, testWAR, DeployOptions.SERVER_ONLY);
 

@@ -1,0 +1,21 @@
+<server description="Server for testing Telemetry10">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>servlet-6.0</feature>
+        <feature>mpTelemetry-2.1</feature>
+        <feature>componentTest-2.0</feature>
+    </featureManager>
+
+    <application id="TelemetryApp" name="TelemetryApp" type="war" location="TelemetryApp.war">
+        <appProperties>
+            <property name="otel.sdk.disabled" value="false" />
+            <property name="otel.service.name" value="overrideDone" />
+        </appProperties>
+    </application>
+
+    <!-- For the ExecutorService in SpanCurrentServlet.java -->
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread" />
+
+</server>

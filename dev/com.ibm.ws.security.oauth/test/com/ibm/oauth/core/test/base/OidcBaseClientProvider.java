@@ -33,7 +33,7 @@ public class OidcBaseClientProvider implements OidcOAuth20ClientProvider {
 
     public OidcBaseClientProvider() {
         OidcBaseClient myClient = new OidcBaseClient("key",
-                        "secret",
+                        "secret1234",
                         OidcOAuth20Util.initJsonArray("http://localhost:9080/oauth/client.jsp"),
                         "My Client",
                         null,

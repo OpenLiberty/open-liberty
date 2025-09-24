@@ -29,7 +29,6 @@
 	     <param-name>javax.faces.FACELETS_LIBRARIES</param-name>
          <param-value>/WEB-INF/custom-taglib.xml</param-value>
     </context-param>
-	
 
 	<!-- Faces Servlet -->
 	<servlet>

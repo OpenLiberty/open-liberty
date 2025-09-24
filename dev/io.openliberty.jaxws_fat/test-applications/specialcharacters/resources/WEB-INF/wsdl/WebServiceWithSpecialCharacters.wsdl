@@ -48,7 +48,7 @@
   </wsdl:binding>
   <wsdl:service name="WebServiceWithSpecialCharacters">
     <wsdl:port binding="impl:soap12WebServiceWithSpecialCharactersSoapSoapBinding" name="soap12WebServiceWithSpecialCharactersSoap">
-      <wsdlsoap12:address location="http://localhost:9080/L3SpecChars/WebServiceWithSpecialCharacters"/>
+      <wsdlsoap12:address location="REPLACE_WITH_ACTUAL_URL"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

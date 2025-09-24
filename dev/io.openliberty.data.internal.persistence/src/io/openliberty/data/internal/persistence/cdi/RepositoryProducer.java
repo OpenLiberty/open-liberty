@@ -75,32 +75,94 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
      */
     private static final long INIT_TIMEOUT_SEC = TimeUnit.MINUTES.toSeconds(5);
 
+    /**
+     * Qualifiers for repository bean instances.
+     */
     private static final Set<Annotation> QUALIFIERS = //
                     Set.of(Any.Literal.INSTANCE, Default.Literal.INSTANCE);
 
+    /**
+     * CDI bean manager.
+     */
     private final BeanManager beanMgr;
+
+    /**
+     * A set of the repository interface type.
+     */
     private final Set<Type> beanTypes;
-    private final FutureEMBuilder futureEMBuilder;
+
+    /**
+     * Future for the EntityManagerBuilder.
+     */
+    private FutureEMBuilder futureEMBuilder;
+
+    /**
+     * CDI extension for the Jakarta Data provider.
+     */
     private final DataExtension extension;
+
+    /**
+     * Map of intercepted instance to bean instance. Applies when a repository
+     * interface has methods with interceptor annotations, such as
+     * Asynchronous or Transactional.
+     */
     private final Map<R, R> intercepted = new ConcurrentHashMap<>();
-    private final Class<?> primaryEntityClass;
+
+    /**
+     * Primary entity class, if any, for the repository.
+     */
+    private Class<?> primaryEntityClass;
+
+    /**
+     * Jakarta Data provider.
+     */
     private final DataProvider provider;
-    private final Map<Class<?>, List<QueryInfo>> queriesPerEntityClass;
+
+    /**
+     * Information about each repository method, grouped by entity class.
+     */
+    final Map<Class<?>, List<QueryInfo>> queriesPerEntityClass;
+
+    /**
+     * Handler for the most recently created repository bean instance.
+     */
     private final AtomicReference<RepositoryImpl<?>> repositoryImplRef = //
-                    new AtomicReference<>(); // most recently created instance
+                    new AtomicReference<>();
+
+    /**
+     * The repository interface.
+     */
     private final Class<?> repositoryInterface;
 
-    RepositoryProducer(Class<?> repositoryInterface, BeanManager beanMgr, DataProvider provider, DataExtension extension,
-                       FutureEMBuilder futureEMBuilder, Class<?> primaryEntityClass, Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+    /**
+     * Indicates if the repository is stateful (true) or stateless (false).
+     * Default: false
+     */
+    private boolean stateful = false;
+
+    /**
+     * Construct an instance of RepositoryProducer.
+     * The instance is not usable until setFutureEMBuilder and setPrimaryEntityClass
+     * are invoked on it.
+     *
+     * @param repositoryInterface   the repository interface.
+     * @param beanMgr               the CDI bean manager.
+     * @param provider              Jakarta Data provider.
+     * @param extension             CDI extension for the Jakarta Data provider.
+     * @param queriesPerEntityClass information about each repository query,
+     *                                  grouped by entity class.
+     */
+    RepositoryProducer(Class<?> repositoryInterface,
+                       BeanManager beanMgr,
+                       DataProvider provider,
+                       DataExtension extension,
+                       Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
         this.beanMgr = beanMgr;
         this.beanTypes = Set.of(repositoryInterface);
         this.extension = extension;
-        this.futureEMBuilder = futureEMBuilder;
-        this.primaryEntityClass = primaryEntityClass;
         this.provider = provider;
         this.queriesPerEntityClass = queriesPerEntityClass;
         this.repositoryInterface = repositoryInterface;
-        provider.producerCreated(futureEMBuilder.jeeName.getApplication(), this);
     }
 
     @Override
@@ -216,6 +278,7 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
 
         writer.println(indent + "RepositoryProducer@" + Integer.toHexString(hashCode()));
         writer.println(indent + "  repository: " + repositoryInterface.getName());
+        writer.println(indent + "  stateful? " + stateful);
         writer.println(indent + "  primary entity: " +
                        (primaryEntityClass == null ? null : primaryEntityClass.getName()));
         writer.println(indent + "  intercepted: " + intercepted);
@@ -243,7 +306,8 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
         });
 
         writer.println();
-        futureEMBuilder.introspect(writer, "  " + indent);
+        if (futureEMBuilder != null)
+            futureEMBuilder.introspect(writer, "  " + indent);
 
         return queryInfos;
     }
@@ -335,6 +399,65 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                     throw new DataException(x);
             }
         }
+    }
+
+    /**
+     * Returns the Jakarta Data provider.
+     *
+     * @return the Jakarta Data provider.
+     */
+    @Trivial
+    public DataProvider provider() {
+        return provider;
+    }
+
+    /**
+     * Assigns the FutureEMBuilder for this repository producer.
+     *
+     * @param futureEMBuilder future for an EntityManagerBuilder.
+     */
+    @Trivial
+    void setFutureEMBuilder(FutureEMBuilder futureEMBuilder) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setFutureEMBuilder", futureEMBuilder);
+
+        this.futureEMBuilder = futureEMBuilder;
+
+        provider.producerCreated(futureEMBuilder.jeeName.getApplication(), this);
+    }
+
+    /**
+     * Assigns the primary entity class, if any, for this repository.
+     *
+     * @param primaryEntityClass primary entity class. Null if none.
+     */
+    @Trivial
+    void setPrimaryEntityClass(Class<?> primaryEntityClass) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setPrimaryEntityClass", primaryEntityClass);
+
+        this.primaryEntityClass = primaryEntityClass;
+    }
+
+    /**
+     * Indicates that the repository is stateful.
+     */
+    @Trivial
+    void setStateful() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "setStateful");
+
+        stateful = true;
+    }
+
+    /**
+     * Returns whether the repository is stateful (true) or stateless (false).
+     *
+     * @return true if the repository is stateful; false if stateless.
+     */
+    @Trivial
+    public final boolean stateful() {
+        return stateful;
     }
 
     /**

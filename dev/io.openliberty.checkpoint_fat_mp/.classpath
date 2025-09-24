@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/mphealthup/src"/>
 	<classpathentry kind="src" path="test-applications/inventory/src/java"/>
 	<classpathentry kind="src" path="test-applications/system/src/java"/>
 	<classpathentry kind="src" path="test-bundles/test.checkpoint.config.bundle/src"/>

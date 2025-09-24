@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -216,14 +216,17 @@ public abstract class WSATEndpoint implements Serializable {
     }
 
     public EndpointReferenceType cloneEPR(EndpointReferenceType epr) {
-        EndpointReferenceType newEpr = EndpointReferenceUtils.duplicate(epr);
+        final EndpointReferenceType newEpr = EndpointReferenceUtils.duplicate(epr);
         // duplicate doesn't seem to copy the ReferenceParams?, so add
         // back the originals plus our new participant id.
-        ReferenceParametersType refs = new ReferenceParametersType();
-        for (Object ref : epr.getReferenceParameters().getAny()) {
-            refs.getAny().add(ref);
+        final ReferenceParametersType oldParams = epr.getReferenceParameters();
+        if (oldParams != null) {
+            final ReferenceParametersType newParams = new ReferenceParametersType();
+            for (Object ref : oldParams.getAny()) {
+                newParams.getAny().add(ref);
+            }
+            newEpr.setReferenceParameters(newParams);
         }
-        newEpr.setReferenceParameters(refs);
         return newEpr;
     }
 }

@@ -1,14 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
@@ -52,7 +49,11 @@ Service-Component: \
     implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
     provide:=com.ibm.wsspi.classloading.ResourceProvider; \
     configuration-policy:=ignore; \
-    properties:="resources=${app-resources}"
+    properties:="resources=${app-resources}", \
+  io.openliberty.faces.fips.initializer; \
+    implementation:=com.ibm.ws.jsf.fips.FIPSInitializer; \
+    provide:=javax.servlet.ServletContainerInitializer; \
+    properties:="service.vendor=IBM,service.ranking:Integer=101", \
 
 Import-Package: \
   javax.faces.webapp, \
@@ -63,7 +64,8 @@ Export-Package: \
   com.ibm.ws.jsf.config.*;thread-context=true, \
   com.ibm.ws.jsf.ee;version=1.0.44, \
   com.ibm.ws.jsf.spi.impl, \
-  com.ibm.ws.jsf.extprocessor
+  com.ibm.ws.jsf.extprocessor, \
+  com.ibm.ws.jsf.fips
 
 -buildpath: \
   com.ibm.ws.org.apache.myfaces.2.3;version=latest,\
@@ -82,6 +84,7 @@ Export-Package: \
   com.ibm.websphere.javaee.servlet.4.0;version=latest,\
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.ws.logging.core,\
+  com.ibm.ws.kernel.service,\
   com.ibm.websphere.appserver.spi.kernel.service,\
   com.ibm.websphere.org.osgi.core;version=latest,\
   com.ibm.websphere.org.osgi.service.component;version=latest,\

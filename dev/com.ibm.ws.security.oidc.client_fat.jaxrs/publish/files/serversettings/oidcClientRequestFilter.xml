@@ -27,8 +27,8 @@
 		id="client01_noJWT"
 		scope="openid profile"
 		clientId="client01_noJWT"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		sharedKey="secret1234"
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
@@ -55,8 +55,8 @@
 		id="client01_injecter"
 		scope="openid profile"
 		clientId="client01_injecter"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		sharedKey="secret1234"
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
@@ -75,19 +75,19 @@
 		id="jwtInjecter"
 		signatureAlgorithm="${oidcSignAlg}"
 		audiences="client01"
-		sharedKey="secret" />
+		sharedKey="secret1234" />
 
 	<jwtBuilder
 		id="jwtInjecter2"
 		signatureAlgorithm="${oidcSignAlg}"
 		audiences="client01"
-		sharedKey="secret" />
+		sharedKey="secret1234" />
 
 	<jwtBuilder
 		id="extraInjecter"
 		signatureAlgorithm="${oidcSignAlg}"
 		audiences="client02"
-		sharedKey="secret" />
+		sharedKey="secret1234" />
 
 	<authFilter id="noClaims_AuthFilter">
 		<requestUrl
@@ -100,8 +100,8 @@
 		id="client01_noClaims"
 		scope="openid profile"
 		clientId="client01_injecter"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		sharedKey="secret1234"
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
@@ -125,8 +125,8 @@
 		id="client01_emptyClaims"
 		scope="openid profile"
 		clientId="client01_injecter"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		sharedKey="secret1234"
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
@@ -152,8 +152,8 @@
 		id="client01_madeUpClaims"
 		scope="openid profile"
 		clientId="client01_injecter"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		sharedKey="secret1234"
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
@@ -179,8 +179,8 @@
 		id="client01_rpHeaderName"
 		scope="openid profile"
 		clientId="client01_injecter"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		sharedKey="secret1234"
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		headerName="rpHeaderName"

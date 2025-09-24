@@ -12,7 +12,7 @@
  -->
 <server description="Spring JMS Test Configuration">
 	<resourceAdapter id="mqJms" location="${shared.resource.dir}/mq/wmq.jakarta.jmsra.rar" />
-	<jmsQueueConnectionFactory jndiName="jms/CF1" resourceAdapterRef="mqJms">
+	<jmsQueueConnectionFactory jndiName="jms/XA_CF1" resourceAdapterRef="mqJms">
     	<properties.mqJms
         	transportType="CLIENT"
         	hostName="${mq_host}"
@@ -28,4 +28,16 @@
         	baseQueueName="Q1"
         	baseQueueManagerName="QM1"/>
     </jmsQueue>
+    
+    <library id="DerbyLib">
+        <file name="${shared.resource.dir}/derby/derby.jar"/>
+    </library>
+    <dataSource jndiName="jdbc/DerbyDS1" type="javax.sql.XADataSource" id="DerbyDS1">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:myDB1"/>
+    </dataSource>
+    <dataSource jndiName="jdbc/DerbyDS2" type="javax.sql.XADataSource" id="DerbyDS2">
+        <jdbcDriver libraryRef="DerbyLib"/>
+        <properties.derby.embedded createDatabase="create" databaseName="memory:myDB2"/>
+    </dataSource>
 </server>

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,12 @@ CWWKC1102.listener.failed.useraction=Correct the cause of the failure and decide
 CWWKC1103.skip.run.failed=CWWKC1103E: Execution of task {0}, which was submitted to executor service {1}, is skipped because the Trigger.skipRun operation failed with the following error: {2}.
 CWWKC1103.skip.run.failed.explanation=The skipRun operation for the Trigger has failed, causing the current execution attempt for the task to be skipped.
 CWWKC1103.skip.run.failed.useraction=Correct the cause of the failure and decide whether or not to resubmit the task.
+
+CWWKC1108.override.virtual=CWWKC1108I: The {0} managed thread factory will create \
+ platform threads because virtual thread creation by the Liberty server is disabled.
+CWWKC1108.override.virtual.explanation=The ThreadTypeOverride SPI disabled \
+ creation of virtual threads by the Liberty server.
+CWWKC1108.override.virtual.useraction=No action is necessary.
 
 CWWKC1110.task.canceled=CWWKC1110I: The {0} task, which was submitted to the {1} executor service, is canceled.
 CWWKC1110.task.canceled.explanation=The task was canceled.

@@ -25,7 +25,7 @@
     <authFilter id="myAuthFilter">
         <requestUrl id="myRequestUrl" matchType="contains" urlPattern="/SimpleServlet"/>
     </authFilter>
-    <openidConnectClient authFilterRef="myAuthFilter" authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize" clientId="client01" clientSecret="{xor}LDo8LTor" httpsRequired="false" id="client01" mapIdentityToRegistryUser="true" redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}" scope="openid profile" sharedKey="secret" tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token" userInfoEndpointEnabled="true" userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"/>
+    <openidConnectClient authFilterRef="myAuthFilter" authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/authorize" clientId="client01" clientSecret="{xor}LDo8LTorbm1saw==" httpsRequired="false" id="client01" mapIdentityToRegistryUser="true" redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}" scope="openid profile" sharedKey="secret1234" tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/token" userInfoEndpointEnabled="true" userInfoEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSample/userinfo"/>
 
 
     <basicRegistry id="basic" realm="BasicRealm">

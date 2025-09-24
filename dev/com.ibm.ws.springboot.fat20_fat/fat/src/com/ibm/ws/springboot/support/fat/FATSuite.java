@@ -73,14 +73,27 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 NonZipExtensionFilesInBootInfLibTests20.class,
                 MultiModuleProjectTests20.class,
                 ApplicationStartedEventTests.class,
+                JNDINoEEContextAppTests.class,
                 JTAAppTests20.class,
                 JTAAppTests20War.class,
+                ProgrammaticTransAppTests20.class,
+                ProgrammaticTransAppTests20War.class,
                 JPAHibernateAppTests20War.class,
                 JPALibertyAppTests20War.class,
                 JPAEclipseLinkAppTests20War.class,
                 JPAEclipseLinkWeavingAppTests20War.class,
                 JmsWebAppTests20.class,
-                JmsSpringBootAppTests20.class
+                JmsSpringBootAppTests20.class,
+                ConcurrencyAppTests20.class,
+                ConcurrencyAppTests20War.class,
+                ValidationTests20.class,
+                ValidationTests20War.class,
+                AopWebAppTests20.class,
+                AopSpringBootAppTests20.class,
+                MBeanAppTests20.class,
+                MBeanAppTests20War.class,
+                HTTPMetricsNoContextRootTest.class,
+                HTTPMetricsWithContextRootTest.class
 })
 
 public class FATSuite {

@@ -31,6 +31,7 @@ import com.ibm.ws.annocache.targets.internal.TargetsTableContainersImpl;
 import com.ibm.ws.annocache.targets.internal.TargetsTableImpl;
 import com.ibm.ws.annocache.util.internal.UtilImpl_InternMap;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate.ScanPolicy;
+import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.targets.cache.TargetCache_ExternalConstants;
 import com.ibm.wsspi.annocache.util.Util_Consumer;
 
@@ -95,6 +96,7 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
 
         this.consLock = new ConsLock();
         this.cons = new HashMap<String, TargetCacheImpl_DataCon>();
+        this.queriesLock = new QueriesLock();
 
         this.containersFile = getDataFile(TargetCache_ExternalConstants.CONTAINERS_NAME);
 
@@ -706,5 +708,60 @@ public class TargetCacheImpl_DataMod extends TargetCacheImpl_DataBase {
         getApp().scheduleWrite(this,
             description, outputFile, doTruncate,
             writeAction, writeActionBinary);
+    }
+
+    // Query data storage.
+
+    private class QueriesLock {
+        // EMPTY
+    }
+    private final QueriesLock queriesLock;
+
+    private TargetCacheImpl_DataQueries queriesData;
+
+    /**
+     * Obtain query cache data for this module.
+     * 
+     * Create new data if the application is unnamed or the module is unnamed.
+     * 
+     * Otherwise, either retrieve data from the queries store,
+     * or create and store new data, and return the new data.
+     *
+     * @param appName The name of the application.
+     * @param modName The name of the module.
+     *
+     * @return Query cache data for the module.
+     */
+    public TargetCacheImpl_DataQueries getQueriesForcing() {
+        // Unnamed data always create new data.
+        if ( (app.getName() == ClassSource_Factory.UNNAMED_APP) ||
+             (getName() == ClassSource_Factory.UNNAMED_MOD) ) {
+            return createQueriesData();
+        }
+
+        synchronized( queriesLock ) {
+            if ( queriesData == null ) {
+                queriesData = createQueriesData();
+            }
+            return queriesData;
+        }
+    }
+
+    /**
+     * Factory method: Create queries data for a module.
+     *
+     * @param appName The name of the application.
+     * @param e_appName The encoded name of the application.
+     * @param modName The name of the module.
+     * @param e_modName The encoded name of the module.
+     * @param modDir The module cache directory.
+     *
+     * @return New queries data for the module.
+     */
+    @Trivial
+    private TargetCacheImpl_DataQueries createQueriesData() {
+        return getFactory().createQueriesData(
+            app.getName(), app.e_getName(),
+            getName(), e_getName(), getDataFile());
     }
 }

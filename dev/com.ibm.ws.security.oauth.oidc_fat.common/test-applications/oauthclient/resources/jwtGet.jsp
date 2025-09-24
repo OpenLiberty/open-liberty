@@ -26,7 +26,7 @@
     boolean submit = false;
     String testName = null ;
     String clientId = "key";
-    String clientSecret = "secret";
+    String clientSecret = "secret1234";
     String jwtBearerToken = "ENTER HERE";
     String urlBase = "https://localhost:9443";
     String tokenEndpoint = urlBase + "/oidc/endpoint/OAuthConfigSample/token";

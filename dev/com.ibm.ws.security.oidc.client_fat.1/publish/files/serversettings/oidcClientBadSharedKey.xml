@@ -23,7 +23,7 @@
 		id="badSharedKey"
 		scope="openid profile"
 		clientId="client01"
-		clientSecret="{xor}LDo8LTor"
+		clientSecret="{xor}LDo8LTorbm1saw=="
 		sharedKey="badsecret"
 		mapIdentityToRegistryUser="true"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcGoodSSLConfigSample/authorize"

@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: A [ {0} ] k\u00f6nyvt\u00e1r egy [ {1} ] ne
 cls.library.path.invalid.explanation=Ahhoz, hogy a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban hozz\u00e1adjon egy k\u00f6nyvt\u00e1r el\u00e9r\u00e9si \u00fatvonal\u00e1t, meg kell adnia egy l\u00e9tez\u0151 el\u00e9r\u00e9si utat.
 cls.library.path.invalid.useraction=Szerkessze a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1t, \u00e9s m\u00f3dos\u00edtsa a k\u00f6nyvt\u00e1r elem el\u00e9r\u00e9si \u00fatvonal attrib\u00fatum\u00e1t.
 
+app.classloader.removed=CWWKL0020W: A [ {0} ] sz\u00e1lhoz tartoz\u00f3 sz\u00e1lkontextus oszt\u00e1lybet\u00f6lt\u0151je m\u00e1r nem hivatkozik a [ {1} ] alkalmaz\u00e1sra, amely le\u00e1llt.
+app.classloader.removed.explanation=app.classloader.removed.explanation =Amikor egy alkalmaz\u00e1s elind\u00edt egy sz\u00e1lat, az \u00faj sz\u00e1l \u00f6r\u00f6kli az alkalmaz\u00e1ssz\u00e1l-kontextus oszt\u00e1ly bet\u00f6lt\u0151j\u00e9t.  Ha a sz\u00e1l az alkalmaz\u00e1s le\u00e1ll\u00edt\u00e1sa ut\u00e1n tov\u00e1bb fut, a kontextus oszt\u00e1ly bet\u00f6lt\u0151je m\u00e1r nem hivatkozik a le\u00e1ll\u00edtott alkalmaz\u00e1sra.
+app.classloader.removed.useraction=Ellen\u0151rizze, hogy az alkalmaz\u00e1s le\u00e1ll\u00edtja-e az \u00f6sszes elind\u00edtott sz\u00e1lat, amikor az alkalmaz\u00e1s le\u00e1ll. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

@@ -116,8 +116,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                             isForward ? queryInfo.jpqlAfterCursor : //
                                             queryInfo.jpqlBeforeCursor;
 
-            @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
+            jakarta.persistence.Query query = em.createQuery(jpql);
             queryInfo.setParameters(query, args);
 
             if (cursor.isPresent())
@@ -126,7 +125,9 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
             query.setFirstResult(firstResult);
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
 
-            results = query.getResultList();
+            @SuppressWarnings("unchecked")
+            List<T> resultList = query.getResultList();
+            results = resultList;
 
             // Cursor-based pagination in the previous page direction is implemented
             // by reversing the ORDER BY to obtain the previous page. A side-effect

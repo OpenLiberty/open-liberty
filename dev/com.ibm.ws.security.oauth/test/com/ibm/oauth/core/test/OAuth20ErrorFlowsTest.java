@@ -27,7 +27,7 @@ public class OAuth20ErrorFlowsTest extends BaseTestCase {
 
     protected static final String CLIENT_ID = "key";
 
-    protected static final String CLIENT_SECRET = "secret";
+    protected static final String CLIENT_SECRET = "secret1234";
 
     protected static final String CLIENT_ID_NULL_REDIRECT_URI = "key3";
 

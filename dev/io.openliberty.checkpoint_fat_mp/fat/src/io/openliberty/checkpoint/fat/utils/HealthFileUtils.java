@@ -11,6 +11,7 @@ package io.openliberty.checkpoint.fat.utils;
 
 import java.io.File;
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -23,6 +24,7 @@ public class HealthFileUtils {
     public static final String SHOULD_NOT_HAVE = " should not have been created.";
 
     public static final String HEALTH_DIR_SHOULD_HAVE = "/health" + SHOULD_HAVE;
+    public static final String HEALTH_DIR_SHOULD_NOT_HAVE = "/health" + SHOULD_NOT_HAVE;
 
     public static final String LIVE_SHOULD_HAVE = "/health/live" + SHOULD_HAVE;
     public static final String LIVE_SHOULD_NOT_HAVE = "/health/live" + SHOULD_NOT_HAVE;
@@ -109,5 +111,39 @@ public class HealthFileUtils {
         String getFileName() {
             return fileName;
         }
+    }
+
+    public static final int MAX_ALL_FILES_EXIST_RETRY = 8;
+
+    public static boolean isFilesCreated(File serverRootDirFile) throws InterruptedException {
+        return isAllHealthCheckFilesCreated(serverRootDirFile, MAX_ALL_FILES_EXIST_RETRY);
+    }
+
+    public static boolean isAllHealthCheckFilesCreated(File serverRootDirFile, int retries) throws InterruptedException {
+        String methodName = "isFilesCreated";
+        int attemptNumber = 1;
+
+        while (attemptNumber <= retries) {
+
+            boolean isDirExist = HealthFileUtils.getHealthDirFile(serverRootDirFile).exists();
+            boolean isStartedExist = HealthFileUtils.getStartFile(serverRootDirFile).exists();
+            boolean isLiveExist = HealthFileUtils.getLiveFile(serverRootDirFile).exists();
+            boolean isReadyExist = HealthFileUtils.getReadyFile(serverRootDirFile).exists();
+
+            if (isDirExist && isStartedExist && isLiveExist && isReadyExist) {
+                Log.info(HealthFileUtils.class, methodName,
+                         String.format("Succesfully verified all health check files created at attempt: %d. Max attempt is: %d.", attemptNumber, retries));
+                return true;
+            }
+
+            Log.info(HealthFileUtils.class, methodName,
+                     String.format("At attempt %d with the following: HealthDir[%s], startedFile[%s], liveFile[%s], readyFile[%s].Max attempt is: %d.", attemptNumber, isDirExist,
+                                   isStartedExist, isLiveExist, isReadyExist, retries));
+
+            TimeUnit.MILLISECONDS.sleep(250);
+            attemptNumber++;
+        }
+
+        return false;
     }
 }

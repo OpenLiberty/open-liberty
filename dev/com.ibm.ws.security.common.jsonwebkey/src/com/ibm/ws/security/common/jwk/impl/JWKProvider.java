@@ -71,15 +71,18 @@ public class JWKProvider {
         this.size = keySize;
         JWKS_TO_GENERATE = 2;
         this.alg = alg;
-        if (rotationTimeMs <= 0) {
+        if (rotationTimeMs < 0) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Specified rotation time " + rotationTimeMs + " <= 0. Setting rotation time to the default (" + DEFAULT_ROTATION_TIME + " ms) instead");
+                Tr.debug(tc, "Specified rotation time " + rotationTimeMs + " < 0. Setting rotation time to the default (" + DEFAULT_ROTATION_TIME + " ms) instead");
             }
             rotationTimeMs = DEFAULT_ROTATION_TIME;
         }
         this.rotationTimeInMilliseconds = rotationTimeMs;
 
-        scheduleRotationTask();
+        // A rotation time of 0ms means do not rotate
+        if (rotationTimeInMilliseconds != 0) {
+            scheduleRotationTask();
+        }
     }
 
     public JWKProvider(int keySize, String alg, long rotationTimeMs, PublicKey publicKey, PrivateKey privateKey) {
@@ -91,9 +94,9 @@ public class JWKProvider {
         }
         this.size = keySize;
         this.alg = alg;
-        if (rotationTimeMs <= 0) {
+        if (rotationTimeMs < 0) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Specified rotation time " + rotationTimeMs + " <= 0. Setting rotation time to the default (" + DEFAULT_ROTATION_TIME + " ms) instead");
+                Tr.debug(tc, "Specified rotation time " + rotationTimeMs + " < 0. Setting rotation time to the default (" + DEFAULT_ROTATION_TIME + " ms) instead");
             }
             rotationTimeMs = DEFAULT_ROTATION_TIME;
         }

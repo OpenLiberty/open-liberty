@@ -217,10 +217,16 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
 
     public void unbind(String name) {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (name.toLowerCase().startsWith("ejblocal:")) {
+            name = name.substring(9);
+        }
+
         if (isTraceOn && tc.isEntryEnabled()) {
             Tr.entry(tc, "unbinding: " + name);
         }
 
+        EJBBinding removed = null;
         Lock writeLock = javaColonLock.writeLock();
         writeLock.lock();
 
@@ -228,13 +234,13 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
             if (EJBLocalContextsCache != null) {
                 EJBLocalContextsCache.clear();
             }
-            EJBLocalBindings.remove(name);
+            removed = EJBLocalBindings.remove(name);
         } finally {
             writeLock.unlock();
         }
 
         if (isTraceOn && tc.isEntryEnabled()) {
-            Tr.exit(tc, "unbind");
+            Tr.exit(tc, "unbind: " + (removed != null));
         }
     }
 
@@ -250,10 +256,13 @@ public class EJBLocalNamingHelperImpl extends EJBNamingInstancer implements EJBL
                 EJBLocalContextsCache.clear();
             }
             for (String name : names) {
-                if (isTraceOn && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "unbinding: " + name);
+                if (name.toLowerCase().startsWith("ejblocal:")) {
+                    name = name.substring(9);
                 }
-                EJBLocalBindings.remove(name);
+                EJBBinding removed = EJBLocalBindings.remove(name);
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "unbinding: " + name + " : " + (removed != null));
+                }
             }
         } finally {
             writeLock.unlock();

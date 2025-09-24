@@ -35,15 +35,18 @@ task assembleTestContainerData(type: JavaExec) {
     args project.getProjectDir()
     
     // Debugging properties for testcontainers
-    systemProperties = [
-      'org.slf4j.simpleLogger.logFile': new File(project.getProjectDir(), 'build/cache.log'),
-      'org.slf4j.simpleLogger.showDateTime': 'true',
-      'org.slf4j.simpleLogger.dateTimeFormat': '[MM/dd/yyyy HH:mm:ss:SSS z]',
-      'org.slf4j.simpleLogger.log.org.testcontainers': 'debug',
-      'org.slf4j.simpleLogger.log.tc': 'debug',
-      'org.slf4j.simpleLogger.log.com.github.dockerjava': 'warn',
-      'org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire': 'off'
-    ]
+    // Used during development, enable using -PassembleDebug
+    if(project.hasProperty('assembleDebug')) {
+        systemProperties = [
+            'org.slf4j.simpleLogger.logFile': new File(project.getProjectDir(), 'build/cache.log'),
+            'org.slf4j.simpleLogger.showDateTime': 'true',
+            'org.slf4j.simpleLogger.dateTimeFormat': '[MM/dd/yyyy HH:mm:ss:SSS z]',
+            'org.slf4j.simpleLogger.log.org.testcontainers': 'debug',
+            'org.slf4j.simpleLogger.log.tc': 'debug',
+            'org.slf4j.simpleLogger.log.com.github.dockerjava': 'warn',
+            'org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire': 'off'
+        ]
+    }
 }
 
 task generateCustomImages(type: JavaExec) {
@@ -64,13 +67,16 @@ task generateCustomImages(type: JavaExec) {
     args project.getProjectDir()
     
     // Debugging properties for testcontainers
-    systemProperties = [
-      'org.slf4j.simpleLogger.logFile': new File(project.getProjectDir(), 'build/build.log'),
-      'org.slf4j.simpleLogger.showDateTime': 'true',
-      'org.slf4j.simpleLogger.dateTimeFormat': '[MM/dd/yyyy HH:mm:ss:SSS z]',
-      'org.slf4j.simpleLogger.log.org.testcontainers': 'debug',
-      'org.slf4j.simpleLogger.log.tc': 'debug',
-      'org.slf4j.simpleLogger.log.com.github.dockerjava': 'warn',
-      'org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire': 'off'
-    ]
+    // Used during development, enable using -PgenerateDebug
+    if(project.hasProperty('generateDebug')) {
+        systemProperties = [
+            'org.slf4j.simpleLogger.logFile': new File(project.getProjectDir(), 'build/build.log'),
+            'org.slf4j.simpleLogger.showDateTime': 'true',
+            'org.slf4j.simpleLogger.dateTimeFormat': '[MM/dd/yyyy HH:mm:ss:SSS z]',
+            'org.slf4j.simpleLogger.log.org.testcontainers': 'debug',
+            'org.slf4j.simpleLogger.log.tc': 'debug',
+            'org.slf4j.simpleLogger.log.com.github.dockerjava': 'warn',
+            'org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire': 'off'
+        ]
+    }
 }

@@ -169,9 +169,9 @@ elements={0}{1} elements
 
 enable_batch_operations_as_true_not_supported=WLS native CMP setting "enable-batch-operations-as-true" is not directly supported in EclipseLink CMP. See migration doc for details.
 
-encryptor_script_description=This application internally decrypts an old encrypted password that was used by a previous EclipseLink version and encrypts it by the latest algorithm.
+encryptor_script_description=This application has an old encrypted password that was used by a previous version of EclipseLink. Reencrypt it with the latest algorithm.
 
-encryptor_script_output=Reencrypted password is: {0}
+encryptor_script_output=The reencrypted password is: {0}
 
 encryptor_script_usage=Usage is `passwordUpdate.sh|.cmd -ip <old encrypted password>`
 
@@ -318,6 +318,8 @@ jpars_could_not_find_session_bean=A call is being made to a session bean with JN
 jta_cannot_be_disabled_in_cmp=When using Container Managed Persistence (CMP), JTA cannot be disabled. EclipseLink will act as if JTA is enabled.
 
 jta_duplicate_ctrl_property=JTA transaction controller class defined in both "eclipselink.target-server" and "eclipselink.jta.controller" properties. Using value from "eclipselink.target-server".
+
+jta_tm_lookup_failure=Cannot look up TransactionManager instance: {0}
 
 jta_tsr_lookup_failure=Cannot look up TransactionSynchronizationRegistry instance: {0}
 

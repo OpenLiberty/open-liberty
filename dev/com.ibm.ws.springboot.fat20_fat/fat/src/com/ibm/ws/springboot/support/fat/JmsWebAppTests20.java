@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,14 +17,15 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
 public class JmsWebAppTests20 extends JmsAbstractTests {
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("servlet-4.0", "jms-2.0", "jndi-1.0", "componenttest-1.0"));
+        return new HashSet<>(Arrays.asList("servlet-4.0", "jms-2.0", "jndi-1.0", "componenttest-1.0", "jdbc-4.2"));
     }
 
     @Override
@@ -34,9 +33,15 @@ public class JmsWebAppTests20 extends JmsAbstractTests {
         return AppConfigType.WEB_APP_TAG;
     }
 
+    @Override
+    public String getContextRoot() {
+        return "/testName/";
+    }
+
+    @ExpectedFFDC("org.springframework.web.util.NestedServletException")
     @Test
-    public void testJmsWebApplication() throws Exception {
-        HttpUtils.findStringInUrl(server, "testName/send?msg=hello", "hello");
-        assertNotNull("Did not find message printed by JMS Listener", server.waitForStringInLog("Received message: hello"));
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void testJmsWebApplicationWithTransaction() throws Exception {
+        testJmsWithTransaction();
     }
 }

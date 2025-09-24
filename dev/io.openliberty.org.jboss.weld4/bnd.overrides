@@ -10,6 +10,7 @@ Build-Identifier: SNAPSHOT-${now}
 Bundle-Version: ${bFullVersion}.${if;${driver;gradle};${version.qualifier};eclipse}
 
 Export-Package: \
+ com.ibm.ws.cdi.impl.weld.validation;version="1.0",\
  org.jboss.weldx.transaction;version="4.0.3",\
  org.jboss.weld.annotated.enhanced;version="4.0.3",\
  org.jboss.weld.contexts;version="4.0.3",\

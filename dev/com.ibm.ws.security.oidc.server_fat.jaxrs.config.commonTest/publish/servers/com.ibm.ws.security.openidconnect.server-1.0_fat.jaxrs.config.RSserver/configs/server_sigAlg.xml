@@ -37,7 +37,7 @@
 
 	<openidConnectClient
 		id="hs256"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		signatureAlgorithm="HS256"
 		authFilterRef="authFilterHS256"
 		inboundPropagation="required"
@@ -55,7 +55,7 @@
 
 	<openidConnectClient
 		id="hs384"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		signatureAlgorithm="HS384"
 		authFilterRef="authFilterHS384"
 		inboundPropagation="required"
@@ -73,7 +73,7 @@
 
 	<openidConnectClient
 		id="hs512"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		signatureAlgorithm="HS512"
 		authFilterRef="authFilterHS512"
 		inboundPropagation="required"

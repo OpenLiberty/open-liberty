@@ -126,13 +126,13 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
     private transient HttpServiceContextImpl myHSC = null;
 
     /** Cache of those "Cookie" headers */
-    private transient CookieCacheData cookieCache = null;
+    protected transient CookieCacheData cookieCache = null;
     /** Cache of the "Cookie2" headers */
-    private transient CookieCacheData cookie2Cache = null;
+    protected transient CookieCacheData cookie2Cache = null;
     /** Cache of those "Set-Cookie" headers */
-    private transient CookieCacheData setCookieCache = null;
+    protected transient CookieCacheData setCookieCache = null;
     /** Cache of those "Set-Cookie2" headers */
-    private transient CookieCacheData setCookie2Cache = null;
+    protected transient CookieCacheData setCookie2Cache = null;
     /** Reference to the cookie parser */
     private transient CookieHeaderByteParser cookieParser;
     /**
@@ -503,6 +503,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         this.bIsCommitted = true;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Committed flag set on " + this);
+
         }
     }
 
@@ -589,6 +590,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @return HttpServiceContextImpl
      */
+    @Override
     public HttpServiceContextImpl getServiceContext() {
         return this.myHSC;
     }
@@ -2918,12 +2920,12 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                     // Set Partitioned Flag for SameSite=None Cookie
                     if (getServiceContext().getHttpConfig().getPartitioned() == true
                         && sameSiteAttributeValue.equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName())) {
-                            if(cookie.getAttribute("partitioned") == null) {  // null means no value has been set yet
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "[1] Setting the Partitioned attribute for SameSite=None");
-                                }
-                                cookie.setAttribute("partitioned", "");
+                        if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "[1] Setting the Partitioned attribute for SameSite=None");
                             }
+                            cookie.setAttribute("partitioned", "");
+                        }
                     }
 
                 } else {
@@ -2932,12 +2934,12 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                     }
                 }
             }
-            
-            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the partitioned attribute
+
+            // If SameSite=None is set programmatically, but partitioned is set via server.xml, then add the parititioned attribute
             if (getServiceContext().getHttpConfig().useSameSiteConfig() && cookie.getAttribute("samesite") != null) {
                 boolean sameSiteNoneUsed = cookie.getAttribute("samesite").equalsIgnoreCase(HttpConfigConstants.SameSite.NONE.getName());
-                if(getServiceContext().getHttpConfig().getPartitioned() && sameSiteNoneUsed) {
-                    if(cookie.getAttribute("partitioned") == null) {  // null means no value has been set yet
+                if (getServiceContext().getHttpConfig().getPartitioned() && sameSiteNoneUsed) {
+                    if (cookie.getAttribute("partitioned") == null) { // null means no value has been set yet
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "[2] Setting the Partitioned attribute for SameSite=None");
                         }
@@ -3018,6 +3020,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
      *
      * @return long
      */
+    @Override
     public long getStartTime() {
         return this.startTime;
     }

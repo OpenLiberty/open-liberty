@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -50,6 +50,7 @@ import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.JwtException;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.common.crypto.KeyAlgorithmChecker;
 import com.ibm.ws.security.jwt.config.JwtConfig;
 import com.ibm.ws.security.jwt.utils.Constants;
@@ -92,7 +93,7 @@ public class BuilderImpl implements Builder {
     private final static String KEY_JWT_SERVICE = "jwtConfig";
     private static final String CFG_KEY_ID = "id";
 
-    public static final String DEFAULT_KEY_MANAGEMENT_ALGORITHM = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+    public static final String DEFAULT_KEY_MANAGEMENT_ALGORITHM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? KeyManagementAlgorithmIdentifiers.ECDH_ES : KeyManagementAlgorithmIdentifiers.RSA_OAEP;
     public static final String DEFAULT_CONTENT_ENCRYPTION_ALGORITHM = ContentEncryptionAlgorithmIdentifiers.AES_256_GCM;
 
     private final Object initlock = new Object() {
@@ -536,6 +537,10 @@ public class BuilderImpl implements Builder {
             keyManagementAlg = DEFAULT_KEY_MANAGEMENT_ALGORITHM;
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Null or empty key management algorithm provided; defaulting to " + keyManagementAlg);
+            }
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "The key management algorithm being used is " + keyManagementAlg);
             }
         }
         if (contentEncryptionAlg == null || contentEncryptionAlg.isEmpty()) {

@@ -20,6 +20,7 @@ import static io.openliberty.classloading.classpath.fat.FATSuite.LIB14_CLASS_NAM
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB15_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB16_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB17_CLASS_NAME;
+import static io.openliberty.classloading.classpath.fat.FATSuite.LIB18_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB1_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB2_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB3_CLASS_NAME;
@@ -56,7 +57,11 @@ public class TestUtils {
      * @param testClassPath1App
      */
     public static void assertCommonResourceFromArchive(Class<?> clazz, String expected) {
-        URL resource = clazz.getResource("/io/openliberty/classloading/test/resources/common.properties");
+        assertResourceFromArchive("common.properties", clazz, expected);
+    }
+
+    public static void assertResourceFromArchive(String resourceName, Class<?> clazz, String expected) {
+        URL resource = clazz.getResource("/io/openliberty/classloading/test/resources/" + resourceName);
         assertNotNull("No resource found for expected: " + expected, resource);
         assertEquals("Wrong resource found", expected, readFromArchive(resource));
     }
@@ -89,7 +94,7 @@ public class TestUtils {
         int i = 0;
         for (; i < expectedOrder.size(); i++) {
             assertTrue("No more resources found to match i=" + i + " for: " + expectedOrder.get(i), i < urls.size());
-            assertEquals("Wrong resource found for i=" + i, expectedOrder.get(i), readFromArchive(urls.get(i)));
+            assertEquals("Wrong resource found for i=" + i + " urls=" + urls, expectedOrder.get(i), readFromArchive(urls.get(i)));
         }
 
         if (i < urls.size()) {
@@ -152,6 +157,7 @@ public class TestUtils {
         testLoadLibrary15Class(LIB15_CLASS_NAME),
         testLoadLibrary16Class(LIB16_CLASS_NAME),
         testLoadLibrary17Class(LIB17_CLASS_NAME),
+        testLoadLibrary18Class(LIB18_CLASS_NAME),
         testLoadRARLib1Class(RAR_LIB1_CLASS_NAME),
         testLoadRARLib2Class(RAR_LIB2_CLASS_NAME);
 

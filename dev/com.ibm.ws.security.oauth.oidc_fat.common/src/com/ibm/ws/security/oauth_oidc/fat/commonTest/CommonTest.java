@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -304,7 +304,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
             if (miscBootstrapParms != null) {
                 aTestServer.addMiscBootstrapParms(miscBootstrapParms);
             }
-
+            aTestServer.getServer().setServerLevelFips(true);
             if (testType.equals(Constants.IDP_SERVER_TYPE)) {
                 // we're having an issue with the in memory LDAP server on z/OS, added a method to see if it can accept requests,
                 // if NOT, we'll use a "external" LDAP server (Shibboleth allows for failover to additional LDAP servers, but,
@@ -312,6 +312,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                 // this method will add properties to bootstrap.properties that will point to a hopefully working LDAP server
                 usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer);
                 shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
+                aTestServer.getServer().setServerLevelFips(false);
                 //                CommonLocalLDAPServerSuite one = new CommonLocalLDAPServerSuite();
                 //                CommonLocalLDAPServerSuite two = new CommonLocalLDAPServerSuite();
                 //                one.ldapSetUp();

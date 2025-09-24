@@ -87,6 +87,10 @@ broadcast_remote_command_is_null=Warning: {0}: received message {1} containing n
 
 broadcast_remote_command_wrong_type=Warning: {0}: received message {1} containing an object of type {2} instead of expected type RemoteCommand.
 
+cache_key_null_identity_map=CacheKey instance: {0} , stored into identity map, has a null primary key.
+
+cache_key_null_read_lock_manager=CacheKey instance: {0} , locked by cache read lock manager, has a null primary key.
+
 call_timeout_not_migrated=The call-timeout value={1} is defined in entity {0} in orion-ejb-jar.xml but no persistent mappings defined in the descriptor file, therefore no migration will occur.  If you use EclipseLink default mapping later to generate the EclipseLink mapping descriptor, be aware that the call-timeout  setting will be lost as EclipseLink default mapping has no access to native descriptor file.  You then need to reset the call timeout mamually or through EclipseLink Mapping Workbench after default mapping generation.
 
 cannot_get_nested_collection_type=The nested collection type cannot be obtained.
@@ -183,7 +187,7 @@ Reencrypt it by `passwordUpdate.sh` from eclipselink.zip bundle.
 
 encryptor_script_description=This application internally decrypts an old encrypted password that was used by a previous EclipseLink version and encrypts it by the latest algorithm.
 
-encryptor_script_output=Reencrypted password is: {0}
+encryptor_script_output=The reencrypted password is: {0}
 
 encryptor_script_usage=Usage is `passwordUpdate.sh|.cmd -ip <old encrypted password>`
 

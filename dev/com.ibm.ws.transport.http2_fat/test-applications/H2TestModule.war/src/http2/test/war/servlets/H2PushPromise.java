@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package http2.test.war.servlets;
 
@@ -53,6 +50,10 @@ public class H2PushPromise extends HttpServlet {
             pw.println("push_promise link header rel=preload");
 
             long time = System.currentTimeMillis();
+            try {
+                Thread.sleep(250);
+            } catch (Exception x) {
+            }
             response.setDateHeader("Date", time);
             response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
             response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
@@ -68,7 +69,10 @@ public class H2PushPromise extends HttpServlet {
                 String name = reqHeaderNames.nextElement();
                 pw.println("Req Header : " + name + ":" + request.getHeader(name));
             }
-
+            try {
+                Thread.sleep(250);
+            } catch (Exception x) {
+            }
             PushBuilder pb = request.newPushBuilder();
             if (pb != null) {
                 pb.path("/H2TestModule/H2PushPromise");

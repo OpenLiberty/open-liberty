@@ -78,6 +78,16 @@ instrument.taskInjection: false
 
 buildEngineName: defaultEngine
 
+Bundle-DocURL: \
+  https://openliberty.io
+
+Bundle-Developers: \
+  contbld; \
+  name=contbld; \
+  email=contbld@uk.ibm.com; \
+  organization=IBM; \
+  organizationUrl=https://openliberty.io
+
 Bundle-License: \
   Eclipse Public License; \
   url=https://www.eclipse.org/legal/epl-2.0/

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,16 +17,17 @@ import java.util.Set;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.HttpUtils;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 public class JmsSpringBootAppTests30 extends JmsAbstractTests {
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("servlet-6.0", "messaging-3.1", "jndi-1.0", "componenttest-2.0", "springBoot-3.0"));
+        return new HashSet<>(Arrays.asList("servlet-6.0", "messaging-3.1", "jndi-1.0", "componenttest-2.0", "springBoot-3.0", "jdbc-4.2"));
     }
 
     @Override
@@ -36,9 +35,10 @@ public class JmsSpringBootAppTests30 extends JmsAbstractTests {
         return AppConfigType.SPRING_BOOT_APP_TAG;
     }
 
+    @ExpectedFFDC("jakarta.servlet.ServletException")
     @Test
-    public void testJmsSpringBootApplication() throws Exception {
-        HttpUtils.findStringInUrl(server, "send?msg=hello", "hello");
-        assertNotNull("Did not find message printed by JMS Listener", server.waitForStringInLog("Received message: hello"));
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void testJmsSpringBootApplicationWithTransaction() throws Exception {
+        testJmsWithTransaction();
     }
 }

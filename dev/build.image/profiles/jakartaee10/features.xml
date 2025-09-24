@@ -15,6 +15,7 @@
 <feature>microProfile-6.0</feature>
 <feature>microProfile-6.1</feature>
 <feature>microProfile-7.0</feature>
+<feature>microProfile-7.1</feature>
 <feature>appAuthentication</feature>
 <feature>appAuthorization</feature>
 <feature>appClientSupport</feature>

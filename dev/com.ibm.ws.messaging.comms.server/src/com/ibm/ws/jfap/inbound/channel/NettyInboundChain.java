@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,7 +41,6 @@ import io.openliberty.netty.internal.tls.NettyTlsProvider;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
-import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
 import io.openliberty.netty.internal.impl.NettyConstants;
 
@@ -52,8 +51,6 @@ public class NettyInboundChain implements InboundChain{
 	private boolean _isSecureChain = false;
 	private boolean _isEnabled = false;
     private String _chainName;
-
-    private SslContext context;
 
     private final CommsServerServiceFacade _commsServerFacade;
 
@@ -70,16 +67,10 @@ public class NettyInboundChain implements InboundChain{
     
     private ChainConfiguration _currentConfig;
 
-	/**
-     * The TCP based bootstrap.
-     */
-//    private ServerBootstrapExtended serverBootstrap;
     /** The bootstrap this object wraps */
     private ServerBootstrapExtended bootstrap;
     private Channel serverChan;
     
-    private FutureTask<ChannelFuture> channelFuture;
-
     NettyInboundChain(CommsServerServiceFacade commsServer, boolean isSecureChain) {
         _commsServerFacade = commsServer;
         _isSecureChain = isSecureChain;
@@ -151,7 +142,6 @@ public class NettyInboundChain implements InboundChain{
 		if(serverChan == null) {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 SibTr.debug(tc, "Netty channel not initialized. Setting chain stop");
-			channelFuture.cancel(true);
 			_isChainStarted = false;
 			return;
 		}else {
@@ -161,9 +151,7 @@ public class NettyInboundChain implements InboundChain{
 	        //stopchain() first quiesce's(invokes chainQuiesced) depending on the chainQuiesceTimeOut
 	        //Once the chain is quiesced StopChainTask is initiated.Hence we block until the actual stopChain is invoked
 	        try {
-                ChannelFuture future = _nettyFramework.stop(serverChan);
-                if(future != null)
-                    future.await(_nettyFramework.getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS); //BLOCK till stopChain actually completes from StopChainTask
+	        	_nettyFramework.stop(serverChan, -1);
 	        } catch (Exception e) {
 	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
 	                SibTr.debug(tc, "Failed in successfully cleaning(i.e stopping/destorying/removing) chain: ", e);
@@ -271,20 +259,9 @@ public class NettyInboundChain implements InboundChain{
             options.putAll(_currentConfig.tcpOptions);
             options.put(ConfigConstants.EXTERNAL_NAME, _endpointName);
             bootstrap = _nettyFramework.createTCPBootstrap(options);
-            if (_isSecureChain) {
-                NettyTlsProvider tlsProvider = _commsServerFacade.getNettyTlsProvider();
-                String host = ep.getHost();
-                String port = Integer.toString(ep.getPort());
-                if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL", new Object[] {tlsProvider, host, port, sslOptions});
-                context = tlsProvider.getInboundSSLContext(_currentConfig.sslOptions, host, port);
-                if(context == null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "initChannel","Error adding TLS Support");
-                    throw new NettyException("Problems creating SSL context");
-                }
-            }
             bootstrap.childHandler(new JMSServerInitializer(bootstrap.getBaseInitializer(), this));
             NettyInboundChain parent = this;
-            this.channelFuture = _nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
+            this.serverChan = _nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
                 if (f.isCancelled() || !f.isSuccess()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());
@@ -294,7 +271,6 @@ public class NettyInboundChain implements InboundChain{
                 }else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(parent, tc, "ready", f);
                     Channel chan = f.channel();
-                    parent.serverChan = chan;
                     f.addListener(innerFuture -> {
                         if (innerFuture.isCancelled() || !innerFuture.isSuccess()) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -357,14 +333,22 @@ public class NettyInboundChain implements InboundChain{
             ch.attr(NettyJMSServerHandler.CHAIN_ATTR_KEY).set(_chainName);
             ch.attr(NettyJMSServerHandler.ATTR_KEY).set(this.chain);
             if(_isSecureChain) {
-            	SSLEngine engine = context.newEngine(ch.alloc());
-                pipeline.addFirst("ssl", new SslHandler(engine, false));
+                EndPointInfo ep = _endpointMgr.getEndPoint(_endpointName);
+                String host = ep.getHost();
+                String port = Integer.toString(ep.getPort());
+                if (tc.isDebugEnabled()) SibTr.debug(this, tc, "Create SSL handler", new Object[] {host, port, _currentConfig.sslOptions});
+                SslHandler handler = _commsServerFacade.getNettyTlsProvider().getInboundSSLContext(_currentConfig.sslOptions, host, port, ch);
+                if(handler == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "initChannel","Error adding TLS Support");
+                    throw new NettyException("Problems creating SslHandler");
+                }
+                pipeline.addFirst("ssl", handler);
             }
             pipeline.addLast(NettyNetworkConnectionFactory.DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
             pipeline.addLast(NettyNetworkConnectionFactory.ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());
             // Replace the timeout handler to handler the timeouts ourselves
             pipeline.replace(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME, NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
-			pipeline.addLast(NettyNetworkConnectionFactory.JMS_SERVER_HANDLER_KEY, new NettyJMSServerHandler());
+            pipeline.addLast(NettyNetworkConnectionFactory.JMS_SERVER_HANDLER_KEY, new NettyJMSServerHandler());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 SibTr.debug(this, tc, "Channel: " + ch + " handler names: " + pipeline.names());
             }

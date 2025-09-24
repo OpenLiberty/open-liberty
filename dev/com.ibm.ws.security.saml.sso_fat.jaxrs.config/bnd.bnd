@@ -42,5 +42,6 @@ tested.features: jdbc-4.1, restfulwsclient-3.0, restfulws-3.0, jsonp-2.0, \
 	javax.ws.rs:javax.ws.rs-api;version='2.0',\
 	com.ibm.ws.org.apache.directory.server;version=latest,\
 	com.ibm.ws.jaxrs.2.0.server;version=latest,\
-	com.ibm.ws.security.token;version=latest
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.kernel.service;version=latest
     

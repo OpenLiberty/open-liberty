@@ -1,0 +1,18 @@
+<server>
+  <featureManager>
+    <feature>componenttest-1.0</feature>
+    <feature>jaxrs-2.0</feature>
+    <feature>mpConfig-1.2</feature>
+    <feature>mpRestClient-1.0</feature>
+    <feature>usr:MyRESTClient-1.0</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <!--  Required to read the remote server's port system property -->
+  <javaPermission className="java.util.PropertyPermission"  name="*" actions="read" />
+  <!-- <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission className="java.lang.RuntimePermission" name="createClassLoader"/> -->
+  
+</server>

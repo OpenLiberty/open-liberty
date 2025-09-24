@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,13 +40,6 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * The kafka consumner group configured in the app config to be used by the connector
-     * <p>
-     * Must be referenced when checking the offset committed by the connector
-     */
-    public static final String APP_GROUPID = "acknowledgement-app-group";
-
     @Inject
     private KafkaDeliveryBean deliveryBean;
 
@@ -70,7 +63,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
     @Test
     public void testReceptionAndAcknowledgement() throws InterruptedException {
         // Baseline the offset
-        long offset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        long offset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, KafkaReceptionBean.GROUP_ID);
 
         // Send message directly
         KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
@@ -82,19 +75,19 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         assertThat(message.getPayload(), is("test1"));
 
         // Assert that partition offset does not get committed
-        long currentOffset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        long currentOffset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, KafkaReceptionBean.GROUP_ID);
         assertEquals(offset, currentOffset);
 
         // Acknowledge received message
         message.ack();
 
         // Assert that partition offset does get committed
-        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, KafkaReceptionBean.GROUP_ID);
     }
 
     @Test
     public void testOutOfOrderAcknowledgement() throws InterruptedException {
-        long offset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        long offset = kafkaTestClient.getTopicOffset(KafkaReceptionBean.CHANNEL_NAME, KafkaReceptionBean.GROUP_ID);
         // Send three messages directly
         KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaReceptionBean.CHANNEL_NAME);
         writer.sendMessage("test1");
@@ -111,18 +104,18 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
         messages.get(2).ack();
 
         // Assert that partition offset gets committed to 1
-        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 1, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, KafkaReceptionBean.GROUP_ID);
 
         // Acknowledge message 2
         messages.get(1).ack();
 
         // Assert that partition offset gets committed to 3
-        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 3, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, APP_GROUPID);
+        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 3, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaReceptionBean.CHANNEL_NAME, KafkaReceptionBean.GROUP_ID);
     }
 
     @Test
     public void testPostProcessSubscriber() throws InterruptedException {
-        long offset = kafkaTestClient.getTopicOffset(KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL, APP_GROUPID);
+        long offset = kafkaTestClient.getTopicOffset(KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL, KafkaPostProcessReceptionBean.GROUP_ID);
 
         KafkaWriter<String, String> writer = kafkaTestClient.writerFor(KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL);
         writer.sendMessage("test1");
@@ -133,6 +126,7 @@ public class KafkaAcknowledgementTestServlet extends AbstractKafkaTestServlet {
 
         // All messages should be received and acked immediately
         // Assert that partition offset gets committed to 5
-        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL, APP_GROUPID);
+        kafkaTestClient.assertTopicOffsetAdvancesTo(offset + 5, KafkaTestConstants.DEFAULT_KAFKA_TIMEOUT, KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL,
+                                                    KafkaPostProcessReceptionBean.GROUP_ID);
     }
 }

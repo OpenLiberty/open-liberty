@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,6 +78,7 @@ public class ConfigTest extends FATServletClient {
     private static final String jdbcapp = "jdbcapp";
     private static final String dsdfat = "dsdfat";
     private static final String dsdfat_global_lib = "dsdfat_global_lib";
+    private static final String dsdfat_override_lib = "dsdfat_override_lib";
 
     //Server used for ConfigTest.java and DataSourceTest.java
     @Server("com.ibm.ws.jdbc.fat")
@@ -158,6 +159,7 @@ public class ConfigTest extends FATServletClient {
         // Default app - dsdfat.war and dsdfat_global_lib.war
         ShrinkHelper.defaultApp(server, dsdfat, dsdfat);
         ShrinkHelper.defaultApp(server, dsdfat_global_lib, dsdfat_global_lib);
+        ShrinkHelper.defaultApp(server, dsdfat_override_lib, dsdfat_override_lib);
 
         // Default app - jdbcapp.ear [basicfat.war, application.xml]
         WebArchive basicfatWAR = ShrinkHelper.buildDefaultApp(basicfat, basicfat);

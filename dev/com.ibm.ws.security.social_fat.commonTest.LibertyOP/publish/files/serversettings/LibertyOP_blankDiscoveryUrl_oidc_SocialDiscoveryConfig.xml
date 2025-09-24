@@ -20,7 +20,7 @@
 		scope="profile email openid"
 		userNameAttribute="sub"
 		clientId="client01"
-		clientSecret="secret"
+		clientSecret="secret1234"
 		discoveryEndpoint=" "
 		authFilterRef="authFilter1"
 		hostNameVerificationEnabled="false"

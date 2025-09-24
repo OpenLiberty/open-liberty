@@ -387,4 +387,18 @@ public interface ConfigurationProvider {
      * Size of threadpool for sending protocol messages
      */
     public int getAsyncResponseThreadpoolSize();
+
+    /**
+     * Whether UserTransaction methods are reenabled according to spec
+     *
+     * @return
+     */
+    public boolean isUTAsSpecified();
+
+    /**
+     * Whether UOWScopeCallbacks are called correctly for end events
+     *
+     * @return
+     */
+    public boolean isCorrectUOWScopeCallbacks();
 }

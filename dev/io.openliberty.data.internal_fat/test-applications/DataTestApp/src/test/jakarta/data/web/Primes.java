@@ -201,6 +201,14 @@ public interface Primes {
     @OrderBy("sumOfBits")
     Page<Prime> findByNumberIdLessThan(long max, Sort<Prime> sort, PageRequest pagination);
 
+    @OrderBy(value = "numberId", descending = true)
+    Stream<Prime> findByNumberIdLessThanAndNameEndsWithOrNumberIdGreaterThanEqualAndNumberIdLessThanEqualAndNameEndsWith//
+    (long numLessThan,
+     String firstSuffix,
+     long lowerLimit,
+     long upperLimit,
+     String secondSuffix);
+
     List<Prime> findByNumberIdLessThanEqualOrderByNumberIdAsc(long max, PageRequest pagination);
 
     List<Prime> findByNumberIdLessThanEqualOrderByNumberIdDesc(long max, Limit limit);
@@ -213,6 +221,11 @@ public interface Primes {
 
     @Asynchronous
     CompletionStage<CursoredPage<Prime>> findByNumberIdLessThanOrderByNumberIdDesc(long max, PageRequest pagination);
+
+    @OrderBy(ID)
+    List<Long> findByNumberIdLessThanOrNumberIdGreaterThanAndNumberIdLessThan(int exclusiveMax,
+                                                                              int exclusiveRangeMin,
+                                                                              int exclusiveRangeMax);
 
     Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort<?>... order);
 
@@ -469,6 +482,15 @@ public interface Primes {
     @Query("where (numberId <= :maximum) and numberId>=10 order by name asc")
     Page<Prime> within10toXAndSortedByName(long maximum, PageRequest pageRequest);
 
+    @Query("""
+                    SELECT p1 FROM Prime p1 WHERE p1.numberId BETWEEN ?1 AND ?2
+                    INTERSECT
+                    SELECT p2 FROM Prime p2 WHERE p2.numberId BETWEEN ?3 AND ?4""")
+    // TODO once it is known how to write the JPQL for ORDER BY add it to the above
+    // and remove the manual sorting from the test
+    List<Prime> withinBoth(long min1, long max1,
+                           long min2, long max2);
+
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "name", descending = false)
     // Query used to contain (numberId-(numberId/10)* 10)<>3
@@ -478,6 +500,16 @@ public interface Primes {
     CursoredPage<Prime> withinButNotEndingIn7or3(@Param("min") long minimum,
                                                  @Param("max") long maximum,
                                                  PageRequest pageRequest);
+
+    @Query("""
+                    SELECT o FROM Prime o WHERE o.numberId BETWEEN ?1 AND ?2
+                    UNION
+                    SELECT o FROM Prime o WHERE o.numberId BETWEEN ?3 AND ?4""")
+    // TODO once it is known how to write the JPQL for ORDER BY, enable this
+    // and remove the manual sorting from the test
+    // @OrderBy(_Prime.NAME)
+    List<Prime> withinEither(long min1, long max1,
+                             long min2, long max2);
 
     @Query("WHERE (LENGTH(TRIM(name))=?1 AND numberId BETWEEN ?2 AND ?3)")
     List<Prime> withTrimmedNameLengthAndNumBetween(int length, long min, long max);

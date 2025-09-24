@@ -128,7 +128,7 @@ public class OAuth2ResourceOwnerPasswordCredentialsFlowTest extends
                     throws Exception {
 
         Map<String, Object> results = baseResourceOwnerPasswordCredentialsFlowTest(
-                                                                                   "key", "secret", "user1", "pass1", "scope1 scope2");
+                                                                                   "key", "secret1234", "user1", "pass1", "scope1 scope2");
         validateSuccessResults(results);
     }
 
@@ -140,7 +140,7 @@ public class OAuth2ResourceOwnerPasswordCredentialsFlowTest extends
     public void testNumericScopeString() throws Exception {
 
         Map<String, Object> results = baseResourceOwnerPasswordCredentialsFlowTest(
-                                                                                   "key", "secret", "user1", "pass1", "123");
+                                                                                   "key", "secret1234", "user1", "pass1", "123");
         validateSuccessResults(results);
         String responseString = (String) results.get(MAPKEY_REPONSETEXT);
 
@@ -167,7 +167,7 @@ public class OAuth2ResourceOwnerPasswordCredentialsFlowTest extends
         String[] expectedScopes = new String[] { "scope1", "scope2" };
         Set<String> expectedScopeSet = new HashSet<String>(Arrays.asList(expectedScopes));
         Map<String, Object> results = baseResourceOwnerPasswordCredentialsFlowTest(
-                                                                                   "key", "secret", "user1", "pass1", "scope1 scope2 scope1");
+                                                                                   "key", "secret1234", "user1", "pass1", "scope1 scope2 scope1");
         validateSuccessResults(results);
         String responseString = (String) results.get(MAPKEY_REPONSETEXT);
 

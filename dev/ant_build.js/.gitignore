@@ -16,7 +16,7 @@ lib/carbon/carbon-components-10.44.0/
 lib/jshint/*.jar
 lib/nodejs/*.gz
 lib/nodejs/*.exe
-lib/orion/orion-6.19.0/
+lib/orion/orion-6.19.0-20250520/
 lib/orion/*.jar
 lib/svg4everybody/svg4everybody-2.1.9/
 lib/svg4everybody/*.jar

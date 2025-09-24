@@ -45,11 +45,6 @@ public class HealthAppServlet extends HttpServlet {
         startTime = System.currentTimeMillis();
     }
 
-    public static boolean isFiveSeconds() {
-        return (System.currentTimeMillis() - startTime >= 5000);
-
-    }
-
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */

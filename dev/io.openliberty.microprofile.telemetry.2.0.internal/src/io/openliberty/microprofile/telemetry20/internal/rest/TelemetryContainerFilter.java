@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTeleme
 import io.openliberty.microprofile.telemetry.internal.common.rest.RestRouteCache;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
-import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemcovConstantsAccessor;
+import io.openliberty.microprofile.telemetry20.logging.internal.semconv.SemconvConstantsAccessor;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.context.Context;
@@ -53,11 +53,11 @@ import io.opentelemetry.instrumentation.api.semconv.http.HttpSpanStatusExtractor
 @Provider
 public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter implements ContainerRequestFilter, ContainerResponseFilter {
 
-    private static final ServiceCaller<SemcovConstantsAccessor> semcovConstantsAccessorCaller;
-    private static final AttributeKey<String> SEMCOV_HTTP_ROUTE;
+    private static final ServiceCaller<SemconvConstantsAccessor> semconvConstantsAccessorCaller;
+    private static final AttributeKey<String> SEMCONV_HTTP_ROUTE;
     static {
-        semcovConstantsAccessorCaller = new ServiceCaller<SemcovConstantsAccessor>(TelemetryContainerFilter.class, SemcovConstantsAccessor.class);
-        SEMCOV_HTTP_ROUTE = semcovConstantsAccessorCaller.run(SemcovConstantsAccessor::httpRoute).get();
+        semconvConstantsAccessorCaller = new ServiceCaller<SemconvConstantsAccessor>(TelemetryContainerFilter.class, SemconvConstantsAccessor.class);
+        SEMCONV_HTTP_ROUTE = semconvConstantsAccessorCaller.run(SemconvConstantsAccessor::httpRoute).get();
     }
 
     private static final String INSTRUMENTATION_NAME = "io.openliberty.microprofile.telemetry";
@@ -158,7 +158,7 @@ public class TelemetryContainerFilter extends AbstractTelemetryContainerFilter i
                 String route = getRoute(request, resourceClass, resourceMethod);
 
                 if (route != null) {
-                    currentSpan.setAttribute(SEMCOV_HTTP_ROUTE, route);
+                    currentSpan.setAttribute(SEMCONV_HTTP_ROUTE, route);
                     currentSpan.updateName(request.getMethod() + " " + route);
                 }
             }

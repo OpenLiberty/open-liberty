@@ -1,0 +1,68 @@
+<server description="Liberty server">
+  <include location="../fatTestPorts.xml" />
+  
+  <featureManager>
+    <feature>messagingServer-3.0</feature>
+    <feature>messagingSecurity-3.0</feature>
+    <feature>timedexit-1.0</feature>
+    <feature>localConnector-1.0</feature>
+    <feature>componentTest-1.0</feature>
+    <feature>wasJmsServer-1.0</feature>
+    <feature>wasJmsSecurity-1.0</feature>
+    <feature>wasJmsClient-2.0</feature>
+    <feature>xmlBinding-3.0</feature>
+    <feature>servlet-3.0</feature>
+    <feature>jndi-1.0</feature>
+  </featureManager>
+  
+  <basicRegistry id="basic" realm="customRealm">
+    <user name="user1" password="user1pwd" />
+    <user name="user2" password="user2pwd" />
+    <user name="user3" password="user3pwd" />
+  </basicRegistry>
+  
+  <administrator-role>
+    <user>user1</user>
+  </administrator-role>
+  
+  <remoteFileAccess>
+    <writeDir>${server.config.dir}</writeDir>
+  </remoteFileAccess>
+  
+  <messagingEngine>
+    <fileStore/>
+    <queue id="TEST.QUEUE"/>
+    <messagingSecurity>
+      <role id="DEV" name="Dev">
+        <user id="user1" name="user1"/>
+        <queuePermission id="QueuePermission" queueRef="TEST.QUEUE">
+          <action>ALL</action>
+        </queuePermission>
+      </role>
+      <role id="send_only" name="Send_Only">
+        <user id="user2" name="user2"/>
+        <queuePermission id="QueuePermission" queueRef="TEST.QUEUE">
+          <action>SEND</action>
+        </queuePermission>
+      </role>
+      <role id="receive_only" name="Receive_only">
+        <user id="user3" name="user3"/>
+        <queuePermission id="QueuePermission" queueRef="TEST.QUEUE">
+          <action>RECEIVE</action>
+        </queuePermission>
+      </role>
+    </messagingSecurity>
+  </messagingEngine>
+  
+  <jmsConnectionFactory id="TestConnectionFactory" jndiName="jms/TestConnectionFactory">
+    <properties.wasJms clientID="TestClientID" remoteServerAddress="localhost:7276:BootstrapBasicMessaging"/>
+  </jmsConnectionFactory>
+  
+  <jmsQueue id="TestQueue" jndiName="jms/TestQueue">
+    <properties.wasJms queueName="TEST.QUEUE"/>
+  </jmsQueue>
+  
+  <!--
+   <logging traceFileName="testTrace.log" messageFileName="testMessages.log" traceSpecification="com.ibm.ws.messaging.security.*=all"/>
+   -->
+</server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ public class SpringBootManifest {
     private static final String SPRING_START_CLASS_HEADER = "Start-Class";
     private static final String SPRING_BOOT_CLASSES_HEADER = "Spring-Boot-Classes";
     private static final String SPRING_BOOT_LIB_HEADER = "Spring-Boot-Lib";
+    private static final String SPRING_BOOT_VERSION = "Spring-Boot-Version";
 
     enum SpringLauncher {
         JarLauncher("JarLauncher", "BOOT-INF/lib/", "BOOT-INF/classes/"),
@@ -76,6 +77,7 @@ public class SpringBootManifest {
     private final String springBootClasses;
     private final String springBootLib;
     private final String springBootLibPrivided;
+    private final String springBootVersion;
 
     /**
      * Returns the start class for the Spring Boot application.
@@ -114,6 +116,16 @@ public class SpringBootManifest {
     public String getSpringBootLibProvided() {
         return springBootLibPrivided;
     }
+    
+    /**
+    * Returns the version of the Spring Boot
+    * application
+    *
+    * @return the version of the Spring Boot application
+    */
+   public String getSpringBootVersion() {
+       return springBootVersion;
+   }
 
     public SpringBootManifest(Manifest mf) {
         String mainClass = mf.getMainAttributes().getValue(JAR_MAIN_CLASS);
@@ -122,6 +134,7 @@ public class SpringBootManifest {
         springBootClasses = getSpringHeader(mf, SPRING_BOOT_CLASSES_HEADER, launcher);
         springBootLib = getSpringHeader(mf, SPRING_BOOT_LIB_HEADER, launcher);
         springBootLibPrivided = getLibProvided(launcher, springBootLib);
+        springBootVersion = getSpringHeader(mf, SPRING_BOOT_VERSION, launcher);
     }
 
     private static String getSpringHeader(Manifest mf, String springBootHeaderKey, SpringLauncher launcher) {

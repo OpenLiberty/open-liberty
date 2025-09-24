@@ -23,10 +23,10 @@
       serverKeyAlias="default" />  
       
     <keyStore id="defaultKeyStore" password="Liberty"
-	           location="resources/security/sslOptions.jks"/>
+	           location="resources/security/sslOptions.p12"/>
 
 	<keyStore id="defaultTrustStore" password="Liberty"
-	           location="resources/security/trust.jks"/>  
+	           location="resources/security/trust.p12"/>  
 <!--
     <logging  traceSpecification="com.ibm.ws.webcontainer*=all:com.ibm.wsspi.webcontainer*=all:HTTPChannel=all:GenericBNF=all:HTTPDispatcher=all"
                 traceFileName="trace.log"

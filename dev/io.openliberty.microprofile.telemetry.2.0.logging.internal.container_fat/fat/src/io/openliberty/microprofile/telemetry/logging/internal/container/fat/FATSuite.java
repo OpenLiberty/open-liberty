@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,9 +29,9 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 })
 
 public class FATSuite extends TestContainerSuite {
-
+    //Latest MpTelemetry 2.0 repeat with all MpTelemetry 2.1 repeats
     @ClassRule
     public static RepeatTests r = TelemetryActions
-                    .repeat(FeatureReplacementAction.ALL_SERVERS, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10,
-                            TelemetryActions.MP50_MPTEL20_JAVA8, TelemetryActions.MP41_MPTEL20, TelemetryActions.MP14_MPTEL20);
+                    .repeat(FeatureReplacementAction.ALL_SERVERS, MicroProfileActions.MP71_EE11, MicroProfileActions.MP71_EE10,  MicroProfileActions.MP70_EE10,
+                            TelemetryActions.MP50_MPTEL21_JAVA8, TelemetryActions.MP41_MPTEL21, TelemetryActions.MP14_MPTEL21);
 }

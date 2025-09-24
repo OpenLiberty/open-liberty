@@ -1,13 +1,10 @@
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME N/A
 #COMPONENTPREFIX CWWKO
@@ -173,3 +170,11 @@ OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Usu\u0144 w\u0142a\u015bciwo\u
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Element adnotacji {0} w klasie {1} jest ignorowany, poniewa\u017c wymaga OpenAPI w wersji {2}, ale aktualna wersja OpenAPI to {3}.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=Element adnotacji odnosi si\u0119 do funkcji dodanej do nowszej wersji specyfikacji OpenAPI ni\u017c ta skonfigurowana. U\u017cywana wersja OpenAPI nie mo\u017ce reprezentowa\u0107 tych informacji, wi\u0119c jest wy\u0142\u0105czona z tworzonej dokumentacji OpenAPI.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Rozwa\u017c usuni\u0119cie elementu adnotacji lub ustawienie elementu konfiguracji openAPIVersion na wersj\u0119, kt\u00f3ra go obs\u0142uguje w pliku server.xml.
+
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W=CWWKO1688W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas odczytu pami\u0119ci podr\u0119cznej OpenAPI dla aplikacji {0}. Pami\u0119\u0107 podr\u0119czna nie b\u0119dzie u\u017cywana. B\u0142\u0105d: {1}
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.explanation=Funkcja MicroProfile OpenAPI przechowuje niekt\u00f3re dane obliczone podczas uruchamiania aplikacji, aby unikn\u0105\u0107 ponownego obliczania tych danych przy przysz\u0142ych uruchomieniach serwera, je\u015bli aplikacja pozostanie niezmieniona. Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by odczytania tych danych, wi\u0119c zostan\u0105 one ponownie obliczone.
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W=CWWKO1689W: Wyst\u0105pi\u0142 b\u0142\u0105d podczas zapisu pami\u0119ci podr\u0119cznej OpenAPI dla aplikacji {0}. Pami\u0119\u0107 podr\u0119czna nie b\u0119dzie dost\u0119pna przy nast\u0119pnym uruchomieniu. B\u0142\u0105d: {1}
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.explanation=Funkcja MicroProfile OpenAPI przechowuje niekt\u00f3re dane obliczone podczas uruchamiania aplikacji, aby unikn\u0105\u0107 ponownego obliczania tych danych przy przysz\u0142ych uruchomieniach serwera, je\u015bli aplikacja pozostanie niezmieniona. Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by zapisu tych danych, wi\u0119c zostan\u0105 one ponownie obliczone przy nast\u0119pnym uruchomieniu serwera.
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.

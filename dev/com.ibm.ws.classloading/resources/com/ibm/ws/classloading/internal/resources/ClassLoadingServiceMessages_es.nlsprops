@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: La biblioteca [ {0} ] especifica una ruta c
 cls.library.path.invalid.explanation=Para agregar una ruta a una biblioteca en la configuraci\u00f3n del servidor, debe especificar una ruta que exista.
 cls.library.path.invalid.useraction=Edite la configuraci\u00f3n del servidor y modifique el atributo de ruta del elemento de biblioteca.
 
+app.classloader.removed=CWWKL0020W: El cargador de clases de contexto del hilo [ {0} ] ya no hace referencia a la aplicaci\u00f3n [ {1} ], que est\u00e1 detenida.
+app.classloader.removed.explanation=app.classloader.removed.explanation =Cuando una aplicaci\u00f3n inicia un hilo, el cargador de la clase de contexto del hilo de la aplicaci\u00f3n es heredado por el nuevo hilo.  Si el hilo contin\u00faa ejecut\u00e1ndose despu\u00e9s de que la aplicaci\u00f3n se detenga, su cargador de clases de contexto ya no hace referencia a la aplicaci\u00f3n detenida.
+app.classloader.removed.useraction=Validar que la aplicaci\u00f3n detiene todos los hilos que inicia cuando la aplicaci\u00f3n se detiene. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

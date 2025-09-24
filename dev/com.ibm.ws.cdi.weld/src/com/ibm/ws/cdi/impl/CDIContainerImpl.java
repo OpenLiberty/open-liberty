@@ -30,9 +30,11 @@ import javax.enterprise.inject.spi.DeploymentException;
 
 import org.jboss.weld.bootstrap.BeanDeploymentModule;
 import org.jboss.weld.bootstrap.BeanDeploymentModules;
+import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
 import org.jboss.weld.config.ConfigurationKey;
 import org.osgi.framework.Bundle;
@@ -43,6 +45,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
+import com.ibm.ws.cdi.impl.weld.LibertyFilteringDelegatingValidator;
 import com.ibm.ws.cdi.impl.weld.WebSphereCDIDeploymentImpl;
 import com.ibm.ws.cdi.impl.weld.WebSphereEEModuleDescriptor;
 import com.ibm.ws.cdi.internal.interfaces.Application;
@@ -173,6 +176,15 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 });
 
                 webSphereCDIDeployment.validateJEEComponentClasses();
+
+                //Create our own validator that will filter out liberty internal bundles
+                //This will prevent us from getting an ambigious bean exception if different wars
+                //have identical beans and one of our features can see all application classes
+                ServiceRegistry serviceRegistry = webSphereCDIDeployment.getServices();
+                Validator weldValidator = serviceRegistry.get(Validator.class);
+                LibertyFilteringDelegatingValidator libertyValidator = new LibertyFilteringDelegatingValidator(weldValidator, webSphereCDIDeployment);
+                serviceRegistry.add(Validator.class, libertyValidator);
+
                 weldBootstrap.deployBeans();
                 weldBootstrap.validateBeans();
             } else {

@@ -83,7 +83,7 @@ public class OAuth20EndpointServicesTest {
     private final String ACCESS_TOKEN_STRING = "RVNnQ0BKKjVxOnlKz7Be";
     private final String AUTHORIZATION_HEADER = "Authorization";
     private final String AUTHORIZATION_CODE_GRANT = "authorization_code";
-    private final String CLIENT_SECRET = "secret";
+    private final String CLIENT_SECRET = "secret1234";
     private final String CLIENT01 = "client01";
     private final String CLIENT02 = "client02";
     private final String scopes[] = { "scope", "scope2" };

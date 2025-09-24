@@ -52,7 +52,7 @@ public class TelemetryDisabledProvidersTest extends FATServletClient {
 
     //This test tests that resource providers can be disabled with `otel.java.disabled.resource.providers` in MPTel 2.0
     @ClassRule
-    public static RepeatTests r = TelemetryActions.telemetry20and21Repeats(SERVER_NAME);
+    public static RepeatTests r = TelemetryActions.telemetry21andLatest20Repeats(SERVER_NAME);
 
     @BeforeClass
     public static void setUp() throws Exception {

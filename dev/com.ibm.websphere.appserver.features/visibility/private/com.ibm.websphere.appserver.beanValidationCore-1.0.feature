@@ -7,7 +7,7 @@ IBM-App-ForceRestart: install, \
   com.ibm.websphere.appserver.classloading-1.0
 -bundles=com.ibm.ws.org.apache.commons.lang3, \
  com.ibm.ws.managedobject, \
- com.ibm.ws.org.apache.commons.beanutils.1.9.4, \
+ com.ibm.ws.org.apache.commons.beanutils, \
  com.ibm.ws.org.apache.commons.collections, \
  com.ibm.ws.javaee.dd, \
  com.ibm.ws.javaee.dd.common, \

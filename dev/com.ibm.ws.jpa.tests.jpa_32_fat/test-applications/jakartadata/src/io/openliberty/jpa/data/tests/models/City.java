@@ -34,6 +34,8 @@ public class City {
     public String name;
 
     public int population;
+    @Version
+    public long version;
 
     @Id
     public String stateName;

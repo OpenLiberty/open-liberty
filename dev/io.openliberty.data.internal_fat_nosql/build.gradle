@@ -34,13 +34,14 @@ dependencies {
 
 def metaModelDir = file("build/libs/generated/sources/annotationProcessor/java/main") 
 
-// this code copy the metamodels generated to the "generated-src" directory
+// this code copies the metamodels generated code to the "generated-src" directory and hardcodes the date to avoid file change just from the date
 assemble.doLast {
   copy{
     from metaModelDir
     into "generated-src"
-    }
+    filter { line -> line.startsWith('@Generated') ? line.replaceAll('date = ".*"', 'date = "2025-05-30T11:32:09.226355"') : line }
   }
+}
 
 task addJNoSQL(type: Copy) {
   mustRunAfter jar

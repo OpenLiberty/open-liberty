@@ -21,6 +21,7 @@ import java.util.Map;
 
 import com.ibm.ws.microprofile.reactive.messaging.kafka.secure.fat.suite.SaslPlainTests;
 import componenttest.annotation.MaximumJavaLevel;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.apache.kafka.common.config.SaslConfigs;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -50,6 +51,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @MaximumJavaLevel(javaLevel = 22)
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class LibertyLoginModuleTest {
 
     private static final String APP_NAME = "kafkaLoginModuleTest";
@@ -62,6 +64,9 @@ public class LibertyLoginModuleTest {
 
     @ClassRule
     public static RepeatTests r = ReactiveMessagingActions.repeatDefault(SERVER_NAME);
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled(SERVER_NAME);
 
     @BeforeClass
     public static void setup() throws Exception {

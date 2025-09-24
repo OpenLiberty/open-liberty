@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import org.w3c.dom.Element;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoSamlService;
@@ -230,18 +231,24 @@ public class SpMetadataBuilder {
             keyDescriptor.setParent(spSSODescriptor);
             spSSODescriptor.getKeyDescriptors().add(0, keyDescriptor);
 
-            KeyDescriptor encKeyDescriptor = keyDescriptorBuilder.buildObject();
-            //UsageType
-            encKeyDescriptor.setUse(UsageType.ENCRYPTION);
-            KeyInfo encKeyInfo = keyInfoBuilder.buildObject();
-            try {
-                KeyInfoSupport.addCertificate(encKeyInfo, cert);
-            } catch (CertificateEncodingException e) {
-
+            if (CryptoUtils.isFips140_3EnabledWithBetaGuard()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Encryption Key is not supplied as FIPS 140-3 is enabled.");
+                } 
+            } else {
+                KeyDescriptor encKeyDescriptor = keyDescriptorBuilder.buildObject();
+                //UsageType
+                encKeyDescriptor.setUse(UsageType.ENCRYPTION);
+                KeyInfo encKeyInfo = keyInfoBuilder.buildObject();
+                try {
+                    KeyInfoSupport.addCertificate(encKeyInfo, cert);
+                } catch (CertificateEncodingException e) {
+    
+                }
+                encKeyDescriptor.setKeyInfo(encKeyInfo);
+                encKeyDescriptor.setParent(spSSODescriptor);
+                spSSODescriptor.getKeyDescriptors().add(1, encKeyDescriptor);
             }
-            encKeyDescriptor.setKeyInfo(encKeyInfo);
-            encKeyDescriptor.setParent(spSSODescriptor);
-            spSSODescriptor.getKeyDescriptors().add(1, encKeyDescriptor);
         }
 
         AssertionConsumerServiceBuilder assertionConsumerServiceBuilder = new AssertionConsumerServiceBuilder();

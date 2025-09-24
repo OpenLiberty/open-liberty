@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.hibernate.web;
 
+import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -36,6 +37,7 @@ import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -89,21 +91,21 @@ public class DataJPAHibernateTestServlet extends FATServlet {
         // save
         City saved = cities.save(Milwaukee);
         assertEquals(Milwaukee.areaCodes, saved.areaCodes);
-        assertEquals(Milwaukee.id.name, saved.id.name);
-        assertEquals(Milwaukee.id.stateName, saved.id.stateName);
+        assertEquals(Milwaukee.name, saved.name);
+        assertEquals(Milwaukee.stateName, saved.stateName);
         assertEquals(Milwaukee.population, saved.population);
 
         // findById
-        City found = cities.findById(Milwaukee.id)
+        City found = cities.findById(Milwaukee.getIdClass())
                         .orElseThrow(() -> new AssertionError("Could not find entity by id"));
         assertEquals(Milwaukee.areaCodes, found.areaCodes);
-        assertEquals(Milwaukee.id.name, found.id.name);
-        assertEquals(Milwaukee.id.stateName, found.id.stateName);
+        assertEquals(Milwaukee.name, found.name);
+        assertEquals(Milwaukee.stateName, found.stateName);
         assertEquals(Milwaukee.population, found.population);
 
         // delete
         cities.delete(Milwaukee);
-        cities.findById(Milwaukee.id)
+        cities.findById(Milwaukee.getIdClass())
                         .ifPresent(city -> {
                             throw new AssertionError("Found entity after it was deleted: " + city.toString());
                         });
@@ -117,10 +119,10 @@ public class DataJPAHibernateTestServlet extends FATServlet {
         //NOTE: tran.begin() / tran.commit() requires hibernate property hibernate.allow_update_outside_transaction=true
         //see https://hibernate.atlassian.net/browse/HHH-18260
         tran.begin();
-        cities.deleteById(GreenBay.id);
+        cities.deleteById(GreenBay.getIdClass());
         tran.commit();
 
-        cities.findById(GreenBay.id).ifPresent(city -> {
+        cities.findById(GreenBay.getIdClass()).ifPresent(city -> {
             throw new AssertionError("Found entity after it was deleted: " + city.toString());
         });
     }
@@ -148,7 +150,7 @@ public class DataJPAHibernateTestServlet extends FATServlet {
 
         // findAll
         sdCitiesCopy = new ArrayList<>(sdCities);
-        final List<City> foundCities = cities.findAll().filter(city -> city.id.stateName.equals("South Dakota")).toList();
+        final List<City> foundCities = cities.findAll().filter(city -> city.stateName.equals("South Dakota")).toList();
         for (City found : foundCities) {
             assertTrue("Found entity that was not an element of the original list: " + found.toString(), sdCitiesCopy.remove(found));
         }
@@ -156,10 +158,11 @@ public class DataJPAHibernateTestServlet extends FATServlet {
 
         // deleteAll
         cities.deleteAll(sdCities);
-        assertFalse(cities.findAll().anyMatch(city -> city.id.stateName.equals("South Dakota")));
+        assertFalse(cities.findAll().anyMatch(city -> city.stateName.equals("South Dakota")));
     }
 
     @Test
+    @SkipIfSysProp(DB_SQLServer) //TODO remove once https://hibernate.atlassian.net/browse/HHH-19713 is fixed
     public void testBasicRepositoryFindAllWithPages() {
         Queue<Integer> expectedPopulationOrder = new LinkedList<>();
         expectedPopulationOrder.offer(508090);

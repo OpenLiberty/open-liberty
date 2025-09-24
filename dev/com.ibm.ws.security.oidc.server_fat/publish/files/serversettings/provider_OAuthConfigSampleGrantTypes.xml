@@ -31,14 +31,14 @@
 		<localStore>
 			<client
 				name="client00"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client00"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				scope="ALL_SCOPES"
 				enabled="true" />
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantTypes="authorization_code"
@@ -46,7 +46,7 @@
 				enabled="true" />
 			<client
 				name="client02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client02"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantTypes="implicit"
@@ -55,7 +55,7 @@
 				enabled="true" />
 			<client
 				name="client03"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client03"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantTypes="authorization_code, refresh_token"
@@ -63,7 +63,7 @@
 				enabled="true" />
 			<client
 				name="client04"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client04"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantTypes="client_credentials"
@@ -72,7 +72,7 @@
 				enabled="true" />
 			<client
 				name="client05"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client05"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantTypes="password"
@@ -81,7 +81,7 @@
 				enabled="true" />
 			<client
 				name="client07"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client07"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				grantTypes="someBadValue"
@@ -90,7 +90,7 @@
 		</localStore>
 	</oauthProvider>
 
-	<!-- <client name="client06" secret="{xor}LDo8LTor" displayname="client06" 
+	<!-- <client name="client06" secret="{xor}LDo8LTorbm1saw==" displayname="client06" 
 		redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp" 
 		grantTypes="urn:ietf:params:oauth:grant-type:jwt-bearer" scope="ALL_SCOPES" 
 		enabled="true"/> -->

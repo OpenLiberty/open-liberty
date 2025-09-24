@@ -1,0 +1,17 @@
+<server description="Server for testing Telemetry10">
+
+	<include location="../fatTestPorts.xml" />
+
+	<featureManager>
+		<feature>servlet-6.0</feature>
+		<feature>mpTelemetry-1.0</feature>
+		<feature>componentTest-2.0</feature>
+	</featureManager>
+	
+	<variable name="otel.service.name" value=""/>
+
+	<application id="TelemetryApp" name="TelemetryApp" type="war" location="TelemetryApp.war">
+		<classloader apiTypeVisibility="+third-party"/>
+	</application>
+
+</server>

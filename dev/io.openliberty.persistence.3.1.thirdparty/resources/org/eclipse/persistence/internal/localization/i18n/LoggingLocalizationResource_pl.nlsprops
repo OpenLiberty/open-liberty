@@ -169,7 +169,7 @@ elements=Liczba element\u00f3w: {0}{1}
 
 enable_batch_operations_as_true_not_supported=Ustawienie komponentu CMP rodzime dla produktu WLS enable-batch-operations-as-true nie jest bezpo\u015brednio obs\u0142ugiwane w komponencie CMP produktu EclipseLink. Szczeg\u00f3\u0142owe informacje zawiera dokumentacja migrowania.
 
-encryptor_script_description=Ta aplikacja wewn\u0119trznie odszyfrowuje stare zaszyfrowane has\u0142o, kt\u00f3re by\u0142o u\u017cywane przez poprzednie EclipseLink wersj\u0119 i szyfruje j\u0105 najnowszym algorytmem.
+encryptor_script_description=Ta aplikacja ma stare zaszyfrowane has\u0142o, kt\u00f3re by\u0142o u\u017cywane przez poprzedni\u0105 wersj\u0119 EclipseLink. Ponownie zaszyfruj go przy u\u017cyciu najnowszego algorytmu.
 
 encryptor_script_output=Ponownie zaszyfrowane has\u0142o to: {0}
 
@@ -318,6 +318,8 @@ jpars_could_not_find_session_bean=Wykonywane jest wywo\u0142anie skierowane do k
 jta_cannot_be_disabled_in_cmp=Je\u015bli u\u017cywane jest zarz\u0105dzanie trwa\u0142o\u015bci\u0105 przez kontener (Container Managed Persistence \u2013 CMP), nie mo\u017cna wy\u0142\u0105czy\u0107 transakcji JTA. Produkt EclipseLink b\u0119dzie dzia\u0142a\u0142 z za\u0142o\u017ceniem, \u017ce transakcje JTA s\u0105 w\u0142\u0105czone.
 
 jta_duplicate_ctrl_property=Klasa kontrolera transakcji JTA jest zdefiniowana w obu w\u0142a\u015bciwo\u015bciach: "eclipselink.target-server" oraz "eclipselink.jta.controller". U\u017cywana jest warto\u015b\u0107 z w\u0142a\u015bciwo\u015bci "eclipselink.target-server".
+
+jta_tm_lookup_failure=Nie mo\u017cna wyszuka\u0107 instancji TransactionManager : {0}
 
 jta_tsr_lookup_failure=Nie mo\u017cna wyszuka\u0107 instancji TransactionSynchronizationRegistry: {0}
 

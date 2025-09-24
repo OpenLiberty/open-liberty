@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -53,7 +53,7 @@ public class genericWebClientAuthCodeCommonTest extends CommonTest {
      * we could make this method an @Before test. Since we only have one test that currently
      * depends on the starting "from scratch" on preloaded database clients, this method will
      * be called directly.
-     * 
+     *
      * @throws Exception
      */
     //@Before
@@ -545,11 +545,11 @@ public class genericWebClientAuthCodeCommonTest extends CommonTest {
     //Only for OIDC
     public void testAuthCodeBasicFlowXORToHashSecret() throws Exception {
         String clientID = "xorClient";
-        String xorSecret = "{xor}BxANDDo8LTor";
+        String xorSecret = "{xor}BxANDDo8LTorbg==";
         String compID = "OAuthConfigDerby";
 
         // Add user directly to the database
-        addClient(clientID, xorSecret, compID, null, null);
+        addClient(clientID, xorSecret, compID, null, null, null, null);
 
         // Double check the secret is set as expected
         verifySecretType(clientID, "xor", compID);
@@ -560,7 +560,7 @@ public class genericWebClientAuthCodeCommonTest extends CommonTest {
         TestSettings ts = testSettings.copyTestSettings();
         ts.setClientID(clientID);
         ts.setClientName(clientID);
-        ts.setClientSecret("XORSecret");
+        ts.setClientSecret("XORSecret1");
 
         // expect good (200) status codes for all steps
         List<validationData> expectations = vData.addSuccessStatusCodes(null);
@@ -594,15 +594,17 @@ public class genericWebClientAuthCodeCommonTest extends CommonTest {
     @Test
     public void testAuthCodeBasicFlowHashSecret() throws Exception {
 
+        boolean isFips = testOPServer.getServer().isFIPS140_3EnabledAndSupported();
         String clientID = "hashClient";
-        // if the hashtype, salt, iterations or key length change, this hash needs to be updated.
-        String hashSecret = "{hash}ARAAAAAUUEJLREYyV2l0aEhtYWNTSEE1MTIgAAAIAFAAAAAgMAAAACxIU3RGRGxUQ1o0ckpRVGhiU2RkWkc1cTBPdmYyb3pEbHJKdFQxQVlpVWhNPUAAAAAE/u6cVw==";
+        // if the hashtype, salt, iterations or key length change, this hash of password "hashSecret" needs to be updated.
+        String hashSecret = isFips ? "{hash}ARAAAAAUUEJLREYyV2l0aEhtYWNTSEE1MTIgAAM0UDAAAAAsSFN0RkRsVENaNHJKUVRoYlNkZFpHNXEwT3ZmMm96RGxySnRUMUFZaVVoTT1AAAAAIKXbFUzZRRrAc1crX0XHX/jTvSvrRK3R3FyVKMcu5GKw" : "{hash}ARAAAAAUUEJLREYyV2l0aEhtYWNTSEE1MTIgAAAIAFAAAAAgMAAAACxIU3RGRGxUQ1o0ckpRVGhiU2RkWkc1cTBPdmYyb3pEbHJKdFQxQVlpVWhNPUAAAAAE/u6cVw==";
+        Integer hashLen = isFips ? 256 : 32;
         String compID = "OAuthConfigDerby";
         String salt = "HStFDlTCZ4rJQThbSddZG5q0Ovf2ozDlrJtT1AYiUhM=";
         String algorithm = "PBKDF2WithHmacSHA512";
-
+        Integer iterations = isFips ? 210000 : 2048;
         // Add user directly to the database
-        addClient(clientID, hashSecret, compID, salt, algorithm); // using default iterations and keys
+        addClient(clientID, hashSecret, compID, salt, algorithm, hashLen, iterations); // using default iterations and keys
 
         // Double check the secret is set as expected
         verifySecretType(clientID, "hash", compID);
@@ -624,7 +626,7 @@ public class genericWebClientAuthCodeCommonTest extends CommonTest {
             }
 
             assertNotNull("Servlet should have returned an iteration type for " + clientID, msg);
-            assertEquals("Iteration is incorrect in the database for client " + clientID, "2048", msg);
+            assertEquals("Iteration is incorrect in the database for client " + clientID, "" + iterations, msg);
 
             assertNotNull("Servlet should have returned an algorithm type for " + clientID, alg);
             assertEquals("Algorithm is incorrect in the database for client " + clientID, algorithm, alg);
@@ -677,13 +679,13 @@ public class genericWebClientAuthCodeCommonTest extends CommonTest {
 
     }
 
-    private void addClient(String clientID, String hashSecret, String compID, String salt, String alg) throws Exception {
+    private void addClient(String clientID, String hashSecret, String compID, String salt, String alg, Integer hashLen, Integer iterations) throws Exception {
         if (testOPServer.isUsingMongoDB()) {
             MongoDBUtils.addMongoDBEntry(testOPServer.getHttpString(), testOPServer.getHttpDefaultPort(), clientID,
-                                         hashSecret, compID, salt, alg);
+                                         hashSecret, compID, salt, alg, hashLen, iterations);
         } else {
             DerbyUtils.addDerbyEntry(testOPServer.getHttpString(), testOPServer.getHttpDefaultPort(), clientID,
-                                     hashSecret, compID, salt, alg);
+                                     hashSecret, compID, salt, alg, hashLen, iterations);
         }
     }
 

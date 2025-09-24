@@ -26,8 +26,8 @@
 	<openidConnectClient
 		id="client_RSHttpsRequiredTrue_OPHttpsRequiredTrue_httpsJwkEndpointUrl_inboundPropRequired"
 		clientId="httpsRequiredClient"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		sharedKey="secret1234"
 		httpsRequired="true"
 		inboundPropagation="required"
 		authorizationEndpointUrl="SetInTestSettings-ConfigValueNotUsed"
@@ -52,8 +52,8 @@
 	<openidConnectClient
 		id="client_RSHttpsRequiredTrue_OPHttpsRequiredTrue_httpsJwkEndpointUrl_inboundPropSupported"
 		clientId="httpsRequiredClient"
-		clientSecret="{xor}LDo8LTor"
-		sharedKey="secret"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		sharedKey="secret1234"
 		httpsRequired="true"
 		inboundPropagation="supported"
 		authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/${providerRoot}/endpoint/HttpsRequiredJwk${providerSample}/authorize"

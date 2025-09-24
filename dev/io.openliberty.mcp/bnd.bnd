@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+Bundle-Name: Model Context Protocol API
+Bundle-SymbolicName: io.openliberty.mcp
+Bundle-Description: Model Context Protocol API, version ${bVersion}
+
+bVersion=1.0
+
+# TODO:  When moving to GA, put this change back in.  We do not want to publish this API to
+# maven until the feature is GA.
+# publish.wlp.jar.suffix: dev/api/ibm
+
+javac.source: 17
+javac.target: 17
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+
+WS-TraceGroup: MCP
+
+Export-Package: \
+    io.openliberty.mcp.*
+
+-buildpath: \
+    com.ibm.websphere.org.osgi.core;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest,\
+    io.openliberty.jakarta.interceptor.2.1;version=latest

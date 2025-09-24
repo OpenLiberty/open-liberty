@@ -2,6 +2,7 @@
 
   <!-- Enable features -->
   <featureManager>
+    <feature>localConnector-1.0</feature>
     <feature>mpOpenAPI-4.0</feature>
     <feature>componenttest-2.0</feature>
     <feature>restfulWS-3.1</feature> <!-- EE feature to ensure we get the expected EE version -->

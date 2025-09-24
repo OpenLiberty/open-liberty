@@ -32,7 +32,7 @@ import com.ibm.ws.security.oauth20.util.OIDCConstants;
 public class OidcBaseClientValidatorTest {
 
     private final String clientId = "b0a376ec4b694b67b6baeb0604a312d8";
-    private final String clientSecret = "secret";
+    private final String clientSecret = "secret1234";
     private final String clientName = "client123";
     private final String componentId = "TestComponent";
     private final String redirectUri1 = "https://localhost:8999/resource/redirect1";

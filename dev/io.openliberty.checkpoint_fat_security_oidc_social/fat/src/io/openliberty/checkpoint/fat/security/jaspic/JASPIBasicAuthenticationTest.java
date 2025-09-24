@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
@@ -63,10 +64,16 @@ public class JASPIBasicAuthenticationTest extends JASPITestBase {
                                                           "usr:jaspicUserTestFeature-3.0"
     };
 
+    private static final Set<String> EE11_FEATURES;
+    private static final String[] EE11_FEATURES_ARRAY = {
+                                                          "usr:jaspicUserTestFeature-3.1"
+    };
+
     static {
         EE8_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE8_FEATURES_ARRAY)));
         EE9_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
         EE10_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_FEATURES_ARRAY)));
+        EE11_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
     }
 
     private static final String SERVER = "com.ibm.ws.security.jaspic11.fat";
@@ -83,7 +90,13 @@ public class JASPIBasicAuthenticationTest extends JASPITestBase {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(new JakartaEE9Action().forServers(SERVER).removeFeatures(EE8_FEATURES).addFeatures(EE9_FEATURES).fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers(SERVER).removeFeatures(EE8_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES).fullFATOnly());
+                    .andWith(new JakartaEE10Action().forServers(SERVER).removeFeatures(EE8_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES).fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                    .forServers(SERVER)
+                                    .removeFeatures(EE8_FEATURES)
+                                    .removeFeatures(EE9_FEATURES)
+                                    .removeFeatures(EE10_FEATURES)
+                                    .addFeatures(EE11_FEATURES));
 
     public JASPIBasicAuthenticationTest() {
         super(server, logClass);

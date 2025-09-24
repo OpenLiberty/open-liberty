@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -74,7 +74,10 @@ public class JASPITestBase {
         verifyServerUpdated(server);
         assertNotNull("The JASPI user feature did not report it was ready",
                       server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
-        if (JakartaEEAction.isEE10OrLaterActive()) {
+        if (JakartaEEAction.isEE11Active()) {
+            assertNotNull("The feature manager did not report the JASPI provider is included in features.",
+                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.1"));
+        } else if (JakartaEEAction.isEE10Active()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
         } else if (JakartaEEAction.isEE9Active()) {
@@ -90,7 +93,10 @@ public class JASPITestBase {
 
     protected static void verifyServerStartedWithJaspiFeature(LibertyServer server) {
         verifyServerStarted(server);
-        if (JakartaEEAction.isEE10OrLaterActive()) {
+        if (JakartaEEAction.isEE11Active()) {
+            assertNotNull("The feature manager did not report the JASPI provider is included in features.",
+                          server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.1"));
+        } else if (JakartaEEAction.isEE10Active()) {
             assertNotNull("The feature manager did not report the JASPI provider is included in features.",
                           server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-3.0"));
         } else if (JakartaEEAction.isEE9Active()) {

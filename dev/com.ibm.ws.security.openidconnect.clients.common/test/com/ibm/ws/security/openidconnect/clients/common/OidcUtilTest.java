@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -136,11 +136,11 @@ public class OidcUtilTest {
                 one(convClientConfig).getClientId();
                 will(returnValue("client01"));
                 allowing(convClientConfig).getClientSecret();
-                will(returnValue("secret"));
+                will(returnValue("secret1234"));
             }
         });
         final String expectedNonceCookieName = OidcStorageUtils.getNonceStorageKey("client01", state);
-        final String expectedNonceCookieValue = OidcStorageUtils.createNonceStorageValue(nonceValue, state, "secret");
+        final String expectedNonceCookieValue = OidcStorageUtils.createNonceStorageValue(nonceValue, state, "secret1234");
 
         mock.checking(new Expectations() {
             {

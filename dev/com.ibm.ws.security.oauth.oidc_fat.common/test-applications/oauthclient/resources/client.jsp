@@ -61,7 +61,7 @@
 	String testName = "notSet";
 	String username = "shane";
 	String clientId = "key";
-	String clientSecret = "secret";
+	String clientSecret = "secret1234";
 	String urlBase = "https://localhost:9443";
 
 	String redirectUri = urlBase + "/oauthclient/redirect.jsp";

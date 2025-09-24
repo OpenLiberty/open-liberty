@@ -10,7 +10,7 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '3.4.5'
+  id 'org.springframework.boot' version '3.5.3'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
 
@@ -28,6 +28,7 @@ dependencies {
   implementation('org.springframework.boot:spring-boot-starter-integration')
   implementation('org.springframework.integration:spring-integration-core')
   implementation('org.springframework.integration:spring-integration-jms')
+  implementation('org.springframework.boot:spring-boot-starter-jdbc')
   providedCompile('jakarta.jms:jakarta.jms-api:3.1.0')
   providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
 }

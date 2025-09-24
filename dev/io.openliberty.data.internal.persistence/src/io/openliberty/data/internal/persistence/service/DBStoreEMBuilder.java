@@ -63,7 +63,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.wsspi.application.Application;
+import com.ibm.wsspi.application.ApplicationState;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
@@ -304,17 +307,51 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
 
         ServiceReference<DatabaseStore> ref = null;
-        for (long start = System.nanoTime(), poll_ms = 125L; ref == null; poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L) {
-            Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
-                                                                                       FilterUtils.createPropertyFilter("id", databaseStoreId));
+        for (long start = System.nanoTime(), poll_ms = 125L; //
+                        ref == null; //
+                        poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L) {
+            String filter = FilterUtils.createPropertyFilter("id", databaseStoreId);
+            Collection<ServiceReference<DatabaseStore>> refs = //
+                            bc.getServiceReferences(DatabaseStore.class, filter);
             if (refs.isEmpty()) {
+                if (FrameworkState.isStopping())
+                    throw exc(IllegalStateException.class,
+                              "CWWKD1113.server.stopping",
+                              Util.names(repositoryInterfaces));
+
+                if (application != null) {
+                    filter = FilterUtils.createPropertyFilter("name", application);
+                    Collection<ServiceReference<Application>> appRefs = //
+                                    bc.getServiceReferences(Application.class, filter);
+                    if (appRefs.isEmpty()) {
+                        throw exc(IllegalStateException.class,
+                                  "CWWKD1115.app.unavailable",
+                                  Util.names(repositoryInterfaces),
+                                  application);
+                    } else {
+                        Object state = appRefs.iterator().next() //
+                                        .getProperty("application.state");
+                        if (ApplicationState.STOPPED == state ||
+                            ApplicationState.STOPPING == state)
+                            throw exc(IllegalStateException.class,
+                                      "CWWKD1114.app.stopping",
+                                      Util.names(repositoryInterfaces),
+                                      application,
+                                      state);
+                    }
+                }
+
                 if (System.nanoTime() - start < MAX_WAIT_FOR_SERVICE_NS) {
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Wait " + poll_ms + " ms for service reference to become available...");
+                        Tr.debug(this, tc, "Wait " + poll_ms +
+                                           " ms for service reference to become available...");
                     TimeUnit.MILLISECONDS.sleep(poll_ms);
                 } else {
-                    throw new IllegalStateException("The " + configDisplayId + " service component did not become available within " +
-                                                    TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS) + " seconds.");
+                    throw exc(IllegalStateException.class,
+                              "CWWKD1116.resource.unavailable",
+                              Util.names(repositoryInterfaces),
+                              configDisplayId,
+                              TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS));
                 }
             } else {
                 ref = refs.iterator().next();

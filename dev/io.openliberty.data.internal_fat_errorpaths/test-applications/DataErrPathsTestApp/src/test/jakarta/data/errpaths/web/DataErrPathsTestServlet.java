@@ -569,7 +569,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  + " a PageRequest.");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1022E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardPage"))
                 throw x;
         }
@@ -588,7 +588,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities but does not return them");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardLimited"))
                 throw x;
         }
@@ -636,7 +636,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities but does not return them");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardOrdered"))
                 throw x;
         }
@@ -655,7 +655,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities and returns an update count: " + count);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardSorted"))
                 throw x;
         }
@@ -1093,6 +1093,27 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an appropriate error is raised for the invalid combination of the
+     * IgnoreCase and In keywords on a Query by Method Name method.
+     */
+    @Test
+    public void testIgnoreCaseIn() {
+        Set<String> addresses = Set.of("401 9th Ave NW, Rochester, MN 55901",
+                                       "88 23RD AVE SW, Rochester, MN 55902");
+        try {
+            List<Voter> found = voters.findByAddressIgnoreCaseIn(addresses);
+            fail("Should not be able to combine IgnoreCase and In keywords." +
+                 " Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1074E:") ||
+                !x.getMessage().contains("IgnoreCase") ||
+                !x.getMessage().contains("In"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised for a repository insert method with a parameter
      * that can insert multiple entities and a return type that can only return
      * one inserted entity.
@@ -1371,7 +1392,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " multiple parameters. Result: " + list);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1009E") ||
+                !x.getMessage().startsWith("CWWKD1014E") ||
                 !x.getMessage().contains("changeBoth"))
                 throw x;
         }
@@ -1558,6 +1579,26 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Supply a null Limit results in NullPointerException.
+     */
+    @Test
+    public void testNullLimit() {
+        try {
+            List<Voter> found = voters
+                            .findBySsnLessThanEqualOrderBySsnDesc(999999999, null);
+            fail("Repository method with a null Limit must raise" +
+                 " NullPointerException. Instead: " + found);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Limit.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
      * BasicRepository.findAll(PageRequest, null) must raise NullPointerException.
      */
     @Test
@@ -1589,6 +1630,47 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() != null &&
                 x.getMessage().startsWith("CWWKD1087E") &&
                 x.getMessage().contains(PageRequest.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Attempt to supply a NULL Sort parameter.
+     */
+    @Test
+    public void testNullSortArgument() {
+        Page<Voter> page;
+        try {
+            page = voters.selectByName("Vincent",
+                                       PageRequest.ofSize(9),
+                                       null);
+            fail("Obtained a page sorted by NULL: " + page);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Sort.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Attempt to supply a NULL varargs Sort parameter.
+     */
+    @Test
+    public void testNullSortArray() {
+        Page<Voter> page;
+        try {
+            page = voters.selectAll(PageRequest.ofSize(3),
+                                    (Sort[]) null);
+            fail("Obtained a page sorted by NULL: " + page);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Sort.class.getName() + "[]"))
                 ; // expected
             else
                 throw x;

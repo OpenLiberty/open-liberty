@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,9 @@
 
 // https://plugins.gradle.org/plugin/org.springframework.boot
 plugins {
-  id 'org.springframework.boot' version '3.0.7'
+  id 'org.springframework.boot' version '3.5.3'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
-def sv = springVersions[ '3.0' ]
 
 apply plugin: 'war'
 apply plugin: 'io.spring.dependency-management'
@@ -49,7 +48,7 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
   implementation project(':io.openliberty.springboot.fat30.war.app:module')
-  implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot'])
+  implementation('org.springframework.boot:spring-boot-starter-web')
 
   providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
   providedCompile 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'

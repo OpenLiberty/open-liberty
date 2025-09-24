@@ -23,7 +23,7 @@ javac.target: 11
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Include-Resource: \
-    @${repo;io.smallrye:smallrye-open-api-jaxrs;[4.1.0.alpha3,4.2)}!/META-INF/services/*
+    @${repo;io.smallrye:smallrye-open-api-jaxrs;[4.1.0,4.2)}!/META-INF/services/*
 
 Service-Component: \
     io.smallrye.openapi.runtime.scanner.spi.AnnotationScanner; \
@@ -40,7 +40,7 @@ Export-Package: \
     io.smallrye.openapi.jaxrs;version=4.1;thread-context=true
 
 -buildpath: \
-    io.smallrye:smallrye-open-api-jaxrs;version=4.1.0.alpha3,\
+    io.smallrye:smallrye-open-api-jaxrs;version=4.1.0,\
     io.openliberty.io.smallrye.openapi41.core;version=latest,\
     io.openliberty.jakarta.validation.3.0;version=latest,\
     io.openliberty.org.eclipse.microprofile.openapi.4.1;version=latest,\

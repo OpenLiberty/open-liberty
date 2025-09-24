@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class MD5Utils {
 
@@ -15,7 +16,8 @@ public class MD5Utils {
 
     static {
         try {
-            messagedigest = MessageDigest.getInstance("MD5");
+            // FIPS 140-3: Algorithm assessment complete; no changes required. Utility functions.
+            messagedigest = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
         } catch (NoSuchAlgorithmException e) {
             //should not happen
         }

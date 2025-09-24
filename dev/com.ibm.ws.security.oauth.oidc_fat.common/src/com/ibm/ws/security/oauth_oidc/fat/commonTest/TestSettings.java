@@ -132,7 +132,7 @@ public class TestSettings {
 
     protected String inboundProp = null;
 
-    public TestSettings() {
+	public TestSettings() {
     }
 
     public TestSettings(TestSettings settings) {
@@ -325,6 +325,7 @@ public class TestSettings {
         Log.info(thisClass, thisMethod, "storeType: " + storeType.toString());
         Log.info(thisClass, thisMethod, "logoutHttpMethod: " + logoutHttpMethod);
 
+
     }
 
     public String getDetailOAuthOPFirstClientUrl() {
@@ -429,7 +430,7 @@ public class TestSettings {
         autoauthz = "true";
         clientName = "client01";
         clientID = "client01";
-        clientSecret = "secret";
+        clientSecret = "secret1234";
         adminUser = "testuser";
         adminPswd = "testuserpwd";
         state = "Lvj9Z2l8jMSMrtWG1F3Z"; // thie will need to be updated when
@@ -595,7 +596,7 @@ public class TestSettings {
         autoauthz = "true";
         clientName = "client01";
         clientID = "client01";
-        clientSecret = "secret";
+        clientSecret = "secret1234";
         adminUser = "testuser";
         adminPswd = "testuserpwd";
         state = "Lvj9Z2l8jMSMrtWG1F3Z"; // This may need to be updated when the
@@ -1307,6 +1308,7 @@ public class TestSettings {
             requiredJwtKeys.remove(key);
         }
     }
+    
 
     public List<String> getDefaultRequiredJwtKeys() {
         ArrayList<String> requiredKeys = new ArrayList<String>();
@@ -1472,7 +1474,7 @@ public class TestSettings {
         issuer = protectedResource;
         clientName = "client01";
         clientID = "client01";
-        clientSecret = "secret";
+        clientSecret = "secret1234";
         adminUser = "testuser";
         adminPswd = "testuserpwd";
         scope = "scope1 scope2";

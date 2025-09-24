@@ -35,7 +35,7 @@
 	String userId = "user1";
 	String userPass = "pass1";
 	String clientId = "key";
-	String clientSecret = "secret";
+	String clientSecret = "secret1234";
 	String urlBase = "https://localhost:9443";
 	String tokenEndpoint = urlBase + "/oauth/token.jsp";
 	String resourceEndpoint = urlBase + "/oauth/resource.jsp";

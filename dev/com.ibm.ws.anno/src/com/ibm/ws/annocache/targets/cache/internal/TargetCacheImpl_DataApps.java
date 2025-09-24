@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,9 +14,7 @@ package com.ibm.ws.annocache.targets.cache.internal;
 
 import java.io.File;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
@@ -30,8 +28,6 @@ import com.ibm.wsspi.annocache.targets.cache.TargetCache_Options;
  *
  * Annotation cache data weakly holds module specific query data.  Query data is
  * keyed on application name and module name.
- *
- * TODO: Move the query data to be within the module data.
  *
  * Annotation cache data is thread safe.
  *
@@ -82,9 +78,6 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
 
         this.appsLock = new AppsLock();
         this.apps = new HashMap<String, TargetCacheImpl_DataApp>();
-
-        this.queriesLock = new QueriesLock();
-        this.queries = new HashMap<String, TargetCacheImpl_DataQueries>();
     }
 
     //
@@ -193,138 +186,7 @@ public class TargetCacheImpl_DataApps extends TargetCacheImpl_DataBase {
      */
     public boolean release(String appName) {
         synchronized ( appsLock ) {
-			releaseQueries(appName);
-
-			return ( apps.remove(appName) != null );
+            return ( apps.remove(appName) != null );
         }
     }
-
-    //
-
-    /**
-     * Factory helper method: Obtain the cache directory for a module.
-     *
-     * Answer null if the application is unnamed or the module is unnamed.
-     *
-     * @param e_appName The encoded application name.
-     * @param e_modName The encoded module name.
-     *
-     * @return The cache directory of the module.
-     */
-    @Trivial
-    protected File e_getModDir(String e_appName, String e_modName) {
-        if ( (e_appName == null) || (e_modName == null) ) {
-            return null;
-        }
-        return new File( e_getAppDir(e_appName), e_addModPrefix(e_modName) );
-    }
-
-    //
-
-    /**
-     * Factory method: Create queries data for a module.
-     *
-     * @param appName The name of the application.
-     * @param e_appName The encoded name of the application.
-     * @param modName The name of the module.
-     * @param e_modName The encoded name of the module.
-     * @param modDir The module cache directory.
-     *
-     * @return New queries data for the module.
-     */
-    @Trivial
-    protected TargetCacheImpl_DataQueries createQueriesData(
-        String appName, String e_appName,
-        String modName, String e_modName,
-        File modDir) {
-
-        return getFactory().createQueriesData(
-            appName, e_appName,
-            modName, e_modName, modDir);
-    }
-
-    /**
-     * Factory method: Create queries data for a module.
-     *
-     * @param appName The name of the application.
-     * @param e_appName The encoded name of the application.
-     * @param modName The name of the module.
-     * @param e_modName The encoded name of the module.
-     *
-     * @return New queries data for the module.
-     */
-    @Trivial
-    protected TargetCacheImpl_DataQueries createQueriesData(String appName, String modName) {
-        String e_appName = encode(appName);
-        String e_modName = encode(modName);
-
-        return createQueriesData(
-            appName, e_appName,
-            modName, e_modName, e_getModDir(e_appName, e_modName) );
-    }
-
-    // Query data storage.
-
-    // TODO: Put the query data as weakly held data of module data.
-
-    protected static class QueriesLock {
-        // EMPTY
-    }
-    private final QueriesLock queriesLock;
-    private final Map<String, TargetCacheImpl_DataQueries> queries;
-
-    /**
-     * Obtain query cache data for an module.
-     * 
-     * Create new data if the application is unnamed or the module is unnamed.
-     * 
-     * Otherwise, either retrieve data from the queries store,
-     * or create and store new data, and return the new data.
-     *
-     * @param appName The name of the application.
-     * @param modName The name of the module.
-     *
-     * @return Query cache data for the module.
-     */
-    public TargetCacheImpl_DataQueries getQueriesForcing(String appName, String modName) {
-        // Unnamed data always create new data.
-        if ( (appName == ClassSource_Factory.UNNAMED_APP) ||
-             (modName == ClassSource_Factory.UNNAMED_MOD) ) {
-            return createQueriesData(appName, modName);
-        }
-
-        String queryKey = appName + '!' + modName;
-
-        synchronized( queriesLock ) {
-            return queries.computeIfAbsent(queryKey, (useQueryKey) -> createQueriesData(appName, modName) );
-        }
-    }
-
-    /**
-     * Release queries data for an application.
-     * 
-     * @param appName The name of the application.
-     */
-    public void releaseQueries(String appName) {
-        synchronized ( queriesLock ) {
-			Set<String> queryKeys = null;
-
-			String appPrefix = appName + '!';
-			for ( Map.Entry<String, TargetCacheImpl_DataQueries> queryEntry : queries.entrySet() ) {
-				String queryKey = queryEntry.getKey();
-				if ( queryKey.startsWith(appPrefix) ) {
-					if ( queryKeys == null ) {
-						queryKeys = new HashSet<>(1);
-					}
-					queryKeys.add(queryKey);
-				}
-			}
-
-			if ( queryKeys != null ) {
-				for ( String queryKey : queryKeys ) {
-					queries.remove(queryKey);
-				}
-			}
-		}
-	}
 }

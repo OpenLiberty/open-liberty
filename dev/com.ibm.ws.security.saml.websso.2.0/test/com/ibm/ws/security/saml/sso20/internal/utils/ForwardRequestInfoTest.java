@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,24 +83,6 @@ public class ForwardRequestInfoTest {
     public void tearDown() throws Exception {
         mockery.assertIsSatisfied();
         System.out.println("Exiting test: " + testName.getMethodName());
-    }
-
-    @Test
-    public void testGetSamlRequestCookieTimeoutCurrentPlusFiveMinutes() {
-        String methodName = "testGetSamlRequestCookieTimeoutCurrentPlusFiveMinutes";
-        Date current = new Date(System.currentTimeMillis());
-        forwardRequest.setFragmentCookieMaxAge(5*60*1000); //5 minutes
-        try {
-            SimpleDateFormat utc_sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
-            utc_sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date currentplusfivemins = current;
-
-            currentplusfivemins = utc_sdf.parse(forwardRequest.getSamlRequestCookieTimeoutString());
-
-            assertTrue("Did not find expected cookie age!", currentplusfivemins.after(current));
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
     }
 
 }

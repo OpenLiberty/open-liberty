@@ -34,7 +34,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient01,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient01"
@@ -67,7 +67,7 @@
 		<localStore>
 			<client
 				name="client02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client02"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient02,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient02"
@@ -100,7 +100,7 @@
 		<localStore>
 			<client
 				name="client03"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client03"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient03,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient03"
@@ -133,7 +133,7 @@
 		<localStore>
 			<client
 				name="client04"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client04"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient04,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient04"
@@ -166,7 +166,7 @@
 		<localStore>
 			<client
 				name="client05"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client05"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient05,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient05_authFilter,
@@ -200,7 +200,7 @@
 		<localStore>
 			<client
 				name="client06"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client06"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient06"
 				scope="ALL_SCOPES"
@@ -232,7 +232,7 @@
 		<localStore>
 			<client
 				name="client07"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client07"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient07,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient07"
@@ -265,7 +265,7 @@
 		<localStore>
 			<client
 				name="client08"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client08"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient08,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient08a,
@@ -302,7 +302,7 @@
 		<localStore>
 			<client
 				name="client09"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client09"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient09,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient09"
@@ -335,7 +335,7 @@
 		<localStore>
 			<client
 				name="client20"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client20"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RPclient20,
 							http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/RSclient20"

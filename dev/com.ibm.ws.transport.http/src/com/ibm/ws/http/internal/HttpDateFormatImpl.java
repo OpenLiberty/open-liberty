@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -144,16 +144,28 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         }
 
         /**
-         * Utility method to determine whether to use the cached time value or
-         * update to a newly formatted timestamp.
+         * Utility method to get the current time and then call checkTime to determine whether
+         * to use the cached time value or update to a newly formatted timestamp.
          *
          * @param tolerance
          */
         private CachedFormattedTime updateTime(long tolerance) {
             long now = HttpDispatcher.getApproxTime();
+            return checkTime(now, tolerance, true);
+        }
+
+        /**
+         * Utility method to determine whether to use the cached time value or
+         * update to a newly formatted timestamp.
+         *
+         * @param time      time to be formatted
+         * @param tolerance tolerance of timestamp from cached value
+         * @param doUpdate  whether to update the cached version or not
+         */
+        private CachedFormattedTime checkTime(long time, long tolerance, boolean doUpdate) {
 
             // We only care about seconds, so remove the milliseconds from the time.
-            long strippedMillis = now - (now % 1000);
+            long strippedMillis = time - (time % 1000);
 
             final CachedFormattedTime cachedFormattedTime = cachedTime.get();
             if (cachedFormattedTime != null) {
@@ -161,7 +173,7 @@ public class HttpDateFormatImpl implements HttpDateFormat {
                     return cachedFormattedTime;
                 }
                 if (tolerance > 1000L) {
-                    if ((now - cachedFormattedTime.timeInMilliseconds) <= tolerance) {
+                    if ((time - cachedFormattedTime.timeInMilliseconds) <= tolerance) {
                         return cachedFormattedTime;
                     }
                 }
@@ -170,10 +182,12 @@ public class HttpDateFormatImpl implements HttpDateFormat {
             // otherwise need to format the current time
             String sTime = formatter.format(Instant.ofEpochMilli(strippedMillis));
 
-            CachedFormattedTime newCachedFormattedTime = new CachedFormattedTime(now, strippedMillis, sTime);
+            CachedFormattedTime newCachedFormattedTime = new CachedFormattedTime(time, strippedMillis, sTime);
 
-            // Only update it if another thread hasn't already updated it.
-            cachedTime.compareAndSet(cachedFormattedTime, newCachedFormattedTime);
+            if (doUpdate) {
+                // Only update it if another thread hasn't already updated it.
+                cachedTime.compareAndSet(cachedFormattedTime, newCachedFormattedTime);
+            }
 
             return newCachedFormattedTime;
         }
@@ -207,6 +221,24 @@ public class HttpDateFormatImpl implements HttpDateFormat {
         String getTimeAsString(long tolerance) {
             return updateTime(tolerance).formattedTimeString;
         }
+
+        /**
+         * Get a formatted version of the time as a String. The input range is
+         * the allowed difference in time from the cached snapshot that the
+         * caller is willing to use. If that range is exceeded, then a new
+         * snapshot is taken and formatted.
+         * <br>
+         *
+         * @param time          time to be formatted
+         * @param tolerance     milliseconds, -1 means use default 1000ms, a 0
+         *                          means that this must be an exact match in time
+         * @param isCurrentTime if the time specified is the current time
+         * @return String
+         */
+        String getTimeAsString(long time, long tolerance, boolean isCurrentTime) {
+            return checkTime(time, tolerance, isCurrentTime).formattedTimeString;
+        }
+
     }
 
     /*
@@ -407,6 +439,20 @@ public class HttpDateFormatImpl implements HttpDateFormat {
     @Override
     public String getNCSATime(Date inDate) {
         return cNCSATime.formatter.format(inDate.toInstant());
+    }
+
+    /**
+     * Get the NCSA format of the time provided.
+     *
+     * This method is not on the interface and is called internally by web container
+     * specific code to get the benefit of the caching function.
+     *
+     * @param time          time to be formatted
+     * @param isCurrentTime if the provided time is the current time
+     * @return the NCSA format of the time provided
+     */
+    public String getNCSATime(long time, boolean isCurrentTime) {
+        return cNCSATime.getTimeAsString(time, 0L, isCurrentTime);
     }
 
     /**

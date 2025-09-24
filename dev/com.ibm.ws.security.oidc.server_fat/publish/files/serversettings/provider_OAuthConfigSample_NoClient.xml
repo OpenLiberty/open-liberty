@@ -32,21 +32,21 @@
 		<localStore>
 			<client
 				name="client02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client02"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
 				enabled="true" />
 			<client
 				name="client03"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client03"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
 				enabled="true" />
 			<client
 				name="client04"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client04"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,5 +17,6 @@ import jakarta.data.metamodel.Attribute;
 /**
  * Method signatures are copied from Jakarta Data.
  */
+@Deprecated(since = "1.1")
 public record AttributeRecord<T>(String name) implements Attribute<T> {
 }

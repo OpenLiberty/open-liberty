@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package test.server.transport.http2;
 
@@ -29,6 +26,7 @@ import org.junit.runner.RunWith;
 import com.ibm.ws.http2.client.SecureHttp2Client;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -51,7 +49,6 @@ public class Http2SecureTests extends FATServletClient {
 
     @BeforeClass
     public static void before() throws Exception {
-
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, CLASS_NAME, "before()", "Starting servers...");
         }

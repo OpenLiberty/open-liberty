@@ -45,6 +45,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20Client;
@@ -681,7 +682,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         MessageDigest digest;
 
         try {
-            digest = MessageDigest.getInstance("MD5"); //$NON-NLS-1$
+            digest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ?  MessageDigest.getInstance(ALG_SHA256) : MessageDigest.getInstance(ALG_MD5);  //$NON-NLS-1$
         } catch (NoSuchAlgorithmException e) {
             // should never happen since all Java implementations must support MD5
             throw new RuntimeException(e);

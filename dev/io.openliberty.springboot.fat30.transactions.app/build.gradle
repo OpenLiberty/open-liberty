@@ -10,7 +10,7 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '3.3.0'
+  id 'org.springframework.boot' version '3.5.3'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
 def sv = springVersions[ '2.0' ]
@@ -25,8 +25,8 @@ sourceCompatibility = 17
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
-  implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot']) // x
-  implementation('org.springframework.boot:spring-boot-starter-jdbc') // + ':' + sv['springBoot']) // x
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  implementation('org.springframework.boot:spring-boot-starter-jdbc')
 
   providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'}
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -436,6 +436,10 @@ warning.tooManySymbolicLinks=CWWKE0096W: Prea multe legaturi simbolice au fost i
 warning.tooManySymbolicLinks.explanation=Leg\u0103turile simbolice sunt scurt\u0103turi care indic\u0103 spre alte fi\u0219iere sau directoare. Aceast\u0103 eroare apare atunci c\u00e2nd sistemul \u00eent\u00e2lne\u0219te prea multe leg\u0103turi simbolice \u00eentr-un lan\u021b \u0219i nu este \u00een m\u0103sur\u0103 s\u0103 rezolve calea.
 warning.tooManySymbolicLinks.useraction=Pentru a rezolva aceast\u0103 problem\u0103, verifica\u021bi leg\u0103turile simbolice din cale \u0219i asigura\u021bi-v\u0103 c\u0103 acestea nu creeaz\u0103 referin\u021be circulare. S-ar putea folosi, de asemenea, comanda "readlink" pentru a inspecta link-uri individuale \u00een lan\u021b.
 
+warning.javaHomeNotSet=CWWKE0097W: Variabila de mediu JAVA_HOME nu este setat\u0103.
+warning.javaHomeNotSet.explanation=Scriptul serverului nu poate determina loca\u021bia instal\u0103rii Java. Aceast\u0103 problem\u0103 nu apare dac\u0103 variabila de mediu JAVA_HOME este setat\u0103 corect sau dac\u0103 executabilul "java", g\u0103sit prin c\u0103utarea \u00een PATH, este localizat \u00eentr-o instalare Java complet\u0103. Loca\u021bia de instalare Java este necesar\u0103 pentru a g\u0103si fi\u0219ierele de configurare specifice versiunii, cum ar fi java9.options. Dac\u0103 instalarea Java nu poate fi g\u0103sit\u0103, aceste fi\u0219iere nu sunt \u00eenc\u0103rcate, iar aplica\u021biile care se bazeaz\u0103 pe ele s-ar putea s\u0103 nu se comporte conform a\u0219tept\u0103rilor.
+warning.javaHomeNotSet.useraction=Seta\u021bi variabila de mediu JAVA_HOME.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Nu se poate folosi op\u0163iunea --include={0}, se va folosi \u00een schimb --include=wlp.
 warn.packageRuntime.include.unknownOption.explanation=Op\u0163iunea a fost ignorat\u0103 deoarece nu a fost recunoscut\u0103.
 warn.packageRuntime.include.unknownOption.useraction=Re\u00eencerca\u0163i comanda folosind op\u0163iuni valide. \u00cencerca\u0163i s\u0103 folosi\u0163ie --help pentru o list\u0103 de op\u0163iuni valide.
@@ -865,3 +869,7 @@ info.list.of.defined.servers=Urm\u0103toarele servere sunt definite relativ la d
 info.communicate.server=A ap\u0103rut o eroare de comunica\u0163ii \u00eentre comanda {0} \u015fi serverul {1}.
 
 info.serialFilterLoaded=Agentul de filtrare serial\u0103 a fost \u00eenc\u0103rcat.
+
+# {0} The full path to a configured logs directory.
+# Displayed when creating a server dump, if an alternate server logs directory has been configured.
+info.dump.server.alt.logs=A detectat directorul de jurnale al serverului configurat la {0}.

@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -53,15 +54,17 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-		AlwaysPassesTest.class,
+                AlwaysPassesTest.class,
                 MPOpenTracingJaegerTraceTest.class,
-		MPFaultToleranceTimeoutTest.class,
-               	MPJWTTest.class,
+                MPFaultToleranceTimeoutTest.class,
+                MPJWTTest.class,
                 MPMetricsTest.class,
                 MPTelemetryTest.class,
                 MPHealthTest.class,
+                MPHealthTestFileBased.class,
+                MPHealthTestFileBasedConfig.class,
                 MPTelemetryJaxRsIntegrationTest.class,
-		OpenAPIConfigTest.class
+                OpenAPIConfigTest.class
 })
 
 public class FATSuite {
@@ -137,6 +140,18 @@ public class FATSuite {
         File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
         try (OutputStream out = new FileOutputStream(serverEnvFile)) {
             serverEnvProperties.store(out, "");
+        }
+    }
+
+    /*
+     * Deletes contents of server.env
+     */
+    static void emptyEnvVariable(LibertyServer server) throws Exception {
+        File serverEnvFile = new File(server.getFileFromLibertyServerRoot("server.env").getAbsolutePath());
+        if (serverEnvFile.isFile()) {
+            FileWriter fw = new FileWriter(serverEnvFile);
+            fw.write("");
+            fw.close();
         }
     }
 
@@ -218,19 +233,24 @@ public class FATSuite {
     public static RepeatTests mpTelemetryRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
                                           // first test in LITE mode
+                                          MicroProfileActions.MP71_EE11,
                                           MicroProfileActions.MP70_EE10,
                                           MicroProfileActions.MP61, // rest are FULL mode
                                           MP50_MPTEL11,
                                           MP41_MPTEL11);
     }
 
-    public static RepeatTests mpTelemetryRepeat2(String serverName) {
+    public static RepeatTests mpOpenApiRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
                                           // first test in LITE mode
-                                          // TODO need to figure out why mpTelemetry-2.0 isn't working for the test app
-                                          //MicroProfileActions.MP70_EE10,
-                                          MicroProfileActions.MP61, // rest are FULL mode
-                                          MP50_MPTEL11,
-                                          MP41_MPTEL11);
+                                          MicroProfileActions.MP71_EE10, // 4.1
+                                          // rest are FULL mode
+                                          MicroProfileActions.MP70_EE10, // 4.0
+                                          // Nothing specific for EE 11 that we should repeat for checkpoint
+                                          // MicroProfileActions.MP71_EE11,
+                                          // MicroProfileActions.MP70_EE11,
+                                          MicroProfileActions.MP61, // 3.1
+                                          MicroProfileActions.MP41, // 2.0
+                                          MicroProfileActions.MP50); // 3.0
     }
 }

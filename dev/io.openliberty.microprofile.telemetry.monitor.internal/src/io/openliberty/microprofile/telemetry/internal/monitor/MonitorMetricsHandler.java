@@ -189,7 +189,7 @@ public class MonitorMetricsHandler {
 	}
 
 	protected synchronized void register(String objectName, String[][] data) {
- 
+
 		MonitorMetrics monitorMetricsInsts = null;
 		if (!containMetrics(objectName)) {
 			monitorMetricsInsts = new MonitorMetrics(objectName);

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -436,6 +436,10 @@ warning.tooManySymbolicLinks=CWWKE0096W: Trop de liens symboliques ont \u00e9t\u
 warning.tooManySymbolicLinks.explanation=Les liens symboliques sont des raccourcis qui pointent vers d'autres fichiers ou r\u00e9pertoires. Cette erreur se produit lorsque le syst\u00e8me rencontre un trop grand nombre de liens symboliques dans une cha\u00eene et qu'il ne parvient pas \u00e0 r\u00e9soudre le chemin.
 warning.tooManySymbolicLinks.useraction=Pour r\u00e9soudre ce probl\u00e8me, v\u00e9rifiez les liens symboliques dans le chemin et assurez-vous qu'ils ne cr\u00e9ent pas de r\u00e9f\u00e9rences circulaires. Vous pouvez \u00e9galement utiliser la commande'readlink'pour inspecter des liens individuels dans la cha\u00eene.
 
+warning.javaHomeNotSet=CWWKE0097W: La variable d'environnement JAVA_HOME n'est pas d\u00e9finie.
+warning.javaHomeNotSet.explanation=Le script du serveur ne peut pas d\u00e9terminer l'emplacement de l'installation de Java. Ce probl\u00e8me ne se produit pas si la variable d'environnement JAVA_HOME est correctement d\u00e9finie ou si l'ex\u00e9cutable "java", trouv\u00e9 par une recherche dans le PATH, se trouve dans une installation Java compl\u00e8te. L'emplacement de l'installation de Java est n\u00e9cessaire pour trouver les fichiers de configuration sp\u00e9cifiques \u00e0 la version, tels que java9.options. Si l'installation de Java est introuvable, ces fichiers ne sont pas charg\u00e9s et les applications qui en d\u00e9pendent risquent de ne pas se comporter comme pr\u00e9vu.
+warning.javaHomeNotSet.useraction=D\u00e9finissez la variable d'environnement JAVA_HOME.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Impossible d''utiliser l''option --include={0}, --include=wlp sera utilis\u00e9 \u00e0 la place.
 warn.packageRuntime.include.unknownOption.explanation=L'option a \u00e9t\u00e9 ignor\u00e9e car elle n'a pas \u00e9t\u00e9 reconnue.
 warn.packageRuntime.include.unknownOption.useraction=Relancez la commande en utilisant des options valides. Utilisez --help pour obtenir la liste des options valides.
@@ -865,3 +869,7 @@ info.list.of.defined.servers=Les serveurs ci-apr\u00e8s sont d\u00e9finis par ra
 info.communicate.server=Une erreur de communication s''est produite entre la commande {0} et le serveur {1}.
 
 info.serialFilterLoaded=Agent de filtres de s\u00e9rie charg\u00e9.
+
+# {0} The full path to a configured logs directory.
+# Displayed when creating a server dump, if an alternate server logs directory has been configured.
+info.dump.server.alt.logs=A d\u00e9tect\u00e9 le r\u00e9pertoire des journaux du serveur configur\u00e9 \u00e0 l''adresse {0}.

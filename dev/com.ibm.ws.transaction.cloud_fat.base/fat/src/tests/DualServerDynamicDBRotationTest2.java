@@ -14,7 +14,6 @@ package tests;
 
 import java.util.Arrays;
 
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -23,10 +22,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 
-@Mode
 @RunWith(FATRunner.class)
 @AllowedFFDC(value = { "java.sql.SQLRecoverableException", "javax.resource.spi.ResourceAllocationException", "java.sql.SQLNonTransientConnectionException",
                        "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
@@ -53,11 +50,6 @@ public class DualServerDynamicDBRotationTest2 extends DualServerDynamicCoreTest2
     @BeforeClass
     public static void setUp() throws Exception {
         setup(s1, s2, "Simple2PCCloudServlet", "cloud001");
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        dropTables();
     }
 
     @Before

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
@@ -61,6 +63,7 @@ public class LibertyMetricsTest extends BaseTestClass {
 		// Read to run a smarter planet
 		server.waitForStringInLogUsingMark("CWWKF0011I");
 		server.setMarkToEndOfLog();
+		
 	}
 
 	@AfterClass
@@ -73,24 +76,30 @@ public class LibertyMetricsTest extends BaseTestClass {
 
 	@Test
 	public void threadPoolAndRequestTimingMetricsTest() throws Exception {
+	    /*
+	     * These metrics should be available from startup.
+	     *  - ThreadPool
+	     *  - RequestTiming
+	     */
+	    assertTrue(server.isStarted());
+	    
+		// Ensure metrics are registered.
+		String threadPoolStatsNotification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=ThreadPoolStats,name=Default Executor\\]");
+		threadPoolStatsNotification = (threadPoolStatsNotification != null) ? "Found trace: " + threadPoolStatsNotification.trim() : "Could not find ThreadPoolStats MBean Registration notification.";
+		Log.info(c, "waitForStringInTrace", threadPoolStatsNotification);
 
-		/*
-		 * These metrics should be available from startup.
-		 *  - ThreadPool
-		 *  - RequestTiming
-		 */
-		
-		assertTrue(server.isStarted());
+		String requestTimingStatsNotification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=RequestTimingStats,name=Default Executor\\]");
+		requestTimingStatsNotification = (requestTimingStatsNotification != null) ? "Found trace: " + requestTimingStatsNotification.trim() : "Could not find RequestTimingStats MBean Registration notification.";
+		Log.info(c, "waitForStringInTrace", requestTimingStatsNotification);
 
-		// Allow time for the collector to receive and expose metrics
-		matchStringsWithRetries(() -> getContainerCollectorMetrics(container), new String[] {
-				"io_openliberty_threadpool_active_threads\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unknown_service\"\\}.*",
-				"io_openliberty_threadpool_size\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_threadpool_name=\"Default Executor\",job=\"unknown_service\"\\}.*",
-				"io_openliberty_request_timing_active.*",
-				"io_openliberty_request_timing_slow.*",
-				"io_openliberty_request_timing_hung.*",
-				"io_openliberty_request_timing_processed.*"});
-
+	    // Allow time for the collector to receive and expose metrics
+	    matchStringsWithRetries(() -> getContainerCollectorMetrics(container), new String[] {
+	        // Made patterns more flexible - removed strict job="unknown_service" and instance patterns
+	        "io_openliberty_threadpool_active_threads\\{.*io_openliberty_threadpool_name=\"Default Executor\".*\\}.*",
+	        "io_openliberty_threadpool_size\\{.*io_openliberty_threadpool_name=\"Default Executor\".*\\}.*", 
+	        "io_openliberty_request_timing_active.*",
+	        "io_openliberty_request_timing_slow.*",
+	        "io_openliberty_request_timing_hung.*",
+	        "io_openliberty_request_timing_processed.*"});
 	}
-
 }

@@ -1,0 +1,26 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.webcontainer.security_test.servlets')
+}
+
+autoFVT.doLast {
+  /*
+   * Copy basicauth.war into test server
+   */
+  copy {
+    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    into new File(autoFvtDir, 'publish/servers/SSLOptionsServer/apps')
+    rename 'basicauth.zip', 'basicauth.war'
+  }
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer

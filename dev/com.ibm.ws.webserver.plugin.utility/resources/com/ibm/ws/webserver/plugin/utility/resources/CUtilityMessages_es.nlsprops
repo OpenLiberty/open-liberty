@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.collective.utility/resources/com/ibm/ws/collective/utility/resources/UtilityMessages.nlsprops
 #ISMESSAGEFILE FALSE
@@ -61,52 +58,36 @@ password.entriesDidNotMatch=Las contrase\u00f1as no han coincidido.
 
 # Messages common to collective utility tasks
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-common.encodeError=\n\
-No es posible codificar la contrase\u00f1a para el argumento: {0}
+common.encodeError=\nNo es posible codificar la contrase\u00f1a para el argumento: {0}
 
-common.hostError=\n\
-El nombre de host especificado no parece ser v\u00e1lido: {0}\n\
-Confirme que el nombre de host es correcto y que el sistema tiene una conexi\u00f3n de red.
+common.hostError=\nEl nombre de host especificado no parece ser v\u00e1lido: {0}\nConfirme que el nombre de host es correcto y que el sistema tiene una conexi\u00f3n de red.
 
-common.portError=\n\
-El puerto especificado {0} no se ha podido alcanzar. Confirme que el puerto es correcto.
+common.portError=\nEl puerto especificado {0} no se ha podido alcanzar. Confirme que el puerto es correcto.
 
-common.connectionError=\n\
-No es posible completar la operaci\u00f3n del MBean.\n\
-Error: {0}
+common.connectionError=\nNo es posible completar la operaci\u00f3n del MBean.\nError: {0}
 
-common.compatibilityError=\n\
-No se puede acceder a la operaci\u00f3n de MBean pues no est\u00e1 definida en el controlador. Probablemente la versi\u00f3n del controlador es anterior a la versi\u00f3n del miembro.\n\
-Error: {0}
+common.compatibilityError=\nNo se puede acceder a la operaci\u00f3n de MBean pues no est\u00e1 definida en el controlador. Probablemente la versi\u00f3n del controlador es anterior a la versi\u00f3n del miembro.\nError: {0}
 
-common.renameFailed=\n\
-No es posible cambiar el nombre de {0} por {1}
+common.renameFailed=\nNo es posible cambiar el nombre de {0} por {1}
 
-common.regenerateKey=Existe un archivo de almac\u00e9n de claves HTTPS por omisi\u00f3n en {0}.\n\
-Este certificado volver\u00e1 a generarse y se conservar\u00e1 el original.\n
+common.regenerateKey=Existe un archivo de almac\u00e9n de claves HTTPS por omisi\u00f3n en {0}.\nEste certificado volver\u00e1 a generarse y se conservar\u00e1 el original.\n
 
-common.regenerateTrust=Existe un archivo de almac\u00e9n de confianza HTTPS por omisi\u00f3n en {0}.\n\
-Este certificado volver\u00e1 a generarse y se conservar\u00e1 el original.\n
+common.regenerateTrust=Existe un archivo de almac\u00e9n de confianza HTTPS por omisi\u00f3n en {0}.\nEste certificado volver\u00e1 a generarse y se conservar\u00e1 el original.\n
 
-common.validityTooShort=\n\
-La validez especificada {0} es demasiado corta. La validez m\u00ednima es de 365 d\u00edas.
+common.validityTooShort=\nLa validez especificada {0} es demasiado corta. La validez m\u00ednima es de 365 d\u00edas.
 
-common.invalidDN=\n\
-El DN especificado para {0} no es v\u00e1lido: {1}
+common.invalidDN=\nEl DN especificado para {0} no es v\u00e1lido: {1}
 
-common.invalidEndpoint=El punto final de destino para la r\u00e9plica {0} no est\u00e1 en el formato necesario.\n\
-El destino es el puerto de r\u00e9plica de la r\u00e9plica y debe estar en formato\n host:puerto.
+common.invalidEndpoint=El punto final de destino para la r\u00e9plica {0} no est\u00e1 en el formato necesario.\nEl destino es el puerto de r\u00e9plica de la r\u00e9plica y debe estar en formato\n host:puerto.
 
 common.updateServerXML=A\u00f1ada las l\u00edneas siguientes a server.xml para habilitar:\n
 
 
 # Messages for establishing SSL trust
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslTrust.autoAccept=Aceptaci\u00f3n autom\u00e1tica de la cadena de certificados para el servidor de destino.\n\
-DN de sujeto de certificado: {0}
+sslTrust.autoAccept=Aceptaci\u00f3n autom\u00e1tica de la cadena de certificados para el servidor de destino.\nDN de sujeto de certificado: {0}
 
-sslTrust.genDigestError=No se puede generar el resumen {0}. \
-Error: {1}
+sslTrust.genDigestError=No se puede generar el resumen {0}. Error: {1}
 
 sslTrust.noDefaultTrust=La confianza SSL no se ha establecido con el servidor de destino.
 
@@ -122,12 +103,13 @@ sslTrust.certSerial=N\u00famero de serie: {0}
 
 sslTrust.certExpires=Caduca: {0}
 
+sslTrust.certSHA256Digest=SHA256 digerir: {0}
+
 sslTrust.certSHADigest=Conversi\u00f3n SHA-1: {0}
 
 sslTrust.certMD5Digest=Conversi\u00f3n MD5: {0}
 
-sslTrust.promptToAcceptTrust=\u00bfDesea aceptar la cadena de certificados anterior? \
-(s/n) 
+sslTrust.promptToAcceptTrust=\u00bfDesea aceptar la cadena de certificados anterior? (s/n) 
 # Note to translator this value must be the same as the translation for y in the sslTrust.promptToAcceptTrust brackets.
 yes.response.short=s
 yes.response.full=s\u00ed
@@ -139,8 +121,7 @@ sslTrust.rejectTrust=El usuario ha rechazado la solicitud de confiar en la caden
 
 # Messages for registering a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-hostAuthInfo.bothCredentialsSet=Se han establecido {0} y {1}. Elija uno.\n\
-S\u00f3lo debe especificarse un medio de autenticaci\u00f3n.
+hostAuthInfo.bothCredentialsSet=Se han establecido {0} y {1}. Elija uno.\nS\u00f3lo debe especificarse un medio de autenticaci\u00f3n.
 
 hostAuthInfo.sshKeyPasswordWithoutKey=Se ha especificado una contrase\u00f1a de clave privada SSH sin la correspondiente clave privada.
 
@@ -148,61 +129,36 @@ hostAuthInfo.useSudoFalseWithSudoOptions=useSudo se ha establecido en false, per
 
 # Messages for registering a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-encoding.aesRequiresKey=La codificaci\u00f3n aes requiere una clave. \
-Especifique una utilizando --key.
+encoding.aesRequiresKey=La codificaci\u00f3n aes requiere una clave. Especifique una utilizando --key.
 
-encoding.xorDoesNotSupportKey=La codificaci\u00f3n xor no admite una clave. \
-No especifique --key.
+encoding.xorDoesNotSupportKey=La codificaci\u00f3n xor no admite una clave. No especifique --key.
 
 encoding.unsupportedEncoding=Valor de codificaci\u00f3n no soportado {0}.
 
 # Messages for registering a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-ssh.invalidSSHKeyPair=\n\
-El par de claves SSH especificado no era v\u00e1lido.\n\
-Error: {0}
+ssh.invalidSSHKeyPair=\nEl par de claves SSH especificado no era v\u00e1lido.\nError: {0}
 
-ssh.couldNotCreateSSHKeys=\n\
-No se pueden crear las claves SSH por omisi\u00f3n para la autenticaci\u00f3n de host.\n\
-Error: {0}
+ssh.couldNotCreateSSHKeys=\nNo se pueden crear las claves SSH por omisi\u00f3n para la autenticaci\u00f3n de host.\nError: {0}
 
-ssh.couldNotReadSSHKeys=\n\
-No se pueden leer (o grabar) las claves SSH.\n\
-Error: {0}
+ssh.couldNotReadSSHKeys=\nNo se pueden leer (o grabar) las claves SSH.\nError: {0}
 
 ssh.updateAuthorizedKeys=Actualizando las claves autorizadas con la nueva clave p\u00fablica...
 
-ssh.cannotUpdateAuthorizedKeys=\n\
-No se puede actualizar el archivo de claves autorizado para el usuario: {0}\n\
-Se comprueba el archivo de claves autorizado en el inicio de usuario: {1}\n\
-Actualizar el archivo de claves autorizado con la siguiente clave p\u00fablica:\n\
-{2}\n\
-Error: {3}
+ssh.cannotUpdateAuthorizedKeys=\nNo se puede actualizar el archivo de claves autorizado para el usuario: {0}\nSe comprueba el archivo de claves autorizado en el inicio de usuario: {1}\nActualizar el archivo de claves autorizado con la siguiente clave p\u00fablica:\n{2}\nError: {3}
 
 
 # Messages for creation of a collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-create.start=Creando certificados necesarios para establecer un colectivo...\n\
-Esta operaci\u00f3n puede tardar un poco.
+create.start=Creando certificados necesarios para establecer un colectivo...\nEsta operaci\u00f3n puede tardar un poco.
 
-create.abort=\n\
-Terminando anormalmente configuraci\u00f3n de servidor de controlador colectivo.
+create.abort=\nTerminando anormalmente configuraci\u00f3n de servidor de controlador colectivo.
 
-create.errGetHostName=\n\
-No se ha podido determinar el nombre de host. Se toma por omisi\u00f3n {0}.\n\
-Causa: {1}\n\
-Para establecer expl\u00edcitamente el nombre de host, utilice la opci\u00f3n --hostName.
+create.errGetHostName=\nNo se ha podido determinar el nombre de host. Se toma por omisi\u00f3n {0}.\nCausa: {1}\nPara establecer expl\u00edcitamente el nombre de host, utilice la opci\u00f3n --hostName.
 
-create.errorAlreadyHasResources=\n\
-El directorio resources/collective del servidor ya existe.\n\
-Para volver a crear el colectivo, elimine todo el directorio.\n\
-Para ampliar un colectivo existente, utilice la tarea de duplicaci\u00f3n.
+create.errorAlreadyHasResources=\nEl directorio resources/collective del servidor ya existe.\nPara volver a crear el colectivo, elimine todo el directorio.\nPara ampliar un colectivo existente, utilice la tarea de duplicaci\u00f3n.
 
-create.configLocationInDefaults=\n\
-La ubicaci\u00f3n especificada por la opci\u00f3n --createConfigFile est\u00e1 en el\n\
-directorio de servidor configDropins/defaults. No es una ubicaci\u00f3n\n\
-v\u00e1lida para la configuraci\u00f3n colectiva generada porque todos los\n\
-controladores comparten la ubicaci\u00f3n. Especifique una ubicaci\u00f3n diferente.
+create.configLocationInDefaults=\nLa ubicaci\u00f3n especificada por la opci\u00f3n --createConfigFile est\u00e1 en el\ndirectorio de servidor configDropins/defaults. No es una ubicaci\u00f3n\nv\u00e1lida para la configuraci\u00f3n colectiva generada porque todos los\ncontroladores comparten la ubicaci\u00f3n. Especifique una ubicaci\u00f3n diferente.
 
 create.genCertControllerRoot=Se ha generado correctamente el certificado ra\u00edz del controlador.
 
@@ -212,46 +168,31 @@ create.genCertServerIdentity=Se ha generado correctamente el certificado de iden
 
 create.genCertHTTPS=Se ha generado correctamente el certificado HTTPS.
 
-create.failedKSSave=\n\
-No es posible guardar el almac\u00e9n de claves {0}
+create.failedKSSave=\nNo es posible guardar el almac\u00e9n de claves {0}
 
-create.cleanupFail=\n\
-Error al limpiar los archivos generados. No es posible suprimir {0}\n\
-Elimine el directorio manualmente, compruebe los permisos de archivo\n\
-\ y vuelva a intentarlo.
+create.cleanupFail=\nError al limpiar los archivos generados. No es posible suprimir {0}\nElimine el directorio manualmente, compruebe los permisos de archivo\n y vuelva a intentarlo.
 
 create.successful=Se ha configurado correctamente la configuraci\u00f3n del controlador colectivo para {0}.\n
 
-create.configureSecurity=Aseg\u00farese de que la seguridad administrativa est\u00e1 configurada para el servidor.\n\
-Es necesario un usuario de administraci\u00f3n para unir miembros al colectivo.
+create.configureSecurity=Aseg\u00farese de que la seguridad administrativa est\u00e1 configurada para el servidor.\nEs necesario un usuario de administraci\u00f3n para unir miembros al colectivo.
 
 create.certUtil.NotAvailable=La operaci\u00f3n solicitada no est\u00e1 disponible en esta edici\u00f3n de WebSphere.
 
 # Messages for joining a collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-join.start=Uniendo al colectivo con el controlador de destino {0}:{1}...\n\
-Esta operaci\u00f3n puede tardar un poco.
+join.start=Uniendo al colectivo con el controlador de destino {0}:{1}...\nEsta operaci\u00f3n puede tardar un poco.
 
-join.abort=\n\
-Terminando anormalmente uni\u00f3n al colectivo.
+join.abort=\nTerminando anormalmente uni\u00f3n al colectivo.
 
-join.errorAlreadyHasResources=El directorio resources/collective ya existe para este servidor.\n\
-Puede que el servidor ya sea un miembro.\n\
-Para volver a unirlo al colectivo, ejecute la tarea remove o suprima manualmente el\n\
-directorio resources/collective y vuelva a intentarlo.
+join.errorAlreadyHasResources=El directorio resources/collective ya existe para este servidor.\nPuede que el servidor ya sea un miembro.\nPara volver a unirlo al colectivo, ejecute la tarea remove o suprima manualmente el\ndirectorio resources/collective y vuelva a intentarlo.
 
-join.writeKeystoreFail=\n\
-Error al grabar el almac\u00e9n de claves necesario en disco {0}
+join.writeKeystoreFail=\nError al grabar el almac\u00e9n de claves necesario en disco {0}
 
-join.cleanupFail=\n\
-Error al limpiar los archivos generados. No es posible suprimir {0}\n\
-Elimine el directorio manualmente, compruebe los permisos de archivo\n\
-y vuelva a intentarlo.
+join.cleanupFail=\nError al limpiar los archivos generados. No es posible suprimir {0}\nElimine el directorio manualmente, compruebe los permisos de archivo\ny vuelva a intentarlo.
 
 join.mbeanComplete=Se ha completado satisfactoriamente la petici\u00f3n de MBean para el controlador.
 
-join.registeredAlready=El servidor especificado {0} ya parece ser un miembro.\n\
-Para volver a unirlo al colectivo, ejecute la tarea remove y vuelva a intentarlo.
+join.registeredAlready=El servidor especificado {0} ya parece ser un miembro.\nPara volver a unirlo al colectivo, ejecute la tarea remove y vuelva a intentarlo.
 
 join.successful=Se ha unido satisfactoriamente el colectivo para el servidor {0}.\n
 
@@ -259,31 +200,24 @@ join.useHostCredentialsButOtherCtedentialsAreSet=Si est\u00e1 establecido useHos
 
 deployAdminMetadata.mbeanComplete=Se ha completado satisfactoriamente la solicitud de AdminMetadataManagerMBean para el controlador.
 
-deployAdminMetadata.start=Desplegando metadatos administrativos en el repositorio colectivo...\n\
-Esta operaci\u00f3n puede tardar un poco.
+deployAdminMetadata.start=Desplegando metadatos administrativos en el repositorio colectivo...\nEsta operaci\u00f3n puede tardar un poco.
 
 allocateDeployVariables.mbeanComplete=Se ha completado satisfactoriamente la solicitud de CollectiveRepositoryMBean para el controlador.
 
-allocateDeployVariables.start=Asignando variables de despliegue en el repositorio colectivo...\n\
-Esta operaci\u00f3n puede tardar un poco.
+allocateDeployVariables.start=Asignando variables de despliegue en el repositorio colectivo...\nEsta operaci\u00f3n puede tardar un poco.
 
 AllocatedDeployVars=La variable de despliegue asignada:
 deployVarsNotFound=La variable de despliegue sin definir: {0}
-deployVarsAreAllocated=Las variables de despliegue se han asignado y se ha creado deployVariables.xml en el directorio \
-/configDropins/overrides del servidor.
+deployVarsAreAllocated=Las variables de despliegue se han asignado y se ha creado deployVariables.xml en el directorio /configDropins/overrides del servidor.
 
 # Messages for generating a collective key
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 genKey.start=Generando almac\u00e9n de claves con el controlador de destino {0}:{1}...\n
-genKey.abort=\n\
-Terminando anormalmente genKey.
+genKey.abort=\nTerminando anormalmente genKey.
 
-genKey.writeKeystoreFail=\n\
-Error al grabar el almac\u00e9n de claves necesario en disco {0}
+genKey.writeKeystoreFail=\nError al grabar el almac\u00e9n de claves necesario en disco {0}
 
-genKey.cleanupFail=\n\
-Error al limpiar los archivos generados. No es posible suprimir {0}\n\
-Elimine el archivo manualmente, compruebe los permisos de archivo\ny vuelva a intentarlo.
+genKey.cleanupFail=\nError al limpiar los archivos generados. No es posible suprimir {0}\nElimine el archivo manualmente, compruebe los permisos de archivo\ny vuelva a intentarlo.
 
 genKey.mbeanComplete=Se ha completado satisfactoriamente la petici\u00f3n de MBean para el controlador.
 
@@ -292,46 +226,32 @@ genKey.generatedKeystore=Se ha generado satisfactoriamente el almac\u00e9n de cl
 
 # Messages for replicating a controller 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-replicate.start=Duplicando el controlador colectivo de destino {0}:{1}...\n\
-Esta operaci\u00f3n puede tardar un poco.
+replicate.start=Duplicando el controlador colectivo de destino {0}:{1}...\nEsta operaci\u00f3n puede tardar un poco.
 
-replicate.abort=\n\
-Terminando anormalmente el controlador duplicaci\u00f3n.
+replicate.abort=\nTerminando anormalmente el controlador duplicaci\u00f3n.
 
-replicate.errorAlreadyHasResources=El directorio resources/collective ya existe para este servidor.\n\
-El servidor puede que ya sea un controlador.\n\
-Para duplicar el controlador, ejecute la tarea remove o suprima manualmente el\n\
-directorio resources/collective y vuelva a intentarlo.
+replicate.errorAlreadyHasResources=El directorio resources/collective ya existe para este servidor.\nEl servidor puede que ya sea un controlador.\nPara duplicar el controlador, ejecute la tarea remove o suprima manualmente el\ndirectorio resources/collective y vuelva a intentarlo.
 
-replicate.writeKeystoreFail=\n\
-Error al grabar el almac\u00e9n de claves necesario en disco {0}
+replicate.writeKeystoreFail=\nError al grabar el almac\u00e9n de claves necesario en disco {0}
 
-replicate.writeFileFail=\n\
-Error al grabar el archivo necesario en disco {0}
+replicate.writeFileFail=\nError al grabar el archivo necesario en disco {0}
 
-replicate.cleanupFail=\n\
-Error al limpiar los archivos generados. No es posible suprimir {0}\n\
-Elimine el directorio manualmente, compruebe los permisos de archivo\n\
-y vuelva a intentarlo.
+replicate.cleanupFail=\nError al limpiar los archivos generados. No es posible suprimir {0}\nElimine el directorio manualmente, compruebe los permisos de archivo\ny vuelva a intentarlo.
 
 replicate.mbeanComplete=Se ha completado satisfactoriamente la petici\u00f3n de MBean para el controlador.
 
-replicate.registeredAlready=El servidor especificado {0} ya parece ser un miembro.\n\
-Para duplicar el controlador, ejecute la tarea remove y vuelva a intentarlo.
+replicate.registeredAlready=El servidor especificado {0} ya parece ser un miembro.\nPara duplicar el controlador, ejecute la tarea remove y vuelva a intentarlo.
 
 replicate.success=Se ha replicado satisfactoriamente el controlador como servidor {0}.\n
 
 
-replicate.configureSecurity=Aseg\u00farese de que la seguridad administrativa est\u00e9 configurada para el nuevo servidor\n\
-exactamente igual que para el controlador colectivo actual. Establezca tambi\u00e9n la\n\
-contrase\u00f1a de collectiveRootKeys en la contrase\u00f1a correcta.\n
+replicate.configureSecurity=Aseg\u00farese de que la seguridad administrativa est\u00e9 configurada para el nuevo servidor\nexactamente igual que para el controlador colectivo actual. Establezca tambi\u00e9n la\ncontrase\u00f1a de collectiveRootKeys en la contrase\u00f1a correcta.\n
 
 # Messages for leaving a collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 remove.attemptUnregister=Intentando anular el registro del servidor del colectivo...
 
-remove.unregisteredAlready=El servidor {0} no est\u00e1 registrado.\n\
-Es posible que est\u00e9 registrado bajo otro nombre de host.
+remove.unregisteredAlready=El servidor {0} no est\u00e1 registrado.\nEs posible que est\u00e9 registrado bajo otro nombre de host.
 
 remove.unregisterFailed=El servidor {0} no se ha podido registrar debido a un error.
 
@@ -342,35 +262,29 @@ remove.attemptResourceDelete=Intentando eliminar recursos para el colectivo del 
 remove.noFilesRemoved=No se han eliminado recursos colectivos.
 remove.noResources=No se han encontrado recursos colectivos.
 
-remove.manuallyRemove=Algunos de los archivos de {0} no han podido eliminarse.\n\
-Deber\u00e1 eliminarlos manualmente.
+remove.manuallyRemove=Algunos de los archivos de {0} no han podido eliminarse.\nDeber\u00e1 eliminarlos manualmente.
 
 remove.filesSuccess=Los recursos de pertenencia al colectivo se han eliminado satisfactoriamente.
 
-remove.updateXML=\n\
-Actualice el archivo server.xml y elimine los elementos siguientes:
+remove.updateXML=\nActualice el archivo server.xml y elimine los elementos siguientes:
 
 removeAllAdminMetadata.mbeanComplete=Se ha completado satisfactoriamente la solicitud de AdminMetadataManagerMBean para el controlador.
 
-removeAllAdminMetadata.start=Eliminado todos los metadatos administrativos del repositorio colectivo...\n\
-Esta operaci\u00f3n puede tardar un poco.
+removeAllAdminMetadata.start=Eliminado todos los metadatos administrativos del repositorio colectivo...\nEsta operaci\u00f3n puede tardar un poco.
 
 remove.removeAllAdminMetadataFailed=Los metadatos administrativos con el tipo de recurso {0} y la identidad {1} no pueden eliminarse del repositorio colectivo debido a un error.
 
 getAdminMetadata.mbeanComplete=Se ha completado satisfactoriamente la solicitud de AdminMetadataManagerMBean para el controlador.
 
-releaseDeployVariables.start=Liberando todas las variables de despliegue del repositorio colectivo...\n\
-Esta operaci\u00f3n puede tardar un poco.
+releaseDeployVariables.start=Liberando todas las variables de despliegue del repositorio colectivo...\nEsta operaci\u00f3n puede tardar un poco.
 
 releaseDeployVariables.mbeanComplete=Se ha completado satisfactoriamente la solicitud de CollectiveRepositoryMBean para el controlador.
 
-remove.releaseDeployVariablesFailed=Las variables de despliegue {0} en el nombre de host {1} no se pueden eliminar del repositorio colectivo \
-debido a un error.
+remove.releaseDeployVariablesFailed=Las variables de despliegue {0} en el nombre de host {1} no se pueden eliminar del repositorio colectivo debido a un error.
 
 # Messages for registering a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-registerHost.abort=\n\
-Terminando anormalmente registerHost.
+registerHost.abort=\nTerminando anormalmente registerHost.
 
 registerHost.attemptRegister=Registro del host en el colectivo...
 
@@ -383,8 +297,7 @@ registerHost.registerSuccess=El host {0} se ha registrado satisfactoriamente.
 
 # Messages for updating a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-updateHost.abort=\n\
-Terminando anormalmente updateHost.
+updateHost.abort=\nTerminando anormalmente updateHost.
 
 updateHost.attemptRegister=Actualizando la informaci\u00f3n de autenticaci\u00f3n para el host...
 
@@ -410,8 +323,7 @@ addReplica.attempt=A\u00f1adiendo el punto final al conjunto de r\u00e9plicas...
 
 addReplica.alreadyAdded=El punto final de r\u00e9plica {0} ya forma parte del conjunto de r\u00e9plicas.
 
-addReplica.invalidEndpoint=El punto final de r\u00e9plica {0} no se puede a\u00f1adir al conjunto de r\u00e9plicas.\n\
-Confirme que el punto final de r\u00e9plica es correcto y que la r\u00e9plica est\u00e1 en ejecuci\u00f3n.
+addReplica.invalidEndpoint=El punto final de r\u00e9plica {0} no se puede a\u00f1adir al conjunto de r\u00e9plicas.\nConfirme que el punto final de r\u00e9plica es correcto y que la r\u00e9plica est\u00e1 en ejecuci\u00f3n.
 
 addReplica.error=El punto final de r\u00e9plica {0} no se ha podido a\u00f1adir debido a un error.
 
@@ -436,8 +348,7 @@ setMaintenanceMode.error=No se ha podido establecer la modalidad de mantenimient
 
 setMaintenanceMode.success=La modalidad de mantenimiento para {0} se ha establecido de forma satisfactoria.
 
-setMaintenanceMode.alt=Debe iniciarse un servidor alternativo. \
-La modalidad de mantenimiento se establecer\u00e1 para {0} cuando se inicie el servidor alternativo.
+setMaintenanceMode.alt=Debe iniciarse un servidor alternativo. La modalidad de mantenimiento se establecer\u00e1 para {0} cuando se inicie el servidor alternativo.
 
 setMaintenanceMode.noAltServer=No se ha podido establecer la modalidad de mantenimiento para {0} porque no hay un servidor alternativo disponible.
 
@@ -457,7 +368,6 @@ getMaintenanceMode.inMM={0} est\u00e1 en modalidad de mantenimiento.
 
 getMaintenanceMode.notInMM={0} no est\u00e1 en modalidad de mantenimiento.
 
-getMaintenanceMode.alt=Debe iniciarse un servidor alternativo. \
-La modalidad de mantenimiento se establecer\u00e1 para {0} cuando se inicie el servidor alternativo.
+getMaintenanceMode.alt=Debe iniciarse un servidor alternativo. La modalidad de mantenimiento se establecer\u00e1 para {0} cuando se inicie el servidor alternativo.
 
 getMaintenanceMode.error=No se ha podido obtener la modalidad de mantenimiento para {0} debido a un error.

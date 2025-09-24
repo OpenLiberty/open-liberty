@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import io.openliberty.reporting.internal.DataCollectorException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class HashUtils {
 
@@ -29,7 +30,7 @@ public class HashUtils {
     public static String hashString(String input) throws DataCollectorException {
 
         try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            MessageDigest md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
             byte[] bytes = md.digest(input.getBytes(StandardCharsets.UTF_8));
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < bytes.length; i++) {

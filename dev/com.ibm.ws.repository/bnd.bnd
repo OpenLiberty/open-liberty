@@ -38,7 +38,8 @@ Private-Package: com.ibm.ws.repository.resources.internal, \
 -buildpath: \
     com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
     com.ibm.ws.org.apache.aries.util;version=latest, \
-    org.eclipse.osgi;version=latest
+    org.eclipse.osgi;version=latest, \
+    com.ibm.ws.kernel.service;version=latest
 
 -testpath: \
     org.jmockit:jmockit;version=1.25, \

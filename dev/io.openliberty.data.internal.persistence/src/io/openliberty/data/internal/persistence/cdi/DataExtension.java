@@ -46,6 +46,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.Util;
@@ -147,12 +148,10 @@ public class DataExtension implements Extension {
             FutureEMBuilder futureEMBuilder = new FutureEMBuilder( //
                             provider, repositoryInterface, loader, dataStore);
 
-            Class<?>[] primaryEntityClassReturnValue = new Class<?>[1];
-            Map<Class<?>, List<QueryInfo>> queriesPerEntityClass = new HashMap<>();
-            if (discoverEntityClasses(repositoryType,
-                                      queriesPerEntityClass,
-                                      primaryEntityClassReturnValue,
-                                      provider)) {
+            RepositoryProducer<Object> producer = discoverEntityClasses(repositoryType,
+                                                                        provider,
+                                                                        beanMgr);
+            if (producer != null) {
 
                 FutureEMBuilder previous = entityGroups.putIfAbsent(futureEMBuilder,
                                                                     futureEMBuilder);
@@ -161,13 +160,12 @@ public class DataExtension implements Extension {
                     futureEMBuilder.addRepositoryInterface(repositoryInterface);
                 }
 
-                for (Class<?> entityClass : queriesPerEntityClass.keySet())
+                for (Class<?> entityClass : producer.queriesPerEntityClass.keySet())
                     if (!QueryInfo.ENTITY_TBD.equals(entityClass))
                         futureEMBuilder.addEntity(entityClass);
 
-                RepositoryProducer<Object> producer = new RepositoryProducer<>( //
-                                repositoryInterface, beanMgr, provider, this, //
-                                futureEMBuilder, primaryEntityClassReturnValue[0], queriesPerEntityClass);
+                producer.setFutureEMBuilder(futureEMBuilder);
+
                 @SuppressWarnings("unchecked")
                 Bean<Object> bean = beanMgr.createBean(producer, (Class<Object>) repositoryInterface, producer);
                 event.addBean(bean);
@@ -187,21 +185,26 @@ public class DataExtension implements Extension {
      * Many repository interfaces will inherit from DataRepository or another built-in repository class,
      * all of which are parameterized with the entity class as the first parameter.
      *
-     * @param repositoryType                the repository interface as an annotated type.
-     * @param queriesPerEntity              initially empty map to populate with partially completed query information per entity.
-     * @param primaryEntityClassReturnValue initially empty size 1 array for returning the primary entity class, if any.
-     * @param provider                      OSGi service that provides the CDI extension.
-     * @return whether all entity types that appear on the repository interface are supported.
+     * @param repositoryType the repository interface as an annotated type.
+     * @param provider       OSGi service that provides the CDI extension.
+     * @param beanMgr        CDI bean manager.
+     * @return a RepositoryProducer instance (with its futureEMBuilder unassigned)
+     *         if all entity types that appear on the repository interface are
+     *         supported. Otherwise null.
      */
-    private boolean discoverEntityClasses(AnnotatedType<?> repositoryType,
-                                          Map<Class<?>, List<QueryInfo>> queriesPerEntity,
-                                          Class<?>[] primaryEntityClassReturnValue,
-                                          DataProvider provider) {
+    private RepositoryProducer<Object> discoverEntityClasses(AnnotatedType<?> repositoryType,
+                                                             DataProvider provider,
+                                                             BeanManager beanMgr) {
         Class<?> repositoryInterface = repositoryType.getJavaClass();
         Class<?> primaryEntityClass = getPrimaryEntityType(repositoryInterface);
         Set<Class<?>> lifecycleMethodEntityClasses = new HashSet<>();
+        Map<Class<?>, List<QueryInfo>> queriesPerEntity = new HashMap<>();
         List<QueryInfo> queriesWithQueryAnno = new ArrayList<>();
         ArrayList<QueryInfo> additionalQueriesForPrimaryEntity = new ArrayList<>();
+
+        RepositoryProducer<Object> producer = new RepositoryProducer<>( //
+                        repositoryInterface, beanMgr, provider, this, //
+                        queriesPerEntity);
 
         for (Method method : repositoryInterface.getMethods()) {
             if (method.isDefault()) // skip default methods
@@ -214,9 +217,10 @@ public class DataExtension implements Extension {
                  || DataSource.class.equals(returnType)
                  || Connection.class.equals(returnType))) {
                 QueryInfo queryInfo = new QueryInfo( //
+                                producer, //
                                 repositoryInterface, //
                                 method, //
-                                QueryInfo.Type.RESOURCE_ACCESS);
+                                QueryType.RESOURCE_ACCESS);
 
                 List<QueryInfo> queries = queriesPerEntity.get(Void.class);
                 if (queries == null)
@@ -300,6 +304,7 @@ public class DataExtension implements Extension {
                     || method.isAnnotationPresent(Update.class)
                     || method.isAnnotationPresent(Save.class)
                     || method.isAnnotationPresent(Delete.class))) {
+                // TODO 1.1 detect stateful annos and invoke repositoryProducer.setStateful()
                 Class<?> c = method.getParameterTypes()[0];
                 if (Iterable.class.isAssignableFrom(c) || Stream.class.isAssignableFrom(c)) {
                     type = method.getGenericParameterTypes()[0];
@@ -364,6 +369,7 @@ public class DataExtension implements Extension {
             }
 
             queries.add(new QueryInfo( //
+                            producer, //
                             repositoryInterface, //
                             method, //
                             entityParamType, //
@@ -431,14 +437,18 @@ public class DataExtension implements Extension {
 
             if (!queriesWithQueryAnno.isEmpty())
                 queriesPerEntity.put(Query.class, queriesWithQueryAnno);
+
+            producer.setPrimaryEntityClass(primaryEntityClass);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, repositoryInterface.getName() + " has primary entity " + primaryEntityClass,
-                     "and methods that use the following entities:", queriesPerEntity);
+            Tr.debug(this, tc,
+                     repositoryInterface.getName() + " has primary entity " +
+                               primaryEntityClass,
+                     "and methods that use the following entities:",
+                     queriesPerEntity);
 
-        primaryEntityClassReturnValue[0] = primaryEntityClass;
-        return supportsAllEntities;
+        return supportsAllEntities ? producer : null;
     }
 
     /**

@@ -46,6 +46,8 @@ public abstract class TransactionalInterceptor implements Serializable {
 
     private static final SecureAction priv = AccessController.doPrivileged(SecureAction.get());
 
+    private final boolean behaveAccordingToSpec = behaveAccordingToSpec();
+
     /*
      * Find the Transactional annotation being processed
      */
@@ -148,8 +150,12 @@ public abstract class TransactionalInterceptor implements Serializable {
         return UOWManagerFactory.getUOWManager();
     }
 
+    private boolean behaveAccordingToSpec() {
+        return ConfigurationProviderManager.getConfigurationProvider().isUTAsSpecified();
+    }
+
     @FFDCIgnore(Exception.class)
-    protected Object runUnderUOWManagingEnablement(int uowType, boolean join, final InvocationContext context, String txLabel) throws Exception {
+    protected Object runUnderUOW(int uowType, boolean join, final InvocationContext context, String txLabel, boolean uTEnabled) throws Exception {
 
         // Get hold of the actual annotation so we can pass the lists of exceptions to runUnderUOW
         final Transactional t = getTransactionalAnnotation(context, txLabel);
@@ -162,13 +168,19 @@ public abstract class TransactionalInterceptor implements Serializable {
             @Override
             public Object run() throws Exception {
                 //disable access to UserTransaction while we're running the user code
-                tranCont.setEnabled(false);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "1: uTEnabled: {0}, behaveAccordingToSpec: {1}", uTEnabled, behaveAccordingToSpec);
+                if (!uTEnabled || behaveAccordingToSpec)
+                    tranCont.setEnabled(uTEnabled);
                 try {
                     return context.proceed();
                 } finally {
                     // reenable access to the UT after we're done. Allows WAS UOW code to
                     // access UT if it needs to.
-                    tranCont.setEnabled(true);
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "2: uTEnabled: {0}, behaveAccordingToSpec: {1}", uTEnabled, behaveAccordingToSpec);
+                    if (!uTEnabled || behaveAccordingToSpec)
+                        tranCont.setEnabled(isUTEnabled);
                 }
             }
         };
@@ -176,34 +188,20 @@ public abstract class TransactionalInterceptor implements Serializable {
         try {
             // allow access to UT while we're within App Server code.  Allows WAS UOW code to use
             // UT methods if it needs to.
-            tranCont.setEnabled(true);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "3: uTEnabled: {0}, behaveAccordingToSpec: {1}", uTEnabled, behaveAccordingToSpec);
+            if (!uTEnabled || behaveAccordingToSpec)
+                tranCont.setEnabled(true);
 
             return getUOWM().runUnderUOW(uowType, join, a, t.rollbackOn(), t.dontRollbackOn());
         } catch (Exception e) {
             throw processException(context, e);
         } finally {
             // Reset access to UT to what it was when we started the method.
-            tranCont.setEnabled(isUTEnabled);
-        }
-    }
-
-    @FFDCIgnore(Exception.class)
-    protected Object runUnderUOWNoEnablement(int uowType, boolean join, final InvocationContext context, String txLabel) throws Exception {
-
-        // Get hold of the actual annotation so we can pass the lists of exceptions to runUnderUOW
-        final Transactional t = getTransactionalAnnotation(context, txLabel);
-
-        final ExtendedUOWAction a = new ExtendedUOWAction() {
-            @Override
-            public Object run() throws Exception {
-                return context.proceed();
-            }
-        };
-
-        try {
-            return getUOWM().runUnderUOW(uowType, join, a, t.rollbackOn(), t.dontRollbackOn());
-        } catch (Exception e) {
-            throw processException(context, e);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "4: uTEnabled: {0}, behaveAccordingToSpec: {1}", uTEnabled, behaveAccordingToSpec);
+            if (!uTEnabled || behaveAccordingToSpec)
+                tranCont.setEnabled(isUTEnabled);
         }
     }
 
