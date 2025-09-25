@@ -300,8 +300,8 @@ configureFIPS.desc=\
 \tJAVA_HOME, JRE_HOME, or WLP_DEFAULT_JAVA_HOME environment variables,\n\
 \tin that order. If none was configured, FIPS 140-3 is configured\n\
 \tbased on the JVM used to run the securityUtility command. The command\n\
-\twill setup FIPS 140-3 for either IBM Semeru Runtimes or IBM SDK, or\n\
-\treturn an error if neither could be determined.\n\n\
+\tsets up FIPS 140-3 for either IBM Semeru Runtimes or IBM SDK, or\n\
+\treturns an error if neither could be determined.\n\n\
 \tFor IBM Semeru Runtimes:\n\
 \tCreates a file containing the FIPS 140-3 custom profile for use by\n\
 \tyour application, which extends the Liberty FIPS140-3-Liberty profile,\n\
@@ -345,7 +345,7 @@ configureFIPS.option-desc.3.customProfileFile=\
 \tserver or client.\n\n\
 \tThe name of the file, without the extension, is used to create the\n\
 \tcustom profile name; it extends the Liberty FIPS140-3-Liberty profile.\n\
-\tThe file name should only contain alphanumeric characters, hyphens (-),\n\
+\tThe file name must contain only alphanumeric characters, hyphens (-),\n\
 \tunderscores (_), and periods (.). The base name of the file cannot be\n\
 \tFIPS140-3-Liberty.\n\n\
 \tMultiple files can be specified with this option by using the\n\
@@ -360,6 +360,6 @@ configureFIPS.option-desc.4.disable=\
 \tDisable FIPS 140-3 by setting the ENABLE_FIPS140_3 environment\n\
 \tvariable to false. This option can be used with the client and server\n\
 \toptions to specify the client or server to disable FIPS 140-3.\n\
-\tOtherwise, it will disable FIPS 140-3 for all clients, servers, and\n\
-\tcommands, except those clients and servers which have been\n\
-\tindividually enabled.
+\tOtherwise, it disables FIPS 140-3 for all clients, servers, and\n\
+\tcommands, except those clients and servers that were individually\n\
+\tenabled.
