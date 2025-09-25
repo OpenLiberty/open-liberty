@@ -110,9 +110,9 @@ Include the following configuration to your server.xml\n\
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 configureFIPS.notIbmSdkNorSemeru=The Java installation is either not from IBM Semeru Runtimes nor IBM SDK, or if it is, it does not support FIPS 140-3.\n\
-Please install Java from either IBM Semeru Runtimes or IBM SDK using a version and operating system that supports FIPS 140-3.\n\
-If you are using IBM Semeru Runtimes, you will need to use version 11.0.29.0, 17.0.17.0, 21.0.9.0, or higher.\n\
-If you are using IBM SDK, you will need to use version 8.0.8.30 or higher.
+Install Java from either IBM Semeru Runtimes or IBM SDK using a version and operating system that supports FIPS 140-3.\n\
+If you are using IBM Semeru Runtimes, use version 11.0.29.0, 17.0.17.0, 21.0.9.0, or higher.\n\
+If you are using IBM SDK, use version 8.0.8.30 or higher.
 
 configureFIPS.zosNotAvailable=The securityUtility configureFIPS command is not supported on z/OS.
 
@@ -135,7 +135,7 @@ configureFIPS.fileNameNotAllowed=The base name of the {0} file cannot be FIPS140
 
 configureFIPS.createdEnvFileToEnableFips=Created the {0} file to enable FIPS 140-3.
 configureFIPS.updatedEnvFileToEnableFips=Updated the {0} file to enable FIPS 140-3.
-configureFIPS.fipsAlreadyEnabled=FIPS 140-3 has already been enabled in the {0} file.
+configureFIPS.fipsAlreadyEnabled=FIPS 140-3 is already enabled in the {0} file.
 
 configureFIPS.updatedEnvFileToDisableFips=Updated the {0} file to disable FIPS 140-3.
 configureFIPS.fipsNotEnabled=FIPS 140-3 is already not enabled in the {0} file.
