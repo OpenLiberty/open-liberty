@@ -31,6 +31,7 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
                 SoReuseAddrTest.class,
                 TcpOptionsDefaultTests.class,
                 ContentTypeResponseHeaderTests.class,
+                ContentMD5HeaderTest.class,
                 AccessLogRolloverTest.class
 })
 
