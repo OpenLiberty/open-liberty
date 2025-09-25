@@ -1355,8 +1355,8 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                 //     Tr.warning(tcWS390, "BBOJ0081", bmd.j2eeName);
                 //     bmd.m_syncToOSThreadValue = false;
                 // } else {
-                //     if (isTraceOn && tc.isDebugEnabled())
-                //         Tr.debug(tc, "EJB requests SynToOSThread, and the server is enabled for SyncToOSThread");
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "DEBUG++++EJB requests SynToOSThread, and the server is enabled for SyncToOSThread");
                 // }
             } else {
                 if (isTraceOn && tc.isDebugEnabled())
@@ -1382,7 +1382,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                 return ((Boolean) injectionObj).booleanValue();
             }
         }
-        return false;
+        return true;
     }
 
     @Override
