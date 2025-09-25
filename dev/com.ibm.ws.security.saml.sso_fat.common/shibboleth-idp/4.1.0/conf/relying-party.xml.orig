@@ -277,7 +277,7 @@
 						p:signResponses="false"
 						p:signAssertions="false"
 						p:encryptAssertions="true"
-						p:securityConfiguration-ref="encryption128"
+						p:securityConfiguration-ref="encryption128ecdh"
 						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
 					<ref bean="SAML2.ECP" />
 					<ref bean="SAML2.Logout" />
@@ -661,7 +661,25 @@
 		</property>
 	</bean>
 	
-	
+	<bean
+		id="encryption128ecdh"
+		class="net.shibboleth.idp.profile.config.SecurityConfiguration"
+	    >
+		<property name="signatureSigningConfiguration">
+			<ref bean="shibboleth.SigningConfiguration.SHA256" />
+		</property>
+		<property name="encryptionConfiguration">
+			<bean parent="shibboleth.BasicEncryptionConfiguration">
+				<property name="dataEncryptionAlgorithms">
+					<list>
+						<util:constant
+							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128_GCM" />
+					</list>
+				</property>
+
+			</bean>
+		</property>
+	</bean>
 
 	<bean
 		id="encryption192"
