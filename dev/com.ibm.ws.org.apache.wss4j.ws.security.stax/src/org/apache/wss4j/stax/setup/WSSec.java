@@ -564,6 +564,7 @@ public class WSSec {
         return schema;
     }
 
+	 // Liberty Change: Backport 4.x
     /**
      * @return If FIPS 140-3 is enabled "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512", "http://www.w3.org/2000/09/xmldsig#rsa-sha1" otherwise.
      */

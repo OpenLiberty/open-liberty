@@ -203,8 +203,7 @@ public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
         } 
         return true;
     }
-	
-		// Liberty Change End
+	// Liberty Change End
 
     protected String getPassword(String userName, AbstractToken info,
                                  int usage, SoapMessage message) {

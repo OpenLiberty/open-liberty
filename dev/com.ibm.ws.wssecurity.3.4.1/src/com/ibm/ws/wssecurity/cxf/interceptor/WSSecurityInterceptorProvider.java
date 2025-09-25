@@ -39,6 +39,7 @@ public class WSSecurityInterceptorProvider extends AbstractPolicyInterceptorProv
         this.getOutFaultInterceptors().add(PolicyBasedWSS4JOutInterceptor.INSTANCE);
         //this.getInInterceptors().add(PolicyBasedWSS4JInInterceptor.INSTANCE);
         this.getInInterceptors().add(new PolicyBasedWSS4JInInterceptor());
+
         //this.getInFaultInterceptors().add(PolicyBasedWSS4JInInterceptor.INSTANCE);
         this.getInFaultInterceptors().add(new PolicyBasedWSS4JInInterceptor());
     }
