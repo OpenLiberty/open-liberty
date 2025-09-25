@@ -371,7 +371,7 @@ public class BasicMessageContextTest {
     }
 
     @Test
-    public void setDecrypterTest() throws SamlException, KeyStoreException, CertificateException {
+    public void setKeyDecrypterTest() throws SamlException, KeyStoreException, CertificateException {
         mockery.checking(new Expectations() {
             {
                 one(ssoService).getPrivateKey();
@@ -380,7 +380,8 @@ public class BasicMessageContextTest {
                 will(returnValue(x509certificate));
             }
         });
-        instance.setDecrypter();
+
+        instance.setKeyDecrypter();
     }
 
     @Test

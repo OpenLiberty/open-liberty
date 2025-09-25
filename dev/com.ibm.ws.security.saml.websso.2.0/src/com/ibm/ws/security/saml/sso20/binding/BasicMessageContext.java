@@ -47,6 +47,7 @@ import org.opensaml.xmlsec.encryption.support.SimpleKeyInfoReferenceEncryptedKey
 import org.opensaml.xmlsec.encryption.support.SimpleRetrievalMethodEncryptedKeyResolver;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.impl.CollectionKeyInfoCredentialResolver;
+import org.opensaml.xmlsec.keyinfo.impl.ChainingKeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.impl.KeyInfoProvider;
 import org.opensaml.xmlsec.keyinfo.impl.LocalKeyInfoCredentialResolver;
 import org.opensaml.xmlsec.keyinfo.impl.StaticKeyInfoCredentialResolver;
@@ -272,8 +273,12 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
             keyInfoProviders.add(new DEREncodedKeyValueProvider());
             keyInfoProviders.add(new InlineX509DataProvider());
             keyInfoProviders.add(new AgreementMethodKeyInfoProvider());
-            KeyInfoCredentialResolver credresolver = new CollectionKeyInfoCredentialResolver(credentials);//new StaticKeyInfoCredentialResolver(decryptingCredential);
-            LocalKeyInfoCredentialResolver resolver = new LocalKeyInfoCredentialResolver(keyInfoProviders, credresolver);
+            KeyInfoCredentialResolver credresolver = new CollectionKeyInfoCredentialResolver(credentials);
+            KeyInfoCredentialResolver staticKeyInfoResolver = new StaticKeyInfoCredentialResolver(decryptingCredential);  // for when no KeyInfo is provided in the samlResponse's EncryptedKey Element (KeyCloak IDP does not supply)
+            LocalKeyInfoCredentialResolver localKeyInfoResolver = new LocalKeyInfoCredentialResolver(keyInfoProviders, credresolver);  // ecdh support + rsa-oaep when KeyInfo is provided in SAMLResponse's EncryptedKey Element
+
+            // try localKeyResolver first, if KeyInfo not found then use static one that is already stored.
+            ChainingKeyInfoCredentialResolver kekResolver = new ChainingKeyInfoCredentialResolver(Arrays.asList(localKeyInfoResolver, staticKeyInfoResolver));
 
             /*
              * decrypter = new Decrypter(null, // symmetric
@@ -285,21 +290,11 @@ public class BasicMessageContext<InboundMessageType extends SAMLObject, Outbound
              * null, // asymmetric
              * null);
              */
-            decrypter = new Decrypter(resolver, resolver, encryptedKeyResolver);
-            decrypter.setRootInNewDocument(true);
-
-        }
-    }
-
-    // Construct an decrypter according the SsoConfig
-    public void setDecrypter() throws SamlException {
-        if (decrypter == null) {
-            Credential decryptingCredential = RequestUtil.getDecryptingCredential(ssoService);
-            KeyInfoCredentialResolver resolver = new StaticKeyInfoCredentialResolver(decryptingCredential);
-            decrypter = new Decrypter(null, // symmetric
-                            resolver, // asymmetric
+            decrypter = new Decrypter(null,
+                            kekResolver,
                             encryptedKeyResolver);
             decrypter.setRootInNewDocument(true);
+
         }
     }
 
