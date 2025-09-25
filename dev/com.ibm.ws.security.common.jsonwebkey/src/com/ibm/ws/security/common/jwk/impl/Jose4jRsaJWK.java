@@ -161,7 +161,7 @@ public class Jose4jRsaJWK extends RsaJsonWebKey implements JWK {
     }
 
     /** {@inheritDoc} */
-//    @Override
+    @Override
     public String getKeyX5tS256() {
         return getX509CertificateSha256Thumbprint();
     }
