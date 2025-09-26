@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,15 +17,17 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -44,11 +46,13 @@ public class WrongPackageTest extends FATServletClient {
     private static final String CWWKM0483I_WEB_MOD_POSTCONSTRUCT = "CWWKM0483I:.*javax.annotation.PostConstruct.*WrongPackageWeb.*WrongPackageApp.*jakarta.annotation.PostConstruct.*io.openliberty.injection.jakarta.web.JakartaStatelessWarPostConstructBean";
     private static final String CWWKM0483I_WEB_APP_RESOURCE = "CWWKM0483I:.*javax.annotation.Resource.*WrongPackageWebApp.*WrongPackageWebApp.*jakarta.annotation.Resource.*io.openliberty.injection.jakarta.webapp.WrongPackageWebAppServlet";
 
-    @Server("InjectionJakartaEE9Server")
-    public static LibertyServer ee9server;
+    @Server("InjectionJakartaServer")
+    public static LibertyServer jakarta_server;
 
-    @Server("InjectionJakartaEE10Server")
-    public static LibertyServer ee10server;
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification() //
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().setSkipTransformation(true).forServers("InjectionJakartaServer")) //
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true).forServers("InjectionJakartaServer"));
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -58,84 +62,47 @@ public class WrongPackageTest extends FATServletClient {
         EnterpriseArchive WrongPackageApp = ShrinkWrap.create(EnterpriseArchive.class, "WrongPackageApp.ear");
         WrongPackageApp.addAsModule(WrongPackageEJB).addAsModule(WrongPackageWeb);
 
-        ShrinkHelper.exportDropinAppToServer(ee9server, WrongPackageApp, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.exportDropinAppToServer(ee10server, WrongPackageApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(jakarta_server, WrongPackageApp, DeployOptions.SERVER_ONLY);
 
         WebArchive WrongPackageWebApp = ShrinkHelper.buildDefaultApp("WrongPackageWebApp.war", "io.openliberty.injection.jakarta.webapp.");
 
-        ShrinkHelper.exportDropinAppToServer(ee9server, WrongPackageWebApp, DeployOptions.SERVER_ONLY);
-        ShrinkHelper.exportDropinAppToServer(ee10server, WrongPackageWebApp, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(jakarta_server, WrongPackageWebApp, DeployOptions.SERVER_ONLY);
     }
 
     @AfterClass
     public static void cleanUp() throws Exception {
-        if (ee9server != null && ee9server.isStarted()) {
-            ee9server.stopServer();
-        }
-        if (ee10server != null && ee10server.isStarted()) {
-            ee10server.stopServer();
+        if (jakarta_server != null && jakarta_server.isStarted()) {
+            jakarta_server.stopServer();
         }
     }
 
     /**
      * This test verifies an informational message is logged when the javax.annotation.Resource,
      * javax.annotation.Resources, javax.annotation.PostConstruct, and javax.annotation.PreDestory
-     * annotations are used with Jakarta EE 9 features and the annotation is ignored. There should
+     * annotations are used with Jakarta EE features and the annotation is ignored. There should
      * be one message per annotation type per module. Also, the jakarta.annotation.Resource
      * annotation works as expected.
      */
     @Test
-    public void testWrongPackageCommonAnnotations_EE9() throws Exception {
+    public void testWrongPackageCommonAnnotations() throws Exception {
         try {
-            ee9server.startServer();
+            jakarta_server.startServer();
             assertEquals("Expected CWWKM0483I message not found for @Resource in EJB module : " + CWWKM0483I_EJB_MOD_RESOURCE, 1,
-                         ee9server.findStringsInLogsUsingMark(CWWKM0483I_EJB_MOD_RESOURCE, ee9server.getDefaultLogFile()).size());
+                         jakarta_server.findStringsInLogsUsingMark(CWWKM0483I_EJB_MOD_RESOURCE, jakarta_server.getDefaultLogFile()).size());
             assertEquals("Expected CWWKM0483I message not found for @PreDestroy in EJB module : " + CWWKM0483I_EJB_MOD_PREDESTROY, 1,
-                         ee9server.findStringsInLogsUsingMark(CWWKM0483I_EJB_MOD_PREDESTROY, ee9server.getDefaultLogFile()).size());
+                         jakarta_server.findStringsInLogsUsingMark(CWWKM0483I_EJB_MOD_PREDESTROY, jakarta_server.getDefaultLogFile()).size());
             assertEquals("Expected CWWKM0483I message not found for @Resource in WEB module : " + CWWKM0483I_WEB_MOD_RESOURCE, 1,
-                         ee9server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_RESOURCE, ee9server.getDefaultLogFile()).size());
+                         jakarta_server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_RESOURCE, jakarta_server.getDefaultLogFile()).size());
             assertEquals("Expected CWWKM0483I message not found for @PostConstruct in WEB module : " + CWWKM0483I_WEB_MOD_POSTCONSTRUCT, 1,
-                         ee9server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_POSTCONSTRUCT, ee9server.getDefaultLogFile()).size());
-            ee9server.resetLogMarks(); // application start order undefined
+                         jakarta_server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_POSTCONSTRUCT, jakarta_server.getDefaultLogFile()).size());
+            jakarta_server.resetLogMarks(); // application start order undefined
             assertEquals("Expected CWWKM0483I message not found for @Resource in WEB application : " + CWWKM0483I_WEB_APP_RESOURCE, 1,
-                         ee9server.findStringsInLogsUsingMark(CWWKM0483I_WEB_APP_RESOURCE, ee9server.getDefaultLogFile()).size());
-            FATServletClient.runTest(ee9server, WRONG_PACKAGE_PATH, "testWrongPackageCommonAnnotations");
-            FATServletClient.runTest(ee9server, WRONG_PACKAGE_WEBAPP_PATH, "testWrongPackageCommonAnnotations");
+                         jakarta_server.findStringsInLogsUsingMark(CWWKM0483I_WEB_APP_RESOURCE, jakarta_server.getDefaultLogFile()).size());
+            FATServletClient.runTest(jakarta_server, WRONG_PACKAGE_PATH, "testWrongPackageCommonAnnotations");
+            FATServletClient.runTest(jakarta_server, WRONG_PACKAGE_WEBAPP_PATH, "testWrongPackageCommonAnnotations");
         } finally {
-            if (ee9server != null && ee9server.isStarted()) {
-                ee9server.stopServer();
-            }
-        }
-    }
-
-    /**
-     * This test verifies an informational message is logged when the javax.annotation.Resource,
-     * javax.annotation.Resources, javax.annotation.PostConstruct, and javax.annotation.PreDestory
-     * annotations are used with Jakarta EE 10 features and the annotation is ignored. There should
-     * be one message per annotation type per module. Also, the jakarta.annotation.Resource
-     * annotation works as expected.
-     */
-    @Test
-    @MinimumJavaLevel(javaLevel = 11)
-    public void testWrongPackageCommonAnnotations_EE10() throws Exception {
-        try {
-            ee10server.startServer();
-            assertEquals("Expected CWWKM0483I message not found for @Resource in EJB module : " + CWWKM0483I_EJB_MOD_RESOURCE, 1,
-                         ee10server.findStringsInLogsUsingMark(CWWKM0483I_EJB_MOD_RESOURCE, ee10server.getDefaultLogFile()).size());
-            assertEquals("Expected CWWKM0483I message not found for @PreDestroy in EJB module : " + CWWKM0483I_EJB_MOD_PREDESTROY, 1,
-                         ee10server.findStringsInLogsUsingMark(CWWKM0483I_EJB_MOD_PREDESTROY, ee10server.getDefaultLogFile()).size());
-            assertEquals("Expected CWWKM0483I message not found for @Resource in WEB module : " + CWWKM0483I_WEB_MOD_RESOURCE, 1,
-                         ee10server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_RESOURCE, ee10server.getDefaultLogFile()).size());
-            assertEquals("Expected CWWKM0483I message not found for @PostConstruct in WEB module : " + CWWKM0483I_WEB_MOD_POSTCONSTRUCT, 1,
-                         ee10server.findStringsInLogsUsingMark(CWWKM0483I_WEB_MOD_POSTCONSTRUCT, ee10server.getDefaultLogFile()).size());
-            ee10server.resetLogMarks(); // application start order undefined
-            assertEquals("Expected CWWKM0483I message not found for @Resource in WEB application : " + CWWKM0483I_WEB_APP_RESOURCE, 1,
-                         ee10server.findStringsInLogsUsingMark(CWWKM0483I_WEB_APP_RESOURCE, ee10server.getDefaultLogFile()).size());
-            FATServletClient.runTest(ee10server, WRONG_PACKAGE_PATH, "testWrongPackageCommonAnnotations");
-            FATServletClient.runTest(ee9server, WRONG_PACKAGE_WEBAPP_PATH, "testWrongPackageCommonAnnotations");
-        } finally {
-            if (ee10server != null && ee10server.isStarted()) {
-                ee10server.stopServer();
+            if (jakarta_server != null && jakarta_server.isStarted()) {
+                jakarta_server.stopServer();
             }
         }
     }
