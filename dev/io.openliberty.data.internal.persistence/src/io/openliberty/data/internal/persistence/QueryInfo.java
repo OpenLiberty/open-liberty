@@ -4106,27 +4106,18 @@ public class QueryInfo {
                 }
             }
 
-            boolean insertConstructor = false;
-            String selection = null;
-            if (selectLen > 0) {
-                selection = ql.substring(select0, select0 + selectLen);
-                insertConstructor = compat.atLeast(1, 1) &&
-                                    singleType.isRecord() &&
-                                    !selection.toUpperCase().contains(" NEW ");
-            }
-
             // TODO Eventually send everything through the if block path and
             // remove the else block entirely. The following is just enough to
             // get a couple of test cases working
-            if (!insertConstructor && // temporary
-                !insertEntityVar) { // temporary
-                if (!modifyAt.isEmpty())
-                    jpql = replaceQuery(ql, modifyAt);
-                else
-                    jpql = ql;
+            if (!insertEntityVar) { // temporary
+                jpql = modifyAt.isEmpty() ? ql : replaceQuery(ql, modifyAt);
             } else {
                 StringBuilder q;
                 if (selectLen > 0) {
+                    String selection = ql.substring(select0, select0 + selectLen);
+                    boolean insertConstructor = compat.atLeast(1, 1) &&
+                                                singleType.isRecord() &&
+                                                !selection.toUpperCase().contains(" NEW ");
                     q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
                     q.append("SELECT");
                     // TODO 1.1 use Jakarta Persistence enhancement issue 420 instead of
@@ -4954,18 +4945,38 @@ public class QueryInfo {
                                              Boolean findQueryStartsWithSelect,
                                              TreeMap<Integer, QueryEdit> modifyAt) {
         LinkedHashSet<String> qlParamNames = new LinkedHashSet<>();
-
-        if (findQueryStartsWithSelect == Boolean.FALSE)
-            modifyAt.put(QueryEdit.BEFORE_QUERY, QueryEdit.ADD_SELECT_IF_NEEDED);
-
         int length = ql.length();
+        int i = startAt;
+        boolean needsConstructorEnd = false;
+
+        if (findQueryStartsWithSelect == Boolean.TRUE) {
+            if (producer.provider().compat.atLeast(1, 1) &&
+                singleType.isRecord()) {
+                while (i < length && Character.isWhitespace(ql.charAt(i)))
+                    i++;
+                if (i + 3 < length &&
+                    !Character.isJavaIdentifierPart(ql.charAt(i + 3)) &&
+                    ql.regionMatches(true, startAt, "NEW", 0, 3)) {
+                    // already has constructor syntax
+                    i += 4;
+                } else {
+                    modifyAt.put(i, QueryEdit.ADD_CONSTRUCTOR_START);
+                    needsConstructorEnd = true;
+                }
+            }
+
+        } else if (findQueryStartsWithSelect == Boolean.FALSE) {
+            modifyAt.put(QueryEdit.BEFORE_QUERY, QueryEdit.ADD_SELECT_IF_NEEDED);
+        }
+
         Integer addFromAt = findQueryStartsWithSelect == null //
                         ? -1 // never, it's a DELETE or UPDATE so it always has FROM
                         : null; // unknown, check for FROM at depth 0 in query
         int depth = 0; // depth of parentheses, to ignore EXTRACT(* FROM *) and subqueries
         boolean isLiteral = false;
         StringBuilder paramName = null;
-        for (int i = startAt; i < length; i++) {
+
+        for (; i < length; i++) {
             char ch = ql.charAt(i);
             if (!isLiteral && ch == ':') {
                 paramName = new StringBuilder(30);
@@ -4994,15 +5005,27 @@ public class QueryInfo {
                         if (depth == 0 && // avoids SELECT EXTRACT(YEAR FROM d) WHERE ...
                             addFromAt == null)
                             addFromAt = -1;
+                        if (depth == 0 &&
+                            needsConstructorEnd) {
+                            needsConstructorEnd = false;
+                            modifyAt.put(i - 1,
+                                         QueryEdit.ADD_CONSTRUCTOR_END);
+                        }
                         i += 5;
                         modifyAt.put(i, QueryEdit.REPLACE_RECORD_ENTITY);
                     } else if (depth == 0 &&
-                               addFromAt == null &&
                                i + 5 < length &&
                                !Character.isJavaIdentifierPart(ql.charAt(i + 5)) &&
                                (ql.regionMatches(true, i, "WHERE", 0, 5) ||
                                 ql.regionMatches(true, i, "ORDER", 0, 5))) {
-                        addFromAt = i;
+                        if (depth == 0 &&
+                            needsConstructorEnd) {
+                            needsConstructorEnd = false;
+                            modifyAt.put(i - 1, // avoid possible collision with ADD_FROM
+                                         QueryEdit.ADD_CONSTRUCTOR_END);
+                        }
+                        if (addFromAt == null) // can move to if block after above is removed
+                            addFromAt = i;
                         i += 5;
                     }
                 } else {
@@ -5032,6 +5055,10 @@ public class QueryInfo {
 
         if (addFromAt != -1)
             modifyAt.put(addFromAt, QueryEdit.ADD_FROM);
+
+        if (needsConstructorEnd)
+            modifyAt.put(length - 1, // avoid possible collision with ADD_FROM
+                         QueryEdit.ADD_CONSTRUCTOR_END);
 
         return qlParamNames;
     }
@@ -5063,6 +5090,21 @@ public class QueryInfo {
                 case ADD_SELECT_IF_NEEDED:
                     // generateSelectClause determines if a SELECT clause is needed
                     q.append(generateSelectClause()).append(' ');
+                    break;
+                case ADD_CONSTRUCTOR_START:
+                    q.append(ql.substring(startAt, startAt = m));
+                    if (!Character.isWhitespace(ql.charAt(m - 1)))
+                        q.append(' ');
+                    q.append("NEW ").append(singleType.getName()).append('(');
+                    break;
+                case ADD_CONSTRUCTOR_END:
+                    q.append(ql.substring(startAt, startAt = m));
+                    char next = ql.charAt(m);
+                    startAt = ++m;
+                    if (Character.isWhitespace(next))
+                        q.append(')').append(next);
+                    else
+                        q.append(next).append(") ");
                     break;
                 case ADD_FROM:
                     q.append(ql.substring(startAt, startAt = m));
