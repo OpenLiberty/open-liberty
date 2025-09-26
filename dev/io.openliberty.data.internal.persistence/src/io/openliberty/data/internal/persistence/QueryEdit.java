@@ -24,8 +24,22 @@ enum QueryEdit {
     ADD_FROM,
 
     /**
+     * Instruction to add a SELECT clause to the query if it is determined that
+     * one is needed.
+     */
+    ADD_SELECT_IF_NEEDED,
+
+    /**
      * Instruction to replace record names with the generated entity class name
      * when the record name appears after the FROM keyword.
      */
-    REPLACE_RECORD_ENTITY
+    REPLACE_RECORD_ENTITY;
+
+    /**
+     * Indicates the position before the beginning of the query, which applies
+     * when inserting a SELECT clause. A negative value is used to ensure that
+     * an added SELECT clause is positioned before an added FROM clause at
+     * position 0.
+     */
+    static final int BEFORE_QUERY = -1;
 }

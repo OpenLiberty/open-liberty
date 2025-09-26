@@ -2996,6 +2996,9 @@ public class QueryInfo {
             if (singleType.isAssignableFrom(entityInfo.entityClass)
                 || entityInfo.inheritance && entityInfo.entityClass.isAssignableFrom(singleType)) {
                 // Whole entity
+                // Omission of the optional SELECT clause means "SELECT this" per
+                // the Jakarta Persistence spec. Given that, a SELECT clause ends up
+                // being required if the entity identification variable is not "this"
                 if (!"this".equals(o))
                     q.append("SELECT ").append(o);
             } else if (entityInfo.idClassAttributeAccessors != null &&
@@ -4117,22 +4120,10 @@ public class QueryInfo {
             // get a couple of test cases working
             if (!insertConstructor && // temporary
                 !insertEntityVar) { // temporary
-                String q;
                 if (!modifyAt.isEmpty())
-                    q = replaceQuery(ql, modifyAt);
+                    jpql = replaceQuery(ql, modifyAt);
                 else
-                    q = ql;
-
-                if (selectLen > 0) {
-                    jpql = q;
-                } else {
-                    // TODO only add a SELECT clause if needed for something other
-                    // than selecting the entity, such as individual attributes or
-                    // Java records with multiple.
-                    // TODO also cover this under modifyAt and the replaceRecordName
-                    // method, which will need a more general name
-                    jpql = generateSelectClause().append(' ').append(q).toString();
-                }
+                    jpql = ql;
             } else {
                 StringBuilder q;
                 if (selectLen > 0) {
@@ -4964,6 +4955,9 @@ public class QueryInfo {
                                              TreeMap<Integer, QueryEdit> modifyAt) {
         LinkedHashSet<String> qlParamNames = new LinkedHashSet<>();
 
+        if (findQueryStartsWithSelect == Boolean.FALSE)
+            modifyAt.put(QueryEdit.BEFORE_QUERY, QueryEdit.ADD_SELECT_IF_NEEDED);
+
         int length = ql.length();
         Integer addFromAt = findQueryStartsWithSelect == null //
                         ? -1 // never, it's a DELETE or UPDATE so it always has FROM
@@ -5050,17 +5044,26 @@ public class QueryInfo {
      * @return a query that contains the requested modifications.
      */
     private String replaceQuery(String ql, TreeMap<Integer, QueryEdit> modifyAt) {
+        if (modifyAt.isEmpty())
+            return ql;
+
         final String recordName = entityInfo.recordClass == null //
                         ? null //
                         : entityInfo.recordClass.getSimpleName();
         final int rLen = recordName == null ? 0 : recordName.length();
         final int eLen = entityInfo.name.length();
         final int qlLen = ql.length();
-        StringBuilder q = new StringBuilder(10 * modifyAt.size() + qlLen);
+        StringBuilder q = new StringBuilder(10 * modifyAt.size() +
+                                            (modifyAt.firstKey() <= 0 ? 100 : 0) +
+                                            qlLen);
         int startAt = 0;
         for (Entry<Integer, QueryEdit> mod : modifyAt.entrySet()) {
             int m = mod.getKey();
             switch (mod.getValue()) {
+                case ADD_SELECT_IF_NEEDED:
+                    // generateSelectClause determines if a SELECT clause is needed
+                    q.append(generateSelectClause()).append(' ');
+                    break;
                 case ADD_FROM:
                     q.append(ql.substring(startAt, startAt = m));
                     if (m > 0 && !Character.isWhitespace(ql.charAt(m - 1)))
