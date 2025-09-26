@@ -34,6 +34,13 @@ steps:
   properties:
     githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
 
+- stepName: GenAI Assistance Code Check
+  workType: Jenkins
+  projectName: genAICodeCheck
+  timeoutInMinutes: 120
+  properties:
+    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
+
 - stepName: DHE Server Artifacts Check
   workType: Jenkins
   projectName: dheServerCheck
