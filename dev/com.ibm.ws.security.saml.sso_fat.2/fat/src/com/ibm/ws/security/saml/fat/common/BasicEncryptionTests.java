@@ -265,7 +265,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" },repeatAction = {EmptyAction.ID,JakartaEE9Action.ID,JakartaEE10Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "java.security.InvalidKeyException" },repeatAction = {EmptyAction.ID,JakartaEE9Action.ID,JakartaEE10Action.ID})
     @Test
     public void testKeyAlias_MultipleCertsInKeystore_KeyAliasIsWrongCert() throws Exception {
 
