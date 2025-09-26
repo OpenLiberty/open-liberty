@@ -66,6 +66,7 @@ import com.ibm.websphere.simplicity.PortType;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.fat.util.Props;
 
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.TCKJarInfo;
@@ -116,9 +117,10 @@ public class TCKRunner {
 
     // Default settings
     private boolean isTestNG = false;
+    private boolean forceUpdate = false;
     private File tckRunnerDir = new File("publish/tckRunner").getAbsoluteFile();
     private File loggingPropertiesFile = new File(tckRunnerDir, "logging.properties");
-    
+
     // Default timeout and boolean settings
     private Boolean failSafeUndeployment = Boolean.TRUE;
     private Duration appDeployTimeout = Duration.ofSeconds(180);
@@ -256,48 +258,70 @@ public class TCKRunner {
 
         return this;
     }
-    
+
     /**
-     * @param failSafeUndeployment whether to use failsafe undeployment
-     * @return this TCKRunner
+     * @param  failSafeUndeployment whether to use failsafe undeployment
+     * @return                      this TCKRunner
      */
     public TCKRunner withFailSafeUndeployment(Boolean failSafeUndeployment) {
         Objects.requireNonNull(failSafeUndeployment);
-        
+
         this.failSafeUndeployment = failSafeUndeployment;
         return this;
     }
-    
+
     /**
-     * @param appDeployTimeout the timeout for app deployment
-     * @return this TCKRunner
+     * @param  appDeployTimeout the timeout for app deployment
+     * @return                  this TCKRunner
      */
     public TCKRunner withAppDeployTimeout(Duration appDeployTimeout) {
         Objects.requireNonNull(appDeployTimeout);
-        
+
         this.appDeployTimeout = appDeployTimeout;
         return this;
     }
-    
+
     /**
-     * @param appUndeployTimeout the timeout for app undeployment
-     * @return this TCKRunner
+     * @param  appUndeployTimeout the timeout for app undeployment
+     * @return                    this TCKRunner
      */
     public TCKRunner withAppUndeployTimeout(Duration appUndeployTimeout) {
         Objects.requireNonNull(appUndeployTimeout);
-        
+
         this.appUndeployTimeout = appUndeployTimeout;
         return this;
     }
-    
+
     /**
-     * @param mbeanTimeout the timeout for MBean operations
-     * @return this TCKRunner
+     * @param  mbeanTimeout the timeout for MBean operations
+     * @return              this TCKRunner
      */
     public TCKRunner withMBeanTimeout(Duration mbeanTimeout) {
         Objects.requireNonNull(mbeanTimeout);
-        
+
         this.mbeanTimeout = mbeanTimeout;
+        return this;
+    }
+
+    /**
+     * When running locally, this will set the '-U' flag on the maven commands
+     * to force update of SNAPSHOTS or retry pulling a previously failed
+     * attempt to pull an artifact before the retry interval.
+     *
+     * Marked as Deprecated to have a visual indication to developers that this
+     * is a local only utility and should be removed before creating a commit.
+     *
+     * @return this TCKRunner
+     */
+    @Deprecated
+    public TCKRunner withForcedUpdate() {
+        if (FATRunner.FAT_TEST_LOCALRUN) {
+            this.forceUpdate = true;
+        } else {
+            Log.info(c, "withForcedUpdate", "Ignoring withForcedUpdate method call during non-local run. "
+                                            + "Doing so is time intensive and should not be required.");
+        }
+
         return this;
     }
 
@@ -494,6 +518,10 @@ public class TCKRunner {
         if (getSettingsFile() != null) {
             stringArrayList.add("-s");
             stringArrayList.add(getSettingsFile().toString());
+        }
+
+        if (forceUpdate) {
+            stringArrayList.add("-U");
         }
 
         for (String command : commands) {

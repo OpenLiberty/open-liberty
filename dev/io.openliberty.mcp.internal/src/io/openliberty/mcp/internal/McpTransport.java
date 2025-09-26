@@ -161,6 +161,7 @@ public class McpTransport {
      */
     public void sendResponse(Object result) {
         McpResponse mcpResponse = new McpResultResponse(mcpRequest.id(), result);
+        res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
 
@@ -193,6 +194,7 @@ public class McpTransport {
      */
     public void sendJsonRpcException(JSONRPCException e) {
         McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? new McpRequestId("") : mcpRequest.id(), e);
+        res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
 

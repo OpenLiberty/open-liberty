@@ -2005,6 +2005,140 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Use an EntityManager to access an entity that has embeddable attributes
+     * that are Java records.
+     */
+    @Test
+    public void testEntityManagerAndEmbeddableRecord() throws Exception {
+        Segment s1 = new Segment();
+        s1.pointA = new Point(0, 0);
+        s1.pointB = new Point(40, 399); // length 401
+
+        Segment s2 = new Segment();
+        s2.pointA = new Point(-36, 0);
+        s2.pointB = new Point(40, 357); // length 365
+
+        Segment s3 = new Segment();
+        s3.pointA = new Point(84, 7);
+        s3.pointB = new Point(220, 280); // length 305
+
+        Segment s4 = new Segment();
+        s4.pointA = new Point(60, 49);
+        s4.pointB = new Point(220, 280); // length 281
+
+        Segment s5 = new Segment();
+        s5.pointA = new Point(12, 5);
+        s5.pointB = new Point(220, 110); // length 233
+
+        Segment s6 = new Segment();
+        s6.pointA = new Point(0, 89);
+        s6.pointB = new Point(220, 110); // length 221
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            s1 = em.merge(s1);
+            em.flush();
+        } finally {
+            tran.commit();
+        }
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            s2 = em.merge(s2);
+            em.flush();
+        } finally {
+            tran.commit();
+        }
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            s3 = em.merge(s3);
+            em.flush();
+        } finally {
+            tran.commit();
+        }
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            s4 = em.merge(s4);
+            em.flush();
+        } finally {
+            tran.commit();
+        }
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            s5 = em.merge(s5);
+            em.flush();
+        } finally {
+            tran.commit();
+        }
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            s6 = em.merge(s6);
+            em.flush();
+        } finally {
+            tran.commit();
+        }
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            jakarta.persistence.Query count = em
+                            .createQuery("SELECT COUNT(o)" +
+                                         " FROM Segment o" +
+                                         " WHERE (o.pointA.x<?1)");
+            count.setParameter(1, 1);
+
+            @SuppressWarnings("unchecked")
+            List<Long> countResult = count.getResultList();
+            assertEquals(1, countResult.size());
+            assertEquals(Long.valueOf(3L), countResult.get(0));
+        } finally {
+            if (tran.getStatus() == Status.STATUS_ACTIVE)
+                tran.commit();
+            else
+                tran.rollback();
+        }
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            jakarta.persistence.Query query = em
+                            .createQuery("FROM Segment" +
+                                         " WHERE this.pointB.y < :yExclusiveMax" +
+                                         " ORDER BY this.pointB.y ASC, this.id ASC");
+            query.setParameter("yExclusiveMax", 200);
+
+            // TODO enable once #29460 is fixed
+            //@SuppressWarnings("unchecked")
+            //Stream<Segment> results = query.getResultStream();
+
+            //assertEquals(List.of(s5.id, s6.id),
+            //             results
+            //                             .map(s -> s.id)
+            //                             .collect(Collectors.toList()));
+        } finally {
+            if (tran.getStatus() == Status.STATUS_ACTIVE)
+                tran.commit();
+            else
+                tran.rollback();
+        }
+
+        tran.begin();
+        try (EntityManager em = segments.manager()) {
+            jakarta.persistence.Query delete = em
+                            .createQuery("DELETE FROM Segment o");
+
+            assertEquals(6L, delete.executeUpdate());
+        } finally {
+            if (tran.getStatus() == Status.STATUS_ACTIVE)
+                tran.commit();
+            else
+                tran.rollback();
+        }
+    }
+
+    /**
      * Use a repository method that uses query language to perform an exists query
      * that returns a boolean true/false value.
      */
@@ -4591,6 +4725,69 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         cities.remove(eagan);
+    }
+
+    /**
+     * Tests a JPQL find operation with a subquery within the ORDER BY clause
+     * but lacking all other clauses, such that the only FROM clause is found
+     * within the ORDER BY clause. The Jakarta Data implementation should
+     * insert a FROM clause prior to the ORDER BY clause to form a valid
+     * query.
+     */
+    @Test
+    public void testSubqueryInOrderBy() {
+        List<DemographicInfo> all = demographics.all();
+
+        assertEquals(List.of(2002,
+                             2003,
+                             2004,
+                             2005,
+                             2006,
+                             2007,
+                             2008,
+                             2009,
+                             2010,
+                             2011,
+                             2012,
+                             2013,
+                             2014,
+                             2015,
+                             2016,
+                             2017,
+                             2018,
+                             2019,
+                             2020,
+                             2021),
+                     all.stream()
+                                     .map(d -> d.collectedOn
+                                                     .atZone(DemographicInfo.TIMEZONE)
+                                                     .getYear())
+                                     .limit(20)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Tests a JPQL find operation with a subquery within the ORDER BY clause
+     * but lacking all other clauses, such that the only FROM clause is found
+     * within the ORDER BY clause. The Jakarta Data implementation should
+     * insert a FROM clause prior to the ORDER BY clause to form a valid
+     * query.
+     */
+    @Test
+    public void testSubqueryInSelect() {
+
+        assertEquals(List.of(2002,
+                             2003,
+                             2004,
+                             2005,
+                             2006,
+                             2007,
+                             2008,
+                             2009,
+                             2010),
+                     demographics.yearsUpTo(2010)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
     }
 
     /**

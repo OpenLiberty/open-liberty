@@ -1604,6 +1604,25 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Verifies that an EXCEPT statement can be used within a query
+     * that combines two subqueries to include results from the first
+     * subquery that do not appear in the results of the second subquery.
+     */
+    @Test
+    public void testExcept() {
+
+        assertEquals(List.of("eleven",
+                             "five",
+                             "thirteen",
+                             "two"),
+                     primes.ofHexLengthNotNameLength(1, 5)
+                                     .stream()
+                                     .map(p -> p.name)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Tests whether a user can write an empty repository class.
      * This is only useful when just starting out developing and you don't have methods yet.
      */
@@ -5813,6 +5832,88 @@ public class DataTestServlet extends FATServlet {
         AtomicLong sumRef = new AtomicLong();
         streamable.iterator().forEachRemaining(p -> sumRef.addAndGet(p.numberId));
         assertEquals(326L, sumRef.get());
+    }
+
+    /**
+     * Tests JPQL find operation with a subquery, such that there are three FROM
+     * clauses: one in the main query and two in subqueries.
+     */
+    @Test
+    public void testSubqueryInFind() {
+        receipts.removeIfTotalUnder(Float.MAX_VALUE);
+
+        receipts.insertAll(List.of(new Receipt(6001, "TSIF-1", 41.99f),
+                                   new Receipt(6002, "TSIF-2", 22.99f),
+                                   new Receipt(6003, "TSIF-3", 23.99f),
+                                   new Receipt(6004, "TSIF-4", 84.99f),
+                                   new Receipt(6005, "TSIF-5", 95.99f)));
+
+        assertEquals(List.of(6002L, 6003L, 6001L),
+                     receipts.withBelowAverageTotal()
+                                     .map(Receipt::purchaseId)
+                                     .collect(Collectors.toList()));
+
+        assertEquals(5L,
+                     receipts.removeIfTotalUnder(Float.MAX_VALUE));
+    }
+
+    /**
+     * Tests JPQL DELETE with a subquery, such that there are two FROM clauses:
+     * one in the main query and one in the subquery.
+     */
+    @Test
+    public void testSubqueryInDelete() {
+        receipts.removeIfTotalUnder(Float.MAX_VALUE);
+
+        receipts.insertAll(List.of(new Receipt(7001, "TSID-1", 13.99f),
+                                   new Receipt(7002, "TSID-2", 82.99f),
+                                   new Receipt(7003, "TSID-3", 93.99f),
+                                   new Receipt(7004, "TSID-4", 24.99f),
+                                   new Receipt(7005, "TSID-5", 75.99f)));
+
+        assertEquals(2L,
+                     receipts.removeByBelowAverageTotal());
+
+        assertEquals(3L,
+                     receipts.removeIfTotalUnder(Float.MAX_VALUE));
+    }
+
+    /**
+     * Tests JPQL UPDATE with a subquery, such that there are two FROM clauses:
+     * one in the main query and one in the subquery.
+     */
+    @Test
+    public void testSubqueryInUpdate() {
+        receipts.removeIfTotalUnder(Float.MAX_VALUE);
+
+        receipts.insertAll(List.of(new Receipt(8001, "TSIU-1", 61.98f),
+                                   new Receipt(8002, "TSIU-2", 32.98f),
+                                   new Receipt(8003, "TSIU-3", 23.98f),
+                                   new Receipt(8004, "TSIU-4", 74.98f),
+                                   new Receipt(8005, "TSIU-5", 65.98f)));
+
+        assertEquals(3L,
+                     receipts.increaseIfAboveAverageTotal(1.08f));
+
+        Receipt r3 = receipts.findById(8003L).orElseThrow();
+        assertEquals(23.98f, r3.total(), 0.01f);
+
+        Receipt r4 = receipts.findById(8004L).orElseThrow();
+        assertEquals(80.98f, r4.total(), 0.01f);
+
+        assertEquals(5L,
+                     receipts.removeIfTotalUnder(Float.MAX_VALUE));
+    }
+
+    /**
+     * Tests a JPQL find operation with a subquery within the WHERE clause
+     * but lacking a main FROM clause, such that the only FROM clause is
+     * found within the WHERE clause.
+     */
+    @Test
+    public void testSubqueryInWhere() {
+        assertEquals(2L,
+                     primes.smallest().numberId);
     }
 
     /**

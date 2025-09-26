@@ -2,8 +2,7 @@
 symbolicName=io.openliberty.springBootHandler-4.0
 visibility=private
 -features=io.openliberty.jakartaeePlatform-11.0,\
-	com.ibm.websphere.appserver.eeCompatible-11.0,\
-	io.openliberty.noShip-1.0
+	com.ibm.websphere.appserver.eeCompatible-11.0
 -bundles=\
  com.ibm.ws.app.manager.springboot.jakarta, \
  com.ibm.ws.springboot.support.shutdown, \
@@ -12,8 +11,8 @@ visibility=private
  bin/tools/ws-springbootutil.jar, \
  bin/springBootUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/springBootUtility.bat
-kind=noship
-edition=full
+kind=beta
+edition=core
 singleton=true
 IBM-API-Package: \
  com.ibm.ws.app.manager.springboot.container.config; type="internal", \

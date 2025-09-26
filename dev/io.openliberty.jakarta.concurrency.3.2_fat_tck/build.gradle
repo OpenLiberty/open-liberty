@@ -1,0 +1,101 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+// Custom repository for Open Liberty version used for certification
+repositories {
+  ivy {
+    url 'https://public.dhe.ibm.com/ibmdl/export/pub/software/'
+    
+    //https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/tck/2024-04-23_2000/openliberty-24.0.0.6-beta-cl240520240423-2000.zip'
+    
+    patternLayout {
+      artifact '/[organization]/[module]/tck/2024-04-23_2000/[revision].[ext]'
+    }
+    
+    metadataSources {
+      ivyDescriptor()
+      artifact()
+    } 
+  }
+}
+
+configurations { 
+  arquillian
+  wlp
+}
+
+dependencies {
+  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1'
+
+  //TODO Configure WLP dependency if doing verification testing, Examples below:
+  //wlp 'openliberty:runtime:openliberty-24.0.0.6-beta-cl240520240423-2000@zip' // certification version
+  //wlp 'io.openliberty.beta:openliberty-runtime:24.0.0.6-beta@zip'             // future versions
+}
+
+addRequiredLibraries.dependsOn addDerby
+
+// These tasks are used only for external users who do not want to build all of liberty to run TCK
+
+ext {
+    fromServer = System.getProperty("jakarta.tck.platform", "web") == "web" ? "ConcurrentTCKWebServer" : "ConcurrentTCKFullServer"
+}
+
+task getWLP(type: Copy) {
+  from configurations.wlp.collect{zipTree (it)}
+  into project.projectDir
+}
+
+task copyArquillianFeatureWLP(type: Copy) {
+  mustRunAfter getWLP
+  from configurations.arquillian
+  into new File(project.projectDir, 'wlp/usr/extension/')
+}
+
+task createServer(type: Exec) {
+  mustRunAfter getWLP
+  workingDir project.projectDir
+  commandLine './wlp/bin/server', 'create', 'ConcurrentTCKServer'
+}
+
+
+task copyDerbyWLP(type: Copy) {
+  mustRunAfter createServer
+  from configurations.derby
+  into new File(project.projectDir, 'wlp/usr/shared/resources/derby/')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task copyConfigWLP(type: Copy) {
+  mustRunAfter createServer  
+  from new File(project.projectDir, "publish/servers/${project.ext.fromServer}")
+  into new File(project.projectDir, 'wlp/usr/servers/ConcurrentTCKServer/')
+  exclude '**/bootstrap.properties' //Specific to Open Liberty test infrastructure
+  exclude 'configDropins/*'         //Specific to Open Liberty test infrastructure
+}
+
+task copyRunnerWLP(type: Copy) {
+  mustRunAfter createServer
+  from new File(project.projectDir, 'publish/tckRunner/')
+  into new File(project.projectDir, 'wlp/')
+  exclude 'tck/pom.xml' //remove the pom we use for dev testing
+  rename 'standalone.pom.xml', 'pom.xml' //replace with the standalone pom
+}
+
+task buildWLP {
+  dependsOn 'getWLP'
+  dependsOn 'copyArquillianFeatureWLP'
+  dependsOn 'createServer'
+  dependsOn 'copyDerbyWLP'
+  dependsOn 'copyConfigWLP'
+  dependsOn 'copyRunnerWLP'
+}

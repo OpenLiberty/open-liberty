@@ -19,7 +19,11 @@ configurations {
 dependencies {
     oracle11 'com.oracle.database.jdbc:ojdbc11:23.4.0.24.05'
     
-    // FIXME 11.5.9.0 12.1.0.0 and 12.1.2.0 have a regression that make kerberos authentication impossible
+    // FIXME Upgrade to latest JCC driver version once the following are resolved:
+    // 11.5.*.* - does not support Java 24+ because it attempts to load the removed class sun.security.action.GetPropertyAction
+    // 11.5.9.0 - has a regression that in an error path that causes incorrect error to be thrown.
+    // 12.1.*.* - has a regression that makes successful kerberos authentication to fail.
+    // Expect the version after 12.1.2.0 to work
     db2Legacy 'com.ibm.db2:jcc:11.5.7.0'
 }
 

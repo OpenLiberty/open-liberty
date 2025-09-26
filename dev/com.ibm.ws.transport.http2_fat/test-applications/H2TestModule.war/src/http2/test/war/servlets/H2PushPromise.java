@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,7 @@ public class H2PushPromise extends HttpServlet {
             pw.println("Response to push");
             pw.close();
 
-        } else if (test.toLowerCase().equals(new String("preload"))) {
+        } else if ("preload".equalsIgnoreCase(test)) {
 
             // Test the header link rel=preload path
             pw.println("push_promise link header rel=preload");
@@ -59,7 +59,7 @@ public class H2PushPromise extends HttpServlet {
             response.addHeader("Link", "</H2TestModule/H2PushPromise>; rel=preload;");
             pw.close();
 
-        } else if ((test.toLowerCase().equals(new String("pushbuilder")))) {
+        } else if ("pushbuilder".equalsIgnoreCase(test)) {
 
             // Test the pushbuilder path
             pw.println("push_promise PushBuilder");
@@ -85,7 +85,7 @@ public class H2PushPromise extends HttpServlet {
                 }
             }
             pw.close();
-        } else if ((test.toLowerCase().equals(new String("delay")))) {
+        } else if ("delay".equalsIgnoreCase(test)) {
 
             try {
                 Thread.sleep(5000);

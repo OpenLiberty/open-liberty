@@ -316,10 +316,11 @@ public class EE10Features {
 
         features.remove("audit-2.0");
 
-        // springBoot-4.0 and nosql-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
+        // springBoot-3.0, nosql-1.0, and mcpServer-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("springBoot-3.0");
             features.remove("nosql-1.0");
+            features.remove("mcpServer-1.0");
         }
 
         return features;

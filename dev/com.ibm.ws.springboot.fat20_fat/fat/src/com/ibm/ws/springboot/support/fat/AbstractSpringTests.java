@@ -83,6 +83,7 @@ public abstract class AbstractSpringTests extends TestContainerSuite {
     public static final String SPRING_BOOT_20_APP_WEBFLUX = "com.ibm.ws.springboot.fat20.webflux.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_WEBSOCKET = "com.ibm.ws.springboot.fat20.websocket.app-0.0.1-SNAPSHOT.jar";
     public static final String SPRING_BOOT_20_APP_TRANSACTIONS = "com.ibm.ws.springboot.fat20.transactions.app-0.0.1-SNAPSHOT.war";
+    public static final String SPRING_BOOT_20_APP_PROGRAMMATIC_TRANS = "com.ibm.ws.springboot.fat20.programmatic.trans.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_20_APP_DATA = "com.ibm.ws.springboot.fat20.data.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_20_APP_JMS = "com.ibm.ws.springboot.fat20.jms.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_20_APP_CONCURRENCY = "com.ibm.ws.springboot.fat20.concurrency.app-0.0.1-SNAPSHOT.war";

@@ -105,6 +105,27 @@ public class Util {
                            double.class, float.class);
 
     /**
+     * Query language keywords that can appear immediately after the entity name when
+     * there is no entity identifier variable specified.
+     *
+     * DELETE FROM MyEntity WHERE ...
+     * FROM MyEntity UNION ...
+     * FROM MyEntity ORDER BY ...
+     * UPDATE MyEntity SET ...
+     */
+    public static final Set<String> QL_KEYWORDS_AFTER_ENTITY_NAME = new HashSet<>();
+    static {
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("EXCEPT");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("GROUP");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("HAVING");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("INTERSECT");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("ORDER");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("SET");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("UNION");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("WHERE");
+    }
+
+    /**
      * Return types for deleteBy that distinguish delete-only from find-and-delete.
      */
     static final Set<Class<?>> RETURN_TYPES_FOR_DELETE_ONLY = //

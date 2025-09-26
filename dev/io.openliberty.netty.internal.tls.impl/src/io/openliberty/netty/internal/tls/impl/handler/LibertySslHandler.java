@@ -9,6 +9,19 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tls.impl.handler;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import javax.net.ssl.SSLEngine;
+import javax.net.ssl.SSLException;
+import javax.net.ssl.SSLHandshakeException;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderException;
@@ -16,22 +29,9 @@ import io.netty.handler.ssl.SslHandler;
 import io.netty.util.AttributeKey;
 import io.openliberty.netty.internal.tls.impl.options.SslOption;
 
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLHandshakeException;
-import javax.net.ssl.SSLException;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * This is a custom SSL handler for Liberty that extends Netty's SslHandler.
- * This handler provides additional functionalities for the server's SSL configurations. 
+ * This handler provides additional functionalities for the server's SSL configurations.
  */
 public class LibertySslHandler extends SslHandler {
     private static final TraceComponent tc = Tr.register(LibertySslHandler.class, "SSLChannel", "com.ibm.ws.channel.ssl.internal.resources.SSLChannelMessages");
@@ -43,8 +43,8 @@ public class LibertySslHandler extends SslHandler {
 
     /**
      * Constructs a new LibertySslHandler.
-     * 
-     * @param engine The SSLEngine to be used by this handler.
+     *
+     * @param engine     The SSLEngine to be used by this handler.
      * @param sslOptions A map containing SSL configuration options.
      */
     public LibertySslHandler(SSLEngine engine, Map<String, Object> sslOptions, Channel channel) {
@@ -53,7 +53,7 @@ public class LibertySslHandler extends SslHandler {
         engine().getSSLParameters().setUseCipherSuitesOrder(enforceCipherOrder);
         this.suppressLogError = SslOption.SUPPRESS_HANDSHAKE_ERRORS.parse(sslOptions);
         this.maxLogEntries = SslOption.SUPPRESS_HANDSHAKE_ERRORS_COUNT.parse(sslOptions);
-        if(Objects.nonNull(channel.parent())) {
+        if (Objects.nonNull(channel.parent())) {
             channel.parent().attr(SSL_EXCEPTION_LOG_ENTRIES).setIfAbsent(new Long(0));
             channel.parent().attr(SSL_EXCEPTION_LOGGING_STOPPED).setIfAbsent(new AtomicBoolean(false));
         } else {
@@ -65,9 +65,9 @@ public class LibertySslHandler extends SslHandler {
     /**
      * Handles exceptions caught during SSL processing.
      * If the exception is related to the SSL handshake, the noteHandshakeError will
-     * handle its logging. 
-     * 
-     * @param ctx The ChannelHandlerContext in which the exception was caught.
+     * handle its logging.
+     *
+     * @param ctx   The ChannelHandlerContext in which the exception was caught.
      * @param cause The Throwable representing the caught exception.
      * @throws Exception if there's an error during exception handling.
      */
@@ -90,20 +90,20 @@ public class LibertySslHandler extends SslHandler {
     }
 
     /**
-     * This method manages the number of log entries created for SSL handshake errors. 
+     * This method manages the number of log entries created for SSL handshake errors.
      * If the error suggests a plaintext connection attempt on a secure port, a more
      * specific error message is provided.
-     * 
-     * @param failure The exception that occurred during the SSL handshake.
-     * @param localAddr The local address involved in the failed handshake.
-     * @param localPort The local port involved in the failed handshake.
+     *
+     * @param failure    The exception that occurred during the SSL handshake.
+     * @param localAddr  The local address involved in the failed handshake.
+     * @param localPort  The local port involved in the failed handshake.
      * @param remoteAddr The remote address involved in the failed handshake.
      * @param remotePort The remote address involved in the failed handshake.
      */
     private void noteHandshakeError(Exception failure, InetAddress localAddr, int localPort, InetAddress remoteAddr, int remotePort, Channel channel) {
         long logCount;
         AtomicBoolean loggingStopped;
-        if(Objects.nonNull(channel.parent())) {
+        if (Objects.nonNull(channel.parent())) {
             logCount = channel.parent().attr(SSL_EXCEPTION_LOG_ENTRIES).get();
             channel.parent().attr(SSL_EXCEPTION_LOG_ENTRIES).set(++logCount);
             loggingStopped = channel.parent().attr(SSL_EXCEPTION_LOGGING_STOPPED).get();
@@ -130,7 +130,7 @@ public class LibertySslHandler extends SslHandler {
             } else if (!loggingStopped.get() && (logCount > maxLogEntries)) {
                 loggingStopped.set(true);
                 Tr.info(tc, "handshake.failure.stop.logging");
-                
+
             }
         }
     }

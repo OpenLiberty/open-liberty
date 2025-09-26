@@ -63,9 +63,21 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 TemplateTests40.class,
                 ApplicationStartedEventTests40.class,
                 ConcurrencyAppTests40.class,
+                ConcurrencyAppTests40War.class,
                 MBeanAppTests40.class,
+                MBeanAppTests40War.class,
                 JmsSpringBootAppTests40.class,
-                JmsWebAppTests40.class
+                JmsWebAppTests40.class,
+                JTAAppTests40.class,
+                JTAAppTests40War.class,
+                JPAEclipseLinkAppTests40War.class,
+                JPAEclipseLinkWeavingAppTests40War.class,
+                JPAHibernateAppTests40War.class,
+                JPALibertyAppTests40War.class,
+                JPAEclipseLinkAppTests40.class,
+                JPAEclipseLinkWeavingAppTests40.class,
+                JPAHibernateAppTests40.class,
+//JPALibertyAppTests40.class
 
 })
 

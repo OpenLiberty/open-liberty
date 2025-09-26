@@ -4738,6 +4738,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-commons</artifactId>
+      <version>4.0.0-M4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-jpa</artifactId>
       <version>2.7.6</version>
     </dependency>
@@ -4745,6 +4750,11 @@
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-jpa</artifactId>
       <version>3.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
+      <version>4.0.0-M4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -4970,6 +4980,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-orm</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>

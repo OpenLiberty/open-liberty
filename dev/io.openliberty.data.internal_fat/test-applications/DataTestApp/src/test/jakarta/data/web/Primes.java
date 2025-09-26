@@ -417,6 +417,18 @@ public interface Primes {
     @Query("SELECT numberId WHERE ID(THIS)=:num")
     Optional<Short> numberAsShortWrapper(long num);
 
+    @Query("""
+                    SELECT p1 FROM Prime p1 WHERE LENGTH(p1.hex) = :hexLen
+                    EXCEPT
+                    SELECT p2 FROM Prime p2 WHERE LENGTH(p2.name) = :excludeNameLen""")
+    List<Prime> ofHexLengthNotNameLength(int hexLen,
+                                         int excludeNameLen
+    // TODO ORDER BY for set operations is undefined in the query language.
+    // If added, enable the following and remove the manual sorting from the
+    // corresponding test
+    // Order<Prime> order
+    );
+
     // discouraged usage, but testing what happens
     @Query("SELECT COUNT(THIS) WHERE ID(THIS) < :max")
     Page<Long> pageOfCountUpTo(long max, PageRequest pageReq);
@@ -467,6 +479,9 @@ public interface Primes {
 
     @Query("SELECT hex WHERE numberId=:id")
     Optional<Character> singleHexDigit(long id);
+
+    @Query("WHERE numberId = (SELECT MIN(p.numberId) FROM Prime p)")
+    Prime smallest();
 
     @Query("SELECT hex WHERE numberId=?1")
     Optional<String> toHexadecimal(long num);

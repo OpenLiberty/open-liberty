@@ -12,12 +12,13 @@
  *******************************************************************************/
 package io.openliberty.jakarta.validation.tck;
 
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.time.Duration;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -55,6 +56,13 @@ public class ValidationTckLauncher {
     public static void setUp() throws Exception {
 
         final OperatingSystem os = server.getMachine().getOperatingSystem();
+
+        /**
+         * Existing issue with the liberty Arquillian plugin running on windows: https://github.com/OpenLiberty/liberty-arquillian/issues/25
+         * Hence skipping the test if the OS is Windows.
+         */
+        Assume.assumeTrue(os != OperatingSystem.WINDOWS);
+
         /*
          * Server config:
          * - Path that jimage will output modules for signature testing

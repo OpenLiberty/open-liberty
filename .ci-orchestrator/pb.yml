@@ -8,13 +8,13 @@ triggers:
   triggerName: "ol-pbbeta"
   triggerRank: 50
   groups: ["LibertyDev"]
-  keyword: "!pbbeta"
+  keyword: "!build"
   aliasKeywords:
-    - "!build"
     - "!pb"
+    - "#pb"
+    - "!pbbeta"
     - "#pbbeta"
     - "#build"
-    - "#pb"
   propertyDefinitions:
     # If a user defines this property, set it for all steps that use it except the "Distributed Full FATs" step.
     - name: fat.buckets.to.run
@@ -33,6 +33,10 @@ triggers:
         - stepName: Compile Liberty Images
         - stepName: Unittest Open Liberty
         - stepName: Compile FATs
+    - name: create.im.repo
+      defaultValue: ${PR Changes:create.im.repo}
+      steps:
+        - stepName: Compile Liberty Images
 
 - type: manual
   triggerName: "ol-pbbeta-manual"
@@ -61,6 +65,10 @@ triggers:
         - stepName: Compile Liberty Images
         - stepName: Unittest Open Liberty
         - stepName: Compile FATs
+    - name: create.im.repo
+      defaultValue: ${PR Changes:create.im.repo}
+      steps:
+        - stepName: Compile Liberty Images
 
 - type: github
   triggerName: "ol-fullpbbeta"
@@ -69,13 +77,13 @@ triggers:
   groups: ["LibertyDev"]
   keyword: "!fullbuild"
   aliasKeywords:
-    - "!fullpb"
-    - "!fullpbbeta"
     - "#fullbuild"
-    - "#fullpbbeta"
+    - "!fullpb"
     - "#fullpb"
+    - "!fullpbbeta"
+    - "#fullpbbeta"
   propertyDefinitions:
-    # Run all buckets in full mode.
+    # Run all buckets.
     - name: fat.buckets.to.run
       defaultValue: all
       steps:
@@ -106,6 +114,24 @@ triggers:
         - stepName: Compile FATs
 
 steps:
+- stepGroup: OL SHA
+  includeProperties:
+    - file: gitSource/OL_personal.properties
+  includeSteps:
+    - file: steps/getOLCommitSHA.yml
+
+- stepGroup: WL SHA
+  includeProperties:
+    - file: gitSource/OL_personal.properties
+  includeSteps:
+    - file: steps/getWLCommitSHA.yml
+
+- stepGroup: Launcher SHA
+  includeProperties:
+    - file: gitSource/OL_personal.properties
+  includeSteps:
+    - file: steps/getLauncherCommitSHA.yml
+
 - stepName: PR Changes
   workType: PRChangesDetection
   timeoutInMinutes: 30
@@ -195,6 +221,7 @@ steps:
     spawn.zos: ${PR Changes:spawn.zos}
   includeProperties:
     - file: compilePersonal.properties
+    - file: gitSource/OL_personal.properties
   includeSteps:
     - file: steps/compileLibertyImages.yml
 
@@ -210,6 +237,7 @@ steps:
     disable.run.runUnitTests: ${PR Changes:disable.run.runUnitTests}
   includeProperties:
     - file: compilePersonal.properties
+    - file: gitSource/OL_personal.properties
   includeSteps:
     - file: steps/unittestOpenLiberty.yml
 
@@ -225,6 +253,7 @@ steps:
     spawn.zos: ${PR Changes:spawn.zos}
   includeProperties:
     - file: compilePersonal.properties
+    - file: gitSource/OL_personal.properties
   includeSteps:
     - file: steps/compileFATs.yml
 
@@ -258,4 +287,3 @@ steps:
     - file: steps/fats/libertyFeatureStartFATs.yml
     - file: steps/fats/zOSFATs.yml
     - file: steps/fats/zOSUnittests.yml
-

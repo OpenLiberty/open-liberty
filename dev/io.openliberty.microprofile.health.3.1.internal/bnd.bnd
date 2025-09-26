@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -12,11 +12,11 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
--sub: *.bnd
+Bundle-Name: Health 3.1
+Bundle-SymbolicName: io.openliberty.microprofile.health.3.1.internal
+Bundle-Description: MicroProfile Health 3.1 Implementation; version ${bVersion}
 
 bVersion=1.0
-
-
 
 Web-ContextPath: health
 OL-VirtualHost: ${admin.virtual.host}

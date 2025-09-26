@@ -1,0 +1,68 @@
+<!--
+    Copyright (c) 2022, 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+        <!-- TODO update to Jakarta EE 12 features -->
+        <feature>concurrent-3.1</feature>
+        <feature>enterpriseBeans-4.0</feature>
+        <feature>jdbc-4.3</feature>
+        <feature>appSecurity-6.0</feature>
+        <feature>pages-4.0</feature>
+		 
+        <!-- Features needed for arquillan support -->
+        <feature>localConnector-1.0</feature>
+        <!-- Required by test infrastructure -->
+	    <feature>timedexit-1.0</feature>
+        <!-- Convenience feature -->
+	    <feature>arquillian-support-jakarta-2.1</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml" />
+
+    <!-- Allow Arquillian access to dropins directory for application installation -->
+    <remoteFileAccess>
+        <writeDir>${server.config.dir}/dropins</writeDir>
+    </remoteFileAccess>
+
+    <!-- Include test dependencies needed on the server at runtime at a global scope -->
+    <library id="global">
+    	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+    </library>
+
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+
+    <!-- Derby Permissions -->
+    <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	
+    <!-- Ensure JSP can handle lamdas -->
+    <jspEngine jdkSourceLevel="18"/>
+    
+    <keyStore id="defaultKeyStore" password="openliberty"/>
+    <quickStartSecurity userName="admin" userPassword="adminpwd"/>
+
+    <!-- Security role(s) needed for TCK tests -->
+    <orb id="defaultOrb" orbSSLInitTimeout="90"/>
+
+    <basicRegistry id="basic" realm="default">
+        <user name="javajoe" password="javajoe"/>
+        <group name="Manager">
+          <member name="javajoe"/>
+        </group>
+    </basicRegistry>
+
+    <security-role-mapping>
+      <role-name>Manager</role-name>
+      <principal-name>javajoe</principal-name>
+    </security-role-mapping>
+</server>

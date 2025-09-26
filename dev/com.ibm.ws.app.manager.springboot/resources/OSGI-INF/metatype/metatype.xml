@@ -31,6 +31,12 @@
                          com.ibm.ws.jca.embeddedResourceAdapter">
         <AD id="type" name="internal" description="internal" type="String" default="spring" ibm:final="true"/>
         <AD id="applicationArgument" name="%applicationArgument.name" description="%applicationArgument.desc" required="false" type="String" cardinality="2147483647"/>
+        <AD name="internal" description="internal use only"
+            id="setEEContextOnStartup"
+            ibm:beta="true"
+            required="false"
+            default="true"
+            type="Boolean"/>
     </OCD>
     <Designate factoryPid="com.ibm.ws.app.manager.springappcfg">
         <Object ocdref="com.ibm.ws.app.manager.springappcfg"/>

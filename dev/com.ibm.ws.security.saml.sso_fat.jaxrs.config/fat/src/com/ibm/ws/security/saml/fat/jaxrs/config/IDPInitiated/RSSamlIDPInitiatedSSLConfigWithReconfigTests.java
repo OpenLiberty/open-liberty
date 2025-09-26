@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -74,24 +74,6 @@ public class RSSamlIDPInitiatedSSLConfigWithReconfigTests extends RSSamlIDPIniti
     }
 
     /**
-     * Test purpose: - signatureMethodAlgorithm: SHA128 Expected results: - The
-     * SAML token should be successfully processed by JAX-RS.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA128() throws Exception {
-
-        RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
-        RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA128);
-
-        List<validationData> expectations = commonUtils.getGoodExpectationsForJaxrsGet(flowType, testSettings);
-
-        generalConfigTest(updatedRsSamlSettings, expectations, testSettings);
-    }
-
-    /**
      * Test purpose: - signatureMethodAlgorithm: SHA256 Expected results: - 401
      * when invoking JAX-RS. - CWWKS5049E message in the app server log saying
      * the signature was not valid (weaker than required).
@@ -113,17 +95,17 @@ public class RSSamlIDPInitiatedSSLConfigWithReconfigTests extends RSSamlIDPIniti
     }
 
     /**
-     * Test purpose: - signatureMethodAlgorithm: SHA128 - SAML SP specifies
+     * Test purpose: - signatureMethodAlgorithm: SHA256 - SAML SP specifies
      * SHA256 as the signature algorithm Expected results: - TODO
      *
      * @throws Exception
      */
     // !@Test
-    public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA128_sp256() throws Exception {
+    public void RSSamlIDPInitiatedConfigTests_signatureMethodAlgorithm_SHA256_sp256() throws Exception {
 
         RSSamlConfigSettings updatedRsSamlSettings = rsConfigSettings.copyConfigSettings();
         RSSamlProviderSettings updatedProviderSettings = updatedRsSamlSettings.getDefaultRSSamlProviderSettings();
-        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA128);
+        updatedProviderSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256);
 
         // Update test settings to use an SP that encrypts SAML assertions
         SAMLTestSettings updatedTestSettings = testSettings.copyTestSettings();

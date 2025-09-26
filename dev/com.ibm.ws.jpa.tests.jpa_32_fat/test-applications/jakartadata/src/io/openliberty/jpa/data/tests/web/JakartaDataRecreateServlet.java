@@ -2480,7 +2480,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @SkipIfSysProp({ DB_DB2, DB_SQLServer }) //TODO DB2 and SQLServer fail due to https://github.com/OpenLiberty/open-liberty/issues/32867
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32867
     public void testOLGH32867() throws Exception {
         deleteAllEntities(Showtime.class);
 

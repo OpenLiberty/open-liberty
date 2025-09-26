@@ -27,6 +27,7 @@ import jakarta.persistence.Id;
  */
 @Entity
 public class DemographicInfo {
+    static final ZoneId TIMEZONE = ZoneId.of("America/New_York");
 
     @Column
     public Instant collectedOn;
@@ -50,7 +51,8 @@ public class DemographicInfo {
     public DemographicInfo(int year, int month, int day,
                            long numFullTimeWorkers,
                            double intragovernmentalDebt, double publicDebt) {
-        this.collectedOn = ZonedDateTime.of(year, month, day, 12, 0, 0, 0, ZoneId.of("America/New_York")).toInstant();
+        this.collectedOn = ZonedDateTime.of(year, month, day, 12, 0, 0, 0, TIMEZONE)
+                        .toInstant();
         this.numFullTimeWorkers = BigInteger.valueOf(numFullTimeWorkers);
         this.intragovernmentalDebt = BigDecimal.valueOf(intragovernmentalDebt);
         this.publicDebt = BigDecimal.valueOf(publicDebt);

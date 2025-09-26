@@ -65,6 +65,7 @@ src: \
 	com.ibm.ws.springboot.fat20.webanno.app;version=latest,\
 	com.ibm.ws.springboot.fat20.webflux.app;version=latest,\
 	com.ibm.ws.springboot.fat20.transactions.app;version=latest,\
+	com.ibm.ws.springboot.fat20.programmatic.trans.app;version=latest,\
 	com.ibm.ws.springboot.fat20.data.app;version=latest,\
 	com.ibm.ws.springboot.fat20.concurrency.app;version=latest,\
 	com.ibm.ws.springboot.fat20.aop.app;version=latest,\

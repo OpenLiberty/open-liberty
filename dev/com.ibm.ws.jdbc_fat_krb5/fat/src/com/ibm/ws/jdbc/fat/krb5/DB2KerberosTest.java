@@ -43,6 +43,7 @@ import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForSecurity;
 import componenttest.annotation.TestServlet;
@@ -54,6 +55,7 @@ import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.db2.web.DB2KerberosTestServlet;
 
 @SkipForSecurity(property = FIPS_140_3, runtimeName = SEMERU)
+@MaximumJavaLevel(javaLevel = 23) //TODO remove once JCC driver is updated
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DB2KerberosTest extends FATServletClient {

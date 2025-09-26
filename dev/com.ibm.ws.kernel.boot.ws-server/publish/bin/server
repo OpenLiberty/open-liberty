@@ -921,17 +921,17 @@ javaCmd()
       elif [ $ACTION = "checkpoint" ] && [ -z "${option##--at=*}" ]; then
         CHECKPOINT_AT=${option#--at=}
       else
-        if [ -z "$REMAINING_ARGS" ] ; then
-          REMAINING_ARGS="$option"
+        # Quote each option when adding to REMAINING_ARGS.
+        escapeForEval "${option}"
+        if [ -z "$REMAINING_ARGS" ]; then
+          REMAINING_ARGS="${escapeForEvalResult}"
         else
-          REMAINING_ARGS="$REMAINING_ARGS $option"
-        fi  
+          REMAINING_ARGS="$REMAINING_ARGS ${escapeForEvalResult}"
+        fi
       fi
-    else
-      REMAINING_ARGS="$REMAINING_ARGS $option"
     fi
   done
-  
+
   if [ $ACTION = "checkpoint" ]; then
     if [ -z "$CHECKPOINT_AT" ]; then
       CHECKPOINT_AT="beforeAppStart"

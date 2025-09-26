@@ -5,7 +5,7 @@
 	~ terms of the Eclipse Public License 2.0 which accompanies this distribution, 
 	~ and is available at 
 	~    http://www.eclipse.org/legal/epl-2.0/
-    
+
     SPDX-License-Identifier: EPL-2.0 
 	~ Contributors: 
 	~    IBM Corporation - initial API and implementation 
@@ -15,10 +15,10 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>io.openliberty.microprofile.faulttolerance</groupId>
+	<groupId>io.openliberty.platform.persistence.cdi</groupId>
 	<artifactId>tck.runner.tck</artifactId>
-	<version>4.0</version>
-	<name>MicroProfile Fault Tolerance TCK Runner TCK Module</name>
+	<version>11.0</version>
+	<name>Jakarta TCK Runner TCK Module</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

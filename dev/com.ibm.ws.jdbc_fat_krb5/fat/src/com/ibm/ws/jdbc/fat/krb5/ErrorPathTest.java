@@ -37,6 +37,7 @@ import com.ibm.ws.jdbc.fat.krb5.containers.DB2KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForSecurity;
 import componenttest.custom.junit.runner.FATRunner;
@@ -45,6 +46,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+@MaximumJavaLevel(javaLevel = 23) //TODO remove once JCC driver is updated
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class ErrorPathTest extends FATServletClient {

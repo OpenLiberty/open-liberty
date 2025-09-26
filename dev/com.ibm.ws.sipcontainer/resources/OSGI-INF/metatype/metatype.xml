@@ -155,6 +155,9 @@
 		<AD name="%addTtl.name" description="%addTtl.desc" id="addTtl"
 			required="true" type="Boolean" default="false" />
 
+		<AD name="internal" description="internal" id="useNettyTransport"
+			required="false" type="Boolean" default="true" />
+
 	</OCD>
 
 	<Designate pid="com.ibm.ws.sip.container.resolver.DomainResolverImpl">

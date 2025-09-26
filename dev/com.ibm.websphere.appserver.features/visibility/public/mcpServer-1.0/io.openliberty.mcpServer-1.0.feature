@@ -13,7 +13,7 @@ IBM-API-Package: \
 IBM-ShortName: mcpServer-1.0
 Subsystem-Name: Model Context Protocol Server 1.0
 -features=io.openliberty.mcpServer1.0.ee-10.0;ibm.tolerates:=11.0
--bundles=io.openliberty.mcp; location:="dev/api/ibm/", \
+-bundles=io.openliberty.mcp; location:="dev/api/ibm/,lib/", \
  io.openliberty.mcp.internal
 kind=beta
 edition=core

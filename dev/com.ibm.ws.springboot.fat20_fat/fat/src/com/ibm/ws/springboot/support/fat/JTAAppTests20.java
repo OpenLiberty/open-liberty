@@ -31,6 +31,11 @@ public class JTAAppTests20 extends JTAAppAbstractTests {
     }
 
     @Test
+    public void testJNDIAppRunner() throws Exception {
+        assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("AppRunner: JNDI TESTS PASSED"));
+    }
+
+    @Test
     public void testTransactionsWebContext() throws Exception {
         HttpUtils.findStringInUrl(server, "testTransactions", "TESTED TRANSACTIONS");
         assertNotNull("Did not find TESTS PASSED messages", server.waitForStringInLog("WebContext: TRANSACTION TESTS PASSED"));

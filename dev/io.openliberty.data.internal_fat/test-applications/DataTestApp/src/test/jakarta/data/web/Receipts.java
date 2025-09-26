@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.concurrent.Asynchronous;
@@ -83,6 +84,17 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
     @Find
     CursoredPage<Receipt> forCustomer(String customer, PageRequest req, Sort<?>... sorts);
 
+    @Query("""
+                    UPDATE Receipt rct
+                       SET rct.total = rct.total * :ReceiptTotalRateOfIncrease
+                     WHERE rct.total > (SELECT AVG(rt.total) FROM Receipt rt)""")
+    long increaseIfAboveAverageTotal(@Param("ReceiptTotalRateOfIncrease") float rate);
+
+    @Query("""
+                    DELETE FROM Receipt r
+                     WHERE r.total < (SELECT AVG(t.total) FROM Receipt t)""")
+    long removeByBelowAverageTotal();
+
     long removeByPurchaseId(long purchaseId);
 
     Set<Long> removeByTotalBetween(float min, float max);
@@ -101,6 +113,13 @@ public interface Receipts extends CrudRepository<Receipt, Long> {
 
     @Query("SELECT total ORDER BY total DESC")
     Page<Float> totalsDecreasing(PageRequest req);
+
+    @Query("""
+                    FROM Receipt
+                    WHERE total < (SELECT SUM(s.total) FROM Receipt s) /
+                                  (SELECT COUNT(c) FROM Receipt c)
+                    ORDER BY total ASC""")
+    Stream<Receipt> withBelowAverageTotal();
 
     @Find
     Receipt withPurchaseNum(long purchaseId);

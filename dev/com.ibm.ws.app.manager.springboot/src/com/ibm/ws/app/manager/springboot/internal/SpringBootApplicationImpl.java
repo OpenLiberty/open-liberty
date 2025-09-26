@@ -543,6 +543,7 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
     private final Set<Runnable> shutdownHooks = new CopyOnWriteArraySet<>();
     private final AtomicBoolean uninstalled = new AtomicBoolean();
     private final List<String> appArgs;
+    private final boolean setEEContextOnStartup;
     private volatile AtomicReference<String> applicationActivated;
 
     public SpringBootApplicationImpl(ApplicationInformation<DeployedAppInfo> applicationInformation,
@@ -580,6 +581,9 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
         } else {
             appArgs = Collections.emptyList();
         }
+
+        Object setEEContextOnStartup = applicationInformation.getConfigProperty(SpringConstants.APP_SET_EE_CONTEXT_ON_STARTUP);
+        this.setEEContextOnStartup = Boolean.TRUE.equals(setEEContextOnStartup);
     }
 
     private static SpringBootManifest getSpringBootManifest(ApplicationInformation<DeployedAppInfo> appInfo) throws UnableToAdaptException {
@@ -710,6 +714,10 @@ public class SpringBootApplicationImpl extends DeployedAppInfoBase implements Sp
 
     List<String> getAppArgs() {
         return appArgs;
+    }
+
+    boolean setEEContextOnStartup() {
+        return setEEContextOnStartup;
     }
 
     @Override

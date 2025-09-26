@@ -21,7 +21,8 @@ fat.project: true
 fat.test.container.images: icr.io/ibm-messaging/mq:9.3.2.0-r2
 
 src: \
-  fat/src
+  fat/src,\
+  test-applications/ejbapp1/src
 
 tested.features: \
   springBoot-4.0, \
@@ -40,7 +41,8 @@ tested.features: \
   connectors-2.1, \
   jndi-1.0, \
   localConnector-1.0, \
-  messaging-3.1
+  messaging-3.1, \
+  persistence-3.2
   
 -buildpath: \
   com.ibm.ws.componenttest.2.0;version=latest,\
@@ -50,6 +52,8 @@ tested.features: \
   io.openliberty.org.apache.commons.logging;version=latest,\
   io.openliberty.org.apache.commons.codec;version=latest,\
   io.openliberty.org.apache.xercesImpl;version=latest,\
+  io.openliberty.jakarta.enterpriseBeans.4.0;version=latest, \
+  io.openliberty.jakarta.cdi.4.1;version=latest, \
   org.brotli:dec;version='0.1.2',\
   io.openliberty.jakarta.websocket.2.2;version=latest, \
   io.openliberty.jakarta.websocket.client.2.2;version=latest, \
@@ -73,5 +77,7 @@ tested.features: \
   io.openliberty.springboot.fat40.security.app;version=latest, \
   io.openliberty.springboot.fat40.concurrency.app;version=latest, \
   io.openliberty.springboot.fat40.mbean.app;version=latest, \
-  io.openliberty.springboot.fat40.jms.app;version=latest
+  io.openliberty.springboot.fat40.jms.app;version=latest, \
+  io.openliberty.springboot.fat40.transactions.app;version=latest, \
+  io.openliberty.springboot.fat40.data.app;version=latest
 

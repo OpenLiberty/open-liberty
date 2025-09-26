@@ -28,7 +28,12 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
   implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot'])
-  providedRuntime('org.springframework.boot:spring-boot-starter-tomcat')
+   // Should use spring-boot-starter-tomcat as provideCompile, but gradle plugin
+  // is putting too much in lib-provided: see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/409
+  // providedCompile('org.springframework.boot:spring-boot-starter-tomcat')
+  providedRuntime('org.apache.tomcat.embed:tomcat-embed-core')
+  providedRuntime('org.apache.tomcat.embed:tomcat-embed-el')
+  providedRuntime('org.apache.tomcat.embed:tomcat-embed-websocket')
 }
 
 bootJar {

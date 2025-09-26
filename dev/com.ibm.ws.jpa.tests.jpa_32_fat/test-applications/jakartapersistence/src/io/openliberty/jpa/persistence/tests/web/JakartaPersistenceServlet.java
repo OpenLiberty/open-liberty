@@ -28,6 +28,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 import org.junit.Ignore;
@@ -969,6 +971,363 @@ public class JakartaPersistenceServlet extends FATServlet {
         assertEquals("Extracted Quarter should be 4", 4, ((Number) result.get(2)).intValue());
         assertEquals("Extracted Quarter should be 2", 2, ((Number) result.get(3)).intValue());
 
+    }
+    
+    @Test
+    @SkipIfSysProp({
+        DB_DB2, DB_SQLServer, //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32957
+        DB_Oracle //Oracle DB doesn't have any conversion function into TIME so whole TIMESTAMP is returned and result is converted to time in EclipseLink/Java
+    })
+    public void testExtractTimeFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 15, 9, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 8, 22), LocalTime.of(14, 45), LocalDateTime.of(2022, 8, 22, 14, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 11, 05), LocalTime.of(14, 45), LocalDateTime.of(2024, 11, 5, 14, 45));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(TIME FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, LocalTime.of(14, 45))
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        
+        assertEquals(2, results.size());
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 11, 5), results.get(0).getLocalDateData());
+        assertEquals("q2", results.get(1).getName());
+        assertEquals(LocalDateTime.of(2022, 8, 22, 14, 45), results.get(1).getLocalDateTimeData());
+    }
+    
+    @Test
+    public void testExtractDateFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 15, 9, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 8, 22), LocalTime.of(14, 45), LocalDateTime.of(2022, 8, 22, 14, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 7, 15), LocalTime.of(11, 20), LocalDateTime.of(2024, 7, 15, 11, 20));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(DAY FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 15)  // Day = 15
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 7, 15), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(9, 30), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 3, 15, 9, 30), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractWeekFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        // Using dates that fall in the same ISO week
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2024, 1, 8), LocalTime.of(10, 15), LocalDateTime.of(2024, 1, 8, 10, 15));   // Week 2 of 2024
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2024, 1, 14), LocalTime.of(16, 30), LocalDateTime.of(2024, 1, 14, 16, 30)); // Week 2 of 2024
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 1, 22), LocalTime.of(12, 45), LocalDateTime.of(2024, 1, 22, 12, 45)); // Week 4 of 2024
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(WEEK FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 2)  // Week 2
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        
+        assertEquals(2, results.size());
+
+        assertEquals("q2", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 1, 14), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(10, 15), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2024, 1, 8, 10, 15), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractQuarterFromLocalDataWithJPQL() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 2, 15), LocalTime.of(8, 30), LocalDateTime.of(2023, 2, 15, 8, 30));   // Q1
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2023, 7, 20), LocalTime.of(14, 15), LocalDateTime.of(2023, 7, 20, 14, 15)); // Q3
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2023, 3, 10), LocalTime.of(16, 45), LocalDateTime.of(2023, 3, 10, 16, 45)); // Q1
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(QUARTER FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 1)  // Quarter 1 (Jan-Mar)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        
+        assertEquals(2, results.size());
+
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2023, 3, 10), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(8, 30), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 2, 15, 8, 30), results.get(1).getLocalDateTimeData());
+    }
+    
+    @Test
+    public void testExtractMonthFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 03, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 03, 15, 9, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 8, 22), LocalTime.of(14, 45), LocalDateTime.of(2022, 8, 22, 14, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 03, 05), LocalTime.of(11, 20), LocalDateTime.of(2024, 03, 05, 11, 20));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(MONTH FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 3)  // March = 3
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        
+        assertEquals(2, results.size());
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDateTime.of(2024, 03, 05, 11, 20), results.get(0).getLocalDateTimeData());
+        assertEquals(LocalTime.of(9, 30), results.get(1).getLocalTimeData());
+    }
+    
+    @Test
+    public void testExtractYearFromLocalDataWithJPQL() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 4, 18), LocalTime.of(10, 45), LocalDateTime.of(2023, 4, 18, 10, 45));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 6, 25), LocalTime.of(16, 20), LocalDateTime.of(2022, 6, 25, 16, 20));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2023, 8, 30), LocalTime.of(8, 45), LocalDateTime.of(2023, 8, 30, 8, 50));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(YEAR FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 2023)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2023, 8, 30), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(10, 45), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 4, 18, 10, 45), results.get(1).getLocalDateTimeData());
+    }
+    
+    @Test
+    public void testExtractDayFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 25), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 25, 9, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 8, 12), LocalTime.of(14, 45), LocalDateTime.of(2022, 8, 12, 14, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 12, 25), LocalTime.of(11, 20), LocalDateTime.of(2024, 12, 25, 11, 20));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(DAY FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 25)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 12, 25), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(9, 30), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 3, 25, 9, 30), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractHourFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 5, 10), LocalTime.of(14, 30), LocalDateTime.of(2023, 5, 10, 14, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 7, 15), LocalTime.of(9, 45), LocalDateTime.of(2022, 7, 15, 9, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 9, 20), LocalTime.of(14, 15), LocalDateTime.of(2024, 9, 20, 14, 15));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(HOUR FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 14)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 9, 20), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(14, 30), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 5, 10, 14, 30), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractMinuteFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 4, 18), LocalTime.of(10, 45), LocalDateTime.of(2023, 4, 18, 10, 45));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 6, 25), LocalTime.of(16, 20), LocalDateTime.of(2022, 6, 25, 16, 20));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 8, 30), LocalTime.of(8, 45), LocalDateTime.of(2024, 8, 30, 8, 45));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(MINUTE FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 45)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 8, 30), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(10, 45), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 4, 18, 10, 45), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractSecondFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 2, 14), LocalTime.of(13, 25, 30), LocalDateTime.of(2023, 2, 14, 13, 25, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 11, 8), LocalTime.of(17, 50, 15), LocalDateTime.of(2022, 11, 8, 17, 50, 15));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 5, 22), LocalTime.of(11, 35, 30), LocalDateTime.of(2024, 5, 22, 11, 35, 30));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(SECOND FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 30.0)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDateTime.of(2024, 5, 22, 11, 35, 30), results.get(0).getLocalDateTimeData());
+        assertEquals(LocalDate.of(2023, 2, 14), results.get(1).getLocalDateData());
+        assertEquals(LocalTime.of(13, 25, 30), results.get(1).getLocalTimeData());
     }
     
     @Test

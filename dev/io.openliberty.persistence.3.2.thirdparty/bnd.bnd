@@ -133,7 +133,8 @@ Include-Resource: \
   @${repo;org.eclipse.persistence:org.eclipse.persistence.json;${eclFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
   org/eclipse/persistence/internal/jpa/metadata/converters=${bin}/org/eclipse/persistence/internal/jpa/metadata/converters,\
   org/eclipse/persistence/mappings/converters=${bin}/org/eclipse/persistence/mappings/converters,\
-  org/eclipse/persistence/internal/queries=${bin}/org/eclipse/persistence/internal/queries
+  org/eclipse/persistence/internal/queries=${bin}/org/eclipse/persistence/internal/queries,\
+  org/eclipse/persistence/platform/database=${bin}/org/eclipse/persistence/platform/database
 
 
 publish.wlp.jar.suffix: dev/api/third-party
