@@ -109,7 +109,7 @@ public class ValidationTckLauncher {
     public void launchValidation31TCK() throws Exception {
 
         TCKRunner.build(server, Type.JAKARTA, "Validation")
-                        .withPlatfromVersion("11")
+                        .withPlatformVersion("11")
                         .withSuiteFileName("tck-tests.xml")
                         .withAdditionalMvnProps(additionalProps)
                         .withAppUndeployTimeout(Duration.ofSeconds(120))

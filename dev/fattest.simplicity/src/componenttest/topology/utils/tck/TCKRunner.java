@@ -201,7 +201,7 @@ public class TCKRunner {
      * @param  platformVersion the version of the Jakarta EE Platform this TCK tests
      * @return                 this TCKRunner
      */
-    public TCKRunner withPlatfromVersion(String platformVersion) {
+    public TCKRunner withPlatformVersion(String platformVersion) {
         Objects.requireNonNull(platformVersion);
 
         this.platformVersion = platformVersion;

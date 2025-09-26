@@ -69,7 +69,7 @@ public class JsonpTckLauncher {
         additionalProps.put("java.io.tmpdir", PrivHelper.getProperty("java.io.tmpdir", "/tmp"));
 
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonp")
-                        .withPlatfromVersion("10")
+                        .withPlatformVersion("10")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
     }
@@ -88,7 +88,7 @@ public class JsonpTckLauncher {
         additionalPluggabilityProps.put("run-tck-tests-pluggability", "true");
 
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonp")
-                        .withPlatfromVersion("10")
+                        .withPlatformVersion("10")
                         .withQualifiers("pluggability")
                         .withAdditionalMvnProps(additionalPluggabilityProps)
                         .runTCK();

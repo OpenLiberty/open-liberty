@@ -88,7 +88,7 @@ public class ConcurrentTckLauncherFull {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrent31TCKFull() throws Exception {
         TCKRunner.build(server, Type.JAKARTA, "Concurrency")
-                        .withPlatfromVersion("12")
+                        .withPlatformVersion("12")
                         .withQualifiers("full")
                         .withAdditionalMvnProps(additionalProps)
                         .withLogging(Map.of("ee.jakarta.tck.concurrent", Level.ALL,

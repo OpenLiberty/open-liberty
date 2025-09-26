@@ -84,7 +84,7 @@ public class JsonbTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchJsonb30TCK() throws Exception {
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonb")
-                        .withPlatfromVersion("10")
+                        .withPlatformVersion("10")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
 
