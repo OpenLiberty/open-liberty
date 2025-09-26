@@ -31,6 +31,7 @@ import jakarta.data.constraint.NotBetween;
 import jakarta.data.constraint.NotNull;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.page.CursoredPage;
+import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
 import jakarta.inject.Inject;
@@ -342,4 +343,78 @@ public class Data_1_1_Servlet extends FATServlet {
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
     }
+
+    /**
+     * Use a repository method that performs a Query with SELECT and ORDER BY
+     * clauses only, retrieving a subset of entity attributes as a Java record.
+     */
+    @Test
+    public void testSelectOrderByQueryReturnsPageOfRecords() {
+
+        Page<Ratio> page1 = fractions.pageOfRatios(PageRequest.ofSize(12));
+
+        assertEquals(List.of("1:19",
+                             "1:18",
+                             "2:18",
+                             "1:17",
+                             "2:17",
+                             "3:17",
+                             "1:16",
+                             "2:16",
+                             "3:16",
+                             "4:16",
+                             "1:15",
+                             "2:15"),
+                     page1.stream()
+                                     .map(Ratio::toString)
+                                     .collect(Collectors.toList()));
+
+        Page<Ratio> page2 = fractions.pageOfRatios(page1.nextPageRequest());
+
+        assertEquals(List.of("3:15",
+                             "4:15",
+                             "5:15",
+                             "1:14",
+                             "2:14",
+                             "3:14",
+                             "4:14",
+                             "5:14",
+                             "6:14",
+                             "1:13",
+                             "2:13",
+                             "3:13"),
+                     page2.stream()
+                                     .map(Ratio::toString)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that performs a Query consisting of a SELECT
+     * clause only, retrieving a subset of entity attributes as a Java record.
+     */
+    @Test
+    public void testSelectQueryReturnsStreamOfRecords() {
+
+        assertEquals(List.of("10:1",
+                             "10:10",
+                             "10:2",
+                             "10:3",
+                             "10:4",
+                             "10:5",
+                             "10:6",
+                             "10:7",
+                             "10:8",
+                             "10:9",
+                             "11:1",
+                             "11:2",
+                             "11:3",
+                             "11:4",
+                             "11:5"),
+                     fractions.streamOfRatios()
+                                     .map(Ratio::toString)
+                                     .sorted()
+                                     .limit(15)
+                                     .collect(Collectors.toList()));
+    }
+
 }
