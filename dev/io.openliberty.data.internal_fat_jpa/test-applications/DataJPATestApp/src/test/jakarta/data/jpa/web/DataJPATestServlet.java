@@ -12,7 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
@@ -2152,7 +2151,6 @@ public class DataJPATestServlet extends FATServlet {
      * Verify that JPQL can be used to EXTRACT the DATE from a LocalDateTime.
      */
     @Test
-    @SkipIfSysProp({ DB_DB2, DB_SQLServer }) //TODO DB2 and SQLServer fail due to https://github.com/OpenLiberty/open-liberty/issues/32867
     public void testExtractDate() {
         rebates.reset();
 
