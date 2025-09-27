@@ -45,6 +45,7 @@ tested.features: \
 	appsecurity-6.0,\
 	concurrent-2.0,\
 	concurrent-3.0,\
+	concurrent-3.1,\
 	ejbLite-3.2,\
 	ejbRemote-3.2,\
 	enterpriseBeansLite-4.0,\
