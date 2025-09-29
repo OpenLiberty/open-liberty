@@ -24,8 +24,8 @@ import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
 
-import io.openliberty.transport.config.options.EndpointOption;
 import io.openliberty.http.options.TcpOption;
+import io.openliberty.transport.config.options.EndpointOption;
 
 /**
  * Configuration class for Netty-based HTTP channels.
@@ -35,12 +35,10 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(NettyHttpChannelConfig.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    
     private boolean suppressHandshakeError;
     private int suppressHandshakeErrorCount;
 
     Map<EndpointOption, Object> config;
-    
 
     /**
      * Constructor for NettyHttpChannelConfig.
@@ -65,7 +63,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         clearSameSiteOptions();
     }
 
-    public void registerAccessLog(String endpointName){
+    public void registerAccessLog(String endpointName) {
         parseAccessLog(endpointName);
     }
 
@@ -82,7 +80,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             }
             return;
         }
-        
 
         if (useCompressionOptions) {
             parseCompressionOptions(config);
@@ -100,7 +97,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
         parseHttpOptions(config);
         parseTCPOptions(config);
-        
 
     }
 
@@ -274,14 +270,13 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         }
     }
 
-    public void parseTCPOptions(Map<String, Object> options){
+    public void parseTCPOptions(Map<String, Object> options) {
         config.putIfAbsent(TcpOption.INACTIVITY_TIMEOUT, TcpOption.INACTIVITY_TIMEOUT.parse(options));
     }
 
-    public Object get(EndpointOption option){
+    public Object get(EndpointOption option) {
         return this.config.getOrDefault(option, option.getDefaultValue());
     }
-    
 
     public void disableRemoteIp() {
         useRemoteIpOptions = Boolean.FALSE;
