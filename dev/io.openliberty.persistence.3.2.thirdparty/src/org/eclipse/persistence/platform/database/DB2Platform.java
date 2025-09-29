@@ -616,8 +616,10 @@ public class DB2Platform extends org.eclipse.persistence.platform.database.Datab
     
     private static final class DB2ExtractOperator extends ExtractOperator {
 
-    	// DATE emulation: CAST(:first AS DATE)
+        // DATE emulation: CAST(:first AS DATE)
         private static final String[] DATE_STRINGS = new String[] {"CAST(", " AS DATE)"};
+        // TIME emulation: TIME(:first)
+        private static final String[] TIME_STRINGS = new String[] {"TIME(", ")"};
 
         private DB2ExtractOperator() {
             super();
@@ -635,6 +637,20 @@ public class DB2Platform extends org.eclipse.persistence.platform.database.Datab
             printer.printString(DATE_STRINGS[0]);
             first.printJava(printer);
             printer.printString(DATE_STRINGS[1]);
+        }
+        
+        @Override
+        protected void printTimeSQL(final Expression first, Expression second, final ExpressionSQLPrinter printer) {
+            printer.printString(TIME_STRINGS[0]);
+            first.printSQL(printer);
+            printer.printString(TIME_STRINGS[1]);
+        }
+
+        @Override
+        protected void printTimeJava(final Expression first, Expression second, final ExpressionJavaPrinter printer) {
+            printer.printString(TIME_STRINGS[0]);
+            first.printJava(printer);
+            printer.printString(TIME_STRINGS[1]);
         }
     }
 
