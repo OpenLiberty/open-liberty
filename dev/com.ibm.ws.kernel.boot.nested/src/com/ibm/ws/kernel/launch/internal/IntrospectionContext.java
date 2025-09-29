@@ -16,10 +16,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.function.BiFunction;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -27,7 +26,6 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.FileUtils;
 import com.ibm.wsspi.logging.Introspector;
@@ -46,7 +44,7 @@ public class IntrospectionContext {
         this.dumpDir = dumpDir;
     }
 
-    public void introspectAll() {
+    public void introspectAll(OutputStreamCreatorFunction outputStreamCreationFunction) {
         // create introspection dir in the dump dir which was created in the server's output directory
         File introspectionDir = new File(dumpDir, BootstrapConstants.SERVER_INTROSPECTION_FOLDER_NAME);
         if (!FileUtils.createDir(introspectionDir)) {
@@ -54,8 +52,8 @@ public class IntrospectionContext {
         }
 
         try {
-            introspectIntrospectors(introspectionDir);
-            introspectIntrospectableServices(introspectionDir);
+            introspectIntrospectors(introspectionDir, outputStreamCreationFunction);
+            introspectIntrospectableServices(introspectionDir, outputStreamCreationFunction);
         } catch (InvalidSyntaxException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception occured when get IntrospectableService refs: {0}", e);
@@ -63,7 +61,7 @@ public class IntrospectionContext {
         }
     }
 
-    private void introspectIntrospectors(File introspectionDir) throws InvalidSyntaxException {
+    private void introspectIntrospectors(File introspectionDir, OutputStreamCreatorFunction outputStreamCreationFunction) throws InvalidSyntaxException {
         Collection<ServiceReference<Introspector>> refs = this.systemBundleCtx.getServiceReferences(Introspector.class, null);
         if (refs != null && !refs.isEmpty()) {
             for (ServiceReference<Introspector> ref : refs) {
@@ -72,7 +70,8 @@ public class IntrospectionContext {
                     try {
                         String name = introspector.getIntrospectorName();
                         String desc = introspector.getIntrospectorDescription();
-                        introspect(introspectionDir, name, desc, introspector, null);
+                        introspect(introspectionDir, name, desc, introspector, null,
+                                   outputStreamCreationFunction);
                     } finally {
                         this.systemBundleCtx.ungetService(ref);
                     }
@@ -81,7 +80,7 @@ public class IntrospectionContext {
         }
     }
 
-    private void introspectIntrospectableServices(File introspectionDir) throws InvalidSyntaxException {
+    private void introspectIntrospectableServices(File introspectionDir, OutputStreamCreatorFunction outputStreamCreationFunction) throws InvalidSyntaxException {
         Collection<ServiceReference<com.ibm.wsspi.logging.IntrospectableService>> legacyRefs = systemBundleCtx.getServiceReferences(com.ibm.wsspi.logging.IntrospectableService.class,
                                                                                                                                     null);
         if (legacyRefs != null && !legacyRefs.isEmpty()) {
@@ -91,7 +90,8 @@ public class IntrospectionContext {
                     try {
                         String name = serv.getName();
                         String desc = serv.getDescription();
-                        introspect(introspectionDir, name, desc, null, serv);
+                        introspect(introspectionDir, name, desc, null, serv,
+                                   outputStreamCreationFunction);
                     } finally {
                         systemBundleCtx.ungetService(ref);
                     }
@@ -104,18 +104,16 @@ public class IntrospectionContext {
                             String introspectionName,
                             String introspectionDesc,
                             Introspector introspector,
-                            com.ibm.wsspi.logging.IntrospectableService introspectable) {
+                            com.ibm.wsspi.logging.IntrospectableService introspectable,
+                            OutputStreamCreatorFunction outputStreamCreationFunction) {
         if (introspectionName == null || introspectionName.isEmpty()) {
             introspectionName = Introspector.class.getSimpleName() + '.' + unnamedCount++;
         }
 
-        File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
-
-        OutputStream out = null;
-        PrintWriter pw = null;
-        try {
-            out = new FileOutputStream(introspectionFile);
-            pw = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
+        PrintWriter writerForThrowable = null;
+        final OutputStream outputStream = outputStreamCreationFunction.apply(introspectionDir, introspectionDesc);
+        try (PrintWriter pw = new PrintWriter(outputStream)) {
+            writerForThrowable = pw;
 
             // write header
             if (introspectionDesc != null && !introspectionDesc.isEmpty()) {
@@ -127,21 +125,35 @@ public class IntrospectionContext {
 
             // write body
             if (introspectable != null) {
-                introspectable.introspect(out);
+                introspectable.introspect(outputStream);
             } else {
                 introspector.introspect(pw);
             }
+        } catch (Throwable t) {
+            Object introspectionFile = null;
+            Tr.warning(tc, "warn.unableWriteFile", introspectionFile, t.getMessage());
+            if (writerForThrowable != null) {
+                t.printStackTrace(writerForThrowable);
+            }
+        }
+    }
+
+    public interface OutputStreamCreatorFunction extends BiFunction<File, String, OutputStream> {
+    }
+
+    public static final OutputStreamCreatorFunction OUTPUT_TO_CONSOLE = (File ignored, String alsoIgnored) -> {
+        return System.out;
+    };
+
+    public static final OutputStreamCreatorFunction OUTPUT_TO_FILE = (File introspectionDir, String introspectionName) -> {
+        File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
+        try {
+            FileOutputStream out = new FileOutputStream(introspectionFile);
+            return out;
         } catch (FileNotFoundException e) {
             e.getCause(); // findbugs
             Tr.error(tc, "error.fileNotFound", introspectionFile);
-        } catch (Throwable t) {
-            Tr.warning(tc, "warn.unableWriteFile", introspectionFile, t.getMessage());
-            if (out != null) {
-                t.printStackTrace(pw);
-            }
-        } finally {
-            Utils.tryToClose(pw);
-            Utils.tryToClose(out);
         }
-    }
+        return null;
+    };
 }
