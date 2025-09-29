@@ -18,7 +18,6 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
-import java.util.function.BiFunction;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -44,7 +43,7 @@ public class IntrospectionContext {
         this.dumpDir = dumpDir;
     }
 
-    public void introspectAll(OutputStreamCreatorFunction outputStreamCreationFunction) {
+    public void introspectAll(OutputTarget outputTarget) {
         // create introspection dir in the dump dir which was created in the server's output directory
         File introspectionDir = new File(dumpDir, BootstrapConstants.SERVER_INTROSPECTION_FOLDER_NAME);
         if (!FileUtils.createDir(introspectionDir)) {
@@ -52,8 +51,8 @@ public class IntrospectionContext {
         }
 
         try {
-            introspectIntrospectors(introspectionDir, outputStreamCreationFunction);
-            introspectIntrospectableServices(introspectionDir, outputStreamCreationFunction);
+            introspectIntrospectors(introspectionDir, outputTarget);
+            introspectIntrospectableServices(introspectionDir, outputTarget);
         } catch (InvalidSyntaxException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception occured when get IntrospectableService refs: {0}", e);
@@ -61,7 +60,7 @@ public class IntrospectionContext {
         }
     }
 
-    private void introspectIntrospectors(File introspectionDir, OutputStreamCreatorFunction outputStreamCreationFunction) throws InvalidSyntaxException {
+    private void introspectIntrospectors(File introspectionDir, OutputTarget outputTarget) throws InvalidSyntaxException {
         Collection<ServiceReference<Introspector>> refs = this.systemBundleCtx.getServiceReferences(Introspector.class, null);
         if (refs != null && !refs.isEmpty()) {
             for (ServiceReference<Introspector> ref : refs) {
@@ -71,7 +70,7 @@ public class IntrospectionContext {
                         String name = introspector.getIntrospectorName();
                         String desc = introspector.getIntrospectorDescription();
                         introspect(introspectionDir, name, desc, introspector, null,
-                                   outputStreamCreationFunction);
+                                   outputTarget);
                     } finally {
                         this.systemBundleCtx.ungetService(ref);
                     }
@@ -80,7 +79,7 @@ public class IntrospectionContext {
         }
     }
 
-    private void introspectIntrospectableServices(File introspectionDir, OutputStreamCreatorFunction outputStreamCreationFunction) throws InvalidSyntaxException {
+    private void introspectIntrospectableServices(File introspectionDir, OutputTarget outputTarget) throws InvalidSyntaxException {
         Collection<ServiceReference<com.ibm.wsspi.logging.IntrospectableService>> legacyRefs = systemBundleCtx.getServiceReferences(com.ibm.wsspi.logging.IntrospectableService.class,
                                                                                                                                     null);
         if (legacyRefs != null && !legacyRefs.isEmpty()) {
@@ -91,7 +90,7 @@ public class IntrospectionContext {
                         String name = serv.getName();
                         String desc = serv.getDescription();
                         introspect(introspectionDir, name, desc, null, serv,
-                                   outputStreamCreationFunction);
+                                   outputTarget);
                     } finally {
                         systemBundleCtx.ungetService(ref);
                     }
@@ -105,13 +104,25 @@ public class IntrospectionContext {
                             String introspectionDesc,
                             Introspector introspector,
                             com.ibm.wsspi.logging.IntrospectableService introspectable,
-                            OutputStreamCreatorFunction outputStreamCreationFunction) {
+                            OutputTarget outputTarget) {
         if (introspectionName == null || introspectionName.isEmpty()) {
             introspectionName = Introspector.class.getSimpleName() + '.' + unnamedCount++;
         }
 
         PrintWriter writerForThrowable = null;
-        final OutputStream outputStream = outputStreamCreationFunction.apply(introspectionDir, introspectionDesc);
+        final OutputStream outputStream;
+
+        switch (outputTarget) {
+            case file:
+                outputStream = acquireFileOutputStream(introspectionDir, introspectionName);
+                break;
+            case console:
+                outputStream = acquireConsoleOutputStream();
+                break;
+            default:
+                throw new IllegalArgumentException("A destination for introspection output is required");
+        }
+
         try (PrintWriter pw = new PrintWriter(outputStream)) {
             writerForThrowable = pw;
 
@@ -138,14 +149,16 @@ public class IntrospectionContext {
         }
     }
 
-    public interface OutputStreamCreatorFunction extends BiFunction<File, String, OutputStream> {
+    public enum OutputTarget {
+        file,
+        console;
     }
 
-    public static final OutputStreamCreatorFunction OUTPUT_TO_CONSOLE = (File ignored, String alsoIgnored) -> {
+    public OutputStream acquireConsoleOutputStream() {
         return System.out;
-    };
+    }
 
-    public static final OutputStreamCreatorFunction OUTPUT_TO_FILE = (File introspectionDir, String introspectionName) -> {
+    public OutputStream acquireFileOutputStream(File introspectionDir, String introspectionName) {
         File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
         try {
             FileOutputStream out = new FileOutputStream(introspectionFile);
@@ -155,5 +168,5 @@ public class IntrospectionContext {
             Tr.error(tc, "error.fileNotFound", introspectionFile);
         }
         return null;
-    };
+    }
 }

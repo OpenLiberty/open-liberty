@@ -83,7 +83,7 @@ import com.ibm.ws.kernel.boot.internal.commands.ServerDumpUtil;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilderListener;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
-import com.ibm.ws.kernel.launch.internal.IntrospectionContext.OutputStreamCreatorFunction;
+import com.ibm.ws.kernel.launch.internal.IntrospectionContext.OutputTarget;
 import com.ibm.ws.kernel.launch.internal.Provisioner.InvalidBundleContextException;
 import com.ibm.ws.kernel.launch.service.ClientRunner;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
@@ -1241,16 +1241,15 @@ public class FrameworkManager {
      * server status from them.
      *
      * @param timestamp
-     *                                        Create a unique dump folder based on the time stamp string.
+     *                            Create a unique dump folder based on the time stamp string.
      * @param javaDumpActions
-     *                                        The java dumps to create, or null for the default set.
+     *                            The java dumps to create, or null for the default set.
      *
-     * @param OutputStreamCreatorFunction
-     *                                        A function that returns the Output stream this introspection will be written to.
-     *                                        Use the public static fields in IntrospectionContext
+     * @param OutputTarget
+     *                            Where this introspection will be written to.
      *
      */
-    public void introspectFramework(String timestamp, Set<JavaDumpAction> javaDumpActions, OutputStreamCreatorFunction outputStreamCreationFunction) {
+    public void introspectFramework(String timestamp, Set<JavaDumpAction> javaDumpActions, OutputTarget outputTarget) {
         Tr.audit(tc, "info.introspect.request.received");
 
         File dumpDir = config.getOutputFile(BootstrapConstants.SERVER_DUMP_FOLDER_PREFIX + timestamp + "/");
@@ -1265,7 +1264,7 @@ public class FrameworkManager {
         }
 
         IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx, dumpDir);
-        introspectionCtx.introspectAll(outputStreamCreationFunction);
+        introspectionCtx.introspectAll(outputTarget);
 
         // create dumped flag file
         File dumpedFlag = new File(dumpDir, BootstrapConstants.SERVER_DUMPED_FLAG_FILE_NAME);
