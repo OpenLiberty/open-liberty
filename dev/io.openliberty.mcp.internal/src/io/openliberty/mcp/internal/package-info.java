@@ -10,7 +10,5 @@
 /**
  *
  */
-@TraceOptions(traceGroup = "MCP", messageBundle = "io.openliberty.mcp.internal.resources.MCPMessages")
+@com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "MCP")
 package io.openliberty.mcp.internal;
-
-import com.ibm.websphere.ras.annotation.TraceOptions;
