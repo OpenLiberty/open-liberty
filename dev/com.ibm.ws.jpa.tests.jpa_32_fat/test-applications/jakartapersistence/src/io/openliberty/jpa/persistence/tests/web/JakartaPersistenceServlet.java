@@ -975,7 +975,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     
     @Test
     @SkipIfSysProp({
-        DB_DB2, DB_SQLServer, //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32957
+        DB_SQLServer, //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32957
         DB_Oracle //Oracle DB doesn't have any conversion function into TIME so whole TIMESTAMP is returned and result is converted to time in EclipseLink/Java
     })
     public void testExtractTimeFromLocalData() throws Exception {
