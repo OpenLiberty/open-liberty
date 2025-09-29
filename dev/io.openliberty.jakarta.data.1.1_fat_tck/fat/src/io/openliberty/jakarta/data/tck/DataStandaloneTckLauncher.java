@@ -62,7 +62,7 @@ public class DataStandaloneTckLauncher {
 //        additionalProps.put("jakarta.data.tck.version", "1.1.0");
 
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "Data")
-                        .withPlatfromVersion("12")
+                        .withPlatformVersion("12")
                         .withQualifiers("standalone", "NoSQL")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)

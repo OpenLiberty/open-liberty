@@ -88,7 +88,7 @@ public class DataCoreTckLauncher {
 //        additionalProps.put("jakarta.data.tck.version", "1.1.0");
 
         TCKRunner.build(persistenceServer, Type.JAKARTA, "Data")
-                        .withPlatfromVersion("12")
+                        .withPlatformVersion("12")
                         .withQualifiers("core", "persistence")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
@@ -128,7 +128,7 @@ public class DataCoreTckLauncher {
 //        additionalProps.put("jakarta.data.tck.version", "1.1.0");
 
         TCKRunner.build(noSQLServer, Type.JAKARTA, "Data")
-                        .withPlatfromVersion("12")
+                        .withPlatformVersion("12")
                         .withQualifiers("core", "NoSQL")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)

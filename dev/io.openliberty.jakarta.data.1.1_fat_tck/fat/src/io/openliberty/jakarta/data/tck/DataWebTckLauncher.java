@@ -80,7 +80,7 @@ public class DataWebTckLauncher {
 //        additionalProps.put("jakarta.data.tck.version", "1.1.0");
 
         TCKRunner.build(server, Type.JAKARTA, "Data")
-                        .withPlatfromVersion("12")
+                        .withPlatformVersion("12")
                         .withQualifiers("web", "persistence")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
