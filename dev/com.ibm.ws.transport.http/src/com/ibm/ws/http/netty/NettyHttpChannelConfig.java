@@ -158,10 +158,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     }
 
     private void parseHttpOptions(Map<String, Object> options) {
-
-        //TODO -> Netty Needed
-
-        //parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
         parseAllowRetries(options.get(HttpConfigConstants.PROPNAME_ALLOW_RETRIES));
         parseAttemptPurgeData(options.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE));
         parseAutoDecompression(options.get(HttpConfigConstants.PROPNAME_AUTODECOMPRESSION));
