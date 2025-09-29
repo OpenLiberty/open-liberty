@@ -51,6 +51,8 @@ public class ToolTest extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
         server.startServer();
+
+        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
     }
 
     @AfterClass
