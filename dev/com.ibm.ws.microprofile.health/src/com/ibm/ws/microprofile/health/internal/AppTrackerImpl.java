@@ -104,6 +104,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     @Reference(name = "configAdmin")
     protected void setConfigAdmin(ConfigurationAdmin configAdmin) {
         this.configAdmin = configAdmin;
+        Tr.debug(tc, "DE_BUG setConfigAdmin ENTRY");
 
         try {
             Configuration[] configuredApps = configAdmin.listConfigurations("(service.factoryPid=com.ibm.ws.app.manager)");
@@ -124,7 +125,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
 
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Adding app found by configAdmin: " + appName);
-
+                    Tr.debug(tc, "DE_BUG setConfigAdmin: Adding app found by configAdmin: " + appName);
                     configAdminMap.put(appName, ApplicationState.INSTALLED);
                 }
             } else {
@@ -142,6 +143,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
             e.printStackTrace();
         }
 
+        Tr.debug(tc, "DE_BUG setConfigAdmin EXIT");
     }
 
     protected void unsetConfigAdmin(ConfigurationAdmin configAdmin) {

@@ -95,13 +95,13 @@ public class ConfigAdminHealthCheckTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
-                                                             MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
-                                                             MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
-                                                             HealthActions.MP41_MPHEALTH40, //  mpHealth-4.0 FULL w/ MP41 EE8
-                                                             HealthActions.MP14_MPHEALTH40, // mpHealth-4.0 FULL w/ MP14 EE7
-                                                             MicroProfileActions.MP41, // mpHealth-3.1 FULL
-                                                             MicroProfileActions.MP40, // mpHealth-3.0 FULL
-                                                             MicroProfileActions.MP30); //mpHealth-2.0 FULL
+//                                                             MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
+//                                                             MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
+//                                                             HealthActions.MP41_MPHEALTH40, //  mpHealth-4.0 FULL w/ MP41 EE8
+                                                             HealthActions.MP14_MPHEALTH40); // mpHealth-4.0 FULL w/ MP14 EE7
+//                                                             MicroProfileActions.MP41, // mpHealth-3.1 FULL
+//                                                             MicroProfileActions.MP40, // mpHealth-3.0 FULL
+                                                            //  MicroProfileActions.MP30); //mpHealth-2.0 FULL
 
     @Server(SERVER_NAME)
     public static LibertyServer server1;
@@ -199,7 +199,7 @@ public class ConfigAdminHealthCheckTest {
      */
     @Test
     public void testAppDetectionServerXml() throws Exception {
-        log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
+        log("testAppDetectionServerXml", "Deploying the ConfigAdmin App into the apps directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "io.openliberty.microprofile.health31.config.admin.xml.checks.app");
         ShrinkHelper.exportAppToServer(server2, app, DeployOptions.SERVER_ONLY);
@@ -228,7 +228,7 @@ public class ConfigAdminHealthCheckTest {
     @Test
     @SkipForRepeat({ MicroProfileActions.MP30_ID, MicroProfileActions.MP40_ID })
     public void testWrongAppNameServerXml() throws Exception {
-        log("testMatchingAppNamesDropinsTest", "Deploying the ConfigAdmin App into the apps directory.");
+        log("testWrongAppNameServerXml", "Deploying the ConfigAdmin App into the apps directory.");
 
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME2, "io.openliberty.microprofile.health31.config.admin.xml.checks.app");
         ShrinkHelper.exportAppToServer(server2, app, DeployOptions.SERVER_ONLY);

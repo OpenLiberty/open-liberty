@@ -208,7 +208,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
     @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
-
+        Tr.debug(tc, "DE_BUG: > activate ENTRY");
         componentContext = cc;
 
         processConfig();
@@ -229,8 +229,10 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
              * and then continually run the live and ready checks.
              * (which will always be UP.. forever.. and ever..).
              */
+            Tr.debug(tc, "DE_BUG: isFileHealthCheckingEnabled() && isValidSystemForFileHealthCheck is true.");
             Set<String> apps = validateApplicationSet();
             if (apps.size() == 0) {
+                Tr.debug(tc, "DE_BUG: size of apps is 0.");
                 startFileHealthCheckProcesses();
             }
 
@@ -239,12 +241,18 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
          * If createUpdateInterval is set (not -1) , but fileUpdateInterval is not set. Issue warning.
          */
         else if (!isFileHealthCheckingEnabled() && (startupCheckIntervalMilliseconds != HealthCheckConstants.CONFIG_NOT_SET)) {
+            Tr.debug(tc, "DE_BUG: (!isFileHealthCheckingEnabled() && (startupCheckIntervalMilliseconds != HealthCheckConstants.CONFIG_NOT_SET) is true.");
             Tr.warning(tc, "startup.check.interval.config.only.set.CWMMH01012W");
+        } else {
+            Tr.debug(tc, "DE_BUG: none of the above is true.");
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "HealthCheckServiceImpl is activated");
+        } else {
+            Tr.debug(tc, "DE_BUG: HealthCheckServiceImpl is NOT activated");
         }
+        Tr.debug(tc, "DE_BUG: < activate EXIT");
 
     }
 
@@ -572,17 +580,23 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
      * Retrieve the current set of visible apps.
      */
     private Set<String> validateApplicationSet() throws NullPointerException {
+        Tr.debug(tc, "DE_BUG: > validationApplicationSet ENTRY");
         Set<String> apps = appTracker.getAllAppNames();
         Set<String> configApps = appTracker.getAllConfigAppNames();
+        Tr.debug(tc, "DE_BUG: validateApplicationSet apps list:" + apps.toString());
+        Tr.debug(tc, "DE_BUG: validateApplicationSet configApps list" + configApps.toString());
 
         Iterator<String> configAppsIt = configApps.iterator();
-
+        Tr.debug(tc, "DE_BUG: about to iterate through configApps...");
         while (configAppsIt.hasNext()) {
             String nextAppName = configAppsIt.next();
+            Tr.debug(tc, "DE_BUG: configApp we are checking: " + nextAppName);
             if (apps.contains(nextAppName)) {
+                Tr.debug(tc, "DE_BUG: ... found in the apps list, this shouldn't fail the test.");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "In performHealthCheck(): configAdmin found an application that the applicationStateListener already found. configAdminAppName = " + nextAppName);
             } else {
+                Tr.debug(tc, "DE_BUG: ... not found in the apps list, should fail the test.");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "In performHealthCheck(): applicationStateListener couldn't find application. configAdmin added appName = " + nextAppName);
                 appTracker.addAppName(nextAppName);
@@ -590,7 +604,8 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         }
 
         apps = appTracker.getAllAppNames();
-
+        Tr.debug(tc, "DE_BUG: validateApplicationSet apps list after:" + apps.toString());
+        Tr.debug(tc, "DE_BUG: < validationApplicationSet EXIT");
         return apps;
     }
 
@@ -602,7 +617,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
     @Override
     public void performHealthCheck(HttpServletRequest request, HttpServletResponse httpResponse, String healthCheckProcedure) {
-
+        Tr.debug(tc, "DE_BUG: > performHealthCheck ENTRY");
         resolveDefaultStatuses();
 
         HealthCheck30HttpResponseBuilder hcHttpResponseBuilder = new HealthCheck30HttpResponseBuilder();
@@ -616,6 +631,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         issueMessagesForUnstartedApps(unstartedAppSet, healthCheckProcedure);
 
         hcHttpResponseBuilder.setHttpResponse(httpResponse);
+        Tr.debug(tc, "DE_BUG: < performHealthCheck EXIT");
     }
 
     @Override
@@ -638,7 +654,9 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
          * - But if MP Config is set for default START (by accident), then overall Status is UP.
          * - resulting in `started` file created for the checkpoint image.
          */
+        Tr.debug(tc, "DE_BUG: > performFileHealthCheck ENTRY");
         if (!isCheckPointFinished) {
+            Tr.debug(tc, "DE_BUG: < performFileHealthCheck EXIT1");
             return null;
         }
 
@@ -646,6 +664,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
          * Entry point through AppTracker40Impl, needs to verify that system is valid, and we're enabled
          */
         if (isValidSystemForFileHealthCheck && isFileHealthCheckingEnabled()) {
+            Tr.debug(tc, "DE_BUG: isValidSystemForFileHealthCheck && isFileHealthCheckingEnabled()");
             resolveDefaultStatuses();
 
             FileHealthCheckBuilder fhc = new FileHealthCheckBuilder(file);
@@ -660,14 +679,15 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
             //Only update file if all health files had been created.
             if (isAllFilesCreated.get() == true) {
+                Tr.debug(tc, "DE_BUG: isAllFilesCreated.get() == true");
                 fhc.updateFile();
             }
 
             issueMessagesForUnstartedApps(unstartedAppSet, healthCheckProcedure);
-
+            Tr.debug(tc, "DE_BUG: < performFileHealthCheck EXIT2");
             return fhc.getOverallStatus();
         }
-
+        Tr.debug(tc, "DE_BUG: < performFileHealthCheck EXIT3");
         return null;
 
     }
