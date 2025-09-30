@@ -288,7 +288,7 @@ public class AsyncInvokerTestServlet extends HttpServlet {
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
         } catch (TimeoutException e) {
-            ret.append("InterruptedException");
+            ret.append("TimeoutException");
             e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
@@ -333,7 +333,7 @@ public class AsyncInvokerTestServlet extends HttpServlet {
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
         } catch (TimeoutException e) {
-            ret.append("InterruptedException");
+            ret.append("TimeoutException");
             e.printStackTrace();
         } catch (InterruptedException e) {
             System.out.println("testAsyncInvoker_getConnectionTimeout Failed InterruptedException " + e);
@@ -374,7 +374,7 @@ public class AsyncInvokerTestServlet extends HttpServlet {
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
         } catch (TimeoutException e) {
-            ret.append("InterruptedException");
+            ret.append("TimeoutException");
             e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
@@ -417,7 +417,7 @@ public class AsyncInvokerTestServlet extends HttpServlet {
             // Did not time out as expected
             ret.append(response.readEntity(String.class));
         } catch (TimeoutException e) {
-            ret.append("InterruptedException");
+            ret.append("TimeoutException");
             e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
@@ -456,7 +456,7 @@ public class AsyncInvokerTestServlet extends HttpServlet {
             // Did not time out as expected
             ret.append(response.getName());
         } catch (TimeoutException e) {
-            ret.append("InterruptedException");
+            ret.append("TimeoutException");
             e.printStackTrace();
        } catch (InterruptedException e) {
             ret.append("InterruptedException");
@@ -501,7 +501,7 @@ public class AsyncInvokerTestServlet extends HttpServlet {
             // Did not time out as expected
             ret.append(response.getName());
         } catch (TimeoutException e) {
-            ret.append("InterruptedException");
+            ret.append("TimeoutException");
             e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
@@ -540,7 +540,7 @@ public class AsyncInvokerTestServlet extends HttpServlet {
             // Did not time out as expected
             ret.append(response.getName());
         } catch (TimeoutException e) {
-            ret.append("InterruptedException");
+            ret.append("TimeoutException");
             e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
@@ -586,7 +586,7 @@ public class AsyncInvokerTestServlet extends HttpServlet {
             // Did not time out as expected
             ret.append(response.getName());
         } catch (TimeoutException e) {
-            ret.append("InterruptedException");
+            ret.append("TimeoutException");
             e.printStackTrace();
         } catch (InterruptedException e) {
             ret.append("InterruptedException");
