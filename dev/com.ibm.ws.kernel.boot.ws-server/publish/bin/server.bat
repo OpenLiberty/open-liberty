@@ -161,6 +161,8 @@ if "help" == "%ACTION%" (
   call:stopServer
 ) else if "dump" == "%ACTION%" (
   call:dump
+) else if "inspect" == "%ACTION%" (
+  call:inspect
 ) else if "javadump" == "%ACTION%" (
   call:javadump
 ) else if "registerWinService" == "%ACTION%" (
@@ -406,6 +408,15 @@ goto:eof
   call:javaCmdResult
 goto:eof
 
+:inspect
+  call:serverEnv
+  call:serverExists true
+  if %RC% == 2 goto:eof
+
+  !JAVA_CMD_QUOTED! !JAVA_PARAMS_QUOTED! --batch-file=--inspect !PARAMS_QUOTED! 
+  set RC=%errorlevel%
+  call:javaCmdResult
+goto:eof
 
 :registerWinService
   if NOT "%OS%" == "Windows_NT" goto:eof
