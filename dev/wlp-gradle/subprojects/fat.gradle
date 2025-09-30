@@ -701,19 +701,21 @@ buildfat {
 task uploadfat {
   dependsOn buildfat
   doLast {
-    // Ensure that async upload doesn't occur when adding a file to upload.
-    while(new File("${rootDir}/upload.lock").exists()) {
+    // Get lock when adding FAT to upload.log.
+    File uploadLock = new File("${rootDir}/upload.lock")
+    while(true) {
+      if (!uploadLock.exists()) {
+        uploadLock.createNewFile()
+        def sourceFile = zipProjectFVT.archiveFile.get().asFile.absolutePath
+        def targetFile = uploadRemotePath + zipProjectFVT.archiveFile.get().asFile
+        def uploadLogFile = new FileWriter("${rootDir}/upload.log", true)
+        uploadLogFile.append(sourceFile + "," + targetFile + "\n")
+        uploadLogFile.close()
+        uploadLock.delete()
+        break
+      }
       Thread.sleep(100)
     }
-    new FileWriter("${rootDir}/upload.lock", true).withWriter { }
-
-    def sourceFile = zipProjectFVT.archiveFile.get().asFile.absolutePath
-    def targetFile = uploadRemotePath + zipProjectFVT.archiveFile.get().asFile
-    def uploadLogFile = new FileWriter("${rootDir}/upload.log", true)
-    uploadLogFile.append(sourceFile + "," + targetFile + "\n")
-    uploadLogFile.close()
-
-    new File("${rootDir}/upload.lock").delete()
   }
 }
 

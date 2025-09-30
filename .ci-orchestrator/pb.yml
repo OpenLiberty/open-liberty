@@ -242,14 +242,11 @@ steps:
     - file: steps/unittestOpenLiberty.yml
 
 - stepGroup: Compile FATs
-  projectName: "Open Liberty Personal Build CI Orchestrator - EBC"
   dependsOn:
     - stepName: PR Changes
       awaitOutputProperties: true
   properties:
     fat.buckets.to.run: ${PR Changes:fat.buckets.to.run}
-    skip.open.liberty.build.if.possible: ${PR Changes:skip.open.liberty.build.if.possible}
-    skip.open.liberty.fats.if.possible: ${PR Changes:skip.open.liberty.fats.if.possible}
     spawn.zos: ${PR Changes:spawn.zos}
   includeProperties:
     - file: compilePersonal.properties
