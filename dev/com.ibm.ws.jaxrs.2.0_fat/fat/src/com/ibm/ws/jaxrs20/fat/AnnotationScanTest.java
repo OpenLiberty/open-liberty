@@ -436,7 +436,7 @@ public class AnnotationScanTest {
      * Application class that does not actually extend javax.ws.rs.Application.
      */
     @Test
-    @SkipForRepeat(SkipForRepeat.EE11_FEATURES) // Waiting for 7.0.0.Alpha2 (https://github.com/resteasy/resteasy/pull/4190)
+    // This test is now supported with RESTEasy 7.0.0.Final
     public void testServletSpecifiedWithInvalidApplicationClass() throws Exception {
         final boolean lookForSRVE0271E = (JakartaEEAction.isEE9OrLaterActive());
         final String targetMessageRegex = lookForSRVE0271E ?
