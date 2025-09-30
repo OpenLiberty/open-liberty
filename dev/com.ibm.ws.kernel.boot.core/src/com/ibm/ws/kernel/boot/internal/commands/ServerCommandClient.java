@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,10 +23,12 @@ import java.net.InetSocketAddress;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Set;
 
 import com.ibm.ws.kernel.boot.BootstrapConfig;
 import com.ibm.ws.kernel.boot.Debug;
+import com.ibm.ws.kernel.boot.LaunchArguments;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
@@ -90,10 +92,10 @@ public class ServerCommandClient extends ServerCommand {
     /**
      * Write a command to the server process.
      *
-     * @param command the command to write
+     * @param command      the command to write
      * @param notStartedRC the return code if the server could not be reached
-     * @param errorRC the return code if an error occurred while communicating
-     *            with the server
+     * @param errorRC      the return code if an error occurred while communicating
+     *                         with the server
      * @return {@link ReturnCode#OK} if the command was sent, notStartedRC if
      *         the server could not be reached, timeoutRC if the client timed
      *         out reading a response from the server, {@link ReturnCode#SERVER_COMMAND_PORT_DISABLED_STATUS} if the
@@ -188,7 +190,7 @@ public class ServerCommandClient extends ServerCommand {
      * Waits for the server to be fully started.
      *
      * @param lock the server lock, which must be held by the server process
-     *            before this method is called
+     *                 before this method is called
      */
     public ReturnCode startStatus(ServerLock lock) {
         // The server process might not have created the command file yet.
@@ -275,10 +277,41 @@ public class ServerCommandClient extends ServerCommand {
                 commandBuilder.append(',').append(javaDumpAction.name());
             }
             command = commandBuilder.toString();
+
+            System.out.println("GREP + " + command);
         }
 
         return write(command,
                      ReturnCode.DUMP_ACTION,
+                     ReturnCode.ERROR_SERVER_DUMP);
+    }
+
+    /**
+     * Issue an inspect action
+     */
+    public ReturnCode inspectServer(LaunchArguments launchArgs) {
+        // Since "server dump" is used for diagnostics, we go out of our way to
+        // not send an unrecognized command to the server even if the user has
+        // broken their environment such that the client process supports java
+        // dumps but the server doesn't.
+        String command;
+
+        List<String> args = launchArgs.getExtraArguments();
+
+        if (args.isEmpty()) {
+            command = INSPECT_COMMAND + DELIM + "ALL";
+        } else {
+            StringBuilder commandBuilder = new StringBuilder().append(INTROSPECT_JAVADUMP_COMMAND).append(DELIM);
+            for (String arg : args) {
+                commandBuilder.append(',').append(arg);
+            }
+            command = commandBuilder.toString();
+
+            System.out.println("GREP + " + command);
+        }
+
+        return write(command,
+                     ReturnCode.INSPECT_ACTION,
                      ReturnCode.ERROR_SERVER_DUMP);
     }
 

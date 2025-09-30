@@ -142,6 +142,9 @@ public class LaunchArguments {
                     } else if (argToLower.equals("--create")) {
                         returnValue = checkPreviousAction(returnValue, ReturnCode.CREATE_ACTION, arg);
                         action = setActionIfOk(returnValue, action, arg);
+                    } else if (argToLower.equals("--inspect")) {
+                        returnValue = checkPreviousAction(returnValue, ReturnCode.INSPECT_ACTION, arg);
+                        action = setActionIfOk(returnValue, action, arg);
                     } else if (argToLower.equals("--stop")) {
                         returnValue = checkPreviousAction(returnValue, ReturnCode.STOP_ACTION, arg);
                         action = setActionIfOk(returnValue, action, arg);

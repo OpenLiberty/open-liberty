@@ -439,6 +439,85 @@ public class ProcessControlHelper {
         return dumpRc;
     }
 
+    /**
+     * Dump the server
+     *
+     * @return
+     */
+    public ReturnCode inspect() {
+        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverDumping"), serverName));
+
+        ReturnCode dumpRc = runInspect(launchArgs);
+
+        boolean serverInactiveStatusFlag = dumpRc == ReturnCode.SERVER_INACTIVE_STATUS;
+        boolean serverUnknownStatusFlag = dumpRc == ReturnCode.SERVER_UNKNOWN_STATUS;
+        boolean serverCommandPortDisabledFlag = dumpRc == ReturnCode.SERVER_COMMAND_PORT_DISABLED_STATUS;
+
+        if (dumpRc == ReturnCode.OK) {
+            if (serverInactiveStatusFlag) {
+                // We are dumping a stopped server. Since it is not a problem, just print a message.
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverNotRunning"), serverName));
+            }
+            if (serverUnknownStatusFlag) {
+                // We tried to attach to the server process, but that failed.
+                // Since it might indicate an error, print a message and change the return code though the dump archive has been generated successfully.
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverStatusException"), serverName));
+                dumpRc = ReturnCode.SERVER_UNKNOWN_STATUS;
+            }
+            if (serverCommandPortDisabledFlag) {
+                //TODO fix all this sysout
+                //System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.serverDumpCompleteCommandPortDisabled"), serverName,
+                //                                        sdp.getDumpFile().getAbsolutePath()));
+            } else {
+                //System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverDumpComplete"), serverName, sdp.getDumpFile().getAbsolutePath()));
+            }
+        } else {
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverDumpException"), serverName));
+        }
+
+        return dumpRc;
+    }
+
+    /**
+     * Run the relevant command for dumping the system
+     *
+     * @param javaDumpActions the java dump actions to take place
+     * @param systemDump      whether this is a full dump (true) or just javadump (false)
+     * @param dumpTimestamp   the timestamp on the server dump packager of the full dump
+     * @return the return code from attempting to run the dump
+     */
+    private ReturnCode runInspect(LaunchArguments args) {
+
+        ServerLock serverLock = ServerLock.createTestLock(bootProps);
+        ReturnCode dumpRc = ReturnCode.OK;
+
+        // The lock file may have been (erroneously) deleted: this can happen on linux
+        boolean lockExists = serverLock.lockFileExists();
+
+        if (lockExists) {
+            if (serverLock.testServerRunning()) {
+                // server is running
+                ServerCommandClient scc = new ServerCommandClient(bootProps);
+
+                if (scc.isValid()) { //check .sCommand exist
+                    dumpRc = scc.inspectServer(args);
+                } else {
+                    // we have a server holding a lock that we can't talk to...
+                    // the dump is likely fine.. but we don't know / can't tell
+                    dumpRc = ReturnCode.SERVER_UNKNOWN_STATUS;
+                }
+            } else {
+                // nope: lock not held, we're not running
+                dumpRc = ReturnCode.SERVER_INACTIVE_STATUS;
+            }
+        } else {
+            // no lock file: we assume the server is not running.
+            dumpRc = ReturnCode.SERVER_INACTIVE_STATUS;
+        }
+
+        return dumpRc;
+    }
+
     public ReturnCode dumpJava() {
         System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverDumping"), serverName));
 

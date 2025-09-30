@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -280,6 +280,9 @@ public class Launcher {
             case DUMP_ACTION:
                 rc = new com.ibm.ws.kernel.boot.internal.commands.ProcessControlHelper(bootProps, launchArgs).dump();
                 break;
+            case INSPECT_ACTION:
+                rc = new com.ibm.ws.kernel.boot.internal.commands.ProcessControlHelper(bootProps, launchArgs).inspect();
+                break;
             case JAVADUMP_ACTION:
                 rc = new com.ibm.ws.kernel.boot.internal.commands.ProcessControlHelper(bootProps, launchArgs).dumpJava();
                 break;
@@ -309,7 +312,7 @@ public class Launcher {
     // default location prior to when the server.xml file is read.
     //
     // During launching, only "LOG_DIR" is known!
-    
+
     /**
      * Find main locations
      *

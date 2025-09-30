@@ -355,6 +355,7 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
      */
     public void startListening() {
         while (listenForCommands && acceptAndExecuteCommand()) {
+            System.out.println("GREP + loop");
             //loop intentionally empty
         }
     }
@@ -378,6 +379,9 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
 
                 try {
                     String uuidAndCommand = read(sc);
+
+                    System.out.println("GREP + " + uuidAndCommand);
+
                     ServerCommandID commandID = new ServerCommandID(uuidAndCommand);
                     String command = commandID.getOperation();
 
@@ -468,7 +472,16 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
 
             frameworkManager.introspectFramework(timestamp, javaDumpActions, IntrospectionContext.OutputTarget.file);
             writeResponse(sc);
-        } else if (command.startsWith(JAVADUMP_COMMAND)) {
+        } else if (command.startsWith(INSPECT_COMMAND)) {
+            String arg = command.substring(command.indexOf('#') + 1);
+            String timestamp = arg;
+            Set<JavaDumpAction> javaDumpActions = null;
+
+            frameworkManager.introspectFramework(timestamp, javaDumpActions, IntrospectionContext.OutputTarget.console);
+            writeResponse(sc);
+        } else if (command.startsWith(JAVADUMP_COMMAND))
+
+        {
             int index = command.indexOf('#');
             Set<JavaDumpAction> javaDumpActions = index == -1 ? null : parseJavaDumpActions(command.substring(index + 1).split(","), 0);
             frameworkManager.dumpJava(javaDumpActions);

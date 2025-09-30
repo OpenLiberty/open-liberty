@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -76,7 +76,8 @@ public enum ReturnCode implements ExitCode {
     INVALID(13),
     PACKAGE_WLP_ACTION(-15, "package.log"),
     PAUSE_ACTION(-16),
-    RESUME_ACTION(-17);
+    RESUME_ACTION(-17),
+    INSPECT_ACTION(-18);
 
     final int val;
     final String logName;
