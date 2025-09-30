@@ -1,0 +1,11 @@
+- stepName: GenAI Assistance Code Check
+  conditionalRun:
+    - type: ifTrue
+      value: ${run.checks}
+  workType: Jenkins
+  projectName: genAICodeCheck
+  timeoutInMinutes: 120
+  properties:
+    run.checks: true
+    githubPRApi: ${github_pr_api}
+    githubPRNumber: ${github_pr_number}
