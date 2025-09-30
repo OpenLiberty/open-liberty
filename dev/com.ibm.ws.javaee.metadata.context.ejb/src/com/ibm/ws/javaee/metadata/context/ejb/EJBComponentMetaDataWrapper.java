@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,9 @@ import com.ibm.ws.ejbcontainer.EJBMethodMetaData;
 import com.ibm.ws.ejbcontainer.EJBType;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.runtime.metadata.SyncToOSThreadMetaData;
 
-public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, IdentifiableComponentMetaData {
+public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, IdentifiableComponentMetaData, SyncToOSThreadMetaData {
     private final EJBComponentMetaData ejbComponentMetaData;
 
     public EJBComponentMetaDataWrapper(EJBComponentMetaData metadata) {
@@ -116,5 +117,11 @@ public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, Identi
     @Override
     public void setMetaData(MetaDataSlot slot, Object metadata) {
         ejbComponentMetaData.setMetaData(slot, metadata);
+    }
+
+    @Override
+    public boolean isSyncToOSThreadEnabled() {
+
+       return true;
     }
 }

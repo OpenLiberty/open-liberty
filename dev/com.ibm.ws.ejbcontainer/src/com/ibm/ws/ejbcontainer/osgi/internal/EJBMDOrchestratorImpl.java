@@ -1382,7 +1382,7 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                 return ((Boolean) injectionObj).booleanValue();
             }
         }
-        return true;
+        return false;
     }
 
     @Override
