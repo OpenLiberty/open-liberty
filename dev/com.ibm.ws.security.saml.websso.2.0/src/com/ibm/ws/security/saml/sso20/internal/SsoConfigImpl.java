@@ -14,7 +14,12 @@ package com.ibm.ws.security.saml.sso20.internal;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.KeyStoreException;
+import java.security.PublicKey;
+import java.security.cert.Certificate;
 import java.security.cert.X509Certificate;
+import java.security.interfaces.ECKey;
+import java.security.interfaces.RSAKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
@@ -194,8 +199,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
 
     CommonConfigUtils configUtils = new CommonConfigUtils();
 
-    public SsoConfigImpl() {
-    }
+    public SsoConfigImpl() {}
 
     /*
      * (non-Javadoc)
@@ -583,13 +587,43 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
      */
     @Override
     public String getSignatureMethodAlgorithm() {
+        System.out.println("ZECH>getSignatureMethodAlgorithm updated");
+        // First check if we need to determine the algorithm based on key type
         if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            try {
+                // Get the certificate from the keystore to determine key type
+                if (parentSsoService != null) {
+                    Certificate cert = parentSsoService.getSignatureCertificate();
+                    if (cert != null) {
+                        PublicKey publicKey = cert.getPublicKey();
+                        if (publicKey instanceof ECKey) {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Using ECDSA signature algorithm for EC key");
+                            }
+                            return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA256;
+                        } else if (publicKey instanceof RSAKey) {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Using RSA signature algorithm for RSA key");
+                            }
+                            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+                        }
+                    }
+                }
+            } catch (KeyStoreException | java.security.cert.CertificateException e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Error determining key type: " + e.getMessage());
+                }
+            }
+
+            // Default to RSA if we couldn't determine the key type
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+
         } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.equalsIgnoreCase(signatureMethodAlgorithm)) {
             // FIPS 140-3: Algorithm assessment complete; no changes required.
             // FIPS users should have have SHA-1 signatures configured, if they do this is expected to fail.
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
         }
+
         return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
     }
 
