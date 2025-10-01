@@ -101,7 +101,7 @@ public class ConfigAdminHealthCheckTest {
                                                              HealthActions.MP14_MPHEALTH40); // mpHealth-4.0 FULL w/ MP14 EE7
 //                                                             MicroProfileActions.MP41, // mpHealth-3.1 FULL
 //                                                             MicroProfileActions.MP40, // mpHealth-3.0 FULL
-                                                            //  MicroProfileActions.MP30); //mpHealth-2.0 FULL
+//                                                             MicroProfileActions.MP30); //mpHealth-2.0 FULL
 
     @Server(SERVER_NAME)
     public static LibertyServer server1;
@@ -164,6 +164,7 @@ public class ConfigAdminHealthCheckTest {
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
         assertNotNull("App was not detected by appTracker.", stateMapLine);
+        assertNotNull("Purposely failing.", null);
 
     }
 
