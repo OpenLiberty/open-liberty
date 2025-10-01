@@ -698,23 +698,56 @@ buildfat {
   dependsOn zipProjectFVT
 }
 
+def withRetries(int retries = 5, int initialDelay = 5, Closure action) {
+    def delay = initialDelay
+    while (retries > 0) {
+        retries--
+        try {
+            return action.call()
+        } catch (Exception e) {
+            if (retries == 0) {
+                throw new GradleException("Action failed", e)
+            }
+            sleep(delay * 1000)
+            delay *= 2
+        }
+    }
+}
+
 task uploadfat {
   dependsOn buildfat
   doLast {
-    // Get lock when adding FAT to upload.log.
-    File uploadLock = new File("${rootDir}/upload.lock")
-    while(true) {
-      if (!uploadLock.exists()) {
-        uploadLock.createNewFile()
-        def sourceFile = zipProjectFVT.archiveFile.get().asFile.absolutePath
-        def targetFile = uploadRemotePath + zipProjectFVT.archiveFile.get().asFile
-        def uploadLogFile = new FileWriter("${rootDir}/upload.log", true)
-        uploadLogFile.append(sourceFile + "," + targetFile + "\n")
-        uploadLogFile.close()
-        uploadLock.delete()
-        break
-      }
-      Thread.sleep(100)
+    def sourceFile = zipProjectFVT.archiveFile.get().asFile.absolutePath
+    def targetFile = uploadRemotePath + "/" + zipProjectFVT.archiveFile.get().asFile
+    withRetries(5, 5) {
+        exec {
+            commandLine 'scp',
+                "-i ${uploadKeyFile}",
+                sourceFile,
+                "${uploadUser}@${uploadHost}:${targetFile}"
+        }
+    }
+
+    def bucketImageUploadedJSON = """{
+    "type": "BucketImageUploaded",
+    "bucketName": "${project.name}",
+    "executionId": "${executionId}",
+    "aggregationName": "${executionId}", 
+    "imageUrl": "https://libertyfs.hursley.ibm.com/${uploadRemotePath}/${zipProjectFVT.archiveFile.get().asFile}",
+    "additionalFileUrls": [],
+    "additionalProductImageDependencies": [],
+    "additionalProperties": {"bucket.is.runnable":"true"},
+    "functionalUnitsTested": ${featureDeps},
+    "description":"${project.name} bucket artifact"
+}"""
+    def bucketEventFile = file("${buildDir}/bucketImageUploaded.json")
+    bucketEventFile.text = bucketImageUploadedJSON
+
+    exec {
+        commandLine "curl",
+            "-X", "POST",
+            "-F", bucketEventFile.getPath(),
+            "http://libh-proxy1.fyre.ibm.com/eventPublish/rawCIArtifacts/${executionId}"
     }
   }
 }
