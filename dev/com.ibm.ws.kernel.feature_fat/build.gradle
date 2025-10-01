@@ -12,7 +12,7 @@
  *******************************************************************************/
  
  dependencies {
-   requiredLibs ('org.apache.commons:commons-compress:1.24.0') {
+   requiredLibs ('org.apache.commons:commons-compress:1.28.0') {
      transitive = false
    }
  }
