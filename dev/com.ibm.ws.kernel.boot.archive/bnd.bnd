@@ -17,6 +17,7 @@ Export-Package: \
 	com.ibm.ws.kernel.boot.archive.internal
 
 Private-Package: \
+    org.apache.commons.compress, \
 	org.apache.commons.compress.archivers, \
 	org.apache.commons.compress.archivers.zip, \
 	org.apache.commons.compress.archivers.tar, \
