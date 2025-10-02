@@ -17,6 +17,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -60,8 +61,19 @@ public class IntrospectionContext {
         }
 
         try {
-            introspectIntrospectors(introspectionDir, outputTarget, filter);
-            introspectIntrospectableServices(introspectionDir, outputTarget, filter);
+
+            for (com.ibm.wsspi.logging.IntrospectableService service : getIntrospectableServices()) {
+                if (filter == null || !filter.contains(service.getName().toUpperCase())) {
+                    introspect(introspectionDir, service, outputTarget);
+                }
+            }
+
+            for (Introspector introspector : getIntrospectors()) {
+                if (filter == null || !filter.contains(introspector.getIntrospectorName().toUpperCase())) {
+                    introspect(introspectionDir, introspector, outputTarget);
+                }
+            }
+
         } catch (InvalidSyntaxException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception occured when get IntrospectableService refs: {0}", e);
@@ -77,41 +89,24 @@ public class IntrospectionContext {
 
                 pw.write("please select one or more of the following introspectors in a space delimited list, or select none to output all of them");
 
-                Collection<ServiceReference<Introspector>> refs = this.systemBundleCtx.getServiceReferences(Introspector.class, null);
-                if (refs != null && !refs.isEmpty()) {
-                    for (ServiceReference<Introspector> ref : refs) {
-                        Introspector introspector = this.systemBundleCtx.getService(ref);
-                        if (introspector != null) {
-                            try {
-                                String name = introspector.getIntrospectorName();
-                                String desc = introspector.getIntrospectorDescription();
-                                pw.write(name + " : " + desc);
+                for (com.ibm.wsspi.logging.IntrospectableService service : getIntrospectableServices()) {
+                    if (service != null) {
+                        String name = service.getName();
+                        String desc = service.getDescription();
+                        pw.write(name + " : " + desc);
+                    }
+                }
 
-                            } finally {
-                                this.systemBundleCtx.ungetService(ref);
-                            }
-                        }
+                for (Introspector introspector : getIntrospectors()) {
+                    if (introspector != null) {
+                        String name = introspector.getIntrospectorName();
+                        String desc = introspector.getIntrospectorDescription();
+                        pw.write(name + " : " + desc);
                     }
                 }
 
                 Collection<ServiceReference<com.ibm.wsspi.logging.IntrospectableService>> legacyRefs = systemBundleCtx.getServiceReferences(com.ibm.wsspi.logging.IntrospectableService.class,
                                                                                                                                             null);
-
-                if (legacyRefs != null && !legacyRefs.isEmpty()) {
-                    for (ServiceReference<com.ibm.wsspi.logging.IntrospectableService> ref : legacyRefs) {
-                        com.ibm.wsspi.logging.IntrospectableService serv = systemBundleCtx.getService(ref);
-                        if (serv != null) {
-                            try {
-                                String name = serv.getName();
-                                String desc = serv.getDescription();
-                                pw.write(name + " : " + desc);
-                            } finally {
-                                systemBundleCtx.ungetService(ref);
-                            }
-                        }
-                    }
-                }
-
                 pw.flush();
             }
         } catch (InvalidSyntaxException e) {
@@ -121,48 +116,20 @@ public class IntrospectionContext {
         }
     }
 
-    private void introspectIntrospectors(File introspectionDir, OutputTarget outputTarget, List<String> filter) throws InvalidSyntaxException {
-        Collection<ServiceReference<Introspector>> refs = this.systemBundleCtx.getServiceReferences(Introspector.class, null);
-        if (refs != null && !refs.isEmpty()) {
-            for (ServiceReference<Introspector> ref : refs) {
-                Introspector introspector = this.systemBundleCtx.getService(ref);
-                if (introspector != null) {
-                    try {
-                        String name = introspector.getIntrospectorName();
-                        String desc = introspector.getIntrospectorDescription();
-                        if (filter == null || !filter.contains(name.toUpperCase())) {
-                            introspect(introspectionDir, name, desc, introspector, null,
-                                       outputTarget);
-                        }
-                    } finally {
-                        this.systemBundleCtx.ungetService(ref);
-                    }
-                }
-            }
-        }
+    private void introspect(File introspectionDir,
+                            Introspector introspectable,
+                            OutputTarget outputTarget) {
+
+        introspect(introspectionDir, introspectable.getIntrospectorName(), introspectable.getIntrospectorDescription(), introspectable, null, outputTarget);
+
     }
 
-    private void introspectIntrospectableServices(File introspectionDir, OutputTarget outputTarget, List<String> filter) throws InvalidSyntaxException {
-        Collection<ServiceReference<com.ibm.wsspi.logging.IntrospectableService>> legacyRefs = systemBundleCtx.getServiceReferences(com.ibm.wsspi.logging.IntrospectableService.class,
-                                                                                                                                    null);
+    private void introspect(File introspectionDir,
+                            com.ibm.wsspi.logging.IntrospectableService introspectable,
+                            OutputTarget outputTarget) {
 
-        if (legacyRefs != null && !legacyRefs.isEmpty()) {
-            for (ServiceReference<com.ibm.wsspi.logging.IntrospectableService> ref : legacyRefs) {
-                com.ibm.wsspi.logging.IntrospectableService serv = systemBundleCtx.getService(ref);
-                if (serv != null) {
-                    try {
-                        String name = serv.getName();
-                        String desc = serv.getDescription();
-                        if (filter == null || !filter.contains(name.toUpperCase())) {
-                            introspect(introspectionDir, name, desc, null, serv,
-                                       outputTarget);
-                        }
-                    } finally {
-                        systemBundleCtx.ungetService(ref);
-                    }
-                }
-            }
-        }
+        introspect(introspectionDir, introspectable.getName(), introspectable.getDescription(), null, introspectable, outputTarget);
+
     }
 
     private void introspect(File introspectionDir,
@@ -202,6 +169,44 @@ public class IntrospectionContext {
                 t.printStackTrace(writerForThrowable);
             }
         }
+    }
+
+    private List<Introspector> getIntrospectors() throws InvalidSyntaxException {
+
+        List<Introspector> introspectors = new ArrayList<Introspector>();
+        Collection<ServiceReference<Introspector>> refs = this.systemBundleCtx.getServiceReferences(Introspector.class, null);
+        if (refs != null && !refs.isEmpty()) {
+            for (ServiceReference<Introspector> ref : refs) {
+                try {
+                    Introspector introspector = this.systemBundleCtx.getService(ref);
+                    if (introspector != null) {
+                        introspectors.add(introspector);
+                    }
+                } finally {
+                    this.systemBundleCtx.ungetService(ref);
+                }
+            }
+        }
+        return introspectors;
+    }
+
+    private List<com.ibm.wsspi.logging.IntrospectableService> getIntrospectableServices() throws InvalidSyntaxException {
+        Collection<ServiceReference<com.ibm.wsspi.logging.IntrospectableService>> legacyRefs = systemBundleCtx.getServiceReferences(com.ibm.wsspi.logging.IntrospectableService.class,
+                                                                                                                                    null);
+        List<com.ibm.wsspi.logging.IntrospectableService> services = new ArrayList<com.ibm.wsspi.logging.IntrospectableService>();
+        if (legacyRefs != null && !legacyRefs.isEmpty()) {
+            for (ServiceReference<com.ibm.wsspi.logging.IntrospectableService> ref : legacyRefs) {
+                try {
+                    com.ibm.wsspi.logging.IntrospectableService serv = systemBundleCtx.getService(ref);
+                    if (serv != null) {
+                        services.add(serv);
+                    }
+                } finally {
+                    systemBundleCtx.ungetService(ref);
+                }
+            }
+        }
+        return services;
     }
 
     public enum OutputTarget {
