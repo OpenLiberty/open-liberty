@@ -282,6 +282,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static final String JVM_OPTIONS_FILE_NAME = "jvm.options";
     protected static final String OPENLIBERTY_PROPERTIES_FILE_NAME = "openliberty.properties";
     protected static final String COM_IBM_WEBSPHERE_PRODUCTVERSION_KEY = "com.ibm.websphere.productVersion";
+    protected final String FIPS_ENV_VAR = "ENABLE_FIPS140_3";
 
     protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
@@ -337,6 +338,7 @@ public class LibertyServer implements LogMonitorClient {
     private String archiveMarker = null;
 
     private boolean serverLevelFipsEnabled = GLOBAL_FIPS_140_3;
+
 
     /**
      * This returns whether or not debugging is "programatically" allowed
@@ -1737,7 +1739,7 @@ public class LibertyServer implements LogMonitorClient {
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM Arg
         if (isFIPS140_3EnabledAndSupported(info) || isFIPS140_2EnabledAndSupported(info)) {
             if (!GLOBAL_ENHANCED_ALGO) {
-                JVM_ARGS += getJvmArgString(this.getFipsJvmOptions(info, false));
+                JVM_ARGS += getJvmArgString(this.getFipsOptions(info, useEnvVars, false));
             } else {
                 JVM_ARGS += getJvmArgString(this.getEnhancedAlgorithmOptions());
             }
@@ -8153,24 +8155,31 @@ public class LibertyServer implements LogMonitorClient {
         configureLTPAKeys(JavaInfo.forServer(this));
     }
 
-    private Map<String, String> getFipsJvmOptions(JavaInfo info, boolean includeGlobalArgs) throws Exception, IOException {
+    private Map<String, String> getFipsOptions(JavaInfo info, Properties envVars, boolean includeGlobalArgs) throws Exception, IOException {
         Map<String, String> opts = new HashMap<>();
         if (isFIPS140_3EnabledAndSupported(info, false)) {
             if (info.majorVersion() >= 11) {
-                Log.info(c, "getFipsJvmOptions",
+                Log.info(c, "getFipsOptions",
                          "FIPS 140-3 global build properties is set for server " + getServerName()
                                                  + " with IBM Java " + info.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
-                opts.put("-Dsemeru.fips", "true");
-                opts.put("-Dsemeru.customprofile", "OpenJCEPlusFIPS.FIPS140-3-Custom");
-                opts.put("-Djava.security.properties", getSemeruFips140_3CustomProfileLocationAndPrintFileContents());
+                if(envVars != null){
+                    envVars.put(FIPS_ENV_VAR, getSemeruFips140_3CustomProfileLocationAndPrintFileContents());
+                } else {
+                    opts.put("-Dsemeru.fips", "true");
+                    opts.put("-Dsemeru.customprofile", "OpenJCEPlusFIPS.FIPS140-3-Custom");
+                    opts.put("-Djava.security.properties", getSemeruFips140_3CustomProfileLocationAndPrintFileContents());
+                }
             } else if (info.majorVersion() == 8) {
-                Log.info(c, "getFipsJvmOptions", "FIPS 140-3 global build properties is set for server "
+                Log.info(c, "getFipsOptions", "FIPS 140-3 global build properties is set for server "
                                                  + getServerName()
                                                  + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
-                opts.put("-Xenablefips140-3", null);
-                opts.put("-Dcom.ibm.jsse2.usefipsprovider", "true");
-                opts.put("-Dcom.ibm.jsse2.usefipsProviderName", "IBMJCEPlusFIPS");
-
+                if(envVars != null) {
+                    envVars.put(FIPS_ENV_VAR, "true");
+                } else {
+                    opts.put("-Xenablefips140-3", null);
+                    opts.put("-Dcom.ibm.jsse2.usefipsprovider", "true");
+                    opts.put("-Dcom.ibm.jsse2.usefipsProviderName", "IBMJCEPlusFIPS");
+                }
             }
             if (includeGlobalArgs) {
                 opts.put("-Dglobal.fips_140-3", "true");
@@ -8221,7 +8230,7 @@ public class LibertyServer implements LogMonitorClient {
             Map<String, String> jvm_opts = this.getJvmOptionsAsMap();
             // Use LinkedHashMap to ensure entry ordering to not break --add-module entries
             Map<String, String> combined = new LinkedHashMap(jvm_opts);
-            combined.putAll(this.getFipsJvmOptions(info, true));
+            combined.putAll(this.getFipsOptions(info, null,true));
             if (!combined.isEmpty() && !combined.equals(jvm_opts)) {
                 this.setJvmOptions(combined);
             }
