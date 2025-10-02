@@ -1275,6 +1275,36 @@ public class FrameworkManager {
         }
     }
 
+    /**
+     * Introspect the framework
+     * Get all IntrospectableService from OSGi bundle context, and dump a running
+     * server status from them.
+     *
+     * @param timestamp
+     *                            Create a unique dump folder based on the time stamp string.
+     * @param javaDumpActions
+     *                            The java dumps to create, or null for the default set.
+     *
+     * @param OutputTarget
+     *                            Where this introspection will be written to.
+     *
+     */
+    public void inspectFramework(List<String> filter) {
+        Tr.audit(tc, "info.introspect.request.received");//TODO message here.
+
+        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx, null);
+        introspectionCtx.introspectAll(IntrospectionContext.OutputTarget.console, filter);
+    }
+
+    public void inspectFramework() {
+        inspectFramework(null);
+    }
+
+    public void consoleHelp() {
+        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx, null);
+        introspectionCtx.listIntrospectorsToConsole();
+    }
+
     public void dumpJava(Set<JavaDumpAction> javaDumpActions) {
         Tr.audit(tc, "info.javadump.request.received");
 

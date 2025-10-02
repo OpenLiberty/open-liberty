@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.Collection;
+import java.util.List;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
@@ -44,15 +45,23 @@ public class IntrospectionContext {
     }
 
     public void introspectAll(OutputTarget outputTarget) {
+        introspectAll(outputTarget, null);
+    }
+
+    public void introspectAll(OutputTarget outputTarget, List<String> filter) {
         // create introspection dir in the dump dir which was created in the server's output directory
-        File introspectionDir = new File(dumpDir, BootstrapConstants.SERVER_INTROSPECTION_FOLDER_NAME);
-        if (!FileUtils.createDir(introspectionDir)) {
-            throw new IllegalStateException("introspections directory could not be created.");
+        File introspectionDir = null;
+
+        if (outputTarget == OutputTarget.file) {
+            introspectionDir = new File(dumpDir, BootstrapConstants.SERVER_INTROSPECTION_FOLDER_NAME);
+            if (!FileUtils.createDir(introspectionDir)) {
+                throw new IllegalStateException("introspections directory could not be created.");
+            }
         }
 
         try {
-            introspectIntrospectors(introspectionDir, outputTarget);
-            introspectIntrospectableServices(introspectionDir, outputTarget);
+            introspectIntrospectors(introspectionDir, outputTarget, filter);
+            introspectIntrospectableServices(introspectionDir, outputTarget, filter);
         } catch (InvalidSyntaxException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Exception occured when get IntrospectableService refs: {0}", e);
@@ -60,7 +69,59 @@ public class IntrospectionContext {
         }
     }
 
-    private void introspectIntrospectors(File introspectionDir, OutputTarget outputTarget) throws InvalidSyntaxException {
+    public void listIntrospectorsToConsole() {
+
+        try {
+            OutputStream outputStream = acquireOutputStream(OutputTarget.console);
+            try (PrintWriter pw = new PrintWriter(outputStream)) {
+
+                pw.write("please select one or more of the following introspectors in a space delimited list, or select none to output all of them");
+
+                Collection<ServiceReference<Introspector>> refs = this.systemBundleCtx.getServiceReferences(Introspector.class, null);
+                if (refs != null && !refs.isEmpty()) {
+                    for (ServiceReference<Introspector> ref : refs) {
+                        Introspector introspector = this.systemBundleCtx.getService(ref);
+                        if (introspector != null) {
+                            try {
+                                String name = introspector.getIntrospectorName();
+                                String desc = introspector.getIntrospectorDescription();
+                                pw.write(name + " : " + desc);
+
+                            } finally {
+                                this.systemBundleCtx.ungetService(ref);
+                            }
+                        }
+                    }
+                }
+
+                Collection<ServiceReference<com.ibm.wsspi.logging.IntrospectableService>> legacyRefs = systemBundleCtx.getServiceReferences(com.ibm.wsspi.logging.IntrospectableService.class,
+                                                                                                                                            null);
+
+                if (legacyRefs != null && !legacyRefs.isEmpty()) {
+                    for (ServiceReference<com.ibm.wsspi.logging.IntrospectableService> ref : legacyRefs) {
+                        com.ibm.wsspi.logging.IntrospectableService serv = systemBundleCtx.getService(ref);
+                        if (serv != null) {
+                            try {
+                                String name = serv.getName();
+                                String desc = serv.getDescription();
+                                pw.write(name + " : " + desc);
+                            } finally {
+                                systemBundleCtx.ungetService(ref);
+                            }
+                        }
+                    }
+                }
+
+                pw.flush();
+            }
+        } catch (InvalidSyntaxException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception occured when get IntrospectableService refs: {0}", e);
+            }
+        }
+    }
+
+    private void introspectIntrospectors(File introspectionDir, OutputTarget outputTarget, List<String> filter) throws InvalidSyntaxException {
         Collection<ServiceReference<Introspector>> refs = this.systemBundleCtx.getServiceReferences(Introspector.class, null);
         if (refs != null && !refs.isEmpty()) {
             for (ServiceReference<Introspector> ref : refs) {
@@ -69,8 +130,10 @@ public class IntrospectionContext {
                     try {
                         String name = introspector.getIntrospectorName();
                         String desc = introspector.getIntrospectorDescription();
-                        introspect(introspectionDir, name, desc, introspector, null,
-                                   outputTarget);
+                        if (filter == null || !filter.contains(name.toUpperCase())) {
+                            introspect(introspectionDir, name, desc, introspector, null,
+                                       outputTarget);
+                        }
                     } finally {
                         this.systemBundleCtx.ungetService(ref);
                     }
@@ -79,9 +142,10 @@ public class IntrospectionContext {
         }
     }
 
-    private void introspectIntrospectableServices(File introspectionDir, OutputTarget outputTarget) throws InvalidSyntaxException {
+    private void introspectIntrospectableServices(File introspectionDir, OutputTarget outputTarget, List<String> filter) throws InvalidSyntaxException {
         Collection<ServiceReference<com.ibm.wsspi.logging.IntrospectableService>> legacyRefs = systemBundleCtx.getServiceReferences(com.ibm.wsspi.logging.IntrospectableService.class,
                                                                                                                                     null);
+
         if (legacyRefs != null && !legacyRefs.isEmpty()) {
             for (ServiceReference<com.ibm.wsspi.logging.IntrospectableService> ref : legacyRefs) {
                 com.ibm.wsspi.logging.IntrospectableService serv = systemBundleCtx.getService(ref);
@@ -89,8 +153,10 @@ public class IntrospectionContext {
                     try {
                         String name = serv.getName();
                         String desc = serv.getDescription();
-                        introspect(introspectionDir, name, desc, null, serv,
-                                   outputTarget);
+                        if (filter == null || !filter.contains(name.toUpperCase())) {
+                            introspect(introspectionDir, name, desc, null, serv,
+                                       outputTarget);
+                        }
                     } finally {
                         systemBundleCtx.ungetService(ref);
                     }
@@ -110,18 +176,7 @@ public class IntrospectionContext {
         }
 
         PrintWriter writerForThrowable = null;
-        final OutputStream outputStream;
-
-        switch (outputTarget) {
-            case file:
-                outputStream = acquireFileOutputStream(introspectionDir, introspectionName);
-                break;
-            case console:
-                outputStream = acquireConsoleOutputStream();
-                break;
-            default:
-                throw new IllegalArgumentException("A destination for introspection output is required");
-        }
+        final OutputStream outputStream = acquireOutputStream(outputTarget, introspectionDir, introspectionName);
 
         try (PrintWriter pw = new PrintWriter(outputStream)) {
             writerForThrowable = pw;
@@ -154,19 +209,25 @@ public class IntrospectionContext {
         console;
     }
 
-    public OutputStream acquireConsoleOutputStream() {
-        return System.out;
+    public OutputStream acquireOutputStream(OutputTarget target) {
+        return acquireOutputStream(target, null, null);
     }
 
-    public OutputStream acquireFileOutputStream(File introspectionDir, String introspectionName) {
-        File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
-        try {
-            FileOutputStream out = new FileOutputStream(introspectionFile);
-            return out;
-        } catch (FileNotFoundException e) {
-            e.getCause(); // findbugs
-            Tr.error(tc, "error.fileNotFound", introspectionFile);
+    public OutputStream acquireOutputStream(OutputTarget outputTarget, File introspectionDir, String introspectionName) {
+        switch (outputTarget) {
+            case file:
+                return System.out;
+            case console:
+                File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
+                try {
+                    FileOutputStream out = new FileOutputStream(introspectionFile);
+                    return out;
+                } catch (FileNotFoundException e) {
+                    e.getCause(); // findbugs
+                    Tr.error(tc, "error.fileNotFound", introspectionFile);
+                }
+            default:
+                throw new IllegalArgumentException("A destination for introspection output is required");
         }
-        return null;
     }
 }

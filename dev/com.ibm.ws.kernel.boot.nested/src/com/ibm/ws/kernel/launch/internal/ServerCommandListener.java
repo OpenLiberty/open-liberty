@@ -21,8 +21,11 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -474,10 +477,21 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
             writeResponse(sc);
         } else if (command.startsWith(INSPECT_COMMAND)) {
             String arg = command.substring(command.indexOf('#') + 1);
-            String timestamp = arg;
-            Set<JavaDumpAction> javaDumpActions = null;
+            List<String> args = Arrays.asList(arg.split(","));
 
-            frameworkManager.introspectFramework(timestamp, javaDumpActions, IntrospectionContext.OutputTarget.console);
+            if (args.size() == 1 && args.get(0).toUpperCase().equals("ALL")) {
+                frameworkManager.inspectFramework();
+            } else if (args.size() == 1 && args.get(0).toUpperCase().equals("HELP")) {
+                frameworkManager.consoleHelp();
+            } else {
+                List<String> upperCaseFilters = new ArrayList<String>();
+                for (String s : args) {
+                    upperCaseFilters.add(s.toUpperCase());
+                }
+
+                frameworkManager.inspectFramework(upperCaseFilters);
+            }
+
             writeResponse(sc);
         } else if (command.startsWith(JAVADUMP_COMMAND))
 
