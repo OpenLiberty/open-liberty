@@ -24,7 +24,7 @@ import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.runtime.metadata.SyncToOSThreadMetaData;
 
-public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, IdentifiableComponentMetaData, SyncToOSThreadMetaData {
+public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, IdentifiableComponentMetaData {
     private final EJBComponentMetaData ejbComponentMetaData;
 
     public EJBComponentMetaDataWrapper(EJBComponentMetaData metadata) {
@@ -121,7 +121,7 @@ public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, Identi
 
     @Override
     public boolean isSyncToOSThreadEnabled() {
-
-       return true;
+        // return ejbComponentMetaData.isSyncToOSThreadEnabled();
+        return true;
     }
 }

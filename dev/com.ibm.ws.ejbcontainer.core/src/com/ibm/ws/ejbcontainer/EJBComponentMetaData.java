@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import java.util.List;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
 public interface EJBComponentMetaData
-                extends ComponentMetaData
+                extends ComponentMetaData, SyncToOSThreadMetaData
 {
     /**
      * @return the EJB type
@@ -40,4 +40,7 @@ public interface EJBComponentMetaData
      *         no interfaces of that type
      */
     List<EJBMethodMetaData> getEJBMethodMetaData(EJBMethodInterface type);
+
+    
+    public boolean isSyncToOSThreadEnabled();
 }
