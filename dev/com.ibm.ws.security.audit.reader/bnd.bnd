@@ -37,7 +37,7 @@ instrument.disabled: true
 	com.ibm.ws.security.audit.reader.auditreader;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.security;version="[1,1.2)", \
-	com.ibm.ws.org.apache.commons.io;version="[1,1.1)", \
+	com.ibm.ws.org.apache.commons.io;version=latest, \
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.json4j;version="[1,1.1)", \
 	com.ibm.ws.kernel.service;version=latest,\
