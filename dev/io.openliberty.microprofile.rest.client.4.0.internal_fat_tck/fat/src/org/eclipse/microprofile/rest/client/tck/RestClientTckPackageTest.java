@@ -115,7 +115,7 @@ public class RestClientTckPackageTest {
         if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
             TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.REST_CLIENT)
                             .withDefaultSuiteFileName()
-                            .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
+                            .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                             .runTCK();
         }
     }

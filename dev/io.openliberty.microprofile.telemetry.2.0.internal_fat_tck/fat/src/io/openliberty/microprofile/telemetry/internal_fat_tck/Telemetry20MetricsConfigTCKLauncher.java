@@ -70,7 +70,7 @@ public class Telemetry20MetricsConfigTCKLauncher {
 
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.TELEMETRY)
                         .withSuiteFileName(suiteName)
-                        .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_70) //Latest MicroProfile version
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_70) //Latest MicroProfile version
                         .runTCK();
     }
 }

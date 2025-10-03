@@ -73,7 +73,7 @@ public class Health40TCKLauncher {
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.HEALTH)
                         .withDefaultSuiteFileName()
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                         .runTCK();
     }
 

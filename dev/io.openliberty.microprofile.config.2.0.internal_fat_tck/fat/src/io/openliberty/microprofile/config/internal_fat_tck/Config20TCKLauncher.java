@@ -60,7 +60,7 @@ public class Config20TCKLauncher {
     public void launchConfig20Tck() throws Exception {
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.CONFIG)
                         .withDefaultSuiteFileName()
-                        .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_40) //Latest MicroProfile version
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_40) //Latest MicroProfile version
                         .runTCK();
     }
 }

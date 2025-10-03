@@ -68,7 +68,7 @@ public class OpenAPITckTest {
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.OPEN_API)
                  .withDefaultSuiteFileName()
                  .withAdditionalMvnProps(additionalProps)
-                 .withPlatfromVersion("7.0") //Latest MicroProfile version
+                 .withPlatformVersion("7.0") //Latest MicroProfile version
                  .runTCK();
     }
 

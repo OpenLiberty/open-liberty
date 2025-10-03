@@ -54,7 +54,7 @@ public class Mpjwt21TCKLauncher_aud_env {
         String suiteName = "tck_suite_aud_env.xml";
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.JWT_AUTH)
                         .withSuiteFileName(suiteName)
-                        .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                         .runTCK();
     }
 }

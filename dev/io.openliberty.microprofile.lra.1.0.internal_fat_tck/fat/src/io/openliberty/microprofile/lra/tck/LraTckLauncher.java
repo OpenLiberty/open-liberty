@@ -127,7 +127,7 @@ public class LraTckLauncher {
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.LRA)
                         .withDefaultSuiteFileName()
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_41) //Latest MicroProfile version
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_41) //Latest MicroProfile version
                         .runTCK();
 
     }

@@ -73,7 +73,7 @@ public class MetricsTCKLauncher {
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.METRICS)
                         .withDefaultSuiteFileName()
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_50) //Latest MicroProfile version
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_50) //Latest MicroProfile version
                         .runTCK();
     }
 

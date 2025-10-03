@@ -133,7 +133,7 @@ public class FaultToleranceTck40Launcher {
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.FAULT_TOLERANCE)
                         .withSuiteFileName(suiteFileName)
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_61) //Latest MicroProfile version
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_61) //Latest MicroProfile version
                         .runTCK();
     }
 

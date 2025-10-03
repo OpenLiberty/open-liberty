@@ -65,7 +65,7 @@ public class Mpjwt21TCKLauncher_aud_noenv {
         TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.JWT_AUTH)
                         .withSuiteFileName(suiteName)
                         .withAdditionalMvnProps(additionalProps)
-                        .withPlatfromVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                         .runTCK();
 
     }
