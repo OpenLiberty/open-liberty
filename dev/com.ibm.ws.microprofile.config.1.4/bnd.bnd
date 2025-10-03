@@ -70,5 +70,5 @@ WS-TraceGroup: APPCONFIG
     com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
     com.ibm.ws.jaxb.tools;version=latest,\
-    org.apache.commons:commons-lang3;version=3.8, \
+    org.apache.commons:commons-lang3;version=3.19.0, \
     ./resources/;version=file

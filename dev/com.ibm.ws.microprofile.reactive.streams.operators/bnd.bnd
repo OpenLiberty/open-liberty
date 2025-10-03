@@ -80,6 +80,6 @@ testsrc: test/src
   com.ibm.ws.org.slf4j.api;version=latest, \
   com.ibm.ws.org.slf4j.jdk14;version=latest, \
   com.ibm.websphere.javaee.jsonp.1.0;version=latest, \
-  org.apache.commons:commons-lang3;version=3.8, \
+  org.apache.commons:commons-lang3;version=3.19.0, \
   ./resources/;version=file
   
