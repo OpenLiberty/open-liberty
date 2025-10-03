@@ -301,13 +301,9 @@ public class ServerCommandClient extends ServerCommand {
         if (args.isEmpty()) {
             command = INSPECT_COMMAND + DELIM + "ALL";
         } else {
-            StringBuilder commandBuilder = new StringBuilder().append(INTROSPECT_JAVADUMP_COMMAND).append(DELIM);
-            for (String arg : args) {
-                commandBuilder.append(',').append(arg);
-            }
-            command = commandBuilder.toString();
+            StringBuilder commandBuilder = new StringBuilder().append(INSPECT_COMMAND).append(DELIM).append(String.join(",", args));
 
-            System.out.println("GREP + " + command);
+            command = commandBuilder.toString();
         }
 
         return write(command,

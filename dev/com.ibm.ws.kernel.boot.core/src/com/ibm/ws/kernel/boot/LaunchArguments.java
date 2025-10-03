@@ -279,7 +279,7 @@ public class LaunchArguments {
         }
 
         // Any left over arguments are passed on into the framework
-        if (returnValue == ReturnCode.OK || returnValue == ReturnCode.MESSAGE_ACTION)
+        if (returnValue == ReturnCode.OK || returnValue == ReturnCode.MESSAGE_ACTION || returnValue == ReturnCode.INSPECT_ACTION)
             extraArguments = cmdArgs;
 
         // Allow the command to work even if the server does not exist.

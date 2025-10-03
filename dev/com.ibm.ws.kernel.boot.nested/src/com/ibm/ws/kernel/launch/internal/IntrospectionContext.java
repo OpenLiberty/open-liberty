@@ -15,6 +15,7 @@ package com.ibm.ws.kernel.launch.internal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -38,6 +39,7 @@ public class IntrospectionContext {
 
     private final BundleContext systemBundleCtx;
     private final File dumpDir;
+    private final PrintWriter consolePrintWriter = null;
     private int unnamedCount;
 
     IntrospectionContext(BundleContext systemBundleCtx, File dumpDir) {
@@ -63,13 +65,13 @@ public class IntrospectionContext {
         try {
 
             for (com.ibm.wsspi.logging.IntrospectableService service : getAllServiceImpls(com.ibm.wsspi.logging.IntrospectableService.class)) {
-                if (filter == null || !filter.contains(service.getName().toUpperCase())) {
+                if (filter == null || filter.contains(service.getName().toUpperCase())) {
                     introspect(introspectionDir, service, outputTarget);
                 }
             }
 
             for (Introspector introspector : getAllServiceImpls(Introspector.class)) {
-                if (filter == null || !filter.contains(introspector.getIntrospectorName().toUpperCase())) {
+                if (filter == null || filter.contains(introspector.getIntrospectorName().toUpperCase())) {
                     introspect(introspectionDir, introspector, outputTarget);
                 }
             }
@@ -88,12 +90,14 @@ public class IntrospectionContext {
             try (PrintWriter pw = new PrintWriter(outputStream)) {
 
                 pw.write("please select one or more of the following introspectors in a space delimited list, or select none to output all of them");
+                pw.write(System.lineSeparator());
 
                 for (com.ibm.wsspi.logging.IntrospectableService service : getAllServiceImpls(com.ibm.wsspi.logging.IntrospectableService.class)) {
                     if (service != null) {
                         String name = service.getName();
                         String desc = service.getDescription();
                         pw.write(name + " : " + desc);
+                        pw.write(System.lineSeparator());
                     }
                 }
 
@@ -102,6 +106,7 @@ public class IntrospectionContext {
                         String name = introspector.getIntrospectorName();
                         String desc = introspector.getIntrospectorDescription();
                         pw.write(name + " : " + desc);
+                        pw.write(System.lineSeparator());
                     }
                 }
 
@@ -199,9 +204,9 @@ public class IntrospectionContext {
 
     public OutputStream acquireOutputStream(OutputTarget outputTarget, File introspectionDir, String introspectionName) {
         switch (outputTarget) {
-            case file:
-                return System.out;
             case console:
+                return new UncloseableWrapper(System.out);
+            case file:
                 File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
                 try {
                     FileOutputStream out = new FileOutputStream(introspectionFile);
@@ -213,5 +218,41 @@ public class IntrospectionContext {
             default:
                 throw new IllegalArgumentException("A destination for introspection output is required");
         }
+    }
+
+    private class UncloseableWrapper extends OutputStream {
+
+        private final OutputStream deligate;
+
+        public UncloseableWrapper(OutputStream deligate) {
+            this.deligate = deligate;
+        }
+
+        @Override
+        public void write(int b) throws IOException {
+            deligate.write(b);
+        }
+
+        @Override
+        public void write(byte[] b) throws IOException {
+            deligate.write(b);
+        }
+
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            deligate.write(b, off, len);
+        }
+
+        @Override
+        public void flush() throws IOException {
+            deligate.flush();
+        }
+
+        @Override
+        public void close() throws IOException {
+            // No-Op. When we close the PrintWriter using it, we don't want to actually close
+            // Liberty's connection to console.log!
+        }
+
     }
 }

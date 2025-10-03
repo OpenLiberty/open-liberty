@@ -358,7 +358,6 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
      */
     public void startListening() {
         while (listenForCommands && acceptAndExecuteCommand()) {
-            System.out.println("GREP + loop");
             //loop intentionally empty
         }
     }
@@ -382,8 +381,6 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
 
                 try {
                     String uuidAndCommand = read(sc);
-
-                    System.out.println("GREP + " + uuidAndCommand);
 
                     ServerCommandID commandID = new ServerCommandID(uuidAndCommand);
                     String command = commandID.getOperation();
