@@ -470,7 +470,7 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
                 javaDumpActions = null;
             }
 
-            frameworkManager.introspectFramework(timestamp, javaDumpActions, IntrospectionContext.OutputTarget.file);
+            frameworkManager.introspectFramework(timestamp, javaDumpActions);
             writeResponse(sc);
         } else if (command.startsWith(INSPECT_COMMAND)) {
             String arg = command.substring(command.indexOf('#') + 1);

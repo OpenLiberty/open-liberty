@@ -15,11 +15,12 @@ package com.ibm.ws.kernel.launch.internal;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import org.osgi.framework.BundleContext;
@@ -28,7 +29,6 @@ import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.FileUtils;
 import com.ibm.wsspi.logging.Introspector;
 
@@ -38,41 +38,32 @@ public class IntrospectionContext {
     private static final TraceComponent tc = Tr.register(IntrospectionContext.class);
 
     private final BundleContext systemBundleCtx;
-    private final File dumpDir;
-    private final PrintWriter consolePrintWriter = null;
     private int unnamedCount;
 
-    IntrospectionContext(BundleContext systemBundleCtx, File dumpDir) {
+    IntrospectionContext(BundleContext systemBundleCtx) {
         this.systemBundleCtx = systemBundleCtx;
-        this.dumpDir = dumpDir;
     }
 
-    public void introspectAll(OutputTarget outputTarget) {
-        introspectAll(outputTarget, null);
+    public void introspectAll(File outputDir) {
+        introspectIntrospectors(outputDir, null);
     }
 
-    public void introspectAll(OutputTarget outputTarget, List<String> filter) {
-        // create introspection dir in the dump dir which was created in the server's output directory
-        File introspectionDir = null;
-
-        if (outputTarget == OutputTarget.file) {
-            introspectionDir = new File(dumpDir, BootstrapConstants.SERVER_INTROSPECTION_FOLDER_NAME);
-            if (!FileUtils.createDir(introspectionDir)) {
-                throw new IllegalStateException("introspections directory could not be created.");
-            }
+    public void introspectIntrospectors(File outputDir, List<String> introspectorsToIntrospect) {
+        if (!FileUtils.createDir(outputDir)) {
+            throw new IllegalStateException("introspections directory could not be created.");
         }
 
         try {
 
             for (com.ibm.wsspi.logging.IntrospectableService service : getAllServiceImpls(com.ibm.wsspi.logging.IntrospectableService.class)) {
-                if (filter == null || filter.contains(service.getName().toUpperCase())) {
-                    introspect(introspectionDir, service, outputTarget);
+                if (introspectorsToIntrospect == null || introspectorsToIntrospect.contains(service.getName().toUpperCase())) {
+                    introspect(outputDir, service);
                 }
             }
 
             for (Introspector introspector : getAllServiceImpls(Introspector.class)) {
-                if (filter == null || filter.contains(introspector.getIntrospectorName().toUpperCase())) {
-                    introspect(introspectionDir, introspector, outputTarget);
+                if (introspectorsToIntrospect == null || introspectorsToIntrospect.contains(introspector.getIntrospectorName().toUpperCase())) {
+                    introspect(outputDir, introspector);
                 }
             }
 
@@ -83,10 +74,15 @@ public class IntrospectionContext {
         }
     }
 
-    public void listIntrospectorsToConsole() {
+    public void listIntrospectorsToConsole(File outputDirectory) {
 
         try {
-            OutputStream outputStream = acquireConsoleOutputStream();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd_HH.mm.ss");
+            String timestamp = sdf.format(new Date());
+            String fileName = "introspectors_list_" + timestamp;
+
+            OutputStream outputStream = acquireOutputStream(outputDirectory, fileName);
             try (PrintWriter pw = new PrintWriter(outputStream)) {
 
                 pw.write("please select one or more of the following introspectors in a space delimited list, or select none to output all of them");
@@ -120,18 +116,16 @@ public class IntrospectionContext {
     }
 
     private void introspect(File introspectionDir,
-                            Introspector introspectable,
-                            OutputTarget outputTarget) {
+                            Introspector introspectable) {
 
-        introspect(introspectionDir, introspectable.getIntrospectorName(), introspectable.getIntrospectorDescription(), introspectable, null, outputTarget);
+        introspect(introspectionDir, introspectable.getIntrospectorName(), introspectable.getIntrospectorDescription(), introspectable, null);
 
     }
 
     private void introspect(File introspectionDir,
-                            com.ibm.wsspi.logging.IntrospectableService introspectable,
-                            OutputTarget outputTarget) {
+                            com.ibm.wsspi.logging.IntrospectableService introspectable) {
 
-        introspect(introspectionDir, introspectable.getName(), introspectable.getDescription(), null, introspectable, outputTarget);
+        introspect(introspectionDir, introspectable.getName(), introspectable.getDescription(), null, introspectable);
 
     }
 
@@ -139,37 +133,38 @@ public class IntrospectionContext {
                             String introspectionName,
                             String introspectionDesc,
                             Introspector introspector,
-                            com.ibm.wsspi.logging.IntrospectableService introspectable,
-                            OutputTarget outputTarget) {
+                            com.ibm.wsspi.logging.IntrospectableService introspectable) {
         if (introspectionName == null || introspectionName.isEmpty()) {
             introspectionName = Introspector.class.getSimpleName() + '.' + unnamedCount++;
         }
 
         PrintWriter writerForThrowable = null;
-        final OutputStream outputStream = acquireOutputStream(outputTarget, introspectionDir, introspectionName);
+        final OutputStream outputStream = acquireOutputStream(introspectionDir, introspectionName);
 
-        try (PrintWriter pw = new PrintWriter(outputStream)) {
-            writerForThrowable = pw;
+        if (outputStream != null) {
+            try (PrintWriter pw = new PrintWriter(outputStream)) {
+                writerForThrowable = pw;
 
-            // write header
-            if (introspectionDesc != null && !introspectionDesc.isEmpty()) {
-                pw.println("The description of this introspector:");
-                pw.println(introspectionDesc);
-                pw.println();
-                pw.flush();
-            }
+                // write header
+                if (introspectionDesc != null && !introspectionDesc.isEmpty()) {
+                    pw.println("The description of this introspector:");
+                    pw.println(introspectionDesc);
+                    pw.println();
+                    pw.flush();
+                }
 
-            // write body
-            if (introspectable != null) {
-                introspectable.introspect(outputStream);
-            } else {
-                introspector.introspect(pw);
-            }
-        } catch (Throwable t) {
-            Object introspectionFile = null;
-            Tr.warning(tc, "warn.unableWriteFile", introspectionFile, t.getMessage());
-            if (writerForThrowable != null) {
-                t.printStackTrace(writerForThrowable);
+                // write body
+                if (introspectable != null) {
+                    introspectable.introspect(outputStream);
+                } else {
+                    introspector.introspect(pw);
+                }
+            } catch (Throwable t) {
+                Object introspectionFile = null;
+                Tr.warning(tc, "warn.unableWriteFile", introspectionFile, t.getMessage());
+                if (writerForThrowable != null) {
+                    t.printStackTrace(writerForThrowable);
+                }
             }
         }
     }
@@ -193,66 +188,18 @@ public class IntrospectionContext {
         return serviceObjects;
     }
 
-    public enum OutputTarget {
-        file,
-        console;
+    public OutputStream acquireOutputStream(File introspectionDir, String introspectionName) {
+
+        File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
+        try {
+            FileOutputStream out = new FileOutputStream(introspectionFile);
+            return out;
+        } catch (FileNotFoundException e) {
+            e.getCause(); // findbugs
+            Tr.error(tc, "error.fileNotFound", introspectionFile);
+
+        }
+        return null;
     }
 
-    public OutputStream acquireConsoleOutputStream() {
-        return acquireOutputStream(OutputTarget.console, null, null);
-    }
-
-    public OutputStream acquireOutputStream(OutputTarget outputTarget, File introspectionDir, String introspectionName) {
-        switch (outputTarget) {
-            case console:
-                return new UncloseableWrapper(System.out);
-            case file:
-                File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
-                try {
-                    FileOutputStream out = new FileOutputStream(introspectionFile);
-                    return out;
-                } catch (FileNotFoundException e) {
-                    e.getCause(); // findbugs
-                    Tr.error(tc, "error.fileNotFound", introspectionFile);
-                }
-            default:
-                throw new IllegalArgumentException("A destination for introspection output is required");
-        }
-    }
-
-    private class UncloseableWrapper extends OutputStream {
-
-        private final OutputStream deligate;
-
-        public UncloseableWrapper(OutputStream deligate) {
-            this.deligate = deligate;
-        }
-
-        @Override
-        public void write(int b) throws IOException {
-            deligate.write(b);
-        }
-
-        @Override
-        public void write(byte[] b) throws IOException {
-            deligate.write(b);
-        }
-
-        @Override
-        public void write(byte[] b, int off, int len) throws IOException {
-            deligate.write(b, off, len);
-        }
-
-        @Override
-        public void flush() throws IOException {
-            deligate.flush();
-        }
-
-        @Override
-        public void close() throws IOException {
-            // No-Op. When we close the PrintWriter using it, we don't want to actually close
-            // Liberty's connection to console.log!
-        }
-
-    }
 }

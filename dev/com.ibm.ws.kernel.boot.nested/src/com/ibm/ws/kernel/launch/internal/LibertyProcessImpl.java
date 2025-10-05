@@ -116,7 +116,7 @@ public class LibertyProcessImpl implements LibertyProcess {
         ServerDumpPackager sdp = new ServerDumpPackager(frameworkMgr.config, null);
         sdp.initializeDumpDirectory();
 
-        frameworkMgr.introspectFramework(sdp.getDumpTimestamp(), parseJavaDumpActions(includedDumps), IntrospectionContext.OutputTarget.file);
+        frameworkMgr.introspectFramework(sdp.getDumpTimestamp(), parseJavaDumpActions(includedDumps));
 
         ReturnCode rc = ReturnCode.OK;
         if (includedDumps == null || includedDumps.isEmpty()) {

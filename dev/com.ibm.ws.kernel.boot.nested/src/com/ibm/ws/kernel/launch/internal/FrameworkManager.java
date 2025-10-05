@@ -32,10 +32,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -83,7 +85,6 @@ import com.ibm.ws.kernel.boot.internal.commands.ServerDumpUtil;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilder;
 import com.ibm.ws.kernel.boot.jmx.internal.PlatformMBeanServerBuilderListener;
 import com.ibm.ws.kernel.boot.jmx.service.MBeanServerPipeline;
-import com.ibm.ws.kernel.launch.internal.IntrospectionContext.OutputTarget;
 import com.ibm.ws.kernel.launch.internal.Provisioner.InvalidBundleContextException;
 import com.ibm.ws.kernel.launch.service.ClientRunner;
 import com.ibm.ws.kernel.launch.service.ForcedServerStop;
@@ -1249,7 +1250,7 @@ public class FrameworkManager {
      *                            Where this introspection will be written to.
      *
      */
-    public void introspectFramework(String timestamp, Set<JavaDumpAction> javaDumpActions, OutputTarget outputTarget) {
+    public void introspectFramework(String timestamp, Set<JavaDumpAction> javaDumpActions) {
         Tr.audit(tc, "info.introspect.request.received");
 
         File dumpDir = config.getOutputFile(BootstrapConstants.SERVER_DUMP_FOLDER_PREFIX + timestamp + "/");
@@ -1263,8 +1264,10 @@ public class FrameworkManager {
             dumpJava(javaDumpActions, javaDumpLocations);
         }
 
-        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx, dumpDir);
-        introspectionCtx.introspectAll(outputTarget);
+        File introspectionDir = new File(dumpDir, BootstrapConstants.SERVER_INTROSPECTION_FOLDER_NAME);
+
+        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx);
+        introspectionCtx.introspectAll(introspectionDir);
 
         // create dumped flag file
         File dumpedFlag = new File(dumpDir, BootstrapConstants.SERVER_DUMPED_FLAG_FILE_NAME);
@@ -1292,8 +1295,13 @@ public class FrameworkManager {
     public void inspectFramework(List<String> filter) {
         Tr.audit(tc, "info.introspect.request.received");//TODO message here.
 
-        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx, null);
-        introspectionCtx.introspectAll(IntrospectionContext.OutputTarget.console, filter);
+        SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd_HH.mm.ss");
+        String timestamp = sdf.format(new Date());
+
+        File introspectionsDir = new File(config.getLogDirectory(), "introspections_" + timestamp);
+
+        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx);
+        introspectionCtx.introspectIntrospectors(introspectionsDir, filter);
     }
 
     public void inspectFramework() {
@@ -1301,8 +1309,8 @@ public class FrameworkManager {
     }
 
     public void consoleHelp() {
-        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx, null);
-        introspectionCtx.listIntrospectorsToConsole();
+        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx);
+        introspectionCtx.listIntrospectorsToConsole(config.getLogDirectory());
     }
 
     public void dumpJava(Set<JavaDumpAction> javaDumpActions) {
