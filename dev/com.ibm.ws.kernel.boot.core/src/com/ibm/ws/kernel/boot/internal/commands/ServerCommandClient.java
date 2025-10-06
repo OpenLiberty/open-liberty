@@ -277,8 +277,6 @@ public class ServerCommandClient extends ServerCommand {
                 commandBuilder.append(',').append(javaDumpAction.name());
             }
             command = commandBuilder.toString();
-
-            System.out.println("GREP + " + command);
         }
 
         return write(command,
