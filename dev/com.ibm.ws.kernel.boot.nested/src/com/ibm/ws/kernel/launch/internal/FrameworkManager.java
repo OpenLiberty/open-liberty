@@ -1308,9 +1308,9 @@ public class FrameworkManager {
         inspectFramework(null);
     }
 
-    public void consoleHelp() {
+    public void listIntrospectors() {
         IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx);
-        introspectionCtx.listIntrospectorsToConsole(config.getLogDirectory());
+        introspectionCtx.listIntrospectorsToFile(config.getLogDirectory());
     }
 
     public void dumpJava(Set<JavaDumpAction> javaDumpActions) {

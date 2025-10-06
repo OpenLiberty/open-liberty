@@ -478,8 +478,8 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
 
             if (args.size() == 1 && args.get(0).toUpperCase().equals("ALL")) {
                 frameworkManager.inspectFramework();
-            } else if (args.size() == 1 && args.get(0).toUpperCase().equals("HELP")) {
-                frameworkManager.consoleHelp();
+            } else if (args.size() == 1 && args.get(0).toUpperCase().equals("LIST")) {
+                frameworkManager.listIntrospectors();
             } else {
                 List<String> upperCaseFilters = new ArrayList<String>();
                 for (String s : args) {

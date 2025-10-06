@@ -74,7 +74,7 @@ public class IntrospectionContext {
         }
     }
 
-    public void listIntrospectorsToConsole(File outputDirectory) {
+    public void listIntrospectorsToFile(File outputDirectory) {
 
         try {
 
@@ -84,9 +84,6 @@ public class IntrospectionContext {
 
             OutputStream outputStream = acquireOutputStream(outputDirectory, fileName);
             try (PrintWriter pw = new PrintWriter(outputStream)) {
-
-                pw.write("please select one or more of the following introspectors in a space delimited list, or select none to output all of them");
-                pw.write(System.lineSeparator());
 
                 for (com.ibm.wsspi.logging.IntrospectableService service : getAllServiceImpls(com.ibm.wsspi.logging.IntrospectableService.class)) {
                     if (service != null) {
