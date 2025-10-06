@@ -718,43 +718,51 @@ task uploadfat {
   dependsOn buildfat
   doLast {
     def sourceFile = zipProjectFVT.archiveFile.get().asFile
-    def targetDir = uploadRemotePath.substring(uploadRemotePath.lastIndexOf("/"))
-    def targetPath = uploadRemotePath.substring(0, uploadRemotePath.lastIndexOf("/"))
     copy {
         from sourceFile
-        into targetDir
+        into new File(project.buildDir, executionId)
     }
-    withRetries(5, 5) {
-        exec {
-            commandLine 'scp',
-                "-i ${uploadKeyFile}",
-                "-r " + targetDir,
-                "${uploadUser}@${uploadHost}:${targetPath}"
+    try {
+        withRetries(5, 5) {
+            exec {
+                workingDir project.buildDir
+                commandLine 'scp',
+                    "-i", uploadKeyFile,
+                    "-r",
+                    "./" + executionId,
+                    "${uploadUser}@${uploadHost}:${uploadRemotePath}"
+            }
         }
+    } finally {
+        delete new File(project.buildDir, executionId)
     }
-    delete targetDir
 
+    // TODO: read featureDeps from new File(autoFvtDir, 'fat-metadata.json')
     def bucketImageUploadedJSON = """{
     "type": "BucketImageUploaded",
     "bucketName": "${project.name}",
     "executionId": "${executionId}",
     "aggregationName": "${executionId}", 
-    "imageUrl": "https://libertyfs.hursley.ibm.com/${uploadRemotePath}/${zipProjectFVT.archiveFile.get().asFile}",
+    "imageUrl": "https://libertyfs.hursley.ibm.com/${uploadRemotePath}/${executionId}/${zipProjectFVT.archiveFileName.get()}",
     "additionalFileUrls": [],
     "additionalProductImageDependencies": [],
     "additionalProperties": {"bucket.is.runnable":"true"},
-    "functionalUnitsTested": ${featureDeps},
+    "functionalUnitsTested": "",
     "description":"${project.name} bucket artifact"
 }"""
     def bucketEventFile = file("${buildDir}/bucketImageUploaded.json")
     bucketEventFile.text = bucketImageUploadedJSON
 
-    exec {
-        commandLine "curl",
-            "-X", "POST",
-            "-F", bucketEventFile.getPath(),
-            "http://libh-proxy1.fyre.ibm.com/eventPublish/rawCIArtifacts/${executionId}"
+    withRetries(5, 5) {
+        exec {
+            commandLine "curl",
+                "-X", "POST",
+                "-H", "Content-Type: application/json",
+                "--data", "@${bucketEventFile.getPath()}",
+                "http://libh-proxy1.fyre.ibm.com/eventPublish/rawCIArtifacts/${executionId}"
+        }
     }
+    
   }
 }
 
