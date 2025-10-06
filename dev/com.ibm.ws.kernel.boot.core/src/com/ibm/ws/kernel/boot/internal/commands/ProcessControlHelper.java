@@ -445,7 +445,7 @@ public class ProcessControlHelper {
      * @return
      */
     public ReturnCode inspect() {
-        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverDumping"), serverName));
+        System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverInspecting"), serverName));
 
         ReturnCode dumpRc = runInspect(launchArgs);
 
@@ -465,14 +465,14 @@ public class ProcessControlHelper {
                 dumpRc = ReturnCode.SERVER_UNKNOWN_STATUS;
             }
             if (serverCommandPortDisabledFlag) {
-                //TODO fix all this sysout
+                //TODO. Investigate wheather the introspectors are affected b the command port or if its only for other parts of the dump
                 //System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("warning.serverDumpCompleteCommandPortDisabled"), serverName,
                 //                                        sdp.getDumpFile().getAbsolutePath()));
             } else {
-                //System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverDumpComplete"), serverName, sdp.getDumpFile().getAbsolutePath()));
+                System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverInspectionComplete"), serverName));
             }
         } else {
-            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverDumpException"), serverName));
+            System.out.println(MessageFormat.format(BootstrapConstants.messages.getString("info.serverInspectException"), serverName));
         }
 
         return dumpRc;
