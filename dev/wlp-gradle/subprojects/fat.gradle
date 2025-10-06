@@ -717,16 +717,22 @@ def withRetries(int retries = 5, int initialDelay = 5, Closure action) {
 task uploadfat {
   dependsOn buildfat
   doLast {
-    def sourceFile = zipProjectFVT.archiveFile.get().asFile.absolutePath
-    def targetFile = uploadRemotePath + "/" + zipProjectFVT.archiveFile.get().asFile
+    def sourceFile = zipProjectFVT.archiveFile.get().asFile
+    def targetDir = uploadRemotePath.substring(uploadRemotePath.lastIndexOf("/"))
+    def targetPath = uploadRemotePath.substring(0, uploadRemotePath.lastIndexOf("/"))
+    copy {
+        from sourceFile
+        into targetDir
+    }
     withRetries(5, 5) {
         exec {
             commandLine 'scp',
                 "-i ${uploadKeyFile}",
-                sourceFile,
-                "${uploadUser}@${uploadHost}:${targetFile}"
+                "-r " + targetDir,
+                "${uploadUser}@${uploadHost}:${targetPath}"
         }
     }
+    delete targetDir
 
     def bucketImageUploadedJSON = """{
     "type": "BucketImageUploaded",
