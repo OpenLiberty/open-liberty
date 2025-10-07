@@ -15,6 +15,7 @@ package com.ibm.ws.ejbcontainer;
 import java.util.List;
 
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.SyncToOSThreadMetaData;
 
 public interface EJBComponentMetaData
                 extends ComponentMetaData, SyncToOSThreadMetaData
