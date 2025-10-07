@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,15 +58,6 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
     private static final int basicTimeout = 30;
     private static final int complexTimeout = 35;
     private static final int messageTimeout = 70;
-    private static final int zTimeout = 70;
-
-    private static final boolean isZOS() {
-        String osName = System.getProperty("os.name");
-        if (osName.toLowerCase().contains("os/") || osName.toLowerCase().contains("z/os") || osName.toLowerCase().contains("zos")) {
-            return true;
-        }
-        return false;
-    }
 
     private static final boolean isRestful30() {
         try {
@@ -1255,10 +1246,6 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         String url = "http://justforcts.test:6789/resource/delete";
         long timeout = messageTimeout;
 
-        if (isZOS()) {
-            timeout = zTimeout;
-        }
-
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.build();
         c.register(RxObservableInvokerProvider.class);
@@ -1292,10 +1279,6 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
 
         String url = "http://justforcts.test:6789/resource/delete";
         long timeout = messageTimeout;
-
-        if (isZOS()) {
-            timeout = zTimeout;
-        }
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.build();
@@ -1331,10 +1314,6 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         String url = "http://justforcts.test:6789/resource/delete";
         long timeout = messageTimeout;
 
-        if (isZOS()) {
-            timeout = zTimeout;
-        }
-
         ClientBuilder cb = ClientBuilder.newBuilder();
         Client c = cb.build();
         c.register(RxFlowableInvokerProvider.class);
@@ -1367,10 +1346,6 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
 
     public void testRxObservableInvoker_getReceiveTimeout(Map<String, String> param, StringBuilder ret) {
         long timeout = messageTimeout;
-
-        if (isZOS()) {
-            timeout = zTimeout;
-        }
 
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
@@ -1415,10 +1390,6 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
 
     public void testRxFlowableInvoker_getReceiveTimeout(Map<String, String> param, StringBuilder ret) {
         long timeout = messageTimeout;
-
-        if (isZOS()) {
-            timeout = zTimeout;
-        }
 
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
@@ -1465,14 +1436,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         String target = null;
         long timeout = messageTimeout;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-            timeout = zTimeout;
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         if (isRestful30()) {
             timeout = timeout * 2;
@@ -1527,14 +1492,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         String target = null;
         long timeout = messageTimeout;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-            timeout = zTimeout;
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         if (isRestful30()) {
             timeout = timeout * 2;
@@ -1588,10 +1547,6 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
     public void testRxObservableInvoker_postReceiveTimeout(Map<String, String> param, StringBuilder ret) {
         long timeout = messageTimeout;
 
-        if (isZOS()) {
-            timeout = zTimeout;
-        }
-
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
         ClientBuilder cb = ClientBuilder.newBuilder();
@@ -1635,10 +1590,6 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
 
     public void testRxFlowableInvoker_postReceiveTimeout(Map<String, String> param, StringBuilder ret) {
         long timeout = messageTimeout;
-
-        if (isZOS()) {
-            timeout = zTimeout;
-        }
 
         String serverIP = param.get("serverIP");
         String serverPort = param.get("serverPort");
@@ -1685,14 +1636,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         String target = null;
         long timeout = messageTimeout;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-            timeout = zTimeout;
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         if (isRestful30()) {
             timeout = timeout * 2;
@@ -1747,14 +1692,8 @@ public class JerseyRxInvokerTestServlet extends HttpServlet {
         String target = null;
         long timeout = messageTimeout;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-            timeout = zTimeout;
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         if (isRestful30()) {
             timeout = timeout * 2;
