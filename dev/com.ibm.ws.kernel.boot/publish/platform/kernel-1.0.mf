@@ -17,6 +17,7 @@ Subsystem-Content: README.TXT; location:="README.TXT"; type="file",
  server.bat; location:="bin/server.bat"; type="file",
  configUtility; location:="bin/configUtility"; type="file",
  configUtility.bat; location:="bin/configUtility.bat"; type="file",
+ FIPS140-3-Liberty.properties; location:="lib/security/fips140_3/FIPS140-3-Liberty.properties"; type="file"
  ws-configUtility.jar; location:="bin/tools/ws-configUtility.jar"; type="file",
  schemaGen; location:="bin/schemaGen"; type="file",
  schemaGen.bat; location:="bin/schemaGen.bat"; type="file",
