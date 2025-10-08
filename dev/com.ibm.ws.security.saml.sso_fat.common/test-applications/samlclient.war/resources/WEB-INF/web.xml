@@ -175,6 +175,15 @@
 		<url-pattern>/fat/sp_enc_aes128/snoop/*</url-pattern>
 	</servlet-mapping>
 
+	<servlet-mapping id="ServletMapping_Snoop_spAES128_ec">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes128_ec/snoop</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping id="ServletMapping_Snoop_spAES128_eca">
+		<servlet-name>SnoopServlet</servlet-name>
+		<url-pattern>/fat/sp_enc_aes128_ec/snoop/*</url-pattern>
+	</servlet-mapping>
+
 	<servlet-mapping id="ServletMapping_Snoop_spAES128_nosignature">
 		<servlet-name>SnoopServlet</servlet-name>
 		<url-pattern>/fat/sp_enc_aes128_no_sign/snoop</url-pattern>
@@ -565,6 +574,8 @@
 			<url-pattern>/fat/spOP/snoop</url-pattern>
 			<url-pattern>/fat/spOP/snoop/*</url-pattern>
 			<url-pattern>/fat/sp_enc_aes128/snoop</url-pattern>
+			<url-pattern>/fat/sp_enc_aes128_ec/snoop</url-pattern>
+			<url-pattern>/fat/sp_enc_aes128_ec/snoop/*</url-pattern>
 			<url-pattern>/fat/sp_enc_aes128_no_sign/snoop</url-pattern>
 			<url-pattern>/fat/sp_enc_aes128_no_sign/snoop/*</url-pattern>
 			<url-pattern>/fat/sp_enc_aes128/snoop/*</url-pattern>

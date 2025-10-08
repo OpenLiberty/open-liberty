@@ -262,10 +262,34 @@
 			</property>
 		</bean>
 		
-				
+		<bean
+			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes128_ec'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="true"
+						p:signAssertions="true"
+						p:encryptAssertions="true"
+						p:securityConfiguration-ref="encryption128ecdh"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
 	    <bean
 			parent="RelyingPartyByName"
-			c:relyingPartyIds="#{{'https://localhost:8020/ibm/saml20/sp_enc_aes128_no_sign'}}"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes128_no_sign'}}"
 		>
 			<property name="profileConfigurations">
 				<list>
@@ -666,7 +690,9 @@
 		class="net.shibboleth.idp.profile.config.SecurityConfiguration"
 	    >
 		<property name="signatureSigningConfiguration">
-			<ref bean="shibboleth.SigningConfiguration.SHA256" />
+			<!-- <ref bean="shibboleth.SigningConfiguration.SHA256" /> -->
+			<bean parent="shibboleth.SigningConfiguration.SHA256" p:signingCredentials-ref="shibboleth.DefaultSigningCredentialECDSA" />
+			<!-- <ref bean="shibboleth.SigningConfiguration.ECDSA" /> -->
 		</property>
 		<property name="encryptionConfiguration">
 			<bean parent="shibboleth.BasicEncryptionConfiguration">
