@@ -3374,7 +3374,7 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.asm</artifactId>
-      <version>9.8.0</version>
+      <version>9.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
