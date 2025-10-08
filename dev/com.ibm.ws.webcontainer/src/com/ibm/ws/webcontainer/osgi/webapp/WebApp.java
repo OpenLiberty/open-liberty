@@ -526,8 +526,11 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                   DocumentRootUtils dru = getDocumentRootUtils(path);
                   
                   //The cache doesn't work for non-URLs (as it only caches URLs) so skip it for now in this case
-                  dru.handleDocumentRoots(path, null);
-                  return dru.getInputStream();
+                  if (dru.handleDocumentRoots(path, null)) {
+                    return dru.getInputStream();
+                  } else {
+                    return null;
+                  }
               }
           }
       
@@ -536,11 +539,14 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
               return null;
           URLConnection conn = url.openConnection();
           return conn.getInputStream();
-      } catch (MalformedURLException e) {
+      } catch (MalformedURLException eAException) {
+        System.out.println("here0 - 5");
           return null;
       } catch (IOException e) {
+        System.out.println("here0 - 3");
           return null;
       } catch (UnableToAdaptException e) {
+        System.out.println("here0 - 4");
           return null;
       }
   }
@@ -622,7 +628,15 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
                         logger.logp(Level.FINE, CLASS_NAME, "getRealPath", "obtained dru");
                     
-                    dru.handleDocumentRoots(path, WCCustomProperties.CHECK_EDR_IN_GET_REAL_PATH);
+                    if (!dru.handleDocumentRoots(path, WCCustomProperties.CHECK_EDR_IN_GET_REAL_PATH)) {
+                        // to be TWAS compliant, return container path if we are not checking EDRs and can't find the real path
+                        // but return null if we are checking EDRs and can't find the real path
+                        if (!WCCustomProperties.GET_REAL_PATH_RETURNS_QUALIFIED_PATH) {
+                            return null;
+                        }
+                        //if the app was extracted, we could return this...
+                        basePath = container.getPhysicalPath();
+                    } else {
                     EntryResource er = dru.getMatchedEntryResource();
 
                     if (er != null) {
@@ -662,21 +676,11 @@ public class WebApp extends com.ibm.ws.webcontainer.webapp.WebApp implements Com
                     }
                 }
             }
+        }
         } catch(IllegalArgumentException e){
             logger.logp(Level.FINE, CLASS_NAME, "getRealPath", "caught IllegalArgument Exception. path: " + path + "  Exception: " + e);
             return null;
-        } catch(IOException e){
-            logger.logp(Level.FINE, CLASS_NAME, "getRealPath", "caught IOException processing document root getReadPath: " + path + "  Exception: " + e);
-
-            // to be TWAS compliant, return container path if we are not checking EDRs and can't find the real path
-            // but return null if we are checking EDRs and can't find the real path
-            if (!WCCustomProperties.GET_REAL_PATH_RETURNS_QUALIFIED_PATH) {
-                 return null;
-            }
-            //if the app was extracted, we could return this...
-            basePath = container.getPhysicalPath();
-         }
-        
+        } 
     }
     
     if (basePath == null) {

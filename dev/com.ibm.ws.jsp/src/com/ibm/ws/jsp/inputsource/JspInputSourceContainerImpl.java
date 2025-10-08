@@ -108,36 +108,30 @@ public class JspInputSourceContainerImpl implements JspInputSource {
                 throw new IllegalStateException(ex);
             }
         } else {
-            try {
+          
                 if(dru!=null){
                     synchronized(dru){
-                        dru.handleDocumentRoots(relativeURL);
-                        InputStream is = dru.getInputStream();
-                        this.lastModified = dru.getLastModified();
-                        return is;
+                        if (dru.handleDocumentRoots(relativeURL)) {
+                            InputStream is = dru.getInputStream();
+                            this.lastModified = dru.getLastModified();
+                            return is;
+                        }
                     }
                 }
-            } catch (FileNotFoundException e) {
-                //no-op the file wasn't found
-            } catch (IOException e){
-                //no-op the file wasn't found
-            }
+            
             return null;
         }
     }
 
     public long getLastModified() {
         if(inputSourceEntry == null && dru != null){
-            try {
                 synchronized(dru){
-                    dru.handleDocumentRoots(relativeURL);
+                    if (!dru.handleDocumentRoots(relativeURL)) {
+                        return 0;
+                    }
                     this.lastModified = dru.getLastModified();
                 }
-            } catch (FileNotFoundException e) {
-                return 0;
-            } catch (IOException e){
-                return 0;
-            }
+           
         }
         else if (inputSourceEntry != null) {
             return inputSourceEntry.getLastModified();

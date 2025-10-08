@@ -99,23 +99,22 @@ public class JSPExtensionContext implements JspTranslationContext {
                             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)) {  //PK76503 added trace
                                 logger.logp(Level.FINE,CLASS_NAME,"getRealPath", "Checking extendedDocumentRoot path: " + path);
                             }
-                            dru.handleDocumentRoots(path);
-                            // return jar name or file name if not in jar.
-                            realPath = dru.getFilePath();
-                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)) { //PK76503 added trace
-                                logger.logp(Level.FINE,CLASS_NAME,"getRealPath", "Path was retrieved from the extendedDoucumentRoots realPath: " + realPath);
-                            }
-                        }
-                        // PM30435 start
-                        catch (FileNotFoundException fne_io){
-                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)) {
-                                logger.logp(Level.FINER,CLASS_NAME,"getRealPath", "FileNotFound exception while obtaining realPath: " +realPath + ", exception was: " + fne_io);
-                            }
-                            // this may happen if resource does not exist
-                            // follow behavior from above and just return path below
-                        } 
-                        // PM30435 end
-                        catch (Exception e) {
+                            if (dru.handleDocumentRoots(path)) {
+                                // return jar name or file name if not in jar.
+                                realPath = dru.getFilePath();
+                                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)) { //PK76503 added trace
+                                    logger.logp(Level.FINE,CLASS_NAME,"getRealPath", "Path was retrieved from the extendedDoucumentRoots realPath: " + realPath);
+                                }
+                            } else {
+                                 // PM30435 start
+                                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable(Level.FINER)) {
+                                    logger.logp(Level.FINER,CLASS_NAME,"getRealPath", "FileNotFound while obtaining realPath: " +realPath);
+                                }
+                                // this may happen if resource does not exist
+                                // follow behavior from above and just return path below
+                            } 
+                            // PM30435 end
+                        } catch (Exception e) {
                             com.ibm.ws.ffdc.FFDCFilter.processException( e, "com.ibm.ws.jsp.webcontainerext.JspExtensionContext.getResourceAsStream", "102", this);
                             // follow behavior from above and just return path below
                         }

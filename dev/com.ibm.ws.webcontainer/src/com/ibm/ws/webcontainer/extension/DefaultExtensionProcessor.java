@@ -489,10 +489,8 @@ private ICollaboratorHelper collabHelper;
             	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
     				logger.logp(Level.FINE, CLASS_NAME,"handleRequest","file does not exist --> " + path);
             	DocumentRootUtils docRoot = new DocumentRootUtils(context,extendedDocumentRoot,preFragmentExtendedDocumentRoot);
-            	try {
-            	    docRoot.handleDocumentRoots(path.toString());
-            	} catch (FileNotFoundException fnfe) {
-    				throw new FileNotFoundException(MessageFormat.format(nls.getString("File.not.found","File not found: {0}"), new Object[]{path}));
+            	if (!docRoot.handleDocumentRoots(path.toString())) {
+            		throw new FileNotFoundException(MessageFormat.format(nls.getString("File.not.found","File not found: {0}"), new Object[]{path}));
             	}
             	if (docRoot.isDirectory()) {
                     if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
@@ -1240,36 +1238,35 @@ private ICollaboratorHelper collabHelper;
 	
 	public boolean isAvailableInDocumentRoot(String resource,boolean searchEDR) {
 		boolean available = false;
-		try { 
+		
 	    	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE))
 	    		logger.logp(Level.FINE, CLASS_NAME,"isAvailable()","File not found in WAR directorr so check DocumetRoots");
             DocumentRootUtils docRoot = new DocumentRootUtils( this._webapp, extendedDocumentRoot,preFragmentExtendedDocumentRoot);
-            docRoot.handleDocumentRoots(resource,preFragmentExtendedDocumentRoot!=null,!WCCustomProperties.SKIP_META_INF_RESOURCES_PROCESSING,searchEDR);
+            if (!docRoot.handleDocumentRoots(resource,preFragmentExtendedDocumentRoot!=null,!WCCustomProperties.SKIP_META_INF_RESOURCES_PROCESSING,searchEDR)) {
+						
+	    				if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE)) {
+	    					logger.logp(Level.FINE, CLASS_NAME,"isAvailable()","FileNotFoundException caught");
+        				/* ignore */
+							}
+        		} else { 
+						            
+            	//Check first to see if we found an Entry match inside of a DocumentRoot
+            	EntryResource entryr = docRoot.getMatchedEntryResource();
+            	if(entryr != null){
+              	  if(entryr.getEntry() != null){
+                	    return true;
+                	}
+            	}
             
-            //Check first to see if we found an Entry match inside of a DocumentRoot
-            EntryResource entryr = docRoot.getMatchedEntryResource();
-            if(entryr != null){
-                if(entryr.getEntry() != null){
-                    return true;
-                }
-            }
-            
-            String filePath = docRoot.getFilePath();
-            if (filePath!=null) {
-		    	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE))
-		    		logger.logp(Level.FINE, CLASS_NAME,"isAvailable()","Match found in DocumetRootd");
-            	File caseFile = new Java2SecurityFile(filePath);
-                available = caseFile.exists();
-            }  
-		} catch (FileNotFoundException fne) {
-	    	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE))
-	    		logger.logp(Level.FINE, CLASS_NAME,"isAvailable()","FileNotFoundException caught");
-        	/* ignore */
-        } catch (IOException ioe) {
-        	if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE))
-        		logger.logp(Level.FINE, CLASS_NAME,"isAvailable()","IOException caught");
-        	/* ignore */
-        }                
+            	String filePath = docRoot.getFilePath();
+            	if (filePath!=null) {
+		    		if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE))
+			    		logger.logp(Level.FINE, CLASS_NAME,"isAvailable()","Match found in DocumetRootd");
+            		File caseFile = new Java2SecurityFile(filePath);
+	                available = caseFile.exists();
+            	}
+						}  
+		  
         return available;
 	}
 

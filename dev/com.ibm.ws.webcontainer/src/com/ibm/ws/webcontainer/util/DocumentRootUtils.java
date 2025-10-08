@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -160,27 +160,26 @@ public class DocumentRootUtils {
         return result;
     }
 
-    public void handleDocumentRoots(String filename, boolean _searchEDR) throws FileNotFoundException, IOException {
-        handleDocumentRoots(filename,searchpfEDR,searchMetaInfRes, _searchEDR);
-    }
-
-    
-    public void handleDocumentRoots(String filename) throws FileNotFoundException, IOException {
-    	handleDocumentRoots(filename,searchpfEDR,searchMetaInfRes,searchEDR);
+    public boolean handleDocumentRoots(String filename, boolean _searchEDR) {
+        return handleDocumentRoots(filename,searchpfEDR,searchMetaInfRes, _searchEDR);
     }
     
-    public void handleDocumentRoots(String filename, Map<String, URL> metaInfCache) throws FileNotFoundException, IOException {
-    	handleDocumentRoots(filename,searchpfEDR,searchMetaInfRes,searchEDR,metaInfCache);
+    public boolean handleDocumentRoots(String filename) {
+    	return handleDocumentRoots(filename,searchpfEDR,searchMetaInfRes,searchEDR);
     }
     
-    public void handleDocumentRoots(String filename,boolean searchpfEDR, boolean searchMetaInf, boolean searchEDR) throws FileNotFoundException, IOException {
-        handleDocumentRoots(filename,searchpfEDR,searchMetaInf,searchEDR,null);
+    public boolean handleDocumentRoots(String filename, Map<String, URL> metaInfCache) {
+    	return handleDocumentRoots(filename,searchpfEDR,searchMetaInfRes,searchEDR,metaInfCache);
+    }
+    
+    public boolean handleDocumentRoots(String filename,boolean searchpfEDR, boolean searchMetaInf, boolean searchEDR) {
+        return handleDocumentRoots(filename,searchpfEDR,searchMetaInf,searchEDR,null);
     }    
     
-    private void handleDocumentRoots(String filename,boolean searchpfEDR, boolean searchMetaInf, boolean searchEDR, Map<String, URL> metaInfCache) throws FileNotFoundException, IOException {
+    private boolean handleDocumentRoots(String filename,boolean searchpfEDR, boolean searchMetaInf, boolean searchEDR, Map<String, URL> metaInfCache) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
             logger.entering(CLASS_NAME,"handleDocumentRoots","search: pfedr = " + searchpfEDR + ", MetaInf = " + searchMetaInf +", edr = " + searchEDR + ", filename --> " + filename );
-        
+       
         boolean foundMatch = false;
         
         matchedFile=null;
@@ -306,13 +305,15 @@ public class DocumentRootUtils {
             matchFromEDR=false;
             matchFromMetaInfRes = false;
             matchIsADirectory = false;
-            throw new FileNotFoundException(filename);
+
+						//throw new FileNotFoundException(filename);
+						return false;
         }
         
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
             logger.exiting(CLASS_NAME,"handleExtendedRoots", "match found. Matched URL = " + (matchedURL == null ? "null." : matchedURL.toString()));
         
-        return;
+        return true;
 
     }
     
@@ -417,23 +418,20 @@ public class DocumentRootUtils {
             logger.entering(CLASS_NAME,"getURL","filename = " + filename + " a metaInfCache was " + (metaInfCache == null ? "not provided." : "provided."));
     	
     	URL returnURL = null;
-    	try {
-    		// handleDocumentRoots only r
-    	    this.handleDocumentRoots(filename, metaInfCache);
+    	
+    	// handleDocumentRoots only r
+    	if (this.handleDocumentRoots(filename, metaInfCache)) {
     	    returnURL = getURL();
-   	    } catch (FileNotFoundException fnf) {
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-                logger.logp(Level.FINE, CLASS_NAME,"getURL", "file not found.");
-    		returnURL=null;
-    	} catch (IOException ioe) {
-            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-                logger.logp(Level.FINE, CLASS_NAME,"getURL", "IOException");
-    		returnURL=null;
-		}	
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
-            logger.exiting(CLASS_NAME,"getURL"," URL = " + (returnURL == null ? "null." : returnURL.toString()));
+   	  } else {
+          if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+          	logger.logp(Level.FINE, CLASS_NAME,"getURL", "file not found.");
+    			returnURL=null;
+    	} 
+		
+      if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+    	  logger.exiting(CLASS_NAME,"getURL"," URL = " + (returnURL == null ? "null." : returnURL.toString()));
 
-		return returnURL;    
+			return returnURL;    
     }
     
        
