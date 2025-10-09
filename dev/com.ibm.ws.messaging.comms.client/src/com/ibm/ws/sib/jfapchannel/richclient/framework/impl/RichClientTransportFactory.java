@@ -134,32 +134,7 @@ public class RichClientTransportFactory implements NetworkTransportFactory
     @Override
     public NetworkConnectionFactory getOutboundNetworkConnectionFactoryFromEndPoint(Object endPoint)
     {
-        if (tc.isEntryEnabled())
-            SibTr.entry(this, tc, "getOutboundNetworkConnectionFactoryFromEndPoint", endPoint);
-
-        NetworkConnectionFactory connFactory = null;
-        if (endPoint instanceof CFEndPoint)
-        {
-        	// Get the virtual connection factory from the EP and wrap it in our implementation of
-        	// the NetworkConnectionFactory interface
-        	String endPointName = ((CFEndPoint) endPoint).getName();
-        	CommsOutboundChain chain = CommsOutboundChain.getChainDetails(endPointName);
-        	if(chain != null && !chain.useNetty()) {
-        		VirtualConnectionFactory vcFactory = ((CFEndPoint) endPoint).getOutboundVCFactory();
-        		connFactory = new CFWNetworkConnectionFactory(vcFactory);
-        	}
-        	else {
-        		if (tc.isDebugEnabled())
-        			SibTr.error(tc, "getOutboundNetworkConnectionFactoryFromEndPoint", endPoint);
-
-                throw new UnsupportedOperationException("NetworkConnectionFactory cannot be created for a Netty endpoint");
-        	}
-        	
-        }
-
-        if (tc.isEntryEnabled())
-            SibTr.exit(this, tc, "getOutboundNetworkConnectionFactoryFromEndPoint", connFactory);
-        return connFactory;
+        throw new RuntimeException("Looks like you've entered getOutboundNetworkConnectionFactoryFromEndPoint."); // Not implemented
     }
 
 }

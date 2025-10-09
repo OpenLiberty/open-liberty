@@ -217,6 +217,7 @@ public class ConnectionDataGroup
         @Override
         public NetworkConnectionFactory getFactory() throws FrameworkException, JFapConnectFailedException
         {
+            System.out.println("DEBUG: ConnectionDataGroup.CreateNewVirtualConnectionFactory.getFactory called with endpoint " + endPoint);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 SibTr.entry(this, tc, "CreateNewVirtualConnectionFactory.getFactory");
 
@@ -226,6 +227,7 @@ public class ConnectionDataGroup
             epPort = framework.getHostPort(endPoint);
 
             NetworkTransportFactory transportFactory = framework.getNetworkTransportFactory();
+            System.out.println("transportFactory " + transportFactory);
             NetworkConnectionFactory vcFactory = transportFactory.getOutboundNetworkConnectionFactoryFromEndPoint(endPoint);
 
             if (vcFactory == null)

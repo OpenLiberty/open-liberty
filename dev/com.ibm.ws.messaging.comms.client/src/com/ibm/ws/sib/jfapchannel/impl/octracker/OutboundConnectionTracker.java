@@ -471,6 +471,7 @@ public class OutboundConnectionTracker
 
             // Determine the heartbeat interval and timeout from our configuration.
             Map properties = framework.getOutboundConnectionProperties(endPoint);
+            System.out.println("DEBUG properties: " + properties);
             int heartbeatInterval = determineHeartbeatInterval(properties);
             int heartbeatTimeout = determineHeartbeatTimeout(properties);
 

@@ -35,7 +35,7 @@ import io.netty.handler.timeout.IdleState;
  * 
  * @see com.ibm.ws.sib.jfapchannel.impl.OutboundConnection
  */
-public class NettyJMSHeartbeatHandler extends IdleStateHandler{
+public class NettyJMSHeartbeatHandler extends IdleStateHandler {
 
 
 	/** Trace */
