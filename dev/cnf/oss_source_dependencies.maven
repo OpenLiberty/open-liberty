@@ -4,8 +4,8 @@ com.google.code.findbugs:jsr305:3.0.2
 com.google.code.gson:gson:2.9.0
 com.google.guava:failureaccess:1.0.1
 com.googlecode.json-simple:json-simple:1.1.1
+com.sun.mail:jakarta.mail:1.6.8
 com.sun.mail:javax.mail:1.5.6
-com.sun.mail:javax.mail:1.6.2
 com.sun.org.apache.xml.internal:resolver:20050927
 com.sun.xml.bind:jaxb-core:2.2.10
 com.sun.xml.bind:jaxb-core:2.3.0.1
