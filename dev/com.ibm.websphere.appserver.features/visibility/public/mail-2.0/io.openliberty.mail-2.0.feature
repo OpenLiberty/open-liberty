@@ -49,7 +49,7 @@ IBM-SPI-Package: \
 -bundles=\
   io.openliberty.mail.2.0.internal, \
   com.ibm.ws.javamail.config
--jars=io.openliberty.mail.2.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:jakarta.mail:2.0.1"
+-jars=io.openliberty.mail.2.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="com.sun.mail:jakarta.mail:2.0.2"
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

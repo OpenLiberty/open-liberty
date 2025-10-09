@@ -20,7 +20,7 @@ configurations {
 /* Define greenmail dependencies */
 dependencies {
   requiredLibs project(':com.ibm.ws.org.slf4j.jdk14'),
-               'com.sun.mail:jakarta.mail:2.0.0-RC6',
+               'com.sun.mail:jakarta.mail:2.0.2',
                'com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.+',
                'com.ibm.ws.com.icegreen:greenmail:2.0.0.fd826131f671b0d3230b0d0e1638d8c4'
 }

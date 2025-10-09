@@ -20,7 +20,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
 Bundle-SymbolicName: io.openliberty.org.eclipse.angus.mail
 
-Implementation-Version: 2.0.1
+Implementation-Version: 2.0.5
 Export-Version: 2.1.0
 Import-Version: 2.1.0
 
