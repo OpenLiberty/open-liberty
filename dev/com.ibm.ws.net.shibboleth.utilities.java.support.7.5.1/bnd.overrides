@@ -47,5 +47,5 @@ Import-Package: \
  *
  
  Include-Resource: \
-  @${repo;net.shibboleth.utilities:java-support;8.4.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+  @${repo;io.openliberty.net.shibboleth.utilities:java-support;8.4.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 

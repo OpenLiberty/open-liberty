@@ -25,5 +25,5 @@ Export-Package: \
 
   
 Include-Resource: \
- @${repo;org.opensaml:opensaml-messaging-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+ @${repo;io.openliberty.org.opensaml:opensaml-messaging-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 

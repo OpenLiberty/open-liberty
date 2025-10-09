@@ -180,20 +180,20 @@ DynamicImport-Package: \
 
 
 Include-Resource: \
- @${repo;org.opensaml:opensaml-core;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
- @${repo;org.opensaml:opensaml-xmlsec-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xmlsec-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-security-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-saml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-profile-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-soap-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-soap-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-saml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-security-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xacml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xacml-saml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xacml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
- @${repo;org.opensaml:opensaml-xacml-saml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-core;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-xmlsec-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-xmlsec-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-security-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-saml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-profile-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-soap-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-soap-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-saml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-security-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-xacml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-xacml-saml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-xacml-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
+ @${repo;io.openliberty.org.opensaml:opensaml-xacml-saml-impl;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
  @${repo;io.dropwizard.metrics:metrics-core;4.2.25}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/services/*, \
  org/opensaml=${bin}/org/opensaml, \
  META-INF=resources/META-INF

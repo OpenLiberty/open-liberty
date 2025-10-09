@@ -40,4 +40,4 @@ Export-Package: \
   org.opensaml.messaging.pipeline.*;version="3.4.5"
   
 Include-Resource: \
- @${repo;org.opensaml:opensaml-messaging-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+ @${repo;io.openliberty.org.opensaml:opensaml-messaging-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*

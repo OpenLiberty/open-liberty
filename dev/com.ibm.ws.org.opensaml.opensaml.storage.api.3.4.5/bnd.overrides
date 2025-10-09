@@ -26,5 +26,5 @@ Import-Package: \
  *
  
 Include-Resource: \
- @${repo;org.opensaml:opensaml-storage-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+ @${repo;io.openliberty.org.opensaml:opensaml-storage-api;4.3.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 
