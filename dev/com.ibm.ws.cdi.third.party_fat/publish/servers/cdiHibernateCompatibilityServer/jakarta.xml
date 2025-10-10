@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server description="Liberty server for testing Hibernate 6.6.23 CDI compatibility with Jakarta EE">
+
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+      
+        <feature>componenttest-2.0</feature>
+        <feature>servlet-5.0</feature>
+        <feature>enterpriseBeansLite-4.0</feature>
+        <feature>persistenceContainer-3.0</feature>
+        <feature>localconnector-1.0</feature>
+        <feature>cdi-3.0</feature>
+        <feature>xmlBinding-3.0</feature>
+    </featureManager>
+
+    <jpa defaultPersistenceProvider="org.hibernate.jpa.HibernatePersistenceProvider" />
+
+    <library id="derbyJDBCLib">
+        <fileset dir="${shared.resource.dir}/derby" includes="derby.jar" />
+    </library>
+
+    <library id="HibernateLib">
+        <fileset dir="${shared.resource.dir}/hibernatejakarta" includes="*.jar" />
+    </library>
+
+    <application location="hibernateCompatibilityTest.war">
+        <classloader commonLibraryRef="HibernateLib" />
+    </application>
+
+    <dataSource jndiName="jdbc/jpaDataSource" id="jpaDataSource">
+        <jdbcDriver libraryRef="derbyJDBCLib" />
+        <properties.derby.embedded databaseName="memory:TestDB" createDatabase="create" />
+    </dataSource>
+
+    <SSLDefault />
+    <javaPermission codebase="${server.config.dir}/apps/hibernateCompatibilityTest.war" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/jboss-logging.jar" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/hibernate-core.jar" className="java.security.AllPermission" />
+</server>
