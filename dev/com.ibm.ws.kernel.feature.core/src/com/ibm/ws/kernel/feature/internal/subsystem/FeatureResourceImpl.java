@@ -12,15 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal.subsystem;
 
-import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.APPLICATION;
-import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.APPLICATION_EARLY;
-import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.APPLICATION_LATE;
 import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.CONTAINER;
-import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.CONTAINER_EARLY;
-import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.CONTAINER_LATE;
-import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.SERVICE;
-import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.SERVICE_EARLY;
-import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.SERVICE_LATE;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,11 +28,12 @@ import org.osgi.framework.VersionRange;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.kernel.feature.internal.ProvisionerConstants;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.provisioning.ActivationType;
 import com.ibm.ws.kernel.feature.provisioning.FeatureResource;
 import com.ibm.ws.kernel.feature.provisioning.SubsystemContentType;
 import com.ibm.ws.kernel.provisioning.VersionUtility;
+import com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase;
 
 public class FeatureResourceImpl implements FeatureResource {
     private static final TraceComponent tc = Tr.register(FeatureResourceImpl.class);
@@ -226,31 +219,14 @@ public class FeatureResourceImpl implements FeatureResource {
         return result;
     }
 
+    @FFDCIgnore(IllegalArgumentException.class)
     private int setStartLevel(String phase, int original) {
-
         if (phase == null) {
             return original;
         }
-
-        if (ProvisionerConstants.PHASE_APPLICATION.equals(phase)) {
-            return APPLICATION.level();
-        } else if (ProvisionerConstants.PHASE_APPLICATION_LATE.equals(phase)) {
-            return APPLICATION_LATE.level();
-        } else if (ProvisionerConstants.PHASE_APPLICATION_EARLY.equals(phase)) {
-            return APPLICATION_EARLY.level();
-        } else if (ProvisionerConstants.PHASE_SERVICE.equals(phase)) {
-            return SERVICE.level();
-        } else if (ProvisionerConstants.PHASE_SERVICE_LATE.equals(phase)) {
-            return SERVICE_LATE.level();
-        } else if (ProvisionerConstants.PHASE_SERVICE_EARLY.equals(phase)) {
-            return SERVICE_EARLY.level();
-        } else if (ProvisionerConstants.PHASE_CONTAINER.equals(phase)) {
-            return CONTAINER.level();
-        } else if (ProvisionerConstants.PHASE_CONTAINER_LATE.equals(phase)) {
-            return CONTAINER_LATE.level();
-        } else if (ProvisionerConstants.PHASE_CONTAINER_EARLY.equals(phase)) {
-            return CONTAINER_EARLY.level();
-        } else {
+        try {
+            return StartPhase.valueOf(phase).level();
+        } catch (IllegalArgumentException e) {
             Tr.warning(tc, "INVALID_START_PHASE_WARNING", new Object[] { phase, this._symbolicName, this._featureName });
             return original;
         }

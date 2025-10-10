@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,11 +46,19 @@ import componenttest.app.FATServlet;
 public class CxfClientPropsTestServlet extends FATServlet {
    
     private final static Logger _log = Logger.getLogger(CxfClientPropsTestServlet.class.getName());
-    private static final long defaultMargin = 30000;
+    private static final long defaultMargin = 14000;
     private final static String proxyPort = "8888";
     private final static String proxyHost = "127.0.0.1";
     private final static String myHost = "1.1.1.1";
     private static final long slowHardwareMargin = 61000;    
+    
+    private static final boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
+            return true;
+        }
+        return false;
+    }
  
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
     private static final boolean isAIX = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("aix");
@@ -99,8 +107,13 @@ public class CxfClientPropsTestServlet extends FATServlet {
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
                                      .build();
         
-        // https://stackoverflow.com/a/904609/6575578
-        target = "http://10.255.255.1/blah";
+        if (isZOS()) {
+            // https://stackoverflow.com/a/904609/6575578
+               target = "http://example.com:81";
+           } else {
+             //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
+               target = "http://localhost:23/blah";
+           }
         
         long startTime = System.currentTimeMillis();
         try {
@@ -153,19 +166,23 @@ public class CxfClientPropsTestServlet extends FATServlet {
         String target = null;
         long IBM_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
-        long CXF_TIMEOUT = 35000;
+        long CXF_TIMEOUT = 20000;
         if (isAIX || isWindows) {
             MARGIN = slowHardwareMargin;
-            CXF_TIMEOUT = 66,000
-        }
+        }    
         
         Client client = ClientBuilder.newBuilder()
                                      .property("com.ibm.ws.jaxrs.client.connection.timeout", IBM_TIMEOUT)
                                      .property("client.ConnectionTimeout", CXF_TIMEOUT)
                                      .build();
         
-        // https://stackoverflow.com/a/904609/6575578
-        target = "http://10.255.255.1/blah";
+        if (isZOS()) {
+         // https://stackoverflow.com/a/904609/6575578
+            target = "http://example.com:81";
+        } else {
+          //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
+            target = "http://localhost:23/blah";
+        }
         
         long startTime = System.currentTimeMillis();
         try {
@@ -187,10 +204,9 @@ public class CxfClientPropsTestServlet extends FATServlet {
         final String m = "testIBMReadTimeoutOverridesCXFReadTimeout";
         long IBM_TIMEOUT = 5000;
         long MARGIN = defaultMargin;
-        long CXF_TIMEOUT = 35000;
+        long CXF_TIMEOUT = 20000;
         if (isAIX || isWindows) {
             MARGIN = slowHardwareMargin;
-            CXF_TIMEOUT = 66000;
         }    
         
         Client client = ClientBuilder.newBuilder()

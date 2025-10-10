@@ -20,18 +20,17 @@ public abstract class SensitiveIntrospector implements Introspector {
 
     final Pattern obscuredValuePattern = Pattern.compile("(\\{aes\\}|\\{xor\\}).*");
     final String OBSCURED_VALUE = "*****";
-    final String ENCRYPTION_KEY = "wlp.password.encryption.key";
-    
+    final Pattern encryptionKeyPattern = Pattern.compile("wlp.password.encryption.key|wlp.aes.encryption.key");
+
     @Sensitive
     protected String getObscuredValue(String name, Object o) {
-    	if ( ENCRYPTION_KEY.equals(name))
-    		return OBSCURED_VALUE;
-    	
+        if (encryptionKeyPattern.matcher(name).matches())
+            return OBSCURED_VALUE;
+
         String value = String.valueOf(o);
         if (obscuredValuePattern.matcher(value).matches())
             return OBSCURED_VALUE;
         return value;
     }
-    
 
 }

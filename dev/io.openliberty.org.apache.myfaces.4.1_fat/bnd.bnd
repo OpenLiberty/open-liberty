@@ -17,7 +17,8 @@ src: \
     test-applications/SetResponseContentLengthLong_Spec1829.war/src,\
     test-applications/uuidConverter_Spec1819.war/src,\
     test-applications/ViewScopeEvents_Spec1739.war/src,\
-    test-applications/rowStatePreserved_Spec1263.war/src
+    test-applications/rowStatePreserved_Spec1263.war/src,\
+    test-applications/ExpressionLanguageResolvers.war/src
 
 fat.test.container.images:\
     seleniarm/standalone-chromium:4.8.3,\

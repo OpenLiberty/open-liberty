@@ -26,7 +26,7 @@ import jakarta.persistence.EntityManager;
 /**
  * Repository for an entity with embeddables that are Java records.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Segments {
 
     @Save

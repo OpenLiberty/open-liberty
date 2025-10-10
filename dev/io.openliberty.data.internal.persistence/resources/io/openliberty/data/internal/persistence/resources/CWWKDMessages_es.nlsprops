@@ -146,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: El m\u00e9todo {0} de la interfaz {1} de
 CWWKD1029.first.neg.or.zero.explanation=El n\u00famero m\u00e1ximo de resultados de la consulta debe ser un n\u00famero positivo.
 CWWKD1029.first.neg.or.zero.useraction=Actualizar el m\u00e9todo de repositorio para especificar un n\u00famero m\u00e1ximo positivo de resultados.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Falta el nombre de la entidad en la consulta {0} especificada para el m\u00e9todo {1} del repositorio {2}. En Jakarta Data Query Language, las consultas {3} deben formarse como: {4}.
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Falta el nombre de la entidad en la consulta {0} especificada para el m\u00e9todo {1} del repositorio {2}. Para consultas en {3}, utilice el formulario: {4}.
 CWWKD1030.ql.lacks.entity.explanation=La consulta contiene una cl\u00e1usula que requiere el nombre de la entidad.
 CWWKD1030.ql.lacks.entity.useraction=Actualizar el m\u00e9todo de consulta del repositorio para incluir el nombre de la entidad.
 
@@ -162,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: El m\u00e9todo {0} de la interfaz de
 CWWKD1033.ql.orderby.disallowed.explanation=La cl\u00e1usula ORDER BY es incompatible con la paginaci\u00f3n basada en cursor.
 CWWKD1033.ql.orderby.disallowed.useraction=Sustituya la cl\u00e1usula ORDER BY por anotaciones que especifiquen los criterios de ordenaci\u00f3n.
 
-CWWKD1034.ql.where.required=CWWKD1034E: La consulta que especifica el m\u00e9todo {0} de la interfaz de repositorio {1} debe terminar en una cl\u00e1usula WHERE porque el m\u00e9todo devuelve {2}. La cl\u00e1usula WHERE termina en la posici\u00f3n {3}, pero la longitud de la consulta es {4}. La consulta es: {5}.
-CWWKD1034.ql.where.required.explanation=Se requiere una cl\u00e1usula WHERE cuando se utiliza la paginaci\u00f3n basada en cursor.
-CWWKD1034.ql.where.required.useraction=A\u00f1ade una cl\u00e1usula WHERE a la consulta.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: La consulta especificada por el m\u00e9todo {0} de la interfaz del repositorio {1} debe terminar en una cl\u00e1usula WHERE porque el m\u00e9todo devuelve {2}. La cl\u00e1usula WHERE termina en la posici\u00f3n {3}, pero la longitud de la consulta es {4}. La consulta es: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=Se requiere una cl\u00e1usula WHERE cuando se utiliza la paginaci\u00f3n basada en cursor.
+CWWKD1034.ql.req.end.in.where.useraction=A\u00f1ade una cl\u00e1usula WHERE a la consulta.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: Una petici\u00f3n de p\u00e1gina con el modo de paginaci\u00f3n {0} no debe suministrarse al m\u00e9todo {1} de la interfaz de repositorio {2} porque el m\u00e9todo devuelve {3} en lugar de {4}.
 CWWKD1035.incompat.page.mode.explanation=El modo de paginaci\u00f3n solicitado no es compatible con el tipo de retorno del m\u00e9todo del repositorio.

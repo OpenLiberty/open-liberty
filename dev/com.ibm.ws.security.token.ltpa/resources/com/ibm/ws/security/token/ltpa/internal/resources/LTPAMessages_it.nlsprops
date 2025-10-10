@@ -87,3 +87,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=I
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Le chiavi di convalida {0} devono essere rigenerate utilizzando algoritmi crittografici certificati FIPS 140-3.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Le chiavi di convalida LTPA create senza FIPS 140-3 abilitato falliscono quando FIPS 140-3 \u00e8 abilitato.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Usare il comando securityUtility createLTPAKeys per creare le chiavi di convalida approvate da FIPS quando \u00e8 configurato FIPS 140-3.
+
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Le chiavi di convalida {0} devono essere rigenerate utilizzando algoritmi crittografici che non sono certificati FIPS 140-3.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Le chiavi di convalida LTPA create con FIPS 140-3 abilitato falliscono quando FIPS 140-3 \u00e8 disabilitato.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utilizzare il comando securityUtility createLTPAKeys per creare le chiavi di convalida non approvate da FIPS quando FIPS 140-3 \u00e8 disattivato.

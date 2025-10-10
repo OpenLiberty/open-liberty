@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,10 +33,13 @@ public class FilteredDirEntryConfig extends DirEntryConfig {
 
     final String FILTER_REGEX = "\"(\\{aes\\}|\\{xor\\}).*\"";
     final String WLP_PASSWORD_ENCYRPTION_STRING = "wlp.password.encryption.key";
+    final String WLP_AES_ENCRYPTION_STRING = "wlp.aes.encryption.key";
     final String WLP_PASSWORD_ENCRYPTION_REGEX = WLP_PASSWORD_ENCYRPTION_STRING + "=.*$";
+    final String WLP_AES_ENCRYPTION_REGEX = WLP_AES_ENCRYPTION_STRING + "=.*$";
     final String OBSCURED_VALUE = "\"*****\"";
     final Pattern obscuredValuePattern = Pattern.compile(FILTER_REGEX);
     final Pattern wlpPasswordEncryptionPattern = Pattern.compile(WLP_PASSWORD_ENCRYPTION_REGEX, Pattern.MULTILINE);
+    final Pattern wlpAesEncryptionPattern = Pattern.compile(WLP_AES_ENCRYPTION_REGEX, Pattern.MULTILINE);
 
     public FilteredDirEntryConfig(File source, boolean includeByDefault, PatternStrategy strategy) throws IOException {
         super("", source, includeByDefault, strategy);
@@ -58,6 +61,7 @@ public class FilteredDirEntryConfig extends DirEntryConfig {
             String originalFile = new String(Files.readAllBytes(originalPath));
             String newFile = obscuredValuePattern.matcher(originalFile).replaceAll(OBSCURED_VALUE);
             newFile = wlpPasswordEncryptionPattern.matcher(newFile).replaceAll(WLP_PASSWORD_ENCYRPTION_STRING + "=*****");
+            newFile = wlpAesEncryptionPattern.matcher(newFile).replaceAll(WLP_AES_ENCRYPTION_STRING + "=*****");
             Files.write(tempFile, newFile.getBytes());
             archive.addFileEntry(file, tempFile.toFile());
         }

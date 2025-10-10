@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -52,21 +52,16 @@ days=d\u00edas
 
 sslCert.abort=Terminando anormalmente la creaci\u00f3n del certificado:
 sslCert.createFailed=No se puede crear el certificado SSL por omisi\u00f3n:\n {0}
-sslCert.errorEncodePassword=Error al codificar la contrase\u00f1a (no se ha creado el certificado):\n\
-{0}
+sslCert.errorEncodePassword=Error al codificar la contrase\u00f1a (no se ha creado el certificado):\n{0}
 sslCert.createKeyStore=Creando almac\u00e9n de claves {0}\n
 sslCert.oneType=Los argumentos {0} y {1} no pueden especificarse al mismo tiempo.
 sslCert.clientNotFound=El cliente especificado {0} no se ha podido encontrar en la ubicaci\u00f3n {1}
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=Se ha creado el certificado SSL para el servidor {0}. El certificado se ha creado con {1} como SubjectDN.\n\
-\n\
-A\u00f1ada las l\u00edneas siguientes a server.xml para habilitar SSL:
+sslCert.serverXML=Se ha creado el certificado SSL para el servidor {0}. El certificado se ha creado con {1} como SubjectDN.\n\nA\u00f1ada las l\u00edneas siguientes a server.xml para habilitar SSL:
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=Se ha creado el certificado SSL para el cliente {0}. El certificado se ha creado con {1} como SubjectDN.\n\
-\n\
-A\u00f1ada las l\u00edneas siguientes a client.xml para habilitar SSL:
+sslCert.clientXML=Se ha creado el certificado SSL para el cliente {0}. El certificado se ha creado con {1} como SubjectDN.\n\nA\u00f1ada las l\u00edneas siguientes a client.xml para habilitar SSL:
 
 fileUtility.failedDirCreate=No se ha podido crear el directorio {0}
 file.exists=El archivo de almac\u00e9n de claves {0} ya existe.  No se ha podido crear un archivo de almac\u00e9n de claves en dicha ubicaci\u00f3n.
@@ -76,14 +71,9 @@ file.requiredDirNotCreated=No se ha podido crear la estructura de directorios ne
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # The following string will be appended after encode.option-desc.encoding
 # message in UtilityOptions.nlsprops file.
-encode.option-custom.encryption=\n\
-\tEl cifrado de contrase\u00f1a personalizado tambi\u00e9n est\u00e1 disponible.
-encode.option-desc.custom.feature=\n\
-\tEl nombre de caracter\u00edstica de {0} es el siguiente:\n\
-\t
-encode.option-desc.custom.description=\n\
-\tLa descripci\u00f3n de {0} es la siguiente:\n\
-\t
+encode.option-custom.encryption=\n\tEl cifrado de contrase\u00f1a personalizado tambi\u00e9n est\u00e1 disponible.
+encode.option-desc.custom.feature=\n\tEl nombre de caracter\u00edstica de {0} es el siguiente:\n\t
+encode.option-desc.custom.description=\n\tLa descripci\u00f3n de {0} es la siguiente:\n\t
 
 # The following message is shown when there is no custom password
 # encryption is enabled.
@@ -105,6 +95,37 @@ saf.arg.not.aes=Los argumentos --keyring, --keyringType y --keyLabel pueden util
 # Note to translator: 'LTPA' should not be translated
 createLTPAKeys.abort=Terminando anormalmente la creaci\u00f3n del archivo de claves LTPA:
 createLTPAKeys.fileExists=El archivo {0} ya existe.  No se puede crear un archivo de claves LTPA en dicha ubicaci\u00f3n.
-createLTPAKeys.createdFile=Se ha creado el archivo de claves LTPA: {0}\n\
-Incluya la siguiente configuraci\u00f3n en server.xml\n\
-{1}\n
+createLTPAKeys.createdFile=Se ha creado el archivo de claves LTPA: {0}\nIncluya la siguiente configuraci\u00f3n en server.xml\n{1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=La instalaci\u00f3n de Java no es de IBM Semeru Runtimes ni de IBM SDK, o si lo es, no es compatible con FIPS 140-3.\nInstale Java desde IBM Semeru Runtimes o IBM SDK utilizando una versi\u00f3n y un sistema operativo compatibles con FIPS 140-3.\nSi utiliza IBM Semeru Runtimes, utilice la versi\u00f3n 11.0.29.0, 17.0.17.0, 21.0.9.0, o superior.\nSi utiliza IBM SDK, utilice la versi\u00f3n 8.0.8.30 o superior.
+
+configureFIPS.zosNotAvailable=El comando securityUtility configureFIPS no es compatible con z/OS.
+
+configureFIPS.configureSemeru=Configuraci\u00f3n de FIPS 140-3 para los tiempos de ejecuci\u00f3n de IBM Semeru.
+configureFIPS.configureIbmSdk=Configuraci\u00f3n de FIPS 140-3 para IBM SDK.
+
+configureFIPS.abort=Abortar la configuraci\u00f3n de FIPS 140-3:
+
+configureFIPS.abortSemeruFile=Abortar IBM Semeru Runtimes FIPS 140-3 custom profile file creation:
+
+configureFIPS.abortEnvFile=Abortar la modificaci\u00f3n del archivo de configuraci\u00f3n:
+
+configureFIPS.fileExists=Utilizando el archivo de perfil personalizado existente {0} IBM Semeru Runtimes.
+
+configureFIPS.createdSemeruFile=Creado el archivo de perfil personalizado {0} IBM Semeru Runtimes.
+
+configureFIPS.fileDoesNotExist=El archivo {0} no existe.
+
+configureFIPS.fileNameNotAllowed=El nombre base del archivo {0} no puede ser FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=Creado el archivo {0} para habilitar FIPS 140-3.
+configureFIPS.updatedEnvFileToEnableFips=Actualizado el archivo {0} para habilitar FIPS 140-3.
+configureFIPS.fipsAlreadyEnabled=FIPS 140-3 ya est\u00e1 activado en el archivo {0}.
+
+configureFIPS.updatedEnvFileToDisableFips=Actualizado el archivo {0} para desactivar FIPS 140-3.
+configureFIPS.fipsNotEnabled=FIPS 140-3 ya no est\u00e1 activado en el archivo {0}.
+
+configureFIPS.restartServer=Reinicie el servidor {0} para aplicar el cambio.
+configureFIPS.restartClient=Reinicie el cliente {0} para aplicar el cambio.
+configureFIPS.restart=Reinicie sus servidores y clientes para aplicar el cambio.

@@ -33,7 +33,7 @@ import javax.naming.InitialContext;
 /**
  * Repository for the County entity.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Counties {
 
     boolean deleteByNameAndLastUpdated(String name, LocalDateTime version);

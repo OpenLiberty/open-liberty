@@ -24,6 +24,9 @@ public abstract class AbstractTestStartPhaseCondition {
 
     protected AbstractTestStartPhaseCondition(ServiceReference<Condition> startPhaseCondition, String expectedActivateStartPhase, String expectedDeactivateStartPhase,
                                               Logger logger) {
+        // The start-phase that causes activation is always different than the one that causes it to deactivate.
+        // This is because the start-phase that causes activation is one that matches the filter.
+        // The one that causes it to deactivate will not match the filter.  These two start-phases cannot be the same.
         this.startPhaseCondition = startPhaseCondition;
         this.expectedActivateStartPhase = expectedActivateStartPhase;
         this.expectedDeactivateStartPhase = expectedDeactivateStartPhase;

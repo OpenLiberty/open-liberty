@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -154,6 +154,28 @@ public class TCKResultsInfo {
             return this.tckJarInfo.version;
         } else {
             return "UNKNOWN";
+        }
+    }
+
+    /**
+     * @return the page version
+     */
+    public String getPageVersion() {
+        if (getPlatformVersion().equals("")) {
+            return getSpecVersion(); //Standalone features use the spec number for page-version
+        } else {
+            return getPlatformVersion();
+        }
+    }
+
+    /**
+     * @return the page spec
+     */
+    public String getPageSpec() {
+        if (getPlatformVersion().equals("")) {
+            return this.type.toString() + this.specName.toUpperCase(); //Standalone features use the platform name and spec name for the page-spec, such as MICROPROFILE GRAPH QL
+        } else {
+            return this.type.toString();
         }
     }
 

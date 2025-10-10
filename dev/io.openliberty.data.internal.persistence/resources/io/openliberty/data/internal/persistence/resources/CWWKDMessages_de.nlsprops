@@ -146,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: Die Methode {0} der {1} Repository-Schni
 CWWKD1029.first.neg.or.zero.explanation=Die maximale Anzahl der Abfrageergebnisse muss eine positive Zahl sein.
 CWWKD1029.first.neg.or.zero.useraction=Aktualisieren Sie die Repository-Methode, um eine positive maximale Anzahl von Ergebnissen anzugeben.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Der Entit\u00e4tsname fehlt in der {0}-Abfrage, die f\u00fcr die {1}-Methode des {2}-Repository angegeben ist. In der Jakarta Data Query Language sollten {3}-Abfragen wie folgt gebildet werden: {4}.
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Der Entit\u00e4tsname fehlt in der Abfrage {0}, die f\u00fcr die Methode {1} des Repository {2} angegeben ist. F\u00fcr {3} Abfragen verwenden Sie die Form: {4}.
 CWWKD1030.ql.lacks.entity.explanation=Die Abfrage enth\u00e4lt eine Klausel, die den Namen der Entit\u00e4t erfordert.
 CWWKD1030.ql.lacks.entity.useraction=Aktualisieren Sie die Abfrage f\u00fcr die Repository-Methode, um den Entit\u00e4tsnamen einzuschlie\u00dfen.
 
@@ -162,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Die Methode {0} der {1} Repository-S
 CWWKD1033.ql.orderby.disallowed.explanation=Die ORDER BY-Klausel ist nicht mit der cursorbasierten Paginierung kompatibel.
 CWWKD1033.ql.orderby.disallowed.useraction=Ersetzen Sie die ORDER BY-Klausel durch Anmerkungen, die die Sortierkriterien angeben.
 
-CWWKD1034.ql.where.required=CWWKD1034E: Die Abfrage, die von der Methode {0} der Repository-Schnittstelle {1} angegeben wird, muss mit einer WHERE-Klausel enden, da die Methode {2} zur\u00fcckgibt. Dort endet die WHERE-Klausel an der Position {3}, aber die L\u00e4nge der Abfrage ist {4}. Die Abfrage lautet: {5}.
-CWWKD1034.ql.where.required.explanation=Eine WHERE-Klausel ist erforderlich, wenn eine cursorbasierte Paginierung verwendet wird.
-CWWKD1034.ql.where.required.useraction=F\u00fcgen Sie der Abfrage eine WHERE-Klausel hinzu.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: Die Abfrage, die mit der Methode {0} der Repository-Schnittstelle {1} angegeben wird, muss mit einer WHERE-Klausel enden, da die Methode {2} zur\u00fcckgibt. Dort endet die WHERE-Klausel an der Position {3}, aber die L\u00e4nge der Abfrage ist {4}. Die Abfrage lautet: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=Eine WHERE-Klausel ist erforderlich, wenn eine cursorbasierte Paginierung verwendet wird.
+CWWKD1034.ql.req.end.in.where.useraction=F\u00fcgen Sie der Abfrage eine WHERE-Klausel hinzu.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: Eine Seitenanforderung mit dem Paginierungsmodus {0} darf nicht an die Methode {1} der Repository-Schnittstelle {2} \u00fcbergeben werden, da die Methode {3} statt {4} zur\u00fcckgibt.
 CWWKD1035.incompat.page.mode.explanation=Der angeforderte Paginierungsmodus ist nicht mit dem R\u00fcckgabetyp der Repository-Methode kompatibel.

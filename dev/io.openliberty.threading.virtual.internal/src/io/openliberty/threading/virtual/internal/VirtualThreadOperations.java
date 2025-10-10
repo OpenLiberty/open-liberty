@@ -46,6 +46,9 @@ public class VirtualThreadOperations implements VirtualThreadOps {
 
     @Activate
     public VirtualThreadOperations(@Reference(target = SERVICE_LATE_FILTER) Condition servicesLate) {
+        // NOTE normally a condition for activate would be expressed with a @SatisfyingConditionTarget annotation
+        // on the component class.  This component already has a @SatisfyingConditionTarget for the Java version
+        // and there is no good way to combine more than one distinct condition into a single filter.
     }
 
     @Reference(

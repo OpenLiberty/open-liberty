@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 
 /**
  * This is a test class that runs the whole Fault Tolerance TCK. The TCK results
@@ -129,9 +130,10 @@ public class FaultToleranceTck40Launcher {
             additionalProps.put("timeoutMultiplier", "1.0");
         }
 
-        TCKRunner.build(server, Type.MICROPROFILE, "Fault Tolerance")
+        TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.FAULT_TOLERANCE)
                         .withSuiteFileName(suiteFileName)
                         .withAdditionalMvnProps(additionalProps)
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_61) //Latest MicroProfile version
                         .runTCK();
     }
 

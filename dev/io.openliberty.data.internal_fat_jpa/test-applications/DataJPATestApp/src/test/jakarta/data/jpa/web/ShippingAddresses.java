@@ -23,7 +23,7 @@ import jakarta.data.repository.Save;
 /**
  * Repository for testing Inheritance and DiscriminatorColumn/Value.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface ShippingAddresses {
     long countByStreetAddressRecipientInfoEmpty();
 

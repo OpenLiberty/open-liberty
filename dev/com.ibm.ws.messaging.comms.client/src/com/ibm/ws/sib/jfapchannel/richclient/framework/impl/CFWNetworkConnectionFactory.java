@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,38 +71,15 @@ public class CFWNetworkConnectionFactory implements NetworkConnectionFactory
     }
 
     /**
-     * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionFactory#createConnection(java.lang.Object)
+     * NO OP -- Traditional WebSphere behaivor not ported to Liberty. See OLGH22692
      */
     @Override
     public NetworkConnection createConnection(Object endpoint) throws FrameworkException
     {
-        if (tc.isEntryEnabled())
-            SibTr.entry(this, tc, "createConnection", endpoint);
+        if (tc.isDebugEnabled())
+            SibTr.warning(tc, "CFWNetworkConnectionFactory#createConnection called - use createConnection() instead");
 
-        NetworkConnection conn = null;
-        try
-        {
-            // Create the connection from the VC Factory. As we are connecting using an EP, we must
-            // cast to the right VCF
-            // Romil liberty changes 
-            VirtualConnectionFactory wsVcf = vcFactory;
-            OutboundVirtualConnection vc = (OutboundVirtualConnection) wsVcf.createConnection();
-            conn = new CFWNetworkConnection(vc);
-        } catch (ChannelFrameworkException e)
-        {
-            FFDCFilter.processException(e, CLASS_NAME + ".createConnection",
-                                        JFapChannelConstants.CFWNETWORKCONNECTIONFACT_CREATECONN_01,
-                                        new Object[] { this, endpoint });
-
-            if (tc.isDebugEnabled())
-                SibTr.debug(this, tc, "Unable to create connection", e);
-
-            throw new FrameworkException(e);
-        }
-
-        if (tc.isEntryEnabled())
-            SibTr.exit(this, tc, "createConnection", conn);
-        return conn;
+        return null;
     }
 
     /**

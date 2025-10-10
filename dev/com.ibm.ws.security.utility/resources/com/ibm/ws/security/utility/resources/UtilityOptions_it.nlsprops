@@ -152,3 +152,32 @@ tlsProfiler.option-key.file=\ \ \ \ --file
 tlsProfiler.option-desc.file=\tFacoltativo. Il risultato verr\u00e0 scritto nel file specificato \n\tinvece che nella schermata della console.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tIncludere informazioni aggiuntive sui protocolli non sicuri.
+
+# -------- CONFIGURE FIPS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\# 
+configureFIPS.desc=\tConfigurare FIPS 140-3 in base all''installazione di Java configurata dalle variabili d''ambiente JAVA_HOME, JRE_HOME o WLP_DEFAULT_JAVA_HOME, nell''ordine. Se non \u00e8 stata configurata alcuna configurazione, FIPS 140-3 viene configurato in base alla JVM utilizzata per eseguire il comando securityUtility. Il comando imposta FIPS 140-3 per IBM Semeru Runtimes o IBM SDK, oppure restituisce un errore se non \u00e8 possibile determinare nessuno dei due.\n\n\tPer IBM Semeru Runtime: Crea un file contenente il profilo personalizzato FIPS 140-3 per l''uso da parte dell''applicazione dell''applicazione, che estende il profilo Liberty FIPS140-3-Liberty, che estende il profilo IBM Semeru Runtimes FIPS140-3-Strongly-Enforced profilo. Inoltre, crea o aggiorna i file default.env, server.env, o client.env per abilitare FIPS 140-3 impostando la variabile d''ambiente ENABLE_FIPS140_3 al percorso del file del profilo personalizzato.\n\n\tPer IBM SDK: Crea o aggiorna il file def\
+    ault.env, server.env, o client.env per per abilitare FIPS 140-3 impostando la variabile d''ambiente ENABLE_FIPS140_3 a true.
+
+configureFIPS.usage.options=\t{0} configureFIPS [opzioni]
+
+configureFIPS.option-key.1.server=\ \ \ \ --server =nome
+
+configureFIPS.option-desc.1.server=\tServer per cui configurare FIPS 140-3. Se questo valore non viene e non viene specificato alcun client, viene configurato FIPS 140-3 per tutti i client, i server e i comandi per tutti i client, i server e i comandi.
+
+configureFIPS.option-key.2.client=\ \ \ \ --client =nome
+
+configureFIPS.option-desc.2.client=\tClient per il quale configurare FIPS 140-3. Se questo valore non viene e non viene specificato alcun server, viene configurato FIPS 140-3 per tutti i client, i server e i comandi per tutti i client, i server e i comandi.
+
+configureFIPS.option-key.3.customProfileFile=\ \ \ \ --customProfileFile=name
+
+configureFIPS.option-desc.3.customProfileFile=\tIl file in cui scrivere il profilo personalizzato FIPS 140-3 di IBM Semeru Runtimes.\n\tSe questo valore non viene fornito, il file viene creato con il nome di FIPS140-3-Liberty-Application.properties nella directory etc dell''installazione di WLP dell''installazione di WLP. Se \u00e8 stata utilizzata l''opzione server o client, il file viene creato nella directory security/resources per il server o il client specificato server o client specificato.\n\n\tIl nome del file, senza l''estensione, viene utilizzato per creare il nome del profilo personalizzato nome del profilo personalizzato; estende il profilo Liberty FIPS140-3-Liberty.\n\tIl nome del file deve contenere solo caratteri alfanumerici, trattini (-), trattini (-), trattini bassi (_) e punti (.). Il nome base del file non pu\u00f2 essere FIPS140-3-Liberty.\n\n\tCon questa opzione \u00e8 possibile specificare pi\u00f9 file utilizzando i separatori di percorso separatori di percorso\
+    . Per Windows, il separatore di percorso \u00e8 un punto e virgola (;). Per i sistemi basati su Unix, il separatore di percorso \u00e8 un punto e virgola (:). Ogni profilo personalizzato si estende a vicenda nell''ordine in cui viene specificato.
+
+configureFIPS.option-key.4.disable=\ \ \ \ --disable
+
+configureFIPS.option-desc.4.disable=\tDisattivare FIPS 140-3 impostando la variabile d''ambiente ENABLE_FIPS140_3 a false. Questa opzione pu\u00f2 essere utilizzata con le opzioni client e server per specificare il client o il server da disabilitare per specificare il client o il server da disabilitare a FIPS 140-3.\n\tAltrimenti, disattiva FIPS 140-3 per tutti i client, i server e i comandi comandi, ad eccezione dei client e dei server abilitati individualmente abilitati.

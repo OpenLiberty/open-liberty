@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,17 @@ name=n\u00e9v
 days=nap
 
 sslCert.abort=Tan\u00fas\u00edtv\u00e1nyl\u00e9trehoz\u00e1s megszak\u00edt\u00e1sa:
-sslCert.createFailed=Nem lehet l\u00e9trehozni az alap\u00e9rtelmezett SSL tan\u00fas\u00edtv\u00e1nyt:\n\
-{0}
-sslCert.errorEncodePassword=Hiba a jelsz\u00f3 k\u00f3dol\u00e1sakor (a tan\u00fas\u00edtv\u00e1ny nem j\u00f6tt l\u00e9tre):\n\
-{0}
+sslCert.createFailed=Nem lehet l\u00e9trehozni az alap\u00e9rtelmezett SSL tan\u00fas\u00edtv\u00e1nyt:\n{0}
+sslCert.errorEncodePassword=Hiba a jelsz\u00f3 k\u00f3dol\u00e1sakor (a tan\u00fas\u00edtv\u00e1ny nem j\u00f6tt l\u00e9tre):\n{0}
 sslCert.createKeyStore=Kulcst\u00e1rol\u00f3 l\u00e9trehoz\u00e1sa: {0}\n
 sslCert.oneType=A(z) {0} \u00e9s a(z) {1} argumentum nem adhat\u00f3 meg egyszerre.
 sslCert.clientNotFound=A megadott {0} \u00fcgyf\u00e9l nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehozva a k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3hoz: {0}. A tan\u00fas\u00edtv\u00e1ny a(z) {1} SubjectDN \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra.\n\
-\n\
-Adja hozz\u00e1 a k\u00f6vetkez\u0151 sorokat a server.xml f\u00e1jlhoz az SSL enged\u00e9lyez\u00e9s\u00e9hez:
+sslCert.serverXML=SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehozva a k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3hoz: {0}. A tan\u00fas\u00edtv\u00e1ny a(z) {1} SubjectDN \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra.\n\nAdja hozz\u00e1 a k\u00f6vetkez\u0151 sorokat a server.xml f\u00e1jlhoz az SSL enged\u00e9lyez\u00e9s\u00e9hez:
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehozva a k\u00f6vetkez\u0151 \u00fcgyf\u00e9lhez: {0}. A tan\u00fas\u00edtv\u00e1ny a(z) {1} SubjectDN \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra.\n\
-\n\
-Adja hozz\u00e1 a k\u00f6vetkez\u0151 sorokat a client.xml f\u00e1jlhoz az SSL enged\u00e9lyez\u00e9s\u00e9hez:
+sslCert.clientXML=SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehozva a k\u00f6vetkez\u0151 \u00fcgyf\u00e9lhez: {0}. A tan\u00fas\u00edtv\u00e1ny a(z) {1} SubjectDN \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra.\n\nAdja hozz\u00e1 a k\u00f6vetkez\u0151 sorokat a client.xml f\u00e1jlhoz az SSL enged\u00e9lyez\u00e9s\u00e9hez:
 
 fileUtility.failedDirCreate=A(z) {0} k\u00f6nyvt\u00e1r l\u00e9trehoz\u00e1sa sikertelen volt
 file.exists=A(z) {0} kulcst\u00e1rol\u00f3 f\u00e1jl m\u00e1r l\u00e9tezik.  Nem hozhat\u00f3 l\u00e9tre kulcst\u00e1rol\u00f3 f\u00e1jl az adott helyen.
@@ -77,14 +71,9 @@ file.requiredDirNotCreated=Nem lehetett l\u00e9trehozni a sz\u00fcks\u00e9ges k\
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # The following string will be appended after encode.option-desc.encoding
 # message in UtilityOptions.nlsprops file.
-encode.option-custom.encryption=\n\
-\tAz egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s is el\u00e9rhet\u0151.
-encode.option-desc.custom.feature=\n\
-\tA(z) {0} szolg\u00e1ltat\u00e1sneve a k\u00f6vetkez\u0151: \n\
-\t
-encode.option-desc.custom.description=\n\
-\tA(z) {0} le\u00edr\u00e1sa a k\u00f6vetkez\u0151: \n\
-\t
+encode.option-custom.encryption=\n\tAz egy\u00e9ni jelsz\u00f3titkos\u00edt\u00e1s is el\u00e9rhet\u0151.
+encode.option-desc.custom.feature=\n\tA(z) {0} szolg\u00e1ltat\u00e1sneve a k\u00f6vetkez\u0151: \n\t
+encode.option-desc.custom.description=\n\tA(z) {0} le\u00edr\u00e1sa a k\u00f6vetkez\u0151: \n\t
 
 # The following message is shown when there is no custom password
 # encryption is enabled.
@@ -106,5 +95,37 @@ saf.arg.not.aes=A --keyring, --keyringType \u00e9s --keyLabel argumentumok csak 
 # Note to translator: 'LTPA' should not be translated
 createLTPAKeys.abort=LTPA kulcsf\u00e1jl l\u00e9trehoz\u00e1s\u00e1nak megszak\u00edt\u00e1sa:
 createLTPAKeys.fileExists=A(z) {0} f\u00e1jl m\u00e1r l\u00e9tezik.  Nem hozhat\u00f3 l\u00e9tre LTPA kulcsf\u00e1jl az adott helyen.
-createLTPAKeys.createdFile=A l\u00e9trehozott LTPA kulcsf\u00e1jl: {0}\n\
-Vegye fel a  k\u00f6vetkez\u0151 be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlba: \n {1}\n
+createLTPAKeys.createdFile=A l\u00e9trehozott LTPA kulcsf\u00e1jl: {0}\nVegye fel a  k\u00f6vetkez\u0151 be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlba: \n {1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=A Java telep\u00edt\u00e9se vagy nem a IBM Semeru Runtimes vagy a IBM SDK, vagy ha igen, akkor nem t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nTelep\u00edtse a Jav\u00e1t a IBM Semeru Runtimes vagy a IBM SDK oldalr\u00f3l olyan verzi\u00f3val \u00e9s oper\u00e1ci\u00f3s rendszerrel, amely t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nHa a IBM Semeru futtat\u00f3programot haszn\u00e1lja, haszn\u00e1lja a 11.0.29.0, 17.0.17.0, 21.0.9.0 vagy magasabb verzi\u00f3t.\nHa a IBM SDK-t haszn\u00e1lja, haszn\u00e1lja a 8.0.8.30 vagy magasabb verzi\u00f3t.
+
+configureFIPS.zosNotAvailable=A securityUtility configureFIPS parancs nem t\u00e1mogatott a z/OS oldalon.
+
+configureFIPS.configureSemeru=A FIPS 140-3 konfigur\u00e1l\u00e1sa a IBM Semeru fut\u00e1si id\u0151h\u00f6z.
+configureFIPS.configureIbmSdk=FIPS 140-3 konfigur\u00e1l\u00e1sa a IBM SDK sz\u00e1m\u00e1ra.
+
+configureFIPS.abort=A FIPS 140-3 konfigur\u00e1l\u00e1s\u00e1nak megszak\u00edt\u00e1sa:
+
+configureFIPS.abortSemeruFile=A IBM Semeru Runtimes FIPS 140-3 egy\u00e9ni profilf\u00e1jlok l\u00e9trehoz\u00e1s\u00e1nak megszak\u00edt\u00e1sa:
+
+configureFIPS.abortEnvFile=Konfigur\u00e1ci\u00f3s f\u00e1jl m\u00f3dos\u00edt\u00e1s\u00e1nak megszak\u00edt\u00e1sa:
+
+configureFIPS.fileExists=A megl\u00e9v\u0151 {0} IBM Semeru Runtimes egy\u00e9ni profilf\u00e1jl haszn\u00e1lata.
+
+configureFIPS.createdSemeruFile=L\u00e9trehozta a {0} IBM Semeru Runtimes egy\u00e9ni profilf\u00e1jlt.
+
+configureFIPS.fileDoesNotExist=A(z) {0} f\u00e1jl nem l\u00e9tezik.
+
+configureFIPS.fileNameNotAllowed=A {0} f\u00e1jl alapneve nem lehet FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=L\u00e9trehozta a {0} f\u00e1jlt a FIPS 140-3 enged\u00e9lyez\u00e9s\u00e9hez.
+configureFIPS.updatedEnvFileToEnableFips=Friss\u00edtette a {0} f\u00e1jlt a FIPS 140-3 enged\u00e9lyez\u00e9se \u00e9rdek\u00e9ben.
+configureFIPS.fipsAlreadyEnabled=A FIPS 140-3 m\u00e1r enged\u00e9lyezve van a {0} f\u00e1jlban.
+
+configureFIPS.updatedEnvFileToDisableFips=Friss\u00edtette a {0} f\u00e1jlt a FIPS 140-3 letilt\u00e1sa \u00e9rdek\u00e9ben.
+configureFIPS.fipsNotEnabled=A FIPS 140-3 m\u00e1r nincs enged\u00e9lyezve a {0} f\u00e1jlban.
+
+configureFIPS.restartServer=A m\u00f3dos\u00edt\u00e1s alkalmaz\u00e1s\u00e1hoz ind\u00edtsa \u00fajra a {0} kiszolg\u00e1l\u00f3t.
+configureFIPS.restartClient=A m\u00f3dos\u00edt\u00e1s alkalmaz\u00e1s\u00e1hoz ind\u00edtsa \u00fajra a {0} \u00fcgyfelet.
+configureFIPS.restart=A m\u00f3dos\u00edt\u00e1s alkalmaz\u00e1s\u00e1hoz ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3kat \u00e9s az \u00fcgyfeleket.

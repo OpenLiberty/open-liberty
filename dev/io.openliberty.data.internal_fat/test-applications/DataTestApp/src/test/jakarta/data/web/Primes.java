@@ -370,6 +370,13 @@ public interface Primes {
                     """)
     Stack<String> minMaxSumCountAverageStack(long numBelow);
 
+    @Query("SELECT MIN(numberId)" +
+           " WHERE numberId < ?1" +
+           " GROUP BY LENGTH(name)")
+    @OrderBy("LENGTH(name)")
+    Page<Long> minNumberOfEachNameLength(long max,
+                                         PageRequest req);
+
     @Query("SELECT o.name FROM Prime o WHERE o.numberId < ?1")
     Page<String> namesBelow(long numBelow, Sort<Prime> sort, PageRequest pageRequest);
 

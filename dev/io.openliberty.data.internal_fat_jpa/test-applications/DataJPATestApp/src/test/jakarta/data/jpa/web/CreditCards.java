@@ -31,7 +31,7 @@ import test.jakarta.data.jpa.web.CreditCard.Issuer;
 /**
  * Repository for testing ManyToOne relationship between CreditCard and Customer entities.
  */
-@Repository(dataStore = "java:module/jdbc/RepositoryDataStore")
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface CreditCards extends DataRepository<CreditCard, CardId> {
     @OrderBy("debtor.phone")
     @OrderBy("issuer")

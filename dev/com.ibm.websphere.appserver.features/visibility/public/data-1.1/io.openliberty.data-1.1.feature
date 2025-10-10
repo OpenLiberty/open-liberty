@@ -39,8 +39,8 @@ Subsystem-Name: Jakarta Data 1.1
 # TODO add this back in if we GA this feature and include this IBM API
 # Also need to update io.openliberty.data/bnd.bnd file to move the bundle to dev/api/ibm
 # -files=dev/api/ibm/javadoc/io.openliberty.data_1.0-javadoc.zip
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
 WLP-Platform: jakartaee-12.0

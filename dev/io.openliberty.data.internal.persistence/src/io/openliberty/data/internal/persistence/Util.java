@@ -38,11 +38,11 @@ import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.util.UUID;
 
 import io.openliberty.data.internal.AttributeConstraint;
 import io.openliberty.data.internal.persistence.cdi.RepositoryProducer;
@@ -91,6 +91,14 @@ public class Util {
      */
     private static final Set<String> METHOD_NAME_PREFIXES_STATELESS = //
                     Set.of("count", "delete", "exists", "find");
+
+    /**
+     * Minimum number of characters in a valid SELECT COUNT clause.
+     * For example: SELECT COUNT(o)
+     * Any value below this number is considered to instead indicate a
+     * keyword that prevented the computation of a count query, such as GROUP.
+     */
+    static final int MIN_COUNT_QUERY_LENGTH = 15;
 
     /**
      * Commonly used result types that are not entities.

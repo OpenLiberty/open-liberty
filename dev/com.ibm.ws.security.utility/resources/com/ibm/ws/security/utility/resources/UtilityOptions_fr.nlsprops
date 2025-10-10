@@ -152,3 +152,32 @@ tlsProfiler.option-key.file=\ \ \ \ --file
 tlsProfiler.option-desc.file=\tFacultatif. Le r\u00e9sultat sera \u00e9crit dans le fichier sp\u00e9cifi\u00e9 \n\tau lieu d''\u00eatre affich\u00e9 sur l''\u00e9cran de la console.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tIncluez des informations suppl\u00e9mentaires sur les protocoles non s\u00e9curis\u00e9s.
+
+# -------- CONFIGURE FIPS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\# 
+configureFIPS.desc=\tConfigurez FIPS 140-3 en fonction de l''installation Java configur\u00e9e par les variables d''environnement JAVA_HOME, JRE_HOME ou WLP_DEFAULT_JAVA_HOME, dans cet ordre. Si aucune n''a \u00e9t\u00e9 configur\u00e9e, la norme FIPS 140-3 est configur\u00e9e en fonction de la JVM utilis\u00e9e pour ex\u00e9cuter la commande sur la base de la JVM utilis\u00e9e pour ex\u00e9cuter la commande securityUtility. La commande configure FIPS 140-3 pour IBM Semeru Runtimes ou IBM SDK, ou renvoie une erreur si aucun des deux n''a pu \u00eatre d\u00e9termin\u00e9.\n\n\tPour IBM Semeru Runtimes : Cr\u00e9e un fichier contenant le profil personnalis\u00e9 FIPS 140-3 \u00e0 utiliser par votre application votre application, qui \u00e9tend le profil Liberty FIPS140-3-Liberty, qui \u00e9tend le profil IBM Semeru Runtimes FIPS140-3-Strongly-Enforced profil. En outre, cr\u00e9e ou met \u00e0 jour le fichier default.env, server.env, ou client.env pour activer la norme FIPS 140-3 en d\u00e9\
+    finissant la variable d''environnement ENABLE_FIPS140_3 au chemin d''acc\u00e8s du fichier de profil personnalis\u00e9.\n\n\tPour IBM SDK : Cr\u00e9e ou met \u00e0 jour le fichier default.env, server.env ou client.env pour activer la norme FIPS 140-3 en d\u00e9finissant l''environnement fIPS 140-3 en d\u00e9finissant la variable d''environnement ENABLE_FIPS140_3 \u00e0 true.
+
+configureFIPS.usage.options=\t{0} configureFIPS [options]
+
+configureFIPS.option-key.1.server=\ \ \ \ --server =nom
+
+configureFIPS.option-desc.1.server=\tServeur pour lequel configurer FIPS 140-3. Si cette valeur n''est pas et qu''aucun client n''est sp\u00e9cifi\u00e9, la norme FIPS 140-3 est configur\u00e9e pour tous les clients, serveurs et commandes pour tous les clients, serveurs et commandes.
+
+configureFIPS.option-key.2.client=\ \ \ \ --client =nom
+
+configureFIPS.option-desc.2.client=\tClient pour lequel configurer FIPS 140-3. Si cette valeur n''est pas et qu''aucun serveur n''est sp\u00e9cifi\u00e9, la norme FIPS 140-3 est configur\u00e9e pour tous les clients, serveurs et commandes pour tous les clients, serveurs et commandes.
+
+configureFIPS.option-key.3.customProfileFile=\ \ \ \ --customProfileFile=name
+
+configureFIPS.option-desc.3.customProfileFile=\tLe fichier dans lequel \u00e9crire le profil personnalis\u00e9 IBM Semeru Runtimes FIPS 140-3.\n\tSi cette valeur n''est pas fournie, le fichier est cr\u00e9\u00e9 sous le nom de FIPS140-3-Liberty-Application.properties dans le r\u00e9pertoire etc de l''installation du l''installation de WLP. Si l''option serveur ou client a \u00e9t\u00e9 utilis\u00e9e, le fichier est cr\u00e9\u00e9 dans le r\u00e9pertoire security/resources pour le serveur ou le client sp\u00e9cifi\u00e9 sp\u00e9cifi\u00e9.\n\n\tLe nom du fichier, sans l''extension, est utilis\u00e9 pour cr\u00e9er le nom du profil personnalis\u00e9 il \u00e9tend le profil Liberty FIPS140-3-Liberty.\n\tLe nom du fichier ne doit contenir que des caract\u00e8res alphanum\u00e9riques, des traits d''union (-), les traits de soulignement (_) et les points (.). Le nom de base du fichier ne peut pas \u00eatre FIPS140-3-Liberty.\n\n\tPlusieurs fichiers peuvent \u00eatre sp\u00e9cifi\u00e9s avec\
+    \ cette option en utilisant les s\u00e9parateurs de chemin s\u00e9parateurs de chemin. Pour Windows, le s\u00e9parateur de chemin est un point-virgule (;). Pour les syst\u00e8mes Unix, le s\u00e9parateur de chemin est un deux-points ( :). Chaque profil personnalis\u00e9 s''\u00e9tend les uns aux autres dans l''ordre o\u00f9 ils sont sp\u00e9cifi\u00e9s.
+
+configureFIPS.option-key.4.disable=\ \ \ \ --disable
+
+configureFIPS.option-desc.4.disable=\tD\u00e9sactivez FIPS 140-3 en d\u00e9finissant la variable d''environnement ENABLE_FIPS140_3 \u00e0 false. Cette option peut \u00eatre utilis\u00e9e avec les options client et serveur pour sp\u00e9cifier le client ou le serveur qui doit d\u00e9sactiver la norme FIPS 140-3.\n\tSinon, il d\u00e9sactive la norme FIPS 140-3 pour tous les clients, serveurs et commandes, \u00e0 l''exception des clients et des serveurs qui ont \u00e9t\u00e9 individuellement modifi\u00e9s en fonction de la norme FIPS 140-3 commandes, \u00e0 l''exception des clients et des serveurs qui ont \u00e9t\u00e9 activ\u00e9s individuellement individuellement.

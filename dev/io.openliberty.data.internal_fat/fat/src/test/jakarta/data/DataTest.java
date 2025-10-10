@@ -54,7 +54,8 @@ public class DataTest extends FATServletClient {
                                    // work around to prevent bad behavior from EclipseLink (see #30575)
                                    "CWWKD1103E.*romanNumeralSymbolsAsListOfArrayList",
                                    // work around to prevent bad behavior from EclipseLink (see #30575)
-                                   "CWWKD1103E.*romanNumeralSymbolsAsSetOfArrayList"
+                                   "CWWKD1103E.*romanNumeralSymbolsAsSetOfArrayList",
+                                   "CWWKD1119E.*minNumberOfEachNameLength" // cannot infer count for GROUP BY
                     };
 
     @ClassRule

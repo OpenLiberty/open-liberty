@@ -40,7 +40,9 @@ encode.enterText=Enter text:
 encode.reenterText=Re-enter text:
 encode.readError=Error reading in text.
 encode.entriesDidNotMatch=Entries did not match.
-
+encode.mutuallyExclusiveArgError=The input file cannot specify both the {0} and {1} properties.
+encode.aesConfigFileEncryptionAmbiguous=ERROR: The input file cannot be used if it contains both the {0} and {1} variables.
+encode.aesConfigFileMissingEncryptionVariables=Cannot encode password; either the input file does not contain the {0} or {1} variables, or the input file is malformed.
 
 password.enterText=Enter password:
 password.reenterText=Re-enter password:
@@ -143,3 +145,16 @@ configureFIPS.fipsNotEnabled=FIPS 140-3 is already not enabled in the {0} file.
 configureFIPS.restartServer=Restart the {0} server to apply the change.
 configureFIPS.restartClient=Restart the {0} client to apply the change.
 configureFIPS.restart=Restart your servers and clients to apply the change.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=\
+Password encryption XML file successfully created.\n\
+To activate the changes, add a reference to the location of the XML file\n\
+to your server.xml file:\n\
+\t<include location=\"{0}\" />
+generateaeskey.failFileExists=\
+The {0} file exists and will not be overwritten. Either specify a \n\
+different file name, or remove the existing file before you try again.\n\
+generateaeskey.failFileIsDirectory=\
+The {0} value specified for the file name is a directory. Specify the \n\
+full file name and try again.

@@ -22,14 +22,4 @@ public interface ProvisionerConstants {
 
     /** Location of feature files */
     String LIB_FEATURE_PATH = "lib/features/";
-
-    String PHASE_APPLICATION = "APPLICATION";
-    String PHASE_APPLICATION_LATE = PHASE_APPLICATION + "_LATE";
-    String PHASE_APPLICATION_EARLY = PHASE_APPLICATION + "_EARLY";
-    String PHASE_SERVICE = "SERVICE";
-    String PHASE_SERVICE_LATE = PHASE_SERVICE + "_LATE";
-    String PHASE_SERVICE_EARLY = PHASE_SERVICE + "_EARLY";
-    String PHASE_CONTAINER = "CONTAINER";
-    String PHASE_CONTAINER_LATE = PHASE_CONTAINER + "_LATE";
-    String PHASE_CONTAINER_EARLY = PHASE_CONTAINER + "_EARLY";
 }

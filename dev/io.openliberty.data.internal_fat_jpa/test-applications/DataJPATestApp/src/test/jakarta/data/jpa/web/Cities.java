@@ -36,7 +36,7 @@ import jakarta.data.repository.Update;
  * Repository for the City entity, which uses IdClass to define a composite id
  * across the City name and stateName.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Cities {
     @Find
     Optional<Set<Integer>> areaCodes(String name, String stateName);

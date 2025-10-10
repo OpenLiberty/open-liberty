@@ -87,3 +87,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=U
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Klucze walidacyjne {0} musz\u0105 zosta\u0107 zregenerowane przy u\u017cyciu algorytm\u00f3w kryptograficznych posiadaj\u0105cych certyfikat FIPS 140-3.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Klucze walidacji LTPA, kt\u00f3re zosta\u0142y utworzone bez w\u0142\u0105czonej funkcji FIPS 140-3, ko\u0144cz\u0105 si\u0119 niepowodzeniem po w\u0142\u0105czeniu funkcji FIPS 140-3.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=U\u017cyj polecenia securityUtility createLTPAKeys, aby utworzy\u0107 klucze walidacji zatwierdzone przez FIPS, gdy skonfigurowany jest FIPS 140-3.
+
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Klucze walidacyjne {0} musz\u0105 zosta\u0107 zregenerowane przy u\u017cyciu algorytm\u00f3w kryptograficznych, kt\u00f3re nie posiadaj\u0105 certyfikatu FIPS 140-3.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Klucze walidacji LTPA utworzone z w\u0142\u0105czon\u0105 funkcj\u0105 FIPS 140-3 zawodz\u0105, gdy funkcja FIPS 140-3 jest wy\u0142\u0105czona.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=U\u017cyj polecenia securityUtility createLTPAKeys, aby utworzy\u0107 klucze walidacji niezatwierdzone przez FIPS, gdy FIPS 140-3 jest wy\u0142\u0105czony.

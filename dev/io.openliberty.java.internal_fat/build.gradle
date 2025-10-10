@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,9 @@ configurations {
     app23
     app24
     app25
+    requiredLibs {
+        transitive = false
+    }
  }
  
  dependencies {
@@ -33,13 +36,8 @@ configurations {
     app23 'io.openliberty:java-apps:23.1.0'
     app24 'io.openliberty:java-apps:24.1.0'
     app25 'io.openliberty:java-apps:25.1.0'
+    requiredLibs project(':com.ibm.ws.kernel.service')
  }
-
-task copyKernelService(type: Copy) {
-  dependsOn ':com.ibm.ws.kernel.service:assemble'
-  from project(':com.ibm.ws.kernel.service').buildDir
-  into new File(autoFvtDir, 'lib')
-}
 
 task copyApp17A(type: Copy) {
   from configurations.app17
@@ -107,7 +105,6 @@ task copyApp25(type: Copy) {
   rename 'java-apps-*.*.*.*', 'io.openliberty.java.internal_fat_25.war'
 }
 
-addRequiredLibraries.dependsOn copyKernelService
 addRequiredLibraries.dependsOn copyApp17A
 addRequiredLibraries.dependsOn copyApp17B
 addRequiredLibraries.dependsOn copyApp18A

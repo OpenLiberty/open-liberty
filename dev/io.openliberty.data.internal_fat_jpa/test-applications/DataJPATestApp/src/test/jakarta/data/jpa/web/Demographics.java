@@ -28,7 +28,7 @@ import jakarta.data.repository.Repository;
  * Repository for the DemographicInfo entity, which covers the basic types
  * Instant, BigDecimal, and BigInteger.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Demographics {
 
     @Query("ORDER BY EXTRACT (YEAR FROM collectedOn)")

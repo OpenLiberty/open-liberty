@@ -22,7 +22,7 @@ import jakarta.data.repository.Repository;
  * Repository for the Purchase entity that has a Converter that is specified
  * on an attribute of the MappedSuperclass.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Purchases {
 
     @OrderBy("timeOfPurchase")

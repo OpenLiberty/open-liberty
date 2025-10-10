@@ -152,3 +152,32 @@ tlsProfiler.option-key.file=\ \ \ \ --file
 tlsProfiler.option-desc.file=\tOp\u0163ional. rezultatul va fi scris \u00een fi\u015fierul specificat \n\t\u00een loc s\u0103 fie scris pe ecranul consolei.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tInclude\u0163i informa\u0163ii suplimentare despre protocoalele nesigure.
+
+# -------- CONFIGURE FIPS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\# 
+configureFIPS.desc=\tConfigura\u021bi FIPS 140-3 pe baza instal\u0103rii Java configurat\u0103 prin variabilele de mediu Variabilele de mediu JAVA_HOME, JRE_HOME sau WLP_DEFAULT_JAVA_HOME, \u00een aceast\u0103 ordine. Dac\u0103 nu a fost configurat niciunul, FIPS 140-3 este configurat pe baza JVM-ului utilizat pentru a rula comanda securityUtility. Comanda configureaz\u0103 FIPS 140-3 pentru IBM Semeru Runtimes sau IBM SDK, sau returneaz\u0103 o eroare \u00een cazul \u00een care nu a putut fi determinat\u0103 niciuna dintre acestea.\n\n\tPentru IBM Semeru Runtimes: Creeaz\u0103 un fi\u0219ier care con\u021bine profilul personalizat FIPS 140-3 pentru utilizarea de c\u0103tre aplica\u021bia dumneavoastr\u0103, care extinde profilul Liberty FIPS140-3-Liberty, care extinde profilul IBM Semeru Runtimes FIPS140-3-Strongly-Enforced profil. De asemenea, creeaz\u0103 sau actualizeaz\u0103 fi\u0219ierul default.env, server.env, sau client.env pentru a activa FIPS 140-3 prin setarea variabilei E\
+    NABLE_FIPS140_3 la calea c\u0103tre fi\u0219ierul de profil personalizat.\n\n\tPentru IBM SDK: Creeaz\u0103 sau actualizeaz\u0103 fi\u0219ierul default.env, server.env, sau client.env pentru a activa FIPS 140-3 prin setarea variabilei de mediu ENABLE_FIPS140_3 la true.
+
+configureFIPS.usage.options=\t{0} configureFIPS [op\u021biuni]
+
+configureFIPS.option-key.1.server=\ \ \ \ --server =nume
+
+configureFIPS.option-desc.1.server=\tServer pentru care se configureaz\u0103 FIPS 140-3. Dac\u0103 aceast\u0103 valoare nu este furnizat\u0103 \u0219i nu este specificat niciun client, atunci FIPS 140-3 este configurat pentru to\u021bi clien\u021bii, serverele \u0219i comenzile.
+
+configureFIPS.option-key.2.client=\ \ \ \ --client =nume
+
+configureFIPS.option-desc.2.client=\tClient pentru care se configureaz\u0103 FIPS 140-3. Dac\u0103 aceast\u0103 valoare nu este furnizat\u0103 \u0219i nu este specificat niciun server, atunci FIPS 140-3 este configurat pentru to\u021bi clien\u021bii, serverele \u0219i comenzile.
+
+configureFIPS.option-key.3.customProfileFile=\ \ \ \ --customProfileFile=name
+
+configureFIPS.option-desc.3.customProfileFile=\tFi\u0219ierul \u00een care se scrie profilul personalizat IBM Semeru Runtimes FIPS 140-3.\n\tDac\u0103 aceast\u0103 valoare nu este furnizat\u0103, atunci fi\u0219ierul este creat cu numele FIPS140-3-Liberty-Application.properties \u00een directorul etc al instalarea WLP. Dac\u0103 a fost utilizat\u0103 op\u021biunea server sau client, fi\u0219ierul este creat \u00een directorul security/resources pentru serverul sau clientul specificat server sau client.\n\n\tNumele fi\u0219ierului, f\u0103r\u0103 extensie, este utilizat pentru a crea numele nume de profil personalizat; acesta extinde profilul Liberty FIPS140-3-Liberty.\n\tNumele fi\u0219ierului trebuie s\u0103 con\u021bin\u0103 numai caractere alfanumerice, liniu\u021be (-), underscores (_) \u0219i puncte (.). Numele de baz\u0103 al fi\u0219ierului nu poate fi FIPS140-3-Liberty.\n\n\tMai multe fi\u0219iere pot fi specificate cu aceast\u0103 op\u021biune prin utilizarea separatori de ca\
+    le. Pentru Windows, separatorul de cale este un punct \u0219i virgul\u0103 (;). Pentru sistemele bazate pe Unix, separatorul de cale este dou\u0103 puncte (:). Fiecare profil personalizat se extinde reciproc \u00een ordinea \u00een care sunt specificate.
+
+configureFIPS.option-key.4.disable=\ \ \ \ --disable
+
+configureFIPS.option-desc.4.disable=\tDezactiva\u021bi FIPS 140-3 prin setarea variabilei de mediu ENABLE_FIPS140_3 la false. Aceast\u0103 op\u021biune poate fi utilizat\u0103 \u00eempreun\u0103 cu op\u021biunile client \u0219i server pentru a specifica clientul sau serverul pentru dezactivarea FIPS 140-3.\n\t\u00cen caz contrar, dezactiveaz\u0103 FIPS 140-3 pentru to\u021bi clien\u021bii, serverele \u0219i comenzi, cu excep\u021bia acelor clien\u021bi \u0219i servere care au fost activate individual.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
@@ -36,6 +37,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import test.jakarta.data.jpa.web.DataJPATestServlet;
+import test.jakarta.data.jpa.web.eclipselink.DataJPAEclipseLinkServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
@@ -46,7 +48,12 @@ public class DataJPATestCheckpoint extends FATServletClient {
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @Server("io.openliberty.data.internal.checkpoint.fat.jpa")
-    @TestServlet(servlet = DataJPATestServlet.class, contextRoot = "DataJPATestApp")
+    @TestServlets({
+                    @TestServlet(servlet = DataJPATestServlet.class,
+                                 contextRoot = "DataJPATestApp"),
+                    @TestServlet(servlet = DataJPAEclipseLinkServlet.class,
+                                 contextRoot = "DataJPATestApp")
+    })
     public static LibertyServer server;
 
     @BeforeClass
@@ -54,7 +61,9 @@ public class DataJPATestCheckpoint extends FATServletClient {
         // Set up server DataSource properties
         DatabaseContainerUtil.build(server, testContainer).withDriverReplacement().withDatabaseProperties().modify();
 
-        WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp", "test.jakarta.data.jpa.web");
+        WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp",
+                                                      "test.jakarta.data.jpa.web",
+                                                      "test.jakarta.data.jpa.web.eclipselink");
         ShrinkHelper.exportAppToServer(server, war);
 
         Map<String, String> envVars = new HashMap<>();

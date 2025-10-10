@@ -34,7 +34,7 @@ import jakarta.data.repository.Update;
 /**
  * Repository for an entity with multiple levels of embeddables.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Businesses extends BasicRepository<Business, Integer> {
 
     @Query("WHERE name >= :beginAtName AND name <= :endAtName")

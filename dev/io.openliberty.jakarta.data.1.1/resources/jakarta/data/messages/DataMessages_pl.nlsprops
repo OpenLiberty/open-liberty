@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=Wymagany jest argument {0}
+002.no.elements=Lista {0} nie mo\u017ce by\u0107 pusta
+003.null.element=Lista {0} nie mo\u017ce zawiera\u0107 elementu null
+004.arg.negative=Argument {0} nie mo\u017ce by\u0107 ujemny
+005.zero.not.allowed=Argument {0} nie mo\u017ce mie\u0107 warto\u015bci 0
+006.zero.size.key=Klucz musi sk\u0142ada\u0107 si\u0119 z co najmniej jednego elementu
+007.wildcard.conflict=Nie mo\u017cna u\u017cy\u0107 tego samego znaku ( {0} ) dla obu symboli wieloznacznych
+008.escape.conflict=Nie mo\u017cna u\u017cy\u0107 tego samego znaku ( {0} ) zar\u00f3wno jako symbolu wieloznacznego, jak i znaku escape
+009.unknown.number.type=Nieoczekiwany podtyp Number: {0}
+010.unknown.total=Ca\u0142kowita liczba element\u00f3w nie jest dost\u0119pna
+011.unknown.attr.type=Instancja {0} zosta\u0142a uzyskana w spos\u00f3b, kt\u00f3ry nie identyfikuje typu atrybutu. W przypadku statycznych klas metamodelu nale\u017cy u\u017cy\u0107 metody.of zdefiniowanej na podtypie atrybutu, aby poda\u0107 klas\u0119 encji i typ atrybutu encji.
+012.unknown.decl.type=Instancja {0} zosta\u0142a uzyskana w spos\u00f3b, kt\u00f3ry nie identyfikuje klasy encji deklaruj\u0105cej atrybut. W przypadku statycznych klas metamodelu nale\u017cy u\u017cy\u0107 metody.of zdefiniowanej na podtypie atrybutu, aby poda\u0107 klas\u0119 encji i typ atrybutu encji.

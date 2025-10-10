@@ -68,8 +68,10 @@ public class ConfigureFIPSTask extends BaseCommandTask {
                                            "#     {MessageDigest, SHA-1, *, FullClassName:io.openliberty.myClass}]",
                                            "# RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3-Liberty-Application.jce.provider.16 = io.openliberty.myProvider",
                                            "#",
-                                           "RestrictedSecurity.OpenJCEPlusFIPS." + PROFILE_NAME_HOLDER + ".desc.name = OpenJCEPlusFIPS Cryptographic Module FIPS 140-3 for Liberty Application",
-                                           "RestrictedSecurity.OpenJCEPlusFIPS." + PROFILE_NAME_HOLDER + ".extends = RestrictedSecurity.OpenJCEPlusFIPS." + BASE_PROFILE_NAME_HOLDER,
+                                           "RestrictedSecurity.OpenJCEPlusFIPS." + PROFILE_NAME_HOLDER
+                                                + ".desc.name = OpenJCEPlusFIPS Cryptographic Module FIPS 140-3 for Liberty Application",
+                                           "RestrictedSecurity.OpenJCEPlusFIPS." + PROFILE_NAME_HOLDER + ".extends = RestrictedSecurity.OpenJCEPlusFIPS."
+                                                                                                                                          + BASE_PROFILE_NAME_HOLDER,
                                            "");
 
     protected ConsoleWrapper stdin;
@@ -206,7 +208,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
 
         if (clientName != null) {
             if (serverName != null) {
-                stdout.println("");  // add a new line if we previously setup for server
+                stdout.println(""); // add a new line if we previously setup for server
             }
 
             String usrClients = fileUtility.getClientsDirectory();
@@ -335,7 +337,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
                     stdout.println(getMessage("configureFIPS.fileNameNotAllowed", customProfileFileLocation));
                     return SecurityUtilityReturnCodes.ERR_GENERIC;
                 }
-                
+
                 if (!fileUtility.createParentDirectory(stdout, customProfileFile)) {
                     stdout.println(getMessage("configureFIPS.abortSemeruFile"));
                     stdout.println(getMessage("file.requiredDirNotCreated", customProfileFileLocation));

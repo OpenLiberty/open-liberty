@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -74,8 +74,6 @@ public class HttpHeaderKeys extends HeaderKeys {
     public static final HttpHeaderKeys HDR_CONTENT_DISPOSITION = new HttpHeaderKeys("Content-Disposition");
     /** Enumerated object for the HTTP header key CONTENT-LOCATION */
     public static final HttpHeaderKeys HDR_CONTENT_LOCATION = new HttpHeaderKeys("Content-Location");
-    /** Enumerated object for the HTTP header key CONTENT-MD5 */
-    public static final HttpHeaderKeys HDR_CONTENT_MD5 = new HttpHeaderKeys("Content-MD5");
     /** Enumerated object for the HTTP header key CONTENT-RANGE */
     public static final HttpHeaderKeys HDR_CONTENT_RANGE = new HttpHeaderKeys("Content-Range");
     /** Enumerated object for the HTTP header key DATE */

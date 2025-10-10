@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,17 @@ name=Nome
 days=dia(s)
 
 sslCert.abort=Interrompendo cria\u00e7\u00e3o do certificado:
-sslCert.createFailed=Imposs\u00edvel criar certificado SSL padr\u00e3o:\n\
-{0}
-sslCert.errorEncodePassword=Erro ao codificar senha (certificado n\u00e3o criado):\n\
-{0}
+sslCert.createFailed=Imposs\u00edvel criar certificado SSL padr\u00e3o:\n{0}
+sslCert.errorEncodePassword=Erro ao codificar senha (certificado n\u00e3o criado):\n{0}
 sslCert.createKeyStore=Criando keystore {0}\n
 sslCert.oneType=Os argumentos {0} e {1} n\u00e3o podem ser especificados ao mesmo tempo.
 sslCert.clientNotFound=O cliente especificado {0} n\u00e3o p\u00f4de ser localizado no local {1}
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=Certificado SSL criado para o servidor {0}. O certificado \u00e9 criado com {1} como o SubjectDN.\n\
-\n\
-Inclua as linhas a seguir no server.xml para ativar o SSL:
+sslCert.serverXML=Certificado SSL criado para o servidor {0}. O certificado \u00e9 criado com {1} como o SubjectDN.\n\nInclua as linhas a seguir no server.xml para ativar o SSL:
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=Certificado SSL criado para o cliente {0}. O certificado \u00e9 criado com {1} como o SubjectDN.\n\
-\n\
-Inclua as linhas a seguir no client.xml para ativar o SSL:
+sslCert.clientXML=Certificado SSL criado para o cliente {0}. O certificado \u00e9 criado com {1} como o SubjectDN.\n\nInclua as linhas a seguir no client.xml para ativar o SSL:
 
 fileUtility.failedDirCreate=Falha ao criar diret\u00f3rio {0}
 file.exists=O arquivo keystore {0} j\u00e1 existe.  N\u00e3o \u00e9 poss\u00edvel criar um arquivo keystore nesse local.
@@ -99,9 +93,39 @@ saf.arg.not.aes=Os argumentos -- keyring, -- keyringType e -- keyLabel podem ser
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated
-createLTPAKeys.abort=Interrompendo a cria\u00e7\u00e3o do \
-arquivo-chave de LTPA:
-createLTPAKeys.fileExists=O arquivo {0} j\u00e1 \
-existe.  N\u00e3o \u00e9 poss\u00edvel criar um arquivo-chave de LTPA nesse local.
-createLTPAKeys.createdFile=Arquivo-chave de LTPA criado: {0}\n Inclua a seguinte configura\u00e7\u00e3o no \
-server.xml\n {1}\n
+createLTPAKeys.abort=Interrompendo a cria\u00e7\u00e3o do arquivo-chave de LTPA:
+createLTPAKeys.fileExists=O arquivo {0} j\u00e1 existe.  N\u00e3o \u00e9 poss\u00edvel criar um arquivo-chave de LTPA nesse local.
+createLTPAKeys.createdFile=Arquivo-chave de LTPA criado: {0}\n Inclua a seguinte configura\u00e7\u00e3o no server.xml\n {1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=A instala\u00e7\u00e3o do Java n\u00e3o \u00e9 do IBM Semeru Runtimes nem do IBM SDK ou, se for, n\u00e3o \u00e9 compat\u00edvel com o FIPS 140-3.\nInstale o Java em IBM Semeru Runtimes ou IBM SDK usando uma vers\u00e3o e um sistema operacional compat\u00edveis com FIPS 140-3.\nSe estiver usando IBM Semeru Runtimes, use a vers\u00e3o 11.0.29.0, 17.0.17.0, 21.0.9.0, ou superior.\nSe estiver usando o SDK IBM, use a vers\u00e3o 8.0.8.30 ou superior.
+
+configureFIPS.zosNotAvailable=O comando securityUtility configureFIPS n\u00e3o \u00e9 compat\u00edvel com z/OS.
+
+configureFIPS.configureSemeru=Configura\u00e7\u00e3o do FIPS 140-3 para IBM Semeru Runtimes.
+configureFIPS.configureIbmSdk=Configura\u00e7\u00e3o do FIPS 140-3 para IBM SDK.
+
+configureFIPS.abort=Abortar a configura\u00e7\u00e3o do FIPS 140-3:
+
+configureFIPS.abortSemeruFile=Abortando IBM Semeru Runtimes Cria\u00e7\u00e3o de arquivo de perfil personalizado FIPS 140-3:
+
+configureFIPS.abortEnvFile=Interrompe a modifica\u00e7\u00e3o do arquivo de configura\u00e7\u00e3o:
+
+configureFIPS.fileExists=Usando o arquivo de perfil personalizado existente {0} IBM Semeru Runtimes.
+
+configureFIPS.createdSemeruFile=Criado o arquivo de perfil personalizado {0} IBM Semeru Runtimes.
+
+configureFIPS.fileDoesNotExist=O arquivo {0} n\u00e3o existe.
+
+configureFIPS.fileNameNotAllowed=O nome base do arquivo {0} n\u00e3o pode ser FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=Criou o arquivo {0} para ativar o FIPS 140-3.
+configureFIPS.updatedEnvFileToEnableFips=Atualiza\u00e7\u00e3o do arquivo {0} para ativar o FIPS 140-3.
+configureFIPS.fipsAlreadyEnabled=O FIPS 140-3 j\u00e1 est\u00e1 ativado no arquivo {0}.
+
+configureFIPS.updatedEnvFileToDisableFips=Atualiza\u00e7\u00e3o do arquivo {0} para desativar o FIPS 140-3.
+configureFIPS.fipsNotEnabled=O FIPS 140-3 j\u00e1 n\u00e3o est\u00e1 ativado no arquivo {0}.
+
+configureFIPS.restartServer=Reinicie o servidor {0} para aplicar a altera\u00e7\u00e3o.
+configureFIPS.restartClient=Reinicie o cliente {0} para aplicar a altera\u00e7\u00e3o.
+configureFIPS.restart=Reinicie seus servidores e clientes para aplicar a altera\u00e7\u00e3o.

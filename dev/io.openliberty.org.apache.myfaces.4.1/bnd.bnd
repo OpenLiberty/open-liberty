@@ -130,6 +130,7 @@ Import-Package: \
   io.openliberty.jakarta.expressionLanguage.6.0;version=latest,\
   io.openliberty.jakarta.servlet.6.1;version=latest, \
   io.openliberty.jakarta.cdi.4.1;version=latest,\
+  io.openliberty.jakarta.validation.3.0;version=latest,\
   io.openliberty.jakarta.websocket.2.2;version=latest,\
   io.openliberty.jakarta.websocket.client.2.2;version=latest,\
   com.ibm.ws.logging.core,\

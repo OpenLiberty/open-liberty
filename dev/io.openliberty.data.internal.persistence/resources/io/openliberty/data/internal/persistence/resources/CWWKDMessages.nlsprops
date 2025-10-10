@@ -1202,3 +1202,21 @@ CWWKD1118.param.anno.conflict.explanation=The combination of parameter \
  annotations is not valid.
 CWWKD1118.param.anno.conflict.useraction=Remove one or more of the conflicting \
  annotations from the repository method parameter.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: The {0} method of the {1} repository \
+ interface retrieves pages that do not include a total count of elements and pages \
+ because the query contains the {2} keyword. The full query is: {3}.
+CWWKD1119.keyword.prevents.count.explanation=The keyword is incompatible with \
+ the ability to obtain a total count of elements and pages.
+CWWKD1119.keyword.prevents.count.useraction=Replace the query with one that \
+ does not use the keyword or avoid requesting a total count of elements and pages.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: The {0} method of the {1} repository \
+ interface specifies a query that includes the {2} keyword, which is incompatible \
+ with cursor-based pagination. Queries for cursor-based pagination must end with \
+ a WHERE clause and must not include subqueries. The query is: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Keywords such as GROUP BY, HAVING, \
+ ORDER BY, EXCEPT, INTERSECT, and UNION are not compatible with cursor-based \
+ pagination.
+CWWKD1120.cursor.keyword.mismatch.useraction=Rewrite the query to include only \
+ the clauses: SELECT, FROM, and WHERE.

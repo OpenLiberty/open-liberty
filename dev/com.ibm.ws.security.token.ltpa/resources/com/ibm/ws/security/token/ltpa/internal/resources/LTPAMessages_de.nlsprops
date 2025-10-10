@@ -87,3 +87,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=S
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Die Validierungsschl\u00fcssel von {0} m\u00fcssen mit kryptografischen Algorithmen, die nach FIPS 140-3 zertifiziert sind, neu generiert werden.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Die LTPA-Validierungsschl\u00fcssel, die ohne aktiviertes FIPS 140-3 erstellt wurden, schlagen fehl, wenn FIPS 140-3 aktiviert ist.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Verwenden Sie den Befehl securityUtility createLTPAKeys, um die von FIPS genehmigten Validierungsschl\u00fcssel zu erstellen, wenn FIPS 140-3 konfiguriert ist.
+
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Die Validierungsschl\u00fcssel von {0} m\u00fcssen mit kryptografischen Algorithmen, die nicht FIPS 140-3-zertifiziert sind, neu generiert werden.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Die LTPA-Validierungsschl\u00fcssel, die mit aktiviertem FIPS 140-3 erstellt wurden, schlagen fehl, wenn FIPS 140-3 deaktiviert ist.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Verwenden Sie den Befehl securityUtility createLTPAKeys, um die nicht von FIPS genehmigten Validierungsschl\u00fcssel zu erstellen, wenn FIPS 140-3 deaktiviert ist.

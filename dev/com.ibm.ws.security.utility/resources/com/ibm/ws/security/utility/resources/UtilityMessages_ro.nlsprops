@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,17 @@ name=nume
 days=zile
 
 sslCert.abort=Renun\u0163are crea\u0163ie certificat:
-sslCert.createFailed=Nu poate s\u0103 creeze certificatul SSL implicit:\n\
-{0}
-sslCert.errorEncodePassword=Eroare codificare parol\u0103 (certificat necreat):\n\
-{0}
+sslCert.createFailed=Nu poate s\u0103 creeze certificatul SSL implicit:\n{0}
+sslCert.errorEncodePassword=Eroare codificare parol\u0103 (certificat necreat):\n{0}
 sslCert.createKeyStore=Creare depozit de chei {0}\n
 sslCert.oneType=Argumentele {0} \u015fi {1} nu pot fi specificate \u00een acela\u015fi timp.
 sslCert.clientNotFound=Clientul specificat {0} nu a putut fi g\u0103sit la loca\u0163ia {1}
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=S-a creat certificatul SSL pentru serverul {0}. Certificatul este creat cu {1} ca SubjectDN.\n\
-\n\
-Ad\u0103uga\u0163i urm\u0103toarele linii la server.xml pentru a activa SSL:
+sslCert.serverXML=S-a creat certificatul SSL pentru serverul {0}. Certificatul este creat cu {1} ca SubjectDN.\n\nAd\u0103uga\u0163i urm\u0103toarele linii la server.xml pentru a activa SSL:
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=S-a creat certificatul SSL pentru clientul {0}. Certificatul este creat cu {1} ca SubjectDN.\n\
-\n\
-Ad\u0103uga\u0163i urm\u0103toarele linii la client.xml pentru a activa SSL:
+sslCert.clientXML=S-a creat certificatul SSL pentru clientul {0}. Certificatul este creat cu {1} ca SubjectDN.\n\nAd\u0103uga\u0163i urm\u0103toarele linii la client.xml pentru a activa SSL:
 
 fileUtility.failedDirCreate=A e\u015fuat crearea directorului {0}
 file.exists=Fi\u015fierul depozit de chei {0} exist\u0103 deja.  Nu se poate crea un fi\u015fier depozit de chei \u00een acea loca\u0163ie.
@@ -77,14 +71,9 @@ file.requiredDirNotCreated=Nu a putut crea structura de director necesar\u0103 p
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # The following string will be appended after encode.option-desc.encoding
 # message in UtilityOptions.nlsprops file.
-encode.option-custom.encryption=\n\
-\tDe asemenea, este disponibil\u0103 criptarea de parol\u0103 personalizat\u0103.
-encode.option-desc.custom.feature=\n\
-\tNumele de caracteristic\u0103 {0} este dup\u0103 cum urmeaz\u0103:\n\
-\t
-encode.option-desc.custom.description=\n\
-\tDescrierea {0} este dup\u0103 cum urmeaz\u0103:\n\
-\t
+encode.option-custom.encryption=\n\tDe asemenea, este disponibil\u0103 criptarea de parol\u0103 personalizat\u0103.
+encode.option-desc.custom.feature=\n\tNumele de caracteristic\u0103 {0} este dup\u0103 cum urmeaz\u0103:\n\t
+encode.option-desc.custom.description=\n\tDescrierea {0} este dup\u0103 cum urmeaz\u0103:\n\t
 
 # The following message is shown when there is no custom password
 # encryption is enabled.
@@ -106,6 +95,37 @@ saf.arg.not.aes=Argumentele --keyring, --keyringType \u015fi --keyLabel pot fi f
 # Note to translator: 'LTPA' should not be translated
 createLTPAKeys.abort=Se abandoneaz\u0103 crearea fi\u015fierului de chei LTPA:
 createLTPAKeys.fileExists=Fi\u015fierul {0} exist\u0103 deja.  Nu se poate crea fi\u015fierul de chei LTPA \u00een acea loca\u0163ie.
-createLTPAKeys.createdFile=Fi\u015fierul de chei LTPA a fost creat: {0}\n\
-Include\u0163i configura\u0163ia urm\u0103toare \u00een server.xml\n\
-{1}\n
+createLTPAKeys.createdFile=Fi\u015fierul de chei LTPA a fost creat: {0}\nInclude\u0163i configura\u0163ia urm\u0103toare \u00een server.xml\n{1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=Instalarea Java fie nu este de la IBM Semeru Runtimes, nici de la IBM SDK, fie, dac\u0103 este, nu accept\u0103 FIPS 140-3.\nInstala\u021bi Java din IBM Semeru Runtimes sau IBM SDK utiliz\u00e2nd o versiune \u0219i un sistem de operare care accept\u0103 FIPS 140-3.\nDac\u0103 utiliza\u021bi IBM Semeru Runtimes, utiliza\u021bi versiunea 11.0.29.0, 17.0.17.0, 21.0.9.0, sau o versiune superioar\u0103.\nDac\u0103 utiliza\u021bi IBM SDK, utiliza\u021bi versiunea 8.0.8.30 sau o versiune superioar\u0103.
+
+configureFIPS.zosNotAvailable=Comanda securityUtility configureFIPS nu este acceptat\u0103 pe z/OS.
+
+configureFIPS.configureSemeru=Configurarea FIPS 140-3 pentru IBM Semeru Runtimes.
+configureFIPS.configureIbmSdk=Configurarea FIPS 140-3 pentru IBM SDK.
+
+configureFIPS.abort=Abandonarea configur\u0103rii FIPS 140-3:
+
+configureFIPS.abortSemeruFile=\u00centreruperea IBM Semeru Runtimes Crearea fi\u0219ierului de profil personalizat FIPS 140-3:
+
+configureFIPS.abortEnvFile=\u00centreruperea modific\u0103rii fi\u0219ierului de configurare:
+
+configureFIPS.fileExists=Utilizarea fi\u0219ierului de profil personalizat existent {0} IBM Semeru Runtimes.
+
+configureFIPS.createdSemeruFile=A fost creat fi\u0219ierul de profil personalizat {0} IBM Semeru Runtimes.
+
+configureFIPS.fileDoesNotExist=Fi\u015fierul {0} nu exist\u0103.
+
+configureFIPS.fileNameNotAllowed=Numele de baz\u0103 al fi\u0219ierului {0} nu poate fi FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=A creat fi\u0219ierul {0} pentru a activa FIPS 140-3.
+configureFIPS.updatedEnvFileToEnableFips=A\u021bi actualizat fi\u0219ierul {0} pentru a activa FIPS 140-3.
+configureFIPS.fipsAlreadyEnabled=FIPS 140-3 este deja activat \u00een fi\u0219ierul {0}.
+
+configureFIPS.updatedEnvFileToDisableFips=A fost actualizat fi\u0219ierul {0} pentru a dezactiva FIPS 140-3.
+configureFIPS.fipsNotEnabled=FIPS 140-3 nu este deja activat \u00een fi\u0219ierul {0}.
+
+configureFIPS.restartServer=Reporni\u021bi serverul {0} pentru a aplica modificarea.
+configureFIPS.restartClient=Reporni\u021bi clientul {0} pentru a aplica modificarea.
+configureFIPS.restart=Reporni\u021bi serverele \u0219i clien\u021bii pentru a aplica modificarea.

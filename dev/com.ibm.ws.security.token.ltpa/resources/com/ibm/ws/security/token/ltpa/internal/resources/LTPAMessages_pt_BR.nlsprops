@@ -87,3 +87,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=C
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: As chaves de valida\u00e7\u00e3o do {0} devem ser regeneradas usando algoritmos criptogr\u00e1ficos com certifica\u00e7\u00e3o FIPS 140-3.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=As chaves de valida\u00e7\u00e3o LTPA que s\u00e3o criadas sem o FIPS 140-3 ativado falham quando o FIPS 140-3 \u00e9 ativado.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use o comando securityUtility createLTPAKeys para criar as chaves de valida\u00e7\u00e3o aprovadas pelo FIPS quando o FIPS 140-3 estiver configurado.
+
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: As chaves de valida\u00e7\u00e3o do {0} devem ser regeneradas usando algoritmos criptogr\u00e1ficos que n\u00e3o s\u00e3o certificados pelo FIPS 140-3.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=As chaves de valida\u00e7\u00e3o LTPA criadas com o FIPS 140-3 ativado falham quando o FIPS 140-3 \u00e9 desativado.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use o comando securityUtility createLTPAKeys para criar as chaves de valida\u00e7\u00e3o n\u00e3o aprovadas pelo FIPS quando o FIPS 140-3 estiver desativado.

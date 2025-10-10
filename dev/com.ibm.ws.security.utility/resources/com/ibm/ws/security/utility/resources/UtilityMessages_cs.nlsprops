@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,17 @@ name=n\u00e1zev
 days=dn\u016f
 
 sslCert.abort=Prob\u00edh\u00e1 p\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed vytvo\u0159en\u00ed certifik\u00e1tu:
-sslCert.createFailed=Nelze vytvo\u0159it v\u00fdchoz\u00ed certifik\u00e1t SSL:\n\
-{0}
-sslCert.errorEncodePassword=Chyba p\u0159i k\u00f3dov\u00e1n\u00ed hesla (certifik\u00e1t nebyl vytvo\u0159en):\n\
-{0}
+sslCert.createFailed=Nelze vytvo\u0159it v\u00fdchoz\u00ed certifik\u00e1t SSL:\n{0}
+sslCert.errorEncodePassword=Chyba p\u0159i k\u00f3dov\u00e1n\u00ed hesla (certifik\u00e1t nebyl vytvo\u0159en):\n{0}
 sslCert.createKeyStore=Vytv\u00e1\u0159en\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0}\n
 sslCert.oneType=Argumenty {0} a {1} nelze ur\u010dit sou\u010dasn\u011b.
 sslCert.clientNotFound=Zadan\u00e9ho klienta {0} nelze v um\u00edst\u011bn\u00ed {1} naj\u00edt
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=Vytvo\u0159en\u00fd certifik\u00e1t SSL pro server {0}. Certifik\u00e1t je vytvo\u0159en s {1} jako SubjectDN.\n\
-\n\
-Chcete-li povolit SSL, p\u0159idejte n\u00e1sleduj\u00edc\u00ed \u0159\u00e1dky do souboru server.xml:
+sslCert.serverXML=Vytvo\u0159en\u00fd certifik\u00e1t SSL pro server {0}. Certifik\u00e1t je vytvo\u0159en s {1} jako SubjectDN.\n\nChcete-li povolit SSL, p\u0159idejte n\u00e1sleduj\u00edc\u00ed \u0159\u00e1dky do souboru server.xml:
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=Vytvo\u0159en\u00fd certifik\u00e1t SSL pro klienta {0}. Certifik\u00e1t je vytvo\u0159en s {1} jako SubjectDN.\n\
-\n\
-Chcete-li povolit SSL, p\u0159idejte n\u00e1sleduj\u00edc\u00ed \u0159\u00e1dky do souboru client.xml:
+sslCert.clientXML=Vytvo\u0159en\u00fd certifik\u00e1t SSL pro klienta {0}. Certifik\u00e1t je vytvo\u0159en s {1} jako SubjectDN.\n\nChcete-li povolit SSL, p\u0159idejte n\u00e1sleduj\u00edc\u00ed \u0159\u00e1dky do souboru client.xml:
 
 fileUtility.failedDirCreate=Nepoda\u0159ilo se vytvo\u0159it adres\u00e1\u0159 {0}.
 file.exists=Soubor \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0} ji\u017e existuje. Nelze vytvo\u0159it soubor \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f v dan\u00e9m um\u00edst\u011bn\u00ed.
@@ -77,14 +71,9 @@ file.requiredDirNotCreated=Nelze vytvo\u0159it po\u017eadovanou adres\u00e1\u015
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # The following string will be appended after encode.option-desc.encoding
 # message in UtilityOptions.nlsprops file.
-encode.option-custom.encryption=\n\
-\tVlastn\u00ed \u0161ifrov\u00e1n\u00ed hesel je rovn\u011b\u017e dostupn\u00e9.
-encode.option-desc.custom.feature=\n\
-\tN\u00e1zev funkce {0} je n\u00e1sleduj\u00edc\u00ed:\n\
-\t
-encode.option-desc.custom.description=\n\
-\tPopis {0} je n\u00e1sleduj\u00edc\u00ed:\n\
-\t
+encode.option-custom.encryption=\n\tVlastn\u00ed \u0161ifrov\u00e1n\u00ed hesel je rovn\u011b\u017e dostupn\u00e9.
+encode.option-desc.custom.feature=\n\tN\u00e1zev funkce {0} je n\u00e1sleduj\u00edc\u00ed:\n\t
+encode.option-desc.custom.description=\n\tPopis {0} je n\u00e1sleduj\u00edc\u00ed:\n\t
 
 # The following message is shown when there is no custom password
 # encryption is enabled.
@@ -106,6 +95,37 @@ saf.arg.not.aes=Argumenty --keyring, --keyringType a --keyLabel lze pou\u017e\u0
 # Note to translator: 'LTPA' should not be translated
 createLTPAKeys.abort=P\u0159ed\u010dasn\u00e9 ukon\u010den\u00ed tvorby souboru s kl\u00ed\u010di LTPA:
 createLTPAKeys.fileExists=Soubor {0} ji\u017e existuje. Nelze vytvo\u0159it soubor s kl\u00ed\u010di LTPA v dan\u00e9m um\u00edst\u011bn\u00ed.
-createLTPAKeys.createdFile=Vytvo\u0159en\u00fd soubor s kl\u00ed\u010di LTPA: {0}\n\
-Zahr\u0148te n\u00e1sleduj\u00edc\u00ed konfiguraci do souboru server.xml\n\
-{1}\n
+createLTPAKeys.createdFile=Vytvo\u0159en\u00fd soubor s kl\u00ed\u010di LTPA: {0}\nZahr\u0148te n\u00e1sleduj\u00edc\u00ed konfiguraci do souboru server.xml\n{1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=Instalace Javy bu\u010f nen\u00ed z IBM Semeru Runtimes ani IBM SDK, nebo pokud ano, nepodporuje FIPS 140-3.\nNainstalujte Javu z IBM Semeru Runtimes nebo IBM SDK pomoc\u00ed verze a opera\u010dn\u00edho syst\u00e9mu, kter\u00fd podporuje FIPS 140-3.\nPokud pou\u017e\u00edv\u00e1te IBM Semeru Runtimes, pou\u017eijte verzi 11.0.29.0, 17.0.17.0, 21.0.9.0 nebo vy\u0161\u0161\u00ed.\nPokud pou\u017e\u00edv\u00e1te IBM SDK, pou\u017eijte verzi 8.0.8.30 nebo vy\u0161\u0161\u00ed.
+
+configureFIPS.zosNotAvailable=P\u0159\u00edkaz securityUtility configureFIPS nen\u00ed podporov\u00e1n na adrese z/OS.
+
+configureFIPS.configureSemeru=Konfigurace FIPS 140-3 pro IBM Semeru Runtimes.
+configureFIPS.configureIbmSdk=Konfigurace FIPS 140-3 pro IBM SDK.
+
+configureFIPS.abort=P\u0159eru\u0161en\u00ed konfigurace FIPS 140-3:
+
+configureFIPS.abortSemeruFile=P\u0159eru\u0161en\u00ed IBM Semeru Runtimes Vytvo\u0159en\u00ed vlastn\u00edho souboru profilu FIPS 140-3:
+
+configureFIPS.abortEnvFile=P\u0159eru\u0161en\u00ed \u00fapravy konfigura\u010dn\u00edho souboru:
+
+configureFIPS.fileExists=Pou\u017eit\u00ed st\u00e1vaj\u00edc\u00edho souboru vlastn\u00edho profilu {0} IBM Semeru Runtimes.
+
+configureFIPS.createdSemeruFile=Vytvo\u0159il vlastn\u00ed profilov\u00fd soubor {0} IBM Semeru Runtimes.
+
+configureFIPS.fileDoesNotExist=Soubor {0} neexistuje.
+
+configureFIPS.fileNameNotAllowed=Z\u00e1kladn\u00ed n\u00e1zev souboru {0} nem\u016f\u017ee b\u00fdt FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=Vytvo\u0159il soubor {0}, aby bylo mo\u017en\u00e9 pou\u017e\u00edvat FIPS 140-3.
+configureFIPS.updatedEnvFileToEnableFips=Aktualizov\u00e1n soubor {0}, aby umo\u017e\u0148oval pou\u017eit\u00ed standardu FIPS 140-3.
+configureFIPS.fipsAlreadyEnabled=V souboru {0} je ji\u017e povoleno pou\u017eit\u00ed standardu FIPS 140-3.
+
+configureFIPS.updatedEnvFileToDisableFips=Aktualizace souboru {0} pro vypnut\u00ed syst\u00e9mu FIPS 140-3.
+configureFIPS.fipsNotEnabled=FIPS 140-3 ji\u017e nen\u00ed v souboru {0} povolen.
+
+configureFIPS.restartServer=Restartujte server {0}, aby se zm\u011bna pou\u017eila.
+configureFIPS.restartClient=Restartujte klienta {0}, aby se zm\u011bna pou\u017eila.
+configureFIPS.restart=Restartujte servery a klienty, aby se zm\u011bna pou\u017eila.

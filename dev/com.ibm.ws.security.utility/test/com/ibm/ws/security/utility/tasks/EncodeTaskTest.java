@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,9 +13,11 @@
 package com.ibm.ws.security.utility.tasks;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.PrintStream;
 
+import org.hamcrest.Matcher;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
@@ -25,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
+import com.ibm.ws.security.utility.utils.StringStartsWithMatcher;
 
 /**
  *
@@ -147,4 +150,53 @@ public class EncodeTaskTest {
 
     }
 
+    /**
+     * Test method for
+     * {@link com.ibm.ws.security.utility.tasks.EncodeTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
+     * This test exists to ensure our beta toggles are working as expected. When this feature leaves beta we can delete this test.
+     *
+     * @throws Exception
+     */
+    @Test(expected = IllegalArgumentException.class)
+    public void handleTask_base64KeyBetaOff() throws Exception {
+        String[] args = { "encode", plaintext, "--encoding=aes", "--base64Key=pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=" };
+        try {
+            encode.handleTask(stdin, stdout, stderr, args);
+            fail();
+        } catch (Exception e) {
+            throw e;
+        }
+
+    }
+
+    /**
+     * Test method for
+     * {@link com.ibm.ws.security.utility.tasks.EncodeTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
+     * .
+     *
+     * @throws Exception
+     */
+    @Test
+    public void handleTask_base64Key_betaon() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                // we will not know the actual secret value, but if the command runs successfully it will return an {aes} password.
+                one(stdout).println(with(aStringStartsWith("{aes}")));
+            }
+        });
+        String[] args = { "encode", "--encoding=aes", "--base64Key=pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=", plaintext };
+        try {
+            System.setProperty("com.ibm.ws.beta.edition", "true");
+            encode.handleTask(stdin, stdout, stderr, args);
+        } finally
+
+        {
+            System.setProperty("com.ibm.ws.beta.edition", "false");
+        }
+
+    }
+
+    public static Matcher<String> aStringStartsWith(String prefix) {
+        return new StringStartsWithMatcher(prefix);
+    }
 }

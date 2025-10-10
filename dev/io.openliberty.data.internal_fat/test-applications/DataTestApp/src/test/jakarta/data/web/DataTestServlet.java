@@ -2432,6 +2432,65 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a GROUP BY query for offset pagination. Results must be correctly split
+     * into pages, but counting of total results is not offered.
+     */
+    @Test
+    public void testGroupByWithOffsetPagination() {
+        Page<Long> page1 = primes.minNumberOfEachNameLength(50,
+                                                            PageRequest.ofSize(4));
+        assertEquals(List.of(2L, // 3 characters long
+                             5L, // 4 characters long
+                             3L, // 5 characters long
+                             11L), // 6 characters long
+                     page1.content());
+
+        try {
+            long total = page1.totalElements();
+            fail("Should not be able to compute a total number of elements (" +
+                 total + ") when the query contains the GROUP keyword.");
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1119E:") &&
+                x.getMessage().contains("GROUP"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            long total = page1.totalPages();
+            fail("Should not be able to compute a total number of pages (" +
+                 total + ") when the query contains the GROUP keyword.");
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1119E:") &&
+                x.getMessage().contains("GROUP"))
+                ; // expected
+            else
+                throw x;
+        }
+
+        assertEquals(false,
+                     page1.hasTotals());
+
+        Page<Long> page2 = primes.minNumberOfEachNameLength(50,
+                                                            page1.nextPageRequest());
+
+        assertEquals(List.of(13L, // 8 characters long
+                             17L, // 9 characters long
+                             31L, // 10 characters long
+                             29L), // 11 characters long
+                     page2.content());
+
+        Page<Long> page3 = primes.minNumberOfEachNameLength(50,
+                                                            page2.nextPageRequest());
+
+        assertEquals(List.of(23L), // 12 characters long
+                     page3.content());
+    }
+
+    /**
      * Cursor pagination with ignoreCase in the sort criteria.
      */
     @Test
