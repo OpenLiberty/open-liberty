@@ -698,22 +698,71 @@ buildfat {
   dependsOn zipProjectFVT
 }
 
+def withRetries(int retries = 5, int initialDelay = 5, Closure action) {
+    def delay = initialDelay
+    while (retries > 0) {
+        retries--
+        try {
+            return action.call()
+        } catch (Exception e) {
+            if (retries == 0) {
+                throw new GradleException("Action failed", e)
+            }
+            sleep(delay * 1000)
+            delay *= 2
+        }
+    }
+}
+
 task uploadfat {
   dependsOn buildfat
   doLast {
-    // Ensure that async upload doesn't occur when adding a file to upload.
-    while(new File("${rootDir}/upload.lock").exists()) {
-      Thread.sleep(100)
+    def sourceFile = zipProjectFVT.archiveFile.get().asFile
+    copy {
+        from sourceFile
+        into new File(project.buildDir, executionId)
     }
-    new FileWriter("${rootDir}/upload.lock", true).withWriter { }
+    try {
+        withRetries(5, 5) {
+            exec {
+                workingDir project.buildDir
+                commandLine 'scp',
+                    "-i", uploadKeyFile,
+                    "-r",
+                    "./" + executionId,
+                    "${uploadUser}@${uploadHost}:${uploadRemotePath}"
+            }
+        }
+    } finally {
+        delete new File(project.buildDir, executionId)
+    }
 
-    def sourceFile = zipProjectFVT.archiveFile.get().asFile.absolutePath
-    def targetFile = uploadRemotePath + zipProjectFVT.archiveFile.get().asFile
-    def uploadLogFile = new FileWriter("${rootDir}/upload.log", true)
-    uploadLogFile.append(sourceFile + "," + targetFile + "\n")
-    uploadLogFile.close()
+    // TODO: read featureDeps from new File(autoFvtDir, 'fat-metadata.json')
+    def bucketImageUploadedJSON = """{
+    "type": "BucketImageUploaded",
+    "bucketName": "${project.name}",
+    "executionId": "${executionId}",
+    "aggregationName": "${executionId}", 
+    "imageUrl": "https://libertyfs.hursley.ibm.com/${uploadRemotePath}/${executionId}/${zipProjectFVT.archiveFileName.get()}",
+    "additionalFileUrls": [],
+    "additionalProductImageDependencies": [],
+    "additionalProperties": {"bucket.is.runnable":"true"},
+    "functionalUnitsTested": "",
+    "description":"${project.name} bucket artifact"
+}"""
+    def bucketEventFile = file("${buildDir}/bucketImageUploaded.json")
+    bucketEventFile.text = bucketImageUploadedJSON
 
-    new File("${rootDir}/upload.lock").delete()
+    withRetries(5, 5) {
+        exec {
+            commandLine "curl",
+                "-X", "POST",
+                "-H", "Content-Type: application/json",
+                "--data", "@${bucketEventFile.getPath()}",
+                "http://libh-proxy1.fyre.ibm.com/eventPublish/rawCIArtifacts/${executionId}"
+        }
+    }
+    
   }
 }
 
