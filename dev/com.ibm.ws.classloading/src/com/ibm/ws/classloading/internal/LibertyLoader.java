@@ -15,6 +15,7 @@ package com.ibm.ws.classloading.internal;
 import static com.ibm.ws.classloading.internal.LibertyLoader.DelegatePolicy.includeParent;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.SecureClassLoader;
 import java.util.Enumeration;
@@ -83,14 +84,20 @@ public abstract class LibertyLoader extends SecureClassLoader implements NoClass
     protected abstract Class<?> loadClass(String className, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException;
 
     protected abstract Class<?> findClass(String className, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException;
-    
-    @Override
-    protected URL findResource(String resName) {
-        return super.findResource(resName);
-    }
 
     protected URL delegateFindResource(String resName) {
         return super.findResource(resName);
+    }
+
+    @Trivial
+    protected InputStream delegateFindInputStream(String resName) {
+        URL result = delegateFindResource(resName);
+        try {
+            return result != null ? result.openStream() : null;
+        } catch (IOException e) {
+            // ignore
+            return null;
+        }
     }
 
     @Override

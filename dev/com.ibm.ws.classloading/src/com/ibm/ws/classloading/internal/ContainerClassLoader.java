@@ -66,6 +66,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.artifact.url.WSJarURLConnection;
 import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;
+import com.ibm.ws.classloading.internal.ContainerClassLoader.UniversalContainer.UniversalResource;
 import com.ibm.ws.classloading.internal.util.ClassRedefiner;
 import com.ibm.ws.classloading.internal.util.Keyed;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -203,6 +204,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
              */
             public URL getResourceURL(String jarProtocol);
 
+            public InputStream getInputStream();
             /**
              * Obtain the ByteResourceInformation for this resource.
              *
@@ -314,6 +316,16 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             return new ByteResourceInformation(container, this, className, this::getActualBytes, hook);
         }
 
+        @Override
+        @Trivial
+        public InputStream getInputStream() {
+            try {
+                return this.entry.adapt(InputStream.class);
+            } catch (UnableToAdaptException e) {
+                // TODO should this propagate?
+                return null;
+            }
+        }
         @Trivial
         private byte[] getActualBytes() {
             if (tc.isDebugEnabled()) {
@@ -357,6 +369,17 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             container = c;
         }
 
+        @Override
+        @Trivial
+        public InputStream getInputStream() {
+            URL u = getResourceURL("jar");
+            try {
+                return u.openStream();
+            } catch (IOException e) {
+                // ignore
+                return null;
+            }
+        }
         @Override
         public URL getResourceURL(String jarProtocol) {
             Collection<URL> urls = container.getURLs();
@@ -927,6 +950,16 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
 
         @Override
+        @Trivial
+        public InputStream getInputStream() {
+            try {
+                return this.entry.getInputStream();
+            } catch (IOException e) {
+                // ignore
+                return null;
+            }
+        }
+        @Override
         public URL getResourceURL(String jarProtocol) {
             URL url = this.entry.getResource();
             if (url == null) {
@@ -1107,6 +1140,18 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
 
         @Override
+        @Trivial
+        public InputStream getInputStream() {
+            URL u = getResourceURL("jar");
+            try {
+                return u.openStream();
+            } catch (IOException e) {
+                // ignore
+                return null;
+            }
+        }
+
+        @Override
         public URL getResourceURL(String jarProtocol) {
             Collection<URL> urls = container.getURLs();
             if (urls.isEmpty())
@@ -1152,6 +1197,8 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         ByteResourceInformation getByteResourceInformation(String className, String path, ClassLoaderHook hook) throws IOException;
 
         URL getResourceURL(String path, String jarProtocol);
+
+        InputStream getResourceAsStream(String path);
 
         Collection<URL> getResourceURLs(String path, String jarProtocol);
 
@@ -1309,12 +1356,12 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
          * How many found urls to cache for this entire classloader, helps a lot for frequent lookups
          */
         final int MAX_LASTFOUND = maxLastFound;
-        final Map<String, URL> lastFoundURL = Collections.synchronizedMap(new CacheHashMap<String, URL>(MAX_LASTFOUND));
+        final Map<String, UniversalResource> lastFound = Collections.synchronizedMap(new CacheHashMap<String, UniversalResource>(MAX_LASTFOUND));
         /**
          * How many 'really not found' (eg, not known at all to this classloader) to cache.
          */
         final int MAX_LASTREALLYNOTFOUND = maxLastReallyNotFound;
-        final Map<String, Object> lastReallyNotFoundURL = Collections.synchronizedMap(new CacheHashMap<String, Object>(MAX_LASTREALLYNOTFOUND));
+        final Map<String, Object> lastReallyNotFound = Collections.synchronizedMap(new CacheHashMap<String, Object>(MAX_LASTREALLYNOTFOUND));
 
         /**
          * This containers package map, indexed from hashCode of package string to list of relevant containers.
@@ -1497,16 +1544,33 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         }
 
         @Override
+        public InputStream getResourceAsStream(String path) {
+            UniversalResource ur = getResource(path);
+            if (ur != null) {
+                return ur.getInputStream();
+            }
+            return null;
+        }
+
+        @Override
         public URL getResourceURL(String path, String jarProtocol) {
+            UniversalResource ur = getResource(path);
+            if (ur != null) {
+                return ur.getResourceURL(jarProtocol);
+            }
+            return null;
+        }
+
+        private UniversalResource getResource(String path) {
             //test positive cache 1st.
-            URL cached = lastFoundURL.get(path);
+            UniversalResource cached = lastFound.get(path);
             if (cached != null) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "CCL: [" + this.hashCode() + "]  getResourceURL : '" + path + "' " + "lastFound hit.");
                 return cached;
             }
             //test negative cache next..
-            if (lastReallyNotFoundURL.containsKey(path)) {
+            if (lastReallyNotFound.containsKey(path)) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "CCL: [" + this.hashCode() + "]  getResourceURL : '" + path + "' " + "lastReallyNotFound hit.");
                 return null;
@@ -1525,17 +1589,12 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
                     //no hit found, try getResource
                     UniversalContainer.UniversalResource ur = uc.getResource(path);
                     if (ur != null) {
-                        URL url = ur.getResourceURL(jarProtocol);
-                        //some resources may not have urls.. ensure we dont return null.
-                        if (url != null) {
-                            //add url to cache..
-                            if (tc.isDebugEnabled())
-                                Tr.debug(tc, "CCL: [" + this.hashCode() + "]  getResourceURL : '" + path + "' " + "found at classpath index " + idx
-                                             + " local not found caches allowed us to skip " + skipped + " locations. Found cache is now.. "
-                                             + lastFoundURL.size() + " and path was known to cache? " + lastFoundURL.containsKey(path));
-                            lastFoundURL.put(path, url);
-                            return url;
-                        }
+                        if (tc.isDebugEnabled())
+                            Tr.debug(tc, "CCL: [" + this.hashCode() + "]  getResourceURL : '" + path + "' " + "found at classpath index " + idx
+                                         + " local not found caches allowed us to skip " + skipped + " locations. Found cache is now.. "
+                                         + lastFound.size() + " and path was known to cache? " + lastFound.containsKey(path));
+                        lastFound.put(path, ur);
+                        return ur;
                     } else {
                         //looked, but did not find, update cache.
                         if (!usePackageMap && lastNotFoundForThisContainer != null) {
@@ -1548,16 +1607,16 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
                 idx++;
             }
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "CCL: [" + this.hashCode() + "]  getResourceURL : '" + path + "' " + "really not found. Cache size is now.. " + lastReallyNotFoundURL.size()
-                             + " path already known to cache? " + lastReallyNotFoundURL.containsKey(path));
-            lastReallyNotFoundURL.put(path, null);//abusing a map as a set here =)
+                Tr.debug(tc, "CCL: [" + this.hashCode() + "]  getResourceURL : '" + path + "' " + "really not found. Cache size is now.. " + lastReallyNotFound.size()
+                             + " path already known to cache? " + lastReallyNotFound.containsKey(path));
+            lastReallyNotFound.put(path, null);//abusing a map as a set here =)
             return null;
         }
 
         @Override
         public Collection<URL> getResourceURLs(String path, String jarProtocol) {
             List<URL> urls = new ArrayList<URL>();
-            if (lastReallyNotFoundURL.containsKey(path)) {
+            if (lastReallyNotFound.containsKey(path)) {
                 return urls;
             }
 
@@ -1587,7 +1646,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
                 idx++;
             }
             if (urls.isEmpty()) {
-                lastReallyNotFoundURL.put(path, null);
+                lastReallyNotFound.put(path, null);
             }
             return urls;
         }
@@ -1672,6 +1731,12 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         public synchronized URL getResourceURL(String path, String jarProtocol) {
             unwrap();
             return delegate.getResourceURL(path, jarProtocol);
+        }
+
+        @Override
+        public InputStream getResourceAsStream(String path) {
+            unwrap();
+            return delegate.getResourceAsStream(path);
         }
 
         @Override
@@ -1854,21 +1919,11 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
 
     @Override
     public URL findResource(String name) {
-        //check super first, which checks parent, if any.
-        URL url = super.findResource(name);
-        if (url != null) {
-            return url;
-        }
-        url = smartClassPath.getResourceURL(name, jarProtocol);
+        return smartClassPath.getResourceURL(name, jarProtocol);
+    }
 
-        //no need to retry smartClassPath with trailing / it already dealt with that.
-        if (url == null && !name.endsWith("/")) {
-            url = super.findResource(name);
-            if (url != null)
-                url = stripTrailingSlash(url);
-        }
-
-        return url;
+    protected InputStream findInputStream(String name) {
+        return smartClassPath.getResourceAsStream(name);
     }
 
     @Override

@@ -264,6 +264,18 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         return result;
     }
 
+    @Override
+    public InputStream getResourceAsStream(String name) {
+        InputStream result = findStreamCommonLibraryClassLoaders(name, beforeApp);
+        if (result == null) {
+            result = parent.getResourceAsStream(name);
+        }
+        if (result == null) {
+            result = findInputStream(name);
+        }
+        return result;
+    }
+
     /**
      * Search order:
      * 1. This classloader.
@@ -298,6 +310,35 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             }
             if (result == null) {
                 result = findResourceCommonLibraryClassLoaders(name, afterApp);
+            }
+        } finally {
+            ThreadIdentityManager.reset(token);
+        }
+        return result;
+    }
+
+    @Override
+    protected InputStream findInputStream(String name) {
+        return findStreamInternal(name, false);
+    }
+
+    @Override
+    protected InputStream delegateFindInputStream(String resName) {
+        return findStreamInternal(resName, true);
+    }
+
+    private InputStream findStreamInternal(String name, boolean delegate) {
+        InputStream result = null;
+        Object token = ThreadIdentityManager.runAsServer();
+        try {
+            if (delegate) {
+                result = findStreamCommonLibraryClassLoaders(name, beforeApp);
+            }
+            if (result == null) {
+                result = super.findInputStream(name);
+            }
+            if (result == null) {
+                result = findStreamCommonLibraryClassLoaders(name, afterApp);
             }
         } finally {
             ThreadIdentityManager.reset(token);
@@ -806,6 +847,17 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
             }
         }
         // If we reached here, then the resource was not found.
+        return null;
+    }
+
+    protected InputStream findStreamCommonLibraryClassLoaders(String name, LibraryPrecedence precedence) {
+        for (LibertyLoader cl : getDelegates(precedence)) {
+            InputStream stream = cl.delegateFindInputStream(name);
+            if (stream != null) {
+                return stream;
+            }
+        }
+        // If we reached here, then the stream was not found.
         return null;
     }
 

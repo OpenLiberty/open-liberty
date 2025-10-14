@@ -22,6 +22,7 @@ import static com.ibm.ws.classloading.internal.Util.freeze;
 import static com.ibm.ws.classloading.internal.Util.list;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.net.URL;
 import java.util.Enumeration;
@@ -70,6 +71,18 @@ class ParentLastClassLoader extends AppClassLoader {
         }
         if (result == null) {
             result = parent.getResource(name);
+        }
+        return result;
+    }
+
+    @Override
+    public InputStream getResourceAsStream(String name) {
+        InputStream result = findStreamCommonLibraryClassLoaders(name, beforeApp);
+        if (result == null) {
+            result = findInputStream(name);
+        }
+        if (result == null) {
+            result = parent.getResourceAsStream(name);
         }
         return result;
     }

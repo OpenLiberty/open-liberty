@@ -13,6 +13,7 @@
 package com.ibm.ws.classloading.internal;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -180,24 +181,45 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     }
 
     @Override
-    protected URL findResource(String name) {
-        URL url = super.findResource(name);
-        if (url == null) {
-            ConcurrentLinkedQueue<String> providerNames = clSvc.metaInfServicesProviders.get(name);
-            if (providerNames != null)
-                for (String providerImplClassName : providerNames) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, providerImplClassName);
-                    ServiceReference<MetaInfServicesProvider> ref = clSvc.metaInfServicesRefs.getReference(providerImplClassName);
-                    if (ref != null) {
-                        url = (URL) ref.getProperty("file.url");
-                        break;
-                    }
-                }
+    public InputStream getResourceAsStream(String resName) {
+        InputStream result = super.getResourceAsStream(resName);
+        if (result != null) {
+            return result;
         }
-        return url;
+        URL url = getFromClassProvider(resName);
+        if (url != null) {
+            try {
+                return url.openStream();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
+        return null;
     }
 
+    @Override
+    protected URL findResource(String name) {
+        URL url = super.findResource(name);
+        if (url != null) {
+            return url;
+        }
+        return getFromClassProvider(name);
+    }
+
+    private URL getFromClassProvider(String name) {
+        ConcurrentLinkedQueue<String> providerNames = clSvc.metaInfServicesProviders.get(name);
+        if (providerNames != null) {
+            for (String providerImplClassName : providerNames) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, providerImplClassName);
+                ServiceReference<MetaInfServicesProvider> ref = clSvc.metaInfServicesRefs.getReference(providerImplClassName);
+                if (ref != null) {
+                    return (URL) ref.getProperty("file.url");
+                }
+            }
+        }
+        return null;
+    }
     @Override
     protected Enumeration<URL> findResources(String name) throws IOException {
         Enumeration<URL> urlEnum = super.findResources(name);

@@ -15,6 +15,7 @@ package com.ibm.ws.classloading.internal;
 import static com.ibm.ws.classloading.internal.LibertyLoader.DelegatePolicy.includeParent;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.net.URL;
 import java.security.AccessController;
@@ -168,6 +169,24 @@ public class UnifiedClassLoader extends LibertyLoader implements SpringLoader {
             return null;
         }
         throw new ClassNotFoundException(name);
+    }
+
+    @Override
+    public InputStream getResourceAsStream(String resName) {
+        if (parent != null) {
+            InputStream fromParent = parent.getResourceAsStream(resName);
+            if (fromParent != null) {
+                return fromParent;
+            }
+        }
+        InputStream fromFollowOn = null;
+        for (ClassLoader cl : followOnClassLoaders) {
+            fromFollowOn = cl.getResourceAsStream(resName);
+            if (fromFollowOn != null) {
+                return fromFollowOn;
+            }
+        }
+        return null;
     }
 
     @Override
