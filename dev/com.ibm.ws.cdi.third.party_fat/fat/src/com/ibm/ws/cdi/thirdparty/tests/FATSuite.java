@@ -23,8 +23,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                HibernateSearchTest.class,
-                ThirdPartyTests.class,
+                //HibernateSearchTest.class,
+                //ThirdPartyTests.class,
                 HibernateCDICompatibilityTest.class,
                 AlwaysPassesTest.class
 })

@@ -19,7 +19,7 @@
     </library>
 
     <library id="HibernateLib">
-        <fileset dir="${shared.resource.dir}/hibernatejavax" includes="*.jar" />
+        <fileset dir="${shared.resource.dir}/hibernate6Untransformed" includes="*.jar" />
     </library>
 
     <application location="hibernateCompatibilityTest.war">

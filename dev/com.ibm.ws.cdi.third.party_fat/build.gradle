@@ -18,6 +18,9 @@ configurations {
   hibernateSearchLibs {
     transitive = false
   }
+  hibernateJakartaSearchLibs {
+    transitive = false
+  }
 }
 
 dependencies {
@@ -53,11 +56,41 @@ dependencies {
     'com.fasterxml:classmate:1.5.0',
     'javassist:javassist:3.12.1.GA',
     'antlr:antlr:2.7.7'
+  hibernateJakartaSearchLibs 'org.antlr:antlr:3.5.2',
+    project(':io.openliberty.com.google.gson'),
+    project(':io.openliberty.org.apache.commons.codec'),
+    project(':com.ibm.ws.org.apache.httpcomponents'),
+    'org.apache.lucene:lucene-analyzers-common:5.5.5',
+    'org.apache.lucene:lucene-core:5.5.5',
+    'org.apache.lucene:lucene-facet:5.5.5',
+    'org.apache.lucene:lucene-misc:5.5.5',
+    'org.apache.lucene:lucene-queries:5.5.5',
+    'org.apache.lucene:lucene-queryparser:5.5.5',
+    'org.dom4j:dom4j:2.1.1',
+    'org.elasticsearch.client:elasticsearch-rest-client:5.6.8',
+    'org.elasticsearch.client:elasticsearch-rest-client-sniffer:5.6.8',
+    'org.hibernate.common:hibernate-commons-annotations:5.1.0.Final',
+    'org.hibernate.orm:hibernate-core:6.6.23.Final',
+    'org.hibernate:hibernate-search-elasticsearch:5.11.2.Final',
+    'org.hibernate:hibernate-search-engine:5.11.2.Final',
+    'org.hibernate:hibernate-search-orm:5.11.2.Final',
+    'org.jboss.logging:jboss-logging:3.3.2.Final',
+    'net.bytebuddy:byte-buddy:1.10.0',
+    'com.fasterxml:classmate:1.5.0',
+    'javassist:javassist:3.12.1.GA',
+    'antlr:antlr:2.7.7'
 }
 
 task downloadHibernateSearchLibs(type: Copy) {
   from configurations.hibernateSearchLibs
   into new File(autoFvtDir, 'publish/shared/resources/hibernatejavax')
+  rename 'jboss-logging-.*.jar', 'jboss-logging.jar'
+  rename 'hibernate-core-.*.jar', 'hibernate-core.jar'
+}
+
+task downloadHibernateJakartaSearchLibs(type: Copy) {
+  from configurations.hibernateJakartaSearchLibs
+  into new File(autoFvtDir, 'publish/shared/resources/hibernate6Untransformed')
   rename 'jboss-logging-.*.jar', 'jboss-logging.jar'
   rename 'hibernate-core-.*.jar', 'hibernate-core.jar'
 }
@@ -71,5 +104,6 @@ addRequiredLibraries {
   dependsOn addDerby
   dependsOn addDeltaspikeLibs
   dependsOn downloadHibernateSearchLibs	
+  dependsOn downloadHibernateJakartaSearchLibs	
   dependsOn addJakartaTransformer
 }

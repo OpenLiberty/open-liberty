@@ -21,7 +21,7 @@
     </library>
 
     <library id="HibernateLib">
-        <fileset dir="${shared.resource.dir}/hibernatejakarta" includes="*.jar" />
+        <fileset dir="${shared.resource.dir}/hibernate6Transformed" includes="*.jar" />
     </library>
 
     <application location="hibernateCompatibilityTest.war">

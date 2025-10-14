@@ -34,13 +34,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.cdi.thirdparty.apps.hibernateCompatibilityWar.model.TestEntity;
 import com.ibm.ws.cdi.thirdparty.apps.hibernateCompatibilityWar.web.HibernateCompatibilityTestServlet;
-import com.ibm.ws.cdi.thirdparty.apps.hibernateSearchWar.model.BasicFieldBridge;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -49,7 +46,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+//@Mode(TestMode.FULL)
 public class HibernateCDICompatibilityTest extends FATServletClient {
 
     public static final String HIBERNATE_COMPAT_APP_NAME = "hibernateCompatibilityTest";
@@ -70,11 +67,11 @@ public class HibernateCDICompatibilityTest extends FATServletClient {
         // To prevent errors on Windows because of file locks, we create a separate set of transformed jakarta jars
         // This must happen before LibertyServerFactory.getLibertyServer as that method copies the publish directory into the server
         if (JakartaEEAction.isEE9OrLaterActive()) {
-            List<Path> files = Files.list(Paths.get("publish/shared/resources/hibernatejavax")).collect(Collectors.toList());
+            List<Path> files = Files.list(Paths.get("publish/shared/resources/hibernate6Untransformed")).collect(Collectors.toList());
             for (Path file : files) {
-                File dir = new File("publish/shared/resources/hibernatejakarta/");
+                File dir = new File("publish/shared/resources/hibernate6Transformed/");
                 dir.mkdir();
-                String newPathString = "publish/shared/resources/hibernatejakarta/" + file.getFileName();
+                String newPathString = "publish/shared/resources/hibernate6Transformed/" + file.getFileName();
                 Path newPath = Paths.get(newPathString);
                 JakartaEEAction.transformApp(file, newPath);
             }
@@ -86,13 +83,12 @@ public class HibernateCDICompatibilityTest extends FATServletClient {
         String persistenceXML = readFile(server.getServerRoot() + "/persistence.xml", StandardCharsets.UTF_8);
         persistenceXML = persistenceXML.replaceAll("INDEX-PATH", server.getServerRoot() + "/lucene/indexes");
 
-
         // Create the test application
         WebArchive hibernateCompatTest = ShrinkWrap.create(WebArchive.class, HIBERNATE_COMPAT_APP_NAME + ".war")
-                                                    .addPackages(true, TestEntity.class.getPackage())
-                                                    .addPackages(true, HibernateCompatibilityTestServlet.class.getPackage())
-                                                    .addAsResource(new StringAsset(persistenceXML), "META-INF/persistence.xml")
-                                                    .addAsResource("com/ibm/ws/cdi/thirdparty/apps/hibernateCompatibilityWar/jpaorm.xml", "META-INF/jpaorm.xml");
+                                                   .addPackages(true, TestEntity.class.getPackage())
+                                                   .addPackages(true, HibernateCompatibilityTestServlet.class.getPackage())
+                                                   .addAsResource(new StringAsset(persistenceXML), "META-INF/persistence.xml")
+                                                   .addAsResource("com/ibm/ws/cdi/thirdparty/apps/hibernateCompatibilityWar/jpaorm.xml", "META-INF/jpaorm.xml");
 
         ShrinkHelper.exportAppToServer(server, hibernateCompatTest, DeployOptions.SERVER_ONLY);
 
@@ -114,5 +110,3 @@ public class HibernateCDICompatibilityTest extends FATServletClient {
         return new String(encoded, encoding);
     }
 }
-
-
