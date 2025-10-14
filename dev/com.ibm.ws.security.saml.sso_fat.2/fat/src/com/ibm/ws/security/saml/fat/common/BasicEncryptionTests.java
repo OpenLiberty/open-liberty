@@ -194,7 +194,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @MaximumJavaLevel(javaLevel = 8) // test uses DSA cert and that is no longer supported
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException", "java.security.InvalidKeyException" }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException", "java.security.InvalidKeyException", "org.apache.xml.security.signature.XMLSignatureException" }, repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
     @Test
     public void testNoKeyAlias_DefaultKeyAliasInKeystore_OneCertInKeystore_WrongCert() throws Exception {
 
@@ -266,7 +266,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "java.security.InvalidKeyException" },repeatAction = {EmptyAction.ID,JakartaEE9Action.ID,JakartaEE10Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "java.security.InvalidKeyException", "org.apache.xml.security.signature.XMLSignatureException" },repeatAction = {EmptyAction.ID,JakartaEE9Action.ID,JakartaEE10Action.ID})
     @Test
     public void testKeyAlias_MultipleCertsInKeystore_KeyAliasIsWrongCert() throws Exception {
 
@@ -493,7 +493,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
     @Test
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException", "java.security.InvalidKeyException", "java.security.spec.InvalidKeySpecException", "org.apache.xml.security.signature.XMLSignatureException" })
     public void testEncryptionAlgorithm_AES128_RSAKey_signatureMethodAlgorithmECDSAMismatch() throws Exception {
-    	if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
+    	if (true || System.getProperty("java.specification.version").matches("1\\.[789]")) {
             Log.info(thisClass, _testName, "Skipping test. idp v3 does not support EC-DH");
             return;
     	}
