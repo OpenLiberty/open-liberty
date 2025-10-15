@@ -3685,7 +3685,7 @@ public final class XMLCipher { // Liberty Change: Backport 4.x
 
             boolean result = false;
             if (domResult.getNode().getFirstChild().getFirstChild().hasAttributes()
-                && domResult.getNode().getFirstChild().getFirstChild().getAttributes().getLength() >= 1) {
+                && domResult.getNode().getFirstChild().getFirstChild().getAttributes().getLength() >= 2) {
                 result = "http://www.w3.org/2000/xmlns/".equals(
                     domResult.getNode().getFirstChild().getFirstChild().getAttributes().item(1).getNamespaceURI());
             }
