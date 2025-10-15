@@ -111,6 +111,7 @@ public class SsoConfigImplTest {
                     allowing(confAdmin).getConfiguration(SsoConfigImpl.CFG_KEY_AUTH_FILTER_REF, null);
                     will(returnValue(config));
                     allowing(parentSsoService).searchTrustAnchors(with(any(Collection.class)), with(any(String.class)));
+                    allowing(parentSsoService).getSignatureCertificate();
                 } catch (Exception e) {
                     e.printStackTrace();
                     fail("Unexpected exception was thrown: " + e);
