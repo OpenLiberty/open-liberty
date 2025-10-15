@@ -1,6 +1,8 @@
 package com.ibm.ws.http.netty.message;
 
 import java.util.ArrayDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
@@ -10,9 +12,9 @@ final public class BodyQueue {
     private static final int DEFAULT_HIGH = 256 * 1024;
     private static final int DEFAULT_LOW = 64 * 1024;
 
-    private final ArrayDeque<ByteBuf> queue = new ArrayDeque<>();
+    private final ConcurrentLinkedQueue<ByteBuf> queue = new ConcurrentLinkedQueue<>();
     private final int lowWater, highWater;
-    private int buffered;
+    private final AtomicInteger buffered = new AtomicInteger();
     private volatile boolean eos;
     private volatile Throwable error;
     private final ByteBufAllocator allocator;
@@ -28,20 +30,20 @@ final public class BodyQueue {
     }
 
     public void enqueueRetained(ByteBuf buf){
-        queue.addLast(buf.retain());
-        buffered += buf.readableBytes();
+        queue.add(buf.retain());
+        buffered.addAndGet(buf.readableBytes());
     }
 
     public ByteBuf poll(){
-        ByteBuf b = queue.pollFirst();
+        ByteBuf b = queue.poll();
         if(b!=null){
-            buffered -= b.readableBytes();
+            buffered.addAndGet(-b.readableBytes());
         }
         return b;
     }
 
     public boolean wantsInput(){
-        return error == null && !eos && buffered < lowWater;
+        return error == null && !eos && buffered.get() < lowWater;
     }
 
     public boolean isEos(){

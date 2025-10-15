@@ -609,6 +609,11 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     Tr.debug(tc, "setupforMultiRead, Netty buffer ->" + postDataBuffer.get(postDataIndex)
                                  + " ,buffersize ->" + postDataBuffer.size() + " ,index ->" + postDataIndex);
                 }
+                if(buffer!=null){
+                    postDataBuffer.add(postDataIndex, this.buffer);
+                    postDataIndex++;
+                }
+
                 postDataIndex = 0;
                 // Set first read complete and read from channel complete
                 firstReadCompleteforMulti = true;
@@ -664,7 +669,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             this.buffer = null;
         }
         while(true){
-            ByteBuf fragment = (nettyBody != null) ? queue.poll():null;
+            ByteBuf fragment = (queue != null) ? queue.poll():null;
             if(fragment == null){
                 if(queue !=null && queue.isEos()){
                     return false; //EOS
@@ -685,7 +690,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 WsByteBuffer fragmentSource = ChannelFrameworkFactory.getBufferManager().allocate(len);
                 int position = fragmentSource.position();
                 fragmentSource.limit(position+len);
-                fragment.readBytes(buffer.getWrappedByteBuffer());
+                fragment.readBytes(fragmentSource.getWrappedByteBuffer());
                 fragmentSource.flip();
 
                 //Stream decompression if content-encoding is present
@@ -714,6 +719,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 } else{
                     //No data produced, compression might need more data
                     if(out != buffer && buffer != null){
+                        fragmentSource.release();
+                    }
+                    if(out != fragmentSource){
                         fragmentSource.release();
                     }
                     continue; //fetch another fragment

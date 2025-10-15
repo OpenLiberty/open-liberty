@@ -184,7 +184,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if(!(request instanceof HttpRequestImpl)){
             throw new IllegalStateException("Unexepcted request type");
         }
+        System.out.println("Request is: " + transportRequest);
         HttpRequestImpl requestImpl = (HttpRequestImpl) request;
+        System.out.println("Stream obtained is: " + requestImpl.getBody());
         if(!(requestImpl.getBody() instanceof HttpInputStreamImpl)){
             throw new IllegalStateException("Unexpected stream type");
         }
@@ -197,6 +199,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         this.streaming = true;
         link.ready();
+
+        if(!context.channel().config().isAutoRead() && queue.wantsInput()){
+            context.read();
+        }
 
         final long cl = HttpUtil.getContentLength(request, 0L);
         final boolean chunked = HttpUtil.isTransferEncodingChunked(request);
