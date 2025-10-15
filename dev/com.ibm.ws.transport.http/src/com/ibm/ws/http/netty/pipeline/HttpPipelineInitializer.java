@@ -138,6 +138,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
         }
        
+        Tr.debug(tc, "MSP >> HTTP pipeline: " + channel.pipeline().toMap().keySet());
 
         Tr.exit(tc, "initChannel");
     }

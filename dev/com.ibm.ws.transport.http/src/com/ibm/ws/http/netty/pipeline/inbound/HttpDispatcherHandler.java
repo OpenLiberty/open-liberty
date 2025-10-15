@@ -86,6 +86,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext context) throws Exception {
+        if(!context.channel().config().isAutoRead()){
+            Tr.debug(tc, "Dispatcher.channelActive -> issue initial read");
+            context.read();
+        }
+        super.channelActive(context);
+    }
+
+    @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
         // Store the context for later use
         context = ctx;
@@ -181,11 +190,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         
         //get input stream
         com.ibm.wsspi.http.HttpRequest transportRequest = this.link.getRequest();
-        if(!(request instanceof HttpRequestImpl)){
+        if(!(transportRequest instanceof HttpRequestImpl)){
             throw new IllegalStateException("Unexepcted request type");
         }
         System.out.println("Request is: " + transportRequest);
-        HttpRequestImpl requestImpl = (HttpRequestImpl) request;
+        HttpRequestImpl requestImpl = (HttpRequestImpl) transportRequest;
         System.out.println("Stream obtained is: " + requestImpl.getBody());
         if(!(requestImpl.getBody() instanceof HttpInputStreamImpl)){
             throw new IllegalStateException("Unexpected stream type");
