@@ -15,8 +15,6 @@ package com.ibm.ws.http.channel.internal.inbound;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.zip.DataFormatException;
 
@@ -27,17 +25,14 @@ import com.ibm.ws.http.channel.inputstream.HttpInputStreamConnectWeb;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
-import com.ibm.wsspi.http.channel.compression.DecompressionHandler;
-import com.ibm.wsspi.http.channel.compression.DeflateInputHandler;
-import com.ibm.wsspi.http.channel.compression.GzipInputHandler;
-import com.ibm.wsspi.http.channel.compression.IdentityInputHandler;
 import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
-import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.openliberty.http.netty.compression.HttpContentDecompressor;
@@ -73,6 +68,15 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private HttpInputStreamObserver obs = null;
     private FullHttpRequest nettyRequest = null;
     private ByteBuf nettyBody = null;
+    private HttpContentDecompressor decompressor;
+
+    //Netty streaming (autoread off) state
+    private volatile BodyQueue queue;
+    private volatile ChannelHandlerContext context;
+    private volatile boolean autoRead;
+    private volatile boolean streaming;
+    private volatile String contentEncoding;
+
 
     /**
      * Constructor.
@@ -83,6 +87,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.isc = context;
     }
 
+    /* Constructor for auto-read enabled on Netty */
     public HttpInputStreamImpl(HttpInboundServiceContext context, FullHttpRequest request) {
         this.isc = context;
         this.nettyRequest = request;
@@ -96,7 +101,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             HttpChannelConfig config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
 
 
-            HttpContentDecompressor decompressor = new HttpContentDecompressor();
+            decompressor = new HttpContentDecompressor();
             try{
                 this.buffer = decompressor.decompress(buffer, config, contentEncoding);
             
@@ -114,6 +119,16 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
     private boolean isCompressed(String encoding) {
         return "gzip".equalsIgnoreCase(encoding) || "deflate".equalsIgnoreCase(encoding);
+    }
+
+    /* call from dispatcher handler when headers are parsed and auto-read off */
+    public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding){
+        this.queue = queue;
+        this.context = context;
+        this.autoRead = (context != null) && context.channel().config().isAutoRead();
+        this.streaming = true;
+        this.contentEncoding = (contentEncoding == null) ? null: contentEncoding.toLowerCase();
+        this.decompressor = new HttpContentDecompressor();
     }
 
     /*
@@ -167,6 +182,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 }
                 this.buffer.release();
                 this.buffer = null;
+            }
+            //Netty streaming (auto read off)
+            if(streaming){
+                return fillFromStreamingNetty();
             }
             if (Objects.nonNull(this.nettyRequest)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -310,6 +329,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private boolean getBufferFromChannel() throws IOException {
 
         try {
+            if(streaming){
+                return fillFromStreamingNetty();
+            }
             this.buffer = this.isc.getRequestBodyBuffer();
             if (null != this.buffer) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -327,16 +349,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
         return false;
     }
-
-//    @Override
-//    public int available() throws IOException {
-//        validate();
-//        int rc = (null == this.buffer) ? 0 : this.buffer.remaining();
-//        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-//            Tr.debug(tc, "available: " + rc);
-//        }
-//        return rc;
-//    }
 
     @Override
     public int available() throws IOException {
@@ -585,9 +597,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             firstReadCompleteforMulti = false;
             readChannelComplete = false;
             dataAlreadyReadFromChannel = false;
-            if (Objects.nonNull(this.nettyRequest)) {
+            if (Objects.nonNull(this.nettyRequest) || streaming) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Setting up Netty multiread!");
+                    Tr.debug(tc, "Setting up Netty multiread! streaming =" + streaming);
                 }
                 if (buffer == null) {
                     throw new UnsupportedOperationException("We should have data when working with Netty");
@@ -601,6 +613,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 // Set first read complete and read from channel complete
                 firstReadCompleteforMulti = true;
                 readChannelComplete = true;
+                if(nettyRequest != null){
+                    firstReadCompleteforMulti = true;
+                    readChannelComplete = true;
+                }
             }
         }
     }
@@ -635,6 +651,75 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "init", "cleanupforMultiRead, postDataBuffer is not available");
+            }
+        }
+    }
+
+    private boolean fillFromStreamingNetty() throws IOException{
+        if(this.buffer != null && this.buffer.hasRemaining()){
+            return true;
+        }
+        if(this.buffer != null){
+            this.buffer.release();
+            this.buffer = null;
+        }
+        while(true){
+            ByteBuf fragment = (nettyBody != null) ? queue.poll():null;
+            if(fragment == null){
+                if(queue !=null && queue.isEos()){
+                    return false; //EOS
+                }
+                if(!autoRead && queue !=null && queue.wantsInput()&& context !=null){
+                    context.read(); 
+                }
+                try{
+                    Thread.sleep(1);
+                }catch(InterruptedException ie){
+                    Thread.currentThread().interrupt();
+                }
+                continue; // retry read
+            }
+            try{
+                //Copy into WsByteBuffer (this avoids retaining netty memory)
+                int len = fragment.readableBytes();
+                WsByteBuffer fragmentSource = ChannelFrameworkFactory.getBufferManager().allocate(len);
+                int position = fragmentSource.position();
+                fragmentSource.limit(position+len);
+                fragment.readBytes(buffer.getWrappedByteBuffer());
+                fragmentSource.flip();
+
+                //Stream decompression if content-encoding is present
+                WsByteBuffer out = fragmentSource;
+                if(contentEncoding !=null && isCompressed(contentEncoding)){
+                    HttpChannelConfig config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
+                    try{
+                        out = decompressor.decompress(fragmentSource, config, contentEncoding);
+                    }catch(DataFormatException dfe){
+                        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                            Tr.debug(tc, "Exception during streaming decompress", dfe);
+                        }
+                        fragmentSource.release();
+                        throw new IOException("Invalid compressed request body", dfe);
+                    }
+                }
+                if(out !=null && out.hasRemaining()){
+                    this.buffer = out;
+                    this.bytesRead += this.buffer.remaining();
+                    //If multi-read is enabled, store duplicate for next read
+                    if(enableMultiReadofPostData && postDataBuffer !=null){
+                        postDataBuffer.add(postDataIndex, this.buffer.duplicate());
+                        postDataIndex++;
+                    }
+                    return true;
+                } else{
+                    //No data produced, compression might need more data
+                    if(out != buffer && buffer != null){
+                        fragmentSource.release();
+                    }
+                    continue; //fetch another fragment
+                } 
+            } finally {
+                fragment.release();
             }
         }
     }

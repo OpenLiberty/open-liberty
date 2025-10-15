@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound;
 
+import java.lang.ref.Reference;
 import java.net.InetSocketAddress;
 import java.util.Objects;
 
@@ -17,9 +18,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
+import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.http.channel.error.HttpError;
@@ -27,14 +32,21 @@ import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 
+import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpContent;
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.TooLongHttpHeaderException;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
@@ -49,7 +61,7 @@ import io.openliberty.http.netty.timeout.exception.TimeoutException;
 /**
  *
  */
-public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
 
     private static final TraceComponent tc = Tr.register(HttpDispatcherHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -57,6 +69,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     private ChannelHandlerContext context;
     private final DefaultFullHttpResponse errorResponse;
     private static final String MAX_STREAMS_REFUSED_MESSAGE = "too many client-initiated streams have been refused; closing the connection";
+
+    //Netty streaming (autoRead off, no aggregator)
+    private boolean streaming;
+    private BodyQueue queue;
+    private HttpDispatcherLink link;
+
 
     // private HttpDispatcherLink link;
 
@@ -82,33 +100,112 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
-        // TODO Need to see if we need to check decoder result from request to ensure data is properly parsed as expected
-        if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
-
-            FullHttpRequest msg = request;
-            HttpDispatcher.getExecutorService().execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        newRequest(context, msg);
-                    } catch (Throwable t) {
-                        try {
+    protected void channelRead0(ChannelHandlerContext context, HttpObject message) throws Exception{
+        //Aggregated path
+        if(message instanceof FullHttpRequest){
+            FullHttpRequest full = (FullHttpRequest) message;
+            if(full.decoderResult().isFinished() && full.decoderResult().isSuccess()){
+                FullHttpRequest retained = full.retainedDuplicate();
+                HttpDispatcher.getExecutorService().execute(() -> {
+                    try{
+                        newRequest(context, retained);
+                    }catch(Throwable t){
+                        try{
                             exceptionCaught(context, t);
-                        } catch (Exception e) {
+                        }catch(Exception e){
                             context.close();
                         }
-                    } finally {
-                        ReferenceCountUtil.release(msg);
+                    }finally {
+                        ReferenceCountUtil.release(retained);
                     }
-                }
-            });
-        } else {
-            if (request.decoderResult().cause() != null) {
-                request.decoderResult().cause().printStackTrace();
+                });
+            } else if (full.decoderResult().cause() != null){
+                full.decoderResult().cause().printStackTrace(); //TODO: we need to change this
             }
+            return;
         }
 
+        //Streaming path
+        if(message instanceof HttpRequest){
+            HttpRequest request = (HttpRequest) message;
+            beginStreamingRequest(context, request);
+            return;
+        }
+        if(message instanceof HttpContent){
+            HttpContent content = (HttpContent) message;
+            if(!streaming || queue == null){ //pass-thru
+                context.fireChannelRead(content.retain());
+                return;
+            }
+            ByteBuf buf = content.content();
+            if(buf.isReadable()){
+                queue.enqueueRetained(buf); //release the buffer in input stream
+            } else{
+                buf.release();
+            }
+            if(content instanceof LastHttpContent){
+                LastHttpContent last = (LastHttpContent) content;
+                // deal with trailers
+                queue.signalEos();
+                if(this.link != null){
+                    this.link.setBodyComplete();
+                }
+            }
+            if(!context.channel().config().isAutoRead() && queue.wantsInput()){
+                context.read();
+            }
+            return;
+        }
+    }
+
+    private void beginStreamingRequest(ChannelHandlerContext context, HttpRequest request){
+        if(request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())){
+            context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
+        }else{
+            if(request.protocolVersion().equals(HttpVersion.HTTP_1_0)){
+                context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP10");
+            }else{
+                context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
+            }
+        }
+        if(context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)){
+            context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
+        }
+        int numberOfRequests = context.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
+        context.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(numberOfRequests+1);
+
+        this.link = new HttpDispatcherLink();
+        this.link.initStreaming(context, request, config);
+
+        this.queue = new BodyQueue(context.alloc());
+        
+        //get input stream
+        com.ibm.wsspi.http.HttpRequest transportRequest = this.link.getRequest();
+        if(!(request instanceof HttpRequestImpl)){
+            throw new IllegalStateException("Unexepcted request type");
+        }
+        HttpRequestImpl requestImpl = (HttpRequestImpl) request;
+        if(!(requestImpl.getBody() instanceof HttpInputStreamImpl)){
+            throw new IllegalStateException("Unexpected stream type");
+        }
+        HttpInputStreamImpl stream = (HttpInputStreamImpl)transportRequest.getBody();
+
+        String encoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
+        stream.nettyConfigureStreaming(queue, context, encoding);
+
+        //If not input stream throw newIllegalStateException
+
+        this.streaming = true;
+        link.ready();
+
+        final long cl = HttpUtil.getContentLength(request, 0L);
+        final boolean chunked = HttpUtil.isTransferEncodingChunked(request);
+        if(!chunked && cl == 0){
+            if(this.link !=null){
+                this.link.setBodyComplete();
+            }
+        }
+        
     }
 
     @Override

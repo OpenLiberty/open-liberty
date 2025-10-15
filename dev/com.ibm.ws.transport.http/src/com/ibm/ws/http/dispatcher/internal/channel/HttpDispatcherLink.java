@@ -77,10 +77,13 @@ import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
 import com.ibm.wsspi.http.ee8.Http2InboundConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
+import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultHttpHeadersFactory;
 import io.netty.handler.codec.http.DefaultHttpResponse;
+import io.netty.handler.codec.http.EmptyHttpHeaders;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
@@ -163,6 +166,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private ConnectionLink nettyConnectionLink;
+    private FullHttpRequest nettyHeaderOnly;
 
     /**
      * Constructor.
@@ -216,6 +220,30 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         super.init(nettyVc);
     }
 
+    public void initStreaming(ChannelHandlerContext context, io.netty.handler.codec.http.HttpRequest headers, HttpChannelConfig config){
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "New conn(streaming): netty context=" + context);
+        }
+        NettyVirtualConnectionImpl nettyVc = NettyVirtualConnectionImpl.createVC();
+        this.nettyContext=context;
+        this.isc = new HttpInboundServiceContextImpl(context, nettyVc);
+        this.isc.setHttpConfig(config);
+        this.isc.setStartTime();
+
+        //Provide headers 
+        this.nettyHeaderOnly = new DefaultFullHttpRequest(headers.protocolVersion(), headers.method(), headers.uri(),
+                Unpooled.EMPTY_BUFFER, headers.headers(), EmptyHttpHeaders.INSTANCE);
+        this.isc.setNettyRequest(nettyHeaderOnly);
+        this.usingNetty = true;
+        this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
+        this.response = new HttpResponseImpl(this);
+        this.isc.setNettyResponse(new DefaultHttpResponse(headers.protocolVersion(), HttpResponseStatus.OK,
+                DefaultHttpHeadersFactory.headersFactory().withValidation(false)));
+        this.nettyConnectionLink = new NettyConnectionLink(context.channel());
+        super.init(nettyVc);
+        this.request.init(isc);
+    }
+
     public void prepareForUpgrade() {
         HttpServerKeepAliveHandler handler = nettyContext.channel().pipeline().get(HttpServerKeepAliveHandler.class);
         if (handler != null) {
@@ -249,7 +277,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
 
-        if (nettyRequest.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+        final FullHttpRequest requestReference = (this.nettyRequest !=null) ? this.nettyRequest:this.nettyHeaderOnly;
+        if (requestReference !=null && requestReference.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
             }
@@ -548,8 +577,18 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Make sure to initialize the response in case of an early-return-error message
-        this.request.init(nettyRequest, isc);
+        if(this.request !=null){
+            boolean bodyCreated = this.request.getBody() != null;
+            if(!bodyCreated){
+                if(this.nettyRequest != null){
+                    this.request.init(this.nettyRequest, isc);
+                }else {
+                    this.request.init(isc);
+                }
+            }
+        }
         this.response.init(isc);
+
         linkIsReady = true;
         ExecutorService executorService = HttpDispatcher.getExecutorService();
         if (null == executorService) {
@@ -684,7 +723,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Initialize the request body / get the message
-        this.request.init(this.isc);
+        if(this.request != null){
+            boolean bodyCreated = (this.request.getBody() !=null);
+            if(!bodyCreated){
+                if(this.nettyRequest != null){
+                    this.request.init(this.nettyRequest, isc);
+                }else{
+                    //streaming path with headers-only
+                    this.request.init(this.isc);
+                }
+            }
+        }
 
         // Try to find a virtual host for the requested host/port..
         VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(this.myChannel.getEndpointPid(),
@@ -1793,6 +1842,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return connectionId;
     }
 
-
+    public void setBodyComplete(){
+        if(this.isc!=null){
+            this.isc.setBodyComplete();
+        }
+    }
 
 }
