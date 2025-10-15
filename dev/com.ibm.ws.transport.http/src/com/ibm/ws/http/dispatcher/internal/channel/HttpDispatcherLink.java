@@ -577,17 +577,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Make sure to initialize the response in case of an early-return-error message
-        if(this.request !=null){
-            boolean bodyCreated = this.request.getBody() != null;
-            if(!bodyCreated){
-                if(this.nettyRequest != null){
-                    this.request.init(this.nettyRequest, isc);
-                }else {
-                    this.request.init(isc);
-                }
-            }
+        if(this.nettyRequest != null){
+            this.request.init(this.nettyRequest, isc);
+        }else{
+            this.request.init(this.isc);
         }
-        this.response.init(isc);
+        this.response.init(this.isc);
 
         linkIsReady = true;
         ExecutorService executorService = HttpDispatcher.getExecutorService();
@@ -602,6 +597,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         try {
             ((NettyRequestMessage)isc.getRequest()).verifyRequest();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                String ae = isc.getRequest().getHeader(HttpHeaderKeys.HDR_ACCEPT_ENCODING).asString();
+                Tr.debug(tc, "MSP >>>Negotiation: Accept-Encoding seen by transport: [" + ae + "]");
+            }
         } catch (IllegalArgumentException iae) {
             //no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -723,16 +722,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Initialize the request body / get the message
-        if(this.request != null){
-            boolean bodyCreated = (this.request.getBody() !=null);
-            if(!bodyCreated){
-                if(this.nettyRequest != null){
-                    this.request.init(this.nettyRequest, isc);
-                }else{
-                    //streaming path with headers-only
-                    this.request.init(this.isc);
-                }
-            }
+        if(this.nettyRequest != null){
+            this.request.init(this.nettyRequest,isc);
+        }else{
+            this.request.init(isc);
         }
 
         // Try to find a virtual host for the requested host/port..
