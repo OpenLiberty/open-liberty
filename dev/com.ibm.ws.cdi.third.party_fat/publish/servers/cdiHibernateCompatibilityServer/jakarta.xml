@@ -35,7 +35,7 @@
 
     <SSLDefault />
     <javaPermission codebase="${server.config.dir}/apps/hibernateCompatibilityTest.war" className="java.security.AllPermission" />
-    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/jboss-logging.jar" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/hibernate6Transformed/jboss-logging.jar" className="java.security.AllPermission" />
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission" />
-    <javaPermission codebase="${shared.resource.dir}/hibernatejakarta/hibernate-core.jar" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/hibernate6Transformed/hibernate-core.jar" className="java.security.AllPermission" />
 </server>
