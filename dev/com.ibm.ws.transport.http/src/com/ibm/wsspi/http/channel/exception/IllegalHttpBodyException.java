@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,5 +32,15 @@ public class IllegalHttpBodyException extends IOException {
      */
     public IllegalHttpBodyException(String msg) {
         super(msg);
+    }
+
+    /**
+     * Constructor for this exception with a cause
+     * 
+     * @param message
+     * @param cause
+     */
+    public IllegalHttpBodyException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

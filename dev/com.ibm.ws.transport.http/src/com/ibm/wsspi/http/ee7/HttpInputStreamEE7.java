@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http2.GrpcServletServices;
+import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.http.channel.exception.BodyCompleteException;
@@ -43,7 +44,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         super(context);
     }
 
-    public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
+    public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) throws IllegalHttpBodyException {
         super(context, request);
     }
 

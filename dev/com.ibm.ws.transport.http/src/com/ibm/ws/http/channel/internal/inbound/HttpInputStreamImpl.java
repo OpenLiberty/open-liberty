@@ -23,6 +23,7 @@ import java.util.zip.DataFormatException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamConnectWeb;
 import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
@@ -82,8 +83,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     public HttpInputStreamImpl(HttpInboundServiceContext context) {
         this.isc = context;
     }
-
-    public HttpInputStreamImpl(HttpInboundServiceContext context, FullHttpRequest request) {
+    public HttpInputStreamImpl(HttpInboundServiceContext context, FullHttpRequest request) throws IllegalHttpBodyException {
         this.isc = context;
         this.nettyRequest = request;
         this.nettyBody = nettyRequest.content();
@@ -101,11 +101,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 this.buffer = decompressor.decompress(buffer, config, contentEncoding);
             
             } catch (DataFormatException dfe) {
-                FFDCFilter.processException(dfe, getClass().getName(), "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Received exception during decompress; " + dfe);
                 }
-                    // TODO -> handle
+                throw new IllegalHttpBodyException("Exception occurred during decompression", dfe);  
             }
             
         }

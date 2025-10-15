@@ -56,6 +56,7 @@ import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.channelfw.base.InboundApplicationLink;
@@ -548,7 +549,21 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Make sure to initialize the response in case of an early-return-error message
-        this.request.init(nettyRequest, isc);
+        try {
+            this.request.init(nettyRequest, isc);
+        } catch (IllegalHttpBodyException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "request.init encountered an IllegalHttpBodyException : " + e);
+            }
+            isc.setHeadersParsed();
+            try {
+                isc.sendError(StatusCodes.BAD_REQUEST.getHttpError());
+            } catch (MessageSentException mse) {
+                // no FFDC required
+                finish(new Exception("HTTP Message failure"));
+            }
+            return;
+        }
         this.response.init(isc);
         linkIsReady = true;
         ExecutorService executorService = HttpDispatcher.getExecutorService();
