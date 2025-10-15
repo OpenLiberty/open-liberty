@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,6 +35,7 @@ public abstract class ServerCommand {
     protected static final String JAVADUMP_COMMAND = "javadump";
     protected static final String PAUSE_COMMAND = "pause";
     protected static final String RESUME_COMMAND = "resume";
+    protected static final String INSPECT_COMMAND = "inspect";
 
     private final CharsetDecoder decoder = StandardCharsets.ISO_8859_1.newDecoder();
     private final CharsetEncoder encoder = StandardCharsets.ISO_8859_1.newEncoder();
@@ -93,7 +94,7 @@ public abstract class ServerCommand {
      * <p>This method is not safe for use by multiple concurrent threads.
      *
      * @param sc the socket channel
-     * @param s the command or command response
+     * @param s  the command or command response
      */
     protected void write(SocketChannel sc, String s) throws IOException {
         sc.write(encoder.encode(CharBuffer.wrap(s)));

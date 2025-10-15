@@ -142,6 +142,9 @@ public class LaunchArguments {
                     } else if (argToLower.equals("--create")) {
                         returnValue = checkPreviousAction(returnValue, ReturnCode.CREATE_ACTION, arg);
                         action = setActionIfOk(returnValue, action, arg);
+                    } else if (argToLower.equals("--inspect")) {
+                        returnValue = checkPreviousAction(returnValue, ReturnCode.INSPECT_ACTION, arg);
+                        action = setActionIfOk(returnValue, action, arg);
                     } else if (argToLower.equals("--stop")) {
                         returnValue = checkPreviousAction(returnValue, ReturnCode.STOP_ACTION, arg);
                         action = setActionIfOk(returnValue, action, arg);
@@ -276,7 +279,7 @@ public class LaunchArguments {
         }
 
         // Any left over arguments are passed on into the framework
-        if (returnValue == ReturnCode.OK || returnValue == ReturnCode.MESSAGE_ACTION)
+        if (returnValue == ReturnCode.OK || returnValue == ReturnCode.MESSAGE_ACTION || returnValue == ReturnCode.INSPECT_ACTION)
             extraArguments = cmdArgs;
 
         // Allow the command to work even if the server does not exist.

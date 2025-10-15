@@ -21,12 +21,9 @@ import static org.osgi.framework.FrameworkUtil.asDictionary;
 import static org.osgi.service.condition.Condition.CONDITION_ID;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.instrument.Instrumentation;
 import java.lang.reflect.Method;
@@ -35,10 +32,12 @@ import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.MessageFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -79,7 +78,6 @@ import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.ReturnCode;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
-import com.ibm.ws.kernel.boot.internal.FileUtils;
 import com.ibm.ws.kernel.boot.internal.KernelStartLevel;
 import com.ibm.ws.kernel.boot.internal.commands.JavaDumpAction;
 import com.ibm.ws.kernel.boot.internal.commands.JavaDumper;
@@ -100,7 +98,6 @@ import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.productinfo.ProductInfoParseException;
 import com.ibm.ws.kernel.productinfo.ProductInfoReplaceException;
 import com.ibm.ws.kernel.provisioning.BundleRepositoryRegistry;
-import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.logprovider.LogProvider;
 
 import io.openliberty.checkpoint.spi.CheckpointHook;
@@ -1248,6 +1245,10 @@ public class FrameworkManager {
      *                            Create a unique dump folder based on the time stamp string.
      * @param javaDumpActions
      *                            The java dumps to create, or null for the default set.
+     *
+     * @param OutputTarget
+     *                            Where this introspection will be written to.
+     *
      */
     public void introspectFramework(String timestamp, Set<JavaDumpAction> javaDumpActions) {
         Tr.audit(tc, "info.introspect.request.received");
@@ -1263,8 +1264,10 @@ public class FrameworkManager {
             dumpJava(javaDumpActions, javaDumpLocations);
         }
 
-        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx, dumpDir);
-        introspectionCtx.introspectAll();
+        File introspectionDir = new File(dumpDir, BootstrapConstants.SERVER_INTROSPECTION_FOLDER_NAME);
+
+        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx);
+        introspectionCtx.introspectAll(introspectionDir);
 
         // create dumped flag file
         File dumpedFlag = new File(dumpDir, BootstrapConstants.SERVER_DUMPED_FLAG_FILE_NAME);
@@ -1275,115 +1278,39 @@ public class FrameworkManager {
         }
     }
 
-    @SuppressWarnings("deprecation")
-    private static class IntrospectionContext {
-        private final BundleContext systemBundleCtx;
-        private final File dumpDir;
-        private int unnamedCount;
+    /**
+     * Introspect the framework
+     * Get all IntrospectableService from OSGi bundle context, and dump a running
+     * server status from them.
+     *
+     * @param timestamp
+     *                            Create a unique dump folder based on the time stamp string.
+     * @param javaDumpActions
+     *                            The java dumps to create, or null for the default set.
+     *
+     * @param OutputTarget
+     *                            Where this introspection will be written to.
+     *
+     */
+    public void inspectFramework(List<String> filter) {
+        Tr.audit(tc, "info.introspect.request.received");//TODO message here.
 
-        IntrospectionContext(BundleContext systemBundleCtx, File dumpDir) {
-            this.systemBundleCtx = systemBundleCtx;
-            this.dumpDir = dumpDir;
-        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yy.MM.dd_HH.mm.ss");
+        String timestamp = sdf.format(new Date());
 
-        public void introspectAll() {
-            // create introspection dir in the dump dir which was created in the server's output directory
-            File introspectionDir = new File(dumpDir, BootstrapConstants.SERVER_INTROSPECTION_FOLDER_NAME);
-            if (!FileUtils.createDir(introspectionDir)) {
-                throw new IllegalStateException("introspections directory could not be created.");
-            }
+        File introspectionsDir = new File(config.getLogDirectory(), "introspections_" + timestamp);
 
-            try {
-                introspectIntrospectors(introspectionDir);
-                introspectIntrospectableServices(introspectionDir);
-            } catch (InvalidSyntaxException e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Exception occured when get IntrospectableService refs: {0}", e);
-                }
-            }
-        }
+        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx);
+        introspectionCtx.introspectIntrospectors(introspectionsDir, filter);
+    }
 
-        private void introspectIntrospectors(File introspectionDir) throws InvalidSyntaxException {
-            Collection<ServiceReference<Introspector>> refs = this.systemBundleCtx.getServiceReferences(Introspector.class, null);
-            if (refs != null && !refs.isEmpty()) {
-                for (ServiceReference<Introspector> ref : refs) {
-                    Introspector introspector = this.systemBundleCtx.getService(ref);
-                    if (introspector != null) {
-                        try {
-                            String name = introspector.getIntrospectorName();
-                            String desc = introspector.getIntrospectorDescription();
-                            introspect(introspectionDir, name, desc, introspector, null);
-                        } finally {
-                            this.systemBundleCtx.ungetService(ref);
-                        }
-                    }
-                }
-            }
-        }
+    public void inspectFramework() {
+        inspectFramework(null);
+    }
 
-        private void introspectIntrospectableServices(File introspectionDir) throws InvalidSyntaxException {
-            Collection<ServiceReference<com.ibm.wsspi.logging.IntrospectableService>> legacyRefs = systemBundleCtx.getServiceReferences(com.ibm.wsspi.logging.IntrospectableService.class,
-                                                                                                                                        null);
-            if (legacyRefs != null && !legacyRefs.isEmpty()) {
-                for (ServiceReference<com.ibm.wsspi.logging.IntrospectableService> ref : legacyRefs) {
-                    com.ibm.wsspi.logging.IntrospectableService serv = systemBundleCtx.getService(ref);
-                    if (serv != null) {
-                        try {
-                            String name = serv.getName();
-                            String desc = serv.getDescription();
-                            introspect(introspectionDir, name, desc, null, serv);
-                        } finally {
-                            systemBundleCtx.ungetService(ref);
-                        }
-                    }
-                }
-            }
-        }
-
-        private void introspect(File introspectionDir,
-                                String introspectionName,
-                                String introspectionDesc,
-                                Introspector introspector,
-                                com.ibm.wsspi.logging.IntrospectableService introspectable) {
-            if (introspectionName == null || introspectionName.isEmpty()) {
-                introspectionName = Introspector.class.getSimpleName() + '.' + unnamedCount++;
-            }
-
-            File introspectionFile = new File(introspectionDir, introspectionName + ".txt");
-
-            OutputStream out = null;
-            PrintWriter pw = null;
-            try {
-                out = new FileOutputStream(introspectionFile);
-                pw = new PrintWriter(new OutputStreamWriter(out, StandardCharsets.UTF_8));
-
-                // write header
-                if (introspectionDesc != null && !introspectionDesc.isEmpty()) {
-                    pw.println("The description of this introspector:");
-                    pw.println(introspectionDesc);
-                    pw.println();
-                    pw.flush();
-                }
-
-                // write body
-                if (introspectable != null) {
-                    introspectable.introspect(out);
-                } else {
-                    introspector.introspect(pw);
-                }
-            } catch (FileNotFoundException e) {
-                e.getCause(); // findbugs
-                Tr.error(tc, "error.fileNotFound", introspectionFile);
-            } catch (Throwable t) {
-                Tr.warning(tc, "warn.unableWriteFile", introspectionFile, t.getMessage());
-                if (out != null) {
-                    t.printStackTrace(pw);
-                }
-            } finally {
-                Utils.tryToClose(pw);
-                Utils.tryToClose(out);
-            }
-        }
+    public void listIntrospectors() {
+        IntrospectionContext introspectionCtx = new IntrospectionContext(systemBundleCtx);
+        introspectionCtx.listIntrospectorsToFile(config.getLogDirectory());
     }
 
     public void dumpJava(Set<JavaDumpAction> javaDumpActions) {

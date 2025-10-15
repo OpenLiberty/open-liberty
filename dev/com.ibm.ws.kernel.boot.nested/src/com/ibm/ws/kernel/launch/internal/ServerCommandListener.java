@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,8 +21,11 @@ import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
 import java.nio.channels.spi.SelectorProvider;
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
@@ -378,6 +381,7 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
 
                 try {
                     String uuidAndCommand = read(sc);
+
                     ServerCommandID commandID = new ServerCommandID(uuidAndCommand);
                     String command = commandID.getOperation();
 
@@ -468,7 +472,27 @@ public class ServerCommandListener extends ServerCommand implements CheckpointHo
 
             frameworkManager.introspectFramework(timestamp, javaDumpActions);
             writeResponse(sc);
-        } else if (command.startsWith(JAVADUMP_COMMAND)) {
+        } else if (command.startsWith(INSPECT_COMMAND)) {
+            String arg = command.substring(command.indexOf('#') + 1);
+            List<String> args = Arrays.asList(arg.split(","));
+
+            if (args.size() == 1 && args.get(0).toUpperCase().equals("ALL")) {
+                frameworkManager.inspectFramework();
+            } else if (args.size() == 1 && args.get(0).toUpperCase().equals("LIST")) {
+                frameworkManager.listIntrospectors();
+            } else {
+                List<String> upperCaseFilters = new ArrayList<String>();
+                for (String s : args) {
+                    upperCaseFilters.add(s.toUpperCase());
+                }
+
+                frameworkManager.inspectFramework(upperCaseFilters);
+            }
+
+            writeResponse(sc);
+        } else if (command.startsWith(JAVADUMP_COMMAND))
+
+        {
             int index = command.indexOf('#');
             Set<JavaDumpAction> javaDumpActions = index == -1 ? null : parseJavaDumpActions(command.substring(index + 1).split(","), 0);
             frameworkManager.dumpJava(javaDumpActions);

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -46,9 +46,9 @@ public class LibertyProcessImpl implements LibertyProcess {
      * list
      *
      * @param args
-     *            Array of String command line arguments
+     *                         Array of String command line arguments
      * @param frameworkMgr
-     *            Calling FrameworkManager: used for shutdown
+     *                         Calling FrameworkManager: used for shutdown
      */
     public LibertyProcessImpl(List<String> args, FrameworkManager frameworkMgr) {
         if (args == null)
