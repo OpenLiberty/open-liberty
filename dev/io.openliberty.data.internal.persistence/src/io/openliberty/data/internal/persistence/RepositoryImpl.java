@@ -20,10 +20,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLNonTransientConnectionException;
-import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
-import java.sql.SQLTransientConnectionException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
@@ -43,11 +40,9 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
 import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
-import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -288,7 +283,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param original exception to possibly replace.
      * @return exception to replace with, if any. Otherwise, the original.
      */
-    @FFDCIgnore(Exception.class) // secondary error
     @Trivial
     static RuntimeException failure(Exception original, EntityManagerBuilder emb) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -298,23 +292,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(tc, "checking " + cause.getClass().getName() + " with message " + cause.getMessage());
 
-                if (emb instanceof DBStoreEMBuilder && cause instanceof SQLException) { //attempt to have the JDBC layer determine if this is a connection exception
-                    try {
-                        WSJdbcDataSource ds = (WSJdbcDataSource) emb.getDataSource(null, null);
-                        if (ds != null && ds.getDatabaseHelper().isConnectionError((java.sql.SQLException) cause)) {
-                            x = new DataConnectionException(original);
-                        }
-                    } catch (Exception e) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(tc, "Could not obtain DataSource during Exception checking");
-                    }
-                }
+                if (cause instanceof SQLException c &&
+                    emb.isConnectionError(c))
+                    x = new DataConnectionException(original);
                 if (x == null)
-                    if (cause instanceof SQLRecoverableException
-                        || cause instanceof SQLNonTransientConnectionException
-                        || cause instanceof SQLTransientConnectionException)
-                        x = new DataConnectionException(original);
-                    else if (cause instanceof SQLSyntaxErrorException)
+                    if (cause instanceof SQLSyntaxErrorException)
                         x = new MappingException(original);
                     else if (cause instanceof SQLIntegrityConstraintViolationException)
                         x = new EntityExistsException(original);

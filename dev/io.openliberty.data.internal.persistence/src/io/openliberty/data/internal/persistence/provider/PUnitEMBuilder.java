@@ -24,7 +24,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
@@ -49,8 +48,6 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
      * @param repositoryInterfaces  repository interfaces that use the entities.
      * @param emf                   entity manager factory.
      * @param pesistenceUnitRef     persistence unit reference.
-     * @param metadata              metadata of the application artifact that
-     *                                  contains the repository interface.
      * @param entityTypes           entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
      */
@@ -59,7 +56,6 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
                           Set<Class<?>> repositoryInterfaces,
                           EntityManagerFactory emf,
                           String persistenceUnitRef,
-                          ComponentMetaData metadata,
                           Set<Class<?>> entityTypes) throws Exception {
         super(provider, //
               repositoryClassLoader, //

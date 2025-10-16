@@ -301,7 +301,7 @@ if [ -n "${ENABLE_FIPS140_3+set}" ] && [ "${ENABLE_FIPS140_3}" != false ]; then
       SEMERU_FIPS=true
     fi
     if [ -n SEMERU_FIPS ]; then
-      JVM_ARGS="-Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Liberty -Djava.security.properties=${WLP_INSTALL_DIR}/lib/security/fips140_3/FIPS140-3-Liberty.properties ${JVM_ARGS}"
+      JVM_ARGS="-Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Liberty -Djava.security.properties=\"${WLP_INSTALL_DIR}/lib/security/fips140_3/FIPS140-3-Liberty.properties\" ${JVM_ARGS}"
     fi
   fi
 fi

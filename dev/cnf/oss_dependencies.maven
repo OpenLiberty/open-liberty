@@ -670,7 +670,7 @@ org.eclipse.microprofile.rest.client:microprofile-rest-client-api:3.0.1
 org.eclipse.microprofile.rest.client:microprofile-rest-client-api:4.0
 org.eclipse.parsson:parsson:1.1.7
 org.eclipse.persistence:org.eclipse.persistence.antlr:2.7.16
-org.eclipse.persistence:org.eclipse.persistence.asm:9.8.0
+org.eclipse.persistence:org.eclipse.persistence.asm:9.9.0
 org.eclipse.persistence:org.eclipse.persistence.core:2.7.16
 org.eclipse.persistence:org.eclipse.persistence.core:3.0.4
 org.eclipse.persistence:org.eclipse.persistence.core:4.0.8
@@ -689,6 +689,11 @@ org.eclipse.persistence:org.eclipse.persistence.jpa:4.0.8
 org.eclipse.persistence:org.eclipse.persistence.jpa:5.0.0-B11
 org.eclipse.persistence:org.eclipse.persistence.json:4.0.8
 org.eclipse.persistence:org.eclipse.persistence.json:5.0.0-B11
+org.eclipse.platform:org.eclipse.equinox.console:1.4.1100
+org.eclipse.platform:org.eclipse.equinox.coordinator:1.5.500
+org.eclipse.platform:org.eclipse.equinox.metatype:1.6.900
+org.eclipse.platform:org.eclipse.equinox.region:1.5.800
+org.eclipse.platform:org.eclipse.osgi:3.23.200
 org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.cli:0.5.0
 org.eclipse.transformer:org.eclipse.transformer.jakarta:0.5.0
@@ -933,6 +938,7 @@ org.springframework.boot:spring-boot-autoconfigure:1.5.9.RELEASE
 org.springframework.boot:spring-boot-autoconfigure:2.7.18
 org.springframework.boot:spring-boot-autoconfigure:3.3.5
 org.springframework.boot:spring-boot-autoconfigure:4.0.0-M1
+org.springframework.boot:spring-boot-jpa:4.0.0-M3
 org.springframework.boot:spring-boot-servlet:4.0.0-M1
 org.springframework.boot:spring-boot-web-server:4.0.0-M1
 org.springframework.boot:spring-boot-webmvc:4.0.0-M1
@@ -940,6 +946,7 @@ org.springframework.boot:spring-boot:1.5.9.RELEASE
 org.springframework.boot:spring-boot:2.7.18
 org.springframework.boot:spring-boot:3.3.5
 org.springframework.boot:spring-boot:4.0.0-M1
+org.springframework.boot:spring-boot:4.0.0-M3
 org.springframework.data:spring-data-commons:2.7.6
 org.springframework.data:spring-data-commons:3.2.4
 org.springframework.data:spring-data-commons:3.3.0

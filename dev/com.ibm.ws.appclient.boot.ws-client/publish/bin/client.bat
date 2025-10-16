@@ -388,7 +388,7 @@ goto:eof
           for %%i in ("!ENABLE_FIPS140_3:;=";"!") do (
             set "file=%%~i"
           )
-          for /f "delims== " %%l in (!file!) do (
+          for /f "usebackq delims== " %%l in ("!file!") do (
             set line=%%l
             if /i "!line:~0,18!" == "RestrictedSecurity" (
               set "line=!line:~19!"
@@ -397,7 +397,7 @@ goto:eof
               )
             )
           )
-          set JVM_OPTIONS=-Dsemeru.fips=true -Dsemeru.customprofile=!profileName! -Djava.security.propertiesList=!ENABLE_FIPS140_3! !JVM_OPTIONS!
+          set JVM_OPTIONS=-Dsemeru.fips=true -Dsemeru.customprofile=!profileName! -Djava.security.propertiesList="!ENABLE_FIPS140_3!" !JVM_OPTIONS!
         )
       )
     )

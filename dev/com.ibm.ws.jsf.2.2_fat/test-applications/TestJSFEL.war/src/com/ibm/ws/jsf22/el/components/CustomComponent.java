@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import javax.faces.event.PreRenderComponentEvent;
 public class CustomComponent extends UIComponentBase implements ComponentSystemEventListener {
 
     private boolean isFaces40OrLater = false;
+    private boolean isFaces41OrLater = false;
 
     /**
      *
@@ -78,6 +79,10 @@ public class CustomComponent extends UIComponentBase implements ComponentSystemE
 
         Application app = context.getApplication();
         ELResolver elResolver = app.getELResolver();
+
+        if (Boolean.parseBoolean(context.getExternalContext().getRequestParameterMap().get("isFaces41OrLater"))) {
+            isFaces41OrLater = true;
+        }
 
         // Getting all EL Resolvers
         responseWriter.write("ELResolver list in order:  ");
@@ -167,6 +172,8 @@ public class CustomComponent extends UIComponentBase implements ComponentSystemE
         // The JSF/Faces specification says the StreamELResolver should be: The return from ExpressionFactory.getStreamELResolver()
         ExpressionFactory expFactory = ELManager.getExpressionFactory();
         List<String> expectedResolvers = new ArrayList<String>() {
+            private static final long serialVersionUID = 1L;
+
             {
 
                 add(expFactory.getStreamELResolver().getClass().getName());
@@ -174,6 +181,10 @@ public class CustomComponent extends UIComponentBase implements ComponentSystemE
                 add("javax.el.MapELResolver");
                 add("javax.el.ListELResolver");
                 add("javax.el.ArrayELResolver");
+                if (isFaces41OrLater) {
+                    add("jakarta.el.OptionalELResolver");
+                    add("jakarta.el.RecordELResolver");
+                }
                 if (isFaces40OrLater) {
                     add("javax.el.BeanELResolver"); // swap with add("org.apache.myfaces.el.resolver.LambdaBeanELResolver"); when o.a.m.USE_LAMBDA_METAFACTORY is true
                 } else {
@@ -183,7 +194,7 @@ public class CustomComponent extends UIComponentBase implements ComponentSystemE
         };
 
         // Loop over all the resolvers until we find the StreamELResolver and then
-        // copy the next 5 resolvers into a new array to use for comparison.
+        // copy the next 5 resolvers, 7 if Faces 4.1 or later into a new array to use for comparison.
         int firstResolverFoundIndex = 0;
         List<String> actualResolvers = new ArrayList<String>();
         for (int i = 0; i < resolvers.length; i++) {
@@ -194,7 +205,14 @@ public class CustomComponent extends UIComponentBase implements ComponentSystemE
         }
 
         // Add all the actual resolvers to the actualResolvers list.
-        for (int i = firstResolverFoundIndex; i <= firstResolverFoundIndex + 5; i++) {
+        int resolverCount;
+        if (isFaces41OrLater) {
+            resolverCount = 7; // Added OptionalELResolver and RecordELResolver
+        } else {
+            resolverCount = 5;
+        }
+
+        for (int i = firstResolverFoundIndex; i <= firstResolverFoundIndex + resolverCount; i++) {
             actualResolvers.add(resolvers[i].getClass().getName());
         }
 

@@ -34,7 +34,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 MissingSslFeatureTests40.class,
                 SSLTests40.class,
                 SSLMutualAuthTests40.class,
-                NeedSpringBootFeatureTests40.class,
+                //NeedSpringBootFeatureTests40.class,     // Disabling reason: See class for comments
                 MultipleApplicationsNotSupported40.class,
                 NonZipExtensionFilesInBootInfLibTests40.class,
                 PreThinnedSpringBootTests40.class,

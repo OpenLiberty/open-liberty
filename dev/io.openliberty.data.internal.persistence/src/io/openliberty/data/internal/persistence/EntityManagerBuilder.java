@@ -21,6 +21,10 @@ import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.sql.SQLException;
+import java.sql.SQLNonTransientConnectionException;
+import java.sql.SQLRecoverableException;
+import java.sql.SQLTransientConnectionException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -515,5 +519,18 @@ public abstract class EntityManagerBuilder {
         writer.println(indent + "  repositories:");
         for (Class<?> r : repositoryInterfaces)
             writer.println(indent + "    " + r.getName());
+    }
+
+    /**
+     * Returns true if the cause exception can be determined to be a
+     * connection-related error, otherwise false.
+     *
+     * @param cause the cause exception.
+     * @return true if known to be a connection-related error, otherise false.
+     */
+    public boolean isConnectionError(SQLException cause) {
+        return cause instanceof SQLRecoverableException ||
+               cause instanceof SQLNonTransientConnectionException ||
+               cause instanceof SQLTransientConnectionException;
     }
 }

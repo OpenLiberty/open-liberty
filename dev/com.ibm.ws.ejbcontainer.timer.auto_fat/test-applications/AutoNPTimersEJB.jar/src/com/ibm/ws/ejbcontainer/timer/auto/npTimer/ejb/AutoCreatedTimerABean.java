@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,10 +13,10 @@
 
 package com.ibm.ws.ejbcontainer.timer.auto.npTimer.ejb;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
@@ -40,52 +40,52 @@ public class AutoCreatedTimerABean {
 
     public static String SECONDS_EXACT = "seconds_exact";
     public static volatile int seconds_exact_count = 0;
-    public static ArrayList<Long> seconds_exact_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> seconds_exact_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> seconds_exact_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> seconds_exact_next = new CopyOnWriteArrayList<Long>();
 
     public static String SECONDS_INTERVAL = "seconds_interval";
     public static volatile int seconds_interval_count = 0;
-    public static ArrayList<Long> seconds_interval_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> seconds_interval_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> seconds_interval_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> seconds_interval_next = new CopyOnWriteArrayList<Long>();
 
     public static String MINUTES_INTERVAL = "minutes_interval";
     public static volatile int minutes_interval_count = 0;
-    public static ArrayList<Long> minutes_interval_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> minutes_interval_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> minutes_interval_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> minutes_interval_next = new CopyOnWriteArrayList<Long>();
 
     public static String MONTH_RANGE = "month_range";
     public static volatile int month_range_count = 0;
-    public static ArrayList<Long> month_range_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> month_range_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> month_range_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> month_range_next = new CopyOnWriteArrayList<Long>();
 
     public static String RANGE_AND_LIST = "range_and_list";
     public static volatile int range_and_list_count = 0;
-    public static ArrayList<Long> range_and_list_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> range_and_list_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> range_and_list_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> range_and_list_next = new CopyOnWriteArrayList<Long>();
 
     public static final String MULTIPLE_ATTRIBUTES_COMBINED = "multiple_attributes_combined";
     public static volatile int multiple_attributes_combined_count = 0;
-    public static ArrayList<Long> multiple_attributes_combined_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> multiple_attributes_combined_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> multiple_attributes_combined_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> multiple_attributes_combined_next = new CopyOnWriteArrayList<Long>();
 
     public static final String FIRST_SCHEDULE = "first_schedule";
     public static volatile int first_schedule_count = 0;
-    public static ArrayList<Long> first_schedule_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> first_schedule_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> first_schedule_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> first_schedule_next = new CopyOnWriteArrayList<Long>();
 
     public static final String SECOND_SCHEDULE = "second_schedule";
     public static volatile int second_schedule_count = 0;
-    public static ArrayList<Long> second_schedule_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> second_schedule_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> second_schedule_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> second_schedule_next = new CopyOnWriteArrayList<Long>();
 
     public static final String THIRD_SCHEDULE = "third_schedule";
     public static volatile int third_schedule_count = 0;
-    public static ArrayList<Long> third_schedule_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> third_schedule_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> third_schedule_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> third_schedule_next = new CopyOnWriteArrayList<Long>();
 
     public static final String PROGRAMATIC_TIMEOUT = "programatic_timeout";
     public static volatile int programatic_count = 0;
-    public static ArrayList<Long> programatic_timestamps = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> programatic_timestamps = new CopyOnWriteArrayList<Long>();
     private static CountDownLatch svProgramaticTimerLatch = new CountDownLatch(1);
 
     public static final String MINUTES_EXACT = "minutes_exact";

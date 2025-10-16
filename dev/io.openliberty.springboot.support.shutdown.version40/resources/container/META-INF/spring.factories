@@ -1,0 +1,2 @@
+org.springframework.boot.EnvironmentPostProcessor=io.openliberty.springboot.support.shutdown.ApplicationContextCloser,\
+io.openliberty.springboot.support.shutdown.FeatureAuditor

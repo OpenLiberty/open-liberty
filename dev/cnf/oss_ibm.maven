@@ -40,7 +40,6 @@ com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.6.10.WAS-f193a
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.6.10.WAS-f193aac
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.6.10.WAS-f193aac
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.6.10.WAS-f193aac
-com.ibm.ws.org.eclipse.platform:org.eclipse.osgi:3.23.200.v20250605-1731
 com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws.repository.parsers.test:anno-esa:1.0.0
 com.ibm.ws.repository.parsers.test:anno-metadata:1.0.0

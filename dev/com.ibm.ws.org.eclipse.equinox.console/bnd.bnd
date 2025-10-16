@@ -10,7 +10,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.eclipse.platform:org.eclipse.equinox.console;1.4.300}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.eclipse.platform:org.eclipse.equinox.console;1.4.1100}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.disabled: true
 
@@ -20,5 +20,5 @@ instrument.disabled: true
 	com.ibm.ws.org.apache.felix.gogo.command;version=latest,\
 	com.ibm.ws.org.apache.felix.gogo.runtime;version=latest,\
 	com.ibm.ws.org.apache.felix.gogo.shell;version=latest,\
-        org.eclipse.platform:org.eclipse.equinox.console;version=1.4.300
+        org.eclipse.platform:org.eclipse.equinox.console;version=1.4.1100
 

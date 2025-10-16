@@ -10,7 +10,7 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '4.0.0-M1'
+  id 'org.springframework.boot' version '4.0.0-M3'
 }
 
 apply from: '../wlp-gradle/subprojects/spring.gradle'

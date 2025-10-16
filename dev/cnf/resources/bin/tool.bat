@@ -79,7 +79,7 @@ if defined ENABLE_FIPS140_3 (
       if defined IBM_SDK_8 (
           set JVM_ARGS=-Xenablefips140-3 -Dcom.ibm.jsse2.usefipsprovider=true -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS !JVM_ARGS!
       ) else if defined SEMERU_FIPS (
-          set JVM_ARGS=-Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Liberty -Djava.security.properties=!WLP_INSTALL_DIR!\lib\security\fips140_3\FIPS140-3-Liberty.properties !JVM_ARGS!
+          set JVM_ARGS=-Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Liberty -Djava.security.properties="!WLP_INSTALL_DIR!\lib\security\fips140_3\FIPS140-3-Liberty.properties" !JVM_ARGS!
       )
     )
 )

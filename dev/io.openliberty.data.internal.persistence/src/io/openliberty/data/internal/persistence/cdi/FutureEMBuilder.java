@@ -379,7 +379,6 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                         repositoryInterfaces, //
                                         (EntityManagerFactory) resource, //
                                         dataStore, //
-                                        metadata, //
                                         entityTypes);
                 } finally {
                     accessor.endContext();
