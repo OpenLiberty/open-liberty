@@ -52,6 +52,8 @@ public class BasicEncryptionTests extends SAMLCommonTest {
     private final String SP_ENCRYPTION_AES_128 = "sp_enc_aes128";
     private final String SP_ENCRYPTION_AES_128_EC = "sp_enc_aes128_ec";
     private final String SP_ENCRYPTION_AES_128_NO_SIGN = "sp_enc_aes128_no_sign";
+    private final String SP_ENCRYPTION_RSASP_ECDSAIDP = "sp_enc_rsaSP_ecdsaIDP";
+    private final String SP_ENCRYPTION_ECDSASP_RSAIDP = "sp_enc_ecdsaSP_rsaIDP";
     private final String SP_ENCRYPTION_AES_192 = "sp_enc_aes192";
     private final String SP_ENCRYPTION_AES_256 = "sp_enc_aes256";
     private final String DEFAULT_ENCRYPTION_KEY_USER = "CN=new_user2, O=IBM, C=US";
@@ -339,7 +341,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      * @throws Exception
      */
     @MaximumJavaLevel(javaLevel = 8) // test uses DSA cert and that is no longer supported
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException", "java.security.InvalidKeyException" },repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException", "java.security.InvalidKeyException", "org.apache.xml.security.signature.XMLSignatureException" },repeatAction = {EmptyAction.ID,JakartaEE9Action.ID})
     @Test
     public void testKeyAlias_OneCertInKeystore_KeyAliasIsWrongCert() throws Exception {
 
@@ -481,19 +483,20 @@ public class BasicEncryptionTests extends SAMLCommonTest {
         updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES128);
         successfulFlow(updatedTestSettings, SP_ENCRYPTION_AES_128_NO_SIGN);
     }
-
     /**
      * Test description:
      * - The standard SAML flow 
      * Expected results:
-     * - Access to the protected resource should be successful.
+     * - Access to the protected resource should NOT be successful.
+     * - SP_INITIATED should fail to sign AuthnRequest
+     * - IDP_INITIATED should fail to decrypt the SAMLResponse
      *
      * @throws Exception
      */
     @Test
     @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException", "java.security.InvalidKeyException", "java.security.spec.InvalidKeySpecException", "org.apache.xml.security.signature.XMLSignatureException" })
     public void testEncryptionAlgorithm_AES128_RSAKey_signatureMethodAlgorithmECDSAMismatch() throws Exception {
-    	if (true || System.getProperty("java.specification.version").matches("1\\.[789]")) {
+    	if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
             Log.info(thisClass, _testName, "Skipping test. idp v3 does not support EC-DH");
             return;
     	}
@@ -508,6 +511,52 @@ public class BasicEncryptionTests extends SAMLCommonTest {
         }
 
         unsuccessfulFlow(SP_ENCRYPTION_AES_128_EC, errorMsg, "Did not find message: EC Signature computation error");
+    }
+
+    /**
+     * Test description:
+     * - The standard SAML flow with an SP that is configured to sign assertions using the RSA-SHA256 and the IDP to sign response with ECDSA-SHA256 certificate.
+     * Expected results:
+     * - Access to the protected resource should be successful.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testEncryptionAlgorithm_RSACertSP_ECDSACertIDP() throws Exception {
+        testSAMLServer.reconfigServer(buildSPServerName("server_enc_rsaCertSP_ecdsaCertIDP.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+        SAMLTestSettings updatedTestSettings = getTestSettings(testSettings, SP_ENCRYPTION_RSASP_ECDSAIDP);
+        updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES128);
+
+        successfulFlowWithoutEncryption(updatedTestSettings, SP_ENCRYPTION_RSASP_ECDSAIDP);
+    }
+
+    /** TODO: update test comments
+     * Test description:
+     * - The standard SAML flow with an SP that is configured to sign assertions using the ECDSA-SHA256 and the IDP to sign response with RSA-SHA256 and encrypt with ECDH.
+     * Expected results:
+     * - Access to the protected resource should fail with "weaker signature from idp failure".
+     *
+     * @throws Exception
+     */
+    @Test
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException", "java.security.InvalidKeyException", "java.security.spec.InvalidKeySpecException", "org.apache.xml.security.signature.XMLSignatureException" })
+    public void testEncryptionAlgorithm_ECDSACertSP_RSACertIDP() throws Exception {
+            	if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
+            Log.info(thisClass, _testName, "Skipping test. idp v3 does not support EC-DH");
+            return;
+    	}
+
+        testSAMLServer.reconfigServer(buildSPServerName("server_enc_ecdsaCertSP_rsaCertIDP.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
+        SAMLTestSettings updatedTestSettings = getTestSettings(testSettings, SP_ENCRYPTION_ECDSASP_RSAIDP);
+        updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES128);
+
+        // TODO: maybe sp_init and idp_init have the same error?
+        String errorMsg = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+the signature method provided is weaker than the required.*";
+        if (flowType.equals(SAMLConstants.SOLICITED_SP_INITIATED)) {
+            errorMsg = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+the signature method provided is weaker than the required.*";
+        }
+
+        unsuccessfulFlow(SP_ENCRYPTION_ECDSASP_RSAIDP, errorMsg, "Did not find message: the signature method provided is weaker than the required.");
     }
 
     /**
@@ -574,6 +623,29 @@ public class BasicEncryptionTests extends SAMLCommonTest {
 
         // Ensure we validate the SAML token content for an EncryptedAssertion
         expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN_ENCRYPTED, SAMLConstants.STRING_CONTAINS, "Did not receive the expected encrypted SAML token content.", null, null);
+
+        // Should successfully reach snoop servlet
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_MESSAGE, SAMLConstants.STRING_MATCHES, "Did not get expected OK message.", null, SAMLConstants.OK_MESSAGE);
+        expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not see the expected snoop servlet title.", null, SAMLConstants.APP1_TITLE);
+
+        performSamlFlow(sp, standardFlow, updatedTestSettings, expectations);
+    }
+
+    private void successfulFlowWithoutEncryption(SAMLTestSettings settings, String sp) throws Exception {
+        SAMLTestSettings updatedTestSettings = getTestSettings(settings, sp);
+
+        List<validationData> expectations = vData.addSuccessStatusCodes();
+
+        String firstAction = standardFlow[0];
+        if (flowType.equals(SAMLConstants.UNSOLICITED_SP_INITIATED)) {
+            expectations = vData.addExpectation(expectations, firstAction, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on the IDP client JSP page.", null, SAMLConstants.IDP_CLIENT_JSP_TITLE);
+        } else {
+            expectations = vData.addExpectation(expectations, firstAction, SAMLConstants.RESPONSE_TITLE, SAMLConstants.STRING_CONTAINS, "Did not land on the IDP form login page.", null, cttools.getLoginTitle(updatedTestSettings.getIdpRoot()));
+        }
+        expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive expected SAML response.", null, SAMLConstants.SAML_RESPONSE);
+
+        // Ensure we validate the SAML token content for an EncryptedAssertion
+        // expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN_ENCRYPTED, SAMLConstants.STRING_CONTAINS, "Did not receive the expected encrypted SAML token content.", null, null);
 
         // Should successfully reach snoop servlet
         expectations = vData.addExpectation(expectations, SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE, SAMLConstants.RESPONSE_MESSAGE, SAMLConstants.STRING_MATCHES, "Did not get expected OK message.", null, SAMLConstants.OK_MESSAGE);
