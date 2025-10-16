@@ -4865,7 +4865,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     // LIDB3294-41
     public Object invokeProceed(EJSDeployedSupport s, Method businessMethod, Object bean, Object[] methodParameters, boolean parametersModified) throws Exception {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
-        dumpStack("invokeProceed");
+        //dumpStack("invokeProceed");
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "EJBinvokeProceed(" + s.methodId + ":" +
                          s.methodInfo.getMethodName() + ")");

@@ -121,7 +121,6 @@ public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, Identi
 
     @Override
     public boolean isSyncToOSThreadEnabled() {
-        // return ejbComponentMetaData.isSyncToOSThreadEnabled();
-        return true;
+        return ejbComponentMetaData.isSyncToOSThreadEnabled();
     }
 }

@@ -806,18 +806,33 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      */
     private void syncToOSThread(EJBSecurityContext ejbSecurityContext) throws EJBAccessDeniedException {
         try {
-            Object token = ThreadIdentityManager.setAppThreadIdentity(ejbSecurityContext.getInvokedSubject());
-            ejbSecurityContext.setSyncToOSThreadToken(token);
+            if (ThreadIdentityManager.isAppThreadIdentityEnabled()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Setting thread identity for EJB application");
+                }
+                Object token = ThreadIdentityManager.setAppThreadIdentity(ejbSecurityContext.getInvokedSubject());
+                ejbSecurityContext.setSyncToOSThreadToken(token);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Thread identity set successfully");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Application thread identity is not enabled");
+                }
+            }
         } catch (ThreadIdentityException tie) {
-                throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
-                                                                            TraceConstants.MESSAGE_BUNDLE,
-                                                                            "EJB_AUTHZ_EXCLUDED",
-                                                                            new Object[] { "postInvoke" },
-                                                                            "WRG+++: syncToOs failed {0}."));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception setting thread identity", tie);
+            }
+            throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                        TraceConstants.MESSAGE_BUNDLE,
+                                                                        "EJB_AUTHZ_EXCLUDED",
+                                                                        new Object[] { "syncToOSThread" },
+                                                                        "WRG+++: syncToOs failed {0}."));
         }
     }
 
-        /**
+    /**
      * Remove the invocation Subject's identity from the thread, if it was previously sync'ed.
      *
      * @param WebSecurityContext The security context object for this application invocation.
@@ -827,7 +842,17 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     private void resetSyncToOSThread(EJBSecurityContext ejbSecurityContext) throws ThreadIdentityException {
         Object token = ejbSecurityContext.getSyncToOSThreadToken();
         if (token != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Resetting thread identity for EJB application");
+            }
             ThreadIdentityManager.resetChecked(token);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Thread identity reset successfully");
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "No thread identity token to reset");
+            }
         }
     }
 }
