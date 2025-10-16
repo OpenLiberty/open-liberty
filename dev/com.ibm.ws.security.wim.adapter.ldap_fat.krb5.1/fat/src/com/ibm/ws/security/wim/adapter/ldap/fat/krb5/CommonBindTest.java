@@ -25,6 +25,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Security;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -122,6 +123,7 @@ public class CommonBindTest {
     static int KDC_PORT = 88; //ApacheDSandKDC.getKdcPort();
 
     protected static String[] stopStrings = null;
+    protected static String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
 
     @BeforeClass
     public static void setup() throws Exception {

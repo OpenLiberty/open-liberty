@@ -148,7 +148,6 @@ public class LDAPUtils {
          * Determine whether we are running remote or locally.
          */
         boolean uselocalLDAP = isLocalLdapExpectedToBeUsed();
-
         try {
             isZOS = LocalMachine.getInstance().getOperatingSystem() == OperatingSystem.ZOS;
         } catch (Exception e) {
