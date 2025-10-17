@@ -75,11 +75,12 @@ dependencies {
     'org.hibernate:hibernate-search-engine:5.11.2.Final',
     'org.hibernate:hibernate-search-orm:5.11.2.Final',
     'org.jboss.logging:jboss-logging:3.6.0.Final',
+    'org.hibernate.orm:hibernate-community-dialects:7.0.9.Final',
     'org.hibernate.models:hibernate-models:1.0.1',
     'net.bytebuddy:byte-buddy:1.16.1',
     'com.fasterxml:classmate:1.5.0',
     'javassist:javassist:3.12.1.GA',
-    'antlr:antlr:2.7.7'
+    'org.antlr:antlr4-runtime:4.13.2'
 }
 
 task downloadHibernateSearchLibs(type: Copy) {

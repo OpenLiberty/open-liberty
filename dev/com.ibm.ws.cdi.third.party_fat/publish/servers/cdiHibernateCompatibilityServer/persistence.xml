@@ -5,6 +5,14 @@
     <persistence-unit name="TestPU" transaction-type="JTA">
         <jta-data-source>jdbc/jpaDataSource</jta-data-source>  
         <properties>
+                    <property name="hibernate.dialect" value="org.hibernate.community.dialect.DerbyDialect"/>
+
+
+
+
+
+        
+        
             <property name="eclipselink.ddl-generation" value="create-tables"/>
             <property name="eclipselink.ddl-generation.output-mode" value="both" />
 
