@@ -530,16 +530,16 @@ public class BasicEncryptionTests extends SAMLCommonTest {
         successfulFlowWithoutEncryption(updatedTestSettings, SP_ENCRYPTION_RSASP_ECDSAIDP);
     }
 
-    /** TODO: update test comments
+    /**
      * Test description:
      * - The standard SAML flow with an SP that is configured to sign assertions using the ECDSA-SHA256 and the IDP to sign response with RSA-SHA256 and encrypt with ECDH.
      * Expected results:
-     * - Access to the protected resource should fail with "weaker signature from idp failure".
+     * - Access to the protected resource should fail with "the signature method provided is weaker than the required".
      *
      * @throws Exception
      */
     @Test
-    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException", "org.opensaml.xmlsec.signature.support.SignatureException", "java.security.InvalidKeyException", "java.security.spec.InvalidKeySpecException", "org.apache.xml.security.signature.XMLSignatureException" })
+    @AllowedFFDC(value = { "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.messaging.handler.MessageHandlerException" })
     public void testEncryptionAlgorithm_ECDSACertSP_RSACertIDP() throws Exception {
             	if (System.getProperty("java.specification.version").matches("1\\.[789]")) {
             Log.info(thisClass, _testName, "Skipping test. idp v3 does not support EC-DH");
@@ -547,16 +547,35 @@ public class BasicEncryptionTests extends SAMLCommonTest {
     	}
 
         testSAMLServer.reconfigServer(buildSPServerName("server_enc_ecdsaCertSP_rsaCertIDP.xml"), _testName, SAMLConstants.NO_EXTRA_MSGS, SAMLConstants.JUNIT_REPORTING);
-        SAMLTestSettings updatedTestSettings = getTestSettings(testSettings, SP_ENCRYPTION_ECDSASP_RSAIDP);
-        updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES128);
 
-        // TODO: maybe sp_init and idp_init have the same error?
-        String errorMsg = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+the signature method provided is weaker than the required.*";
-        if (flowType.equals(SAMLConstants.SOLICITED_SP_INITIATED)) {
-            errorMsg = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+the signature method provided is weaker than the required.*";
+        String sp = SP_ENCRYPTION_ECDSASP_RSAIDP;
+        String failureMessage = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+the signature method provided is weaker than the required.*";
+        String logMessage = "Did not find message: " + failureMessage;
+
+        // unsuccessfulFlow(sp, failureMessage, logMessage);
+
+
+        List<validationData> expectations = vData.addSuccessStatusCodes();
+
+        String[] flow = standardFlow;
+
+        if (flowType.equals(SAMLConstants.IDP_INITIATED)) {
+            expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.RESPONSE_FULL, SAMLConstants.STRING_CONTAINS, "Did not receive expected SAML response.", null, SAMLConstants.SAML_RESPONSE);
+            // Ensure we validate the SAML token content for an EncryptedAssertion
+            expectations = vData.addExpectation(expectations, SAMLConstants.PERFORM_IDP_LOGIN, SAMLConstants.SAML_TOKEN_ENCRYPTED, SAMLConstants.STRING_CONTAINS, "Did not receive the expected encrypted SAML token content.", null, null);
         }
 
-        unsuccessfulFlow(SP_ENCRYPTION_ECDSASP_RSAIDP, errorMsg, "Did not find message: the signature method provided is weaker than the required.");
+        String errorPageStep = SAMLConstants.INVOKE_ACS_WITH_SAML_RESPONSE;
+
+        if (flowType.equals(SAMLConstants.SOLICITED_SP_INITIATED)) {
+            flow = SAMLConstants.SOLICITED_SP_INITIATED_FLOW_ONLY_SP;
+        }
+
+        // Should reach an error page with the expected message appearing in the logs
+        expectations = msgUtils.addForbiddenExpectation(errorPageStep, expectations);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, errorPageStep, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_MATCHES, logMessage, failureMessage);
+
+        performSamlFlow(testSettings, sp, flow, expectations);
     }
 
     /**
@@ -670,11 +689,11 @@ public class BasicEncryptionTests extends SAMLCommonTest {
      *
      * @throws Exception
      */
-    private void unsuccessfulFlow(String sp, String logMessage, String failureMessage) throws Exception {
+    private void unsuccessfulFlow(String sp, String failureMessage, String logMessage) throws Exception {
         unsuccessfulFlow(testSettings, sp, logMessage, failureMessage);
     }
 
-    private void unsuccessfulFlow(SAMLTestSettings settings, String sp, String logMessage, String failureMessage) throws Exception {
+    private void unsuccessfulFlow(SAMLTestSettings settings, String sp, String failureMessage, String logMessage) throws Exception {
         List<validationData> expectations = vData.addSuccessStatusCodes();
 
         String[] flow = standardFlow;
@@ -694,7 +713,7 @@ public class BasicEncryptionTests extends SAMLCommonTest {
 
         // Should reach an error page with the expected message appearing in the logs
         expectations = msgUtils.addForbiddenExpectation(errorPageStep, expectations);
-        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, errorPageStep, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_MATCHES, failureMessage, logMessage);
+        expectations = helpers.addMessageExpectation(testSAMLServer, expectations, errorPageStep, SAMLConstants.SAML_MESSAGES_LOG, SAMLConstants.STRING_MATCHES, logMessage, failureMessage);
 
         performSamlFlow(settings, sp, flow, expectations);
     }
