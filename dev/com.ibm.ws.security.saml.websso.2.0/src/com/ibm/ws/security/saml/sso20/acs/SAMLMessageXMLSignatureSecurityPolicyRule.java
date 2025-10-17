@@ -28,6 +28,7 @@ import org.opensaml.security.SecurityException;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCriterion;
 import org.opensaml.xmlsec.signature.Signature;
+import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.opensaml.xmlsec.signature.support.SignatureException;
 import org.opensaml.xmlsec.signature.support.SignaturePrevalidator;
 import org.opensaml.xmlsec.signature.support.SignatureValidator;
@@ -35,6 +36,7 @@ import org.opensaml.xmlsec.signature.support.impl.BaseSignatureTrustEngine;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.saml.TraceConstants;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.internal.utils.SignatureMethods;
@@ -203,6 +205,10 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
         @SuppressWarnings("rawtypes")
         String configMethod = ((BasicMessageContext) samlMsgCtx).getSsoConfig().getSignatureMethodAlgorithm();
         String messageMethod = signature.getSignatureAlgorithm();
+        if (CryptoUtils.isFips140_3EnabledWithBetaGuard() && SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1.equals(messageMethod)) {
+            throw new MessageHandlerException("The server is configured with FIPS 140-3 enabled mode, but the received SAML assertion is signed with RSA-SHA1, which is not allowed in FIPS 140-3 mode");
+        }
+
         if (SignatureMethods.toInteger(messageMethod) < SignatureMethods.toInteger(configMethod)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Required signature method from configuration is " + configMethod);
