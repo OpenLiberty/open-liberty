@@ -20,7 +20,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.internal.config.McpConfiguration;
-
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
@@ -32,33 +31,33 @@ import jakarta.enterprise.context.ApplicationScoped;
  */
 
 @ApplicationScoped
-public class McpConnectionTracker {
+public class McpRequestTracker {
 
-    private static final TraceComponent tc = Tr.register(McpConnectionTracker.class);
-    private final ConcurrentMap<String, Cancellation> ongoingRequests;
-    private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpConnectionTracker.class, McpConfiguration.class);
+    private static final TraceComponent tc = Tr.register(McpRequestTracker.class);
+    private final ConcurrentMap<ExecutionRequestId, Cancellation> ongoingRequests;
+    private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpRequestTracker.class, McpConfiguration.class);
 
-    public McpConnectionTracker() {
+    public McpRequestTracker() {
         this.ongoingRequests = new ConcurrentHashMap<>();
     }
 
     public void deregisterOngoingRequest(ExecutionRequestId id) {
-        ongoingRequests.remove(id.toString());
+        ongoingRequests.remove(id);
     }
 
     public void registerOngoingRequest(ExecutionRequestId id, Cancellation cancellation) {
-        Cancellation previous = ongoingRequests.putIfAbsent(id.toString(), cancellation);
+        Cancellation previous = ongoingRequests.putIfAbsent(id, cancellation);
         if (previous != null) {
             throw new JSONRPCException(INVALID_PARAMS, Tr.formatMessage(tc, "CWMCM0008E.invalid.request.params", id.id()));
         }
     }
 
     public boolean isOngoingRequest(ExecutionRequestId id) {
-        return ongoingRequests.containsKey(id.toString());
+        return ongoingRequests.containsKey(id);
     }
 
     public Cancellation getOngoingRequestCancellation(ExecutionRequestId id) {
-        return ongoingRequests.get(id.toString());
+        return ongoingRequests.get(id);
     }
 
     /**
@@ -75,7 +74,7 @@ public class McpConnectionTracker {
         }
 
         for (ExecutionRequestId id : session.getActiveRequests()) {
-            Cancellation cancellation = ongoingRequests.remove(id.toString());
+            Cancellation cancellation = ongoingRequests.remove(id);
             if (cancellation instanceof CancellationImpl) {
                 ((CancellationImpl) cancellation).cancel(Optional.of("Session cancelled"));
             }

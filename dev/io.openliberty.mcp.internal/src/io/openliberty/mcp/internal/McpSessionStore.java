@@ -35,7 +35,7 @@ public class McpSessionStore {
     private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpSessionStore.class, McpConfiguration.class);
 
     @Inject
-    McpConnectionTracker connectionTracker;
+    McpRequestTracker connectionTracker;
 
     public boolean isStateless() {
         return mcpConfigService.run(McpConfiguration::isStateless).orElse(false);

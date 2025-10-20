@@ -66,13 +66,13 @@ public class McpServlet extends HttpServlet {
     BeanManager bm;
 
     @Inject
-    McpConnectionTracker connectionTracker;
+    McpRequestTracker connectionTracker;
 
     @Inject
     McpSessionStore sessionStore;
 
     @Inject
-    McpConnectionTracker connection;
+    McpRequestTracker connection;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -184,6 +184,10 @@ public class McpServlet extends HttpServlet {
 
         McpSession sessionInfo = transport.getSession();
         if (sessionInfo != null) {
+            if (sessionInfo.isRequestActive(requestId)) {
+                throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
+                                           Tr.formatMessage(tc, "CWMCM0009E.duplicate.request.id", requestId.id()));
+            }
             sessionInfo.addRequest(requestId);
         }
 

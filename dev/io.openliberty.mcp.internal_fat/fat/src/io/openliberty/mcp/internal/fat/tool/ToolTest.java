@@ -10,7 +10,9 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,6 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -37,6 +40,10 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
  */
 @RunWith(FATRunner.class)
 public class ToolTest extends FATServletClient {
+
+    private static final String ACCEPT_HEADER = "application/json, text/event-stream";
+    private static final String MCP_PROTOCOL_HEADER = "MCP-Protocol-Version";
+    private static final String MCP_PROTOCOL_VERSION = "2025-06-18";
 
     @Server("mcp-server")
     public static LibertyServer server;
@@ -2102,5 +2109,44 @@ public class ToolTest extends FATServletClient {
                         {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testDuplicateRequestIdReturnsError() throws Exception {
+
+        String requestTemplate = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "%s",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echo",
+                            "arguments": {
+                              "input": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        // First request call
+        new HttpRequest(server, "/toolTest/mcp").requestProp("Accept", ACCEPT_HEADER)
+                                                .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                .requestProp("Mcp-Session-Id", client.getSessionId())
+                                                .jsonBody(requestTemplate)
+                                                .method("POST")
+                                                .expectCode(200)
+                                                .run(String.class);
+
+        // Second request - same ID while the first is likely still active
+        String duplicateResponse = new HttpRequest(server, "/toolTest/mcp").requestProp("Accept", ACCEPT_HEADER)
+                                                                           .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                                           .requestProp("Mcp-Session-Id", client.getSessionId())
+                                                                           .jsonBody(requestTemplate)
+                                                                           .method("POST")
+                                                                           .expectCode(200)
+                                                                           .run(String.class);
+
+        assertThat("Expected error for duplicate request ID", duplicateResponse, containsString("\"error\""));
+        assertThat("Expected specific error code for duplicate request ID", duplicateResponse, containsString("CWMCM0009E"));
     }
 }
