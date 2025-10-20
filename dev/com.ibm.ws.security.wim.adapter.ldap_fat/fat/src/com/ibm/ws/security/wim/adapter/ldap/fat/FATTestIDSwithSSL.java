@@ -60,11 +60,6 @@ public class FATTestIDSwithSSL {
      */
     @BeforeClass
     public static void setupClass() throws Exception {
-        String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
-        if ("PKIX".equalsIgnoreCase(provider)) {
-            System.setProperty("fat.test.really.use.local.ldap", "false");
-        }
-
         setupLdapServer();
         setUpLibertyServer();
     }
@@ -80,14 +75,12 @@ public class FATTestIDSwithSSL {
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
 
         String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
-        if ("PKIX".equalsIgnoreCase(provider)) {
-            System.setProperty("fat.test.really.use.local.ldap", "false");
-        }
+        boolean canUseInMemoryLdap = !"PKIX".equalsIgnoreCase(provider);
 
         // Add LDAP variables to bootstrap properties file
-        LDAPUtils.addLDAPVariables(server);
+        LDAPUtils.addLDAPVariables(server, canUseInMemoryLdap);
 
-        if (!"PKIX".equalsIgnoreCase(provider)) {
+        if (canUseInMemoryLdap) {
             //Update LDAP configuration with In-Memory Server
             ServerConfiguration serverConfig = server.getServerConfiguration();
             LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);

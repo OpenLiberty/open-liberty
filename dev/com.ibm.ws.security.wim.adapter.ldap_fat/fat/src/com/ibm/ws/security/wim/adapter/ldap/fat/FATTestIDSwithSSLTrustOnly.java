@@ -88,14 +88,10 @@ public class FATTestIDSwithSSLTrustOnly {
         String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
+        boolean canUseInMemoryLdap = !"PKIX".equalsIgnoreCase(provider);
+        LDAPUtils.addLDAPVariables(server, canUseInMemoryLdap);
 
-        if ("PKIX".equalsIgnoreCase(provider)) {
-            System.setProperty("fat.test.really.use.local.ldap", "false");
-        }
-        // Add LDAP variables to bootstrap properties file
-        LDAPUtils.addLDAPVariables(server);
-
-        if (!"PKIX".equalsIgnoreCase(provider)) {
+        if (canUseInMemoryLdap) {
             ldapServer = new InMemoryTDSLDAPServer();
             // Update LDAP configuration with In-Memory Server
             ServerConfiguration serverConfig = server.getServerConfiguration();

@@ -673,10 +673,14 @@ public class LDAPUtils {
      * @throws Exception
      */
     public static void addLDAPVariables(LibertyServer server) throws Exception {
-        addLDAPVariables(server, false);
+        addLDAPVariables(server, false, true);
     }
 
-    public static void addLDAPVariables(LibertyServer server, boolean asEnv) throws Exception {
+    public static void addLDAPVariables(LibertyServer server, boolean canUseInMemoryLdap) throws Exception {
+        addLDAPVariables(server, false, canUseInMemoryLdap);
+    }
+
+    public static void addLDAPVariables(LibertyServer server, boolean asEnv, boolean canUseInMemoryLdap) throws Exception {
         String method = "addLDAPVariables";
         Log.entering(c, method, new Object[] { server });
 
@@ -695,11 +699,11 @@ public class LDAPUtils {
         }
 
         Log.info(c, "addLDAPVariables", "USE_LOCAL_LDAP_SERVER=" + USE_LOCAL_LDAP_SERVER);
-
+        Log.info(c, "addLDAPVariables", "Can use in memory LDAP=" + canUseInMemoryLdap);
         /*
          * Create a Properties instance with the remote or the local server properties.
          */
-        if (USE_LOCAL_LDAP_SERVER) {
+        if (USE_LOCAL_LDAP_SERVER && canUseInMemoryLdap) {
             Log.info(c, "addLDAPVariables", "Setting in-memory LDAP server properties");
         } else {
             /*
@@ -713,7 +717,7 @@ public class LDAPUtils {
             Log.info(c, "addLDAPVariables", "Setting physical LDAP server properties");
         }
         for (int idx = 1; idx < remoteServers.length; idx++) {
-            setServerProperties(idx, props, asEnv);
+            setServerProperties(idx, props, asEnv, canUseInMemoryLdap);
         }
 
         // Write above LDAP variables to remote bootstrap properties file
@@ -737,11 +741,11 @@ public class LDAPUtils {
      * @param serverNumber The LDAP server number.
      * @param props
      */
-    private static void setServerProperties(int serverNumber, Properties props, boolean asEnv) {
+    private static void setServerProperties(int serverNumber, Properties props, boolean asEnv, boolean canUseInMemoryLdap) {
         /*
          * Determine whether we should use the local or remote server.
          */
-        LdapServer server = (USE_LOCAL_LDAP_SERVER) ? localServers[serverNumber] : remoteServers[serverNumber];
+        LdapServer server = (USE_LOCAL_LDAP_SERVER && canUseInMemoryLdap) ? localServers[serverNumber] : remoteServers[serverNumber];
 
         char sep = asEnv ? '_' : '.';
         String prefix = "ldap" + sep + "server" + sep;
