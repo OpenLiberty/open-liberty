@@ -710,7 +710,7 @@ public class LDAPUtils {
              * Check to see if we failed requesting the servers from Consul. If there was a failure, the output.txt log
              * will contain failure information.
              */
-            if (CONSUL_LOOKUP_FAILED) {
+            if (CONSUL_LOOKUP_FAILED && !canUseInMemoryLdap) {
                 throw new Exception("Tests requested physical LDAP servers, but a failure was encountered retrieving them from "
                                     + "Consul. Check the output.txt file for more details.");
             }
