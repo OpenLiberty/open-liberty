@@ -209,7 +209,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
             throw new MessageHandlerException("The server is configured with FIPS 140-3 enabled mode, but the received SAML assertion is signed with RSA-SHA1, which is not allowed in FIPS 140-3 mode");
         }
 
-        if (SignatureMethods.toInteger(messageMethod) < SignatureMethods.toInteger(configMethod)) {
+        if (SignatureMethods.isInboundSignatureMethodWeakerThanConfigured(messageMethod, configMethod)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Required signature method from configuration is " + configMethod);
                 Tr.debug(tc, "Received signature method is " + messageMethod);
