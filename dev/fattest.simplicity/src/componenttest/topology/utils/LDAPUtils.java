@@ -711,7 +711,7 @@ public class LDAPUtils {
              * will contain failure information.
              */
             if (CONSUL_LOOKUP_FAILED && !canUseInMemoryLdap) {
-                throw new Exception("Tests requested physical LDAP servers, but a failure was encountered retrieving them from "
+                throw new Exception("Tests can not use in Memory LDAP and requested physical LDAP servers, but a failure was encountered retrieving them from "
                                     + "Consul. Check the output.txt file for more details.");
             }
             Log.info(c, "addLDAPVariables", "Setting physical LDAP server properties");
