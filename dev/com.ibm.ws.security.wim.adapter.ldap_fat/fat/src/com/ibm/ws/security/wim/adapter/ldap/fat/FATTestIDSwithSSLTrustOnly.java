@@ -85,9 +85,9 @@ public class FATTestIDSwithSSLTrustOnly {
     public static void setupLibertyServer() throws Exception {
 
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
-        String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
+        String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
         boolean canUseInMemoryLdap = !"PKIX".equalsIgnoreCase(provider);
         LDAPUtils.addLDAPVariables(server, canUseInMemoryLdap);
 
