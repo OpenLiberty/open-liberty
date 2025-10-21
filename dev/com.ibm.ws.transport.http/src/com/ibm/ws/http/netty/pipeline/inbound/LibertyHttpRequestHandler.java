@@ -228,7 +228,16 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
     private static void resumeReading(ChannelHandlerContext context) {
         ChannelConfig config = context.channel().config();
         if (!config.isAutoRead()) {
-            config.setAutoRead(true);
+            //config.setAutoRead(true);
+            context.read();
+        }
+    }
+
+    @Override
+    public void channelReadComplete(ChannelHandlerContext context) throws Exception{
+        super.channelReadComplete(context);
+        if(!context.channel().config().isAutoRead()){
+            context.channel().read();
         }
     }
 

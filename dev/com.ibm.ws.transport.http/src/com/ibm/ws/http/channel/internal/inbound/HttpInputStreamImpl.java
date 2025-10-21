@@ -26,6 +26,7 @@ import com.ibm.ws.http.channel.inputstream.HttpInputStreamObserver;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.message.BodyQueue;
+import com.ibm.ws.http.netty.pipeline.inbound.ReadFlowHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
@@ -92,6 +93,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.isc = context;
         this.nettyRequest = request;
         this.nettyBody = nettyRequest.content();
+
         buffer = ChannelFrameworkFactory.getBufferManager().wrap(nettyBody.nioBuffer()).position(nettyBody.readerIndex());
         // Check if the request content is compressed
         String contentEncoding = nettyRequest.headers().get(HttpHeaderNames.CONTENT_ENCODING);

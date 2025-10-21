@@ -52,6 +52,8 @@ import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.pipeline.RemoteIpHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.ReadFlowHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.ReadFlowHandler.FlowState;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
 import com.ibm.ws.transport.access.TransportConstants;
@@ -88,8 +90,11 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
+import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+import io.netty.util.Attribute;
+import io.netty.util.AttributeKey;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -167,6 +172,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private FullHttpRequest nettyRequest;
     private ConnectionLink nettyConnectionLink;
     private FullHttpRequest nettyHeaderOnly;
+    private AtomicBoolean deferClear = new AtomicBoolean(false);
+
+    private static final AttributeKey<Boolean> READ_LOCK = AttributeKey.valueOf("http.read.lock");
 
     /**
      * Constructor.
@@ -220,31 +228,65 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         super.init(nettyVc);
     }
 
-    public void initStreaming(ChannelHandlerContext context, io.netty.handler.codec.http.HttpRequest headers, HttpChannelConfig config){
+    public void initStreaming(ChannelHandlerContext ctx,
+                              io.netty.handler.codec.http.HttpRequest headers,
+                              HttpChannelConfig config) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "New conn(streaming): netty context=" + context);
+            Tr.debug(tc, "New conn(streaming): netty context=" + ctx);
         }
+
+        // Always manual reads
+        ctx.channel().config().setAutoRead(false);
+        
+
+        // Install gate if missing
+        if (ctx.pipeline().get(ReadFlowHandler.class)==null){
+            ReadFlowHandler flowHandler = new ReadFlowHandler();
+            ctx.pipeline().addLast("readFlowHandler", flowHandler);
+        }
+
         NettyVirtualConnectionImpl nettyVc = NettyVirtualConnectionImpl.createVC();
-        this.nettyContext=context;
-        this.isc = new HttpInboundServiceContextImpl(context, nettyVc);
+        this.nettyContext = ctx;
+        this.isc = new HttpInboundServiceContextImpl(ctx, nettyVc);
         this.isc.setHttpConfig(config);
         this.isc.setStartTime();
 
-        //Provide headers 
-        this.nettyHeaderOnly = new DefaultFullHttpRequest(headers.protocolVersion(), headers.method(), headers.uri(),
-                Unpooled.EMPTY_BUFFER, headers.headers(), EmptyHttpHeaders.INSTANCE);
-        this.isc.setNettyRequest(nettyHeaderOnly);
+        this.nettyHeaderOnly = new DefaultFullHttpRequest(headers.protocolVersion(), headers.method(), headers.uri(), Unpooled.EMPTY_BUFFER, headers.headers(), EmptyHttpHeaders.INSTANCE);
+
+        this.nettyRequest = this.nettyHeaderOnly;
+        this.isc.setNettyRequest(this.nettyRequest);
         this.usingNetty = true;
+
         this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
         this.response = new HttpResponseImpl(this);
-        this.isc.setNettyResponse(new DefaultHttpResponse(headers.protocolVersion(), HttpResponseStatus.OK,
-                DefaultHttpHeadersFactory.headersFactory().withValidation(false)));
-        this.nettyConnectionLink = new NettyConnectionLink(context.channel());
+        this.request.init(this.nettyRequest, isc);
+
+        this.isc.setNettyResponse(new DefaultHttpResponse(headers.protocolVersion(), HttpResponseStatus.OK, DefaultHttpHeadersFactory.headersFactory().withValidation(false)));
+
+        this.response.init(this.isc);
+        this.nettyConnectionLink = new NettyConnectionLink(ctx.channel());
         super.init(nettyVc);
-        this.request.init(isc);
+        this.linkIsReady = true;
+
+        final boolean chunked = HttpUtil.isTransferEncodingChunked(headers);
+        final long cl = HttpUtil.getContentLength(headers, -1);
+        final boolean expect100 = HttpUtil.is100ContinueExpected(headers);
+        final boolean hasBody = chunked || cl > 0;
+
+        if (!hasBody && !expect100) {
+            // Tell the channel-side ISC and the flow gate that there is nothing to read
+            this.isc.setBodyComplete();
+            ReadFlowHandler.markRequestConsumed(ctx);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "initStreaming: request has no body; marked as consumed");
+            }
+        }
     }
 
     public void prepareForUpgrade() {
+
+        ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
+
         HttpServerKeepAliveHandler handler = nettyContext.channel().pipeline().get(HttpServerKeepAliveHandler.class);
         if (handler != null) {
             // Need to remove to keep connection open
@@ -282,6 +324,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
             }
+            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
             return;
         }
 
@@ -305,22 +348,30 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (nettyContext.pipeline().get("httpKeepAlive") == null) {
-            this.nettyContext.channel().close();
 
-        } else {
-            // Reset for another request
-            this.isc.clear();
+            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
+            this.nettyContext.channel().close();
+        }else {
+            System.out.println(">>> Close called, is bodycomplete set? "+isc.isBodyComplete());
+
+            if (this.isc != null && !this.isc.isBodyComplete()) {
+                deferClear.set(true);
+            } else if (this.isc != null) {
+                this.isc.clear();
+            }
         }
 
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
+            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
             this.nettyContext.channel().close();
         }
 
         // Needed to match channel behavior. Related to HttpOptions' ignoreWriteAfterCommit config.
         if(e != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Closing connection. Error occurred -> " + e.getMessage());
-                }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Closing connection. Error occurred -> " + e.getMessage());
+            }
+            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
              this.nettyContext.channel().close();
         }
 
@@ -485,6 +536,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "Destroy with exc=" + e);
         }
 
+        if (this.nettyContext != null) {
+            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
+        }
+
         linkIsReady = false;
 
         String upgraded = null;
@@ -557,6 +612,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     public void ready() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Received HTTP connection, hc: " + this.hashCode() + " , this link: " + this);
+            Tr.debug(tc, "Request/Response bound to ISC: requestMsg="
+                         + this.request + ", isc=" + this.isc + ", response=" + this.response);
         }
 
         SocketAddress socket = this.nettyContext.channel().remoteAddress();
@@ -577,10 +634,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Make sure to initialize the response in case of an early-return-error message
-        if(this.nettyRequest != null){
-            this.request.init(this.nettyRequest, isc);
-        }else{
-            this.request.init(this.isc);
+        if(this.request != null){
+            if (this.nettyRequest != null) {
+                this.request.init(this.nettyRequest, isc);
+            } else {
+                this.request.init(this.isc);
+            }
         }
         this.response.init(this.isc);
 
@@ -1836,8 +1895,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     }
 
     public void setBodyComplete(){
-        if(this.isc!=null){
+        if (this.isc != null) {
             this.isc.setBodyComplete();
+            ReadFlowHandler.markRequestConsumed(nettyContext);
+            if (deferClear.compareAndSet(true, false)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Body complete; performing deferred ISC.clear() for keep-alive.");
+                }
+                this.isc.clear();
+            }
         }
     }
 
