@@ -248,7 +248,7 @@ public class RSSamlIDPInitiatedSSLConfigNoReconfigTests extends RSSamlIDPInitiat
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException")
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" })
     //java 8 with opensaml v4 changes hits InvalidKeyException, but other jdk levels do not
     @AllowedFFDC("java.security.InvalidKeyException")
     @Test
@@ -1002,7 +1002,7 @@ public class RSSamlIDPInitiatedSSLConfigNoReconfigTests extends RSSamlIDPInitiat
      *
      * @throws Exception
      */
-    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" )
+    @ExpectedFFDC({ "com.ibm.ws.security.saml.error.SamlException", "org.opensaml.xmlsec.encryption.support.DecryptionException" })
     //java 8 with opensaml v4 changes hits InvalidKeyException, but other jdk levels do not
     @AllowedFFDC("java.security.InvalidKeyException")
     @Test
