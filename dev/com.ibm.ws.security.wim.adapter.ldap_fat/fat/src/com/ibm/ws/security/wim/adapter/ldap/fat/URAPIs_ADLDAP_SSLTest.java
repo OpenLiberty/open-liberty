@@ -96,10 +96,6 @@ public class URAPIs_ADLDAP_SSLTest {
      * @throws Exception If there was an issue setting up the Liberty server.
      */
     private static void setupLibertyServer() throws Exception {
-        /*
-         * Add LDAP variables to bootstrap properties file
-         */
-//        LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
