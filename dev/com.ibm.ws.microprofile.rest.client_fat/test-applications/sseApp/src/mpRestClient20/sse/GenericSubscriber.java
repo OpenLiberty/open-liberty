@@ -52,11 +52,18 @@ public class GenericSubscriber<T> implements Subscriber<T> {
     public void onNext(T t) {
         if (t instanceof InboundSseEvent) {
             InboundSseEvent ise = (InboundSseEvent) t;
-            System.out.println("GenericSubscriber onNext ResponseImpl(" + ise.readData() + ")");
+            System.out.println("GenericSubscriber onNext ResponseImpl(" + ise.readData() + ") - current size: " + onNexts.size());
         } else {
-            System.out.println("GenericSubscriber onNext " + t);
+            System.out.println("GenericSubscriber onNext " + t + " - current size: " + onNexts.size());
         }
+        
+        // Check for duplicates to help diagnose the issue
+        if (onNexts.contains(t)) {
+            System.out.println("WARNING: Duplicate event detected: " + t);
+        }
+        
         onNexts.add(t);
+        System.out.println("GenericSubscriber onNext added event - new size: " + onNexts.size());
         latch.countDown();
     }
 
