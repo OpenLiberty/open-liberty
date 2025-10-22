@@ -31,6 +31,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Java22Test.class,
                 Java23Test.class,
                 JavaIllegalAccessTest.class,
+                Java24WarningTest.class,
                 AlwaysPassesTest.class
 })
 public class FATSuite {
