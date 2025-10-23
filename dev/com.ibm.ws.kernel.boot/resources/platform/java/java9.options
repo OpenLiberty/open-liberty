@@ -1,0 +1,2 @@
+# These entries are necessary to include as parameters when starting the JVM and running with Java versions 9 through 23
+# It is created from combining the common_java.options file along with the extra_java_9_23.options file
