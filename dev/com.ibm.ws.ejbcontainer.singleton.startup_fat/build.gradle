@@ -12,7 +12,7 @@
  *******************************************************************************/
 repositories {
   ivy {
-    url "../cnf/local"
+    url = "../cnf/local"
     metadataSources {
       ivyDescriptor()
       artifact()

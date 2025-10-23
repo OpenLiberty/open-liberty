@@ -14,16 +14,18 @@
 // https://plugins.gradle.org/plugin/org.springframework.boot
 plugins {
   id 'org.springframework.boot' version '3.5.3'
+  id 'war'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
-apply plugin: 'war'
 
 apply plugin: 'java'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'io.openliberty.example.spring'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 17
+java {
+  sourceCompatibility = 17
+}
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 

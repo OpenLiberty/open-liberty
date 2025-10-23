@@ -93,6 +93,7 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
@@ -909,6 +910,11 @@ public class QueryInfo {
         TypedQuery<Long> query = em.createQuery(jpql, Long.class);
         setParameters(query, args);
 
+        // TODO why are EntityManager.setCacheRetrieveMode and
+        // Query.setCacheRetrieveMode unable to set this instead?
+        query.setHint("jakarta.persistence.cache.retrieveMode",
+                      CacheRetrieveMode.BYPASS);
+
         Long count = query.getSingleResult();
 
         Object returnValue;
@@ -1518,7 +1524,7 @@ public class QueryInfo {
      */
     @Trivial
     private RuntimeException excMissingParamAnno(int p) {
-        DataVersionCompatibility compat = producer.provider().compat;
+        DataVersionCompatibility compat = producer.compat();
 
         switch (type) {
             case FIND:
@@ -1691,6 +1697,11 @@ public class QueryInfo {
         jakarta.persistence.Query query = em.createQuery(jpql);
         query.setMaxResults(1);
         setParameters(query, args);
+
+        // TODO why are EntityManager.setCacheRetrieveMode and
+        // Query.setCacheRetrieveMode unable to set this instead?
+        query.setHint("jakarta.persistence.cache.retrieveMode",
+                      CacheRetrieveMode.BYPASS);
 
         List<?> results = query.getResultList();
         boolean found = !results.isEmpty();
@@ -1894,6 +1905,11 @@ public class QueryInfo {
 
             jakarta.persistence.Query query = em.createQuery(jpql);
             setParameters(query, args);
+
+            // TODO why are EntityManager.setCacheRetrieveMode and
+            // Query.setCacheRetrieveMode unable to set this instead?
+            query.setHint("jakarta.persistence.cache.retrieveMode",
+                          CacheRetrieveMode.BYPASS);
 
             if (type == FIND_AND_DELETE)
                 query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
@@ -2257,7 +2273,7 @@ public class QueryInfo {
         Object returnValue = em.merge(toEntity(e));
 
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "findAndUpdateOne", loggable(returnValue));
+            Tr.exit(this, tc, "findAndUpdateOne", loggable(returnValue));
         return returnValue;
     }
 
@@ -4608,7 +4624,7 @@ public class QueryInfo {
 
             if (findQueryStartsWithSelect == Boolean.TRUE) {
                 countMustOmitSelect = countPages;
-                if (producer.provider().compat.atLeast(1, 1) &&
+                if (producer.compat().atLeast(1, 1) &&
                     singleType.isRecord()) {
                     while (i < length && Character.isWhitespace(ql.charAt(i)))
                         i++;
@@ -5287,7 +5303,7 @@ public class QueryInfo {
     void setParameters(jakarta.persistence.Query query, Object... args) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        DataVersionCompatibility compat = producer.provider().compat;
+        DataVersionCompatibility compat = producer.compat();
         Iterator<String> namedParams = jpqlParamNames.iterator();
         for (int i = 0, p = 0; i < jpqlParamCount; i++) {
             Object[] values = compat.toConstraintValues(args[i]);

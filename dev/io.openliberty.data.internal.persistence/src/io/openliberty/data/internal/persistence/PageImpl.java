@@ -30,6 +30,7 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Mode;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -101,6 +102,11 @@ public class PageImpl<T> implements Page<T> {
             jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
             queryInfo.setParameters(query, args);
 
+            // TODO why are EntityManager.setCacheRetrieveMode and
+            // Query.setCacheRetrieveMode unable to set this instead?
+            query.setHint("jakarta.persistence.cache.retrieveMode",
+                          CacheRetrieveMode.BYPASS);
+
             int maxPageSize = pageRequest.size();
             query.setFirstResult(queryInfo.computeOffset(pageRequest));
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
@@ -151,6 +157,11 @@ public class PageImpl<T> implements Page<T> {
                 Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);
             TypedQuery<Long> query = em.createQuery(queryInfo.jpqlCount, Long.class);
             queryInfo.setParameters(query, args);
+
+            // TODO why are EntityManager.setCacheRetrieveMode and
+            // Query.setCacheRetrieveMode unable to set this instead?
+            query.setHint("jakarta.persistence.cache.retrieveMode",
+                          CacheRetrieveMode.BYPASS);
 
             return query.getSingleResult();
         } catch (Exception x) {

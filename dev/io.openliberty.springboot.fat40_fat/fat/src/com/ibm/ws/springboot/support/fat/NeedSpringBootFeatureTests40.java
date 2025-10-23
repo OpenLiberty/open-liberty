@@ -42,10 +42,6 @@ public class NeedSpringBootFeatureTests40 extends AbstractSpringTests {
         stopServer(true, "CWWKC0276E", "CWWKZ0002E");
     }
 
-    /*
-     * Temporarily disable the test till com.ibm.ws.springboot.support.shutdown.FeatureAuditor class is fixed.
-     * 
-     */
     @Override
     public Set<String> getFeatures() {
         return new HashSet<>(Arrays.asList("springBoot-3.0", "servlet-6.0"));

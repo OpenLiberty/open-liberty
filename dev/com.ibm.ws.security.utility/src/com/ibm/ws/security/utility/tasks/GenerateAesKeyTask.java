@@ -41,7 +41,7 @@ public class GenerateAesKeyTask extends BaseCommandTask {
     private static final List<String> VALID_ARGUMENTS = Collections.unmodifiableList(
                                                                                      Arrays.asList(BaseCommandTask.ARG_KEY, ARG_FILE));
 
-    private static final String TASK_NAME = "generateAESKey";
+    protected static final String TASK_NAME = "generateAESKey";
     private final IFileUtility fileUtil;
 
     /**
@@ -125,9 +125,10 @@ public class GenerateAesKeyTask extends BaseCommandTask {
         String keyPhrase = null;
         String filePath = null;
 
-        for (String arg : args) {
+        for (int i = 1; i < args.length; i++) {
+            String arg = args[i];
             if (!arg.startsWith("--")) {
-                continue;
+                throw new IllegalArgumentException(getMessage("invalidArg", arg));
             }
 
             int index = arg.indexOf('=');

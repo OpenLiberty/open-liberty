@@ -128,16 +128,17 @@ task dependabotGenerate() {
 def pluginsProject = project(':wlp-bndPlugins')
 
 task updatePluginClasses(type: Copy) {
+    def currentProject = project
     dependsOn ':wlp-bndPlugins:jar'
     dependsOn dependabotGenerate
     from zipTree(bnd.get('build.bnd.plugins.jar'))
     into project.file('bndplugins/classes')
     doLast {
-        println 'Refresh bnd Projects after building bnd plugins in ' + project.name
+        println 'Refresh bnd Projects after building bnd plugins in ' + currentProject.name
         bnd.project.refresh()
         bnd.project.clear()
         parent.subprojects {
-            if (project != pluginsProject) {
+            if (currentProject != pluginsProject) {
                 bnd.project.refresh()
                 bnd.project.clear()
             }
@@ -190,7 +191,7 @@ parent.subprojects {
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
-import groovy.util.XmlSlurper
+import groovy.xml.XmlSlurper
 
 String getVersionFromReleaseRepo(String org, String name) {
     def versions = []
@@ -378,8 +379,8 @@ def releaserepo = file(bnd.get('releaserepo', 'release')) /* Release repository.
 import aQute.bnd.gradle.Index
 
 task ('index', type: Index) {
-    description 'Index the release repository. (Does not depend on releaseNeeded)'
-    group 'release'
+    description = 'Index the release repository. (Does not depend on releaseNeeded)'
+    group = 'release'
     repositoryName = "OpenLiberty ${version}"
     destinationDirectory = releaserepo
     gzip = true
@@ -393,8 +394,8 @@ task ('index', type: Index) {
 }
 
 task('createIndex') {
-    description 'Index the release repository.'
-    group 'release'
+    description = 'Index the release repository.'
+    group = 'release'
     dependsOn copyMavenLibs
     dependsOn everythingElseHasBeenReleased
     finalizedBy index
@@ -466,13 +467,13 @@ publish {
 publishing {
   publications {
     gradle(MavenPublication) {
-        artifactId 'gradle-bootstrap'
-        version project.version
+        artifactId = 'gradle-bootstrap'
+        version = project.version
         artifact zipGradleBootstrap
     }
     libertyVersions(MavenPublication) {
-        artifactId 'liberty-versions'
-        version project.version
+        artifactId = 'liberty-versions'
+        version = project.version
         artifact project.file('build/liberty-versions.props')
     }
   }

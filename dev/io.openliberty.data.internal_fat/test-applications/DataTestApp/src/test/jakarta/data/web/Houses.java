@@ -33,7 +33,7 @@ import jakarta.data.repository.Save;
  * Repository for operations on the unannotated House entity,
  * which has multiple levels of unannotated embeddables.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Houses {
 
     @Delete

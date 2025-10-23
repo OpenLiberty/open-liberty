@@ -43,17 +43,19 @@ autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.jwtsso_fat.commonTest:buildfat'
 
-autoFVT.doFirst {
+autoFVT {
+  def commonProject = project(':com.ibm.ws.security.jwtsso_fat.commonTest')
+  doFirst {
   /*
    * This is a HACK to generate the fat-metadata.json file when starting the FVT framework.
    */
 
   copy {
-    from project(':com.ibm.ws.security.jwtsso_fat.commonTest').autoFvtDir
+    from commonProject.autoFvtDir
     into autoFvtDir
     include 'publish/**'
     include 'test-applications/**'
     include 'lib/**'
-
+  }
   }
 }

@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings
+    xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence/orm https://jakarta.ee/xml/ns/persistence/orm/orm_3_2.xsd"
+    version="3.2">
+
+ <entity class="test.jakarta.data.web.Apartment">
+  <table name="Apartment"/>
+  <attributes>
+   <id name="APTID">
+    <column nullable="false"/>
+   </id>
+   <basic name="isOccupied">
+    <column nullable="false"/>
+   </basic>
+   <embedded name="occupant">
+    <attribute-override name="firstName">
+     <column name="OCCUPANT_FIRSTNAME"/>
+    </attribute-override>
+    <attribute-override name="lastName">
+     <column name="OCCUPANT_LASTNAME"/>
+    </attribute-override>
+   </embedded>
+   <embedded name="quarters">
+    <attribute-override name="length">
+     <column name="QUARTERS_LENGTH"/>
+    </attribute-override>
+    <attribute-override name="width">
+     <column name="QUARTERS_WIDTH"/>
+    </attribute-override>
+   </embedded>
+   <basic name="quartersWidth">
+    <column nullable="false"/>
+   </basic>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Apartment2">
+  <table name="Apartment2"/>
+  <attributes>
+   <id name="aptId">
+    <column nullable="false"/>
+   </id>
+   <basic name="isOccupied">
+    <column nullable="false"/>
+   </basic>
+   <embedded name="occupant">
+    <attribute-override name="firstName">
+     <column name="OCCUPANT_FIRSTNAME"/>
+    </attribute-override>
+    <attribute-override name="lastName">
+     <column name="OCCUPANT_LASTNAME"/>
+    </attribute-override>
+   </embedded>
+   <embedded name="quarters">
+    <attribute-override name="length">
+     <column name="QUARTERS_LENGTH"/>
+    </attribute-override>
+    <attribute-override name="width">
+     <column name="QUARTERS_WIDTH"/>
+    </attribute-override>
+   </embedded>
+   <basic name="quarters_width">
+    <column nullable="false"/>
+   </basic>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Apartment3">
+  <table name="Apartment3"/>
+  <attributes>
+   <id name="aptId">
+    <column nullable="false"/>
+   </id>
+   <basic name="isOccupied">
+    <column nullable="false"/>
+   </basic>
+   <embedded name="occupant">
+    <attribute-override name="firstName">
+     <column name="OCCUPANT_FIRSTNAME"/>
+    </attribute-override>
+    <attribute-override name="lastName">
+     <column name="OCCUPANT_LASTNAME"/>
+    </attribute-override>
+   </embedded>
+   <basic name="occupant_firstName">
+    <column nullable="false"/>
+   </basic>
+   <embedded name="quarters">
+    <attribute-override name="length">
+     <column name="QUARTERS_LENGTH"/>
+    </attribute-override>
+    <attribute-override name="width">
+     <column name="QUARTERS_WIDTH"/>
+    </attribute-override>
+   </embedded>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.House">
+  <table name="House"/>
+  <attributes>
+   <basic name="area">
+    <column nullable="false"/>
+   </basic>
+   <embedded name="garage">
+    <attribute-override name="area">
+     <column name="GARAGE_AREA"/>
+    </attribute-override>
+    <attribute-override name="type">
+     <column name="GARAGE_TYPE"/>
+    </attribute-override>
+    <attribute-override name="door.height">
+     <column name="GARAGE_DOOR_HEIGHT"/>
+    </attribute-override>
+    <attribute-override name="door.width">
+     <column name="GARAGE_DOOR_WIDTH"/>
+    </attribute-override>
+   </embedded>
+   <embedded name="kitchen">
+    <attribute-override name="length">
+     <column name="KITCHEN_LENGTH"/>
+    </attribute-override>
+    <attribute-override name="width">
+     <column name="KITCHEN_WIDTH"/>
+    </attribute-override>
+   </embedded>
+   <basic name="lotSize">
+    <column nullable="false"/>
+   </basic>
+   <basic name="numBedrooms">
+    <column nullable="false"/>
+   </basic>
+   <id name="parcelId">
+   </id>
+   <basic name="purchasePrice">
+    <column nullable="false"/>
+   </basic>
+   <basic name="sold">
+   </basic>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Package">
+  <table name="Package"/>
+  <attributes>
+   <basic name="description">
+   </basic>
+   <basic name="height">
+    <column nullable="false"/>
+   </basic>
+   <id name="id">
+    <column nullable="false"/>
+   </id>
+   <basic name="length">
+    <column nullable="false"/>
+   </basic>
+   <basic name="width">
+    <column nullable="false"/>
+   </basic>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Participant">
+  <table name="Participant"/>
+  <attributes>
+   <embedded name="name">
+    <attribute-override name="first">
+     <column name="NAME_FIRST"/>
+    </attribute-override>
+    <attribute-override name="last">
+     <column name="NAME_LAST"/>
+    </attribute-override>
+   </embedded>
+   <id name="pID">
+   </id>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Person">
+  <table name="Person"/>
+  <attributes>
+   <basic name="firstName">
+   </basic>
+   <basic name="lastName">
+   </basic>
+   <id name="ssn_id">
+    <column nullable="false"/>
+   </id>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Prime">
+  <table name="Prime"/>
+  <attributes>
+   <basic name="binaryDigits">
+   </basic>
+   <basic name="even">
+    <column nullable="false"/>
+   </basic>
+   <basic name="hex">
+   </basic>
+   <basic name="name">
+   </basic>
+   <id name="numberId">
+    <column nullable="false"/>
+   </id>
+   <basic name="romanNumeral">
+   </basic>
+   <element-collection name="romanNumeralSymbols" fetch="EAGER">
+   </element-collection>
+   <basic name="sumOfBits">
+    <column nullable="false"/>
+   </basic>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Product">
+  <table name="Product"/>
+  <attributes>
+   <basic name="description">
+   </basic>
+   <basic name="name">
+   </basic>
+   <id name="pk">
+   </id>
+   <basic name="price">
+    <column nullable="false"/>
+   </basic>
+   <version name="version">
+    <column nullable="false"/>
+   </version>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Purchase">
+  <table name="Purchase"/>
+  <attributes>
+   <basic name="customer">
+   </basic>
+   <id name="purchaseId">
+    <column nullable="false"/>
+   </id>
+   <embedded name="receipt">
+    <attribute-override name="customer">
+     <column name="RECEIPT_CUSTOMER"/>
+    </attribute-override>
+    <attribute-override name="purchaseId">
+     <column name="RECEIPT_PURCHASEID"/>
+    </attribute-override>
+    <attribute-override name="total">
+     <column name="RECEIPT_TOTAL"/>
+    </attribute-override>
+   </embedded>
+   <basic name="total">
+    <column nullable="false"/>
+   </basic>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Thing">
+  <table name="Thing"/>
+  <attributes>
+   <basic name="a">
+   </basic>
+   <basic name="alike">
+   </basic>
+   <basic name="android">
+    <column nullable="false"/>
+   </basic>
+   <basic name="brand">
+   </basic>
+   <basic name="description">
+   </basic>
+   <basic name="floor">
+   </basic>
+   <basic name="info">
+   </basic>
+   <basic name="notes">
+   </basic>
+   <basic name="orderNumber">
+    <column nullable="false"/>
+   </basic>
+   <basic name="purchaseOrder">
+    <column nullable="false"/>
+   </basic>
+   <id name="thingId">
+    <column nullable="false"/>
+   </id>
+  </attributes>
+ </entity>
+
+ <entity class="test.jakarta.data.web.Vehicle">
+  <table name="Vehicle"/>
+  <attributes>
+   <basic name="make">
+   </basic>
+   <basic name="model">
+   </basic>
+   <basic name="numSeats">
+    <column nullable="false"/>
+   </basic>
+   <basic name="price">
+    <column nullable="false"/>
+   </basic>
+   <id name="vinId">
+   </id>
+  </attributes>
+ </entity>
+ 
+ <embeddable class="test.jakarta.data.web.Bedroom">
+  <attributes>
+   <basic name="length">
+   </basic>
+   <basic name="width">
+   </basic>
+  </attributes>
+ </embeddable>
+
+ <embeddable class="test.jakarta.data.web.Garage">
+  <attributes>
+   <basic name="area">
+   </basic>
+   <embedded name="door">
+   </embedded>
+   <basic name="type">
+   </basic>
+  </attributes>
+ </embeddable>
+
+ <embeddable class="test.jakarta.data.web.GarageDoor">
+  <attributes>
+   <basic name="height">
+   </basic>
+   <basic name="width">
+   </basic>
+  </attributes>
+ </embeddable>
+
+ <embeddable class="test.jakarta.data.web.Kitchen">
+  <attributes>
+   <basic name="length">
+   </basic>
+   <basic name="width">
+   </basic>
+  </attributes>
+ </embeddable>
+
+ <embeddable class="test.jakarta.data.web.Participant$Name">
+  <attributes>
+   <basic name="first">
+   </basic>
+   <basic name="last">
+   </basic>
+  </attributes>
+ </embeddable>
+
+ <embeddable class="test.jakarta.data.web.Receipt">
+  <attributes>
+   <basic name="customer">
+   </basic>
+   <basic name="purchaseId">
+   </basic>
+   <basic name="total">
+   </basic>
+  </attributes>
+ </embeddable>
+
+ <embeddable class="test.jakarta.data.web.Residence$Occupant">
+  <attributes>
+   <basic name="firstName">
+   </basic>
+   <basic name="lastName">
+   </basic>
+  </attributes>
+ </embeddable>
+
+</entity-mappings>
+

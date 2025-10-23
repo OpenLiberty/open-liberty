@@ -16,7 +16,6 @@
  */
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
-ext.distsDirectory = new File(project.buildDir, 'distributions')
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
@@ -29,7 +28,7 @@ if (isAutomatedBuild && project.file('fat').exists()) {
   release {
     doLast {
       delete autoFvtDir
-      delete distsDirectory
+      delete layout.buildDirectory.dir("distributions")
     }
   }
 }
@@ -133,11 +132,12 @@ task copyJdbcDrivers(type: Copy) {
 }
 
 task copyFeatureBundles {
+  def projectName = project.name
   dependsOn jar
-  enabled project.file('test-bundles').exists()
+  enabled = project.file('test-bundles').exists()
   doLast {
-    new File(project.buildDir, 'buildfiles').eachLine { String line ->
-      if (!line.contains(project.name + ".jar")) {
+    new File(buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(projectName + ".jar")) {
         copy {
           from line
           into new File(autoFvtDir, 'publish/files/bundles')
@@ -153,7 +153,7 @@ task autoFVT {
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
   dependsOn ':fattest.simplicity:jar'
-  enabled project.file('fat').exists()
+  enabled = project.file('fat').exists()
 
   ext.getFeature = { line ->
     def fStart = line.indexOf('<feature>')
@@ -166,12 +166,15 @@ task autoFVT {
     return line.substring(fStart, fEnd).trim().toLowerCase()
   }
 
+  def projectName = project.name
+  def fattestSimplicityProject = project(':fattest.simplicity')
+
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip
   doLast {
     // Copy the compiled classes
     copy {
-      from compileJava.destinationDir
+      from compileJava.destinationDirectory
       into new File(autoFvtDir, 'build/classes')
     }
 
@@ -223,28 +226,28 @@ task autoFVT {
     // Copy the DDL files
     // TODO: Consider if this can be removed, it looks like there's only a single project for this rule
     copy {
-      from project.file('ddl')
+      from file('ddl')
       include '**/*'
       into new File(autoFvtDir, 'ddl')
     }
 
     // Copy the static autoFVT-defaults
     copy {
-      from new File(project(':fattest.simplicity').projectDir, '/autoFVT-defaults')
+      from new File(fattestSimplicityProject.projectDir, '/autoFVT-defaults')
       include '**/*'
       into autoFvtDir
     }
 
     // Copy the dynamic autoFVT-defaults
     copy {
-      from new File(project(':fattest.simplicity').buildDir, '/autoFVT-defaults')
+      from new File(fattestSimplicityProject.buildDir, '/autoFVT-defaults')
       include '**/*'
       into autoFvtDir
     }
 
     // Copy override autoFVT files in the current project
     copy {
-      from project.file('override/autoFVT/src/ant')
+      from file('override/autoFVT/src/ant')
       include '*.xml'
       into new File(autoFvtDir,"src/ant")
     }
@@ -253,7 +256,7 @@ task autoFVT {
     def bndProps = new Properties()
 
     // By default, load up all properties with certain prefixes from bndWorkspace
-    bndWorkspace.getProject(project.name).getProperties().each { k, v ->
+    bndWorkspace.getProject(projectName).getProperties().each { k, v ->
       if(k.startsWith("test.") || k.startsWith("fat."))
         bndProps.setProperty(k, v);
     }
@@ -299,9 +302,9 @@ task autoFVT {
 
     // Copy the fattest libs
     // TCK project's depend on the fattest.simplicity.jar being in the autoFVT/lib directory for their pom.xml files
-    if (project.name.contains('tck')) {
+    if (projectName.contains('tck')) {
       copy {
-        from project(':fattest.simplicity').buildDir
+        from fattestSimplicityProject.buildDir
         include 'fattest.simplicity.jar'
         into new File(autoFvtDir, 'lib')
       }
@@ -317,7 +320,7 @@ task autoFVT {
 
     // Copy the published files
     copy {
-      from project.file('publish/files'), new File(publishDir, 'files')
+      from file('publish/files'), new File(publishDir, 'files')
       include '**/*'
       into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
       duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -325,7 +328,7 @@ task autoFVT {
 
     // Copy the publish directory (minus the 'files' directory)
     copy {
-      from project.file('publish')
+      from file('publish')
       include '**/*'
       exclude 'files'
       into publishDir
@@ -371,7 +374,7 @@ task autoFVT {
 
     // Copy any locally cloned git repositories' files
     // This omits all git metadata by default (see gradle issue:1348).
-    File gitReposDir = new File(project.buildDir, 'gitRepos')
+    File gitReposDir = new File(buildDir, 'gitRepos')
     copy {
       from gitReposDir
       into new File(autoFvtDir, 'publish/gitRepos/')
@@ -431,7 +434,7 @@ task autoFVT {
 
 task customizeAutoFVT {
   dependsOn autoFVT
-  enabled project.file('fat').exists()
+  enabled = project.file('fat').exists()
   // no-op task that allows buckets to override behavior of default autoFVT task
 }
 
@@ -445,7 +448,7 @@ task zipAutoFVT(type: Zip) {
 task zipProjectFVT(type: Zip) {
   dependsOn zipAutoFVT
   archiveBaseName = project.name
-  into project.name + '/build/lib', {from "${distsDirectory}/autoFVT.zip"}
+  into project.name + '/build/lib', {from zipAutoFVT}
   into project.name, {from 'build-test.xml'}
 }
 
@@ -453,9 +456,9 @@ if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
   publishing {
     publications {
       maven(MavenPublication) {
-        artifactId project.name + '_autoFVT'
-        groupId 'test'
-        version project.version
+        artifactId = project.name + '_autoFVT'
+        groupId = 'test'
+        version = project.version
         artifact zipProjectFVT
       }
     }
@@ -468,18 +471,20 @@ task trySkipFat(type: JavaExec) {
   dependsOn ':build.changeDetector:assemble'
   inputs.file(new File(autoFvtDir, 'fat-metadata.json'))
 
+  def projectName = project.name
+
   mainClass = 'com.ibm.ws.infra.depchain.ChangeDetector'
   classpath = project(':build.changeDetector').sourceSets.main.runtimeClasspath
 
   args '--wlp', project(':build.image').projectDir.toString() + '/wlp',
        '--git-diff', System.getProperty('git_diff', 'UNSET'),
        '--deps', autoFvtDir.toString() + '/fat-metadata.json',
-       '--fat-name', project.name,
+       '--fat-name', projectName,
        '--output', autoFvtDir.toString() + '/canSkipFat'
 
   doLast {
     if (new File(autoFvtDir, 'canSkipFat').exists()) {
-      println "Disabling FAT bucket " + project.name + " from running based on modified files"
+      println "Disabling FAT bucket " + projectName + " from running based on modified files"
       tasks['runfat'].enabled = false
     }
   }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,20 +23,25 @@ dependencies {
     'com.unboundid:unboundid-ldapsdk:5.1.0',
     project(':com.ibm.ws.com.unboundid')
 }
+jar.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.wim.repository_test.custom:assemble'
 addRequiredLibraries.dependsOn addJakartaTransformer
 
-autoFVT.doLast {
+autoFVT {
+  def repositoryTestProject = project(':com.ibm.ws.security.wim.repository_test.custom')
+  def registryServletProject = project(':com.ibm.ws.security.registry_test.servlet')
+  doLast {
   /*
    * Copy sample CustomRepository user feature to this test bucket.
    */
   copy { 
-    from project(':com.ibm.ws.security.wim.repository_test.custom').file('publish/usr/extension/lib/features/customRepositorySample-1.0.mf')
+    from repositoryTestProject.file('publish/usr/extension/lib/features/customRepositorySample-1.0.mf')
     into new File(autoFvtDir, 'publish/features')
   }
   copy {
-    from new File(project(':com.ibm.ws.security.wim.repository_test.custom').buildDir, 'com.ibm.ws.security.wim.repository_test.custom.jar')
+    from new File(repositoryTestProject.buildDir, 'com.ibm.ws.security.wim.repository_test.custom.jar')
     into new File(autoFvtDir, 'publish/bundles')
     rename 'com.ibm.ws.security.wim.repository_test.custom.jar', 'com.ibm.ws.security.wim.repository_test.custom_1.0.jar'
   }
@@ -54,9 +59,10 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy {
-      from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application')
+      from new File(registryServletProject.buildDir, 'test-application')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
       include '*.war'
     }
+  }
   }
 }  

@@ -37,6 +37,7 @@ import jakarta.data.exceptions.DataException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -122,6 +123,11 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
             if (cursor.isPresent())
                 queryInfo.setParametersFromCursor(query, cursor.get());
 
+            // TODO why are EntityManager.setCacheRetrieveMode and
+            // Query.setCacheRetrieveMode unable to set this instead?
+            query.setHint("jakarta.persistence.cache.retrieveMode",
+                          CacheRetrieveMode.BYPASS);
+
             query.setFirstResult(firstResult);
             query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
 
@@ -175,6 +181,11 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                 Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);
             TypedQuery<Long> query = em.createQuery(queryInfo.jpqlCount, Long.class);
             queryInfo.setParameters(query, args);
+
+            // TODO why are EntityManager.setCacheRetrieveMode and
+            // Query.setCacheRetrieveMode unable to set this instead?
+            query.setHint("jakarta.persistence.cache.retrieveMode",
+                          CacheRetrieveMode.BYPASS);
 
             return query.getSingleResult();
         } catch (Exception x) {

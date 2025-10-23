@@ -96,7 +96,7 @@ public class LTPAKeyRotationTests {
     private static final String validUser = "user1";
     private static final String validPassword = "user1pwd";
 
-    private static final String[] serverShutdownMessages = { "CWWKG0058E", "CWWKG0083W", "CWWKS4106E", "CWWKS4109W", "CWWKS4110E", "CWWKS4111E", "CWWKS4112E", "CWWKS4113W",
+    private static final String[] serverShutdownMessages = { "CWWKG0058E", "CWWKG0083W", "CWWKS4102E", "CWWKS4106E", "CWWKS4109W", "CWWKS4110E", "CWWKS4111E", "CWWKS4112E", "CWWKS4113W",
                                                              "CWWKS4114W", "CWWKS4115W", "CWWKS1859E" };
 
     private static String validationKeyPassword = "{xor}Lz4sLCgwLTs=";
@@ -134,6 +134,7 @@ public class LTPAKeyRotationTests {
     private static String SERVER_XML_PATH = "server.xml";
 
     // Define the paths to the alternate key files
+    private static String ALT_FIPS_PRIMARY_KEY_PATH = "alternateFIPS/ltpa.keys";
     private static String ALT_FIPS_VALIDATION_KEY1_PATH = "alternateFIPS/validation1.keys";
     private static String ALT_FIPS_VALIDATION_KEY2_PATH = "alternateFIPS/validation2.keys";
     private static String ALT_FIPS_VALIDATION_KEY3_PATH = "alternateFIPS/validation3.keys";
@@ -307,48 +308,79 @@ public class LTPAKeyRotationTests {
         }
     }
 
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 10.
+     * <LI>Verify LTPA primary key version is 2.0 when fips is enabled, and 1.0 when not enabled
+     * <LI>When fips is not enabled, assert a backup LTPA key file is not created
+     * <LI>When FIPS is enabled, replace the LTPA primary key file and check for the creation of a backup and new primary key file
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
+     * <LI>LTPA primary key version should be version 2.0 when fips is enabled, and 1.0 when not enabled
+     * <LI>When fips is not enabled, a backup LTPA key file is not created
+     * <LI>When FIPS is enabled on IBM JDK 8, a backup key file is not created
+     * <LI>When FIPS is enabled on Semeru, a backup key file is created and a compatible LTPA key file is generated
+     * </OL>
+     * 
+     * TODO: After removal of betaguard reconfigure test as regeneration will occur regardless of FIPS enablement and platform
+     * Beta check in LTPAKeyInfoManager only allows LTPA key backup and regeneration on Semeru FIPS 140-3
+     */
     @Test
     @CheckForLeakedPasswords({ validPassword })
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
     public void testLTPAFileRegeneration_regenerateV1KeysWhenFipsIsEnabled_notRegenerateV1KeysWhenFipsDisabled() throws Exception {
+
+        // Configure the server
+        configureServer("true", "10", true);
+
         if (!fips140_3Enabled) {
             // ltpa is ver1 on startup since fips is NOT enabled
-            configureServer("true", "10", true);
             verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "1.0");
 
+            copyFileToServerResourcesSecurityDir(ALT_FIPS_PRIMARY_KEY_PATH);
+            assertNotNull("Error message for LTPA key creation should be found in the log due to missing 3DESKey property",
+                server.waitForStringInLog("CWWKS4102E", 5000));
+
             // should NOT regenerate ltpa to fips-compatible keys
-            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".noFips");
-            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".noFips.1");
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".fips");
 
         } else if (ibmJdk8Fips140_3Enabled) {
-            // TODO: Combine Semeru and IBM JDK FIPS 140-3 check after removal of beta-guards
-            // Beta check in LTPAKeyInfoManager currently prevents LTPA key regeneration on tests running with IBM JDK 8 FIPS 140-3
 
-            // ltpa is ver2 on startup since fips is enabled
-            configureServer("true", "10", true);
+            // ltpa is ver1 on startup since fips is NOT enabled
             verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "2.0");
 
+            copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
+            assertNotNull("Error message for LTPA key creation should be found in the log due to missing SharedKey property",
+                server.waitForStringInLog("CWWKS4102E", 5000));
+
             // should NOT regenerate ltpa to fips-compatible keys
-            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".noFips");
-            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".noFips.1");
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".nofips");
 
         } else if (semeruFips140_3Enabled) {
+            
             // ltpa is ver2 on startup since fips is enabled
-            configureServer("true", "10", true);
             verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "2.0");
 
             // copy version1 (non-fips) ltpa to server
             copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
             verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "1.0");
 
+            // should regenerate ltpa to fips-compatible keys and backup incompatible key
+            waitForLTPAKeysCreatedMessage();
             waitForLTPAConfigurationReadyMessage();
-
-            // should regenerate ltpa to fips-compatible keys
-            assertFileWasCreated(DEFAULT_KEY_PATH + ".noFips");
+            assertFileWasCreated(DEFAULT_KEY_PATH + ".nofips");
 
             copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
             verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "1.0");
 
+            moveLogMark();
+
+            // should regenerate key again
+            waitForLTPAKeysCreatedMessage();
             waitForLTPAConfigurationReadyMessage();
 
             // verify version 2 keys was generated

@@ -19,10 +19,12 @@ configurations {
 
 task copyBundles {
   dependsOn jar
-  enabled project.file('test-bundles').exists()
+  enabled = project.file('test-bundles').exists()
+  def projectName = project.name
+
   doFirst {
-    new File(project.buildDir, 'buildfiles').eachLine { String line ->
-      if (!line.contains(project.name + '.jar')) {
+    new File(buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(projectName + '.jar')) {
         copy {
           from line
           into new File(autoFvtDir, 'publish/bundles')
@@ -77,7 +79,11 @@ dependencies {
   requiredLibs project(':io.openliberty.microprofile.health.internal_fat.common')
 }
 
+jar.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+
 autoFVT {
+  def apacheDirectoryProject = project(':com.ibm.ws.org.apache.directory.server')
+  def registryTestProject = project(':com.ibm.ws.security.registry_test.servlet')
   dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
   doLast {
     // Manually clear out JSON-P 1.0 (automatically added to all FATs) because we want to use JSON-P 1.1
@@ -87,7 +93,7 @@ autoFVT {
      * Copy the local ApacheDS LDAP instances. 
      */
     copy {
-      from project(':com.ibm.ws.org.apache.directory.server').projectDir
+      from apacheDirectoryProject.projectDir
       into autoFvtDir
       include 'apacheds-2.0.0-M15/**'
     }
@@ -99,7 +105,7 @@ autoFVT {
     ]
     servers.each { server ->
       copy { 
-        from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application/userRegistry.war')
+        from new File(registryTestProject.buildDir, 'test-application/userRegistry.war')
         into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
       }
     }

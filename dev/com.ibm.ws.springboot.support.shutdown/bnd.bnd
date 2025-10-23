@@ -49,7 +49,8 @@ instrument.disabled: true
 \
   com.ibm.ws.logging.core;version=latest, \
   com.ibm.ws.ras.instrument;version=latest, \
-  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+  io.openliberty.springboot.support.shutdown.version40;version=latest
 
 -dsannotations: com.ibm.ws.springboot.support.osgi.shutdown.ShutdownSpringBootSupport
 -dsannotations-inherit: true

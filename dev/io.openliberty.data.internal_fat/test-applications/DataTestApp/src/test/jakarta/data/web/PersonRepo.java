@@ -29,7 +29,7 @@ import jakarta.transaction.Transactional.TxType;
  * Do not add methods or inheritance that would allow the entity class
  * to be discovered another way.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 @Transactional(TxType.SUPPORTS)
 public interface PersonRepo {
     @Query("WHERE lastName=?1")

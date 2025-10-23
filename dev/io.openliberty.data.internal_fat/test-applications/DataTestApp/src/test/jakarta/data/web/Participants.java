@@ -33,7 +33,7 @@ import test.jakarta.data.web.Participant.Name;
  * Repository for an unannotated entity with a record attribute
  * that should be interpreted as an embeddable.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Participants extends DataRepository<Participant, Integer> {
 
     @Insert

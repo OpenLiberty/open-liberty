@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -97,7 +97,7 @@ task comparenlsprops(dependsOn:'classes') {
       include '**/*.MD5'
     }
     
-    javaexec {
+    providers.javaexec {
       // Find the location of the eclipselink core jar containing the new translation messages
       def coreJar = configurations.binaries.resolvedConfiguration.files.find{ it.name.startsWith("org.eclipse.persistence.core-${newversion}.WAS-${newhash}")}.each{ }
 
@@ -105,7 +105,7 @@ task comparenlsprops(dependsOn:'classes') {
       mainClass = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
       classpath += sourceSets.main.runtimeClasspath
       args = [coreJar, newResourcesDir, "org/eclipse/persistence/internal/localization/i18n/.*class", "org/eclipse/persistence/exceptions/i18n/.*class"]
-    }
+    }.result.get()
     
     // Explicitly get rid of the Trace nlsprops file as we don't want to translate trace message.
     delete fileTree(newResourcesDir){ 
@@ -202,11 +202,11 @@ task updateELProject{
     
     // Run the Eclipselink Version class to get the binaries version information 
     def tmpBuildProps = "${buildDir}/tmp/build.properties.tmp"
-    javaexec {
+    providers.javaexec {
       standardOutput = new FileOutputStream(tmpBuildProps)
       classpath configurations.binaries
       mainClass = "org.eclipse.persistence.Version"
-    }
+    }.result.get()
     
     // Extract the EclipseLink build version from the temporary file created when running the EclipseLink Version class
     def buildversion

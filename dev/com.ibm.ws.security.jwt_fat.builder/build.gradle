@@ -90,7 +90,10 @@ assemble {
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 
-autoFVT.doLast {
+autoFVT {
+  def securityCommonProject = project(':com.ibm.ws.security.fat.common')
+  def jwtCommonProject = project(':com.ibm.ws.security.fat.common.jwt')
+  doLast {
 
   def allServers = [
         'com.ibm.ws.security.jwt_fat.builder',
@@ -109,18 +112,18 @@ autoFVT.doLast {
 
     /* copy test marker (small test app that marks the start/end of each test case in the server side logs */
     copy {
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      from new File(securityCommonProject.buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
     
    	/* Copy all shared key/trust stores from the common security FAT */
     copy { 
-     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     from securityCommonProject.file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
     /* Copy all shared key/trust stores from the common security JWT FAT */
     copy { 
-     from project(':com.ibm.ws.security.fat.common.jwt').file('publish/shared/securityKeys')
+     from jwtCommonProject.file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
     }
   	/* Copy all shared key/trust stores from this project
@@ -146,13 +149,13 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/jwtbuilder.war')
+      from new File(jwtCommonProject.buildDir, 'test-application/jwtbuilder.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
     
         /* copy the all signature alg config file from security_fat.common */
     copy {
-      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      from securityCommonProject.file('publish/shared/config')
       into new File(autoFvtDir, 'publish/shared/config')
     }
     
@@ -160,10 +163,11 @@ autoFVT.doLast {
     
     rsServers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common.jwt').buildDir, 'test-application/helloworld.war')
+      from new File(jwtCommonProject.buildDir, 'test-application/helloworld.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
-   }
+  }
+  }
 } 
   
 

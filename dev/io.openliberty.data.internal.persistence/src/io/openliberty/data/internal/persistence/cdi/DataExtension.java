@@ -166,6 +166,9 @@ public class DataExtension implements Extension {
 
                 producer.setFutureEMBuilder(futureEMBuilder);
 
+                provider.producerCreated(futureEMBuilder.jeeName.getApplication(),
+                                         producer);
+
                 @SuppressWarnings("unchecked")
                 Bean<Object> bean = beanMgr.createBean(producer, (Class<Object>) repositoryInterface, producer);
                 event.addBean(bean);
@@ -232,7 +235,7 @@ public class DataExtension implements Extension {
             Find find = method.getAnnotation(Find.class);
             Class<?> entityClass = find == null //
                             ? void.class //
-                            : provider.compat.getEntityClass(find);
+                            : producer.compat().getEntityClass(find);
             Class<?> returnArrayComponentType = null;
             List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
             Type type = method.getGenericReturnType();

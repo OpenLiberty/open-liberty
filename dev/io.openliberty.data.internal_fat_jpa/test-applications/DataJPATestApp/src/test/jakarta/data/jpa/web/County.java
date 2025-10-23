@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
@@ -23,6 +24,7 @@ import jakarta.persistence.Version;
  */
 @Entity
 public class County {
+    @Column(length = 1024)
     public Set<CityId> cities;
 
     @Version
@@ -33,6 +35,7 @@ public class County {
 
     public int population;
 
+    @Column(length = 512)
     public int[] zipcodes;
 
     public County() {

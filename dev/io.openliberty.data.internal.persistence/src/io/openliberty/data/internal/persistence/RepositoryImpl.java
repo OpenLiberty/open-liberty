@@ -540,6 +540,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     suspendedLTC = provider.localTranCurrent.suspend();
                     provider.tranMgr.begin();
                     startedTransaction = true;
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "started global tran",
+                                 "suspended LTC: " + suspendedLTC);
                 }
 
                 if (queryType != RESOURCE_ACCESS)
@@ -569,17 +572,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 try {
                     if (startedTransaction) {
                         int status = provider.tranMgr.getStatus();
-                        if (status == Status.STATUS_MARKED_ROLLBACK || failed)
+                        if (status == Status.STATUS_MARKED_ROLLBACK || failed) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "roll back global tran",
+                                         Util.txStatusToString(status));
                             provider.tranMgr.rollback();
-                        else if (status != Status.STATUS_NO_TRANSACTION)
+                        } else if (status != Status.STATUS_NO_TRANSACTION) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "commit global tran",
+                                         Util.txStatusToString(status));
                             provider.tranMgr.commit();
+                        }
                     } else {
-                        if (failed && Status.STATUS_ACTIVE == provider.tranMgr.getStatus())
+                        if (failed && Status.STATUS_ACTIVE == provider.tranMgr.getStatus()) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "set rollback only");
                             provider.tranMgr.setRollbackOnly();
+                        }
                     }
                 } finally {
-                    if (suspendedLTC != null)
+                    if (suspendedLTC != null) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "resume LTC: " + suspendedLTC);
                         provider.localTranCurrent.resume(suspendedLTC);
+                    }
                 }
             }
 

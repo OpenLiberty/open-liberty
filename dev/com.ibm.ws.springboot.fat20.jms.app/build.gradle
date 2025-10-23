@@ -9,19 +9,16 @@
  *
  ********************************************************************************/
 plugins {
-  id 'org.springframework.boot' version '2.7.1'
+  id 'org.springframework.boot' version '3.5.3'
+  id 'war'
 }
-apply from: '../wlp-gradle/subprojects/spring.gradle'
-def sv = springVersions[ '2.0' ]
-
-apply plugin: 'war'
-apply plugin: 'io.spring.dependency-management'
+apply from: '../wlp-gradle/subprojects/springboot2.gradle'
 
 group = 'com.ibm.ws.example.spring'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
-
-apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+java {
+  sourceCompatibility = 1.8
+}
 
 dependencies {
   implementation('org.springframework.boot:spring-boot-starter-web')
@@ -34,7 +31,7 @@ dependencies {
 }
 
 bootJar {
-  duplicatesStrategy 'warn'
+  duplicatesStrategy = 'warn'
 }
 
 // Disable jar because it would need a dependency on ':com.ibm.ws.springboot.fat20.jms.app:module:compileTestJava' and 

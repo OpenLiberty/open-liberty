@@ -31,6 +31,8 @@ Include-Resource: springBoot40Closer.jar
 
 Provide-Capability: spring.boot.support; jars:List<String>=springBoot40Closer.jar; version:Version=1.0
 
+Export-Package: io.openliberty.springboot.support.shutdown
+
 instrument.disabled: true
 
 // 'com.ibm.ws.logging.core' and 'com.ibm.ws.ras.instrument' are present to avoid BND warnings,
@@ -54,7 +56,9 @@ instrument.disabled: true
 \
   com.ibm.ws.logging.core;version=latest, \
   com.ibm.ws.ras.instrument;version=latest, \
-  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest
+  
 
 -dsannotations: io.openliberty.springboot.support.osgi.shutdown.ShutdownSpringBootSupport
 -dsannotations-inherit: true

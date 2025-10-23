@@ -1,0 +1,97 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+
+/**
+ * This gradle file includes the updates needed to build a Spring Boot 2 application
+ * using the Spring Boot 3 gradle plugin.  The Spring Boot 2 gradle plugin does not
+ * work with Gradle 9 so we do this approach to be able to build Spring Boot 2
+ * application using Gradle 9 still.
+ */
+
+apply from: '../wlp-gradle/subprojects/spring.gradle'
+def sv = springVersions[ '2.0' ]
+
+apply plugin: 'io.spring.dependency-management'
+
+// Need to use the dependency manager as well because the implementation with the
+// enforcedPlatform below only works for implementation and we need to have the bom
+// also be used for providedCompile and providedRuntime
+dependencyManagement {
+  imports {
+    mavenBom 'org.springframework.boot:spring-boot-dependencies:' + sv['springBoot.fat']
+  }
+}
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+configurations {
+  springBootLoader2
+}
+
+// Override the default spring boot to be Spring Boot 2 based so that the right
+// dependencies are put into the application
+dependencies {
+  implementation(enforcedPlatform('org.springframework.boot:spring-boot-dependencies:' + sv['springBoot.fat']))
+
+  springBootLoader2('org.springframework.boot:spring-boot-loader:' + sv['springBoot.fat'])
+}
+
+task copySpringBootLoader(type: Copy) {
+  from {
+    zipTree(configurations.springBootLoader2.singleFile)
+  }
+  include 'org/springframework/boot/loader/**'
+  into "${buildDir}/tmp/springBootLoader"
+}
+
+bootJar {
+  dependsOn copySpringBootLoader
+
+  // Removes the jar mode tools jar from the application that will be SB 3 based
+  includeTools = false
+
+  // Switches to the Spring Boot 2 loader.  Using the 3.x loader requires Java 17.
+  from("${buildDir}/tmp/springBootLoader") {
+    into '/'
+  }
+
+  // Updates the manifest so that the Spring Boot version is 2 and so that the
+  // right package name is used for the loader class.
+  manifest {
+    attributes(
+      'Spring-Boot-Version': sv['springBoot.fat'],
+      'Main-Class': 'org.springframework.boot.loader.JarLauncher'
+    )
+  }
+}
+
+// The bootWar task is only found if the war plugin is configured
+if (project.plugins.hasPlugin('war')) {
+  bootWar {
+    dependsOn copySpringBootLoader
+
+    // Removes the jar mode tools jar from the application that will be SB 3 based
+    includeTools = false
+
+    // Switches to the Spring Boot 2 loader.  Using the 3.x loader requires Java 17.
+    from("${buildDir}/tmp/springBootLoader") {
+      into '/'
+    }
+
+    // Updates the manifest so that the Spring Boot version is 2 and so that the
+    // right package name is used for the loader class.
+    manifest {
+      attributes(
+        'Spring-Boot-Version': sv['springBoot.fat'],
+        'Main-Class': 'org.springframework.boot.loader.WarLauncher'
+      )
+    }
+  }
+}

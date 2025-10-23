@@ -12,6 +12,7 @@ package test.jakarta.data.jpa.web;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -23,7 +24,7 @@ import jakarta.persistence.OneToOne;
 @Entity
 public class DriversLicense {
 
-    @OneToOne(mappedBy = "license")
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "license")
     public Driver driver;
 
     @Column

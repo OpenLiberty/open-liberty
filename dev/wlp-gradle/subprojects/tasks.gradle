@@ -26,23 +26,24 @@ if (parseBoolean(bnd.get('globalize', 'true'))) {
   task globalize {
     // Exclude messages from quotation validation if explicitly excluded via bnd.bnd
     def quotationExcludes = bnd.get('globalize.quotation.excludes')
+    def projectName = project.name
 
     ext.destinationDir = new File(buildDir, "src/${name}/java")
 
     inputs.files(fileTree(dir: project.file('resources'), include: '**/*.nlsprops')).ignoreEmptyDirectories().skipWhenEmpty()
     outputs.dir destinationDir
     doFirst {
-      project.mkdir(destinationDir)
+      mkdir(destinationDir)
     }
     doLast {
       copy {
-        from project.file('resources')
+        from file('resources')
         into destinationDir
         include '**/package-info.java'
       }
       nlsTaskdef(ant)
       ant.validate() {
-        fileset(dir: project.file('resources'), includes: "**/*.nlsprops", excludes: "**/*_*.nlsprops")
+        fileset(dir: file('resources'), includes: "**/*.nlsprops", excludes: "**/*_*.nlsprops")
         completenessvalidator(messagesonly: "false")
         duplicatekeyvalidator()
         metadatavalidator()
@@ -63,16 +64,16 @@ if (parseBoolean(bnd.get('globalize', 'true'))) {
         contentvalidator(constraint: "disallowed", pattern: "\\b((WAS)|(TAM)|(WIM)|(WPS)|(eWAS)|(LUW)|(ND)|(MQSeries))\\b", loglevel: "warning", message: "product acronyms are disallowed")
         contentvalidator(constraint: "disallowed", pattern: "([A-Z0-9]{4,5})(\\d{4})([IWE]):\\S", loglevel: "error", message: "malformed message")
       }
-      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalized'), defaultencoding: "ISO-8859-1") {
-        fileset(dir: project.file('resources'), includes: "**/*.nlsprops")
+      ant.normalize(dest: new File(buildDir, 'nlsbuild/normalized'), defaultencoding: "ISO-8859-1") {
+        fileset(dir: file('resources'), includes: "**/*.nlsprops")
         encodingtable(encodings: cnf.file('resources/EncodingTable.properties'))
         globmapper(from: "*.nlsprops", to: "*.normalized")
       }
-      ant.commonize(dest: new File(project.buildDir, 'nlsbuild/normalized'), commonmessagefile: cnf.file('resources/nls/commonmessages.properties')) {
-        fileset(dir: new File(project.buildDir, 'nlsbuild/normalized'), includes: "**/*.normalized")
+      ant.commonize(dest: new File(buildDir, 'nlsbuild/normalized'), commonmessagefile: cnf.file('resources/nls/commonmessages.properties')) {
+        fileset(dir: new File(buildDir, 'nlsbuild/normalized'), includes: "**/*.normalized")
       }
       ant.transform() {
-        fileset(dir: new File(project.buildDir, 'nlsbuild/normalized'), includes: "**/*.normalized")
+        fileset(dir: new File(buildDir, 'nlsbuild/normalized'), includes: "**/*.normalized")
         javatransformer(dest: destinationDir) {
           keyfilter {
             exclude(name: "*.explanation")
@@ -85,9 +86,9 @@ if (parseBoolean(bnd.get('globalize', 'true'))) {
       // commonize and normalize that. Then generate
       // the tmsource for all languages (including the newly
       // generated english source)
-      File nlsbuildtemp = new File(project.buildDir, 'nlsbuild/temp')
+      File nlsbuildtemp = new File(buildDir, 'nlsbuild/temp')
       copy {
-        from project.file('resources')
+        from file('resources')
         into nlsbuildtemp
         include '**/*.nlsprops'
         exclude '**/*_??.nlsprops'
@@ -95,15 +96,15 @@ if (parseBoolean(bnd.get('globalize', 'true'))) {
         rename '(.*).nlsprops', '$1' + "_en.nlsprops"
       }
       // Existing languages first
-      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), defaultencoding: "ISO-8859-1") {
-        fileset(dir: project.file('resources')) {
+      ant.normalize(dest: new File(buildDir, 'nlsbuild/normalizedxml'), defaultencoding: "ISO-8859-1") {
+        fileset(dir: file('resources')) {
           include(name: "**/*.nlsprops")
         }
         encodingtable(encodings: cnf.file('resources/EncodingTable.properties'))
         globmapper(from: "*.nlsprops", to: "*.normalized")
       }
       // And now english
-      ant.normalize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), defaultencoding: "ISO-8859-1") {
+      ant.normalize(dest: new File(buildDir, 'nlsbuild/normalizedxml'), defaultencoding: "ISO-8859-1") {
         fileset(dir: nlsbuildtemp) {
           include(name: "**/*_en.nlsprops")
         }
@@ -111,8 +112,8 @@ if (parseBoolean(bnd.get('globalize', 'true'))) {
         globmapper(from: "*.nlsprops", to: "*.normalized")
       }
 
-      ant.commonize(dest: new File(project.buildDir, 'nlsbuild/normalizedxml'), commonmessagefile: cnf.file('resources/nls/commonmessages.properties')) {
-        fileset(dir: new File(project.buildDir, 'nlsbuild/normalizedxml'), includes: "**/*.normalized")
+      ant.commonize(dest: new File(buildDir, 'nlsbuild/normalizedxml'), commonmessagefile: cnf.file('resources/nls/commonmessages.properties')) {
+        fileset(dir: new File(buildDir, 'nlsbuild/normalizedxml'), includes: "**/*.normalized")
         globmapper(from: "*.normalized", to: "*.commonized")
       }
 
@@ -121,8 +122,8 @@ if (parseBoolean(bnd.get('globalize', 'true'))) {
       // So instead of generating these files to the local project and doing a copy, directly generate the
       // files into the build.pii.package project.
       ant.transform() {
-        fileset(dir: new File(project.buildDir, 'nlsbuild/normalizedxml'), includes: "**/*.commonized")
-        tmstransformer(dest: rootProject.file("build.pii.package/nlsxml/${project.name}"))
+        fileset(dir: new File(buildDir, 'nlsbuild/normalizedxml'), includes: "**/*.commonized")
+        tmstransformer(dest: rootProject.file("build.pii.package/nlsxml/${projectName}"))
       }
     }
   }
@@ -160,18 +161,27 @@ compileJava {
   
   if (!bnd.project.isNoBundles() && !parseBoolean(bnd.get('instrument.disabled', 'false'))) {
     inputs.files { rasInstrumentationInputFiles() }
-    outputs.dir compileJava.destinationDir
-    def instrument = fileTree(dir: compileJava.destinationDir, include: bnd.get('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd.get('instrument.classesExcludes').split("\\s*,\\s*"))
+    outputs.dir compileJava.destinationDirectory
     doLast {
+      def instrument = fileTree(dir: compileJava.destinationDirectory.getAsFile().get(), include: bnd.get('instrument.classesIncludes').split("\\s*,\\s*"), exclude: bnd.get('instrument.classesExcludes').split("\\s*,\\s*"))
       if (!instrument.isEmpty()) {
         rasInstrumentationTaskdef(ant)
         ant.instrumentForTrace(ffdc: bnd.get('instrument.ffdc'), taskInjection: bnd.get('instrument.taskInjection')) {
-          fileset(dir: compileJava.destinationDir, includes: bnd.get('instrument.classesIncludes'), excludes: bnd.get('instrument.classesExcludes'))
+          fileset(dir: compileJava.destinationDirectory.getAsFile().get(), includes: bnd.get('instrument.classesIncludes'), excludes: bnd.get('instrument.classesExcludes'))
         }
       }
     }
   }
 }
+
+compileTestJava {
+  // With the 7.x versions of the bnd gradle plugin the test classpath for compiling
+  // does not have the output directory of the source of the project so if there are
+  // overlays that add new methods like in com.ibm.ws.jaxrs.2.0.common, the new methods
+  // are not found during test compile time.
+  classpath = files(sourceSets.main.output.classesDirs) + classpath
+}
+
 
 tasks.withType(Test) configureEach {
     int javaVersionNumVal = Integer.parseInt(JavaVersion.current().getMajorVersion())
@@ -184,12 +194,12 @@ tasks.withType(Test) configureEach {
 
 test {
   dependsOn ':cnf:copyMavenLibs'
-  def testports = fileTree(dir: compileTestJava.destinationDir, include: 'unittestports.properties')
+  def testports = fileTree(dir: compileTestJava.destinationDirectory.getAsFile().get(), include: 'unittestports.properties')
 
   doFirst {
     if (testports.isEmpty())
       return
-    def propertiesFile = new File(compileTestJava.destinationDir, 'unittestports.properties')
+    def propertiesFile = new File(compileTestJava.destinationDirectory.getAsFile().get(), 'unittestports.properties')
     portSelectorTaskdef(ant)
     ant.portSelector(engineName: "${bnd.buildEngineName}", location: propertiesFile, jvmarg: 'jvmargPorts')
     if (null.equals(ant.properties['jvmargPorts'])) {
@@ -223,8 +233,8 @@ test {
   environment("WLP_INSTALL_DIR", buildImage.file('wlp'))
   jvmArgs "-Dtest.buildDir=${buildDir}"
   jvmArgs "-Djava.io.tmpdir=${buildDir}/tmp"
-  jvmArgs "-Dmain.classesDir=" + compileJava.destinationDir
-  jvmArgs "-Dtest.classesDir=" + compileTestJava.destinationDir
+  jvmArgs "-Dmain.classesDir=" + compileJava.destinationDirectory.getAsFile().get()
+  jvmArgs "-Dtest.classesDir=" + compileTestJava.destinationDirectory.getAsFile().get()
   jvmArgs "-Dcom.ibm.ws.is.unit.test=true"
 }
 
@@ -323,9 +333,9 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
           }
         }
 
-        def initialJavadocZipName = project.buildDir.path + '/distributions/' + bnd.get('Bundle-SymbolicName', project.name) + '.javadoc.zip'
+        def initialJavadocZipName = buildDir.path + '/distributions/' + bnd.get('Bundle-SymbolicName', project.name) + '.javadoc.zip'
 
-        def finalJavadocZipName = project.buildDir.path + '/distributions/' + transformedSymbolicName + '.javadoc.zip'
+        def finalJavadocZipName = buildDir.path + '/distributions/' + transformedSymbolicName + '.javadoc.zip'
 
         File jakartaZipFile = new File(finalJavadocZipName)
         if (jakartaZipFile.exists()) {
@@ -339,11 +349,11 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
           '-q', // quiet output
           '-tf', transformProject.getFile('rules/jakarta-javadoc.properties').path ]
 
-        javaexec {
+        providers.javaexec {
             classpath configurations.jakartaeeTransformJars
             mainClass = 'org.eclipse.transformer.cli.JakartaTransformerCLI'
             args = transformerArgs
-        }
+        }.result.get()
       }
     }
   }

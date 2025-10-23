@@ -1,20 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2024 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright The RestEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.jboss.resteasy.spi.metadata;
@@ -28,9 +14,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -957,21 +940,7 @@ public class ResourceBuilder {
     }
 
     protected void processDeclaredFields(ResourceClassBuilder resourceClassBuilder, final Class<?> root) {
-        Field[] fieldList = new Field[0];
-        try {
-            if (System.getSecurityManager() == null) {
-                fieldList = root.getDeclaredFields();
-            } else {
-                fieldList = AccessController.doPrivileged(new PrivilegedExceptionAction<Field[]>() {
-                    @Override
-                    public Field[] run() throws Exception {
-                        return root.getDeclaredFields();
-                    }
-                });
-            }
-        } catch (PrivilegedActionException pae) {
-
-        }
+        Field[] fieldList = root.getDeclaredFields();
 
         for (Field field : fieldList) {
             FieldParameterBuilder builder = resourceClassBuilder.field(field).fromAnnotations();
@@ -985,21 +954,7 @@ public class ResourceBuilder {
 
     protected void processDeclaredSetters(ResourceClassBuilder resourceClassBuilder, final Class<?> root,
             Set<Long> visitedHashes) {
-        Method[] methodList = new Method[0];
-        try {
-            if (System.getSecurityManager() == null) {
-                methodList = root.getDeclaredMethods();
-            } else {
-                methodList = AccessController.doPrivileged(new PrivilegedExceptionAction<Method[]>() {
-                    @Override
-                    public Method[] run() throws Exception {
-                        return root.getDeclaredMethods();
-                    }
-                });
-            }
-        } catch (PrivilegedActionException pae) {
-
-        }
+        Method[] methodList = root.getDeclaredMethods();
 
         for (Method method : methodList) {
             if (!method.getName().startsWith("set"))

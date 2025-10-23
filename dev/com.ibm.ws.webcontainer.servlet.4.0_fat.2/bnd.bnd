@@ -12,6 +12,7 @@ bVersion=1.0
 
 src: \
     fat/src,\
+    test-applications/RequestAutoDecompress.war/src,\
     test-applications/ResponseHeadersTest.war/src,\
     test-applications/SameSiteTest.war/src,\
     test-applications/SameSiteSecurityTest.war/src,\

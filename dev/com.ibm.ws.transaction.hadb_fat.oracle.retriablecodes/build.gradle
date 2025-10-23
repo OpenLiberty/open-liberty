@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,16 +26,12 @@ dependencies {
                project(":com.ibm.ws.transaction.fat.util")
 }
 
-task copyCommonFiles {
-  doLast {
-    /*
-     * Copy common publish files.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.hadb_fat.derby.1').file('publish')
-      into new File('publish')
-    }
-  }
+/*
+ * Copy common publish files.
+ */
+task copyCommonFiles(type:Copy) {
+  from project(':com.ibm.ws.transaction.hadb_fat.derby.1').file('publish')
+  into 'publish'
 }
 
 task copyFeatureBundle(type: Copy) {
@@ -52,11 +48,14 @@ task copyTxJdbcDrivers(type: Copy) {
   rename 'ojdbc8.*.jar', 'anomyous.jar'
 }
 
-autoFVT.doLast {
+autoFVT {
+  def baseProject = project(':com.ibm.ws.transaction.hadb_fat.derby.1')
+  doLast {
   copy {
-    from project(':com.ibm.ws.transaction.hadb_fat.derby.1').autoFvtDir
+    from baseProject.autoFvtDir
     into autoFvtDir
     include 'test-applications/**'
+  }
   }
 }
 

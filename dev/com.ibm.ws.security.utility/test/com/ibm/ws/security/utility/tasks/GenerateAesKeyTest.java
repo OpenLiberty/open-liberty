@@ -58,7 +58,7 @@ public class GenerateAesKeyTest {
 
         try (MockedStatic<PasswordEncryptionConfigBuilder> xmlBuilder = Mockito.mockStatic(PasswordEncryptionConfigBuilder.class, Mockito.CALLS_REAL_METHODS)) {
             String outfile = "/path/keys.xml";
-            generate.handleTask(stdin, stdout, stderr, new String[] { "--createConfigFile=" + outfile });
+            generate.handleTask(stdin, stdout, stderr, new String[] { GenerateAesKeyTask.TASK_NAME, "--createConfigFile=" + outfile });
             xmlBuilder.verify(() -> PasswordEncryptionConfigBuilder.generateRandomAes256Key(), times(1));
             xmlBuilder.verifyNoMoreInteractions();
             verify(fileUtil, times(1)).writeToFile(any(), anyString(), any());
@@ -77,7 +77,7 @@ public class GenerateAesKeyTest {
         xml.append("    <variable name=\"").append(AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY).append("\" value=\"").append(expectedKey).append("\" />\n");
         xml.append("</server>");
         try (MockedStatic<PasswordEncryptionConfigBuilder> xmlBuilder = Mockito.mockStatic(PasswordEncryptionConfigBuilder.class, Mockito.CALLS_REAL_METHODS)) {
-            generate.handleTask(stdin, stdout, stderr, new String[] { "--key=" + pass, "--createConfigFile=/path/keys.xml" });
+            generate.handleTask(stdin, stdout, stderr, new String[] { GenerateAesKeyTask.TASK_NAME, "--key=" + pass, "--createConfigFile=/path/keys.xml" });
             xmlBuilder.verify(() -> PasswordEncryptionConfigBuilder.generateAes256KeyWithPBKDF2(pass), times(1));
             xmlBuilder.verifyNoMoreInteractions();
             verify(fileUtil, times(1)).writeToFile(stderr, xml.toString(), new File(outFile));
@@ -90,7 +90,7 @@ public class GenerateAesKeyTest {
         String pass = "passw0rd";
         String expectedKey = "lcJWjIt38ZjBBvYfNWLEgp/I0DQFTbFmA5zFl6zCU30=";
         try (MockedStatic<PasswordEncryptionConfigBuilder> xmlBuilder = Mockito.mockStatic(PasswordEncryptionConfigBuilder.class, Mockito.CALLS_REAL_METHODS)) {
-            generate.handleTask(stdin, stdout, stderr, new String[] { "--key=" + pass });
+            generate.handleTask(stdin, stdout, stderr, new String[] { GenerateAesKeyTask.TASK_NAME, "--key=" + pass });
             xmlBuilder.verify(() -> PasswordEncryptionConfigBuilder.generateAes256KeyWithPBKDF2(pass), times(1));
             xmlBuilder.verifyNoMoreInteractions();
             verify(stdout, times(1)).println(expectedKey);
@@ -101,7 +101,7 @@ public class GenerateAesKeyTest {
     public void testNoKeyNoConfigFile() throws Exception {
 
         try (MockedStatic<PasswordEncryptionConfigBuilder> xmlBuilder = Mockito.mockStatic(PasswordEncryptionConfigBuilder.class, Mockito.CALLS_REAL_METHODS)) {
-            generate.handleTask(stdin, stdout, stderr, new String[] {});
+            generate.handleTask(stdin, stdout, stderr, new String[] { GenerateAesKeyTask.TASK_NAME, });
             xmlBuilder.verify(() -> PasswordEncryptionConfigBuilder.generateRandomAes256Key(), times(1));
             xmlBuilder.verifyNoMoreInteractions();
             verify(stdout, times(1)).println(anyString());
@@ -112,10 +112,39 @@ public class GenerateAesKeyTest {
     public void testEmptyKey() throws Exception {
 
         try (MockedStatic<PasswordEncryptionConfigBuilder> xmlBuilder = Mockito.mockStatic(PasswordEncryptionConfigBuilder.class, Mockito.CALLS_REAL_METHODS)) {
-            generate.handleTask(stdin, stdout, stderr, new String[] { "--key=" });
+            generate.handleTask(stdin, stdout, stderr, new String[] { GenerateAesKeyTask.TASK_NAME, "--key=" });
             fail("task should throw an exception if key isn't specified");
         } catch (IllegalArgumentException iae) {
             assertEquals("Wrong message returned when specifying an empty key.", BaseCommandTask.getMessage("missingValue", "--key"), iae.getMessage());
+        }
+    }
+
+    @Test
+    public void testUnknownArg() {
+        String unknownArg = "testarg=abc";
+
+        try {
+            generate.handleTask(stdin, stdout, stderr, new String[] { GenerateAesKeyTask.TASK_NAME, unknownArg });
+            fail("task should output invalidArg message");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            assertEquals("Wrong message returned when specifying an empty key.", BaseCommandTask.getMessage("invalidArg", unknownArg), e.getMessage());
+
+        }
+    }
+
+    @Test
+    public void testUnknownParam() {
+        String badParam = "--testarg";
+        String unknownArg = badParam + "=abc";
+
+        try {
+            generate.handleTask(stdin, stdout, stderr, new String[] { GenerateAesKeyTask.TASK_NAME, unknownArg });
+            fail("task should output invalidArg message");
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            assertEquals("Wrong message returned when specifying an empty key.", BaseCommandTask.getMessage("invalidArg", badParam), e.getMessage());
+
         }
     }
 

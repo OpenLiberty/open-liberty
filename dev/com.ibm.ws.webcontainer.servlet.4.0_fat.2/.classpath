@@ -2,6 +2,7 @@
 <classpath>
     <classpathentry kind="src" path="fat/src"/>
     <classpathentry kind="src" path="test-applications/IncompatibleClientTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/RequestAutoDecompress.war/src"/>
     <classpathentry kind="src" path="test-applications/ResponseHeadersTest.war/src"/>
     <classpathentry kind="src" path="test-applications/SameSiteTest.war/src"/>
     <classpathentry kind="src" path="test-applications/SameSiteSecurityTest.war/src"/>

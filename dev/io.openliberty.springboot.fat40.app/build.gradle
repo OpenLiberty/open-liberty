@@ -22,7 +22,9 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'io.openliberty.example.spring'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 17
+java {
+  sourceCompatibility = 17
+}
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
@@ -35,5 +37,5 @@ dependencies {
 }
 
 bootJar {
-  duplicatesStrategy 'warn'
+  duplicatesStrategy = 'warn'
 }

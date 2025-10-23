@@ -19,7 +19,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 bVersion=1.0
 
-resteasy-version=7.0.0.Alpha2
+resteasy-version=7.0.0.Final
 resteasy-tracing-api-version=1.1.0.Final
 apache-mime4j-version=0.8.10
 
@@ -224,7 +224,7 @@ Include-Resource:\
 	com.ibm.ws.container.service.compat;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.threading,\
-	io.openliberty.org.jboss.logging35,\
+	io.openliberty.org.jboss.logging36,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

@@ -21,7 +21,7 @@ javac.target: 17
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
-resteasy-version=7.0.0.Alpha2
+resteasy-version=7.0.0.Final
 
 instrument.ffdc: false
 instrument.disabled: true

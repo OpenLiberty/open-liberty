@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@ package sendredirect.servlets;
 
 import java.io.IOException;
 
-import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -19,12 +18,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
- * Test HTTP response sendRedirect methods: 
+ * Test HTTP response sendRedirect methods:
  *
  * sendRedirect(String location)                        => sendRedirect(location, 302, true)
  * sendRedirect(String location, int status_code)       => sendRedirect(location, status_code, true)
  * sendRedirect(String location, boolean clearBuffer)   => sendRedirect(location, 302, clearBuffer)
- * 
+ *
  * sendRedirect(String location, int status_code, boolean clearBuffer)
  */
 @WebServlet("/TestResponseSendRedirect")
@@ -57,15 +56,17 @@ public class TestResponseSendRedirectServlet extends HttpServlet {
         else if (runTestMethod.equalsIgnoreCase("testSendRedirect_301"))
             testSendRedirect_301();
         else if (runTestMethod.equalsIgnoreCase("testSendRedirect_303"))
-            testSendRedirect_303(); 
+            testSendRedirect_303();
         if (runTestMethod.equalsIgnoreCase("testSendRedirect_writer"))
             testSendRedirect_writer();
         else if (runTestMethod.equalsIgnoreCase("testSendRedirect_clearBuffer_false"))
-            testSendRedirect_clearBuffer_false(); 
+            testSendRedirect_clearBuffer_false();
         else if (runTestMethod.equalsIgnoreCase("testSendRedirect_301_clearBuffer_false"))
-            testSendRedirect_301_clearBuffer_false(); 
+            testSendRedirect_301_clearBuffer_false();
         else if (runTestMethod.equalsIgnoreCase("testSendRedirect_303_clearBuffer_true"))
-            testSendRedirect_303_clearBuffer_true(); 
+            testSendRedirect_303_clearBuffer_true();
+        else if (runTestMethod.equalsIgnoreCase("testSendRedirect_throws_IllegalArgumentException"))
+            testSendRedirect_throws_IllegalArgumentException();
 
         LOG("EXIT doGet");
     }
@@ -87,11 +88,11 @@ public class TestResponseSendRedirectServlet extends HttpServlet {
         LOG("<<< Testing testSendRedirect");
 
     }
-    
+
     /*
      * sendRedirect(String Location) with the default 302 status code
-     * 
-     * Provide a body using PrinterWriter.  
+     *
+     * Provide a body using PrinterWriter.
      * Server's sendRedirect will replace the body and also switch b/w outputStream and Writer to accommodate the correct output type.
      */
     private void testSendRedirect_writer() throws IOException{
@@ -111,7 +112,7 @@ public class TestResponseSendRedirectServlet extends HttpServlet {
 
     /*
      * sendRedirect(String Location, int status_code)
-     * 
+     *
      * with status code 301 and OutputStream body
      * Server will replace the body.
      */
@@ -164,12 +165,12 @@ public class TestResponseSendRedirectServlet extends HttpServlet {
         }
         LOG("<<< Testing testSendRedirect_clearBuffer_false");
     }
-    
+
     /*
      * sendRedirect(String Location, int sc, boolean clearBuffer)
      * with status code 301, using writer to write a body, and without reset the current buffer.
      */
-    
+
     private void testSendRedirect_301_clearBuffer_false() throws IOException{
         LOG(">>> Testing testSendRedirect_301_clearBuffer_false");
 
@@ -183,14 +184,14 @@ public class TestResponseSendRedirectServlet extends HttpServlet {
         }
         LOG("<<< Testing testSendRedirect_301_clearBuffer_false");
     }
-    
+
     /*
      * sendRedirect(String Location, int sc, boolean clearBuffer)
      * with status code 303, using writer to write a body, and explicitly clearBuffer = true
      * App's body will be reset and replaced with default hypertext URL
      * Server will switch dynamically b/w outputStream and Writer to write out the default hypertext
      */
-    
+
     private void testSendRedirect_303_clearBuffer_true() throws IOException{
         LOG(">>> Testing testSendRedirect_303_clearBuffer_true");
 
@@ -203,6 +204,29 @@ public class TestResponseSendRedirectServlet extends HttpServlet {
             throw e;
         }
         LOG("<<< Testing testSendRedirect_303_clearBuffer_true");
+    }
+
+    /*
+     * sendRedirect throws IllegalArguementException if a relative URL is given and cannot be converted into an absolute URL
+     */
+    private void testSendRedirect_throws_IllegalArgumentException() throws IOException{
+        LOG(">>> Testing testSendRedirect_cannot_convert_URL");
+        String badURL = "https%E5%98%BA/../.../../../../../..../../www.sendRedirect.IllegalArguementException.com";
+        try {
+            response.sendRedirect(badURL);
+        }
+        catch (Exception e){
+            LOG("Exception during sendRedirect [" + e + "]");
+            if (e.getMessage().contains("CWWWC0012E")) {
+                LOG("Exception CWWWC0012E found. Test PASSES");
+                response.getOutputStream().println("Test sendRedirect cannot convert to a valid URL. Test PASSES");
+            }
+            else {
+                LOG(" cannot find the expected exception CWWWC0012E. Test FAILS");
+                throw e;
+            }
+        }
+        LOG("<<< Testing testSendRedirect");
     }
 
     public static void LOG(String s) {

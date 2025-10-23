@@ -51,7 +51,7 @@ import jakarta.enterprise.concurrent.Asynchronous;
  * Repository with data that is pre-populated.
  * This should be treated as read-only to avoid interference between with tests.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Primes {
     @Find
     CursoredPage<Prime> all(Order<Prime> sorts, PageRequest req);

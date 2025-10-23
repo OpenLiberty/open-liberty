@@ -71,6 +71,7 @@ public class H2FATDriverServlet extends FATServlet {
     private static final String SERVLET_H2Ping1 = "/H2TestModule/H2PriorityWindowUpdate1?testName=Ping1";
     private static final String SERVLET_CONTINUATION = "/H2TestModule/HeadersAndContinuation";
     protected static final String COMPRESSION_URI = "/H2TestModule/H2Compression";
+    protected static final String POST_ECHO_BODY_URI = "/H2TestModule/H2PostEchoBody";
 
     public static final FrameSettings EMPTY_SETTINGS_FRAME = new FrameSettings();
     public static final FrameSettings DEFAULT_SERVER_SETTINGS_FRAME = new FrameSettings(0, -1, -1, 100, -1, 57344, -1, false);
@@ -5399,6 +5400,27 @@ public class H2FATDriverServlet extends FATServlet {
 
     }
 
+    /**
+     * Send an upgrade header to a server that has servlet 4.0, but has HTTP/2 turned off.
+     * This should result in a timeout waiting for the 101 response.
+     *
+     * @param the Http2Client that will expect a header response
+     * @return the expected FrameHeaders
+     */
+    public void testDataPost(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
+        CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
+        String testName = "testDataPost";
+        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+
+        String dataString = "ABC123";
+        String responseString = "Request Body: ABC123 content-length: 6";
+        h2Client.addExpectedFrame(new FrameData(1, responseString.getBytes(), 0, false, false, false));
+        setupDefaultUpgradedConnection(h2Client, POST_ECHO_BODY_URI, EMPTY_SETTINGS_FRAME, dataString);
+
+        blockUntilConnectionIsDone.await();
+        handleErrors(h2Client, testName);
+    }
+
     void handleErrors(Http2Client client, String testName) {
         boolean testFailed = false;
         List<Exception> errors = client.getReportedExceptions();
@@ -5476,9 +5498,29 @@ public class H2FATDriverServlet extends FATServlet {
      * @throws Exception
      */
     void setupDefaultUpgradedConnection(Http2Client client, String requestUri, FrameSettings settingsFrameToSend) throws IOException, Exception {
+        setupDefaultUpgradedConnection(client, requestUri, settingsFrameToSend, null);
+    }
+
+    /**
+     * Performs the typical steps needed to start a test:
+     * 1. add an expected settings frame
+     * 2. add the first expected header response
+     * 3. send the HEADERS_AND_BODY_URI upgrade request
+     * 4. send the client preface frames
+     * 5. wait for the first upgrade request to complete (stream 1)
+     *
+     * @param client
+     * @param requestUri
+     * @param settingsFrameToSend
+     * @throws Exception
+     */
+    void setupDefaultUpgradedConnection(Http2Client client, String requestUri, FrameSettings settingsFrameToSend, String body) throws IOException, Exception {
         client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         FrameHeaders headers = addFirstExpectedHeaders(client);
-        client.sendUpgradeHeader(requestUri);
+        if(body == null)
+            client.sendUpgradeHeader(requestUri);
+        else
+            client.sendUpgradeHeader(requestUri, HTTPUtils.HTTPMethod.POST, body);
         client.sendClientPrefaceFollowedBySettingsFrame(settingsFrameToSend);
         client.waitFor(headers);
     }

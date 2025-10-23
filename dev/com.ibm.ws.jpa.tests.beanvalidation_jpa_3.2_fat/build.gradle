@@ -49,44 +49,47 @@ task addhibernateJPA31(type: Copy) {
 }
 
 task copyFAT {
+    def commonProject = project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common')
+    def common32Project = project(':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common')
     dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_fat.common:build'
     copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
+      from commonProject.file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
       into new File('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests')
     }
     dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common:build'
     copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common').file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests/jpa32')
+      from common32Project.file('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests/jpa32')
       into new File('fat/src/com/ibm/ws/jpa/tests/beanvalidation/tests/jpa32')
     }
 }
 
 task copyCommonFiles {
+  def commonProject = project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common')
+  def common32Project = project(':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common')
   dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_fat.common:build'
-  doLast {
-    /*
-     * Copy test application resources.
-     */
-    copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('test-applications')
-      into new File('test-applications')
-    }
-    
-    /*
-     * Copy common publish files.
-     */
-    copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation_fat.common').file('publish')
-      into new File('publish')
-    }
-  }
   dependsOn ':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common:build'
   doLast {
     /*
      * Copy test application resources.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common').file('test-applications')
+      from commonProject.file('test-applications')
+      into new File('test-applications')
+    }
+
+    /*
+     * Copy common publish files.
+     */
+    copy {
+      from commonProject.file('publish')
+      into new File('publish')
+    }
+
+    /*
+     * Copy test application resources.
+     */
+    copy {
+      from common32Project.file('test-applications')
       into new File('test-applications')
     }
     
@@ -94,7 +97,7 @@ task copyCommonFiles {
      * Copy common publish files.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.beanvalidation_3.2_fat.common').file('publish')
+      from common32Project.file('publish')
       into new File('publish')
     }
   }
@@ -109,8 +112,14 @@ addRequiredLibraries {
   dependsOn copyTestContainers
 }
 
-jar {
+compileJava {
   dependsOn copyCommonFiles
+  dependsOn copyFAT
+}
+
+processResources {
+  dependsOn copyCommonFiles
+  dependsOn copyFAT
 }
 
 autoFVT.dependsOn copyCommonFiles

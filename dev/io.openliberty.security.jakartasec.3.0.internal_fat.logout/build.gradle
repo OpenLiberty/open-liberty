@@ -39,24 +39,28 @@ dependencies {
 
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':io.openliberty.security.jakartasec.3.0.internal_fat.common:assemble'
-autoFVT.doLast {
+autoFVT {
+  def securityCommonProject = project(':com.ibm.ws.security.fat.common')
+  def security3_0CommonProject = project(':io.openliberty.security.jakartasec.3.0.internal_fat.common')
+
+  doLast {
   
    copy {
-      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      from securityCommonProject.file('publish/shared/config')
       into new File(autoFvtDir, 'publish/shared/config')
       include '**/allAlgSSLSettings.xml'
    }
 
    /** copy common config files **/
    copy {
-      from project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').file('publish/shared/config')
+      from security3_0CommonProject.file('publish/shared/config')
       into new File(autoFvtDir, 'publish/shared/config')
       exclude 'oidcProvider.xml'
       include '**/*.xml'
    }
  
     copy {
-      from project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').file('publish/shared/config/oidcClient')
+      from security3_0CommonProject.file('publish/shared/config/oidcClient')
       into new File(autoFvtDir, 'publish/shared/config/oidcClient')
       include '**/*.properties'
    }
@@ -70,12 +74,12 @@ autoFVT.doLast {
   servers.each { server ->
 
     copy { 
-      from new File(project(':io.openliberty.security.jakartasec.3.0.internal_fat.common').buildDir, 'test-application/testmarker.war')
+      from new File(security3_0CommonProject.buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
    }
       
     copy { 
-     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     from securityCommonProject.file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
      include '**/allAlg*.p12'
     }
@@ -103,5 +107,5 @@ autoFVT.doLast {
    }
 
   }  
-   
+  }
 }

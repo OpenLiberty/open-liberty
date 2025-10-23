@@ -12,6 +12,7 @@ package test.jakarta.data.jpa.web;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -35,7 +36,7 @@ public class CreditCard {
         }
     }
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     public Customer debtor;
 
     @Column

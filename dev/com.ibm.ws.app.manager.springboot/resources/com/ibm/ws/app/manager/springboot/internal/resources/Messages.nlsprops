@@ -62,7 +62,7 @@ error.spring.required.20.explanation=The currently configured Spring Boot featur
 error.spring.required.20.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: The springBoot-3.0 feature must be configured. The springBoot-1.5 or springBoot-2.0 feature is configured and the application has Spring 3.0 content.
+error.spring3.required=CWWKC0273E: The {0} feature must be configured in the server.xml file. The {1} feature is configured and the application has Spring Boot {2} content.
 error.spring3.required.explanation=The currently configured Spring Boot feature is not compatible with application content.
 error.spring3.required.useraction=Configure a version of the Spring Boot feature that is compatible with application content.
 

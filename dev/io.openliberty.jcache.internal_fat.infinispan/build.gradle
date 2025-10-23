@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -111,7 +111,12 @@ autoFVT.dependsOn ':io.openliberty.jcache.internal_fat.hazelcast:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.saml.sso_fat.common:samlclient_WAR'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:helloworld_war_ZIP'
 
-autoFVT.doLast {
+autoFVT {
+  def securityServletsProject = project(':com.ibm.ws.webcontainer.security_test.servlets')
+  def oidcCommonProject = project(':com.ibm.ws.security.oauth.oidc_fat.common')
+  def samlCommonProject = project(':com.ibm.ws.security.saml.sso_fat.common')
+  def hazelcastProject = project(':io.openliberty.jcache.internal_fat.hazelcast')
+  doLast {
   /*
    * Copy the basicauth.war into test servers.
    */
@@ -131,7 +136,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      from new File(securityServletsProject.buildDir, 'test-application/basicauth.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'basicauth.zip', 'basicauth.war'
     }
@@ -149,7 +154,7 @@ autoFVT.doLast {
     'io.openliberty.jcache.internal.fat.ltpa.cookie.cache.restart.2',
   ]
   servers.each { server ->    copy { 
-      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/formlogin.zip')
+      from new File(securityServletsProject.buildDir, 'test-application/formlogin.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'formlogin.zip', 'formlogin.war'
     }
@@ -164,7 +169,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':io.openliberty.jcache.internal_fat.hazelcast').buildDir, 'test-application/subjectcast.war')
+      from new File(hazelcastProject.buildDir, 'test-application/subjectcast.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }
@@ -173,7 +178,7 @@ autoFVT.doLast {
    * Copy the CustomLoginModule.jar into the shared resources directory.
    */
   copy { 
-    from new File(project(':io.openliberty.jcache.internal_fat.hazelcast').buildDir, 'test-application/CustomLoginModule.jar')
+    from new File(hazelcastProject.buildDir, 'test-application/CustomLoginModule.jar')
     into new File(autoFvtDir, 'publish/shared/resources/libs/')
   }
   
@@ -186,7 +191,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.security.saml.sso_fat.common').buildDir, 'test-application/samlclient.war')
+      from new File(samlCommonProject.buildDir, 'test-application/samlclient.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }
@@ -204,7 +209,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application/helloworld.war.zip")
+      from new File(oidcCommonProject.buildDir, "test-application/helloworld.war.zip")
       into new File(autoFvtDir, "publish/servers/" + server + '/apps')
       rename 'helloworld.war.zip', 'helloworld.war'
     }
@@ -229,4 +234,5 @@ autoFVT.doLast {
    */
   delete new File(autoFvtDir, 'lib/htmlunit-2.44.0.jar')
   delete new File(autoFvtDir, 'lib/com.ibm.ws.org.apache.commons.lang3.jar')
+  }
 }

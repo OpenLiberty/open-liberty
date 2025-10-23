@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,19 +24,20 @@ dependencies {
 
 task copyTestApps {
   dependsOn ':com.ibm.ws.jbatch.fat.common:assemble'
+  def fatCommonProject = project(':com.ibm.ws.jbatch.fat.common')
   doLast {
     // Sources to enable application compilation and shrinkwrap operations
     copy {
-      from project(':com.ibm.ws.jbatch.fat.common').file('test-applications')
+      from fatCommonProject.file('test-applications')
       into new File('test-applications/fat.common')
     }
     copy {
-      from project(':com.ibm.ws.jbatch.fat.common').file('src/batch/fat/common/util')
+      from fatCommonProject.file('src/batch/fat/common/util')
       into new File('test-applications/fat.common/src/batch/fat/common/util')
     }
     // Pre-built application archives
     copy {
-      from project(':com.ibm.ws.jbatch.fat.common').file('build/libs/test-application')
+      from fatCommonProject.file('build/libs/test-application')
       into new File('build/libs/autoFVT/build/lib/test-application')
     }
   }

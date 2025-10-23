@@ -13,6 +13,7 @@ package test.jakarta.data.jpa.web;
 import java.time.Instant;
 import java.util.UUID;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -31,7 +32,7 @@ public class Model {
     private UUID id;
 
     @JoinColumn(name = "manufacturer_id")
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Manufacturer manufacturer;
 
     @Column(name = "name")

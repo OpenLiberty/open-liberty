@@ -12,17 +12,19 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '3.3.0'
+  id 'org.springframework.boot' version '3.5.3'
+  id 'war'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
 def sv = springVersions[ '3.0' ]
 
-apply plugin: 'war'
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.ibm.ws.example.spring'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 17
+java {
+  sourceCompatibility = 17
+}
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
@@ -32,7 +34,7 @@ dependencies {
 }
 
 bootJar {
-  duplicatesStrategy 'warn'
+  duplicatesStrategy = 'warn'
 }
 
 // Disable jar because it would need a dependency on ':io.openliberty.springboot.fat30.war.app:module:compileTestJava' and 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -318,14 +318,14 @@ publishing {
     map.keySet().each { featureName ->
       Properties featureProps = map[featureName]
       "feature-${featureName}" (MavenPublication) {
-        artifactId featureName
-        version project.version
+        artifactId = featureName
+        version = project.version
         artifact(new File(project.buildDir, 'repo/' + featureName + ".esa")) {
-          extension 'esa'
+          extension = 'esa'
           builtBy publishFeatureResources
         }
         artifact(new File(project.buildDir, 'repo/' + featureName + ".esa.metadata.zip")) {
-          extension 'esa.metadata.zip'
+          extension = 'esa.metadata.zip'
           builtBy publishFeatureResources
         }
       }
@@ -352,10 +352,10 @@ task generateModifiedGAFeatureList {
 publishing {
     publications {
         modifiedFeatureList(MavenPublication) {
-            artifactId 'openliberty-modifiedgaFeatureList'
-            version project.version
+            artifactId = 'openliberty-modifiedgaFeatureList'
+            version = project.version
             artifact(modifiedgaFeatureList) {
-                extension 'txt'
+                extension = 'txt'
                 builtBy generateModifiedGAFeatureList
             }
         }
@@ -391,10 +391,10 @@ if (isAutomatedBuild) {
     publishing {
         publications {
             newJsonArtifact(MavenPublication) {
-                artifactId 'openliberty-singleJson'
-                version project.version
+                artifactId = 'openliberty-singleJson'
+                version = project.version
                 artifact(singleOpenLibertyJsonRepo) {
-                    extension 'json'
+                    extension = 'json'
                     builtBy generateSingleJsonRepo
                 }
             }
@@ -419,14 +419,14 @@ if (isAutomatedBuild) {
         from project.file('build/temp/mavenArtifact')
         include "io/**"
         archiveFileName = 'openliberty-mavenArtifact.zip'
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
     }
 
     publishing {
         publications {
             newMavenArtifact(MavenPublication) {
-                artifactId 'openliberty-MavenArtifact'
-                version project.version
+                artifactId = 'openliberty-MavenArtifact'
+                version = project.version
                 artifact zipOpenLibertyMavenRepo
             }
         }

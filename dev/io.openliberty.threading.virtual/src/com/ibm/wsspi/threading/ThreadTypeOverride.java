@@ -16,6 +16,7 @@ package com.ibm.wsspi.threading;
  * Provides a mechanism to allow disabling the creation of virtual threads within the control of Liberty.
  * When creation of virtual threads is disabled, Liberty will create platform threads instead.
  * Note that use of this interface should generally be avoided. The primary use case is for embedder's who have a specific need to control the creation of Virtual Threads.
+ * The overriding feature manifest must declare the implementing bundle with: start-phase:=SERVICE_EARLY
  * This is not a common need, and so careful consideration should be given before registering an implementation.
  */
 @Deprecated //Remove when GA
