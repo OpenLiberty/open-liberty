@@ -1,0 +1,94 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+def sourceJavaOptionsFilesDirectory = 'resources/platform/java'
+def destinationJavaOptionsFilesDirectory = 'wlp/lib/platform/java'
+def java9OptionsFile = 'java9.options'
+def java24OptionsFile = 'java24.options'
+def java9Through23OptionsFile = project.file("${sourceJavaOptionsFilesDirectory}/extra_java_9_23.options")
+def commonOptionsFile = project.file("${sourceJavaOptionsFilesDirectory}/common_java.options")
+def lineSeparator = System.getProperty("line.separator")
+
+/*
+ * Delete any existing java options files in wlp/lib/platform/java directory
+ */
+task deleteJavaOptionsFiles(type: Delete) {
+  delete fileTree(dir: buildImage.file("${destinationJavaOptionsFilesDirectory}"), include: '**/java*.options')
+}
+
+/*
+ * Create java options files in wlp/lib/platform/java directory
+ */
+task createJavaOptionsFiles(type: Copy) {
+  dependsOn deleteJavaOptionsFiles
+  doFirst {
+  if (!buildImage.file("${destinationJavaOptionsFilesDirectory}").exists()) {
+      mkdir buildImage.file("${destinationJavaOptionsFilesDirectory}")
+    }
+  }
+  from project.file("${sourceJavaOptionsFilesDirectory}")
+  into buildImage.file("${destinationJavaOptionsFilesDirectory}")
+  include 'java*.options'
+}
+
+/*
+ * Build the java9.options file by taking the contents of the extra_java_9_23.options
+ * file and appending the contents of the common_java.options file
+ */
+task buildJava9OptionsFile() {
+  dependsOn createJavaOptionsFiles
+  doLast {
+    def optionsFile = buildImage.file("${destinationJavaOptionsFilesDirectory}/${java9OptionsFile}")
+    
+    // Before appending the extra_java_9_23.options file contents,
+    // insert a line separator if the file doesn't already end with one
+    if (optionsFile.text && !optionsFile.text.endsWith(lineSeparator)) {
+      optionsFile.append(lineSeparator + java9Through23OptionsFile.text)
+    } else {
+      optionsFile.append(java9Through23OptionsFile.text)
+    }
+    
+    // Before appending the common_java.options file contents,
+    // insert a line separator if the file doesn't already end with one
+    if (optionsFile.text && !optionsFile.text.endsWith(lineSeparator)) {
+      optionsFile.append(lineSeparator + commonOptionsFile.text)
+    } else {
+      optionsFile.append(commonOptionsFile.text)
+    }
+  }
+}
+
+
+/*
+ * Build the java24.options file by appending the contents of the common_java.options file
+ */
+task buildJava24OptionsFile() {
+  dependsOn buildJava9OptionsFile
+  doLast {
+    def optionsFile = buildImage.file("${destinationJavaOptionsFilesDirectory}/${java24OptionsFile}")
+
+    // Before appending the common_java.options file contents,
+    // insert a line separator if the file doesn't already end with one
+    if (optionsFile.text && !optionsFile.text.endsWith(lineSeparator)) {
+      optionsFile.append(lineSeparator + commonOptionsFile.text)
+    } else {
+      optionsFile.append(commonOptionsFile.text)
+    }
+  }
+}
+
+
+/******************************************************************
+ ** Create and populate java option files
+ ******************************************************************/
+assemble.dependsOn buildJava24OptionsFile
