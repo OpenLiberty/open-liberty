@@ -1,0 +1,23 @@
+<server description="mpHealth file-based: long runtime check interval (fast startup)">
+    <!-- shared test ports -->
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>mpHealth-4.0</feature>
+        <feature>mpConfig-3.0</feature>
+        <feature>servlet-4.0</feature>
+    </featureManager>
+
+    <!-- Fast startup, long runtime interval -->
+    <mpHealth startupCheckInterval="1s" checkInterval="30s"/>
+
+    <webContainer deferServletLoad="false"/>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions portOpenRetries="60"/>
+    </httpEndpoint>
+</server>

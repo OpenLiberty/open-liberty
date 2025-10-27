@@ -31,7 +31,6 @@ import io.openliberty.microprofile.health.file.healthcheck.fat.utils.HealthFileU
                 ConfigTest.class,
                 MPConfigDefaultValuesTest.class
 })
-
 public class FATSuite {
 
     static final int MAX_ALL_FILES_EXIST_RETRY = 8;
@@ -58,8 +57,8 @@ public class FATSuite {
             }
 
             Log.info(FATSuite.class, methodName,
-                     String.format("At attempt %d with the following: HealthDir[%s], startedFile[%s], liveFile[%s], readyFile[%s].Max attempt is: %d.", attemptNumber, isDirExist,
-                                   isStartedExist, isLiveExist, isReadyExist, retries));
+                     String.format("At attempt %d with the following: HealthDir[%s], startedFile[%s], liveFile[%s], readyFile[%s]. Max attempt is: %d.",
+                                   attemptNumber, isDirExist, isStartedExist, isLiveExist, isReadyExist, retries));
 
             TimeUnit.MILLISECONDS.sleep(250);
             attemptNumber++;
@@ -67,5 +66,4 @@ public class FATSuite {
 
         return false;
     }
-
 }

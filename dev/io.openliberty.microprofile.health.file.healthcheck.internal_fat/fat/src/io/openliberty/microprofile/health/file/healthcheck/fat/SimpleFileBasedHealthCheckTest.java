@@ -15,14 +15,12 @@ import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.Duration;
-import java.util.concurrent.TimeUnit;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,68 +40,47 @@ import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 import io.openliberty.microprofile.health.file.healthcheck.fat.utils.Constants;
 import io.openliberty.microprofile.health.file.healthcheck.fat.utils.HealthFileUtils;
-import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
-/**
- *
- */
 @RunWith(FATRunner.class)
 @AllowedFFDC({ "javax.management.InstanceNotFoundException", "java.lang.IllegalStateException" })
-public class SimpleFileBasedHealthCheckTest {
+public class SimpleFileBasedHealthCheckTest extends BaseHealthFilesTest {
 
-    final static String SERVER_NAME = "HealthServer";
+    private static final String FAIL_START_APP = "FailStartApp";
+    private static final String FAIL_START_APP_WAR = FAIL_START_APP + ".war";
 
-    final static String SERVER_LONG_STARTUP_CHECK_INTERVAL = "HealthServerLongStartupCheckInterval";
-    final static String SERVER_LONG_CHECK_INTERVAL = "HealthServerLongCheckInterval";
-    final static String FAIL_START_APP = "FailStartApp";
-    final static String FAIL_START_APP_WAR = FAIL_START_APP + ".war";
+    private static final String FAIL_LIVE_APP = "FailLiveApp";
+    private static final String FAIL_LIVE_APP_WAR = FAIL_LIVE_APP + ".war";
 
-    final static String FAIL_LIVE_APP = "FailLiveApp";
-    final static String FAIL_LIVE_APP_WAR = FAIL_LIVE_APP + ".war";
+    private static final String FAIL_READY_APP = "FailReadyApp";
+    private static final String FAIL_READY_APP_WAR = FAIL_READY_APP + ".war";
 
-    final static String FAIL_READY_APP = "FailReadyApp";
-    final static String FAIL_READY_APP_WAR = FAIL_READY_APP + ".war";
-    final static String TOGGLE_APP = "ToggleApp";
-    final static String TOGGLE_APP_WAR = TOGGLE_APP + ".war";
-
-    private static final String[] IGNORED_FAILURES = { "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E" };
-
-    public static final int APP_STARTUP_TIMEOUT = 120 * 1000;
-
-    private static enum HealthCheck {
-        LIVE, READY, STARTED, HEALTH;
-    }
-
-    private static enum Status {
-        SUCCESS, FAILURE;
-    }
+    private static final String TOGGLE_APP = "ToggleApp";
+    private static final String TOGGLE_APP_WAR = TOGGLE_APP + ".war";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
-                                                             MicroProfileActions.MP61, // mpHealth-4.0 w/ EE9
-                                                             MicroProfileActions.MP70_EE10, // mpHealth-4.0 FULL EE10
-                                                             MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL EE11
-                                                             HealthActions.MP14_MPHEALTH40, // mpHealth-4.0 FULL EE7
-                                                             HealthActions.MP41_MPHEALTH40); //mpHealth-4.0 FULL EE8
+    public static RepeatTests r = MicroProfileActions.repeat(
+                                                             FeatureReplacementAction.ALL_SERVERS,
+                                                             MicroProfileActions.MP61, // EE9 mpHealth-4.0
+                                                             MicroProfileActions.MP70_EE10, // EE10
+                                                             MicroProfileActions.MP70_EE11, // EE11
+                                                             io.openliberty.microprofile.health.internal_fat.shared.HealthActions.MP14_MPHEALTH40, // EE7
+                                                             io.openliberty.microprofile.health.internal_fat.shared.HealthActions.MP41_MPHEALTH40 // EE8
+    );
 
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @Server(SERVER_LONG_STARTUP_CHECK_INTERVAL)
-    public static LibertyServer serverLongStart;
-
-    @Server(SERVER_LONG_CHECK_INTERVAL)
-    public static LibertyServer serverLongCheck;
-
-    @BeforeClass
-    public static void beforeClass() {
-
-    }
+    private static final String[] IGNORED_FAILURES = { "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E" };
 
     @Before
     public void before() throws Exception {
-        server.removeAllInstalledAppsForValidation();
-        server.deleteAllDropinApplications();
+        if (server != null) {
+            server.removeAllInstalledAppsForValidation();
+            server.deleteAllDropinApplications();
+            if (server.isStarted()) {
+                server.stopServer(IGNORED_FAILURES);
+            }
+        }
     }
 
     @After
@@ -111,68 +88,43 @@ public class SimpleFileBasedHealthCheckTest {
         if (server != null && server.isStarted()) {
             server.stopServer(IGNORED_FAILURES);
         }
-
-        if (serverLongCheck != null && serverLongCheck.isStarted()) {
-            serverLongCheck.stopServer(IGNORED_FAILURES);
-        }
-
-        if (serverLongStart != null && serverLongStart.isStarted()) {
-            serverLongStart.stopServer(IGNORED_FAILURES);
-        }
     }
 
+    // ----- Tests that use only the default server -----
+
     @Test
-    /*
-     * No configuration used.
-     */
     public void emptyServerCheck() throws Exception {
         final String METHOD_NAME = "emptyServerCheck";
 
         server.startServer();
-
-        // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
-
         assertTrue("Server is not started", server.isStarted());
+        triggerHealthEndpoints(server); // ensure /health is initialized
 
-        String serverRoot = server.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
-
+        File serverRootDirFile = new File(server.getServerRoot());
         Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
 
-        /*
-         * Expect:
-         * [X] /health dir
-         * [X] Started
-         * [X] Ready
-         * [X] Live
-         *
-         */
-        /*
-         * Checks that require to check that all files are created may encounter a scenario where FAT test is way ahead of the server.
-         * This results in the files not existing yet. isFilesCreated() will retry up to 2 seconds (w/ 250ms cycles).
-         */
-        Assert.assertTrue("Expected all files to be created: Review isAllHealthCheckFilesCreated logs for state of files.", FATSuite.isFilesCreated(serverRootDirFile));
+        awaitAllHealthFiles(serverRootDirFile);
 
-        //Want to wait time to check that files have been updated.
-        TimeUnit.SECONDS.sleep(10);
+        long ready0 = HealthFileUtils.getLastModifiedTime(HealthFileUtils.getReadyFile(serverRootDirFile));
+        long live0 = HealthFileUtils.getLastModifiedTime(HealthFileUtils.getLiveFile(serverRootDirFile));
 
-        //Check that live and ready files have been updating.
+        Assert.assertTrue("ready should update shortly",
+                          HealthFileUtils.waitForUpdateSince(HealthFileUtils.getReadyFile(serverRootDirFile), ready0, 20, 200));
+        Assert.assertTrue("live should update shortly",
+                          HealthFileUtils.waitForUpdateSince(HealthFileUtils.getLiveFile(serverRootDirFile), live0, 20, 200));
+
         Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
                           HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
-
+        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED,
+                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
     }
 
     @Test
-    /*
-     * Startup check fails.
-     */
     public void failedStartedHealthCheckTest() throws Exception {
         final String METHOD_NAME = "failedStartedHealthCheckTest";
 
-        WebArchive testWAR = ShrinkWrap
-                        .create(WebArchive.class, FAIL_START_APP_WAR)
+        WebArchive testWAR = ShrinkWrap.create(WebArchive.class, FAIL_START_APP_WAR)
                         .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
                         .addPackage("io.openliberty.microprofile.health.file.healthcheck.app")
                         .addPackage("io.openliberty.microprofile.health.file.healthcheck.app.start.fail");
@@ -180,198 +132,31 @@ public class SimpleFileBasedHealthCheckTest {
         ShrinkHelper.exportDropinAppToServer(server, testWAR, DeployOptions.SERVER_ONLY);
 
         server.startServer();
-
-        // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
         assertTrue("Server is not started", server.isStarted());
+        triggerHealthEndpoints(server);
 
-        String serverRoot = server.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
-
+        File serverRootDirFile = new File(server.getServerRoot());
         Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
 
-        /*
-         * Expect:
-         * [X] /health dir
-         * [ ] Started
-         * [ ] Ready
-         * [ ] Live
-         *
-         * Not Expected:
-         * [X] Started
-         * [X] Ready
-         * [X] Live
-         */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        awaitHealthDir(serverRootDirFile);
         Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
         Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
         Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
-        //Started file should still not be created; consequently no other files are created
-        TimeUnit.SECONDS.sleep(10);
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-
+        Assert.assertTrue(Constants.STARTED_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getStartFile(serverRootDirFile), 8, 200));
+        Assert.assertTrue(Constants.READY_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getReadyFile(serverRootDirFile), 8, 200));
+        Assert.assertTrue(Constants.LIVE_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getLiveFile(serverRootDirFile), 8, 200));
     }
 
     @Test
-    /*
-     * Startup check is long at 30 seconds.
-     * The `StartupCheckUpAfterSecondQuery` servlet only returns UP after second query.
-     * This ensures that first query (i.e. first check of the startup check process will fail).
-     *
-     */
-    public void StartedHealthCheckTestLongStartupInterval() throws Exception {
-        final String METHOD_NAME = "StartedHealthCheckTestLongStartupInterval";
-
-        WebArchive testWAR = ShrinkWrap
-                        .create(WebArchive.class, FAIL_START_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app")
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app.start.after");
-
-        ShrinkHelper.exportDropinAppToServer(serverLongStart, testWAR, DeployOptions.SERVER_ONLY);
-
-        serverLongStart.startServer();
-
-        // Read to run a smarter planet
-        serverLongStart.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue("Server is not started", serverLongStart.isStarted());
-
-        String serverRoot = serverLongStart.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
-
-        Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
-
-        /*
-         * Expect:
-         * [X] /health dir
-         * [ ] Started
-         * [ ] Ready
-         * [ ] Live
-         *
-         * Not Expected:
-         * [X] Started
-         * [X] Ready
-         * [X] Live
-         */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-
-        //Started file should still not be created; consequently no other files are created
-        TimeUnit.SECONDS.sleep(10);
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-
-        /*
-         * Started file should still not be created; consequently no other files are created.
-         * Startup interval is set to 30 seconds, but due to potential machine slowness, we'll just wait 5 seconds here.
-         * Our next wait we'll wait 25 seconds and expect files to be created.
-         */
-        TimeUnit.SECONDS.sleep(5);
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-
-        TimeUnit.SECONDS.sleep(20);
-        Assert.assertTrue(Constants.STARTED_SHOULD_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-
-    }
-
-    @Test
-    /*
-     * check interval is long at 30 seconds.
-     */
-    public void HealthCheckTestLongCheckInterval() throws Exception {
-        final String METHOD_NAME = "HealthCheckTestLongCheckInterval";
-
-        WebArchive testWAR = ShrinkWrap
-                        .create(WebArchive.class, FAIL_START_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app");
-
-        ShrinkHelper.exportDropinAppToServer(serverLongCheck, testWAR, DeployOptions.SERVER_ONLY);
-
-        serverLongCheck.startServer();
-
-        // Read to run a smarter planet
-        serverLongCheck.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue("Server is not started", serverLongCheck.isStarted());
-
-        String serverRoot = serverLongCheck.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
-
-        Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
-
-        /*
-         * Expect:
-         * [X] /health dir
-         * [x] Started
-         * [x] Ready
-         * [x] Live
-         *
-         * Not Expected:
-         * [] Started
-         * [] Ready
-         * [] Live
-         */
-        /*
-         * Checks that require to check that all files are created may encounter a scenario where FAT test is way ahead of the server.
-         * This results in the files not existing yet. isFilesCreated() will retry up to 2 seconds (w/ 250ms cycles).
-         */
-        Assert.assertTrue("Expected all files to be created: Review isAllHealthCheckFilesCreated logs for state of files.", FATSuite.isFilesCreated(serverRootDirFile));
-
-        /*
-         * The checkInterval is at 30 seconds.
-         * Due to slowness of server startup, or app startups or test execution startup we'll wait 12 and then 5 seconds.
-         * We will check the last 10 seconds and 5 seconds respectively for each cycle.
-         * We wait 12 and check the last 10 due the fact that the update phase maybe have issue the first health check queries during the wait.
-         * If that is the case, waiting 12 seconds and checking the last 12 seconds would fail due to the file being modified during that duration.
-         * and expect the live and ready files not to be updated.
-         *
-         * Then we'll wait 20 seconsd and we should expect it to have been updated during that time frame.
-         *
-         */
-        TimeUnit.SECONDS.sleep(12);
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_UPDATED,
-                           HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(10)));
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_UPDATED,
-                           HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(10)));
-
-        TimeUnit.SECONDS.sleep(5);
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_UPDATED,
-                           HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(5)));
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_UPDATED,
-                           HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(5)));
-
-        /*
-         * We are elapsed 38 seconds after we detected files are created (on the test infra).
-         * Checking within last 12 seconds. (i.e. elapsed after file create ~26-38).
-         * Big time window to account for slowness or "quickness" of the server.
-         */
-        TimeUnit.SECONDS.sleep(20);
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
-                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(12)));
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED,
-                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(12)));
-    }
-
-    @Test
-    /*
-     * Liveness check fails.
-     *
-     */
     public void failedLivenessHealthCheckTest() throws Exception {
         final String METHOD_NAME = "failedLivenessHealthCheckTest";
 
-        WebArchive testWAR = ShrinkWrap
-                        .create(WebArchive.class, FAIL_LIVE_APP_WAR)
+        WebArchive testWAR = ShrinkWrap.create(WebArchive.class, FAIL_LIVE_APP_WAR)
                         .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
                         .addPackage("io.openliberty.microprofile.health.file.healthcheck.app")
                         .addPackage("io.openliberty.microprofile.health.file.healthcheck.app.live.fail");
@@ -379,240 +164,109 @@ public class SimpleFileBasedHealthCheckTest {
         ShrinkHelper.exportDropinAppToServer(server, testWAR, DeployOptions.SERVER_ONLY);
 
         server.startServer();
-
-        // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
         assertTrue("Server is not started", server.isStarted());
+        triggerHealthEndpoints(server);
 
-        String serverRoot = server.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
-
+        File serverRootDirFile = new File(server.getServerRoot());
         Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
 
-        /*
-         * Expect:
-         * [X] /health dir
-         * [ ] Started
-         * [ ] Ready
-         * [ ] Live
-         *
-         * Not Expected:
-         * [X] Started
-         * [X] Ready
-         * [X] Live
-         */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        awaitHealthDir(serverRootDirFile);
         Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
         Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
         Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
-        TimeUnit.SECONDS.sleep(10);
-
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-
+        Assert.assertTrue(Constants.STARTED_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getStartFile(serverRootDirFile), 8, 200));
+        Assert.assertTrue(Constants.READY_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getReadyFile(serverRootDirFile), 8, 200));
+        Assert.assertTrue(Constants.LIVE_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getLiveFile(serverRootDirFile), 8, 200));
     }
 
     @Test
-    /*
-     * Readiness check fails.
-     */
     public void failedReadinessHealthCheckTest() throws Exception {
         final String METHOD_NAME = "failedReadinessHealthCheckTest";
 
-        WebArchive app = ShrinkHelper.buildDefaultApp(FAIL_READY_APP, "io.openliberty.microprofile.health.file.healthcheck.app",
+        WebArchive app = ShrinkHelper.buildDefaultApp(
+                                                      FAIL_READY_APP,
+                                                      "io.openliberty.microprofile.health.file.healthcheck.app",
                                                       "io.openliberty.microprofile.health.file.healthcheck.app.ready.fail");
 
         ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
         server.startServer();
-
-        // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
         assertTrue("Server is not started", server.isStarted());
+        triggerHealthEndpoints(server);
 
-        String serverRoot = server.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
-
+        File serverRootDirFile = new File(server.getServerRoot());
         Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
 
-        /*
-         * Expect:
-         * [X] /health dir
-         * [ ] Started
-         * [ ] Ready
-         * [ ] Live
-         *
-         * Not Expected:
-         * [X] Started
-         * [X] Ready
-         * [X] Live
-         */
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
+        awaitHealthDir(serverRootDirFile);
         Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
         Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
         Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
 
-        TimeUnit.SECONDS.sleep(10);
-
-        Assert.assertTrue(Constants.HEALTH_DIR_SHOULD_HAVE_CREATED, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.STARTED_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_CREATED, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
+        Assert.assertTrue(Constants.STARTED_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getStartFile(serverRootDirFile), 8, 200));
+        Assert.assertTrue(Constants.READY_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getReadyFile(serverRootDirFile), 8, 200));
+        Assert.assertTrue(Constants.LIVE_SHOULD_NOT_HAVE_CREATED,
+                          HealthFileUtils.waitForFileMissing(HealthFileUtils.getLiveFile(serverRootDirFile), 8, 200));
     }
 
     @Test
-    /*
-     * Readiness check fails during runtime.
-     *
-     * And then later is updated.
-     */
     public void toggleReadinessFailTest() throws Exception {
         final String METHOD_NAME = "toggleReadinessFailTest";
 
-        WebArchive app = ShrinkWrap
-                        .create(WebArchive.class, TOGGLE_APP_WAR)
+        WebArchive app = ShrinkWrap.create(WebArchive.class, TOGGLE_APP_WAR)
                         .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
                         .addPackage("io.openliberty.microprofile.health.file.healthcheck.app");
 
         ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
         server.startServer();
-
-        // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
         assertTrue("Server is not started", server.isStarted());
+        triggerHealthEndpoints(server);
 
-        String serverRoot = server.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
+        File root = new File(server.getServerRoot());
+        Log.info(getClass(), METHOD_NAME, "Server root directory is: " + root.getAbsolutePath());
 
-        Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
+        // ensure initial files exist
+        awaitAllHealthFiles(root);
 
-        /*
-         * Expect:
-         * [X] /health dir
-         * [X] Started
-         * [X] Ready
-         * [X] Live
-         *
-         * Not Expected:
-         * [ ] Started
-         * [ ] Ready
-         * [ ] Live
-         */
-        /*
-         * Checks that require to check that all files are created may encounter a scenario where FAT test is way ahead of the server.
-         * This results in the files not existing yet. isFilesCreated() will retry up to 2 seconds (w/ 250ms cycles).
-         */
-        Assert.assertTrue("Expected all files to be created: Review isAllHealthCheckFilesCreated logs for state of files.", FATSuite.isFilesCreated(serverRootDirFile));
+        File startedFile = HealthFileUtils.getStartFile(root);
+        File readyFile = HealthFileUtils.getReadyFile(root);
+        File liveFile = HealthFileUtils.getLiveFile(root);
 
+        long live0 = HealthFileUtils.getLastModifiedTime(liveFile);
+        long ready0 = HealthFileUtils.getLastModifiedTime(readyFile);
+
+        // ready=false
         URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=false");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
         con.connect();
-        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+        Assert.assertEquals(200, con.getResponseCode());
 
-        TimeUnit.SECONDS.sleep(10);
+        Assert.assertTrue("live should update quickly after toggle",
+                          HealthFileUtils.waitForUpdateSince(liveFile, live0, 15, 200));
+        Assert.assertTrue(Constants.READY_SHOULD_NOT_HAVE_UPDATED,
+                          HealthFileUtils.waitForNoUpdateSince(readyFile, ready0, 8, 200));
 
-        /*
-         * Now expect ready to not be updated. Expect liveness to have been updated.
-         */
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_UPDATED,
-                           HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-
-        /*
-         * Set the ready status back to UP; expect both files to have been updated
-         */
+        // ready=true
+        ready0 = HealthFileUtils.getLastModifiedTime(readyFile);
+        live0 = HealthFileUtils.getLastModifiedTime(liveFile);
 
         url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=true");
         con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
         con.connect();
-        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+        Assert.assertEquals(200, con.getResponseCode());
 
-        TimeUnit.SECONDS.sleep(10);
-
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
-                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-
+        Assert.assertTrue("ready should update quickly after toggle",
+                          HealthFileUtils.waitForUpdateSince(readyFile, ready0, 15, 200));
+        Assert.assertTrue("live should update again",
+                          HealthFileUtils.waitForUpdateSince(liveFile, live0, 15, 200));
     }
-
-    @Test
-    /*
-     * Liveness check fails during runtime.
-     */
-    public void toggleLivenessFailTest() throws Exception {
-        final String METHOD_NAME = "toggleLivenessFailTest";
-
-        WebArchive app = ShrinkWrap
-                        .create(WebArchive.class, TOGGLE_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app");
-
-        ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
-
-        server.startServer();
-
-        // Read to run a smarter planet
-        server.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue("Server is not started", server.isStarted());
-
-        String serverRoot = server.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
-
-        Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
-
-        /*
-         * Expect:
-         * [X] /health dir
-         * [X] Started
-         * [X] Ready
-         * [X] Live
-         *
-         * Not Expected:
-         * [ ] Started
-         * [ ] Ready
-         * [ ] Live
-         */
-        /*
-         * Checks that require to check that all files are created may encounter a scenario where FAT test is way ahead of the server.
-         * This results in the files not existing yet. isFilesCreated() will retry up to 2 seconds (w/ 250ms cycles).
-         */
-        Assert.assertTrue("Expected all files to be created: Review isAllHealthCheckFilesCreated logs for state of files.", FATSuite.isFilesCreated(serverRootDirFile));
-
-        URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?live=false");
-        HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
-        con.connect();
-        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
-
-        TimeUnit.SECONDS.sleep(10);
-
-        /*
-         * Now expect live to not be updated. Expect ready to have been updated.
-         */
-
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
-                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertFalse(Constants.LIVE_SHOULD_NOT_HAVE_UPDATED,
-                           HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
-
-        /*
-         * Set the live status back to UP; expect both files to have been updated
-         */
-
-        url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?live=true");
-        con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
-        con.connect();
-        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
-
-        TimeUnit.SECONDS.sleep(10);
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
-                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED,
-                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
-
-    }
-
 }

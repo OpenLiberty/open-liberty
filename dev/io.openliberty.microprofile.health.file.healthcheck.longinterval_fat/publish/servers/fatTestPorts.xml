@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+    <!-- This file is used by many FAT projects to define common port values -->
+    <variable name="bvt.prop.HTTP_default" value="8010"/>
+    <variable name="bvt.prop.HTTP_default.secure" value="8020"/>
+    <variable name="bvt.prop.IIOP" value="2809"/>
+    <variable name="bvt.prop.IIOP.2" value="2810"/>
+    <variable name="bvt.prop.jms" value="1414"/>
+    <variable name="bvt.prop.jms.ssl" value="1415"/>
+    <variable name="bvt.prop.jms.2" value="1416"/>
+    <variable name="bvt.prop.jms.2.ssl" value="1417"/>
+    <variable name="bvt.prop.http.1" value="8011"/>
+    <variable name="bvt.prop.http.1.ssl" value="8021"/>
+    <variable name="bvt.prop.http.2" value="8012"/>
+    <variable name="bvt.prop.http.2.ssl" value="8022"/>
+    <variable name="bvt.prop.http.3" value="8013"/>
+    <variable name="bvt.prop.http.3.ssl" value="8023"/>
+    <variable name="bvt.prop.jms.1" value="1414"/>
+    <variable name="bvt.prop.jms.1.ssl" value="1415"/>
+</server>
+
+<!-- Made with Bob -->
