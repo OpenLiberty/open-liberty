@@ -31,10 +31,10 @@ import io.openliberty.mcp.meta.MetaKey;
  * @param text (must not be {@code null})
  * @param _meta the optional metadata
  */
-public record TextContent(String text, Map<MetaKey, Object> _meta) implements Content {
+public record TextContent(String text, Map<MetaKey, Object> _meta, Annotations annotations) implements Content {
 
     public TextContent(String text) {
-        this(text, null);
+        this(text, null, null);
     }
 
     public TextContent {

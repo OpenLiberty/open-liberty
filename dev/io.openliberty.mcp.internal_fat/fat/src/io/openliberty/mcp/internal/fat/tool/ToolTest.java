@@ -320,6 +320,47 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void testToolReturnsListOfContentWithAnnotations() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "textContentToolWithContentAnnotation",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+
+        String expectedResponseString = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "annotations": {
+                                  "audience": "assistant",
+                                  "lastModified": "2025-08-26T08:40:00Z",
+                                  "priority": 0.5
+                                },
+                                "text": "Echo: hello",
+                                "type": "text"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
     public void testToolReturnsImageContentList() throws Exception {
         String request = """
                         {
@@ -358,6 +399,49 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void testToolReturnsImageContentListWithAnnotations() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "imageContentToolWithContentAnnotation",
+                            "arguments": {
+                              "imageData": "base64-encoded-image"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        String expectedResponseString = """
+                        {
+                            "id": 1,
+                            "jsonrpc": "2.0",
+                            "result": {
+                              "content": [
+                                {
+                                  "annotations": {
+                                    "audience": "user",
+                                    "lastModified": "2025-08-26T08:40:00Z",
+                                    "priority": 0.8
+                                  },
+                                  "data": "base64-encoded-image",
+                                  "mimeType": "image/png",
+                                  "type": "image"
+                                }
+                              ],
+                              "isError": false
+                            }
+                         }
+                         """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
     public void testToolReturnsAudioContentList() throws Exception {
         String request = """
                         {
@@ -375,12 +459,54 @@ public class ToolTest extends FATServletClient {
         String response = client.callMCP(request);
 
         String expectedResponseString = """
+                        {
+                           "id": 1,
+                           "jsonrpc": "2.0",
+                           "result": {
+                             "content": [
+                               {
+                                 "data": "base64-encoded-audio",
+                                 "mimeType": "audio/mpeg",
+                                 "type": "audio"
+                               }
+                             ],
+                             "isError": false
+                           }
+                         }
+                         """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolReturnsAudioContentListWithAnnotations() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "audioContentToolWithContentAnnotation",
+                            "arguments": {
+                              "audioData": "base64-encoded-audio"
+                            }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+
+        String expectedResponseString = """
                                                 {
                           "id": 1,
                           "jsonrpc": "2.0",
                           "result": {
                             "content": [
                               {
+                                "annotations": {
+                                  "audience": "assistant",
+                                  "lastModified": "2025-08-26T08:40:00Z",
+                                  "priority": 0.3
+                                },
                                 "data": "base64-encoded-audio",
                                 "mimeType": "audio/mpeg",
                                 "type": "audio"
@@ -1105,6 +1231,23 @@ public class ToolTest extends FATServletClient {
                                       "inputSchema": {
                                         "type": "object",
                                         "properties": {
+                                          "input": {
+                                            "description": "input string to echo back as content",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "input"
+                                        ]
+                                      },
+                                      "name": "textContentToolWithContentAnnotation",
+                                      "description": "Returns text content object with annotation",
+                                      "title": "Text Content Tool With Content Annotation"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
                                           "imageData": {
                                             "description": "Base64-encoded image",
                                             "type": "string"
@@ -1122,6 +1265,23 @@ public class ToolTest extends FATServletClient {
                                       "inputSchema": {
                                         "type": "object",
                                         "properties": {
+                                          "imageData": {
+                                            "description": "Base64-encoded image",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "imageData"
+                                        ]
+                                      },
+                                      "name": "imageContentToolWithContentAnnotation",
+                                      "description": "Returns image content object with annotation",
+                                      "title": "Image Content Tool With Content Annotation"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
                                           "audioData": {
                                             "description": "Base64-encoded audio",
                                             "type": "string"
@@ -1134,6 +1294,23 @@ public class ToolTest extends FATServletClient {
                                       "name": "audioContentTool",
                                       "description": "Returns audio content object",
                                       "title": "Audio Content Tool"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "audioData": {
+                                            "description": "Base64-encoded audio",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "audioData"
+                                        ]
+                                      },
+                                      "name": "audioContentToolWithContentAnnotation",
+                                      "description": "Returns audio content object with annotation",
+                                      "title": "Audio Content Tool With Content Annotation"
                                     },
                                     {
                                         "outputSchema": {

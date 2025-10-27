@@ -9,6 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.basicToolApp;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,6 +23,7 @@ import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.content.AudioContent;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.ImageContent;
+import io.openliberty.mcp.content.Role;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -60,13 +64,11 @@ public class BasicTools {
 
         ImageContent image = new ImageContent(
                                               "base64-encoded-image",
-                                              "image/png",
-                                              null);
+                                              "image/png");
 
         AudioContent audio = new AudioContent(
                                               "base64-encoded-audio",
-                                              "audio/mpeg",
-                                              null);
+                                              "audio/mpeg");
 
         return ToolResponse.success(List.of(text, image, audio));
 
@@ -79,13 +81,11 @@ public class BasicTools {
 
                        new ImageContent(
                                         "base64-encoded-image",
-                                        "image/png",
-                                        null),
+                                        "image/png"),
 
                        new AudioContent(
                                         "base64-encoded-audio",
-                                        "audio/mpeg",
-                                        null));
+                                        "audio/mpeg"));
     }
 
     @Tool(name = "textContentTool", title = "Text Content Tool", description = "Returns text content object")
@@ -94,13 +94,35 @@ public class BasicTools {
         return new TextContent("Echo: " + input);
     }
 
+    @Tool(name = "textContentToolWithContentAnnotation", title = "Text Content Tool With Content Annotation", description = "Returns text content object with annotation")
+    public TextContent textContentToolWithContentAnnotation(
+                                                            @ToolArg(name = "input", description = "input string to echo back as content") String input) {
+        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
+                                                                                               .format(DateTimeFormatter.ISO_INSTANT),
+                                                                  0.5);
+        return new TextContent("Echo: " + input, null, annotations);
+    }
+
     @Tool(name = "imageContentTool", title = "Image Content Tool", description = "Returns image content object")
     public ImageContent imageContentTool(
                                          @ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
         return new ImageContent(
                                 imageData,
+                                "image/png");
+    }
+
+    @Tool(name = "imageContentToolWithContentAnnotation", title = "Image Content Tool With Content Annotation", description = "Returns image content object with annotation")
+    public ImageContent imageContentToolWithContentAnnotation(
+                                                              @ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
+        Content.Annotations annotations = new Content.Annotations(Role.USER,
+                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
+                                                                               .format(DateTimeFormatter.ISO_INSTANT),
+                                                                  0.8);
+        return new ImageContent(
+                                imageData,
                                 "image/png",
-                                null);
+                                null,
+                                annotations);
     }
 
     @Tool(name = "audioContentTool", title = "Audio Content Tool", description = "Returns audio content object")
@@ -108,8 +130,20 @@ public class BasicTools {
                                          @ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
         return new AudioContent(
                                 audioData,
+                                "audio/mpeg");
+    }
+
+    @Tool(name = "audioContentToolWithContentAnnotation", title = "Audio Content Tool With Content Annotation", description = "Returns audio content object with annotation")
+    public AudioContent audioContentToolWithContentAnnotation(
+                                                              @ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
+        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
+                                                                                               .format(DateTimeFormatter.ISO_INSTANT),
+                                                                  0.3);
+        return new AudioContent(
+                                audioData,
                                 "audio/mpeg",
-                                null);
+                                null,
+                                annotations);
     }
 
     //tool name is not present -> use method name

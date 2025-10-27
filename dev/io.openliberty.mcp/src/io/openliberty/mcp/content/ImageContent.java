@@ -32,10 +32,10 @@ import io.openliberty.mcp.meta.MetaKey;
  * @param mimeType the mime type of the image (must not be {@code null})
  * @param _meta the optional metadata
  */
-public record ImageContent(String data, String mimeType, Map<MetaKey, Object> _meta) implements Content {
+public record ImageContent(String data, String mimeType, Map<MetaKey, Object> _meta, Annotations annotations) implements Content {
 
     public ImageContent(String data, String mimeType) {
-        this(data, mimeType, null);
+        this(data, mimeType, null, null);
     }
 
     public ImageContent {
