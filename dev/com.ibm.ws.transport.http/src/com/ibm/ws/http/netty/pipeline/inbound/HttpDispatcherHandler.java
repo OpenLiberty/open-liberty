@@ -41,6 +41,7 @@ import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -57,6 +58,8 @@ import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
+
+import io.netty.buffer.UnpooledByteBufAllocator;
 
 /**
  *
@@ -142,15 +145,21 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         if(message instanceof HttpContent){
             HttpContent content = (HttpContent) message;
-            if(!streaming || queue == null){ //pass-thru
-                context.fireChannelRead(content.retain());
-                return;
-            }
-            ByteBuf buf = content.content();
-            if(buf.isReadable()){
-                queue.enqueueRetained(buf); //release the buffer in input stream
-            } else{
-                buf.release();
+            // if(!streaming || queue == null){ //pass-thru
+            //     context.fireChannelRead(content.retain());
+            //     return;
+            // }
+            // ByteBuf buf = content.content();
+            // if(buf.isReadable()){
+            //     queue.enqueueRetained(buf); //release the buffer in input stream
+            // } else{
+            //     buf.release();
+            // }
+            if(queue!=null){
+                ByteBuf data = content.content();
+                if(data.isReadable()){
+                    queue.enqueueRetained(data);
+                }
             }
             if(content instanceof LastHttpContent){
                 LastHttpContent last = (LastHttpContent) content;
@@ -184,42 +193,63 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         context.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(numberOfRequests+1);
 
         this.link = new HttpDispatcherLink();
-        this.link.initStreaming(context, request, config);
 
-        this.queue = new BodyQueue(context.alloc());
-        
-        //get input stream
-        com.ibm.wsspi.http.HttpRequest transportRequest = this.link.getRequest();
-        if(!(transportRequest instanceof HttpRequestImpl)){
-            throw new IllegalStateException("Unexepcted request type");
-        }
-        System.out.println("Request is: " + transportRequest);
-        HttpRequestImpl requestImpl = (HttpRequestImpl) transportRequest;
-        System.out.println("Stream obtained is: " + requestImpl.getBody());
-        if(!(requestImpl.getBody() instanceof HttpInputStreamImpl)){
-            throw new IllegalStateException("Unexpected stream type");
-        }
-        HttpInputStreamImpl stream = (HttpInputStreamImpl)transportRequest.getBody();
-
-        String encoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
-        stream.nettyConfigureStreaming(queue, context, encoding);
-
-        //If not input stream throw newIllegalStateException
-
-        this.streaming = true;
-        link.ready();
-
-        if(!context.channel().config().isAutoRead() && queue.wantsInput()){
-            context.read();
-        }
-
-        final long cl = HttpUtil.getContentLength(request, 0L);
         final boolean chunked = HttpUtil.isTransferEncodingChunked(request);
-        if(!chunked && cl == 0){
-            if(this.link !=null){
-                this.link.setBodyComplete();
-            }
+        final long cl = HttpUtil.getContentLength(request, -1);
+        final boolean expect100 = HttpUtil.is100ContinueExpected(request);
+        final boolean hasBody = chunked || cl > 0;
+
+        queue = new BodyQueue(context.alloc());
+
+        // 2) init the link for streaming
+        link.initStreaming(context, request, config);
+
+        HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
+        HttpInputStreamImpl body = req.getBody(); 
+        final String contentEncoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
+        body.nettyConfigureStreaming(queue, context, contentEncoding);
+        //context.channel().attr(NettyHttpConstants.BODY_QUEUE).set(queue);
+        link.ready();
+        if (!hasBody && !expect100) {
+            link.setBodyComplete(); // this calls isc.setBodyComplete() + ReadFlowHandler.markRequestConsumed(ctx)
         }
+
+        // this.link.initStreaming(context, request, config);
+
+        // this.queue = new BodyQueue(context.alloc());
+        
+        // //get input stream
+        // com.ibm.wsspi.http.HttpRequest transportRequest = this.link.getRequest();
+        // if(!(transportRequest instanceof HttpRequestImpl)){
+        //     throw new IllegalStateException("Unexepcted request type");
+        // }
+        // System.out.println("Request is: " + transportRequest);
+        // HttpRequestImpl requestImpl = (HttpRequestImpl) transportRequest;
+        // System.out.println("Stream obtained is: " + requestImpl.getBody());
+        // if(!(requestImpl.getBody() instanceof HttpInputStreamImpl)){
+        //     throw new IllegalStateException("Unexpected stream type");
+        // }
+        // HttpInputStreamImpl stream = (HttpInputStreamImpl)transportRequest.getBody();
+
+        // String encoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
+        // stream.nettyConfigureStreaming(queue, context, encoding);
+
+        // //If not input stream throw newIllegalStateException
+
+        // this.streaming = true;
+        // link.ready();
+
+        // if(!context.channel().config().isAutoRead() && queue.wantsInput()){
+        //     context.read();
+        // }
+
+        // final long cl = HttpUtil.getContentLength(request, 0L);
+        // final boolean chunked = HttpUtil.isTransferEncodingChunked(request);
+        // if(!chunked && cl == 0){
+        //     if(this.link !=null){
+        //         this.link.setBodyComplete();
+        //     }
+        // }
         
     }
 

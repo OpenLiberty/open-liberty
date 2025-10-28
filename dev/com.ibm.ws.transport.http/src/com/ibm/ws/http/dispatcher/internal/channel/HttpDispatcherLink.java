@@ -273,7 +273,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         this.request = new HttpRequestImpl(HttpDispatcher.useEE7Streams());
         this.response = new HttpResponseImpl(this);
-        this.request.init(this.nettyRequest, isc);
+        this.request.init(isc);
 
         final boolean chunked = HttpUtil.isTransferEncodingChunked(headers);
         final long cl = HttpUtil.getContentLength(headers, -1);
