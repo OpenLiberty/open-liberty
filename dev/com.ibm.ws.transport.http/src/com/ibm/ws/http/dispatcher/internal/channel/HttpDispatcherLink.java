@@ -87,6 +87,7 @@ import io.netty.handler.codec.http.DefaultHttpHeadersFactory;
 import io.netty.handler.codec.http.DefaultHttpResponse;
 import io.netty.handler.codec.http.EmptyHttpHeaders;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -95,6 +96,7 @@ import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
+import io.netty.util.ReferenceCountUtil;
 
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
@@ -210,6 +212,18 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "New conn: netty context=" + context);
         }
+        final boolean chunked = HttpUtil.isTransferEncodingChunked(request);
+        final long cl = HttpUtil.getContentLength(request,-1);
+        final boolean expect100 = HttpUtil.is100ContinueExpected(request);
+
+        if(!chunked && cl <= 0 && !expect100){
+            initStreaming(context, request, config);
+            ReferenceCountUtil.release(request);
+            return;
+        }
+
+
+
         NettyVirtualConnectionImpl nettyVc = NettyVirtualConnectionImpl.createVC();
         nettyContext = context;
         this.isc = new HttpInboundServiceContextImpl(context, nettyVc);
@@ -261,6 +275,23 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.response = new HttpResponseImpl(this);
         this.request.init(this.nettyRequest, isc);
 
+        final boolean chunked = HttpUtil.isTransferEncodingChunked(headers);
+        final long cl = HttpUtil.getContentLength(headers, -1);
+        final boolean expect100 = HttpUtil.is100ContinueExpected(headers);
+        final boolean hasBody = chunked || cl > 0;
+
+        if (hasBody || expect100) {
+            final String encoding = headers.headers().get(HttpHeaderNames.CONTENT_ENCODING);
+            ((HttpInputStreamImpl) this.request.getBody()).nettyConfigureStreaming(null, ctx, encoding);
+            
+        }else{
+            this.isc.setBodyComplete();
+            ReadFlowHandler.markRequestConsumed(ctx);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "initStreaming: request has no body; marked as consumed");
+            }
+        }
+
         this.isc.setNettyResponse(new DefaultHttpResponse(headers.protocolVersion(), HttpResponseStatus.OK, DefaultHttpHeadersFactory.headersFactory().withValidation(false)));
 
         this.response.init(this.isc);
@@ -268,19 +299,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         super.init(nettyVc);
         this.linkIsReady = true;
 
-        final boolean chunked = HttpUtil.isTransferEncodingChunked(headers);
-        final long cl = HttpUtil.getContentLength(headers, -1);
-        final boolean expect100 = HttpUtil.is100ContinueExpected(headers);
-        final boolean hasBody = chunked || cl > 0;
+        
 
-        if (!hasBody && !expect100) {
-            // Tell the channel-side ISC and the flow gate that there is nothing to read
-            this.isc.setBodyComplete();
-            ReadFlowHandler.markRequestConsumed(ctx);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "initStreaming: request has no body; marked as consumed");
-            }
-        }
+        
     }
 
     public void prepareForUpgrade() {

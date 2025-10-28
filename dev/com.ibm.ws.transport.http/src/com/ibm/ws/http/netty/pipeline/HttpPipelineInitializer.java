@@ -32,7 +32,6 @@ import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
-import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 
 import io.netty.channel.Channel;
@@ -92,7 +91,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_SSL_HANDLER_NAME = "SSL_HANDLER";
     public static final String HTTP_ALPN_HANDLER_NAME = "ALPN_HANDLER";
     public static final String HTTP_KEEP_ALIVE_HANDLER_NAME = "httpKeepAlive";
-    public static final String HTTP_AGGREGATOR_HANDLER_NAME = "LIBERTY_OBJECT_AGGREGATOR";
     public static final String HTTP_REQUEST_HANDLER_NAME = "LIBERTY_REQUEST_HANDLER";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "H2C_UPGRADE_HANDLER";
     public static final String CRLF_VALIDATION_HANDLER = "CRLFValidationHandler";
@@ -138,7 +136,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
         }
        
-        pipeline.channel().config().setOption(ChannelOption.MAX_MESSAGES_PER_READ, 1);
+        //pipeline.channel().config().setOption(ChannelOption.MAX_MESSAGES_PER_READ, 1);
         Tr.debug(tc, "MSP >> HTTP pipeline: " + channel.pipeline().toMap().keySet());
 
         Tr.exit(tc, "initChannel");
@@ -264,10 +262,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
                 pipeline.addBefore("transportHandler", HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
-                //TODO: this is a very large number, check best practice
-                //pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
-                //                  new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
-                //pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler(httpConfig));
                 ctx.pipeline().remove(this);
 
                 ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
@@ -306,11 +300,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         if (!isHttp2) {
             pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-            //TODO: this is a very large number, check best practice
-            //pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_AGGREGATOR_HANDLER_NAME,
-             //                 new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? maxContentLength : httpConfig.getMessageSizeLimit()));
-            //pipeline.addAfter(HTTP_KEEP_ALIVE_HANDLER_NAME, HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler(httpConfig));
-            
         }
         pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME,"transportHandler", TransportHandler.INSTANCE);
 

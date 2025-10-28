@@ -599,31 +599,16 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             firstReadCompleteforMulti = false;
             readChannelComplete = false;
             dataAlreadyReadFromChannel = false;
-            if (Objects.nonNull(this.nettyRequest) || streaming) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Setting up Netty multiread! streaming =" + streaming);
-                }
-                if (buffer == null) {
-                    throw new UnsupportedOperationException("We should have data when working with Netty");
-                }
-                postDataBuffer.add(postDataIndex, this.buffer);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "setupforMultiRead, Netty buffer ->" + postDataBuffer.get(postDataIndex)
-                                 + " ,buffersize ->" + postDataBuffer.size() + " ,index ->" + postDataIndex);
-                }
-                if(buffer!=null){
-                    postDataBuffer.add(postDataIndex, this.buffer);
-                    postDataIndex++;
-                }
 
-                postDataIndex = 0;
-                // Set first read complete and read from channel complete
-                firstReadCompleteforMulti = true;
+
+            if (nettyRequest!=null && buffer !=null && buffer.hasRemaining()){
+                postDataBuffer.add(0, buffer.duplicate());
+                postDataIndex = 1;
+                firstReadCompleteforMulti = true;   // we already have everything in this path
                 readChannelComplete = true;
-                if(nettyRequest != null){
-                    firstReadCompleteforMulti = true;
-                    readChannelComplete = true;
-                }
+            } else{
+                //stream from fillFromNettyStreamingNetty
+                postDataIndex = 0;
             }
         }
     }
@@ -642,6 +627,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "cleanupforMultiRead", "remove buffer ->" + this.buffer);
             }
+            this.buffer.release();
             this.buffer = null;
         }
         if (postDataBuffer != null) {
@@ -674,6 +660,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             ByteBuf fragment = (queue != null) ? queue.poll():null;
             if(fragment == null){
                 if(queue !=null && queue.isEos()){
+                    if (this.context != null) {
+                        ReadFlowHandler.markRequestConsumed(this.context);
+                    }
                     return false; //EOS
                 }
                 if(!autoRead && queue !=null && queue.wantsInput()&& context !=null){
@@ -710,6 +699,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     }
                 }
                 if(out !=null && out.hasRemaining()){
+                    if (out != fragmentSource) 
+                        fragmentSource.release();
                     this.buffer = out;
                     this.bytesRead += this.buffer.remaining();
                     //If multi-read is enabled, store duplicate for next read
@@ -720,10 +711,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     return true;
                 } else{
                     //No data produced, compression might need more data
-                    if(out != buffer && buffer != null){
+                    if(out != fragmentSource && fragmentSource != null){
                         fragmentSource.release();
                     }
-                    if(out != fragmentSource){
+                    if(out == fragmentSource){
                         fragmentSource.release();
                     }
                     continue; //fetch another fragment

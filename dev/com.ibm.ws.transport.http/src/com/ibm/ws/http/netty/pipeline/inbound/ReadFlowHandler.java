@@ -56,15 +56,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     @Override
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
         FlowState state = state(context);
-        // if(message instanceof FullHttpRequest ) {
-        //     state.requestConsumed = true;
-        //     super.channelRead(context, message);
-        //     return;
-        // }
         if(message instanceof HttpRequest){
             HttpRequest request = (HttpRequest) message;
-            state.headRequest = HttpMethod.HEAD.equals(request.method());
-            state.requestConsumed = !isBodyExpected(request);
+            state.headRequest = request.method() == HttpMethod.HEAD;
+            state.requestConsumed = state.headRequest || !isBodyExpected(request);
             super.channelRead(context, message);
             if (!state.requestConsumed && !state.closedOrUpgraded && context.channel().isActive()) {
                 context.read(); 
@@ -75,6 +70,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         if(message instanceof LastHttpContent){
             state.requestConsumed = true;
             super.channelRead(context, message);
+            verifyNeedRead(context, state);
             return;
         }
 
@@ -85,6 +81,15 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     }
 
     @Override
+    public void channelReadComplete(ChannelHandlerContext context) throws Exception {
+        FlowState state = state(context);
+        if (!state.closedOrUpgraded && !state.responseInFlight && !state.requestConsumed && context.channel().isActive()) {
+            context.read();                        
+        }
+        super.channelReadComplete(context);
+    }
+
+    @Override
     public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception {
         FlowState state = state(context);
 
@@ -92,24 +97,21 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             HttpResponse response = (HttpResponse) message;
             int code = response.status().code();
             boolean informational = (code >= 100 && code < 200 && code != 101);
+            state.keepAliveAllowed = HttpUtil.isKeepAlive(response);
+
             if (!informational) {
                 state.responseInFlight = true;
-                state.keepAliveAllowed = HttpUtil.isKeepAlive(response);
 
-                if (code == 101) {
-                    state.closedOrUpgraded = true;
-                    state.keepAliveAllowed = false;
-                    promise.addListener((ChannelFutureListener) f -> {
-                        state.responseInFlight = false;
-                    });
-                } else if (!isResponseBodyPermitted(code, state.headRequest)) {
+                if(isResponseBodyPermitted(code)){
                     promise.addListener((ChannelFutureListener) f -> {
                         state.responseInFlight = false;
                         verifyNeedRead(context, state);
                     });
                 }
             }
-        }else if (message instanceof LastHttpContent) {
+        }
+        
+        if (message instanceof LastHttpContent) {
             // When the final chunk is flushed, we may allow one more read
             promise.addListener((ChannelFutureListener) f -> {
                 state.responseInFlight = false;
@@ -135,12 +137,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     }
 
     private static void verifyNeedRead(ChannelHandlerContext context, FlowState state) {
-        if(state.closedOrUpgraded) return;
+        if(state.closedOrUpgraded || !context.channel().isActive()) return;
 
-        if (state.requestConsumed && !state.responseInFlight && state.keepAliveAllowed && context.channel().isActive()) {
-            state.headRequest = false;
-            state.requestConsumed = false;
-            context.read();
+        if(state.requestConsumed && !state.responseInFlight && state.keepAliveAllowed) {
+            context.read(); 
         }
     }
 
@@ -160,12 +160,12 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     }
 
     private static boolean isBodyExpected(HttpRequest request){
-        if(HttpUtil.isTransferEncodingChunked(request)) return true;
+        if (request.method() == HttpMethod.HEAD) return false;
+        if (HttpUtil.isTransferEncodingChunked(request)) return true;
         return HttpUtil.getContentLength(request, -1) > 0;
     }
 
-    private static boolean isResponseBodyPermitted(int status, boolean headRequest) {
-        if(headRequest) return false;
+    private static boolean isResponseBodyPermitted(int status) {
         if (status == 101 || status == 204 || status == 304) return false;
         return !(status >= 100 && status < 200);
     }
