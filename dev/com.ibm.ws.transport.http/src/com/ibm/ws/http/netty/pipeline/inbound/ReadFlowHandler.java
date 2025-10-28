@@ -5,6 +5,11 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import io.netty.channel.socket.ChannelInputShutdownEvent;
+import io.netty.channel.socket.ChannelInputShutdownReadComplete;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
@@ -19,9 +24,9 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     public static final class FlowState {
         public volatile boolean requestConsumed; // set when request body is fully read or proven empty
         public volatile boolean responseInFlight; // set true at first commit; false on final write future
-        public volatile boolean keepAliveAllowed; // writer decides based on response & policy
-        public volatile boolean pendingRead; // someone asked to read while gated
+        public volatile boolean keepAliveAllowed = true; // writer decides based on response & policy
         public volatile boolean closedOrUpgraded; // shutdown/upgrade says “never resume”
+        public volatile boolean headRequest; // request is HEAD
     }
 
     private static FlowState state(ChannelHandlerContext context){
@@ -38,21 +43,44 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         if (context.channel().config().isAutoRead()) {
             context.channel().config().setAutoRead(false);
         }
-        state(context);
+        FlowState state = state(context);
+        state.requestConsumed     = false;
+        state.responseInFlight    = false;
+        state.keepAliveAllowed    = true;
+        state.closedOrUpgraded    = false;
+        state.headRequest = false;
         super.channelActive(context);
+        context.read();
     }
 
     @Override
-    public void read(ChannelHandlerContext context) throws Exception {
-        FlowState st = state(context);
-        if (st.closedOrUpgraded) {
-            // swallow reads after close/upgrade
+    public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
+        FlowState state = state(context);
+        // if(message instanceof FullHttpRequest ) {
+        //     state.requestConsumed = true;
+        //     super.channelRead(context, message);
+        //     return;
+        // }
+        if(message instanceof HttpRequest){
+            HttpRequest request = (HttpRequest) message;
+            state.headRequest = HttpMethod.HEAD.equals(request.method());
+            state.requestConsumed = !isBodyExpected(request);
+            super.channelRead(context, message);
+            if (!state.requestConsumed && !state.closedOrUpgraded && context.channel().isActive()) {
+                context.read(); 
+            }
             return;
         }
-        if (st.requestConsumed && !st.responseInFlight && st.keepAliveAllowed) {
-            super.read(context);
-        } else {
-            st.pendingRead = true; 
+
+        if(message instanceof LastHttpContent){
+            state.requestConsumed = true;
+            super.channelRead(context, message);
+            return;
+        }
+
+        super.channelRead(context, message);
+        if (!state.requestConsumed && !state.closedOrUpgraded && context.channel().isActive()) {
+            context.read();
         }
     }
 
@@ -61,15 +89,27 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         FlowState state = state(context);
 
         if (message instanceof HttpResponse) {
-            // Response is being committed
-            state.responseInFlight = true;
+            HttpResponse response = (HttpResponse) message;
+            int code = response.status().code();
+            boolean informational = (code >= 100 && code < 200 && code != 101);
+            if (!informational) {
+                state.responseInFlight = true;
+                state.keepAliveAllowed = HttpUtil.isKeepAlive(response);
 
-            // Decide keep-alive based on response headers as they are now.
-            HttpResponse res = (HttpResponse) message;
-            state.keepAliveAllowed = HttpUtil.isKeepAlive(res);
-        }
-
-        if (message instanceof LastHttpContent) {
+                if (code == 101) {
+                    state.closedOrUpgraded = true;
+                    state.keepAliveAllowed = false;
+                    promise.addListener((ChannelFutureListener) f -> {
+                        state.responseInFlight = false;
+                    });
+                } else if (!isResponseBodyPermitted(code, state.headRequest)) {
+                    promise.addListener((ChannelFutureListener) f -> {
+                        state.responseInFlight = false;
+                        verifyNeedRead(context, state);
+                    });
+                }
+            }
+        }else if (message instanceof LastHttpContent) {
             // When the final chunk is flushed, we may allow one more read
             promise.addListener((ChannelFutureListener) f -> {
                 state.responseInFlight = false;
@@ -80,14 +120,26 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         super.write(context, message, promise);
     }
 
+    @Override
+    public void userEventTriggered(ChannelHandlerContext context, Object evt) throws Exception {
+        if (evt instanceof ChannelInputShutdownEvent || evt instanceof ChannelInputShutdownReadComplete) {
+            FlowState state = state(context);
+            state.closedOrUpgraded = true;
+            state.keepAliveAllowed = false;
+            if (!state.responseInFlight) {
+                context.close(); // nothing in flight; close now
+                return;
+            }
+        }
+        super.userEventTriggered(context, evt);
+    }
+
     private static void verifyNeedRead(ChannelHandlerContext context, FlowState state) {
-        if (state.pendingRead
-            && state.requestConsumed
-            && !state.responseInFlight
-            && state.keepAliveAllowed
-            && !state.closedOrUpgraded
-            && context.channel().isActive()) {
-            state.pendingRead = false;
+        if(state.closedOrUpgraded) return;
+
+        if (state.requestConsumed && !state.responseInFlight && state.keepAliveAllowed && context.channel().isActive()) {
+            state.headRequest = false;
+            state.requestConsumed = false;
             context.read();
         }
     }
@@ -97,15 +149,24 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     }
 
     public static void markRequestConsumed(ChannelHandlerContext context) {
-        FlowState st = state(context);
-        st.requestConsumed = true;
-        verifyNeedRead(context, st);
+        FlowState state = state(context);
+        state.requestConsumed = true;
     }
 
     public static void setClosedOrUpgraded(ChannelHandlerContext context) {
-        FlowState st = state(context);
-        st.closedOrUpgraded = true;
-        st.keepAliveAllowed = false;
-        st.pendingRead = false;
+        FlowState state = state(context);
+        state.closedOrUpgraded = true;
+        state.keepAliveAllowed = false;
+    }
+
+    private static boolean isBodyExpected(HttpRequest request){
+        if(HttpUtil.isTransferEncodingChunked(request)) return true;
+        return HttpUtil.getContentLength(request, -1) > 0;
+    }
+
+    private static boolean isResponseBodyPermitted(int status, boolean headRequest) {
+        if(headRequest) return false;
+        if (status == 101 || status == 204 || status == 304) return false;
+        return !(status >= 100 && status < 200);
     }
 }

@@ -79,7 +79,7 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext context) throws Exception{
+    public void channelInactive(ChannelHandlerContext context) throws Exception {
         FullHttpRequest request;
         while ((request = requestQueue.poll()) != null) {
             ReferenceCountUtil.safeRelease(request);
@@ -98,13 +98,13 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
             context.close();
             return;
         }
-        synchronized(context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)){
+        synchronized (context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)) {
             if (closeAfterDrain || (hasMaxRequests && acceptedRequests >= maxRequests)) {
 
-            ReferenceCountUtil.safeRelease(request);
-            closeAfterDrain = true;
-            pauseReading(context);
-            return;
+                ReferenceCountUtil.safeRelease(request);
+                closeAfterDrain = true;
+                pauseReading(context);
+                return;
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -146,13 +146,13 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
 
             context.fireChannelRead(request);
 
-        } 
+        }
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
         if (!peerClosedConnection && (event instanceof ChannelInputShutdownEvent || event instanceof ChannelInputShutdownReadComplete)) {
-            synchronized(context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)){
+            synchronized (context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)) {
                 // If handling request we just need to wait until processing finishes to handle the closing
                 // else we should close the channel up now
                 if (Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.HANDLING_REQUEST).get())) {
@@ -180,12 +180,12 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
             return;
         }
 
-        synchronized(context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)){
+        synchronized (context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)) {
             completedRequests++;
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Processing next available request in request queue. Completed requests: " + completedRequests + " of max " +
-                                maxRequests + ". Queued requests: " + requestQueue.size());
+                                   maxRequests + ". Queued requests: " + requestQueue.size());
             }
             boolean draining = peerClosedConnection || closeAfterDrain || (hasMaxRequests && completedRequests >= maxRequests);
             if (draining && requestQueue.isEmpty()) {
@@ -204,13 +204,13 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "No additional requests remaining. Closing channel.");
                     }
-                    context.close(); 
-                } else if(!context.channel().config().isAutoRead()){
-                    resumeReading(context);                                                      
+                    context.close();
+                } else if (!context.channel().config().isAutoRead()) {
+                    resumeReading(context);
                 }
                 return;
-            }    
-            if(!draining && !context.channel().config().isAutoRead() && requestQueue.remainingCapacity()>0){
+            }
+            if (!draining && !context.channel().config().isAutoRead() && requestQueue.remainingCapacity() > 0) {
                 resumeReading(context);
             }
             requestHandlerContext.channel().attr(NettyHttpConstants.HANDLING_REQUEST).set(true);
@@ -228,16 +228,7 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
     private static void resumeReading(ChannelHandlerContext context) {
         ChannelConfig config = context.channel().config();
         if (!config.isAutoRead()) {
-            //config.setAutoRead(true);
-            context.read();
-        }
-    }
-
-    @Override
-    public void channelReadComplete(ChannelHandlerContext context) throws Exception{
-        super.channelReadComplete(context);
-        if(!context.channel().config().isAutoRead()){
-            context.channel().read();
+            config.setAutoRead(true);
         }
     }
 
