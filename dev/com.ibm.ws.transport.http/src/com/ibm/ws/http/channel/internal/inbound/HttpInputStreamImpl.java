@@ -36,6 +36,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpUtil;
 import io.openliberty.http.netty.compression.HttpContentDecompressor;
 
 /**
@@ -62,7 +63,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private boolean enableMultiReadofPostData = false; // custom property
     private ArrayList<WsByteBuffer> postDataBuffer;
     protected boolean firstReadCompleteforMulti = false;
-    private boolean readChannelComplete = false;
+    protected boolean readChannelComplete = false;
     private int postDataIndex = 0;
     protected long bytesReadFromStore = 0L;
 
@@ -72,11 +73,13 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private HttpContentDecompressor decompressor;
 
     //Netty streaming (autoread off) state
-    private volatile BodyQueue queue;
-    private volatile ChannelHandlerContext context;
-    private volatile boolean autoRead;
-    private volatile boolean streaming;
+    protected volatile BodyQueue queue;
+    protected volatile ChannelHandlerContext context;
+    protected volatile boolean autoRead;
+    protected volatile boolean streaming;
     private volatile String contentEncoding;
+    private volatile long rawBytesRead = 0L;
+
 
 
     /**
@@ -131,6 +134,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.streaming = true;
         this.contentEncoding = (contentEncoding == null) ? null: contentEncoding.toLowerCase();
         this.decompressor = new HttpContentDecompressor();
+
+        this.readChannelComplete = false;
+        this.rawBytesRead = 0L;
     }
 
     /*
@@ -660,6 +666,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             ByteBuf fragment = (queue != null) ? queue.poll():null;
             if(fragment == null){
                 if(queue !=null && queue.isEos()){
+                    this.readChannelComplete = true;
                     if (this.context != null) {
                         ReadFlowHandler.markRequestConsumed(this.context);
                     }

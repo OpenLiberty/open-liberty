@@ -145,6 +145,27 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         if(message instanceof HttpContent){
             HttpContent content = (HttpContent) message;
+            try{
+                if (queue != null) {
+                    ByteBuf data = content.content();
+                    if (data.isReadable()) {
+                        // We retain into the queue; it is safe to release the HttpContent itself.
+                        queue.enqueueRetained(data);
+                    }
+                }
+                if (content instanceof LastHttpContent) {
+                    queue.signalEos();
+                    if (this.link != null) {
+                        this.link.setBodyComplete();
+                    }
+                }
+                if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
+                    context.read();
+                }
+            } finally {
+                ReferenceCountUtil.release(content);
+            }
+            return;
             // if(!streaming || queue == null){ //pass-thru
             //     context.fireChannelRead(content.retain());
             //     return;
@@ -155,24 +176,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             // } else{
             //     buf.release();
             // }
-            if(queue!=null){
-                ByteBuf data = content.content();
-                if(data.isReadable()){
-                    queue.enqueueRetained(data);
-                }
-            }
-            if(content instanceof LastHttpContent){
-                LastHttpContent last = (LastHttpContent) content;
-                // deal with trailers
-                queue.signalEos();
-                if(this.link != null){
-                    this.link.setBodyComplete();
-                }
-            }
-            if(!context.channel().config().isAutoRead() && queue.wantsInput()){
-                context.read();
-            }
-            return;
         }
     }
 

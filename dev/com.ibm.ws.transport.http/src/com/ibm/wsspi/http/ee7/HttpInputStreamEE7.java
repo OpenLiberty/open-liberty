@@ -120,6 +120,29 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
             if (isClosed()) {
                 return true;
             }
+            if (streaming) {
+                // If we still have buffered bytes, we are not finished.
+                if (available() > 0) {
+                    return false;
+                }
+                // If Netty has signaled EOS and there is nothing buffered, we are finished.
+                if (readChannelComplete) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "isFinished(streaming): EOS reached and no buffered data; returning true");
+                    }
+                    return true;
+                }
+                // Otherwise we’re waiting for more input; request another read if manual flow control is in use.
+                if (!autoRead && queue != null && queue.wantsInput() && context != null) {
+                    context.read();
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "isFinished(streaming): more input expected; returning false");
+                }
+                return false;
+            }
+
+
             if (available() <= 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "There is no data currently available in the buffer");

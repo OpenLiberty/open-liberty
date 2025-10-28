@@ -656,10 +656,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         // Make sure to initialize the response in case of an early-return-error message
         if(this.request != null){
-            if (this.nettyRequest != null) {
-                this.request.init(this.nettyRequest, isc);
-            } else {
-                this.request.init(this.isc);
+            if (this.request.getBody() == null) {
+                if (this.nettyRequest != null) {
+                    // aggregated/full request path: preserve aggregated content
+                    this.request.init(this.nettyRequest, isc);
+                } else {
+                    // legacy path
+                    this.request.init(this.isc);
+                }
             }
         }
         this.response.init(this.isc);
@@ -802,12 +806,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // Initialize the request body / get the message
-        if(this.nettyRequest != null){
-            this.request.init(this.nettyRequest,isc);
-        }else{
-            this.request.init(isc);
-        }
+        // if(this.nettyRequest != null){
+        //     this.request.init(this.nettyRequest,isc);
+        // }else{
+        //     this.request.init(isc);
+        // }
 
+        this.request.init(isc);
         // Try to find a virtual host for the requested host/port..
         VirtualHostImpl vhost = VirtualHostMap.findVirtualHost(this.myChannel.getEndpointPid(),
                                                                this);
