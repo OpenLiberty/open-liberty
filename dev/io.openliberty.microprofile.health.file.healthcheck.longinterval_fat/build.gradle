@@ -11,8 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-// Inherit the shared FAT Gradle config (defines autoFvtDir, copyTestContainers, etc.)
-apply from: "${rootDir}/wlp-gradle/subprojects/fat.gradle"
+// FAT Gradle config is automatically applied by the root build.gradle
 
 configurations {
     requiredLibs
