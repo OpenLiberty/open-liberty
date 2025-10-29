@@ -89,31 +89,28 @@ public class BasicTools {
     }
 
     @Tool(name = "textContentTool", title = "Text Content Tool", description = "Returns text content object")
-    public TextContent textContentTool(
-                                       @ToolArg(name = "input", description = "input string to echo back as content") String input) {
+    public TextContent textContentTool(@ToolArg(name = "input", description = "input string to echo back as content") String input) {
         return new TextContent("Echo: " + input);
     }
 
     @Tool(name = "textContentToolWithContentAnnotation", title = "Text Content Tool With Content Annotation", description = "Returns text content object with annotation")
-    public TextContent textContentToolWithContentAnnotation(
-                                                            @ToolArg(name = "input", description = "input string to echo back as content") String input) {
-        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                                               .format(DateTimeFormatter.ISO_INSTANT),
+    public TextContent textContentToolWithContentAnnotation(@ToolArg(name = "input", description = "input string to echo back as content") String input) {
+        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT,
+                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
+                                                                               .format(DateTimeFormatter.ISO_INSTANT),
                                                                   0.5);
         return new TextContent("Echo: " + input, null, annotations);
     }
 
     @Tool(name = "imageContentTool", title = "Image Content Tool", description = "Returns image content object")
-    public ImageContent imageContentTool(
-                                         @ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
+    public ImageContent imageContentTool(@ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
         return new ImageContent(
                                 imageData,
                                 "image/png");
     }
 
     @Tool(name = "imageContentToolWithContentAnnotation", title = "Image Content Tool With Content Annotation", description = "Returns image content object with annotation")
-    public ImageContent imageContentToolWithContentAnnotation(
-                                                              @ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
+    public ImageContent imageContentToolWithContentAnnotation(@ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
         Content.Annotations annotations = new Content.Annotations(Role.USER,
                                                                   ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
                                                                                .format(DateTimeFormatter.ISO_INSTANT),
@@ -126,18 +123,17 @@ public class BasicTools {
     }
 
     @Tool(name = "audioContentTool", title = "Audio Content Tool", description = "Returns audio content object")
-    public AudioContent audioContentTool(
-                                         @ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
+    public AudioContent audioContentTool(@ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
         return new AudioContent(
                                 audioData,
                                 "audio/mpeg");
     }
 
     @Tool(name = "audioContentToolWithContentAnnotation", title = "Audio Content Tool With Content Annotation", description = "Returns audio content object with annotation")
-    public AudioContent audioContentToolWithContentAnnotation(
-                                                              @ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
-        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                                               .format(DateTimeFormatter.ISO_INSTANT),
+    public AudioContent audioContentToolWithContentAnnotation(@ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
+        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT,
+                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
+                                                                               .format(DateTimeFormatter.ISO_INSTANT),
                                                                   0.3);
         return new AudioContent(
                                 audioData,
