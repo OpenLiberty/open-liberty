@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,34 @@ import com.ibm.websphere.simplicity.log.Log;
  * could be replaced in the future with a robust SunOne schema design.
  */
 public class InMemorySunLDAPServer extends InMemoryLDAPServer {
+//    static {
+    // bridge java.util.Logger output to log4j
+    //System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
+//        System.setProperty("java.util.logging.manager", "com.ibm.ws.kernel.boot.logging.WsLogManager");
+//
+//        // setting the ldap debug level...
+//        System.setProperty("com.unboundid.ldap.sdk.debug.enabled", "true");
+//        System.setProperty("com.unboundid.ldap.sdk.debug.level", "FINEST");
+//        System.setProperty("com.unboundid.ldap.sdk.debug.type", DebugType.getTypeNameList());
+    //System.setProperty("unboundid.util.SSLUtil.enabledSSLProtocols", "TLSv1.3");
+
+//        Debug.setEnabled(true);
+//        System.setProperty("com.unboundid.ldap.sdk.debug.enabled", "true");
+//        System.setProperty("com.unboundid.ldap.sdk.debug.level", "ALL");
+//        System.setProperty("com.unboundid.ldap.sdk.debug.file", "/tmp/ldapSdk.log");
+//        System.setProperty("javax.net.debug", "all");
+//        Debug.setEnabled(true);
+//        java.util.logging.Logger logger = Debug.getLogger();
+//        FileHandler fileHandler = null;
+//        try {
+//            fileHandler = new FileHandler("/tmp/ldapSdk.log");
+//        } catch (SecurityException | IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
+//        fileHandler.setLevel(Level.ALL);
+//        logger.addHandler(fileHandler);
+//    }
     protected static final Class<?> c = InMemorySunLDAPServer.class;
     public static final String BASE_DN = "dc=rtp,dc=raleigh,dc=ibm,dc=com";
 

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,6 +22,9 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocket;
@@ -38,6 +41,7 @@ import com.unboundid.ldap.sdk.LDAPException;
 import com.unboundid.ldap.sdk.Modification;
 import com.unboundid.ldap.sdk.OperationType;
 import com.unboundid.ldap.sdk.schema.Schema;
+import com.unboundid.util.Debug;
 import com.unboundid.util.ssl.KeyStoreKeyManager;
 import com.unboundid.util.ssl.SSLUtil;
 import com.unboundid.util.ssl.TrustAllTrustManager;
@@ -71,6 +75,48 @@ public class InMemoryLDAPServer {
     private String keystore;
     private static final String listenerName = "LDAP";
     private static final String secureListenerName = "LDAPS";
+
+    static {
+        // bridge java.util.Logger output to log4j
+        //System.setProperty("java.util.logging.manager", "org.apache.logging.log4j.jul.LogManager");
+        //System.setProperty("java.util.logging.manager", "com.ibm.ws.kernel.boot.logging.WsLogManager");
+
+        // setting the ldap debug level...
+//        System.setProperty("com.unboundid.ldap.sdk.debug.enabled", "true");
+//        System.setProperty("com.unboundid.ldap.sdk.debug.level", "FINEST");
+//        System.setProperty("com.unboundid.ldap.sdk.debug.type", DebugType.getTypeNameList());
+
+        //working debug start
+
+        System.setProperty("com.unboundid.ldap.sdk.debug.enabled", "true");
+        System.setProperty("com.unboundid.ldap.sdk.debug.level", "ALL");
+        System.setProperty("com.unboundid.ldap.sdk.debug.file", "/tmp/ldapSdk.log");
+        System.setProperty("javax.net.debug", "all");
+        Debug.setEnabled(true);
+        java.util.logging.Logger logger = Debug.getLogger();
+        FileHandler cfileHandler = null;
+        try {
+            cfileHandler = new FileHandler("/tmp/cldapSdk.log");
+        } catch (SecurityException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        cfileHandler.setLevel(Level.ALL);
+        logger.addHandler(cfileHandler);
+
+        //java.util.logging.Logger logger = Debug.getLogger();
+        FileHandler sfileHandler = null;
+        try {
+            sfileHandler = new FileHandler("/tmp/sldapSdk.log");
+        } catch (SecurityException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        sfileHandler.setLevel(Level.ALL);
+        logger.addHandler(sfileHandler);
+        // end
+//        System.setProperty("unboundid.util.SSLUtil.enabledSSLProtocols", "TLSv1.2");
+    }
 
     /**
      * Creates a new instance of the in memory LDAP server. It initializes the directory
@@ -116,15 +162,50 @@ public class InMemoryLDAPServer {
      * @throws Exception If something went wrong.
      */
     public InMemoryLDAPServer(boolean useWimSchema, int ldapPort, int ldapsPort, boolean allowAnonOps, String... baseEntries) throws Exception {
+
+        System.setProperty("com.unboundid.ldap.sdk.debug.enabled", "true");
+        System.setProperty("com.unboundid.ldap.sdk.debug.level", "FINEST");
+        System.setProperty("com.unboundid.ldap.sdk.debug.file", "/tmp/ldapSdk.log");
+        System.setProperty("javax.net.debug", "all");
+        Debug.setEnabled(true);
+        System.setProperty(Debug.PROPERTY_INCLUDE_CAUSE_IN_EXCEPTION_MESSAGES, "true");
+        java.util.logging.Logger logger = Debug.getLogger();
+        FileHandler cfileHandler = null;
+        try {
+            cfileHandler = new FileHandler("/tmp/cldapSdk.log");
+        } catch (SecurityException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        cfileHandler.setLevel(Level.ALL);
+        logger.addHandler(cfileHandler);
+
+        //java.util.logging.Logger logger = Debug.getLogger();
+        FileHandler sfileHandler = null;
+        try {
+            sfileHandler = new FileHandler("/tmp/sldapSdk.log");
+        } catch (SecurityException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        sfileHandler.setLevel(Level.ALL);
+        logger.addHandler(sfileHandler);
         /*
          * Enable required protocols and cipher suites.
          */
         SSLContext sslc = SSLContext.getDefault();
         SSLSocketFactory sslf = sslc.getSocketFactory();
         SSLSocket ssls = (SSLSocket) sslf.createSocket();
-        SSLUtil.setEnabledSSLProtocols(Arrays.asList(ssls.getSupportedProtocols()));
-        SSLUtil.setEnabledSSLCipherSuites(Arrays.asList(ssls.getSupportedCipherSuites()));
+        List<String> protocols = Arrays.asList(ssls.getSupportedProtocols());
+        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> sslProtocols: " + protocols);
+//        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> hard code sslProtocols: TLSv1z.2");
+//        protocols = Arrays.asList("TLSv1.2");
+        SSLUtil.setEnabledSSLProtocols(protocols);
+        //System.setProperty("com.unboundid.util.ssl.SSLUtil.ENABLED_SSL_PROTOCOLS", "TLSv1.3,TLSv1.2");
 
+        String[] cipherSuits = ssls.getSupportedCipherSuites();
+        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> cipherSuits: " + convertCipherListToString(cipherSuits));
+        SSLUtil.setEnabledSSLCipherSuites(Arrays.asList(cipherSuits));
         /*
          * Configure base entries and root credentials.
          */
@@ -143,13 +224,23 @@ public class InMemoryLDAPServer {
          * so we can use the certificate within it at runtime.
          */
         keystore = extractResourceToFile("/resources/keystore.p12", "keystore", ".p12").getAbsolutePath();
-        final SSLUtil serverSSLUtil = new SSLUtil(new KeyStoreKeyManager(keystore, keystorePassword
-                        .toCharArray(), "PKCS12", "cert-alias"), new TrustAllTrustManager());
+        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> keystore: " + keystore);
 
+        KeyStoreKeyManager keystoreKeyManager = new KeyStoreKeyManager(keystore, keystorePassword.toCharArray(), "PKCS12", "cert-alias");
+        String alias = keystoreKeyManager.getCertificateAlias();
+        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> keystore cert alias: " + alias);
+        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> keystore cert chain: " + keystoreKeyManager.getCertificateChain(alias));
+        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> keystore cert privateKey: " + keystoreKeyManager.getPrivateKey(alias));
+        //        final SSLUtil serverSSLUtil = new SSLUtil(new KeyStoreKeyManager(keystore, keystorePassword
+//                        .toCharArray(), "PKCS12", "cert-alias"), new TrustAllTrustManager());
+        final SSLUtil serverSSLUtil = new SSLUtil(keystoreKeyManager, new TrustAllTrustManager());
+
+        //SSLServerSocketFactory serverSocketFacotry = serverSSLUtil.createSSLServerSocketFactory();
         /*
          * Configure LDAPS.
          */
         ArrayList<InMemoryListenerConfig> configs = new ArrayList<InMemoryListenerConfig>();
+//        InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig(secureListenerName, ldapsPort, serverSSLUtil.createSSLServerSocketFactory());
         InMemoryListenerConfig secure = InMemoryListenerConfig.createLDAPSConfig(secureListenerName, ldapsPort, serverSSLUtil.createSSLServerSocketFactory());
         configs.add(secure);
 
@@ -177,6 +268,10 @@ public class InMemoryLDAPServer {
          */
         ds = new InMemoryDirectoryServer(config);
         ds.startListening();
+
+        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> about to call debugConnect");
+
+        Debug.debugConnect("localhost", getLdapPort());
 
         Log.info(c, "InMemoryLDAPServer", "LDAP server started listenting on LDAP port " + getLdapPort() + " and LDAPS port " + getLdapsPort() + ".");
     }
@@ -210,6 +305,8 @@ public class InMemoryLDAPServer {
      */
     protected File extractResourceToFile(String resource, String prefix, String suffix) throws IOException {
         File tempfile = File.createTempFile(prefix, suffix);
+        Log.info(c, "InMemoryLDAPServer", "<<UTLE>> tempfile: " + tempfile.getCanonicalPath());
+
         InputStream src = getClass().getResourceAsStream(resource);
         Files.copy(src, Paths.get(tempfile.getAbsolutePath()), StandardCopyOption.REPLACE_EXISTING);
         return tempfile;
@@ -380,5 +477,20 @@ public class InMemoryLDAPServer {
      */
     public int importFromLDIF(boolean clear, String path) throws LDAPException {
         return ds.importFromLDIF(clear, path);
+    }
+
+    private static String convertCipherListToString(String[] cipherList) {
+        if (cipherList == null || cipherList.length == 0) {
+            return "null";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('(').append(cipherList.length).append(')');
+        for (int i = 0; i < cipherList.length; i++) {
+            sb.append(' ');
+            sb.append(cipherList[i]);
+        }
+
+        return sb.toString();
     }
 }
