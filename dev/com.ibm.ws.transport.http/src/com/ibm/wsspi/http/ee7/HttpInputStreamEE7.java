@@ -43,9 +43,9 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         super(context);
     }
 
-    public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
-        super(context, request);
-    }
+    // public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
+    //     super(context, request);
+    // }
 
     /*
      * (non-Javadoc)
@@ -125,16 +125,21 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 if (available() > 0) {
                     return false;
                 }
-                // If Netty has signaled EOS and there is nothing buffered, we are finished.
+                if (queue != null && queue.isEos()) {
+                    this.readChannelComplete = true;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "isFinished(streaming): queue EOS and no buffered data; returning true");
+                    }
+                    return true;
+                }
                 if (readChannelComplete) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "isFinished(streaming): EOS reached and no buffered data; returning true");
                     }
                     return true;
                 }
-                // Otherwise we’re waiting for more input; request another read if manual flow control is in use.
                 if (!autoRead && queue != null && queue.wantsInput() && context != null) {
-                    context.read();
+                    context.channel().read();
                 }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "isFinished(streaming): more input expected; returning false");

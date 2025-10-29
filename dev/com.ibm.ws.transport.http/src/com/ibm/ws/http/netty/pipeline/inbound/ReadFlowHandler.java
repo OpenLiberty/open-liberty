@@ -24,7 +24,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     public static final class FlowState {
         public volatile boolean requestConsumed; // set when request body is fully read or proven empty
         public volatile boolean responseInFlight; // set true at first commit; false on final write future
-        public volatile boolean keepAliveAllowed = true; // writer decides based on response & policy
+        public volatile boolean keepAliveAllowed; // writer decides based on response & policy
         public volatile boolean closedOrUpgraded; // shutdown/upgrade says “never resume”
         public volatile boolean headRequest; // request is HEAD
     }
@@ -137,6 +137,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     }
 
     private static void verifyNeedRead(ChannelHandlerContext context, FlowState state) {
+        
+            System.out.printf("verifyNeedRead: consumed=%s inflight=%s keepAlive=%s closed=%s active=%s",
+                     state.requestConsumed, state.responseInFlight, state.keepAliveAllowed, state.closedOrUpgraded, context.channel().isActive());
+        
         if(state.closedOrUpgraded || !context.channel().isActive()) return;
 
         if(state.requestConsumed && !state.responseInFlight && state.keepAliveAllowed) {

@@ -51,6 +51,7 @@ final public class BodyQueue {
     }
 
     public void signalEos(){
+        Thread.currentThread().dumpStack();
         eos = true;
     }
 

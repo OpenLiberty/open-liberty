@@ -78,6 +78,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     private BodyQueue queue;
     private HttpDispatcherLink link;
 
+    private final java.util.ArrayDeque<HttpContent> earlyContents = new java.util.ArrayDeque<>();
+    private boolean streamingInitialized;
+
 
     // private HttpDispatcherLink link;
 
@@ -92,7 +95,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     public void channelActive(ChannelHandlerContext context) throws Exception {
         if(!context.channel().config().isAutoRead()){
             Tr.debug(tc, "Dispatcher.channelActive -> issue initial read");
-            context.read();
+            context.channel().read();
         }
         super.channelActive(context);
     }
@@ -113,59 +116,146 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     @Override
     protected void channelRead0(ChannelHandlerContext context, HttpObject message) throws Exception{
-        //Aggregated path
-        if(message instanceof FullHttpRequest){
-            FullHttpRequest full = (FullHttpRequest) message;
-            if(full.decoderResult().isFinished() && full.decoderResult().isSuccess()){
-                FullHttpRequest retained = full.retainedDuplicate();
-                HttpDispatcher.getExecutorService().execute(() -> {
-                    try{
-                        newRequest(context, retained);
-                    }catch(Throwable t){
-                        try{
-                            exceptionCaught(context, t);
-                        }catch(Exception e){
-                            context.close();
-                        }
-                    }finally {
-                        ReferenceCountUtil.release(retained);
+        // //Aggregated path
+        // if(message instanceof FullHttpRequest){
+        //     FullHttpRequest full = (FullHttpRequest) message;
+        //     if(full.decoderResult().isFinished() && full.decoderResult().isSuccess()){
+        //         FullHttpRequest retained = full.retainedDuplicate();
+        //         HttpDispatcher.getExecutorService().execute(() -> {
+        //             try{
+        //                 newRequest(context, retained);
+        //             }catch(Throwable t){
+        //                 try{
+        //                     exceptionCaught(context, t);
+        //                 }catch(Exception e){
+        //                     context.close();
+        //                 }
+        //             }finally {
+        //                 ReferenceCountUtil.release(retained);
+        //             }
+        //         });
+        //     } else if (full.decoderResult().cause() != null){
+        //         full.decoderResult().cause().printStackTrace(); //TODO: we need to change this
+        //     }
+        //     return;
+        // }
+
+        if (message instanceof HttpRequest) {
+            HttpRequest request = (HttpRequest) message;
+            if(queue != null)
+                Tr.debug(tc, "Resetting queue for new request; old=" + System.identityHashCode(queue)); 
+            
+                queue = new BodyQueue(context.alloc());
+                earlyContents.clear();
+
+            streamingInitialized = false;
+            link = null;
+
+            beginStreamingRequest(context, request);
+
+            // Drain any early content that might have arrived in the same read cycle
+            HttpContent early;
+            while ((early = earlyContents.poll()) != null) {
+                try {
+                    if (queue == null) {
+                        throw new IllegalStateException("Queue should have been initialized before draining early contents");
                     }
-                });
-            } else if (full.decoderResult().cause() != null){
-                full.decoderResult().cause().printStackTrace(); //TODO: we need to change this
+                    final ByteBuf data = early.content();
+                    if (data.isReadable()) {
+                        queue.enqueueRetained(data);
+                    }
+                    if (early instanceof LastHttpContent) {
+                        queue.signalEos();
+                        if (this.link != null) this.link.setBodyComplete();
+                    }
+                } finally {
+                    early.release();
+                }
+            }
+
+            if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
+                context.executor().execute(() -> context.channel().read());
             }
             return;
         }
-
-        //Streaming path
-        if(message instanceof HttpRequest){
-            HttpRequest request = (HttpRequest) message;
-            beginStreamingRequest(context, request);
-            return;
-        }
-        if(message instanceof HttpContent){
+        else if (message instanceof HttpContent) {
             HttpContent content = (HttpContent) message;
-            try{
-                if (queue != null) {
-                    ByteBuf data = content.content();
-                    if (data.isReadable()) {
-                        // We retain into the queue; it is safe to release the HttpContent itself.
-                        queue.enqueueRetained(data);
-                    }
+
+            // If streaming not yet initialized, retain and park the content
+            if (!streamingInitialized || queue == null) {
+                content.retain();               // we will release after draining
+                earlyContents.add(content);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "DISP: parked early HttpContent readable="
+                            + content.content().readableBytes() + ", last=" + (content instanceof LastHttpContent));
+                }
+                ReferenceCountUtil.release(message); // release the original inbound reference
+                return;
+            }
+
+            try {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "DISP: HttpContent arrived, readable="
+                            + content.content().readableBytes() + " last=" + (content instanceof LastHttpContent));
+                }
+                ByteBuf data = content.content();
+                if (data.isReadable()) {
+                    queue.enqueueRetained(data);
                 }
                 if (content instanceof LastHttpContent) {
                     queue.signalEos();
-                    if (this.link != null) {
-                        this.link.setBodyComplete();
-                    }
+                    if (this.link != null) this.link.setBodyComplete();
                 }
                 if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
-                    context.read();
+                    context.executor().execute(() -> context.channel().read());
                 }
             } finally {
                 ReferenceCountUtil.release(content);
             }
             return;
+        
+
+
+
+        // //Streaming path
+        // if(message instanceof HttpRequest){
+        //     HttpRequest request = (HttpRequest) message;
+        //     HttpDispatcher.getExecutorService().execute(() -> {
+        //         beginStreamingRequest(context, request);
+        //     });
+            
+        // }
+        // else if(message instanceof HttpContent){
+        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //         Tr.debug(tc, "DISP: HttpContent arrived, readable=" + ((HttpContent) message).content().readableBytes()
+        //                      + " last=" + (message instanceof LastHttpContent));
+        //     }
+        //     HttpContent content = (HttpContent) message;
+        //     try{
+        //         if(queue == null){
+        //             throw new IllegalStateException("Queue should have been initialized");
+        //         }
+
+        //         if (queue != null) {
+        //             ByteBuf data = content.content();
+        //             if (data.isReadable()) {
+        //                 // We retain into the queue; it is safe to release the HttpContent itself.
+        //                 queue.enqueueRetained(data);
+        //             }
+        //         }
+        //         if (content instanceof LastHttpContent) {
+        //             queue.signalEos();
+        //             if (this.link != null) {
+        //                 this.link.setBodyComplete();
+        //             }
+        //         }
+        //         if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
+        //             context.channel().read();
+        //         }
+        //     } finally {
+        //         ReferenceCountUtil.release(content);
+        //     }
+        //     return;
             // if(!streaming || queue == null){ //pass-thru
             //     context.fireChannelRead(content.retain());
             //     return;
@@ -177,6 +267,19 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             //     buf.release();
             // }
         }
+    }
+    
+    @Override
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        // With autoRead=false we must explicitly drive the next read *after* a read cycle completes.
+        if (!ctx.channel().config().isAutoRead() && queue != null && queue.wantsInput()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "READ-COMPLETE: scheduling channel.read(); wantsInput=" + queue.wantsInput());
+            }
+            // schedule onto the event loop to ensure it propagates tail→head on the next tick
+            ctx.executor().execute(() -> ctx.channel().read());
+        }
+        super.channelReadComplete(ctx);
     }
 
     private void beginStreamingRequest(ChannelHandlerContext context, HttpRequest request){
@@ -202,20 +305,42 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         final boolean expect100 = HttpUtil.is100ContinueExpected(request);
         final boolean hasBody = chunked || cl > 0;
 
-        queue = new BodyQueue(context.alloc());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "beginStreamingRequest: CL=" + cl + ", chunked=" + chunked + ", expect100=" + expect100);
+        }
 
-        // 2) init the link for streaming
+        
         link.initStreaming(context, request, config);
 
         HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
         HttpInputStreamImpl body = req.getBody(); 
+        this.streaming = true;
         final String contentEncoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
-        body.nettyConfigureStreaming(queue, context, contentEncoding);
-        //context.channel().attr(NettyHttpConstants.BODY_QUEUE).set(queue);
-        link.ready();
+        body.nettyConfigureStreaming(queue, context, contentEncoding, cl, chunked);
+
+
+
+        
         if (!hasBody && !expect100) {
-            link.setBodyComplete(); // this calls isc.setBodyComplete() + ReadFlowHandler.markRequestConsumed(ctx)
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "beginStreamingRequest: no body; signal EOS + setBodyComplete");
+            }
+            queue.signalEos();
+            if (this.link != null)
+                this.link.setBodyComplete(); // this calls isc.setBodyComplete() + ReadFlowHandler.markRequestConsumed(ctx)
         }
+        if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
+            context.channel().read();
+        }
+
+        streamingInitialized = true;
+        HttpDispatcher.getExecutorService().execute(() -> {link.ready();});
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "beginStreamingRequest: CE=%s, wantsInput=%s, autoRead=%s",
+                     contentEncoding, queue.wantsInput(), context.channel().config().isAutoRead());
+        }
+
 
         // this.link.initStreaming(context, request, config);
 

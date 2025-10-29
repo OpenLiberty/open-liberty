@@ -74,16 +74,16 @@ public class HttpRequestImpl implements Http2Request, HttpRequestExt {
      *
      * @param context
      */
-    public void init(FullHttpRequest request, HttpInboundServiceContext context) {
+    // public void init(FullHttpRequest request, HttpInboundServiceContext context) {
 
-        this.message = context.getRequest();
+    //     this.message = context.getRequest();
 
-        if (this.useEE7Streams) {
-            this.body = new HttpInputStreamEE7(context, request);
-        } else {
-            this.body = new HttpInputStreamImpl(context, request);
-        }
-    }
+    //     if (this.useEE7Streams) {
+    //         this.body = new HttpInputStreamEE7(context, request);
+    //     } else {
+    //         this.body = new HttpInputStreamImpl(context, request);
+    //     }
+    // }
 
     /*
      * @see com.ibm.websphere.http.HttpRequest#getBody()

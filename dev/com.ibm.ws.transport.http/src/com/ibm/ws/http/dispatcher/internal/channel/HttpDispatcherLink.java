@@ -282,7 +282,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         if (hasBody || expect100) {
             final String encoding = headers.headers().get(HttpHeaderNames.CONTENT_ENCODING);
-            ((HttpInputStreamImpl) this.request.getBody()).nettyConfigureStreaming(null, ctx, encoding);
+            ((HttpInputStreamImpl) this.request.getBody()).nettyConfigureStreaming(null, ctx, encoding, cl, chunked);
             
         }else{
             this.isc.setBodyComplete();
@@ -657,13 +657,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // Make sure to initialize the response in case of an early-return-error message
         if(this.request != null){
             if (this.request.getBody() == null) {
-                if (this.nettyRequest != null) {
-                    // aggregated/full request path: preserve aggregated content
-                    this.request.init(this.nettyRequest, isc);
-                } else {
-                    // legacy path
+                // if (this.nettyRequest != null) {
+                //     // aggregated/full request path: preserve aggregated content
+                //     this.request.init(this.nettyRequest, isc);
+                // } else {
+                //     // legacy path
                     this.request.init(this.isc);
-                }
+                //}
             }
         }
         this.response.init(this.isc);

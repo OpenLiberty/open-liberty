@@ -75,12 +75,13 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     //Netty streaming (autoread off) state
     protected volatile BodyQueue queue;
     protected volatile ChannelHandlerContext context;
-    protected volatile boolean autoRead;
+    protected volatile boolean autoRead = false;
     protected volatile boolean streaming;
     private volatile String contentEncoding;
     private volatile long rawBytesRead = 0L;
 
-
+    private volatile long remainingContentLength = -1L; // -1 => unknown
+    private volatile boolean isChunked = false;
 
     /**
      * Constructor.
@@ -91,52 +92,33 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         this.isc = context;
     }
 
-    /* Constructor for auto-read enabled on Netty */
-    public HttpInputStreamImpl(HttpInboundServiceContext context, FullHttpRequest request) {
-        this.isc = context;
-        this.nettyRequest = request;
-        this.nettyBody = nettyRequest.content();
-
-        buffer = ChannelFrameworkFactory.getBufferManager().wrap(nettyBody.nioBuffer()).position(nettyBody.readerIndex());
-        // Check if the request content is compressed
-        String contentEncoding = nettyRequest.headers().get(HttpHeaderNames.CONTENT_ENCODING);
-    
-        // If the content is compressed, use legacy decompression handler
-        if (contentEncoding != null && isCompressed(contentEncoding)) {
-            HttpChannelConfig config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
-
-
-            decompressor = new HttpContentDecompressor();
-            try{
-                this.buffer = decompressor.decompress(buffer, config, contentEncoding);
-            
-            } catch (DataFormatException dfe) {
-                FFDCFilter.processException(dfe, getClass().getName(), "1");
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Received exception during decompress; " + dfe);
-                }
-                    // TODO -> handle
-            }
-            
-        }
-        this.bytesRead += buffer.remaining();
-    }
-
     private boolean isCompressed(String encoding) {
         return "gzip".equalsIgnoreCase(encoding) || "deflate".equalsIgnoreCase(encoding);
     }
 
+    public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding) {
+        // delegate with unknown CL + not chunked
+        nettyConfigureStreaming(queue, context, contentEncoding, -1L, false);
+    }
+
     /* call from dispatcher handler when headers are parsed and auto-read off */
-    public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding){
+    public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding, long contentLength, boolean chunked){
         this.queue = queue;
         this.context = context;
-        this.autoRead = (context != null) && context.channel().config().isAutoRead();
         this.streaming = true;
         this.contentEncoding = (contentEncoding == null) ? null: contentEncoding.toLowerCase();
         this.decompressor = new HttpContentDecompressor();
 
         this.readChannelComplete = false;
         this.rawBytesRead = 0L;
+
+        this.remainingContentLength = contentLength;
+        this.isChunked = chunked;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, String.format("nettyConfigureStreaming: autoRead=%s, CL=%d, chunked=%s, CE=%s",
+                                       this.autoRead, this.remainingContentLength, this.isChunked, this.contentEncoding));
+        }
     }
 
     /*
@@ -496,6 +478,14 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         // Tr.debug(tc, "read(byte[],int,int) rc=" + amount);
         // }
         this.bytesToCaller += amount;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, String.format("read: delivered=%d, bytesToCaller=%d, availableAfter=%d, readChannelComplete=%s, rawBytesRead=%d, remainingCL=%d",
+                                       amount, this.bytesToCaller, this.buffer.remaining(), this.readChannelComplete, this.rawBytesRead, this.remainingContentLength));
+        }
+
+
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "read(byte[],int,int)", this);
         }
@@ -655,6 +645,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     }
 
     private boolean fillFromStreamingNetty() throws IOException{
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "stream.poll: q=" + queue + " eos=" + (queue!=null && queue.isEos()) 
+                + " wantsInput=" + queue.wantsInput() );
+            
+        }
+
         if(this.buffer != null && this.buffer.hasRemaining()){
             return true;
         }
@@ -662,34 +658,70 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             this.buffer.release();
             this.buffer = null;
         }
+
+
+        System.out.println("MSP: Entering while(true)");
         while(true){
             ByteBuf fragment = (queue != null) ? queue.poll():null;
             if(fragment == null){
-                if(queue !=null && queue.isEos()){
+                if (queue != null && queue.isEos()) {
                     this.readChannelComplete = true;
                     if (this.context != null) {
                         ReadFlowHandler.markRequestConsumed(this.context);
                     }
-                    return false; //EOS
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "stream: EOS from queue; no buffered data; returning false");
+                    }
+                    return false; // EOS
                 }
-                if(!autoRead && queue !=null && queue.wantsInput()&& context !=null){
-                    context.read(); 
+                if (!autoRead && queue != null && queue.wantsInput() && context != null) {
+                    context.channel().read();
                 }
-                try{
+                try {
                     Thread.sleep(1);
-                }catch(InterruptedException ie){
+                } catch (InterruptedException ie) {
                     Thread.currentThread().interrupt();
                 }
-                continue; // retry read
+                System.out.println("MSP: attempting to read again (loop)");
+                continue;
             }
             try{
+                System.out.println("MSP: has a fragment of data");
+
                 //Copy into WsByteBuffer (this avoids retaining netty memory)
                 int len = fragment.readableBytes();
+
+                this.rawBytesRead += len;
+                if (!isChunked && remainingContentLength >= 0) {
+                    remainingContentLength -= len;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, String.format("stream.raw: got=%d, rawBytesRead=%d, remainingCL=%d",
+                                                   len, rawBytesRead, remainingContentLength));
+                    }
+                    if (remainingContentLength <= 0) {
+                        // We have received all promised wire octets; flip EOS proactively
+                        this.readChannelComplete = true;
+                        if (this.context != null) {
+                            ReadFlowHandler.markRequestConsumed(this.context);
+                        }
+                        if (queue != null) {
+                            queue.signalEos();
+                        }
+                    }
+                }
+
+
+
                 WsByteBuffer fragmentSource = ChannelFrameworkFactory.getBufferManager().allocate(len);
                 int position = fragmentSource.position();
                 fragmentSource.limit(position+len);
                 fragment.readBytes(fragmentSource.getWrappedByteBuffer());
                 fragmentSource.flip();
+
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "stream.fragment: rawBytes=" + len + ", CE=" + contentEncoding);
+                }
 
                 //Stream decompression if content-encoding is present
                 WsByteBuffer out = fragmentSource;
@@ -697,6 +729,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     HttpChannelConfig config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
                     try{
                         out = decompressor.decompress(fragmentSource, config, contentEncoding);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "stream.decompress: produced=%d", out != null ? out.remaining() : 0);
+                        }
                     }catch(DataFormatException dfe){
                         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                             Tr.debug(tc, "Exception during streaming decompress", dfe);
@@ -715,13 +750,14 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                         postDataBuffer.add(postDataIndex, this.buffer.duplicate());
                         postDataIndex++;
                     }
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, String.format("stream.buffered: produced=%d decodedBytesRead=%d readChannelComplete=%s",
+                                                   buffer.remaining(), this.bytesRead, this.readChannelComplete));
+                    }
                     return true;
                 } else{
                     //No data produced, compression might need more data
-                    if(out != fragmentSource && fragmentSource != null){
-                        fragmentSource.release();
-                    }
-                    if(out == fragmentSource){
+                    if(out != fragmentSource){
                         fragmentSource.release();
                     }
                     continue; //fetch another fragment
