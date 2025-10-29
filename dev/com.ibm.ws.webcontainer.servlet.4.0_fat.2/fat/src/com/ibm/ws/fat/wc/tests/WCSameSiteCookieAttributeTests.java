@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2021 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -355,9 +355,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -392,9 +390,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -425,9 +421,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setStrict("cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -462,9 +456,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -541,9 +533,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -576,9 +566,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setNone("cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -613,9 +601,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -650,9 +636,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -690,9 +674,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -727,9 +709,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("cookie*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -767,9 +747,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -805,9 +783,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setLax("*");
         httpEndpoint.getSameSite().setStrict("cookieTwo");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -847,9 +823,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -883,9 +857,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("cookieOne, cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -920,9 +892,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -956,9 +926,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("*,*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -993,9 +961,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1033,9 +999,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setLax("cookie*");
         httpEndpoint.getSameSite().setStrict("cookieT*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1075,9 +1039,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1111,9 +1073,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setLax("cookieOne");
         httpEndpoint.getSameSite().setStrict("cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -1145,9 +1105,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1181,9 +1139,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setLax("cookie*");
         httpEndpoint.getSameSite().setStrict("cookie*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -1215,9 +1171,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertNotNull("The CWWKT0035W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0035W.*"));
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1263,9 +1217,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setStrict("*");
         httpEndpoint.getSameSite().setNone("cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1303,9 +1255,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1340,9 +1290,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setStrict("cookieOne");
         httpEndpoint.getSameSite().setNone("cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -1374,9 +1322,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertNotNull("The CWWKT0037W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0037W.*"));
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1409,9 +1355,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("co*kieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -1443,9 +1387,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertNotNull("The CWWKT0036W should have been logged for an invalid configuration but was not.", sameSiteServer.waitForStringInLogUsingMark("CWWKT0036W.*"));
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1480,9 +1422,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setStrict("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1520,9 +1460,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1557,9 +1495,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setStrict("cookie*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1597,9 +1533,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1634,9 +1568,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setNone("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1674,9 +1606,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1711,9 +1641,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setNone("cookie*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies";
@@ -1751,9 +1679,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1836,9 +1762,7 @@ public class WCSameSiteCookieAttributeTests {
             }
         } finally {
             
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1873,9 +1797,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_same_cookie_twice";
@@ -1914,9 +1836,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -1953,9 +1873,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("MySameSiteCookieNameSetHeader, MySameSiteCookieNameAddHeader");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestSetCookie?testSameSiteConfigSetAddHeader=true";
@@ -1992,9 +1910,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2023,9 +1939,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("JSESSIONID");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -2063,9 +1977,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2094,9 +2006,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -2134,9 +2044,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2169,9 +2077,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setLax("JSESSIONID");
         configuration.getHttpSession().setCookieSameSite("Strict");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -2209,9 +2115,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2244,9 +2148,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setLax("*");
         configuration.getHttpSession().setCookieSameSite("Strict");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -2284,9 +2186,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2320,9 +2220,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("cookieOne");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_two_cookies_different_case";
@@ -2360,9 +2258,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2396,9 +2292,7 @@ public class WCSameSiteCookieAttributeTests {
         httpEndpoint.getSameSite().setStrict("cookie*");
         httpEndpoint.getSameSite().setNone("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteAddCookieServlet?cookieToAdd=add_one_cookie";
@@ -2433,9 +2327,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2513,9 +2405,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2557,9 +2447,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setStrict("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestAddCookieSetCookieHeader?testDuplicateSameSiteValue=true";
@@ -2596,9 +2484,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2642,9 +2528,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setStrict("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestSetCookie?testDuplicateSameSiteValue=true";
@@ -2681,9 +2565,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2727,9 +2609,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setStrict("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestAddCookieSetCookieHeader?testEmptySameSiteValue=true";
@@ -2766,9 +2646,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2812,9 +2690,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setStrict("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestSetCookie?testEmptySameSiteValue=true";
@@ -2851,9 +2727,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2898,9 +2772,7 @@ public class WCSameSiteCookieAttributeTests {
         HttpEndpoint httpEndpoint = configuration.getHttpEndpoints().getById("defaultHttpEndpoint");
         httpEndpoint.getSameSite().setLax("*");
 
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/TestAddCookieSetCookieHeader?testIncorrectSameSiteValue=true";
@@ -2941,9 +2813,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -2969,9 +2839,7 @@ public class WCSameSiteCookieAttributeTests {
         LOG.info("Server configuration that was saved: " + configuration);
 
         configuration.getHttpSession().setCookieSameSite("Lax");
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3009,9 +2877,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -3037,9 +2903,7 @@ public class WCSameSiteCookieAttributeTests {
         LOG.info("Server configuration that was saved: " + configuration);
 
         configuration.getHttpSession().setCookieSameSite("Strict");
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3077,9 +2941,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -3108,9 +2970,7 @@ public class WCSameSiteCookieAttributeTests {
 
         configuration.getHttpSession().setCookieSameSite("None");
         configuration.getHttpSession().setCookieSecure(true);
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3148,9 +3008,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -3179,9 +3037,7 @@ public class WCSameSiteCookieAttributeTests {
         LOG.info("Server configuration that was saved: " + configuration);
 
         configuration.getHttpSession().setCookieSameSite("None");
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3219,9 +3075,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -3438,9 +3292,7 @@ public class WCSameSiteCookieAttributeTests {
         LOG.info("Server configuration that was saved: " + configuration);
 
         configuration.getHttpSession().setCookieSameSite("LaX");
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3478,9 +3330,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -3509,9 +3359,7 @@ public class WCSameSiteCookieAttributeTests {
 
         configuration.getHttpSession().setCookieSameSite("Lax");
         configuration.getHttpSession().setCookieName("uniqueSessionIdCookieName");
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3550,9 +3398,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -3579,9 +3425,7 @@ public class WCSameSiteCookieAttributeTests {
 
         configuration.getHttpSession().setCookieSameSite("Strict");
         configuration.getHttpSession().setCookieSecure(true);
-        sameSiteServer.setMarkToEndOfLog();
-        sameSiteServer.updateServerConfiguration(configuration);
-        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+        updateServerConfiguration(configuration);
 
         String url = "http://" + sameSiteServer.getHostname() + ":" + sameSiteServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE
                      + "/SameSiteSessionCreationServlet";
@@ -3619,9 +3463,7 @@ public class WCSameSiteCookieAttributeTests {
                 assertFalse("The response contained a split SameSite Set-Cookie header and it should not have.", splitSameSiteHeaderFound);
             }
         } finally {
-            sameSiteServer.setMarkToEndOfLog();
-            sameSiteServer.restoreServerConfiguration();
-            sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+            restoreServerConfiguration();
         }
     }
 
@@ -4021,5 +3863,24 @@ public class WCSameSiteCookieAttributeTests {
         }
 
         return isSplitSameSiteSetCookieHeader;
+    }
+
+    // HELPER METHODS -- (synchronized may be unecessary, but added for safety)
+    // Allow some leeway between config updates. 
+
+    public synchronized void updateServerConfiguration(ServerConfiguration configuration) throws Exception{
+        sameSiteServer.setMarkToEndOfLog();
+        Thread.sleep(250);
+        sameSiteServer.updateServerConfiguration(configuration);
+        Thread.sleep(250);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
+    }
+
+    public synchronized void restoreServerConfiguration() throws Exception {
+        sameSiteServer.setMarkToEndOfLog();
+        Thread.sleep(250);
+        sameSiteServer.restoreServerConfiguration();
+        Thread.sleep(250);
+        sameSiteServer.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SAMESITE), false, "CWWKT0016I:.*SameSiteTest.*");
     }
 }
