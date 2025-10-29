@@ -231,5 +231,6 @@ if (requiresInitialize && !bndPluginsClassesDir.exists()) {
 apply from: 'wlp-gradle/propertiesSettings.gradle'
 apply from: 'wlp-gradle/bndSettings.gradle'
 apply from: 'wlp-gradle/buildCacheSettings.gradle'
+include 'build.changeDetector'
 include 'io.openliberty.microprofile.health.file.healthcheck.longinterval_fat'
 include 'io.openliberty.microprofile.health.internal_fat.common'
