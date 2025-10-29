@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,22 +24,24 @@ Bundle-ActivationPolicy: lazy
 # Using version=! in order to not have a version attached to the import for packages that were removed
 # from Java after Java 8.  Doing this keeps the import like before Java 11 support. It will get the 
 # packages from Java when using Java 8 or earlier and from the new shipped bundles for Java 9 and later.
-Import-Package:  \
+Import-Package: \
   !org.apache.cxf.ws.mex.*, \
   !com.ctc.wstx.*, \
   !org.codehaus.stax2.*, \
-  !net.sf.ehcache.*, \
+  !org.ehcache.*, \
   javax.jws;version=!, \
   javax.jws.soap;version=!, \
-  javax.xml.soap;version=!, \
   org.apache.neethi, \
   org.apache.neethi.builders, \
-  org.apache.wss4j.*, \
+  org.apache.wss4j.*;version="[2.3.0,5.0.0)", \
   org.w3c.dom, \
   com.ibm.websphere.ras, \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
   javax.servlet.*;version="[0.0.0,3.0.0)", \
+  javax.xml.soap.*, \
+  org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)", \
+  org.apache.xml.security.*;version="[2.3.0,5.0.0)", \
   *
 
 Export-Package: \
@@ -94,14 +96,19 @@ instrument.classesIncludes: \
   org.apache.cxf:cxf-rt-ws-security;strategy=exact;version=${cxfVersion}, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.rt.ws.mex.3.4.1;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.rt.security.3.4.1;version=latest, \
   com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1;version=latest, \
   com.ibm.ws.org.apache.neethi.3.1.1;version=latest, \
+  com.ibm.ws.org.apache.wss4j.bindings;version=latest, \
   com.ibm.ws.org.apache.wss4j.policy;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.dom;version=latest, \
+  com.ibm.ws.org.apache.wss4j.ws.security.policy.stax;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.stax;version=latest, \
   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
   com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest, \
@@ -109,5 +116,7 @@ instrument.classesIncludes: \
   com.ibm.ws.org.slf4j.api;version=latest, \
   com.ibm.websphere.appserver.spi.logging, \
   com.ibm.websphere.javaee.jws.1.0;version=latest, \
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   org.codehaus.woodstox:stax2-api;version='4.2', \
-  org.codehaus.woodstox:woodstox-core-asl;version='4.2.0'
+  org.codehaus.woodstox:woodstox-core-asl;version='4.2.0', \
+  com.ibm.websphere.javaee.jcache.1.1.core;version=latest

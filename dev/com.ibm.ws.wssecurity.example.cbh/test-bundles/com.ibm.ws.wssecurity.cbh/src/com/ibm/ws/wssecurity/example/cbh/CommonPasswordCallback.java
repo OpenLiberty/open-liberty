@@ -105,6 +105,7 @@ public class CommonPasswordCallback implements CallbackHandler {
             signaturePasswords.put("soaprequester", "client");
             signaturePasswords.put("bob", "keypass");
             signaturePasswords.put("alice", "keypass");
+            signaturePasswords.put("secp256r1", "security");
 
             encryptPasswords.put("x509ClientDefault", "KLibertyX509Client");
             encryptPasswords.put("x509clientdefault", "KLibertyX509Client");
@@ -116,6 +117,7 @@ public class CommonPasswordCallback implements CallbackHandler {
             encryptPasswords.put("x509serversecond", "KLibertyX509Server2");
             encryptPasswords.put("bob", "keypass");
             encryptPasswords.put("alice", "keypass");
+            encryptPasswords.put("secp256r1", "security");
 
         }
 

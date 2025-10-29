@@ -53,6 +53,7 @@ import org.apache.neethi.PolicyOperator;
 import org.apache.neethi.PolicyReference;
 import org.apache.neethi.PolicyRegistry;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
 /**
  *
  */
@@ -230,8 +231,8 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
 
     // PolicyEngine interface
 
-    public EffectivePolicy getEffectiveClientRequestPolicy(EndpointInfo ei, BindingOperationInfo boi,
-                                                           Conduit c, Message m) {
+    public EffectivePolicy getEffectiveClientRequestPolicy(@Sensitive EndpointInfo ei, @Sensitive BindingOperationInfo boi,
+                                                           @Sensitive Conduit c, @Sensitive Message m) {
         EffectivePolicy effectivePolicy = (EffectivePolicy)boi.getProperty(POLICY_INFO_REQUEST_CLIENT);
         if (effectivePolicy == null) {
             synchronized (ei) {
@@ -255,11 +256,11 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         boi.setProperty(POLICY_INFO_REQUEST_CLIENT, ep);
     }
 
-    public EffectivePolicy getEffectiveServerResponsePolicy(EndpointInfo ei,
-                                                            BindingOperationInfo boi,
-                                                            Destination d,
-                                                            List<List<Assertion>> incoming,
-                                                            Message m) {
+    public EffectivePolicy getEffectiveServerResponsePolicy(@Sensitive EndpointInfo ei,
+                                                            @Sensitive BindingOperationInfo boi,
+                                                            @Sensitive Destination d,
+                                                            @Sensitive List<List<Assertion>> incoming,
+                                                            @Sensitive Message m) {
         if (incoming == null) {
             EffectivePolicy effectivePolicy = (EffectivePolicy)boi.getProperty(POLICY_INFO_RESPONSE_SERVER);
             if (effectivePolicy == null) {
@@ -288,16 +289,16 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         return epi;
     }
 
-    public void setEffectiveServerResponsePolicy(EndpointInfo ei, BindingOperationInfo boi,
-                                                 EffectivePolicy ep) {
+    public void setEffectiveServerResponsePolicy(@Sensitive EndpointInfo ei, @Sensitive BindingOperationInfo boi,
+                                                 @Sensitive EffectivePolicy ep) {
         boi.setProperty(POLICY_INFO_RESPONSE_SERVER, ep);
     }
 
-    public EffectivePolicy getEffectiveServerFaultPolicy(EndpointInfo ei,
-                                                         BindingOperationInfo boi,
-                                                         BindingFaultInfo bfi,
-                                                         Destination d,
-                                                         Message m) {
+    public EffectivePolicy getEffectiveServerFaultPolicy(@Sensitive EndpointInfo ei,
+                                                         @Sensitive BindingOperationInfo boi,
+                                                         @Sensitive BindingFaultInfo bfi,
+                                                         @Sensitive Destination d,
+                                                         @Sensitive Message m) {
 
         if (bfi == null) {
             EffectivePolicyImpl epi = createOutPolicyInfo();
@@ -369,9 +370,9 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         ei.setProperty(POLICY_INFO_ENDPOINT_SERVER, ep);
     }
 
-    public EffectivePolicy getEffectiveServerRequestPolicy(EndpointInfo ei,
-                                                           BindingOperationInfo boi,
-                                                           Message m) {
+    public EffectivePolicy getEffectiveServerRequestPolicy(@Sensitive EndpointInfo ei,
+                                                           @Sensitive BindingOperationInfo boi,
+                                                           @Sensitive Message m) {
         EffectivePolicy effectivePolicy = (EffectivePolicy)boi.getProperty(POLICY_INFO_REQUEST_SERVER);
         if (effectivePolicy == null) {
             synchronized (ei) {
@@ -389,14 +390,14 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         return effectivePolicy;
     }
 
-    public void setEffectiveServerRequestPolicy(EndpointInfo ei, BindingOperationInfo boi,
-                                                EffectivePolicy ep) {
+    public void setEffectiveServerRequestPolicy(@Sensitive EndpointInfo ei, @Sensitive BindingOperationInfo boi,
+                                                @Sensitive EffectivePolicy ep) {
         boi.setProperty(POLICY_INFO_REQUEST_SERVER, ep);
     }
 
-    public EffectivePolicy getEffectiveClientResponsePolicy(EndpointInfo ei,
-                                                            BindingOperationInfo boi,
-                                                            Message m) {
+    public EffectivePolicy getEffectiveClientResponsePolicy(@Sensitive EndpointInfo ei,
+                                                            @Sensitive BindingOperationInfo boi,
+                                                            @Sensitive Message m) {
         EffectivePolicy effectivePolicy = (EffectivePolicy)boi.getProperty(POLICY_INFO_RESPONSE_CLIENT);
         if (effectivePolicy == null) {
             synchronized (ei) {
@@ -414,15 +415,15 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         return effectivePolicy;
     }
 
-    public void setEffectiveClientResponsePolicy(EndpointInfo ei, BindingOperationInfo boi,
-                                                 EffectivePolicy ep) {
+    public void setEffectiveClientResponsePolicy(@Sensitive EndpointInfo ei, @Sensitive BindingOperationInfo boi,
+                                                 @Sensitive EffectivePolicy ep) {
         boi.setProperty(POLICY_INFO_RESPONSE_CLIENT, ep);
     }
 
     public EffectivePolicy getEffectiveClientFaultPolicy(EndpointInfo ei,
                                                          BindingOperationInfo boi,
                                                          BindingFaultInfo bfi,
-                                                         Message m) {
+                                                         @Sensitive Message m) {
         EffectivePolicy effectivePolicy = null;
         if (bfi != null) {
             effectivePolicy = (EffectivePolicy)bfi.getProperty(POLICY_INFO_FAULT_CLIENT);
@@ -445,7 +446,7 @@ public class PolicyEngineImpl implements PolicyEngine, BusExtension {
         return effectivePolicy;
     }
 
-    public void setEffectiveClientFaultPolicy(EndpointInfo ei, BindingFaultInfo bfi, EffectivePolicy ep) {
+    public void setEffectiveClientFaultPolicy(@Sensitive EndpointInfo ei,@Sensitive BindingFaultInfo bfi,@Sensitive EffectivePolicy ep) {
         bfi.setProperty(POLICY_INFO_FAULT_CLIENT, ep);
     }
 

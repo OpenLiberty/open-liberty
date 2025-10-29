@@ -18,7 +18,9 @@
  */
 package org.apache.xml.security.stax.ext;
 
+import java.security.AccessController;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivilegedAction;
 import java.security.SecureRandom;
 
 import javax.xml.bind.JAXBContext;
@@ -46,16 +48,18 @@ public class XMLSecurityConstants {
     public static final XMLOutputFactory xmlOutputFactory;
     public static final XMLOutputFactory xmlOutputFactoryNonRepairingNs;
 
-    private static final SecureRandom SECURE_RANDOM;
+	// Liberty Change Start: Backport 4.x 
+    private static volatile SecureRandom SECURE_RANDOM;
+    private static final Object SECURE_RANDOM_LOCK = new Object();
+    private static final String RANDOM_ALGORITHM_KEY = "org.apache.xml.security.securerandom.algorithm"; // Liberty Change
     private static JAXBContext jaxbContext;
     private static Schema schema;
 
     static {
         try {
-            // Liberty Change Start: Use SecureRandom with default algorithm instead of SHA1PRNG when FIPS 140-3 is enabled.
-            SECURE_RANDOM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new SecureRandom() : SecureRandom.getInstance(CryptoUtils.SHA1PRNG);
-            // Liberty Change End
-        } catch (NoSuchAlgorithmException e) {
+            SECURE_RANDOM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new SecureRandom() : SecureRandom.getInstance("SHA1PRNG");
+       		// Liberty Change End 
+		} catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
 
@@ -120,9 +124,28 @@ public class XMLSecurityConstants {
      * @throws XMLSecurityException
      */
     public static byte[] generateBytes(int length) throws XMLSecurityException {
+		// Liberty Change Start: Backport 4.x 
+        SecureRandom rnd = SECURE_RANDOM;
+        if (rnd == null) {
+            synchronized (SECURE_RANDOM_LOCK) {
+                rnd = SECURE_RANDOM;
+                if (rnd == null) {
+                    try {
+                        final String prngAlgorithm = AccessController.doPrivileged(
+                                (PrivilegedAction<String>) () -> System.getProperty(RANDOM_ALGORITHM_KEY));
+                        SECURE_RANDOM = rnd = prngAlgorithm != null
+                                ? SecureRandom.getInstance(prngAlgorithm)
+                                : new SecureRandom();
+                    } catch (NoSuchAlgorithmException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
         try {
             byte[] temp = new byte[length];
-            SECURE_RANDOM.nextBytes(temp);
+            rnd.nextBytes(temp);
+			// Liberty Change End
             return temp;
         } catch (Exception ex) {
             throw new XMLSecurityException(ex);
@@ -251,9 +274,7 @@ public class XMLSecurityConstants {
     public static final String NS_C14N_EXCL = "http://www.w3.org/2001/10/xml-exc-c14n#";
     public static final String NS_XMLDSIG_FILTER2 = "http://www.w3.org/2002/06/xmldsig-filter2";
     public static final String NS_XMLDSIG_ENVELOPED_SIGNATURE = NS_DSIG + "enveloped-signature";
-    // FIPS 140-3: Algorithm assessment complete; no changes required.
-    // The classes which use these SHA-1 constants need attention, the constants on their own are harmless
-    public static final String NS_XMLDSIG_SHA1 = NS_DSIG + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase();
+    public static final String NS_XMLDSIG_SHA1 = NS_DSIG + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(); 	// Liberty Change: Backport 4.x 
     public static final String NS_XMLDSIG_HMACSHA1 = NS_DSIG + "hmac-sha1";
     public static final String NS_XMLDSIG_RSASHA1 = NS_DSIG + "rsa-sha1";
     public static final String NS_XMLDSIG_MANIFEST = NS_DSIG + "Manifest";
@@ -282,8 +303,8 @@ public class XMLSecurityConstants {
     public static final String NS_MGF1_SHA384 = NS_XMLENC11 + "mgf1sha384";
     public static final String NS_MGF1_SHA512 = NS_XMLENC11 + "mgf1sha512";
 
-    public static final String NS_XENC_SHA256 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase();
-    public static final String NS_XENC_SHA512 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase();
+    public static final String NS_XENC_SHA256 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase(); 	// Liberty Change: Backport 4.x 
+    public static final String NS_XENC_SHA512 = NS_XMLENC + CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase(); 	// Liberty Change: Backport 4.x 
 
     public static final String PREFIX_C14N_EXCL = "c14nEx";
     public static final QName ATT_NULL_PrefixList = new QName(null, "PrefixList");
