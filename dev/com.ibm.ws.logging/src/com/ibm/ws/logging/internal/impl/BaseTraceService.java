@@ -312,7 +312,8 @@ public class BaseTraceService implements TrService {
     protected final static int BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD = ThreadLocalByteArrayOutputStream.getByteArrayOutputThreshold();
     public static boolean isStackTraceSingleEntryEnabled = false;
 
-    private static Boolean isBetaEdition;
+    private static Boolean isBetaEdition = null;
+    private static volatile boolean issuedBetaMessageAccess = false;
 
     /**
      * Called from Tr.getDelegate when BaseTraceService delegate is created
@@ -362,14 +363,28 @@ public class BaseTraceService implements TrService {
     }
 
     public Boolean betaFenceCheck() {
-        if (isBetaEdition == null) {
-            if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
-                isBetaEdition = true;
-            } else {
-                isBetaEdition = false;
-            }
+        if (isBetaEdition != null)
+            return isBetaEdition;
+
+        if (issuedBetaMessageAccess) {
+            return false;
         }
-        return isBetaEdition;
+
+        issuedBetaMessageAccess = true;
+
+        try {
+            if (isBetaEdition == null) {
+                if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+                    Tr.info(tc, "BETA: A beta method has been invoked for the class BaseTraceService for the first time.");
+                    isBetaEdition = true;
+                } else {
+                    isBetaEdition = false;
+                }
+            }
+            return isBetaEdition;
+        } finally {
+            issuedBetaMessageAccess = false;
+        }
     }
 
     /**
@@ -482,15 +497,13 @@ public class BaseTraceService implements TrService {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
         }
 
-        if (betaFenceCheck()) {
-            throttleMaxMessagesPerWindow = trConfig.getThrottleMaxMessagesPerWindow();
-            throttleMapSize = trConfig.getThrottleMapSize();
+        throttleMaxMessagesPerWindow = trConfig.getThrottleMaxMessagesPerWindow();
+        throttleMapSize = trConfig.getThrottleMapSize();
 
-            if (throttleType != trConfig.getThrottleType()) {
-                throttleType = trConfig.getThrottleType();
-                resetLogThrottling(); //We need to reset the throttleStates map when switching between throttleTypes.
+        if (throttleType != trConfig.getThrottleType()) {
+            throttleType = trConfig.getThrottleType();
+            resetLogThrottling(); //We need to reset the throttleStates map when switching between throttleTypes.
 
-            }
         }
 
         //Sources
