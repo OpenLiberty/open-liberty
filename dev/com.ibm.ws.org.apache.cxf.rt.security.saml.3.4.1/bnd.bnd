@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,32 +10,24 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include=~../cnf/resources/bnd/bundle.props
+-include= jar:${fileuri;\${repo;io.openliberty.org.apache.cxf:cxf-rt-security-saml;3.5.5.1;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -sub: *.bnd
 
 bVersion=1.0
-cxfVersion=3.5.5
+cxfVersion=3.5.5.1
 
 WS-TraceGroup: WSSECURITY
 
-Bundle-ActivationPolicy: lazy
-
-Export-Package: \
-  org.apache.cxf.rt.security.saml.*;version=${cxfVersion}
-
-Import-Package:  \
-  com.ibm.websphere.ras, \
-  com.ibm.websphere.ras.annotation, \
-  com.ibm.ws.ffdc, \
-  *
-
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-security-saml;${cxfVersion};EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF|META-INF/cxf/*
-
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-security-saml;${cxfVersion};EXACT}!/!META-INF/maven/*|META-INF/MANIFEST.MF, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-security-saml;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-security-saml;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-security-saml;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-security-saml;${cxfVersion};EXACT}!/META-INF/cxf/*
+  
 globalize: false
 instrument.ffdc: true
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-security-saml;strategy=exact;version=${cxfVersion}, \
-  com.ibm.ws.org.joda.time.2.9.9;version=latest
+ io.openliberty.org.apache.cxf:cxf-rt-security-saml;version=${cxfVersion}

@@ -10,7 +10,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn addDerby
 addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn copyTestContainers
@@ -91,7 +90,9 @@ def appDefs =
     [ 'io.openliberty.springboot.fat40.concurrency.app', '.war'],
     [ 'io.openliberty.springboot.fat40.mbean.app', '.war'],
     [ 'io.openliberty.springboot.fat40.jms.app', '.war'],
-    [ 'io.openliberty.springboot.fat40.transactions.app', '.war']]
+    [ 'io.openliberty.springboot.fat40.transactions.app', '.war'],
+    [ 'io.openliberty.springboot.fat40.data.app', '.war'],
+    [ 'io.openliberty.springboot.fat40.validation.app', '.war']]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

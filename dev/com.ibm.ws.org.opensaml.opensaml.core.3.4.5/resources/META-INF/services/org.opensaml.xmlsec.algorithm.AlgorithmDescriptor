@@ -19,6 +19,9 @@ org.opensaml.xmlsec.algorithm.descriptors.HMACSHA224
 org.opensaml.xmlsec.algorithm.descriptors.HMACSHA256
 org.opensaml.xmlsec.algorithm.descriptors.HMACSHA384
 org.opensaml.xmlsec.algorithm.descriptors.HMACSHA512
+org.opensaml.xmlsec.algorithm.descriptors.KeyAgreementDHExplicitKDF
+org.opensaml.xmlsec.algorithm.descriptors.KeyAgreementDHLegacyKDF
+org.opensaml.xmlsec.algorithm.descriptors.KeyAgreementECDH
 org.opensaml.xmlsec.algorithm.descriptors.KeyTransportRSA15
 org.opensaml.xmlsec.algorithm.descriptors.KeyTransportRSAOAEP
 org.opensaml.xmlsec.algorithm.descriptors.KeyTransportRSAOAEPMGF1P

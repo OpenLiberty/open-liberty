@@ -553,7 +553,7 @@ public class Data_1_1 implements DataVersionCompatibility {
         else if (NotIn.class.equals(type))
             constraint = AttributeConstraint.NotIn;
         else if (NotLike.class.equals(type))
-            constraint = Like.class.equals(methodParamType) //
+            constraint = NotLike.class.equals(methodParamType) //
                             ? AttributeConstraint.NotLikeEscaped //
                             : AttributeConstraint.NotLike;
         else if (NotNull.class.equals(type))

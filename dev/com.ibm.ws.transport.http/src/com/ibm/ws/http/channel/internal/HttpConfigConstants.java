@@ -439,7 +439,6 @@ public class HttpConfigConstants {
     public static final String PROPNAME_SAMESITE_LAX = "lax";
     public static final String PROPNAME_SAMESITE_NONE = "none";
     public static final String PROPNAME_SAMESITE_STRICT = "strict";
-    //TODO -> change internal value for netty beta
     public static final String PROPNAME_SAMESITE_PARTITION = "partitioned";
 
     public static final String PROPNAME_SAMESITE_LAX_INTERNAL = "sameSiteLaxInternal";

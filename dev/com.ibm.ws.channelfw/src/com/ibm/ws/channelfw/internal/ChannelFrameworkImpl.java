@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1259,7 +1259,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
 
     /**
      * This method won't actually call the init method of the channel
-     * implemenation unless the channel is uninitialized. If the channel
+     * implementation unless the channel is uninitialized. If the channel
      * doesn't exist in the runtime yet, it will be put in here. The channel
      * in the runtime will then be updated with a reference to the input chain.
      * This method is invoked from the chain implementation.

@@ -34,6 +34,7 @@ import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.NettyFramework;
+import io.openliberty.netty.internal.impl.NettyConstants;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 public class WsocOutboundChain {
@@ -96,7 +97,7 @@ public class WsocOutboundChain {
     public static Map<String, Object> getCurrentSslOptions() {
         return currentSSLOptions;
     }
-    
+
     public static Map<String, Object> getCurrentHttpOptions() {
         return currentHttpOptions;
     }
@@ -114,7 +115,7 @@ public class WsocOutboundChain {
 
         // TODO: Updated this to use constants
         useNettyTransport = ProductInfo.getBetaEdition() &&
-                            MetatypeUtils.parseBoolean(WS_CHAIN_NAME, "useNettyTransport", properties.get("useNettyTransport"), true);
+                            MetatypeUtils.parseBoolean(WS_CHAIN_NAME, NettyConstants.USE_NETTY, properties.get(NettyConstants.USE_NETTY), true);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "activate, Netty bundle: " + nettyBundle);

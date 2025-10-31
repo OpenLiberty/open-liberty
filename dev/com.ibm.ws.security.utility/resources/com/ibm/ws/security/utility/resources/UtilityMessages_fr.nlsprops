@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,17 @@ name=nom
 days=jours
 
 sslCert.abort=Interruption de la cr\u00e9ation de certificat :
-sslCert.createFailed=Impossible de cr\u00e9er le certificat SSL par d\u00e9faut :\n\
-{0}
-sslCert.errorEncodePassword=Erreur lors du codage du mot de passe (certificat non cr\u00e9\u00e9) :\n\
-{0}
+sslCert.createFailed=Impossible de cr\u00e9er le certificat SSL par d\u00e9faut :\n{0}
+sslCert.errorEncodePassword=Erreur lors du codage du mot de passe (certificat non cr\u00e9\u00e9) :\n{0}
 sslCert.createKeyStore=Cr\u00e9ation de fichier de cl\u00e9s {0}\n
 sslCert.oneType=Les arguments {0} et {1} ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s en m\u00eame temps.
 sslCert.clientNotFound=Le client sp\u00e9cifi\u00e9 {0} est introuvable \u00e0 l''emplacement {1}
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=Certificat SSL cr\u00e9\u00e9 pour le serveur {0}. Le certificat est cr\u00e9\u00e9 avec {1} comme SubjectDN.\n\
-\n\
-Ajoutez les lignes suivantes dans le fichier server.xml pour activer SSL :
+sslCert.serverXML=Certificat SSL cr\u00e9\u00e9 pour le serveur {0}. Le certificat est cr\u00e9\u00e9 avec {1} comme SubjectDN.\n\nAjoutez les lignes suivantes dans le fichier server.xml pour activer SSL :
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=Certificat SSL cr\u00e9\u00e9 pour le client {0}. Le certificat est cr\u00e9\u00e9 avec {1} comme SubjectDN.\n\
-\n\
-Ajoutez les lignes suivantes dans le fichier client.xml pour activer SSL :
+sslCert.clientXML=Certificat SSL cr\u00e9\u00e9 pour le client {0}. Le certificat est cr\u00e9\u00e9 avec {1} comme SubjectDN.\n\nAjoutez les lignes suivantes dans le fichier client.xml pour activer SSL :
 
 fileUtility.failedDirCreate=La cr\u00e9ation du r\u00e9pertoire {0} a \u00e9chou\u00e9
 file.exists=Le fichier de cl\u00e9s {0} existe d\u00e9j\u00e0.  Impossible de cr\u00e9er un fichier de cl\u00e9s dans cet emplacement.
@@ -77,14 +71,9 @@ file.requiredDirNotCreated=Impossible de cr\u00e9er la structure de r\u00e9perto
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # The following string will be appended after encode.option-desc.encoding
 # message in UtilityOptions.nlsprops file.
-encode.option-custom.encryption=\n\
-\tLe chiffrement personnalis\u00e9 de mot de passe est \u00e9galement disponible.
-encode.option-desc.custom.feature=\n\
-\tLe nom de fonction de {0} est le suivant :\n\
-\t
-encode.option-desc.custom.description=\n\
-\tLa description de {0} est la suivante :\n\
-\t
+encode.option-custom.encryption=\n\tLe chiffrement personnalis\u00e9 de mot de passe est \u00e9galement disponible.
+encode.option-desc.custom.feature=\n\tLe nom de fonction de {0} est le suivant :\n\t
+encode.option-desc.custom.description=\n\tLa description de {0} est la suivante :\n\t
 
 # The following message is shown when there is no custom password
 # encryption is enabled.
@@ -106,6 +95,37 @@ saf.arg.not.aes=Les arguments --keyring, --keyringType et --keyLabel ne peuvent 
 # Note to translator: 'LTPA' should not be translated
 createLTPAKeys.abort=Interruption de la cr\u00e9ation de fichier de cl\u00e9s LTPA :
 createLTPAKeys.fileExists=Le fichier {0} existe d\u00e9j\u00e0.  Impossible de cr\u00e9er un fichier de cl\u00e9s LTPA \u00e0 cet emplacement.
-createLTPAKeys.createdFile=Fichier de cl\u00e9s LTPA cr\u00e9\u00e9 : {0}\n\
-Inclure la configuration suivante dans votre fichier server.xml\n\
-{1}\n
+createLTPAKeys.createdFile=Fichier de cl\u00e9s LTPA cr\u00e9\u00e9 : {0}\nInclure la configuration suivante dans votre fichier server.xml\n{1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=L'installation de Java ne provient pas de IBM Semeru Runtimes ni de IBM SDK, ou si c'est le cas, elle ne prend pas en charge la norme FIPS 140-3.\nInstallez Java \u00e0 partir de IBM Semeru Runtimes ou IBM SDK en utilisant une version et un syst\u00e8me d'exploitation compatibles avec la norme FIPS 140-3.\nSi vous utilisez IBM Semeru Runtimes, utilisez la version 11.0.29.0, 17.0.17.0, 21.0.9.0, ou une version plus r\u00e9cente.\nSi vous utilisez le SDK IBM, utilisez la version 8.0.8.30 ou une version plus r\u00e9cente.
+
+configureFIPS.zosNotAvailable=La commande securityUtility configureFIPS n'est pas prise en charge sur z/OS.
+
+configureFIPS.configureSemeru=Configuration de FIPS 140-3 pour IBM Semeru Runtimes.
+configureFIPS.configureIbmSdk=Configuration de FIPS 140-3 pour IBM SDK.
+
+configureFIPS.abort=Abandon de la configuration de FIPS 140-3 :
+
+configureFIPS.abortSemeruFile=Abandon de IBM Semeru Runtimes Cr\u00e9ation d'un fichier de profil personnalis\u00e9 FIPS 140-3 :
+
+configureFIPS.abortEnvFile=Abandon de la modification du fichier de configuration :
+
+configureFIPS.fileExists=Utilisation du fichier de profil personnalis\u00e9 existant {0} IBM Semeru Runtimes.
+
+configureFIPS.createdSemeruFile=Cr\u00e9ation du fichier de profil personnalis\u00e9 {0} IBM Semeru Runtimes.
+
+configureFIPS.fileDoesNotExist=Le fichier {0} n''existe pas.
+
+configureFIPS.fileNameNotAllowed=Le nom de base du fichier {0} ne peut pas \u00eatre FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=Cr\u00e9ation du fichier {0} pour activer la norme FIPS 140-3.
+configureFIPS.updatedEnvFileToEnableFips=Mise \u00e0 jour du fichier {0} pour activer la norme FIPS 140-3.
+configureFIPS.fipsAlreadyEnabled=La norme FIPS 140-3 est d\u00e9j\u00e0 activ\u00e9e dans le fichier {0}.
+
+configureFIPS.updatedEnvFileToDisableFips=Mise \u00e0 jour du fichier {0} pour d\u00e9sactiver FIPS 140-3.
+configureFIPS.fipsNotEnabled=FIPS 140-3 n''est d\u00e9j\u00e0 pas activ\u00e9 dans le fichier {0}.
+
+configureFIPS.restartServer=Red\u00e9marrez le serveur {0} pour appliquer la modification.
+configureFIPS.restartClient=Red\u00e9marrez le client {0} pour appliquer la modification.
+configureFIPS.restart=Red\u00e9marrez vos serveurs et vos clients pour appliquer la modification.

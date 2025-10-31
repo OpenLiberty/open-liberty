@@ -45,7 +45,7 @@ public class JTAAppTests40War extends JTAAppAbstractTests {
 
     @Override
     public Set<String> getFeatures() {
-        return new HashSet<>(Arrays.asList("servlet-6.0", "connectors-2.1", "jdbc-4.2", "jndi-1.0", "componenttest-2.0", "cdi-4.1", "enterpriseBeansLite-4.0"));
+        return new HashSet<>(Arrays.asList("servlet-6.1", "connectors-2.1", "jdbc-4.2", "jndi-1.0", "componenttest-2.0", "cdi-4.1", "enterpriseBeansLite-4.0"));
     }
 
     @Override

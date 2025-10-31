@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.transport.http_fat.accesslists;
 
@@ -559,7 +556,7 @@ public class AccessListsTests extends HttpTest {
         try {
             try {
                 // We have an error but first try waiting
-                Thread.currentThread().sleep(2000);
+                Thread.sleep(2000);
                 result = checkAccessAllowed(server);
                 if (result.contains("Backend")) {
                     debug("The problem is a timing issue as waiting for 2 seconds fixed it");

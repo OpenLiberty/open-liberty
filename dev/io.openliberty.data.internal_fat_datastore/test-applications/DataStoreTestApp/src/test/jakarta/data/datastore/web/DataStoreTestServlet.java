@@ -27,9 +27,13 @@ import jakarta.ejb.EJB;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.Status;
+import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -101,6 +105,9 @@ public class DataStoreTestServlet extends FATServlet {
 
     @EJB
     DataStoreTestEJB testEJB;
+
+    @Resource
+    UserTransaction tx;
 
     @Inject
     WebLibRepo webLibRepo;
@@ -240,6 +247,63 @@ public class DataStoreTestServlet extends FATServlet {
     }
 
     /**
+     * Uses entity manager methods to update a value and then retrieve the value
+     * within the same transaction. The retrieved value must be the updated
+     * value rather than the original value.
+     */
+    @Test
+    public void testPersistenceUnitEMUpdateAndRetrieveInTran() throws Exception {
+        String id = "testPersistenceUnitEMUpdateAndRetrieveInTran";
+        tx.begin();
+        try (EntityManager em = persistenceUnitRepo.entityManager()) {
+            PersistenceUnitEntity e = PersistenceUnitEntity.of(id, 222);
+            e = em.merge(e);
+            em.flush();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try (EntityManager em = persistenceUnitRepo.entityManager()) {
+            // TODO #33189 the following is not honored:
+            //em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+
+            Query update = em.createQuery("""
+                            UPDATE PersistenceUnitEntity
+                               SET value = value * 2
+                             WHERE id = ?1
+                            """);
+            update.setParameter(1, id);
+            assertEquals(1L, update.executeUpdate());
+
+            Query query = em.createQuery("""
+                              FROM PersistenceUnitEntity
+                             WHERE id = ?1
+                            """);
+            query.setParameter(1, id);
+
+            // TODO #33189 the following is not honored:
+            // query.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+            // TODO #33189 should be able to replace the following setHint with either
+            // of the preceding TODOs that use em/query.setCacheRetrieveMode.
+            query.setHint("jakarta.persistence.cache.retrieveMode",
+                          CacheRetrieveMode.BYPASS);
+
+            List<?> results = query.getResultList();
+            assertEquals(1,
+                         results.size());
+            PersistenceUnitEntity e = (PersistenceUnitEntity) results.get(0);
+            assertEquals(Integer.valueOf(444),
+                         e.value);
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+        }
+    }
+
+    /**
      * Verify that the EntityManagerFactory for the PersistenceUnit reference can be looked up by its JNDI name:
      */
     @Test
@@ -289,6 +353,38 @@ public class DataStoreTestServlet extends FATServlet {
         try (EntityManager em = persistenceUnitRepo.entityManager()) {
             PersistenceUnitEntity e = em.find(PersistenceUnitEntity.class, "TestPersistenceUnit-fifty-two");
             assertEquals(Integer.valueOf(152), e.value);
+        }
+    }
+
+    /**
+     * Uses repository methods to update a value and then retrieve the value
+     * within the same transaction. The retrieved value must be the updated
+     * value rather than the original value.
+     */
+    @Test
+    public void testPersistenceUnitRepoUpdateAndRetrieveInTran() //
+                    throws Exception {
+        String id = "testPersistenceUnitRepoUpdateAndRetrieveInTran";
+        PersistenceUnitEntity e1 = PersistenceUnitEntity.of(id, 111);
+        persistenceUnitRepo.save(List.of(e1));
+
+        tx.begin();
+        try {
+            e1 = persistenceUnitRepo.singleItem(id).orElseThrow();
+            assertEquals(Integer.valueOf(111),
+                         e1.value);
+
+            assertEquals(true,
+                         persistenceUnitRepo.triple(id));
+
+            e1 = persistenceUnitRepo.singleItem(id).orElseThrow();
+            assertEquals(Integer.valueOf(333),
+                         e1.value);
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
         }
     }
 

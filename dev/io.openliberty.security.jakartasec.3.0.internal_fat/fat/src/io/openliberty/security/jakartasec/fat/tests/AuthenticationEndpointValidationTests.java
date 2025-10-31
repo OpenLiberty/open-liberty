@@ -94,6 +94,10 @@ public class AuthenticationEndpointValidationTests extends CommonAnnotatedSecuri
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
 
+        // Wait to ensure LTPA configuration has completed before starting tests.
+        opServer.waitForStringInLog("CWWKS4105I");
+        rpServer.waitForStringInLog("CWWKS4105I");
+
     }
 
     /**

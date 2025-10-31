@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,10 @@ repositories {
   if (isUsingArtifactory) {
     maven {
       credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
+        username = userProps.getProperty("artifactory.download.user")
+        password = userProps.getProperty("artifactory.download.token")
       }
-      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+      url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote"
     }
   } else {
     mavenCentral()
@@ -77,13 +77,17 @@ def appBuildDir = "${buildDir}/test-application"
  ******************************************************************/
 
 task copyOPServers (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':com.ibm.ws.security.fat.common.jwt:assemble', ':com.ibm.ws.security.fat.common.social:assemble', ':com.ibm.ws.security.oauth.oidc_fat.common:assemble', ':com.ibm.ws.security.fat.common.claimPropagation:assemble']) {
+  def apacheDirectoryProject = project(':com.ibm.ws.org.apache.directory.server')
+  def securityCommonProject = project(':com.ibm.ws.security.fat.common')
+  def oidcCommonProject = project(':com.ibm.ws.security.oauth.oidc_fat.common')
+  def claimPropCommonProject = project(':com.ibm.ws.security.fat.common.claimPropagation')
   doLast {
 
   /*
    * Copy the local ApacheDS LDAP instances.
    */
   copy {
-    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    from apacheDirectoryProject.projectDir
     into autoFvtDir
     include 'apacheds-2.0.0-M15/**'
   }
@@ -99,31 +103,31 @@ task copyOPServers (dependsOn: [':com.ibm.ws.security.fat.common:assemble', ':co
   servers.each { server ->
 
     copy { 
-     from project(':com.ibm.ws.security.fat.common.claimPropagation').file("publish/servers/${server}")
+     from claimPropCommonProject.file("publish/servers/${server}")
      into new File(autoFvtDir, 'publish/servers/' + server)
      include '**'
     }
 
     copy { 
-      from project(':com.ibm.ws.security.fat.common.claimPropagation').file('publish/files/serversettings/')
+      from claimPropCommonProject.file('publish/files/serversettings/')
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
       include '*.xml'
     }
     
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      from new File(securityCommonProject.buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
 
     copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+      from new File(oidcCommonProject.projectDir, "/securitykeys")
       into new File(autoFvtDir, 'publish/servers/' + server)
       include 'commonBasicKeyStore.jks'
       include 'commonTrustStore.jks'
     }
     
     copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings/')
+      from new File(oidcCommonProject.projectDir, 'publish/files/serversettings/')
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
       include 'formlogin_1.xml'
       include 'op_fatTestPorts.xml'

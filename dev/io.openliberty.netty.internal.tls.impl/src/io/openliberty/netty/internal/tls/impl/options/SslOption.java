@@ -9,8 +9,6 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tls.impl.options;
 
-import java.util.Map;
-
 import io.openliberty.transport.config.options.EndpointOption;
 
 /**
@@ -18,14 +16,13 @@ import io.openliberty.transport.config.options.EndpointOption;
  * Each constant in this enum respresents a specific endpoint SSL configuration option
  * with its key, default value, and value type.
  */
-public enum SslOption implements EndpointOption{
+public enum SslOption implements EndpointOption {
 
     SESSION_TIMEOUT("sessionTimeout", 86400, Integer.class, ConfigType.SSL),
     SSL_SESSION_TIMEOUT("sslSessionTimeout", 86400000, Integer.class, ConfigType.SSL),
     SUPPRESS_HANDSHAKE_ERRORS("suppressHandshakeErrors", true, Boolean.class, ConfigType.SSL),
     SUPPRESS_HANDSHAKE_ERRORS_COUNT("suppressHandshakeErrorsCount", 100, Long.class, ConfigType.SSL),
     ENFORCE_CIPHER_ORDER("com.ibm.ws.ssl.enforceCipherOrder", false, Boolean.class, ConfigType.SSL);
-    
 
     private final String key;
     private final Object defaultValue;
@@ -51,7 +48,7 @@ public enum SslOption implements EndpointOption{
 
     @Override
     public Class<?> getValueType() {
-        return  valueType;
+        return valueType;
     }
 
     @Override

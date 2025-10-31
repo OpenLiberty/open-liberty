@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020,2023 IBM Corporation and others.
+# Copyright (c) 2020,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -18,19 +18,20 @@ Multi-Release: true
 WS-TraceGroup: SAML20
 
 Export-Package: \
-  net.shibboleth.utilities.java.support;version="7.5.1", \
-  net.shibboleth.utilities.java.support.*;version="7.5.1", \
-  net.shibboleth.utilities.java.support.annotation;version="7.5.1", \
-  net.shibboleth.utilities.java.support.collection;version="7.5.1", \
-  net.shibboleth.utilities.java.support.codec;version="7.5.1", \
-  net.shibboleth.utilities.java.support.component;version="7.5.1", \
-  net.shibboleth.utilities.java.support.logic;version="7.5.1", \
-  net.shibboleth.utilities.java.support.net;version="7.5.1", \
-  net.shibboleth.utilities.java.support.primitive;version="7.5.1", \
-  net.shibboleth.utilities.java.support.resolver;version="7.5.1", \
-  net.shibboleth.utilities.java.support.resource;version="7.5.1", \
-  net.shibboleth.utilities.java.support.security;version="7.5.1", \
-  net.shibboleth.utilities.java.support.xml;version="7.5.1"
+  net.shibboleth.utilities.java.support;version="8.4.2", \
+  net.shibboleth.utilities.java.support.*;version="8.4.2", \
+  net.shibboleth.utilities.java.support.annotation;version="8.4.2", \
+  net.shibboleth.utilities.java.support.collection;version="8.4.2", \
+  net.shibboleth.utilities.java.support.codec;version="8.4.2", \
+  net.shibboleth.utilities.java.support.component;version="8.4.2", \
+  net.shibboleth.utilities.java.support.logic;version="8.4.2", \
+  net.shibboleth.utilities.java.support.net;version="8.4.2", \
+  net.shibboleth.utilities.java.support.net.impl;version="8.4.2", \
+  net.shibboleth.utilities.java.support.primitive;version="8.4.2", \
+  net.shibboleth.utilities.java.support.resolver;version="8.4.2", \
+  net.shibboleth.utilities.java.support.resource;version="8.4.2", \
+  net.shibboleth.utilities.java.support.security;version="8.4.2", \
+  net.shibboleth.utilities.java.support.xml;version="8.4.2"
 
 Import-Package: \
  !com.beust.jcommander, \
@@ -46,5 +47,5 @@ Import-Package: \
  *
  
  Include-Resource: \
-  @${repo;net.shibboleth.utilities:java-support;7.5.1}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+  @\${repo;io.openliberty.net.shibboleth.utilities:java-support;8.4.2}!/!META-INF/MANIFEST.MF|META-INF/maven/*
 

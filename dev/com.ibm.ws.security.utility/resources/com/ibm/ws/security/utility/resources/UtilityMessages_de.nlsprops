@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,17 @@ name=Name
 days=Tage
 
 sslCert.abort=Zertifikatserstellung wird abgebrochen:
-sslCert.createFailed=SSL-Standardzertifikat kann nicht erstellt werden:\n\
-{0}
-sslCert.errorEncodePassword=Fehler beim Verschl\u00fcsseln des Kennworts (Zertifikat nicht erstellt):\n\
-{0}
+sslCert.createFailed=SSL-Standardzertifikat kann nicht erstellt werden:\n{0}
+sslCert.errorEncodePassword=Fehler beim Verschl\u00fcsseln des Kennworts (Zertifikat nicht erstellt):\n{0}
 sslCert.createKeyStore=Keystore {0} wird erstellt.\n
 sslCert.oneType=Die Argumente {0} und {1} k\u00f6nnen nicht gleichzeitig angegeben werden.
 sslCert.clientNotFound=Der angegebene Client {0} wurde nicht an der Position {1} gefunden.
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=Das SSL-Zertifikat f\u00fcr den Server {0} wurde erstellt. Das Zertifikat wird mit {1} als SubjectDN erstellt. \n\
-\n\
-F\u00fcgen Sie zum Aktivieren von SSL der Datei server.xml die folgenden Zeilen hinzu:
+sslCert.serverXML=Das SSL-Zertifikat f\u00fcr den Server {0} wurde erstellt. Das Zertifikat wird mit {1} als SubjectDN erstellt. \n\nF\u00fcgen Sie zum Aktivieren von SSL der Datei server.xml die folgenden Zeilen hinzu:
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=Das SSL-Zertifikat f\u00fcr den Client {0} wurde erstellt. Das Zertifikat wird mit {1} als SubjectDN erstellt. \n\
-\n\
-F\u00fcgen Sie zum Aktivieren von SSL der Datei client.xml die folgenden Zeilen hinzu:
+sslCert.clientXML=Das SSL-Zertifikat f\u00fcr den Client {0} wurde erstellt. Das Zertifikat wird mit {1} als SubjectDN erstellt. \n\nF\u00fcgen Sie zum Aktivieren von SSL der Datei client.xml die folgenden Zeilen hinzu:
 
 fileUtility.failedDirCreate=Fehler beim Erstellen des Verzeichnisses {0}
 file.exists=Die Keystore-Datei {0} ist bereits vorhanden. Es kann keine Keystore-Datei an dieser Position erstellt werden.
@@ -77,14 +71,9 @@ file.requiredDirNotCreated=Die erforderliche Verzeichnisstruktur f\u00fcr {0} ko
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # The following string will be appended after encode.option-desc.encoding
 # message in UtilityOptions.nlsprops file.
-encode.option-custom.encryption=\n\
-\tDie angepasste Kennwortverschl\u00fcsselung ist ebenfalls verf\u00fcgbar.
-encode.option-desc.custom.feature=\n\
-\tDer Featurename von {0} ist wie folgt:\n\
-\t
-encode.option-desc.custom.description=\n\
-\tDie Beschreibung von {0} ist wie folgt:\n\
-\t
+encode.option-custom.encryption=\n\tDie angepasste Kennwortverschl\u00fcsselung ist ebenfalls verf\u00fcgbar.
+encode.option-desc.custom.feature=\n\tDer Featurename von {0} ist wie folgt:\n\t
+encode.option-desc.custom.description=\n\tDie Beschreibung von {0} ist wie folgt:\n\t
 
 # The following message is shown when there is no custom password
 # encryption is enabled.
@@ -106,6 +95,37 @@ saf.arg.not.aes=Die Argumente -- keyring, -- keyringType, und -- keyLabel k\u00f
 # Note to translator: 'LTPA' should not be translated
 createLTPAKeys.abort=Erstellung der Datei mit den LTPA-Schl\u00fcsseln wird abgebrochen:
 createLTPAKeys.fileExists=Die Datei {0} ist bereits vorhanden. Es kann keine Datei mit LTPA-Schl\u00fcsseln an dieser Position erstellt werden.
-createLTPAKeys.createdFile=Datei mit LTPA-Schl\u00fcsseln erstellt: {0}\n\
-F\u00fcgen Sie die folgende Konfiguration in Ihrer Datei server.xml hinzu:\n\
-{1}\n
+createLTPAKeys.createdFile=Datei mit LTPA-Schl\u00fcsseln erstellt: {0}\nF\u00fcgen Sie die folgende Konfiguration in Ihrer Datei server.xml hinzu:\n{1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=Die Java-Installation ist entweder nicht von IBM Semeru Runtimes oder IBM SDK, oder wenn sie es ist, unterst\u00fctzt sie FIPS 140-3 nicht.\nInstallieren Sie Java entweder von IBM Semeru Runtimes oder IBM SDK unter Verwendung einer Version und eines Betriebssystems, das FIPS 140-3 unterst\u00fctzt.\nWenn Sie IBM Semeru Runtimes verwenden, benutzen Sie die Versionen 11.0.29.0, 17.0.17.0, 21.0.9.0 oder h\u00f6her.\nWenn Sie IBM SDK verwenden, benutzen Sie die Version 8.0.8.30 oder h\u00f6her.
+
+configureFIPS.zosNotAvailable=Der Befehl securityUtility configureFIPS wird auf z/OS nicht unterst\u00fctzt.
+
+configureFIPS.configureSemeru=Konfigurieren von FIPS 140-3 f\u00fcr IBM Semeru Laufzeiten.
+configureFIPS.configureIbmSdk=Konfigurieren von FIPS 140-3 f\u00fcr IBM SDK.
+
+configureFIPS.abort=Abbruch der Konfiguration von FIPS 140-3:
+
+configureFIPS.abortSemeruFile=Abbruch IBM Semeru Runtimes FIPS 140-3 Erstellung von benutzerdefinierten Profildateien:
+
+configureFIPS.abortEnvFile=Abbruch der \u00c4nderung der Konfigurationsdatei:
+
+configureFIPS.fileExists=Verwendung der vorhandenen {0} IBM Semeru Runtimes benutzerdefinierten Profildatei.
+
+configureFIPS.createdSemeruFile=Die benutzerdefinierte Profildatei {0} IBM Semeru Runtimes wurde erstellt.
+
+configureFIPS.fileDoesNotExist=Die Datei {0} ist nicht vorhanden.
+
+configureFIPS.fileNameNotAllowed=Der Basisname der Datei {0} kann nicht FIPS140-3-Liberty sein.
+
+configureFIPS.createdEnvFileToEnableFips=Erstellt die Datei {0}, um FIPS 140-3 zu aktivieren.
+configureFIPS.updatedEnvFileToEnableFips=Die Datei {0} wurde aktualisiert, um FIPS 140-3 zu aktivieren.
+configureFIPS.fipsAlreadyEnabled=FIPS 140-3 ist bereits in der Datei {0} aktiviert.
+
+configureFIPS.updatedEnvFileToDisableFips=Die Datei {0} wurde aktualisiert, um FIPS 140-3 zu deaktivieren.
+configureFIPS.fipsNotEnabled=FIPS 140-3 ist bereits in der Datei {0} nicht aktiviert.
+
+configureFIPS.restartServer=Starten Sie den {0} Server neu, um die \u00c4nderung zu \u00fcbernehmen.
+configureFIPS.restartClient=Starten Sie den {0} Client neu, um die \u00c4nderung zu \u00fcbernehmen.
+configureFIPS.restart=Starten Sie Ihre Server und Clients neu, um die \u00c4nderung zu \u00fcbernehmen.

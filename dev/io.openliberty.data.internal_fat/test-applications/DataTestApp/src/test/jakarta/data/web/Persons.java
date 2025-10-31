@@ -23,7 +23,7 @@ import jakarta.transaction.Transactional.TxType;
  * transaction type so that by default, all repository operations will run in a
  * transaction of their own instead of a transaction that was already on the thread.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 @Transactional(TxType.REQUIRES_NEW)
 public interface Persons {
 

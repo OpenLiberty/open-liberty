@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -40,7 +40,9 @@ encode.enterText=Enter text:
 encode.reenterText=Re-enter text:
 encode.readError=Error reading in text.
 encode.entriesDidNotMatch=Entries did not match.
-
+encode.mutuallyExclusiveArgError=The input file cannot specify both the {0} and {1} properties.
+encode.aesConfigFileEncryptionAmbiguous=ERROR: The input file cannot be used if it contains both the {0} and {1} variables.
+encode.aesConfigFileMissingEncryptionVariables=Cannot encode password; either the input file does not contain the {0} or {1} variables, or the input file is malformed.
 
 password.enterText=Enter password:
 password.reenterText=Re-enter password:
@@ -107,3 +109,52 @@ createLTPAKeys.fileExists=The {0} file already exists.  Unable to create a LTPA 
 createLTPAKeys.createdFile=Created LTPA keys file: {0}\n\
 Include the following configuration to your server.xml\n\
 {1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=The Java installation is either not from IBM Semeru Runtimes nor IBM SDK, or if it is, it does not support FIPS 140-3.\n\
+Install Java from either IBM Semeru Runtimes or IBM SDK using a version and operating system that supports FIPS 140-3.\n\
+If you are using IBM Semeru Runtimes, use version 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, or higher.\n\
+If you are using IBM SDK, use version 8.0.8.30 or higher.
+
+configureFIPS.zosNotAvailable=The securityUtility configureFIPS command is not supported on z/OS.
+
+configureFIPS.configureSemeru=Configuring FIPS 140-3 for IBM Semeru Runtimes.
+configureFIPS.configureIbmSdk=Configuring FIPS 140-3 for IBM SDK.
+
+configureFIPS.abort=Aborting configuring FIPS 140-3:
+
+configureFIPS.abortSemeruFile=Aborting IBM Semeru Runtimes FIPS 140-3 custom profile file creation:
+
+configureFIPS.abortEnvFile=Aborting configuration file modification:
+
+configureFIPS.fileExists=Using the existing {0} IBM Semeru Runtimes custom profile file.
+
+configureFIPS.createdSemeruFile=Created the {0} IBM Semeru Runtimes custom profile file.
+
+configureFIPS.fileDoesNotExist=The {0} file does not exist.
+
+configureFIPS.fileNameNotAllowed=The base name of the {0} file cannot be FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=Created the {0} file to enable FIPS 140-3.
+configureFIPS.updatedEnvFileToEnableFips=Updated the {0} file to enable FIPS 140-3.
+configureFIPS.fipsAlreadyEnabled=FIPS 140-3 is already enabled in the {0} file.
+
+configureFIPS.updatedEnvFileToDisableFips=Updated the {0} file to disable FIPS 140-3.
+configureFIPS.fipsNotEnabled=FIPS 140-3 is already not enabled in the {0} file.
+
+configureFIPS.restartServer=Restart the {0} server to apply the change.
+configureFIPS.restartClient=Restart the {0} client to apply the change.
+configureFIPS.restart=Restart your servers and clients to apply the change.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=\
+Password encryption XML file successfully created.\n\
+To activate the changes, add a reference to the location of the XML file\n\
+to your server.xml file:\n\
+\t<include location=\"{0}\" />
+generateaeskey.failFileExists=\
+The {0} file exists and will not be overwritten. Either specify a \n\
+different file name, or remove the existing file before you try again.
+generateaeskey.failFileIsDirectory=\
+The {0} value specified for the file name is a directory. Specify the \n\
+full file name and try again.

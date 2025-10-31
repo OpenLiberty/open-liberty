@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -75,7 +75,7 @@ public class Pages40ChangesTest {
         WebResponse response = wc.getResponse(request);
         LOG.info("Servlet response : " + response.getText());
 
-        assertTrue("jsp:plugin should throw an error", response.getText().contains("JSPG0024E: Unknown directive isThreadSafe"));
+        assertTrue("jsp:plugin should throw an error", response.getText().contains("CWWJS0009E: The &quot;isThreadSafe&quot; directive is no longer supported as it was removed in Pages 4.0"));
     }
 
     /**

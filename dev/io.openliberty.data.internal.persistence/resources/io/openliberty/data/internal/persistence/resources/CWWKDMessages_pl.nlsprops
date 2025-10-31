@@ -146,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: Metoda {0} interfejsu repozytorium {1} \
 CWWKD1029.first.neg.or.zero.explanation=Maksymalna liczba wynik\u00f3w zapytania musi by\u0107 liczb\u0105 dodatni\u0105.
 CWWKD1029.first.neg.or.zero.useraction=Zaktualizuj metod\u0119 repozytorium, aby okre\u015bli\u0107 dodatni\u0105 maksymaln\u0105 liczb\u0119 wynik\u00f3w.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Brakuje nazwy encji w zapytaniu {0} okre\u015blonym dla metody {1} repozytorium {2} . W j\u0119zyku Jakarta Data Query Language zapytania {3} nale\u017cy formu\u0142owa\u0107 w nast\u0119puj\u0105cy spos\u00f3b: {4} .
+CWWKD1030.ql.lacks.entity=CWWKD1030E: W zapytaniu {0} okre\u015blonym dla metody {1} repozytorium {2} brakuje nazwy podmiotu. W przypadku zapyta\u0144 {3} nale\u017cy u\u017cy\u0107 formularza: {4}.
 CWWKD1030.ql.lacks.entity.explanation=Zapytanie zawiera klauzul\u0119 wymagaj\u0105c\u0105 podania nazwy encji.
 CWWKD1030.ql.lacks.entity.useraction=Zaktualizuj zapytanie o metod\u0119 repozytorium, aby uwzgl\u0119dni\u0107 nazw\u0119 encji.
 
@@ -162,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Metoda {0} interfejsu repozytorium {
 CWWKD1033.ql.orderby.disallowed.explanation=Klauzula ORDER BY jest niezgodna z paginacj\u0105 opart\u0105 na kursorze.
 CWWKD1033.ql.orderby.disallowed.useraction=Zast\u0105p klauzul\u0119 ORDER BY adnotacjami okre\u015blaj\u0105cymi kryteria sortowania.
 
-CWWKD1034.ql.where.required=CWWKD1034E: Zapytanie okre\u015blone przez metod\u0119 {0} interfejsu repozytorium {1} musi ko\u0144czy\u0107 si\u0119 klauzul\u0105 WHERE, poniewa\u017c metoda zwraca {2} . Klauzula WHERE ko\u0144czy si\u0119 na pozycji {3} , ale d\u0142ugo\u015b\u0107 zapytania wynosi {4} . Zapytanie brzmi: {5} .
-CWWKD1034.ql.where.required.explanation=Klauzula WHERE jest wymagana w przypadku korzystania z paginacji opartej na kursorze.
-CWWKD1034.ql.where.required.useraction=Dodaj klauzul\u0119 WHERE do zapytania.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: Zapytanie okre\u015blone przez metod\u0119 {0} interfejsu repozytorium {1} musi ko\u0144czy\u0107 si\u0119 klauzul\u0105 WHERE, poniewa\u017c metoda ta zwraca {2}. Klauzula WHERE ko\u0144czy si\u0119 na pozycji {3}, ale d\u0142ugo\u015b\u0107 zapytania wynosi {4}. Zapytanie brzmi: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=Klauzula WHERE jest wymagana w przypadku korzystania z paginacji opartej na kursorze.
+CWWKD1034.ql.req.end.in.where.useraction=Dodaj klauzul\u0119 WHERE do zapytania.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: \u017b\u0105danie strony z trybem paginacji {0} nie mo\u017ce zosta\u0107 przekazane do metody {1} interfejsu repozytorium {2} , poniewa\u017c metoda zwraca {3} zamiast {4} .
 CWWKD1035.incompat.page.mode.explanation=\u017b\u0105dany tryb paginacji nie jest zgodny z typem zwracanym przez metod\u0119 repozytorium.

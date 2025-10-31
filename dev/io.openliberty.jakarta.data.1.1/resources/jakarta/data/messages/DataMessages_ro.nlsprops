@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=Argumentul {0} este necesar
+002.no.elements=Lista {0} nu poate fi goal\u0103
+003.null.element=Lista {0} nu poate avea un element nul
+004.arg.negative=Argumentul {0} nu poate fi negativ
+005.zero.not.allowed=Argumentul {0} nu poate fi 0
+006.zero.size.key=Cheia trebuie s\u0103 fie format\u0103 din cel pu\u021bin un element
+007.wildcard.conflict=Nu se poate utiliza acela\u0219i caracter ( {0} ) pentru ambele caractere wildcard
+008.escape.conflict=Nu se poate utiliza acela\u0219i caracter ( {0} ) at\u00e2t pentru un caracter wildcard, c\u00e2t \u0219i pentru un caracter escape
+009.unknown.number.type=Subtip nea\u0219teptat al num\u0103rului: {0}
+010.unknown.total=Un num\u0103r total de elemente nu este disponibil
+011.unknown.attr.type=Instan\u021ba {0} a fost ob\u021binut\u0103 \u00eentr-un mod care nu identific\u0103 tipul de atribut. Pentru clasele metamodel static, utiliza\u021bi o metod\u0103.of care este definit\u0103 pe un subtip Attribute pentru a furniza clasa entit\u0103\u021bii \u0219i tipul de atribut al entit\u0103\u021bii.
+012.unknown.decl.type=Instan\u021ba {0} a fost ob\u021binut\u0103 \u00eentr-un mod care nu identific\u0103 clasa entit\u0103\u021bii care declar\u0103 atributul. Pentru clasele metamodel static, utiliza\u021bi o metod\u0103.of care este definit\u0103 pe un subtip Attribute pentru a furniza clasa entit\u0103\u021bii \u0219i tipul de atribut al entit\u0103\u021bii.

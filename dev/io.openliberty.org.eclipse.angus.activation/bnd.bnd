@@ -1,5 +1,5 @@
 1 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -38,7 +38,7 @@ Service-Component: \
     properties:= "resources=${app-resources}"
 
 -includeresource: \
-  @${repo;org.eclipse.angus:angus-activation;${angus-activation-version};EXACT}!/!(META-INF/maven/*|module-info.class|META-INF/native-image|org/eclipse/angus/activation/nativeimage/*)
+  @\${repo;org.eclipse.angus:angus-activation;${angus-activation-version};EXACT}!/!(META-INF/maven/*|module-info.class|META-INF/native-image|org/eclipse/angus/activation/nativeimage/*)
    
 -buildpath: \
   org.eclipse.angus:angus-activation;version=${angus-activation-version};strategy=exact. \

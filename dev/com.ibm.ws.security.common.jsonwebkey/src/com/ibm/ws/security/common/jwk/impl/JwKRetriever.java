@@ -160,7 +160,7 @@ public class JwKRetriever {
 
     @Sensitive
     public PrivateKey getPrivateKeyFromJwk(String kid, boolean useSystemPropertiesForHttpClientConnections) throws IOException {
-        return (PrivateKey) getKeyFromJwk(kid, null, null, useSystemPropertiesForHttpClientConnections, JwkKeyType.PRIVATE);
+        return (PrivateKey) getKeyFromJwk(kid, null, null, null, useSystemPropertiesForHttpClientConnections, JwkKeyType.PRIVATE);
     }
 
     /**
@@ -169,35 +169,44 @@ public class JwKRetriever {
     public PublicKey getPublicKeyFromJwk(String kid, String x5t, boolean useSystemPropertiesForHttpClientConnections) throws IOException {
         return getPublicKeyFromJwk(kid, x5t, null, useSystemPropertiesForHttpClientConnections);
     }
+    
+    /**
+     * Either kid, x5t or x5tS256 will work. But not both
+     */
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String x5tS256, boolean useSystemPropertiesForHttpClientConnections) throws IOException {
+        return getPublicKeyFromJwk(kid, x5t, x5tS256, null, useSystemPropertiesForHttpClientConnections);
+    }
 
     /**
-     * Either kid, x5t, or use will work, but not all
+     * Either kid, x5t, x5tS256 or use will work, but not all
      */
-    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections) throws IOException {
-        return (PublicKey) getKeyFromJwk(kid, x5t, use, useSystemPropertiesForHttpClientConnections, JwkKeyType.PUBLIC);
+    public PublicKey getPublicKeyFromJwk(String kid, String x5t, String x5tS256, String use, boolean useSystemPropertiesForHttpClientConnections) throws IOException {
+        return (PublicKey) getKeyFromJwk(kid, x5t, x5tS256, use, useSystemPropertiesForHttpClientConnections, JwkKeyType.PUBLIC);
     }
 
     /**
      * Either kid, x5t, or use will work, but not all
      */
     @Sensitive
-    Key getKeyFromJwk(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
+    Key getKeyFromJwk(String kid, String x5t, String x5tS256, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
         Key key = null;
         boolean isHttp = remoteHttpCall(this.jwkEndpointUrl, keyText, this.keyLocation);
         if (isHttp) {
-            key = this.getJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections, keyType);
+            key = this.getJwkRemote(kid, x5t, x5tS256, use, useSystemPropertiesForHttpClientConnections, keyType);
         } else {
-            key = this.getJwkLocal(kid, x5t, keyText, keyLocation, use, keyType);
+            key = this.getJwkLocal(kid, x5t, x5tS256, keyText, keyLocation, use, keyType);
         }
         return key;
     }
 
     @Sensitive
-    private Key getJwkFromJWKSet(@Sensitive String setId, String kid, String x5t, String use, @Sensitive String keyText, JwkKeyType keyType) {
-        boolean isKeyIdentifierUsed = (kid != null || x5t != null);
+    private Key getJwkFromJWKSet(@Sensitive String setId, String kid, String x5t, String x5tS256, String use, @Sensitive String keyText, JwkKeyType keyType) {
+        boolean isKeyIdentifierUsed = (kid != null || x5t != null || x5tS256 != null);
         Key key = null;
         if (kid != null) {
             key = jwkSet.getKeyBySetIdAndKid(setId, kid, keyType);
+        } else if (x5tS256 != null) {
+            key = jwkSet.getKeyBySetIdAndx5tS256(setId, x5tS256, keyType);
         } else if (x5t != null) {
             key = jwkSet.getKeyBySetIdAndx5t(setId, x5t, keyType);
         } else if (use != null) {
@@ -229,7 +238,7 @@ public class JwKRetriever {
 
     @Sensitive
     @FFDCIgnore({ Exception.class })
-    protected Key getKeyFromFile(@Sensitive String location, String kid, String x5t, String use, JwkKeyType keyType) {
+    protected Key getKeyFromFile(@Sensitive String location, String kid, String x5t, String x5tS256, String use, JwkKeyType keyType) {
         Key key = null;
         String keyString = null;
         String classLoadingCacheSelector = null;
@@ -251,9 +260,9 @@ public class JwKRetriever {
             fileSystemCacheSelector = jwkFile.getCanonicalPath();
 
             synchronized (jwkSet) {
-                key = getJwkFromJWKSet(fileSystemCacheSelector, kid, x5t, use, null, keyType); // try the cache.
+                key = getJwkFromJWKSet(fileSystemCacheSelector, kid, x5t, x5tS256, use, null, keyType); // try the cache.
                 if (key == null) {
-                    key = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, use, null, keyType);
+                    key = getJwkFromJWKSet(classLoadingCacheSelector, kid, x5t, x5tS256, use, null, keyType);
                 }
                 if (key == null) { // cache miss, read the jwk if we can,  &  update locationUsed
                     InputStream is = null;
@@ -262,7 +271,7 @@ public class JwKRetriever {
                         if (is != null) {
                             keyString = getKeyAsString(is);
                             parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
-                            key = getJwkFromJWKSet(locationUsed, kid, x5t, use, keyString, keyType);
+                            key = getJwkFromJWKSet(locationUsed, kid, x5t, x5tS256, use, keyString, keyType);
                         }
                     } finally {
                         if (is != null) {
@@ -339,17 +348,17 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    protected Key getJwkLocal(String kid, String x5t, @Sensitive String keyText, @Sensitive String location, String use, JwkKeyType keyType) {
+    protected Key getJwkLocal(String kid, String x5t, String x5tS256, @Sensitive String keyText, @Sensitive String location, String use, JwkKeyType keyType) {
         if (keyText == null && location != null) {
-            return getKeyFromFile(location, kid, x5t, use, keyType);
+            return getKeyFromFile(location, kid, x5t, x5tS256, use, keyType);
         }
 
         if (keyText != null) {
             synchronized (jwkSet) {
-                Key key = getJwkFromJWKSet(keyText, kid, x5t, use, keyText, keyType);
+                Key key = getJwkFromJWKSet(keyText, kid, x5t, x5tS256, use, keyText, keyType);
                 if (key == null) {
                     parseJwk(keyText, null, jwkSet, sigAlg);
-                    key = getJwkFromJWKSet(keyText, kid, x5t, use, keyText, keyType);
+                    key = getJwkFromJWKSet(keyText, kid, x5t, x5tS256, use, keyText, keyType);
                 }
                 return key;
             }
@@ -381,7 +390,7 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    protected Key getJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
+    protected Key getJwkRemote(String kid, String x5t, String x5tS256, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
         locationUsed = jwkEndpointUrl;
         if (locationUsed == null) {
             locationUsed = keyLocation;
@@ -391,16 +400,16 @@ public class JwKRetriever {
         }
         Key key = null;
         synchronized (jwkSet) {
-            key = getJwkFromJWKSet(locationUsed, kid, x5t, use, null, keyType);
+            key = getJwkFromJWKSet(locationUsed, kid, x5t, x5tS256, use, null, keyType);
             if (key == null) {
-                key = doJwkRemote(kid, x5t, use, useSystemPropertiesForHttpClientConnections, keyType);
+                key = doJwkRemote(kid, x5t, x5tS256, use, useSystemPropertiesForHttpClientConnections, keyType);
             }
         }
         return key;
     }
 
     @FFDCIgnore({ IOException.class, Exception.class })
-    protected Key doJwkRemote(String kid, String x5t, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
+    protected Key doJwkRemote(String kid, String x5t, String x5tS256, String use, boolean useSystemPropertiesForHttpClientConnections, JwkKeyType keyType) throws IOException {
 
         String jsonString = null;
         locationUsed = jwkEndpointUrl;
@@ -437,7 +446,7 @@ public class JwKRetriever {
             }
         }
 
-        return getJwkFromJWKSet(locationUsed, kid, x5t, use, jsonString, keyType);
+        return getJwkFromJWKSet(locationUsed, kid, x5t, x5tS256, use, jsonString, keyType);
     }
     
     private String logCWWKS6049E(String url, int iStatusCode, String errMsg) {

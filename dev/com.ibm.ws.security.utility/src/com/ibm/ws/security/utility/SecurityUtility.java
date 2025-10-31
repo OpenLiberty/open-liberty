@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,10 +20,13 @@ import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateFactory;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtilityImpl;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.UtilityTemplate;
+import com.ibm.ws.security.utility.tasks.ConfigureFIPSTask;
 import com.ibm.ws.security.utility.tasks.CreateLTPAKeysTask;
 import com.ibm.ws.security.utility.tasks.CreateSSLCertificateTask;
 import com.ibm.ws.security.utility.tasks.EncodeTask;
+import com.ibm.ws.security.utility.tasks.GenerateAesKeyTask;
 import com.ibm.ws.security.utility.tasks.HelpTask;
 import com.ibm.ws.security.utility.tasks.TLSProfilerTask;
 import com.ibm.ws.security.utility.utils.CommandUtils;
@@ -141,7 +144,7 @@ public class SecurityUtility extends UtilityTemplate {
                 stderr.println("");
                 stderr.println(CommandUtils.getMessage("error", e.toString()));
                 stderr.println(help.getTaskUsage(task));
-		e.printStackTrace(stderr);
+                e.printStackTrace(stderr);
                 return SecurityUtilityReturnCodes.ERR_GENERIC;
             }
         }
@@ -162,11 +165,15 @@ public class SecurityUtility extends UtilityTemplate {
 
         // Create the SecurityUtility and register tasks
         SecurityUtility util = new SecurityUtility(console, System.out, System.err);
-        IFileUtility fileUtil = new FileUtility(util.getUserDir(), util.getOutputDir(null));
+        IFileUtility fileUtil = new FileUtility(util.getUserDir(), util.getOutputDir(null), util.getInstallDir());
         util.registerTask(new EncodeTask(SCRIPT_NAME));
         util.registerTask(new CreateSSLCertificateTask(certCreator, fileUtil, SCRIPT_NAME));
         util.registerTask(new CreateLTPAKeysTask(ltpaKeyFileCreator, fileUtil, SCRIPT_NAME));
         util.registerTask(new TLSProfilerTask(fileUtil, SCRIPT_NAME));
+        if (ProductInfo.getBetaEdition()) {
+            util.registerTask(new ConfigureFIPSTask(fileUtil, SCRIPT_NAME));
+            util.registerTask(new GenerateAesKeyTask(fileUtil, SCRIPT_NAME));
+        }
 
         // Kick everything off
         int rc = util.runProgram(args).getReturnCode();

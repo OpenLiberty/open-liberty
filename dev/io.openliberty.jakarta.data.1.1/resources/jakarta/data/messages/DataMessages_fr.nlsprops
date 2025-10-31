@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=L''argument {0} est requis
+002.no.elements=La liste {0} ne peut pas \u00eatre vide
+003.null.element=La liste {0} ne peut pas comporter d''\u00e9l\u00e9ment nul
+004.arg.negative=L''argument {0} ne peut pas \u00eatre n\u00e9gatif
+005.zero.not.allowed=L''argument {0} ne peut pas \u00eatre 0
+006.zero.size.key=La cl\u00e9 doit comporter au moins un \u00e9l\u00e9ment
+007.wildcard.conflict=Impossible d''utiliser le m\u00eame caract\u00e8re ( {0} ) pour les deux caract\u00e8res g\u00e9n\u00e9riques
+008.escape.conflict=Impossible d''utiliser le m\u00eame caract\u00e8re ( {0} ) pour un caract\u00e8re g\u00e9n\u00e9rique et un caract\u00e8re d''\u00e9chappement
+009.unknown.number.type=Sous-type inattendu de Nombre : {0}
+010.unknown.total=Le nombre total d'\u00e9l\u00e9ments n'est pas disponible
+011.unknown.attr.type=L''instance {0} a \u00e9t\u00e9 obtenue d''une mani\u00e8re qui ne permet pas d''identifier le type d''attribut. Pour les classes statiques du m\u00e9tamod\u00e8le, utilisez une m\u00e9thode.of d\u00e9finie sur un sous-type Attribute pour fournir la classe d''entit\u00e9 et le type d''attribut de l''entit\u00e9.
+012.unknown.decl.type=L''instance {0} a \u00e9t\u00e9 obtenue d''une mani\u00e8re qui ne permet pas d''identifier la classe d''entit\u00e9s qui d\u00e9clare l''attribut. Pour les classes statiques du m\u00e9tamod\u00e8le, utilisez une m\u00e9thode.of d\u00e9finie sur un sous-type Attribute pour fournir la classe d''entit\u00e9 et le type d''attribut de l''entit\u00e9.

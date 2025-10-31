@@ -24,6 +24,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -56,8 +57,9 @@ public class Telemetry21TCKLauncher {
     public void launchTelemetry21Tck() throws Exception {
         String suiteName = "tck-suite-application.xml";
 
-        TCKRunner.build(server, Type.MICROPROFILE, "Telemetry")
+        TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.TELEMETRY)
                         .withSuiteFileName(suiteName)
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                         .runTCK();
     }
 }

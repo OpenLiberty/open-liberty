@@ -20,7 +20,7 @@ import jakarta.data.repository.Repository;
  * Do not add methods or inheritance that would allow the entity class
  * to be discovered another way.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface People extends //
                 CustomRepository<Person, Long>, //
                 DataRepository<Person, Long> {

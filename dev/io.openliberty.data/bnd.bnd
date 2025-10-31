@@ -13,10 +13,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 Bundle-Name: Open Liberty API for Jakarta Data
 Bundle-SymbolicName: io.openliberty.data
@@ -31,9 +31,12 @@ instrument.classesExcludes: io/openliberty/data/repository/*.class
  
 # TODO switch to dev/api/ibm if we GA a feature that includes this API jar
 # Also need to update the feature file to include the javadoc zip
+#
+# Presently these are NOT APIs for customers to use, but only for us to 
+# experiment with
 # publish.wlp.jar.suffix: dev/api/ibm
 
 -buildpath: \
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  io.openliberty.jakarta.annotation.2.1,\
-  io.openliberty.jakarta.data.1.0
+  io.openliberty.jakarta.annotation.3.0,\
+  io.openliberty.jakarta.data.1.1

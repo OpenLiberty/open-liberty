@@ -34,7 +34,7 @@ import jakarta.enterprise.concurrent.Asynchronous;
  * and experimenting with how generated repository method implementations
  * fit with asynchronous methods.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Personnel {
     @Asynchronous
     @Query("UPDATE Person o SET o.lastName=?3 WHERE o.lastName=?1 AND o.ssn_id IN ?2")

@@ -152,3 +152,32 @@ tlsProfiler.option-key.file=\ \ \ \ --file
 tlsProfiler.option-desc.file=\tNem k\u00f6telez\u0151. Az eredm\u00e9ny a megadott f\u00e1jlba ker\u00fcl ki\u00edr\u00e1sra \n\ta konzolk\u00e9perny\u0151 helyett.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tA nem biztons\u00e1gos protokollokkal kapcsolatos tov\u00e1bbi inform\u00e1ci\u00f3k tartalmaz\u00e1sa.
+
+# -------- CONFIGURE FIPS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\# 
+configureFIPS.desc=\tA FIPS 140-3 konfigur\u00e1l\u00e1sa a Java-telep\u00edt\u00e9s alapj\u00e1n, amelyet a JAVA_HOME, JRE_HOME vagy WLP_DEFAULT_JAVA_HOME k\u00f6rnyezeti v\u00e1ltoz\u00f3k \u00e1ltal meghat\u00e1rozott telep\u00edt\u00e9s, ebben a sorrendben. Ha nem volt be\u00e1ll\u00edtva, akkor a FIPS 140-3 van be\u00e1ll\u00edtva a securityUtility parancs futtat\u00e1s\u00e1hoz haszn\u00e1lt JVM alapj\u00e1n ker\u00fcl be\u00e1ll\u00edt\u00e1sra. A parancs be\u00e1ll\u00edtja a FIPS 140-3 szabv\u00e1nyt a IBM Semeru Runtimes vagy a IBM SDK sz\u00e1m\u00e1ra, vagy hiba\u00fczenetet ad vissza, ha egyiket sem siker\u00fclt meghat\u00e1rozni.\n\n\tA IBM Semeru Runtimes: L\u00e9trehoz egy f\u00e1jlt, amely a FIPS 140-3 egy\u00e9ni profilt tartalmazza a k\u00f6vetkez\u0151 eszk\u00f6z\u00f6k sz\u00e1m\u00e1ra az alkalmaz\u00e1s sz\u00e1m\u00e1ra, amely kib\u0151v\u00edti a Liberty FIPS140-3-Liberty profilt, amely kiterjeszti a IBM Semeru Runtimes-t FIPS140-3-Strongly-Enforced profil. \
+    Tov\u00e1bb\u00e1 l\u00e9trehozza vagy friss\u00edti a default.env, server.env, vagy a client.env f\u00e1jlt a FIPS 140-3 enged\u00e9lyez\u00e9s\u00e9hez az al\u00e1bbi param\u00e9terek be\u00e1ll\u00edt\u00e1s\u00e1val ENABLE_FIPS140_3 k\u00f6rnyezeti v\u00e1ltoz\u00f3t az egy\u00e9ni profilf\u00e1jl el\u00e9r\u00e9si \u00fatvonal\u00e1ra.\n\n\tA IBM SDK eset\u00e9ben: L\u00e9trehozza vagy friss\u00edti a default.env, server.env, vagy client.env f\u00e1jlt a k\u00f6vetkez\u0151kre a FIPS 140-3 enged\u00e9lyez\u00e9se a ENABLE_FIPS140_3 k\u00f6rnyezet be\u00e1ll\u00edt\u00e1s\u00e1val v\u00e1ltoz\u00f3t true \u00e9rt\u00e9kre \u00e1ll\u00edtja.
+
+configureFIPS.usage.options=\t{0} configureFIPS [opci\u00f3k]
+
+configureFIPS.option-key.1.server=\ \ \ \ --server =n\u00e9v
+
+configureFIPS.option-desc.1.server=\tKiszolg\u00e1l\u00f3, amelyhez a FIPS 140-3 konfigur\u00e1l\u00e1sa sz\u00fcks\u00e9ges. Ha ez az \u00e9rt\u00e9k nem \u00e9s nincs \u00fcgyf\u00e9l megadva, akkor a FIPS 140-3 van konfigur\u00e1lva minden \u00fcgyf\u00e9l, kiszolg\u00e1l\u00f3 \u00e9s parancs eset\u00e9ben.
+
+configureFIPS.option-key.2.client=\ \ \ \ --client =n\u00e9v
+
+configureFIPS.option-desc.2.client=\t\u00dcgyf\u00e9l, amelyhez a FIPS 140-3 szabv\u00e1nyt konfigur\u00e1lni kell. Ha ez az \u00e9rt\u00e9k nem \u00e9s nincs megadva kiszolg\u00e1l\u00f3, akkor a FIPS 140-3 van konfigur\u00e1lva minden \u00fcgyf\u00e9l, kiszolg\u00e1l\u00f3 \u00e9s parancs eset\u00e9ben.
+
+configureFIPS.option-key.3.customProfileFile=\ \ \ \ --customProfileFile=name
+
+configureFIPS.option-desc.3.customProfileFile=\tA f\u00e1jl, amelybe a IBM Semeru Runtimes FIPS 140-3 egy\u00e9ni profilj\u00e1t \u00edrja.\n\tHa ez az \u00e9rt\u00e9k nincs megadva, akkor a f\u00e1jl a k\u00f6vetkez\u0151 n\u00e9vvel j\u00f6n l\u00e9tre a FIPS140-3-Liberty-Application.properties k\u00f6nyvt\u00e1rban az etc k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3 k\u00f6nyvt\u00e1r\u00e1ban tal\u00e1lhat\u00f3. Ha a kiszolg\u00e1l\u00f3 vagy az \u00fcgyf\u00e9l opci\u00f3t haszn\u00e1ltuk, akkor a f\u00e1jl a security/resources k\u00f6nyvt\u00e1rban j\u00f6n l\u00e9tre a megadott kiszolg\u00e1l\u00f3hoz vagy \u00fcgyf\u00e9lhez.\n\n\tA f\u00e1jl neve, a kiterjeszt\u00e9s n\u00e9lk\u00fcl, a f\u00e1jlkiterjeszt\u00e9s l\u00e9trehoz\u00e1s\u00e1hoz haszn\u00e1lt egy\u00e9ni profil neve; ez b\u0151v\u00edti a Liberty FIPS140-3-Liberty profilt.\n\tA f\u00e1jln\u00e9v csak alfanumerikus karaktereket \u00e9s k\u00f6t\u0151jeleket (-) tartalmazhat, al\u00e1h\u00faz\u00e1sokat (_) \u00e9s \
+    pontokat (.). A f\u00e1jl alapneve nem lehet FIPS140-3-Liberty.\n\n\tT\u00f6bb f\u00e1jl is megadhat\u00f3 ezzel az opci\u00f3val a \u00fatvonal elv\u00e1laszt\u00f3jelek haszn\u00e1lat\u00e1val. A Windows eset\u00e9ben az \u00fatvonal elv\u00e1laszt\u00f3 jel egy pontosvessz\u0151 (;). Unix-alap\u00fa rendszerek eset\u00e9n az \u00fatvonal elv\u00e1laszt\u00f3 jel a kett\u0151spont (:). Minden egy\u00e9ni profil a megadott sorrendben b\u0151v\u00edti egym\u00e1st.
+
+configureFIPS.option-key.4.disable=\ \ \ \ --disable
+
+configureFIPS.option-desc.4.disable=\tA FIPS 140-3 letilt\u00e1sa a ENABLE_FIPS140_3 k\u00f6rnyezet be\u00e1ll\u00edt\u00e1s\u00e1val v\u00e1ltoz\u00f3t false \u00e9rt\u00e9kre \u00e1ll\u00edtsuk. Ez az opci\u00f3 az \u00fcgyf\u00e9l \u00e9s a kiszolg\u00e1l\u00f3 eset\u00e9n haszn\u00e1lhat\u00f3 opci\u00f3kkal adhat\u00f3 meg a FIPS 140-3 letiltand\u00f3 \u00fcgyf\u00e9l vagy kiszolg\u00e1l\u00f3.\n\tEllenkez\u0151 esetben letiltja a FIPS 140-3 szabv\u00e1nyt az \u00f6sszes \u00fcgyf\u00e9l, kiszolg\u00e1l\u00f3 \u00e9s parancsok, kiv\u00e9ve azokat az \u00fcgyfeleket \u00e9s kiszolg\u00e1l\u00f3kat, amelyek egyedileg enged\u00e9lyezve vannak.

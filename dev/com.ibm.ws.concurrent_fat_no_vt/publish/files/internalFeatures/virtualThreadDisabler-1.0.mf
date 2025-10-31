@@ -2,6 +2,6 @@ Subsystem-ManifestVersion: 1
 IBM-ShortName: virtualThreadDisabler-1.0
 Subsystem-SymbolicName: virtualThreadDisabler-1.0; visibility:=public
 Subsystem-Version: 1.0.0
-Subsystem-Content: test.concurrent.no.vt.disabler; version="[1,1.1)"
+Subsystem-Content: test.concurrent.no.vt.disabler; version="[1,1.1)"; start-phase:=SERVICE_EARLY
 Subsystem-Type: osgi.subsystem.feature
 IBM-Feature-Version: 2

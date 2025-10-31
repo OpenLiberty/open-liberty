@@ -53,8 +53,8 @@ tested.features:\
   jsonp-2.1 
 
 -includeresource: \
-  @${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*, \
-  @${repo;com.ibm.ws.wssecurity.example.cbhwss4j}!/!META-INF/*, \
+  @\${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*, \
+  @\${repo;com.ibm.ws.wssecurity.example.cbhwss4j}!/!META-INF/*, \
   =${bin}
 
 -buildpath: \

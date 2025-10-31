@@ -20,10 +20,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.SQLNonTransientConnectionException;
-import java.sql.SQLRecoverableException;
 import java.sql.SQLSyntaxErrorException;
-import java.sql.SQLTransientConnectionException;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
@@ -43,11 +40,9 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 
 import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.persistence.cdi.DataExtension;
-import io.openliberty.data.internal.persistence.service.DBStoreEMBuilder;
 import jakarta.data.exceptions.DataConnectionException;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.EmptyResultException;
@@ -288,7 +283,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * @param original exception to possibly replace.
      * @return exception to replace with, if any. Otherwise, the original.
      */
-    @FFDCIgnore(Exception.class) // secondary error
     @Trivial
     static RuntimeException failure(Exception original, EntityManagerBuilder emb) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -298,23 +292,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(tc, "checking " + cause.getClass().getName() + " with message " + cause.getMessage());
 
-                if (emb instanceof DBStoreEMBuilder && cause instanceof SQLException) { //attempt to have the JDBC layer determine if this is a connection exception
-                    try {
-                        WSJdbcDataSource ds = (WSJdbcDataSource) emb.getDataSource(null, null);
-                        if (ds != null && ds.getDatabaseHelper().isConnectionError((java.sql.SQLException) cause)) {
-                            x = new DataConnectionException(original);
-                        }
-                    } catch (Exception e) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(tc, "Could not obtain DataSource during Exception checking");
-                    }
-                }
+                if (cause instanceof SQLException c &&
+                    emb.isConnectionError(c))
+                    x = new DataConnectionException(original);
                 if (x == null)
-                    if (cause instanceof SQLRecoverableException
-                        || cause instanceof SQLNonTransientConnectionException
-                        || cause instanceof SQLTransientConnectionException)
-                        x = new DataConnectionException(original);
-                    else if (cause instanceof SQLSyntaxErrorException)
+                    if (cause instanceof SQLSyntaxErrorException)
                         x = new MappingException(original);
                     else if (cause instanceof SQLIntegrityConstraintViolationException)
                         x = new EntityExistsException(original);
@@ -553,18 +535,24 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (queryInfo.validateParams)
                     validator.validateParameters(proxy, method, args);
 
+                int txStatus = provider.tranMgr.getStatus();
                 if ((queryType = queryInfo.type).requiresTransaction &&
-                    Status.STATUS_NO_TRANSACTION == provider.tranMgr.getStatus()) {
+                    txStatus == Status.STATUS_NO_TRANSACTION) {
                     suspendedLTC = provider.localTranCurrent.suspend();
                     provider.tranMgr.begin();
                     startedTransaction = true;
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "started global tran",
+                                 "suspended LTC: " + suspendedLTC);
+                } else if (trace && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, Util.txStatusToString(txStatus));
                 }
 
                 if (queryType != RESOURCE_ACCESS)
                     em = entityInfo.builder.createEntityManager();
 
                 returnValue = switch (queryType) {
-                    case FIND, FIND_AND_DELETE -> queryInfo.find(em, args);
+                    case FIND, FIND_AND_DELETE -> queryInfo.find(em, txStatus, args);
                     case COUNT -> queryInfo.count(em, args);
                     case EXISTS -> queryInfo.exists(em, args);
                     case INSERT -> queryInfo.insert(args[0], em);
@@ -572,7 +560,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case QM_UPDATE, QM_DELETE -> queryInfo.execute(em, args);
                     case LC_DELETE -> queryInfo.delete(args[0], em);
                     case LC_UPDATE -> queryInfo.update(args[0], em);
-                    case LC_UPDATE_RET_ENTITY -> queryInfo.findAndUpdate(args[0], em);
+                    case LC_UPDATE_MERGE -> queryInfo.findAndUpdate(args[0], em);
                     case RESOURCE_ACCESS -> getResource(method);
                 };
 
@@ -587,17 +575,30 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 try {
                     if (startedTransaction) {
                         int status = provider.tranMgr.getStatus();
-                        if (status == Status.STATUS_MARKED_ROLLBACK || failed)
+                        if (status == Status.STATUS_MARKED_ROLLBACK || failed) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "roll back global tran",
+                                         Util.txStatusToString(status));
                             provider.tranMgr.rollback();
-                        else if (status != Status.STATUS_NO_TRANSACTION)
+                        } else if (status != Status.STATUS_NO_TRANSACTION) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "commit global tran",
+                                         Util.txStatusToString(status));
                             provider.tranMgr.commit();
+                        }
                     } else {
-                        if (failed && Status.STATUS_ACTIVE == provider.tranMgr.getStatus())
+                        if (failed && Status.STATUS_ACTIVE == provider.tranMgr.getStatus()) {
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "set rollback only");
                             provider.tranMgr.setRollbackOnly();
+                        }
                     }
                 } finally {
-                    if (suspendedLTC != null)
+                    if (suspendedLTC != null) {
+                        if (trace && tc.isDebugEnabled())
+                            Tr.debug(this, tc, "resume LTC: " + suspendedLTC);
                         provider.localTranCurrent.resume(suspendedLTC);
+                    }
                 }
             }
 

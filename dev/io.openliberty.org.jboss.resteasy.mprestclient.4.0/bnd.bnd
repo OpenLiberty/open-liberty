@@ -65,8 +65,8 @@ instrument.ffdc: false
 instrument.disabled: false
 
 Include-Resource:\
-  @${repo;org.jboss.resteasy.microprofile:microprofile-rest-client-base;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy.microprofile:microprofile-rest-client;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy.microprofile:microprofile-rest-client-base;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy.microprofile:microprofile-rest-client;${resteasy-version};EXACT}, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
   org/jboss/resteasy/microprofile=${bin}/org/jboss/resteasy/microprofile, \
   META-INF=resources/META-INF

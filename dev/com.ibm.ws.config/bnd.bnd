@@ -60,7 +60,7 @@ com.ibm.ws.config.featuregen.internal.FeatureListMBeanImpl
     OSGI-INF/permissions.perm=resources/permissions.perm, \
     OSGI-INF/metatype=resources/OSGI-INF/metatype, \
     OSGI-INF/l10n=resources/OSGI-INF/l10n,\
-    @${repo;com.ibm.ws.org.eclipse.equinox.metatype}!/org/eclipse/equinox/metatype/impl/ExtendableHelper.class
+    @\${repo;com.ibm.ws.org.eclipse.equinox.metatype}!/org/eclipse/equinox/metatype/impl/ExtendableHelper.class
 
 instrument.classesExcludes: com/ibm/ws/config/internal/resources/*.class
 
@@ -80,6 +80,7 @@ instrument.classesExcludes: com/ibm/ws/config/internal/resources/*.class
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.kernel.filemonitor;version=latest,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest
 

@@ -17,6 +17,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -30,7 +31,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.businessExceptionApp.ToolErrorHandlingTools;
-import io.openliberty.mcp.internal.fat.utils.HttpTestUtils;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
  *
@@ -42,6 +43,9 @@ public class ToolErrorHandlingTest extends FATServletClient {
 
     @Server("mcp-server")
     public static LibertyServer server;
+
+    @Rule
+    public McpClient client = new McpClient(server, ENDPOINT);
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -72,7 +76,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
 
         String expectedResponseString = """
                         {
@@ -108,7 +112,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
 
         String expectedResponse = """
                         {
@@ -144,7 +148,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                           }
                         }
                         """;
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
 
         String expectedResponse = """
                         {
@@ -180,7 +184,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                           }
                         }
                         """;
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
 
         String expectedResponse = """
                         {
@@ -217,7 +221,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
 
         String expectedResponse = """
                         {
@@ -253,7 +257,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                             }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
 
         String expectedResponse = """
                             {
@@ -289,7 +293,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                             }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
 
         String expectedResponse = """
                             {
@@ -325,7 +329,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
         Log.info(getClass(), "unwrappedCheckedExceptionTool", "Raw MCP response: " + response);
 
         String expectedResponse = """
@@ -362,7 +366,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, ENDPOINT, request);
+        String response = client.callMCP(request);
         JSONObject jsonResponse = new JSONObject(response);
 
         String expectedString = """

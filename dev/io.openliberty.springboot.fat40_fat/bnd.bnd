@@ -28,6 +28,7 @@ tested.features: \
   springBoot-4.0, \
   servlet-6.1, \
   cdi-4.1, \
+  validation-3.1, \
   transportSecurity-1.0, \
   ssl-1.0, \
   springBoot-3.0, \
@@ -41,7 +42,8 @@ tested.features: \
   connectors-2.1, \
   jndi-1.0, \
   localConnector-1.0, \
-  messaging-3.1
+  messaging-3.1, \
+  persistence-3.2
   
 -buildpath: \
   com.ibm.ws.componenttest.2.0;version=latest,\
@@ -77,5 +79,7 @@ tested.features: \
   io.openliberty.springboot.fat40.concurrency.app;version=latest, \
   io.openliberty.springboot.fat40.mbean.app;version=latest, \
   io.openliberty.springboot.fat40.jms.app;version=latest, \
-  io.openliberty.springboot.fat40.transactions.app;version=latest
+  io.openliberty.springboot.fat40.transactions.app;version=latest, \
+  io.openliberty.springboot.fat40.data.app;version=latest, \
+  io.openliberty.springboot.fat40.validation.app;version=latest
 

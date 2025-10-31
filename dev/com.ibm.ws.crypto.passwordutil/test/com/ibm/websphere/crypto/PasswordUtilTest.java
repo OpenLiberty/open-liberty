@@ -17,10 +17,30 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.times;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.Map;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 
 import org.junit.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
+
+import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.AESKeyManager.KeyVersion;
+import com.ibm.ws.crypto.util.AesConfigFileParser;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.wsspi.security.crypto.PasswordEncryptException;
 
 import test.common.SharedOutputManager;
 
@@ -130,6 +150,7 @@ public class PasswordUtilTest {
 
     @Test
     public void testAESEncoding() throws Exception {
+
         String encoding = PasswordUtil.encode("WebAS", "aes");
         assertTrue("The encoded password should start with {aes} " + encoding, encoding.startsWith("{aes}"));
         String encoding2 = PasswordUtil.encode("WebAS", "aes");
@@ -143,6 +164,7 @@ public class PasswordUtilTest {
                      PasswordUtil.decode("{aes}AEmVKa+jOeA7pos+sSfpHNmH1MVfwg8ZoV29iDi6I0ZGcov6hSZsAxMhFr91jTSBYQ=="));
         assertEquals("Did not decode password encoded with AES_V1 (AES-256) encoded password", "alternatepwd",
                      PasswordUtil.decode("{aes}ARABGAM7S4HrIRtZWJ229TnxuKZrrPN3dsKrrQzCQE/3U5F4zp3UrDQ+Czmnvz1kaQyN7JktDzieJxelwu077ZYET2V+7/1Gi37iztr7lY0i+j4dlHOFIi5PESnZ7V8XOmdSbH9DSgkuJaXNoEqb"));
+
     }
 
     @Test
@@ -176,6 +198,230 @@ public class PasswordUtilTest {
         } catch (InvalidPasswordDecodingException e) {
             fail();
         }
+    }
 
+    /**
+     * Test bringing your own AES key for encoding and decoding.
+     */
+    @Test
+    public void testBYOAesKey() throws Exception {
+        byte[] keyBytes = generateRandomAes256Key();
+        String keyString = Base64.getEncoder().encodeToString(keyBytes);
+        String decoded_string = "pass1233";
+        Map<String, String> props = new HashMap<>();
+        props.put(PasswordUtil.PROPERTY_AES_KEY, keyString);
+
+        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class);
+                        MockedStatic<AESKeyManager> mock = Mockito.mockStatic(AESKeyManager.class, Mockito.CALLS_REAL_METHODS)) {
+            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
+            mock.when(() -> AESKeyManager.getKeyCharsUsingResolver(KeyVersion.AES_V2, null)).thenReturn(keyString.toCharArray());
+
+            String encodedPassword = PasswordUtil.encode(decoded_string, "aes", props);
+            assertEquals("AES_V2 byte marker not set", getAesVersionFromEncodedPassword(encodedPassword), 2);
+            assertEquals("Decoded value does not match original value", decoded_string, PasswordUtil.decode(encodedPassword));
+
+            // two invocations, one for encode and one for decode.
+            productInfoMock.verify(() -> ProductInfo.getBetaEdition(), times(2));
+            mock.verify(() -> AESKeyManager.getKeyCharsUsingResolver(KeyVersion.AES_V2, null), times(1));
+
+        }
+    }
+
+    /**
+     * Test wlp.aes.encryption.key not set with v2 password.
+     */
+    @Test
+    public void testBase64KeyPropertyNotSet() throws Exception {
+
+        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class);
+                        MockedStatic<AESKeyManager> mock = Mockito.mockStatic(AESKeyManager.class, Mockito.CALLS_REAL_METHODS)) {
+            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
+            mock.when(() -> AESKeyManager.getKeyCharsUsingResolver(KeyVersion.AES_V2, null)).thenReturn(AESKeyManager.PROPERTY_WLP_BASE64_AES_ENCRYPTION_KEY.toCharArray());
+            String v2Password = "{aes}AhBGFEeJlillfrTtgxuEL8rV+U0wtouKfmrDj0oYeoFaD4HWATqpJdEmXVacQtxJpWgMTrzBGOzwnsUZLKqmgRmrs9MPpMF4fY5vPrK1N/jOyCxyl3OzqQMwxXopecmoQIxL+lsUmw==";
+            try {
+                PasswordUtil.decode(v2Password);
+                fail("Exception should be thrown when decoding with out the wlp.aes.encryption.key set");
+            } catch (InvalidPasswordDecodingException e) {
+                //intentionally empty, test should pass if exception is caught
+            }
+
+            // two invocations, one for encode and one for decode.
+            productInfoMock.verify(() -> ProductInfo.getBetaEdition(), times(1));
+            mock.verify(() -> AESKeyManager.getKeyCharsUsingResolver(KeyVersion.AES_V2, null), times(1));
+
+        }
+    }
+
+    /**
+     * @param encodedPassword
+     * @return
+     */
+    private byte getAesVersionFromEncodedPassword(String encodedPassword) {
+        return Base64.getDecoder().decode(encodedPassword.substring(5))[0];
+    }
+
+    /**
+     * Helper method to generate a random AES-256 key.
+     *
+     * @return A byte array containing a random 256-bit AES key
+     */
+    private byte[] generateRandomAes256Key() {
+        byte[] keyBytes;
+        SecureRandom secureRandom = new SecureRandom();
+
+        try {
+            KeyGenerator keyGenerator = KeyGenerator.getInstance(CryptoUtils.ENCRYPT_ALGORITHM_AES);
+            keyGenerator.init(CryptoUtils.AES_256_KEY_LENGTH_BITS, secureRandom);
+            SecretKey secretKey = keyGenerator.generateKey();
+            keyBytes = secretKey.getEncoded();
+        } catch (NoSuchAlgorithmException e) {
+            // Fallback to SecureRandom if KeyGenerator is not available
+            keyBytes = new byte[CryptoUtils.AES_256_KEY_LENGTH_BYTES];
+            secureRandom.nextBytes(keyBytes);
+        }
+
+        return keyBytes;
+    }
+
+    /**
+     * Test that providing an invalid Base64 string as an AES key fails appropriately.
+     */
+    @Test
+    public void testInvalidBase64KeyFails() {
+        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class)) {
+            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
+
+            Map<String, String> props = new HashMap<>();
+            // Invalid base64 string: contains characters not valid in Base64 encoding
+            String invalidKey = "Not@Valid*Base64==";
+            props.put(PasswordUtil.PROPERTY_AES_KEY, invalidKey);
+
+            String testPassword = "badKeyTest";
+
+            try {
+                PasswordUtil.encode(testPassword, "aes", props);
+                fail("Encoding with an invalid Base64 key should have failed");
+            } catch (Exception e) {
+                // Verify we get the expected exception type
+                assertTrue("Exception should be InvalidPasswordEncodingException",
+                           e instanceof InvalidPasswordEncodingException);
+            }
+        }
+    }
+
+    /**
+     * Test that attempting to parse an AES encryption file with a non-existent path
+     * results in an appropriate exception.
+     */
+    @Test
+    public void testParseAesEncryptionaesConfigFileWithInvalidPath() {
+
+        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class)) {
+            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
+            // Use a path that definitely doesn't exist
+            String invalidPath = "/non/existent/path/to/aeskey.xml";
+
+            try {
+                AesConfigFileParser.parseAesEncryptionFile(invalidPath);
+                fail("Expected IOException for non-existent XML file path");
+            } catch (Exception e) {
+                // We expect some kind of IOException or parsing failure
+                assertTrue(
+                           "Unexpected exception type: " + e,
+                           e instanceof PasswordEncryptException);
+            }
+        }
+    }
+
+    /**
+     * Test that attempting to parse an AES encryption XML file which is malformed
+     * results in an appropriate exception.
+     */
+    @Test
+    public void testParseAesEncryptionaesConfigFileWithMalformedXml() throws IOException {
+
+        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class)) {
+            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
+            // Create a temporary file with invalid XML content
+            File badXml = File.createTempFile("bad-xml", ".xml");
+            try (FileWriter writer = new FileWriter(badXml)) {
+                // Write intentionally malformed XML content
+                writer.write("<variable name=\"wlp.aes.encryption.key\" value=\"someValue\" >"); // Missing closing tag
+            }
+
+            try {
+                AesConfigFileParser.parseAesEncryptionFile(badXml.getAbsolutePath());
+                fail("Expected UnsupportedConfigurationException for malformed XML content");
+            } catch (Exception e) {
+                assertTrue(
+                           "Unexpected exception type: " + e,
+                           e instanceof UnsupportedCryptoAlgorithmException);
+            } finally {
+                // Clean up the temporary file
+                badXml.delete();
+            }
+        }
+    }
+
+    /**
+     * Test that attempting to parse an AES encryption XML file which has both
+     * wlp.aes.encryption.key and wlp.password.encryption.key specified
+     */
+    @Test
+    public void testParseAesEncryptionaesConfigFileWithBothPropertiesSpecified() throws IOException {
+
+        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class)) {
+            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
+            // Create a temporary file with invalid XML content
+            File badXml = File.createTempFile("bad-xml", ".xml");
+            try (FileWriter writer = new FileWriter(badXml)) {
+                // Write intentionally malformed XML content
+                writer.write("<variable name=\"wlp.aes.encryption.key\" value=\"someValue\" />");
+                writer.write("<variable name=\"wlp.password.encryption.key\" value=\"someValue\" />");
+
+            }
+
+            try {
+                AesConfigFileParser.parseAesEncryptionFile(badXml.getAbsolutePath());
+                fail("Expected UnsupportedConfigurationException for malformed XML content");
+            } catch (Exception e) {
+                assertTrue(
+                           "Unexpected exception type: " + e,
+                           e instanceof UnsupportedCryptoAlgorithmException);
+            } finally {
+                // Clean up the temporary file
+                badXml.delete();
+            }
+        }
+    }
+
+    /**
+     * Test that attempting to parse an AES encryption XML file which has both
+     * wlp.aes.encryption.key and wlp.password.encryption.key specified
+     */
+    @Test
+    public void testParseAesEncryptionaesConfigFileWithNoPropertiesSpecified() throws IOException {
+
+        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class)) {
+            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
+            // Create a temporary file with invalid XML content
+            File badXml = File.createTempFile("bad-xml", ".xml");
+            try (FileWriter writer = new FileWriter(badXml)) {
+                // Write intentionally malformed XML content
+                writer.write("<variable name=\"name1\" value=\"someValue\" />");
+            }
+
+            try {
+                AesConfigFileParser.parseAesEncryptionFile(badXml.getAbsolutePath());
+                fail("Expected UnsupportedCryptoAlgorithmException for malformed XML content");
+            } catch (Exception e) {
+                assertTrue(
+                           "Unexpected exception type: " + e,
+                           e instanceof UnsupportedCryptoAlgorithmException);
+            } finally {
+                // Clean up the temporary file
+                badXml.delete();
+            }
+        }
     }
 }

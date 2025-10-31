@@ -40,8 +40,8 @@ public enum QueryType {
     // life cycle @Update
     LC_UPDATE(Require.TX, !Require.RETURN_HIDDEN),
 
-    // life cycle @Update with entity result
-    LC_UPDATE_RET_ENTITY(Require.TX, Require.RETURN_HIDDEN),
+    // life cycle @Update often with entity result (find & merge)
+    LC_UPDATE_MERGE(Require.TX, Require.RETURN_HIDDEN),
 
     // query method delete/@Delete/@Query(DELETE)
     QM_DELETE(Require.TX, !Require.RETURN_HIDDEN),

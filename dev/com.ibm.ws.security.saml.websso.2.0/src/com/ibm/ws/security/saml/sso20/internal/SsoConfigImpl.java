@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.common.config.CommonConfigUtils;
 import com.ibm.ws.security.filemonitor.FileBasedActionable;
@@ -50,6 +51,8 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, FileBasedActionable {
+    // Flag tells us if the message for a call to a beta method has been issued
+    private static boolean issuedBetaMessage = false;
     public static final TraceComponent tc = Tr.register(SsoConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     public static final String KEY_ID = "id";
     public static final Object KEY_PROVIDER_ID = "id";
@@ -194,8 +197,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
 
     CommonConfigUtils configUtils = new CommonConfigUtils();
 
-    public SsoConfigImpl() {
-    }
+    public SsoConfigImpl() {}
 
     /*
      * (non-Javadoc)
@@ -587,10 +589,42 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
         } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.equalsIgnoreCase(signatureMethodAlgorithm)) {
             // FIPS 140-3: Algorithm assessment complete; no changes required.
-            // FIPS users should have have SHA-1 signatures configured, if they do this is expected to fail.
+            // Already log insure algorithm at top of the class
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
+        } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            signatureBetaMessage();
+            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA384;
+        } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            signatureBetaMessage();
+            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA512;
+        } //end RSA algos
+          //begin ECDSA algos
+        else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA256.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            signatureBetaMessage();
+            return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA256;
+        } else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA384.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            signatureBetaMessage();
+            return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA384;
+        } else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA512.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            signatureBetaMessage();
+            return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA512;
         }
+        // default to sha256 otherwise
         return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
+    }
+
+    /**
+     *
+     */
+    private void signatureBetaMessage() {
+        if (!ProductInfo.getBetaEdition()) {
+            throw new UnsupportedOperationException("The samlWebSso20 signatureMethodAlgorithm option, " + signatureMethodAlgorithm + ", is beta and is not available.");
+        } else {
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta option has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
+        }
     }
 
     /*

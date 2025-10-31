@@ -344,3 +344,8 @@ PROVIDER_FATAL_CWWJP9993E.explanation=Poskytovatel rozhran\u00ed JPA (Java Persi
 PROVIDER_FATAL_CWWJP9993E.useraction=Informace naleznete v dokumentaci k poskytovateli rozhran\u00ed JPA.
 
 #-------------------------------------------------------------------------------
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W=CWWJP9994W: Server nem\u016f\u017ee vytvo\u0159it boby pro {0} PersistenceUnit, proto\u017ee: {1}.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.explanation=P\u0159i pokusu vytvo\u0159it bean pro jednotku perzistence do\u0161lo k v\u00fdjimce. CDI nem\u016f\u017ee injektovat spr\u00e1vce entit, tov\u00e1rnu spr\u00e1vce entit ani u\u017eitkov\u00e9 t\u0159\u00eddy souvisej\u00edc\u00ed s touto jednotkou perzistence.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.useraction=Vy\u0159e\u0161te v\u00fdjimku.
+
+#-------------------------------------------------------------------------------

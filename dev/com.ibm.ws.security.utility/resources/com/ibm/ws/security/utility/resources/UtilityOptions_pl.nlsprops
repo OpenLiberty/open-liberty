@@ -152,3 +152,32 @@ tlsProfiler.option-key.file=\ \ \ \ --file
 tlsProfiler.option-desc.file=\tOpcjonalna. Wynik zostanie zapisany do podanego pliku \n\tzamiast na ekran konsoli.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tUwzgl\u0119dnij dodatkowe informacje o niezabezpieczonych protoko\u0142ach.
+
+# -------- CONFIGURE FIPS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\# 
+configureFIPS.desc=\tSkonfiguruj FIPS 140-3 w oparciu o instalacj\u0119 Java skonfigurowan\u0105 przez zmienne \u015brodowiskowe JAVA_HOME, JRE_HOME lub WLP_DEFAULT_JAVA_HOME, w tej kolejno\u015bci. Je\u015bli \u017caden nie zosta\u0142 skonfigurowany, FIPS 140-3 jest konfigurowany na podstawie maszyny JVM u\u017cytej do uruchomienia polecenia securityUtility. Polecenie konfiguruje FIPS 140-3 dla IBM Semeru Runtimes lub IBM SDK, lub zwraca b\u0142\u0105d, je\u015bli nie mo\u017cna okre\u015bli\u0107 \u017cadnego z nich.\n\n\tDla IBM Semeru Runtimes: Tworzy plik zawieraj\u0105cy niestandardowy profil FIPS 140-3 do u\u017cytku przez aplikacj\u0119 aplikacj\u0119, kt\u00f3ry rozszerza profil Liberty FIPS140-3-Liberty, kt\u00f3ry rozszerza profil IBM Semeru Runtimes FIPS140-3-Strongly-Enforced profile. Ponadto, tworzy lub aktualizuje default.env, server.env, lub client.env aby w\u0142\u0105czy\u0107 FIPS 140-3 poprzez ustawienie zmiennej \u015brodowiskowej ENABLE_FIPS140_3 na \u015bcie\u017c\
+    k\u0119 do pliku profilu niestandardowego.\n\n\tDla IBM SDK: Tworzy lub aktualizuje plik default.env, server.env lub client.env w celu w\u0142\u0105czy\u0107 FIPS 140-3 poprzez ustawienie zmiennej \u015brodowiskowej ENABLE_FIPS140_3 na warto\u015b\u0107 true.
+
+configureFIPS.usage.options=\t{0} configureFIPS [opcje]
+
+configureFIPS.option-key.1.server=\ \ \ \ --server =nazwa
+
+configureFIPS.option-desc.1.server=\tSerwer, dla kt\u00f3rego ma zosta\u0107 skonfigurowany standard FIPS 140-3. Je\u015bli ta warto\u015b\u0107 nie jest i nie okre\u015blono \u017cadnego klienta, w\u00f3wczas FIPS 140-3 jest skonfigurowany dla wszystkich klient\u00f3w, serwer\u00f3w i polece\u0144.
+
+configureFIPS.option-key.2.client=\ \ \ \ --client =nazwa
+
+configureFIPS.option-desc.2.client=\tKlient, dla kt\u00f3rego ma zosta\u0107 skonfigurowany standard FIPS 140-3. Je\u015bli ta warto\u015b\u0107 nie jest i nie okre\u015blono serwera, w\u00f3wczas FIPS 140-3 jest skonfigurowany dla wszystkich klient\u00f3w, serwer\u00f3w i polece\u0144.
+
+configureFIPS.option-key.3.customProfileFile=\ \ \ \ --customProfileFile=name
+
+configureFIPS.option-desc.3.customProfileFile=\tPlik do zapisu profilu niestandardowego IBM Semeru Runtimes FIPS 140-3.\n\tJe\u015bli ta warto\u015b\u0107 nie zostanie podana, w\u00f3wczas tworzony jest plik o nazwie FIPS140-3-Liberty-Application.properties w katalogu etc instalacji instalacji WLP. Je\u015bli u\u017cyto opcji serwera lub klienta, plik plik jest tworzony w katalogu security/resources dla okre\u015blonego serwera lub klienta.\n\n\tNazwa pliku, bez rozszerzenia, jest u\u017cywana do utworzenia nazwy profilu niestandardowego nazwy profilu niestandardowego; rozszerza ona profil Liberty FIPS140-3-Liberty.\n\tNazwa pliku musi zawiera\u0107 tylko znaki alfanumeryczne, my\u015blniki (-), podkre\u015blniki (_) i kropki (.). Podstawow\u0105 nazw\u0105 pliku nie mo\u017ce by\u0107 FIPS140-3-Liberty.\n\n\tZa pomoc\u0105 tej opcji mo\u017cna okre\u015bli\u0107 wiele plik\u00f3w, u\u017cywaj\u0105c znak\u00f3w separator\u00f3w \u015bcie\u017cek. W systemie Windows separatorem \u015b\
+    cie\u017cek jest \u015brednik (;). W systemach uniksowych separatorem \u015bcie\u017cek jest dwukropek (:). Ka\u017cdy profil niestandardowy rozszerza ka\u017cdy inny profil w kolejno\u015bci, w jakiej zosta\u0142y okre\u015blone.
+
+configureFIPS.option-key.4.disable=\ \ \ \ --disable
+
+configureFIPS.option-desc.4.disable=\tWy\u0142\u0105cz FIPS 140-3, ustawiaj\u0105c zmienn\u0105 \u015brodowiskow\u0105 ENABLE_FIPS140_3 na warto\u015b\u0107 false. Ta opcja mo\u017ce by\u0107 u\u017cywana z opcjami klienta i serwera aby okre\u015bli\u0107 klienta lub serwer do wy\u0142\u0105czenia FIPS 140-3.\n\tW przeciwnym razie wy\u0142\u0105cza FIPS 140-3 dla wszystkich klient\u00f3w, serwer\u00f3w i polece\u0144 z wyj\u0105tkiem tych, kt\u00f3re polece\u0144, z wyj\u0105tkiem tych klient\u00f3w i serwer\u00f3w, kt\u00f3re zosta\u0142y indywidualnie w\u0142\u0105czone.

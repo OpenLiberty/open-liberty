@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Ensure that the key store,
 
 # Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
 # -------------------------------------------------------------------------------------------------
-NO_USER_REGISTRY=CWWKS9660E: The orb element with the {0} id attribute requires a user registry but no user registry became available within {1} seconds.   As a result, no application will start. Ensure that you have configured an appropriate user registry in the server.xml file.
+NO_USER_REGISTRY=CWWKS9660E: The orb element with the {0} id attribute requires a user registry but no user registry became available within {1} seconds. As a result, no application will start. Ensure that you have configured an appropriate user registry in the server.xml file. For environments that use ORB-based components such as EJB applications, defining a user registry is required. If these components are not in use, this message can be safely ignored.
 NO_USER_REGISTRY.explanation=No application has started because a secured Object Request Broker (ORB) on a server requires a user registry, but no user registry was found. After an appropriate user registry has been configured, applications will start.
 NO_USER_REGISTRY.useraction=Ensure that you have configured a user registry appropriate for your environment.
 

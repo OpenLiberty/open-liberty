@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2021 IBM Corporation and others.
+ * Copyright (c) 2008, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,9 +54,6 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 	/** instance that is currently trying to create a virtual connection */
 	private static SipUdpConnLink s_connectingInstance = null;
 
-	/** switched to true in first send or receive */
-	private boolean m_connected;
-
 	/** channel that created this connection */
 	private SipUdpInboundChannel m_channel;
 
@@ -81,6 +78,8 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 	 * running in the control region
 	 */
 	private boolean m_needToLearnRouterEndpoint;
+
+	private boolean closeAlreadyCalled = false;
 
 	/** nested class that sends outbound messages on a separate thread */
 	private static class SendThread extends Thread {
@@ -166,7 +165,7 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 					// wait here until there's something to send
 					MessageContext messageContext = null;
 					synchronized (m_outMessages) {
-						if (m_outMessages.isEmpty() || !m_connLink.m_connected) {
+						if (m_outMessages.isEmpty()) {
 							m_outMessages.wait();
 						}
 						if (!m_running) {
@@ -264,7 +263,6 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 	private SipUdpConnLink(SipUdpInboundChannel channel) {
 		m_channel = channel;
 		m_sendThread = new SendThread(this);
-		m_connected = false;
 		m_outboundBuffer = null;
 		m_sendThread.start();
 
@@ -302,17 +300,17 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 		return current;
 	}
 
-	/**
-	 * establishes the outbound virtual connection
-	 */
-	private void connect(MessageContext messageContext) throws IOException {
-		String outboundChainName = m_channel.getOutboundChainName();
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(this, tc, "<connect>", "outboundChainName = " + outboundChainName);
-		}
-		
-		// TODO connect async?
-	}
+    /**
+     * No Op -- Should already be connected and active. 
+     */
+    private void connect(MessageContext messageContext) throws IOException {
+        String outboundChainName = m_channel.getOutboundChainName();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Boolean isActive =  ((SipUdpConnection)messageContext.getSipConnection()).getChannel().isActive();
+            Tr.debug(this, tc, "<connect>", "outboundChainName = " + outboundChainName + " isActive = " + isActive);
+        }
+    }
+
 
 	/**
 	 * send queued outbound message
@@ -322,11 +320,7 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 	 */
 	public void send(MessageContext messageContext, UseCompactHeaders useCompactHeaders) throws IOException {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(this, tc, "SipUdpConnLink.send: " + System.identityHashCode(messageContext) + " isconnected = "
-					+ m_connected);
-		}
-		if (!m_connected) {
-			connect(messageContext);
+			Tr.debug(this, tc, "SipUdpConnLink.send: " + System.identityHashCode(messageContext));
 		}
 		m_sendThread.queue(messageContext);
 	}
@@ -380,9 +374,6 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 				Tr.debug(this, tc, "complete", "Warning: dropping request under overloaded situation");
 			}
 		}
-		if (!m_connected) {
-			m_connected = true;
-		}
 		if (senderAddr == null) {
 			if (c_logger.isInfoEnabled()) {
 				c_logger.info("complete", null, "A message in order to use UDP connection link");
@@ -419,17 +410,17 @@ public class SipUdpConnLink implements UdpSender, ChannelFutureListener {
 	 * send thread (immediate) or from the channel thread (asynchronous)
 	 */
 	void releaseOutboundBuffer() {
-		// TODO do we need to release a buffer ?
-		// m_outboundBuffer.release();
+		// No need to release the ByteBuf as the reference count should be 0 by this point. 
+		// Reference count should have been handled by the writeandflush method
 		m_outboundBuffer = null;
 	}
 
 	public void close(Throwable e) {
-		if (!m_connected) {
-			// avoid double-close
+		// avoid double close
+		if(closeAlreadyCalled){ 
 			return;
 		}
-		m_connected = false;
+		closeAlreadyCalled = true;
 
 		// remove this conn link from the global table
 		s_instances.remove(m_channel.getListeningPoint());

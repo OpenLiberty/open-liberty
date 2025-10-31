@@ -12,21 +12,22 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.acs;
 
-import static com.ibm.ws.security.saml.sso20.common.CommonMockObjects.SAML20_AUTHENTICATION_FAIL;
-import static com.ibm.ws.security.saml.sso20.common.CommonMockObjects.SETUP;
+import static com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects.SAML20_AUTHENTICATION_FAIL;
+import static com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects.SETUP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.when;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.States;
-import org.joda.time.DateTime;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,11 +35,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
+import org.mockito.Mockito;
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.saml.common.messaging.context.SAMLPeerEntityContext;
 import org.opensaml.saml.common.messaging.context.SAMLProtocolContext;
 import org.opensaml.saml.common.xml.SAMLConstants;
-import org.opensaml.saml.metadata.resolver.impl.DOMMetadataResolver;
 import org.opensaml.saml.saml2.core.Assertion;
 import org.opensaml.saml.saml2.core.Audience;
 import org.opensaml.saml.saml2.core.AudienceRestriction;
@@ -56,7 +57,6 @@ import org.opensaml.saml.saml2.metadata.EntityDescriptor;
 import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.xmlsec.SignatureValidationParameters;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
-import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
 
@@ -64,7 +64,7 @@ import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
-import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
+import com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
@@ -73,8 +73,7 @@ import test.common.SharedOutputManager;
 @SuppressWarnings({ "unchecked", "rawtypes" })
 public class AssertionValidatorTest {
 
-    private static final CommonMockObjects common = new CommonMockObjects();
-    private static final Mockery mockery = common.getMockery();
+    private static final CommonMockitoObjects common = new CommonMockitoObjects();
 
     private static final Assertion assertion = common.getAssertion();
     private static final MessageContext messageContext = common.getMessageContext();
@@ -88,23 +87,22 @@ public class AssertionValidatorTest {
     private static final HttpServletRequest request = common.getServletRequest();
     private static final Issuer issuer = common.getIssuer();
 
-    private static final AcsDOMMetadataProvider acsmetadataProvider = mockery.mock(AcsDOMMetadataProvider.class);
+    private static final AcsDOMMetadataProvider acsmetadataProvider = Mockito.mock(AcsDOMMetadataProvider.class);
     private static final NameID nameId = common.getNameId();
     private static final ForwardRequestInfo requestInfo = common.getRequestInfo();
 
     private static final Signature signature = common.getSignature();
     private static final SsoConfig ssoConfig = common.getSsoConfig();
     private static final SsoSamlService ssoService = common.getSsoService();
-    private static final States stateMachine = common.getStateMachine();
     private static final Subject subject = common.getSubject();
     private static final SubjectConfirmation subjectConfirmation = common.getSubjectConfirmation();
     private static final SubjectConfirmationData subjectConfirmationData = common.getSubjectConfirmationData();
 
-    private static final SAMLProtocolContext samlProtocolContext = mockery.mock(SAMLProtocolContext.class);
-    private static final SecurityParametersContext securityParamContext = mockery.mock(SecurityParametersContext.class);
-    private static final SignatureValidationParameters signatureValidationParams = mockery.mock(SignatureValidationParameters.class);
-    private static final SignatureTrustEngine signatureTrustEngine = mockery.mock(SignatureTrustEngine.class);
-    private static final Audience audience = mockery.mock(Audience.class, "audience");
+    private static final SAMLProtocolContext samlProtocolContext = Mockito.mock(SAMLProtocolContext.class);
+    private static final SecurityParametersContext securityParamContext = Mockito.mock(SecurityParametersContext.class);
+    private static final SignatureValidationParameters signatureValidationParams = Mockito.mock(SignatureValidationParameters.class);
+    private static final SignatureTrustEngine signatureTrustEngine = Mockito.mock(SignatureTrustEngine.class);
+    private static final Audience audience = Mockito.mock(Audience.class);
     
     private static final Response samlResponse = common.getSamlResponse();
 
@@ -126,7 +124,7 @@ public class AssertionValidatorTest {
     
     private static AssertionValidator validator;
     private static String stateTest;
-    private static DateTime date;
+    private static Instant date;
     private static QName conditionQName;
     private static String protocol = SAMLConstants.SAML20P_NS;
     private static List<Audience> listAudience = new ArrayList<Audience>();
@@ -145,156 +143,94 @@ public class AssertionValidatorTest {
     @BeforeClass
     public static void setup() {
         outputMgr.trace("*=all");
-        stateMachine.startsAs(SETUP);
         listConditions.add(condition);
 
-        date = new DateTime().plusYears(YEARS);
+        date = Instant.now().plus(YEARS * 365, ChronoUnit.DAYS);
         conditionQName = OneTimeUse.DEFAULT_ELEMENT_NAME;
 
-        mockery.checking(new Expectations() {
-            {
-                allowing(ssoConfig).getSpHostAndPort();
-                will(returnValue(null));
-                allowing(context).getSsoConfig();
-                will(returnValue(ssoConfig));
-                allowing(ssoConfig).isPkixTrustEngineEnabled();
-                will(returnValue(false));
-                allowing(context).getMessageContext();
-                will(returnValue(messageContext));
-                allowing(messageContext).getSubcontext(SAMLPeerEntityContext.class, true);
-                will(returnValue(samlPeerEntityContext));
-                allowing(messageContext).getSubcontext(SAMLPeerEntityContext.class);
-                will(returnValue(samlPeerEntityContext));
-                allowing(samlPeerEntityContext).setAuthenticated(with(any(Boolean.class)));
-                allowing(samlPeerEntityContext).getRole();
-                will(returnValue(role));
-                allowing(messageContext).getSubcontext(SAMLProtocolContext.class);
-                will(returnValue(samlProtocolContext));                
-                allowing(samlProtocolContext).getProtocol();
-                will(returnValue(protocol));
-                allowing(messageContext).getSubcontext(SecurityParametersContext.class, true);
-                will(returnValue(securityParamContext));
-                allowing(messageContext).getSubcontext(SecurityParametersContext.class);
-                will(returnValue(securityParamContext));
-                allowing(securityParamContext).setSignatureValidationParameters(with(any(SignatureValidationParameters.class)));
-                allowing(securityParamContext).getSignatureValidationParameters();
-                will(returnValue(signatureValidationParams));
-                allowing(signatureValidationParams).getSignatureTrustEngine();
-                will(returnValue(signatureTrustEngine));
+        // Setup common mock behaviors
+        when(ssoConfig.getSpHostAndPort()).thenReturn(null);
+        when(context.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.isPkixTrustEngineEnabled()).thenReturn(false);
+        when(context.getMessageContext()).thenReturn(messageContext);
+        when(messageContext.getSubcontext(SAMLPeerEntityContext.class, true)).thenReturn(samlPeerEntityContext);
+        when(messageContext.getSubcontext(SAMLPeerEntityContext.class)).thenReturn(samlPeerEntityContext);
+        when(samlPeerEntityContext.getRole()).thenReturn(role);
+        when(messageContext.getSubcontext(SAMLProtocolContext.class)).thenReturn(samlProtocolContext);
+        when(samlProtocolContext.getProtocol()).thenReturn(protocol);
+        when(messageContext.getSubcontext(SecurityParametersContext.class, true)).thenReturn(securityParamContext);
+        when(messageContext.getSubcontext(SecurityParametersContext.class)).thenReturn(securityParamContext);
+        when(securityParamContext.getSignatureValidationParameters()).thenReturn(signatureValidationParams);
+        when(signatureValidationParams.getSignatureTrustEngine()).thenReturn(signatureTrustEngine);
 
-                allowing(context).getPeerEntityMetadata();
-                will(returnValue(entityDescriptor));
-                allowing(context).getCachedRequestInfo();
-                will(returnValue(requestInfo));
-                one(context).getExternalRelayState();
-                will(returnValue(null));
-                when(stateMachine.is(SETUP));
-                allowing(context).getHttpServletRequest();
-                will(returnValue(request));
-                allowing(context).getSsoService();
-                will(returnValue(ssoService));
-                one(context).setSubjectNameIdentifier(nameId);
+        when(context.getPeerEntityMetadata()).thenReturn(entityDescriptor);
+        when(context.getCachedRequestInfo()).thenReturn(requestInfo);
+        when(context.getExternalRelayState()).thenReturn(null);
+        when(context.getHttpServletRequest()).thenReturn(request);
+        when(context.getSsoService()).thenReturn(ssoService);
 
-                allowing(ssoConfig).getClockSkew();
-                will(returnValue(0l));
-                one(ssoConfig).isWantAssertionsSigned();
-                will(returnValue(false));
-                when(stateMachine.is(SETUP));
+        when(ssoConfig.getClockSkew()).thenReturn(0L);
+        when(ssoConfig.isWantAssertionsSigned()).thenReturn(false);
 
-                one(entityDescriptor).getEntityID();
-                will(returnValue(""));
-                when(stateMachine.is(SETUP));
+        when(entityDescriptor.getEntityID()).thenReturn("");
 
-                allowing(issuer).getValue();
-                will(returnValue(""));
-                allowing(ssoConfig).getPkixTrustedIssuers();
-                will(returnValue(null));
-                when(stateMachine.is(SETUP));
-                atLeast(2).of(issuer).getFormat();
-                will(returnValue(SAML_ISSUER_FORMAT));
-                when(stateMachine.is(SETUP));
+        when(issuer.getValue()).thenReturn("");
+        when(ssoConfig.getPkixTrustedIssuers()).thenReturn(null);
+        when(issuer.getFormat()).thenReturn(SAML_ISSUER_FORMAT);
 
-                allowing(assertion).getIssuer();
-                will(returnValue(issuer));
-                one(assertion).getSignature();
-                will(returnValue(null));
-                when(stateMachine.is(SETUP));
-                allowing(assertion).getSubject();
-                will(returnValue(subject));
-                allowing(assertion).getConditions();
-                will(returnValue(conditions));
-                allowing(assertion).getAuthnStatements();
-                will(returnValue(listAuthn));
+        when(assertion.getIssuer()).thenReturn(issuer);
+        when(assertion.getSignature()).thenReturn(null);
+        when(assertion.getSubject()).thenReturn(subject);
+        when(assertion.getConditions()).thenReturn(conditions);
+        when(assertion.getAuthnStatements()).thenReturn(listAuthn);
 
-                allowing(subject).getSubjectConfirmations();
-                will(returnValue(listSubjectConfirmation));
-                one(subject).getNameID();
-                will(returnValue(nameId));
+        when(subject.getSubjectConfirmations()).thenReturn(listSubjectConfirmation);
+        when(subject.getNameID()).thenReturn(nameId);
 
-                allowing(subjectConfirmation).getMethod();
-                will(returnValue(METHOD_BEARER));
-                when(stateMachine.isNot(INVALID_METHOD));
-                allowing(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(subjectConfirmationData));
-                when(stateMachine.is(SETUP));
+        when(subjectConfirmation.getMethod()).thenReturn(METHOD_BEARER);
+        when(subjectConfirmation.getSubjectConfirmationData()).thenReturn(subjectConfirmationData);
 
-                one(subjectConfirmationData).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(SETUP));
-                allowing(subjectConfirmationData).getNotOnOrAfter();
-                will(returnValue(date));
-                when(stateMachine.is(SETUP));
-                one(subjectConfirmationData).getInResponseTo();
-                will(returnValue(SAML_REQUESTINFO_ID));
-                when(stateMachine.is(SETUP));
-                allowing(subjectConfirmationData).getRecipient();
-                will(returnValue(RECIPIENT_URL));
-                when(stateMachine.is(SETUP));
+        when(subjectConfirmationData.getNotBefore()).thenReturn(null);
+        when(subjectConfirmationData.getNotOnOrAfter()).thenReturn(date);
+        when(subjectConfirmationData.getInResponseTo()).thenReturn(SAML_REQUESTINFO_ID);
+        when(subjectConfirmationData.getRecipient()).thenReturn(RECIPIENT_URL);
 
-                one(requestInfo).getInResponseToId();
-                will(returnValue(SAML_REQUESTINFO_ID));
-                when(stateMachine.is(SETUP));
+        when(requestInfo.getInResponseToId()).thenReturn(SAML_REQUESTINFO_ID);
 
-                allowing(ssoService).getProviderId();
-                will(returnValue(SERVER_PROVIDER_ID));
-                when(stateMachine.isNot(INVALID_PROVIDERID));
+        when(ssoService.getProviderId()).thenReturn(SERVER_PROVIDER_ID);
 
-                allowing(request).getServerName();
-                will(returnValue(SERVER_NAME));
-                allowing(request).getServerPort();
-                will(returnValue(SERVER_PORT));
-                allowing(request).getScheme();
-                will(returnValue(SERVER_PROTOCOL));
-                allowing(request).isSecure();
-                will(returnValue(true));
+        when(request.getServerName()).thenReturn(SERVER_NAME);
+        when(request.getServerPort()).thenReturn(SERVER_PORT);
+        when(request.getScheme()).thenReturn(SERVER_PROTOCOL);
+        when(request.isSecure()).thenReturn(true);
 
-                allowing(conditions).getAudienceRestrictions();
-                will(returnValue(listAudienceRestriction));
-                one(conditions).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(SETUP));
-                one(conditions).getNotOnOrAfter();
-                will(returnValue(null));
-                when(stateMachine.is(SETUP));
-                allowing(conditions).getConditions();
-                will(returnValue(listConditions));
+        when(conditions.getAudienceRestrictions()).thenReturn(listAudienceRestriction);
+        when(conditions.getNotBefore()).thenReturn(null);
+        when(conditions.getNotOnOrAfter()).thenReturn(null);
+        when(conditions.getConditions()).thenReturn(listConditions);
 
-                allowing(condition).getElementQName();
-                will(returnValue(conditionQName));
-                when(stateMachine.is(SETUP));
-
-            }
-
-        });
+        when(condition.getElementQName()).thenReturn(conditionQName);
 
         validator = new AssertionValidator(context, assertion);
     }
 
     @Before
     public void before() {
-        stateMachine.become(SETUP);
         stateTest = currentTest.getMethodName();
-
+        
+        // Reset mocks for each test
+        Mockito.reset(
+            acsmetadataProvider, samlProtocolContext, securityParamContext, 
+            signatureValidationParams, signatureTrustEngine, audience
+        );
+        
+        // Re-setup common behaviors
+        when(samlProtocolContext.getProtocol()).thenReturn(protocol);
+        when(securityParamContext.getSignatureValidationParameters()).thenReturn(signatureValidationParams);
+        when(signatureValidationParams.getSignatureTrustEngine()).thenReturn(signatureTrustEngine);
+        when(ssoService.getProviderId()).thenReturn(SERVER_PROVIDER_ID);
+        
+        // Clear and reset lists
         listAuthn.clear();
         listSubjectConfirmation.clear();
         listAudienceRestriction.clear();
@@ -319,15 +255,8 @@ public class AssertionValidatorTest {
 
     @Test
     public void testValidateIssuer_NoIssuer() {
-        stateMachine.become(stateTest);
-
-        mockery.checking(new Expectations() {
-            {
-                atLeast(3).of(issuer).getFormat();
-                will(returnValue("unmatched format"));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        when(issuer.getFormat()).thenReturn("unmatched format");
 
         try {
             validator.validateIssuer(false);
@@ -340,26 +269,11 @@ public class AssertionValidatorTest {
 
     @Test
     public void testValidateIssuer_IncorrectIssuer() {
-        stateMachine.become(stateTest);
-
-        mockery.checking(new Expectations() {
-            {
-                one(issuer).getFormat();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-
-                atMost(2).of(entityDescriptor).getEntityID();
-                will(returnValue("incorrect_issuer"));
-                when(stateMachine.is(stateTest));
-
-                one(ssoConfig).getPkixTrustedIssuers();//
-                will(returnValue(null));//
-
-                atMost(2).of(issuer).getValue();
-                will(returnValue("correct_issuer"));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        when(issuer.getFormat()).thenReturn(null);
+        when(entityDescriptor.getEntityID()).thenReturn("incorrect_issuer");
+        when(issuer.getValue()).thenReturn("correct_issuer");
+        when(ssoConfig.getPkixTrustedIssuers()).thenReturn(null);
 
         try {
             validator.validateIssuer(false);
@@ -372,36 +286,14 @@ public class AssertionValidatorTest {
 
     @Test
     public void testValidateSignature() {
-        stateMachine.become(stateTest);
-
-        mockery.checking(new Expectations() {
-            {
-                one(context).getMetadataProvider();
-                will(returnValue(acsmetadataProvider));
-                when(stateMachine.is(stateTest));
-
-                allowing(samlPeerEntityContext).isAuthenticated();
-                will(returnValue(false));
-                when(stateMachine.is(stateTest));
-                allowing(messageContext).getMessage();
-                will(returnValue(samlResponse));
-                when(stateMachine.is(stateTest));
-
-                one(ssoConfig).isWantAssertionsSigned();
-                will(returnValue(true));
-                when(stateMachine.is(stateTest));
-
-                one(assertion).getSignature();
-                will(returnValue(signature));
-                when(stateMachine.is(stateTest));
-                one(assertion).isSigned();
-                will(returnValue(false));
-                when(stateMachine.is(stateTest));
-                allowing(samlResponse).isSigned();
-                will(returnValue(false));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        when(context.getMetadataProvider()).thenReturn(acsmetadataProvider);
+        when(samlPeerEntityContext.isAuthenticated()).thenReturn(false);
+        when(messageContext.getMessage()).thenReturn(samlResponse);
+        when(ssoConfig.isWantAssertionsSigned()).thenReturn(true);
+        when(assertion.getSignature()).thenReturn(signature);
+        when(assertion.isSigned()).thenReturn(false);
+        when(samlResponse.isSigned()).thenReturn(false);
 
         try {
             validator.validateSignature();
@@ -414,39 +306,17 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifyAssertionSignature() {
-        stateMachine.become(stateTest);
-
         final String LOW_VALUE = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
         final String HIGH_VALUE = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
 
-        mockery.checking(new Expectations() {
-            {
-                one(context).getMetadataProvider();
-                will(returnValue(acsmetadataProvider));
-                when(stateMachine.is(stateTest));
-
-                allowing(messageContext).getMessage();
-                will(returnValue(samlResponse));
-                when(stateMachine.is(stateTest));
-                
-                one(assertion).isSigned();
-                will(returnValue(true));
-                when(stateMachine.is(stateTest));
-                allowing(samlResponse).isSigned();
-                will(returnValue(false));
-                when(stateMachine.is(stateTest));
-                
-                one(assertion).getSignature();
-                will(returnValue(signature));
-                when(stateMachine.is(stateTest));
-
-                one(ssoConfig).getSignatureMethodAlgorithm();
-                will(returnValue(HIGH_VALUE));
-
-                one(signature).getSignatureAlgorithm();
-                will(returnValue(LOW_VALUE));
-            }
-        });
+        // Setup specific mock behavior for this test
+        when(context.getMetadataProvider()).thenReturn(acsmetadataProvider);
+        when(messageContext.getMessage()).thenReturn(samlResponse);
+        when(assertion.isSigned()).thenReturn(true);
+        when(samlResponse.isSigned()).thenReturn(false);
+        when(assertion.getSignature()).thenReturn(signature);
+        when(ssoConfig.getSignatureMethodAlgorithm()).thenReturn(HIGH_VALUE);
+        when(signature.getSignatureAlgorithm()).thenReturn(LOW_VALUE);
 
         try {
             validator.verifyAssertionSignature();
@@ -459,13 +329,8 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifySubject_InvalidMethod() {
-        stateMachine.become(INVALID_METHOD);
-        mockery.checking(new Expectations() {
-            {
-                atMost(2).of(subjectConfirmation).getMethod();
-                will(returnValue(INVALID_METHOD));
-            }
-        });
+        // Setup specific mock behavior for this test
+        when(subjectConfirmation.getMethod()).thenReturn(INVALID_METHOD);
 
         try {
             validator.verifySubject();
@@ -478,15 +343,8 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifySubject_SubjectConfirmationData_IsNull() {
-        stateMachine.become(stateTest);
-
-        mockery.checking(new Expectations() {
-            {
-                one(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        when(subjectConfirmation.getSubjectConfirmationData()).thenReturn(null);
 
         try {
             validator.verifySubject();
@@ -499,21 +357,9 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifySubject_NotBefore_IsNull() {
-        stateMachine.become(stateTest);
-
-        date = new DateTime();
-
-        mockery.checking(new Expectations() {
-            {
-                one(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(subjectConfirmationData));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmationData).getNotBefore();
-                will(returnValue(date));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        date = Instant.now();
+        when(subjectConfirmationData.getNotBefore()).thenReturn(date);
 
         try {
             validator.verifySubject();
@@ -526,23 +372,8 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifySubject_NotOnOrAfter_IsNull() {
-        stateMachine.become(stateTest);
-
-        mockery.checking(new Expectations() {
-            {
-                one(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(subjectConfirmationData));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmationData).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-
-                allowing(subjectConfirmationData).getNotOnOrAfter();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        when(subjectConfirmationData.getNotOnOrAfter()).thenReturn(null);
 
         try {
             validator.verifySubject();
@@ -555,24 +386,9 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifySubject_NotOnOrAfter_IsBeforeNow() {
-        stateMachine.become(stateTest);
-
-        date = new DateTime().minusYears(1000);
-
-        mockery.checking(new Expectations() {
-            {
-                one(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(subjectConfirmationData));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmationData).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-                allowing(subjectConfirmationData).getNotOnOrAfter();
-                will(returnValue(date));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        date = Instant.now().minus(1000 * 365, ChronoUnit.DAYS);
+        when(subjectConfirmationData.getNotOnOrAfter()).thenReturn(date);
 
         try {
             validator.verifySubject();
@@ -585,38 +401,13 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifySubject_RecipientNull() {
-        stateMachine.become(stateTest);
-
-        date = new DateTime().plusYears(1000);
-
-        mockery.checking(new Expectations() {
-            {
-                one(context).getExternalRelayState();
-                will(returnValue(with(any(String.class))));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(subjectConfirmationData));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmationData).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-                allowing(subjectConfirmationData).getNotOnOrAfter();
-                will(returnValue(date));
-                when(stateMachine.is(stateTest));
-                one(subjectConfirmationData).getInResponseTo();
-                will(returnValue(SAME_VALUE));
-                when(stateMachine.is(stateTest));
-                one(subjectConfirmationData).getRecipient();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-
-                one(requestInfo).getInResponseToId();
-                will(returnValue(SAME_VALUE));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        date = Instant.now().plus(1000 * 365, ChronoUnit.DAYS);
+        when(context.getExternalRelayState()).thenReturn("some-relay-state");
+        when(subjectConfirmationData.getNotOnOrAfter()).thenReturn(date);
+        when(subjectConfirmationData.getInResponseTo()).thenReturn(SAME_VALUE);
+        when(subjectConfirmationData.getRecipient()).thenReturn(null);
+        when(requestInfo.getInResponseToId()).thenReturn(SAME_VALUE);
 
         try {
             validator.verifySubject();
@@ -629,38 +420,13 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifySubject_RecipientNotMatch() {
-        stateMachine.become(stateTest);
-
-        date = new DateTime().plusYears(1000);
-
-        mockery.checking(new Expectations() {
-            {
-                one(context).getExternalRelayState();
-                will(returnValue(with(any(String.class))));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(subjectConfirmationData));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmationData).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-                allowing(subjectConfirmationData).getNotOnOrAfter();
-                will(returnValue(date));
-                when(stateMachine.is(stateTest));
-                one(subjectConfirmationData).getInResponseTo();
-                will(returnValue(SAME_VALUE));
-                when(stateMachine.is(stateTest));
-                allowing(subjectConfirmationData).getRecipient();
-                will(returnValue("recipient_does_not_match"));
-                when(stateMachine.is(stateTest));
-
-                one(requestInfo).getInResponseToId();
-                will(returnValue(SAME_VALUE));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        date = Instant.now().plus(1000 * 365, ChronoUnit.DAYS);
+        when(context.getExternalRelayState()).thenReturn("some-relay-state");
+        when(subjectConfirmationData.getNotOnOrAfter()).thenReturn(date);
+        when(subjectConfirmationData.getInResponseTo()).thenReturn(SAME_VALUE);
+        when(subjectConfirmationData.getRecipient()).thenReturn("recipient_does_not_match");
+        when(requestInfo.getInResponseToId()).thenReturn(SAME_VALUE);
 
         try {
             validator.verifySubject();
@@ -673,38 +439,13 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifySubject_RecipientDoesNotMatchAcsUrl() throws SamlException {
-        stateMachine.become(stateTest);
-
-        date = new DateTime().plusYears(1000);
-
-        mockery.checking(new Expectations() {
-            {
-                one(context).getExternalRelayState();
-                will(returnValue(with(any(String.class))));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(subjectConfirmationData));
-                when(stateMachine.is(stateTest));
-
-                one(subjectConfirmationData).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-                allowing(subjectConfirmationData).getNotOnOrAfter();
-                will(returnValue(date));
-                when(stateMachine.is(stateTest));
-                one(subjectConfirmationData).getInResponseTo();
-                will(returnValue(SAME_VALUE));
-                when(stateMachine.is(stateTest));
-                allowing(subjectConfirmationData).getRecipient();
-                will(returnValue("http://bogusmachine.ibm.com"));
-                when(stateMachine.is(stateTest));
-
-                one(requestInfo).getInResponseToId();
-                will(returnValue(SAME_VALUE));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        date = Instant.now().plus(1000 * 365, ChronoUnit.DAYS);
+        when(context.getExternalRelayState()).thenReturn("some-relay-state");
+        when(subjectConfirmationData.getNotOnOrAfter()).thenReturn(date);
+        when(subjectConfirmationData.getInResponseTo()).thenReturn(SAME_VALUE);
+        when(subjectConfirmationData.getRecipient()).thenReturn("http://bogusmachine.ibm.com");
+        when(requestInfo.getInResponseToId()).thenReturn(SAME_VALUE);
 
         try {
             validator.verifySubject();
@@ -743,17 +484,9 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifyConditions_AssertionBefore() {
-        stateMachine.become(stateTest);
-
-        date = new DateTime().plusYears(1000);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(conditions).getNotBefore();
-                will(returnValue(date));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        date = Instant.now().plus(1000 * 365, ChronoUnit.DAYS);
+        when(conditions.getNotBefore()).thenReturn(date);
 
         try {
             validator.verifyConditions();
@@ -766,20 +499,10 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifyConditions_AssertionAfter() {
-        stateMachine.become(stateTest);
-
-        date = new DateTime().minusYears(1000);
-
-        mockery.checking(new Expectations() {
-            {
-                one(conditions).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-                allowing(conditions).getNotOnOrAfter();
-                will(returnValue(date));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        // Setup specific mock behavior for this test
+        date = Instant.now().minus(1000 * 365, ChronoUnit.DAYS);
+        when(conditions.getNotBefore()).thenReturn(null);
+        when(conditions.getNotOnOrAfter()).thenReturn(date);
 
         try {
             validator.verifyConditions();
@@ -792,35 +515,17 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifyConditions_ConditionQNameEqualsAudienceRestriction() {
-        stateMachine.become(stateTest);
-
+        // Setup specific mock behavior for this test
         conditionQName = AudienceRestriction.DEFAULT_ELEMENT_NAME;
-
+        
         listAudience.clear();
         listAudience.add(audience);
-
-        mockery.checking(new Expectations() {
-            {
-                one(conditions).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-                one(conditions).getNotOnOrAfter();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-
-                one(condition).getElementQName();
-                will(returnValue(conditionQName));
-                when(stateMachine.is(stateTest));
-
-                one(audienceRestriction).getAudiences();
-                will(returnValue(listAudience));
-                when(stateMachine.is(stateTest));
-
-                allowing(audience).getAudienceURI();
-                will(returnValue(AUDIENCE_URL));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        
+        when(conditions.getNotBefore()).thenReturn(null);
+        when(conditions.getNotOnOrAfter()).thenReturn(null);
+        when(condition.getElementQName()).thenReturn(conditionQName);
+        when(audienceRestriction.getAudiences()).thenReturn(listAudience);
+        when(audience.getAudienceURI()).thenReturn(AUDIENCE_URL);
 
         try {
             validator.verifyConditions();
@@ -832,24 +537,12 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifyConditions_UnknownCondition() {
-        stateMachine.become(stateTest);
-
+        // Setup specific mock behavior for this test
         conditionQName = new QName("unknown_condition");
-
-        mockery.checking(new Expectations() {
-            {
-                one(conditions).getNotBefore();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-                one(conditions).getNotOnOrAfter();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-
-                allowing(condition).getElementQName();
-                will(returnValue(conditionQName));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        
+        when(conditions.getNotBefore()).thenReturn(null);
+        when(conditions.getNotOnOrAfter()).thenReturn(null);
+        when(condition.getElementQName()).thenReturn(conditionQName);
 
         try {
             validator.verifyConditions();
@@ -862,26 +555,13 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifyAudience_InvalidAudienceAttribute() {
-        stateMachine.become(INVALID_PROVIDERID);
-
+        // Setup specific mock behavior for this test
         listAudience.clear();
         listAudience.add(audience);
-
-        mockery.checking(new Expectations() {
-            {
-                one(ssoService).getProviderId();
-                will(returnValue(INVALID_PROVIDERID));
-                when(stateMachine.is(INVALID_PROVIDERID));
-
-                one(audienceRestriction).getAudiences();
-                will(returnValue(listAudience));
-                when(stateMachine.is(INVALID_PROVIDERID));
-
-                allowing(audience).getAudienceURI();
-                will(returnValue("http://audience.ibm.com"));
-                when(stateMachine.is(INVALID_PROVIDERID));
-            }
-        });
+        
+        when(ssoService.getProviderId()).thenReturn(INVALID_PROVIDERID);
+        when(audienceRestriction.getAudiences()).thenReturn(listAudience);
+        when(audience.getAudienceURI()).thenReturn("http://audience.ibm.com");
 
         try {
             validator.verifyAudience(listAudienceRestriction);
@@ -907,15 +587,11 @@ public class AssertionValidatorTest {
 
     @Test
     public void testVerifyAuthnStatement_SessionError() {
+        // Setup specific mock behavior for this test
         listAuthn.add(authnStatement);
-        date = new DateTime().minusMinutes(3);
-
-        mockery.checking(new Expectations() {
-            {
-                allowing(authnStatement).getSessionNotOnOrAfter();
-                will(returnValue(date));
-            }
-        });
+        date = Instant.now().minus(3, ChronoUnit.MINUTES);
+        
+        when(authnStatement.getSessionNotOnOrAfter()).thenReturn(date);
 
         try {
             validator.verifyAuthnStatement();

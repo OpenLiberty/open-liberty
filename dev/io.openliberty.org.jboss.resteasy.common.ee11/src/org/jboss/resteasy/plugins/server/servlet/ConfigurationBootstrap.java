@@ -1,27 +1,10 @@
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2024 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright The RestEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.jboss.resteasy.plugins.server.servlet;
 
-import java.security.AccessController;
-import java.security.PrivilegedActionException;
-import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,6 +78,7 @@ public abstract class ConfigurationBootstrap implements ResteasyConfiguration {
             for (String pr : p)
                 deployment.getProviderClasses().add(pr.trim());
         }
+
         final String disableProviders = getParameter(ResteasyContextParameters.RESTEASY_DISABLE_PROVIDERS);
         if (disableProviders != null && !disableProviders.isBlank()) {
             deployment.addDisabledProviderClasses(
@@ -343,24 +327,7 @@ public abstract class ConfigurationBootstrap implements ResteasyConfiguration {
     }
 
     public String getParameter(String name) {
-        String propName = null;
-        if (System.getSecurityManager() == null) {
-            propName = config.getOptionalValue(name, String.class).orElse(null);
-
-        } else {
-
-            try {
-                propName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                    @Override
-                    public String run() throws Exception {
-                        return config.getOptionalValue(name, String.class).orElse(null);
-                    }
-                });
-            } catch (PrivilegedActionException pae) {
-                throw new RuntimeException(pae);
-            }
-        }
-        return propName;
+        return config.getOptionalValue(name, String.class).orElse(null);
     }
 
 }

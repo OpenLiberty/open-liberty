@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,7 +55,6 @@ import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
-
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @TraceOptions(messageBundle = "com.ibm.ws.security.authentication.internal.resources.AuthenticationMessages")
@@ -65,6 +64,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String CFG_ALLOW_HASHTABLE_LOGIN_WITH_ID_ONLY = "allowHashtableLoginWithIdOnly";
     static final String CFG_CACHE_ENABLED = "cacheEnabled";
     static final String CFG_USE_DISPLAYNAME_FOR_SECURITYNAME = "useDisplayNameForSecurityName";
+    static final String CFG_IGNORE_CUSTOM_CACHE_KEY = "ignoreCustomCacheKey";
     static final String KEY_AUTH_CACHE_SERVICE = "authCacheService";
     static final String KEY_USER_REGISTRY_SERVICE = "userRegistryService";
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
@@ -83,6 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private boolean cacheEnabled = true;
     private boolean allowHashtableLoginWithIdOnly = false;
     private boolean useDisplayNameForSecurityName = false;
+    private boolean ignoreCustomCacheKey = false;
     private String invalidDelegationUser = "";
 
     private final AuthenticationGuard authenticationGuard = new AuthenticationGuard();
@@ -161,6 +162,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @param props
      */
     private void getAuthenticationConfig(Map<String, Object> props) {
+
         Boolean loginWithIdOnly = (Boolean) props.get(CFG_ALLOW_HASHTABLE_LOGIN_WITH_ID_ONLY);
         if (loginWithIdOnly != null)
             allowHashtableLoginWithIdOnly = loginWithIdOnly;
@@ -173,6 +175,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Boolean useDisplayNameForSecurityNameState = (Boolean) props.get(CFG_USE_DISPLAYNAME_FOR_SECURITYNAME);
         if (useDisplayNameForSecurityNameState != null) {
             useDisplayNameForSecurityName = useDisplayNameForSecurityNameState;
+        }
+	
+        Boolean ignoreCustomCacheKeyState = (Boolean) props.get(CFG_IGNORE_CUSTOM_CACHE_KEY);
+        if (ignoreCustomCacheKeyState != null) {
+            ignoreCustomCacheKey = ignoreCustomCacheKeyState;
         }
     }
 
@@ -403,13 +410,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return authCacheService.getSubject(certHash);
     }
 
+
     /**
-     * @param authCacheService   An authentication cache service
-     * @param token              The cache key, can be either a byte[] (SSO Token) or String (SSO Token Base64 encoded)
-     * @param ssoTokenBytes      Optional SSO token as byte[], if null, it will be constructed from the token
-     * @param authenticaitonData TODO
-     * @return the cached subject
-     * @throws AuthenticationException if no cached subject was found
+     * Finds a Subject based on the provided token contents.
+     *
+     * @param authCacheService The authentication cache service used to retrieve subjects.
+     * @param token The token string to search for in the cache.
+     * @param ssoTokenBytes The byte array representation of the Single Sign-On (SSO) token.
+     * @param authenticationData The authentication data containing the authentication mechanism OID.
+     * @return The Subject associated with the provided token, or null if not found.
+     * @throws AuthenticationException If the token is invalid or the custom cache key is missing.
      */
     private Subject findSubjectByTokenContents(AuthCacheService authCacheService, String token, byte[] ssoTokenBytes,
                                                AuthenticationData authenticationData) throws AuthenticationException {
@@ -440,10 +450,18 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             } else if (oid != null && oid.equals(JWT_OID)) {
                 customCacheKey = JwtSSOTokenHelper.getCustomCacheKeyFromJwtSSOToken(token);
             }
+
             if (customCacheKey != null) {
                 subject = authCacheService.getSubject(customCacheKey);
                 if (subject == null) {
-                    throw new AuthenticationException("Custom cache key missed authentication cache. Need to re-challenge the user to login again.");
+		    if (ignoreCustomCacheKey()) {
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			    Tr.debug(tc, "ignoreCustomCacheKey is set to true. Continue authentication without re-challenging");
+			}			
+		    }
+		    else {
+			throw new AuthenticationException("Custom cache key missed authentication cache. Need to re-challenge the user to login again.");			
+		    }
                 }
             }
         }
@@ -453,6 +471,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Subject findSubjectByUseridAndPassword(AuthCacheService authCacheService, String userid, @Sensitive String password) {
         return authCacheService.getSubject(BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password));
     }
+
 
 /*
  * We only create cache key (CustomCacheKeyProvider.java) for hashtable login so there is no need to
@@ -668,6 +687,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public Boolean isUseDisplayNameForSecurityName() {
         return useDisplayNameForSecurityName;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Boolean ignoreCustomCacheKey() {
+        return ignoreCustomCacheKey;
     }
 
 }

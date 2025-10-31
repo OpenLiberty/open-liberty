@@ -23,11 +23,6 @@ Export-Package: \
   io.smallrye.mutiny.*; version="2.7.0", \
   mutiny.zero.flow.adapters.*; version="1.1.1"
 
-Private-Package: \
-  io.openliberty.mutiny.internal
-
-Bundle-Activator: io.openliberty.mutiny.internal.MutinyActivator
-
 WS-TraceGroup: REACTIVESTREAMS
 
 instrument.disabled: true

@@ -11,4 +11,4 @@ Dynamic-Import: sun.nio.cs
 Import-Package: !sun.nio.cs
 
 Include-Resource: \
-    @${repo;org.jboss.jdeparser:jdeparser;1.0.0.Final}!/!META-INF/*
+    @\${repo;org.jboss.jdeparser:jdeparser;1.0.0.Final}!/!META-INF/*

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,13 +36,13 @@ task validateNLS {
     }
 
     // Run the ConvertRBtoNLSProps class which converts the translation class files to nlsprops files
-    javaexec {
+    providers.javaexec {
       sourceSets.main.java.srcDirs = ['src/com/ibm/ws/i18n/conversion/tools']
-      classpath = files(jar.archivePath, sourceSets.main.runtimeClasspath)
+      classpath = files(jar.archiveFile.get().getAsFile(), sourceSets.main.runtimeClasspath)
       mainClass = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
 
-      args = [jar.archivePath, newResourcesDir, "org/eclipse/persistence/internal/localization/i18n/.*class", "org/eclipse/persistence/exceptions/i18n/.*class"]
-    }
+      args = [jar.archiveFile.get().getAsFile(), newResourcesDir, "org/eclipse/persistence/internal/localization/i18n/.*class", "org/eclipse/persistence/exceptions/i18n/.*class"]
+    }.result.get()
 
     task fixCRLF {
       ant.fixcrlf(srcDir: existingResourceDir, eol: 'crlf')
@@ -56,11 +56,8 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/ExceptionLocalizationResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/QueryExceptionResource.nlsprops') // Remove with 5.0.0-B10
-          
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 5.0.0-B11
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 5.0.0-B11        
         }
       }
       delete fileTree(existingResourceDir){ 
@@ -71,11 +68,8 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/ExceptionLocalizationResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/QueryExceptionResource.nlsprops') // Remove with 5.0.0-B10
-        
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 5.0.0-B11
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 5.0.0-B11
         }
       }
     }
@@ -87,10 +81,8 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/ExceptionLocalizationResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/QueryExceptionResource.nlsprops') // Remove with 5.0.0-B10
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 5.0.0-B11
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 5.0.0-B11
         }
       }
       delete fileTree(newResourcesDir){ 
@@ -101,10 +93,8 @@ task validateNLS {
           include(name: '**/*Resource.nlsprops')
           exclude(name: '**/TraceLocalizationResource.nlsprops')
           exclude(name: '**/*Resource_*.nlsprops')
-          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/ExceptionLocalizationResource.nlsprops') // Remove with 5.0.0-B10
-          exclude(name: '**/QueryExceptionResource.nlsprops') // Remove with 5.0.0-B10
+          exclude(name: '**/ValidationExceptionResource.nlsprops') // Remove with 5.0.0-B11
+          exclude(name: '**/LoggingLocalizationResource.nlsprops') // Remove with 5.0.0-B11
         }
       }
     }

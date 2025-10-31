@@ -24,5 +24,5 @@ Private-Package: \
     org.apache.aries.jndi.tracker
 
 -includeresource: \
-    @${repo;com.ibm.ws.org.apache.aries.jndi:org.apache.aries.jndi.core;1.1.0.ibm20201007-1}!/!META-INF/maven/*, \
+    @\${repo;com.ibm.ws.org.apache.aries.jndi:org.apache.aries.jndi.core;1.1.0.ibm20201007-1}!/!META-INF/maven/*, \
     org=${bin}/org

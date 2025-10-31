@@ -6,12 +6,12 @@ Bundle-SymbolicName: io.openliberty.com.sun.mail.jakarta.mail.2.0
 Bundle-Description: Private Jakarta Mail bundle
   
 Include-Resource: \
-     @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/mailcap, \
-     @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/gfprobe-provider.xml, \
-     @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/javamail.charset.map, \
-     @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/javamail.default.address.map, \
-     @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/javamail.default.providers, \
-     @${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/!(jakarta/mail/*|module-info.class)
+     @\${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/mailcap, \
+     @\${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/gfprobe-provider.xml, \
+     @\${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/javamail.charset.map, \
+     @\${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/javamail.default.address.map, \
+     @\${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/META-INF/javamail.default.providers, \
+     @\${repo;com.sun.mail:jakarta.mail;2.0.1;EXACT}!/!(jakarta/mail/*|module-info.class)
 
 Import-Package: jakarta.mail;version="[2.0.0,3.0.0)",  \
 jakarta.mail.event;version="[2.0.0,3.0.0)", \

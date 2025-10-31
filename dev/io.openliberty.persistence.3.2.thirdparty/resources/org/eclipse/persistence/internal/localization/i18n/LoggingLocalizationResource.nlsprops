@@ -85,9 +85,9 @@ broadcast_remote_command_is_null=Warning: {0}: received message {1} containing n
 
 broadcast_remote_command_wrong_type=Warning: {0}: received message {1} containing an object of type {2} instead of expected type RemoteCommand.
 
-cache_key_null_identity_map=CacheKey instance: {0} , stored into identity map has, a null primary key.
+cache_key_null_identity_map=CacheKey instance: {0}, stored into the identity map, has a null primary key.
 
-cache_key_null_read_lock_manager=CacheKey instance: {0} , locked by cache read lock manager has, a null primary key.
+cache_key_null_read_lock_manager=CacheKey instance: {0}, locked by the cache read lock manager, has a null primary key.
 
 cannot_get_nested_collection_type=The nested collection type cannot be obtained.
 

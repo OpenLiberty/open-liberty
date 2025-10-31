@@ -647,3 +647,5 @@
 
 7363=For a STRING enumerated type, only the java.lang.String type can be used as an attribute type marked by @EnumeratedValue. Check attribute [{0}] in the [{1}] enum class.
 
+7364=In the entity [{0}] in NamedNativeQuery [{1}], an implicit SqlResultSetMapping ("entities", "classes", or "columns" attribute) is used together with an external SqlResultSetMapping that is referred to by the "resultSetMapping" attribute. This combination is not allowed.
+

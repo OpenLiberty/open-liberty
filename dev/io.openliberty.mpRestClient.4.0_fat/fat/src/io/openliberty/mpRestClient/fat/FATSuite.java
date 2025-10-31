@@ -16,7 +16,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
     PrototypeTest.class,
-    MultipartTest.class
+    MultipartTest.class,
+    AsyncMultipartTest.class
 })
 public class FATSuite {
     // This class is intentionally empty. It's used as a test suite to run all the tests.

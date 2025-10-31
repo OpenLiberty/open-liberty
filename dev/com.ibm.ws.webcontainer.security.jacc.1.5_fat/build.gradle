@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -406,7 +406,10 @@ autoFVT.dependsOn ':io.openliberty.security.authorization.jacc.testprovider:asse
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
 autoFVT.dependsOn ':com.ibm.ws.org.apache.directory.server:assemble' // Probably don't need.
 
-autoFVT.doLast {
+autoFVT {
+  def testProvider1Project = project(':com.ibm.ws.security.authorization.jacc.testprovider')
+  def testProvider2Project = project(':io.openliberty.security.authorization.jacc.testprovider')
+  doLast {
 
   /*
    * Copy the local ApacheDS LDAP instances. 
@@ -421,30 +424,30 @@ autoFVT.doLast {
    * Copy the JACC test provider feature.
    */
   copy {
-     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jar") 
+     from new File(testProvider1Project.projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jar") 
      into new File(autoFvtDir, 'publish/bundles')
      rename 'com.ibm.ws.security.authorization.jacc.testprovider.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_1.0.jar'
   }
   copy {
-     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
+     from new File(testProvider1Project.projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
      into new File(autoFvtDir, 'publish/bundles')
      rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.0.jar'
   }
   copy {
-     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
+     from new File(testProvider1Project.projectDir, "/build/libs/com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar") 
      into new File(autoFvtDir, 'publish/bundles')
      rename 'com.ibm.ws.security.authorization.jacc.testprovider.jakarta.jar', 'com.ibm.ws.security.authorization.jacc.testprovider_2.1.jar'
   }
   copy {
-     from new File(project(':io.openliberty.security.authorization.jacc.testprovider').projectDir, "/build/libs/io.openliberty.security.authorization.jacc.testprovider.jar") 
+     from new File(testProvider2Project.projectDir, "/build/libs/io.openliberty.security.authorization.jacc.testprovider.jar") 
      into new File(autoFvtDir, 'publish/bundles')
      rename 'io.openliberty.security.authorization.jacc.testprovider.jar', 'io.openliberty.security.authorization.jacc.testprovider_3.0.jar'
   }
   copy {
-     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
-     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
-     from new File(project(':com.ibm.ws.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.1.mf")  
-     from new File(project(':io.openliberty.security.authorization.jacc.testprovider').projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-3.0.mf")  
+     from new File(testProvider1Project.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
+     from new File(testProvider1Project.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
+     from new File(testProvider1Project.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.1.mf")  
+     from new File(testProvider2Project.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-3.0.mf")  
      into new File(autoFvtDir, 'publish/features')
   }
 
@@ -724,5 +727,6 @@ autoFVT.doLast {
     from new File(projectDir, 'publish/servers/com.ibm.ws.webcontainer.security.fat.basicauthServlet31/server.xml')
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
     rename 'server.xml', 'basicauthServlet31.server.orig.xml'
+  }
   }
 }

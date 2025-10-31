@@ -21,9 +21,7 @@ package org.apache.cxf.jaxb.io;
 
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array; // Liberty Change
 import java.lang.reflect.Method;
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,15 +31,15 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.MarshalException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.ValidationEventHandler;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import javax.xml.bind.attachment.AttachmentMarshaller;
 
 import org.apache.cxf.Bus;
+import org.apache.cxf.attachment.AttachmentUtil;
+import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.i18n.Message;
-import org.apache.cxf.common.jaxb.JAXBUtils;
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.ReflectionUtil;
 import org.apache.cxf.databinding.DataWriter;
@@ -63,7 +61,10 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
     boolean noEscape;
     private JAXBDataBinding databinding;
     private Bus bus;
-
+    // Liberty Change Start
+    private boolean isMtomDisabledEndPointInfoProperty = false;
+    // Liberty Change End
+    
     public DataWriterImpl(Bus bus, JAXBDataBinding binding) {
         this(bus, binding, false);
     }
@@ -85,13 +86,16 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
             if (veventHandler == null) {
                 veventHandler = databinding.getValidationEventHandler();
             }
-	    // Liberty change begin
-	    if (LOG.isLoggable(Level.FINEST)) { 
-		LOG.finest("Validation event handler: " + (veventHandler != null ? veventHandler.getClass().getCanonicalName() : "null"));
-	    } 
-	    // Liberty change end
-            setEventHandler = MessageUtils.getContextualBoolean(m,
-                    JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true);
+            // Liberty change begin
+            if (LOG.isLoggable(Level.FINEST)) {
+                LOG.finest("Validation event handler: " + (veventHandler != null ? veventHandler.getClass().getCanonicalName() : "null"));
+            } 
+            setEventHandler = AttachmentUtil.mtomOverride(m, MessageUtils.getContextualBoolean(m, JAXBDataBinding.SET_VALIDATION_EVENT_HANDLER, true));
+            // Only count when MTOM is disabled on purpose trough system property 
+            Object mtomEnabledProperty = AttachmentUtil.getPropertyFromEndPointInfo(m, AttachmentUtil.IBM_MTOM_ENABLED);
+            // Check if mtom is disabled by endpoint property. 
+            isMtomDisabledEndPointInfoProperty = (mtomEnabledProperty != null && PropertyUtils.isFalse(mtomEnabledProperty));
+            // Liberty Change end
         }
     }
 
@@ -187,11 +191,14 @@ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
 
             marshaller.setSchema(schema);
             AttachmentMarshaller atmarsh = getAttachmentMarshaller();
-	    // Liberty change begin
-	    if (isLoggableFinest) {
-	       LOG.finest("Setting AttachmentMarshaller: " + (atmarsh != null ? atmarsh.getClass().getName() : "null") );
-	    } 
-	    // Liberty change end
+            // Liberty change begin
+            if(atmarsh instanceof JAXBAttachmentMarshaller && isMtomDisabledEndPointInfoProperty)     {
+                ((JAXBAttachmentMarshaller) atmarsh).setXOPPackage(setEventHandler); // setEventHandler equals isXop in this case
+            }
+            if (isLoggableFinest) {
+               LOG.finest("Setting AttachmentMarshaller: " + (atmarsh != null ? atmarsh.getClass().getName() : "null") );
+            } 
+            // Liberty change end
             marshaller.setAttachmentMarshaller(atmarsh);
 
             if (schema != null

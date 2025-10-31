@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2022, 2024 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2022, 2025 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
     and is available at 
@@ -95,13 +95,12 @@
             <systemPath>${io.openliberty.jakarta.concurrency.3.1}</systemPath>
         </dependency>
         <!-- Other API Dependencies -->
-        <!-- TODO update to Jakarta EE 11 bundles -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
-            <version>6.0.0</version>
+            <version>6.1.0</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.jakarta.servlet.6.0}</systemPath>
+            <systemPath>${io.openliberty.jakarta.servlet.6.1}</systemPath>
         </dependency>
         <dependency>
             <groupId>jakarta.ejb</groupId>

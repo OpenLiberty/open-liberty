@@ -98,7 +98,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
         super.init(response, context, config);
         setMessageType(MessageType.RESPONSE);
-
     }
 
     public void update(HttpResponse response) {
@@ -111,18 +110,15 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         super.clear();
         this.setStatusCode(HttpResponseStatus.OK.code());
         this.nettyResponse.setProtocolVersion(HttpVersion.HTTP_1_1);
-
     }
 
     @Override
     public void destroy() {
         super.destroy();
-
     }
 
     @Override
     public boolean isBodyExpected() {
-
         if (VersionValues.V10.equals(getVersionValue())) {
             return isBodyAllowed();
         }
@@ -138,7 +134,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         }
 
         return bodyExpected && isBodyAllowedForStatusCode();
-
     }
 
     @Override
@@ -211,19 +206,14 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setTransferEncoding(TransferEncodingValues value) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public void setTransferEncoding(TransferEncodingValues[] values) {
-        // TODO Auto-generated method stub
-
     }
 
     @Override
     public TransferEncodingValues[] getTransferEncoding() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -234,9 +224,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setCurrentDate() {
-
         setHeader(HttpHeaderKeys.HDR_DATE, HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(this.config.getDateHeaderRange()));
-
     }
 
     @Override
@@ -261,7 +249,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setMIMEType(String type) {
-        //TODO
 
     }
 
@@ -317,7 +304,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public HeaderField getHeader(byte[] name) {
         return getHeader(new String(name, StandardCharsets.UTF_8));
-
     }
 
     @Override
@@ -417,12 +403,10 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         String normalizedValue = HeaderValidator.process(value, FieldType.VALUE, config);
 
         headers.add(normalizedName, normalizedValue);
-
     }
 
     @Override
     public int getNumberOfHeaderInstances(String header) {
-
         return headers.getAll(header).size();
     }
 
@@ -454,19 +438,16 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public void removeHeader(byte[] header) {
         removeHeader(new String(header, StandardCharsets.UTF_8));
-
     }
 
     @Override
     public void removeHeader(byte[] header, int instance) {
-        //TODO
 
     }
 
     @Override
     public void removeHeader(HeaderKeys header) {
         removeHeader(header.getName());
-
     }
 
     @Override
@@ -477,19 +458,16 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public void removeHeader(String header) {
         headers.remove(header);
-
     }
 
     @Override
     public void removeHeader(String header, int instance) {
-        //TODO
 
     }
 
     @Override
     public void removeAllHeaders() {
         headers.clear();
-
     }
 
     @Override
@@ -520,19 +498,17 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public void setHeader(HeaderKeys header, String value) {
         setHeader(header.getName(), value);
-
     }
 
     @Override
     public HeaderField setHeaderIfAbsent(HeaderKeys header, String value) {
-        HeaderField hf;
         Objects.requireNonNull(header);
         Objects.requireNonNull(value);
 
         if (!headers.contains(header.getName())) {
             headers.set(header.getName(), value);
         }
-        //TODO HeaderField not used for netty, can we avoid creating an object here?
+
         return null;
     }
 
@@ -549,7 +525,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public void setHeader(String header, String value) {
         headers.set(header.trim(), value.trim());
-
     }
 
     @Override
@@ -559,7 +534,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public int getLimitOnNumberOfHeaders() {
-
         return 0;
     }
 
@@ -586,13 +560,11 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     @Override
     public void setStatusCode(int code) {
         this.nettyResponse.setStatus(HttpResponseStatus.valueOf(code));
-
     }
 
     @Override
     public void setStatusCode(StatusCodes code) {
         setStatusCode(code.getIntCode());
-
     }
 
     @Override
@@ -644,7 +616,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
                 }
             }
         }
-
     }
 
     @Override
@@ -670,7 +641,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
      */
     @Override
     public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "De-serializing into: " + this);
         }
@@ -702,5 +672,4 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     public HttpResponse getResponse() {
         return nettyResponse;
     }
-
 }

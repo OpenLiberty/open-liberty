@@ -63,8 +63,10 @@ public class McpCdiExtension implements Extension {
     private void reportOnToolArgEdgeCases(AfterDeploymentValidation afterDeploymentValidation) {
         StringBuilder sbBlankArgs = new StringBuilder("Blank arguments found in MCP Tool:");
         StringBuilder sbDuplicateArgs = new StringBuilder("Duplicate arguments found in MCP Tool:");
+        StringBuilder sbMissingArgs = new StringBuilder("Missing arguments found in MCP Tool:");
         boolean blankArgumentsFound = false;
         boolean duplicateArgumentsFound = false;
+        boolean missingArgumentName = false;
 
         for (ToolMetadata tool : tools.getAllTools()) {
             Map<String, ArgumentMetadata> arguments = tool.arguments();
@@ -76,6 +78,10 @@ public class McpCdiExtension implements Extension {
                 } else if (arguments.get(argName).isDuplicate()) {
                     sbDuplicateArgs.append("\n").append("Tool: " + tool.getToolQualifiedName() + " -  Argument: " + argName);
                     duplicateArgumentsFound = true;
+                } else if (argName.equals(ToolMetadata.MISSING_TOOL_ARG_NAME)) {
+                    sbMissingArgs.append("\n").append("Tool: " + tool.getToolQualifiedName());
+                    sbMissingArgs.append("\n Tool argument name was not provided for the parameter. Either add a name to the @ToolArg annotation, or to add the -parameters compiler option to use the parameter name");
+                    missingArgumentName = true;
                 }
             }
         }
@@ -84,6 +90,9 @@ public class McpCdiExtension implements Extension {
         }
         if (duplicateArgumentsFound) {
             afterDeploymentValidation.addDeploymentProblem(new Exception(sbDuplicateArgs.toString()));
+        }
+        if (missingArgumentName) {
+            afterDeploymentValidation.addDeploymentProblem(new Exception(sbMissingArgs.toString()));
         }
     }
 

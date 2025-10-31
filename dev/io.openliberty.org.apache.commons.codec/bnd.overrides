@@ -4,4 +4,4 @@ bVersion=1.16
 Bundle-SymbolicName: io.openliberty.org.apache.commons.codec
 
 Include-Resource: \
-   @${repo;commons-codec:commons-codec;1.16.1;EXACT}!/!META-INF/maven/*
+   @\${repo;commons-codec:commons-codec;1.16.1;EXACT}!/!META-INF/maven/*

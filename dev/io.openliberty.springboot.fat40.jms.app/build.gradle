@@ -10,16 +10,17 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '4.0.0-M1'
+  id 'org.springframework.boot' version '4.0.0-RC1'
+  id 'war'
+  id 'io.spring.dependency-management' version '1.1.7'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
 
-apply plugin: 'war'
-apply plugin: 'io.spring.dependency-management'
-
 group = 'com.ibm.ws.example.spring'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 17
+java {
+  sourceCompatibility = 17
+}
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
@@ -30,17 +31,5 @@ dependencies {
   implementation('org.springframework.integration:spring-integration-jms')
   implementation('org.springframework.boot:spring-boot-starter-jdbc')
   providedCompile('jakarta.jms:jakarta.jms-api:3.1.0')
-  // Should use spring-boot-starter-tomcat as provideCompile, but gradle plugin
-  // is putting too much in lib-provided: see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/409
-  // providedCompile('org.springframework.boot:spring-boot-starter-tomcat')
-  providedRuntime('org.apache.tomcat.embed:tomcat-embed-core')
-  providedRuntime('org.apache.tomcat.embed:tomcat-embed-el')
-  providedRuntime('org.apache.tomcat.embed:tomcat-embed-websocket')
-}
-bootJar {
-  duplicatesStrategy 'warn'
-}
-
-jar {
-  enabled = false
+  providedRuntime('org.springframework.boot:spring-boot-tomcat-runtime')
 }

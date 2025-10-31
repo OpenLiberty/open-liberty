@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,49 +34,49 @@ task addJPAFATTools (type: Copy) {
 }
 
 task copyFAT {
+  def commonProject = project(':com.ibm.ws.jpa.tests.eclipselink.query_fat.common')
+  def common31Project = project(':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common')
   dependsOn ':com.ibm.ws.jpa.tests.eclipselink.query_fat.common:build'
-  copy {
-    from project(':com.ibm.ws.jpa.tests.eclipselink.query_fat.common').file('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests')
-    into new File('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests')
-  }
-
   dependsOn ':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common:build'
-  copy {
-    from project(':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common').file('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests/jpa31')
-    into new File('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests/jpa31')
+  doLast {
+    copy {
+      from commonProject.file('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests')
+      into new File('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests')
+    }
+
+    copy {
+      from common31Project.file('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests/jpa31')
+      into new File('fat/src/com/ibm/ws/jpa/tests/eclipselink/query/tests/jpa31')
+    }
   }
-  
 }
 
 task copyCommonFiles {
+  def commonProject = project(':com.ibm.ws.jpa.tests.eclipselink.query_fat.common')
+  def common31Project = project(':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common')
+  def common32Project = project(':com.ibm.ws.jpa.tests.eclipselink.query_32_fat.common')
   dependsOn ':com.ibm.ws.jpa.tests.eclipselink.query_fat.common:build'
-  doLast {
-    copy {
-      from project(':com.ibm.ws.jpa.tests.eclipselink.query_fat.common').file('test-applications')
-      into new File('test-applications')
-    }
-    copy {
-      from project(':com.ibm.ws.jpa.tests.eclipselink.query_fat.common').file('publish')
-      into new File('publish')
-    }
-  }
-
   dependsOn ':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common:build'
-  doLast {
-    copy {
-      from project(':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common').file('test-applications')
-      into new File('test-applications')
-    }
-    copy {
-      from project(':com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common').file('publish')
-      into new File('publish')
-    }
-  }
-  
   dependsOn ':com.ibm.ws.jpa.tests.eclipselink.query_32_fat.common:build'
   doLast {
     copy {
-      from project(':com.ibm.ws.jpa.tests.eclipselink.query_32_fat.common').file('test-applications')
+      from commonProject.file('test-applications')
+      into new File('test-applications')
+    }
+copy {
+      from commonProject.file('publish')
+      into new File('publish')
+    }
+    copy {
+      from common31Project.file('test-applications')
+      into new File('test-applications')
+    }
+    copy {
+      from common31Project.file('publish')
+      into new File('publish')
+    }
+    copy {
+      from common32Project.file('test-applications')
       into new File('test-applications')
     }
   }
@@ -90,8 +90,14 @@ addRequiredLibraries {
   dependsOn copyTestContainers
 }
 
-jar {
+compileJava {
   dependsOn copyCommonFiles
+  dependsOn copyFAT
+}
+
+processResources {
+  dependsOn copyCommonFiles
+  dependsOn copyFAT
 }
 
 autoFVT.dependsOn copyCommonFiles

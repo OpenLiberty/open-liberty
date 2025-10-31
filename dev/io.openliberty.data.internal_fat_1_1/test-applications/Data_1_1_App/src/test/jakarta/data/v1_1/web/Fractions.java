@@ -14,6 +14,7 @@ package test.jakarta.data.v1_1.web;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
@@ -30,12 +31,14 @@ import jakarta.data.constraint.NotBetween;
 import jakarta.data.constraint.NotEqualTo;
 import jakarta.data.constraint.NotNull;
 import jakarta.data.page.CursoredPage;
+import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Select;
 
@@ -62,6 +65,18 @@ public interface Fractions {
     List<String> named(@By(_Fraction.NAME) Like pattern,
                        Order<Fraction> order,
                        Limit limit);
+
+    @Query("SELECT numerator, denominator - numerator" +
+           " ORDER BY denominator - numerator DESC, numerator ASC")
+    Page<Ratio> pageOfRatios(PageRequest pageReq);
+
+    @Query("SELECT NEW test.jakarta.data.v1_1.web.Ratio(" +
+           "\t\tnumerator, denominator - numerator)" +
+           "\tWHERE numerator=?1 AND denominator=?2")
+    Optional<Ratio> singleRatio(int numerator, int denominator);
+
+    @Query("SELECT numerator, denominator - numerator")
+    Stream<Ratio> streamOfRatios();
 
     @Find
     @OrderBy(_Fraction.DENOMINATOR)

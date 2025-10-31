@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-  @${repo;jakarta.interceptor:jakarta.interceptor-api;2.2.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @\${repo;jakarta.interceptor:jakarta.interceptor-api;2.2.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
   dep1;groupId=jakarta.interceptor;artifactId=jakarta.interceptor-api;version=2.2.0;scope=runtime

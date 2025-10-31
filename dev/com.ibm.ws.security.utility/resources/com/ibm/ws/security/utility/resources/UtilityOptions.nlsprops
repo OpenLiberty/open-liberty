@@ -60,10 +60,10 @@ encode.desc=\
 \tFor more information, see the Open Liberty securityUtility encode documentation.
 #Note to translator the word "encode" should not be translated
 encode.usage.options=\
-\t{0} encode [options]
-encode.option-key.text=\
+\t{0} encode [options] textToEncode
+encode.option-key.1.text=\
 \ \ \ \ textToEncode
-encode.option-desc.text=\
+encode.option-desc.1.text=\
 \tIf no arguments are specified, the tool will enter the interactive\n\
 \tmode; otherwise, the provided text will be encoded.\n\
 \tText with spaces must be fully quoted if specified as an argument.
@@ -77,10 +77,24 @@ encode.option-key.key=\
 \ \ \ \ --key=[key]
 encode.option-desc.key=\
 \tSpecify a key to be used when encoding using AES. This string will be\n\
-\thashed to produce an encryption key which will be used to encrypt and\n\
+\thashed to produce an encryption key, which is used to encrypt and\n\
 \tdecrypt the password. The key can be provided to the server by\n\
 \tdefining the variable wlp.password.encryption.key whose value is the\n\
 \tkey. If this option is not provided a default key shall be used.
+encode.option-key.base64Key=\
+\ \ \ \ --base64Key=base64Key
+encode.option-desc.base64Key=\
+\tA base64 encoded AES-256 bit key to be used to encrypt and decrypt the\n\
+\tpassword. The key can be provided to the server by defining the \n\
+\tvariable wlp.aes.encryption.key whose value is the key. If --base64Key is\n\
+\tspecified then --aesConfigFile and --key cannot be specified.
+encode.option-key.aesConfigFile=\
+\ \ \ \ --aesConfigFile=aesConfigFile
+encode.option-desc.aesConfigFile=\
+\tAn XML or Java properties file with a variable named \n\
+\twlp.password.encryption.key or wlp.aes.encryption.key with valid\n\
+\tvalues respectively. Both variables cannot be specified in the same file.\n\
+\tIf --aesConfigFile is specified then --key and --base64Key cannot be specified.
 encode.option-key.notrim=\
 \ \ \ \ --notrim
 encode.option-desc.notrim=\
@@ -213,6 +227,23 @@ sslCert.option-desc.ext=\
 \tcommand -ext flag. This flag can be used multiple times on the command\n\ 
 line.
 
+sslCert.option-key.passwordBase64Key=\
+\ \ \ \ --passwordBase64Key=base64Key
+sslCert.option-desc.passwordBase64Key=\
+\tA base64 encoded AES-256 bit key to be used to encrypt and decrypt the\n\
+\tpassword. The key can be provided to the server by defining the \n\
+\twlp.aes.encryption.key variable, whose value is the key.\n\
+\tIf --passwordBase64Key is specified then --aesConfigFile and --passwordKey\n\
+\tcannot be specified.
+sslCert.option-key.aesConfigFile=\
+\ \ \ \ --aesConfigFile=aesConfigFile
+sslCert.option-desc.aesConfigFile=\
+\tAn XML or Java properties file with a variable named \n\
+\twlp.password.encryption.key or wlp.aes.encryption.key with valid\n\
+\tvalues respectively. Both variables cannot be specified in the same file.\n\
+\tIf --aesConfigFile is specified then --passwordBase64Key and --passwordKey\n\
+\tcannot be specified.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -258,6 +289,22 @@ createLTPAKeys.option-desc.password.key=\
 \tprovided to the server by defining the variable\n\
 \twlp.password.encryption.key whose value is the key. If this option is\n\
 \tnot provided a default key shall be used.
+createLTPAKeys.option-key.passwordBase64Key=\
+\ \ \ \ --passwordBase64Key=base64Key
+createLTPAKeys.option-desc.passwordBase64Key=\
+\tA base64 encoded AES-256 bit key to be used to encrypt and decrypt the\n\
+\tpassword. The key can be provided to the server by defining the \n\
+\tvariable wlp.aes.encryption.key whose value is the key. If \n\
+\t--passwordBase64Key is specified then --aesConfigFile and --passwordKey\n\
+\tcannot be specified.
+createLTPAKeys.option-key.aesConfigFile=\
+\ \ \ \ --aesConfigFile=aesConfigFile
+createLTPAKeys.option-desc.aesConfigFile=\
+\tAn XML or Java properties file with a variable named \n\
+\twlp.password.encryption.key or wlp.aes.encryption.key with valid\n\
+\tvalues respectively. Both variables cannot be specified in the same file.\n\
+\tIf --aesConfigFile is specified then --passwordBase64Key and --passwordKey\n\
+\tcannot be specified.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -287,3 +334,108 @@ tlsProfiler.option-key.verbose=\
 \ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\
 \tInclude additional information about unsafe protocols.
+
+# -------- CONFIGURE FIPS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\# 
+configureFIPS.desc=\
+\tConfigure FIPS 140-3 based on the Java installation configured by the\n\
+\tJAVA_HOME, JRE_HOME, or WLP_DEFAULT_JAVA_HOME environment variables,\n\
+\tin that order. If none was configured, FIPS 140-3 is configured\n\
+\tbased on the JVM used to run the securityUtility command. The command\n\
+\tsets up FIPS 140-3 for either IBM Semeru Runtimes or IBM SDK, or\n\
+\treturns an error if neither could be determined.\n\n\
+\tFor IBM Semeru Runtimes:\n\
+\tCreates a file containing the FIPS 140-3 custom profile for use by\n\
+\tyour application, which extends the Liberty FIPS140-3-Liberty profile,\n\
+\twhich extends the IBM Semeru Runtimes FIPS140-3-Strongly-Enforced\n\
+\tprofile. Also, creates or updates the default.env, server.env, or\n\
+\tclient.env file to enable FIPS 140-3 by setting the ENABLE_FIPS140_3\n\
+\tenvironment variable to the path to the custom profile file.\n\n\
+\tFor IBM SDK:\n\
+\tCreates or updates the default.env, server.env, or client.env file to\n\
+\tenable FIPS 140-3 by setting the ENABLE_FIPS140_3 environment\n\
+\tvariable to true.
+
+configureFIPS.usage.options=\
+\t{0} configureFIPS [options]
+
+configureFIPS.option-key.1.server=\
+\ \ \ \ --server=name
+
+configureFIPS.option-desc.1.server=\
+\tServer for which to configure FIPS 140-3. If this value is not\n\
+\tprovided and no client is specified, then FIPS 140-3 is configured\n\
+\tfor all clients, servers, and commands.
+
+configureFIPS.option-key.2.client=\
+\ \ \ \ --client=name
+
+configureFIPS.option-desc.2.client=\
+\tClient for which to configure FIPS 140-3. If this value is not\n\
+\tprovided and no server is specified, then FIPS 140-3 is configured\n\
+\tfor all clients, servers, and commands.
+
+configureFIPS.option-key.3.customProfileFile=\
+\ \ \ \ --customProfileFile=name
+
+configureFIPS.option-desc.3.customProfileFile=\
+\tThe file to write the IBM Semeru Runtimes FIPS 140-3 custom profile in.\n\
+\tIf this value is not provided, then the file is created with the name\n\
+\tof FIPS140-3-Liberty-Application.properties in the etc directory of\n\
+\tthe WLP installation. If the server or client option was used, the\n\
+\tfile is created in the security/resources directory for the specified\n\
+\tserver or client.\n\n\
+\tThe name of the file, without the extension, is used to create the\n\
+\tcustom profile name; it extends the Liberty FIPS140-3-Liberty profile.\n\
+\tThe file name must contain only alphanumeric characters, hyphens (-),\n\
+\tunderscores (_), and periods (.). The base name of the file cannot be\n\
+\tFIPS140-3-Liberty.\n\n\
+\tMultiple files can be specified with this option by using the\n\
+\tpath separators. For Windows, the path separator is a semicolon (;).\n\
+\tFor Unix-based systems, the path separator is a colon (:). Each custom\n\
+\tprofile extends each other in the order that they are specified.
+
+configureFIPS.option-key.4.disable=\
+\ \ \ \ --disable
+
+configureFIPS.option-desc.4.disable=\
+\tDisable FIPS 140-3 by setting the ENABLE_FIPS140_3 environment\n\
+\tvariable to false. This option can be used with the client and server\n\
+\toptions to specify the client or server to disable FIPS 140-3.\n\
+\tOtherwise, it disables FIPS 140-3 for all clients, servers, and\n\
+\tcommands, except those clients and servers that were individually\n\
+\tenabled.
+
+
+
+# -------- Generate AES-256 KEY OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+generateaeskey.desc=\
+\tGenerates a value to be placed in configuration variable \n\
+\twlp.aes.encryption.key for aes encryption.
+generateaeskey.usage.options=\
+\t{0} generateAESKey [options]
+generateaeskey.option-key.key=\
+\ \ \ \ --key=[key]
+generateaeskey.option-desc.key=\
+\tSpecify a key for use during AES encryption. This string is\n\
+\thashed to produce an encryption key which will be used to encrypt\n\
+\tand decrypt passwords. The encryption key is saved in base64 format\n\
+\tin a variable named wlp.aes.encryption.key. If this option is\n\
+\tomitted, a random key is be generated.
+generateaeskey.option-key.createConfigFile=\
+\ \ \ \ --createConfigFile=name
+generateaeskey.option-desc.createConfigFile=\
+\tCreates an XML file with the generated value saved in a variable\n\
+\tnamed wlp.aes.encryption.key. If not provided, the generated value\n\
+\twill be written to the console screen.

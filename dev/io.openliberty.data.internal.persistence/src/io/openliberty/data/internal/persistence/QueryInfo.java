@@ -21,7 +21,7 @@ import static io.openliberty.data.internal.QueryType.FIND_AND_DELETE;
 import static io.openliberty.data.internal.QueryType.INSERT;
 import static io.openliberty.data.internal.QueryType.LC_DELETE;
 import static io.openliberty.data.internal.QueryType.LC_UPDATE;
-import static io.openliberty.data.internal.QueryType.LC_UPDATE_RET_ENTITY;
+import static io.openliberty.data.internal.QueryType.LC_UPDATE_MERGE;
 import static io.openliberty.data.internal.QueryType.QM_DELETE;
 import static io.openliberty.data.internal.QueryType.QM_UPDATE;
 import static io.openliberty.data.internal.QueryType.SAVE;
@@ -42,6 +42,8 @@ import java.lang.reflect.Parameter;
 import java.lang.reflect.RecordComponent;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,8 +53,10 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.BaseStream;
@@ -91,9 +95,11 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Status;
 
 /**
  * Query information.
@@ -179,6 +185,8 @@ public class QueryInfo {
 
     /**
      * For counting the total number of results across all pages.
+     * If less than Util.MIN_COUNT_QUERY_LENGTH characters long, indicates a
+     * query keyword that prevents computation of a count.
      * Null if pagination is not used or if pagination without totals is used.
      */
     String jpqlCount;
@@ -499,81 +507,6 @@ public class QueryInfo {
         if (attrName.charAt(attrName.length() - 1) != ')')
             q.append(entityVar_);
         q.append(attrName);
-    }
-
-    /**
-     * Temporary code to append the portion of the query language ql starting from startAt
-     * where the entity identify variable is inserted before references to entity attributes.
-     * This method does not cover all scenarios but should be sufficient for simulating.
-     * TODO remove this method once EclipseLink issue #30351 is fixed
-     *
-     * @param ql        Jakarta Data Query Language
-     * @param startAt   position in query language to start at.
-     * @param endBefore position in query language before which to end.
-     * @param o_        entity identifier variable followed by the . character.
-     * @param q         simulated JPQL to which to append.
-     * @return simulated JPQL.
-     */
-    private StringBuilder appendWithIdentifierName(String ql, int startAt, int endBefore, String o_, StringBuilder q) {
-        boolean isLiteral = false;
-        boolean isNamedParamOrEmbedded = false;
-        for (int i = startAt; i < endBefore; i++) {
-            char ch = ql.charAt(i);
-            if (!isLiteral && (ch == ':' || ch == '.')) {
-                q.append(ch);
-                isNamedParamOrEmbedded = true;
-            } else if (ch == '\'') {
-                q.append(ch);
-                if (isLiteral) {
-                    if (i + 1 < endBefore && ql.charAt(i + 1) == '\'') {
-                        // escaped ' within a literal
-                        q.append('\'');
-                        i++;
-                    } else {
-                        isLiteral = false;
-                    }
-                } else {
-                    isLiteral = true;
-                    isNamedParamOrEmbedded = false;
-                }
-            } else if (Character.isJavaIdentifierStart(ch)) {
-                if (isNamedParamOrEmbedded || isLiteral) {
-                    q.append(ch);
-                } else {
-                    StringBuilder s = new StringBuilder();
-                    s.append(ch);
-                    for (int j = i + 1; j < endBefore; j++) {
-                        ch = ql.charAt(j);
-                        if (Character.isJavaIdentifierPart(ch))
-                            s.append(ch);
-                        else
-                            break;
-                    }
-                    i += s.length();
-                    String str = s.toString();
-                    i--; // adjust for separate loop increment
-
-                    if ("id".equalsIgnoreCase(str) && ql.regionMatches(true, i + 1, "(THIS)", 0, 6)) {
-                        String name = getAttributeName(By.ID, true);
-                        appendAttributeName(name, q);
-                        i += 6;
-                    } else if ("this".equalsIgnoreCase(str)
-                               || getAttributeName(str, false) == null) {
-                        q.append(str);
-                    } else {
-                        q.append(o_).append(str);
-                    }
-                }
-            } else if (Character.isDigit(ch)) {
-                q.append(ch);
-            } else {
-                q.append(ch);
-                if (!isLiteral)
-                    isNamedParamOrEmbedded = false;
-            }
-        }
-
-        return q;
     }
 
     /**
@@ -980,6 +913,11 @@ public class QueryInfo {
         TypedQuery<Long> query = em.createQuery(jpql, Long.class);
         setParameters(query, args);
 
+        // TODO #33189 why are EntityManager.setCacheRetrieveMode and
+        // Query.setCacheRetrieveMode unable to set this instead?
+        query.setHint("jakarta.persistence.cache.retrieveMode",
+                      CacheRetrieveMode.BYPASS);
+
         Long count = query.getSingleResult();
 
         Object returnValue;
@@ -1287,7 +1225,7 @@ public class QueryInfo {
             && jpql != this.jpql)
             Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
 
-        TypedQuery<?> delete = em.createQuery(jpql, entityInfo.entityClass);
+        jakarta.persistence.Query delete = em.createQuery(jpql);
 
         if (entityInfo.idClassAttributeAccessors == null) {
             int p = 1;
@@ -1354,6 +1292,41 @@ public class QueryInfo {
     private static boolean endsWith(String searchFor, String text, int minStart, int endBefore) {
         int searchLen = searchFor.length();
         return endBefore - minStart >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
+    }
+
+    /**
+     * Create a new UnsupportedOperationException for a conflicting Limit or
+     * PageRequest parameter.
+     *
+     * @param ql                the query.
+     * @param endOfWhereClause  position at which the WHERE clause ends.
+     * @param endsAtOrderClause indicates if this error is being raised because an
+     *                              ORDER BY clause was found in the query.
+     * @return UnsupportedOperationException
+     */
+    @Trivial
+    private UnsupportedOperationException //
+                    excCursorPaginationNotAllowed(String ql,
+                                                  int endOfWhereClause,
+                                                  boolean endsAtOrderClause) {
+
+        if (endsAtOrderClause)
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1033.ql.orderby.disallowed",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      CursoredPage.class.getSimpleName(),
+                      OrderBy.class.getSimpleName(),
+                      ql);
+        else
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1034.ql.req.end.in.where",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      CursoredPage.class.getSimpleName(),
+                      endOfWhereClause,
+                      ql.length(),
+                      ql);
     }
 
     /**
@@ -1554,7 +1527,7 @@ public class QueryInfo {
      */
     @Trivial
     private RuntimeException excMissingParamAnno(int p) {
-        DataVersionCompatibility compat = producer.provider().compat;
+        DataVersionCompatibility compat = producer.compat();
 
         switch (type) {
             case FIND:
@@ -1728,6 +1701,11 @@ public class QueryInfo {
         query.setMaxResults(1);
         setParameters(query, args);
 
+        // TODO #33189 why are EntityManager.setCacheRetrieveMode and
+        // Query.setCacheRetrieveMode unable to set this instead?
+        query.setHint("jakarta.persistence.cache.retrieveMode",
+                      CacheRetrieveMode.BYPASS);
+
         List<?> results = query.getResultList();
         boolean found = !results.isEmpty();
 
@@ -1753,14 +1731,15 @@ public class QueryInfo {
      * Execute a repository find query, and possibly also a delete operation
      * if find-and-delete.
      *
-     * @param em   entity manager.
-     * @param args method parameters.
+     * @param em       entity manager.
+     * @param txStatus transaction status.
+     * @param args     method parameters.
      * @return results, after wrapping in an Optional or CompletionStage if required
      *         by the repository method signature.
      * @throws Exception if an error occurs.
      */
-    @Trivial // em and method args have already been logged if loggable
-    Object find(EntityManager em, Object... args) throws Exception {
+    @Trivial // em, txStatus, and method args have already been logged if loggable
+    Object find(EntityManager em, int txStatus, Object... args) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "find", type);
@@ -1855,7 +1834,13 @@ public class QueryInfo {
             }
         }
 
-        Object returnValue = queryInfo.find(limit, max, pageReq, sortList, em, args);
+        Object returnValue = queryInfo.find(limit,
+                                            max,
+                                            pageReq,
+                                            sortList,
+                                            em,
+                                            txStatus,
+                                            args);
 
         if (isOptional) {
             returnValue = returnValue == null
@@ -1887,16 +1872,18 @@ public class QueryInfo {
      * @param pageReq  PageRequest, if specified as a repository method parameter
      * @param sortList combined list of Sorts
      * @param em       entity manager.
+     * @param txStatus transaction status.
      * @param args     method parameters.
      * @return results, before wrapping in an Optional or CompletionStage.
      * @throws Exception if an error occurs.
      */
-    @Trivial // method args have already been logged if loggable
+    @Trivial // em, txStatus, and method args have already been logged if loggable
     private Object find(Limit limit,
                         int max,
                         PageRequest pageReq,
                         List<Sort<Object>> sortList,
                         EntityManager em,
+                        int txStatus,
                         Object... args) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
@@ -1931,6 +1918,11 @@ public class QueryInfo {
             jakarta.persistence.Query query = em.createQuery(jpql);
             setParameters(query, args);
 
+            // TODO #33189 why are EntityManager.setCacheRetrieveMode and
+            // Query.setCacheRetrieveMode unable to set this instead?
+            query.setHint("jakarta.persistence.cache.retrieveMode",
+                          CacheRetrieveMode.BYPASS);
+
             if (type == FIND_AND_DELETE)
                 query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
@@ -1952,7 +1944,11 @@ public class QueryInfo {
             }
 
             if (multiType != null && BaseStream.class.isAssignableFrom(multiType)) {
-                Stream<?> stream = query.getResultStream();
+                Stream<?> stream;
+                if (txStatus == Status.STATUS_NO_TRANSACTION)
+                    stream = query.getResultList().stream();
+                else
+                    stream = query.getResultStream();
                 if (Stream.class.equals(multiType))
                     returnValue = stream;
                 else if (IntStream.class.equals(multiType))
@@ -2134,60 +2130,72 @@ public class QueryInfo {
             }
         }
 
-        if (results.isEmpty())
+        if (!results.isEmpty())
+            em.flush();
+
+        Object returnValue;
+        Class<?> returnType = method.getReturnType();
+        if (boolean.class.equals(singleType) || Boolean.class.equals(singleType)) {
+            returnValue = !results.isEmpty();
+        } else if (Util.PRIMITIVE_NUMERIC_TYPES.contains(singleType) ||
+                   Number.class.isAssignableFrom(singleType)) {
+            returnValue = convert(results.size(), singleType, true);
+        } else if (results.isEmpty()) {
             throw exc(IllegalArgumentException.class,
                       "CWWKD1092.lifecycle.arg.empty",
                       method.getName(),
                       repositoryInterface.getName(),
                       method.getGenericParameterTypes()[0].getTypeName());
-
-        em.flush();
-
-        Class<?> returnType = method.getReturnType();
-        if (void.class.equals(returnType) || Void.class.equals(returnType))
-            return null;
-
-        if (entityInfo.recordClass != null)
-            for (int i = 0; i < results.size(); i++)
-                results.set(i, entityInfo.toRecord(results.get(i)));
-
-        Object returnValue;
-        if (returnArrayType != null) {
-            Object[] newArray = (Object[]) Array.newInstance(returnArrayType, results.size());
-            returnValue = results.toArray(newArray);
+        } else if (void.class.equals(returnType) || Void.class.equals(returnType)) {
+            returnValue = null;
         } else {
-            if (multiType == null)
-                if (results.size() == 1)
-                    returnValue = results.get(0);
-                else if (results.isEmpty())
-                    returnValue = null;
+            if (entityInfo.recordClass != null)
+                for (int i = 0; i < results.size(); i++)
+                    results.set(i, entityInfo.toRecord(results.get(i)));
+
+            if (returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(returnArrayType, results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                if (multiType == null)
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw excNonUniqueResult(results.size());
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = convertToIterable(results, multiType, null, null);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
                 else
-                    throw excNonUniqueResult(results.size());
-            else if (multiType.isInstance(results))
-                returnValue = results;
-            else if (Stream.class.equals(multiType))
-                returnValue = results.stream();
-            else if (Iterable.class.isAssignableFrom(multiType))
-                returnValue = convertToIterable(results, multiType, null, null);
-            else if (Iterator.class.equals(multiType))
-                returnValue = results.iterator();
-            else
-                throw exc(MappingException.class,
-                          "CWWKD1003.rtrn.err",
-                          method.getGenericReturnType().getTypeName(),
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          "Update",
-                          lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
-                                               hasSingularEntityParam,
-                                               false));
+                    throw exc(MappingException.class,
+                              "CWWKD1003.rtrn.err",
+                              method.getGenericReturnType().getTypeName(),
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              "Update",
+                              lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
+                                                   hasSingularEntityParam,
+                                                   false));
+            }
         }
 
         if (Optional.class.equals(returnType)) {
-            returnValue = returnValue == null ? Optional.empty() : Optional.of(returnValue);
-        } else if (CompletableFuture.class.equals(returnType) || CompletionStage.class.equals(returnType)) {
-            returnValue = CompletableFuture.completedFuture(returnValue); // useful for @Asynchronous
-        } else if (returnValue != null && !returnType.isInstance(returnValue)) {
+            returnValue = returnValue == null //
+                            ? Optional.empty() //
+                            : Optional.of(returnValue);
+        } else if (CompletableFuture.class.equals(returnType) ||
+                   CompletionStage.class.equals(returnType)) {
+            // useful for @Asynchronous
+            returnValue = CompletableFuture.completedFuture(returnValue);
+        } else if (returnValue != null &&
+                   !Util.wrapperClassIfPrimitive(returnType) //
+                                   .isAssignableFrom(returnValue.getClass())) {
             throw exc(MappingException.class,
                       "CWWKD1003.rtrn.err",
                       method.getGenericReturnType().getTypeName(),
@@ -2249,11 +2257,7 @@ public class QueryInfo {
         if (TraceComponent.isAnyTracingEnabled() && jpql != this.jpql)
             Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
 
-        Class<?> entityClass = singleType.equals(entityInfo.recordClass) //
-                        ? entityInfo.entityClass //
-                        : singleType;
-
-        TypedQuery<?> query = em.createQuery(jpql, entityClass);
+        jakarta.persistence.Query query = em.createQuery(jpql);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
         if (entityInfo.idClassAttributeAccessors == null) {
@@ -2290,10 +2294,18 @@ public class QueryInfo {
                       Util.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES_STATELESS);
         }
 
-        Object returnValue = em.merge(toEntity(e));
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "found", loggable(results.get(0)));
+
+        e = toEntity(e);
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "merge", loggable(e));
+
+        Object returnValue = em.merge(e);
 
         if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "findAndUpdateOne", loggable(returnValue));
+            Tr.exit(this, tc, "findAndUpdateOne", loggable(returnValue));
         return returnValue;
     }
 
@@ -2832,6 +2844,7 @@ public class QueryInfo {
                             .append(entityInfo.name).append(' ').append(o) //
                             .append(" SET");
 
+            boolean needsVersionUpdate = entityInfo.versionAttributeName != null;
             boolean first = true;
             // p is the repository method parameter position (0-based)
             for (int p = 0; p < numAttributeParams; p++) {
@@ -2856,6 +2869,10 @@ public class QueryInfo {
                                                    " repository when the Id is an IdClass.");
                     } else {
                         String name = attrNames[p];
+
+                        if (needsVersionUpdate &&
+                            name.equals(entityInfo.versionAttributeName))
+                            needsVersionUpdate = false;
 
                         q.append(first ? " " : ", ");
                         appendAttributeName(name, q);
@@ -2885,6 +2902,23 @@ public class QueryInfo {
                             q.append(')');
                     }
                 }
+            }
+
+            if (needsVersionUpdate) {
+                Class<?> versionType = entityInfo.attributeTypes //
+                                .get(entityInfo.versionAttributeName);
+
+                q.append(first ? " " : ", ");
+                appendAttributeName(entityInfo.versionAttributeName, q);
+                q.append("=");
+                if (LocalDateTime.class.equals(versionType) ||
+                    Instant.class.equals(versionType)) {
+                    q.append("LOCAL DATETIME");
+                } else {
+                    appendAttributeName(entityInfo.versionAttributeName, q);
+                    q.append(" + 1");
+                }
+                first = false;
             }
 
             if (first)
@@ -2994,6 +3028,9 @@ public class QueryInfo {
             if (singleType.isAssignableFrom(entityInfo.entityClass)
                 || entityInfo.inheritance && entityInfo.entityClass.isAssignableFrom(singleType)) {
                 // Whole entity
+                // Omission of the optional SELECT clause means "SELECT this" per
+                // the Jakarta Persistence spec. Given that, a SELECT clause ends up
+                // being required if the entity identification variable is not "this"
                 if (!"this".equals(o))
                     q.append("SELECT ").append(o);
             } else if (entityInfo.idClassAttributeAccessors != null &&
@@ -3184,10 +3221,10 @@ public class QueryInfo {
                 q.append(o_).append(name).append("=?").append(++jpqlParamCount);
             }
         } else {
-            // Update that returns an entity. And also used when an entity
-            // has relation attributes that require using em.merge.
+            // Update that returns an entity. And also used when an entity has a
+            // version attribute or relation attribute that requires using em.merge.
             // Perform a find operation first so that em.merge can be used.
-            setType(Update.class, LC_UPDATE_RET_ENTITY);
+            setType(Update.class, LC_UPDATE_MERGE);
 
             q = new StringBuilder(100) //
                             .append("SELECT ").append(o) //
@@ -3344,13 +3381,8 @@ public class QueryInfo {
                                     .toString();
                 }
             else
-                throw exc(MappingException.class,
-                          "CWWKD1010.unknown.entity.attr",
-                          name,
-                          entityInfo.getType().getName(),
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          entityInfo.attributeTypes.keySet());
+                // allow functions, such as LENGTH(name)
+                attributeName = name;
         } else if (len == 0) {
             throw exc(MappingException.class,
                       "CWWKD1024.missing.entity.attr",
@@ -3755,71 +3787,47 @@ public class QueryInfo {
                                    DataVersionCompatibility compat) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        boolean isCursoredPage = CursoredPage.class.equals(multiType);
-        boolean countPages = isCursoredPage || Page.class.equals(multiType);
-
         // for collecting names of named parameters:
         LinkedHashSet<String> qlParamNames = new LinkedHashSet<>();
+
+        // indices at which the query needs to be modified, along with the
+        // type of modification needed
+        TreeMap<Integer, QueryEdit> modifyAt;
 
         int length = ql.length();
         int startAt = 0;
         char firstChar = ' ';
-        for (; startAt < length && Character.isWhitespace(firstChar = ql.charAt(startAt)); startAt++);
+        while (startAt < length &&
+               Character.isWhitespace(firstChar = ql.charAt(startAt)))
+            startAt++;
 
-        if (firstChar == 'D' || firstChar == 'd') { // DELETE FROM EntityName[ WHERE ...]
-            ArrayList<Integer> modifyAt = new ArrayList<>();
+        if (firstChar == 'D' || firstChar == 'd') {
+            // DELETE FROM EntityName[ WHERE ...]
             if (startAt + 12 < length
                 && ql.regionMatches(true, startAt + 1, "ELETE", 0, 5)
                 && Character.isWhitespace(ql.charAt(startAt + 6))) {
                 type = QM_DELETE;
-                jpql = ql;
                 startAt += 7; // start of FROM
-                for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
-                if (startAt + 6 < length
-                    && ql.regionMatches(true, startAt, "FROM", 0, 4)
-                    && Character.isWhitespace(ql.charAt(startAt + 4))) {
-                    modifyAt.add(startAt += 5); // start of EntityName
-                    for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
-                    StringBuilder entityName = new StringBuilder();
-                    for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
-                        entityName.append(ch);
-                    if (entityName.length() > 0)
-                        setEntityInfo(entityName.toString(), entityInfos, ql);
-                    else
-                        throw exc(UnsupportedOperationException.class,
-                                  "CWWKD1030.ql.lacks.entity",
-                                  ql,
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  "DELETE",
-                                  "DELETE FROM [entity_name] WHERE [conditional_expression]");
-
-                    entityVar = parseIdentificationVariable(startAt, length, ql);
-                    entityVar_ = entityVar == "this" ? "" : (entityVar + '.');
-                }
             }
 
-            qlParamNames = parseQuery(ql, startAt, modifyAt);
+            modifyAt = parseQuery(ql, startAt, null, true, entityInfos, qlParamNames);
 
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(tc, ql, "DELETE query",
-                         "  " + jpql,
-                         "  entity [" + entityInfo.name + "] [" + entityVar + "]",
-                         "  modify " + modifyAt,
-                         "  :named " + qlParamNames);
+            if (entityInfo == null)
+                setEntityInfo(entityInfos, primaryEntityInfoFuture);
 
             // TODO move this later into shared code with all paths
-            if (!modifyAt.isEmpty() &&
-                entityInfo.recordClass != null)
-                jpql = replaceRecordName(ql, modifyAt);
-        } else if (firstChar == 'U' || firstChar == 'u') { // UPDATE EntityName[ SET ... WHERE ...]
-            ArrayList<Integer> modifyAt = new ArrayList<>();
+            if (modifyAt.isEmpty() || entityInfo.recordClass == null)
+                jpql = ql;
+            else
+                jpql = replaceQuery(ql, -1, modifyAt);
+        } else if (firstChar == 'U' || firstChar == 'u') {
+            // UPDATE EntityName[ SET ... WHERE ...]
+            int entityNameStartAt = -1;
             if (startAt + 13 < length
                 && ql.regionMatches(true, startAt + 1, "PDATE", 0, 5)
                 && Character.isWhitespace(ql.charAt(startAt + 6))) {
                 type = QM_UPDATE;
-                jpql = ql;
-                modifyAt.add(startAt += 7); // start of EntityName
+                entityNameStartAt = startAt += 7;
                 for (; startAt < length && Character.isWhitespace(ql.charAt(startAt)); startAt++);
                 StringBuilder entityName = new StringBuilder();
                 for (char ch; startAt < length && Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); startAt++)
@@ -3839,361 +3847,36 @@ public class QueryInfo {
                 entityVar_ = entityVar == "this" ? "" : (entityVar + '.');
             }
 
-            qlParamNames = parseQuery(ql, startAt, modifyAt);
+            modifyAt = parseQuery(ql, startAt, null, false, entityInfos, qlParamNames);
 
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(tc, ql, "UPDATE query",
-                         "  " + jpql,
-                         "  entity [" + entityInfo.name + "] [" + entityVar + "]",
-                         "  modify " + modifyAt,
-                         "  :named " + qlParamNames);
-
-            // TODO move this later into shared code with all paths
-            if (!modifyAt.isEmpty() &&
-                entityInfo.recordClass != null)
-                jpql = replaceRecordName(ql, modifyAt);
-        } else { // SELECT ... or FROM ... or WHERE ... or ORDER BY ...
-            int select0 = -1, selectLen = 0; // starts after SELECT
-            int from0 = -1, fromLen = 0; // starts after FROM
-            int entityName0 = -1, entityNameLen = 0;
-            int where0 = -1, whereLen = 0; // starts after WHERE
-            int order0 = -1, orderLen = 0; // starts at ORDER BY
-
-            if (length > startAt + 6
-                && ql.regionMatches(true, startAt, "SELECT", 0, 6)
-                && !Character.isJavaIdentifierPart(ql.charAt(startAt + 6))) {
-                select0 = startAt += 6;
-                // The end of the SELECT clause is a FROM, WHERE, GROUP BY, HAVING, or ORDER BY clause, or the end of the query
-            }
-
-            // track depth of parenthesis to ignore FROM within expressions, such as in
-            // SELECT EXTRACT(YEAR FROM colName) FROM EntityName
-            int depth = 0;
-            boolean isEmbedded = false;
-            boolean isLiteral = false;
-            StringBuilder paramName = null;
-            for (; startAt < length; startAt++) {
-                char ch = ql.charAt(startAt);
-                if (!isLiteral && (ch == ':' || ch == '.' || ch == '(' || ch == ')')) {
-                    switch (ch) {
-                        case ':' -> paramName = new StringBuilder(30);
-                        case '.' -> isEmbedded = true;
-                        case '(' -> depth++;
-                        case ')' -> depth = depth > 0 ? depth - 1 : 0;
-                    }
-                } else if (ch == '\'') {
-                    if (isLiteral) {
-                        if (startAt + 1 < length && ql.charAt(startAt + 1) == '\'')
-                            startAt++; // escaped ' within a literal
-                        else
-                            isLiteral = false;
-                    } else {
-                        isLiteral = true;
-                        if (isEmbedded) {
-                            isEmbedded = false;
-                        } else if (paramName != null) {
-                            qlParamNames.add(paramName.toString());
-                            paramName = null;
-                        }
-                    }
-                } else if (Character.isJavaIdentifierStart(ch)) {
-                    if (paramName != null) {
-                        paramName.append(ch);
-                        while (length > startAt + 1 && Character //
-                                        .isJavaIdentifierPart(ch = ql.charAt(startAt + 1))) {
-                            paramName.append(ch);
-                            startAt++;
-                        }
-                    } else if (!isEmbedded && !isLiteral && depth == 0) {
-                        int by;
-                        if (from0 < 0 && where0 < 0 && length > startAt + 4
-                            && ql.regionMatches(true, startAt, "FROM", 0, 4)
-                            && !Character.isJavaIdentifierPart(ql.charAt(startAt + 4))) {
-                            if (select0 >= 0 && selectLen == 0)
-                                selectLen = startAt - select0;
-                            from0 = startAt + 4;
-                            startAt = from0 - 1; // -1 to allow for loop increment
-                        } else if (length > startAt + 5
-                                   && ql.regionMatches(true, startAt, "WHERE", 0, 5)
-                                   && !Character.isJavaIdentifierPart(ql.charAt(startAt + 5))) {
-                            if (select0 >= 0 && selectLen == 0)
-                                selectLen = startAt - select0;
-                            else if (from0 >= 0 && fromLen == 0)
-                                fromLen = startAt - from0;
-                            where0 = startAt + 5;
-                            startAt = where0 - 1; // -1 to allow for loop increment
-                            whereLen = 0;
-                        } else if (length > startAt + 8
-                                   && ql.regionMatches(true, startAt, "GROUP", 0, 5)
-                                   && (by = indexOfAfterWhitespace("BY", ql, startAt + 5)) > 0) {
-                            if (select0 >= 0 && selectLen == 0)
-                                selectLen = startAt - select0;
-                            else if (from0 >= 0 && fromLen == 0)
-                                fromLen = startAt - from0;
-                            else if (where0 >= 0 && whereLen == 0)
-                                whereLen = startAt - where0;
-                            startAt = by + 2 - 1; // -1 to allow for loop increment
-                        } else if (length > startAt + 6
-                                   && ql.regionMatches(true, startAt, "HAVING", 0, 6)
-                                   && !Character.isJavaIdentifierPart(ql.charAt(startAt + 6))) {
-                            if (select0 >= 0 && selectLen == 0)
-                                selectLen = startAt - select0;
-                            else if (from0 >= 0 && fromLen == 0)
-                                fromLen = startAt - from0;
-                            else if (where0 >= 0 && whereLen == 0)
-                                whereLen = startAt - where0;
-                            startAt += 6 - 1; // -1 to allow for loop increment
-                        } else if (length > startAt + 8
-                                   && ql.regionMatches(true, startAt, "ORDER", 0, 5)
-                                   && (by = indexOfAfterWhitespace("BY", ql, startAt + 5)) > 0) {
-                            if (select0 >= 0 && selectLen == 0)
-                                selectLen = startAt - select0;
-                            else if (from0 >= 0 && fromLen == 0)
-                                fromLen = startAt - from0;
-                            else if (where0 >= 0 && whereLen == 0)
-                                whereLen = startAt - where0;
-                            order0 = startAt; // include the ORDER BY unlike the other clauses
-                            startAt = by + 2 - 1; // -1 to allow for loop increment
-                        } else {
-                            while (length > startAt + 1 && Character.isJavaIdentifierPart(ql.charAt(startAt + 1)))
-                                startAt++;
-                        }
-                    }
-                } else if (Character.isDigit(ch)) {
-                    if (paramName != null)
-                        paramName.append(ch);
-                } else if (!isLiteral) {
-                    if (isEmbedded) {
-                        isEmbedded = false;
-                    } else if (paramName != null) {
-                        qlParamNames.add(paramName.toString());
-                        paramName = null;
-                    }
-                }
-            }
-            if (paramName != null) {
-                qlParamNames.add(paramName.toString());
-                paramName = null;
-            }
-
-            if (select0 >= 0 && selectLen == 0)
-                selectLen = length - select0;
-            else if (from0 >= 0 && fromLen == 0)
-                fromLen = length - from0;
-            else if (where0 >= 0 && whereLen == 0)
-                whereLen = length - where0;
-            else if (order0 >= 0 && orderLen == 0)
-                orderLen = length - order0;
-
-            type = FIND;
-            entityVar = "this";
-            entityVar_ = "";
-            hasWhere = whereLen > 0;
-
-            // Locate the entity identifier variable (if present). Examples of FROM clause:
-            // FROM EntityName
-            // FROM EntityName e
-            // FROM EntityName AS e
-            for (startAt = from0; startAt < from0 + fromLen && Character.isWhitespace(ql.charAt(startAt)); startAt++);
-            if (startAt < from0 + fromLen) {
-                entityName0 = startAt; // starts at EntityName
-                for (; startAt < from0 + fromLen && Character.isJavaIdentifierPart(ql.charAt(startAt)); startAt++);
-                if ((entityNameLen = startAt - entityName0) > 0) {
-                    String entityName = ql.substring(entityName0, entityName0 + entityNameLen);
-                    setEntityInfo(entityName, entityInfos, ql);
-
-                    for (; startAt < from0 + fromLen && Character.isWhitespace(ql.charAt(startAt)); startAt++);
-                    if (startAt < from0 + fromLen) {
-                        int idVar0 = startAt, idVarLen = 0; // starts at the entity identifier variable
-                        for (; startAt < from0 + fromLen && Character.isJavaIdentifierPart(ql.charAt(startAt)); startAt++);
-                        if ((idVarLen = startAt - idVar0) > 0) {
-                            if (idVarLen == 2
-                                && (ql.charAt(idVar0) == 'A' || ql.charAt(idVar0) == 'a')
-                                && (ql.charAt(idVar0 + 1) == 'S' || ql.charAt(idVar0 + 1) == 's')) {
-                                // skip over the AS keyword
-                                for (; startAt < from0 + fromLen && Character.isWhitespace(ql.charAt(startAt)); startAt++);
-                                idVar0 = startAt;
-                                for (; startAt < from0 + fromLen && Character.isJavaIdentifierPart(ql.charAt(startAt)); startAt++);
-                            }
-                            if (startAt > idVar0) {
-                                entityVar = ql.substring(idVar0, startAt);
-                                entityVar_ = entityVar + '.';
-                            }
-                        }
-                    }
-                }
-            }
+            modifyAt.put(entityNameStartAt, QueryEdit.REPLACE_RECORD_ENTITY);
 
             if (entityInfo == null)
                 setEntityInfo(entityInfos, primaryEntityInfoFuture);
 
-            String entityName = entityInfo.name;
+            // TODO move this later into shared code with all paths
+            if (entityInfo.recordClass == null)
+                jpql = ql;
+            else
+                jpql = replaceQuery(ql, -1, modifyAt);
+        } else { // SELECT ... or FROM ... or WHERE ... or ORDER BY ...
+            type = FIND;
 
-            if (trace && tc.isDebugEnabled()) {
-                Tr.debug(tc, ql, "JDQL query parts", // does not include GROUP BY, HAVING, or address subqueries or other complex JPQL
-                         "  SELECT [" + (selectLen > 0 ? ql.substring(select0, select0 + selectLen) : "") + "]",
-                         "    FROM [" + (fromLen > 0 ? ql.substring(from0, from0 + fromLen) : "") + "]",
-                         "   WHERE [" + (whereLen > 0 ? ql.substring(where0, where0 + whereLen) : "") + "]",
-                         "  [" + (orderLen > 0 ? ql.substring(order0, order0 + orderLen) : "") + "]",
-                         "  entity [" + entityName + "] [" + entityVar + "]",
-                         "  :named " + qlParamNames);
+            int select0 = -1;
+            if (length > startAt + 6
+                && ql.regionMatches(true, startAt, "SELECT", 0, 6)
+                && !Character.isJavaIdentifierPart(ql.charAt(startAt + 6))) {
+                select0 = startAt += 6;
+                // The end of the SELECT clause is a FROM, WHERE, GROUP BY, HAVING,
+                // or ORDER BY clause, or the end of the query
             }
 
-            boolean hasEntityVar = entityVar_.length() > 0;
+            modifyAt = parseQuery(ql, startAt, select0 >= 0, true, entityInfos, qlParamNames);
 
-            // TODO remove this workaround for #30351 once fixed and run the _fat_jpa bucket to verify
-            boolean insertEntityVar = entityVar_.length() == 0 && !entityInfo.relationAttributeNames.isEmpty();
-            if (insertEntityVar)
-                entityVar_ = entityVar + ".";
+            if (entityInfo == null)
+                setEntityInfo(entityInfos, primaryEntityInfoFuture);
 
-            if (countPages) {
-                // TODO count query cannot always be accurately inferred if Query value is JPQL
-                StringBuilder c = new StringBuilder("SELECT COUNT(");
-                c.append(inferCountFromSelect(ql, select0, selectLen));
-
-                c.append(") FROM");
-                if (from0 >= 0) {
-                    if (entityName0 > 0) {
-                        c.append(ql.substring(from0, entityName0));
-                        c.append(entityName);
-                        c.append(ql.substring(entityName0 + entityNameLen, from0 + fromLen));
-                    } else {
-                        c.append(ql.substring(from0, from0 + fromLen));
-                    }
-                } else {
-                    c.append(' ').append(entityName).append(' ');
-                    if (hasEntityVar)
-                        c.append(entityVar).append(' ');
-                }
-
-                if (whereLen > 0)
-                    if (insertEntityVar) {
-                        c.append("WHERE");
-                        appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, c);
-                    } else
-                        c.append("WHERE").append(ql.substring(where0, where0 + whereLen));
-
-                jpqlCount = c.toString();
-
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(tc, ql, "count query: " + jpqlCount);
-            }
-
-            if (isCursoredPage) {
-                if (order0 >= 0)
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1033.ql.orderby.disallowed",
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              CursoredPage.class.getSimpleName(),
-                              OrderBy.class.getSimpleName(),
-                              ql);
-
-                if (whereLen > 0) {
-                    if (where0 + whereLen != length)
-                        throw exc(UnsupportedOperationException.class,
-                                  "CWWKD1034.ql.where.required",
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  CursoredPage.class.getSimpleName(),
-                                  where0 + whereLen,
-                                  length,
-                                  ql);
-
-                    // Enclose the WHERE clause in parenthesis so that conditions can be appended.
-                    boolean addSpace = ql.charAt(where0) != ' ';
-                    ql = new StringBuilder(ql.length() + 2) //
-                                    .append(ql.substring(0, where0)) //
-                                    .append(" (") //
-                                    .append(ql.substring(where0 + (addSpace ? 0 : 1), where0 + whereLen)) //
-                                    .append(")") //
-                                    .toString();
-                    whereLen += 2 + (addSpace ? 1 : 0);
-                }
-            }
-
-            boolean insertConstructor = false;
-            String selection = null;
-            if (selectLen > 0) {
-                selection = ql.substring(select0, select0 + selectLen);
-                insertConstructor = compat.atLeast(1, 1) &&
-                                    singleType.isRecord() &&
-                                    !selection.toUpperCase().contains(" NEW ");
-            }
-
-            // TODO Eventually send everything through the if block path and
-            // remove the else block entirely. The following is just enough to
-            // get a couple of test cases working
-            if (fromLen > 0 && // TODO insert FROM clause if not present
-                (entityInfo.recordClass == null ||
-                 !ql.contains(entityInfo.recordClass.getSimpleName()))
-                && // TODO replace record types with generated class type
-                !insertConstructor && // temporary
-                !insertEntityVar) { // temporary
-                if (selectLen > 0) {
-                    jpql = ql;
-                } else {
-                    // TODO only add a SELECT clause if needed for something other
-                    // than selecting the entity, such as individual attributes or
-                    // Java records with multiple.
-                    jpql = generateSelectClause().append(' ').append(ql).toString();
-                }
-            } else {
-                StringBuilder q;
-                if (selectLen > 0) {
-                    q = new StringBuilder(ql.length() + (selectLen >= 0 ? 0 : 50) + (fromLen >= 0 ? 0 : 50) + 2);
-                    q.append("SELECT");
-                    // TODO 1.1 use Jakarta Persistence enhancement issue 420 instead of
-                    // editing the query
-                    if (insertConstructor)
-                        q.append(" NEW ").append(singleType.getName()).append('(');
-                    if (insertEntityVar) {
-                        appendWithIdentifierName(ql, select0, select0 + selectLen, entityVar_, q);
-                    } else {
-                        q.append(selection);
-                    }
-                    if (insertConstructor)
-                        q.append(") ");
-                    if (fromLen == 0 && whereLen == 0 && orderLen == 0 &&
-                        !Character.isWhitespace(q.charAt(q.length() - 1)))
-                        q.append(' ');
-                } else {
-                    q = generateSelectClause().append(' ');
-                }
-
-                q.append("FROM");
-                if (fromLen > 0) {
-                    if (entityName0 > 0) {
-                        q.append(ql.substring(from0, entityName0));
-                        q.append(entityName);
-                        q.append(ql.substring(entityName0 + entityNameLen, from0 + fromLen));
-                    } else {
-                        q.append(ql.substring(from0, from0 + fromLen));
-                    }
-                } else {
-                    q.append(' ').append(entityName).append(' ');
-                    if (hasEntityVar)
-                        q.append(entityVar).append(' ');
-                }
-
-                if (whereLen > 0)
-                    // TODO once fixed, test #30351 by adding: && !"this.".equalsIgnoreCase(entityVar_)
-                    // and running DataJPATestServlet.testCountQueryWithFromAndWhereClausesOnly
-                    if (insertEntityVar) {
-                        q.append("WHERE");
-                        appendWithIdentifierName(ql, where0, where0 + whereLen, entityVar_, q);
-                    } else {
-                        q.append("WHERE").append(ql.substring(where0, where0 + whereLen));
-                    }
-
-                if (orderLen > 0)
-                    if (insertEntityVar)
-                        appendWithIdentifierName(ql, order0, order0 + orderLen, entityVar_, q);
-                    else
-                        q.append(ql.substring(order0, order0 + orderLen));
-
-                jpql = q.toString();
-            }
+            jpql = replaceQuery(ql, select0, modifyAt);
         }
 
         // Find out how many parameters the method supplies to the query
@@ -4954,29 +4637,86 @@ public class QueryInfo {
      * Locate the names of named parameters after the specified point in the query
      * and populate them into the paramNames list.
      *
-     * @param ql       query language
-     * @param startAt  starting position in the query language
-     * @param modifyAt list into which to add the possible starting indices of
-     *                     entity names of FROM clauses.
-     * @return the names of named parameter.
+     * @param ql                        query language
+     * @param startAt                   starting position in the query language
+     * @param findQueryStartsWithSelect indicates whether or not a find query begins
+     *                                      with SELECT. Null if a DELETE or UPDATE.
+     * @param initEntityVar             indicates whether or not to initialize entityVar.
+     * @param entityInfos               map of entity name to entity information.
+     * @param qlParamNames              list to populate with the names of named
+     *                                      parameters.
+     * @param modifyAt                  list into which to add the possible starting
+     *                                      indices of entity names of FROM clauses.
+     * @return indices at which the query needs to be modified, along with the type
+     *         of modification needed
      */
-    @Trivial
-    private LinkedHashSet<String> parseQuery(String ql,
-                                             int startAt,
-                                             List<Integer> modifyAt) {
-        LinkedHashSet<String> qlParamNames = new LinkedHashSet<>();
+    private TreeMap<Integer, QueryEdit> //
+                    parseQuery(String ql,
+                               final int startAt,
+                               Boolean findQueryStartsWithSelect,
+                               boolean initEntityVar,
+                               Map<String, CompletableFuture<EntityInfo>> entityInfos,
+                               LinkedHashSet<String> qlParamNames) {
+        TreeMap<Integer, QueryEdit> modifyAt = new TreeMap<>();
 
         int length = ql.length();
+        int i = startAt;
+        boolean isCursoredPage;
+        boolean countPages;
+        boolean countMustOmitSelect;
+        boolean needsConstructorEnd = false;
+        boolean needsParenthesesEnd = false;
+
+        if (findQueryStartsWithSelect == null) {
+            // not a SELECT statement
+            isCursoredPage = false;
+            countPages = false;
+            countMustOmitSelect = false;
+        } else {
+            isCursoredPage = CursoredPage.class.equals(multiType);
+            countPages = isCursoredPage || Page.class.equals(multiType);
+
+            if (findQueryStartsWithSelect == Boolean.TRUE) {
+                countMustOmitSelect = countPages;
+                if (producer.compat().atLeast(1, 1) &&
+                    singleType.isRecord()) {
+                    while (i < length && Character.isWhitespace(ql.charAt(i)))
+                        i++;
+                    if (i + 3 < length &&
+                        !Character.isJavaIdentifierPart(ql.charAt(i + 3)) &&
+                        ql.regionMatches(true, i, "NEW", 0, 3)) {
+                        // already has constructor syntax
+                        i += 3;
+                    } else {
+                        modifyAt.put(i, QueryEdit.ADD_CONSTRUCTOR_BEGIN);
+                        needsConstructorEnd = true;
+                    }
+                }
+            } else { // findQueryStartsWithSelect == Boolean.FALSE
+                countMustOmitSelect = false;
+                modifyAt.put(QueryEdit.BEFORE_QUERY, QueryEdit.ADD_SELECT_IF_NEEDED);
+            }
+        }
+
+        Integer addFromAt = findQueryStartsWithSelect == null //
+                        ? -1 // never, it's a DELETE or UPDATE so it always has FROM
+                        : null; // unknown, check for FROM at depth 0 in query
+        int depth = 0; // depth of parentheses, to ignore EXTRACT(* FROM *) and subqueries
         boolean isLiteral = false;
         StringBuilder paramName = null;
-        for (; startAt < length; startAt++) {
-            char ch = ql.charAt(startAt);
+
+        for (; i < length; i++) {
+            char ch = ql.charAt(i);
             if (!isLiteral && ch == ':') {
                 paramName = new StringBuilder(30);
+            } else if (!isLiteral && ch == '(') {
+                depth++;
+            } else if (!isLiteral && ch == ')') {
+                depth = depth > 0 ? depth - 1 : 0;
             } else if (ch == '\'') {
                 if (isLiteral) {
-                    if (startAt + 1 < length && ql.charAt(startAt + 1) == '\'')
-                        startAt++; // escaped ' within a literal
+                    if (i + 1 < length && ql.charAt(i + 1) == '\'')
+                        i++; // escaped ' within a literal
                     else
                         isLiteral = false;
                 } else {
@@ -4988,18 +4728,127 @@ public class QueryInfo {
                 }
             } else if (Character.isJavaIdentifierStart(ch)) {
                 if (paramName == null) {
-                    if (startAt + 4 < length &&
-                        !Character.isJavaIdentifierPart(ql.charAt(startAt + 4)) &&
-                        ql.regionMatches(true, startAt, "FROM", 0, 4)) {
-                        startAt += 5;
-                        modifyAt.add(startAt);
+                    if (i + 4 < length &&
+                        !Character.isJavaIdentifierPart(ql.charAt(i + 4)) &&
+                        ql.regionMatches(true, i, "FROM", 0, 4)) {
+
+                        if (depth == 0 && // avoids SELECT EXTRACT(YEAR FROM d) WHERE ...
+                            addFromAt == null)
+                            addFromAt = -1;
+                        if (depth == 0 &&
+                            countMustOmitSelect) {
+                            countMustOmitSelect = false;
+                            modifyAt.put(-i, // avoid possible collision
+                                         QueryEdit.OMIT_SELECT_IN_COUNT);
+                        }
+                        if (depth == 0 &&
+                            needsConstructorEnd) {
+                            needsConstructorEnd = false;
+                            modifyAt.put(i - 1,
+                                         QueryEdit.ADD_CONSTRUCTOR_END);
+                        }
+
+                        i += 4;
+                        modifyAt.put(i + 1, QueryEdit.REPLACE_RECORD_ENTITY);
+
+                        if (depth == 0 && initEntityVar) {
+                            // determine the entity identification variable
+                            while (i < length && Character.isWhitespace(ql.charAt(i)))
+                                i++;
+                            StringBuilder entityName = new StringBuilder();
+                            for (char c; i < length && //
+                                         Character.isJavaIdentifierPart(c = ql.charAt(i)); //
+                                            i++)
+                                entityName.append(c);
+                            if (entityName.length() > 0)
+                                setEntityInfo(entityName.toString(), entityInfos, ql);
+                            else if (findQueryStartsWithSelect == null) // a DELETE query
+                                throw exc(UnsupportedOperationException.class,
+                                          "CWWKD1030.ql.lacks.entity",
+                                          ql,
+                                          method.getName(),
+                                          repositoryInterface.getName(),
+                                          "DELETE",
+                                          "DELETE FROM [entity_name] WHERE [conditional_expression]");
+
+                            entityVar = parseIdentificationVariable(i, length, ql);
+                            entityVar_ = entityVar == "this" ? "" : (entityVar + '.');
+                            initEntityVar = false;
+                        }
+                        i--; // balances loop increment when already positioned correctly
+                    } else if (depth == 0) {
+                        boolean isWhere = false, isOrder = false;
+                        int l; // keyword length
+                        if (i + (l = 5) < length &&
+                            !Character.isJavaIdentifierPart(ql.charAt(i + l)) &&
+                            ((isWhere = ql.regionMatches(true, i, "WHERE", 0, l)) ||
+                             (isOrder = ql.regionMatches(true, i, "ORDER", 0, l)) ||
+                             ql.regionMatches(true, i, "GROUP", 0, l) ||
+                             ql.regionMatches(true, i, "UNION", 0, l))
+                            ||
+                            (i + (l = 6) < length &&
+                             !Character.isJavaIdentifierPart(ql.charAt(i + l)) &&
+                             (ql.regionMatches(true, i, "HAVING", 0, l) ||
+                              ql.regionMatches(true, i, "EXCEPT", 0, l)))
+                            ||
+                            (i + (l = 9) < length &&
+                             !Character.isJavaIdentifierPart(ql.charAt(i + l)) &&
+                             ql.regionMatches(true, i, "INTERSECT", 0, l))) {
+
+                            if (isCursoredPage && !isWhere && !isOrder)
+                                // ORDER BY isn't allowed with cursored pagination
+                                // either, but has a better error message for it
+                                // elsewhere that points out the correct ways to
+                                // specify order
+                                throw exc(UnsupportedOperationException.class,
+                                          "CWWKD1120.cursor.keyword.mismatch",
+                                          method.getName(),
+                                          repositoryInterface.getName(),
+                                          ql.substring(i, i + l),
+                                          ql);
+                            if (countMustOmitSelect) {
+                                countMustOmitSelect = false;
+                                modifyAt.put(-i, // avoid possible collision
+                                             QueryEdit.OMIT_SELECT_IN_COUNT);
+                            }
+                            if (needsConstructorEnd) {
+                                needsConstructorEnd = false;
+                                modifyAt.put(i - 1, // avoid possible collision with ADD_FROM
+                                             QueryEdit.ADD_CONSTRUCTOR_END);
+                            }
+                            if (needsParenthesesEnd) {
+                                needsParenthesesEnd = false;
+                                modifyAt.put(i, QueryEdit.ADD_PARENTHESIS_END);
+                                if (isCursoredPage)
+                                    throw excCursorPaginationNotAllowed(ql, i, isOrder);
+                            }
+                            if (addFromAt == null)
+                                addFromAt = i;
+                            i += l;
+                            if (isWhere) {
+                                hasWhere = true;
+                                if (isCursoredPage) {
+                                    modifyAt.put(i, QueryEdit.ADD_PARENTHESIS_BEGIN);
+                                    needsParenthesesEnd = true;
+                                }
+                            } else if (isOrder) {
+                                if (countPages)
+                                    modifyAt.put(-i, // avoid possible collision
+                                                 QueryEdit.OMIT_ORDER_IN_COUNT);
+                            } else {
+                                if (jpqlCount == null)
+                                    // indicates that the keyword prevents computing a count
+                                    jpqlCount = ql.substring(i - l, i);
+                            }
+                            i--; // balances loop increment when already positioned correctly
+                        }
                     }
                 } else {
                     paramName.append(ch);
-                    while (length > startAt + 1 && Character //
-                                    .isJavaIdentifierPart(ch = ql.charAt(startAt + 1))) {
+                    while (length > i + 1 && Character //
+                                    .isJavaIdentifierPart(ch = ql.charAt(i + 1))) {
                         paramName.append(ch);
-                        startAt++;
+                        i++;
                     }
                 }
             } else if (paramName != null) {
@@ -5008,44 +4857,199 @@ public class QueryInfo {
             }
         }
 
+        if (initEntityVar) {
+            entityVar = "this";
+            entityVar_ = "";
+        }
+
         if (paramName != null)
             qlParamNames.add(paramName.toString());
 
-        return qlParamNames;
+        if (countMustOmitSelect)
+            modifyAt.put(-length, // avoid possible collision
+                         QueryEdit.OMIT_SELECT_IN_COUNT);
+
+        if (addFromAt == null)
+            if (findQueryStartsWithSelect == Boolean.TRUE)
+                addFromAt = length;
+            else if (startAt < length && ql.charAt(startAt) == '(')
+                addFromAt = -1; // not a JDQL query
+            else
+                addFromAt = 0;
+
+        if (addFromAt != -1)
+            modifyAt.put(addFromAt,
+                         QueryEdit.ADD_FROM);
+
+        if (needsConstructorEnd)
+            modifyAt.put(length - 1, // avoid possible collision with ADD_FROM
+                         QueryEdit.ADD_CONSTRUCTOR_END);
+
+        if (needsParenthesesEnd)
+            modifyAt.put(length,
+                         QueryEdit.ADD_PARENTHESIS_END);
+
+        return modifyAt;
     }
 
     /**
-     * Identify occurrences of the record entity name in FROM clauses and
-     * replace them with the generated entity name.
+     * Replaces the given query with one that includes the requested modifications.
      *
-     * @param ql       the query.
-     * @param modifyAt indices of the possible start of entity names of FROM clauses.
-     * @return a query in which the record entity names are replaced.
+     * @param ql                 the query.
+     * @param selectItemsStartAt the position after the SELECT keyword. Otherwise -1.
+     * @param modifyAt           indices at which to perform modifications.
+     * @return a query that contains the requested modifications.
      */
-    private String replaceRecordName(String ql, List<Integer> modifyAt) {
-        final String recordName = entityInfo.recordClass.getSimpleName();
-        final int rLen = recordName.length();
+    private String replaceQuery(String ql,
+                                int selectItemsStartAt,
+                                TreeMap<Integer, QueryEdit> modifyAt) {
+
+        final String recordName = entityInfo.recordClass == null //
+                        ? null //
+                        : entityInfo.recordClass.getSimpleName();
+        final int rLen = recordName == null ? 0 : recordName.length();
         final int eLen = entityInfo.name.length();
         final int qlLen = ql.length();
-        StringBuilder q = new StringBuilder((eLen - rLen) * modifyAt.size() + qlLen);
-        int startAt = 0;
-        for (Integer m : modifyAt) {
-            q.append(ql.substring(startAt, startAt = m));
-            for (char ch; startAt < qlLen &&
-                          !Character.isJavaIdentifierPart(ch = ql.charAt(startAt)); //
-                            startAt++)
-                q.append(ch);
 
-            if ((startAt + rLen == qlLen // exactly long enough to have RecordName
-                 || startAt + rLen < qlLen // more than long enough and next char must delimit
-                    && !Character.isJavaIdentifierPart(ql.charAt(startAt + rLen)))
-                && ql.regionMatches(false, startAt, recordName, 0, rLen)) {
-                q.append(entityInfo.name);
-                startAt += rLen;
+        // for editing the main query
+        StringBuilder q = new StringBuilder(10 * modifyAt.size() +
+                                            (modifyAt.firstKey() <= 0 ? 100 : 0) +
+                                            qlLen);
+        int qStartAt = 0; // index into the original query (ql)
+
+        // for generating the count query
+        StringBuilder c = jpqlCount == null &&
+                          (Page.class.equals(multiType) ||
+                           CursoredPage.class.equals(multiType)) //
+                                           ? new StringBuilder(qlLen + 50) //
+                                           : null;
+        int cStartAt = 0; // index into the original query (ql)
+        int cEndAt = qlLen;
+
+        for (Entry<Integer, QueryEdit> mod : modifyAt.entrySet()) {
+            int m = mod.getKey();
+            switch (mod.getValue()) {
+                case OMIT_SELECT_IN_COUNT:
+                    if (c != null) {
+                        cStartAt = -m; // position after end of SELECT clause
+                        int selectItemsLength = cStartAt - selectItemsStartAt;
+                        c.append("SELECT COUNT(");
+                        c.append(inferCountFromSelect(ql,
+                                                      selectItemsStartAt,
+                                                      selectItemsLength));
+                        c.append(") ");
+                    }
+                    break;
+                case OMIT_ORDER_IN_COUNT:
+                    if (c != null)
+                        cEndAt = -m - 5; // start of ORDER BY
+                    break;
+                case ADD_SELECT_IF_NEEDED:
+                    // generateSelectClause determines if a SELECT clause is needed
+                    q.append(generateSelectClause()).append(' ');
+
+                    if (c != null)
+                        c.append("SELECT COUNT(").append(entityVar).append(") ");
+                    break;
+                case ADD_CONSTRUCTOR_BEGIN:
+                    q.append(ql.substring(qStartAt, qStartAt = m));
+                    if (!Character.isWhitespace(ql.charAt(m - 1)))
+                        q.append(' ');
+                    q.append("NEW ").append(singleType.getName()).append('(');
+                    break;
+                case ADD_CONSTRUCTOR_END:
+                    q.append(ql.substring(qStartAt, qStartAt = m));
+                    char next = ql.charAt(m);
+                    qStartAt = ++m;
+                    if (Character.isWhitespace(next))
+                        q.append(')').append(next);
+                    else
+                        q.append(next).append(") ");
+                    break;
+                case ADD_FROM:
+                    q.append(ql.substring(qStartAt, qStartAt = cStartAt = m));
+                    if (m > 0 && !Character.isWhitespace(ql.charAt(m - 1)))
+                        q.append(' ');
+
+                    q.append("FROM ").append(entityInfo.name);
+                    if (c != null)
+                        c.append("FROM ").append(entityInfo.name);
+
+                    if (entityVar_.length() > 0) {
+                        q.append(' ').append(entityVar);
+                        if (c != null)
+                            c.append(' ').append(entityVar);
+                    }
+
+                    if (m < qlLen && !Character.isWhitespace(ql.charAt(m))) {
+                        q.append(' ');
+                        if (c != null)
+                            c.append(' ');
+                    }
+                    break;
+                case ADD_PARENTHESIS_BEGIN:
+                    q.append(ql.substring(qStartAt, qStartAt = m));
+                    if (m < qlLen && ql.charAt(m) == ' ') {
+                        qStartAt = ++m;
+                        q.append(' ');
+                    }
+                    q.append('(');
+                    break;
+                case ADD_PARENTHESIS_END:
+                    q.append(ql.substring(qStartAt, (qStartAt = m) - 1));
+                    char last = ql.charAt(m - 1);
+                    if (Character.isWhitespace(last))
+                        q.append(')').append(last);
+                    else
+                        q.append(last).append(") ");
+                    break;
+                case REPLACE_RECORD_ENTITY:
+                    if (rLen > 0) { // has a record entity to replace
+
+                        q.append(ql.substring(qStartAt, m));
+                        if (c != null)
+                            c.append(ql.substring(cStartAt, cEndAt < m ? cEndAt : m));
+
+                        for (char ch; m < qlLen &&
+                                      !Character.isJavaIdentifierPart(ch = ql.charAt(m)); //
+                                        m++) {
+                            q.append(ch);
+                            if (c != null && m < cEndAt)
+                                c.append(ch);
+                        }
+
+                        if ((m + rLen == qlLen // exactly long enough to have RecordName
+                             || m + rLen < qlLen // more than long enough and next char must delimit
+                                && !Character.isJavaIdentifierPart(ql.charAt(m + rLen)))
+                            && ql.regionMatches(false, m, recordName, 0, rLen)) {
+                            m += rLen;
+                            q.append(entityInfo.name);
+                            if (c != null && m <= cEndAt)
+                                c.append(entityInfo.name);
+                        }
+
+                        qStartAt = m;
+                        cStartAt = m < cEndAt ? m : cEndAt;
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException(mod.getValue().toString());
             }
         }
-        if (startAt < qlLen)
-            q.append(ql.substring(startAt));
+
+        if (qStartAt < qlLen)
+            q.append(ql.substring(qStartAt));
+
+        if (c != null) {
+            if (cStartAt < cEndAt)
+                c.append(ql.substring(cStartAt, cEndAt));
+
+            jpqlCount = c.toString();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, ql, "count query: " + jpqlCount);
+        }
+
         return q.toString();
     }
 
@@ -5353,7 +5357,7 @@ public class QueryInfo {
     void setParameters(jakarta.persistence.Query query, Object... args) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        DataVersionCompatibility compat = producer.provider().compat;
+        DataVersionCompatibility compat = producer.compat();
         Iterator<String> namedParams = jpqlParamNames.iterator();
         for (int i = 0, p = 0; i < jpqlParamCount; i++) {
             Object[] values = compat.toConstraintValues(args[i]);
@@ -5756,6 +5760,8 @@ public class QueryInfo {
             updateCount = updateOne(arg, em);
         }
 
+        em.flush();
+
         if (numExpected == 0)
             throw exc(IllegalArgumentException.class,
                       "CWWKD1092.lifecycle.arg.empty",
@@ -5822,33 +5828,25 @@ public class QueryInfo {
         String jpql = this.jpql;
         Set<String> attrsToUpdate = entityInfo.attributeNamesForEntityUpdate;
 
-        int versionParamIndex = entityInfo.idClassAttributeAccessors == null //
-                        ? (attrsToUpdate.size() + 2) //
-                        : (attrsToUpdate.size() +
-                           entityInfo.idClassAttributeAccessors.size() + 1);
-        Object version = null;
-        if (entityInfo.versionAttributeName != null) {
-            version = getAttribute(e, entityInfo.versionAttributeName);
-            if (version == null)
-                jpql = jpql.replace("=?" + versionParamIndex, " IS NULL");
-        }
-
         Object id = null;
         String idAttributeName = null;
         if (entityInfo.idClassAttributeAccessors == null) {
             idAttributeName = entityInfo.attributeNames.get(ID);
             id = getAttribute(e, idAttributeName);
             if (id == null) {
-                jpql = jpql.replace("=?" + (versionParamIndex - 1), " IS NULL");
-                if (version != null)
-                    jpql = jpql.replace("=?" + versionParamIndex, "=?" + (versionParamIndex - 1));
+                int idParamIndex = entityInfo.idClassAttributeAccessors == null //
+                                ? (attrsToUpdate.size() + 1) //
+                                : (attrsToUpdate.size() +
+                                   entityInfo.idClassAttributeAccessors.size());
+
+                jpql = jpql.replace("=?" + (idParamIndex - 1), " IS NULL");
             }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && jpql != this.jpql)
-            Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
+            Tr.debug(this, tc, "JPQL adjusted for NULL id", jpql);
 
-        TypedQuery<?> update = em.createQuery(jpql, entityInfo.entityClass);
+        jakarta.persistence.Query update = em.createQuery(jpql);
 
         // parameters for entity attributes to update:
         int p = 1;
@@ -5862,14 +5860,8 @@ public class QueryInfo {
                     Tr.debug(tc, "set ?" + p + ' ' + loggable(id));
                 update.setParameter(p++, id);
             }
-
-            if (entityInfo.versionAttributeName != null && version != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(tc, "set ?" + p + ' ' + loggable(version));
-                update.setParameter(p++, version);
-            }
         } else { // has IdClass
-            setParametersFromIdClassAndVersion(p, update, e, version);
+            setParametersFromIdClassAndVersion(p, update, e, null);
         }
 
         int numUpdated = update.executeUpdate();
@@ -5895,7 +5887,7 @@ public class QueryInfo {
             methodParamCount < jpqlParamCount &&
             type != LC_DELETE &&
             type != LC_UPDATE &&
-            type != LC_UPDATE_RET_ENTITY)
+            type != LC_UPDATE_MERGE)
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1021.insufficient.params",
                       method.getName(),

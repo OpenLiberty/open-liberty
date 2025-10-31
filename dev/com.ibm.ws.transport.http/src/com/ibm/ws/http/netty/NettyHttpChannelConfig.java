@@ -24,8 +24,8 @@ import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer.ConfigElement;
 
-import io.openliberty.transport.config.options.EndpointOption;
 import io.openliberty.http.options.TcpOption;
+import io.openliberty.transport.config.options.EndpointOption;
 
 /**
  * Configuration class for Netty-based HTTP channels.
@@ -35,12 +35,10 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(NettyHttpChannelConfig.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    
     private boolean suppressHandshakeError;
     private int suppressHandshakeErrorCount;
 
     Map<EndpointOption, Object> config;
-    
 
     /**
      * Constructor for NettyHttpChannelConfig.
@@ -65,7 +63,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         clearSameSiteOptions();
     }
 
-    public void registerAccessLog(String endpointName){
+    public void registerAccessLog(String endpointName) {
         parseAccessLog(endpointName);
     }
 
@@ -82,7 +80,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             }
             return;
         }
-        
 
         if (useCompressionOptions) {
             parseCompressionOptions(config);
@@ -100,7 +97,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
 
         parseHttpOptions(config);
         parseTCPOptions(config);
-        
 
     }
 
@@ -158,10 +154,6 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
     }
 
     private void parseHttpOptions(Map<String, Object> options) {
-
-        //TODO -> Netty Needed
-
-        //parseAccessLog(options.get(HttpConfigConstants.PROPNAME_ACCESSLOG_ID));
         parseAllowRetries(options.get(HttpConfigConstants.PROPNAME_ALLOW_RETRIES));
         parseAttemptPurgeData(options.get(HttpConfigConstants.PROPNAME_PURGE_DATA_DURING_CLOSE));
         parseAutoDecompression(options.get(HttpConfigConstants.PROPNAME_AUTODECOMPRESSION));
@@ -259,7 +251,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         if (this.useSameSiteOptions && (options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_LAX) ||
                                         options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_NONE) ||
                                         options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_STRICT) ||
-                                        options.containsKey("partitioned"))) {
+                                        options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_PARTITION))) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, method, "Http Channel Config: SameSite configuration has been enabled");
@@ -268,7 +260,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             parseCookiesSameSiteLax(options.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX));
             parseCookiesSameSiteNone(options.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE));
             parseCookiesSameSiteStrict(options.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT));
-            parseCookiesSameSitePartitioned(options.get("partitioned"));
+            parseCookiesSameSitePartitioned(options.get(HttpConfigConstants.PROPNAME_SAMESITE_PARTITION));
 
             initSameSiteCookiesPatterns();
 
@@ -278,14 +270,13 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         }
     }
 
-    public void parseTCPOptions(Map<String, Object> options){
+    public void parseTCPOptions(Map<String, Object> options) {
         config.putIfAbsent(TcpOption.INACTIVITY_TIMEOUT, TcpOption.INACTIVITY_TIMEOUT.parse(options));
     }
 
-    public Object get(EndpointOption option){
+    public Object get(EndpointOption option) {
         return this.config.getOrDefault(option, option.getDefaultValue());
     }
-    
 
     public void disableRemoteIp() {
         useRemoteIpOptions = Boolean.FALSE;

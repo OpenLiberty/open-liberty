@@ -112,15 +112,13 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
      */
     @Override
     public long read(long numBytes, int timeout) throws IOException {
-        
         if (!nettyChannel.isActive()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Found closed connection on read for channel: " + nettyChannel);
             }
-            throw new IOException("Netty channel is not active.");
+            throw new EOFException("Connection closed: Read failed.  Possible end of stream encountered. local=" + nettyChannel.localAddress() + " remote=" + nettyChannel.remoteAddress());
         }
 
-                
         if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) == null) {
             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyChannel);
             nettyChannel.pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
@@ -130,8 +128,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         upgradeHandler.setTCPReadContext(this);
         upgradeHandler.setTCPReadContext(this);
         upgradeHandler.setVC(vc);
-        
-        
+
+
         if (upgradeHandler == null) {
             throw new IOException("Upgrade handler not present in pipeline.");
         }
@@ -197,14 +195,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     @Override
     @FFDCIgnore(EOFException.class)
     public VirtualConnection read(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
-        if (!nettyChannel.isActive()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Channel became inactive, not queueing async read! " + nettyChannel);
-            }
-            // Channel is not active, do not proceed with the callback
-             return vc; // Return
-        }
-
         if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) == null) {
             NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyChannel);
             nettyChannel.pipeline().addLast("ServletUpgradeHandler", upgradeHandler);

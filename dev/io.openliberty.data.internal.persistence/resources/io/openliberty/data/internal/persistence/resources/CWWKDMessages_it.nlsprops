@@ -146,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: Il metodo {0} dell''interfaccia del repo
 CWWKD1029.first.neg.or.zero.explanation=Il numero massimo di risultati della query deve essere un numero positivo.
 CWWKD1029.first.neg.or.zero.useraction=Aggiornare il metodo del repository per specificare un numero massimo positivo di risultati.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Il nome dell''entit\u00e0 manca nella query {0} specificata per il metodo {1} del repository {2}. In Jakarta Data Query Language, le query {3} devono essere formate come: {4}.
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Il nome dell''entit\u00e0 manca dalla query {0} specificata per il metodo {1} del repository {2}. Per le interrogazioni su {3}, utilizzare la forma: {4}.
 CWWKD1030.ql.lacks.entity.explanation=La query contiene una clausola che richiede il nome dell'entit\u00e0.
 CWWKD1030.ql.lacks.entity.useraction=Aggiornare il metodo query for repository per includere il nome dell'entit\u00e0.
 
@@ -162,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Il metodo {0} dell''interfaccia del 
 CWWKD1033.ql.orderby.disallowed.explanation=La clausola ORDER BY \u00e8 incompatibile con la paginazione a cursore.
 CWWKD1033.ql.orderby.disallowed.useraction=Sostituire la clausola ORDER BY con annotazioni che specificano i criteri di ordinamento.
 
-CWWKD1034.ql.where.required=CWWKD1034E: La query specificata dal metodo {0} dell''interfaccia del repository {1} deve terminare con una clausola WHERE perch\u00e9 il metodo restituisce {2}. La clausola WHERE termina alla posizione {3}, ma la lunghezza della query \u00e8 {4}. La query \u00e8: {5}.
-CWWKD1034.ql.where.required.explanation=Una clausola WHERE \u00e8 necessaria quando si utilizza la paginazione a cursore.
-CWWKD1034.ql.where.required.useraction=Aggiungere una clausola WHERE alla query.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: La query specificata dal metodo {0} dell''interfaccia del repository {1} deve terminare con una clausola WHERE perch\u00e9 il metodo restituisce {2}. La clausola WHERE termina alla posizione {3}, ma la lunghezza della query \u00e8 {4}. L''interrogazione \u00e8: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=Una clausola WHERE \u00e8 necessaria quando si utilizza la paginazione a cursore.
+CWWKD1034.ql.req.end.in.where.useraction=Aggiungere una clausola WHERE alla query.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: Una richiesta di pagina con la modalit\u00e0 di paginazione {0} non deve essere fornita al metodo {1} dell''interfaccia del repository {2}, perch\u00e9 il metodo restituisce {3} invece di {4}.
 CWWKD1035.incompat.page.mode.explanation=La modalit\u00e0 di paginazione richiesta non \u00e8 compatibile con il tipo di ritorno del metodo del repository.

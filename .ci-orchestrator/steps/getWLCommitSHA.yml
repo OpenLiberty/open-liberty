@@ -1,0 +1,6 @@
+- stepName: WL SHA
+  workType: Jenkins
+  projectName: getGitCommitSHA
+  timeoutInMinutes: 120
+  properties:
+    commitsAPI: "https://github.ibm.com/api/v3/repos/${git.clone.repository.username}/WS-CD-Open/commits/${git.clone.checkout.branch}"

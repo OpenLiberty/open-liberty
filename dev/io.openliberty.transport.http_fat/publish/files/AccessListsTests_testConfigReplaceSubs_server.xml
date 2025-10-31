@@ -1,21 +1,25 @@
-<!-- Copyright (c) 2021 IBM Corporation and others. All rights reserved. 
-	This program and the accompanying materials are made available under the 
-	terms of the Eclipse Public License 2.0 which accompanies this distribution, 
-	and is available at http://www.eclipse.org/legal/epl-2.0/ Contributors: 
-	IBM Corporation - initial API and implementation -->
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
 
-	<!-- Check these "_"s are replaced correctly they will be found in the output/.../server.xml 
-		CLIENT+HOST CLIENT+ADDR CLIENT+PORT 
-		CLIENT_HOST CLIENT_ADDR CLIENT_PORT -->
+    <!-- Check these "_"s are replaced correctly they will be found in the output/.../server.xml 
+        CLIENT+HOST CLIENT+ADDR CLIENT+PORT 
+        CLIENT_HOST CLIENT_ADDR CLIENT_PORT -->
 <server>
 
     <featureManager>
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
     </featureManager>
-    
+
     <include location="../fatTestPorts.xml"/>
-    
+
     <application location="app1.war" />
 
 </server>

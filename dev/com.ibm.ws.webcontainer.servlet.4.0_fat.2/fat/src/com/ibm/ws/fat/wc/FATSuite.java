@@ -20,11 +20,13 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.fat.wc.tests.WCPartitionedAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCPartitionedCookieAttributeSecurityTest;
+import com.ibm.ws.fat.wc.tests.WCRequestAutoDecompressTest;
 import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSameSiteIncompatibleClientsTests;
 import com.ibm.ws.fat.wc.tests.WebSphereServletEventListenerTest;
+import com.ibm.ws.fat.wc.tests.WebSphereSpiHttpRequestURLTest;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
@@ -49,13 +51,15 @@ import componenttest.rules.repeater.RepeatTests;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+                WCRequestAutoDecompressTest.class,
                 WCResponseHeadersTest.class,
                 WCSameSiteCookieAttributeTests.class,
                 WCSameSiteCookieAttributeSecurityTest.class,
                 WCPartitionedAttributeTests.class,
                 WCPartitionedCookieAttributeSecurityTest.class,
                 WCSameSiteIncompatibleClientsTests.class,
-                WebSphereServletEventListenerTest.class
+                WebSphereServletEventListenerTest.class,
+                WebSphereSpiHttpRequestURLTest.class
 })
 
 public class FATSuite {

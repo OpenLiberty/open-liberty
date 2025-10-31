@@ -146,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: O m\u00e9todo {0} da interface do reposi
 CWWKD1029.first.neg.or.zero.explanation=O n\u00famero m\u00e1ximo de resultados da consulta deve ser um n\u00famero positivo.
 CWWKD1029.first.neg.or.zero.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para especificar um n\u00famero m\u00e1ximo positivo de resultados.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: O nome da entidade est\u00e1 faltando na consulta {0} especificada para o m\u00e9todo {1} do reposit\u00f3rio {2}. Na linguagem de consulta de dados Jakarta, as consultas {3} devem ser formadas como: {4}.
+CWWKD1030.ql.lacks.entity=CWWKD1030E: O nome da entidade est\u00e1 faltando na consulta {0} especificada para o m\u00e9todo {1} do reposit\u00f3rio {2}. Para consultas em {3}, use o formul\u00e1rio: {4}.
 CWWKD1030.ql.lacks.entity.explanation=A consulta cont\u00e9m uma cl\u00e1usula que exige o nome da entidade.
 CWWKD1030.ql.lacks.entity.useraction=Atualize a consulta do m\u00e9todo de reposit\u00f3rio para incluir o nome da entidade.
 
@@ -162,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: O m\u00e9todo {0} da interface do re
 CWWKD1033.ql.orderby.disallowed.explanation=A cl\u00e1usula ORDER BY \u00e9 incompat\u00edvel com a pagina\u00e7\u00e3o baseada em cursor.
 CWWKD1033.ql.orderby.disallowed.useraction=Substitua a cl\u00e1usula ORDER BY por anota\u00e7\u00f5es que especifiquem os crit\u00e9rios de classifica\u00e7\u00e3o.
 
-CWWKD1034.ql.where.required=CWWKD1034E: A consulta especificada pelo m\u00e9todo {0} da interface do reposit\u00f3rio {1} deve terminar em uma cl\u00e1usula WHERE porque o m\u00e9todo retorna {2}. A cl\u00e1usula WHERE termina na posi\u00e7\u00e3o {3}, mas o comprimento da consulta \u00e9 {4}. A consulta \u00e9: {5}.
-CWWKD1034.ql.where.required.explanation=\u00c9 necess\u00e1ria uma cl\u00e1usula WHERE ao usar a pagina\u00e7\u00e3o baseada em cursor.
-CWWKD1034.ql.where.required.useraction=Adicione uma cl\u00e1usula WHERE \u00e0 consulta.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: A consulta especificada pelo m\u00e9todo {0} da interface do reposit\u00f3rio {1} deve terminar em uma cl\u00e1usula WHERE, pois o m\u00e9todo retorna {2}. A cl\u00e1usula WHERE termina na posi\u00e7\u00e3o {3}, mas o comprimento da consulta \u00e9 {4}. A consulta \u00e9: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=\u00c9 necess\u00e1ria uma cl\u00e1usula WHERE ao usar a pagina\u00e7\u00e3o baseada em cursor.
+CWWKD1034.ql.req.end.in.where.useraction=Adicione uma cl\u00e1usula WHERE \u00e0 consulta.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: Uma solicita\u00e7\u00e3o de p\u00e1gina com o modo de pagina\u00e7\u00e3o {0} n\u00e3o deve ser fornecida ao m\u00e9todo {1} da interface do reposit\u00f3rio {2} porque o m\u00e9todo retorna {3} em vez de {4}.
 CWWKD1035.incompat.page.mode.explanation=O modo de pagina\u00e7\u00e3o solicitado n\u00e3o \u00e9 compat\u00edvel com o tipo de retorno do m\u00e9todo do reposit\u00f3rio.

@@ -15,6 +15,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -26,7 +27,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
-import io.openliberty.mcp.internal.fat.utils.HttpTestUtils;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
  *
@@ -36,6 +37,9 @@ public class LifecycleTest {
 
     @Server("mcp-server")
     public static LibertyServer server;
+
+    @Rule
+    public McpClient client = new McpClient(server, "/lifecycleTest");
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -77,7 +81,7 @@ public class LifecycleTest {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, "/lifecycleTest", request);
+        String response = client.callMCP(request);
 
         String expectedResponse = """
                         {
@@ -110,7 +114,7 @@ public class LifecycleTest {
                          }
                         """;
 
-        HttpTestUtils.callMCPNotification(server, "/lifecycleTest", request);
+        client.callMCPNotification(server, "/lifecycleTest", request);
     }
 
     @Test
@@ -123,7 +127,7 @@ public class LifecycleTest {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, "/lifecycleTest", request);
+        String response = client.callMCP(request);
 
         String expectedResponse = """
                           {

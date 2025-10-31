@@ -62,6 +62,12 @@ public class McpServlet extends HttpServlet {
     BeanManager bm;
 
     @Inject
+    McpConnectionTracker connectionTracker;
+
+    @Inject
+    McpSessionStore sessionStore;
+
+    @Inject
     McpConnectionTracker connection;
 
     @Override
@@ -95,7 +101,16 @@ public class McpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, JSONRPCException {
         McpTransport transport = new McpTransport(req, resp, jsonb);
         try {
-            transport.init();
+            transport.init(sessionStore);
+
+            RequestMethod method = transport.getMcpRequest().getRequestMethod();
+            if (method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
+                McpSession session = transport.getSession();
+                if (session == null) {
+                    throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, "Missing Mcp-Session-Id header");
+                }
+            }
+
             callRequest(transport);
         } catch (JSONRPCException e) {
             transport.sendJsonRpcException(e);
@@ -121,6 +136,31 @@ public class McpServlet extends HttpServlet {
 
     }
 
+    /*
+     * Delete method for deleting sessionId
+     */
+
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        final String sessionId = req.getHeader(McpTransport.MCP_SESSION_ID_HEADER);
+
+        if (sessionId == null) {
+            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing Mcp-Session-Id");
+            return;
+        }
+
+        if (sessionStore.isValid(sessionId)) {
+            McpSession session = sessionStore.getSession(sessionId);
+
+            if (session != null) {
+                connectionTracker.cancelSessionRequests(session);
+            }
+            resp.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
+        }
+    }
+
     @FFDCIgnore({ JSONRPCException.class, InvocationTargetException.class, IllegalAccessException.class, IllegalArgumentException.class })
     private void callTool(McpTransport transport) {
         ExecutionRequestId requestId = createOngoingRequestId(transport);
@@ -131,6 +171,11 @@ public class McpServlet extends HttpServlet {
                 Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
             }
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Method " + params.getName() + " not found"));
+        }
+
+        McpSession sessionInfo = transport.getSession();
+        if (sessionInfo != null) {
+            sessionInfo.addRequest(requestId);
         }
 
         CreationalContext<Object> cc = bm.createCreationalContext(null);
@@ -283,11 +328,15 @@ public class McpServlet extends HttpServlet {
             Tr.event(this, tc, "Client initializing: " + params.getClientInfo(), params.getCapabilities());
         }
 
+        String sessionId = sessionStore.createSession();
+
         ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
 
         // TODO: provide a way for the user to set server info
         ServerInfo info = new ServerInfo("test-server", "Test Server", "0.1");
         McpInitializeResult result = new McpInitializeResult(version, caps, info, null);
+
+        transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, sessionId);
         transport.sendResponse(result);
     }
 
@@ -305,7 +354,7 @@ public class McpServlet extends HttpServlet {
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
         McpRequestId mcpRedId = notificationParams.getRequestId();
-        ExecutionRequestId requestId = new ExecutionRequestId(mcpRedId, transport.getRequestIpAddress());
+        ExecutionRequestId requestId = new ExecutionRequestId(mcpRedId, transport.getSessionId());
         Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -324,6 +373,6 @@ public class McpServlet extends HttpServlet {
 
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
         return new ExecutionRequestId(transport.getMcpRequest().id(),
-                                      transport.getRequestIpAddress());
+                                      transport.getSessionId());
     }
 }

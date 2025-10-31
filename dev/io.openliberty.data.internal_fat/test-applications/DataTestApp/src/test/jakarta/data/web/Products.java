@@ -30,7 +30,7 @@ import jakarta.transaction.Transactional;
 /**
  * Repository interface for the unannotated Product entity, which has a UUID as the Id.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Products {
     @Delete
     void clear();

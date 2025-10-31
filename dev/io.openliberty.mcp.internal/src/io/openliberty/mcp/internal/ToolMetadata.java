@@ -29,6 +29,8 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
                            String name, String title, String description,
                            List<Class<? extends Throwable>> businessExceptions) {
 
+    public static final String MISSING_TOOL_ARG_NAME = "<<<MISSING TOOL_ARG NAME>>>";
+
     public record ArgumentMetadata(Type type, int index, String description, boolean required, boolean isDuplicate) {}
 
     public record SpecialArgumentMetadata(SpecialArgumentType.Resolution typeResolution, int index) {}
@@ -51,15 +53,40 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
 
     private static Map<String, ArgumentMetadata> getArgumentMap(AnnotatedMethod<?> method) {
         Map<String, ArgumentMetadata> result = new HashMap<>();
-        for (AnnotatedParameter<?> p : method.getParameters()) {
-            ToolArg pInfo = p.getAnnotation(ToolArg.class);
-            if (pInfo != null) {
-                String toolArgName = (pInfo.name().equals(ToolArg.ELEMENT_NAME)) ? p.getJavaParameter().getName() : pInfo.name(); // p.getJavaParameter().getName() needs java compiler -parameter flag to work
-                boolean isDuplicateArg = result.containsKey(toolArgName);
-                result.put(toolArgName, new ArgumentMetadata(p.getBaseType(), p.getPosition(), pInfo.description(), pInfo.required(), isDuplicateArg));
+
+        for (AnnotatedParameter<?> param : method.getParameters()) {
+
+            ToolArg argAnnotation = param.getAnnotation(ToolArg.class);
+
+            if (argAnnotation == null) {
+                continue;
             }
+
+            String argName = resolveArgumentName(param, argAnnotation);
+            boolean isDuplicateArg = result.containsKey(argName);
+
+            result.put(argName, new ArgumentMetadata(param.getBaseType(),
+                                                     param.getPosition(),
+                                                     argAnnotation.description(),
+                                                     argAnnotation.required(),
+                                                     isDuplicateArg));
         }
         return result.isEmpty() ? Collections.emptyMap() : result;
+    }
+
+    private static String resolveArgumentName(AnnotatedParameter<?> param, ToolArg argAnnotation) {
+        String argAnnotationName = argAnnotation.name();
+
+        if (!argAnnotationName.equals(ToolArg.ELEMENT_NAME)) {
+            return argAnnotationName;
+        }
+
+        if (param.getJavaParameter().isNamePresent()) {
+            // needs java compiler -parameter flag to work
+            return param.getJavaParameter().getName();
+        }
+
+        return MISSING_TOOL_ARG_NAME;
     }
 
     private static List<SpecialArgumentMetadata> getSpecialArgumentList(AnnotatedMethod<?> method) {

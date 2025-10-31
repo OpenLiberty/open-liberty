@@ -148,7 +148,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: The {0} method of the {1} repository int
 CWWKD1029.first.neg.or.zero.explanation=\u67e5\u8a62\u7d50\u679c\u7684\u6700\u5927\u6578\u76ee\u5fc5\u9808\u662f\u6b63\u6578\u3002
 CWWKD1029.first.neg.or.zero.useraction=\u66f4\u65b0\u5132\u5b58\u5eab\u65b9\u6cd5\uff0c\u6307\u5b9a\u6b63\u6578\u7684\u6700\u5927\u7d50\u679c\u6578\u76ee\u3002
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: The entity name is missing from the {0} query that is specified for the {1} method of the {2} repository. \u5728 Jakarta \u8cc7\u6599\u67e5\u8a62\u8a9e\u8a00\u4e2d\uff0c{3} \u67e5\u8a62\u61c9\u8a72\u50cf\u9019\u6a23\u7d44\u6210\uff1a{4}\u3002
+CWWKD1030.ql.lacks.entity=CWWKD1030E: \u70ba {2} \u5132\u5b58\u5eab\u7684 {1} \u65b9\u6cd5\u6307\u5b9a\u7684 {0} \u67e5\u8a62\u4e2d\u7f3a\u5c11\u5be6\u9ad4\u540d\u7a31\u3002 \u5c0d\u65bc {3} \u67e5\u8a62\uff0c\u8acb\u4f7f\u7528\u8868\u683c\uff1a {4}\u3002
 CWWKD1030.ql.lacks.entity.explanation=\u67e5\u8a62\u5305\u542b\u4e00\u500b\u9700\u8981\u5be6\u9ad4\u540d\u7a31\u7684\u5b50\u53e5\u3002
 CWWKD1030.ql.lacks.entity.useraction=\u66f4\u65b0\u5132\u5b58\u5eab\u65b9\u6cd5\u7684\u67e5\u8a62\uff0c\u4ee5\u5305\u542b\u5be6\u9ad4\u540d\u7a31\u3002
 
@@ -164,9 +164,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: The {0} method of the {1} repository
 CWWKD1033.ql.orderby.disallowed.explanation=ORDER BY \u5b50\u53e5\u8207\u57fa\u65bc\u6e38\u6a19\u7684\u5206\u9801\u65b9\u5f0f\u4e0d\u76f8\u5bb9\u3002
 CWWKD1033.ql.orderby.disallowed.useraction=\u4ee5\u6307\u5b9a\u6392\u5e8f\u689d\u4ef6\u7684\u6ce8\u89e3\u53d6\u4ee3 ORDER BY \u5b50\u53e5\u3002
 
-CWWKD1034.ql.where.required=CWWKD1034E: The query that is specified by the {0} method of the {1} repository interface must end in a WHERE clause because the method returns {2}. There WHERE clause ends at position {3}, but the length of the query is {4}. \u67e5\u8a62\u5167\u5bb9\u70ba{5}.
-CWWKD1034.ql.where.required.explanation=\u4f7f\u7528\u57fa\u65bc\u6e38\u6a19\u7684\u5206\u9801\u65b9\u5f0f\u6642\uff0c\u9700\u8981\u4f7f\u7528 WHERE \u5b50\u53e5\u3002
-CWWKD1034.ql.where.required.useraction=\u5728\u67e5\u8a62\u4e2d\u52a0\u5165 WHERE \u5b50\u53e5\u3002
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: {1} \u5132\u5b58\u5eab\u4ecb\u9762\u7684 {0} \u65b9\u6cd5\u6307\u5b9a\u7684\u67e5\u8a62\u5fc5\u9808\u4ee5 WHERE \u5b50\u53e5\u7d50\u675f\uff0c\u56e0\u70ba\u8a72\u65b9\u6cd5\u6703\u8fd4\u56de {2}\u3002 WHERE \u5b50\u53e5\u5728 {3} \u4f4d\u7f6e\u7d50\u675f\uff0c\u4f46\u67e5\u8a62\u7684\u9577\u5ea6\u662f {4}\u3002 \u67e5\u8a62\u5167\u5bb9\u70ba\uff1a {5}.
+CWWKD1034.ql.req.end.in.where.explanation=\u4f7f\u7528\u57fa\u65bc\u6e38\u6a19\u7684\u5206\u9801\u65b9\u5f0f\u6642\uff0c\u9700\u8981\u4f7f\u7528 WHERE \u5b50\u53e5\u3002
+CWWKD1034.ql.req.end.in.where.useraction=\u5728\u67e5\u8a62\u4e2d\u52a0\u5165 WHERE \u5b50\u53e5\u3002
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: \u4e0d\u5f97\u5c07\u63a1\u7528{0}\u5206\u9801\u6a21\u5f0f\u7684\u9801\u9762\u8acb\u6c42\u63d0\u4f9b\u7d66{2}\u5132\u5b58\u5eab\u4ecb\u9762\u7684{1}\u65b9\u6cd5\uff0c\u56e0\u70ba\u6b64\u65b9\u6cd5\u50b3\u56de{3}\u800c\u975e{4} \u3002
 CWWKD1035.incompat.page.mode.explanation=\u8acb\u6c42\u7684\u5206\u9801\u6a21\u5f0f\u8207\u5132\u5b58\u5eab\u65b9\u6cd5\u7684\u8fd4\u56de\u985e\u578b\u4e0d\u76f8\u5bb9\u3002

@@ -1,0 +1,53 @@
+<persistence xmlns="https://jakarta.ee/xml/ns/persistence"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
+        version="3.2">
+  <persistence-unit name="ApplicationScopedPU">
+    <qualifier>io.openliberty.jpa.jpacdiintegration.tests.web.LongScoped</qualifier>
+    <scope>jakarta.enterprise.context.ApplicationScoped</scope>
+
+    <properties>
+      <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
+      <property name="jakarta.persistence.bean.classes"
+                value="jakarta.persistence.EntityManager,
+                       jakarta.persistence.EntityManagerFactory,
+                       jakarta.persistence.criteria.CriteriaBuilder,
+                       jakarta.persistence.PersistenceUnitUtil,
+                       jakarta.persistence.Cache,
+                       jakarta.persistence.metamodel.Metamodel"/>
+    </properties>
+  </persistence-unit>
+
+  <persistence-unit name="DependentScopedPU">
+    <qualifier>io.openliberty.jpa.jpacdiintegration.tests.web.ShortScoped</qualifier>
+    <scope>jakarta.enterprise.context.Dependent</scope>
+
+    <properties>
+      <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
+      <property name="jakarta.persistence.bean.classes"
+                value="jakarta.persistence.EntityManager,
+                       jakarta.persistence.EntityManagerFactory,
+                       jakarta.persistence.criteria.CriteriaBuilder,
+                       jakarta.persistence.PersistenceUnitUtil,
+                       jakarta.persistence.Cache,
+                       jakarta.persistence.metamodel.Metamodel"/>
+    </properties>
+  </persistence-unit>
+
+  <persistence-unit name="DefaultScopedPU">
+    <properties>
+      <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="eclipselink.logging.parameters" value="true"/>
+      <property name="jakarta.persistence.bean.classes"
+                value="jakarta.persistence.EntityManager,
+                       jakarta.persistence.EntityManagerFactory,
+                       jakarta.persistence.criteria.CriteriaBuilder,
+                       jakarta.persistence.PersistenceUnitUtil,
+                       jakarta.persistence.Cache,
+                       jakarta.persistence.metamodel.Metamodel"/>
+    </properties>
+  </persistence-unit>
+
+</persistence>

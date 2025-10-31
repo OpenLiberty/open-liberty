@@ -147,7 +147,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: Metoda {0} rozhran\u00ed \u00falo\u017ei
 CWWKD1029.first.neg.or.zero.explanation=Maxim\u00e1ln\u00ed po\u010det v\u00fdsledk\u016f dotazu mus\u00ed b\u00fdt kladn\u00e9 \u010d\u00edslo.
 CWWKD1029.first.neg.or.zero.useraction=Aktualizujte metodu \u00falo\u017ei\u0161t\u011b a zadejte kladn\u00fd maxim\u00e1ln\u00ed po\u010det v\u00fdsledk\u016f.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: V dotazu {0} , kter\u00fd je zad\u00e1n pro metodu {1} \u00falo\u017ei\u0161t\u011b {2} , chyb\u00ed n\u00e1zev entity. V jazyce Jakarta Data Query Language by m\u011blo b\u00fdt {3} dotaz\u016f tvo\u0159eno takto: {4} .
+CWWKD1030.ql.lacks.entity=CWWKD1030E: V dotazu {0}, kter\u00fd je zad\u00e1n pro metodu {1} \u00falo\u017ei\u0161t\u011b {2}, chyb\u00ed n\u00e1zev entity. Pro dotazy na {3} pou\u017eijte formul\u00e1\u0159: {4}.
 CWWKD1030.ql.lacks.entity.explanation=Dotaz obsahuje klauzuli, kter\u00e1 vy\u017eaduje n\u00e1zev entity.
 CWWKD1030.ql.lacks.entity.useraction=Aktualizujte dotaz na metodu \u00falo\u017ei\u0161t\u011b tak, aby obsahoval n\u00e1zev entity.
 
@@ -163,9 +163,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Metoda {0} rozhran\u00ed \u00falo\u0
 CWWKD1033.ql.orderby.disallowed.explanation=Klauzule ORDER BY je nekompatibiln\u00ed s kurzorov\u00fdm str\u00e1nkov\u00e1n\u00edm.
 CWWKD1033.ql.orderby.disallowed.useraction=Nahra\u010fte klauzuli ORDER BY pozn\u00e1mkami, kter\u00e9 ur\u010duj\u00ed krit\u00e9ria \u0159azen\u00ed.
 
-CWWKD1034.ql.where.required=CWWKD1034E: Dotaz zadan\u00fd metodou {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} mus\u00ed kon\u010dit klauzul\u00ed WHERE, proto\u017ee metoda vrac\u00ed {2} . Klauzule WHERE kon\u010d\u00ed na pozici {3} , ale d\u00e9lka dotazu je {4} . Dotaz je: {5} .
-CWWKD1034.ql.where.required.explanation=P\u0159i pou\u017eit\u00ed kurzorov\u00e9ho str\u00e1nkov\u00e1n\u00ed je vy\u017eadov\u00e1na klauzule WHERE.
-CWWKD1034.ql.where.required.useraction=P\u0159idejte do dotazu klauzuli WHERE.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: Dotaz zadan\u00fd metodou {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} mus\u00ed kon\u010dit klauzul\u00ed WHERE, proto\u017ee metoda vrac\u00ed {2}. Klauzule WHERE kon\u010d\u00ed na pozici {3}, ale d\u00e9lka dotazu je {4}. Dotaz zn\u00ed: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=P\u0159i pou\u017eit\u00ed str\u00e1nkov\u00e1n\u00ed pomoc\u00ed kurzoru je vy\u017eadov\u00e1na klauzule WHERE.
+CWWKD1034.ql.req.end.in.where.useraction=P\u0159idejte do dotazu klauzuli WHERE.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: Po\u017eadavek na str\u00e1nku s re\u017eimem str\u00e1nkov\u00e1n\u00ed {0} nesm\u00ed b\u00fdt dod\u00e1n metod\u011b {1} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {2} , proto\u017ee metoda vrac\u00ed {3} m\u00edsto {4} .
 CWWKD1035.incompat.page.mode.explanation=Po\u017eadovan\u00fd re\u017eim str\u00e1nkov\u00e1n\u00ed nen\u00ed kompatibiln\u00ed s n\u00e1vratov\u00fdm typem metody \u00falo\u017ei\u0161t\u011b.

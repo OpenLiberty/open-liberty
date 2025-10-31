@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=L''argomento {0} \u00e8 necessario
+002.no.elements=L''elenco {0} non pu\u00f2 essere vuoto
+003.null.element=L''elenco {0} non pu\u00f2 avere un elemento nullo
+004.arg.negative=L''argomento {0} non pu\u00f2 essere negativo
+005.zero.not.allowed=L''argomento {0} non pu\u00f2 essere 0
+006.zero.size.key=La chiave deve essere composta da almeno un elemento
+007.wildcard.conflict=Non \u00e8 possibile utilizzare lo stesso carattere ( {0} ) per entrambi i caratteri jolly
+008.escape.conflict=Non \u00e8 possibile utilizzare lo stesso carattere ( {0} ) sia come carattere jolly che come carattere di escape
+009.unknown.number.type=Sottotipo imprevisto di Number: {0}
+010.unknown.total=Il conteggio totale degli elementi non \u00e8 disponibile
+011.unknown.attr.type=L''istanza di {0} \u00e8 stata ottenuta in un modo che non identifica il tipo di attributo. Per le classi statiche del metamodello, utilizzare un metodo.of definito su un sottotipo Attribute per fornire la classe dell''entit\u00e0 e il tipo di attributo dell''entit\u00e0.
+012.unknown.decl.type=L''istanza di {0} \u00e8 stata ottenuta in un modo che non identifica la classe di entit\u00e0 che dichiara l''attributo. Per le classi statiche del metamodello, utilizzare un metodo.of definito su un sottotipo Attribute per fornire la classe dell''entit\u00e0 e il tipo di attributo dell''entit\u00e0.

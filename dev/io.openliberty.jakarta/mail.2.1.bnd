@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2024 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ Import-Package: jakarta.activation;version="[2.1,3)", \
   *
 
 -includeresource: \
-  @${repo;jakarta.mail:jakarta.mail-api;2.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @\${repo;jakarta.mail:jakarta.mail-api;2.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.mail;artifactId=jakarta.mail-api;version=2.1.1;scope=runtime

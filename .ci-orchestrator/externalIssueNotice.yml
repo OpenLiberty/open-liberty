@@ -16,6 +16,8 @@ triggers:
     include: "Opened by external contributor"
   - property: labels
     exclude: "test"
+  - property: userExternal
+    include: true
   propertyDefinitions:
     - name: user
       isRequired: true

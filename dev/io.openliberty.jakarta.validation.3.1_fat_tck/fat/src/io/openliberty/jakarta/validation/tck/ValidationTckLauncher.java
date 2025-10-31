@@ -18,8 +18,8 @@ import java.util.Map;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Assume;
 import org.junit.Test;
+import org.junit.Assume;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
@@ -62,7 +62,7 @@ public class ValidationTckLauncher {
          * Hence skipping the test if the OS is Windows.
          */
         Assume.assumeTrue(os != OperatingSystem.WINDOWS);
-
+        
         /*
          * Server config:
          * - Path that jimage will output modules for signature testing
@@ -109,7 +109,7 @@ public class ValidationTckLauncher {
     public void launchValidation31TCK() throws Exception {
 
         TCKRunner.build(server, Type.JAKARTA, "Validation")
-                        .withPlatfromVersion("11")
+                        .withPlatformVersion("11")
                         .withSuiteFileName("tck-tests.xml")
                         .withAdditionalMvnProps(additionalProps)
                         .withAppUndeployTimeout(Duration.ofSeconds(120))

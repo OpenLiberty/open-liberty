@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -32,9 +32,9 @@ public class FolderStructureGeneratorTest {
     public TestRule outputRule = outputMgr;
 
     @Test
-    public void testMD5() {
-        String md5 = new ServerDumpPackager.FolderStructureGenerator().md5(new File(dataDir, "/md5-1.txt"));
-        Assert.assertEquals("a62c519aaabfce3f6d02bfc983f26098", md5);
+    public void testSha512() {
+        String sha512 = new ServerDumpPackager.FolderStructureGenerator().hash(new File(dataDir, "/sha512-1.txt"));
+        Assert.assertEquals("1f47c433a2b1d1aef1c6f6d645af845374f3e0707cf44f11edeaabb9d376ecb948c9f7bafc7ba14320f1ff1de189cb137e834444d0b4e832af68f39cfb4cfe7e", sha512);
     }
 
     @Test
@@ -49,9 +49,14 @@ public class FolderStructureGeneratorTest {
         int i = 0;
         Assert.assertTrue(lines[i], lines[i].matches("d              " + dateTime + "                                    lib" + sep));
         i++;
-        Assert.assertTrue(lines[i], lines[i].matches("f          54  " + dateTime + "  c327688b13b293d7d42c60d39e59f8a5  lib" + sep + "md5-2.txt"));
+        Assert.assertTrue(lines[i],
+                          lines[i].matches("f          54  " + dateTime
+                                           + "  cb7bfefbe2e5c5321c345d25b4b61c31919a5c68e2a24013ebc2c4a9e5c478a1936d8724dafc78ee49354dccbb0c3cd3dd3b477ec8369a420f38c43a7c14e55c  lib"
+                                           + sep + "sha512-2.txt"));
         i++;
-        Assert.assertTrue(lines[i], lines[i].matches("f          46  " + dateTime + "  a62c519aaabfce3f6d02bfc983f26098  md5-1.txt"));
+        Assert.assertTrue(lines[i],
+                          lines[i].matches("f          46  " + dateTime
+                                           + "  1f47c433a2b1d1aef1c6f6d645af845374f3e0707cf44f11edeaabb9d376ecb948c9f7bafc7ba14320f1ff1de189cb137e834444d0b4e832af68f39cfb4cfe7e  sha512-1.txt"));
         i++;
         Assert.assertTrue(lines[i], lines[i].matches("d              " + dateTime + "                                    usr" + sep));
         i++;

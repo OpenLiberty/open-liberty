@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -118,7 +118,28 @@ public class OKDServiceLogin_GenericTests extends OKDServiceLoginCommonTest {
         updatedSocialTestSettings.setHeaderName(SocialConstants.BEARER_HEADER);
         updatedSocialTestSettings.setHeaderValue(cttools.buildBearerTokenCred(""));
 
-        List<validationData> expectations = setErrorPageForSocialLogin(SocialMessageConstants.CWWKS5375E_MISSING_REQUIRED_ACCESS_TOKEN);
+        List<validationData> expectations = setErrorPageForSocialLogin(SocialMessageConstants.CWWKS5452E_NOTAUTH_DUE_TO_MISSING_CLAIMS, SocialMessageConstants.CWWKS5382E_USER_API_RESPONSE_CANNOT_BE_PROCESSED); 
+
+        genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
+
+    }
+
+    /**
+     * pass an empty Authorization header - expect a bad response from the user validation api server
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OKDServiceLogin_GenericTests_emptyAuthorizationHeader() throws Exception {
+
+        WebClient webClient = getAndSaveWebClient();
+
+        SocialTestSettings updatedSocialTestSettings = socialSettings.copyTestSettings();
+        updatedSocialTestSettings.setProtectedResource(genericTestServer.getServerHttpsString() + "/helloworld/rest/helloworld");
+        updatedSocialTestSettings.setHeaderName(SocialConstants.BEARER_HEADER);
+        updatedSocialTestSettings.setHeaderValue("");
+
+       List<validationData> expectations = setErrorPageForSocialLogin(SocialMessageConstants.CWWKS5375E_MISSING_REQUIRED_ACCESS_TOKEN);
 
         genericSocial(_testName, webClient, SocialConstants.INVOKE_SOCIAL_RESOURCE_ONLY, updatedSocialTestSettings, expectations);
 

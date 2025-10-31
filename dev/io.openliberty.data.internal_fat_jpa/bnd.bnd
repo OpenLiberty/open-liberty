@@ -47,12 +47,11 @@ tested.features:\
     com.ibm.ws.persistence.jakarta;version=latest,\
     com.ibm.ws.tx.embeddable.jakarta;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
-    io.openliberty.jakarta.annotation.2.1,\
-    io.openliberty.jakarta.cdi.4.0,\
+    io.openliberty.jakarta.annotation.3.0,\
+    io.openliberty.jakarta.cdi.4.1,\
     io.openliberty.jakarta.data.1.0,\
-    io.openliberty.jakarta.interceptor.2.1,\
-    io.openliberty.jakarta.persistence.3.1,\
-    io.openliberty.jakarta.servlet.6.0;version=latest,\
+    io.openliberty.jakarta.interceptor.2.2,\
+    io.openliberty.jakarta.persistence.3.2,\
+    io.openliberty.jakarta.servlet.6.1;version=latest,\
     io.openliberty.jakarta.transaction.2.0;version=latest,\
     io.openliberty.org.testcontainers;version=latest
-

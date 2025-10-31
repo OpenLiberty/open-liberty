@@ -17,12 +17,17 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 import java.util.Iterator;
+import org.mockito.Answers;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import java.util.List;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
+import java.time.Instant;
+import java.time.Clock;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -49,11 +54,13 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
     private static final AuthnStatement authnStatement = common.getAuthnStatement();
 
     private static SessionNotOnOrAfterTest validator;
-    private static DateTime sessionNotOnOrAfter;
-    private static final DateTime systemTime = new DateTime(2015, 9, 30, 12, 0, 0, 0); // Date 2015/09/30 12:00:00:00
-    private static final long systemTimeMilliseconds = systemTime.getMillis();
+    private static Instant sessionNotOnOrAfter;
+    private static final Instant systemTime = Instant.parse("2015-09-30T12:00:00Z"); // Date 2015/09/30 12:00:00:00
+    private static final long systemTimeMilliseconds = systemTime.toEpochMilli();
     private static final long FIVE_MIN = 300000l;
     private static final long FOUR_MIN = 240000l;
+    private static Clock fixedClock;
+    private static MockedStatic<Instant> mockedInstant;
 
     static {
         mockery.checking(new Expectations() {
@@ -70,6 +77,9 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
     @BeforeClass
     public static void setUp() {
+        // Initialize the MockedStatic for Instant with CALLS_REAL_METHODS
+        mockedInstant = Mockito.mockStatic(Instant.class, Answers.CALLS_REAL_METHODS);
+        
         mockery.checking(new Expectations() {
             {
                 allowing(context).getSsoConfig();
@@ -86,7 +96,22 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
     @AfterClass
     public static void tearDown() {
-        DateTimeUtils.setCurrentMillisSystem();
+        // Close the MockedStatic to avoid affecting other tests
+        if (mockedInstant != null) {
+            mockedInstant.close();
+        }
+        
+        // Reset to system clock
+        Clock.systemDefaultZone();
+    }
+    
+    /**
+     * Helper method to set a fixed clock for testing
+     * @param timeMillis The time in milliseconds to set the clock to
+     */
+    private static void setFixedClock(long timeMillis) {
+        fixedClock = Clock.fixed(Instant.ofEpochMilli(timeMillis), ZoneId.systemDefault());
+        mockedInstant.when(Instant::now).thenReturn(fixedClock.instant());
     }
 
     @After
@@ -140,8 +165,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeCurrentTime_ClockSkewSetTo5Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTimeMilliseconds);
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds);
+        setFixedClock(systemTimeMilliseconds);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds);
 
         mockery.checking(new Expectations() {
             {
@@ -162,7 +187,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
@@ -177,8 +201,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeCurrentTime_ClockSkewSetToZero() {
-        DateTimeUtils.setCurrentMillisFixed(systemTimeMilliseconds);
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds);
+        setFixedClock(systemTimeMilliseconds);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds);
 
         mockery.checking(new Expectations() {
             {
@@ -199,7 +223,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
@@ -214,8 +237,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeCurrentTimeMinus1Sec_ClockSkewSetToZero() {
-        DateTimeUtils.setCurrentMillisFixed(systemTimeMilliseconds);
-        sessionNotOnOrAfter = new DateTime(systemTime.minus(1000));
+        setFixedClock(systemTimeMilliseconds);
+        sessionNotOnOrAfter = systemTime.minus(1000, ChronoUnit.MILLIS);
 
         mockery.checking(new Expectations() {
             {
@@ -234,7 +257,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
             fail("SamlException was not thrown");
         } catch (SamlException ex) {
@@ -250,8 +272,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeCurrentTimeMinus4Min_ClockSkewSetTo5Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTimeMilliseconds);
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds).minus(FOUR_MIN);
+        setFixedClock(systemTimeMilliseconds);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds).minus(FOUR_MIN, ChronoUnit.MILLIS);
 
         mockery.checking(new Expectations() {
             {
@@ -272,7 +294,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
@@ -287,8 +308,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeCurrentTimePlus4Min_ClockSkewSetTo5Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTimeMilliseconds);
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds).plus(FOUR_MIN);
+        setFixedClock(systemTimeMilliseconds);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds).plus(FOUR_MIN, ChronoUnit.MILLIS);
 
         mockery.checking(new Expectations() {
             {
@@ -309,7 +330,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
@@ -324,8 +344,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeSystemTimeMinus4Min_ClockSkewSetTo5Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTime.minus(FOUR_MIN).getMillis());
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds);
+        setFixedClock(systemTimeMilliseconds - FOUR_MIN);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds);
 
         mockery.checking(new Expectations() {
             {
@@ -346,7 +366,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
@@ -361,8 +380,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeSystemTimePlus4Min_ClockSkewSetTo5Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTime.plus(FOUR_MIN).getMillis());
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds);
+        setFixedClock(systemTimeMilliseconds + FOUR_MIN);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds);
 
         mockery.checking(new Expectations() {
             {
@@ -383,7 +402,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
@@ -398,8 +416,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeCurrentTimeMinus5Min_ClockSkewSetTo4Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTimeMilliseconds);
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds).minus(FIVE_MIN);
+        setFixedClock(systemTimeMilliseconds);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds).minus(FIVE_MIN, ChronoUnit.MILLIS);
 
         mockery.checking(new Expectations() {
             {
@@ -418,7 +436,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
             fail("SamlException was not thrown");
         } catch (SamlException ex) {
@@ -434,8 +451,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeCurrentTimePlus5Min_ClockSkewSetTo4Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTimeMilliseconds);
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds).plus(FIVE_MIN);
+        setFixedClock(systemTimeMilliseconds);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds).plus(FIVE_MIN, ChronoUnit.MILLIS);
 
         mockery.checking(new Expectations() {
             {
@@ -456,7 +473,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
@@ -471,8 +487,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeSystemTimeMinus5Min_ClockSkewSetTo4Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTime.minus(FIVE_MIN).getMillis());
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds);
+        setFixedClock(systemTimeMilliseconds - FIVE_MIN);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds);
 
         mockery.checking(new Expectations() {
             {
@@ -493,7 +509,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
         } catch (SamlException ex) {
             ex.printStackTrace();
@@ -508,8 +523,8 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
      */
     @Test
     public void testFakeSystemTimePlus5Min_ClockSkewSetTo4Min() {
-        DateTimeUtils.setCurrentMillisFixed(systemTime.plus(FIVE_MIN).getMillis());
-        sessionNotOnOrAfter = new DateTime(systemTimeMilliseconds);
+        setFixedClock(systemTimeMilliseconds + FIVE_MIN);
+        sessionNotOnOrAfter = Instant.ofEpochMilli(systemTimeMilliseconds);
 
         mockery.checking(new Expectations() {
             {
@@ -528,7 +543,6 @@ public class SessionNotOnOrAfterTest extends AssertionValidator {
 
         try {
             validator = new SessionNotOnOrAfterTest();
-
             validator.verifyAuthnStatement();
             fail("SamlException was not thrown");
         } catch (SamlException ex) {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal;
@@ -12,7 +12,7 @@ package io.openliberty.netty.internal;
 import io.netty.bootstrap.ServerBootstrap;
 
 /**
- * Extends {@link ServerBootstrap} to allow configuration via a {@link BootstrapConfiguration} 
+ * Extends {@link ServerBootstrap} to allow configuration via a {@link BootstrapConfiguration}
  */
 public class ServerBootstrapExtended extends ServerBootstrap {
 
@@ -22,7 +22,7 @@ public class ServerBootstrapExtended extends ServerBootstrap {
     /**
      * Apply the given {@link BootstrapConfiguration} to this {@link ServerBootstrap}
      * Note that most props are implemented via handlers, see {@link TCPChannelInitializerImpl}
-     * 
+     *
      * @param config
      */
     public void applyConfiguration(BootstrapConfiguration config) {
@@ -32,6 +32,7 @@ public class ServerBootstrapExtended extends ServerBootstrap {
 
     /**
      * Get the ServerBootstrapConfiguration associated with this bootstrap
+     *
      * @return ServerBootstrapConfiguration
      */
     public BootstrapConfiguration getConfiguration() {
@@ -47,6 +48,7 @@ public class ServerBootstrapExtended extends ServerBootstrap {
 
     /**
      * Get the base {@link ChannelInitializerWrapper} used by this bootstrap
+     *
      * @return ChannelInitializerWrapper
      */
     public ChannelInitializerWrapper getBaseInitializer() {

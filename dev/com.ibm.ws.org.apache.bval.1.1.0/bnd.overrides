@@ -48,9 +48,9 @@ DynamicImport-Package: \
   javax.xml.bind.util
  
 Include-Resource: \
-  @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/LICENSE, \
-  @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/LICENSE.txt, \
-  @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/org.apache.bval.revision.properties, \
-  @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/*.xsd, \
+  @\${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/LICENSE, \
+  @\${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/LICENSE.txt, \
+  @\${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/org.apache.bval.revision.properties, \
+  @\${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/*.xsd, \
   META-INF/services=resources/META-INF/services
 

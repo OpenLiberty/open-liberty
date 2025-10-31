@@ -10,7 +10,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.commons:commons-weaver-privilizer;1.1.0.ibm}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;org.apache.commons:commons-weaver-privilizer;1.1.0.ibm}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -buildpath: \
    org.apache.commons:commons-weaver-privilizer;version=1.1.0.ibm,\

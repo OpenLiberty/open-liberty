@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,14 +14,24 @@ package com.ibm.ws.security.utility.tasks;
 
 import java.io.PrintStream;
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
+import com.ibm.ws.crypto.util.AESKeyManager;
+import com.ibm.ws.crypto.util.AesConfigFileParser;
+import com.ibm.ws.crypto.util.UnsupportedConfigurationException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.utility.SecurityUtilityTask;
 import com.ibm.ws.security.utility.utils.CommandUtils;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
+import com.ibm.wsspi.security.crypto.PasswordEncryptException;
 
 public abstract class BaseCommandTask implements SecurityUtilityTask {
 
@@ -29,11 +39,45 @@ public abstract class BaseCommandTask implements SecurityUtilityTask {
 
     protected final String scriptName;
 
+    static final String ARG_AES_CONFIG_FILE = "--aesConfigFile";
+
+    static final String ARG_PASSWORD_BASE64_KEY = "--passwordBase64Key";
+
+    static final String ARG_PASSWORD_KEY = "--passwordKey";
+
+    static final String ARG_PASSWORD_ENCODING = "--passwordEncoding";
+
+    static final String ARG_KEY_LABEL = "--keyLabel";
+
+    static final String ARG_KEYRING_TYPE = "--keyringType";
+
+    static final String ARG_KEYRING = "--keyring";
+
+    static final String ARG_HASH_ENCODED = "--encoded"; // this is for debug
+
+    static final String ARG_HASH_ALGORITHM = "--algorithm";
+
+    static final String ARG_HASH_ITERATION = "--iteration";
+
+    static final String ARG_HASH_SALT = "--salt";
+
+    static final String ARG_LIST_CUSTOM = "--listCustom";
+
+    static final String ARG_NO_TRIM = "--notrim";
+
+    static final String ARG_PASSWORD = "--password";
+
+    static final String ARG_ENCODING = "--encoding";
+
+    public static final String ARG_BASE64_KEY = "--base64Key";
+
+    public static final String ARG_KEY = "--key";
+
     public BaseCommandTask(String scriptName) {
         this.scriptName = scriptName;
     }
 
-    protected String getMessage(String key, Object... args) {
+    protected static String getMessage(String key, Object... args) {
         return CommandUtils.getMessage(key, args);
     }
 
@@ -54,10 +98,9 @@ public abstract class BaseCommandTask implements SecurityUtilityTask {
         if (optionKeyPrefix != null && !optionKeyPrefix.isEmpty() && optionDescPrefix != null && !optionDescPrefix.isEmpty()) {
             Enumeration<String> keys = CommandUtils.getOptions().getKeys();
             Set<String> optionKeys = new TreeSet<String>();
-
             while (keys.hasMoreElements()) {
                 String key = keys.nextElement();
-                if (key.startsWith(optionKeyPrefix)) {
+                if (key.startsWith(optionKeyPrefix) && !isBetaOption(key)) {
                     optionKeys.add(key);
                 }
             }
@@ -81,13 +124,13 @@ public abstract class BaseCommandTask implements SecurityUtilityTask {
     /**
      * Generate the formatted task help.
      *
-     * @param desc the description NLS key
-     * @param usage the usage NLS key
-     * @param optionKeyPrefix the option name NLS key prefix
+     * @param desc             the description NLS key
+     * @param usage            the usage NLS key
+     * @param optionKeyPrefix  the option name NLS key prefix
      * @param optionDescPrefix the option description NLS key prefix
-     * @param addonKey an addon NLS key prefix
-     * @param footer a raw (already translated) String to append to the output
-     * @param args any arguments to pass to the formating keys (order matters)
+     * @param addonKey         an addon NLS key prefix
+     * @param footer           a raw (already translated) String to append to the output
+     * @param args             any arguments to pass to the formating keys (order matters)
      * @return
      */
     protected String getTaskHelp(String desc, String usage,
@@ -227,12 +270,12 @@ public abstract class BaseCommandTask implements SecurityUtilityTask {
      * No validation is done in the format of args as it is assumed to
      * have been done previously.
      *
-     * @param arg Argument name to resolve a value for
-     * @param args List of arguments. Assumes the script name is included and therefore minimum length is 2.
-     * @param defalt Default value if the argument is not specified
+     * @param arg            Argument name to resolve a value for
+     * @param args           List of arguments. Assumes the script name is included and therefore minimum length is 2.
+     * @param defalt         Default value if the argument is not specified
      * @param passwordArgKey The password argument key (required to know when to prompt for password)
-     * @param stdin Standard in interface
-     * @param stdout Standard out interface
+     * @param stdin          Standard in interface
+     * @param stdout         Standard out interface
      * @return Value of the argument
      * @throws IllegalArgumentException if the argument is defined but no value is given.
      */
@@ -279,13 +322,13 @@ public abstract class BaseCommandTask implements SecurityUtilityTask {
      */
     protected void validateArgumentList(String[] args, List<String> keyOnlyArgs) {
         checkRequiredArguments(args);
-
         // Skip the first argument as it is the task name
         // Arguments and values come in pairs (expect -password).
         // Anything outside of that pattern is invalid.
         // Loop through, jumping in pairs except when we encounter
         // -password -- that may be an interactive prompt which won't
         // define a value.
+        Map<String, String> inputMap = new HashMap<String, String>();
         for (int i = 1; i < args.length; i++) {
             String argPair = args[i];
             String arg = null;
@@ -304,7 +347,135 @@ public abstract class BaseCommandTask implements SecurityUtilityTask {
                     throw new IllegalArgumentException(getMessage("missingValue", arg));
                 }
             }
+            inputMap.put(arg, value);
+            validateMutuallyExclusiveArgs(arg, inputMap);
         }
+    }
+
+    /**
+     * Convert the properties for encoding from the command line parameters.
+     *
+     * @param stdout a PrintStream to write informational messages.
+     * @throws Exception
+     */
+    protected static Map<String, String> convertToProperties(Map<String, String> argMap, PrintStream stdout) throws Exception {
+        HashMap<String, String> props = new HashMap<>();
+
+        String value = argMap.get(BaseCommandTask.ARG_KEY);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_CRYPTO_KEY, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_PASSWORD_KEY);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_CRYPTO_KEY, value);
+        }
+        if (argMap.containsKey(BaseCommandTask.ARG_NO_TRIM)) {
+            props.put(PasswordUtil.PROPERTY_NO_TRIM, "true");
+        }
+        value = argMap.get(BaseCommandTask.ARG_HASH_SALT);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_HASH_SALT, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_HASH_ITERATION);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_HASH_ITERATION, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_HASH_ALGORITHM);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_HASH_ALGORITHM, value);
+        }
+        // following value are for debug
+        value = argMap.get(BaseCommandTask.ARG_HASH_ENCODED);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_HASH_ENCODED, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_KEYRING);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_KEYRING, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_KEYRING_TYPE);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_KEYRING_TYPE, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_KEY_LABEL);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_KEY_LABEL, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_BASE64_KEY);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_AES_KEY, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_PASSWORD_BASE64_KEY);
+        if (value != null) {
+            props.put(PasswordUtil.PROPERTY_AES_KEY, value);
+        }
+        value = argMap.get(BaseCommandTask.ARG_AES_CONFIG_FILE);
+        if (value != null) {
+            handleAesConfigFile(props, value);
+        }
+
+        return props;
+    }
+
+    protected static void handleAesConfigFile(HashMap<String, String> props, String value) throws PasswordEncryptException {
+        try {
+            props.putAll(AesConfigFileParser.parseAesEncryptionFile(value));
+        } catch (PasswordEncryptException e) {
+            throw e;
+        } catch (UnsupportedCryptoAlgorithmException e) {
+            throw new IllegalArgumentException(getMessage("encode.aesConfigFileMissingEncryptionVariables", AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY,
+                                                          AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY), e);
+        } catch (UnsupportedConfigurationException e) {
+            throw new IllegalArgumentException(getMessage("encode.aesConfigFileEncryptionAmbiguous", AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY,
+                                                          AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY), e);
+        }
+    }
+
+    /**
+     * Validates whether adding a new argument would violate any mutually exclusive constraints.
+     *
+     * @param arg      the argument we are testing
+     * @param inputMap the inputMap of arguments already parsed.
+     */
+    protected void validateMutuallyExclusiveArgs(String arg, Map<String, String> inputMap) {
+        for (Set<String> group : getExclusiveArguments()) {
+            if (group.contains(arg)) {
+                for (String key : group) {
+                    if (!key.equals(arg) && inputMap.containsKey(key)) {
+                        throw new IllegalArgumentException(getMessage("exclusiveArg", key, arg));
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Override this method if beta options for this task are used.
+     *
+     * @return a list of beta options for this task.
+     */
+    protected List<String> getBetaOptions() {
+        return new ArrayList<>();
+    }
+
+    /**
+     * @param option
+     * @return
+     */
+    private boolean isBetaOption(String option) {
+        if (ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            return getBetaOptions().stream().anyMatch(p -> option.endsWith(p));
+        }
+
+    }
+
+    /**
+     * @return A List<Set<String>> where each item in the list is a set containing the argument names for mutually exclusive arguments
+     */
+    protected List<Set<String>> getExclusiveArguments() {
+        return new ArrayList<>();
     }
 
 }

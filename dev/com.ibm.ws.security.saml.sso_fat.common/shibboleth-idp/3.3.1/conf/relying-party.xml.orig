@@ -239,6 +239,31 @@
 
 		<bean
 			parent="RelyingPartyByName"
+			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_sha1'}}"
+		>
+			<property name="profileConfigurations">
+				<list>
+					<bean parent="Shibboleth.SSO" />
+					<ref bean="SAML1.AttributeQuery" />
+					<ref bean="SAML1.ArtifactResolution" />
+					<bean
+						parent="SAML2.SSO"
+						p:signResponses="true"
+						p:signAssertions="true"
+						p:encryptAssertions="false"
+						p:securityConfiguration-ref="SHA1SecurityConfig"
+						p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid" />
+					<ref bean="SAML2.ECP" />
+					<ref bean="SAML2.Logout" />
+					<ref bean="SAML2.AttributeQuery" />
+					<ref bean="SAML2.ArtifactResolution" />
+					<ref bean="Liberty.SSOS" />
+				</list>
+			</property>
+		</bean>
+
+		<bean
+			parent="RelyingPartyByName"
 			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes128'}}"
 		>
 			<property name="profileConfigurations">
@@ -579,7 +604,7 @@
 		parent="shibboleth.DefaultSecurityConfiguration"
 	>
 		<property name="signatureSigningConfiguration">
-			<ref bean="shibboleth.SigningConfiguration.SHA1" />
+			<bean parent="shibboleth.SigningConfiguration.SHA1" p:signingCredentials-ref="shibboleth.DefaultSigningCredentialSHA1" />
 		</property>
 	</bean>
 

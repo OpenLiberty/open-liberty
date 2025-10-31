@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.udp;
@@ -31,7 +31,7 @@ import io.openliberty.netty.internal.exception.NettyException;
 public class UDPConfigurationImpl implements BootstrapConfiguration {
 
     private static final TraceComponent tc = Tr.register(UDPConfigurationImpl.class,
-            UDPMessageConstants.NETTY_TRACE_NAME, UDPMessageConstants.UDP_BUNDLE);
+                                                         UDPMessageConstants.NETTY_TRACE_NAME, UDPMessageConstants.UDP_BUNDLE);
 
     private static int DEFAULT_READ_BUFFER_SIZE = 1024000;
     private Map<String, Object> channelProperties = null;
@@ -52,7 +52,7 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
 
     /**
      * Constructor.
-     * 
+     *
      * @throws NettyException
      */
     public UDPConfigurationImpl(Map<String, Object> options, boolean inbound) throws NettyException {
@@ -82,17 +82,17 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
         bootstrap.option(ChannelOption.SO_REUSEADDR, false);
         int receiveBufferSize = getReceiveBufferSize();
         if ((receiveBufferSize >= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
-                && (receiveBufferSize <= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
+            && (receiveBufferSize <= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "setting receive buffer to size " + receiveBufferSize);
             }
             //SO_RCVBUF - size of buffer that holds the datagrams the client hasn't read yet
             bootstrap.option(ChannelOption.SO_RCVBUF, receiveBufferSize);
-            //set common RCVBUF_ALLOCATOR strategy 
+            //set common RCVBUF_ALLOCATOR strategy
             bootstrap.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(receiveBufferSize));
         }
         if ((getSendBufferSize() >= UDPConfigConstants.SEND_BUFFER_SIZE_MIN)
-                && (getSendBufferSize() <= UDPConfigConstants.SEND_BUFFER_SIZE_MAX)) {
+            && (getSendBufferSize() <= UDPConfigConstants.SEND_BUFFER_SIZE_MAX)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "setting send buffer to size " + getSendBufferSize());
             }
@@ -106,7 +106,7 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
         }
 
         for (Map.Entry<String, Object> entry : props.entrySet()) {
-            String key = (String) entry.getKey();
+            String key = entry.getKey();
             Object value = entry.getValue();
             try {
                 if (key.equals("id") ||
@@ -375,7 +375,7 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
         if (size < 0 || size > UDPConfigConstants.MAX_UDP_PACKET_SIZE) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Channel Receive buffer size not within Limits: " + size + " setting to possible maximum value: "
-                        + UDPConfigConstants.MAX_UDP_PACKET_SIZE);
+                             + UDPConfigConstants.MAX_UDP_PACKET_SIZE);
             }
             this.channelReceiveBufferSize = UDPConfigConstants.MAX_UDP_PACKET_SIZE;
         }

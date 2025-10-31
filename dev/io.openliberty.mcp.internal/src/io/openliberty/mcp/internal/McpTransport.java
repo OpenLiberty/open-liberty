@@ -39,6 +39,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Represents the current request and allows the response to be sent
  */
 public class McpTransport {
+    public static final String MCP_SESSION_ID_HEADER = "Mcp-Session-Id";
     private static final TraceComponent tc = Tr.register(McpTransport.class);
     private static final String MCP_HEADER = "MCP-Protocol-Version";
     private static final List<String> REQUIRED_MCP_MIME_TYPES = List.of("text/event-stream", "application/json");
@@ -48,6 +49,8 @@ public class McpTransport {
     private McpRequest mcpRequest;
     private Writer writer;
     private McpProtocolVersion version;
+    private String sessionId;
+    private McpSession sessionInfo;
 
     public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb) throws IOException {
         this.req = req;
@@ -64,7 +67,7 @@ public class McpTransport {
      * @throws IOException if an I/O exception occurs.
      */
     @FFDCIgnore(NoSuchElementException.class)
-    public void init() throws IOException {
+    public void init(McpSessionStore sessionStore) throws IOException {
         if (!validReqAcceptHeader()) {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_ACCEPTABLE);
         }
@@ -78,6 +81,17 @@ public class McpTransport {
                                             "Unsupported MCP-Protocol-Version header. Supported values: " + supportedValues);
         }
         this.mcpRequest = toRequest();
+        final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
+        if (sessionIdHeader == null) {
+            this.sessionInfo = null;
+            return;
+        }
+
+        McpSession session = sessionStore.getSession(sessionIdHeader);
+        if (session == null) {
+            throw new HttpResponseException(HttpServletResponse.SC_NOT_FOUND, "Invalid or Expired Session Id");
+        }
+        this.sessionInfo = session;
     }
 
     /**
@@ -140,6 +154,35 @@ public class McpTransport {
 
     public McpRequest getMcpRequest() {
         return this.mcpRequest;
+    }
+
+    /*
+     * Sets an HTTP header in the response.
+     * <p>
+     * Intended only for sending the Session ID header with initialize response
+     */
+    void setResponseHeader(String name, String value) {
+        res.setHeader(name, value);
+    }
+
+    /**
+     * Returns the current session associated with this transport, or null if no valid session was provided.
+     *
+     * @return the {@link McpSession} for this transport, or null if not available
+     */
+    public McpSession getSession() {
+        return sessionInfo;
+    }
+
+    /**
+     * Returns the session ID associated with this transport.
+     * This is the raw ID value provided by the client in the {@code Mcp-Session-Id} header,
+     * or assigned by the server during initialization.
+     *
+     * @return the session ID string, or {@code null} if none is available
+     */
+    public String getSessionId() {
+        return sessionId;
     }
 
     /**

@@ -369,13 +369,13 @@ CWWKD1033.ql.orderby.disallowed.explanation=The ORDER BY clause is incompatible 
 CWWKD1033.ql.orderby.disallowed.useraction=Replace the ORDER BY clause with \
  annotations that specify the sort criteria.
 
-CWWKD1034.ql.where.required=CWWKD1034E: The query that is specified by the \
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: The query that is specified by the \
  {0} method of the {1} repository interface must end in a WHERE clause because \
  the method returns {2}. There WHERE clause ends at position {3}, but the \
  length of the query is {4}. The query is: {5}.
-CWWKD1034.ql.where.required.explanation=A WHERE clause is required when \
+CWWKD1034.ql.req.end.in.where.explanation=A WHERE clause is required when \
  using cursor-based pagination.
-CWWKD1034.ql.where.required.useraction=Add a WHERE clause to the query.
+CWWKD1034.ql.req.end.in.where.useraction=Add a WHERE clause to the query.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: A page request with the {0} pagination \
  mode must not be supplied to the {1} method of the {2} repository interface \
@@ -1202,3 +1202,21 @@ CWWKD1118.param.anno.conflict.explanation=The combination of parameter \
  annotations is not valid.
 CWWKD1118.param.anno.conflict.useraction=Remove one or more of the conflicting \
  annotations from the repository method parameter.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: The {0} method of the {1} repository \
+ interface retrieves pages that do not include a total count of elements and pages \
+ because the query contains the {2} keyword. The full query is: {3}.
+CWWKD1119.keyword.prevents.count.explanation=The keyword is incompatible with \
+ the ability to obtain a total count of elements and pages.
+CWWKD1119.keyword.prevents.count.useraction=Replace the query with one that \
+ does not use the keyword or avoid requesting a total count of elements and pages.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: The {0} method of the {1} repository \
+ interface specifies a query that includes the {2} keyword, which is incompatible \
+ with cursor-based pagination. Queries for cursor-based pagination must end with \
+ a WHERE clause and must not include subqueries. The query is: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Keywords such as GROUP BY, HAVING, \
+ ORDER BY, EXCEPT, INTERSECT, and UNION are not compatible with cursor-based \
+ pagination.
+CWWKD1120.cursor.keyword.mismatch.useraction=Rewrite the query to include only \
+ the clauses: SELECT, FROM, and WHERE.

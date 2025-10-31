@@ -25,7 +25,7 @@ import jakarta.data.repository.Repository;
  * Do not add add a superinterface for this class, and do not add any lifecycle methods.
  * (A save method for Employee can be found on the Businesses repository)
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Employees {
 
     void deleteByLastName(String lastName);

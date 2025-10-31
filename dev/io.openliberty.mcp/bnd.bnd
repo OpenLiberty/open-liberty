@@ -15,9 +15,7 @@ Bundle-Description: Model Context Protocol API, version ${bVersion}
 
 bVersion=1.0
 
-# TODO:  When moving to GA, put this change back in.  We do not want to publish this API to
-# maven until the feature is GA.
-# publish.wlp.jar.suffix: dev/api/ibm
+publish.wlp.jar.suffix: dev/api/ibm
 
 javac.source: 17
 javac.target: 17

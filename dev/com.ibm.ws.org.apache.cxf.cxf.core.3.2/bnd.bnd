@@ -158,16 +158,18 @@ DynamicImport-Package: \
   com.ibm.ws.cxf.client.component.*
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-core;${importVer};EXACT}!/!*-INF/*, \
+  @\${repo;org.apache.cxf:cxf-core;${importVer};EXACT}!/!*-INF/*, \
   org/apache/cxf=${bin}/org/apache/cxf, \
   META-INF=resources/META-INF
 
 instrument.ffdc: false
 instrument.classesExcludes: \
+  org/apache/cxf/attachment/*.class, \
   org/apache/cxf/common/jaxb/*.class, \
   org/apache/cxf/service/invoker/*.class, \
   org/apache/cxf/phase/*.class, \
   org/apache/cxf/interceptor/*.class, \
+  org/apache/cxf/io/*.class, \
   org/apache/cxf/service/model/*.class, \
   org/apache/cxf/staxutils/*.class, \
   org/apache/cxf/common/logging/*.class, \

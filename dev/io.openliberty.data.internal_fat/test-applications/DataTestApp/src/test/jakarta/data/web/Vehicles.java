@@ -27,7 +27,7 @@ import jakarta.data.repository.Save;
  * The entity type for this repository only appears as a type parameter.
  * Do not add methods that would allow it to be discovered any other way.
  */
-@Repository(dataStore = "java:module/jdbc/env/DerbyDataSourceRef")
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Vehicles {
 
     long count();

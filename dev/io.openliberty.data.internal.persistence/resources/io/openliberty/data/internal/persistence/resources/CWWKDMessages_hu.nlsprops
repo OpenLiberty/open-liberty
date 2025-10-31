@@ -148,7 +148,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: A {1} lerakatfel\u00fclet {0} met\u00f3d
 CWWKD1029.first.neg.or.zero.explanation=A lek\u00e9rdez\u00e9si eredm\u00e9nyek maxim\u00e1lis sz\u00e1m\u00e1nak pozit\u00edv sz\u00e1mnak kell lennie.
 CWWKD1029.first.neg.or.zero.useraction=Friss\u00edtse a t\u00e1rm\u00f3dszert, hogy megadja az eredm\u00e9nyek maxim\u00e1lis sz\u00e1m\u00e1t.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Az entit\u00e1s neve hi\u00e1nyzik a {2} lerakat {1} met\u00f3dus\u00e1hoz megadott {0} lek\u00e9rdez\u00e9sb\u0151l. A jakartai adatlek\u00e9rdez\u00e9si nyelvben a {3} lek\u00e9rdez\u00e9seket a k\u00f6vetkez\u0151k\u00e9ppen kell kialak\u00edtani: {4} .
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Az entit\u00e1s neve hi\u00e1nyzik a {0} lek\u00e9rdez\u00e9sb\u0151l, amely a {2} t\u00e1rol\u00f3hely {1} m\u00f3dszer\u00e9hez van megadva. A {3} lek\u00e9rdez\u00e9sekhez haszn\u00e1lja a k\u00f6vetkez\u0151 form\u00e1t: {4}.
 CWWKD1030.ql.lacks.entity.explanation=A lek\u00e9rdez\u00e9s tartalmaz egy z\u00e1rad\u00e9kot, amely megk\u00f6veteli az entit\u00e1s nev\u00e9t.
 CWWKD1030.ql.lacks.entity.useraction=Friss\u00edtse a lerakatmet\u00f3dus lek\u00e9rdez\u00e9s\u00e9t, hogy tartalmazza az entit\u00e1s nev\u00e9t.
 
@@ -164,9 +164,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: A {1} lerakatfel\u00fclet {0} met\u0
 CWWKD1033.ql.orderby.disallowed.explanation=Az ORDER BY z\u00e1rad\u00e9k nem kompatibilis a kurzor alap\u00fa lapoz\u00e1ssal.
 CWWKD1033.ql.orderby.disallowed.useraction=Cser\u00e9lje le az ORDER BY z\u00e1rad\u00e9kot a rendez\u00e9si felt\u00e9teleket meghat\u00e1roz\u00f3 megjegyz\u00e9sekkel.
 
-CWWKD1034.ql.where.required=CWWKD1034E: A {1} lerakatfel\u00fclet {0} met\u00f3dusa \u00e1ltal megadott lek\u00e9rdez\u00e9snek WHERE z\u00e1rad\u00e9kkal kell v\u00e9gz\u0151dnie, mert a met\u00f3dus a k\u00f6vetkez\u0151t adja vissza: {2} . Ott a WHERE z\u00e1rad\u00e9k a {3} helyen v\u00e9gz\u0151dik, de a lek\u00e9rdez\u00e9s hossza {4} . A lek\u00e9rdez\u00e9s: {5} .
-CWWKD1034.ql.where.required.explanation=Kurzor alap\u00fa lapoz\u00e1s haszn\u00e1latakor sz\u00fcks\u00e9g van egy WHERE z\u00e1rad\u00e9kra.
-CWWKD1034.ql.where.required.useraction=Adjon hozz\u00e1 egy WHERE z\u00e1rad\u00e9kot a lek\u00e9rdez\u00e9shez.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: A {1} t\u00e1rol\u00f3fel\u00fclet {0} met\u00f3dusa \u00e1ltal megadott lek\u00e9rdez\u00e9snek WHERE z\u00e1rad\u00e9kkal kell v\u00e9gz\u0151dnie, mivel a m\u00f3dszer a {2} met\u00f3dust adja vissza. A WHERE z\u00e1rad\u00e9k a {3} poz\u00edci\u00f3ban v\u00e9gz\u0151dik, de a lek\u00e9rdez\u00e9s hossza {4}. A lek\u00e9rdez\u00e9s: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=A kurzoralap\u00fa lapoz\u00e1s haszn\u00e1latakor WHERE z\u00e1rad\u00e9kra van sz\u00fcks\u00e9g.
+CWWKD1034.ql.req.end.in.where.useraction=Adjon hozz\u00e1 egy WHERE z\u00e1rad\u00e9kot a lek\u00e9rdez\u00e9shez.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: A(z) {0} oldalsz\u00e1moz\u00e1si m\u00f3ddal rendelkez\u0151 oldalk\u00e9r\u00e9st nem szabad megadni a(z) {2} lerakatfel\u00fclet {1} met\u00f3dus\u00e1nak, mert a met\u00f3dus a(z {3} \u00e9rt\u00e9ket adja vissza a(z {4} helyett.
 CWWKD1035.incompat.page.mode.explanation=A k\u00e9rt lapoz\u00e1si m\u00f3d nem kompatibilis a t\u00e1rm\u00f3dszer visszat\u00e9r\u00e9si t\u00edpus\u00e1val.

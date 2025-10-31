@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,23 +51,17 @@ name=nazwa
 days=dni
 
 sslCert.abort=Tworzenie certyfikatu zostanie przerwane:
-sslCert.createFailed=Nie mo\u017cna utworzy\u0107 domy\u015blnego certyfikatu SSL:\n\
-{0}
-sslCert.errorEncodePassword=B\u0142\u0105d podczas kodowania has\u0142a (certyfikat nie zosta\u0142 utworzony):\n\
-{0}
+sslCert.createFailed=Nie mo\u017cna utworzy\u0107 domy\u015blnego certyfikatu SSL:\n{0}
+sslCert.errorEncodePassword=B\u0142\u0105d podczas kodowania has\u0142a (certyfikat nie zosta\u0142 utworzony):\n{0}
 sslCert.createKeyStore=Tworzenie magazynu kluczy {0}\n
 sslCert.oneType=Nie mo\u017cna okre\u015bla\u0107 jednocze\u015bnie argument\u00f3w {0} i {1}.
 sslCert.clientNotFound=Okre\u015blony klient {0} nie zosta\u0142 znaleziony w po\u0142o\u017ceniu {1}.
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=Utworzono certyfikat SSL dla serwera {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\
-\n\
-Dodaj nast\u0119puj\u0105ce wiersze do pliku server.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
+sslCert.serverXML=Utworzono certyfikat SSL dla serwera {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\nDodaj nast\u0119puj\u0105ce wiersze do pliku server.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=Utworzono certyfikat SSL dla klienta {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\
-\n\
-Dodaj nast\u0119puj\u0105ce wiersze do pliku client.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
+sslCert.clientXML=Utworzono certyfikat SSL dla klienta {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\nDodaj nast\u0119puj\u0105ce wiersze do pliku client.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
 
 fileUtility.failedDirCreate=Utworzenie katalogu {0} nie powiod\u0142o si\u0119
 file.exists=Plik kluczy {0} ju\u017c istnieje.  Nie mo\u017cna utworzy\u0107 pliku kluczy w tym po\u0142o\u017ceniu.
@@ -77,14 +71,9 @@ file.requiredDirNotCreated=Nie mo\u017cna utworzy\u0107 wymaganej struktury kata
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # The following string will be appended after encode.option-desc.encoding
 # message in UtilityOptions.nlsprops file.
-encode.option-custom.encryption=\n\
-\tNiestandardowe szyfrowanie has\u0142a jest tak\u017ce dost\u0119pne.
-encode.option-desc.custom.feature=\n\
-\tNazwa sk\u0142adnika {0} jest nast\u0119puj\u0105ca:\n\
-\t
-encode.option-desc.custom.description=\n\
-\tOpis elementu {0} jest nast\u0119puj\u0105cy:\n\
-\t
+encode.option-custom.encryption=\n\tNiestandardowe szyfrowanie has\u0142a jest tak\u017ce dost\u0119pne.
+encode.option-desc.custom.feature=\n\tNazwa sk\u0142adnika {0} jest nast\u0119puj\u0105ca:\n\t
+encode.option-desc.custom.description=\n\tOpis elementu {0} jest nast\u0119puj\u0105cy:\n\t
 
 # The following message is shown when there is no custom password
 # encryption is enabled.
@@ -104,9 +93,39 @@ saf.arg.not.aes=Argumenty --keyring, --keyringType i --keyLabel mog\u0105 by\u01
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated
-createLTPAKeys.abort=Przerywanie tworzenia pliku kluczy \
-LTPA:
-createLTPAKeys.fileExists=Plik {0} ju\u017c istnieje.  Nie \
-mo\u017cna utworzy\u0107 pliku kluczy LTPA w tym po\u0142o\u017ceniu.
-createLTPAKeys.createdFile=Utworzono plik \
-kluczy LTPA: {0}\n Do pliku server.xml dodaj nast\u0119puj\u0105c\u0105 konfiguracj\u0119\n {1}\n
+createLTPAKeys.abort=Przerywanie tworzenia pliku kluczy LTPA:
+createLTPAKeys.fileExists=Plik {0} ju\u017c istnieje.  Nie mo\u017cna utworzy\u0107 pliku kluczy LTPA w tym po\u0142o\u017ceniu.
+createLTPAKeys.createdFile=Utworzono plik kluczy LTPA: {0}\n Do pliku server.xml dodaj nast\u0119puj\u0105c\u0105 konfiguracj\u0119\n {1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=Instalacja Java nie pochodzi z IBM Semeru Runtimes ani IBM SDK, a je\u015bli tak, to nie obs\u0142uguje FIPS 140-3.\nZainstaluj Jav\u0119 z IBM Semeru Runtimes lub IBM SDK przy u\u017cyciu wersji i systemu operacyjnego obs\u0142uguj\u0105cego FIPS 140-3.\nJe\u015bli u\u017cywasz IBM Semeru Runtimes, u\u017cyj wersji 11.0.29.0, 17.0.17.0, 21.0.9.0, lub wy\u017cszej.\nJe\u015bli korzystasz z IBM SDK, u\u017cyj wersji 8.0.8.30 lub wy\u017cszej.
+
+configureFIPS.zosNotAvailable=Polecenie securityUtility configureFIPS nie jest obs\u0142ugiwane na stronie z/OS.
+
+configureFIPS.configureSemeru=Konfiguracja FIPS 140-3 dla IBM Semeru Runtimes.
+configureFIPS.configureIbmSdk=Konfiguracja FIPS 140-3 dla IBM SDK.
+
+configureFIPS.abort=Przerwanie konfigurowania standardu FIPS 140-3:
+
+configureFIPS.abortSemeruFile=Przerwanie IBM Semeru Tworzenie pliku profilu niestandardowego FIPS 140-3:
+
+configureFIPS.abortEnvFile=Przerwanie modyfikacji pliku konfiguracyjnego:
+
+configureFIPS.fileExists=Korzystanie z istniej\u0105cego pliku profilu niestandardowego {0} IBM Semeru Runtimes.
+
+configureFIPS.createdSemeruFile=Utworzono plik profilu niestandardowego {0} IBM Semeru Runtimes.
+
+configureFIPS.fileDoesNotExist=Plik {0} nie istnieje.
+
+configureFIPS.fileNameNotAllowed=Podstawow\u0105 nazw\u0105 pliku {0} nie mo\u017ce by\u0107 FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=Utworzono plik {0} w celu w\u0142\u0105czenia standardu FIPS 140-3.
+configureFIPS.updatedEnvFileToEnableFips=Zaktualizowano plik {0}, aby w\u0142\u0105czy\u0107 FIPS 140-3.
+configureFIPS.fipsAlreadyEnabled=FIPS 140-3 jest ju\u017c w\u0142\u0105czony w pliku {0}.
+
+configureFIPS.updatedEnvFileToDisableFips=Zaktualizowano plik {0}, aby wy\u0142\u0105czy\u0107 FIPS 140-3.
+configureFIPS.fipsNotEnabled=FIPS 140-3 nie jest ju\u017c w\u0142\u0105czony w pliku {0}.
+
+configureFIPS.restartServer=Uruchom ponownie serwer {0}, aby zastosowa\u0107 zmian\u0119.
+configureFIPS.restartClient=Uruchom ponownie klienta {0}, aby zastosowa\u0107 zmian\u0119.
+configureFIPS.restart=Uruchom ponownie serwery i klient\u00f3w, aby zastosowa\u0107 zmian\u0119.

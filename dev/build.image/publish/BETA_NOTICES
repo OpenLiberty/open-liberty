@@ -136,7 +136,7 @@ CDI Language Model [jakarta.enterprise.lang-model],
 CDI Lite Extension Translator [weld-lite-extension-translator],
 ClassMate [classmate], Commons BeanUtils [commons-beanutils],
 Commons Digester [commons-digester], Commons Lang [commons-lang],
-Commons Logging [commons-logging], Cryptacular Library [cryptacular],
+Commons Logging [commons-logging], commons-weaver-privilizer, Cryptacular Library [cryptacular],
 Eclipse MicroProfile Reactive Streams Operators API [microprofile-reactive-streams-operators-api],
 Ehcache [ehcache], Ehcache Core [ehcache-core], Failsafe [failsafe],
 FindBugs-jsr305 [jsr305],
@@ -372,8 +372,7 @@ Zipkin Sender: OkHttp 3 [zipkin-sender-okhttp3], acme4j Client [acme4j-client],
 acme4j Utils [acme4j-utils], asyncutil,
 carbon-components [carbon-components-10.50.0-rc.0.min.js],
 carbon-components [carbon-components-10.44.0.tgz],
-classfilewriter [jboss-classfilewriter], commons-weaver-privilizer,
-dompurify [dompurify-3.2.6.tgz],
+classfilewriter [jboss-classfilewriter], dompurify [dompurify-3.2.6.tgz],
 error-prone annotations [error_prone_annotations], fastinfoset [FastInfoset],
 geronimo-annotation_1.1_spec, geronimo-ejb_3.1_spec-alt,
 geronimo-interceptor_1.1_spec, geronimo-validation,
@@ -718,7 +717,7 @@ Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2007 Eclipse
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2024 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
-Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
+Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
 Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2020 Oracle and/or its affiliates)
 Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates)
@@ -751,6 +750,7 @@ RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO) (Copyr
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project (ASAMI Tomoharu, Daisuke) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
+sha.js [sha.js-2.4.12.tgz] (Copyright 1998-2009 Paul Johnston) (Copyright 2013-2018 sha.js contributors)
 TXW2 Runtime [txw2] (Copyright 2005-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 TXW2 Runtime [txw2] (Copyright 2005-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 TXW2 Runtime [txw2] (Copyright 2005-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
@@ -783,7 +783,6 @@ org.eclipse.persistence.core(Copyright Not Found)
 ramda-adjunct [ramda-adjunct-5.1.0.tgz] (Copyright 2017-2019 Vladim)
 redux-immutable [redux-immutable-4.0.0.tgz] (Copyright 2016 Gajus Kuizinas (http://gajus.com/))
 relaxngDatatype (Copyright 2001 Thai Open Source Software Center Ltd)
-sha.js [sha.js-2.4.12.tgz] (Copyright 1998-2009 Paul Johnston) (Copyright 2013-2018 sha.js contributors)
 source-map [source-map-0.5.7.tgz] (Copyright 2009-2011 Mozilla Foundation and contributors)
 sprintf-js [sprintf-js-1.0.3.tgz] (Copyright 2014 Alexandru Marasteanu)
 warning [warning-3.0.0.tgz] (Copyright 2013-2015 Facebook, Inc)
@@ -1010,6 +1009,7 @@ Jakarta WebSocket - Client API [jakarta.websocket-client-api] https://www.eclips
 Jakarta WebSocket - Server API [jakarta.websocket-api] https://www.eclipse.org
 Java(TM) API for JSON Processing [jboss-json-api_1.0_spec] http://www.jboss.org
 Meta Type [org.eclipse.equinox.metatype] http://www.eclipse.org/
+OSGi System Bundle [org.eclipse.osgi] https://github.com/eclipse-equinox/equinox/
 OSGi System Bundle [org.eclipse.osgi] https://projects.eclipse.org/projects/eclipse.equinox
 OSGi resource locator [osgi-resource-locator] https://www.eclipse.org
 RESTEasy Tracing API [resteasy-tracing-api] https://resteasy.github.io/
@@ -1028,6 +1028,7 @@ javax.ws.rs-api [jakarta.ws.rs-api] https://www.eclipse.org/org/foundation/
 javax.ws.rs-api https://www.eclipse.org/org/foundation/
 jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] http://www.jboss.org
 jboss-jakarta-jaxrs-api_spec [jboss-jaxrs-api_2.1_spec] http://www.jboss.org
+open-libertygm-25.0.0.10 [open-liberty] https://github.com/OpenLiberty/open-liberty.git
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
 org.eclipse.yasson [yasson] http://www.oracle.com/
 
@@ -1650,8 +1651,6 @@ copy-to-clipboard [copy-to-clipboard-3.3.3.tgz] (Copyright 2017 sudodoki <smd.de
 core-js [core-js-3.45.1.tgz] (Copyright 2014-2025 Denis Pushkarev)
 core-js-pure [core-js-pure-3.45.1.tgz] (Copyright 2014-2025 Denis Pushkarev)
 core-util-is [core-util-is-1.0.3.tgz] (Copyright Node.js contributors)
-crypto-js [enc-base64-min-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
-crypto-js [sha256-3.1.2.js] (Copyright 2009-2013 by Jeff Mott)
 crypto-random-string [crypto-random-string-2.0.0.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 css.escape [css.escape-1.5.1.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)
 dateformat [dateformat-2.2.0.tgz] (Copyright 2007-2009 Steven Levithan) (Copyright 2007-2009 Steven Levithan <stevenlevithan.com>)
@@ -1804,7 +1803,7 @@ multipipe [multipipe-0.1.2.tgz] (Copyright 2014 Julian Gruber <julian@juliangrub
 neotraverse [neotraverse-0.6.18.tgz] (Copyright 2010 James Halliday and contributors)
 node-abort-controller [node-abort-controller-3.1.1.tgz] (Copyright 2019 Steve Faulkner)
 node-addon-api [node-addon-api-8.5.0.tgz] (Copyright 2017 Node.js API collaborators" (https://github.com/nodejs/node-addon-api#collaborators))
-node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy Wärting)
+node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy WÃ¤rting)
 node-fetch-commonjs [node-fetch-commonjs-3.3.2.tgz] (Copyright 2016-2020 Node Fetch Team)
 node-gyp-build [node-gyp-build-4.8.4.tgz] (Copyright 2017 Mathias Buus)
 normalize-path [normalize-path-2.1.1.tgz] (Copyright 2014-2017 Jon Schlinkert) (Copyright 2017 Jon Schlinkert" (https://github.com/jonschlinkert)) (Copyright 2017 [Jon Schlinkert](https://github.com/jonschlinkert))
@@ -1875,7 +1874,7 @@ sha.js [sha.js-2.4.12.tgz] (Copyright 1998-2009 Paul Johnston) (Copyright 2013-2
 simple-swizzle [simple-swizzle-0.2.2.tgz] (Copyright 2015 Josh Junon)
 space-separated-tokens [space-separated-tokens-1.1.5.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
 sparkles [sparkles-1.0.1.tgz] (Copyright 2014 Blaine Bublitz <blaine.bublitz@gmail.com> and Eric Schoffstall <yo@contra.io>)
-stack-trace [stack-trace-0.0.10.tgz] (Copyright 2011 Felix Geisendörfer (felix@debuggable.com))
+stack-trace [stack-trace-0.0.10.tgz] (Copyright 2011 Felix GeisendÃ¶rfer (felix@debuggable.com))
 stream-browserify [stream-browserify-3.0.0.tgz] (Copyright James Halliday)
 stream-shift [stream-shift-1.0.3.tgz] (Copyright 2016 Mathias Buus)
 string-width [string-width-4.2.3.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))

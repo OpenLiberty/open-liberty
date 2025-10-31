@@ -152,3 +152,32 @@ tlsProfiler.option-key.file=\ \ \ \ --file
 tlsProfiler.option-desc.file=\tVoliteln\u00e9. V\u00fdsledek se zap\u00ed\u0161e do ur\u010den\u00e9ho souboru \n\tnam\u00edsto obrazovky konzoly.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tZahr\u0148te dal\u0161\u00ed informace o nezabezpe\u010den\u00fdch protokolech.
+
+# -------- CONFIGURE FIPS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\# 
+configureFIPS.desc=\tKonfigurace FIPS 140-3 na z\u00e1klad\u011b instalace Javy nakonfigurovan\u00e9 pomoc\u00ed JAVA_HOME, JRE_HOME nebo WLP_DEFAULT_JAVA_HOME, v tomto po\u0159ad\u00ed. Pokud nebyla nakonfigurov\u00e1na \u017e\u00e1dn\u00e1, je nakonfigurov\u00e1n syst\u00e9m FIPS 140-3 na z\u00e1klad\u011b JVM pou\u017eit\u00e9ho ke spu\u0161t\u011bn\u00ed p\u0159\u00edkazu securityUtility. P\u0159\u00edkaz nastav\u00ed FIPS 140-3 pro IBM Semeru Runtimes nebo IBM SDK, pop\u0159 vr\u00e1t\u00ed chybu, pokud se nepoda\u0159ilo ur\u010dit ani jedno z toho.\n\n\tPro IBM Semeru Runtimes: Vytvo\u0159\u00ed soubor obsahuj\u00edc\u00ed vlastn\u00ed profil FIPS 140-3, kter\u00fd bude pou\u017eit va\u0161\u00ed aplikaci, kter\u00fd roz\u0161i\u0159uje profil Liberty FIPS140-3-Liberty, kter\u00fd roz\u0161i\u0159uje profil IBM Semeru Runtimes FIPS140-3-Strongly-Enforced profil. Vytv\u00e1\u0159\u00ed nebo aktualizuje tak\u00e9 str\u00e1nky default.env, server.env, pop\u0159 client.env soubor, \
+    kter\u00fd povol\u00ed FIPS 140-3 nastaven\u00edm parametru ENABLE_FIPS140_3 prom\u011bnn\u00e9 prost\u0159ed\u00ed na cestu k souboru vlastn\u00edho profilu.\n\n\tPro IBM SDK: Vytvo\u0159\u00ed nebo aktualizuje soubor default.env, server.env nebo client.env na adresu povolit FIPS 140-3 nastaven\u00edm prost\u0159ed\u00ed ENABLE_FIPS140_3 na hodnotu true.
+
+configureFIPS.usage.options=\t{0} configureFIPS [mo\u017enosti]
+
+configureFIPS.option-key.1.server=\ \ \ \ --server =jm\u00e9no
+
+configureFIPS.option-desc.1.server=\tServer, pro kter\u00fd se konfiguruje FIPS 140-3. Pokud tato hodnota nen\u00ed a nen\u00ed zad\u00e1n \u017e\u00e1dn\u00fd klient, pak je nakonfigurov\u00e1n syst\u00e9m FIPS 140-3 pro v\u0161echny klienty, servery a p\u0159\u00edkazy.
+
+configureFIPS.option-key.2.client=\ \ \ \ --client =jm\u00e9no
+
+configureFIPS.option-desc.2.client=\tKlient, pro kter\u00e9ho se konfiguruje FIPS 140-3. Pokud tato hodnota nen\u00ed a nen\u00ed zad\u00e1n \u017e\u00e1dn\u00fd server, pak je nakonfigurov\u00e1n syst\u00e9m FIPS 140-3 pro v\u0161echny klienty, servery a p\u0159\u00edkazy.
+
+configureFIPS.option-key.3.customProfileFile=\ \ \ \ --customProfileFile=name
+
+configureFIPS.option-desc.3.customProfileFile=\tSoubor, do kter\u00e9ho se zap\u00ed\u0161e vlastn\u00ed profil IBM Semeru Runtimes FIPS 140-3.\n\tPokud tato hodnota nen\u00ed uvedena, vytvo\u0159\u00ed se soubor s n\u00e1zvem FIPS140-3-Liberty-Application.properties v adres\u00e1\u0159i etc instalace WLP. Pokud byla pou\u017eita mo\u017enost server nebo klient, bude je soubor vytvo\u0159en v adres\u00e1\u0159i security/resources pro zadan\u00fd adres\u00e1\u0159 serveru nebo klienta.\n\n\tN\u00e1zev souboru bez p\u0159\u00edpony se pou\u017eije k vytvo\u0159en\u00ed souboru vlastn\u00ed n\u00e1zev profilu; roz\u0161i\u0159uje profil Liberty FIPS140-3-Liberty.\n\tN\u00e1zev souboru mus\u00ed obsahovat pouze alfanumerick\u00e9 znaky, poml\u010dky (-), podtr\u017e\u00edtka (_) a te\u010dky (.). Z\u00e1kladn\u00ed n\u00e1zev souboru nesm\u00ed b\u00fdt FIPS140-3-Liberty.\n\n\tPomoc\u00ed t\u00e9to mo\u017enosti lze zadat v\u00edce soubor\u016f pomoc\u00ed p\u0159\u00edkazu odd\u011blova\u010d\
+    e cest. V syst\u00e9mu Windows je odd\u011blova\u010dem cesty st\u0159edn\u00edk (;). V syst\u00e9mech Unix je odd\u011blova\u010dem cesty dvojte\u010dka (:). Ka\u017ed\u00fd vlastn\u00ed profil\u016f se navz\u00e1jem roz\u0161i\u0159uj\u00ed v po\u0159ad\u00ed, v jak\u00e9m jsou zad\u00e1ny.
+
+configureFIPS.option-key.4.disable=\ \ \ \ --disable
+
+configureFIPS.option-desc.4.disable=\tZak\u00e1zat FIPS 140-3 nastaven\u00edm prost\u0159ed\u00ed ENABLE_FIPS140_3 na hodnotu false. Tuto mo\u017enost lze pou\u017e\u00edt u klienta i serveru k zad\u00e1n\u00ed klienta nebo serveru, kter\u00fd m\u00e1 zak\u00e1zat FIPS 140-3.\n\tV opa\u010dn\u00e9m p\u0159\u00edpad\u011b zak\u00e1\u017ee FIPS 140-3 pro v\u0161echny klienty, servery a po\u010d\u00edta\u010de p\u0159\u00edkazy, s v\u00fdjimkou t\u011bch klient\u016f a server\u016f, kter\u00e9 byly jednotliv\u011b povoleny.

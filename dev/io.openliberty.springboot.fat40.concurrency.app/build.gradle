@@ -12,35 +12,21 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '4.0.0-M1'
+  id 'org.springframework.boot' version '4.0.0-RC1'
+  id 'war'
+  id 'io.spring.dependency-management' version '1.1.7'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
 
-apply plugin: 'war'
-apply plugin: 'io.spring.dependency-management'
-
 group = 'com.ibm.ws.example.spring'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 17
+java {
+  sourceCompatibility = 17
+}
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
   implementation('org.springframework.boot:spring-boot-starter-web')
-  // Should use spring-boot-starter-tomcat as provideCompile, but gradle plugin
-  // is putting too much in lib-provided: see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/409
-  // providedCompile('org.springframework.boot:spring-boot-starter-tomcat')
-  providedRuntime('org.apache.tomcat.embed:tomcat-embed-core')
-  providedRuntime('org.apache.tomcat.embed:tomcat-embed-el')
-  providedRuntime('org.apache.tomcat.embed:tomcat-embed-websocket')
-}
-
-bootJar {
-  duplicatesStrategy 'warn'
-}
-
-// Disable jar because it would need a dependency on ':com.ibm.ws.springboot.fat20.war.app:module:compileTestJava' and 
-// ':com.ibm.ws.springboot.fat20.war.app:module:processTestResources' which seems silly since we don't actually need a jar for this project.  We only need the war.
-jar {
-  enabled = false
+  providedRuntime('org.springframework.boot:spring-boot-tomcat-runtime')
 }

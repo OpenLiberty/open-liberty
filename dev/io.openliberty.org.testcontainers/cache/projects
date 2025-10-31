@@ -209,6 +209,7 @@ io.openliberty.data.internal_fat_jpa_hibernate
 io.openliberty.data.internal_fat_nosql
 io.openliberty.http.monitor_fat
 io.openliberty.jakarta.data.1.0_fat_tck
+io.openliberty.jakarta.data.1.1_fat_tck
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan
 io.openliberty.microprofile.health.3.1.internal_fat
@@ -221,3 +222,4 @@ io.openliberty.microprofile.telemetry.internal.monitor_fat
 io.openliberty.org.apache.myfaces.4.0_fat
 io.openliberty.org.apache.myfaces.4.1_fat
 io.openliberty.springboot.fat30_fat
+io.openliberty.springboot.fat40_fat

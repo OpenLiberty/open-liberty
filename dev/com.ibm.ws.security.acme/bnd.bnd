@@ -46,8 +46,8 @@ Private-Package: \
 
 Include-Resource: \
     OSGI-INF=resources/OSGI-INF,\
-    @${repo;org.shredzone.acme4j:acme4j-client;2.7;EXACT},\
-    @${repo;org.shredzone.acme4j:acme4j-utils;2.7;EXACT},\
+    @\${repo;org.shredzone.acme4j:acme4j-client;2.7;EXACT},\
+    @\${repo;org.shredzone.acme4j:acme4j-utils;2.7;EXACT},\
     org=${bin}/org
 
 instrument.classesExcludes: com/ibm/ws/security/acme/resources/*.class

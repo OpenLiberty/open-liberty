@@ -27,7 +27,7 @@ public class McpCdiExtensionMetadata implements CDIExtensionMetadata {
 
     @Override
     public Set<Class<?>> getBeanClasses() {
-        return Set.of(McpConnectionTracker.class);
+        return Set.of(McpConnectionTracker.class, McpSessionStore.class);
     }
 
 }

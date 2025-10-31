@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -34,7 +35,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
-import io.openliberty.mcp.internal.fat.utils.HttpTestUtils;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 @RunWith(FATRunner.class)
 public class CancellationTest extends FATServletClient {
@@ -42,6 +43,9 @@ public class CancellationTest extends FATServletClient {
     @Server("mcp-server")
     public static LibertyServer server;
     private static ExecutorService executor;
+
+    @Rule
+    public McpClient client = new McpClient(server, "/cancellationTest");
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -86,7 +90,7 @@ public class CancellationTest extends FATServletClient {
                                 """;
                 //make sure this tread executes first
                 latch.countDown();
-                return HttpTestUtils.callMCP(server, "/cancellationTest", request);
+                return client.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -110,7 +114,7 @@ public class CancellationTest extends FATServletClient {
         // Call AwaitToolServlet to wait for the tool to start running. Adds path param "strId" to specify which countdown latch to use
         new HttpRequest(server, "/cancellationTest/awaitTool/strId").run(String.class);
 
-        HttpTestUtils.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
+        client.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
 
         String response = future.get(10, TimeUnit.SECONDS);
 
@@ -142,7 +146,7 @@ public class CancellationTest extends FATServletClient {
                                 """;
                 //make sure this tread executes first
                 latch.countDown();
-                return HttpTestUtils.callMCP(server, "/cancellationTest", request);
+                return client.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -166,7 +170,7 @@ public class CancellationTest extends FATServletClient {
         // Call AwaitToolServlet to wait for the tool to start running. Adds path param "numId" to specify which countdown latch to use
         new HttpRequest(server, "/cancellationTest/awaitTool/numId").run(String.class);
 
-        HttpTestUtils.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
+        client.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
 
         String response = future.get(10, TimeUnit.SECONDS);
 
@@ -191,7 +195,7 @@ public class CancellationTest extends FATServletClient {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, "/cancellationTest", request);
+        String response = client.callMCP(request);
 
         String expectedResponseString = """
                         {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text", "text": "If this String is returned, then the tool was not cancelled"}],"isError":false}}

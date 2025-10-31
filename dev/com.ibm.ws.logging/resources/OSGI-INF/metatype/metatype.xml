@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2022 IBM Corporation and others.
+    Copyright (c) 2011, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -145,6 +145,22 @@
         <AD name="%max.ffdc.age" description="%max.ffdc.age.desc" 
             ibm:variable="com.ibm.ws.logging.max.ffdc.age"
             id="maxFfdcAge" required="false" type="String" ibm:type="duration(m)" default="-1">
+        </AD>
+        
+        <AD name="%throttle.max.messages.per.window" description="%throttle.max.messages.per.window.desc" 
+            ibm:variable="com.ibm.ws.logging.throttle.max.messages.per.window"
+            id="throttleMaxMessagesPerWindow" required="false" type="Integer" min="0" default="1000" ibm:beta="true">
+        </AD>
+        
+        <AD name="%throttle.type" description="%throttle.type.desc" 
+            ibm:variable="com.ibm.ws.logging.throttle.type"
+            id="throttleType" required="false" type="String" default="messageID" ibm:beta="true">
+            <Option label="%throttle.type.messageid" value="messageID"/>
+            <Option label="%throttle.type.message" value="message"/>
+        </AD>
+        
+        <AD name="internal" description="internal use only" 
+            id="throttleMapSize" required="false" type="Integer" min="100" default="500" ibm:beta="true">
         </AD>
 
         <AD name="internal" description="internal use only" 

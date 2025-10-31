@@ -208,7 +208,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         }
 
         writeByteArray(output, getVersionValue().getByteArray());
-
     }
 
     protected byte[] readByteArray(ObjectInput input) throws IOException {
@@ -216,7 +215,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         byte[] data = new byte[length];
         input.readFully(data);
         return data;
-
     }
 
     protected void writeByteArray(ObjectOutput output, byte[] data) throws IOException {
@@ -227,7 +225,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     @Override
     public void setDebugContext(Object o) {
         throw new UnsupportedOperationException("setDebugContext unsupported in Netty context");
-
     }
 
     @Override
@@ -289,67 +286,56 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     @Override
     public void appendHeader(byte[] header, byte[] value) {
         appendHeader(new String(header, StandardCharsets.UTF_8), new String(value, StandardCharsets.UTF_8));
-
     }
 
     @Override
     public void appendHeader(byte[] header, byte[] value, int offset, int length) {
         throw new UnsupportedOperationException("appendHeader(2) not supported in Netty context");
-
     }
 
     @Override
     public void appendHeader(byte[] header, String value) {
         appendHeader(new String(header, StandardCharsets.UTF_8), value);
-
     }
 
     @Override
     public void appendHeader(HeaderKeys header, byte[] value) {
         appendHeader(header, new String(value, StandardCharsets.UTF_8));
-
     }
 
     @Override
     public void appendHeader(HeaderKeys header, byte[] value, int offset, int length) {
         throw new UnsupportedOperationException("appendHeader(5) not supported in Netty context");
-
     }
 
     @Override
     public void appendHeader(HeaderKeys header, String value) {
         appendHeader(header.getName(), value);
-
     }
 
     @Override
     public void appendHeader(String header, byte[] value) {
         appendHeader(header, new String(value, StandardCharsets.UTF_8));
-
     }
 
     @Override
     public void appendHeader(String header, byte[] value, int offset, int length) {
         throw new UnsupportedOperationException("appendHeader(8) not supported in Netty context");
-
     }
 
     @Override
     public void appendHeader(String header, String value) {
         headers.add(header, value);
-
     }
 
     @Override
     public int getNumberOfHeaderInstances(String header) {
-
         return headers.getAll(header).size();
     }
 
     @Override
     public boolean containsHeader(byte[] header) {
         return containsHeader(new String(header, StandardCharsets.UTF_8));
-
     }
 
     @Override
@@ -365,7 +351,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     @Override
     public int getNumberOfHeaderInstances(byte[] header) {
         return this.getNumberOfHeaderInstances(new String(header, StandardCharsets.UTF_8));
-
     }
 
     @Override
@@ -376,116 +361,98 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     @Override
     public void removeHeader(byte[] header) {
         removeHeader(new String(header, StandardCharsets.UTF_8));
-
     }
 
     @Override
     public void removeHeader(byte[] header, int instance) {
-        //TODO
 
     }
 
     @Override
     public void removeHeader(HeaderKeys header) {
         removeHeader(header.getName());
-
     }
 
     @Override
     public void removeHeader(HeaderKeys header, int instance) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void removeHeader(String header) {
         headers.remove(header);
-
     }
 
     @Override
     public void removeHeader(String header, int instance) {
-        //TODO
 
     }
 
     @Override
     public void removeAllHeaders() {
         headers.clear();
-
     }
 
     @Override
     public void setHeader(byte[] header, byte[] value) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setHeader(byte[] header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setHeader(byte[] header, String value) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setHeader(HeaderKeys header, byte[] value) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setHeader(HeaderKeys header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setHeader(HeaderKeys header, String value) {
         setHeader(header.getName(), value);
-
     }
 
     @Override
     public HeaderField setHeaderIfAbsent(HeaderKeys header, String value) {
-
         Objects.requireNonNull(header);
         Objects.requireNonNull(value);
 
         if (!headers.contains(header.getName())) {
             headers.set(header.getName(), value);
         }
-        //TODO HeaderField not used for netty, can we avoid creating an object here?
+
         return null;
     }
 
     @Override
     public void setHeader(String header, byte[] value) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setHeader(String header, byte[] value, int offset, int length) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setHeader(String header, String value) {
         headers.set(header, value);
-
     }
 
     @Override
     public void setLimitOnNumberOfHeaders(int number) {
         this.limitOnNumberOfHeaders = number;
-
     }
 
     @Override
@@ -496,7 +463,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     @Override
     public void setLimitOfTokenSize(int size) {
         this.limitOfTokenSize = size;
-
     }
 
     @Override
@@ -695,7 +661,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
   
     private void parseAllCookies(CookieCacheData cache, HttpHeaderKeys header) {
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Parsing all cookies for " + header.getName());
         }
@@ -717,11 +682,8 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public List<String> getAllCookieValues(String name) {
-        // TODO Auto-generated method stub
         return null;
     }
-
-    
 
     @Override
     public boolean isIncoming() {
@@ -735,7 +697,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     @Override
     public boolean isCommitted() {
         return this.committed;
-
     }
 
     @Override
@@ -749,16 +710,13 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void clear() {
-
         cookieCacheMap.clear();
         this.committed = false;
-
     }
 
     @Override
     public void destroy() {
         clear();
-
     }
 
     @Override
@@ -795,31 +753,25 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         if (HttpUtil.isTransferEncodingChunked(message))
             HttpUtil.setTransferEncodingChunked(message, false);
         HttpUtil.setContentLength(message, length);
-
     }
 
     @Override
     public long getContentLength() {
-
         return HttpUtil.isContentLengthSet(message) ? HttpUtil.getContentLength(message) : HttpGenerics.NOT_SET;
-
     }
 
     @Override
     public void setConnection(ConnectionValues value) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setConnection(ConnectionValues[] values) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public ConnectionValues[] getConnection() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -835,37 +787,31 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setContentEncoding(ContentEncodingValues value) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setContentEncoding(ContentEncodingValues[] values) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public ContentEncodingValues[] getContentEncoding() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setTransferEncoding(TransferEncodingValues value) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Tried setting transfer encoding in Netty!");
     }
 
     @Override
     public void setTransferEncoding(TransferEncodingValues[] values) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Tried setting transfer encoding in Netty!");
     }
 
     @Override
     public TransferEncodingValues[] getTransferEncoding() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -876,19 +822,16 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setCurrentDate() {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setExpect(ExpectValues value) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public byte[] getExpect() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -904,25 +847,21 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setMIMEType(String type) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public Charset getCharset() {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public void setCharset(Charset set) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public HttpTrailers getTrailers() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -944,37 +883,29 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setVersion(VersionValues version) {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setVersion(String version) throws UnsupportedProtocolVersionException {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
-        // TODO Auto-generated method stub
 
     }
 
     @Override
     public HttpTrailersImpl createTrailers() {
-        // TODO Auto-generated method stub
         return null;
     }
 
-    
-
     public void processCookies() {
-
         if(MessageType.REQUEST == messageType){
             marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_COOKIE));
             marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_COOKIE2));
         }
-
         else if(MessageType.RESPONSE == messageType){
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Checking to see if we should mark the cookie cache as dirty - samesite is " + config.useSameSiteConfig()
@@ -996,20 +927,13 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
                     }
                     getCookieCache(HttpHeaderKeys.HDR_SET_COOKIE2).setIsDirty(true);
                 }
-
             }
             marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_SET_COOKIE));
             marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_SET_COOKIE2));
-
         }
-        
-
-        
-
     }
 
     protected void marshallCookieCache(CookieCacheData cache) {
-
         if (cache == null || !cache.isDirty()){
             return;
         }
@@ -1022,7 +946,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     }
 
     private void marshallCookies(List<HttpCookie> list, HeaderKeys header) {
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "marshallCookies");
         }
@@ -1090,7 +1013,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
      *  -> RESPONSE: When the transport acts as a client, parse "Set-Cookie" headers
      */
     private boolean shouldParseCookieHeader(HttpHeaderKeys header){
-
         if(header == HttpHeaderKeys.HDR_COOKIE || header == HttpHeaderKeys.HDR_COOKIE2){
             return (messageType == MessageType.REQUEST && isIncoming());
         }
@@ -1100,7 +1022,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     }
 
     protected boolean cookieCacheExists(HttpHeaderKeys header) {
-
         return (cookieCacheMap.containsKey(header));
 
     }
@@ -1136,5 +1057,4 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         CookieCacheData cache = getCookieCache(header);
         cache.getAllCookies(name, list);
     }
-    
 }

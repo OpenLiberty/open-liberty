@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ Export-Package: jakarta.persistence.*; jpa=3.2; version="3.2.0"; -split-package:
 Private-Package: io.openliberty.jakarta.persistence.internal
 
 -includeresource: \
-  @${repo;jakarta.persistence:jakarta.persistence-api;3.2.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @\${repo;jakarta.persistence:jakarta.persistence-api;3.2.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
   dep1;groupId=jakarta.persistence;artifactId=jakarta.persistence-api;version=3.2.0;scope=runtime
