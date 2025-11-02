@@ -312,7 +312,7 @@ public class BaseTraceService implements TrService {
     protected final static int BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD = ThreadLocalByteArrayOutputStream.getByteArrayOutputThreshold();
     public static boolean isStackTraceSingleEntryEnabled = false;
 
-    private static Boolean isBetaEdition = null;
+    private static volatile Boolean isBetaEdition = null;
     private static volatile boolean issuedBetaMessageAccess = false;
 
     /**
@@ -373,14 +373,17 @@ public class BaseTraceService implements TrService {
         issuedBetaMessageAccess = true;
 
         try {
-            if (isBetaEdition == null) {
-                if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
-                    Tr.info(tc, "BETA: A beta method has been invoked for the class BaseTraceService for the first time.");
-                    isBetaEdition = true;
-                } else {
-                    isBetaEdition = false;
+            synchronized (BaseTraceService.class) {
+                if (isBetaEdition == null) {
+                    if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+                        Tr.info(tc, "BETA: A beta method has been invoked for the class BaseTraceService for the first time.");
+                        isBetaEdition = true;
+                    } else {
+                        isBetaEdition = false;
+                    }
                 }
             }
+
             return isBetaEdition;
         } finally {
             issuedBetaMessageAccess = false;
