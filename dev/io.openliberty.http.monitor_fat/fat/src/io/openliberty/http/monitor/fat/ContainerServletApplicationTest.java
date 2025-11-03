@@ -71,7 +71,6 @@ public class ContainerServletApplicationTest extends BaseTestClass {
 
     public static TcpDumpContainer tcpDumpContainer = new TcpDumpContainer(container)
                     .withPrivilegedMode(true)
-                    .withDumpFileDestination("mytcpdump.dump")
                     .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "tcpdump"));
 
     @ClassRule
