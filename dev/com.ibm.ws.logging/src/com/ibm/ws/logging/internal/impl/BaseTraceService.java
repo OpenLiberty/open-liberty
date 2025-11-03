@@ -366,6 +366,7 @@ public class BaseTraceService implements TrService {
         if (isBetaEdition != null)
             return isBetaEdition;
 
+        //To prevent a StackOverflow error, we need to ensure only one thread runs the beta check block, otherwise the tr.info will be stuck in an infinite loop.
         if (betaCheckInitializing.compareAndSet(false, true)) {
             try {
                 if (isBetaEdition == null) {
