@@ -33,8 +33,6 @@ import java.util.concurrent.CompletionStage;
 
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
-import io.openliberty.mcp.encoders.ContentEncoder;
-import io.openliberty.mcp.encoders.ToolResponseEncoder;
 import io.openliberty.mcp.tools.ToolResponse;
 
 /**
@@ -49,9 +47,6 @@ import io.openliberty.mcp.tools.ToolResponse;
  * content object.</li>
  * <li>If it returns a {@link List} of {@link Content} implementations or strings then the response is
  * {@code success} and contains a list of relevant content objects.</li>
- * <li>If it returns any other type {@code X} or {@code List<X>} then {@code X} is encoded first using the {@link ToolResponseEncoder}
- * and {@link ContentEncoder} API (unless {@link Tool#structuredContent()} is set to {@code true}), afterwards the
- * rules above apply.</li>
  * <li>It may also return a {@link CompletionStage} that wraps any of the type mentioned above.</li>
  * </ul>
  *
@@ -60,8 +55,6 @@ import io.openliberty.mcp.tools.ToolResponse;
  *
  * @see ToolResponse
  * @see ToolArg
- * @see ToolResponseEncoder
- * @see ContentEncoder
  */
 @Retention(RUNTIME)
 @Target(METHOD)
@@ -108,18 +101,6 @@ public @interface Tool {
      * @see #outputSchema()
      */
     boolean structuredContent() default false;
-
-    OutputSchema outputSchema() default @OutputSchema;
-
-    @Retention(RUNTIME)
-    @Target(ElementType.ANNOTATION_TYPE)
-    public @interface OutputSchema {
-
-        Class<?> from() default OutputSchema.class;
-
-        Class<? extends OutputSchemaGenerator> generator() default OutputSchemaGenerator.class;
-
-    }
 
     @Retention(RUNTIME)
     @Target(ElementType.ANNOTATION_TYPE)
