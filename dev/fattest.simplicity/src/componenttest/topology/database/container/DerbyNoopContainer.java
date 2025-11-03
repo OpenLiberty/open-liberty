@@ -1,16 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.topology.database.container;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
 import org.testcontainers.utility.DockerImageName;
@@ -24,6 +27,13 @@ import org.testcontainers.utility.DockerImageName;
  *
  */
 class DerbyNoopContainer extends JdbcDatabaseContainer<DerbyNoopContainer> {
+    @SuppressWarnings("serial")
+    public static final Map<String, String> supportingLibs = new HashMap<String, String>() {
+        {
+            put("derbyshared.jar", "lib0.jar");
+            put("derbytools.jar", "lib1.jar");
+        }
+    };
 
     public DerbyNoopContainer(DockerImageName image) {
         super("");

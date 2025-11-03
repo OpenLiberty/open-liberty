@@ -15,7 +15,11 @@ package componenttest.topology.database.container;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -39,32 +43,38 @@ import com.ibm.websphere.simplicity.log.Log;
 @SuppressWarnings("rawtypes")
 public enum DatabaseContainerType {
     DB2("jcc.jar", //
+        Collections.emptyMap(), //
         Db2Container.class.getCanonicalName(), //
         Properties_db2_jcc.class, //
         DockerImageName.parse("icr.io/db2_community/db2:12.1.1.0")//
                         .asCompatibleSubstituteFor("icr.io/db2_community/db2")),
     Derby("derby.jar", //
+          DerbyNoopContainer.supportingLibs, //
           DerbyNoopContainer.class.getCanonicalName(), //
           Properties_derby_embedded.class, //
           DockerImageName.parse(""), //
           "DerbyEmbedded"),
     DerbyClient("derbyclient.jar", //
+                DerbyClientContainer.supportingLibs, //
                 DerbyClientContainer.class.getCanonicalName(), //
                 Properties_derby_client.class, //
                 DockerImageName.parse("")),
     Oracle("ojdbc8.jar", //
+           Collections.emptyMap(), //
            OracleContainer.class.getCanonicalName(), //
            Properties_oracle.class, //
            DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23-full-faststart")//
                            .asCompatibleSubstituteFor("gvenzl/oracle-free"), //
            "OracleDB"),
     Postgres("postgresql.jar", //
+             Collections.emptyMap(), //
              PostgreSQLContainer.class.getCanonicalName(), //
              Properties_postgresql.class, //
              DockerImageName.parse("public.ecr.aws/docker/library/postgres:17-alpine")//
                              .asCompatibleSubstituteFor("postgres"), //
              "Postgre", "PostgreSQL"),
     SQLServer("mssql-jdbc.jar", //
+              Collections.emptyMap(), //
               MSSQLServerContainer.class.getCanonicalName(), //
               Properties_microsoft_sqlserver.class, //
               DockerImageName.parse("mcr.microsoft.com/mssql/server:2022-latest")//
@@ -72,15 +82,18 @@ public enum DatabaseContainerType {
               "MSSQLServer");
 
     private final String driverName;
+    private final Map<String, String> libraries;
     private final Class<DataSourceProperties> dsPropsClass;
     private final Class<? extends JdbcDatabaseContainer> containerClass;
     private final DockerImageName imageName;
     private final List<String> aliases;
 
     @SuppressWarnings("unchecked")
-    DatabaseContainerType(final String driverName, final String containerClassName, final Class dsPropsClass,
+    DatabaseContainerType(final String driverName, final Map<String, String> libraries,
+                          final String containerClassName, final Class dsPropsClass,
                           final DockerImageName imageName, final String... aliases) {
         this.driverName = driverName;
+        this.libraries = libraries;
 
         //Use reflection to get classes at runtime.
         Class containerClass = null;
@@ -107,6 +120,16 @@ public enum DatabaseContainerType {
     }
 
     /**
+     * Returns the supporting libraries for this testcontainer type.
+     * Example: 'derbytools.jar'
+     *
+     * @return Set - of support libraries
+     */
+    public Set<String> getLibraryNames() {
+        return this.libraries.keySet();
+    }
+
+    /**
      * Returns an anonymized JDBC Driver name for this testcontainer type.
      * Example: 'driver2.jar'
      *
@@ -114,6 +137,16 @@ public enum DatabaseContainerType {
      */
     public String getAnonymousDriverName() {
         return "driver" + this.ordinal() + ".jar";
+    }
+
+    /**
+     * Returns the anonymized supporting libraries for this testcontainer type.
+     * Example: 'lib2.jar'
+     *
+     * @return Set - of support libraries
+     */
+    public Set<String> getAnonymousLibraryNames() {
+        return this.libraries.values().stream().collect(Collectors.toSet());
     }
 
     /**

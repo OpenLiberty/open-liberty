@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Stream;
 
 import org.testcontainers.containers.Db2Container;
 import org.testcontainers.containers.JdbcDatabaseContainer;
@@ -201,16 +203,23 @@ public class DatabaseContainerFactory {
      * @return boolean - true if and only if driver exists. Otherwise, false.
      */
     private static boolean isJdbcDriverAvailable(DatabaseContainerType type) {
-        File temp = new File("publish/shared/resources/jdbc/" + type.getDriverName());
-        boolean result = temp.exists();
+        final AtomicBoolean result = new AtomicBoolean(true);
 
-        if (result) {
-            Log.info(c, "isJdbcDriverAvailable", "FOUND: " + type + " JDBC driver in location: " + temp.getAbsolutePath());
-        } else {
-            Log.warning(c, "MISSING: " + type + " JDBC driver not in location: " + temp.getAbsolutePath());
-        }
+        Stream.concat(Stream.of(type.getDriverName()), type.getLibraryNames().stream())
+                        .map(name -> new File("publish/shared/resources/jdbc/" + name))
+                        .forEach(file -> {
+                            boolean temp = file.exists();
 
-        return result;
+                            if (temp) {
+                                Log.info(c, "isJdbcDriverAvailable", "FOUND: " + type + " JDBC driver in location: " + file.getAbsolutePath());
+                            } else {
+                                Log.warning(c, "MISSING: " + type + " JDBC driver not in location: " + file.getAbsolutePath());
+                            }
+
+                            result.compareAndSet(true, temp); //equivalent to result &= temp
+                        });
+
+        return result.get();
     }
 
     /**

@@ -54,8 +54,10 @@ dependencies {
   jdbcDrivers 'com.ibm.db2:jcc:12.1.0.0',
 		'org.postgresql:postgresql:42.7.2',
 		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
-		'org.apache.derby:derbyclient:10.11.1.1',
-		'org.apache.derby:derby:10.11.1.1',
+		'org.apache.derby:derbyclient:10.17.1.0',
+		'org.apache.derby:derby:10.17.1.0',
+		'org.apache.derby:derbyshared:10.17.1.0',
+		'org.apache.derby:derbytools:10.17.1.0',
 		'com.oracle.database.jdbc:ojdbc8:23.4.0.24.05'
 
   jakartaTransformer 'commons-cli:commons-cli:1.5.0',
@@ -123,6 +125,22 @@ task copyJdbcDrivers(type: Copy) {
   rename 'ojdbc8.*.jar', 'ojdbc8.jar'
   rename 'postgresql.*.jar', 'postgresql.jar'
   rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
+  rename 'derbyshared-.*.jar', 'derbyshared.jar'
+  rename 'derbytools-.*.jar', 'derbytools.jar'
+}
+
+task copyAnonymousDrivers(type: Copy) {
+  shouldRunAfter jar
+  from configurations.jdbcDrivers
+  into new File(autoFvtDir, 'publish/shared/resources/anonymous')
+  rename 'jcc.*.jar', 'driver0.jar'
+  rename 'derby-.*.jar', 'driver1.jar'
+  rename 'derbyclient-.*.jar', 'driver2.jar'
+  rename 'ojdbc8.*.jar', 'driver3.jar'
+  rename 'postgresql.*.jar', 'driver4.jar'
+  rename 'mssql-jdbc.*.jar', 'driver5.jar'
+  rename 'derbyshared-.*.jar', 'lib0.jar'
+  rename 'derbytools-.*.jar', 'lib1.jar'
 }
 
 task copyFeatureBundles {
