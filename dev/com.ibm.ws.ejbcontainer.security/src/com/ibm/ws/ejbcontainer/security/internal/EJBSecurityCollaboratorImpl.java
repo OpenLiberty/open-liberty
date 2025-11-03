@@ -212,7 +212,6 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         }
         Subject originalInvokedSubject = invokedSubject;
         Subject originalCallerSubject = callerSubject;
-        EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(invokedSubject, callerSubject);
 //        SecurityCookieImpl securityCookie = new SecurityCookieImpl(invokedSubject, callerSubject);
         if (setUnauthenticatedSubjectIfNeeded(invokedSubject, callerSubject)) {
             invokedSubject = subjectManager.getInvocationSubject();
@@ -226,6 +225,8 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
         performDelegation(methodMetaData, subjectToAuthorize);
         subjectManager.setCallerSubject(subjectToAuthorize);
+        
+        EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
         syncToOSThread(ejbSecurityContext);
         SecurityCookieImpl securityCookie = new SecurityCookieImpl(originalInvokedSubject, originalCallerSubject, subjectManager.getInvocationSubject(), subjectToAuthorize);
         return securityCookie;
