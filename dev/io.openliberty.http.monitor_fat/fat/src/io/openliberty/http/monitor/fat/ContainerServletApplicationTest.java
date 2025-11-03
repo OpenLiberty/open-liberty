@@ -64,13 +64,20 @@ public class ContainerServletApplicationTest extends BaseTestClass {
                     .withFileFromFile("/etc/otelcol/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
                     .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector"))
                     .withExposedPorts(8888, 8889, 4317)
+                    .withPrivilegedMode(true)
                     .withNetwork(network)
                     .withNetworkAliases("otel-collector-metrics")
                     .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Begin running and processing data.*").withStartupTimeout(Duration.ofMinutes(1)));
 
+    public static TcpDumpContainer tcpDumpContainer = new TcpDumpContainer(container)
+                    .withPrivilegedMode(true)
+                    .withDumpFileDestination("mytcpdump.dump")
+                    .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "tcpdump"));
+
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(network)
                     .around(container)
+                    .around(tcpDumpContainer)
                     .around(rt);
 
     @BeforeClass
