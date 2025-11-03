@@ -4,14 +4,18 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
     <persistence-unit name="TestPU" transaction-type="JTA">
         <jta-data-source>jdbc/jpaDataSource</jta-data-source>  
+         <!-- Declare managed entity classes here -->
+    <class>com.ibm.ws.cdi.thirdparty.apps.hibernateCompatibilityWar.model.TestEntity</class>
         <properties>
-            <property name="eclipselink.ddl-generation" value="create-tables"/>
+            <property name="hibernate.dialect" value="org.hibernate.community.dialect.DerbyDialect"/>
+
+           <property name="eclipselink.ddl-generation" value="create-tables"/>
             <property name="eclipselink.ddl-generation.output-mode" value="both" />
 
             <property name="eclipselink.logging.level" value="ALL"/>
             <property name="eclipselink.logging.level.sql" value="FINE"/>
             
-            <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="eclipselink.cache.shared.default" value="false"/> 
             
             <property name="hibernate.hbm2ddl.auto" value="create"/>
             <!-- <property name="hibernate.resource.beans.container" value="cdi" />-->

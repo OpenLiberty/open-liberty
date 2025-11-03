@@ -12,11 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.thirdparty.apps.hibernateCompatibilityWar.web;
 
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,8 +23,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceUnit;
-import javax.persistence.PersistenceContext;
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.UserTransaction;
 
@@ -35,34 +30,35 @@ import javax.transaction.UserTransaction;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.ibm.ws.cdi.thirdparty.apps.hibernateCompatibilityWar.model.TestEntity;
+
 import componenttest.app.FATServlet;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-import com.ibm.ws.cdi.thirdparty.apps.hibernateCompatibilityWar.model.TestEntity;
-import com.ibm.ws.cdi.thirdparty.apps.hibernateCompatibilityWar.web.CustomEM;
 /**
- * Test servlet to verify Hibernate  CDI compatibility
+ * Test servlet to verify Hibernate CDI compatibility
  */
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/Hibernate6CompatibilityTestServlet")
 public class HibernateCompatibilityTestServlet extends FATServlet {
-    
+
     @PersistenceUnit(unitName = "TestPU")
     private EntityManagerFactory emf;
-    
+
     @Inject
     @CustomEM
     private EntityManager injectedEm;
-    
+
     @Inject
     private BeanManager beanManager;
-    
+
     @Resource
     private UserTransaction tx;
-    
+
     /**
      * Test to check whether the bean managers are all set properly
+     * 
      * @throws Exception
      */
     @Test
@@ -73,9 +69,9 @@ public class HibernateCompatibilityTestServlet extends FATServlet {
         boolean hasBeanManagerInterface = false;
         boolean hasExtendedBeanManagerInterface = false;
         boolean hasDeprecatedExtendedBeanManager = false;
-        
+
         Assert.assertNotNull("BeanManager property should be set", properties.get("javax.persistence.bean.manager"));
-    
+
         Object beanManagerProperty = properties.get("javax.persistence.bean.manager");
         Class<?>[] interfaces = beanManagerProperty.getClass().getInterfaces();
         for (Class<?> iface : interfaces) {
@@ -89,41 +85,41 @@ public class HibernateCompatibilityTestServlet extends FATServlet {
                 hasDeprecatedExtendedBeanManager = true;
             }
         }
-        
+
         Assert.assertTrue("Proxy should implement BeanManager interface", hasBeanManagerInterface);
         Assert.assertTrue("Proxy should implement ExtendedBeanManager interface", hasExtendedBeanManagerInterface);
 
-        
         /*
-         * The deprecated extended bean manager were removed from hibernate starting from the version 
+         * The deprecated extended bean manager were removed from hibernate starting from the version
          * 6.6.32. So the deprecated bean manager will be set only for versions before that
          */
-        
-        String hibernateVersion="5.4.3";
-        
-        if (isHibernateVersionAtLeast(hibernateVersion, 6, 6,23)) {
+
+        String hibernateVersion = "7.0.9"; //taken from hibernateJakartaSearchLibs in build.gradle. 
+
+        if (isHibernateVersionAtLeast(hibernateVersion, 6, 6, 23)) {
             Assert.assertFalse("Should not implement deprecated ExtendedBeanManager in Hibernate 6.6+", hasDeprecatedExtendedBeanManager);
         } else {
             Assert.assertTrue("Should implement deprecated ExtendedBeanManager in Hibernate version less than 6.6", hasDeprecatedExtendedBeanManager);
         }
     }
+
     @Test
     @Mode(TestMode.FULL)
     /**
-     * Checking if the deprecated interface is present in the classpath and seeing whether the 
+     * Checking if the deprecated interface is present in the classpath and seeing whether the
      * cdi update has set it as extended bean manager
+     * 
      * @throws Exception
      */
     public void testDeprecatedExtendedBeanManagerIntegration() throws Exception {
-        
+
         boolean deprecatedInterfaceAvailable;
         try {
             Class.forName("org.hibernate.jpa.event.spi.jpa.ExtendedBeanManager");
             deprecatedInterfaceAvailable = true;
         } catch (ClassNotFoundException e) {
             deprecatedInterfaceAvailable = false;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             deprecatedInterfaceAvailable = false;
         }
 
@@ -137,16 +133,17 @@ public class HibernateCompatibilityTestServlet extends FATServlet {
                 proxyImplementsDeprecated = true;
             }
         }
-        
+
         if (deprecatedInterfaceAvailable) {
             Assert.assertTrue("Proxy should implement deprecated ExtendedBeanManager when available", proxyImplementsDeprecated);
         } else {
             Assert.assertFalse("Proxy should NOT implement deprecated ExtendedBeanManager when not available", proxyImplementsDeprecated);
         }
     }
-    
+
     /**
      * Method to check whether the hibernate version passed is atleast equalt to or less than the version passed
+     * 
      * @param versionString
      * @param major
      * @param minor
@@ -160,16 +157,20 @@ public class HibernateCompatibilityTestServlet extends FATServlet {
             int minorVersion = Integer.parseInt(parts[1]);
             int patchVersion = parts.length > 2 ? Integer.parseInt(parts[2].replaceAll("[^0-9]", "")) : 0;
 
-            if (majorVersion > major) return true;
-            if (majorVersion < major) return false;
-            if (minorVersion > minor) return true;
-            if (minorVersion < minor) return false;
+            if (majorVersion > major)
+                return true;
+            if (majorVersion < major)
+                return false;
+            if (minorVersion > minor)
+                return true;
+            if (minorVersion < minor)
+                return false;
             return patchVersion >= patch;
         } catch (Exception e) {
-            return false; 
+            return false;
         }
     }
-    
+
     /**
      * Test that the CDI injection works with Hibernate
      */
@@ -177,13 +178,13 @@ public class HibernateCompatibilityTestServlet extends FATServlet {
     @Mode(TestMode.FULL)
     public void testCDIInjection() throws Exception {
         Assert.assertNotNull("EntityManager should be injected", injectedEm);
-        
+
         try {
             tx.begin();
             TestEntity entity = new TestEntity("Test Entity");
             injectedEm.persist(entity);
             tx.commit();
-            
+
             // Verify the entity was persisted
             TestEntity found = injectedEm.find(TestEntity.class, entity.getId());
             Assert.assertNotNull("Entity should be found", found);
@@ -193,7 +194,7 @@ public class HibernateCompatibilityTestServlet extends FATServlet {
             throw e;
         }
     }
-    
+
     /**
      * Test that the updateProperties method in CDIJPAEMFPropertyProviderImpl correctly
      * handles Hibernate compatibility
@@ -202,21 +203,20 @@ public class HibernateCompatibilityTestServlet extends FATServlet {
     @Mode(TestMode.FULL)
     public void testUpdatePropertiesMethod() throws Exception {
         Map<String, Object> props = new HashMap<>();
-        
+
         // Verify that the BeanManager proxy is set in the EMF properties
         Map<String, Object> emfProps = emf.getProperties();
         Object beanManagerProxy = emfProps.get("javax.persistence.bean.manager");
         Assert.assertNotNull("BeanManager proxy should be set in EMF properties", beanManagerProxy);
-        
+
         InvocationHandler handler = Proxy.getInvocationHandler(beanManagerProxy);
-        
+
         // The handler class name should contain BeanManagerInvocationHandler
-        Assert.assertTrue("Handler should be a BeanManagerInvocationHandler", 
+        Assert.assertTrue("Handler should be a BeanManagerInvocationHandler",
                           handler.getClass().getName().contains("BeanManagerInvocationHandler"));
     }
 
     //public static void registerFieldBridgeCalled() {
-        
-   // }
-}
 
+    // }
+}

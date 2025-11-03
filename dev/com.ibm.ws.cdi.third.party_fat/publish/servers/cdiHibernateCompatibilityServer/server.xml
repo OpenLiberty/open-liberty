@@ -2,7 +2,6 @@
 <server description="Liberty server for testing Hibernate 6.6.23 CDI compatibility">
 
     <include location="../fatTestPorts.xml" />
-
     <featureManager>
         <feature>componentTest-1.0</feature>
         <feature>cdi-2.0</feature>
@@ -19,7 +18,11 @@
     </library>
 
     <library id="HibernateLib">
-        <fileset dir="${shared.resource.dir}/hibernatejavax" includes="*.jar" />
+<!--  
+        <fileset dir="${shared.resource.dir}/hibernatejavax" includes="*.jar" />-->
+
+        <fileset dir="${shared.resource.dir}/hibernate6Untransformed" includes="*.jar" />
+
     </library>
 
     <application location="hibernateCompatibilityTest.war">
@@ -33,7 +36,12 @@
 
     <SSLDefault />
     <javaPermission codebase="${server.config.dir}/apps/hibernateCompatibilityTest.war" className="java.security.AllPermission" />
+<!--  
     <javaPermission codebase="${shared.resource.dir}/hibernatejavax/jboss-logging.jar" className="java.security.AllPermission" />
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission" />
     <javaPermission codebase="${shared.resource.dir}/hibernatejavax/hibernate-core.jar" className="java.security.AllPermission" />
+-->
+    <javaPermission codebase="${shared.resource.dir}/hibernate6Untransformed/jboss-logging.jar" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission" />
+    <javaPermission codebase="${shared.resource.dir}/hibernate6Untransformed/hibernate-core.jar" className="java.security.AllPermission" />
 </server>
