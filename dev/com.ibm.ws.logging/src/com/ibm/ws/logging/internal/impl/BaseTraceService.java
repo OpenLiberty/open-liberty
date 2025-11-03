@@ -313,7 +313,7 @@ public class BaseTraceService implements TrService {
     public static boolean isStackTraceSingleEntryEnabled = false;
 
     private static volatile Boolean isBetaEdition = null;
-    private static volatile boolean issuedBetaMessageAccess = false;
+    private static final AtomicBoolean betaCheckInitializing = new AtomicBoolean(false);
 
     /**
      * Called from Tr.getDelegate when BaseTraceService delegate is created
@@ -366,14 +366,8 @@ public class BaseTraceService implements TrService {
         if (isBetaEdition != null)
             return isBetaEdition;
 
-        if (issuedBetaMessageAccess) {
-            return false;
-        }
-
-        issuedBetaMessageAccess = true;
-
-        try {
-            synchronized (BaseTraceService.class) {
+        if (betaCheckInitializing.compareAndSet(false, true)) {
+            try {
                 if (isBetaEdition == null) {
                     if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
                         Tr.info(tc, "BETA: A beta method has been invoked for the class BaseTraceService for the first time.");
@@ -381,13 +375,15 @@ public class BaseTraceService implements TrService {
                     } else {
                         isBetaEdition = false;
                     }
-                }
-            }
 
-            return isBetaEdition;
-        } finally {
-            issuedBetaMessageAccess = false;
+                }
+
+                return isBetaEdition;
+            } finally {
+                betaCheckInitializing.set(false);
+            }
         }
+        return isBetaEdition != null ? isBetaEdition : false;
     }
 
     /**
