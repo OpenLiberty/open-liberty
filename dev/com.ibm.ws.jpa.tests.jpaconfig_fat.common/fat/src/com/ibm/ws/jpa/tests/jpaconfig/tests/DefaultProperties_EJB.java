@@ -52,7 +52,6 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
@@ -146,11 +145,11 @@ public class DefaultProperties_EJB extends JPAFATServletClient {
 
         server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
 
-        //Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         server.startServer();
 

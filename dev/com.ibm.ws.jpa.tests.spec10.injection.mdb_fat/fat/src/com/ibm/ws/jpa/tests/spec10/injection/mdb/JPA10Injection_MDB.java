@@ -69,7 +69,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
@@ -172,11 +171,11 @@ public class JPA10Injection_MDB extends JPAFATServletClient {
 
         server1.addEnvVar("repeat_phase", RepeaterInfo.repeatPhase);
 
-        //Get driver name
-        server1.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server1, testContainer);
+        DatabaseContainerUtil.build(server1, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         server1.startServer();
 

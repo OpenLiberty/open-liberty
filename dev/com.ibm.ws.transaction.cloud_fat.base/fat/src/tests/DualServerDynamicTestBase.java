@@ -28,7 +28,6 @@ import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 
@@ -49,11 +48,13 @@ public class DualServerDynamicTestBase extends CloudTestBase {
 
     public static void setupDriver(LibertyServer server) throws Exception {
         JdbcDatabaseContainer<?> testContainer = TxTestContainerSuite.testContainer;
-        //Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.build(server, testContainer).withDatabaseProperties().modify();
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
     }
 
     public void setUp(LibertyServer server) throws Exception {

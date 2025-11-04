@@ -31,7 +31,6 @@ import com.ibm.ws.transaction.fat.util.TxFATServletClient;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
 import componenttest.annotation.SkipIfSysProp;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -92,11 +91,13 @@ public class FailoverTest extends TxFATServletClient {
 
     public static void setUp(LibertyServer server) throws Exception {
         JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
-        //Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }

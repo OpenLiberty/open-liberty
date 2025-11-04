@@ -49,12 +49,13 @@ public class DBRerouteTest extends SimpleTest {
 	        @Override
 	        public void run(LibertyServer s) throws Exception {
 	        	Log.info(DBRerouteTest.class, "setupRunner.run", "Setting up "+s.getServerName()+" for testcontainers");
-
-	            //Get driver name
-	            s.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer).getDriverName());
-
+	        	
 	            //Setup server DataSource properties
-	            DatabaseContainerUtil.setupDataSourceDatabaseProperties(s, TxTestContainerSuite.testContainer);
+	            DatabaseContainerUtil.build(s, TxTestContainerSuite.testContainer)
+	              .withDriverVariable()
+	              .withLibraryPermissions()
+	              .withDatabaseProperties()
+	              .modify();
 
 	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 	        }

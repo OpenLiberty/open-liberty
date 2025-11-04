@@ -36,7 +36,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -63,8 +62,15 @@ public class DataTestCheckpoint extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Map<String, String> envVars = new HashMap<>();
+
         // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourcePropertiesForCheckpoint(server, testContainer);
+        envVars = DatabaseContainerUtil.build(server, testContainer)
+                        .withDatabaseProperties()
+                        .withDriverReplacement() // Avoid issues after checkpoint with variables
+                        .withDriverVariable() // Add driver variable for servlet side skips
+                        .withLibraryPermissions()
+                        .modify();
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp",
                                                       "test.jakarta.data.web",
@@ -81,9 +87,6 @@ public class DataTestCheckpoint extends FATServletClient {
         WebArchive providerWar = ShrinkHelper.buildDefaultApp("ProviderTestApp", "test.jakarta.data.inmemory.web")
                         .addAsLibrary(providerJar);
         ShrinkHelper.exportAppToServer(server, providerWar);
-
-        Map<String, String> envVars = new HashMap<>();
-        envVars.put("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START, false, null);
         server.startServer();

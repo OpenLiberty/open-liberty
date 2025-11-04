@@ -40,7 +40,6 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -123,11 +122,13 @@ public class ContainerAuthTest extends FATServletClient {
 
     public static void setUp(LibertyServer server) throws Exception {
         JdbcDatabaseContainer<?> testContainer = TxTestContainerSuite.testContainer;
-        //Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.build(server, testContainer).withDatabaseProperties().modify();
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }
@@ -153,28 +154,28 @@ public class ContainerAuthTest extends FATServletClient {
         return;
 /*
  * serversToCleanup = new LibertyServer[] { conAuth };
- * 
+ *
  * FATUtils.startServers(runner, conAuth);
- * 
+ *
  * assertNotNull("Container authentication should have been configured", conAuth.waitForStringInTrace(CONFIGURED_MARKER));
- * 
+ *
  * // Do a little tx work
  * runTest(conAuth, SERVLET_NAME, "testUserTranLookup");
- * 
+ *
  * // Update server.xml to use a different authData
  * conAuth.setMarkToEndOfLog();
  * final ServerConfiguration serverConfig = conAuth.getServerConfiguration();
  * final DataSource tranlogDataSource = serverConfig.getDataSources().getById("tranlogDataSource");
  * tranlogDataSource.setContainerAuthDataRef("auth3");
  * conAuth.updateServerConfiguration(serverConfig);
- * 
+ *
  * // This is intermittently failing atm hence the dump
  * final String appRestartedMsg = conAuth.waitForStringInLogUsingMark("CWWKZ0003I: The application " + APP_NAME + " updated in ");
  * if (null == appRestartedMsg) {
  * conAuth.serverDump("thread");
  * fail("Application " + APP_NAME + " should have been updated");
  * }
- * 
+ *
  * // Do a little more tx work
  * runTest(conAuth, SERVLET_NAME, "testUserTranLookup");
  */

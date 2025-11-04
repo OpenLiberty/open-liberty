@@ -40,8 +40,11 @@ public class DataWebTckLauncher {
 
     @BeforeClass
     public static void setup() throws Exception {
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.relationalDatabase);
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(FATSuite.relationalDatabase).getDriverName());
+        DatabaseContainerUtil.build(server, FATSuite.relationalDatabase)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
         server.startServer();
     }
 

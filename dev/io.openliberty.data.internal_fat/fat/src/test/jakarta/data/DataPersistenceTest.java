@@ -32,7 +32,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -95,8 +94,8 @@ public class DataPersistenceTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         DatabaseContainerUtil.build(server, testContainer) //
+                        .withDatabaseProperties()
                         .withDriverVariable() //
-                        .withDatabaseProperties() //
                         .modify();
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataPersistenceApp",

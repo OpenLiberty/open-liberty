@@ -45,7 +45,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEEAction;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
@@ -94,15 +93,21 @@ public class AsmServiceTest extends JPAFATServletClient {
         PrivHelper.generateCustomPolicy(serverWithEclipselinkAsm, FATSuite.JAXB_PERMS);
         PrivHelper.generateCustomPolicy(serverWithOw2Asm, FATSuite.JAXB_PERMS);
 
-        //Get driver name
-        serverWithDefaultAsm.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-        serverWithEclipselinkAsm.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-        serverWithOw2Asm.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(serverWithDefaultAsm, testContainer);
-        DatabaseContainerUtil.setupDataSourceProperties(serverWithEclipselinkAsm, testContainer);
-        DatabaseContainerUtil.setupDataSourceProperties(serverWithOw2Asm, testContainer);
+        DatabaseContainerUtil.build(serverWithDefaultAsm, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
+
+        DatabaseContainerUtil.build(serverWithEclipselinkAsm, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
+
+        DatabaseContainerUtil.build(serverWithOw2Asm, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
     }
 
     private void setupDatabaseApp(LibertyServer server) throws Exception {

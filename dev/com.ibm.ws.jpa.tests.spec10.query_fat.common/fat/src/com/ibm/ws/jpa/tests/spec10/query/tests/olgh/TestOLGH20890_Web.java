@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -99,11 +99,11 @@ public class TestOLGH20890_Web extends JPAFATServletClient {
 
         server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
 
-        //Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         server.startServer();
 

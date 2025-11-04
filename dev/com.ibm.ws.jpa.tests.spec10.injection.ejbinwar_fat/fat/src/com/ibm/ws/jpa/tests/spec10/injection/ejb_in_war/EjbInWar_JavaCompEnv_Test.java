@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -45,7 +45,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
@@ -126,11 +125,11 @@ public class EjbInWar_JavaCompEnv_Test extends JPAFATServletClient {
 
         server1.addEnvVar("repeat_phase", FATSuite.repeatPhase);
 
-        //Get driver name
-        server1.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server1, testContainer);
+        DatabaseContainerUtil.build(server1, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         server1.startServer();
 

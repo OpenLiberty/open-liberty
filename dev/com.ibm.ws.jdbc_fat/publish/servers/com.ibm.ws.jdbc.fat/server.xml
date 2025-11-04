@@ -74,8 +74,8 @@
 
 <!-- ### Authentication ### -->
 	<!-- Auth for any database -->
-    <authData id="auth1" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
-    <authData id="recoveryAuth" user="${env.DB_USER}" password="${env.DB_PASSWORD}"/>
+    <authData id="auth1" user="${env.DB_USER}" password="${env.DB_PASS}"/>
+    <authData id="recoveryAuth" user="${env.DB_USER}" password="${env.DB_PASS}"/>
     
     <!-- Auth for derby only -->
     <authData id="derbyAuth1" user="dbuser1" password="{xor}Oz0vKDtu"/>

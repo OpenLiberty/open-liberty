@@ -108,11 +108,11 @@ public class Relationships_ManyXMany_EJB extends JPAFATServletClient {
             server.setConfigUpdateTimeout(120 * 1000);
         }
 
-        //Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         server.startServer();
 

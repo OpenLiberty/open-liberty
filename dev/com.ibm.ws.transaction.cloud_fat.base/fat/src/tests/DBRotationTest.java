@@ -137,11 +137,13 @@ public class DBRotationTest extends CloudFATServletClient {
 
     public static void setUp(LibertyServer server) throws Exception {
         JdbcDatabaseContainer<?> testContainer = TxTestContainerSuite.testContainer;
-        //Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.build(server, testContainer).withDatabaseProperties().modify();
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
     }

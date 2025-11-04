@@ -27,7 +27,6 @@ import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.PrivHelper;
@@ -55,11 +54,11 @@ public class JPACDIIntegrationTest {
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server, PrivHelper.JAXB_PERMISSION);
 
-        // Get driver name
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
-        // Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        //Setup server DataSource properties
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDriverVariable()
+                        .withLibraryPermissions()
+                        .modify();
 
         createApplication(SPECLEVEL);
         server.startServer();
@@ -72,20 +71,22 @@ public class JPACDIIntegrationTest {
         app.addPackage(TestEntity.class.getPackage().getName());
         app.addPackage(JPACDIIntegrationServlet.class.getPackage().getName());
         app.merge(
-                ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class).importDirectory(resPath)
-                        .as(GenericArchive.class),
-                "/",
-                Filters.includeAll());
+                  ShrinkWrap.create(GenericArchive.class)
+                                  .as(ExplodedImporter.class)
+                                  .importDirectory(resPath)
+                                  .as(GenericArchive.class),
+                  "/",
+                  Filters.includeAll());
         ShrinkHelper.exportDropinAppToServer(server, app);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer("CWWJP9991W",
-                "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException
-                                                                                                // test, expected
-                "Missing PostgreSQL10JsonPlatform"); // Generated with postgres db, since we don't include the postgres
-                                                     // plugin);
+                          "WTRN0074E: Exception caught from before_completion synchronization operation", // RuntimeException
+                          // test, expected
+                          "Missing PostgreSQL10JsonPlatform"); // Generated with postgres db, since we don't include the postgres
+                                                               // plugin);
     }
 
 }
