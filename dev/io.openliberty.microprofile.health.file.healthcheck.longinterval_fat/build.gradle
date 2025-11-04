@@ -16,14 +16,12 @@ dependencies {
     requiredLibs project(':io.openliberty.microprofile.health.internal_fat.common')
 }
 
-// Put test libs where the FAT zip expects them
 tasks.register('addRequiredLibraries', Copy) {
     from configurations.requiredLibs
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles/libs')
     shouldRunAfter autoFVT
 }
 
-// Ensure libs are present before packaging the FAT zip
 tasks.named('zipAutoFVT') {
     dependsOn 'addRequiredLibraries'
 }
