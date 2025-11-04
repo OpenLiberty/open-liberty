@@ -3,8 +3,6 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-apply from: '../wlp-gradle/fat.gradle'  // defines autoFvtDir, autoFVT, zipAutoFVT, etc.
-
 configurations {
     requiredLibs
 }
@@ -14,14 +12,8 @@ dependencies {
     requiredLibs project(':com.ibm.ws.crypto.passwordutil')
     requiredLibs 'org.apache.johnzon:johnzon-core:1.1.0'
     requiredLibs project(':io.openliberty.microprofile.health.internal_fat.common')
+    
+    addRequiredLibraries.dependsOn addJakartaTransformer
 }
 
-tasks.register('addRequiredLibraries', Copy) {
-    from configurations.requiredLibs
-    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/libs')
-    shouldRunAfter autoFVT
-}
-
-tasks.named('zipAutoFVT') {
-    dependsOn 'addRequiredLibraries'
-}
+addRequiredLibraries.dependsOn copyTestContainers
