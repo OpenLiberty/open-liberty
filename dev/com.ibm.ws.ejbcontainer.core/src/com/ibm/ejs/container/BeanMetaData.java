@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,10 +23,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
-import javax.naming.NamingException;
 
 import javax.ejb.TimedObject;
 import javax.naming.Context;
+import javax.naming.NamingException;
 
 import com.ibm.ejs.container.activator.Activator;
 import com.ibm.ejs.container.interceptors.InterceptorMetaData;
@@ -49,6 +49,7 @@ import com.ibm.ws.ejbcontainer.diagnostics.IntrospectionWriter;
 import com.ibm.ws.ejbcontainer.diagnostics.TrDumpWriter;
 import com.ibm.ws.ejbcontainer.failover.SfFailoverClient;
 import com.ibm.ws.javaee.dd.ejb.EJBJar;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.managedobject.ManagedObjectException;
 import com.ibm.ws.managedobject.ManagedObjectFactory;
 import com.ibm.ws.metadata.ejb.BeanInitData;
@@ -85,6 +86,8 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
     private static final TraceComponent tc = Tr.register(BeanMetaData.class,
                                                          "EJBContainer",
                                                          "com.ibm.ejs.container.container");
+
+    private static boolean issuedBetaMessage = false;
 
     /** Class for the javax.ejb.TimedObject interface **/
     // LI2281.07
@@ -2621,30 +2624,48 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
         return constructor;
     }
 
-    public boolean isSyncToOSThreadEnabled(){
-        return m_syncToOSThreadValue;
+    @Override
+    public boolean isSyncToOSThreadEnabled() {
+        if (isRunningBetaMode())
+            return m_syncToOSThreadValue;
+        else
+            return false;
     }
 
     public void initializeSyncToOSThread() {
-    try {
-        // Get the JNDI context for the EJB
-        Context javaComp = getJavaNameSpaceContext();
-        if (javaComp != null) {
-            // Look up the SyncToOSThread environment entry
-            Boolean syncToOSThread = (Boolean) javaComp.lookup("env/com.ibm.websphere.security.SyncToOSThread");
-            if (syncToOSThread != null) {
-                m_syncToOSThreadValue = syncToOSThread.booleanValue();
+        if (isRunningBetaMode()) {
+            try {
+                // Get the JNDI context for the EJB
+                Context javaComp = getJavaNameSpaceContext();
+                if (javaComp != null) {
+                    // Look up the SyncToOSThread environment entry
+                    Boolean syncToOSThread = (Boolean) javaComp.lookup("env/com.ibm.websphere.security.SyncToOSThread");
+                    if (syncToOSThread != null) {
+                        m_syncToOSThreadValue = syncToOSThread.booleanValue();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "SyncToOSThread enabled for bean: " + enterpriseBeanName);
+                        }
+                    }
+                }
+            } catch (NamingException e) {
+                // The environment entry doesn't exist, so leave the default value
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SyncToOSThread enabled for bean: " + enterpriseBeanName);
+                    Tr.debug(tc, "SyncToOSThread environment entry not found for bean: " + enterpriseBeanName);
                 }
             }
         }
-    } catch (NamingException e) {
-        // The environment entry doesn't exist, so leave the default value
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "SyncToOSThread environment entry not found for bean: " + enterpriseBeanName);
+    }
+
+    public static boolean isRunningBetaMode() {
+        if (!ProductInfo.getBetaEdition()) {
+            return false;
+        } else {
+            // Running beta exception, issue message if we haven't already issued one for this class
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the syncToOSThread feature for the first time.");
+                issuedBetaMessage = true;
+            }
+            return true;
         }
     }
-}
-
 } // BeanMetaData

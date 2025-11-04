@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,8 @@
 package com.ibm.ws.ejbcontainer.security.internal;
 
 import javax.security.auth.Subject;
+
+import com.ibm.ejs.container.BeanMetaData;
 
 public class EJBSecurityContext {
 
@@ -28,24 +30,36 @@ public class EJBSecurityContext {
     private Object syncToOSThreadToken = null;
 
     public EJBSecurityContext(Subject iSubject, Subject rSubject) {
-        invokedSubject = iSubject;
-        receivedSubject = rSubject;
+        if (BeanMetaData.isRunningBetaMode()) {
+            invokedSubject = iSubject;
+            receivedSubject = rSubject;
+        }
     }
 
     public Subject getInvokedSubject() {
-        return invokedSubject;
+        if (BeanMetaData.isRunningBetaMode())
+            return invokedSubject;
+        else
+            return null;
     }
 
     public Subject getReceivedSubject() {
-        return receivedSubject;
+        if (BeanMetaData.isRunningBetaMode())
+            return receivedSubject;
+        else
+            return null;
     }
 
     public void setSyncToOSThreadToken(Object obj) {
-        syncToOSThreadToken = obj;
+        if (BeanMetaData.isRunningBetaMode())
+            syncToOSThreadToken = obj;
     }
 
     public Object getSyncToOSThreadToken() {
-        return syncToOSThreadToken;
+        if (BeanMetaData.isRunningBetaMode())
+            return syncToOSThreadToken;
+        else
+            return null;
     }
 
 }

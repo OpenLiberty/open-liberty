@@ -627,7 +627,6 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             //auditManager.setHttpServletRequest(req);
 
             performDelegation(req, servletName, securityMetadata);
-            //we do it here because the run as may be different from the caller subject. we don't want to send john when we want mary. 
             syncToOSThread(webSecurityContext);
         }
 

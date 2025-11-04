@@ -31,8 +31,6 @@ import javax.security.auth.login.CredentialExpiredException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Reference;
-import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
-import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.ras.TraceNLS;
@@ -55,6 +53,8 @@ import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ejbcontainer.security.internal.jacc.EJBJaccAuthorizationHelper;
 import com.ibm.ws.ejbcontainer.security.jacc.EJBJaccService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.security.SecurityService;
@@ -225,9 +225,11 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
         performDelegation(methodMetaData, subjectToAuthorize);
         subjectManager.setCallerSubject(subjectToAuthorize);
-        
-        EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
-        syncToOSThread(ejbSecurityContext);
+        if (BeanMetaData.isRunningBetaMode()) {
+            EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
+            syncToOSThread(ejbSecurityContext);
+        }
+
         SecurityCookieImpl securityCookie = new SecurityCookieImpl(originalInvokedSubject, originalCallerSubject, subjectManager.getInvocationSubject(), subjectToAuthorize);
         return securityCookie;
     }
@@ -261,16 +263,18 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
                     Tr.debug(tc, "Subjects have been changed, preserving the current Subjects.");
                 }
             }
-            try {
-                 EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
-                resetSyncToOSThread(ejbSecurityContext);
+            if (BeanMetaData.isRunningBetaMode()) {
+                try {
+                    EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
+                    resetSyncToOSThread(ejbSecurityContext);
 
-            } catch (ThreadIdentityException e) {
-                throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
-                                                                            TraceConstants.MESSAGE_BUNDLE,
-                                                                            "EJB_AUTHZ_EXCLUDED",
-                                                                            new Object[] { "postInvoke" },
-                                                                            "WRG+++: syncToOs failed {0}."));
+                } catch (ThreadIdentityException e) {
+                    throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                                    TraceConstants.MESSAGE_BUNDLE,
+                                                                                    "EJB_AUTHZ_EXCLUDED",
+                                                                                    new Object[] { "postInvoke" },
+                                                                                    "WRG+++: syncToOs failed {0}."));
+                }
             }
         }
     }
@@ -797,39 +801,37 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         waitedForSecurity = true;
     }
 
-
     /**
      * Sync the invocation Subject's identity to the thread, if request by the application.
      *
      * @param WebSecurityContext The security context object for this application invocation.
-     *            MUST NOT BE NULL.
+     *                               MUST NOT BE NULL.
      * @throws SecurityViolationException
      */
     private void syncToOSThread(EJBSecurityContext ejbSecurityContext) throws EJBAccessDeniedException {
-        try {
-            if (ThreadIdentityManager.isAppThreadIdentityEnabled()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Setting thread identity for EJB application");
+        if (BeanMetaData.isRunningBetaMode()) {
+            try {
+                if (ThreadIdentityManager.isAppThreadIdentityEnabled()) {
+                    Object token = ThreadIdentityManager.setAppThreadIdentity(ejbSecurityContext.getInvokedSubject());
+                    ejbSecurityContext.setSyncToOSThreadToken(token);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Thread identity for EJB application set successfully");
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Application thread identity is not enabled");
+                    }
                 }
-                Object token = ThreadIdentityManager.setAppThreadIdentity(ejbSecurityContext.getInvokedSubject());
-                ejbSecurityContext.setSyncToOSThreadToken(token);
+            } catch (ThreadIdentityException tie) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Thread identity set successfully");
+                    Tr.debug(tc, "Exception setting thread identity for EJB application", tie);
                 }
-            } else {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Application thread identity is not enabled");
-                }
+                throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                                TraceConstants.MESSAGE_BUNDLE,
+                                                                                "EJB_AUTHZ_EXCLUDED",
+                                                                                new Object[] { "syncToOSThread" },
+                                                                                "WRG+++: syncToOs failed {0}."));
             }
-        } catch (ThreadIdentityException tie) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception setting thread identity", tie);
-            }
-            throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
-                                                                        TraceConstants.MESSAGE_BUNDLE,
-                                                                        "EJB_AUTHZ_EXCLUDED",
-                                                                        new Object[] { "syncToOSThread" },
-                                                                        "WRG+++: syncToOs failed {0}."));
         }
     }
 
@@ -837,22 +839,24 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * Remove the invocation Subject's identity from the thread, if it was previously sync'ed.
      *
      * @param WebSecurityContext The security context object for this application invocation.
-     *            MUST NOT BE NULL.
+     *                               MUST NOT BE NULL.
      * @throws ThreadIdentityException
      */
     private void resetSyncToOSThread(EJBSecurityContext ejbSecurityContext) throws ThreadIdentityException {
-        Object token = ejbSecurityContext.getSyncToOSThreadToken();
-        if (token != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Resetting thread identity for EJB application");
-            }
-            ThreadIdentityManager.resetChecked(token);
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Thread identity reset successfully");
-            }
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "No thread identity token to reset");
+        if (BeanMetaData.isRunningBetaMode()) {
+            Object token = ejbSecurityContext.getSyncToOSThreadToken();
+            if (token != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Resetting thread identity for EJB application");
+                }
+                ThreadIdentityManager.resetChecked(token);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Thread identity reset successfully");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No thread identity token to reset");
+                }
             }
         }
     }

@@ -21,9 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import javax.naming.NamingException;
-import javax.naming.Context;
-import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
+
 import javax.ejb.EJBException;
 
 import com.ibm.ejs.container.BeanMetaData;
@@ -33,7 +31,6 @@ import com.ibm.ejs.container.ContainerProperties;
 import com.ibm.ejs.container.EJBConfigurationException;
 import com.ibm.ejs.container.EJSContainer;
 import com.ibm.ejs.container.interceptors.InterceptorMetaData;
-import com.ibm.ejs.container.util.EJSPlatformHelper;
 import com.ibm.ejs.csi.EJBApplicationMetaData;
 import com.ibm.ejs.csi.EJBModuleMetaDataImpl;
 import com.ibm.websphere.cpi.Persister;
@@ -63,6 +60,7 @@ import com.ibm.ws.javaee.dd.ejbbnd.MessageDriven;
 import com.ibm.ws.javaee.dd.ejbext.BeanCache;
 import com.ibm.ws.javaee.dd.ejbext.RunAsMode;
 import com.ibm.ws.javaee.dd.ejbext.Session;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.metadata.ejb.EJBMDOrchestrator;
 import com.ibm.ws.metadata.ejb.ModuleInitData;
@@ -1339,21 +1337,22 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
     @Trivial
     @Override
     protected void processZOSMetadata(BeanMetaData bmd) {
+
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processZOSMetadata : " + bmd);
 
-        Tr.debug(tc, "WRG++++isZOS(): "+ isZOS());
         if (isZOS()) {
-            // Call the BeanMetaData's initializeSyncToOSThread method to check environment entry
-            bmd.initializeSyncToOSThread();
-            
+            if (BeanMetaData.isRunningBetaMode()) {
+                // Call the BeanMetaData's initializeSyncToOSThread method to check environment entry
+                bmd.initializeSyncToOSThread();
+            }
             // If not set by environment entry, check the binding
             if (!bmd.m_syncToOSThreadValue) {
                 bmd.m_syncToOSThreadValue = getSyncToOSThreadSetting(ContainerConfigConstants.syncToOSThreadSetting, bmd);
             }
-            
+
             if (bmd.m_syncToOSThreadValue) {
                 if (isTraceOn && tc.isDebugEnabled())
                     Tr.debug(tc, "SyncToOSThread is enabled for bean: " + bmd.enterpriseBeanName);
@@ -1361,23 +1360,24 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
                 // Check if ThreadIdentityManager supports application thread identity
                 if (ThreadIdentityManager.isAppThreadIdentityEnabled()) {
                     if (isTraceOn && tc.isDebugEnabled())
-                        Tr.debug(tc, "WRG+++EJB requests SyncToOSThread, and the server is enabled for SyncToOSThread");
+                        Tr.debug(tc, "Reequests SyncToOSThread, and the server is enabled for SyncToOSThread");
                 } else {
                     if (isTraceOn && tc.isDebugEnabled())
-                        Tr.debug(tc, "WRG+++EJB requests SyncToOSThread, but the server does not have ThreadIdentityService enabled");
+                        Tr.debug(tc, "Requests SyncToOSThread, but the server does not have ThreadIdentityService enabled");
                     // Keep the setting enabled - the ThreadIdentityManager will handle the case when no service is available
                 }
             } else {
                 if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(tc, "WRG++++SyncToOSThread is not enabled for bean: " + bmd.enterpriseBeanName);
+                    Tr.debug(tc, "SyncToOSThread is not enabled for bean: " + bmd.enterpriseBeanName);
             }
         }
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "processZOSMetadata");
+
     }
 
-    private static boolean isZOS(){
+    private static boolean isZOS() {
         String osName = System.getProperty("os.name");
         return osName != null && (osName.equalsIgnoreCase("z/OS") || osName.equalsIgnoreCase("OS/390"));
     }

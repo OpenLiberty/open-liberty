@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.javaee.metadata.context.ejb;
 
 import java.util.List;
 
+import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.ejbcontainer.EJBComponentMetaData;
@@ -22,7 +23,6 @@ import com.ibm.ws.ejbcontainer.EJBMethodMetaData;
 import com.ibm.ws.ejbcontainer.EJBType;
 import com.ibm.ws.runtime.metadata.MetaDataSlot;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.runtime.metadata.SyncToOSThreadMetaData;
 
 public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, IdentifiableComponentMetaData {
     private final EJBComponentMetaData ejbComponentMetaData;
@@ -121,6 +121,9 @@ public class EJBComponentMetaDataWrapper implements EJBComponentMetaData, Identi
 
     @Override
     public boolean isSyncToOSThreadEnabled() {
-        return ejbComponentMetaData.isSyncToOSThreadEnabled();
+        if (BeanMetaData.isRunningBetaMode()) {
+            return ejbComponentMetaData.isSyncToOSThreadEnabled();
+        } else
+            return false;
     }
 }

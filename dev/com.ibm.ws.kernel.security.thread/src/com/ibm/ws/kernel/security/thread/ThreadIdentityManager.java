@@ -212,7 +212,6 @@ public class ThreadIdentityManager {
     }
 
     /**
-     * whenever we set synctoos thread, this is callled by the websecurity collaborator 
      * Set the subject's identity as the thread identity.
      * 
      * This method is used by app containers. It checks whether app thread

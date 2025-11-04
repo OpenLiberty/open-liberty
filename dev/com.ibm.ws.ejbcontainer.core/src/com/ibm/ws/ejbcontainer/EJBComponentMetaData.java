@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,9 +17,7 @@ import java.util.List;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.SyncToOSThreadMetaData;
 
-public interface EJBComponentMetaData
-                extends ComponentMetaData, SyncToOSThreadMetaData
-{
+public interface EJBComponentMetaData extends ComponentMetaData, SyncToOSThreadMetaData {
     /**
      * @return the EJB type
      */
@@ -42,6 +40,8 @@ public interface EJBComponentMetaData
      */
     List<EJBMethodMetaData> getEJBMethodMetaData(EJBMethodInterface type);
 
-    
+    /**
+     * @return true if sync to SO thread enabled
+     */
     public boolean isSyncToOSThreadEnabled();
 }
