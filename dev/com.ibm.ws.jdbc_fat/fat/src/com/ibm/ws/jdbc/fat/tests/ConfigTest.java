@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -62,7 +63,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -87,6 +87,7 @@ public class ConfigTest extends FATServletClient {
     //Test container
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    private static Map<String, String> envVarCache;
 
     //List of apps tested by this test suite
     private static final Set<String> appNames = new HashSet<String>(Arrays.asList(dsdfat, jdbcapp));
@@ -132,15 +133,13 @@ public class ConfigTest extends FATServletClient {
         // Get original server config
         originalServerConfig = server.getServerConfiguration().clone();
 
-        //Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
-        server.addEnvVar("ANON_DRIVER", type.getAnonymousDriverName());
-        server.addEnvVar("DB_USER", testContainer.getUsername());
-        server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
-
         //Setup server DataSource properties (use database specific properties in order to run testTrace() )
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        envVarCache = DatabaseContainerUtil.build(server, testContainer)//
+                        .withDriverVariable()//
+                        .withAnonDriverVariable()//
+                        .withAuthVariables()//
+                        .withLibraryPermissions()//
+                        .modify();
 
         // Get JDBC server config
         originalServerConfigUpdatedForJDBC = server.getServerConfiguration().clone();
@@ -1403,11 +1402,9 @@ public class ConfigTest extends FATServletClient {
             try {
                 server.stopServer(ALLOWED_MESSAGES);
 
-                //Get driver type
-                server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
-                server.addEnvVar("DB_USER", testContainer.getUsername());
-                server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+                for (Map.Entry<String, String> e : envVarCache.entrySet()) {
+                    server.addEnvVar(e.getKey(), e.getValue());
+                }
             } finally {
                 server.startServer();
             }
@@ -1565,11 +1562,9 @@ public class ConfigTest extends FATServletClient {
                 try {
                     server.stopServer(ALLOWED_MESSAGES);
 
-                    //Get driver type
-                    server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                    server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
-                    server.addEnvVar("DB_USER", testContainer.getUsername());
-                    server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+                    for (Map.Entry<String, String> e : envVarCache.entrySet()) {
+                        server.addEnvVar(e.getKey(), e.getValue());
+                    }
                 } finally {
                     server.startServer();
                 }
@@ -1638,11 +1633,9 @@ public class ConfigTest extends FATServletClient {
             try {
                 server.stopServer(ALLOWED_MESSAGES);
 
-                //Get driver type
-                server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-                server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
-                server.addEnvVar("DB_USER", testContainer.getUsername());
-                server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+                for (Map.Entry<String, String> e : envVarCache.entrySet()) {
+                    server.addEnvVar(e.getKey(), e.getValue());
+                }
             } finally {
                 server.startServer();
             }

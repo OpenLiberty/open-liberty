@@ -19,7 +19,7 @@
       <feature>jndi-1.0</feature>
     </featureManager>
  
-     <library id="DerbyLib" fat.modify="true">
+     <library id="DerbyLib">
     	<fileset dir="${shared.resource.dir}/derby"/>
     </library>
     
