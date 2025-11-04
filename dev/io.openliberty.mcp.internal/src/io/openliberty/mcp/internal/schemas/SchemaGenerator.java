@@ -44,6 +44,7 @@ import io.openliberty.mcp.internal.schemas.blueprints.OptionalSchemaCreationBlue
 import io.openliberty.mcp.internal.schemas.blueprints.SchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.TypeVariableSchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.WildcardSchemaCreationBlueprint;
+import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
@@ -143,7 +144,9 @@ public class SchemaGenerator {
         SchemaAnnotation schemaAnnotation = SchemaAnnotation.read(method);
 
         SchemaGenerationContext ctx = new SchemaGenerationContext(blueprintRegistry, OUTPUT);
-        calculateClassFrequency(returnType, SchemaDirection.OUTPUT, ctx);
+        if (!method.getReturnType().isAssignableFrom(ToolResponse.class)) {
+            calculateClassFrequency(returnType, SchemaDirection.OUTPUT, ctx);
+        }
 
         JsonObjectBuilder outputSchema = generateSubSchema(returnType, ctx, schemaAnnotation);
         addDefs(outputSchema, ctx);

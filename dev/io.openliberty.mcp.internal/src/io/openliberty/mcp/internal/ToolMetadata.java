@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
+import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
@@ -70,7 +71,16 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
                                         && (pt.getActualTypeArguments()[0] instanceof Class<?>) && ((Class<?>) pt.getActualTypeArguments()[0]).isAssignableFrom(Content.class));
         boolean hasOutputSchema = (!returnTypeClass.isAssignableFrom(ToolResponse.class) && !hasContentListReturn && !returnTypeClass.isAssignableFrom(Content.class)
                                    && !returnTypeClass.isAssignableFrom(String.class) && annotation.structuredContent());
+
+        if (!hasOutputSchema && returnTypeClass.isAssignableFrom(ToolResponse.class) && annotation.structuredContent()
+            && method.isAnnotationPresent(Schema.class)
+            && method.getAnnotation(Schema.class).value() != Schema.UNSET) {
+
+            hasOutputSchema = true;
+
+        }
         JsonObject outputSchema = hasOutputSchema ? sr.getToolOutputSchema(method) : null;
+
         outputSchema = (outputSchema == null || outputSchema.isEmpty()) ? null : outputSchema;
 
         return new ToolMetadata(annotation,
@@ -101,7 +111,6 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
                 if (argAnnotation == null) {
                     continue;
                 }
-
                 String argName = resolveArgumentName(param, argAnnotation);
                 boolean isDuplicateArg = result.containsKey(argName);
 

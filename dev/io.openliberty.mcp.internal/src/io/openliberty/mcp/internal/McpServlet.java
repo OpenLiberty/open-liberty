@@ -318,7 +318,7 @@ public class McpServlet extends HttpServlet {
         } else if (result instanceof String s) {
             return ToolResponse.success(s);
         } else if (includeStructuredContent) {
-            return ToolResponse.structuredSuccess(jsonb.toJson(result), result);
+            return ToolResponse.structuredSuccess(result);
         } else {
             return ToolResponse.success(Objects.toString(result));
         }

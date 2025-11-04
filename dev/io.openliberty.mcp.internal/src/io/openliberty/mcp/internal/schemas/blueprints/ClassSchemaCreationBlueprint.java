@@ -86,5 +86,4 @@ public record ClassSchemaCreationBlueprint(Class<?> baseType, List<FieldInfo> in
 
         return schemaBuilder;
     }
-
 }

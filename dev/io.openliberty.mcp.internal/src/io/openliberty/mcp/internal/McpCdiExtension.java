@@ -161,7 +161,6 @@ public class McpCdiExtension implements Extension {
                 Tr.error(tc, "CWMCM0018E.generic.arguments", ToolMetadata.getToolQualifiedName(bean, method), argument);
             }
         }
-
     }
 
     public ToolRegistry getToolRegistry() {

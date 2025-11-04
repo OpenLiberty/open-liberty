@@ -55,7 +55,6 @@ public class ToolMetadataTest {
     @Test
     public void testGenericParams() {
         Method tm = TestUtils.findActualMethod(ToolMetadataTest.class, "addGenericToGenericArray");
-
         assertTrue(TypeUtility.hasGenericParams(tm.getAnnotatedParameterTypes()[0].getType()));
         assertTrue(TypeUtility.hasGenericParams(tm.getAnnotatedParameterTypes()[1].getType()));
         assertTrue(TypeUtility.hasGenericParams(tm.getAnnotatedParameterTypes()[2].getType()));

@@ -441,20 +441,14 @@ public class BasicTools {
         return employeeList;
     }
 
-//TODO support for concrete generic parameters
-//    public static class MyClass<T> {
-//        @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
-//        public @Schema(description = "Returns list of  object") List<T> addGenericToGenericArray(@ToolArg(name = "generic list 1",
-//                                                                                                          description = "List of generics 1") T[] list1,
-//                                                                                                 @ToolArg(name = "generic list 2",
-//                                                                                                          description = "List of generics 1 ") List<T>[] list2,
-//                                                                                                 @ToolArg(name = "generic", description = "Generic object") T item) {
-//            return null;
-//            //comment
-//        }
-//    }
-//
-//    @ApplicationScoped
-//    public static class MyBean extends MyClass<String> {}
+    @Tool(name = "addPersonToListToolResponse", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
+    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" }, \"description\": \"Returns list of person object\" }",
+                   description = "Returns list of person object") ToolResponse addPersonToListToolResponse(@ToolArg(name = "employeeList",
+                                                                                                                    description = "List of people") List<Person> employeeList,
+                                                                                                           @ToolArg(name = "person",
+                                                                                                                    description = "Person object") Optional<Person> person) {
+        employeeList.add(person.get());
+        return ToolResponse.structuredSuccess(employeeList);
+    }
 
 }

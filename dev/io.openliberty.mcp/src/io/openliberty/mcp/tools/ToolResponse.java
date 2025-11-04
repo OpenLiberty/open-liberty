@@ -28,6 +28,8 @@ import java.util.Map;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.meta.MetaKey;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 
 /**
  * Response to a {@code tools/call} request from the client.
@@ -83,12 +85,12 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param message a message, returned as unstructured text content
-     * @param structuredContent the structured content
+     * @param message
      * @return a successful response with structured content
      */
-    public static ToolResponse structuredSuccess(String message, Object structuredContent) {
-        return new ToolResponse(false, List.of(new TextContent(message)), structuredContent, null);
+    public static ToolResponse structuredSuccess(Object structuredContent) {
+        Jsonb jsonb = JsonbBuilder.create();
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(structuredContent))), structuredContent, null);
     }
 
     public ToolResponse(boolean isError, List<? extends Content> content, Map<MetaKey, Object> _meta) {
