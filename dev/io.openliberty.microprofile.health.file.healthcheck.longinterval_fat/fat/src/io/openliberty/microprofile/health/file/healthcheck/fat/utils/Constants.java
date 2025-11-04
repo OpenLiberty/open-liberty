@@ -42,5 +42,3 @@ public class Constants {
     public static final String READY_SHOULD_NOT_HAVE_UPDATED = "/health/ready" + SHOULD_NOT_HAVE_UPDATED;
 
 }
-
-// Made with Bob
