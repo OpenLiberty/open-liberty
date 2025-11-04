@@ -542,6 +542,10 @@ org.bouncycastle:bcpg-jdk18on:1.78.1
 org.bouncycastle:bcpkix-jdk18on:1.78.1
 org.bouncycastle:bcprov-jdk18on:1.78.1
 org.bouncycastle:bcutil-jdk18on:1.78.1
+org.bouncycastle:bcpg-jdk18on:1.82
+org.bouncycastle:bcpkix-jdk18on:1.82
+org.bouncycastle:bcprov-jdk18on:1.82
+org.bouncycastle:bcutil-jdk18on:1.82
 org.brotli:dec:0.1.2
 org.checkerframework:checker-compat-qual:2.5.2
 org.codehaus.plexus:plexus-utils:3.2.1

@@ -10,8 +10,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;\${repo;org.bouncycastle:bcpkix-jdk18on;1.78.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;org.bouncycastle:bcpkix-jdk18on;1.82}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--buildpath: org.bouncycastle:bcpkix-jdk18on;version=1.78.1,\
-            org.bouncycastle:bcprov-jdk18on;version=1.78.1,\
-            org.bouncycastle:bcutil-jdk18on;version=1.78.1
+-buildpath: org.bouncycastle:bcpkix-jdk18on;version=1.82,\
+            org.bouncycastle:bcprov-jdk18on;version=1.82,\
+            org.bouncycastle:bcutil-jdk18on;version=1.82

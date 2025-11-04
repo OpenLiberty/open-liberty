@@ -22,7 +22,7 @@ test.project: true
 
 # Using the actual bouncycastle bcprov library instead of io.openliberty.org.bouncycastle one because sshd has issues.
 -buildpath: \
-    org.bouncycastle:bcprov-jdk18on;version=1.78.1,\
+    org.bouncycastle:bcprov-jdk18on;version=1.82,\
     fattest.simplicity;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
     io.openliberty.org.apache.commons.logging;version=latest,\
