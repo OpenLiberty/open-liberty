@@ -154,19 +154,18 @@ Service-Component: \
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
-	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.messaging.impl.3.4.5;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5;version=latest,\
+	io.openliberty.net.shibboleth.utilities.java.support;version=latest,\
+	io.openliberty.org.opensaml.opensaml.core;version=latest,\
+	io.openliberty.org.opensaml.opensaml.messaging.api;version=latest,\
+	io.openliberty.org.opensaml.opensaml.messaging.impl;version=latest,\
+	io.openliberty.org.opensaml.opensaml.storage.api;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.websphere.appserver.api.saml20;version=latest,\
 	com.ibm.ws.security.sso.common;version=latest,\
 	com.ibm.websphere.appserver.spi.saml20;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
-	com.ibm.ws.com.google.guava;version=latest,\
-	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1
+	com.ibm.ws.com.google.guava;version=latest
 	
 
 instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/SamlSso20Messages*.class

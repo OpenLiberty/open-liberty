@@ -16,12 +16,11 @@ configurations {
 }
 
 dependencies {
-    opensaml 'org.opensaml:opensaml-core:3.4.5'
+    opensaml 'io.openliberty.org.opensaml:opensaml-messaging-impl:4.3.2.1'
 }
 
 task extractInjectedClasses(type: Copy) {
    from zipTree(configurations.opensaml[0])
-   include "org/opensaml/core/config/Configuration.class"
    into compileJava.destinationDirectory
 }
 

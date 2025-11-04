@@ -21,10 +21,10 @@
     io.openliberty.org.opensaml:opensaml-xmlsec-impl;version='4.3.2.1',\
     io.openliberty.org.opensaml:opensaml-security-api;version='4.3.2.1',\
     io.openliberty.org.opensaml:opensaml-security-impl;version='4.3.2.1',\
-    com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5;version=latest,\
+    io.openliberty.org.opensaml.opensaml.messaging.api;version=latest,\
     com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest,\
     org.cryptacular:cryptacular;version=1.2.4,\
-    com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
+    io.openliberty.net.shibboleth.utilities.java.support;version=latest,\
 	io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
 	io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
 	io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest,\

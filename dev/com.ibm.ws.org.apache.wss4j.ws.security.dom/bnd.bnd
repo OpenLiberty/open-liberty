@@ -28,5 +28,5 @@ instrument.classesExcludes: org/apache/wss4j/dom/util/*.class, \
  com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
  com.ibm.ws.org.slf4j.api;version=latest, \
  com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
- com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest, \
+ io.openliberty.org.opensaml.opensaml.core;version=latest, \
  com.ibm.websphere.appserver.spi.logging;version=latest

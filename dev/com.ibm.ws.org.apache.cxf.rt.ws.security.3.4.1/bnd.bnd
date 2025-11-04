@@ -114,7 +114,7 @@ instrument.classesIncludes: \
   com.ibm.ws.org.apache.wss4j.ws.security.stax;version=latest, \
   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
   com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest, \
-  com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest, \
+  io.openliberty.org.opensaml.opensaml.core;version=latest, \
   com.ibm.ws.org.slf4j.api;version=latest, \
   com.ibm.websphere.appserver.spi.logging, \
   com.ibm.websphere.javaee.jws.1.0;version=latest, \

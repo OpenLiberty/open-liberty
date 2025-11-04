@@ -22,6 +22,6 @@
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.ws.com.google.guava;version=latest,\
 	com.google.code.findbugs:jsr305;version='3.0.2',\
-	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
+	io.openliberty.net.shibboleth.utilities.java.support;version=latest,\
 	org.jsr-305
 

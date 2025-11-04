@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5</name>
+	<name>io.openliberty.org.opensaml.opensaml.messaging.api</name>
 	<comment></comment>
 	<projects>
 	</projects>
