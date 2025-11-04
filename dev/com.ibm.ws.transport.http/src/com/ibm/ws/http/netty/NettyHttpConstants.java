@@ -9,6 +9,12 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.util.concurrent.CompletableFuture;
+
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
+import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
+
 import io.netty.util.AttributeKey;
 
 /**
@@ -35,6 +41,13 @@ public class NettyHttpConstants {
     public static final AttributeKey<Boolean> THROW_FFDC = AttributeKey.valueOf("throwFFDC");
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
+    public static final AttributeKey<HttpInputStreamImpl> HTTP_INPUT_STREAM = AttributeKey.valueOf("httpInputStream");
+    public static final AttributeKey<Runnable> ASYNC_READ_CALLBACK = AttributeKey.valueOf("asyncReadCallback");
+    public static final AttributeKey<Boolean> UPGRADED = AttributeKey.valueOf("httpUpgraded");
+    public static final AttributeKey<HttpOutputStreamObserver> UPGRADE_OBSERVER = AttributeKey.valueOf("upgradeObserver");
+    public static final AttributeKey<HttpChannelConfig> HTTP_CONFIG = AttributeKey.valueOf("httpConfig");
+    public static final AttributeKey<CompletableFuture<Void>> UPGRADE_READY_PROMISE =
+        AttributeKey.valueOf("upgrade.ready.promise");
 
     public enum ProtocolName {
         HTTP1("HTTP1"),

@@ -116,6 +116,8 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     /** Host string parsed from Host header */
     private transient String sHdrHost = null;
 
+    private HttpTrailers trailers = null;
+
     public NettyRequestMessage(FullHttpRequest request, HttpInboundServiceContext isc, ChannelHandlerContext nettyContext) {
         init(request, isc, nettyContext);
 
@@ -786,9 +788,12 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public HttpTrailers getTrailers() {
-//        if (request.trailingHeaders().isEmpty())
-//            return null;
-        return new NettyTrailers(this.request.trailingHeaders());
+        
+        return (this.trailers != null) ? trailers: new NettyTrailers(this.request.trailingHeaders());
+    }
+
+    public void setTrailers(HttpHeaders trailers){
+        this.trailers = new NettyTrailers(trailers);
     }
 
     @Override

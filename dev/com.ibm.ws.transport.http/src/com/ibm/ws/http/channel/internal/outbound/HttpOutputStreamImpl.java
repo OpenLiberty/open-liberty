@@ -11,8 +11,14 @@ package com.ibm.ws.http.channel.internal.outbound;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -22,16 +28,24 @@ import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
 import com.ibm.ws.http.channel.h2internal.exceptions.StreamClosedException;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
+import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamConnectWeb;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.genericbnf.exception.MessageSentException;
+import com.ibm.wsspi.http.channel.HttpResponseMessage;
 import com.ibm.wsspi.http.channel.exception.WriteBeyondContentLengthException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.util.AttributeKey;
 
 /**
  * HTTP transport output stream that wraps the bytebuffer usage and the HTTP
@@ -165,6 +179,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
      */
     @Override
     public void clear() {
+        System.out.println("DEBUG HttpOputStream#clear was called");
         if (null != this.output) {
             for (int i = 0; i < this.output.length; i++) {
                 if (null != this.output[i]) {
@@ -473,6 +488,15 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             return;
         }
         try {
+            
+            Tr.debug(tc, "flushHeaders: willFireObserver=" + (obs != null && !this.WCheadersWritten)
+                         + " WCheadersWritten=" + this.WCheadersWritten);
+
+            Tr.debug(tc, "flushHeaders -> isUpgrade101: " + isUpgrade101() );
+
+            if (isUpgrade101()) {
+                awaitUpgradePipelineInstalled();
+            }
             this.isc.sendResponseHeaders();
         } catch (MessageSentException mse) {
             FFDCFilter.processException(mse, getClass().getName(),
@@ -540,10 +564,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         try {
             WsByteBuffer[] content = (writingBody) ? this.output : null;
 
+            final boolean is101 = isUpgrade101();
             if (isClosed() || this.isClosing) {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
-                    this.isc.finishResponseMessage(content);
+
+                    System.out.println("DEBUG: skipping finishResponseMessage?: " + is101);
+                    if(!is101)
+                        this.isc.finishResponseMessage(content);
                     this.isClosing = false;
                     this.hasFinished = true;
                 }
@@ -627,6 +655,11 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             validate();
             this.closed = true;
             this.ignoreFlush = false;
+            if(isUpgrade101()){
+                System.out.println("DEBUG HttpOutputStreamImpl isUpgrade101 calling clear and returning ");
+                clear();
+                return;
+            }
             flushBuffers();
         } catch (IOException ioe) {
             this.closed = true;
@@ -724,13 +757,21 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
     @Override
     public void setObserver(HttpOutputStreamObserver obs) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "obs  ->" + obs);
+            Tr.debug(tc, "obs  ->" + this.obs);
         }
         this.obs = obs;
+        
     }
 
     @Override
     public void setWebC_headersWritten(boolean headersWritten) {
+        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
+        // Start from index 1 to skip the printCurrentStackTrace method itself
+        for (int i = 1; i < elements.length; i++) {
+            StackTraceElement s = elements[i];
+            System.out.println("\tat " + s.getClassName() + "." + s.getMethodName() +
+                               "(" + s.getFileName() + ":" + s.getLineNumber() + ")");
+        }
         this.WCheadersWritten = headersWritten;
     }
 
@@ -774,6 +815,51 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             throw this.error;
         }
 
+    }
+
+    private boolean isUpgrade101() {
+        // isc/response exist because we just validated earlier in flushHeaders()
+        HttpResponseMessage resp = this.isc.getResponse();
+        if (resp == null)
+            return false;
+        int sc = resp.getStatusCodeAsInt(); // or getStatusCodeAsInt()
+        if (sc != 101)
+            return false;
+
+        String conn = resp.getHeader(HttpHeaderKeys.HDR_CONNECTION).asString();
+        String upg = resp.getHeader("Upgrade").asString();
+        return conn != null
+               && io.netty.util.AsciiString.containsIgnoreCase(conn, "upgrade")
+               && upg != null && !upg.isEmpty();
+    }
+
+    private void awaitUpgradePipelineInstalled() {
+        if (!(isc instanceof HttpInboundServiceContextImpl)) return;
+
+        ChannelHandlerContext ctx = ((HttpInboundServiceContextImpl) isc).getNettyContext();
+        if (ctx == null) return;
+
+        CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise == null) {
+            promise = new CompletableFuture<>();
+            ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+        }
+        System.out.println("UG-PROMISE set    ch=" + ctx.channel().id().asShortText() +
+                           " p@" + System.identityHashCode(promise));
+
+     
+        ctx.executor().execute(() ->
+            ctx.pipeline().fireUserEventTriggered(
+                com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
+
+        try {
+            promise.get(750, TimeUnit.MILLISECONDS); 
+        } catch (TimeoutException te) {
+            Tr.debug(tc, "awaitUpgradePipelineInstalled: timed out waiting for pipeline switch; proceeding");
+        } catch (Exception e) {
+            Tr.debug(tc, "awaitUpgradePipelineInstalled: interrupted/failure; proceeding " + e);
+            Thread.currentThread().interrupt();
+        }
     }
     
 }

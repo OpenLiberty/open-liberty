@@ -9,22 +9,26 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound;
 
-import java.lang.ref.Reference;
 import java.net.InetSocketAddress;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
-import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpResponseImpl;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.message.BodyQueue;
+import com.ibm.ws.http.netty.message.NettyRequestMessage;
+import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
+import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
 import com.ibm.wsspi.http.channel.error.HttpError;
@@ -36,6 +40,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -43,260 +48,350 @@ import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObject;
+import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
+import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.TooLongHttpHeaderException;
 import io.netty.handler.codec.http2.Http2Connection;
-import io.netty.handler.codec.http2.Http2Exception.StreamException;
-import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.codec.http2.Http2Error;
+import io.netty.handler.codec.http2.Http2Exception.StreamException;
 import io.netty.handler.codec.http2.Http2Stream;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 
-import io.netty.buffer.UnpooledByteBufAllocator;
+import io.netty.buffer.ByteBufUtil;
+import io.netty.channel.Channel;
+
+
+
+import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 
 /**
- *
+ * Dispatcher: wires upgrade and hands off body streaming to BodyQueue (HTTP) or UpgradeHandler (post-101).
  */
 public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
-
     private static final TraceComponent tc = Tr.register(HttpDispatcherHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    HttpChannelConfig config;
+    private final HttpChannelConfig config;
     private ChannelHandlerContext context;
-    private final DefaultFullHttpResponse errorResponse;
-    private static final String MAX_STREAMS_REFUSED_MESSAGE = "too many client-initiated streams have been refused; closing the connection";
 
-    //Netty streaming (autoRead off, no aggregator)
-    private boolean streaming;
+    private final DefaultFullHttpResponse errorResponse;
+
     private BodyQueue queue;
     private HttpDispatcherLink link;
 
     private final java.util.ArrayDeque<HttpContent> earlyContents = new java.util.ArrayDeque<>();
-    private boolean streamingInitialized;
+    private final java.util.ArrayDeque<io.netty.buffer.ByteBuf> earlyUpgradeBytes = new java.util.ArrayDeque<>();
+
+    private final java.util.concurrent.atomic.AtomicBoolean commitScheduled = new java.util.concurrent.atomic.AtomicBoolean(false);
+    private final java.util.concurrent.atomic.AtomicBoolean upgradeCommitted = new java.util.concurrent.atomic.AtomicBoolean(false);
+    private volatile boolean upgradingNow;
+    private volatile boolean streamingInitialized;
 
 
-    // private HttpDispatcherLink link;
+    private static final String UPGRADE_TRACE_ID = "UGTRACE";
+    private static final io.netty.util.AttributeKey<Long> ATTR_SEQ = io.netty.util.AttributeKey.valueOf("ug.seq");
+    private static final io.netty.util.AttributeKey<Long> ATTR_TID = io.netty.util.AttributeKey.valueOf("ug.tid");
+
+    private enum CommitTrigger {
+        FLUSH_OBSERVER, EARLY_BYTES, RETRY_TASK
+    }
+
+    private final java.util.concurrent.atomic.AtomicReference<CommitTrigger> commitTrigger = new java.util.concurrent.atomic.AtomicReference<>(null);
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
         super(false);
-        Objects.requireNonNull(config);
-        this.config = config;
-        errorResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST);
+        this.config = Objects.requireNonNull(config);
+        
+
+        this.errorResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST);
+    }
+
+    private long nextSeq(ChannelHandlerContext ctx) {
+        Long s = ctx.channel().attr(ATTR_SEQ).get();
+        long n = (s == null ? 0L : s) + 1L;
+        ctx.channel().attr(ATTR_SEQ).set(n);
+        return n;
+    }
+
+    private long ensureTraceId(ChannelHandlerContext ctx) {
+        Long tid = ctx.channel().attr(ATTR_TID).get();
+        if (tid != null)
+            return tid;
+        long newTid = System.nanoTime(); // unique enough
+        ctx.channel().attr(ATTR_TID).set(newTid);
+        return newTid;
+    }
+
+    private String chid(ChannelHandlerContext ctx) {
+        return ctx.channel().id().asShortText();
+    }
+
+    
+
+    // Compact pipeline snapshot: handler simple names in order
+    private String pipelineNames(ChannelPipeline p) {
+        StringBuilder sb = new StringBuilder("[");
+        for (String n : p.names()) {
+            sb.append(n).append(',');
+        }
+        if (sb.length() > 1)
+            sb.setLength(sb.length() - 1);
+        return sb.append(']').toString();
+    }
+
+    private void t(ChannelHandlerContext ctx, String at, String fmt, Object... args) {
+        long tid = ensureTraceId(ctx);
+        long seq = nextSeq(ctx);
+        String msg = String.format(fmt, args);
+        Tr.debug(tc, String.format("UG|tid=%d|seq=%d|at=%s|ch=%s|thr=%s|%s",
+                                   tid, seq, at, chid(ctx), thr(), msg));
+    }
+
+    private static String bufInfo(ByteBuf b) {
+        return String.format("buf@%x rc=%d ridx=%d widx=%d cap=%d",
+                             System.identityHashCode(b), b.refCnt(), b.readerIndex(), b.writerIndex(), b.capacity());
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext context) throws Exception {
-        if(!context.channel().config().isAutoRead()){
-            Tr.debug(tc, "Dispatcher.channelActive -> issue initial read");
-            context.channel().read();
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        if (!ctx.channel().config().isAutoRead()) {
+            Tr.debug(tc, "HTTP: channelActive -> initial read()");
+            ctx.channel().read();
         }
-        super.channelActive(context);
+        snapCtx("channelActive", ctx);
+        super.channelActive(ctx);
     }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) {
-        // Store the context for later use
         context = ctx;
-        context.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(0);
-        context.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(0);
+        ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(0);
+        ctx.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(0);
+        //Should we have this in channel start instead of passing it as handler param?
+        ctx.channel().attr(NettyHttpConstants.HTTP_CONFIG).set(config);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "handlerAdded cid=" + cid(ctx.channel()) + " autoRead=" + ctx.channel().config().isAutoRead());
+            dumpPipeline(ctx.pipeline(), "onAdd");
+        }
+        
     }
 
-    // Method to allow direct invocation
-    // TODO check if this can be cleaned up and removed
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        if (evt instanceof Upgrade101CommittedEvent) {
+            // If the flip already happened, satisfy any late waiter immediately.
+            // if (upgradeCommitted.get()) {
+            //     io.netty.channel.ChannelPromise waiter = ctx.channel().attr(NettyHttpConstants.UPGRADE_FLIP_PROMISE).getAndSet(null);
+            //     if (waiter != null && !waiter.isDone()) {
+            //         t(ctx, "userEvt", "flip already committed; completing waiter");
+            //         waiter.setSuccess();
+            //     }
+            //     return;
+            // }
+            t(ctx, "userEvt", "UPGRADE_101_COMMITTED (triggerWas=%s scheduled=%s committed=%s)",
+              commitTrigger.get(), commitScheduled.get(), upgradeCommitted.get());
+            commitTrigger.compareAndSet(null, CommitTrigger.FLUSH_OBSERVER);
+            if (commitScheduled.compareAndSet(false, true)) {
+                onUpgradeCommitted(ctx);
+            } else {
+                t(ctx, "userEvt", "commit already scheduled");
+            }
+            return;
+        }
+        super.userEventTriggered(ctx, evt);
+    }
+
+    // Direct invocation path for tests
     public void processMessageDirectly(FullHttpRequest request) throws Exception {
         channelRead0(context, request);
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, HttpObject message) throws Exception{
-        // //Aggregated path
-        // if(message instanceof FullHttpRequest){
-        //     FullHttpRequest full = (FullHttpRequest) message;
-        //     if(full.decoderResult().isFinished() && full.decoderResult().isSuccess()){
-        //         FullHttpRequest retained = full.retainedDuplicate();
-        //         HttpDispatcher.getExecutorService().execute(() -> {
-        //             try{
-        //                 newRequest(context, retained);
-        //             }catch(Throwable t){
-        //                 try{
-        //                     exceptionCaught(context, t);
-        //                 }catch(Exception e){
-        //                     context.close();
-        //                 }
-        //             }finally {
-        //                 ReferenceCountUtil.release(retained);
-        //             }
-        //         });
-        //     } else if (full.decoderResult().cause() != null){
-        //         full.decoderResult().cause().printStackTrace(); //TODO: we need to change this
-        //     }
-        //     return;
-        // }
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (upgradingNow && msg instanceof ByteBuf) {
+            ByteBuf buf = (ByteBuf) msg;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                dumpBuf("EARLY-101 incoming", buf);
+            }
+            ByteBuf snapshot = buf.retainedSlice(buf.readerIndex(), buf.readableBytes());
+            t(ctx, "earlyBytes",
+              "captured %s (upgradingNow=%s upgradeCommitted=%s commitScheduled=%s)",
+              bufInfo(snapshot), upgradingNow, upgradeCommitted.get(), commitScheduled.get());
+            earlyUpgradeBytes.add(snapshot);
+            ReferenceCountUtil.release(buf);
 
-        if (message instanceof HttpRequest) {
-            HttpRequest request = (HttpRequest) message;
-            if(queue != null)
-                Tr.debug(tc, "Resetting queue for new request; old=" + System.identityHashCode(queue)); 
-            
-                queue = new BodyQueue(context.alloc());
-                earlyContents.clear();
-
-            streamingInitialized = false;
-            link = null;
-
-            beginStreamingRequest(context, request);
-
-            // Drain any early content that might have arrived in the same read cycle
-            HttpContent early;
-            while ((early = earlyContents.poll()) != null) {
-                try {
-                    if (queue == null) {
-                        throw new IllegalStateException("Queue should have been initialized before draining early contents");
-                    }
-                    final ByteBuf data = early.content();
-                    if (data.isReadable()) {
-                        queue.enqueueRetained(data);
-                    }
-                    if (early instanceof LastHttpContent) {
-                        queue.signalEos();
-                        if (this.link != null) this.link.setBodyComplete();
-                    }
-                } finally {
-                    early.release();
-                }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "EARLY-101 stored count=" + earlyUpgradeBytes.size() + " " + flags());
             }
 
-            if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
-                context.executor().execute(() -> context.channel().read());
+            if (commitTrigger.compareAndSet(null, CommitTrigger.EARLY_BYTES)) {
+                t(ctx, "earlyBytes", "setting trigger=EARLY_BYTES");
+            }
+
+            if (commitScheduled.compareAndSet(false, true)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Scheduling onUpgradeCommitted (from channelRead) inEL=" + ctx.executor().inEventLoop());
+                }
+                ctx.executor().execute(() -> {
+                    t(ctx, "earlyBytes.schedule", "inEventLoop=%s", ctx.executor().inEventLoop());
+                    if (upgradingNow && !upgradeCommitted.get()) {
+                        onUpgradeCommitted(ctx);
+                    }
+                });
+            } else {
+                t(ctx, "earlyBytes", "commit already scheduled");
             }
             return;
         }
-        else if (message instanceof HttpContent) {
-            HttpContent content = (HttpContent) message;
+        super.channelRead(ctx, msg);
+    }
 
-            // If streaming not yet initialized, retain and park the content
-            if (!streamingInitialized || queue == null) {
-                content.retain();               // we will release after draining
+    @Override
+    protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+        if (msg instanceof HttpRequest) {
+            currentReqId = REQ_SEQ.incrementAndGet();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                HttpRequest req = (HttpRequest) msg;
+                Tr.debug(tc, "REQ BEGIN reqId=" + currentReqId +
+                             " uri=" + req.uri() +
+                             " ver=" + req.protocolVersion() +
+                             " isUpgrade=" + isUpgrade(req));
+                snapCtx("req-begin", ctx);
+            }
+            HttpRequest req = (HttpRequest) msg;
+            upgradingNow = false;
+            streamingInitialized = false;
+            if (queue != null)
+                Tr.debug(tc, "HTTP: new request; resetting BodyQueue old=" + System.identityHashCode(queue));
+
+            queue = new BodyQueue(ctx.alloc());
+            earlyContents.clear();
+            earlyUpgradeBytes.clear();
+            link = null;
+
+            if (isUpgrade(req) && (req instanceof FullHttpRequest)) {
+                ByteBuf content = ((FullHttpRequest) req).content();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    dumpBuf("EARLY-CONTENT(upgNow) park", content);
+                }
+                if (content.isReadable()) {
+                    content.retain(); 
+                    earlyUpgradeBytes.add(content); 
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "HTTP: parked aggregated upgrade body bytes=" + content.readableBytes());
+                    }
+                }
+            }
+
+            beginStreamingRequest(ctx, req);
+
+            if (!upgradingNow) {
+                // Drain any early content (arrived in same read cycle)
+                drainEarlyHttpContentToBodyQueue(ctx);
+            }
+
+            if (!ctx.channel().config().isAutoRead() && queue.wantsInput()) {
+                ctx.executor().execute(() -> ctx.channel().read());
+            }
+            return;
+        }
+
+        if (msg instanceof HttpContent) {
+            HttpContent content = (HttpContent) msg;
+
+            if (upgradingNow) {
+                content.retain();
+                earlyContents.add(content);
+                t(ctx, "park.content", "last=%s bytes=%d %s",
+                  (content instanceof LastHttpContent), content.content().readableBytes(), bufInfo(content.content()));
+
+                
+                ReferenceCountUtil.release(content);
+                return;
+            }
+
+            if (!streamingInitialized && queue == null) {
+                content.retain();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    dumpBuf("EARLY-CONTENT(pre-stream) park", content.content());
+                }
                 earlyContents.add(content);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "DISP: parked early HttpContent readable="
-                            + content.content().readableBytes() + ", last=" + (content instanceof LastHttpContent));
+                    Tr.debug(tc, "HTTP: parked early HttpContent bytes=" + content.content().readableBytes()
+                                 + " last=" + (content instanceof LastHttpContent));
                 }
-                ReferenceCountUtil.release(message); // release the original inbound reference
+                ReferenceCountUtil.release(msg);
                 return;
             }
 
             try {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "DISP: HttpContent arrived, readable="
-                            + content.content().readableBytes() + " last=" + (content instanceof LastHttpContent));
-                }
                 ByteBuf data = content.content();
-                if (data.isReadable()) {
+                if (data.isReadable())
                     queue.enqueueRetained(data);
-                }
                 if (content instanceof LastHttpContent) {
+                    HttpHeaders trailers = ((LastHttpContent) content).trailingHeaders();
+                    if(!trailers.isEmpty()){
+                        System.out.println("trailers >>> found >>> " + trailers);
+                        HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
+                        req.setTrailers(trailers);
+                    }
                     queue.signalEos();
-                    if (this.link != null) this.link.setBodyComplete();
+                    if (this.link != null)
+                        this.link.setBodyComplete();
                 }
-                if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
-                    context.executor().execute(() -> context.channel().read());
+                if (!ctx.channel().config().isAutoRead() && queue.wantsInput()) {
+                    ctx.executor().execute(() -> ctx.channel().read());
                 }
             } finally {
                 ReferenceCountUtil.release(content);
             }
             return;
-        
-
-
-
-        // //Streaming path
-        // if(message instanceof HttpRequest){
-        //     HttpRequest request = (HttpRequest) message;
-        //     HttpDispatcher.getExecutorService().execute(() -> {
-        //         beginStreamingRequest(context, request);
-        //     });
-            
-        // }
-        // else if(message instanceof HttpContent){
-        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //         Tr.debug(tc, "DISP: HttpContent arrived, readable=" + ((HttpContent) message).content().readableBytes()
-        //                      + " last=" + (message instanceof LastHttpContent));
-        //     }
-        //     HttpContent content = (HttpContent) message;
-        //     try{
-        //         if(queue == null){
-        //             throw new IllegalStateException("Queue should have been initialized");
-        //         }
-
-        //         if (queue != null) {
-        //             ByteBuf data = content.content();
-        //             if (data.isReadable()) {
-        //                 // We retain into the queue; it is safe to release the HttpContent itself.
-        //                 queue.enqueueRetained(data);
-        //             }
-        //         }
-        //         if (content instanceof LastHttpContent) {
-        //             queue.signalEos();
-        //             if (this.link != null) {
-        //                 this.link.setBodyComplete();
-        //             }
-        //         }
-        //         if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
-        //             context.channel().read();
-        //         }
-        //     } finally {
-        //         ReferenceCountUtil.release(content);
-        //     }
-        //     return;
-            // if(!streaming || queue == null){ //pass-thru
-            //     context.fireChannelRead(content.retain());
-            //     return;
-            // }
-            // ByteBuf buf = content.content();
-            // if(buf.isReadable()){
-            //     queue.enqueueRetained(buf); //release the buffer in input stream
-            // } else{
-            //     buf.release();
-            // }
-        }
+        }    
     }
-    
+
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-        // With autoRead=false we must explicitly drive the next read *after* a read cycle completes.
-        if (!ctx.channel().config().isAutoRead() && queue != null && queue.wantsInput()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "READ-COMPLETE: scheduling channel.read(); wantsInput=" + queue.wantsInput());
-            }
-            // schedule onto the event loop to ensure it propagates tail→head on the next tick
+        if (!ctx.channel().config().isAutoRead() && !upgradingNow && queue != null && queue.wantsInput()) {
             ctx.executor().execute(() -> ctx.channel().read());
         }
         super.channelReadComplete(ctx);
     }
 
-    private void beginStreamingRequest(ChannelHandlerContext context, HttpRequest request){
-        if(request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())){
-            context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
-        }else{
-            if(request.protocolVersion().equals(HttpVersion.HTTP_1_0)){
-                context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP10");
-            }else{
-                context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
-            }
+    private static boolean isUpgrade(HttpRequest req) {
+        final CharSequence conn = req.headers().get(HttpHeaderNames.CONNECTION);
+        final CharSequence upg = req.headers().get(HttpHeaderNames.UPGRADE);
+        if (upg == null || conn == null)
+            return false;
+        return io.netty.util.AsciiString.containsIgnoreCase(conn, "upgrade");
+    }
+
+    private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request) {
+
+        final CharSequence ae = request.headers().get(HttpHeaderNames.ACCEPT_ENCODING);
+        if (ae != null) {
+            ctx.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).set(ae.toString());
         }
-        if(context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)){
-            context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
+
+        // protocol tag on channel
+        if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
+        } else {
+            ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(request.protocolVersion().equals(HttpVersion.HTTP_1_0) ? "HTTP10" : "http");
         }
-        int numberOfRequests = context.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
-        context.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(numberOfRequests+1);
+        if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
+            ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
+        }
+        int num = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
+        ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(num + 1);
 
         this.link = new HttpDispatcherLink();
 
@@ -304,157 +399,287 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         final long cl = HttpUtil.getContentLength(request, -1);
         final boolean expect100 = HttpUtil.is100ContinueExpected(request);
         final boolean hasBody = chunked || cl > 0;
+        final boolean upg = isUpgrade(request);
+
+        commitScheduled.set(false);
+        upgradeCommitted.set(false);
+
+        commitTrigger.set(null);
+        t(ctx, "begin",
+          "autoRead=%s upg=%s cl=%d chunked=%s expect100=%s pipeline=%s",
+          ctx.channel().config().isAutoRead(), upg, cl, chunked, expect100, pipelineNames(ctx.pipeline()));
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "beginStreamingRequest: CL=" + cl + ", chunked=" + chunked + ", expect100=" + expect100);
+            Tr.debug(tc, String.format(
+                                       "beginStreamingRequest reqId=%d CL=%d chunked=%s expect100=%s upgrade=%s",
+                                       currentReqId, cl, chunked, expect100, upg));
+            snapCtx("beginStreamingRequest", ctx);
         }
 
-        
-        link.initStreaming(context, request, config);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "beginStreamingRequest: CL=" + cl + " chunked=" + chunked + " expect100=" + expect100 + " upg=" + upg);
+        }
 
-        HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
-        HttpInputStreamImpl body = req.getBody(); 
-        this.streaming = true;
+        // Initialize link & request/response
+        link.initStreaming(ctx, request, config);
+        final HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
+        final HttpInputStreamImpl body = req.getBody();
+
+        if (upg) {
+            // Defer pipeline switch until we commit 101+Upgrade
+            
+            upgradingNow = true;
+            HttpDispatcher.getExecutorService().execute(() -> link.ready());
+            return;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "non-upgrade: wiring body queue=" + System.identityHashCode(queue));
+        }
+
+        // Non-upgrade: expose input stream and wire body queue
+        ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(body);
         final String contentEncoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
-        body.nettyConfigureStreaming(queue, context, contentEncoding, cl, chunked);
+        body.nettyConfigureStreaming(queue, ctx, contentEncoding, cl, chunked);
 
-
-
-        
         if (!hasBody && !expect100) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "beginStreamingRequest: no body; signal EOS + setBodyComplete");
-            }
             queue.signalEos();
             if (this.link != null)
-                this.link.setBodyComplete(); // this calls isc.setBodyComplete() + ReadFlowHandler.markRequestConsumed(ctx)
-        }
-        if (!context.channel().config().isAutoRead() && queue.wantsInput()) {
-            context.channel().read();
+                this.link.setBodyComplete();
         }
 
         streamingInitialized = true;
-        HttpDispatcher.getExecutorService().execute(() -> {link.ready();});
 
+        if (!ctx.channel().config().isAutoRead() && queue.wantsInput())
+            ctx.channel().read();
+
+        
+        HttpDispatcher.getExecutorService().execute(() -> link.ready());
+    }
+
+    private void drainEarlyHttpContentToBodyQueue(ChannelHandlerContext ctx) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "beginStreamingRequest: CE=%s, wantsInput=%s, autoRead=%s",
-                     contentEncoding, queue.wantsInput(), context.channel().config().isAutoRead());
+            Tr.debug(tc, "drainEarlyHttpContentToBodyQueue count=" + earlyContents.size());
+        }
+        t(ctx, "drainToBodyQueue.begin", "count=%d", earlyContents.size());
+        HttpContent early;
+        while ((early = earlyContents.poll()) != null) {
+            try {
+
+                final ByteBuf data = early.content();
+
+                t(ctx, "drainToBodyQueue.item", "last=%s bytes=%d %s",
+                  (early instanceof LastHttpContent), data.readableBytes(), bufInfo(data));
+
+                if (data.isReadable())
+                    queue.enqueueRetained(data);
+                if (early instanceof LastHttpContent) {
+                    queue.signalEos();
+                    if (this.link != null)
+                        this.link.setBodyComplete();
+                }
+            } finally {
+                early.release();
+                t(ctx, "drainToBodyQueue.end", "done");
+            }
+        }
+    }
+
+    private void onUpgradeCommitted(ChannelHandlerContext ctx) {
+        if (!ctx.executor().inEventLoop()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "onUpgradeCommitted off-EL, rescheduling...");
+            }
+            t(ctx, "commit.defer", "not in EL, deferring");
+            ctx.executor().execute(() -> onUpgradeCommitted(ctx));
+            return;
+        }
+        if (!upgradeCommitted.compareAndSet(false, true)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "onUpgradeCommitted: already committed; skipping");
+            }
+            t(ctx, "commit.skip", "already committed (trigger=%s)", commitTrigger.get());
+            return;
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            snapCtx("onUpgradeCommitted:enter", ctx);
+            dumpPipeline(ctx.pipeline(), "preFlip");
+        }
 
-        // this.link.initStreaming(context, request, config);
+        final ChannelPipeline p = ctx.pipeline();
+        t(ctx, "commit.begin",
+          "trigger=%s autoRead=%s pipeline(before)=%s earlyContents=%d earlyUpgBytes=%d",
+          commitTrigger.get(), ctx.channel().config().isAutoRead(),
+          pipelineNames(p), earlyContents.size(), earlyUpgradeBytes.size());
 
-        // this.queue = new BodyQueue(context.alloc());
-        
-        // //get input stream
-        // com.ibm.wsspi.http.HttpRequest transportRequest = this.link.getRequest();
-        // if(!(transportRequest instanceof HttpRequestImpl)){
-        //     throw new IllegalStateException("Unexepcted request type");
-        // }
-        // System.out.println("Request is: " + transportRequest);
-        // HttpRequestImpl requestImpl = (HttpRequestImpl) transportRequest;
-        // System.out.println("Stream obtained is: " + requestImpl.getBody());
-        // if(!(requestImpl.getBody() instanceof HttpInputStreamImpl)){
-        //     throw new IllegalStateException("Unexpected stream type");
-        // }
-        // HttpInputStreamImpl stream = (HttpInputStreamImpl)transportRequest.getBody();
 
-        // String encoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
-        // stream.nettyConfigureStreaming(queue, context, encoding);
 
-        // //If not input stream throw newIllegalStateException
+        removeIfPresent(p, HttpServerCodec.class);
+        removeIfPresent(p, HttpObjectAggregator.class);
+        removeIfPresent(p, CRLFValidationHandler.class);
+        removeIfPresent(p, TimeoutHandler.class);
+        removeIfPresent(p, LibertyHttpRequestHandler.class);
+        removeIfPresent(p, io.netty.handler.codec.http.HttpServerKeepAliveHandler.class);
 
-        // this.streaming = true;
-        // link.ready();
 
-        // if(!context.channel().config().isAutoRead() && queue.wantsInput()){
-        //     context.read();
-        // }
+        NettyServletUpgradeHandler upgrade = p.get(NettyServletUpgradeHandler.class);
+        if (upgrade == null) {
+            if (p.get("HTTP_DISPATCHER") != null) {
+                p.addBefore("HTTP_DISPATCHER", NettyServletUpgradeHandler.NAME, new NettyServletUpgradeHandler(ctx.channel()));
+                t(ctx, "commit.add", "ServletUpgradeHandler before HTTP_DISPATCHER");
+            } else {
+                p.addLast(NettyServletUpgradeHandler.NAME, new NettyServletUpgradeHandler(ctx.channel()));
+                t(ctx, "commit.add", "ServletUpgradeHandler addLast");
+            }
+            upgrade = p.get(NettyServletUpgradeHandler.class);
+        } else {
+            t(ctx, "commit.add", "ServletUpgradeHandler already present");
+        }
 
-        // final long cl = HttpUtil.getContentLength(request, 0L);
-        // final boolean chunked = HttpUtil.isTransferEncodingChunked(request);
-        // if(!chunked && cl == 0){
-        //     if(this.link !=null){
-        //         this.link.setBodyComplete();
-        //     }
-        // }
-        
+        // Deliver parked content to the *upgrade handler context*
+        final ChannelHandlerContext upgCtx = p.context(NettyServletUpgradeHandler.class);
+        if (upgCtx == null) {
+            t(ctx, "commit.err", "ServletUpgradeHandler context is null");
+        }
+
+        HttpContent early;
+        int ec = 0;
+        while ((early = this.earlyContents.poll()) != null) {
+            try {
+                ByteBuf d = early.content();
+                if (d.isReadable() && upgCtx != null) {
+                    t(ctx, "commit.flushEarlyContent", "bytes=%d %s", d.readableBytes(), bufInfo(d));
+                    upgCtx.fireChannelRead(d.retain());
+                    ec++;
+                }
+            } finally {
+                early.release();
+            }
+        }
+        ByteBuf raw;
+        int eu = 0;
+        while ((raw = earlyUpgradeBytes.poll()) != null) {
+            try {
+                if (raw.isReadable() && upgCtx != null) {
+                    t(ctx, "commit.flushEarlyBytes", "bytes=%d %s", raw.readableBytes(), bufInfo(raw));
+                    upgCtx.fireChannelRead(raw.retain());
+                    eu++;
+                }
+            } finally {
+                raw.release();
+            }
+        }
+        if (upgCtx != null) {
+            t(ctx, "commit.readComplete", "flushed earlyContents=%d earlyUpgBytes=%d", ec, eu);
+            upgCtx.fireChannelReadComplete();
+        }
+
+        // Mark and cleanup
+        ReadFlowHandler.setClosedOrUpgraded(ctx);
+        ctx.channel().attr(NettyHttpConstants.UPGRADED).set(Boolean.TRUE);
+        ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(null);
+
+        try {
+            if (this.link != null && this.link.getVirtualConnection() != null) {
+                this.link.getVirtualConnection().getStateMap().put(com.ibm.ws.transport.access.TransportConstants.UPGRADED_CONNECTION, "true");
+            }
+        } catch (Throwable ignore) {
+            // keep pipeline alive regardless
+        }
+
+        Runnable pending = ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+        if (pending != null) {
+            t(ctx, "commit.pending", "running ASYNC_READ_CALLBACK once");
+            HttpDispatcher.getExecutorService().execute(pending);
+        }
+
+        if (!ctx.channel().config().isAutoRead()) {
+            t(ctx, "commit.nudgeRead", "autoRead=false, issuing read()");
+            ctx.channel().read();
+        }
+
+        try {
+            CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).getAndSet(null);
+            System.out.println("UG-PROMISE fetched ch=" + ctx.channel().id().asShortText() +
+                               " p@" + (promise == null ? 0 : System.identityHashCode(promise)));
+            if (promise != null && !promise.isDone()) {
+                promise.complete(null);
+                t(ctx, "commit.done", "signaled UPGRADE_READY_PROMISE");
+            } else {
+                t(ctx, "commit.done", "no waiter for UPGRADE_READY_PROMISE");
+            }
+        } catch (Throwable ignore) {
+            // keep the pipeline alive regardless
+        }
+
+        upgradingNow = false;
+        t(ctx, "commit.done", "pipeline(after)=%s", pipelineNames(p));
     }
 
     @Override
-    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        super.channelWritabilityChanged(ctx);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "exceptionCaught cid=" + cid(ctx.channel()) + " inEL=" + ctx.executor().inEventLoop() +
+                         " type=" + cause.getClass().getName() + " msg=" + String.valueOf(cause.getMessage()));
+            snapCtx("exceptionCaught", ctx);
+        }
+        int n = 0;
+        ByteBuf raw;
+        while ((raw = earlyUpgradeBytes.poll()) != null) {
+            n++;
+            raw.release();
+        }
+        t(ctx, "exception", "released earlyUpgradeBytes=%d cause=%s", n, cause.toString());
         if (cause instanceof StreamException) {
             StreamException c = (StreamException) cause;
-            HttpToHttp2ConnectionHandler handler = context.pipeline().get(HttpToHttp2ConnectionHandler.class);
+            HttpToHttp2ConnectionHandler handler = ctx.pipeline().get(HttpToHttp2ConnectionHandler.class);
             Http2Connection connection = handler.connection();
 
-            if (cause.getMessage().startsWith("Maximum active streams violated for this endpoint")) {
-                // This is for the overlay to control the amount of streams we are willing to refuse on a channel
-                if (config.getH2MaxStreamsRefused() == 0) {
-                    // Check disabled, just send a reset stream out and don't worry about the rest
-                    // Reset already handled by codec so just return here
+            if (cause.getMessage() != null && cause.getMessage().startsWith("Maximum active streams violated for this endpoint")) {
+                int maxRefused = config.getH2MaxStreamsRefused();
+                if (maxRefused == 0)
                     return;
-                }
-                // Increment max streams refused and continue
-                int streamsRefused = context.channel().attr(NettyHttpConstants.STREAMS_REFUSED).get();
-                if (++streamsRefused >= config.getH2MaxStreamsRefused()) {
-                    // Streams refused exceeded the number of configured allowed streams so closing connection
-                    // Send go away with enhance your calm
-                    handler.goAway(context, connection.remote().lastStreamCreated(), Http2Error.ENHANCE_YOUR_CALM.code(),
-                                   Unpooled.wrappedBuffer(MAX_STREAMS_REFUSED_MESSAGE.getBytes()), context.channel().newPromise());
+                int streamsRefused = ctx.channel().attr(NettyHttpConstants.STREAMS_REFUSED).get();
+                if (++streamsRefused >= maxRefused) {
+                    handler.goAway(ctx, connection.remote().lastStreamCreated(), Http2Error.ENHANCE_YOUR_CALM.code(),
+                                   Unpooled.wrappedBuffer("too many client-initiated streams have been refused; closing the connection".getBytes()),
+                                   ctx.channel().newPromise());
                 } else {
-                    // Increment streams refused attribute and let reset happen by codec
-                    context.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(streamsRefused);
+                    ctx.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(streamsRefused);
                     return;
                 }
             } else {
                 Http2Stream stream = connection.stream(c.streamId());
-                if (Objects.nonNull(stream)) {
+                if (stream != null)
                     stream.close();
-                }
                 return;
             }
         } else if (cause instanceof IllegalArgumentException) {
-            //Legacy doesnt throw ffdc on processNewInformation
-            if (context.channel().attr(NettyHttpConstants.THROW_FFDC).get() != null) {
-                context.channel().attr(NettyHttpConstants.THROW_FFDC).set(null);
-            } else if (!cause.getMessage().contains("possibly HTTP/0.9")) {
-                FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
+            if (ctx.channel().attr(NettyHttpConstants.THROW_FFDC).get() != null) {
+                ctx.channel().attr(NettyHttpConstants.THROW_FFDC).set(null);
+            } else if (cause.getMessage() == null || !cause.getMessage().contains("possibly HTTP/0.9")) {
+                FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", ctx);
             }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "exceptionCaught encountered an IllegalArgumentException : " + cause);
-            }
+            Tr.debug(tc, "IllegalArgumentException: " + cause);
             sendErrorMessage(cause);
             return;
         } else if (cause instanceof TooLongHttpHeaderException) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "exceptionCaught encountered an TooLongHttpHeaderException : " + cause);
-            }
+            Tr.debug(tc, "TooLongHttpHeaderException: " + cause);
             sendErrorMessage(cause);
             return;
-        } else if(cause instanceof TimeoutException){
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "The connection closed due to idle timeout");
-            }
-            if(cause instanceof ReadTimeoutException){
+        } else if (cause instanceof TimeoutException) {
+            Tr.debug(tc, "Idle timeout; closing channel");
+            if (cause instanceof ReadTimeoutException)
                 sendErrorMessage(cause);
-            }
-             
         }
-        context.close();
+
+        clearPerRequestAttrs(ctx);
+        ctx.close();
     }
 
     private void sendErrorMessage(Throwable cause) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Sending a 400 for throwable [" + cause + "]");
-        }
-        // TODO Need a way to check if headers were already sent or not before sending an entire response
+        Tr.debug(tc, "Sending a 400 for throwable [" + cause + "]");
         loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
         HttpUtil.setKeepAlive(errorResponse, false);
         this.context.writeAndFlush(errorResponse);
@@ -463,77 +688,154 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     private void loadErrorPage(HttpError error) {
         errorResponse.setStatus(HttpResponseStatus.valueOf(error.getErrorCode()));
         WsByteBuffer[] body = error.getErrorBody();
-        if (null != body) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HttpError returned body of length=" + body.length);
-            }
+        if (body != null) {
             errorResponse.replace(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(body)));
             if (HttpUtil.isTransferEncodingChunked(errorResponse))
                 HttpUtil.setTransferEncodingChunked(errorResponse, false);
-            HttpUtil.setContentLength(errorResponse, body.length);
+            //HttpUtil.setContentLength(errorResponse, body.length);
+            long bytes = 0;
+            for (WsByteBuffer b : body) { 
+                bytes += b.remaining(); 
+            }
+            HttpUtil.setContentLength(errorResponse, bytes);
             return;
         }
         if (HttpUtil.isTransferEncodingChunked(errorResponse))
             HttpUtil.setTransferEncodingChunked(errorResponse, false);
         HttpUtil.setContentLength(errorResponse, 0);
+
         HttpErrorPageService eps = (HttpErrorPageService) HttpDispatcher.getFramework().lookupService(HttpErrorPageService.class);
-        if (null == eps) {
+        if (eps == null)
             return;
-        }
 
         InetSocketAddress local = (InetSocketAddress) context.channel().localAddress();
-        InetSocketAddress remote = (InetSocketAddress) context.channel().remoteAddress();
-        // found the error page service, load the pieces we need and then
-        // query for any configured body
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Querying service for port=" + local.getPort());
-        }
         HttpErrorPageProvider provider = eps.access(local.getPort());
-        if (null != provider) {
+        if (provider != null) {
             String host = local.getAddress().getHostName();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Querying provider for host=" + host);
-            }
             try {
                 body = provider.accessPage(host, local.getPort(), null, null);
             } catch (Throwable t) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Exception while calling into provider, t=" + t);
-                }
+                Tr.debug(tc, "Exception while calling into provider, t=" + t);
             }
-            if (null != body) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Received body of length=" + body.length);
-                }
+            if (body != null) {
                 errorResponse.replace(Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(body)));
                 if (HttpUtil.isTransferEncodingChunked(errorResponse))
                     HttpUtil.setTransferEncodingChunked(errorResponse, false);
+
+                long bytes = 0;
+                for (WsByteBuffer b : body) {
+                    bytes += b.remaining();
+                }
                 HttpUtil.setContentLength(errorResponse, body.length);
             }
         }
-        return;
     }
 
-    public void newRequest(ChannelHandlerContext context, FullHttpRequest request) {
-
+    public void newRequest(ChannelHandlerContext ctx, FullHttpRequest request) {
         if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
-            context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
+            ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
         } else {
-            if (request.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
-                context.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP10");
-            } else
-                context.channel().attr(NettyHttpConstants.PROTOCOL).set("http");
+            ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(request.protocolVersion().equals(HttpVersion.HTTP_1_0) ? "HTTP10" : "http");
         }
-        HttpDispatcherLink link = new HttpDispatcherLink();
-        if (context.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
-            context.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
 
+        HttpDispatcherLink link = new HttpDispatcherLink();
+        if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
+            ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
         }
-        int numberOfRequests = context.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
-        context.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(numberOfRequests + 1);
-        link.init(context, request, config);
+        int num = ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).get();
+        ctx.channel().attr(NettyHttpConstants.NUMBER_OF_HTTP_REQUESTS).set(num + 1);
+        link.init(ctx, request, config);
         link.ready();
     }
 
-    
+    private static void clearPerRequestAttrs(ChannelHandlerContext ctx) {
+        ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(null);
+        ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+        if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
+            ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
+        }
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "channelInactive cid=" + cid(ctx.channel()));
+            snapCtx("channelInactive", ctx);
+        }
+        int n = 0;
+        ByteBuf raw;
+        while ((raw = earlyUpgradeBytes.poll()) != null) {
+            n++;
+            raw.release();
+        }
+        t(ctx, "inactive", "released earlyUpgradeBytes=%d", n);
+        clearPerRequestAttrs(ctx);
+        super.channelInactive(ctx);
+    }
+
+    /////DEBUG
+    /// // Correlate events across a channel's lifetime and requests
+    private static final AtomicLong REQ_SEQ = new AtomicLong(0);
+
+    private long currentReqId = -1L;
+
+    private static String cid(Channel ch) {
+        return ch.id().asShortText();
+    }
+
+    private static String thr() {
+        return Thread.currentThread().getName();
+    }
+
+    private String flags() {
+        return "upgradingNow=" + upgradingNow +
+               " upgradeCommitted=" + upgradeCommitted.get() +
+               " commitScheduled=" + commitScheduled.get() +
+               " earlyContents=" + earlyContents.size() +
+               " earlyUpgradeBytes=" + earlyUpgradeBytes.size() +
+               " queue=" + (queue == null ? "null" : System.identityHashCode(queue)) +
+               " link=" + (link == null ? "null" : System.identityHashCode(link));
+    }
+
+    private void snapCtx(String where, ChannelHandlerContext ctx) {
+        if (!TraceComponent.isAnyTracingEnabled() || !tc.isDebugEnabled())
+            return;
+        Channel ch = ctx.channel();
+        Tr.debug(tc, String.format(
+                                   "SNAP[%s] cid=%s reqId=%d inEL=%s autoRead=%s active=%s open=%s writable=%s flags={%s}",
+                                   where, cid(ch), currentReqId, ctx.executor().inEventLoop(), ch.config().isAutoRead(),
+                                   ch.isActive(), ch.isOpen(), ch.isWritable(), flags()));
+    }
+
+    private void dumpPipeline(ChannelPipeline p, String tag) {
+        if (!TraceComponent.isAnyTracingEnabled() || !tc.isDebugEnabled())
+            return;
+        StringBuilder sb = new StringBuilder("PIPE[").append(tag).append("]: ");
+        p.toMap().forEach((name, handler) -> sb.append(name).append(","));
+        Tr.debug(tc, sb.toString());
+    }
+
+    private void dumpBuf(String tag, ByteBuf b) {
+        if (!TraceComponent.isAnyTracingEnabled() || !tc.isDebugEnabled())
+            return;
+        int readable = b.readableBytes();
+        String hex = ByteBufUtil.hexDump(b, b.readerIndex(), Math.min(readable, 64));
+        Tr.debug(tc, String.format("%s ridx=%d widx=%d readable=%d refCnt=%d preview=%s",
+                                   tag, b.readerIndex(), b.writerIndex(), readable, b.refCnt(), hex));
+    }
+
+    private static void removeIfPresent(ChannelPipeline pipeline, Class<? extends ChannelHandler> handler) {
+        if (pipeline.get(handler) != null) {
+            pipeline.remove(handler);
+        }
+    }
+
+    public static final class Upgrade101CommittedEvent {
+        @Override
+        public String toString() {
+            return "UPGRADE_101_COMMITTED";
+        }
+    }
+
+    public static final Upgrade101CommittedEvent UPGRADE_101_COMMITTED_EVENT = new Upgrade101CommittedEvent();
 }

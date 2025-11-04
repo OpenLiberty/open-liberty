@@ -200,6 +200,7 @@ public class UpgradeInputByteBufferUtil {
                         Tr.debug(tc, "immediateRead, read from interface");
                     } 
                     bytesRead = _tcpContext.getReadInterface().read(0, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
+                    Tr.debug(tc, "WC immediateRead: amountToRead=" + amountToRead + " buffer.remaining()="+ _buffer.remaining());
                 } catch (IOException readException){
                     //If we encounter an exception here we need to return the 1 byte that we already have.
                     //Returned true immediately and the next read will catch the exception and propagate it properly
@@ -450,6 +451,7 @@ public class UpgradeInputByteBufferUtil {
                 
                 //Immediately read for some data. This will return immediately if there was anything
                 bytesRead = _tcpContext.getReadInterface().read(0, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
+                Tr.debug(tc, "WC isReady read(0): bytesRead=" + bytesRead);
                 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                     Tr.debug(tc, "isReady, Completed the read, " + bytesRead);

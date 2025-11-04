@@ -306,30 +306,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     public void prepareForUpgrade() {
 
-        ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
-
-        HttpServerKeepAliveHandler handler = nettyContext.channel().pipeline().get(HttpServerKeepAliveHandler.class);
-        if (handler != null) {
-            // Need to remove to keep connection open
-            nettyContext.channel().pipeline().remove(handler);
-        }
-
-        // Add Inbound handler to accumulate data which will not belong to HTTP but rather the upgrade protocol
-        HttpToHttp2ConnectionHandler http2Handler = nettyContext.channel().pipeline().get(HttpToHttp2ConnectionHandler.class);
-
-        if (this.nettyContext.pipeline().get(NettyServletUpgradeHandler.class) == null) {
-            NettyServletUpgradeHandler upgradeHandler = new NettyServletUpgradeHandler(nettyContext.channel());
-            upgradeHandler.setVC(vc);
-            if (http2Handler == null) { // In HTTP 1.1
-                nettyContext.channel().pipeline().addLast("ServletUpgradeHandler", upgradeHandler);
-            } else { // In HTTP2
-                nettyContext.channel().pipeline().addBefore(nettyContext.channel().pipeline().context(http2Handler).name(), "ServletUpgradeHandler", upgradeHandler);
-            }
-            // In an upgrade, we don't expect to keep the request handler running so will remove this because it is HTTP 1.1 specific
-            if(nettyContext.channel().pipeline().get(LibertyHttpRequestHandler.class) != null){
-                nettyContext.channel().pipeline().remove(LibertyHttpRequestHandler.class);
-            }
-        }
+        
     }
 
     public void nettyClose(VirtualConnection conn, Exception e) {

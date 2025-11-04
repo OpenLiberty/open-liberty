@@ -83,6 +83,18 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
 
     @FFDCIgnore(BodyCompleteException.class)
     public boolean asyncCheckBuffers(InterChannelCallback callback) {
+        // Prefer streaming buffer first
+        try {
+            if (streaming && checkBuffer()) {
+                return true;
+            }
+        } catch (IOException ioe) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "asyncCheckBuffers(streaming) checkBuffer exception: " + ioe);
+            }
+        }
+
+
 
         try {
             VirtualConnection vc = isc.getRequestBodyBuffer(callback, false);
