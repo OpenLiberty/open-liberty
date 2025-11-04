@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2020 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 
@@ -101,11 +100,11 @@ public class PXLockTest {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        //Get driver info
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
-        //Setup datasource properties
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        //Setup server DataSource properties
+        DatabaseContainerUtil.build(server, testContainer)//
+                        .withDriverVariable()//
+                        .withLibraryPermissions()//
+                        .modify();
 
         //Add application to server
         ShrinkHelper.defaultApp(server, APP_NAME, "web");

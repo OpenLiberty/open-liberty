@@ -68,9 +68,11 @@ public class PersistentExecutorWithFailoverEnabledTest extends FATServletClient 
     public static void setUp() throws Exception {
         testContainer.start();
 
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
-
-        DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
+        //Setup server DataSource properties
+        DatabaseContainerUtil.build(server, testContainer)//
+                        .withDriverVariable()//
+                        .withLibraryPermissions()//
+                        .modify();
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "web");
 

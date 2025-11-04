@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -98,9 +98,16 @@ public class FailoverTimersTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        //Setup datasource properties
-        DatabaseContainerUtil.setupDataSourceProperties(serverA, testContainer);
-        DatabaseContainerUtil.setupDataSourceProperties(serverB, testContainer);
+        //Setup server DataSource properties
+        DatabaseContainerUtil.build(serverA, testContainer)
+                        .withDriverReplacement()
+                        .withLibraryPermissions()
+                        .modify();
+
+        DatabaseContainerUtil.build(serverB, testContainer)
+                        .withDriverReplacement()
+                        .withLibraryPermissions()
+                        .modify();
 
         //Application uses an XA datasource to perform database access.
         //Oracle restrictions creation/dropping of database tables using transactions with error:
@@ -145,11 +152,9 @@ public class FailoverTimersTest extends FATServletClient {
     public void setUpPerTest() throws Exception {
         ArrayList<Callable<ProgramOutput>> startActions = new ArrayList<>();
         if (!serverA.isStarted()) {
-            serverA.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
             startActions.add(() -> serverA.startServer(testName.getMethodName() + ".log"));
         }
         if (!serverB.isStarted()) {
-            serverB.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
             startActions.add(() -> serverB.startServer(testName.getMethodName() + ".log"));
         }
 
