@@ -539,9 +539,6 @@ org.aspectj:aspectjrt:1.9.24
 org.asynchttpclient:async-http-client:2.12.3
 org.bitbucket.b_c:jose4j:0.9.5
 org.bouncycastle:bcpg-jdk18on:1.78.1
-org.bouncycastle:bcpkix-jdk18on:1.78.1
-org.bouncycastle:bcprov-jdk18on:1.78.1
-org.bouncycastle:bcutil-jdk18on:1.78.1
 org.bouncycastle:bcpg-jdk18on:1.82
 org.bouncycastle:bcpkix-jdk18on:1.82
 org.bouncycastle:bcprov-jdk18on:1.82
