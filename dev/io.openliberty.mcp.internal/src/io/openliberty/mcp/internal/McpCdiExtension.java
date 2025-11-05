@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal;
 
 import java.util.ArrayList;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -70,6 +71,7 @@ public class McpCdiExtension implements Extension {
     private static Jsonb createJsonb() {
         JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
                                                    .withDeserializers(new McpRequestIdDeserializer());
+    
         return JsonbBuilder.create(jsonbConfig);
     }
 
