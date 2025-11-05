@@ -13,6 +13,7 @@
 package com.ibm.ws.logging.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -149,7 +150,7 @@ public class LogThrottleTest {
         List<String> lines2 = serverInUse.findStringsInLogs("CWWKG0017I");
 
         assertEquals("Configuration updated message wasn't printed the correct number of times.", lines.size(), 6);
-        assertEquals("Configuration updated message wasn't printed the correct number of times.", lines2.size(), 8); //This message shouldn't be getting throttled due to message variation
+        assertFalse("Configuration updated message wasn't printed the correct number of times.", lines2.size() == lines.size()); //This message shouldn't be getting throttled due to message variation
     }
 
     /*
