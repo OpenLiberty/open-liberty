@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,8 @@ import javax.security.auth.login.CredentialExpiredException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Reference;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.ras.TraceNLS;
@@ -202,7 +204,6 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     public SecurityCookieImpl preInvoke(EJBRequestData request) throws EJBAccessDeniedException {
         Subject invokedSubject = subjectManager.getInvocationSubject();
         Subject callerSubject = subjectManager.getCallerSubject();
-
         EJBMethodMetaData methodMetaData = request.getEJBMethodMetaData();
 
         if (ejbSecConfig.getUseUnauthenticatedForExpiredCredentials()) {
@@ -225,6 +226,8 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
         performDelegation(methodMetaData, subjectToAuthorize);
         subjectManager.setCallerSubject(subjectToAuthorize);
+        EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
+        syncToOSThread(ejbSecurityContext);
         SecurityCookieImpl securityCookie = new SecurityCookieImpl(originalInvokedSubject, originalCallerSubject, subjectManager.getInvocationSubject(), subjectToAuthorize);
         return securityCookie;
     }
@@ -251,13 +254,23 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
                 // otherwise, keep the current subjects in order to preserve the subjects from the programmatic login.
                 Subject invokedSubject = securityCookie.getInvokedSubject();
                 Subject receivedSubject = securityCookie.getReceivedSubject();
-
                 subjectManager.setCallerSubject(receivedSubject);
                 subjectManager.setInvocationSubject(invokedSubject);
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Subjects have been changed, preserving the current Subjects.");
                 }
+            }
+            try {
+                 EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
+                resetSyncToOSThread(ejbSecurityContext);
+
+            } catch (ThreadIdentityException e) {
+                throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                            TraceConstants.MESSAGE_BUNDLE,
+                                                                            "EJB_AUTHZ_EXCLUDED",
+                                                                            new Object[] { "postInvoke" },
+                                                                            "syncToOs failed {0}."));
             }
         }
     }
@@ -782,5 +795,65 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         }
 
         waitedForSecurity = true;
+    }
+
+
+    /**
+     * Sync the invocation Subject's identity to the thread, if request by the application.
+     *
+     * @param WebSecurityContext The security context object for this application invocation.
+     *            MUST NOT BE NULL.
+     * @throws SecurityViolationException
+     */
+    private void syncToOSThread(EJBSecurityContext ejbSecurityContext) throws EJBAccessDeniedException {
+        try {
+            if (ThreadIdentityManager.isAppThreadIdentityEnabled()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Setting thread identity for EJB application");
+                }
+                Object token = ThreadIdentityManager.setAppThreadIdentity(ejbSecurityContext.getInvokedSubject());
+                ejbSecurityContext.setSyncToOSThreadToken(token);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Thread identity set successfully");
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Application thread identity is not enabled");
+                }
+            }
+        } catch (ThreadIdentityException tie) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception setting thread identity", tie);
+            }
+            throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                        TraceConstants.MESSAGE_BUNDLE,
+                                                                        "EJB_AUTHZ_EXCLUDED",
+                                                                        new Object[] { "syncToOSThread" },
+                                                                        "syncToOs failed {0}."));
+        }
+    }
+
+    /**
+     * Remove the invocation Subject's identity from the thread, if it was previously sync'ed.
+     *
+     * @param WebSecurityContext The security context object for this application invocation.
+     *            MUST NOT BE NULL.
+     * @throws ThreadIdentityException
+     */
+    private void resetSyncToOSThread(EJBSecurityContext ejbSecurityContext) throws ThreadIdentityException {
+        Object token = ejbSecurityContext.getSyncToOSThreadToken();
+        if (token != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Resetting thread identity for EJB application");
+            }
+            ThreadIdentityManager.resetChecked(token);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Thread identity reset successfully");
+            }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "No thread identity token to reset");
+            }
+        }
     }
 }

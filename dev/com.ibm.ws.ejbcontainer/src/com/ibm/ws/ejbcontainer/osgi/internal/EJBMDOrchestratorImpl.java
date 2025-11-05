@@ -21,7 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-
+import javax.naming.NamingException;
+import javax.naming.Context;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import javax.ejb.EJBException;
 
 import com.ibm.ejs.container.BeanMetaData;
@@ -1342,30 +1344,41 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "processZOSMetadata : " + bmd);
 
-        if (EJSPlatformHelper.isZOS()) {
-            bmd.m_syncToOSThreadValue = getSyncToOSThreadSetting(ContainerConfigConstants.syncToOSThreadSetting, bmd);
+        if (isZOS()) {
+            // Call the BeanMetaData's initializeSyncToOSThread method to check environment entry
+            bmd.initializeSyncToOSThread();
+            
+            // If not set by environment entry, check the binding
+            if (!bmd.m_syncToOSThreadValue) {
+                bmd.m_syncToOSThreadValue = getSyncToOSThreadSetting(ContainerConfigConstants.syncToOSThreadSetting, bmd);
+            }
+            
             if (bmd.m_syncToOSThreadValue) {
                 if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(tc, "From the bean's env-var, m_syncToOSThreadValue is set to true");
+                    Tr.debug(tc, "SyncToOSThread is enabled for bean: " + bmd.enterpriseBeanName);
 
-                // check to if server is enabled for SyncToOSThread
-                // WSLoginLocalOSExtension localSecurityLoginExt;
-                // localSecurityLoginExt = com.ibm.ws.security.auth.j2c.WSLoginLocalOSExtensionFactory.getInstance();
-                // if (!(localSecurityLoginExt.isApplicationSyncToOSThreadEnabled())) {
-                //     Tr.warning(tcWS390, "BBOJ0081", bmd.j2eeName);
-                //     bmd.m_syncToOSThreadValue = false;
-                // } else {
-                //     if (isTraceOn && tc.isDebugEnabled())
-                //         Tr.debug(tc, "EJB requests SynToOSThread, and the server is enabled for SyncToOSThread");
-                // }
+                // Check if ThreadIdentityManager supports application thread identity
+                if (ThreadIdentityManager.isAppThreadIdentityEnabled()) {
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "EJB requests SyncToOSThread, and the server is enabled for SyncToOSThread");
+                } else {
+                    if (isTraceOn && tc.isDebugEnabled())
+                        Tr.debug(tc, "EJB requests SyncToOSThread, but the server does not have ThreadIdentityService enabled");
+                    // Keep the setting enabled - the ThreadIdentityManager will handle the case when no service is available
+                }
             } else {
                 if (isTraceOn && tc.isDebugEnabled())
-                    Tr.debug(tc, "From the bean's env-var, m_syncToOSThreadValue is set to false as a default");
+                    Tr.debug(tc, "SyncToOSThread is not enabled for bean: " + bmd.enterpriseBeanName);
             }
         }
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.exit(tc, "processZOSMetadata");
+    }
+
+    private static boolean isZOS(){
+        String osName = System.getProperty("os.name");
+        return osName != null && (osName.equalsIgnoreCase("z/OS") || osName.equalsIgnoreCase("OS/390"));
     }
 
     @Trivial

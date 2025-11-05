@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -4865,7 +4865,7 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
     // LIDB3294-41
     public Object invokeProceed(EJSDeployedSupport s, Method businessMethod, Object bean, Object[] methodParameters, boolean parametersModified) throws Exception {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); // d532639.2
-
+        //dumpStack("invokeProceed");
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(tc, "EJBinvokeProceed(" + s.methodId + ":" +
                          s.methodInfo.getMethodName() + ")");
@@ -4901,6 +4901,19 @@ public class EJSContainer implements ORBDispatchInterceptor, FFDCSelfIntrospecta
         }
         return returnValue;
     }
+
+    private static void dumpStack(String method) {
+		if (tc.isDebugEnabled()){
+            StringBuffer sb = new StringBuffer("---DEBUG: " + method + " being called dumpstack BEGIN---");
+            java.io.ByteArrayOutputStream baos = new java.io.ByteArrayOutputStream();
+            new Throwable().printStackTrace(new java.io.PrintStream(baos));
+            sb.append("\n");
+            sb.append(baos);
+            sb.append("--------END Dump stack ---------");
+            System.out.println(sb.toString());
+            Tr.debug(tc, sb.toString());
+        }
+	}
 
     private static <T> void notifySecurityCollaboratorArgumentsUpdated(EJBSecurityCollaborator<T> collaborator,
                                                                        EJSDeployedSupport s) throws Exception {
