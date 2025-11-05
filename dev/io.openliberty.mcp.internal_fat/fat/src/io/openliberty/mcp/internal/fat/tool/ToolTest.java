@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -29,6 +30,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -37,6 +39,11 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
  */
 @RunWith(FATRunner.class)
 public class ToolTest extends FATServletClient {
+
+    private static final String ACCEPT_HEADER = "application/json, text/event-stream";
+    public static final String APPLICATION_JSON = "application/json";
+    private static final String MCP_PROTOCOL_HEADER = "MCP-Protocol-Version";
+    private static final String MCP_PROTOCOL_VERSION = "2025-06-18";
 
     @Server("mcp-server")
     public static LibertyServer server;
@@ -3018,4 +3025,38 @@ public class ToolTest extends FATServletClient {
 
         JSONAssert.assertEquals(expectedResponseString, duplicateResponse, true);
     }
+
+    @Test
+    public void testDeleteSessionRemovesSession() throws Exception {
+        String sessionId = client.getSessionId();
+        assertNotNull("Expected session ID from MCP initialization", sessionId);
+
+        client.deleteSession();
+
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "1",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echo",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = new HttpRequest(server, "/toolTest/mcp")
+                                                                  .requestProp("Accept", ACCEPT_HEADER)
+                                                                  .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                                  .requestProp("Mcp-Session-Id", sessionId)
+                                                                  .jsonBody(request)
+                                                                  .method("POST")
+                                                                  .expectCode(404)
+                                                                  .run(String.class);
+
+        assertTrue(response.contains("Invalid or Expired Session Id"));
+    }
+
 }

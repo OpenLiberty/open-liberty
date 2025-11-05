@@ -158,11 +158,7 @@ public class McpServlet extends HttpServlet {
         }
 
         if (sessionStore.isValid(sessionId)) {
-            McpSession session = sessionStore.getSession(sessionId);
-
-            if (session != null) {
-                requestTracker.cancelSessionRequests(sessionId);
-            }
+            sessionStore.deleteSession(sessionId);
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");

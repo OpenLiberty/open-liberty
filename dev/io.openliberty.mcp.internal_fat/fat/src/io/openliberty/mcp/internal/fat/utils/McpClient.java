@@ -45,6 +45,7 @@ public class McpClient extends ExternalResource {
     public static final String APPLICATION_JSON = "application/json";
     private static final String MCP_PROTOCOL_HEADER = "MCP-Protocol-Version";
     private static final String MCP_PROTOCOL_VERSION = "2025-06-18";
+    private boolean sessionDeleted = false;
 
     private String sessionId;
     private LibertyServer server;
@@ -122,6 +123,10 @@ public class McpClient extends ExternalResource {
 
     @Override
     protected void after() {
+
+        if (sessionDeleted) {
+            return;
+        }
         try {
             new HttpRequest(server, path + "/mcp").requestProp("Mcp-Session-Id", sessionId)
                                                   .method("DELETE")
@@ -133,6 +138,19 @@ public class McpClient extends ExternalResource {
 
     public String getSessionId() {
         return this.sessionId;
+    }
+
+    public void deleteSession() {
+        try {
+            new HttpRequest(server, path + "/mcp")
+                                                  .requestProp("Mcp-Session-Id", sessionId)
+                                                  .method("DELETE")
+                                                  .run(String.class);
+
+            this.sessionDeleted = true;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**
