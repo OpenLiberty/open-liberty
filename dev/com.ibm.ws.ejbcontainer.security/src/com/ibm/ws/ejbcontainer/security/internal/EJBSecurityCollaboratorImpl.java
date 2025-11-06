@@ -273,7 +273,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
                                                                                     TraceConstants.MESSAGE_BUNDLE,
                                                                                     "EJB_AUTHZ_EXCLUDED",
                                                                                     new Object[] { "postInvoke" },
-                                                                                    "WRG+++: syncToOs failed {0}."));
+                                                                                    "syncToOs failed {0}."));
                 }
             }
         }
@@ -830,7 +830,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
                                                                                 TraceConstants.MESSAGE_BUNDLE,
                                                                                 "EJB_AUTHZ_EXCLUDED",
                                                                                 new Object[] { "syncToOSThread" },
-                                                                                "WRG+++: syncToOs failed {0}."));
+                                                                                "syncToOs failed {0}."));
             }
         }
     }

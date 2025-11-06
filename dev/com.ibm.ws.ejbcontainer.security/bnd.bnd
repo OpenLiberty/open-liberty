@@ -72,6 +72,7 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/security/internal/resources/
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
     com.ibm.ws.kernel.security.thread,\
+    com.ibm.ws.kernel.boot.core;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
