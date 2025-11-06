@@ -72,3 +72,13 @@ from: https://shibboleth.atlassian.net/wiki/spaces/IDP4/pages/1265631515/Configu
 
 The script included a jar in the dist tree that we do not want in shipped code.  The dist directory is NOT needed for the server runtime, so, it will be saved in artifactory and dist will be deleted from this location in Git.  We're keeping this copy of the dist tree to ease migration to future versions of Shibboleth as the files in dist/conf can be compared against what is in the conf directory of the 4.1.0 Shibboleth instance.
 The file in artifactory is named idp-war-4.1.0.zip and is stored in te same location as idp-war-4.1.0.war (artifactory naming conventions dictated the zip file name).
+
+
+
+
+keytool -genkeypair -alias eccert -keyalg EC -groupname secp256r1 -validity 3650 -storetype pkcs12 -keystore ec_key.p12 -storepass Password
+keytool -export -alias eccert -keystore path/to/ec_key.p12 -rfc -file path/to/eccert.crt
+
+
+
+

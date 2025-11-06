@@ -30,6 +30,7 @@ import org.junit.runner.manipulation.Filter;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.topology.impl.JavaInfo;
 
 public class CheckpointSupportFilter extends Filter {
@@ -60,7 +61,7 @@ public class CheckpointSupportFilter extends Filter {
         }
 
         if (checkpointTest != null) {
-            File testedFeaturesFile = new File("fat-metadata.json");
+            File testedFeaturesFile = FeatureDependencyProcessor.getTestedFeaturesMetdataFile();
             JsonProvider provider = new org.glassfish.json.JsonProviderImpl();
             JsonObject fatMetadata;
             try {

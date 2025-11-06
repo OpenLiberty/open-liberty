@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2024 IBM Corporation and others.
+# Copyright (c) 1997, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1643,3 +1643,7 @@ read.write.bytebuffer.null.useraction=\u4fee\u6539\u61c9\u7528\u7a0b\u5f0f\u78bc
 read.write.failed.isReady.false=CWWWC0011E: \u5617\u8a66\u5f9e InputStream \u4f5c\u696d\u8b80\u53d6\u6216\u5beb\u5165\u81f3 OutputStream \u4f5c\u696d\u5931\u6557\uff0c\u56e0\u70ba isReady API \u50b3\u56de false\u3002
 read.write.failed.isReady.false.explanation=\u5982\u679c isReady API \u50b3\u56de false \uff0c\u5247\u7121\u6cd5\u547c\u53eb read \u6216 write \u65b9\u6cd5\u3002
 read.write.failed.isReady.false.useraction=\u4fee\u6539\u61c9\u7528\u7a0b\u5f0f\u908f\u8f2f\uff0c\u4ee5\u78ba\u4fdd\u4e32\u6d41\u5df2\u5099\u59a5\u53ef\u9032\u884c InputStream \u6216 OutputStream \u4f5c\u696d\u3002
+
+sendRedirect.cannot.convert.relative.url=CWWWC0012E: \u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684 sendRedirect \u76f8\u5c0d URL \u7121\u6cd5\u8f49\u63db\u70ba\u6709\u6548\u7684 URL\u3002
+sendRedirect.cannot.convert.relative.url.explanation=\u6240\u7d66\u7684\u76f8\u5c0d URL \u53ef\u80fd\u5305\u542b\u7121\u6548\u7684\u8def\u5f91\u904d\u6b77\u7b26\u865f\u6216\u7d22\u5f15\u3002
+sendRedirect.cannot.convert.relative.url.useraction=\u5728\u547c\u53eb response.sendRedirect( ) \u65b9\u6cd5\u4e4b\u524d\uff0c\u5148\u9a57\u8b49\u61c9\u7528\u7a0b\u5f0f\u4e2d sendRedirect \u7684\u4f4d\u7f6e URL

@@ -28,11 +28,9 @@ import com.ibm.ws.wsat.fat.util.DBTestBase;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
-import componenttest.topology.database.container.PostgreSQLContainer;
 import componenttest.topology.impl.LibertyServer;
 
 @AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "com.ibm.tx.jta.ut.util.AlreadyDumpedException", "javax.transaction.SystemException", "javax.transaction.xa.XAException", "java.io.IOException", "java.io.EOFException" })
@@ -57,7 +55,7 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 	            s.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(TxTestContainerSuite.testContainer).getDriverName());
 
 	            //Setup server DataSource properties
-	            DatabaseContainerUtil.setupDataSourceDatabaseProperties(s, TxTestContainerSuite.testContainer);
+	            DatabaseContainerUtil.build(s, TxTestContainerSuite.testContainer).withDatabaseProperties().modify();
 
 	            s.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
 	        }
@@ -84,14 +82,14 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 		ShrinkHelper.exportDropinAppToServer(server1, serverApp);
 		ShrinkHelper.exportDropinAppToServer(server2, serverApp);
 
-		FATUtils.startServers(runner, server3);
+		FATUtils.startServers(runner, server1, server2, server3);
 	}
 
 	@AfterClass
 	public static void afterClass() throws Exception {
 		Log.info(DBRerouteRecoveryTest.class, "afterClass", "");
 
-		FATUtils.stopServers(server3);
+		FATUtils.stopServers(true, server1, server2, server3);
 
 		DBTestBase.cleanupWSATTest(server1);
 		DBTestBase.cleanupWSATTest(server2);		
@@ -100,12 +98,10 @@ public class DBRerouteRecoveryTest extends MultiRecoveryTest1 {
 	@Before
 	public void before() throws Exception {
 		Log.info(DBRerouteRecoveryTest.class, "before", "");
-		FATUtils.startServers(runner, server1, server2);
 	}
 
 	@After
 	public void after() throws Exception {
 		Log.info(DBRerouteRecoveryTest.class, "after", "");
-		FATUtils.stopServers(server1, server2);
 	}
 }

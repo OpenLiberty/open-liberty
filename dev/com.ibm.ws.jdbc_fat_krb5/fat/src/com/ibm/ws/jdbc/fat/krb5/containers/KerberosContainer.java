@@ -13,18 +13,15 @@
 package com.ibm.ws.jdbc.fat.krb5.containers;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.time.Duration;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.GenericContainer;
@@ -41,7 +38,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.containers.ImageBuilder;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.utils.FileUtils;
 
 public class KerberosContainer extends GenericContainer<KerberosContainer> {
 
@@ -52,7 +48,16 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     public static final String KRB5_KDC_EXTERNAL = "kerberos";
     public static final String KRB5_PASS = "password";
 
-    private static final DockerImageName KDC_JDBC_SERVER = ImageBuilder.build("kdc-jdbc-server:3.0.0.1").getDockerImageName();
+    private static final DockerImageName KDC_JDBC_SERVER = ImageBuilder //
+                    .build("kdc-jdbc-server:3.0.0.2") //
+                    .getDockerImageName();
+
+    /**
+     * A map of user to keytab file.
+     * Avoids calls to the method {@link #requestKeyTable(String)}
+     * from requesting the same keytab from the container multiple times
+     */
+    private static final Map<String, String> EXTERNAL_KEY_TABLE = new HashMap<>();
 
     private int udp_99;
 
@@ -148,79 +153,58 @@ public class KerberosContainer extends GenericContainer<KerberosContainer> {
     }
 
     /**
-     * Use generateConf instead
+     * Generates a krb5 keytab in the KDC container,
+     * and then copy it to the destination location on the client system.
+     *
+     * @param destination where to copy the keytab file
+     * @param user        the user to generate a keytab file
      */
-    @Deprecated
-    public void configureKerberos() throws IOException {
-        Path krbConfPath = Paths.get("/etc/krb5.conf");
-        String krbConf = FileUtils.readFile(krbConfPath.toAbsolutePath().toString());
-
-        krbConf = configureProperty(krbConf, "libdefaults", "default_realm", KRB5_REALM);
-        krbConf = configureProperty(krbConf, "libdefaults", "dns_lookup_realm", "false");
-        krbConf = configureProperty(krbConf, "libdefaults", "ticket_lifetime", "24h");
-        krbConf = configureProperty(krbConf, "libdefaults", "renew_lifetime", "7d");
-        krbConf = configureProperty(krbConf, "libdefaults", "forwardable", "true");
-        krbConf = configureProperty(krbConf, "libdefaults", "rdns", "false");
-
-        if (!krbConf.contains("[realms]")) {
-            krbConf += "\n\n[realms]";
+    public void copyUserKeytab(final Path destination, final String user) {
+        try {
+            this.copyFileFromContainer(requestKeyTable(user), destination.toAbsolutePath().toString());
+        } catch (Exception e) {
+            throw new RuntimeException("Could not copy keytab file from KDC " + this.getContainerId(), e);
         }
-        if (!krbConf.contains(KRB5_REALM + " = {")) {
-            krbConf = krbConf.replace("[realms]", "[realms]\n\t" +
-                                                  KRB5_REALM + " = {\n\t\t" +
-                                                  "kdc = " + getHost() + ":" + getMappedPort(99) + "\n\t\t" +
-                                                  "admin_server = " + getHost() + "\n\t}\n");
-        }
-
-        if (!krbConf.contains("[domain_realm]")) {
-            krbConf += "\n\n[domain_realm]";
-        }
-        krbConf = configureProperty(krbConf, "domain_realm", KRB5_REALM.toLowerCase(), KRB5_REALM);
-        krbConf = configureProperty(krbConf, "domain_realm", "." + KRB5_REALM.toLowerCase(), KRB5_REALM);
-
-        Log.info(c, "configureKerberos", "Transformed kerberos config:\n" + krbConf);
-        Files.write(krbConfPath, krbConf.getBytes(), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING, StandardOpenOption.WRITE);
-    }
-
-    private static String configureProperty(String krbConf, String section, String key, String value) {
-        if (krbConf.contains(key + " = " + value)) {
-            // already correct
-        } else if (krbConf.contains(key + " = ")) {
-            krbConf = krbConf.replaceAll(key.replace(".", "\\.") + " = .*", key + " = " + value);
-        } else {
-            krbConf = krbConf.replace("[" + section + "]", "[" + section + "]\n\t" + key + " = " + value);
-        }
-        return krbConf;
     }
 
     /**
-     * This doesn't seem to be necessary because we can simply check in the keytab file
+     * Requests the KDC to export a keytab file for this user.
+     * Then returns the location the keytab file was saved in the container.
+     *
+     * @param user to export to the keytab file
+     * @return the container location for the keytab file
+     * @throws Exception if generating the keytab failed
      */
-    @Deprecated
-    public void generateKeytab(String username, Path output) throws Exception {
-        Files.deleteIfExists(output);
-        Process proc = Runtime.getRuntime().exec("ktutil");
-        OutputStream ktInput = proc.getOutputStream();
-        ktInput.write(("add_entry -password -p " + username + "@" + KRB5_REALM +
-                       " -k 1 -e aes256-cts\n" + KRB5_PASS + "\nwkt " + output.toAbsolutePath().toString()).getBytes());
-        ktInput.flush();
-        ktInput.close();
-        if (!proc.waitFor(15, TimeUnit.SECONDS)) {
-            Log.info(c, "generateKeytab", "Proc timed out... destroying forcibly");
-            proc.destroyForcibly();
-        }
-        Log.info(c, "generateKeytab", "Process stdout:");
-        String procOut = "STDOUT:\n" + readInputStream(proc.getInputStream());
-        procOut += "\nSTDERR:\n" + readInputStream(proc.getErrorStream());
-        Log.info(c, "generateKeytab", procOut);
-        if (proc.exitValue() != 0) {
-            throw new RuntimeException("Process failed with output: " + procOut);
-        }
-    }
+    private String requestKeyTable(final String user) throws Exception {
+        final String m = "requestKeyTable";
+        String containerLocation;
 
-    private static String readInputStream(InputStream is) {
-        @SuppressWarnings("resource")
-        Scanner s = new Scanner(is).useDelimiter("\\A");
-        return s.hasNext() ? s.next() : "";
+        // Try to find cached key table
+        if (EXTERNAL_KEY_TABLE.containsKey(user)) {
+            containerLocation = EXTERNAL_KEY_TABLE.get(user);
+            Log.info(c, m, "Returning cached external key table from: " + this.getContainerId() + ":" + containerLocation);
+            return containerLocation;
+        } else {
+            containerLocation = "/tmp/client_" + user + "_krb5.keytab";
+        }
+
+        // Queries
+        final String[] script = new String[] { "/tmp/client-keytab.sh", user };
+
+        // Export principle to new keytab file
+        Log.info(c, m, "Execute in container " + this.getContainerName() + " : " + Arrays.toString(script));
+        ExecResult result = this.execInContainer(script);
+        if (result.getExitCode() != 0) {
+            Log.info(c, m, "\tSTDOUT: " + result.getStdout());
+            Log.info(c, m, "\tSTDERR: " + result.getStderr());
+            throw new IllegalStateException("Could not generate keytab file because exit code was: " + result.getExitCode() + " see logs for details.");
+        } else {
+            Log.info(c, m, "\tSTDOUT: " + result.getStdout());
+        }
+
+        // Cache location
+        EXTERNAL_KEY_TABLE.put(user, containerLocation);
+
+        return containerLocation;
     }
 }

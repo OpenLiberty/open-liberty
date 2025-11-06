@@ -12,7 +12,14 @@
  *******************************************************************************/
 package jakarta.data.expression;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.Temporal;
+
+import jakarta.data.spi.expression.function.CurrentDate;
+import jakarta.data.spi.expression.function.CurrentDateTime;
+import jakarta.data.spi.expression.function.CurrentTime;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -21,5 +28,15 @@ public interface TemporalExpression//
 /*           */ <T, V extends Temporal & Comparable<? extends Temporal>> //
                 extends ComparableExpression<T, V> {
 
-    // TODO methods
+    static TemporalExpression<Object, LocalDate> localDate() {
+        return CurrentDate.now();
+    }
+
+    static TemporalExpression<Object, LocalDateTime> localDateTime() {
+        return CurrentDateTime.now();
+    }
+
+    static TemporalExpression<Object, LocalTime> localTime() {
+        return CurrentTime.now();
+    }
 }

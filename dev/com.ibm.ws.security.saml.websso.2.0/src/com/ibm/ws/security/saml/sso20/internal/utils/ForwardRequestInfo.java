@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
 
     boolean bNeedFragment = true;
 
-    private long fragmentCookieMaxAge = 10*60*1000; //10 minutes
+    private long fragmentCookieMaxAgeSec = 10*60; //10 minutes
 
     /**
      *
@@ -231,7 +231,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
     String handleFragmentCookies() {
 
         String cookieName = Constants.COOKIE_NAME_SAML_FRAGMENT + getFragmentCookieId();
-        String cookieMaxAge = "expires=" + getSamlRequestCookieTimeoutString() + ";";
+        String cookieMaxAge = "Max-Age=" + String.valueOf(this.fragmentCookieMaxAgeSec) + ";";
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "cookie " + cookieName + " , " + cookieMaxAge);
@@ -247,22 +247,6 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         sb.append("</SCRIPT>\n");
 
         return sb.toString();
-    }
-
-    public String getSamlRequestCookieTimeoutString() {
-
-        long samlLoginRequestTimeoutMillis = this.fragmentCookieMaxAge; // default - 10 minutes
-        Date timeout = new Date(System.currentTimeMillis() + samlLoginRequestTimeoutMillis);
-
-        SimpleDateFormat utc_sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
-        utc_sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-        String retVal = utc_sdf.format(timeout);
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "getSamlRequestCookieTimeoutString returns [" + retVal + "]");
-        }
-        return retVal;
     }
 
     // This is called when postIdp
@@ -412,8 +396,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
      * @param authnRequestTime
      */
     public void setFragmentCookieMaxAge(long authnRequestTime) {
-        this.fragmentCookieMaxAge = authnRequestTime;
-
+        this.fragmentCookieMaxAgeSec = authnRequestTime / 1000;
     }
 
 }

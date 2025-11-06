@@ -66,7 +66,9 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: \u670d\u52a1\u5668\u914d\u7f6e\u
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty \u73b0\u5728\u4f7f\u7528\u66f4\u5f3a\u5927\u7684\u7b97\u6cd5\u4e3a\u65b0\u751f\u6210\u7684 \u548c \u5bc6\u7801\u52a0\u5bc6\u3002 {aes} {hash}
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=\u786e\u4fdd\u4f7f\u7528\u6700\u65b0\u7248\u672c\u7684 Liberty \u751f\u6210 {aes} \u548c {hash} \u7684\u5bc6\u7801\u503c\u3002
 
-
+AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=wlp.aes.encryption.key \u53d8\u91cf\u4e2d\u6307\u5b9a\u7684\u503c\u7684\u5bc6\u94a5\u957f\u5ea6\u5fc5\u987b\u662f 256 \u4f4d\u3002
+AESKEYMANAGER_NOT_BASE64_EXCEPTION=wlp.aes.encryption.key \u53d8\u91cf\u4e2d\u6307\u5b9a\u7684\u503c\u5fc5\u987b\u662f base64 \u7f16\u7801\u3002
+AESKEYMANAGER_BASE64_VARIABLE_NOT_SET=\u5fc5\u987b\u8bbe\u7f6e wlp.aes.encryption.key \u53d8\u91cf\u624d\u80fd\u89e3\u7801\u5bc6\u7801\u3002
 # ---------------- This is an exception message ------------
 PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=\u68c0\u6d4b\u5230\u591a\u4e2a CustomPasswordEncryption \u5b9e\u65bd\u3002\u4ec5\u652f\u6301\u4e00\u4e2a CustomPasswordEncryption \u5b9e\u65bd\u3002\u68c0\u6d4b\u5230\u7684 CustomPasswordEncryption \u5b9e\u65bd\u7684\u5217\u8868\u5982\u4e0b\u6240\u793a\uff1a
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=\u5904\u7406\u6269\u5c55\u6e05\u5355\u6587\u4ef6 {0} \u65f6\u62a5\u544a\u4e86\u9519\u8bef\u3002\u5c06\u5ffd\u7565\u6b64\u6587\u4ef6\u3002\u5b9a\u5236\u52a0\u5bc6\u4e0d\u53ef\u7528\u3002\u9519\u8bef\u6d88\u606f\u662f {1}\u3002

@@ -42,6 +42,7 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.common.crypto.HashUtils;
@@ -149,13 +150,13 @@ public class Jose4jUtil {
         Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
 
         List<String> tokensOrderToFetchCallerClaims = clientConfig.getTokenOrderToFetchCallerClaims();
-        try {          
+        try {
             if ((idTokenStr == null || idTokenStr.isEmpty()) && tokensOrderToFetchCallerClaims.size() == 1) {
                 // This is for ID Token only
                 Tr.error(tc, "OIDC_CLIENT_IDTOKEN_REQUEST_FAILURE", new Object[] { clientId, clientConfig.getTokenEndpointUrl() });
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
-            
+
             Map<String, JwtClaims> tokenClaimsMap = new HashMap<String, JwtClaims>();
 
             JwtClaims idTokenClaims = getClaimsFromIdToken(idTokenStr, clientConfig, oidcClientRequest);
@@ -172,11 +173,11 @@ public class Jose4jUtil {
             if (userInfoStr != null) {
                 try {
                     userInfoClaims = getClaimsFromUserInfo(userInfoStr);
-                    
+
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Invalid user info: " + userInfoStr);
-                    }            
+                    }
                 }
             }
 
@@ -186,14 +187,13 @@ public class Jose4jUtil {
                 tokenClaimsMap.put(Constants.TOKEN_TYPE_ACCESS_TOKEN, accessTokenClaims);
                 if (userInfoStr != null) {
                     tokenClaimsMap.put(Constants.TOKEN_TYPE_USER_INFO, userInfoClaims);
-                }       
+                }
             }
 
             String userName = this.getUserName(clientConfig, tokensOrderToFetchCallerClaims, tokenClaimsMap);
             if (userName == null || userName.isEmpty()) {
                 return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
             }
-            
 
             boolean isImplicit = Constants.IMPLICIT.equals(clientConfig.getGrantType());
             // verify nonce when nonce is enabled
@@ -207,7 +207,7 @@ public class Jose4jUtil {
                     return new ProviderAuthenticationResult(AuthResult.SEND_401, HttpServletResponse.SC_UNAUTHORIZED);
                 }
             }
-            
+
             // if social login flow, put tokens and anything else social might want
             // into PAR props here and return it. Social will build the subject.
             if (clientConfig.isSocial()) {
@@ -246,7 +246,6 @@ public class Jose4jUtil {
                 String uniqueID = new StringBuffer("user:").append(realm).append("/").append(uniqueSecurityName).toString();
                 customProperties.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, uniqueID);
             }
-
 
             if (clientConfig.isIncludeCustomCacheKeyInSubject() || clientConfig.isDisableLtpaCookie()) {
                 //long storingTime = new Date().getTime();
@@ -369,11 +368,14 @@ public class Jose4jUtil {
     @FFDCIgnore({ Exception.class })
     public Key getSignatureVerificationKeyFromJsonWebStructure(JsonWebStructure jsonStruct, ConvergedClientConfig clientConfig, OidcClientRequest oidcClientRequest) throws JWTTokenValidationFailedException {
         String kid = jsonStruct.getKeyIdHeaderValue();
-        String x5t = jsonStruct.getX509CertSha1ThumbprintHeaderValue();
+        // Support for 'x5t' header remains for interoperability purposes.
+        // If FIPS 140-3 is enabled, usage of the 'x5t' header for signature verification is disabled
+        String x5t = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? null : jsonStruct.getX509CertSha1ThumbprintHeaderValue();
+        String x5tS256 = jsonStruct.getX509CertSha256ThumbprintHeaderValue();
         Key key = null;
         Exception caughtException = null;
         try {
-            key = getVerifyKey(clientConfig, kid, x5t);
+            key = getVerifyKey(clientConfig, kid, x5t, x5tS256);
         } catch (Exception e) {
             caughtException = e;
         }
@@ -392,7 +394,7 @@ public class Jose4jUtil {
         return key;
     }
 
-    public Key getVerifyKey(ConvergedClientConfig clientConfig, String kid, String x5t) throws Exception {
+    public Key getVerifyKey(ConvergedClientConfig clientConfig, String kid, String x5t, String x5tS256) throws Exception {
         Key keyValue = null;
         String signatureAlgorithm = clientConfig.getSignatureAlgorithm();
         if (signatureAlgorithm == null) {
@@ -404,7 +406,7 @@ public class Jose4jUtil {
         } else if (signatureAlgorithm.startsWith(SIGNATURE_ALG_RS) || signatureAlgorithm.startsWith(SIGNATURE_ALG_ES)) {
             if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
                 JwKRetriever retriever = createJwkRetriever(clientConfig);
-                keyValue = retriever.getPublicKeyFromJwk(kid, x5t, "sig", clientConfig.getUseSystemPropertiesForHttpClientConnections());
+                keyValue = retriever.getPublicKeyFromJwk(kid, x5t, x5tS256, "sig", clientConfig.getUseSystemPropertiesForHttpClientConnections());
             } else {
                 keyValue = clientConfig.getPublicKey();
             }
@@ -572,7 +574,7 @@ public class Jose4jUtil {
      * @throws MalformedClaimException
      */
     String getUserName(ConvergedClientConfig clientConfig, List<String> tokensOrderToFetchCallerClaims, Map<String, JwtClaims> tokenClaimsMap) throws MalformedClaimException {
-        String userNameClaim = getUserNameClaim(clientConfig); 
+        String userNameClaim = getUserNameClaim(clientConfig);
         String userName = getClaimValueFromTokens(userNameClaim, String.class, tokensOrderToFetchCallerClaims, tokenClaimsMap);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "user name = '" + userName + "' and the user identifier = " + userNameClaim);
@@ -584,15 +586,15 @@ public class Jose4jUtil {
                 Tr.debug(tc, "The " + attrUsedToCreateSubject + " config attribute is used");
                 Tr.debug(tc, "There is no principal");
             }
-            Tr.error(tc, "OIDC_CLIENT_JWT_MISSING_CLAIM", new Object[] { clientConfig.getClientId(), userNameClaim, attrUsedToCreateSubject });            
+            Tr.error(tc, "OIDC_CLIENT_JWT_MISSING_CLAIM", new Object[] { clientConfig.getClientId(), userNameClaim, attrUsedToCreateSubject });
         }
         return userName;
     }
-    
+
     String getUserNameAttribute(ConvergedClientConfig clientConfig) {
-        String attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute":"userIdentifier";
+        String attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentifier";
         if (clientConfig.getUserIdentifier() == null) {
-            attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentityToCreateSubject"; 
+            attrUsedToCreateSubject = clientConfig.isSocial() ? "userNameAttribute" : "userIdentityToCreateSubject";
         }
         return attrUsedToCreateSubject;
     }

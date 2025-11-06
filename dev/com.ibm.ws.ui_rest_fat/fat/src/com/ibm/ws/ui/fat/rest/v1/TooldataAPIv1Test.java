@@ -39,7 +39,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 /**
- *
+ * The algorithm assessment of FIPS 140-3 by updating SHA512 checksum is based on slack discussion with component SMEs.
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
@@ -50,8 +50,8 @@ public class TooldataAPIv1Test extends CommonRESTTest implements APIConstants {
     private final String tooldataExploreEntryURL = API_V1_TOOLDATA + "/com.ibm.websphere.appserver.adminCenter.tool.explore";
     private final String dataString = "{\"key\":\"value\"}";
     private final String dataString1 = "{\"key\":\"value1\"}";
-    private final String etagCheckSum1 = isFIPSEnabledOnServer() ? "e43abcf3375244839c012f9633f95862d232a95b00d5bc7348b3098b9fed7f32" : "a7353f7cddce808de0032747a0b7be50";
-    private final String etagCheckSum2 = isFIPSEnabledOnServer() ? "dfada72ccc2244e8c7aef8f0dbe7c026a6553bc5bda3f7654f3d0b94dd51a23b" : "9ecb15df65a2ceddcb3b2c726f5aa522";
+    private final String etagCheckSum1 = "0213f898602b6a489de25f20d8d32c3dbf3d6fee0fbe468f89ac803874ac846f8cd239294a78c2bddf3e0988acb8cd3d00e067a981c9c7933b43a42d3b273eae";
+    private final String etagCheckSum2 = "30a9c1549c94169bc284e21ea24d49084b1d661d01a8f6c194b7823bcad429da2aafae945b6a1573994234806fb6000ca092718e8b92c02b062223650e6817e1";
 
     public TooldataAPIv1Test() {
         super(c);
@@ -265,20 +265,6 @@ public class TooldataAPIv1Test extends CommonRESTTest implements APIConstants {
 
         // make sure etag is correct
         assertEquals("Unexpected etag value.", expectedETagValue, list.get(0));
-    }
-
-    /**
-     * Determine if FIPS is enabled and supported on the test server
-     * Determines which etag checksum will be used for validation:
-     * MD5 when FIPS 140-3 is disabled, and SHA256 when FIPS 140-3 is enabled
-     */
-    private boolean isFIPSEnabledOnServer() {
-        try {
-            return FATSuite.server.isFIPS140_3EnabledAndSupported();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
 }

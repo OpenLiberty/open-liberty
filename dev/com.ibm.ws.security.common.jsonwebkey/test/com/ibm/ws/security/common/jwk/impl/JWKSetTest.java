@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ public class JWKSetTest {
 
     private final String kid = "test-key-id";
     private final String x5t = "U1dkoqHSjCUk2fdBHU-qSCpQXZc=";
+    private final String x5tS256 = "h2d0YhmNecvX5YUU8Yl_-qG-1J2Yy0E-UJdAhV9E2Rg=";
 
     private JWKSet jwkSet;
     private JWK jwk;
@@ -72,6 +73,8 @@ public class JWKSetTest {
                 will(returnValue(kid));
                 allowing(jwk).getKeyX5t();
                 will(returnValue(x5t));
+                allowing(jwk).getKeyX5tS256();
+                will(returnValue(x5tS256));
             }
         });
     }
@@ -115,6 +118,17 @@ public class JWKSetTest {
     }
 
     @Test
+    public void testGetPublicKeyByUriAndx5tS256() throws Exception {
+        setId = uri.toString();
+        jwkSet.add(setId, jwk);
+
+        Key publicKey = jwkSet.getKeyBySetIdAndx5tS256(setId, x5tS256, JwkKeyType.PUBLIC);
+
+        assertNotNull("There must a public key.", publicKey);
+        assertTrue("Returned key was not a PublicKey: " + publicKey, publicKey instanceof PublicKey);
+    }
+
+    @Test
     public void testRemoveStaleEntries() throws Exception {
         ArrayList<JWK> al = new ArrayList<JWK>();
         al.add(new TestJWK());
@@ -142,6 +156,11 @@ public class JWKSetTest {
 
         @Override
         public String getKeyX5t() {
+            return null;
+        }
+
+        @Override
+        public String getKeyX5tS256() {
             return null;
         }
 

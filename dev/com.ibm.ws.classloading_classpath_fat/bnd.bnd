@@ -18,6 +18,11 @@ src: \
 	test-applications/testClassPath1.war/src, \
 	test-applications/testClassPath2.war/src, \
 	test-applications/testClassPath3.war/src, \
+	test-applications/testLibFileSet.war/src, \
+	test-applications/testParentLastLibraryFeature.war/src, \
+	test-applications/testParentLibraryInconsistent.war/src, \
+	test-applications/testLibPrecedence.war/src, \
+	test-applications/testOverrideLib.war/src, \
 	test-applications/testClient1.jar/src, \
 	test-applications/testEjb1.jar/src, \
 	test-applications/testEjb2.jar/src, \
@@ -42,15 +47,20 @@ src: \
 	test-applications/testLib18.jar/src, \
 	test-applications/testRar1.rar/src, \
 	test-applications/testResourceAdaptor.jar/src, \
-	test-applications/testLibFileSet/src, \
-	test-applications/testParentLast/src
+	test-resourceadapters/testDummyRA/src, \
+	test-bundles/userApiBundle/src
 
 fat.project: true
+-sub: *.bnd
 
 tested.features:
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0, \
 	com.ibm.websphere.javaee.ejb.3.2, \
-	com.ibm.websphere.javaee.connector.1.7,\
-	com.ibm.websphere.javaee.annotation.1.3
+	com.ibm.websphere.javaee.connector.1.7, \
+	com.ibm.websphere.javaee.annotation.1.3, \
+	com.ibm.websphere.javaee.jms.2.0, \
+	com.ibm.ws.classloading.configuration, \
+	com.ibm.websphere.org.osgi.core
+

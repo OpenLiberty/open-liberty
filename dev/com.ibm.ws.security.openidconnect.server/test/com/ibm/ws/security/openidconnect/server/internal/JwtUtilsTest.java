@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,11 @@ import org.jose4j.jwt.JwtClaims;
 import org.jose4j.jwt.consumer.JwtContext;
 import org.jose4j.jwx.JsonWebStructure;
 import org.junit.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.oauth20.api.OAuth20Provider;
 import com.ibm.ws.security.oauth20.api.OidcOAuth20ClientProvider;
 import com.ibm.ws.security.oauth20.plugins.OidcBaseClient;
@@ -197,6 +200,7 @@ public class JwtUtilsTest {
                 one(jws).getAlgorithmHeaderValue();
                 one(jws).getKeyIdHeaderValue();
                 one(jws).getX509CertSha1ThumbprintHeaderValue();
+                one(jws).getX509CertSha256ThumbprintHeaderValue();
                 one(oidcServerConfig).getJSONWebKey();
                 will(returnValue(null));
             }
@@ -213,6 +217,7 @@ public class JwtUtilsTest {
                 will(returnValue("HS256"));
                 one(jws).getKeyIdHeaderValue();
                 one(jws).getX509CertSha1ThumbprintHeaderValue();
+                one(jws).getX509CertSha256ThumbprintHeaderValue();
                 one(oidcServerConfig).getJSONWebKey();
                 will(returnValue(jsonWebKey));
                 one(jsonWebKey).getAlgorithm();
@@ -233,6 +238,8 @@ public class JwtUtilsTest {
                 will(returnValue("bad-kid-value"));
                 one(jws).getX509CertSha1ThumbprintHeaderValue();
                 will(returnValue("bad-x5t-value"));
+                one(jws).getX509CertSha256ThumbprintHeaderValue();
+                will(returnValue("bad-x5tS256-value"));
                 one(oidcServerConfig).getJSONWebKey();
                 will(returnValue(jsonWebKey));
                 one(jsonWebKey).getAlgorithm();
@@ -241,6 +248,8 @@ public class JwtUtilsTest {
                 will(returnValue("expected-kid-value"));
                 one(jsonWebKey).getKeyX5t();
                 will(returnValue("expected-x5t-value"));
+                one(jsonWebKey).getKeyX5tS256();
+                will(returnValue("expected-x5tS256-value"));
             }
         });
         Key key = JwtUtils.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
@@ -257,6 +266,8 @@ public class JwtUtilsTest {
                 will(returnValue("expected-kid-value"));
                 one(jws).getX509CertSha1ThumbprintHeaderValue();
                 will(returnValue("bad-x5t-value"));
+                one(jws).getX509CertSha256ThumbprintHeaderValue();
+                will(returnValue("bad-x5tS256-value"));
                 one(oidcServerConfig).getJSONWebKey();
                 will(returnValue(jsonWebKey));
                 one(jsonWebKey).getAlgorithm();
@@ -280,7 +291,9 @@ public class JwtUtilsTest {
                 one(jws).getKeyIdHeaderValue();
                 will(returnValue("bad-kid-value"));
                 one(jws).getX509CertSha1ThumbprintHeaderValue();
-                will(returnValue("expected-kid-value"));
+                will(returnValue("expected-x5t-value"));
+                one(jws).getX509CertSha256ThumbprintHeaderValue();
+                will(returnValue("bad-x5tS256-value"));
                 one(oidcServerConfig).getJSONWebKey();
                 will(returnValue(jsonWebKey));
                 one(jsonWebKey).getAlgorithm();
@@ -288,7 +301,39 @@ public class JwtUtilsTest {
                 one(jsonWebKey).getKeyID();
                 will(returnValue("expected-kid-value"));
                 one(jsonWebKey).getKeyX5t();
+                will(returnValue("expected-x5t-value"));
+                one(jsonWebKey).getKeyX5tS256();
+                will(returnValue("expected-x5tS256-value"));
+                one(jsonWebKey).getPublicKey();
+                will(returnValue(publicKey));
+            }
+        });
+        Key key = JwtUtils.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
+        assertEquals("Returned key did not match the expected public key.", publicKey, key);
+    }
+
+    @Test
+    public void test_getPublicKeyFromJsonWebStructure_x5tS256Matches() {
+        context.checking(new Expectations() {
+            {
+                one(jws).getAlgorithmHeaderValue();
+                will(returnValue("RS256"));
+                one(jws).getKeyIdHeaderValue();
+                will(returnValue("bad-kid-value"));
+                one(jws).getX509CertSha1ThumbprintHeaderValue();
+                will(returnValue("bad-x5t-value"));
+                one(jws).getX509CertSha256ThumbprintHeaderValue();
+                will(returnValue("expected-x5tS256-value"));
+                one(oidcServerConfig).getJSONWebKey();
+                will(returnValue(jsonWebKey));
+                one(jsonWebKey).getAlgorithm();
+                will(returnValue("RS256"));
+                one(jsonWebKey).getKeyID();
                 will(returnValue("expected-kid-value"));
+                one(jsonWebKey).getKeyX5t();
+                will(returnValue("expected-x5t-value"));
+                one(jsonWebKey).getKeyX5tS256();
+                will(returnValue("expected-x5tS256-value"));
                 one(jsonWebKey).getPublicKey();
                 will(returnValue(publicKey));
             }
@@ -307,6 +352,8 @@ public class JwtUtilsTest {
                 will(returnValue(null));
                 one(jws).getX509CertSha1ThumbprintHeaderValue();
                 will(returnValue(null));
+                one(jws).getX509CertSha256ThumbprintHeaderValue();
+                will(returnValue(null));
                 one(oidcServerConfig).getJSONWebKey();
                 will(returnValue(jsonWebKey));
                 one(jsonWebKey).getAlgorithm();
@@ -317,6 +364,114 @@ public class JwtUtilsTest {
         });
         Key key = JwtUtils.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
         assertEquals("Returned key did not match the expected public key.", publicKey, key);
+    }
+
+    @Test
+    public void test_getPublicKeyFromJsonWebStructure_x5tMatches_Fips140_3Enabled() {
+        try (MockedStatic<CryptoUtils> cryptoUtilsMock = Mockito.mockStatic(CryptoUtils.class)) {
+
+            cryptoUtilsMock.when(CryptoUtils::isFips140_3EnabledWithBetaGuard).thenReturn(true);
+
+            context.checking(new Expectations() {
+                {
+                    one(jws).getAlgorithmHeaderValue();
+                    will(returnValue("RS256"));
+                    one(jws).getKeyIdHeaderValue();
+                    will(returnValue("bad-kid-value"));
+                    one(jws).getX509CertSha1ThumbprintHeaderValue();
+                    will(returnValue("expected-x5t-value"));
+                    one(jws).getX509CertSha256ThumbprintHeaderValue();
+                    will(returnValue("bad-x5tS256-value"));
+                    one(oidcServerConfig).getJSONWebKey();
+                    will(returnValue(jsonWebKey));
+                    one(jsonWebKey).getAlgorithm();
+                    will(returnValue("RS256"));
+                    one(jsonWebKey).getKeyID();
+                    will(returnValue("expected-kid-value"));
+                    one(jsonWebKey).getKeyX5t();
+                    will(returnValue("expected-x5t-value"));
+                    one(jsonWebKey).getKeyX5tS256();
+                    will(returnValue("expected-x5tS256-value"));
+                    one(jsonWebKey).getPublicKey();
+                    will(returnValue(publicKey));
+                }
+            });
+            Key key = JwtUtils.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
+            assertNull("Should not have returned a key, but got: " + key, key);
+
+        }
+    }
+
+    @Test
+    public void test_getPublicKeyFromJsonWebStructure_x5tAndX5tS256Match_Fips140_3Enabled() {
+        try (MockedStatic<CryptoUtils> cryptoUtilsMock = Mockito.mockStatic(CryptoUtils.class)) {
+
+            cryptoUtilsMock.when(CryptoUtils::isFips140_3EnabledWithBetaGuard).thenReturn(true);
+
+            context.checking(new Expectations() {
+                {
+                    one(jws).getAlgorithmHeaderValue();
+                    will(returnValue("RS256"));
+                    one(jws).getKeyIdHeaderValue();
+                    will(returnValue("bad-kid-value"));
+                    one(jws).getX509CertSha1ThumbprintHeaderValue();
+                    will(returnValue("expected-x5t-value"));
+                    one(jws).getX509CertSha256ThumbprintHeaderValue();
+                    will(returnValue("expected-x5tS256-value"));
+                    one(oidcServerConfig).getJSONWebKey();
+                    will(returnValue(jsonWebKey));
+                    one(jsonWebKey).getAlgorithm();
+                    will(returnValue("RS256"));
+                    one(jsonWebKey).getKeyID();
+                    will(returnValue("expected-kid-value"));
+                    one(jsonWebKey).getKeyX5t();
+                    will(returnValue("expected-x5t-value"));
+                    one(jsonWebKey).getKeyX5tS256();
+                    will(returnValue("expected-x5tS256-value"));
+                    one(jsonWebKey).getPublicKey();
+                    will(returnValue(publicKey));
+                }
+            });
+            Key key = JwtUtils.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
+            assertEquals("Returned key did not match the expected public key. ", key, key);
+
+        }
+    }
+
+    @Test
+    public void test_getPublicKeyFromJsonWebStructure_x5tAndKidMatch_Fips140_3Enabled() {
+        try (MockedStatic<CryptoUtils> cryptoUtilsMock = Mockito.mockStatic(CryptoUtils.class)) {
+
+            cryptoUtilsMock.when(CryptoUtils::isFips140_3EnabledWithBetaGuard).thenReturn(true);
+
+            context.checking(new Expectations() {
+                {
+                    one(jws).getAlgorithmHeaderValue();
+                    will(returnValue("RS256"));
+                    one(jws).getKeyIdHeaderValue();
+                    will(returnValue("expected-kid-value"));
+                    one(jws).getX509CertSha1ThumbprintHeaderValue();
+                    will(returnValue("expected-x5t-value"));
+                    one(jws).getX509CertSha256ThumbprintHeaderValue();
+                    will(returnValue("bad-x5tS256-value"));
+                    one(oidcServerConfig).getJSONWebKey();
+                    will(returnValue(jsonWebKey));
+                    one(jsonWebKey).getAlgorithm();
+                    will(returnValue("RS256"));
+                    one(jsonWebKey).getKeyID();
+                    will(returnValue("expected-kid-value"));
+                    one(jsonWebKey).getKeyX5t();
+                    will(returnValue("expected-x5t-value"));
+                    one(jsonWebKey).getKeyX5tS256();
+                    will(returnValue("expected-x5tS256-value"));
+                    one(jsonWebKey).getPublicKey();
+                    will(returnValue(publicKey));
+                }
+            });
+            Key key = JwtUtils.getPublicKeyFromJsonWebStructure(jws, oidcServerConfig);
+            assertEquals("Returned key did not match the expected public key.", key, key);
+
+        }
     }
 
 }

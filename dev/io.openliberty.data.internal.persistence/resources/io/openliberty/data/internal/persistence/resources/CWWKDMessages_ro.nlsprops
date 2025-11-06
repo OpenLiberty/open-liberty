@@ -64,7 +64,7 @@ CWWKD1008.ambig.rtrn.err.useraction=Actualiza\u021bi metoda depozitului pentru a
 
 CWWKD1009.lifecycle.param.err=CWWKD1009E: Metoda {0} a interfe\u021bei de depozit {1} nu poate avea {2} parametri, deoarece metoda este adnotat\u0103 cu adnotarea ciclului de via\u021b\u0103 {3} . Metodele de depozit care sunt adnotate cu o adnotare ciclului de via\u021b\u0103 trebuie s\u0103 aib\u0103 exact 1 parametru, care trebuie s\u0103 fie entitatea sau o matrice sau Lista entit\u0103\u021bii.
 CWWKD1009.lifecycle.param.err.explanation=Metodele ciclului de via\u021b\u0103 trebuie s\u0103 aib\u0103 un singur parametru de entitate.
-CWWKD1009.lifecycle.param.err.useraction=Actualiza\u021bi metoda de depozit pentru a avea un singur parametru care este o entitate sau o matrice de List\u0103 a entit\u0103\u021bii.
+CWWKD1009.lifecycle.param.err.useraction=Actualiza\u021bi metoda depozitului pentru a avea un singur parametru care este o entitate, un array de entit\u0103\u021bi sau o list\u0103 de entit\u0103\u021bi.
 
 CWWKD1010.unknown.entity.attr=CWWKD1010E: Un atribut de entitate numit {0} nu este g\u0103sit \u00een clasa de entit\u0103\u021bi {1} pentru metoda {2} din interfa\u021ba depozitului {3}. Numele valide ale atributelor pentru entitate sunt: {4}.
 CWWKD1010.unknown.entity.attr.explanation=Metoda depozitului \u00eencearc\u0103 s\u0103 utilizeze un atribut de entitate care nu exist\u0103.
@@ -82,9 +82,9 @@ CWWKD1013.cde.missing.param.anno=CWWKD1013E: Parametrul {0} al metodei {1} din i
 CWWKD1013.cde.missing.param.anno.explanation=Parametrii metodelor de num\u0103rare, \u0219tergere \u0219i existen\u021b\u0103 a depozitelor trebuie s\u0103 corespund\u0103 atributelor entit\u0103\u021bii.
 CWWKD1013.cde.missing.param.anno.useraction=Actualiza\u021bi metoda depozitului astfel \u00eenc\u00e2t to\u021bi parametrii s\u0103 corespund\u0103 atributelor entit\u0103\u021bii.
 
-CWWKD1014.upd.missing.param.anno=CWWKD1014E: Parametrul {0} al metodei {1} din interfa\u021ba depozitului {2} nu corespunde unui atribut de entitate. Parametrii care nu corespund unui atribut de entitate trebuie s\u0103 aib\u0103 una dintre adnot\u0103rile parametrului: {3}. Pentru a defini o condi\u021bie de restric\u021bionare a rezultatelor interog\u0103rii, parametrul trebuie s\u0103 fie adnotat cu adnotarea By, iar valoarea adnot\u0103rii By trebuie s\u0103 fie numele atributului entit\u0103\u021bii. Alternativ, activa\u021bi op\u021biunea de compilare -parameters \u0219i da\u021bi parametrului acela\u0219i nume ca atributul entit\u0103\u021bii.
-CWWKD1014.upd.missing.param.anno.explanation=Parametrii metodelor de actualizare a depozitelor trebuie s\u0103 corespund\u0103 atributelor entit\u0103\u021bilor.
-CWWKD1014.upd.missing.param.anno.useraction=Actualiza\u021bi metoda depozitului astfel \u00eenc\u00e2t to\u021bi parametrii s\u0103 corespund\u0103 atributelor entit\u0103\u021bii.
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: Metoda {0} din depozitul {1} nu este o metod\u0103 valid\u0103 de actualizare a ciclului de via\u021b\u0103 deoarece metoda are parametri {2}. Metodele de depozit care sunt adnotate cu o adnotare a ciclului de via\u021b\u0103 trebuie s\u0103 aib\u0103 exact 1 parametru, care trebuie s\u0103 fie entitatea, un array al entit\u0103\u021bii sau o list\u0103 a entit\u0103\u021bii. Metoda {0} nu este, de asemenea, o opera\u021biune valid\u0103 de actualizare bazat\u0103 pe parametri deoarece parametrul metodei {3} nu are o adnotare ( {4} ) care s\u0103 indice numele atributului entit\u0103\u021bii. Alternativ, activa\u021bi op\u021biunea de compilare -parameters \u0219i da\u021bi parametrului acela\u0219i nume ca atributul entit\u0103\u021bii.
+CWWKD1014.upd.missing.param.anno.explanation=Parametrii metodelor de actualizare a depozitelor trebuie s\u0103 corespund\u0103 atributelor entit\u0103\u021bilor. Alternativ, metodele de ciclu de via\u021b\u0103 trebuie s\u0103 aib\u0103 un singur parametru de entitate.
+CWWKD1014.upd.missing.param.anno.useraction=Actualiza\u021bi metoda depozitului astfel \u00eenc\u00e2t to\u021bi parametrii s\u0103 corespund\u0103 atributelor entit\u0103\u021bii. Alternativ, actualiza\u021bi metoda depozitului pentru a avea un singur parametru care este o entitate, un array al entit\u0103\u021bii sau o list\u0103 a entit\u0103\u021bii.
 
 CWWKD1015.null.entity.param=CWWKD1015E: Metoda {0} a interfe\u021bei de depozit {1} nu poate accepta o entitate nul\u0103.
 CWWKD1015.null.entity.param.explanation=Metodele ciclului de via\u021b\u0103 necesit\u0103 o instan\u021b\u0103 de entitate non-nul\u0103.
@@ -102,8 +102,7 @@ CWWKD1018.confl.special.param=CWWKD1018E: Metoda {0} a depozitului {1} nu poate 
 CWWKD1018.confl.special.param.explanation=Unii dintre parametrii speciali Jakarta Data, cum ar fi Limit \u0219i PageRequest, nu pot fi combina\u021bi \u00eentr-o singur\u0103 semn\u0103tur\u0103 a metodei de depozit.
 CWWKD1018.confl.special.param.useraction=Actualiza\u021bi depozitul pentru a nu utiliza ambele tipuri de parametri speciali Jakarta Data \u00een aceea\u0219i semn\u0103tur\u0103 de metod\u0103.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: Metoda {0} a interfe\u021bei de depozit {1} nu poate avea o interogare care amestec\u0103 parametri pozi\u021bionali \u0219i numi\u021bi. Interfa\u021ba define\u0219te o combina\u021bie de {2} parametri de pozi\u021bie \u0219i
- {3} parametrii numi\u021bi {4} pentru valoarea de adnotare a interog\u0103rii: {5} . O interogare cu parametri de pozi\u021bie trebuie s\u0103 fac\u0103 referire la fiecare parametru prin valoarea sa ordinal\u0103, \u00eencep\u00e2nd cu ?1, iar parametrii metodei nu trebuie s\u0103 aib\u0103 adnotarea Param. \u00centr-o interogare cu parametri numi\u021bi, fiecare parametru trebuie s\u0103 fie referit prin numele s\u0103u, cum ar fi {6} , iar parametrii metodei trebuie s\u0103 aib\u0103 adnotarea Param, cum ar fi {7} . Alternativ, activarea op\u021biunii de compilare -parameters permite parametrilor metodei s\u0103 indice parametrul numit prin potrivirea numelui acestuia, de exemplu, {8} .
+CWWKD1019.mixed.positional.named=CWWKD1019E: Metoda {0} a interfe\u021bei depozitului {1} nu poate avea o interogare care amestec\u0103 parametrii pozi\u021bionali \u0219i parametrii numi\u021bi. Interfa\u021ba define\u0219te o combina\u021bie de parametri pozi\u021bionali {2} \u0219i parametri numi\u021bi {3} {4} pentru valoarea de adnotare Query: {5}. O interogare cu parametri pozi\u021bionali trebuie s\u0103 fac\u0103 referire la fiecare parametru prin valoarea sa ordinal\u0103, \u00eencep\u00e2nd cu?1, iar parametrii metodei nu trebuie s\u0103 aib\u0103 adnotarea Param. \u00centr-o interogare cu parametri numi\u021bi, fiecare parametru trebuie s\u0103 fie referit prin numele s\u0103u, cum ar fi {6}, iar parametrii metodei trebuie s\u0103 aib\u0103 adnotarea Param, cum ar fi {7}. Alternativ, activarea op\u021biunii de compilare -parameters permite parametrilor metodei s\u0103 indice parametrul numit prin potrivirea numelui s\u0103u, de exemplu, {8}.
 CWWKD1019.mixed.positional.named.explanation=Interog\u0103rile cu parametri trebuie s\u0103 utilizeze to\u021bi parametrii numi\u021bi sau to\u021bi parametrii de pozi\u021bie, nu o combina\u021bie.
 CWWKD1019.mixed.positional.named.useraction=Actualiza\u021bi metoda de depozit pentru a utiliza numai parametrii denumi\u021bi sau numai parametrii pozi\u021bionali.
 
@@ -135,9 +134,9 @@ CWWKD1026.ignore.case.not.text=CWWKD1026E: Atributul {0} al entit\u0103\u021bii 
 CWWKD1026.ignore.case.not.text.explanation=Sortarea cu ignorarea cazurilor este posibil\u0103 numai cu atribute de entitate care reprezint\u0103 text.
 CWWKD1026.ignore.case.not.text.useraction=Asigura\u021bi-v\u0103 c\u0103 criteriile de sortare se aplic\u0103 atributului de entitate corect \u0219i elimina\u021bi instruc\u021biunea de a ignora cazul dac\u0103 atributul de entitate nu reprezint\u0103 text.
 
-CWWKD1027.anno.missing.attr.name=CWWKD1027E: Parametrul {0} al metodei {1} din interfa\u021ba depozitului {2} este adnotat cu o adnotare {3} care nu specific\u0103 un nume de atribut de entitate ca valoare. Adnotarea trebuie fie s\u0103 specifice numele atributului entit\u0103\u021bii ca valoare, fie op\u021biunea de compilare -parameters trebuie s\u0103 fie activat\u0103, iar parametrul trebuie s\u0103 aib\u0103 acela\u0219i nume ca atributul entit\u0103\u021bii.
-CWWKD1027.anno.missing.attr.name.explanation=Parametrii metodelor de actualizare a depozitelor trebuie s\u0103 corespund\u0103 atributelor entit\u0103\u021bilor.
-CWWKD1027.anno.missing.attr.name.useraction=Actualiza\u021bi metoda depozitului pentru a indica atributul entit\u0103\u021bii la care se refer\u0103 parametrul.
+CWWKD1027.datastore.lacks.java.comp=CWWKD1027E: Una sau mai multe interfe\u021be de depozit ( {0} ) din artefactul de aplica\u021bie {1} specific\u0103 o valoare {2} dataStore care nu se potrive\u0219te cu o referin\u021b\u0103 a resursei sursei de date sau cu o referin\u021b\u0103 a unit\u0103\u021bii de persisten\u021b\u0103 deoarece nu are un prefix al spa\u021biului de nume java:comp/env/. Lua\u021bi \u00een considerare modificarea adnot\u0103rii Repository pentru a specifica {3}.
+CWWKD1027.datastore.lacks.java.comp.explanation=Numele JNDI ale referin\u021belor resurselor sursei de date \u0219i ale referin\u021belor unit\u0103\u021bilor de persisten\u021b\u0103 trebuie s\u0103 includ\u0103 un prefix java: namespace.
+CWWKD1027.datastore.lacks.java.comp.useraction=Asigura\u021bi-v\u0103 c\u0103 valoarea stocului de date din adnotarea Repository include un prefix java: namespace atunci c\u00e2nd valoarea indic\u0103 numele JNDI al unei referin\u021be de resurs\u0103 a sursei de date sau al unei referin\u021be de unitate de persisten\u021b\u0103.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: Metoda {0} a interfe\u021bei de depozit {1} solicit\u0103 primele {2} rezultate, care dep\u0103\u0219esc num\u0103rul maxim permis de rezultate: {3} .
 CWWKD1028.first.exceeds.max.explanation=Num\u0103rul maxim de rezultate ale interog\u0103rii este limitat de constr\u00e2ngerile de sistem \u0219i de valoarea specificat\u0103.
@@ -147,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: Metoda {0} a interfe\u021bei de depozit 
 CWWKD1029.first.neg.or.zero.explanation=Num\u0103rul maxim de rezultate ale interog\u0103rii trebuie s\u0103 fie un num\u0103r pozitiv.
 CWWKD1029.first.neg.or.zero.useraction=Actualiza\u021bi metoda de depozit pentru a specifica un num\u0103r maxim pozitiv de rezultate.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Numele entit\u0103\u021bii lipse\u0219te din interogarea {0} care este specificat\u0103 pentru metoda {1} a depozitului {2} . \u00cen Jakarta Data Query Language, {3} interog\u0103ri ar trebui s\u0103 fie formate ca: {4} .
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Numele entit\u0103\u021bii lipse\u0219te din interogarea {0} care este specificat\u0103 pentru metoda {1} din depozitul {2}. Pentru interog\u0103rile {3}, utiliza\u021bi forma: {4}.
 CWWKD1030.ql.lacks.entity.explanation=Interogarea con\u021bine o clauz\u0103 care necesit\u0103 numele entit\u0103\u021bii.
 CWWKD1030.ql.lacks.entity.useraction=Actualiza\u021bi interogarea pentru metoda depozitului pentru a include numele entit\u0103\u021bii.
 
@@ -163,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Metoda {0} a interfe\u021bei de depo
 CWWKD1033.ql.orderby.disallowed.explanation=Clauza ORDER BY este incompatibil\u0103 cu paginarea bazat\u0103 pe cursor.
 CWWKD1033.ql.orderby.disallowed.useraction=\u00cenlocui\u021bi clauza ORDER BY cu adnot\u0103ri care specific\u0103 criteriile de sortare.
 
-CWWKD1034.ql.where.required=CWWKD1034E: Interogarea care este specificat\u0103 de metoda {0} a interfe\u021bei de depozit {1} trebuie s\u0103 se \u00eencheie cu o clauz\u0103 WHERE deoarece metoda returneaz\u0103 {2} . Acolo clauza WHERE se termin\u0103 la pozi\u021bia {3} , dar lungimea interog\u0103rii este {4} . Interogarea este: {5} .
-CWWKD1034.ql.where.required.explanation=O clauz\u0103 WHERE este necesar\u0103 c\u00e2nd se utilizeaz\u0103 paginarea bazat\u0103 pe cursor.
-CWWKD1034.ql.where.required.useraction=Ad\u0103uga\u021bi o clauz\u0103 WHERE la interogare.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: Interogarea specificat\u0103 de metoda {0} a interfe\u021bei depozitului {1} trebuie s\u0103 se \u00eencheie cu o clauz\u0103 WHERE deoarece metoda returneaz\u0103 {2}. Clauza WHERE se \u00eencheie la pozi\u021bia {3}, dar lungimea interog\u0103rii este {4}. Interogarea este: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=O clauz\u0103 WHERE este necesar\u0103 atunci c\u00e2nd se utilizeaz\u0103 paginarea bazat\u0103 pe cursor.
+CWWKD1034.ql.req.end.in.where.useraction=Ad\u0103uga\u021bi o clauz\u0103 WHERE la interogare.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: O solicitare de pagin\u0103 cu modul de paginare {0} nu trebuie s\u0103 fie furnizat\u0103 metodei {1} a interfe\u021bei de depozit {2} deoarece metoda returneaz\u0103 {3} \u00een loc de {4} .
 CWWKD1035.incompat.page.mode.explanation=Modul de paginare solicitat nu este compatibil cu tipul de returnare al metodei de depozit.
@@ -271,7 +270,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: Interfa\u021ba de depozit {0} din aplica
 CWWKD1060.name.out.of.scope.explanation=Spa\u021biul de nume specificat nu este accesibil din artefactul \u00een care este definit\u0103 interfa\u021ba de depozit.
 CWWKD1060.name.out.of.scope.useraction=Actualiza\u021bi adnotarea depozitului pentru a specifica un nume de depozit de date care este vizibil pentru modulul sau biblioteca care furnizeaz\u0103 interfa\u021ba de depozit.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: Una sau mai multe interfe\u021be de depozit ( {0} ) care sunt definite \u00een modulul enterprise bean {1} al aplica\u021biei {2} configureaz\u0103 o valoare {2} pentru atributul {3} . Cu toate acestea, numele {4} nu sunt accesibile modulelor enterprise bean. Utiliza\u021bi un nume din unul dintre urm\u0103toarele spa\u021bii de nume: {5} .
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Una sau mai multe interfe\u021be de depozit ( {0} ) care sunt definite \u00een modulul {1} enterprise bean al aplica\u021biei {2} configureaz\u0103 o valoare {3} pentru atributul {4}. Cu toate acestea, numele {5} nu sunt accesibile modulelor enterprise bean. Utiliza\u021bi un nume din unul dintre urm\u0103toarele spa\u021bii de nume: {6}.
 CWWKD1061.comp.name.in.ejb.explanation=Spa\u021biul de nume specificat nu este accesibil pentru modulul enterprise bean unde este definit\u0103 interfa\u021ba de depozit.
 CWWKD1061.comp.name.in.ejb.useraction=Actualiza\u021bi adnotarea Repository pentru a specifica un nume de depozit de date care este vizibil pentru modulul enterprise bean care furnizeaz\u0103 interfa\u021ba de depozit.
 
@@ -484,3 +483,35 @@ CWWKD1111.unsupported.convert.useraction=Actualiza\u021bi implementarea Attribut
 CWWKD1112.record.entity.verify.err=CWWKD1112W: O clas\u0103 de entitate pentru \u00eenregistrarea {0} este definit\u0103, dar ar putea s\u0103 nu func\u021bioneze. Verificarea octe\u021bilor clasei de entit\u0103\u021bi Jakarta Persistence, care a fost generat\u0103 pentru clasa de entit\u0103\u021bi, a e\u0219uat. Clasa de entitate definit\u0103 este utilizat\u0103 de una sau mai multe interfe\u021be de depozit ( {1} ) \u00een artifactul de aplica\u021bie {2}. Eroarea este: {3}.
 CWWKD1112.record.entity.verify.err.explanation=Atunci c\u00e2nd un depozit utilizeaz\u0103 o entitate record, este generat\u0103 o entitate Jakarta Persistence pentru a reprezenta entitatea record. Verificarea octe\u021bilor clasei de entit\u0103\u021bi Jakarta Persistence generate a e\u0219uat.
 CWWKD1112.record.entity.verify.err.useraction=Verifica\u021bi dac\u0103 punerea \u00een aplicare a entit\u0103\u021bii de \u00eenregistrare respect\u0103 cerin\u021bele \u0219i conven\u021biile pentru o entitate de \u00eenregistrare.
+
+CWWKD1113.server.stopping=CWWKD1113I: Unul sau mai multe depozite ( {0} ) nu s-au ini\u021bializat deoarece serverul se \u00eenchide.
+CWWKD1113.server.stopping.explanation=Serverul se opre\u0219te \u0219i nu va \u00eencerca s\u0103 ini\u021bializeze depozitele.
+CWWKD1113.server.stopping.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+CWWKD1114.app.stopping=CWWKD1114I: Unul sau mai multe depozite ( {0} ) nu s-au ini\u021bializat deoarece aplica\u021bia {1} este \u00een starea {2}.
+CWWKD1114.app.stopping.explanation=Aplica\u021bia se opre\u0219te sau s-a oprit \u0219i nu va \u00eencerca s\u0103 ini\u021bializeze depozitele.
+CWWKD1114.app.stopping.useraction=Porni\u021bi aplica\u021bia pentru a face depozitele disponibile.
+
+CWWKD1115.app.unavailable=CWWKD1115E: Unul sau mai multe depozite ( {0} ) nu s-au ini\u021bializat deoarece aplica\u021bia {1} nu este disponibil\u0103.
+CWWKD1115.app.unavailable.explanation=Aplica\u021bia care define\u0219te depozitele nu este disponibil\u0103. Depozitele nu se pot ini\u021bializa.
+CWWKD1115.app.unavailable.useraction=Porni\u021bi aplica\u021bia pentru a face depozitele disponibile.
+
+CWWKD1116.resource.unavailable=CWWKD1116E: Unul sau mai multe depozite ( {0} ) nu s-au ini\u021bializat deoarece resursa {1} nu a devenit disponibil\u0103 \u00een termen de {2} secunde.
+CWWKD1116.resource.unavailable.explanation=O resurs\u0103 necesar\u0103 depozitelor nu a devenit disponibil\u0103.
+CWWKD1116.resource.unavailable.useraction=Verifica\u021bi configura\u021bia resurselor pe care le utilizeaz\u0103 depozitele.
+
+CWWKD1117.anno.constraint.conflict=CWWKD1117E: Parametrul {0} al metodei {1} din interfa\u021ba depozitului {2} nu poate fi adnotat cu adnot\u0103rile: {3}. Una sau mai multe dintre adnot\u0103ri sunt incompatibile cu tipul {4} al parametrului metodei depozitului.
+CWWKD1117.anno.constraint.conflict.explanation=Constr\u00e2ngerea \u0219i subtipurile sale nu pot fi combinate cu adnot\u0103ri ale parametrilor, altele dec\u00e2t adnotarea By.
+CWWKD1117.anno.constraint.conflict.useraction=Elimina\u021bi adnotarea conflictual\u0103 sau specifica\u021bi tipul de atribut al entit\u0103\u021bii \u00een locul unui tip de constr\u00e2ngere.
+
+CWWKD1118.param.anno.conflict=CWWKD1118E: Parametrul {0} al metodei {1} din interfa\u021ba depozitului {2} nu poate fi adnotat cu adnot\u0103rile: {3}. Dou\u0103 sau mai multe dintre adnot\u0103ri intr\u0103 \u00een conflict \u00eentre ele.
+CWWKD1118.param.anno.conflict.explanation=Combina\u021bia de adnot\u0103ri ale parametrilor nu este valabil\u0103.
+CWWKD1118.param.anno.conflict.useraction=Elimina\u021bi una sau mai multe dintre adnot\u0103rile conflictuale din parametrul metodei depozitului.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Metoda {0} a interfe\u021bei depozitului {1} recupereaz\u0103 pagini care nu includ un num\u0103r total de elemente \u0219i pagini deoarece interogarea con\u021bine cuv\u00e2ntul-cheie {2}. Interogarea complet\u0103 este: {3}.
+CWWKD1119.keyword.prevents.count.explanation=Cuv\u00e2ntul cheie este incompatibil cu capacitatea de a ob\u021bine un num\u0103r total de elemente \u0219i pagini.
+CWWKD1119.keyword.prevents.count.useraction=\u00cenlocui\u021bi interogarea cu una care nu utilizeaz\u0103 cuv\u00e2ntul cheie sau evita\u021bi solicitarea unui num\u0103r total de elemente \u0219i pagini.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Metoda {0} a interfe\u021bei depozitului {1} specific\u0103 o interogare care include cuv\u00e2ntul-cheie {2}, care este incompatibil\u0103 cu paginarea bazat\u0103 pe cursor. Interog\u0103rile pentru paginarea bazat\u0103 pe cursor trebuie s\u0103 se \u00eencheie cu o clauz\u0103 WHERE \u0219i nu trebuie s\u0103 includ\u0103 subinterog\u0103ri. Interogarea este: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Cuvinte-cheie precum GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT \u0219i UNION nu sunt compatibile cu paginarea bazat\u0103 pe cursor.
+CWWKD1120.cursor.keyword.mismatch.useraction=Rescrie\u021bi interogarea pentru a include doar clauzele: SELECT, FROM \u0219i WHERE.

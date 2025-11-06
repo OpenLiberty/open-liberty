@@ -4,4 +4,4 @@ bVersion=1.78.1
 Bundle-SymbolicName: io.openliberty.org.bouncycastle.bcutil-jdk18on
 
 Include-Resource: \
-   @${repo;org.bouncycastle:bcutil-jdk18on;1.78.1;EXACT}!/!META-INF/versions/9/module-info.class
+   @\${repo;org.bouncycastle:bcutil-jdk18on;1.78.1;EXACT}!/!META-INF/versions/9/module-info.class

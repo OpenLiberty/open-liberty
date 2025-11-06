@@ -971,6 +971,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_encrypt_RS256() throws Exception {
 
@@ -995,6 +996,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_encrypt_RS384() throws Exception {
 
@@ -1019,6 +1021,7 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
     public void JwkEndpointValidationUrlTests_encrypt_RS512() throws Exception {
 
@@ -1039,6 +1042,66 @@ public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
         // TODO
         //        // use the token to access the protected app - one last check to ensure that the token is valid
         //        invokeAndValidateProtectedApp(UseTokenInHeader, builderResponse, builderId.replace("jwkEnabled_", ""));
+
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
+    public void JwkEndpointValidationUrlTests_encrypt_ES256() throws Exception {
+
+        String builderId = "key_encrypt_good_ES256";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_ES256));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateCurve(validateResponse, "P-256");
+
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
+    public void JwkEndpointValidationUrlTests_encrypt_ES384() throws Exception {
+
+        String builderId = "key_encrypt_good_ES384";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_ES384));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateCurve(validateResponse, "P-384");
+
+    }
+
+    @Test
+    @ConditionalIgnoreRule.ConditionalIgnore(condition = skipIfAddressDoesNotResolve.class)
+    public void JwkEndpointValidationUrlTests_encrypt_ES512() throws Exception {
+
+        String builderId = "key_encrypt_good_ES512";
+        String url = buildEndpointUrl_http(builderId, urlJwkPart);
+
+        // build a jwt token with the "default" test claims (need to validate different info for an encrypted token)
+        Page builderResponse = buildEncryptedJwtForEndpointValidationTests(builderId, JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+
+        // create validation endpoint expectations from the built token
+        Expectations validateExpectations = BuilderHelpers.createGoodValidationEndpointExpectations(BuilderHelpers.extractJwtTokenFromResponse(builderResponse, JWTBuilderConstants.BUILT_JWT_TOKEN), url, JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_ES512));
+
+        Page validateResponse = actions.invokeUrl(_testName, url);
+        validationUtils.validateResult(validateResponse, validateExpectations);
+        // extra validation - make sure that the signature size is correct
+        validationUtils.validateCurve(validateResponse, "P-521");
 
     }
 

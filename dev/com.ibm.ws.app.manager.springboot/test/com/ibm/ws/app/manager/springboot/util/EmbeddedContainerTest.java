@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -85,7 +85,7 @@ public class EmbeddedContainerTest {
         expected = "a"; // no dirPath, smallest artifact
         assertTrue("Artifact name is " + expected, expected.equals(getArtifactId("a-2.jar")));
         expected = "b"; // dirPath, smallest artifact
-        assertTrue("Artifact name is " + expected, expected.equals(getArtifactId("/b-c.jar")));
+        assertTrue("Artifact name is " + expected, expected.equals(getArtifactId("/b-2.jar")));
     }
 
     @Test
@@ -120,25 +120,27 @@ public class EmbeddedContainerTest {
 
         sourceFatJar = new JarFile(getUndertowStarter20AppJar());
         starterJarName = springBoot20UndertowStarterJars.get(random0max(springBoot20UndertowStarterJars.size() - 1));
-        filter = getStarterFilter(sourceFatJar);
+        Manifest manifest = createManifest(springBoot20WebAppManifestContent);
+        SpringBootManifest sbmf = new SpringBootManifest(manifest);
+        filter = getStarterFilter(sourceFatJar, sbmf);
         assertTrue("JarName " + starterJarName + " is a SB 2.0 UNDERTOW starter artifact, apply() is true", filter.apply(starterJarName));
         sourceFatJar.close();
 
         sourceFatJar = new JarFile(getJettyStarter20AppJar());
         starterJarName = springBoot20JettyStarterJars.get(random0max(springBoot20JettyStarterJars.size() - 1));
-        filter = getStarterFilter(sourceFatJar);
+        filter = getStarterFilter(sourceFatJar, sbmf);
         assertTrue("JarName " + starterJarName + " is a SB 2.0 JETTY starter artifact, apply() is true", filter.apply(starterJarName));
         sourceFatJar.close();
 
         sourceFatJar = new JarFile(getWebStarter20AppJar());
         starterJarName = springBoot20TomcatStarterJars.get(random0max(springBoot20TomcatStarterJars.size() - 1));
-        filter = getStarterFilter(sourceFatJar);
+        filter = getStarterFilter(sourceFatJar, sbmf);
         assertTrue("JarName " + starterJarName + " is a SB 2.0 TOMCAT starter artifact, apply() is true", filter.apply(starterJarName));
         sourceFatJar.close();
 
         sourceFatJar = new JarFile(getNettyStarter20AppJar());
         starterJarName = springBoot20NettyStarterJars.get(random0max(springBoot20NettyStarterJars.size() - 1));
-        filter = getStarterFilter(sourceFatJar);
+        filter = getStarterFilter(sourceFatJar, sbmf);
         assertTrue("JarName " + starterJarName + " is a SB 2.0 NETTY starter artifact, apply() is true", filter.apply(starterJarName));
         sourceFatJar.close();
 

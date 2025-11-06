@@ -11,8 +11,6 @@ package com.ibm.ws.jsp23.fat;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.Locale;
-
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -24,7 +22,6 @@ import com.ibm.ws.jsp23.fat.tests.JSP23JSP22ServerTest;
 import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
 import com.ibm.ws.jsp23.fat.tests.JSPChannelTest;
 import com.ibm.ws.jsp23.fat.tests.JSPDebugSupport;
-import com.ibm.ws.jsp23.fat.tests.JSPExceptionTests;
 import com.ibm.ws.jsp23.fat.tests.JSPExpressionLanguageTests;
 import com.ibm.ws.jsp23.fat.tests.JSPGlobalTLDTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava11Test;
@@ -34,11 +31,8 @@ import com.ibm.ws.jsp23.fat.tests.JSPJava7Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountNonDefaultValueTests;
-import com.ibm.ws.jsp23.fat.tests.JSPSkipMetaInfTests;
-import com.ibm.ws.jsp23.fat.tests.JSPTests;
 import com.ibm.ws.jsp23.fat.tests.JSTLTests;
 
-import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -52,9 +46,6 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                JSPTests.class,
-                JSPExceptionTests.class,
-                JSPSkipMetaInfTests.class,
                 JSPJava7Test.class,
                 JSPJava8Test.class,
                 JSPJava11Test.class,
@@ -76,36 +67,18 @@ public class FATSuite {
     /**
      * Run the tests again with the cdi-2.0 feature. Tests should be skipped where appropriate
      * using @SkipForRepeat("CDI-2.0").
+     *
+     * If running with a Java version less than 11, have EE9 be the lite mode test to run.
      */
     @ClassRule
-    public static RepeatTests repeat;
-
-    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
-
-    static {
-        if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
-            // Repeating the full fat for all features may exceed the 3 hour limit on Fyre Windows and causes random build breaks.
-            // Skip EE9 on the windows platform when not running locally.
-            // If we are running with a Java version less than 11, have EE7 (EmptyAction) be the lite mode test to run.
-            repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                            .withID("CDI-2.0")
-                                            .forceAddFeatures(false)
-                                            .fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                            .andWith(FeatureReplacementAction.EE11_FEATURES());
-        } else {
-            // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                            .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
-                                            .withID("CDI-2.0")
-                                            .forceAddFeatures(false)
-                                            .fullFATOnly())
-                            .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                            .andWith(FeatureReplacementAction.EE11_FEATURES());
-        }
-    }
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
+                                    .withID("CDI-2.0")
+                                    .forceAddFeatures(false)
+                                    .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     //Server used for setup
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("globalTLDServer");

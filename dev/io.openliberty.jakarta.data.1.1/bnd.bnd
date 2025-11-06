@@ -13,10 +13,10 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 Bundle-Name: Jakarta Data copy of API classes
 Bundle-SymbolicName: io.openliberty.jakarta.data.1.1
@@ -24,6 +24,8 @@ Bundle-Description: Copied Jakarta Data API classes and some proposed or experim
 
 Export-Package: \
   jakarta.data;version="1.0.0",\
+  jakarta.data.constraint;version="1.0.0",\
+  jakarta.data.event;version="1.0.0",\
   jakarta.data.exceptions;version="1.0.0",\
   jakarta.data.expression;version="1.0.0",\
   jakarta.data.metamodel;version="1.0.0",\
@@ -31,12 +33,19 @@ Export-Package: \
   jakarta.data.page;version="1.0.0",\
   jakarta.data.page.impl;version="1.0.0",\
   jakarta.data.repository;version="1.0.0",\
-  jakarta.data.spi;version="1.0.0"
+  jakarta.data.restrict;version="1.0.0",\
+  jakarta.data.spi;version="1.0.0",\
+  jakarta.data.spi.expression.function;version="1.0.0",\
+  jakarta.data.spi.expression.literal;version="1.0.0",\
+  jakarta.data.spi.expression.path;version="1.0.0"
+
+Private-Package: \
+  jakarta.data.messages;version="1.0.0"
 
 instrument.classesExcludes: jakarta/data/*.class
 
 #-includeresource: \
-#  @${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+#  @\${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 publish.wlp.jar.suffix: dev/api/spec
 

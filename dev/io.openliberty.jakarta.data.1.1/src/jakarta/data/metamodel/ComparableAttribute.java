@@ -13,6 +13,7 @@
 package jakarta.data.metamodel;
 
 import jakarta.data.expression.ComparableExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -28,10 +29,9 @@ public interface ComparableAttribute<T, V extends Comparable<?>> //
                        String name,
                        Class<V> attributeType) {
 
-        if (entityClass == null ||
-            name == null ||
-            attributeType == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(entityClass, "entityClass");
+        Messages.requireNonNull(name, "name");
+        Messages.requireNonNull(attributeType, "attributeType");
 
         return new ComparableAttributeRecord<>(entityClass, name, attributeType);
     }

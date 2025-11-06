@@ -327,6 +327,8 @@ metamodel_managed_type_attribute_type_incorrect=O\u010dek\u00e1v\u00e1n typ atri
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Deklarovan\u00fd atribut [{0}] ze spravovan\u00e9ho typu [{1}] nen\u00ed p\u0159\u00edtomen -  je v\u0161ak deklarovan\u00fd v supert\u0159\u00edd\u011b.
 
+missing_jpql_parser_class=Nepoda\u0159ilo se na\u010d\u00edst t\u0159\u00eddu parseru JPQL.
+
 missing_parameter_value=Argument dotazu {0} nebyl v seznamu parametr\u016f poskytnut\u00fdch b\u011bhem prov\u00e1d\u011bn\u00ed dotazu nalezen.
 
 missing_toplink_bean_definition_for=Chyb\u00ed definice objektu typu bean TopLink pro {0}
@@ -411,7 +413,7 @@ schema_validation=Ov\u011b\u0159en\u00ed platnosti sch\u00e9matu
 
 schema_validation_failed=Ov\u011b\u0159en\u00ed sch\u00e9matu se nezda\u0159ilo.
 
-schema_validation_missing_table=Ve sch\u00e9matu nebylo nalezeno pl\u00e1tno tabulky {0} .
+schema_validation_missing_table=Tabulka {0} nen\u00ed ve sch\u00e9matu nalezena
 
 schema_validation_table_different_columns=Tabulka {0} m\u00e1 ve sch\u00e9matu r\u016fzn\u00e9 sloupce.
 

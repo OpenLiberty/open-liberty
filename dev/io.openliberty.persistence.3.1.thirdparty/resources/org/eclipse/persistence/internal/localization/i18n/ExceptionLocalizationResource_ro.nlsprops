@@ -303,6 +303,8 @@ metamodel_managed_type_attribute_type_incorrect=Se a\u015ftepta tipul de atribut
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Atributul declarat [{0}] de la tipul gestionat [{1}] nu este prezent - totu\u015fi, este declarat pe o superclas\u0103.
 
+missing_jpql_parser_class=Nu s-a putut \u00eenc\u0103rca clasa parser JPQL.
+
 missing_parameter_value=Argumentul interog\u0103rii {0} nu a fost g\u0103sit \u00een lista de parametri furnizat\u0103 \u00een timpul execu\u0163iei interog\u0103rii.
 
 missing_toplink_bean_definition_for=Lipse\u015fte defini\u0163ia de bean TopLink pentru {0}

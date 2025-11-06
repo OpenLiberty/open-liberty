@@ -310,7 +310,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Die folgenden lokalen Ke
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Es ist keine Aktion erforderlich.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Das System f\u00fcgt den Unterzeichneralias {0} dem lokalen Keystore {1} mit dem folgenden SHA-Digest hinzu: {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Das System f\u00fcgt den Unterzeichner-Alias {0} zum lokalen Schl\u00fcsselspeicher {1} mit dem folgenden {3} digest hinzu: {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Diese Nachricht ist nur f\u00fcr Informationszwecke bestimmt.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Es ist keine Aktion erforderlich.
 # -------------------------------------------------------------------------------------------------

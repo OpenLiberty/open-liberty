@@ -633,7 +633,7 @@
 
 7356=Nie mo\u017cna wykona\u0107 procedury [{1}], poniewa\u017c {0} nie obs\u0142uguje wielu parametr\u00f3w wyj\u015bciowych
 
-7357=\u201e[{0} ]\u201d Adres URL dla \u201e[{1} ]\u201d zas\u00f3b nie nale\u017cy do prawid\u0142owego katalogu g\u0142\u00f3wnego trwa\u0142o\u015bci, zgodnie ze specyfikacj\u0105 Jakarta Persistence
+7357="[ {0} ]" URL dla zasobu "[ {1} ]" nie nale\u017cy do prawid\u0142owego korzenia trwa\u0142o\u015bci, zgodnie ze specyfikacj\u0105 Jakarta Persistence.
 
 7358=Podano niepoprawn\u0105 nazw\u0119 us\u0142ugi ASM.
 

@@ -20,5 +20,5 @@ org.apache.commons.io.input;version="2.19.0",org.apache.commons.io.input.buffer;
 org.apache.commons.io.monitor;version="2.19.0",org.apache.commons.io.output;version="2.19.0", \
 org.apache.commons.io.serialization;version="2.19.0"
 
-Include-Resource: @${repo;commons-io:commons-io;2.19.0;EXACT}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/versions/9/module-info.class)
+Include-Resource: @\${repo;commons-io:commons-io;2.19.0;EXACT}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/versions/9/module-info.class)
 

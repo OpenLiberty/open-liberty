@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -882,6 +882,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Egy alkalmaz\u00e1s a kiszolg\u00e1l
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=A verem-nyomk\u00f6vet\u00e9s a tranzakci\u00f3 l\u00e9trehoz\u00e1sakor ker\u00fclt r\u00f6gz\u00edt\u00e9sre. A verem-nyomk\u00f6vet\u00e9s seg\u00edt a felhaszn\u00e1l\u00f3knak meghat\u00e1rozni, hogy mely alkalmaz\u00e1sok kezdenek tranzakci\u00f3kat az ind\u00edt\u00e1suk sor\u00e1n, ami miatt az ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s meghi\u00fasul.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Vizsg\u00e1lja meg a verem-nyomk\u00f6vet\u00e9st annak meghat\u00e1roz\u00e1s\u00e1hoz, hogy melyik alkalmaz\u00e1s kezdett \u00faj tranzakci\u00f3t a kiszolg\u00e1l\u00f3 ellen\u0151rz\u00e9si pont k\u00e9r\u00e9s sor\u00e1n.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: A tranzakci\u00f3 nem folytathat\u00f3 az aktu\u00e1lis sz\u00e1lon, mivel az egy m\u00e1sik sz\u00e1lon akt\u00edv ( {0} ).
+WTRN0156_CANNOT_RESUME.explanation=Liberty nem teszi lehet\u0151v\u00e9, hogy egy tranzakci\u00f3 egyszerre t\u00f6bb sz\u00e1lon is akt\u00edv legyen.
+WTRN0156_CANNOT_RESUME.useraction=Felf\u00fcggeszti a tranzakci\u00f3t, miel\u0151tt egy m\u00e1sik sz\u00e1lon folytatn\u00e1 azt.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: A tranzakci\u00f3t nem lehet folytatni az aktu\u00e1lis sz\u00e1lon, mert az m\u00e1shol akt\u00edv.
+WTRN0157_CANNOT_RESUME.explanation=Liberty nem teszi lehet\u0151v\u00e9, hogy egy tranzakci\u00f3 egyszerre t\u00f6bb sz\u00e1lon is akt\u00edv legyen.
+WTRN0157_CANNOT_RESUME.useraction=Felf\u00fcggeszti a tranzakci\u00f3t, miel\u0151tt egy m\u00e1sik sz\u00e1lon folytatn\u00e1 azt.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

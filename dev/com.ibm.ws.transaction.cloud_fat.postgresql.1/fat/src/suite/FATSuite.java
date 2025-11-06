@@ -18,13 +18,12 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.transaction.fat.util.PostgresqlContainerSuite;
+import com.ibm.ws.transaction.fat.util.TxTestDB;
 
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.database.container.PostgreSQLContainer;
 import tests.DualServerDynamicDBRotationTest1;
 
 @RunWith(Suite.class)
@@ -35,16 +34,8 @@ import tests.DualServerDynamicDBRotationTest1;
 })
 public class FATSuite extends PostgresqlContainerSuite {
 
-    static {
-        testContainer = new PostgreSQLContainer(getPostgresqlImageName())
-                        .withDatabaseName(POSTGRES_DB)
-                        .withUsername(POSTGRES_USER)
-                        .withPassword(POSTGRES_PASS)
-                        .withSSL()
-                        .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "postgre-ssl"));
-
-        beforeSuite(DatabaseContainerType.Postgres);
-    }
+    @ClassRule
+    public static TxTestDB p = new TxTestDB(DatabaseContainerType.Postgres);
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()

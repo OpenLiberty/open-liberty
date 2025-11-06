@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPIConnection;
 import com.ibm.ws.microprofile.openapi.fat.utils.OpenAPITestUtil;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.RepeatTests;
@@ -41,8 +42,11 @@ import componenttest.topology.utils.HttpUtils;
  */
 @RunWith(FATRunner.class)
 public class ProxySupportTest extends FATServletClient {
+    /**  */
+    private static final String HOST = "Host";
     private static final Class<?> c = ProxySupportTest.class;
     private static final String REFERER = "Referer";
+    private static final String X_FORWARDED_PROTO = "X-Forwarded-Proto";
 
     private static final String APP_NAME_1 = "appWithStaticDoc";
 
@@ -110,7 +114,7 @@ public class ProxySupportTest extends FATServletClient {
 
     /**
      * Tests to ensure when the call to /openapi with a referer header that has different port than the server,
-     * the OAS doc has correct host and port
+     * the OAS doc has the scheme, host and port from the referer header
      *
      * @throws Exception
      */
@@ -129,11 +133,13 @@ public class ProxySupportTest extends FATServletClient {
 
     /**
      * Tests to ensure when the call to /openapi with a referer header that has the same port than the server,
-     * the OAS doc has correct host and port
+     * the OAS doc has the host from the referer header and the scheme and ports from the liberty config
      *
      * @throws Exception
      */
     @Test
+    @MaximumJavaLevel(javaLevel = 23) // On JAVA 24 many JDKs are setting the Host variable to localhost despite its
+                                      // explicit definition
     public void testRefererSamePort() throws Exception {
         String referer = "http://openliberty.io:" + server.getHttpDefaultPort() + "/openapi";
         String openapi = OpenAPIConnection.openAPIDocsConnection(server, false).header(REFERER, referer).download();
@@ -149,4 +155,105 @@ public class ProxySupportTest extends FATServletClient {
             "http://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1,
             "https://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
     }
+
+    /**
+     * Tests to ensure that if we call /openapi with a referer header that has the same port as the server but a different scheme,
+     * the OAS doc uses the scheme, host and port from the referer header.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testRefererSamePortOtherScheme() throws Exception {
+        String referer = "https://openliberty.io:" + server.getHttpDefaultPort() + "/openapi";
+        String openapi = OpenAPIConnection.openAPIDocsConnection(server, false).header(REFERER, referer).download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode,
+            "https://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1);
+
+        referer = "http://openliberty.io:" + server.getHttpDefaultSecurePort() + "/openapi";
+        openapi = OpenAPIConnection.openAPIDocsConnection(server, true).header(REFERER, referer).download();
+        openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode,
+            "http://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
+    }
+
+    /**
+     * Tests to ensure when the call to /openapi with forwarding headers that have a different port than the server,
+     * the OAS doc has the scheme, host and port from the forwarding headers
+     *
+     * @throws Exception
+     */
+    @Test
+    @MaximumJavaLevel(javaLevel = 23) // On JAVA 24 many JDKs are setting the Host variable to localhost despite its
+                                      // explicit definition
+    public void testForwardedDifferentPort() throws Exception {
+        String openapi = OpenAPIConnection.openAPIDocsConnection(server, false)
+            .header(HOST, "openliberty.io")
+            .header(X_FORWARDED_PROTO, "http")
+            .download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode, "http://openliberty.io" + "/" + APP_NAME_1);
+
+        openapi = OpenAPIConnection.openAPIDocsConnection(server, true)
+            .header(HOST, "openliberty.io")
+            .header(X_FORWARDED_PROTO, "https")
+            .download();
+        openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode, "https://openliberty.io" + "/" + APP_NAME_1);
+    }
+
+    /**
+     * Tests to ensure when the call to /openapi with forwarding headers that has the same port as the server,
+     * the OAS doc has the host from the forwarding headers and the scheme and ports from the liberty config
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testForwardedSamePort() throws Exception {
+        String openapi = OpenAPIConnection.openAPIDocsConnection(server, false)
+            .header(HOST, "openliberty.io:" + server.getHttpDefaultPort())
+            .header(X_FORWARDED_PROTO, "http")
+            .download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode,
+            "http://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1,
+            "https://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
+
+        openapi = OpenAPIConnection.openAPIDocsConnection(server, true)
+            .header(HOST, "openliberty.io:" + server.getHttpDefaultSecurePort())
+            .header(X_FORWARDED_PROTO, "https")
+            .download();
+        openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode,
+            "http://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1,
+            "https://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
+    }
+
+    /**
+     * Tests to ensure that if we call /openapi with forwarding headers that have the same port as the server but a different scheme,
+     * the OAS doc uses the scheme, host and port from the forwarding headers.
+     *
+     * @throws Exception
+     */
+    @Test
+    @MaximumJavaLevel(javaLevel = 23) // On JAVA 24 many JDKs are setting the Host variable to localhost despite its
+                                      // explicit definition
+    public void testForwadedSamePortOtherScheme() throws Exception {
+        String openapi = OpenAPIConnection.openAPIDocsConnection(server, false)
+            .header(HOST, "openliberty.io:" + server.getHttpDefaultPort())
+            .header(X_FORWARDED_PROTO, "https")
+            .download();
+        JsonNode openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode,
+            "https://openliberty.io:" + server.getHttpDefaultPort() + "/" + APP_NAME_1);
+
+        openapi = OpenAPIConnection.openAPIDocsConnection(server, true)
+            .header(HOST, "openliberty.io:" + server.getHttpDefaultSecurePort())
+            .header(X_FORWARDED_PROTO, "http")
+            .download();
+        openapiNode = OpenAPITestUtil.readYamlTree(openapi);
+        OpenAPITestUtil.checkServer(openapiNode,
+            "http://openliberty.io:" + server.getHttpDefaultSecurePort() + "/" + APP_NAME_1);
+    }
+
 }

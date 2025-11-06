@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1289,3 +1289,7 @@ jsp.bothsourcelevelset.warning.useraction=\u50c5\u6307\u5b9a javaSource\u5c64\u6
 jsp.javasourcelevel.value=CWWJS0008I: JSP \u5c6c\u6027 javaSource\u5c64\u6b21\u7684\u503c\u662f "{0}"\u3002
 jsp.javasourcelevel.value.explanation=
 jsp.javasourcelevel.value.useraction=
+
+pages.removed.directive.error=CWWJS0009E: {0} " \u6307\u4ee4\u5df2\u4e0d\u518d\u652f\u63f4\uff0c\u56e0\u70ba\u5b83\u5df2\u5728 {1} \u4e2d\u79fb\u9664\u3002
+pages.removed.directive.error.explanation = \u4e0d\u518d\u652f\u63f4\u8a72\u6307\u4ee4\u3002 
+pages.removed.directive.error.useraction = \u79fb\u9664\u6307\u4ee4\u7684\u4f7f\u7528\u3002

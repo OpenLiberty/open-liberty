@@ -42,6 +42,7 @@ import com.ibm.ws.classloading.internal.ClassLoadingServiceImpl.ClassFileTransfo
 import com.ibm.ws.classloading.internal.ContainerClassLoader.ByteResourceInformation;
 import com.ibm.ws.classloading.internal.ContainerClassLoader.ContainerURL;
 import com.ibm.ws.classloading.internal.ContainerClassLoader.UniversalContainer;
+import com.ibm.ws.classloading.internal.ContainerClassLoader.UniversalContainerList;
 import com.ibm.ws.kernel.boot.classloader.ClassLoaderHook;
 import com.ibm.wsspi.classloading.ClassTransformer;
 
@@ -92,7 +93,7 @@ public class TransformerTest {
         }
 
         @Override
-        public void updatePackageMap(Map<Integer, List<UniversalContainer>> map) {
+        public void updatePackageMap(Map<Integer, UniversalContainerList> map, boolean prepend) {
 
         }
 

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+<Designate pid="io.openliberty.mcp.internal.config.McpConfiguration">
+    <Object ocdref="io.openliberty.mcp.internal.config.McpConfiguration" />
+</Designate>
+
+<OCD name="%mcpServer.name" description="%mcpServer.description" 
+        id="io.openliberty.mcp.internal.config.McpConfiguration" ibm:alias="mcpServer">
+    <AD name="%stateless.name" 
+    description="%stateless.description"
+    id="stateless" 
+    required="false" 
+    type="Boolean" 
+    default="false"/>
+
+</OCD>
+
+</metatype:MetaData>

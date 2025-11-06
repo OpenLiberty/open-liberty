@@ -15,6 +15,7 @@
 <feature>sessionDatabase-1.0</feature>
 <feature>webCache-1.0</feature>
 <feature>requestTiming-1.0</feature>
+<feature>microProfile-7.0</feature>
 <feature>microProfile-7.1</feature>
 <feature>appAuthentication</feature>
 <feature>appAuthorization</feature>

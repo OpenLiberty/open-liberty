@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,15 +15,19 @@ package io.openliberty.microprofile.telemetry.internal.tests;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasNoParent;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasParentSpanId;
+import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.hasTag;
 import static io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher.span;
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_REQUEST_METHOD;
 // In MpTelemetry-2.0 SemanticAttributes was moved to a new package, so we use import static to allow both versions to coexist
 import static io.opentelemetry.semconv.SemanticAttributes.HTTP_ROUTE;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
+import com.ibm.websphere.simplicity.log.Log;
 
 import java.util.List;
 
@@ -37,7 +41,6 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -55,7 +58,6 @@ import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinQueryCl
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpan;
 import io.openliberty.microprofile.telemetry.internal.utils.zipkin.ZipkinSpanMatcher;
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
-import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
 
 /**
  * Test exporting traces to a Zipkin server
@@ -87,6 +89,7 @@ public class ZipkinTest {
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
+        server.addEnvVar(TestConstants.ENV_OTEL_TRACES_SAMPLER, "always_on");
 
         // Construct the test application
         WebArchive spanTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
@@ -114,14 +117,17 @@ public class ZipkinTest {
         Log.info(c, "testBasic", "Spans returned: " + spans);
 
         ZipkinSpan span = spans.get(0);
-        assertThat(span, span().withTraceId(traceId)
-                               .withTag(SemanticAttributes.HTTP_ROUTE.getKey(), "/spanTest/")
-                               .withTag(SemanticAttributes.HTTP_METHOD.getKey(), "GET"));
+        assertThat(span, allOf(
+                               span().withTraceId(traceId),
+                               hasTag(HTTP_ROUTE.getKey(), "/spanTest/"),
+                               anyOf(
+                                     hasTag("http.method", "GET"),
+                                     hasTag(HTTP_REQUEST_METHOD.getKey(), "GET"))));
     }
 
     @Test
     @SkipForRepeat({ MicroProfileActions.MP60_ID, TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP50_MPTEL11_ID,
-                     MicroProfileActions.MP61_ID, TelemetryActions.MP14_MPTEL21_ID, TelemetryActions.MP41_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_ID})
+                     MicroProfileActions.MP61_ID, TelemetryActions.MP14_MPTEL21_ID, TelemetryActions.MP41_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_ID })
     public void testBasicTelemetry2() throws Exception {
         HttpRequest request = new HttpRequest(server, "/spanTest");
         String traceId = request.run(String.class);

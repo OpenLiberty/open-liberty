@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -82,17 +82,18 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cache.intf.DCache;
 import com.ibm.ws.cache.util.MessageDigestUtility;
-import com.ibm.wsspi.cache.CacheStatistics;
 import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.wsspi.cache.CacheStatistics;
+
 /**
  * All public methods in this class are exposed as runtime operations on the
  * Dynacache mbean.
- * 
+ *
  * If the cache instance is not specified then the mbean operations by default operate
  * on the base cache instance.
- * 
+ *
  * Note that the object name property here must agree with CacheAdminMBean.OBJECT_NAME.
- * 
+ *
  * Also note that this implements CacheAdmin, since it supports the
  * getCacheStatisticNames(DCache cache) method in addition to those published on the
  * CacheAdminMBean interface
@@ -102,14 +103,13 @@ import com.ibm.ws.common.crypto.CryptoUtils;
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = {
-                       "service.vendor=IBM",
-                       "jmx.objectname=WebSphere:feature=CacheAdmin,type=DynaCache,name=DistributedMap" })
+                        "service.vendor=IBM",
+                        "jmx.objectname=WebSphere:feature=CacheAdmin,type=DynaCache,name=DistributedMap" })
 public class MBeans extends StandardMBean implements CacheAdmin {
 
     private static TraceComponent tc = Tr.register(MBeans.class, DynaCacheConstants.TRACE_GROUP, DynaCacheConstants.NLS_FILE);
-
-    private static MessageDigest messageDigestMD5 = null;
-    private final static boolean INCLUDE_VALUE = true; // indicate to include the cache value in hashcode calculation
+    private static String MESSAGE_DIGEST_ALGORITHM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256 : CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
+    private static MessageDigest messageDigest = null;
 
     public MBeans() {
         super(CacheAdminMBean.class, false); // yes, CacheAdminMBean, not internal
@@ -118,7 +118,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
     //--------------------------------------------------------------
     //  MBean Methods
     //
-    //  Note: Signatures of MBean methods in CacheServiceImpl.java match the 
+    //  Note: Signatures of MBean methods in CacheServiceImpl.java match the
     //  signatures of DynaCache.xml.  The methods here may not because they need
     //  data passed from the CacheServiceImpl methods in order to perform the
     //  function of the MBean.
@@ -126,7 +126,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheSize()
      */
     @Override
@@ -140,7 +140,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getUsedCacheSize()
      */
     @Override
@@ -161,7 +161,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getDiskOverflow()
      */
     @Override
@@ -175,7 +175,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheStatisticNames()
      */
     @Override
@@ -197,7 +197,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheStatisticNames(java.lang.String)
      */
     @Override
@@ -208,7 +208,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.cache.CacheAdmin#getCacheStatisticNames(com.ibm.ws.cache.intf.DCache)
      */
     @Override
@@ -228,7 +228,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheInstanceNames()
      */
     @Override
@@ -246,7 +246,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getAllCacheStatistics()
      */
     @Override
@@ -277,7 +277,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getAllCacheStatistics(java.lang.String)
      */
     @Override
@@ -301,7 +301,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheStatistics(java.lang.String[])
      */
     @Override
@@ -336,7 +336,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheStatistics(java.lang.String, java.lang.String[])
      */
     @Override
@@ -362,7 +362,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheIDsInMemory(java.lang.String, java.lang.String)
      */
     @Override
@@ -385,21 +385,21 @@ public class MBeans extends StandardMBean implements CacheAdmin {
                 i++;
                 //if (tc.isDebugEnabled()) {
                 //  Tr.debug(tc,"getCacheIDsInMemory:  Cache element # " + i +" = " + skey + " matches the pattern " + pattern + " for cacheInstance = " + cacheInstance);
-                //}    
+                //}
             }
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getCacheIDsInMemory" + "/" + cacheInstance + "/" + "Exiting. Number of matches found = " + i);
 
         //Allocate output String array #entries matched and return
-        //Convert to string array and return 
+        //Convert to string array and return
         String[] cids = matchSet.toArray(new String[matchSet.size()]);
         return cids;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheIDsOnDisk(java.lang.String, java.lang.String)
      */
     @Override
@@ -408,7 +408,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
         // Get the cache for this cacheInstance
         DCache cache1 = getCache(cacheInstance);
 
-        //Throw exception if disk caching is not enabled.  
+        //Throw exception if disk caching is not enabled.
         if (!cache1.getSwapToDisk()) {
             Tr.error(tc, "DYNA1051E", new Object[] { "getCacheIDsOnDisk", cacheInstance });
             throw new AttributeNotFoundException("Disk caching is not enabled.");
@@ -448,7 +448,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
             } while (more == true);
         }
 
-        //Allocate output array #entries matched 
+        //Allocate output array #entries matched
         String[] cids = matchSet.toArray(new String[matchSet.size()]);
         if (tc.isDebugEnabled())
             Tr.debug(tc, "getCacheIDsOnDisk: Exiting. Number of matches found = " + matchSet.size());
@@ -457,7 +457,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheIDsInPushPullTable(java.lang.String, java.lang.String)
      */
     @Override
@@ -480,21 +480,21 @@ public class MBeans extends StandardMBean implements CacheAdmin {
                 count++;
                 //if (tc.isDebugEnabled()) {
                 //  Tr.debug(tc,"getCacheIDsInPushPullTable:  Cache element # " + count +" = " + skey + " matches the pattern " + pattern + " for cacheInstance = " + cacheInstance);
-                //}    
+                //}
             }
         }
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "getCacheIDsInPushPullTable" + "/" + cacheInstance + "/" + "Exiting. Number of matches found = " + count);
         }
         //Allocate output String array #entries matched and return
-        //Convert to string array and return 
+        //Convert to string array and return
         String[] cids = matchSet.toArray(new String[matchSet.size()]);
         return cids;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#invalidateCacheIDs(java.lang.String, java.lang.String, boolean)
      */
     @Override
@@ -545,18 +545,18 @@ public class MBeans extends StandardMBean implements CacheAdmin {
             Tr.debug(tc, "invalidateCacheIDs: Exiting. Number of matches found = " + invalidateSet.size());
 
         //need to convert to string array before return.
-        //Allocate output array #entries matched 
+        //Allocate output array #entries matched
         String[] cids = invalidateSet.toArray(new String[invalidateSet.size()]);
         return cids;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheEntry(java.lang.String, java.lang.String)
      */
     @Override
-    public String getCacheEntry(String cacheInstance, String cacheId) throws javax.management.AttributeNotFoundException { // 429429       
+    public String getCacheEntry(String cacheInstance, String cacheId) throws javax.management.AttributeNotFoundException { // 429429
 
         if (cacheId == null) {
             throw new AttributeNotFoundException(cacheId + " is null.");
@@ -588,7 +588,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#clearCache(java.lang.String)
      */
     @Override
@@ -605,7 +605,7 @@ public class MBeans extends StandardMBean implements CacheAdmin {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.websphere.cache.CacheAdminMBean#getCacheDigest(java.lang.String, boolean, boolean, boolean)
      */
     @Override
@@ -620,18 +620,18 @@ public class MBeans extends StandardMBean implements CacheAdmin {
         DCache cache1 = getCache(cacheInstance);
 
         // Get the message digest
-        getMessageDigestMD5();
+        initMessageDigest();
 
-        // Calculate total hashcode for cache ids and cache value in memory cache  
+        // Calculate total hashcode for cache ids and cache value in memory cache
         int totalHashcode = cache1.getMemoryCacheHashcode(debug, !cacheIDOnly);
 
         if (cacheIDOnly == true) {
-            // Calculate total hashcode for cache ids in PushPullTable  
+            // Calculate total hashcode for cache ids in PushPullTable
             totalHashcode += cache1.getCacheIdsHashcodeInPushPullTable(debug);
         }
 
         if (useMemoryCacheDigest == false) {
-            // Calculate total hashcode for cache ids and cache value in disk cache  
+            // Calculate total hashcode for cache ids and cache value in disk cache
             try {
                 totalHashcode += cache1.getDiskCacheHashcode(debug, !cacheIDOnly);
             } catch (DynamicCacheException e) {
@@ -640,23 +640,23 @@ public class MBeans extends StandardMBean implements CacheAdmin {
             }
         }
 
-        // Convert hashcode to MD5 digest
-        String md5Hash = MessageDigestUtility.processMessageDigestForData(MBeans.messageDigestMD5, totalHashcode);
+        // Convert hashcode to digest
+        String digest = MessageDigestUtility.processMessageDigestForData(MBeans.messageDigest, totalHashcode);
 
         if (tc.isEntryEnabled()) {
-            Tr.exit(tc, "getCacheDigest: Exiting. Entire cache hash in MD5 is " + md5Hash + " for cacheInstance = " + cacheInstance);
+            Tr.exit(tc, "getCacheDigest: Exiting. Entire cache hash in " + MESSAGE_DIGEST_ALGORITHM + " is " + digest + " for cacheInstance = " + cacheInstance);
         }
-        return md5Hash;
+        return digest;
     }
 
-    // create messageDigest for MD5 algoritm if it is not created.
-    private void getMessageDigestMD5() throws AttributeNotFoundException {
-        if (MBeans.messageDigestMD5 == null) {
+    // create messageDigest with SHA-256 algorithm when FIPS140-3 is disabled, MD5 otherwise.
+    private void initMessageDigest() throws AttributeNotFoundException {
+        if (MBeans.messageDigest == null) {
             try {
-                MBeans.messageDigestMD5 = MessageDigestUtility.createMessageDigest(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
+                MBeans.messageDigest = MessageDigestUtility.createMessageDigest(MESSAGE_DIGEST_ALGORITHM);
             } catch (NoSuchAlgorithmException e) {
                 Tr.error(tc, "DYNA1044E", new Object[] { e.getMessage() });
-                throw new AttributeNotFoundException("Message digest for MD5 is not available. " + e.getMessage());
+                throw new AttributeNotFoundException("Message digest for " + MESSAGE_DIGEST_ALGORITHM + " is not available. " + e.getMessage());
             }
         }
     }
@@ -729,28 +729,24 @@ public class MBeans extends StandardMBean implements CacheAdmin {
         MBeanOperationInfo getCacheSizeMbeanOperationInfo = createMbeanOperationInfo("getCacheSize", Integer.TYPE.getName());
         MBeanOperationInfo getDiskOverflowMbeanOperationInfo = createMbeanOperationInfo("getDiskOverflow", Boolean.TYPE.getName());
         MBeanOperationInfo[] addedMbeanOperationInfo = new MBeanOperationInfo[] {
-                                                                                 getCacheInstanceNamesMbeanOperationInfo,
-                                                                                 getAllCacheStatisticsMbeanOperationInfo,
-                                                                                 getCacheStatisticNamesMbeanOperationInfo,
-                                                                                 getUsedCacheSizeMbeanOperationInfo,
-                                                                                 getCacheSizeMbeanOperationInfo,
-                                                                                 getDiskOverflowMbeanOperationInfo };
+                                                                                  getCacheInstanceNamesMbeanOperationInfo,
+                                                                                  getAllCacheStatisticsMbeanOperationInfo,
+                                                                                  getCacheStatisticNamesMbeanOperationInfo,
+                                                                                  getUsedCacheSizeMbeanOperationInfo,
+                                                                                  getCacheSizeMbeanOperationInfo,
+                                                                                  getDiskOverflowMbeanOperationInfo };
 
         MBeanOperationInfo[] modifiedMBeanOperationInfo = new MBeanOperationInfo[existingMbeanOperationInfo.length + addedMbeanOperationInfo.length];
         System.arraycopy(existingMbeanOperationInfo, 0, modifiedMBeanOperationInfo, 0, existingMbeanOperationInfo.length);
         System.arraycopy(addedMbeanOperationInfo, 0, modifiedMBeanOperationInfo, existingMbeanOperationInfo.length, addedMbeanOperationInfo.length);
 
-        final MBeanInfo nmbi = new MBeanInfo(this.getClass().getName(),
-                        mbeanInfo.getDescription(), null, mbeanInfo.getConstructors(),
-                        modifiedMBeanOperationInfo, mbeanInfo.getNotifications(),
-                        mbeanInfo.getDescriptor());
+        final MBeanInfo nmbi = new MBeanInfo(this.getClass().getName(), mbeanInfo.getDescription(), null, mbeanInfo.getConstructors(), modifiedMBeanOperationInfo, mbeanInfo.getNotifications(), mbeanInfo.getDescriptor());
 
         return nmbi;
     }
 
     @Override
-    public Object invoke(String actionName, Object params[], String signature[])
-                    throws MBeanException, ReflectionException {
+    public Object invoke(String actionName, Object params[], String signature[]) throws MBeanException, ReflectionException {
 
         Object o = null;
         try {
@@ -785,13 +781,8 @@ public class MBeans extends StandardMBean implements CacheAdmin {
     }
 
     public MBeanOperationInfo createMbeanOperationInfo(String operationName, String returnType) {
-        MBeanOperationInfo addOperationInfo =
-                        new MBeanOperationInfo(
-                                        operationName,
-                                        "Operation exposed for management", //TODO for now description is empty 
-                                        null,
-                                        returnType,
-                                        MBeanOperationInfo.INFO);
+        MBeanOperationInfo addOperationInfo = new MBeanOperationInfo(operationName, "Operation exposed for management", //TODO for now description is empty
+                        null, returnType, MBeanOperationInfo.INFO);
         return addOperationInfo;
     }
 

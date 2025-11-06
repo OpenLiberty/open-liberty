@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -436,6 +436,10 @@ warning.tooManySymbolicLinks=CWWKE0096W: Se han encontrado demasiados enlaces si
 warning.tooManySymbolicLinks.explanation=Los enlaces simb\u00f3licos son accesos directos que apuntan a otros archivos o directorios. Este error se produce cuando el sistema encuentra demasiados enlaces simb\u00f3licos en una cadena y no puede resolver la v\u00eda de acceso.
 warning.tooManySymbolicLinks.useraction=Para resolver este problema, compruebe los enlaces simb\u00f3licos en la v\u00eda de acceso y aseg\u00farese de que no crean referencias circulares. Tambi\u00e9n puede utilizar el mandato 'readlink' para inspeccionar los enlaces individuales de la cadena.
 
+warning.javaHomeNotSet=CWWKE0097W: La variable de entorno JAVA_HOME no est\u00e1 configurada.
+warning.javaHomeNotSet.explanation=El script del servidor no puede determinar la ubicaci\u00f3n de la instalaci\u00f3n de Java. Este problema no se produce si la variable de entorno JAVA_HOME est\u00e1 configurada correctamente, o si el ejecutable "java", encontrado mediante una b\u00fasqueda en el PATH, se encuentra en una instalaci\u00f3n completa de Java. La ubicaci\u00f3n de instalaci\u00f3n de Java es necesaria para encontrar archivos de configuraci\u00f3n espec\u00edficos de la versi\u00f3n, como java9.options. Si no se encuentra la instalaci\u00f3n de Java, estos archivos no se cargan, y las aplicaciones que dependen de ellos podr\u00edan no comportarse como se espera.
+warning.javaHomeNotSet.useraction=Establezca la variable de entorno JAVA_HOME.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: No se puede utilizar la opci\u00f3n --include={0}, se utilizar\u00e1 --include=wlp en su lugar.
 warn.packageRuntime.include.unknownOption.explanation=La opci\u00f3n se ha ignorado porque no se ha reconocido.
 warn.packageRuntime.include.unknownOption.useraction=Vuelva a intentar el mandato utilizando opciones v\u00e1lidas. Intente utilizar --help para obtener una lista de opciones v\u00e1lidas.
@@ -865,3 +869,7 @@ info.list.of.defined.servers=Los servidores siguientes se definen en relaci\u00f
 info.communicate.server=Se ha producido un error de comunicaciones entre el mandato {0} y el servidor {1}.
 
 info.serialFilterLoaded=Se ha cargado el agente de filtro serie.
+
+# {0} The full path to a configured logs directory.
+# Displayed when creating a server dump, if an alternate server logs directory has been configured.
+info.dump.server.alt.logs=Detectado el directorio de registros del servidor configurado en {0}.

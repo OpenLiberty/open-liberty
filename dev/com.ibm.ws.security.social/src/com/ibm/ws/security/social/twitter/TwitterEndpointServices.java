@@ -121,6 +121,8 @@ public class TwitterEndpointServices {
      */
     public String computeSignature(String requestMethod, String targetUrl, Map<String, String> params, @Sensitive String consumerSecret, @Sensitive String tokenSecret) {
 
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
+        // The twitter OAuth v1.0 spec will not work with fips compliant algorithms. A new implementation of v2.0 spec would be required for FIPS 140-3.
         String signatureBaseString = createSignatureBaseString(requestMethod, targetUrl, params);
 
         // Hash the base string using the consumer secret (and request token secret, if known) as a key

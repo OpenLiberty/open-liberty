@@ -14,7 +14,7 @@ Export-Package: \
   org.hibernate.validator.cdi.*;version="6.2.5.Final"
 
 Include-Resource: \
-  @${repo;org.hibernate.validator:hibernate-validator-cdi;6.2.5.Final;EXACT}!/META-INF/services/*,\
+  @\${repo;org.hibernate.validator:hibernate-validator-cdi;6.2.5.Final;EXACT}!/META-INF/services/*,\
   META-INF=resources/META-INF
 
 -cdiannotations:

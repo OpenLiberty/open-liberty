@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2020 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -130,6 +130,9 @@ public class SSLConfig extends Properties {
         }
 
         JSSEProvider defaultProvider = JSSEProviderFactory.getInstance();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Defafult JSSEProvider: " + defaultProvider.toString());
+        }
 
         if (getProperty(Constants.SSLPROP_KEY_MANAGER) == null)
             setProperty(Constants.SSLPROP_KEY_MANAGER, JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
@@ -138,9 +141,10 @@ public class SSLConfig extends Properties {
             && null != defaultProvider.getKeyStoreProvider())
             setProperty(Constants.SSLPROP_KEY_STORE_PROVIDER, defaultProvider.getKeyStoreProvider());
 
-        if (getProperty(Constants.SSLPROP_PROTOCOL) == null)
+        if (getProperty(Constants.SSLPROP_PROTOCOL) == null) {
             setProperty(Constants.SSLPROP_PROTOCOL, defaultProvider.getDefaultProtocol());
-
+            Tr.debug(tc, "Default protocol: " + defaultProvider.getDefaultProtocol());
+        }
         if (getProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION) == null)
             setProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION, Constants.FALSE);
 
@@ -190,14 +194,16 @@ public class SSLConfig extends Properties {
         // When only a trust store is specified, use it as the key store as well.
         if (keyStore == null && trustStore != null && trustStorePassword != null && trustStoreType != null) {
             setProperty(Constants.SSLPROP_KEY_STORE, trustStore);
-            if (trustStoreName != null) setProperty(Constants.SSLPROP_KEY_STORE_NAME, trustStoreName);
+            if (trustStoreName != null)
+                setProperty(Constants.SSLPROP_KEY_STORE_NAME, trustStoreName);
             setProperty(Constants.SSLPROP_KEY_STORE_PASSWORD, trustStorePassword);
             setProperty(Constants.SSLPROP_KEY_STORE_TYPE, trustStoreType);
         }
         // When only a key store is specified, use it as the trust store as well.
         else if (trustStore == null && keyStore != null && keyStorePassword != null && keyStoreType != null) {
             setProperty(Constants.SSLPROP_TRUST_STORE, keyStore);
-            if (keyStoreName != null) setProperty(Constants.SSLPROP_TRUST_STORE_NAME, keyStoreName);
+            if (keyStoreName != null)
+                setProperty(Constants.SSLPROP_TRUST_STORE_NAME, keyStoreName);
             setProperty(Constants.SSLPROP_TRUST_STORE_PASSWORD, keyStorePassword);
             setProperty(Constants.SSLPROP_TRUST_STORE_TYPE, keyStoreType);
         }
@@ -298,7 +304,7 @@ public class SSLConfig extends Properties {
      * Load ConfigURL from a url string that names a properties file. This
      * method does not check that values are in valid range,
      *
-     * @param propertiesURL - the properties file to load the SSL properties
+     * @param propertiesURL  - the properties file to load the SSL properties
      * @param multiConfigURL
      * @return SSLConfig[]
      */

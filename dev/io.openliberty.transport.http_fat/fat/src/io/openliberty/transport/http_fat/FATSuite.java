@@ -6,7 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
  *******************************************************************************/
 package io.openliberty.transport.http_fat;
 
@@ -26,6 +25,7 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
                 InactivityTimeoutTests.class,
                 MaxOpenConnectionsTests.class,
                 PortOpenRetriesTests.class,
+                RequestSocketTest.class,
                 SoLingerTests.class,
                 SoReuseAddrTest.class,
                 TcpOptionsDefaultTests.class,

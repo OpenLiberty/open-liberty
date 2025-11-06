@@ -36,7 +36,7 @@
   <authData id="auth1" user="user1" password="pwd1"/>
   <authData id="auth2" user="user2" password="pwd2"/>
 
-  <data logValues="test.jakarta.data.web"/>
+  <data logValues="test.jakarta.data.web,test.jakarta.data.web.eclipselink"/>
 
   <!-- For DataSourceDefinition java:app/jdbc/DerbyDataSource which is used by the Vehicles repository -->
   <library id="DerbyLib">

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ public class DataSourceTest extends FATServletClient {
     private static final String basicfat = "basicfat";
     private static final String dsdfat = "dsdfat";
     private static final String dsdfat_global_lib = "dsdfat_global_lib";
+    private static final String dsdfat_override_lib = "dsdfat_override_lib";
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
@@ -88,9 +89,10 @@ public class DataSourceTest extends FATServletClient {
         // Dropin app - setupfat.war
         ShrinkHelper.defaultDropinApp(server, setupfat, "setupfat");
 
-        // Default app - dsdfat.war and dsdfat_global_lib.war
+        // Default app - dsdfat.war, dsdfat_global_lib.war and dsdfat_override_lib.war
         ShrinkHelper.defaultApp(server, dsdfat, dsdfat);
         ShrinkHelper.defaultApp(server, dsdfat_global_lib, dsdfat_global_lib);
+        ShrinkHelper.defaultApp(server, dsdfat_override_lib, dsdfat_override_lib);
 
         // Default app - jdbcapp.ear [basicfat.war, application.xml]
         WebArchive basicfatWAR = ShrinkHelper.buildDefaultApp(basicfat, basicfat);
@@ -356,6 +358,12 @@ public class DataSourceTest extends FATServletClient {
     @OnlyIfDataSourceProperties(DERBY_EMBEDDED)
     public void testDataSourceDefGlobalLib() throws Exception {
         runTest(server, dsdfat_global_lib, testName);
+    }
+
+    @Test
+    @OnlyIfDataSourceProperties(DERBY_EMBEDDED)
+    public void testDataSourceDefOverrideLib() throws Exception {
+        runTest(server, dsdfat_override_lib, testName);
     }
 
     /**

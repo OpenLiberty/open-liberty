@@ -26,6 +26,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
 import com.ibm.ws.kernel.service.util.CpuInfo;
 
@@ -180,6 +181,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
         }
     }
 
+    @FFDCIgnore(InterruptedException.class)
     private GetQueueLock waitGet_(GetQueueLock getQueueLock, long timeout) throws InterruptedException {
         if (getQueueLock == null) {
             getQueueLock = threadLocalGetLock.get();
@@ -190,6 +192,10 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
                 waitingThreadLocks.add(getQueueLock);
                 getQueueLock.wait(timeout == -1 ? 0 : timeout);
             }
+        } catch (InterruptedException ie) {
+            // clear the interrupted flag on the thread
+            Thread.interrupted();
+            throw ie;
         } finally {
             if (!getQueueLock.isNotified()) {
                 // we either timed out or were interrupted, so remove ourselves from the queue...  it's okay if a producer already has the
@@ -209,6 +215,7 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
         }
     }
 
+    @FFDCIgnore(InterruptedException.class)
     private void waitPut_(long timeout) throws InterruptedException {
         synchronized (putQueue_) {
             try {
@@ -221,6 +228,10 @@ public class BoundedBuffer<T> implements BlockingQueue<T>, AvailableProcessorsLi
 //            } catch (InterruptedException ex) {
 //                putQueue_.notify();
 //                throw ex;
+            } catch (InterruptedException ie) {
+                // clear the interrupted flag on the thread
+                Thread.interrupted();
+                throw ie;
             } finally {
                 putQueueLen_--;
             }

@@ -1,21 +1,8 @@
-/**
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements. See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership. The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * “License”); you may not use this file except in compliance
- * with the License. You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
+/*
+ * Copyright The RestEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
+
 package org.jboss.resteasy.core;
 
 import java.io.IOException;
@@ -32,12 +19,12 @@ import java.util.Optional;
 import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.core.EntityPart;
 import jakarta.ws.rs.core.MediaType;
-import jakarta.ws.rs.core.MultivaluedMap;
-import jakarta.ws.rs.ext.MessageBodyReader;
+import jakarta.ws.rs.core.MultivaluedMap; //Liberty change
+import jakarta.ws.rs.ext.MessageBodyReader; //Liberty change
 
-import org.jboss.resteasy.core.providerfactory.CommonProviders;
-import org.jboss.resteasy.plugins.providers.ProviderHelper;
-import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl;
+import org.jboss.resteasy.core.providerfactory.CommonProviders; //Liberty change
+import org.jboss.resteasy.plugins.providers.ProviderHelper; //Liberty change
+import org.jboss.resteasy.plugins.providers.multipart.IAttachmentImpl; //Liberty change
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
 import org.jboss.resteasy.spi.HttpRequest;
 import org.jboss.resteasy.spi.HttpResponse;
@@ -46,9 +33,9 @@ import org.jboss.resteasy.spi.ValueInjector;
 import org.jboss.resteasy.spi.util.Types;
 import org.jboss.resteasy.util.Encode;
 
-import com.ibm.websphere.jaxrs20.multipart.IAttachment;
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.jaxrs20.multipart.IAttachment; //Liberty change
+import com.ibm.websphere.ras.Tr; //Liberty change
+import com.ibm.websphere.ras.TraceComponent; //Liberty change
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -70,7 +57,7 @@ public class FormParamInjector extends StringParameterInjector implements ValueI
         this.annotations = annotations; //Liberty change
     }
 
-   @SuppressWarnings({ "unchecked", "rawtypes", "serial" })
+   @SuppressWarnings({ "unchecked", "rawtypes", "serial" }) //Liberty change
     @Override
     public Object inject(HttpRequest request, HttpResponse response, boolean unwrapAsync) {
         // A @FormParam for multipart/form-data can be a String, InputStream or EntityPart. This type is handled specially.

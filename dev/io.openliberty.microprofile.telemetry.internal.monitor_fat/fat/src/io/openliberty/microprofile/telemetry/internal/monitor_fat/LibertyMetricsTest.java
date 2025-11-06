@@ -22,6 +22,8 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -61,6 +63,7 @@ public class LibertyMetricsTest extends BaseTestClass {
 		// Read to run a smarter planet
 		server.waitForStringInLogUsingMark("CWWKF0011I");
 		server.setMarkToEndOfLog();
+		
 	}
 
 	@AfterClass
@@ -80,6 +83,15 @@ public class LibertyMetricsTest extends BaseTestClass {
 	     */
 	    assertTrue(server.isStarted());
 	    
+		// Ensure metrics are registered.
+		String threadPoolStatsNotification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=ThreadPoolStats,name=Default Executor\\]");
+		threadPoolStatsNotification = (threadPoolStatsNotification != null) ? "Found trace: " + threadPoolStatsNotification.trim() : "Could not find ThreadPoolStats MBean Registration notification.";
+		Log.info(c, "waitForStringInTrace", threadPoolStatsNotification);
+
+		String requestTimingStatsNotification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=RequestTimingStats,name=Default Executor\\]");
+		requestTimingStatsNotification = (requestTimingStatsNotification != null) ? "Found trace: " + requestTimingStatsNotification.trim() : "Could not find RequestTimingStats MBean Registration notification.";
+		Log.info(c, "waitForStringInTrace", requestTimingStatsNotification);
+
 	    // Allow time for the collector to receive and expose metrics
 	    matchStringsWithRetries(() -> getContainerCollectorMetrics(container), new String[] {
 	        // Made patterns more flexible - removed strict job="unknown_service" and instance patterns

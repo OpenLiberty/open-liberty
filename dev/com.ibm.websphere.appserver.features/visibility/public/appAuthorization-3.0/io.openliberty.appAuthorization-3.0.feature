@@ -18,8 +18,7 @@ Subsystem-Name: Jakarta Authorization 3.0
   io.openliberty.security.authorization.internal.jacc.3.0
 kind=noship
 edition=full
-#TODO re-enable files and update location for jar to dev/api/ibm
--jars=io.openliberty.jacc.3.0; location:="lib/"
-#-files=dev/api/ibm/javadoc/io.openliberty.jacc.3.0_1.0-javadoc.zip
+-jars=io.openliberty.jacc.3.0; location:="dev/api/ibm/,lib/"
+-files=dev/api/ibm/javadoc/io.openliberty.jacc.3.0_1.0-javadoc.zip
 WLP-Platform: jakartaee-11.0
 WLP-InstantOn-Enabled: true

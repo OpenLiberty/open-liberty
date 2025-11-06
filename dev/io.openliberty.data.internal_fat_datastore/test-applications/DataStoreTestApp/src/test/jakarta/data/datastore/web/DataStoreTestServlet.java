@@ -19,7 +19,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import jakarta.annotation.Resource;
 import jakarta.annotation.sql.DataSourceDefinition;
@@ -27,9 +27,13 @@ import jakarta.ejb.EJB;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.Query;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.Status;
+import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
@@ -41,6 +45,8 @@ import test.jakarta.data.datastore.ejb.DataStoreTestEJB;
 import test.jakarta.data.datastore.lib.DSDEntity;
 import test.jakarta.data.datastore.lib.DSDRepo;
 import test.jakarta.data.datastore.lib.ServerDSEntity;
+import test.jakarta.data.datastore.web.lib.WebLibEntity;
+import test.jakarta.data.datastore.web.lib.WebLibRepo;
 
 @DataSourceDefinition(name = "java:app/jdbc/DataSourceDef",
                       className = "org.apache.derby.jdbc.EmbeddedXADataSource",
@@ -67,8 +73,8 @@ public class DataStoreTestServlet extends FATServlet {
     @Inject
     DSAccessorMethodQualifiedRepo dsAccessorQualifiedRepo;
 
-    @EJB(lookup = "java:global/DataStoreEJBApp/DataEJBAppBean!java.util.function.Consumer")
-    Consumer<String> ejbApp;
+    @EJB(lookup = "java:global/DataStoreEJBApp/DataEJBAppBean!java.util.function.BiConsumer")
+    BiConsumer<String, String> ejbApp;
 
     @Inject
     EMAccessorMethodQualifiedRepo emAccessorQualifiedRepo;
@@ -99,6 +105,12 @@ public class DataStoreTestServlet extends FATServlet {
 
     @EJB
     DataStoreTestEJB testEJB;
+
+    @Resource
+    UserTransaction tx;
+
+    @Inject
+    WebLibRepo webLibRepo;
 
     /**
      * Use a repository defined in a library of the application that uses
@@ -191,11 +203,27 @@ public class DataStoreTestServlet extends FATServlet {
     }
 
     /**
-     * Use a repository that is defined within an EJB application.
+     * Use a repository that is defined within an EJB application,
+     * where the data source is the default data source.
+     */
+    @Test
+    public void testDefaultDataSourceInEJBModule() {
+        ejbApp.accept("testDefaultDataSourceInEJBModule",
+                      "EJBAppDSRefRepo");
+
+        // Prove it went into the expected database by accessing it from
+        // another repository that uses the same DataSource
+        defaultDSRepo.existsByIdAndValue(62, "sixty-two");
+    }
+
+    /**
+     * Use a repository that is defined within an EJB application,
+     * where the EJB application also defines the data source.
      */
     @Test
     public void testEJBAppDefinesAndUsesRepository() {
-        ejbApp.accept("testEJBAppDefinesAndUsesRepository");
+        ejbApp.accept("testEJBAppDefinesAndUsesRepository",
+                      "EJBAppDSRefRepo");
     }
 
     /**
@@ -215,6 +243,63 @@ public class DataStoreTestServlet extends FATServlet {
         try (EntityManager em = emAccessorQualifiedRepo.entityManager()) {
             PersistenceUnitEntity entity = em.find(PersistenceUnitEntity.class, "EMRAMQI");
             assertEquals(Integer.valueOf(70), entity.value);
+        }
+    }
+
+    /**
+     * Uses entity manager methods to update a value and then retrieve the value
+     * within the same transaction. The retrieved value must be the updated
+     * value rather than the original value.
+     */
+    @Test
+    public void testPersistenceUnitEMUpdateAndRetrieveInTran() throws Exception {
+        String id = "testPersistenceUnitEMUpdateAndRetrieveInTran";
+        tx.begin();
+        try (EntityManager em = persistenceUnitRepo.entityManager()) {
+            PersistenceUnitEntity e = PersistenceUnitEntity.of(id, 222);
+            e = em.merge(e);
+            em.flush();
+        } finally {
+            tx.commit();
+        }
+
+        tx.begin();
+        try (EntityManager em = persistenceUnitRepo.entityManager()) {
+            // TODO #33189 the following is not honored:
+            //em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+
+            Query update = em.createQuery("""
+                            UPDATE PersistenceUnitEntity
+                               SET value = value * 2
+                             WHERE id = ?1
+                            """);
+            update.setParameter(1, id);
+            assertEquals(1L, update.executeUpdate());
+
+            Query query = em.createQuery("""
+                              FROM PersistenceUnitEntity
+                             WHERE id = ?1
+                            """);
+            query.setParameter(1, id);
+
+            // TODO #33189 the following is not honored:
+            // query.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+            // TODO #33189 should be able to replace the following setHint with either
+            // of the preceding TODOs that use em/query.setCacheRetrieveMode.
+            query.setHint("jakarta.persistence.cache.retrieveMode",
+                          CacheRetrieveMode.BYPASS);
+
+            List<?> results = query.getResultList();
+            assertEquals(1,
+                         results.size());
+            PersistenceUnitEntity e = (PersistenceUnitEntity) results.get(0);
+            assertEquals(Integer.valueOf(444),
+                         e.value);
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
         }
     }
 
@@ -269,6 +354,65 @@ public class DataStoreTestServlet extends FATServlet {
             PersistenceUnitEntity e = em.find(PersistenceUnitEntity.class, "TestPersistenceUnit-fifty-two");
             assertEquals(Integer.valueOf(152), e.value);
         }
+    }
+
+    /**
+     * Uses repository methods to update a value and then retrieve the value
+     * within the same transaction. The retrieved value must be the updated
+     * value rather than the original value.
+     */
+    @Test
+    public void testPersistenceUnitRepoUpdateAndRetrieveInTran() //
+                    throws Exception {
+        String id = "testPersistenceUnitRepoUpdateAndRetrieveInTran";
+        PersistenceUnitEntity e1 = PersistenceUnitEntity.of(id, 111);
+        persistenceUnitRepo.save(List.of(e1));
+
+        tx.begin();
+        try {
+            e1 = persistenceUnitRepo.singleItem(id).orElseThrow();
+            assertEquals(Integer.valueOf(111),
+                         e1.value);
+
+            assertEquals(true,
+                         persistenceUnitRepo.triple(id));
+
+            e1 = persistenceUnitRepo.singleItem(id).orElseThrow();
+            assertEquals(Integer.valueOf(333),
+                         e1.value);
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+        }
+    }
+
+    /**
+     * Use a repository that is defined within an EJB application,
+     * where the EJB application also defines the data source.
+     */
+    @Test
+    public void testRepositoryInEJBAppDefinesAndUsesDataSourceDefinition() {
+        ejbApp.accept("testRepositoryInEJBAppDefinesAndUsesDataSourceDefinition",
+                      "EJBAppDSDRepo");
+    }
+
+    /**
+     * Use a repository defined in a library of a web module.
+     */
+    @Test
+    public void testRepositoryInWebModuleLibrary() throws SQLException {
+
+        assertEquals(false, webLibRepo.request(5).isPresent());
+
+        webLibRepo.create(WebLibEntity.of(5, "five"));
+
+        assertEquals("servletuser1", webLibRepo.user());
+
+        WebLibEntity e = webLibRepo.request(5).orElseThrow();
+        assertEquals(5, e.id);
+        assertEquals("five", e.value);
     }
 
     /**
@@ -423,7 +567,8 @@ public class DataStoreTestServlet extends FATServlet {
      */
     @Test
     public void testStartupEventObserverInEJBApplicationUsesRepository() {
-        ejbApp.accept("testStartupEventObserverInEJBApplicationUsesRepository");
+        ejbApp.accept("testStartupEventObserverInEJBApplicationUsesRepository",
+                      "EJBAppDSRefRepo");
     }
 
     /**

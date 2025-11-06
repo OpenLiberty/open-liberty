@@ -13,6 +13,8 @@
 
 package com.ibm.ws.threading.internal;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -284,6 +286,42 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         }
     }
 
+    @Trivial
+    private static ClassLoader getContextClassLoader(Thread thread) {
+        if (System.getSecurityManager() == null) {
+            return thread.getContextClassLoader();
+        }
+        return AccessController.doPrivileged((PrivilegedAction<ClassLoader>) () -> thread.getContextClassLoader());
+    }
+
+    @Trivial
+    private static void setContextClassLoaderIfChanged(Thread thread, ClassLoader beforeContextCL) {
+        if (System.getSecurityManager() == null) {
+            ClassLoader afterContextCL = thread.getContextClassLoader();
+            if (beforeContextCL != afterContextCL) {
+                thread.setContextClassLoader(beforeContextCL);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Reset leaked context class loader " + afterContextCL + " on thread " + thread.getName());
+                }
+            }
+        } else {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                @Trivial
+                public Void run() {
+                    ClassLoader afterContextCL = thread.getContextClassLoader();
+                    if (beforeContextCL != afterContextCL) {
+                        thread.setContextClassLoader(beforeContextCL);
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Reset leaked context class loader " + afterContextCL + " on thread " + thread.getName());
+                        }
+                    }
+                    return null;
+                }
+            });
+        }
+    }
+
     private class RunnableWrapper implements Runnable {
 
         private final Runnable wrappedTask;
@@ -300,14 +338,15 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         @Override
         public void run() {
             phaser.register();
+            Thread currentThread = Thread.currentThread();
+            ClassLoader beforeContextCL = getContextClassLoader(currentThread);
             try {
                 this.wrappedTask.run();
             } finally {
-
+                setContextClassLoaderIfChanged(currentThread, beforeContextCL);
                 phaser.arriveAndDeregister();
             }
         }
-
     }
 
     // Used to keep track of the number of threads that are not finished
@@ -328,9 +367,12 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         @Override
         public T call() throws Exception {
             phaser.register();
+            Thread currentThread = Thread.currentThread();
+            ClassLoader beforeContextCL = getContextClassLoader(currentThread);
             try {
                 return this.callable.call();
             } finally {
+                setContextClassLoaderIfChanged(currentThread, beforeContextCL);
                 phaser.arriveAndDeregister();
             }
         }

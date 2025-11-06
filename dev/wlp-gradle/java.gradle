@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ subprojects {
   apply plugin: 'java'
 
   tasks.withType(Copy).all {
-  	duplicatesStrategy 'include'
+    duplicatesStrategy = 'include'
   }
 
   task publishJunitReport() {
@@ -28,6 +28,7 @@ subprojects {
       outputEventsDir = rootProject.file(rootProject.ext.get('published.outputs.events')+"/rawJUnitResults")
       reportDir = project.file("${project.buildDir}/libs/merged-test-reports/test/")
     }
+    def projectName = project.name
     doLast {
       if(new File(reportDir,"TESTS-TestSuites.xml").exists()){
         mkdir outputFilesDir
@@ -37,17 +38,17 @@ subprojects {
         copy {
           from reportDir
           include "TESTS-TestSuites.xml"
-          into new File(outputFilesDir,"junits/unit_"+project.name+"/"+ant.junitSHA256+"/")
+          into new File(outputFilesDir,"junits/unit_"+projectName+"/"+ant.junitSHA256+"/")
         }
 
         def prop = new Properties()
-        def propFile = File.createTempFile("unit_"+project.name,".properties",outputEventsDir) 
+        def propFile = File.createTempFile("unit_"+projectName,".properties",outputEventsDir) 
         prop.put("event","rawJUnitResult")
-        prop.put("bucketName","unit_"+project.name)
+        prop.put("bucketName","unit_"+projectName)
         prop.put("bucketType","Unit")
         prop.put("bucketRunMode","n/a")
         prop.put("resultType","normal")
-        prop.put("junit","junits/unit_"+project.name+"/"+ant.junitSHA256+"/TESTS-TestSuites.xml")
+        prop.put("junit","junits/unit_"+projectName+"/"+ant.junitSHA256+"/TESTS-TestSuites.xml")
         def propWriter = new FileWriter(propFile)
         try {
           prop.store(propWriter, null)

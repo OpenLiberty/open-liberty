@@ -53,7 +53,7 @@ public abstract class BaseTestClass {
     protected static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
 
     protected static final String IMAGE_NAME = ImageNameSubstitutor.instance() //
-                    .apply(DockerImageName.parse("otel/opentelemetry-collector-contrib:0.103.0")).asCanonicalNameString();
+                    .apply(DockerImageName.parse("ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.127.0")).asCanonicalNameString();
 
     protected static void trustAll() throws Exception {
         try {
@@ -389,12 +389,12 @@ public abstract class BaseTestClass {
         matchString += expectedCount;
 
         Log.info(c, "validatePrometheusHTTPMetricCount", "Trying to match: " + matchString);
-        
+
         if (vendorMetricsOutput == null) {
-        	Log.info(c, "validatePrometheusHTTPMetricCount", "vendorMetricsOutput is null - metrics endpoint may not be responding");
-        	return false;
+            Log.info(c, "validatePrometheusHTTPMetricCount", "vendorMetricsOutput is null - metrics endpoint may not be responding");
+            return false;
         }
-        
+
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -449,12 +449,12 @@ public abstract class BaseTestClass {
         matchString += expectedSum;
 
         Log.info(c, "validatePrometheusHTTPMetricSum", "Trying to match: " + matchString);
-        
+
         if (vendorMetricsOutput == null) {
             Log.info(c, "validatePrometheusHTTPMetricSum", "vendorMetricsOutput is null - metrics endpoint may not be responding");
             return false;
         }
-        
+
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();

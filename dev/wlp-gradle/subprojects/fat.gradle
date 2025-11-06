@@ -16,7 +16,6 @@
  */
 // Global vars
 ext.autoFvtDir = new File(project.buildDir, 'autoFVT')
-ext.distsDirectory = new File(project.buildDir, 'distributions')
 
 // Local vars
 File publishDir = new File(autoFvtDir, 'publish')
@@ -29,7 +28,7 @@ if (isAutomatedBuild && project.file('fat').exists()) {
   release {
     doLast {
       delete autoFvtDir
-      delete distsDirectory
+      delete layout.buildDirectory.dir("distributions")
     }
   }
 }
@@ -100,17 +99,11 @@ task addJakartaTransformerRules(type: Copy) {
 task addJakartaTransformer(type: Copy) {
   mustRunAfter jar
   dependsOn addJakartaTransformerRules
-/*  from configurations.jakartaTransformer
-  from configurations.jakartaTransformerPreJava17
-  from configurations.jakartaTransformerJava17Plus
-  into new File(autoFvtDir, 'lib')*/
 }
 
 task copyTestContainers(type: Copy) {
   dependsOn ':io.openliberty.org.testcontainers:assembleTestContainerData'
   mustRunAfter jar
-/*  from configurations.testcontainers
-  into new File(autoFvtDir, 'lib')*/
 }
 
 task addDerby(type: Copy) {
@@ -133,11 +126,12 @@ task copyJdbcDrivers(type: Copy) {
 }
 
 task copyFeatureBundles {
+  def projectName = project.name
   dependsOn jar
-  enabled project.file('test-bundles').exists()
+  enabled = project.file('test-bundles').exists()
   doLast {
-    new File(project.buildDir, 'buildfiles').eachLine { String line ->
-      if (!line.contains(project.name + ".jar")) {
+    new File(buildDir, 'buildfiles').eachLine { String line ->
+      if (!line.contains(projectName + ".jar")) {
         copy {
           from line
           into new File(autoFvtDir, 'publish/files/bundles')
@@ -147,13 +141,70 @@ task copyFeatureBundles {
   }
 }
 
+/**
+ * Determine if there subbundles that hat suite.name property set in them to specify which FATSuite
+ * is defined in that bundle.  If there is are subbundles with suite names defined, populate a Map 
+ * (fatProperties) with a key of the suite name with values of:
+ *
+ * suite.bndFile - the bnd file name
+ * autoFVT.zipName - name of the autoFVT.zip file
+ * suite.jarName - name of the bundle jar file
+ *
+ * Also populate two Sets:
+ * 
+ * suiteJarNames - contains the bundle jar names that contain suites
+ * publishedArtifacts - contains the names of the zip files to be published
+ */  
+def hasMultipleSuites = false
+def fatProperties = new HashMap<String, Properties>();
+def suiteJarNames = new HashSet<String>()
+def publishedArtifacts = new HashSet<String>()
+if (!bnd.get('-sub', '').empty) {
+  fileTree(dir: projectDir, include: bnd.get('-sub', '')).each { subBndFile ->
+    def subBndProperties = new Properties()
+    subBndFile.withInputStream { subBndProperties.load(it) }
+    def suiteName = subBndProperties.getProperty('suite.name')
+    if (suiteName != null) {
+      hasMultipleSuites = true
+
+      def suiteProperties = new Properties()
+      suiteProperties.setProperty('suite.bndFile', subBndFile.absolutePath)
+      suiteProperties.setProperty('autoFVT.zipName', layout.buildDirectory.dir("distributions").get().getAsFile().toString() + "/autoFVT__${suiteName}.zip")
+
+      // calculate the bundle name
+      def bsn = subBndProperties.getProperty('Bundle-SymbolicName')
+      if (bsn == null) {
+        def bndFileName = subBndFile.getName()
+        bsn = project.name + '.' + bndFileName.substring(0, bndFileName.lastIndexOf('.'))
+      } else {
+        def index = bsn.indexOf(';')
+        if (index != -1) {
+          bsn = bsn.substring(0, index).trim()
+        }
+      }
+      def jarName = bsn + '.jar'
+      suiteProperties.setProperty('suite.jarName', jarName)
+      fatProperties.put(suiteName, suiteProperties)
+
+      suiteJarNames.add(jarName)
+      publishedArtifacts.add(project.name + "__${suiteName}")
+    }
+  }
+}
+
+// If there are subbundles, but they don't have the suite.name property, or there are no subbundles
+// Even if there are subbundles we also want to have a zip with the project name to be a dependency
+// to the suite sub bundles
+publishedArtifacts.add(project.name)
+
 task autoFVT {
+  shouldRunAfter cleanFat
   dependsOn jar
   dependsOn ':cnf:copyMavenLibs'
   dependsOn addRequiredLibraries
   dependsOn copyFeatureBundles
   dependsOn ':fattest.simplicity:jar'
-  enabled project.file('fat').exists()
+  enabled = project.file('fat').exists()
 
   ext.getFeature = { line ->
     def fStart = line.indexOf('<feature>')
@@ -166,45 +217,37 @@ task autoFVT {
     return line.substring(fStart, fEnd).trim().toLowerCase()
   }
 
+  def projectName = project.name
+  def fattestSimplicityProject = project(':fattest.simplicity')
+  ext.setFatBndProps = { Properties fatBndProps, String prefix, Properties bndFileProps ->
+    // By default, load up all properties with certain prefixes from bndWorkspace
+    bndFileProps.each { k, v ->
+      if (k.startsWith('test.') || k.startsWith('fat.'))
+        fatBndProps.setProperty(prefix + k, v);
+    }
+  }
+
+  ext.createFatMetadata = { Set featureDeps, String printPrefix, String prefix ->
+    if(featureDeps.size() > 0) {
+      println printPrefix + ' tests the following features: ' + featureDeps
+      def fatDeps = new groovy.json.JsonBuilder()
+      def root = fatDeps {
+    	'feature-deps' featureDeps
+      }
+      new File(autoFvtDir, prefix + 'fat-metadata.json').write(new groovy.json.JsonBuilder(root).toPrettyString())
+    } else {
+      println printPrefix + ' does not test any features.'
+    }
+  }
+
   // For now we are just forcing the autoFVT create every time, this will be fixed
   // TODO: Be smart about when to recreate the autoFVT.zip
   doLast {
     // Copy the compiled classes
     copy {
-      from compileJava.destinationDir
+      from compileJava.destinationDirectory
       into new File(autoFvtDir, 'build/classes')
     }
-
-    // Copy the buildtask jars
-    /*copy {
-      from cnf.file('mavenlibs')
-      into new File(autoFvtDir, 'build/lib')
-      include 'asm-all-5.2.jar'
-      include 'org.apache.aries.util-*.jar'
-      include 'osgi.core*.jar'
-      include 'jsch-*.jar'
-    }
-    
-    // Copy the jackson jar, use the liberty project rather than mavenlibs
-    // to ensure versions match
-    copy {
-      from project(':io.openliberty.com.fasterxml.jackson').buildDir
-      include 'io.openliberty.com.fasterxml.jackson.jar'
-      into new File(autoFvtDir, 'build/lib')
-    }
-
-    // Copy the com.ibm.ws.junit.extensions jar
-    copy {
-      from project(':com.ibm.ws.junit.extensions').buildDir
-      include 'com.ibm.ws.junit.extensions.jar'
-      into new File(autoFvtDir, 'build/lib')
-    }
-
-    // Copy the infra jar
-    copy {
-      from cnf.file('mavenlibs/infra.buildtasks-core-7.0.2.jar')
-      into new File(autoFvtDir, 'build/lib')
-    }*/
 
     // Copy the bundle jar
     copy {
@@ -213,62 +256,33 @@ task autoFVT {
       into new File(autoFvtDir, 'build/lib')
     }
 
-    // Include JSON-P processor implementation
-    /*copy {
-      from project(':com.ibm.ws.org.glassfish.json').buildDir
-      include '*.jar'
-      into new File(autoFvtDir, 'lib')
-    }*/
-
     // Copy the DDL files
     // TODO: Consider if this can be removed, it looks like there's only a single project for this rule
     copy {
-      from project.file('ddl')
+      from file('ddl')
       include '**/*'
       into new File(autoFvtDir, 'ddl')
     }
 
     // Copy the static autoFVT-defaults
     copy {
-      from new File(project(':fattest.simplicity').projectDir, '/autoFVT-defaults')
+      from new File(fattestSimplicityProject.projectDir, '/autoFVT-defaults')
       include '**/*'
       into autoFvtDir
     }
 
     // Copy the dynamic autoFVT-defaults
     copy {
-      from new File(project(':fattest.simplicity').buildDir, '/autoFVT-defaults')
+      from new File(fattestSimplicityProject.buildDir, '/autoFVT-defaults')
       include '**/*'
       into autoFvtDir
     }
 
     // Copy override autoFVT files in the current project
     copy {
-      from project.file('override/autoFVT/src/ant')
+      from file('override/autoFVT/src/ant')
       include '*.xml'
       into new File(autoFvtDir,"src/ant")
-    }
-
-    // Create a fat.bnd.properties file that contains metadata about the FAT
-    def bndProps = new Properties()
-
-    // By default, load up all properties with certain prefixes from bndWorkspace
-    bndWorkspace.getProject(project.name).getProperties().each { k, v ->
-      if(k.startsWith("test.") || k.startsWith("fat."))
-        bndProps.setProperty(k, v);
-    }
-
-    // Check for minimum java level for test execution:
-    def minJavaLevel = bnd.get('fat.minimum.java.level', bnd.get('javac.source'))
-    bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
-    bndProps.setProperty('micro.version', bnd.get('libertyBundleMicroVersion'))
-
-    File bndPropsFile = new File(autoFvtDir, 'fat.bnd.properties')
-    def bndWriter = new FileWriter(bndPropsFile)
-    try {
-      bndProps.store(bndWriter, null)
-    } finally {
-      bndWriter.close()
     }
 
     // Create a fat.sys.properties file that contains metadata about the FAT
@@ -288,36 +302,19 @@ task autoFVT {
       sysWriter.close()
     }
 
-    // Copy the component test libs
-    // TODO: It looks like the componenttest.app.jar got combined into something else, so this is now way more source in the jar than was there before. This might need changing then.
-    /*copy {
-      from project(':com.ibm.ws.componenttest').buildDir
-      include 'com.ibm.ws.componenttest.jar'
-      rename 'com.ibm.ws.componenttest.jar', 'componenttest.app.jar'
-      into new File(autoFvtDir, 'lib')
-    }*/
-
     // Copy the fattest libs
     // TCK project's depend on the fattest.simplicity.jar being in the autoFVT/lib directory for their pom.xml files
-    if (project.name.contains('tck')) {
+    if (projectName.contains('tck')) {
       copy {
-        from project(':fattest.simplicity').buildDir
+        from fattestSimplicityProject.buildDir
         include 'fattest.simplicity.jar'
         into new File(autoFvtDir, 'lib')
       }
     }
 
-    // TODO: This is to compensate for the fact that the ant build of fattest.simplicity produced this jar but the gradle build doesn't
-    /*copy {
-      from project(':com.ibm.ws.common.encoder').buildDir
-      include 'com.ibm.ws.common.encoder.jar'
-      rename 'com.ibm.ws.common.encoder.jar', 'fattest.encoder.jar'
-      into new File(autoFvtDir, 'lib')
-    }*/
-
     // Copy the published files
     copy {
-      from project.file('publish/files'), new File(publishDir, 'files')
+      from file('publish/files'), new File(publishDir, 'files')
       include '**/*'
       into new File(autoFvtDir, 'lib/LibertyFATTestFiles')
       duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -325,7 +322,7 @@ task autoFVT {
 
     // Copy the publish directory (minus the 'files' directory)
     copy {
-      from project.file('publish')
+      from file('publish')
       include '**/*'
       exclude 'files'
       into publishDir
@@ -353,13 +350,6 @@ task autoFVT {
       into autoFvtDir
     }
 
-    // Copy the logging libraries over for use while running FATs
-    /*copy {
-      from project(':com.ibm.ws.logging.core').buildDir
-      include 'com.ibm.ws.logging.core.jar'
-      into new File(autoFvtDir, 'lib')
-    }*/
-
     // Copy all non-java app resources, such as *.html or *.jsp
     copy {
       includeEmptyDirs = false
@@ -371,20 +361,20 @@ task autoFVT {
 
     // Copy any locally cloned git repositories' files
     // This omits all git metadata by default (see gradle issue:1348).
-    File gitReposDir = new File(project.buildDir, 'gitRepos')
+    File gitReposDir = new File(buildDir, 'gitRepos')
     copy {
       from gitReposDir
       into new File(autoFvtDir, 'publish/gitRepos/')
     }
     delete gitReposDir
 
+    /**
+     * In a multi bundle / bnd environment these settings are specific to a particular bundle
+     * and bnd file and need to be handled individually for individual autoFVT zip files.
+     */
+
     // Produce a list of features tested by this FAT
     def featureDeps = [] as Set
-
-    // Include features added explictly via bnd.bnd
-    def testedFeatures = bnd.get('tested.features')
-    if(testedFeatures != null)
-      testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
 
     // Scan publish/ dir for features
     if(publishDir.exists()) {
@@ -416,47 +406,187 @@ task autoFVT {
       }
     }
 
-    if(featureDeps.size() > 0) {
-      println "This FAT tests the following features: " + featureDeps
-      def fatDeps = new groovy.json.JsonBuilder()
-      def root = fatDeps {
-    	"feature-deps" featureDeps
+    // Create a fat.bnd.properties file that contains metadata about the FAT
+    def bndProps = new Properties()
+
+    // Populate with the non suite name scoped properties
+    setFatBndProps(bndProps, '', bndWorkspace.getProject(project.name).getProperties())
+
+    if (hasMultipleSuites) {
+      fatProperties.each { suiteName, suiteProps ->
+        def subBndProperties = new Properties()
+        new File(suiteProps.get('suite.bndFile')).withInputStream { subBndProperties.load(it) }
+
+        // Populate with the suite name scoped properties with a prefix of the suite name
+        setFatBndProps(bndProps, suiteName + '_', subBndProperties)
+
+        // If the suite name bnd properties include tested.features create a suite name scoped fat-metadata.json file
+        def suiteTestedFeatures = subBndProperties.getProperty('tested.features')
+        if (suiteTestedFeatures != null) {
+          // Copy the feature dependencies previously calculated from the server.xml files
+          def suiteFeatureDeps = new HashSet(featureDeps)
+          suiteTestedFeatures.split(',').each{ suiteFeatureDeps.add(it.trim().toLowerCase()) }
+          createFatMetadata(suiteFeatureDeps, suiteName, suiteName + '-')
+        }
       }
-      new File(autoFvtDir, 'fat-metadata.json').write(new groovy.json.JsonBuilder(root).toPrettyString())
-    } else {
-      println "This FAT does not test any features."
     }
+
+    // Check for minimum java level for test execution:
+    def minJavaLevel = bnd.get('fat.minimum.java.level', bnd.get('javac.source'))
+    bndProps.setProperty('fat.minimum.java.level', minJavaLevel)
+    bndProps.setProperty('micro.version', bnd.get('libertyBundleMicroVersion'))
+
+    File bndPropsFile = new File(autoFvtDir, 'fat.bnd.properties')
+    def bndWriter = new FileWriter(bndPropsFile)
+    try {
+      bndProps.store(bndWriter, null)
+    } finally {
+      bndWriter.close()
+    }
+
+    // Include features added explicitly via bnd.bnd
+    def testedFeatures = bnd.get('tested.features')
+    if(testedFeatures != null)
+      testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
+
+    createFatMetadata(featureDeps, 'This FAT', '')
   }
 }
 
 task customizeAutoFVT {
   dependsOn autoFVT
-  enabled project.file('fat').exists()
+  enabled = project.file('fat').exists()
   // no-op task that allows buckets to override behavior of default autoFVT task
 }
 
-task zipAutoFVT(type: Zip) {
-  dependsOn customizeAutoFVT
-  from autoFvtDir
-  into 'autoFVT'
-  archiveFileName = 'autoFVT.zip'
+// Create zip tasks for the autoFVT zip files
+if (!hasMultipleSuites) {
+  tasks.create('autoFvtZip', Zip) {
+    dependsOn customizeAutoFVT
+    from autoFvtDir
+    into 'autoFVT'
+    archiveFileName = 'autoFVT.zip'
+  }
+} else {
+  // Create an autoFVT zip file that has all of the files except for the suite jar files
+  // and the fat-metadata.json file
+  tasks.create('autoFvtZip', Zip) {
+    dependsOn customizeAutoFVT
+    from (autoFvtDir) {
+      exclude { fileTreeElement ->
+        def fileName = fileTreeElement.file.name
+
+         // Exclude the subbundle jars
+        if (suiteJarNames.contains(fileName)) {
+          return true
+        }
+
+        // Exclude the fat-metadata.json files
+        if (fileName.endsWith('fat-metadata.json')) {
+          return true
+        }
+        return false
+      }
+    }
+    into 'autoFVT'
+    archiveFileName = 'autoFVT.zip'
+  }
+
+  // Create autoFVT zip files that contain just the suite jar file 
+  // and the fat-metadata.json file that goes with the suite
+  fatProperties.each { suiteName, suiteProps ->
+    def suiteJarName = suiteProps.get('suite.jarName')
+
+    tasks.create("autoFvtZip-${suiteName}", Zip) {
+      dependsOn customizeAutoFVT
+      from (autoFvtDir) {
+        include "build/lib/${suiteJarName}"
+        include "configuration.properties"
+        include { fileTreeElement ->
+          def fileName = fileTreeElement.file.name
+
+          // Exclude the fat-metatdata.json files that don't belong to this suite name
+          if (fileName.endsWith('fat-metadata.json')) {
+            def suiteFatMetadata = new File(autoFvtDir, "${suiteName}-fat-metadata.json")
+            // If tested.features was not configured in the subbundle bnd file, then use the fat-metadata.json from the tested.features
+            // from the main bnd.bnd file.
+            return fileName.equals(suiteFatMetadata.exists() ? (suiteName + '-fat-metadata.json') : 'fat-metadata.json')
+          }
+          return false
+        }
+        // rename the suite scoped fat-metadata.json file to fat-metadata.json since that is what the build tooling expects
+        rename "${suiteName}-fat-metadata.json", 'fat-metadata.json'
+      }
+      into 'autoFVT'
+      archiveFileName = suiteProps.get('autoFVT.zipName')
+    }
+  }
 }
 
-task zipProjectFVT(type: Zip) {
+task zipAutoFVT {
+  dependsOn customizeAutoFVT
+  dependsOn tasks.matching { task ->
+    task.name.startsWith('autoFvtZip')
+  }
+  outputs.files layout.buildDirectory.dir("distributions").get().getAsFileTree().matching {
+   include 'autoFVT*.zip'
+  }
+}
+
+task zipProjectFVT {
   dependsOn zipAutoFVT
-  archiveBaseName = project.name
-  into project.name + '/build/lib', {from "${distsDirectory}/autoFVT.zip"}
-  into project.name, {from 'build-test.xml'}
+  def projectName = project.name
+  doLast {
+    zipAutoFVT.outputs.files.each {
+      def bucketName = projectName
+      def autoFVTFileName = it.name
+      def suiteSeparator = autoFVTFileName.indexOf('__')
+      if (suiteSeparator != -1) {
+        String suffix = autoFVTFileName.substring(suiteSeparator, autoFVTFileName.lastIndexOf('.zip'))
+        bucketName = bucketName + suffix
+      }
+
+      // If we are zipping up a project that doesn't have multiple suites or we are zipping up
+      // a suite only autoFVT.zip file, then include the build-test.xml.  Otherwise do not include
+      // it because the autoFVT.zip doesn't have any FATSuites in it and needs to be known as a non
+      // FAT zip file
+      def distributionsDir = layout.buildDirectory.dir("distributions").get().getAsFile().toString()
+      if (!hasMultipleSuites || suiteSeparator != -1) {
+        ant.zip(destfile: "${distributionsDir}/${bucketName}.zip") {
+          mappedresources {
+            fileset(dir: "${distributionsDir}", includes: "${autoFVTFileName}")
+            globmapper(from: 'autoFVT*.zip', to: "${bucketName}/build/lib/autoFVT.zip")
+          }
+          zipfileset(dir: '.', prefix: "${bucketName}/", includes: 'build-test.xml')
+        }
+      } else {
+        new File("${distributionsDir}/hasSubBuckets.txt").createNewFile()
+        ant.zip(destfile: "${distributionsDir}/${bucketName}.zip") {
+          mappedresources {
+            fileset(dir: "${distributionsDir}", includes: "${autoFVTFileName}")
+            globmapper(from: 'autoFVT*.zip', to: "${bucketName}/build/lib/autoFVT.zip")
+          }
+          zipfileset(dir: "${distributionsDir}", prefix: "${bucketName}/", includes: 'hasSubBuckets.txt')
+        }
+        file("${distributionsDir}/hasSubBuckets.txt").delete()
+      }
+    }
+  }
 }
 
 if (isAutomatedBuild || rootProject.projectNames.contains(project.name)) {
   publishing {
     publications {
-      maven(MavenPublication) {
-        artifactId project.name + '_autoFVT'
-        groupId 'test'
-        version project.version
-        artifact zipProjectFVT
+      publishedArtifacts.each {
+        String fileName = it
+        "autoFVT-${fileName}" (MavenPublication) {
+          artifactId "${fileName}_autoFVT"
+          groupId 'test'
+          version project.version
+          artifact(new File(layout.buildDirectory.dir("distributions").get().getAsFile(), "${fileName}.zip")) {
+            builtBy zipProjectFVT
+          }
+        }
       }
     }
   }
@@ -468,18 +598,20 @@ task trySkipFat(type: JavaExec) {
   dependsOn ':build.changeDetector:assemble'
   inputs.file(new File(autoFvtDir, 'fat-metadata.json'))
 
+  def projectName = project.name
+
   mainClass = 'com.ibm.ws.infra.depchain.ChangeDetector'
   classpath = project(':build.changeDetector').sourceSets.main.runtimeClasspath
 
   args '--wlp', project(':build.image').projectDir.toString() + '/wlp',
        '--git-diff', System.getProperty('git_diff', 'UNSET'),
        '--deps', autoFvtDir.toString() + '/fat-metadata.json',
-       '--fat-name', project.name,
+       '--fat-name', projectName,
        '--output', autoFvtDir.toString() + '/canSkipFat'
 
   doLast {
     if (new File(autoFvtDir, 'canSkipFat').exists()) {
-      println "Disabling FAT bucket " + project.name + " from running based on modified files"
+      println "Disabling FAT bucket " + projectName + " from running based on modified files"
       tasks['runfat'].enabled = false
     }
   }
@@ -700,6 +832,7 @@ buildfat {
 
 task uploadfat {
   dependsOn buildfat
+  def projectName = project.name
   doLast {
     // Ensure that async upload doesn't occur when adding a file to upload.
     while(new File("${rootDir}/upload.lock").exists()) {
@@ -707,10 +840,15 @@ task uploadfat {
     }
     new FileWriter("${rootDir}/upload.lock", true).withWriter { }
 
-    def sourceFile = zipProjectFVT.archiveFile.get().asFile.absolutePath
-    def targetFile = uploadRemotePath + zipProjectFVT.archiveFile.get().asFile
     def uploadLogFile = new FileWriter("${rootDir}/upload.log", true)
-    uploadLogFile.append(sourceFile + "," + targetFile + "\n")
+    layout.buildDirectory.dir("distributions").get().getAsFile().eachFile {
+      if (it.name.startsWith(projectName)) {
+
+        def sourceFile = it.absolutePath
+        def targetFile = uploadRemotePath + it.name
+        uploadLogFile.append(sourceFile + "," + targetFile + "\n")
+      }
+    }
     uploadLogFile.close()
 
     new File("${rootDir}/upload.lock").delete()

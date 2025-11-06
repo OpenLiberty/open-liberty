@@ -1738,6 +1738,33 @@
 		audiences="client01"
 	>
 	</openidConnectClient>	
+
+	<authFilter id="authFilterES256ShortES256">
+		<requestUrl
+			id="requestUrlES256ShortES256"
+			urlPattern="/snoop/SignES256EncryptShortES256"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="SignES256EncryptShortES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		authFilterRef="authFilterES256ShortES256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="short_es256"
+		sslRef="ssl_allSigAlg"
+		inboundPropagation="required"
+		issuerIdentifier="client01"
+		audiences="client01"
+	>
+	</openidConnectClient>
 		
 	<authFilter id="authFilterRS256PublicRS256">
 		<requestUrl
@@ -1764,24 +1791,51 @@
 		issuerIdentifier="client01"
 		audiences="client01"
 	>
-	</openidConnectClient>		
+	</openidConnectClient>	
 
-	<authFilter id="authFilterRS_trustStoreRefOmitted">
+	<authFilter id="authFilterES256PublicES256">
 		<requestUrl
-			id="requestUrlRS_trustStoreRefOmitted"
-			urlPattern="/snoop/RS_trustStoreRefOmitted"
+			id="requestUrlES256PublicES256"
+			urlPattern="/snoop/SignES256EncryptPublicES256"
 			matchType="contains" />
 	</authFilter>
 
 	<openidConnectClient
-		id="RS_trustStoreRefOmitted"
+		id="SignES256EncryptPublicES256"
 		scope="openid profile"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTorbm1saw=="
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		authFilterRef="authFilterRS_trustStoreRefOmitted"
+		authFilterRef="authFilterES256PublicES256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg_badKeyStore"
+		inboundPropagation="required"
+		issuerIdentifier="client01"
+		audiences="client01"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterRS_trustStoreRefOmitted_RSA_OAEP">
+		<requestUrl
+			id="requestUrlRS_trustStoreRefOmitted_RSA_OAEP"
+			urlPattern="/snoop/RS_trustStoreRefOmitted_RSA_OAEP"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RS_trustStoreRefOmitted_RSA_OAEP"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		authFilterRef="authFilterRS_trustStoreRefOmitted_RSA_OAEP"
 		signatureAlgorithm="RS256"
 		trustAliasName="rs256"
 		keyManagementKeyAlias="rs256"
@@ -1790,27 +1844,78 @@
 		issuerIdentifier="client01"
 		audiences="client01"
 	>
-	</openidConnectClient>		
-	
-	<authFilter id="authFilterRS_sslRefOmitted">
+	</openidConnectClient>	
+
+	<authFilter id="authFilterRS_trustStoreRefOmitted_ECDH_ES">
 		<requestUrl
-			id="requestUrlRS_sslRefOmitted"
-			urlPattern="/snoop/RS_sslRefOmitted"
+			id="requestUrlRS_trustStoreRefOmitted_ECDH_ES"
+			urlPattern="/snoop/RS_trustStoreRefOmitted_ECDH_ES"
 			matchType="contains" />
 	</authFilter>
 
 	<openidConnectClient
-		id="RS_sslRefOmitted"
+		id="RS_trustStoreRefOmitted_ECDH_ES"
 		scope="openid profile"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTorbm1saw=="
 		mapIdentityToRegistryUser="true"
 		httpsRequired="false"
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
-		authFilterRef="authFilterRS_sslRefOmitted"
+		authFilterRef="authFilterRS_trustStoreRefOmitted_ECDH_ES"
+		signatureAlgorithm="ES256"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg"
+		inboundPropagation="required"
+		issuerIdentifier="client01"
+		audiences="client01"
+	>
+	</openidConnectClient>	
+	
+	<authFilter id="authFilterRS_sslRefOmitted_RSA_OAEP">
+		<requestUrl
+			id="requestUrlRS_sslRefOmitted_RSA_OAEP"
+			urlPattern="/snoop/RS_sslRefOmitted_RSA_OAEP"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RS_sslRefOmitted_RSA_OAEP"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		authFilterRef="authFilterRS_sslRefOmitted_RSA_OAEP"
 		signatureAlgorithm="RS256"
 		trustAliasName="rs256"
 		keyManagementKeyAlias="rs256"
+		inboundPropagation="required"
+		issuerIdentifier="client01"
+		audiences="client01"
+	>
+	</openidConnectClient>
+
+	<authFilter id="authFilterRS_sslRefOmitted_ECDH_ES">
+		<requestUrl
+			id="requestUrlRS_sslRefOmitted_ECDH_ES"
+			urlPattern="/snoop/RS_sslRefOmitted_ECDH_ES"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RS_sslRefOmitted_ECDH_ES"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_3_HTTP_default}"
+		authFilterRef="authFilterRS_sslRefOmitted_ECDH_ES"
+		signatureAlgorithm="ES256"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
 		inboundPropagation="required"
 		issuerIdentifier="client01"
 		audiences="client01"

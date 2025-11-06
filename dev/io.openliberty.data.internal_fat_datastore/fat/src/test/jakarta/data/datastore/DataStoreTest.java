@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -74,16 +74,21 @@ public class DataStoreTest extends FATServletClient {
                         .addAsWebInfResource(new File("test-applications/DataStoreWebApp/resources/WEB-INF/ibm-web-bnd.xml"));
         ShrinkHelper.exportAppToServer(server, DataStoreWebApp);
 
-        JavaArchive DataStoreTestLib = ShrinkWrap.create(JavaArchive.class,
-                                                         "DataStoreTestLib.jar")
+        JavaArchive DataStoreTestAppLib = ShrinkWrap.create(JavaArchive.class,
+                                                            "DataStoreTestAppLib.jar")
                         .addPackage("test.jakarta.data.datastore.lib");
+
+        JavaArchive DataStoreTestAppWebLib = ShrinkWrap.create(JavaArchive.class,
+                                                               "DataStoreTestAppWebLib.jar")
+                        .addPackage("test.jakarta.data.datastore.web.lib");
 
         WebArchive DataStoreTestWeb1 = ShrinkWrap.create(WebArchive.class,
                                                          "DataStoreTestWeb1.war")
                         .addPackage("test.jakarta.data.datastore.web")
                         .addAsWebInfResource(new File("test-applications/DataStoreTestApp/resources/DataStoreTestWeb1/WEB-INF/ibm-web-bnd.xml"))
                         .addAsResource(new File("test-applications/DataStoreTestApp/resources/DataStoreTestWeb1/WEB-INF/classes/META-INF/persistence.xml"),
-                                       "META-INF/persistence.xml");
+                                       "META-INF/persistence.xml")
+                        .addAsLibrary(DataStoreTestAppWebLib);
 
         WebArchive DataStoreTestWeb2 = ShrinkWrap.create(WebArchive.class,
                                                          "DataStoreTestWeb2.war")
@@ -98,7 +103,7 @@ public class DataStoreTest extends FATServletClient {
 
         EnterpriseArchive DataStoreTestApp = ShrinkWrap.create(EnterpriseArchive.class,
                                                                "DataStoreTestApp.ear")
-                        .addAsLibrary(DataStoreTestLib)
+                        .addAsLibrary(DataStoreTestAppLib)
                         .addAsModule(DataStoreTestWeb1)
                         .addAsModule(DataStoreTestWeb2)
                         .addAsModule(DataStoreTestEJB);
@@ -126,7 +131,9 @@ public class DataStoreTest extends FATServletClient {
         List<String> ddlExpectedFileNames = DDLGenScriptHelper.getExpectedDDLFiles();
 
         // Verify that all the generated DDL files were expected
-        assertEquals("Incorrect number of generated DDL files", ddlExpectedFileNames.size(), ddlGeneratedFileNames.size());
+        assertEquals("Incorrect number of generated DDL files",
+                     ddlExpectedFileNames.size(),
+                     ddlGeneratedFileNames.size());
         for (int i = 0; i < ddlExpectedFileNames.size(); i++) {
 
             // Verify that all the generated DDL files had the correct name

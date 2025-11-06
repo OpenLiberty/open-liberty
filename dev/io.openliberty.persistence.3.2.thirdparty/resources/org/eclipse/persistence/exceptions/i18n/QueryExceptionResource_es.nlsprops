@@ -359,3 +359,5 @@
 
 6183=El tipo de correlaci\u00f3n {1} para el atributo {2} de {0} no est\u00e1 soportado con la funcionalidad Consultar por ejemplo.  Si el atributo puede ignorarse de forma segura, a\u00f1\u00e1dalo a la lista de ignorar o establezca la validaci\u00f3n de ejemplo en false en la pol\u00edtica.
 
+6184=Tipo de valor incorrecto {0} se pasa a la expresi\u00f3n del constructor. No se admiten tipos complejos (por ejemplo, matrices, colecciones u objetos).
+

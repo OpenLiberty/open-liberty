@@ -26,6 +26,8 @@ public class StartupSingletonEJB {
 
     @PostConstruct
     public void init() {
+        System.out.println("Startup Singleton EJB PostConstruct");
+
         repo.acquire(0);
     }
 }

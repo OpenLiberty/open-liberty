@@ -10,6 +10,7 @@
 	<classpathentry kind="src" path="test-applications/dsdfat/src"/>
 	<classpathentry kind="src" path="test-applications/setupfat/src"/>
 	<classpathentry kind="src" path="test-applications/dsdfat_global_lib/src"/>
+	<classpathentry kind="src" path="test-applications/dsdfat_override_lib/src"/>
 	<classpathentry kind="src" path="test-resource/loginmodule/src"/>
 	<classpathentry exported="true" kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="output" path="bin"/>

@@ -6,7 +6,7 @@
   "dependencies": {
     "bootstrap": "5.1.3",
     "carbon-components": "10.44.0",
-    "google-closure-compiler": "20160315.2.0",
+    "google-closure-compiler": "20251008.0.0",
     "jquery": "3.5.1"
   }
 }

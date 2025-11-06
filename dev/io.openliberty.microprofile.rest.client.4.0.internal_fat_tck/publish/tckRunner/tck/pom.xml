@@ -77,6 +77,14 @@
         </dependency>
 
         <dependency>
+            <groupId>io.openliberty</groupId>
+            <artifactId>com.ibm.ws.threading</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${com.ibm.ws.threading_}</systemPath>
+        </dependency>
+
+        <dependency>
             <groupId>org.reactivestreams</groupId>
             <artifactId>reactive-streams-tck</artifactId>
             <version>${reactive.streams.version}</version>

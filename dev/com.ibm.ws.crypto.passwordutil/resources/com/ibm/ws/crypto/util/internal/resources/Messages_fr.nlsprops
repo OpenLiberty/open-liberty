@@ -66,7 +66,9 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Une ou plusieurs valeurs de mot 
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty utilise d\u00e9sormais des algorithmes plus puissants pour les mots de passe nouvellement g\u00e9n\u00e9r\u00e9s {aes} et {hash}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Assurez-vous que les mots de passe {aes} et {hash} sont g\u00e9n\u00e9r\u00e9s avec la derni\u00e8re version d'' Liberty.
 
-
+AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=La longueur de la cl\u00e9 de la valeur sp\u00e9cifi\u00e9e dans la variable wlp.aes.encryption.key doit \u00eatre de 256 bits.
+AESKEYMANAGER_NOT_BASE64_EXCEPTION=La valeur sp\u00e9cifi\u00e9e dans la variable wlp.aes.encryption.key doit \u00eatre cod\u00e9e base64.
+AESKEYMANAGER_BASE64_VARIABLE_NOT_SET=La variable wlp.aes.encryption.key doit \u00eatre d\u00e9finie pour d\u00e9coder les mots de passe.
 # ---------------- This is an exception message ------------
 PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Plusieurs impl\u00e9mentations CustomPasswordEncryption ont \u00e9t\u00e9 d\u00e9tect\u00e9es. Une seule impl\u00e9mentation CustomPasswordEncryption est prise en charge. La liste des impl\u00e9mentations CustomPasswordEncryption d\u00e9tect\u00e9es est la suivante :
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Une erreur a \u00e9t\u00e9 signal\u00e9e lors du traitement du fichier manifeste d''extension {0}. Ce fichier sera ignor\u00e9. Le chiffrement personnalis\u00e9 n''est pas disponible. Le message d''erreur est le suivant : {1}.

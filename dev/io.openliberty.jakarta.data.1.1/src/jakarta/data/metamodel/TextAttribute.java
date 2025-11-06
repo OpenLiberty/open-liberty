@@ -14,6 +14,7 @@ package jakarta.data.metamodel;
 
 import jakarta.data.Sort;
 import jakarta.data.expression.TextExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -35,9 +36,8 @@ public interface TextAttribute<T> extends ComparableAttribute<T, String>, TextEx
 
     static <T> TextAttribute<T> of(Class<T> entityClass,
                                    String name) {
-        if (entityClass == null ||
-            name == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(entityClass, "entityClass");
+        Messages.requireNonNull(name, "name");
 
         return new TextAttributeRecord<>(entityClass, name);
     }

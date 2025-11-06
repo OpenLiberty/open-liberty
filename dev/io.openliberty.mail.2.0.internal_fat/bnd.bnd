@@ -18,7 +18,7 @@ src: \
   test-applications/fvtweb/src, \
   test-applications/TestingApp/src
   
-#-include= jar:${fileuri;${repo;com.ibm.ws.com.icegreen:greenmail;2.0.0.fd826131f671b0d3230b0d0e1638d8c4;EXACT}}
+#-include= jar:${fileuri;\${repo;com.ibm.ws.com.icegreen:greenmail;2.0.0.fd826131f671b0d3230b0d0e1638d8c4;EXACT}}
 
 fat.project: true
 

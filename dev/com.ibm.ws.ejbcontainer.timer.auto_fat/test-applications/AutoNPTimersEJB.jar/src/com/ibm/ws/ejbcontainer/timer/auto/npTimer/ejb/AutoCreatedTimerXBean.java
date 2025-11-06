@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,10 +13,10 @@
 
 package com.ibm.ws.ejbcontainer.timer.auto.npTimer.ejb;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource;
@@ -30,37 +30,37 @@ public class AutoCreatedTimerXBean {
 
     public static String SECONDS_RANGE = "seconds_range";
     public static volatile int seconds_range_count = 0;
-    public static ArrayList<Long> seconds_range_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> seconds_range_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> seconds_range_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> seconds_range_next = new CopyOnWriteArrayList<Long>();
 
     public static String SECONDS_LIST = "seconds_list";
     public static volatile int seconds_list_count = 0;
-    public static ArrayList<Long> seconds_list_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> seconds_list_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> seconds_list_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> seconds_list_next = new CopyOnWriteArrayList<Long>();
 
     public static String MINUTES_RANGE = "minutes_range";
     public static volatile int minutes_range_count = 0;
-    public static ArrayList<Long> minutes_range_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> minutes_range_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> minutes_range_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> minutes_range_next = new CopyOnWriteArrayList<Long>();
 
     public static String MULTIPLE_SETTINGS_DONT_CONFLICT = "multipleSettingsDontConflict";
     public static volatile int multiple_settings_count = 0;
-    public static ArrayList<Long> multiple_settings_timestamps = new ArrayList<Long>();
-    public static ArrayList<Long> multiple_settings_next = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> multiple_settings_timestamps = new CopyOnWriteArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> multiple_settings_next = new CopyOnWriteArrayList<Long>();
 
     public static String START_GATE = "startGate";
     public static volatile int start_gate_count = 0;
-    public static ArrayList<Long> start_gate_timestamps = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> start_gate_timestamps = new CopyOnWriteArrayList<Long>();
 
     public static String STOP_GATE = "stopGate";
     public static volatile int stop_gate_count = 0;
-    public static ArrayList<Long> stop_gate_timestamps = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> stop_gate_timestamps = new CopyOnWriteArrayList<Long>();
 
     // begin F743-16271
     public static String TIME_ZONE = "timeZone";
     public static String time_zone_zone = "uninitialized";
     public static volatile int time_zone_count = 0;
-    public static ArrayList<Long> time_zone_timestamps = new ArrayList<Long>();
+    public static CopyOnWriteArrayList<Long> time_zone_timestamps = new CopyOnWriteArrayList<Long>();
     // end F743-16271
 
     public static String MINUTES_LIST = "minutes_list";

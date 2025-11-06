@@ -24,7 +24,7 @@ javac.target: 17
 fat.minimum.java.level: 17
 fat.project: true
 
-tested.features: databaseRotation, checkpoint
+tested.features: databaseRotation, checkpoint, persistence-3.2
 
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
@@ -42,14 +42,14 @@ tested.features: databaseRotation, checkpoint
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	io.openliberty.jakarta.annotation.2.1,\
-	io.openliberty.jakarta.cdi.4.0,\
-	io.openliberty.jakarta.concurrency.3.0,\
+	io.openliberty.jakarta.annotation.3.0,\
+	io.openliberty.jakarta.cdi.4.1,\
+	io.openliberty.jakarta.concurrency.3.1,\
 	io.openliberty.jakarta.data.1.0,\
 	io.openliberty.jakarta.enterpriseBeans.4.0,\
-	io.openliberty.jakarta.interceptor.2.1,\
-	io.openliberty.jakarta.persistence.3.1,\
-	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.jakarta.interceptor.2.2,\
+	io.openliberty.jakarta.persistence.3.2,\
+	io.openliberty.jakarta.servlet.6.1;version=latest,\
 	io.openliberty.jakarta.transaction.2.0;version=latest,\
 	io.openliberty.org.testcontainers;version=latest
 	

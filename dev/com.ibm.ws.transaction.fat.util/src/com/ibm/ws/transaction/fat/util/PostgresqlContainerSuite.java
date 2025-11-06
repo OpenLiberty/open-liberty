@@ -23,7 +23,7 @@ public class PostgresqlContainerSuite extends TxTestContainerSuite {
     public static final String POSTGRES_PASS = "superSecret";
     
     private static DockerImageName _postgresqlImageName;
-    
+
     public static DockerImageName getPostgresqlImageName() {
     	if (_postgresqlImageName == null) {
     		_postgresqlImageName = ImageBuilder.build("postgres-ssl:17.0.0.1").getDockerImageName();

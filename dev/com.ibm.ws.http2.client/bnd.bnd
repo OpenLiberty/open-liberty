@@ -1,14 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -45,7 +42,15 @@ Export-Package: \
   com.ibm.ws.http.dispatcher.internal, \
   com.ibm.ws.http.dispatcher.internal.channel, \
   com.ibm.ws.http.internal, \
-  com.ibm.ws.http.logging.internal
+  com.ibm.ws.http.netty, \
+  com.ibm.ws.http.netty.message, \
+  com.ibm.ws.http.netty.pipeline, \
+  com.ibm.ws.http.netty.pipeline.inbound, \
+  com.ibm.ws.http.netty.pipeline.outbound, \
+  com.ibm.ws.http.netty.pipeline.http2, \
+  com.ibm.ws.http.logging.internal, \
+  io.openliberty.http.options, \
+  io.openliberty.http.netty*
   
 Import-Package: \
   !com.ibm.ws.http.channel.h2internal, \
@@ -65,4 +70,6 @@ Import-Package: \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.channelfw;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	io.openliberty.io.netty,\
+	io.netty.buffer

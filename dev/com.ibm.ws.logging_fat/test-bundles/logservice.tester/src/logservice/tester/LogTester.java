@@ -228,7 +228,7 @@ public class LogTester extends HttpServlet {
         attributes.putValue("Manifest-Version", "1.0");
         attributes.putValue("Bundle-ManifestVersion", "2");
         attributes.putValue("Bundle-SymbolicName", "bundle" + id);
-        attributes.putValue("Import-Package", "org.osgi.framework");
+        attributes.putValue("Import-Package", "org.osgi.framework,org.osgi.framework.wiring");
         return manifest;
     }
 }

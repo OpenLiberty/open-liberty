@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ Private-Package: \
   org.apache.cxf.tools.common.jaxb
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-tools-common;${cxfVersion}}!/!META-INF/*
+  @\${repo;org.apache.cxf:cxf-tools-common;${cxfVersion}}!/!META-INF/*
 
 -buildpath: \
   org.apache.cxf:cxf-tools-common;version=${cxfVersion}

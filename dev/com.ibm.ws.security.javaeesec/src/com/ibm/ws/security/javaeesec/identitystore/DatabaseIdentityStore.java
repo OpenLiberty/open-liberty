@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,6 @@ import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
-import javax.security.enterprise.identitystore.IdentityStorePermission;
 import javax.security.enterprise.identitystore.PasswordHash;
 import javax.sql.DataSource;
 
@@ -43,7 +42,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.javaeesec.CDIHelper;
-import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+
+import io.openliberty.security.jakartasec.identitystore.permissions.IdentityStorePermissionService;
 
 /**
  * Liberty's database {@link IdentityStore} implementation.
@@ -166,10 +166,8 @@ public class DatabaseIdentityStore implements IdentityStore {
         if (!validationTypes().contains(ValidationType.PROVIDE_GROUPS)) {
             return groups;
         }
-        SecurityManager securityManager = System.getSecurityManager();
-        if (securityManager != null) {
-            securityManager.checkPermission(new IdentityStorePermission(JavaEESecConstants.GET_GROUPS_PERMISSION));
-        }
+
+        IdentityStorePermissionService.checkPermission("getGroups");
 
         String caller = validationResult.getCallerPrincipal().getName();
         if (caller == null) {

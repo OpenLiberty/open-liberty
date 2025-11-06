@@ -27,4 +27,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/stable
 
 Include-Resource: \
-  @${repo;io.grpc:grpc-api;${grpcVersion};EXACT}
+  @\${repo;io.grpc:grpc-api;${grpcVersion};EXACT}

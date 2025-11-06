@@ -151,11 +151,11 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
     @Trivial
-    protected Class<?> findClass(String className, boolean returnNull) throws ClassNotFoundException {
+    protected Class<?> findClass(String className, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
         ClassNotFoundException cnfe = null;
         Class<?> c = null;
         try {
-            c = super.findClass(className, returnNull);
+            c = super.findClass(className, delegatePolicy, returnNull);
         } catch (ClassNotFoundException x) {
             cnfe = x;
         }
@@ -175,8 +175,8 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     /** Override classloading related methods so this class shows up in stacktraces **/
     /*********************************************************************************/
     @Override
-    protected Class<?> loadClass(String name, boolean resolve, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
-        return super.loadClass(name, resolve, onlySearchSelf, returnNull);
+    protected Class<?> loadClass(String name, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
+        return super.loadClass(name, resolve, delegatePolicy, returnNull);
     }
 
     @Override

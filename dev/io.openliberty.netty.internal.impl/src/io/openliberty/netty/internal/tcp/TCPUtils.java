@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
@@ -12,9 +12,11 @@ package io.openliberty.netty.internal.tcp;
 import java.net.Inet6Address;
 import java.net.InetSocketAddress;
 import java.net.SocketAddress;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.Future;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -33,14 +35,13 @@ import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 import io.openliberty.netty.internal.impl.NettyConstants;
-
+import io.openliberty.netty.internal.impl.NettyFrameworkImpl;
 
 public class TCPUtils {
 
-    private static final TraceComponent tc = Tr.register(TCPUtils.class, new String[]{TCPMessageConstants.TCP_TRACE_NAME,TCPMessageConstants.NETTY_TRACE_NAME},
-            TCPMessageConstants.TCP_BUNDLE, TCPUtils.class.getName());
+    private static final TraceComponent tc = Tr.register(TCPUtils.class, new String[] { TCPMessageConstants.TCP_TRACE_NAME, TCPMessageConstants.NETTY_TRACE_NAME },
+                                                         TCPMessageConstants.TCP_BUNDLE, TCPUtils.class.getName());
     private static final int timeBetweenRetriesMsec = 1000; // make this non-configurable
 
     /**
@@ -52,7 +53,7 @@ public class TCPUtils {
      * @throws NettyException
      */
     public static ServerBootstrapExtended createTCPBootstrap(NettyFrameworkImpl framework,
-            Map<String, Object> tcpOptions) throws NettyException {
+                                                             Map<String, Object> tcpOptions) throws NettyException {
         BootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, true);
         ServerBootstrapExtended bs = new ServerBootstrapExtended();
         bs.group(framework.getParentGroup(), framework.getChildGroup());
@@ -73,7 +74,7 @@ public class TCPUtils {
      * @throws NettyException
      */
     public static BootstrapExtended createTCPBootstrapOutbound(NettyFrameworkImpl framework,
-            Map<String, Object> tcpOptions) throws NettyException {
+                                                               Map<String, Object> tcpOptions) throws NettyException {
         BootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, false);
         BootstrapExtended bs = new BootstrapExtended();
         bs.group(framework.getChildGroup());
@@ -85,23 +86,26 @@ public class TCPUtils {
         return bs;
     }
 
-    private static ChannelFuture open(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
-            final TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener,
-            final int retryCount) {
-
+    private static ChannelFuture open(NettyFrameworkImpl framework, final Channel channel,
+                                      final TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener,
+                                      final int retryCount) {
+        if (!channel.isOpen()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Channel not started because it was closed: " + channel);
+            }
+            return null;
+        }
         ChannelFuture oFuture = null;
         if (inetHost.equals("*")) {
             inetHost = NettyConstants.INADDR_ANY;
         }
         if (config.isInbound()) {
-            oFuture = ((ServerBootstrapExtended) bootstrap).bind(inetHost, inetPort);
+            oFuture = channel.bind(new InetSocketAddress(inetHost, inetPort));
         } else {
-            oFuture = ((BootstrapExtended) bootstrap).connect(inetHost, inetPort);
+            oFuture = channel.connect(new InetSocketAddress(inetHost, inetPort));
         }
         final ChannelFuture openFuture = oFuture;
-        if (openListener != null) {
-            openFuture.addListener(openListener);
-        }
+
         final String newHost = inetHost;
 
         openFuture.addListener(future -> {
@@ -109,32 +113,34 @@ public class TCPUtils {
 
                 // add new channel to set of active channels, and set a close future to
                 // remove it
-            	// Get parent and increment active connections
-                final Channel channel = openFuture.channel();
+                // Get parent and increment active connections
 
                 // set common channel attrs
                 channel.attr(ConfigConstants.NAME_KEY).set(config.getExternalName());
                 channel.attr(ConfigConstants.HOST_KEY).set(newHost);
                 channel.attr(ConfigConstants.PORT_KEY).set(inetPort);
                 channel.attr(ConfigConstants.IS_INBOUND_KEY).set(config.isInbound());
-                
+
                 // Listener to stop channel on close
                 // This should just log that the channel stopped
-                channel.closeFuture().addListener(innerFuture -> logChannelStopped(channel));
+                channel.closeFuture().addListener(innerFuture -> logChannelStopped(innerFuture, channel));
 
-                if(config.isInbound()) {
+                if (config.isInbound()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Adding new channel group for " + channel);
                     }
-                    framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
-                }else {
-                	framework.getOutboundConnections().add(channel);
+                    synchronized (framework.getActiveChannelsMap()) {
+                        framework.getActiveChannelsMap().put(channel, new DefaultChannelGroup(GlobalEventExecutor.INSTANCE));
+                    }
+                } else {
+                    synchronized (framework.getOutboundConnections()) {
+                        framework.getOutboundConnections().add(channel);
+                    }
                 }
-
                 // set up a helpful log message
                 String hostLogString = newHost;
                 SocketAddress addr = channel.localAddress();
-                InetSocketAddress inetAddr = (InetSocketAddress)addr;
+                InetSocketAddress inetAddr = (InetSocketAddress) addr;
                 String IPvType = "IPv4";
                 if (inetAddr.getAddress() instanceof Inet6Address) {
                     IPvType = "IPv6";
@@ -143,11 +149,11 @@ public class TCPUtils {
                     hostLogString = "*  (" + IPvType + ")";
                 } else {
                     hostLogString = config.getHostname() + "  (" + IPvType + ": "
-                               + inetAddr.getAddress().getHostAddress() + ")";
+                                    + inetAddr.getAddress().getHostAddress() + ")";
                 }
 
-                if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                	Tr.debug(tc, "serverSocket getInetAddress is: " + inetAddr);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "serverSocket getInetAddress is: " + inetAddr);
                     Tr.debug(tc, "serverSocket getLocalSocketAddress is: " + channel.localAddress());
                     Tr.debug(tc, "serverSocket getInetAddress hostname is: " + inetAddr.getAddress().getHostName());
                     Tr.debug(tc, "serverSocket getInetAddress address is: " + inetAddr.getAddress().getHostAddress());
@@ -161,19 +167,27 @@ public class TCPUtils {
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-                                new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
+                                 new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
                     }
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc,
-                            "open failed for " + config.getExternalName() + " due to: " + future.cause().getMessage());
+                             "open failed for " + config.getExternalName() + " due to: " + future.cause().getMessage());
                 }
 
                 if (retryCount > 0) {
+                    if (!channel.isOpen()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Channel not open so it must have been cancelled. Returning...");
+                        }
+                        return;
+                    }
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        // config.getPortOpenRetries() + 1 because the initial bind failed, now trying config.getPortOpenRetries() additional times.
-                        Tr.debug(tc, "attempt " + retryCount + " of " + (config.getPortOpenRetries() + 1) + " failed to open the port, will try again after wait interval");
+                        // config.getPortOpenRetries() + 1 because the initial bind failed, now trying
+                        // config.getPortOpenRetries() additional times.
+                        Tr.debug(tc, "attempt " + retryCount + " of " + (config.getPortOpenRetries() + 1)
+                                     + " failed to open the port, will try again after wait interval");
                     }
                     // recurse until we either complete successfully or run out of retries;
                     try {
@@ -184,43 +198,106 @@ public class TCPUtils {
                             Tr.debug(tc, "sleep caught InterruptedException.  will proceed.");
                         }
                     }
-                    open(framework, bootstrap, config, newHost, inetPort, openListener, retryCount - 1);
+                    open(framework, channel, config, newHost, inetPort, openListener, retryCount - 1);
                 } else {
-                    if (config.isInbound()) {
-                        Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
-                                String.valueOf(inetPort), openFuture.cause().getMessage() });
-                    } else {
+                    if (!channel.isOpen()) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
-                                    newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
+                            Tr.debug(tc, "No retries left and channel is not open so not printing any logs. Returning...");
+                        }
+                        return;
+                    }
+
+                    // Check if the exception is or was caused by UnresolvedAddressException
+                    Throwable cause = future.cause();
+                    boolean unresolvedAddress = false;
+
+                    while (cause != null) {
+                        if (cause instanceof java.nio.channels.UnresolvedAddressException) {
+                            unresolvedAddress = true;
+                            break;
+                        }
+                        cause = cause.getCause();
+                    }
+                    if (unresolvedAddress) {
+                        // Log the specific error message
+                        Tr.error(tc, TCPMessageConstants.LOCAL_HOST_UNRESOLVED,
+                                 new Object[] { config.getExternalName(), newHost, String.valueOf(inetPort) });
+                    } else {
+                        if (config.isInbound()) {
+                            Tr.error(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(), newHost,
+                                                                                        String.valueOf(inetPort), openFuture.cause().getMessage() });
+                        } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, TCPMessageConstants.BIND_ERROR, new Object[] { config.getExternalName(),
+                                                                                            newHost, String.valueOf(inetPort), openFuture.cause().getMessage() });
+                            }
                         }
                     }
                 }
             }
         });
+
+        if (openListener != null) {
+            openFuture.addListener(generateOpenListenerWrapper(framework, openListener));
+        }
         return openFuture;
     }
 
-    private static FutureTask<ChannelFuture> startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
-            TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener)
-            throws NettyException {
-    	if(framework.isStopping()){ // Framework already started and is no longer active
+    private static ChannelFutureListener generateOpenListenerWrapper(NettyFrameworkImpl framework, ChannelFutureListener listener) {
+        return new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                framework.getExecutorService().execute(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        try {
+                            listener.operationComplete(future);
+                        } catch (Exception e) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Exception caught running open listener!! Closing channel just in case");
+                            }
+                            future.channel().close();
+                        }
+                    }
+                });
+            }
+        };
+    }
+
+    private static Channel startHelper(NettyFrameworkImpl framework, AbstractBootstrap bootstrap,
+                                       TCPConfigurationImpl config, String inetHost, int inetPort, ChannelFutureListener openListener) throws NettyException {
+        if (framework.isStopping()) { // Framework already stopping and is no longer active
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "server is stopping, channel will not be started");
             }
             return null;
-        }else{
+        } else {
             try {
-                return framework.runWhenServerStarted(new Callable<ChannelFuture>() {
+                Channel channel;
+                if (System.getSecurityManager() == null) {
+                    channel = bootstrap.register().channel();
+                } else {
+                    channel = AccessController.doPrivileged(
+                                                            new PrivilegedAction<ChannelFuture>() {
+                                                                @Override
+                                                                public ChannelFuture run() {
+                                                                    return bootstrap.register();
+                                                                }
+                                                            })
+                                    .channel();
+                }
+                framework.runWhenServerStarted(new Callable<ChannelFuture>() {
                     @Override
                     public ChannelFuture call() {
-                        return open(framework, bootstrap, config, inetHost, inetPort, openListener,
-                                config.getPortOpenRetries());
+                        return open(framework, channel, config, inetHost, inetPort, openListener,
+                                    config.getPortOpenRetries());
                     }
                 });
+                return channel;
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "NettyFramework signaled- caught exception:: " + e.getMessage());
+                    Tr.debug(tc, "NettyFramework signaled- caught exception: " + e.getMessage());
                 }
             }
         }
@@ -238,8 +315,8 @@ public class TCPUtils {
      * @return
      * @throws NettyException
      */
-    public static FutureTask<ChannelFuture> start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost,
-            int inetPort, ChannelFutureListener openListener) throws NettyException {
+    public static Channel start(NettyFrameworkImpl framework, ServerBootstrapExtended bootstrap, String inetHost,
+                                int inetPort, ChannelFutureListener openListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "start (TCP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
         }
@@ -258,8 +335,8 @@ public class TCPUtils {
      * @return
      * @throws NettyException
      */
-    public static FutureTask<ChannelFuture> startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
-            String inetHost, int inetPort, ChannelFutureListener openListener) throws NettyException {
+    public static Channel startOutbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap,
+                                        String inetHost, int inetPort, ChannelFutureListener openListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "startOutbound (TCP): attempt to connect to host " + inetHost + " port " + inetPort);
         }
@@ -281,11 +358,25 @@ public class TCPUtils {
         if (inbound != null && inbound) {
             Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
         } else if (inbound != null && !inbound) {
-        	if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-        		Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STOPPED, channelName, host, String.valueOf(port));
         } else {
-        	if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-        		Tr.debug(tc, "Socket channel closed, local: " + channel.localAddress() + " remote: " + channel.remoteAddress());
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Socket channel closed, local: " + channel.localAddress() + " remote: " + channel.remoteAddress());
+        }
+    }
+
+    /**
+     * Overrides method above to also log the state of the future.
+     * 
+     * @param channel
+     */
+    public static void logChannelStopped(Future<?> future, Channel channel) {
+        logChannelStopped(channel);
+        boolean completed = future.isDone() && !future.isCancelled();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Channel stop future: done and not cancelled --> {0} for port {1}",
+                     completed, String.valueOf(channel.attr(ConfigConstants.PORT_KEY).get()));
         }
     }
 
@@ -303,8 +394,8 @@ public class TCPUtils {
             Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
                     new Object[] { channelName, host, String.valueOf(port) });
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-                        new Object[] { channelName, host, String.valueOf(port) });
+            Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
+                     new Object[] { channelName, host, String.valueOf(port) });
         }
     }
 

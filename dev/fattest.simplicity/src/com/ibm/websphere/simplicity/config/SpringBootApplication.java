@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.websphere.simplicity.config;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
@@ -28,6 +29,17 @@ public class SpringBootApplication extends Application {
 
     @XmlElement(name = "applicationArgument")
     private List<String> applicationArguments;
+
+    private Boolean setEEContextOnStartup = true;
+
+    public Boolean getEEContextOnStartup() {
+        return setEEContextOnStartup;
+    }
+
+    @XmlAttribute(name = "setEEContextOnStartup")
+    public void setEEContextOnStartup(Boolean b) {
+        this.setEEContextOnStartup = b;
+    }
 
     /**
      * Retrieves the list of application arguments in this configuration.

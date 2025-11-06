@@ -64,7 +64,7 @@ CWWKD1008.ambig.rtrn.err.useraction=Zaktualizuj metod\u0119 repozytorium, aby u\
 
 CWWKD1009.lifecycle.param.err=CWWKD1009E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce mie\u0107 parametr\u00f3w {2} , poniewa\u017c metoda jest adnotowana adnotacj\u0105 cyklu \u017cycia {3} . Metody repozytorium, kt\u00f3re s\u0105 adnotowane adnotacj\u0105 cyklu \u017cycia, musz\u0105 mie\u0107 dok\u0142adnie 1 parametr, kt\u00f3rym musi by\u0107 encja, tablica lub lista encji.
 CWWKD1009.lifecycle.param.err.explanation=Metody cyklu \u017cycia musz\u0105 mie\u0107 pojedynczy parametr encji.
-CWWKD1009.lifecycle.param.err.useraction=Zaktualizuj metod\u0119 repozytorium, aby mia\u0142a pojedynczy parametr, kt\u00f3ry jest encj\u0105 lub tablic\u0105 listy encji.
+CWWKD1009.lifecycle.param.err.useraction=Zaktualizuj metod\u0119 repozytorium, aby mia\u0142a pojedynczy parametr b\u0119d\u0105cy encj\u0105, tablic\u0105 encji lub list\u0105 encji.
 
 CWWKD1010.unknown.entity.attr=CWWKD1010E: Atrybut encji o nazwie {0} nie zosta\u0142 znaleziony w klasie encji {1} dla metody {2} interfejsu repozytorium {3}. Prawid\u0142owe nazwy atrybut\u00f3w dla encji to: {4}.
 CWWKD1010.unknown.entity.attr.explanation=Metoda repozytorium pr\u00f3buje u\u017cy\u0107 atrybutu encji, kt\u00f3ry nie istnieje.
@@ -82,9 +82,9 @@ CWWKD1013.cde.missing.param.anno=CWWKD1013E: Parametr {0} metody {1} interfejsu 
 CWWKD1013.cde.missing.param.anno.explanation=Parametry metod repository count, delete i exists musz\u0105 odpowiada\u0107 atrybutom encji.
 CWWKD1013.cde.missing.param.anno.useraction=Zaktualizuj metod\u0119 repozytorium tak, aby wszystkie parametry odpowiada\u0142y atrybutom encji.
 
-CWWKD1014.upd.missing.param.anno=CWWKD1014E: Parametr {0} metody {1} interfejsu repozytorium {2} nie pasuje do atrybutu encji. Parametry, kt\u00f3re nie pasuj\u0105 do atrybutu encji musz\u0105 posiada\u0107 jedn\u0105 z adnotacji parametru: {3}. Aby zdefiniowa\u0107 warunek ograniczenia wynik\u00f3w zapytania, parametr musi by\u0107 opatrzony adnotacj\u0105 By, a warto\u015b\u0107 adnotacji By musi by\u0107 przypisana jako nazwa atrybutu encji. Alternatywnie, w\u0142\u0105cz opcj\u0119 kompilacji -parameters i nadaj parametrowi tak\u0105 sam\u0105 nazw\u0119 jak atrybut encji.
-CWWKD1014.upd.missing.param.anno.explanation=Parametry metod aktualizacji repozytorium musz\u0105 odpowiada\u0107 atrybutom encji.
-CWWKD1014.upd.missing.param.anno.useraction=Zaktualizuj metod\u0119 repozytorium tak, aby wszystkie parametry odpowiada\u0142y atrybutom encji.
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: Metoda {0} repozytorium {1} nie jest prawid\u0142ow\u0105 metod\u0105 aktualizacji cyklu \u017cycia, poniewa\u017c metoda ma parametry {2}. Metody repozytorium opatrzone adnotacj\u0105 cyklu \u017cycia musz\u0105 mie\u0107 dok\u0142adnie 1 parametr, kt\u00f3rym musi by\u0107 encja, tablica encji lub lista encji. Metoda {0} nie jest r\u00f3wnie\u017c poprawn\u0105 operacj\u0105 aktualizacji opart\u0105 na parametrach, poniewa\u017c parametr metody {3} nie posiada adnotacji ( {4} ), kt\u00f3ra wskazuje nazw\u0119 atrybutu encji. Alternatywnie, w\u0142\u0105cz opcj\u0119 kompilacji -parameters i nadaj parametrowi tak\u0105 sam\u0105 nazw\u0119 jak atrybut encji.
+CWWKD1014.upd.missing.param.anno.explanation=Parametry metod aktualizacji repozytorium musz\u0105 odpowiada\u0107 atrybutom encji. Alternatywnie, metody cyklu \u017cycia musz\u0105 mie\u0107 pojedynczy parametr jednostki.
+CWWKD1014.upd.missing.param.anno.useraction=Zaktualizuj metod\u0119 repozytorium tak, aby wszystkie parametry odpowiada\u0142y atrybutom encji. Alternatywnie, zaktualizuj metod\u0119 repozytorium, aby mia\u0142a pojedynczy parametr b\u0119d\u0105cy encj\u0105, tablic\u0105 encji lub list\u0105 encji.
 
 CWWKD1015.null.entity.param=CWWKD1015E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce akceptowa\u0107 encji null.
 CWWKD1015.null.entity.param.explanation=Metody cyklu \u017cycia wymagaj\u0105 instancji encji innej ni\u017c null.
@@ -102,8 +102,7 @@ CWWKD1018.confl.special.param=CWWKD1018E: Metoda {0} repozytorium {1} nie mo\u01
 CWWKD1018.confl.special.param.explanation=Niekt\u00f3rych parametr\u00f3w specjalnych Jakarta Data, takich jak Limit i PageRequest, nie mo\u017cna \u0142\u0105czy\u0107 w jednym podpisie metody repozytorium.
 CWWKD1018.confl.special.param.useraction=Zaktualizuj repozytorium, aby nie u\u017cywa\u0107 obu typ\u00f3w parametr\u00f3w specjalnych Jakarta Data w tym samym podpisie metody.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce mie\u0107 zapytania \u0142\u0105cz\u0105cego parametry pozycyjne i nazwane. Interfejs definiuje kombinacj\u0119 {2} parametr\u00f3w pozycyjnych i
- {3} nazwane parametry {4} dla warto\u015bci adnotacji zapytania: {5} . Zapytanie z parametrami pozycyjnymi musi odwo\u0142ywa\u0107 si\u0119 do ka\u017cdego parametru za pomoc\u0105 jego warto\u015bci porz\u0105dkowej, zaczynaj\u0105c od ?1, a parametry metody nie mog\u0105 mie\u0107 adnotacji Param. W zapytaniu z parametrami nazwanymi do ka\u017cdego parametru nale\u017cy odwo\u0142a\u0107 si\u0119 za pomoc\u0105 jego nazwy, np. {6} , a parametry metody musz\u0105 mie\u0107 adnotacj\u0119 Param, np. {7} . Alternatywnie, w\u0142\u0105czenie opcji kompilacji -parameters pozwala parametrom metody na wskazanie nazwanego parametru poprzez dopasowanie jego nazwy, na przyk\u0142ad {8} .
+CWWKD1019.mixed.positional.named=CWWKD1019E: Metoda {0} interfejsu repozytorium {1} nie mo\u017ce mie\u0107 zapytania, kt\u00f3re \u0142\u0105czy parametry pozycyjne i nazwane. Interfejs definiuje po\u0142\u0105czenie parametr\u00f3w pozycyjnych {2} i parametr\u00f3w nazwanych {3} {4} dla warto\u015bci adnotacji Query: {5}. Zapytanie z parametrami pozycyjnymi musi odwo\u0142ywa\u0107 si\u0119 do ka\u017cdego parametru poprzez jego warto\u015b\u0107 porz\u0105dkow\u0105, zaczynaj\u0105c od?1, a parametry metody nie mog\u0105 mie\u0107 adnotacji Param. W zapytaniu z nazwanymi parametrami, do ka\u017cdego parametru musi odnosi\u0107 si\u0119 jego nazwa, np. {6}, a parametry metody musz\u0105 mie\u0107 adnotacj\u0119 Param, np. {7}. Alternatywnie, w\u0142\u0105czenie opcji kompilacji -parameters umo\u017cliwia parametrom metody wskazanie nazwanego parametru poprzez dopasowanie jego nazwy, na przyk\u0142ad {8}.
 CWWKD1019.mixed.positional.named.explanation=Zapytania z parametrami musz\u0105 u\u017cywa\u0107 wszystkich parametr\u00f3w nazwanych lub wszystkich parametr\u00f3w pozycyjnych, a nie ich kombinacji.
 CWWKD1019.mixed.positional.named.useraction=Zaktualizuj metod\u0119 repozytorium, aby u\u017cywa\u0142a wy\u0142\u0105cznie parametr\u00f3w nazwanych lub wy\u0142\u0105cznie parametr\u00f3w pozycyjnych.
 
@@ -135,9 +134,9 @@ CWWKD1026.ignore.case.not.text=CWWKD1026E: Atrybut {0} encji {1} nie jest znakie
 CWWKD1026.ignore.case.not.text.explanation=Sortowanie z ignorowaniem wielko\u015bci liter jest mo\u017cliwe tylko w przypadku atrybut\u00f3w encji reprezentuj\u0105cych tekst.
 CWWKD1026.ignore.case.not.text.useraction=Upewnij si\u0119, \u017ce kryteria sortowania s\u0105 stosowane do w\u0142a\u015bciwego atrybutu encji i usu\u0144 instrukcj\u0119 ignorowania wielko\u015bci liter, je\u015bli atrybut encji nie reprezentuje tekstu.
 
-CWWKD1027.anno.missing.attr.name=CWWKD1027E: Parametr {0} metody {1} interfejsu repozytorium {2} jest opatrzony adnotacj\u0105 {3}, kt\u00f3ra nie okre\u015bla nazwy atrybutu encji jako jego warto\u015bci. Adnotacja musi albo okre\u015bla\u0107 nazw\u0119 atrybutu encji jako jego warto\u015b\u0107, albo opcja kompilacji -parameters musi by\u0107 w\u0142\u0105czona, a parametr musi mie\u0107 tak\u0105 sam\u0105 nazw\u0119 jak atrybut encji.
-CWWKD1027.anno.missing.attr.name.explanation=Parametry metod aktualizacji repozytorium musz\u0105 odpowiada\u0107 atrybutom encji.
-CWWKD1027.anno.missing.attr.name.useraction=Zaktualizuj metod\u0119 repozytorium, aby wskaza\u0107 atrybut encji, do kt\u00f3rego odnosi si\u0119 parametr.
+CWWKD1027.datastore.lacks.java.comp=CWWKD1027E: Jeden lub wi\u0119cej interfejs\u00f3w repozytorium ( {0} ) z artefaktu aplikacji {1} okre\u015bla warto\u015b\u0107 {2} dataStore, kt\u00f3ra nie pasuje do odniesienia do zasobu \u017ar\u00f3d\u0142a danych lub odniesienia do jednostki trwa\u0142o\u015bci, poniewa\u017c nie ma prefiksu przestrzeni nazw java:comp/env/. Rozwa\u017cmy zmian\u0119 adnotacji Repository, aby okre\u015bli\u0107 {3}.
+CWWKD1027.datastore.lacks.java.comp.explanation=Nazwy JNDI odwo\u0142a\u0144 do zasob\u00f3w \u017ar\u00f3d\u0142a danych i odwo\u0142a\u0144 do jednostek trwa\u0142o\u015bci musz\u0105 zawiera\u0107 prefiks przestrzeni nazw java:.
+CWWKD1027.datastore.lacks.java.comp.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 magazynu danych adnotacji Repository zawiera prefiks przestrzeni nazw java:, gdy warto\u015b\u0107 wskazuje nazw\u0119 JNDI odniesienia do zasobu \u017ar\u00f3d\u0142a danych lub odniesienia do jednostki trwa\u0142o\u015bci.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: Metoda {0} interfejsu repozytorium {1} \u017c\u0105da pierwszych {2} wynik\u00f3w, co przekracza maksymaln\u0105 dozwolon\u0105 liczb\u0119 wynik\u00f3w: {3} .
 CWWKD1028.first.exceeds.max.explanation=Maksymalna liczba wynik\u00f3w zapytania jest ograniczona przez ograniczenia systemowe i podan\u0105 warto\u015b\u0107.
@@ -147,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: Metoda {0} interfejsu repozytorium {1} \
 CWWKD1029.first.neg.or.zero.explanation=Maksymalna liczba wynik\u00f3w zapytania musi by\u0107 liczb\u0105 dodatni\u0105.
 CWWKD1029.first.neg.or.zero.useraction=Zaktualizuj metod\u0119 repozytorium, aby okre\u015bli\u0107 dodatni\u0105 maksymaln\u0105 liczb\u0119 wynik\u00f3w.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Brakuje nazwy encji w zapytaniu {0} okre\u015blonym dla metody {1} repozytorium {2} . W j\u0119zyku Jakarta Data Query Language zapytania {3} nale\u017cy formu\u0142owa\u0107 w nast\u0119puj\u0105cy spos\u00f3b: {4} .
+CWWKD1030.ql.lacks.entity=CWWKD1030E: W zapytaniu {0} okre\u015blonym dla metody {1} repozytorium {2} brakuje nazwy podmiotu. W przypadku zapyta\u0144 {3} nale\u017cy u\u017cy\u0107 formularza: {4}.
 CWWKD1030.ql.lacks.entity.explanation=Zapytanie zawiera klauzul\u0119 wymagaj\u0105c\u0105 podania nazwy encji.
 CWWKD1030.ql.lacks.entity.useraction=Zaktualizuj zapytanie o metod\u0119 repozytorium, aby uwzgl\u0119dni\u0107 nazw\u0119 encji.
 
@@ -163,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Metoda {0} interfejsu repozytorium {
 CWWKD1033.ql.orderby.disallowed.explanation=Klauzula ORDER BY jest niezgodna z paginacj\u0105 opart\u0105 na kursorze.
 CWWKD1033.ql.orderby.disallowed.useraction=Zast\u0105p klauzul\u0119 ORDER BY adnotacjami okre\u015blaj\u0105cymi kryteria sortowania.
 
-CWWKD1034.ql.where.required=CWWKD1034E: Zapytanie okre\u015blone przez metod\u0119 {0} interfejsu repozytorium {1} musi ko\u0144czy\u0107 si\u0119 klauzul\u0105 WHERE, poniewa\u017c metoda zwraca {2} . Klauzula WHERE ko\u0144czy si\u0119 na pozycji {3} , ale d\u0142ugo\u015b\u0107 zapytania wynosi {4} . Zapytanie brzmi: {5} .
-CWWKD1034.ql.where.required.explanation=Klauzula WHERE jest wymagana w przypadku korzystania z paginacji opartej na kursorze.
-CWWKD1034.ql.where.required.useraction=Dodaj klauzul\u0119 WHERE do zapytania.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: Zapytanie okre\u015blone przez metod\u0119 {0} interfejsu repozytorium {1} musi ko\u0144czy\u0107 si\u0119 klauzul\u0105 WHERE, poniewa\u017c metoda ta zwraca {2}. Klauzula WHERE ko\u0144czy si\u0119 na pozycji {3}, ale d\u0142ugo\u015b\u0107 zapytania wynosi {4}. Zapytanie brzmi: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=Klauzula WHERE jest wymagana w przypadku korzystania z paginacji opartej na kursorze.
+CWWKD1034.ql.req.end.in.where.useraction=Dodaj klauzul\u0119 WHERE do zapytania.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: \u017b\u0105danie strony z trybem paginacji {0} nie mo\u017ce zosta\u0107 przekazane do metody {1} interfejsu repozytorium {2} , poniewa\u017c metoda zwraca {3} zamiast {4} .
 CWWKD1035.incompat.page.mode.explanation=\u017b\u0105dany tryb paginacji nie jest zgodny z typem zwracanym przez metod\u0119 repozytorium.
@@ -271,7 +270,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: Interfejs repozytorium {0} w aplikacji {
 CWWKD1060.name.out.of.scope.explanation=Okre\u015blona przestrze\u0144 nazw nie jest dost\u0119pna z poziomu artefaktu, w kt\u00f3rym zdefiniowano interfejs repozytorium.
 CWWKD1060.name.out.of.scope.useraction=Zaktualizuj adnotacj\u0119 Repozytorium, aby okre\u015bli\u0107 nazw\u0119 magazynu danych widoczn\u0105 dla modu\u0142u lub biblioteki udost\u0119pniaj\u0105cej interfejs repozytorium.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: Jeden lub wi\u0119cej interfejs\u00f3w repozytorium ( {0} ) zdefiniowanych w module przedsi\u0119biorstwa {1} aplikacji {2} konfiguruje warto\u015b\u0107 {2} dla atrybutu {3} . Jednak\u017ce nazwy {4} nie s\u0105 dost\u0119pne dla modu\u0142\u00f3w bean przedsi\u0119biorstwa. U\u017cyj nazwy z jednej z nast\u0119puj\u0105cych przestrzeni nazw: {5} .
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Jeden lub wi\u0119cej interfejs\u00f3w repozytorium ( {0} ), kt\u00f3re s\u0105 zdefiniowane w module fasoli przedsi\u0119biorstwa {1} aplikacji {2}, konfiguruje warto\u015b\u0107 {3} dla atrybutu {4}. Nazwy {5} nie s\u0105 jednak dost\u0119pne dla modu\u0142\u00f3w Enterprise Bean. U\u017cyj nazwy z jednej z nast\u0119puj\u0105cych przestrzeni nazw: {6}.
 CWWKD1061.comp.name.in.ejb.explanation=Okre\u015blona przestrze\u0144 nazw nie jest dost\u0119pna dla modu\u0142u Enterprise Bean, w kt\u00f3rym zdefiniowano interfejs repozytorium.
 CWWKD1061.comp.name.in.ejb.useraction=Zaktualizuj adnotacj\u0119 repozytorium, aby okre\u015bli\u0107 nazw\u0119 magazynu danych widoczn\u0105 dla modu\u0142u Enterprise Bean, kt\u00f3ry udost\u0119pnia interfejs repozytorium.
 
@@ -484,3 +483,35 @@ CWWKD1111.unsupported.convert.useraction=Zaktualizuj implementacj\u0119 Attribut
 CWWKD1112.record.entity.verify.err=CWWKD1112W: Klasa podmiotu dla rekordu {0} jest zdefiniowana, ale mo\u017ce nie dzia\u0142a\u0107. Weryfikacja bajt\u00f3w klasy encji Jakarta Persistence, kt\u00f3ra zosta\u0142a wygenerowana dla klasy encji, nie powiod\u0142a si\u0119. Zdefiniowana klasa encji jest u\u017cywana przez jeden lub wi\u0119cej interfejs\u00f3w repozytorium ( {1} ) w artefakcie aplikacji {2}. B\u0142\u0105d jest nast\u0119puj\u0105cy: {3}.
 CWWKD1112.record.entity.verify.err.explanation=Gdy repozytorium u\u017cywa encji rekord\u00f3w, generowana jest encja Jakarta Persistence reprezentuj\u0105ca encj\u0119 rekord\u00f3w. Weryfikacja bajt\u00f3w wygenerowanej klasy encji Jakarta Persistence nie powiod\u0142a si\u0119.
 CWWKD1112.record.entity.verify.err.useraction=Weryfikacja, czy implementacja jednostki rekord\u00f3w jest zgodna z wymaganiami i konwencjami dla jednostki rekord\u00f3w.
+
+CWWKD1113.server.stopping=CWWKD1113I: Jedno lub wi\u0119cej repozytori\u00f3w ( {0} ) nie zosta\u0142o zainicjowanych, poniewa\u017c serwer jest zamykany.
+CWWKD1113.server.stopping.explanation=Serwer jest zamykany i nie podejmie pr\u00f3by zainicjowania repozytori\u00f3w.
+CWWKD1113.server.stopping.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+CWWKD1114.app.stopping=CWWKD1114I: Jedno lub wi\u0119cej repozytori\u00f3w ( {0} ) nie zosta\u0142o zainicjowanych, poniewa\u017c aplikacja {1} jest w stanie {2}.
+CWWKD1114.app.stopping.explanation=Aplikacja zatrzymuje si\u0119 lub zatrzyma\u0142a si\u0119 i nie b\u0119dzie pr\u00f3bowa\u0142a inicjowa\u0107 repozytori\u00f3w.
+CWWKD1114.app.stopping.useraction=Uruchom aplikacj\u0119, aby udost\u0119pni\u0107 repozytoria.
+
+CWWKD1115.app.unavailable=CWWKD1115E: Jedno lub wi\u0119cej repozytori\u00f3w ( {0} ) nie zosta\u0142o zainicjowanych, poniewa\u017c aplikacja {1} nie jest dost\u0119pna.
+CWWKD1115.app.unavailable.explanation=Aplikacja definiuj\u0105ca repozytoria jest niedost\u0119pna. Repozytoria nie mog\u0105 zosta\u0107 zainicjowane.
+CWWKD1115.app.unavailable.useraction=Uruchom aplikacj\u0119, aby udost\u0119pni\u0107 repozytoria.
+
+CWWKD1116.resource.unavailable=CWWKD1116E: Jedno lub wi\u0119cej repozytori\u00f3w ( {0} ) nie zosta\u0142o zainicjowanych, poniewa\u017c zas\u00f3b {1} nie sta\u0142 si\u0119 dost\u0119pny w ci\u0105gu {2} sekund.
+CWWKD1116.resource.unavailable.explanation=Zas\u00f3b wymagany przez repozytoria nie sta\u0142 si\u0119 dost\u0119pny.
+CWWKD1116.resource.unavailable.useraction=Zweryfikuj konfiguracj\u0119 zasob\u00f3w u\u017cywanych przez repozytoria.
+
+CWWKD1117.anno.constraint.conflict=CWWKD1117E: Parametr {0} metody {1} interfejsu repozytorium {2} nie mo\u017ce by\u0107 opatrzony adnotacj\u0105: {3}. Jedna lub wi\u0119cej adnotacji jest niezgodna z typem {4} parametru metody repozytorium.
+CWWKD1117.anno.constraint.conflict.explanation=Constraint i jego podtypy nie mog\u0105 by\u0107 \u0142\u0105czone z adnotacjami parametr\u00f3w innymi ni\u017c adnotacja By.
+CWWKD1117.anno.constraint.conflict.useraction=Usu\u0144 sprzeczn\u0105 adnotacj\u0119 lub okre\u015bl typ atrybutu encji zamiast typu Constraint.
+
+CWWKD1118.param.anno.conflict=CWWKD1118E: Parametr {0} metody {1} interfejsu repozytorium {2} nie mo\u017ce by\u0107 opatrzony adnotacj\u0105: {3}. Co najmniej dwie adnotacje s\u0105 ze sob\u0105 sprzeczne.
+CWWKD1118.param.anno.conflict.explanation=Kombinacja adnotacji parametr\u00f3w jest nieprawid\u0142owa.
+CWWKD1118.param.anno.conflict.useraction=Usuni\u0119cie jednej lub wi\u0119cej sprzecznych adnotacji z parametru metody repozytorium.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Metoda {0} interfejsu repozytorium {1} pobiera strony, kt\u00f3re nie zawieraj\u0105 ca\u0142kowitej liczby element\u00f3w i stron, poniewa\u017c zapytanie zawiera s\u0142owo kluczowe {2}. Pe\u0142ne zapytanie brzmi: {3}.
+CWWKD1119.keyword.prevents.count.explanation=S\u0142owo kluczowe jest niezgodne z mo\u017cliwo\u015bci\u0105 uzyskania ca\u0142kowitej liczby element\u00f3w i stron.
+CWWKD1119.keyword.prevents.count.useraction=Zamie\u0144 zapytanie na takie, kt\u00f3re nie u\u017cywa s\u0142owa kluczowego lub unikaj \u017c\u0105dania ca\u0142kowitej liczby element\u00f3w i stron.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Metoda {0} interfejsu repozytorium {1} okre\u015bla zapytanie zawieraj\u0105ce s\u0142owo kluczowe {2}, kt\u00f3re jest niekompatybilne z paginacj\u0105 opart\u0105 na kursorze. Zapytania dla paginacji opartej na kursorze musz\u0105 ko\u0144czy\u0107 si\u0119 klauzul\u0105 WHERE i nie mog\u0105 zawiera\u0107 podzapyta\u0144. Zapytanie brzmi: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=S\u0142owa kluczowe takie jak GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT i UNION nie s\u0105 kompatybilne z paginacj\u0105 opart\u0105 na kursorach.
+CWWKD1120.cursor.keyword.mismatch.useraction=Przepisz zapytanie tak, aby zawiera\u0142o tylko klauzule: SELECT, FROM i WHERE.

@@ -98,4 +98,5 @@ tested.features: \
         io.openliberty.org.apache.commons.codec;version=latest,\
         io.openliberty.org.apache.xercesImpl;version=latest,\
         io.openliberty.jakarta.cdi.4.0,\
-        io.openliberty.jakarta.faces.4.0
+        io.openliberty.jakarta.faces.4.0,\
+        com.ibm.ws.org.apache.commons.lang3;version=latest

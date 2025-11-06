@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,22 +48,21 @@ task addhibernateJPA30(type: Copy) {
   into new File(autoFvtDir, 'publish/shared/resources/jpa_spec20_fat_jpa30_hibernate')
 }
 
-task copyFAT {
+task copyFAT(type: Copy) {
     dependsOn ':com.ibm.ws.jpa.tests.spec20_fat.common:build'
-    copy {
-      from project(':com.ibm.ws.jpa.tests.spec20_fat.common').file('fat/src/com/ibm/ws/jpa/tests/spec20/tests')
-      into new File('fat/src/com/ibm/ws/jpa/tests/spec20/tests')
-    }
+    from project(':com.ibm.ws.jpa.tests.spec20_fat.common').file('fat/src/com/ibm/ws/jpa/tests/spec20/tests')
+    into new File('fat/src/com/ibm/ws/jpa/tests/spec20/tests')
 }
 
 task copyCommonFiles {
+  def commonProject = project(':com.ibm.ws.jpa.tests.spec20_fat.common')
   dependsOn ':com.ibm.ws.jpa.tests.spec20_fat.common:build'
   doLast {
     /*
      * Copy test application resources.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec20_fat.common').file('test-applications')
+      from commonProject.file('test-applications')
       into new File('test-applications')
     }
 
@@ -71,7 +70,7 @@ task copyCommonFiles {
      * Copy common publish files.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec20_fat.common').file('publish')
+      from commonProject.file('publish')
       into new File('publish')
     }
   }
@@ -86,8 +85,14 @@ addRequiredLibraries {
   dependsOn copyTestContainers
 }
 
-jar {
+compileJava {
   dependsOn copyCommonFiles
+  dependsOn copyFAT
+}
+
+processResources {
+  dependsOn copyCommonFiles
+  dependsOn copyFAT
 }
 
 autoFVT.dependsOn copyCommonFiles

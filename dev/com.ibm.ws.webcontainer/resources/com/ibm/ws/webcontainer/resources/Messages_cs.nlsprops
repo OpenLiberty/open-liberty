@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2024 IBM Corporation and others.
+# Copyright (c) 1997, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1643,3 +1643,7 @@ read.write.bytebuffer.null.useraction=Upravte k\u00f3d aplikace tak, aby byla vy
 read.write.failed.isReady.false=CWWWC0011E: Pokus o \u010dten\u00ed z operace InputStream nebo o z\u00e1pis do operace OutputStream se nezda\u0159il, proto\u017ee rozhran\u00ed API isReady vrac\u00ed hodnotu false.
 read.write.failed.isReady.false.explanation=Pokud rozhran\u00ed API isReady vr\u00e1t\u00ed hodnotu false, nem\u016f\u017eete volat metodu \u010dten\u00ed ani z\u00e1pisu.
 read.write.failed.isReady.false.useraction=Upravte logiku aplikace, abyste se ujistili, \u017ee je proud p\u0159ipraven na operaci InputStream nebo OutputStream .
+
+sendRedirect.cannot.convert.relative.url=CWWWC0012E: Relativn\u00ed adresu sendRedirect URL v aplikaci nelze p\u0159ev\u00e9st na platnou adresu URL.
+sendRedirect.cannot.convert.relative.url.explanation=Zadan\u00fd relativn\u00ed URL m\u016f\u017ee obsahovat neplatn\u00e9 znaky proch\u00e1zen\u00ed cest nebo indexy.
+sendRedirect.cannot.convert.relative.url.useraction=Ov\u011b\u0159en\u00ed um\u00edst\u011bn\u00ed sendRedirect URL v aplikaci p\u0159ed vol\u00e1n\u00edm metody response.sendRedirect( )

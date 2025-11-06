@@ -7335,6 +7335,13 @@
             <version-range>0.0.0</version-range>
         </constituent>
         <constituent>
+            <symbolic-name>io.openliberty.springBoot40ServerSupport.servlet61-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
             <symbolic-name>io.openliberty.transportSecurity1.0.jakarta</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
@@ -28413,6 +28420,13 @@
             <type>type=osgi.subsystem.feature</type>
             <version-range>0.0.0</version-range>
         </constituent>
+          <constituent>
+            <symbolic-name>io.openliberty.springBoot40ServerSupport.servlet61-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
         <constituent>
             <symbolic-name>io.openliberty.transportSecurity1.0.jakarta</symbolic-name>
             <start-level>12</start-level>
@@ -40578,6 +40592,13 @@
         </constituent>
         <constituent>
             <symbolic-name>io.openliberty.springBootServerSupport.servlet60-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.springBoot40ServerSupport.servlet61-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -57972,6 +57993,13 @@
         </constituent>
         <constituent>
             <symbolic-name>io.openliberty.springBootServerSupport.servlet60-1.0</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.subsystem.feature</type>
+            <version-range>0.0.0</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>io.openliberty.springBoot40ServerSupport.servlet61-1.0</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.subsystem.feature</type>
@@ -88792,6 +88820,31 @@
         <restart>NEVER</restart>
         <constituent>
             <symbolic-name>io.openliberty.springboot.support.web.server.version30</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.bundle</type>
+            <version-range>[1.0.0,1.1.0)</version-range>
+        </constituent>
+        <constituent>
+            <symbolic-name>com.ibm.ws.springboot.support.web.server.jakarta</symbolic-name>
+            <start-level>12</start-level>
+            <activation-type>SEQUENTIAL</activation-type>
+            <type>type=osgi.bundle</type>
+            <version-range>[1.0.0,1.1.0)</version-range>
+        </constituent>
+    </feature>
+      <feature>
+        <file>io.openliberty.springBoot40ServerSupport.servlet61-1.0.mf</file>
+        <name>io.openliberty.springBoot40ServerSupport.servlet61-1.0</name>
+        <symbolic-name>io.openliberty.springBoot40ServerSupport.servlet61-1.0</symbolic-name>
+        <version>1.0.0</version>
+        <ibm-version>2</ibm-version>
+        <supported-version/>
+        <visibility>PRIVATE</visibility>
+        <auto/>
+        <restart>NEVER</restart>
+        <constituent>
+            <symbolic-name>io.openliberty.springboot.support.web.server.version40</symbolic-name>
             <start-level>12</start-level>
             <activation-type>SEQUENTIAL</activation-type>
             <type>type=osgi.bundle</type>

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=Corrigez la cause de l'\u00e9chec et d\u00e
 CWWKC1103.skip.run.failed=CWWKC1103E: L''ex\u00e9cution de la t\u00e2che {0}, qui a \u00e9t\u00e9 soumise au service de programme d''ex\u00e9cution {1}, est ignor\u00e9e car l''op\u00e9ration Trigger.skipRun a \u00e9chou\u00e9 avec l''erreur suivante : {2}.
 CWWKC1103.skip.run.failed.explanation=L'op\u00e9ration skipRun du d\u00e9clencheur a \u00e9chou\u00e9 et la tentative d'ex\u00e9cution en cours de la t\u00e2che a \u00e9t\u00e9 ignor\u00e9e.
 CWWKC1103.skip.run.failed.useraction=Corriger la cause de l'\u00e9chec et d\u00e9cidez si vous souhaitez ou non soumettre la t\u00e2che \u00e0 nouveau.
+
+CWWKC1108.override.virtual=CWWKC1108I: La fabrique de threads g\u00e9r\u00e9e par {0} cr\u00e9era des threads de plateforme car la cr\u00e9ation de threads virtuels par le serveur Liberty est d\u00e9sactiv\u00e9e.
+CWWKC1108.override.virtual.explanation=Le SPI ThreadTypeOverride a d\u00e9sactiv\u00e9 la cr\u00e9ation de threads virtuels par le serveur Liberty.
+CWWKC1108.override.virtual.useraction=Aucune action n'est requise.
 
 CWWKC1110.task.canceled=CWWKC1110I: La t\u00e2che {0}, qui a \u00e9t\u00e9 soumise au service d''ex\u00e9cution {1}, est annul\u00e9e.
 CWWKC1110.task.canceled.explanation=La t\u00e2che a \u00e9t\u00e9 annul\u00e9e.

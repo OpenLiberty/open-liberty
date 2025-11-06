@@ -1,0 +1,9 @@
+<server description="Server for testing FileUpload 1.6 maxPartHeaderSize property">
+    <include location="../fatTestPorts.xml"/>
+    <featureManager>
+        <feature>servlet-4.0</feature>
+    </featureManager>
+
+     <webContainer maxPartHeaderSize="90"/>
+
+</server>

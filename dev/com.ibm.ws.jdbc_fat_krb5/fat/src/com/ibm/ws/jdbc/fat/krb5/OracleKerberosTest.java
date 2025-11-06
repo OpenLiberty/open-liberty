@@ -25,7 +25,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
-import org.testcontainers.containers.Container.ExecResult;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -74,24 +73,22 @@ public class OracleKerberosTest extends FATServletClient {
 
         // Generate krb5.keytab in KDC container, and then copy it to server/security directory
         Path krb5KeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
-        ExecResult result = FATSuite.krb5.execInContainer("kadmin.local", "-q", "ktadd -k /tmp/client_krb5.keytab ORACLEUSR");
-        if (result.getExitCode() != 0) {
-            Log.info(c, "setup", "STDOUT: " + result.getStdout());
-            Log.info(c, "setup", "STDERR: " + result.getStderr());
-        }
-        FATSuite.krb5.copyFileFromContainer("/tmp/client_krb5.keytab", krb5KeytabPath.toAbsolutePath().toString());
+        FATSuite.krb5.copyUserKeytab(krb5KeytabPath, "ORACLEUSR");
 
         // Dropin application
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.oracle.web");
 
         // Setup environment variables
         server.addEnvVar("ORACLE_DRIVER", getDriverName());
-        server.addEnvVar("ORACLE_DBNAME", oracle.getDatabaseName());
+        server.addEnvVar("ORACLE_DB", oracle.getDatabaseName());
+        server.addEnvVar("ORACLE_SID", oracle.getSid());
         server.addEnvVar("ORACLE_HOSTNAME", oracle.getHost());
         server.addEnvVar("ORACLE_PORT", "" + oracle.getMappedPort(1521));
         server.addEnvVar("ORACLE_USER", oracle.getUsername());
         server.addEnvVar("ORACLE_PASS", oracle.getPassword());
+        server.addEnvVar("KRB5_PRIN", oracle.getKerberosPrinciple());
         server.addEnvVar("KRB5_USER", oracle.getKerberosUsername());
+        server.addEnvVar("KRB5_PASS", oracle.getKerberosPassword());
         server.addEnvVar("KRB5_KEYTAB", krb5KeytabPath.toAbsolutePath().toString());
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
 

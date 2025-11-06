@@ -1210,6 +1210,15 @@ public class JTMConfigurationProvider extends DefaultConfigurationProvider imple
         return b;
     }
 
+    @Override
+    @Trivial
+    public boolean isCorrectUOWScopeCallbacks() {
+        final boolean b = (Boolean) _props.get("correctUOWScopeCallbacks");
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "isCorrectUOWScopeCallbacks {0}", b);
+        return b;
+    }
+
     /*
      * Called by DS to inject ResourceConfigFactory reference from the com.ibm.ws.jdbc component
      */

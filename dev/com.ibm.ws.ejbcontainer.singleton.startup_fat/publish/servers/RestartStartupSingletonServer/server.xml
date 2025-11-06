@@ -1,0 +1,30 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
+
+    <library id="RestartStartupSingletonShared">
+        <file name="${server.config.dir}/lib/RestartStartupSingletonIntf.jar"/>
+    </library>
+
+    <webApplication id="RestartStartupSingletonWeb" location="RestartStartupSingletonWeb.war">
+        <classloader commonLibraryRef="RestartStartupSingletonShared"/>
+    </webApplication>
+
+    <ejbApplication id="RestartStartupSingletonEjb" location="RestartStartupSingletonEjb.jar">
+        <classloader commonLibraryRef="RestartStartupSingletonShared"/>
+    </ejbApplication>
+
+    <application id="RestartStartupSingletonApp" location="RestartStartupSingletonApp.ear">
+        <classloader commonLibraryRef="RestartStartupSingletonShared"/>
+    </application>
+
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+</server>

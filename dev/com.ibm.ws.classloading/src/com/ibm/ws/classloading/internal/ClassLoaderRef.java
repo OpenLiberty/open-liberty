@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
+import static com.ibm.ws.classloading.internal.LibertyLoader.DelegatePolicy.includeParent;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.instrument.ClassFileTransformer;
@@ -67,7 +69,7 @@ public class ClassLoaderRef extends LibertyLoader implements SpringLoader {
 
     @Override
     protected final Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
-        return loadClass(name, resolve, false, false);
+        return loadClass(name, resolve, includeParent, false);
     }
 
     /**
@@ -165,11 +167,11 @@ public class ClassLoaderRef extends LibertyLoader implements SpringLoader {
     }
 
     @Override
-    protected Class<?> loadClass(String className, boolean resolve, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
+    protected Class<?> loadClass(String className, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
         AppClassLoader appCL = getAppLoader();
         if (appCL == null) {
-            if (onlySearchSelf) {
-                return findClass(className, returnNull);
+            if (delegatePolicy != DelegatePolicy.includeParent) {
+                return findClass(className, delegatePolicy, returnNull);
             }
 
             if (parent instanceof NoClassNotFoundLoader) {
@@ -194,11 +196,11 @@ public class ClassLoaderRef extends LibertyLoader implements SpringLoader {
             }
         }
 
-        return appCL.loadClass(className, resolve, onlySearchSelf, returnNull);
+        return appCL.loadClass(className, resolve, delegatePolicy, returnNull);
     }
 
     @Override
-    protected Class<?> findClass(String className, boolean returnNull) throws ClassNotFoundException {
+    protected Class<?> findClass(String className, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
         if (returnNull) {
             return null;
         }

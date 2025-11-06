@@ -10,31 +10,31 @@
  *******************************************************************************/
 package test.jakarta.data.experimental.web;
 
-import static io.openliberty.data.repository.Is.Op.GreaterThan;
-import static io.openliberty.data.repository.Is.Op.GreaterThanEqual;
-import static io.openliberty.data.repository.Is.Op.LessThanEqual;
-import static io.openliberty.data.repository.Is.Op.Not;
-import static io.openliberty.data.repository.Is.Op.NotIgnoreCase;
-import static io.openliberty.data.repository.Is.Op.Prefixed;
 import static jakarta.data.repository.By.ID;
 
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import jakarta.data.constraint.AtLeast;
+import jakarta.data.constraint.AtMost;
+import jakarta.data.constraint.GreaterThan;
+import jakarta.data.constraint.Like;
+import jakarta.data.constraint.NotEqualTo;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.Is;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Update;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Is;
+import io.openliberty.data.repository.IgnoreCase;
 import io.openliberty.data.repository.update.Assign;
 
 /**
@@ -50,11 +50,11 @@ public interface Towns {
 
     @Count
     long countByStateButNotTown(@By("stateName") String state,
-                                @By(ID) @Is(Not) TownId exceptForInState);
+                                @By(ID) @Is(NotEqualTo.class) TownId exceptForInState);
 
     @Delete
-    TownId[] deleteWithinPopulationRange(@By("population") @Is(GreaterThanEqual) int min,
-                                         @By("population") @Is(LessThanEqual) int max);
+    TownId[] deleteWithinPopulationRange(@By("population") @Is(AtLeast.class) int min,
+                                         @By("population") @Is(AtMost.class) int max);
 
     @Exists
     boolean existsById(@By(ID) TownId id);
@@ -63,15 +63,15 @@ public interface Towns {
     Optional<Town> findById(@By(ID) TownId id);
 
     @Exists
-    boolean isBiggerThan(@By("population") @Is(GreaterThan) int minPopulation,
+    boolean isBiggerThan(@By("population") @Is(GreaterThan.class) int minPopulation,
                          @By(ID) TownId id);
 
     @Find
     @OrderBy("stateName")
     @OrderBy("name")
-    Stream<Town> largerThan(@By("population") @Is(GreaterThan) int minPopulation,
-                            @By("name") @Is(NotIgnoreCase) String cityToExclude,
-                            @By("stateName") @Is(Prefixed) String statePattern);
+    Stream<Town> largerThan(@By("population") @Is(GreaterThan.class) int minPopulation,
+                            @By("name") @IgnoreCase @Is(NotEqualTo.class) String cityToExclude,
+                            @By("stateName") Like statePattern);
 
     @Update
     int replace(@By(ID) TownId id,
@@ -99,7 +99,7 @@ public interface Towns {
 
     @Find
     @OrderBy(value = ID, descending = true)
-    CursoredPage<Town> sizedWithin(@By("population") @Is(GreaterThanEqual) int minPopulation,
-                                   @By("population") @Is(LessThanEqual) int maxPopulation,
+    CursoredPage<Town> sizedWithin(@By("population") @Is(AtLeast.class) int minPopulation,
+                                   @By("population") @Is(AtMost.class) int maxPopulation,
                                    PageRequest pagination);
 }

@@ -66,7 +66,9 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Jedna nebo v\u00edce hodnot hese
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty nyn\u00ed pou\u017e\u00edv\u00e1 siln\u011bj\u0161\u00ed algoritmy pro nov\u011b generovan\u00e1 hesla {aes} a {hash}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Ujist\u011bte se, \u017ee hodnoty hesel {aes} a {hash} jsou generov\u00e1ny pomoc\u00ed nejnov\u011bj\u0161\u00ed verze Liberty.
 
-
+AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=D\u00e9lka kl\u00ed\u010de hodnoty zadan\u00e9 v prom\u011bnn\u00e9 wlp.aes.encryption.key mus\u00ed b\u00fdt 256 bit\u016f.
+AESKEYMANAGER_NOT_BASE64_EXCEPTION=Hodnota zadan\u00e1 v prom\u011bnn\u00e9 wlp.aes.encryption.key mus\u00ed b\u00fdt k\u00f3dov\u00e1na base64.
+AESKEYMANAGER_BASE64_VARIABLE_NOT_SET=Pro dek\u00f3dov\u00e1n\u00ed hesel mus\u00ed b\u00fdt nastavena prom\u011bnn\u00e1 wlp.aes.encryption.key.
 # ---------------- This is an exception message ------------
 PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Byla zji\u0161t\u011bna v\u00edce ne\u017e jedna implementace CustomPasswordEncryption. Podporuje se pouze jedna implementace CustomPasswordEncryption. Seznam zji\u0161t\u011bn\u00fdch implementac\u00ed CustomPasswordEncryption je n\u00e1sleduj\u00edc\u00ed:
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=P\u0159i zpracov\u00e1n\u00ed souboru typu manifest roz\u0161\u00ed\u0159en\u00ed {0} byla nahl\u00e1\u0161ena chyba. Tento soubor byl ignorov\u00e1n. Vlastn\u00ed \u0161ifrov\u00e1n\u00ed nen\u00ed dostupn\u00e9. Chybov\u00e1 zpr\u00e1va je {1}.

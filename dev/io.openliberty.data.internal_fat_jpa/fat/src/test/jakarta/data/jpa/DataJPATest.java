@@ -24,12 +24,14 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.jpa.web.DataJPATestServlet;
+import test.jakarta.data.jpa.web.eclipselink.DataJPAEclipseLinkServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
@@ -66,14 +68,26 @@ public class DataJPATest extends FATServletClient {
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @Server("io.openliberty.data.internal.fat.jpa")
-    @TestServlet(servlet = DataJPATestServlet.class, contextRoot = "DataJPATestApp")
+    @TestServlets({
+                    @TestServlet(servlet = DataJPATestServlet.class,
+                                 contextRoot = "DataJPATestApp"),
+                    @TestServlet(servlet = DataJPAEclipseLinkServlet.class,
+                                 contextRoot = "DataJPATestApp")
+    })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        DatabaseContainerUtil.build(server, testContainer).withDriverVariable().withDatabaseProperties().modify();
+        FATSuite.standardizeCollation(testContainer);
 
-        WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp", "test.jakarta.data.jpa.web");
+        DatabaseContainerUtil.build(server, testContainer) //
+                        .withDriverVariable() //
+                        .withDatabaseProperties() //
+                        .modify();
+
+        WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp",
+                                                      "test.jakarta.data.jpa.web",
+                                                      "test.jakarta.data.jpa.web.eclipselink");
         ShrinkHelper.exportAppToServer(server, war);
         server.startServer();
     }

@@ -7,35 +7,54 @@ import jakarta.data.metamodel.TextAttribute;
 import jakarta.data.metamodel.impl.SortableAttributeRecord;
 import jakarta.data.metamodel.impl.TextAttributeRecord;
 
+/**
+ * Jakarta Data static metamodel for {@link test.jakarta.data.jpa.hibernate.integration.web.County}
+ **/
 @StaticMetamodel(County.class)
 @Generated("org.hibernate.processor.HibernateProcessor")
 public interface _County {
 
+	
+	/**
+	 * @see #name
+	 **/
 	String NAME = "name";
-	String COUNTY_SEAT = "countySeat";
-	String ZIPCODES = "zipcodes";
+	
+	/**
+	 * @see #population
+	 **/
 	String POPULATION = "population";
+	
+	/**
+	 * @see #zipcodes
+	 **/
+	String ZIPCODES = "zipcodes";
+	
+	/**
+	 * @see #countySeat
+	 **/
+	String COUNTY_SEAT = "countySeat";
 
 	
 	/**
-	 * @see County#name
+	 * Static metamodel for attribute {@link County#name}
 	 **/
 	TextAttribute<County> name = new TextAttributeRecord<>(NAME);
 	
 	/**
-	 * @see County#countySeat
+	 * Static metamodel for attribute {@link County#population}
 	 **/
-	TextAttribute<County> countySeat = new TextAttributeRecord<>(COUNTY_SEAT);
+	SortableAttribute<County> population = new SortableAttributeRecord<>(POPULATION);
 	
 	/**
-	 * @see County#zipcodes
+	 * Static metamodel for attribute {@link County#zipcodes}
 	 **/
 	SortableAttribute<County> zipcodes = new SortableAttributeRecord<>(ZIPCODES);
 	
 	/**
-	 * @see County#population
+	 * Static metamodel for attribute {@link County#countySeat}
 	 **/
-	SortableAttribute<County> population = new SortableAttributeRecord<>(POPULATION);
+	TextAttribute<County> countySeat = new TextAttributeRecord<>(COUNTY_SEAT);
 
 }
 

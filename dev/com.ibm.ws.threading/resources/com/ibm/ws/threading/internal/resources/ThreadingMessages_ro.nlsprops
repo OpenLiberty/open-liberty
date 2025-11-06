@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,3 +65,7 @@ CWWKE1206.quiesce.timeout.not.valid.useraction=Edita\u021bi fi\u0219ierul 'serve
 CWWKE1207.threads.hung.pool.cannot.grow=CWWKE1207W: \ Toate firele de execu\u021bie din executorul implicit Liberty par s\u0103 fie blocate \u0219i nu mai pot fi ad\u0103ugate alte fire de execu\u021bie deoarece dimensiunea grupului a atins limita.  Dimensiunea actual\u0103 a bazinului este {0}.
 CWWKE1207.threads.hung.pool.cannot.grow.explanation=Toate firele de execu\u021bie implicite sunt ocupate, firele nu au finalizat nicio sarcin\u0103 recent, iar sarcinile a\u0219teapt\u0103 \u00een coad\u0103. Nu mai pot fi ad\u0103ugate alte fire, deoarece dimensiunea bazinului a atins limita.  
 CWWKE1207.threads.hung.pool.cannot.grow.useraction=Determina\u021bi dac\u0103 exist\u0103 un blocaj, cum ar fi un tabel blocat \u00een baza de date, care ar putea \u00eempiedica firele s\u0103 \u00ee\u0219i \u00eendeplineasc\u0103 sarcinile. Dac\u0103 nu exist\u0103 niciun blocaj \u0219i serverul are nevoie doar de mai multe fire, ajusta\u021bi atributele coreThreads \u0219i maxThreads ale elementului de configurare a executorului.
+
+CWWKE1208.override.virtual=CWWKE1208I: Politica de simultaneitate {0} va crea fire de platform\u0103 deoarece crearea de fire virtuale de c\u0103tre serverul Liberty este dezactivat\u0103.
+CWWKE1208.override.virtual.explanation=SPI ThreadTypeOverride a dezactivat crearea de fire virtuale de c\u0103tre serverul Liberty.
+CWWKE1208.override.virtual.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

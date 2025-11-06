@@ -96,6 +96,7 @@ public class WCServerHttpUnit {
     // Integer.MAX_VALUE is 2^31-1, or 2,147,483,647.
     // 'sendPostRequest' does writes of the requested length,
     // making for a very, very, long test.
+    // Fails in netty due to https://github.com/OpenLiberty/open-liberty/issues/30702
     @Test
     @Mode(TestMode.FULL)
     public void testSendContentLengthLongLong_test() throws Exception {

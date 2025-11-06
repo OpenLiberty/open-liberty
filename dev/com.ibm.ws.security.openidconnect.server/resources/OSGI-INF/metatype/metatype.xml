@@ -45,7 +45,7 @@
             <AD id="idTokenCacheEnabled" name="%idTokenCacheEnabled" description="%idTokenCacheEnabled.desc"
             required="false" type="Boolean" default="true"/>  
          <AD id="jwkRotationTime" name="%jwkRotationTime" description="%jwkRotationTime.desc"
-            required="false" type="String" ibm:type="duration(m)" default="720m" min="60m"/>
+            required="false" type="String" ibm:type="duration(m)" default="720m" min="0m"/>
          <AD id="jwkSigningKeySize" name="%jwkSigningKeySize" description="%jwkSigningKeySize.desc"
             required="false" type="Long" default="2048">
          	<Option label="%jwkSigningKeySize.1024" value="1024"/>

@@ -36,4 +36,5 @@ fat.test.container.images: public.ecr.aws/docker/library/mongo:6.0.6
 	io.openliberty.jakarta.transaction.2.0,\
 	io.openliberty.org.eclipse.microprofile.config.3.0,\
 	io.openliberty.org.testcontainers;version=latest,\
+	org.eclipse.jnosql.communication:jnosql-communication-semistructured;version=1.1.4,\
 	org.eclipse.jnosql.mapping:jnosql-mapping-semistructured;version=1.1.4

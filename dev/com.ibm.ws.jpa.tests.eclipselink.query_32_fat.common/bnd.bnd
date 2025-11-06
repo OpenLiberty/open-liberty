@@ -40,7 +40,7 @@ javac.target: 17
     com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common
 
 -includeresource: \
-    @${repo;com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common}, \
+    @\${repo;com.ibm.ws.jpa.tests.eclipselink.query_31_fat.common}, \
     ${bin}
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)

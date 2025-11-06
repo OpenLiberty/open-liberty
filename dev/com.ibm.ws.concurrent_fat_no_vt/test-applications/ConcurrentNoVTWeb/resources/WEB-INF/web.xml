@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app version="6.1"
+         xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd">
+
+  <!-- For testing access to the application component namespace -->
+  <env-entry>
+    <env-entry-name>java:comp/env/entry1</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>value1</env-entry-value>
+  </env-entry>
+
+  <managed-executor>
+    <name>java:global/concurrent/WebXMLExecutorToOverride</name>
+    <virtual>true</virtual>
+  </managed-executor>
+
+  <managed-scheduled-executor>
+    <name>java:module/concurrent/WebXMLScheduledExecutorToOverride</name>
+    <virtual>true</virtual>
+  </managed-scheduled-executor>
+
+  <managed-thread-factory>
+    <name>java:comp/concurrent/WebXMLThreadFactoryToOverride</name>
+    <virtual>true</virtual>
+  </managed-thread-factory>
+
+</web-app>

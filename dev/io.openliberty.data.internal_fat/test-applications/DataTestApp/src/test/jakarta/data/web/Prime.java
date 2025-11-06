@@ -13,6 +13,7 @@
 package test.jakarta.data.web;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Entity class for which data is pre-populated.
@@ -31,7 +32,7 @@ public class Prime {
 
     public String romanNumeral;
 
-    public ArrayList<String> romanNumeralSymbols;
+    public List<String> romanNumeralSymbols; //TODO revert to ArrayList once https://github.com/OpenLiberty/open-liberty/issues/33205 is closed
 
     public int sumOfBits;
 

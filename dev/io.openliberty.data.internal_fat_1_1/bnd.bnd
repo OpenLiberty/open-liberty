@@ -1,0 +1,49 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+  test-applications/Data_1_1_App/src,\
+  fat/src
+
+javac.source: 21
+javac.target: 21
+
+fat.minimum.java.level: 21
+fat.project: true
+
+tested.features: databaseRotation
+
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
+# Uncomment to test against alternative databases
+# Options: Derby, Postgres, DB2, Oracle, SQLServer
+#fat.bucket.db.type: Postgres
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.componenttest.2.0;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	io.openliberty.jakarta.annotation.3.0,\
+	io.openliberty.jakarta.cdi.4.1,\
+	io.openliberty.jakarta.data.1.1;version=latest,\
+	io.openliberty.jakarta.interceptor.2.2,\
+	io.openliberty.jakarta.persistence.3.2,\
+	io.openliberty.jakarta.servlet.6.1;version=latest,\
+	io.openliberty.jakarta.transaction.2.0;version=latest,\
+	io.openliberty.org.testcontainers;version=latest,\
+	io.openliberty.jakarta.nosql.1.0

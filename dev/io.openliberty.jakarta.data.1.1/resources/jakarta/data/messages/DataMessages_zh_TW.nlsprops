@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required={0} \u53c3\u6578\u662f\u5fc5\u9700\u7684
+002.no.elements={0} \u6e05\u55ae\u4e0d\u80fd\u70ba\u7a7a
+003.null.element={0} \u6e05\u55ae\u4e0d\u80fd\u6709 null \u5143\u7d20
+004.arg.negative={0} \u8ad6\u9ede\u4e0d\u80fd\u70ba\u8ca0\u6578
+005.zero.not.allowed={0} \u53c3\u6578\u4e0d\u80fd\u70ba 0
+006.zero.size.key=\u5bc6\u9470\u5fc5\u9808\u81f3\u5c11\u5305\u542b\u4e00\u500b\u5143\u7d20
+007.wildcard.conflict=\u5169\u500b\u901a\u914d\u7b26\u4e0d\u80fd\u4f7f\u7528\u76f8\u540c\u7684\u5b57\u5143 ( {0} )
+008.escape.conflict=\u901a\u914d\u7b26\u548c\u8f49\u63db\u7b26\u4e0d\u80fd\u4f7f\u7528\u76f8\u540c\u7684\u7b26\u865f ( {0} )
+009.unknown.number.type=\u975e\u9810\u671f\u7684 Number \u5b50\u985e\u578b\uff1a {0}
+010.unknown.total=\u6c92\u6709\u5143\u7d20\u7684\u7e3d\u8a08\u6578
+011.unknown.attr.type={0} \u7bc4\u4f8b\u7684\u53d6\u5f97\u65b9\u5f0f\u7121\u6cd5\u8b58\u5225\u5c6c\u6027\u7684\u985e\u578b\u3002 \u5c0d\u65bc\u975c\u614b\u5143\u6a21\u578b\u985e\u5225\uff0c\u4f7f\u7528\u5b9a\u7fa9\u5728\u5c6c\u6027\u5b50\u985e\u578b\u4e0a\u7684.of \u65b9\u6cd5\u4f86\u63d0\u4f9b\u5be6\u9ad4\u985e\u5225\u548c\u5be6\u9ad4\u5c6c\u6027\u985e\u578b\u3002
+012.unknown.decl.type={0} \u7bc4\u4f8b\u7684\u53d6\u5f97\u65b9\u5f0f\u7121\u6cd5\u8b58\u5225\u5ba3\u544a\u8a72\u5c6c\u6027\u7684\u5be6\u9ad4\u985e\u5225\u3002 \u5c0d\u65bc\u975c\u614b\u5143\u6a21\u578b\u985e\u5225\uff0c\u4f7f\u7528\u5b9a\u7fa9\u5728\u5c6c\u6027\u5b50\u985e\u578b\u4e0a\u7684.of \u65b9\u6cd5\u4f86\u63d0\u4f9b\u5be6\u9ad4\u985e\u5225\u548c\u5be6\u9ad4\u5c6c\u6027\u985e\u578b\u3002

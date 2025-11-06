@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2019, 2021 IBM Corporation and others.
+    Copyright (c) 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -247,6 +247,10 @@
       -->
     </application>
 
+    <application type="war" id="dsdfat_override_lib" location="dsdfat_override_lib.war">
+      <classloader overrideLibraryRef="DerbyLib" privateLibraryRef="empty"/>
+    </application>
+	<library id="empty"/>
 <!-- ### Permissions ### -->
 	<!-- Note that until using a nested <file> works the following ACEs will be thrown: createClassLoader,
 	java.util.PropertyPermission, javax.management.MBeanPermission -->

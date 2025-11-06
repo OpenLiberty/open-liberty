@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -100,7 +100,8 @@ public class JakartaEE10Action extends JakartaEEAction {
                                                   "servlet-6.0",
                                                   "websocket-2.1",
                                                   "xmlBinding-4.0",
-                                                  "xmlWS-4.0"
+                                                  "xmlWS-4.0",
+                                                  "xmlWSClient-4.0"
     };
 
     public static final Set<String> EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_FEATURES_ARRAY)));

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.ibm.ws.security.social.fat.utils.SocialTestSettings;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * This is the test class that will run tests to verify the correct behavior with
@@ -256,27 +257,10 @@ public class Social_EncryptionTests extends SocialCommonTest {
         return expectations;
     }
 
-    /**
-     * TODO when issue 17485 is completed, remove setting/passing parms and update the builder configs that encrypt with ES algs
-     * with keyManagementKeyAlgorithm set to ECDH-ES
-     *
-     * @param alg
-     * @return
-     * @throws Exception
-     */
-    public List<endpointSettings> setParmsForECWorkaround(String alg) throws Exception {
-
-        testOPServer.addIgnoredServerException(MessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE);
-
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_ES);
-        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), alg));
-        return parms;
-    }
-
     public String createGenericRS256JWE() throws Exception {
         // We're going to use a test JWT token builder to create a token that has "notJOSE" in the JWE header type field
         // the Liberty builder won't allow us to update that field, so, we need to peice a token together
-        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), SocialConstants.SIGALG_RS256)));
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), SocialConstants.SIGALG_RS256)), JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG);
         builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
         builder.setAlorithmHeaderValue(SocialConstants.SIGALG_RS256);
         builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
@@ -287,10 +271,29 @@ public class Social_EncryptionTests extends SocialCommonTest {
         return jwtToken;
     }
 
-    public String createTokenWithBadElement(int badPart) throws Exception {
+    public String createGenericES256JWE() throws Exception {
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), SocialConstants.SIGALG_ES256)), JwtConstants.KEY_MGMT_KEY_ALG_ES);
+        builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
+        builder.setAlorithmHeaderValue(SocialConstants.SIGALG_ES256);
+        builder.setECKey(testOPServer.getServer().getServerRoot() + "/ES256private-key-pkcs#8.pem");
+        builder.setClaim("token_src", "testcase builder");
+        // calling buildJWE will override the header contents
+        String jwtToken = builder.buildJWE("JOSE", "jwt");
+
+        return jwtToken;
+    }
+
+    public String createTokenWithBadElement(int badPart, String builderAlg) throws Exception {
 
         String createTokenWithBadElement = "createTokenWithBadElement";
-        String jwtToken = createGenericRS256JWE();
+        String jwtToken;
+        if (builderAlg == SocialConstants.SIGALG_ES256){
+            jwtToken = createGenericES256JWE();
+        } else if (builderAlg == SocialConstants.SIGALG_RS256){
+            jwtToken = createGenericRS256JWE();
+        } else {
+            jwtToken = "";
+        }
         Log.info(thisClass, createTokenWithBadElement, jwtToken);
         String[] jwtTokenArray = jwtToken.split("\\.");
         Log.info(thisClass, createTokenWithBadElement, "size: " + jwtTokenArray.length);
@@ -320,6 +323,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_EncryptTokenRS256_SocialClientDecryptRS256() throws Exception {
 
         genericEncryptTest(SocialConstants.SIGALG_RS256, SocialConstants.SIGALG_RS256);
@@ -332,6 +336,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_EncryptTokenRS384_SocialClientDecryptRS384() throws Exception {
 
         genericEncryptTest(SocialConstants.SIGALG_RS384, SocialConstants.SIGALG_RS384);
@@ -344,6 +349,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_EncryptTokenRS512_SocialClientDecryptRS512() throws Exception {
 
         genericEncryptTest(SocialConstants.SIGALG_RS512, SocialConstants.SIGALG_RS512);
@@ -356,11 +362,10 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_EncryptTokenES256_SocialClientDecryptES256() throws Exception {
 
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(SocialConstants.SIGALG_ES256, SocialConstants.SIGALG_ES256, setParmsForECWorkaround(JwtConstants.SIGALG_ES256));
+        genericEncryptTest(SocialConstants.SIGALG_ES256, SocialConstants.SIGALG_ES256);
 
     }
 
@@ -369,11 +374,10 @@ public class Social_EncryptionTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_EncryptTokenES384_SocialClientDecryptES384() throws Exception {
 
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(SocialConstants.SIGALG_ES384, SocialConstants.SIGALG_ES384, setParmsForECWorkaround(SocialConstants.SIGALG_ES384));
+        genericEncryptTest(SocialConstants.SIGALG_ES384, SocialConstants.SIGALG_ES384);
 
     }
 
@@ -382,11 +386,10 @@ public class Social_EncryptionTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_EncryptTokenES512_SocialClientDecryptES512() throws Exception {
 
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(SocialConstants.SIGALG_ES512, SocialConstants.SIGALG_ES512, setParmsForECWorkaround(SocialConstants.SIGALG_ES512));
+        genericEncryptTest(SocialConstants.SIGALG_ES512, SocialConstants.SIGALG_ES512);
 
     }
 
@@ -402,17 +405,13 @@ public class Social_EncryptionTests extends SocialCommonTest {
     @Test
     public void Social_EncryptionTests_EncryptTokenNotWithRS256_SocialClientDecryptRS256() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.ALL_TEST_ESSIGALGS : SocialConstants.ALL_TEST_ENCRYPTALGS;
+
         String socialClientDecryptAlg = SocialConstants.SIGALG_RS256;
-        for (String builderEncryptAlg : SocialConstants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!socialClientDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, Social Client specifies original alg for sign, but RS256 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                // Testing ECDH-ES for encrypting the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
             }
         }
 
@@ -426,17 +425,13 @@ public class Social_EncryptionTests extends SocialCommonTest {
     @Test
     public void Social_EncryptionTests_EncryptTokenNotWithRS384_RPDecryptRS384() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.ALL_TEST_ESSIGALGS : SocialConstants.ALL_TEST_ENCRYPTALGS;
+
         String socialClientDecryptAlg = SocialConstants.SIGALG_RS384;
-        for (String builderEncryptAlg : SocialConstants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!socialClientDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but RS384 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                // Testing ECDH-ES for encrypting the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
             }
         }
 
@@ -450,17 +445,13 @@ public class Social_EncryptionTests extends SocialCommonTest {
     @Test
     public void Social_EncryptionTests_EncryptTokenNotWithRS512_RPDecryptRS512() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.ALL_TEST_ESSIGALGS : SocialConstants.ALL_TEST_ENCRYPTALGS;
+
         String socialClientDecryptAlg = SocialConstants.SIGALG_RS512;
-        for (String builderEncryptAlg : SocialConstants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!socialClientDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but RS512 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                // Testing ECDH-ES for encrypting the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
             }
         }
 
@@ -471,19 +462,16 @@ public class Social_EncryptionTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test 
     public void Social_EncryptionTests_EncryptTokenNotWithES256_RPDecryptES256() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.ALL_TEST_ESSIGALGS : SocialConstants.ALL_TEST_ENCRYPTALGS;
+
         String socialClientDecryptAlg = SocialConstants.SIGALG_ES256;
-        for (String builderEncryptAlg : SocialConstants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!socialClientDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES256 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
             }
         }
 
@@ -494,19 +482,16 @@ public class Social_EncryptionTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_EncryptTokenNotWithES384_RPDecryptES384() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.ALL_TEST_ESSIGALGS : SocialConstants.ALL_TEST_ENCRYPTALGS;
+
         String socialClientDecryptAlg = SocialConstants.SIGALG_ES384;
-        for (String builderEncryptAlg : SocialConstants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!socialClientDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES384 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
             }
         }
 
@@ -517,19 +502,16 @@ public class Social_EncryptionTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_EncryptTokenNotWithES512_RPDecryptES512() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.ALL_TEST_ESSIGALGS : SocialConstants.ALL_TEST_ENCRYPTALGS;
+
         String socialClientDecryptAlg = SocialConstants.SIGALG_ES512;
-        for (String builderEncryptAlg : SocialConstants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!socialClientDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES512 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), socialClientDecryptAlg, setAppName(builderEncryptAlg, socialClientDecryptAlg), null);
             }
         }
 
@@ -547,6 +529,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_SignWithVariousAlgs_EncryptWithRS256_DecryptWithRS256() throws Exception {
 
         String encryptDecryptAlg = SocialConstants.SIGALG_RS256;
@@ -567,6 +550,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_SignWithVariousAlgs_EncryptWithRS384_DecryptWithRS384() throws Exception {
 
         String encryptDecryptAlg = SocialConstants.SIGALG_RS384;
@@ -586,6 +570,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_SignWithVariousAlgs_EncryptWithRS512_DecryptWithRS512() throws Exception {
 
         String encryptDecryptAlg = SocialConstants.SIGALG_RS512;
@@ -604,13 +589,13 @@ public class Social_EncryptionTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithVariousAlgs_EncryptWithES256_DecryptWithES256() throws Exception {
 
         String encryptDecryptAlg = SocialConstants.SIGALG_ES256;
         for (String builderSigAlg : SocialConstants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), builderSigAlg, null, null);
             }
         }
 
@@ -624,13 +609,13 @@ public class Social_EncryptionTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithVariousAlgs_EncryptWithES384_DecryptWithES384() throws Exception {
 
         String encryptDecryptAlg = SocialConstants.SIGALG_ES384;
         for (String builderSigAlg : SocialConstants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), builderSigAlg, null, null);
             }
         }
     }
@@ -643,13 +628,13 @@ public class Social_EncryptionTests extends SocialCommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithVariousAlgs_EncryptWithES512_DecryptWithES512() throws Exception {
 
         String encryptDecryptAlg = SocialConstants.SIGALG_ES512;
         for (String builderSigAlg : SocialConstants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), builderSigAlg, null, null);
             }
         }
     }
@@ -660,8 +645,8 @@ public class Social_EncryptionTests extends SocialCommonTest {
     /****************************************************************/
     @Test
     public void Social_EncryptionTests_SignWithValidAlg_EncryptValid_DecryptInvalidKeyManagementKeyAlias() throws Exception {
-        String socialClientEncryptAlg = SocialConstants.SIGALG_RS256;
-        String socialClientDecryptAlg = SocialConstants.SIGALG_RS256;
+        String socialClientEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.SIGALG_ES256 : SocialConstants.SIGALG_RS256;
+        String socialClientDecryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.SIGALG_ES256 : SocialConstants.SIGALG_RS256;
 
         List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the RP logs.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "InvalidKeyException");
@@ -670,8 +655,8 @@ public class Social_EncryptionTests extends SocialCommonTest {
 
     @Test
     public void Social_EncryptionTests_SignWithValidAlg_EncryptValid_DecryptNonExistantKeyManagementKeyAlias() throws Exception {
-        String socialClientEncryptAlg = SocialConstants.SIGALG_RS256;
-        String socialClientDecryptAlg = SocialConstants.SIGALG_RS256;
+        String socialClientEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.SIGALG_ES256 : SocialConstants.SIGALG_RS256;
+        String socialClientDecryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.SIGALG_ES256 : SocialConstants.SIGALG_RS256;
 
         List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the RP logs.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "nonExistantKeyManagementKeyAlias" + ".*" + "not present");
@@ -750,6 +735,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
     /* enabled - show that we fail with the appropriate errors */
     /*******************************************************************/
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_SignWithValidAlg_EncryptWithRS256_DoNotDecrypt() throws Exception {
         String signAlg = SocialConstants.SIGALG_RS256;
         String socialClientEncryptAlg = SocialConstants.SIGALG_RS256;
@@ -760,6 +746,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_SignWithValidAlg_EncryptWithRS384_DoNotDecrypt() throws Exception {
         String signAlg = SocialConstants.SIGALG_RS384;
         String socialClientEncryptAlg = SocialConstants.SIGALG_RS384;
@@ -770,6 +757,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_SignWithValidAlg_EncryptWithRS512_DoNotDecrypt() throws Exception {
         String signAlg = SocialConstants.SIGALG_RS512;
         String socialClientEncryptAlg = SocialConstants.SIGALG_RS512;
@@ -778,34 +766,31 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), getMissingDecryptionSettingsExpectations());
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithValidAlg_EncryptWithES256_DoNotDecrypt() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES256;
         String socialClientEncryptAlg = SocialConstants.SIGALG_ES256;
         String socialClientDecryptAlg = SocialConstants.SIGALG_NONE;
 
-        genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), getMissingDecryptionSettingsExpectations(),
-                setParmsForECWorkaround(socialClientEncryptAlg));
+        genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), getMissingDecryptionSettingsExpectations());
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithValidAlg_EncryptWithES384_DoNotDecrypt() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES384;
         String socialClientEncryptAlg = SocialConstants.SIGALG_ES384;
         String socialClientDecryptAlg = SocialConstants.SIGALG_NONE;
 
-        genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), getMissingDecryptionSettingsExpectations(),
-                setParmsForECWorkaround(socialClientEncryptAlg));
+        genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), getMissingDecryptionSettingsExpectations());
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithValidAlg_EncryptWithES512_DoNotDecrypt() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES512;
         String socialClientEncryptAlg = SocialConstants.SIGALG_ES512;
         String socialClientDecryptAlg = SocialConstants.SIGALG_NONE;
 
-        genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), getMissingDecryptionSettingsExpectations(),
-                setParmsForECWorkaround(socialClientEncryptAlg));
+        genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), getMissingDecryptionSettingsExpectations());
     }
 
     /*************** Various JWE header content tests ***************/
@@ -821,13 +806,17 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_consumeTokenThatWasEncryptedUsingOtherContentEncryptionAlg() throws Exception {
+	public void Social_EncryptionTests_consumeTokenThatWasEncryptedUsingOtherContentEncryptionAlg() throws Exception {
+        
+		String sigAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.SIGALG_ES256 : JwtConstants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
 
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192);
-        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), JwtConstants.SIGALG_RS256));
+		List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192);
+		parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg));
+        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_KEY_MGMT_ALG, keyManagementAlg);
 
-        genericEncryptTest(SocialConstants.SIGALG_RS256, SocialConstants.SIGALG_RS256, parms);
-    }
+        genericEncryptTest(sigAlg, sigAlg, parms);
+	}
 
     /**
      * Show that the Social Client can accept a token built specifying RSA_OAEP_256 (instead of RSA-OAEP) in the
@@ -837,6 +826,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_consumeTokenThatWasEncryptedUsingOtherKeyManagementKeyAlg() throws Exception {
 
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_256);
@@ -853,12 +843,19 @@ public class Social_EncryptionTests extends SocialCommonTest {
     @Test
     public void Social_EncryptionTests_JWETypeNotJose() throws Exception {
 
+        String sigAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.SIGALG_ES256 : SocialConstants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         // We're going to use a test JWT token builder to create a token that has "notJOSE" in the JWE header type field
         // the Liberty builder won't allow us to update that field, so, we need to peice a token together
-        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), SocialConstants.SIGALG_RS256)));
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg)), keyManagementAlg);
         builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
-        builder.setAlorithmHeaderValue(SocialConstants.SIGALG_RS256);
-        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setAlorithmHeaderValue(sigAlg);
+        if (testOPServer.getServer().isFIPS140_3EnabledAndSupported()){
+            builder.setECKey(testOPServer.getServer().getServerRoot() + "/ES256private-key-pkcs#8.pem");
+        } else {
+            builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        }
         builder.setClaim("token_src", "testcase builder");
         builder.setAudience("client01");
         builder.setIssuedAtToNow();
@@ -871,18 +868,25 @@ public class Social_EncryptionTests extends SocialCommonTest {
         // the built token will be passed to the test app via the overrideToken parm
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtToken);
 
-        genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, setAppName(SocialConstants.SIGALG_RS256), null, parms);
+        genericEncryptTest(sigAlg, setBuilderName(sigAlg), sigAlg, setAppName(sigAlg), null, parms);
     }
 
     @Test
     public void Social_EncryptionTests_JWEContentTypeNotJwt() throws Exception {
 
+        String sigAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.SIGALG_ES256 : SocialConstants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         // We're going to use a test JWT token builder to create a token that has "not_jwt" in the JWE header content type field
         // the Liberty builder won't allow us to update that field, so, we need to peice a token together
-        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), SocialConstants.SIGALG_RS256)));
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg)), keyManagementAlg);
         builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
-        builder.setAlorithmHeaderValue(SocialConstants.SIGALG_RS256);
-        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setAlorithmHeaderValue(sigAlg);
+        if (testOPServer.getServer().isFIPS140_3EnabledAndSupported()){
+            builder.setECKey(testOPServer.getServer().getServerRoot() + "/ES256private-key-pkcs#8.pem");
+        } else {
+            builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        }
         builder.setClaim("token_src", "testcase builder");
         // calling buildJWE will override the header contents
         String jwtToken = builder.buildJWE("JOSE", "not_jwt");
@@ -892,7 +896,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
 
         List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the Social Client logs for a bad 'cty' in the ID token.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + MessageConstants.CWWKS6057E_CTY_NOT_JWT_FOR_NESTED_JWS);
-        genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, setAppName(SocialConstants.SIGALG_RS256), expectations, parms);
+        genericEncryptTest(sigAlg, setBuilderName(sigAlg), sigAlg, setAppName(sigAlg), expectations, parms);
 
     }
 
@@ -905,15 +909,19 @@ public class Social_EncryptionTests extends SocialCommonTest {
     @Test
     public void Social_EncryptionTests_simpleJsonPayload() throws Exception {
 
+        String sigAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? SocialConstants.SIGALG_ES256 : SocialConstants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
+
         // build a jwt token whose payload contains only json data - make sure that we do not allow this format (it's not supported at this time)
-        String jwtToken = tokenBuilderHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), SocialConstants.SIGALG_RS256)));
+        String jwtToken = tokenBuilderHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg)), keyManagementAlg);
 
         // the built token will be pass to the test app via the overrideToken parm
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtToken);
 
         List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the Social Client logs saying the payload of the JWE ID token wasn't a JWS.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6065E_NESTED_JWS_REQUIRED_BUT_NOT_FOUND);
-        genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, setAppName(SocialConstants.SIGALG_RS256), expectations, parms);
+        genericEncryptTest(sigAlg, setBuilderName(sigAlg), sigAlg, setAppName(sigAlg), expectations, parms);
 
     }
 
@@ -923,11 +931,26 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_RPUsesShortPrivateKey() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void Social_EncryptionTests_RPUsesShortPrivateKey_with_RSA_OAEP() throws Exception {
 
         List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the Social Client logs saying the JWS couldn't be extracted because the key used a key size that was too small.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "2048 bits or larger");
         genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, "SignRS256EncryptShortRS256", expectations);
+
+    }
+
+    /**
+     * The Social Client should not allow a key with an invalid curve
+     *
+     * @throws Exception
+     */
+    @Test
+    public void Social_EncryptionTests_RPUsesInvalidPrivateKey_with_ECDH_ES() throws Exception {
+
+        List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the Social Client logs saying the JWS couldn't be extracted because the key used a key size that was too small.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "secp256k1 curve is not defined");
+        genericEncryptTest(SocialConstants.SIGALG_ES256, setBuilderName(SocialConstants.SIGALG_ES256), SocialConstants.SIGALG_ES256, "SignES256EncryptShortES256", expectations);
 
     }
 
@@ -937,11 +960,26 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * a public key, not a private key
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void Social_EncryptionTests_RPUsesPublicKey() throws Exception {
 
         List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
         expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the Social Client logs saying the JWS couldn't be extracted because a key was missing.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "rs256" + ".*" + "not present");
         genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, "SignRS256EncryptPublicRS256", expectations);
+
+    }
+
+    /**
+     * The Social Client should not use a public key to decrypt - should use the private key
+     * The Social Client fails to find the key - there is a key with a name that matches the keyManagementKeyAlias, but the key is
+     * a public key, not a private key
+     */
+    @Test
+    public void Social_EncryptionTests_RPUsesPublicKey_ECDH_ES() throws Exception {
+
+        List<validationData> expectations = validationTools.add401Responses(SocialConstants.PERFORM_SOCIAL_LOGIN);
+        expectations = validationTools.addMessageExpectation(genericTestServer, expectations, SocialConstants.PERFORM_SOCIAL_LOGIN, SocialConstants.MESSAGES_LOG, SocialConstants.STRING_MATCHES, "Didn't find expected error message in the Social Client logs saying the JWS couldn't be extracted because a key was missing.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "es256" + ".*" + "not present");
+        genericEncryptTest(SocialConstants.SIGALG_ES256, setBuilderName(SocialConstants.SIGALG_ES256), SocialConstants.SIGALG_ES256, "SignES256EncryptPublicES256", expectations);
 
     }
 
@@ -988,13 +1026,20 @@ public class Social_EncryptionTests extends SocialCommonTest {
     //    }
 
     /**
+     * RSA-OAEP JWE Structure Validation Tests
+     * Validates the Social Client's ability to properly validate the structure of JWE
+     * (JSON Web Encryption) that use RSA-OAEP as the key management algorithm.
+     * The tests validates each aspect of the 5 part JWE structure (JOSE Header, Encrypted Key, IV, Ciphertext, Auth tag)
+     */
+
+    /**
      * Test that the Social Client detects that the JWE is invalid as it has too many parts (6) (one of which is completely
      * invalid)
      *
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_JWETooManyParts() throws Exception {
+    public void Social_EncryptionTests_JWETooManyParts_encryption_RSA_OAEP() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createGenericRS256JWE() + "." + badTokenSegment);
@@ -1009,7 +1054,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_JWETooFewParts() throws Exception {
+    public void Social_EncryptionTests_JWETooFewParts_encryption_RSA_OAEP() throws Exception {
 
         String jwtToken = createGenericRS256JWE();
 
@@ -1027,10 +1072,10 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_JWE_Part1_isInvalid() throws Exception {
+    public void Social_EncryptionTests_JWE_Part1_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(1));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(1, SocialConstants.SIGALG_RS256));
 
         genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, setAppName(SocialConstants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
@@ -1042,10 +1087,10 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_JWE_Part2_isInvalid() throws Exception {
+    public void Social_EncryptionTests_JWE_Part2_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(2));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(2, SocialConstants.SIGALG_RS256));
 
         genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, setAppName(SocialConstants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
@@ -1057,10 +1102,10 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_JWE_Par3_isInvalid() throws Exception {
+    public void Social_EncryptionTests_JWE_Par3_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(3));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(3, SocialConstants.SIGALG_RS256));
 
         genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, setAppName(SocialConstants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
@@ -1072,10 +1117,10 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_JWE_Part4_isInvalid() throws Exception {
+    public void Social_EncryptionTests_JWE_Part4_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(4));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(4, SocialConstants.SIGALG_RS256));
 
         genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, setAppName(SocialConstants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
@@ -1087,12 +1132,114 @@ public class Social_EncryptionTests extends SocialCommonTest {
      * @throws Exception
      */
     @Test
-    public void Social_EncryptionTests_JWE_Part5_isInvalid() throws Exception {
+    public void Social_EncryptionTests_JWE_Part5_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(5));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(5, SocialConstants.SIGALG_RS256));
 
         genericEncryptTest(SocialConstants.SIGALG_RS256, setBuilderName(SocialConstants.SIGALG_RS256), SocialConstants.SIGALG_RS256, setAppName(SocialConstants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
+
+    }
+
+    /**
+     * ECDH-ES JWE Structure Validation Tests
+     * Validates the Social Client's ability to properly validate the structure of JWE
+     * (JSON Web Encryption) that use ECDH-ES as the key management algorithm.
+     * Unlike the RSA-OAEP tests, there is no specific test for Part 2 (Encrypted Key) in the ECDH-ES
+     * tests, as ECDH-ES uses direct key agreement (not requiring and effectively ignoring part 2 of the JWE).
+     */
+
+    /**
+     * Test that the Social Client detects that the JWE is invalid as it has too many parts (6) (one of which is completely
+     * invalid)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void Social_EncryptionTests_JWETooManyParts_encryption_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createGenericES256JWE() + "." + badTokenSegment);
+
+        genericEncryptTest(SocialConstants.SIGALG_ES256, setBuilderName(SocialConstants.SIGALG_ES256), SocialConstants.SIGALG_ES256, setAppName(SocialConstants.SIGALG_ES256), getInvalidNumberOfPartsExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the Social Client detects that the JWE is invalid as it has too few parts - the token only has 4 parts.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void Social_EncryptionTests_JWETooFewParts_encryption_ECDH_ES() throws Exception {
+
+        String jwtToken = createGenericES256JWE();
+
+        String badJweToken = jwtToken.substring(0, jwtToken.lastIndexOf(".") - 1);
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", badJweToken);
+
+        genericEncryptTest(SocialConstants.SIGALG_ES256, setBuilderName(SocialConstants.SIGALG_ES256), SocialConstants.SIGALG_ES256, setAppName(SocialConstants.SIGALG_ES256), getInvalidNumberOfPartsExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the Social Client detects that the JWE is invalid - Part 1 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void Social_EncryptionTests_JWE_Part1_isInvalid_encryption_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(1, SocialConstants.SIGALG_ES256));
+
+        genericEncryptTest(SocialConstants.SIGALG_ES256, setBuilderName(SocialConstants.SIGALG_ES256), SocialConstants.SIGALG_ES256, setAppName(SocialConstants.SIGALG_ES256), getInvalidFormatExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the Social Client detects that the JWE is invalid - Part 3 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void Social_EncryptionTests_JWE_Par3_isInvalid_encryption_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(3, SocialConstants.SIGALG_ES256));
+
+        genericEncryptTest(SocialConstants.SIGALG_ES256, setBuilderName(SocialConstants.SIGALG_ES256), SocialConstants.SIGALG_ES256, setAppName(SocialConstants.SIGALG_ES256), getInvalidFormatExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the Social Client detects that the JWE is invalid - Part 4 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void Social_EncryptionTests_JWE_Part4_isInvalid_encryption_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(4, SocialConstants.SIGALG_ES256));
+
+        genericEncryptTest(SocialConstants.SIGALG_ES256, setBuilderName(SocialConstants.SIGALG_ES256), SocialConstants.SIGALG_ES256, setAppName(SocialConstants.SIGALG_ES256), getInvalidFormatExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the Social Client detects that the JWE is invalid - Part 5 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void Social_EncryptionTests_JWE_Part5_isInvalid_encryption_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(5, SocialConstants.SIGALG_ES256));
+
+        genericEncryptTest(SocialConstants.SIGALG_ES256, setBuilderName(SocialConstants.SIGALG_ES256), SocialConstants.SIGALG_ES256, setAppName(SocialConstants.SIGALG_ES256), getInvalidFormatExpectations(), parms);
 
     }
 }

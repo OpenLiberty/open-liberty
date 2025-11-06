@@ -78,6 +78,7 @@
     <MetadataProvider id="spMetadata13" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp13Metadata.xml"/>
     <MetadataProvider id="spMetadata50" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp50Metadata.xml"/>
     <MetadataProvider id="spMetadataDefaultSP" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/defaultSPMetadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_sha1" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_sha1Metadata.xml"/>
     <MetadataProvider id="spMetadata_enc_aes128" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes128Metadata.xml"/>
     <MetadataProvider id="spMetadata_enc_aes256" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes256Metadata.xml"/>
     <MetadataProvider id="spMetadata_enc_aes192" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes192Metadata.xml"/>

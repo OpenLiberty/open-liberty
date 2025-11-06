@@ -37,12 +37,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.TreeSet;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.util.UUID;
 
+import io.openliberty.data.internal.AttributeConstraint;
 import io.openliberty.data.internal.persistence.cdi.RepositoryProducer;
 import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.Order;
@@ -51,6 +53,7 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
 import jakarta.persistence.AttributeConverter;
+import jakarta.transaction.Status;
 
 /**
  * A location for helper methods that do not require any state.
@@ -77,6 +80,11 @@ public class Util {
                             Update.class.getSimpleName());
 
     /**
+     * Query hint and map key for a load graph.
+     */
+    static final String LOADGRAPH = "jakarta.persistence.loadgraph";
+
+    /**
      * List of valid prefixes for Query by Method Name methods of a stateful
      * repository.
      */
@@ -91,6 +99,14 @@ public class Util {
                     Set.of("count", "delete", "exists", "find");
 
     /**
+     * Minimum number of characters in a valid SELECT COUNT clause.
+     * For example: SELECT COUNT(o)
+     * Any value below this number is considered to instead indicate a
+     * keyword that prevented the computation of a count query, such as GROUP.
+     */
+    static final int MIN_COUNT_QUERY_LENGTH = 15;
+
+    /**
      * Commonly used result types that are not entities.
      */
     static final Set<Class<?>> NON_ENTITY_RESULT_TYPES = new HashSet<>();
@@ -101,6 +117,27 @@ public class Util {
     static final Set<Class<?>> PRIMITIVE_NUMERIC_TYPES = //
                     Set.of(long.class, int.class, short.class, byte.class,
                            double.class, float.class);
+
+    /**
+     * Query language keywords that can appear immediately after the entity name when
+     * there is no entity identifier variable specified.
+     *
+     * DELETE FROM MyEntity WHERE ...
+     * FROM MyEntity UNION ...
+     * FROM MyEntity ORDER BY ...
+     * UPDATE MyEntity SET ...
+     */
+    public static final Set<String> QL_KEYWORDS_AFTER_ENTITY_NAME = new HashSet<>();
+    static {
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("EXCEPT");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("GROUP");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("HAVING");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("INTERSECT");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("ORDER");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("SET");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("UNION");
+        QL_KEYWORDS_AFTER_ENTITY_NAME.add("WHERE");
+    }
 
     /**
      * Return types for deleteBy that distinguish delete-only from find-and-delete.
@@ -234,6 +271,24 @@ public class Util {
     }
 
     /**
+     * Returns names of all Query by Method Name constraint keywords that are
+     * supported for collection attributes. This is used in error reporting
+     * to display which keywords are valid.
+     *
+     * @return names of all constraints that are supported for collection attributes.
+     */
+    @Trivial
+    static Set<String> constraintsThatSupportCollections() {
+        Set<String> supported = new TreeSet<>();
+        for (AttributeConstraint c : AttributeConstraint.values())
+            if (c.supportsCollections() && c.lengthWithinMethodName() > 0) {
+                String name = c.name();
+                supported.add(name);
+            }
+        return supported;
+    }
+
+    /**
      * Identifies whether a method is annotated with a Jakarta Data annotation
      * that performs and operation, such as Query, Find, or Save. This method is
      * for use by error reporting only, so it does not need to be very efficient.
@@ -245,7 +300,7 @@ public class Util {
     @Trivial
     static final boolean hasOperationAnno(Method method,
                                           RepositoryProducer<?> producer) {
-        DataVersionCompatibility compat = producer.provider().compat;
+        DataVersionCompatibility compat = producer.compat();
         Set<Class<? extends Annotation>> statefulAnnos = compat.operationAnnoTypes(true);
         Set<Class<? extends Annotation>> statelessAnnos = compat.operationAnnoTypes(false);
 
@@ -295,12 +350,12 @@ public class Util {
      */
     @Trivial
     static String lifeCycleAnnoNames(RepositoryProducer<?> producer) {
-        Set<Class<? extends Annotation>> annoClasses = producer.provider().compat //
+        Set<Class<? extends Annotation>> annoClasses = producer.compat() //
                         .lifeCycleAnnoTypes(producer.stateful());
 
         return annoClasses.stream() //
-                   .map(Class::getSimpleName) //
-                   .collect(Collectors.joining(", ", "[", "]"));
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
     }
 
     /**
@@ -364,12 +419,12 @@ public class Util {
      */
     @Trivial
     static String operationAnnoNames(RepositoryProducer<?> producer) {
-        Set<Class<? extends Annotation>> annoClasses = producer.provider().compat //
+        Set<Class<? extends Annotation>> annoClasses = producer.compat() //
                         .operationAnnoTypes(producer.stateful());
 
         return annoClasses.stream() //
-                           .map(Class::getSimpleName) //
-                           .collect(Collectors.joining(", ", "[", "]"));
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
     }
 
     /**
@@ -447,12 +502,12 @@ public class Util {
      */
     @Trivial
     static String resourceAccessorTypeNames(RepositoryProducer<?> producer) {
-        Set<Class<?>> types = producer.provider().compat //
+        Set<Class<?>> types = producer.compat() //
                         .resourceAccessorTypes(producer.stateful());
 
         return types.stream() //
-                    .map(Class::getSimpleName) //
-                    .collect(Collectors.joining(", ", "[", "]"));
+                        .map(Class::getSimpleName) //
+                        .collect(Collectors.joining(", ", "[", "]"));
     }
 
     /**
@@ -605,6 +660,29 @@ public class Util {
             }
             b.append(EOLN);
         }
+    }
+
+    /**
+     * Readable value to log to trace for a transaction status constant.
+     *
+     * @param status constant value from jakarta.transaction.Status.
+     * @return a more readable value to log to trace.
+     */
+    @Trivial
+    static final String txStatusToString(int status) {
+        return switch (status) {
+            case Status.STATUS_ACTIVE -> "STATUS_ACTIVE (0)";
+            case Status.STATUS_MARKED_ROLLBACK -> "STATUS_MARKED_ROLLBACK (1)";
+            case Status.STATUS_PREPARED -> "STATUS_PREPARED (2)";
+            case Status.STATUS_COMMITTED -> "STATUS_COMMITTED (3)";
+            case Status.STATUS_ROLLEDBACK -> "STATUS_ROLLEDBACK (4)";
+            case Status.STATUS_UNKNOWN -> "STATUS_UNKNOWN (5)";
+            case Status.STATUS_NO_TRANSACTION -> "STATUS_NO_TRANSACTION (6)";
+            case Status.STATUS_PREPARING -> "STATUS_PREPARING (7)";
+            case Status.STATUS_COMMITTING -> "STATUS_COMMITTING (8)";
+            case Status.STATUS_ROLLING_BACK -> "STATUS_ROLLING_BACK (9)";
+            default -> "unrecognized value (" + status + ")";
+        };
     }
 
     /**

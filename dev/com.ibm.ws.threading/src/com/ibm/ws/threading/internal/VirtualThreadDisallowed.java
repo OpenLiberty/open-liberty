@@ -56,6 +56,11 @@ public class VirtualThreadDisallowed implements VirtualThreadOps {
     }
 
     @Override
+    public boolean isVirtualThreadCreationEnabled() {
+        return false;
+    }
+
+    @Override
     public boolean isVirtual(Thread thread) {
         throw new UnsupportedOperationException();
     }

@@ -17,123 +17,125 @@ Bundle-Name: FAT infrastructure
 Bundle-SymbolicName: fattest.simplicity
 Bundle-Description: FAT infrastructure; version=${bVersion}
 
-Export-Package: \
-    com.ibm.websphere.simplicity;version=2.0,\
+Export-Package:\
     com.ibm.websphere.simplicity.application;version=2.0,\
     com.ibm.websphere.simplicity.beansxml;version=2.0,\
-    com.ibm.websphere.simplicity.config;version=2.0,\
-    com.ibm.websphere.simplicity.config.context;version=2.0,\
-    com.ibm.websphere.simplicity.config.dsprops;version=2.0,\
-    com.ibm.websphere.simplicity.config.dsprops.testrules;version=2.0,\
-    com.ibm.websphere.simplicity.config.wim;version=2.0,\
     com.ibm.websphere.simplicity.config.cache;version=2.0,\
+    com.ibm.websphere.simplicity.config.context;version=2.0,\
+    com.ibm.websphere.simplicity.config.dsprops.testrules;version=2.0,\
+    com.ibm.websphere.simplicity.config.dsprops;version=2.0,\
+    com.ibm.websphere.simplicity.config.wim;version=2.0,\
+    com.ibm.websphere.simplicity.config;version=2.0,\
     com.ibm.websphere.simplicity.log;version=2.0,\
+    com.ibm.websphere.simplicity;version=2.0,\
     com.ibm.websphere.soe_reporting;version=2.0,\
-    com.ibm.ws.fat.util;version=2.0,\
     com.ibm.ws.fat.util.browser;version=2.0,\
-    com.ibm.ws.fat.util.jmx;version=2.0,\
     com.ibm.ws.fat.util.jmx.mbeans;version=2.0,\
+    com.ibm.ws.fat.util.jmx;version=2.0,\
     com.ibm.ws.fat.util.tck;version=2.0,\
+    com.ibm.ws.fat.util;version=2.0,\
     componenttest.annotation;version=2.0,\
-    componenttest.common.apiservices;version=2.0,\
     componenttest.common.apiservices.cmdline;version=2.0,\
-    componenttest.containers;version=2.0,\
+    componenttest.common.apiservices;version=2.0,\
     componenttest.containers.registry;version=2.0,\
     componenttest.containers.substitution;version=2.0,\
+    componenttest.containers;version=2.0,\
     componenttest.custom.junit.runner;version=2.0,\
     componenttest.exception;version=2.0,\
     componenttest.logging.ffdc;version=2.0,\
-    componenttest.rules;version=2.0,\
     componenttest.rules.repeater;version=2.0,\
+    componenttest.rules;version=2.0,\
     componenttest.security.utils;version=2.0,\
     componenttest.selenium;version=2.0,\
-    componenttest.topology.database;version=2.0,\
     componenttest.topology.database.container;version=2.0,\
+    componenttest.topology.database;version=2.0,\
     componenttest.topology.impl;version=2.0,\
     componenttest.topology.ldap;version=2.0,\
-    componenttest.topology.utils;version=2.0,\
     componenttest.topology.utils.tck;version=2.0,\
+    componenttest.topology.utils;version=2.0,\
     componenttest.vulnerability;version=2.0,\
     io.openliberty.checkpoint.spi;version=2.0
 
-Private-Package: \
+Private-Package:\
+    com.ibm.websphere.simplicity.configuration,\
     componenttest.annotation.processor,\
     componenttest.depchain,\
-    componenttest.topology.impl.probe,\
-    com.ibm.websphere.simplicity.configuration
+    componenttest.topology.impl.probe
 
-Include-Resource: \
+Include-Resource:\
     init-sqlserver.sql=resources/init-sqlserver.sql
 
 test.project: true
 generate.replacement: true
 
 # These are the images used by the org.testcontainers and componenttest.topology.database.container packages
-fat.test.container.images: \
-               ghcr.io/testcontainers/ryuk:0.12.0,\
-               ghcr.io/testcontainers/sshd:1.3.0,\
-               ghcr.io/testcontainers/vnc-recorder:1.4.0,\
-               icr.io/db2_community/db2:12.1.1.0,\
-               ghcr.io/gvenzl/oracle-free:23-full-faststart,\
-               public.ecr.aws/docker/library/postgres:17-alpine,\
-               public.ecr.aws/docker/library/alpine:3.17,\
-               mcr.microsoft.com/mssql/server:2022-latest
+fat.test.container.images:\
+    ghcr.io/gvenzl/oracle-free:23-full-faststart,\
+    ghcr.io/testcontainers/ryuk:0.12.0,\
+    ghcr.io/testcontainers/sshd:1.3.0,\
+    ghcr.io/testcontainers/vnc-recorder:1.4.0,\
+    icr.io/db2_community/db2:12.1.1.0,\
+    mcr.microsoft.com/mssql/server:2022-latest,\
+    public.ecr.aws/docker/library/alpine:3.17,\
+    public.ecr.aws/docker/library/postgres:17-alpine
 
--buildpath: \
-    com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
-    commons-httpclient:commons-httpclient;version=3.1,\
-    com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-    io.openliberty.jakarta.servlet.5.0;version=latest,\
-    org.eclipse.transformer:org.eclipse.transformer.cli;version=0.5.0,\
-    org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer;version=0.5.0,\
-    org.eclipse.transformer:org.eclipse.transformer.jakarta;version=0.5.0,\
-    org.eclipse.transformer:org.eclipse.transformer;version=0.5.0,\
+-buildpath:\
     biz.aQute.bnd:biz.aQute.bnd.transform;strategy=exact;version=6.4.1,\
     biz.aQute.bnd:biz.aQute.bnd.transform;strategy=exact;version=7.0.0,\
-    commons-cli:commons-cli;strategy=exact;version='1.5.0',\
+    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
     com.ibm.ws.common.encoder;version=latest,\
     com.ibm.ws.componenttest;version=latest,\
-    com.ibm.ws.timedexit.internal;version=latest,\
     com.ibm.ws.jaxb.tools;version=latest,\
-    httpunit:httpunit;version=1.5.4,\
-    javax.activation:activation;version=1.1,\
-    net.sf.jtidy:jtidy;version=9.3.8,\
-    org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
-    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
-    org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
-    org.apache.derby:derbynet;version=10.11.1.1,\
-    org.jmock:jmock;strategy=exact;version=2.5.1,\
-    org.hamcrest:hamcrest-all;version=1.3,\
-    com.ibm.ws.org.glassfish.json.1.0;version=latest,\
-    com.ibm.ws.logging;version=latest,\
-    org.jboss.arquillian.container:arquillian-container-test-spi;version=1.7.0.Alpha13,\
-    org.jboss.arquillian.core:arquillian-core-spi;version=1.7.0.Alpha13,\
-    org.jboss.arquillian.core:arquillian-core-api;version=1.7.0.Alpha13,\
-    org.jboss.arquillian.test:arquillian-test-spi;version=1.7.0.Alpha13,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    io.openliberty.org.apache.commons.logging;version=latest,\
-    io.openliberty.org.testcontainers;version=latest,\
-    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-    io.openliberty.jakarta.cdi.3.0;version=latest,\
     com.ibm.ws.kernel.boot;version=latest,\
+    com.ibm.ws.kernel.security.thread;version=latest,\
     com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.kernel.security.thread;version=latest, \
-    io.openliberty.org.eclipse.openj9.criu;version=latest,\
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.ws.org.glassfish.json.1.0;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.org.slf4j.api;version=latest,\
     com.ibm.ws.org.slf4j.simple;version=latest,\
+    com.ibm.ws.timedexit.internal;version=latest,\
+    commons-cli:commons-cli;strategy=exact;version='1.5.0',\
+    commons-httpclient:commons-httpclient;version=3.1,\
+    httpunit:httpunit;version=1.5.4,\
     io.openliberty.com.fasterxml.jackson;version=latest,\
-    org.seleniumhq.selenium:selenium-api;version=4.8.3,\
-    org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+    io.openliberty.jakarta.annotation.3.0;version=latest,\
+    io.openliberty.jakarta.cdi.3.0;version=latest,\
+    io.openliberty.jakarta.concurrency.3.1;version=latest,\
+    io.openliberty.jakarta.servlet.5.0;version=latest,\
+    io.openliberty.org.apache.commons.logging;version=latest,\
     io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
     io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
     io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest,\
-    io.openliberty.jakarta.concurrency.3.1;version=latest,\
-    io.openliberty.jakarta.annotation.3.0;version=latest
-    
--testpath: \
+    io.openliberty.org.eclipse.openj9.criu;version=latest,\
+    io.openliberty.org.testcontainers;version=latest,\
+    javax.activation:activation;version=1.1,\
+    net.sf.jtidy:jtidy;version=9.3.8,\
+    org.apache.derby:derbynet;version=10.11.1.1,\
+    org.eclipse.transformer:org.eclipse.transformer.bnd.analyzer;version=0.5.0,\
+    org.eclipse.transformer:org.eclipse.transformer.cli;version=0.5.0,\
+    org.eclipse.transformer:org.eclipse.transformer.jakarta;version=0.5.0,\
+    org.eclipse.transformer:org.eclipse.transformer;version=0.5.0,\
+    org.hamcrest:hamcrest-all;version=1.3,\
+    org.jboss.arquillian.container:arquillian-container-test-spi;version=1.7.0.Alpha13,\
+    org.jboss.arquillian.core:arquillian-core-api;version=1.7.0.Alpha13,\
+    org.jboss.arquillian.core:arquillian-core-spi;version=1.7.0.Alpha13,\
+    org.jboss.arquillian.test:arquillian-test-spi;version=1.7.0.Alpha13,\
+    org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
+    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
+    org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
+    org.jmock:jmock;strategy=exact;version=2.5.1,\
+    org.seleniumhq.selenium:selenium-api;version=4.8.3,\
+    org.seleniumhq.selenium:selenium-support;version=4.8.3,\
+    jakarta.tck.arquillian:tck-porting-lib;version=11.0.1
+
+-testpath:\
+    net.bytebuddy:byte-buddy-agent;version=1.16.1,\
+    net.bytebuddy:byte-buddy;version=1.16.1,\
     org.mockito:mockito-core;version=4.11.0,\
     org.mockito:mockito-inline;version=4.11.0,\
-    net.bytebuddy:byte-buddy;version=1.16.1,\
-    net.bytebuddy:byte-buddy-agent;version=1.16.1,\
     org.objenesis:objenesis;version=3.4
+

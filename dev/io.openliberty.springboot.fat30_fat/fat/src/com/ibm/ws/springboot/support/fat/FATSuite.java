@@ -68,6 +68,10 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 JPALibertyAppTests30War.class,
                 JPAEclipseLinkAppTests30War.class,
                 JPAEclipseLinkWeavingAppTests30War.class,
+                JPAEclipseLinkAppTests30.class,
+                JPAEclipseLinkWeavingAppTests30.class,
+                JPAHibernateAppTests30.class,
+//                JPALibertyAppTests30.class,
                 JmsWebAppTests30.class,
                 JmsSpringBootAppTests30.class,
                 ConcurrencyAppTests30.class,
@@ -75,7 +79,11 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 ValidationTests30.class,
                 ValidationTests30War.class,
                 AopWebAppTests30.class,
-                AopSpringBootAppTests30.class
+                AopSpringBootAppTests30.class,
+                MBeanAppTests30.class,
+                MBeanAppTests30War.class,
+                HTTPMetricsNoContextRootTest.class,
+                HTTPMetricsWithContextRootTest.class
 })
 
 public class FATSuite {

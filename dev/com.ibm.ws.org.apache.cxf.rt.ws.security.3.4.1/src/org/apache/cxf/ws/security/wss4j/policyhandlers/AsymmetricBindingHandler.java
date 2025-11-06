@@ -239,8 +239,8 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
             }
 
             if (encToken != null) {
-                WSSecBase encr = null;
                 if (encToken.getToken() != null && !enc.isEmpty()) {
+                    final WSSecBase encr; // Liberty Change: Backport 4.x
                     if (encToken.getToken().getDerivedKeys() == DerivedKeys.RequireDerivedKeys) {
                         encr = doEncryptionDerived(encToken, enc);
                     } else {
@@ -783,7 +783,7 @@ public class AsymmetricBindingHandler extends AbstractBindingBuilder {
             }
 
             List<Reference> referenceList = sig.addReferencesToSign(sigParts);
-            if (!referenceList.isEmpty()) {
+            if (!referenceList.isEmpty()) { 
                 //Do signature
                 if (bottomUpElement == null) {
                     sig.computeSignature(referenceList, false, null);

@@ -27,6 +27,7 @@ import org.testcontainers.utility.DockerImageName;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.depchain.FeatureDependencyProcessor;
 
 /**
  * This is a factory class that creates database test-containers.
@@ -81,7 +82,7 @@ public class DatabaseContainerFactory {
      *      This should mainly be used if you want to use derby client instead of derby embedded as your default.
      */
     public static JdbcDatabaseContainer<?> create(DatabaseContainerType defaultType) throws IllegalArgumentException {
-        Path testedFeatures = new File("fat-metadata.json").toPath();
+        Path testedFeatures = FeatureDependencyProcessor.getTestedFeaturesMetdataFile().toPath();
         String dbProperty = System.getProperty(databaseRotationDatabaseType, defaultType.name());
 
         boolean validateDatabaseRotationFeature;

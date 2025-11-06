@@ -1,21 +1,30 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
 
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
                'org.apache.httpcomponents:httpcore:4.1.2',
+               'org.apache.sshd:sshd-common:2.12.1',
+               'org.apache.sshd:sshd-core:2.12.1',
+               'org.bouncycastle:bcprov-jdk18on:1.78.1', // required for sshd and cannot use io.openliberty.org.bouncycastle.bcprov-jdk18on
                project(':io.openliberty.org.apache.commons.codec'),
-               project(':com.ibm.ws.security.spnego.fat.common')
+               project(':com.ibm.ws.security.spnego.fat.common'),
+               project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

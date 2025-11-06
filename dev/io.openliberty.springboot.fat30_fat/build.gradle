@@ -29,7 +29,7 @@ dependencies {
     'net.sourceforge.htmlunit:htmlunit:2.44.0',
     'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
     'net.sourceforge.htmlunit:webdriver:2.6',
-    'org.apache.commons:commons-lang3:3.14.0',
+    project(':com.ibm.ws.org.apache.commons.lang3'),
     'org.apache.httpcomponents:httpmime:4.3.1',
     'org.brotli:dec:0.1.2',
     'org.eclipse.birt.runtime:org.w3c.css.sac:1.3.1.v200903091627',
@@ -60,6 +60,7 @@ dependencies {
     'xml-apis:xml-apis:1.4.01',
     project(':com.ibm.ws.org.apache.commons.io'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
+    project(':com.ibm.ws.org.apache.commons.lang3'),
     project(':io.openliberty.org.apache.commons.codec'),
     project(':io.openliberty.org.apache.xercesImpl')
 
@@ -90,6 +91,8 @@ addRequiredLibraries.dependsOn addMQ
 def appDefs =
   [ [ 'io.openliberty.springboot.fat30.app', '.jar' ],
     [ 'io.openliberty.springboot.fat30.war.app', '.war' ],
+    [ 'io.openliberty.springboot.fat30.http.app', '.war' ],
+    [ 'io.openliberty.springboot.fat30.http.contextroot.app', '.war' ],
     [ 'io.openliberty.springboot.fat30.java.app', '.jar' ],
     [ 'io.openliberty.springboot.fat30.webanno.app', '.jar' ],
     [ 'io.openliberty.springboot.fat30.websocket.app', '.war' ],
@@ -103,7 +106,9 @@ def appDefs =
     [ 'io.openliberty.springboot.fat30.data.app', '.war' ], 
     [ 'io.openliberty.springboot.fat30.concurrency.app', '.war'], 
     [ 'io.openliberty.springboot.fat30.validation.app', '.war'],
-    [ 'io.openliberty.springboot.fat30.aop.app', '.war']]
+    [ 'io.openliberty.springboot.fat30.aop.app', '.war'],
+    [ 'io.openliberty.springboot.fat30.concurrency.app', '.war'],
+    [ 'io.openliberty.springboot.fat30.mbean.app', '.war']]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
+import jakarta.data.constraint.Like;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
@@ -415,7 +416,7 @@ public class DataExperimentalServlet extends FATServlet {
         // @Select as String
 
         assertEquals(List.of("050-2 B120", "050-2 G105", "050-2 G105"),
-                     reservations.locationsThatStartWith("050-"));
+                     reservations.locations(Like.prefix("050-")));
 
         reservations.deleteByHostNot("nobody");
     }
@@ -425,9 +426,9 @@ public class DataExperimentalServlet extends FATServlet {
      */
     @Test
     public void testExistsAnnotation() {
-        assertEquals(true, primes.anyLessThanEndingWithBitPattern(25L, "1101"));
-        assertEquals(false, primes.anyLessThanEndingWithBitPattern(25L, "1111"));
-        assertEquals(false, primes.anyLessThanEndingWithBitPattern(12L, "1101"));
+        assertEquals(true, primes.anyLessThanWithBitPattern(25L, "%1101"));
+        assertEquals(false, primes.anyLessThanWithBitPattern(25L, "s1111"));
+        assertEquals(false, primes.anyLessThanWithBitPattern(12L, "11_1"));
     }
 
     /**
@@ -516,10 +517,16 @@ public class DataExperimentalServlet extends FATServlet {
     @Test
     public void testFind() {
         assertEquals(List.of(37L, 17L, 7L, 5L), // 11 has no V in the roman numeral and 47 is too big
-                     primes.inRangeHavingNumeralLikeAndSubstringOfName(5L, 45L, "%v%", "ve"));
+                     primes.inRangeHavingNumeralLikeAndNamePattern(5L,
+                                                                   45L,
+                                                                   "%v%",
+                                                                   Like.substring("ve")));
 
         assertEquals(List.of(),
-                     primes.inRangeHavingNumeralLikeAndSubstringOfName(1L, 18L, "%v%", "nine"));
+                     primes.inRangeHavingNumeralLikeAndNamePattern(1L,
+                                                                   18L,
+                                                                   "%v%",
+                                                                   Like.substring("nine")));
     }
 
     /**
@@ -835,15 +842,19 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
-     * Test the Not annotation on a parameter-based query.
+     * Test the Like and NotLike constraints on a parameter-based query.
      */
     @Test
-    public void testNot() {
+    public void testLikeAndNotLike() {
         assertEquals(List.of("thirteen"),
-                     primes.withRomanNumeralSuffixAndWithoutNameSuffix("III", "three", 50));
+                     primes.withRomanNumeralAndWithoutName("%III",
+                                                           "%three",
+                                                           50));
 
         assertEquals(List.of("seventeen"),
-                     primes.withRomanNumeralSuffixAndWithoutNameSuffix("VII", "seven", 50));
+                     primes.withRomanNumeralAndWithoutName("%VII",
+                                                           "%seven",
+                                                           50));
     }
 
     /**
@@ -855,7 +866,9 @@ public class DataExperimentalServlet extends FATServlet {
 
         assertEquals(List.of("Rochester Minnesota",
                              "Kansas City Missouri"),
-                     towns.largerThan(100000, "springfield", "M%s")
+                     towns.largerThan(100000,
+                                      "springfield",
+                                      Like.pattern("M*s*", '_', '*'))
                                      .map(c -> c.name + ' ' + c.stateName)
                                      .collect(Collectors.toList()));
     }
@@ -1509,10 +1522,10 @@ public class DataExperimentalServlet extends FATServlet {
     }
 
     /**
-     * Use repository updateBy methods.
+     * Use repository Query methods that perform assignment operations.
      */
     @Test
-    public void testRepositoryUpdateMethods() {
+    public void testRepositoryQueryMethodsAssignment() {
         ZoneOffset CDT = ZoneOffset.ofHours(-5);
 
         // remove data that other tests previously inserted to the same table
@@ -1557,7 +1570,7 @@ public class DataExperimentalServlet extends FATServlet {
         reservations.saveAll(List.of(r1, r2, r3, r4));
 
         // Update by primary key
-        assertEquals(true, reservations.updateByMeetingIDSetHost(1012004, "testRepositoryUpdateMethods-host2@example.org"));
+        assertEquals(true, reservations.setHost(1012004, "testRepositoryUpdateMethods-host2@example.org"));
 
         // See if the updated entry is found
         List<Long> found = new ArrayList<>();
@@ -1565,9 +1578,9 @@ public class DataExperimentalServlet extends FATServlet {
         assertEquals(List.of(1012004L), found);
 
         // Update multiple by various conditions
-        assertEquals(2, reservations.updateByHostAndLocationSetLocation("testRepositoryUpdateMethods-host1@example.org",
-                                                                        "050-2 A101",
-                                                                        "050-2 H115"));
+        assertEquals(2, reservations.setLocation("testRepositoryUpdateMethods-host1@example.org",
+                                                 "050-2 A101",
+                                                 "050-2 H115"));
         assertEquals(List.of(1012001L, 1012003L),
                      reservations.findByLocationContainsOrderByMeetingID("H115")
                                      .stream()
@@ -1836,7 +1849,9 @@ public class DataExperimentalServlet extends FATServlet {
         assertEquals(true, items.isNotEmpty());
         assertEquals(6, items.total());
 
-        assertEquals(5, items.inflatePrices("Priced TestUpdateAnnotation Item", 1.07f)); // item4 does not match
+        assertEquals(5,
+                     items.inflatePrices(Like.suffix("Priced TestUpdateAnnotation Item"),
+                                         1.07f)); // item4 does not match
 
         Item[] found = items.versionedAtOrAbove(2);
 

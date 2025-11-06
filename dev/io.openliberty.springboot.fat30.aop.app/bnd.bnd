@@ -34,6 +34,7 @@ src: \
 # Ref: https://bndtools.org/manual/packageexplorer.html
 
 -testpath: \
+  org.aspectj:aspectjrt;version=1.9.24, \
   org.springframework.boot:spring-boot;${springBootVersion30}, \
   org.springframework.boot:spring-boot-autoconfigure;${springBootVersion30}, \
 \

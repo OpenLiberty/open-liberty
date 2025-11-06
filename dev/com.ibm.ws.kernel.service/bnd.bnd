@@ -26,6 +26,7 @@ Bundle-Activator: com.ibm.ws.kernel.service.location.internal.Activator
 
 Export-Package: \
  com.ibm.websphere.kernel.server;provide:=true, \
+ com.ibm.wsspi.kernel.service.condition, \
  com.ibm.wsspi.kernel.service.location, \
  com.ibm.wsspi.kernel.service.utils;provide:=true, \
  com.ibm.ws.kernel.service.util;provide:=true, \
@@ -51,7 +52,8 @@ Import-Package: \
 -dsannotations: \
   com.ibm.ws.kernel.server.internal.InspectCommand, \
   com.ibm.ws.kernel.server.internal.ServerInfoMBeanImpl, \
-  com.ibm.ws.kernel.server.internal.ServerEndpointControlMBeanImpl
+  com.ibm.ws.kernel.server.internal.ServerEndpointControlMBeanImpl, \
+  com.ibm.ws.kernel.server.internal.StartPhaseConditionManager
 
 instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class, \
   com/ibm/ws/kernel/**/internal/resources/*.class, \

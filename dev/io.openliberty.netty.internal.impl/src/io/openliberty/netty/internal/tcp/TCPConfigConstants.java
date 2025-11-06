@@ -4,16 +4,16 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
 /**
  * This interface describes the constants used for configuring a TCP Channel.
- * 
+ *
  * Adapted from {@link com.ibm.wsspi.tcpchannel.TCPConfigConstants}
- * 
+ *
  */
 public interface TCPConfigConstants {
 

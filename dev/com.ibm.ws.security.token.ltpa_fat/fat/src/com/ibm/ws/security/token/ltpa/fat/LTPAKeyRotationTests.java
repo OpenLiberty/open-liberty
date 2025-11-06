@@ -13,9 +13,9 @@
 
 package com.ibm.ws.security.token.ltpa.fat;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
@@ -96,7 +96,7 @@ public class LTPAKeyRotationTests {
     private static final String validUser = "user1";
     private static final String validPassword = "user1pwd";
 
-    private static final String[] serverShutdownMessages = { "CWWKG0058E", "CWWKG0083W", "CWWKS4106E", "CWWKS4109W", "CWWKS4110E", "CWWKS4111E", "CWWKS4112E", "CWWKS4113W",
+    private static final String[] serverShutdownMessages = { "CWWKG0058E", "CWWKG0083W", "CWWKS4102E", "CWWKS4106E", "CWWKS4109W", "CWWKS4110E", "CWWKS4111E", "CWWKS4112E", "CWWKS4113W",
                                                              "CWWKS4114W", "CWWKS4115W", "CWWKS1859E" };
 
     private static String validationKeyPassword = "{xor}Lz4sLCgwLTs=";
@@ -121,6 +121,7 @@ public class LTPAKeyRotationTests {
     private static final String BAD_PUBLIC_VALIDATION_KEY2_PATH = "resources/security/validation8.keys";
 
     // Define the paths to the alternate key files
+    private static String ALT_PRIMARY_KEY_PATH = "alternate/ltpa.keys";
     private static String ALT_VALIDATION_KEY1_PATH = "alternate/validation1.keys";
     private static String ALT_VALIDATION_KEY2_PATH = "alternate/validation2.keys";
     private static String ALT_VALIDATION_KEY3_PATH = "alternate/validation3.keys";
@@ -133,6 +134,7 @@ public class LTPAKeyRotationTests {
     private static String SERVER_XML_PATH = "server.xml";
 
     // Define the paths to the alternate key files
+    private static String ALT_FIPS_PRIMARY_KEY_PATH = "alternateFIPS/ltpa.keys";
     private static String ALT_FIPS_VALIDATION_KEY1_PATH = "alternateFIPS/validation1.keys";
     private static String ALT_FIPS_VALIDATION_KEY2_PATH = "alternateFIPS/validation2.keys";
     private static String ALT_FIPS_VALIDATION_KEY3_PATH = "alternateFIPS/validation3.keys";
@@ -154,17 +156,27 @@ public class LTPAKeyRotationTests {
 
     // Define fipsEnabled
     private static final boolean fips140_3Enabled;
+    private static final boolean ibmJdk8Fips140_3Enabled;
+    private static final boolean semeruFips140_3Enabled;
     private static final boolean fips140_2Enabled;
 
     static {
         boolean isFips140_3Enabled = false;
+        boolean isSemeruFips140_3Enabled = false;
+        boolean isIbmJdk8Fips140_3Enabled = false;
         try {
             isFips140_3Enabled = server.isFIPS140_3EnabledAndSupported();
+            isIbmJdk8Fips140_3Enabled = server.isIbmJdk8FIPS140_3EnabledAndSupported();
+            isSemeruFips140_3Enabled = server.isSemeruFIPS140_3EnabledAndSupported();
         } catch (Exception e) {
             e.printStackTrace();
         }
         fips140_3Enabled = isFips140_3Enabled;
         Log.info(thisClass, "static", "fips140_3Enabled: " + fips140_3Enabled);
+        ibmJdk8Fips140_3Enabled = isIbmJdk8Fips140_3Enabled;
+        Log.info(thisClass, "static", "ibmJdk8Fips140_3Enabled: " + ibmJdk8Fips140_3Enabled);
+        semeruFips140_3Enabled = isSemeruFips140_3Enabled;
+        Log.info(thisClass, "static", "semeruFips140_3Enabled: " + semeruFips140_3Enabled);
 
         boolean isFips140_2Enabled = false;
         try {
@@ -231,7 +243,9 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
                       server.waitForStringInLog("CWWKS4105I"));
 
-        checkFipsEnabledMessages();
+        if (!server.isEnhancedAlgorithmOptionsEnabled()) {
+            checkFipsEnabledMessages();
+        }
 
         messagesLogFile = server.getDefaultLogFile();
 
@@ -239,9 +253,19 @@ public class LTPAKeyRotationTests {
 
     private static void checkFipsEnabledMessages() {
         assertFalse("Expected neither or one of FIPS 140-3 or FIPS 140-2 to be enabled, but both are enabled.", fips140_3Enabled && fips140_2Enabled);
+        assertFalse("Expected neither or one of IBM JDK 8 or Semeru FIPS 140-3 to be enabled, but both are enabled.", ibmJdk8Fips140_3Enabled && semeruFips140_3Enabled);
 
-        assertEquals("Expected FIPS 140-3 enabled message to be " + (fips140_3Enabled ? "found, but was not found." : "not found, but was found."),
-                fips140_3Enabled, server.waitForStringInLog("CWWKS5903I") != null);
+        if (fips140_3Enabled) {
+            assertTrue("Expected one of IBM JDK 8 or Semeru FIPS 140-3 to be enabled, but neither are enabled.", ibmJdk8Fips140_3Enabled || semeruFips140_3Enabled);
+            if (ibmJdk8Fips140_3Enabled) {
+                assertNotNull("Expected FIPS 140-3 enabled message to be found, but was not found.", server.waitForStringInLog("CWWKS5903I:.*IBMJCEPlusFIPS"));
+            } else {
+                assertNotNull("Expected FIPS 140-3 enabled message to be found, but was not found.", server.waitForStringInLog("CWWKS5903I:.*OpenJCEPlusFIPS"));
+            }
+        } else {
+            assertFalse("Expected neither of IBM JDK 8 or Semeru FIPS 140-3 to be enabled, but at least one is enabled.", ibmJdk8Fips140_3Enabled || semeruFips140_3Enabled);
+            assertNull("Expected FIPS 140-3 enabled message to be not found, but was found.", server.waitForStringInLog("CWWKS5903I:"));
+        }
 
         // let's not worry about non-fips case for getFipsLevel for now since some JDK's might use 140-2 as default
         // while some might use disabled. so let's just focus on making sure it's correct for fips enabled.
@@ -251,6 +275,10 @@ public class LTPAKeyRotationTests {
         }
 
         assertNotNull("Expected \"isFips140_3Enabled: " + fips140_3Enabled + "\" trace was not found.", server.waitForStringInTrace("isFips140_3Enabled: " + fips140_3Enabled));
+        assertNotNull("Expected \"isIbmJdk8Fips140_3Enabled: " + ibmJdk8Fips140_3Enabled + "\" trace was not found.",
+                      server.waitForStringInTrace("isIbmJdk8Fips140_3Enabled: " + ibmJdk8Fips140_3Enabled));
+        assertNotNull("Expected \"isSemeruFips140_3Enabled: " + semeruFips140_3Enabled + "\" trace was not found.",
+                      server.waitForStringInTrace("isSemeruFips140_3Enabled: " + semeruFips140_3Enabled));
         assertNotNull("Expected \"isFips140_2Enabled: " + fips140_2Enabled + "\" trace was not found.", server.waitForStringInTrace("isFips140_2Enabled: " + fips140_2Enabled));
     }
 
@@ -278,6 +306,92 @@ public class LTPAKeyRotationTests {
             flClient1.releaseClient();
             flClient2.releaseClient();
         }
+    }
+
+
+    /**
+     * Verify the following:
+     * <OL>
+     * <LI>Set MonitorValidationKeysDir to true, and MonitorInterval to 10.
+     * <LI>Verify LTPA primary key version is 2.0 when fips is enabled, and 1.0 when not enabled
+     * <LI>When fips is not enabled, assert a backup LTPA key file is not created
+     * <LI>When FIPS is enabled, replace the LTPA primary key file and check for the creation of a backup and new primary key file
+     * <OL>
+     * <P>Expected Results:
+     * <OL>
+     * <LI>MonitorValidationKeysDir is set to true, and MonitorInterval to 10.
+     * <LI>LTPA primary key version should be version 2.0 when fips is enabled, and 1.0 when not enabled
+     * <LI>When fips is not enabled, a backup LTPA key file is not created
+     * <LI>When FIPS is enabled on IBM JDK 8, a backup key file is not created
+     * <LI>When FIPS is enabled on Semeru, a backup key file is created and a compatible LTPA key file is generated
+     * </OL>
+     * 
+     * TODO: After removal of betaguard reconfigure test as regeneration will occur regardless of FIPS enablement and platform
+     * Beta check in LTPAKeyInfoManager only allows LTPA key backup and regeneration on Semeru FIPS 140-3
+     */
+    @Test
+    @CheckForLeakedPasswords({ validPassword })
+    @AllowedFFDC({ "java.lang.IllegalArgumentException" })
+    public void testLTPAFileRegeneration_regenerateV1KeysWhenFipsIsEnabled_notRegenerateV1KeysWhenFipsDisabled() throws Exception {
+
+        // Configure the server
+        configureServer("true", "10", true);
+
+        if (!fips140_3Enabled) {
+            // ltpa is ver1 on startup since fips is NOT enabled
+            verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "1.0");
+
+            copyFileToServerResourcesSecurityDir(ALT_FIPS_PRIMARY_KEY_PATH);
+            assertNotNull("Error message for LTPA key creation should be found in the log due to missing 3DESKey property",
+                server.waitForStringInLog("CWWKS4102E", 5000));
+
+            // should NOT regenerate ltpa to fips-compatible keys
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".fips");
+
+        } else if (ibmJdk8Fips140_3Enabled) {
+
+            // ltpa is ver1 on startup since fips is NOT enabled
+            verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "2.0");
+
+            copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
+            assertNotNull("Error message for LTPA key creation should be found in the log due to missing SharedKey property",
+                server.waitForStringInLog("CWWKS4102E", 5000));
+
+            // should NOT regenerate ltpa to fips-compatible keys
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".nofips");
+
+        } else if (semeruFips140_3Enabled) {
+            
+            // ltpa is ver2 on startup since fips is enabled
+            verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "2.0");
+
+            // copy version1 (non-fips) ltpa to server
+            copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
+            verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "1.0");
+
+            // should regenerate ltpa to fips-compatible keys and backup incompatible key
+            waitForLTPAKeysCreatedMessage();
+            waitForLTPAConfigurationReadyMessage();
+            assertFileWasCreated(DEFAULT_KEY_PATH + ".nofips");
+
+            copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
+            verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "1.0");
+
+            moveLogMark();
+
+            // should regenerate key again
+            waitForLTPAKeysCreatedMessage();
+            waitForLTPAConfigurationReadyMessage();
+
+            // verify version 2 keys was generated
+            assertFileWasCreated(DEFAULT_KEY_PATH);
+            verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "2.0");
+        }
+
+        flClient1.accessProtectedServletWithAuthorizedCredentials(FormLoginClient.PROTECTED_SIMPLE, validUser, validPassword);
+
+        String cookie1 = flClient1.getCookieFromLastLogin();
+        assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
     }
 
     /**
@@ -2590,7 +2704,6 @@ public class LTPAKeyRotationTests {
             Log.info(thisClass, "notifyFileChangesWithMbean", "FileNotificationMBean is not registered.");
             throw new Exception("FileNotificationMBean is not registered.");
         }
-
     }
 
     private static boolean isWindows() {
@@ -2607,4 +2720,34 @@ public class LTPAKeyRotationTests {
         assertNotNull("Expected LTPA configuration ready message not found in the log.", server.waitForStringInLog("CWWKS4105I", timeoutMillis));
     }
 
+    /**
+     * Verify that the LTPA key file has the expected version
+     *
+     * @param filePath        Path to the LTPA key file
+     * @param expectedVersion Expected version string (e.g., "1.0" or "2.0")
+     * @throws Exception
+     */
+    private void verifyLTPAKeyVersion(String filePath, String expectedVersion) throws Exception {
+        Log.info(thisClass, "verifyLTPAKeyVersion", "Verifying LTPA key version in: " + filePath);
+
+        String absolutePath = server.getServerRoot() + "/" + filePath;
+        boolean versionFound = false;
+        boolean correctVersion = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(absolutePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.startsWith("com.ibm.websphere.ltpa.version=")) {
+                    versionFound = true;
+                    String version = line.substring("com.ibm.websphere.ltpa.version=".length());
+                    Log.info(thisClass, "verifyLTPAKeyVersion", "Found version: " + version);
+                    correctVersion = expectedVersion.equals(version);
+                    break;
+                }
+            }
+        }
+
+        assertTrue("LTPA key version not found in file: " + filePath, versionFound);
+        assertTrue("LTPA key version is not " + expectedVersion + " in file: " + filePath, correctVersion);
+    }
 }

@@ -9,10 +9,10 @@
  *******************************************************************************/
 package io.openliberty.classloading.classpath.fat;
 
-import static io.openliberty.classloading.classpath.fat.FATSuite.PARENT_LAST_TEST_SERVER;
+import static io.openliberty.classloading.classpath.fat.FATSuite.PARENT_LAST_LIBRARY_FEATURE_TEST_SERVER;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB6_JAR;
-import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_PARENT_LAST_APP;
-import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_PARENT_LAST_WAR;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_PARENT_LAST_LIBRARY_FEATURE_APP;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_PARENT_LAST_LIBRARY_FEATURE_WAR;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -27,21 +27,24 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.classloading.parentlast.test.app.ParentLastTestServlet;
+import io.openliberty.classloading.feature.message.test.app.ParentLastFeatureMessageTestServlet;
 
 /**
- *
+ * Tests using parentLast delegation with a configured library.
+ * Verifies we do not log unexpected messages about missing classes and possible features to enable.
  */
 @RunWith(FATRunner.class)
+@MinimumJavaLevel(javaLevel=11)
 public class ParentLastLibraryFeatureTests extends FATServletClient {
 
-    @Server(PARENT_LAST_TEST_SERVER)
-    @TestServlet(servlet = ParentLastTestServlet.class, contextRoot = TEST_PARENT_LAST_APP)
+    @Server(PARENT_LAST_LIBRARY_FEATURE_TEST_SERVER)
+    @TestServlet(servlet = ParentLastFeatureMessageTestServlet.class, contextRoot = TEST_PARENT_LAST_LIBRARY_FEATURE_APP)
     public static LibertyServer server;
 
     @Rule
@@ -49,7 +52,7 @@ public class ParentLastLibraryFeatureTests extends FATServletClient {
 
     @BeforeClass
     public static void setupTestServer() throws Exception {
-        ShrinkHelper.exportAppToServer(server, TEST_PARENT_LAST_WAR, DeployOptions.SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, TEST_PARENT_LAST_LIBRARY_FEATURE_WAR, DeployOptions.SERVER_ONLY);
 
         ShrinkHelper.exportToServer(server, "/libs", TEST_LIB6_JAR, DeployOptions.SERVER_ONLY);
 

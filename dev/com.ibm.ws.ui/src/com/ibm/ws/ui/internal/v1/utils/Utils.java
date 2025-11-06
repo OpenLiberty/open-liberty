@@ -33,6 +33,7 @@ import com.ibm.wsspi.rest.handler.RESTRequest;
 
 /**
  * This class is designed to hold utility methods that different parts of the server side UI will need to use.
+ * The algorithm assessment of FIPS 140-3 by updating SHA512 message digest algorithm is based on slack discussion with component SMEs.
  */
 public class Utils {
     private static final TraceComponent tc = Tr.register(Utils.class);
@@ -40,7 +41,7 @@ public class Utils {
 
     static {
         try {
-            messagedigest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5);
+            messagedigest = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512);
         } catch (NoSuchAlgorithmException e) {
             //should not happen
             throw new RuntimeException(e);
@@ -118,12 +119,12 @@ public class Utils {
     }
 
     /**
-     * Generates the md5 checksum of the given string
+     * Generates the sha512 checksum of the given string
      *
      * @param str The input string
-     * @return The MD5 checksum of the given string.
+     * @return The SHA512 checksum of the given string.
      */
-    public synchronized static String getMD5String(String str) {
+    public synchronized static String getSHA512String(String str) {
         byte[] hash;
         try {
             hash = messagedigest.digest(str.getBytes(StandardCharsets.UTF_8));

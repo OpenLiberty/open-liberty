@@ -237,6 +237,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         if (session != null) {
             appA.sessionPut("testModifyWithoutPut-key", new StringBuffer("MyValue"), session, true);
+        Thread.sleep(250);
             try {
                 appB.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
                 // appA should not see the update because it does not get written to the persistent store without a putAttribute per writeContents=ONLY_SET_ATTRIBUTES
@@ -330,6 +331,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         if (session != null) {
             appA.sessionPut("testMaxInactiveInterval-key", 55901, session, true);
+        Thread.sleep(250);
             appB.sessionGet("testMaxInactiveInterval-key", 55901, session);
             appA.invokeServlet("setMaxInactiveInterval", session); //set max inactive interval to 1 second
 

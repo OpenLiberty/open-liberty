@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,10 +16,10 @@ repositories {
   if (isUsingArtifactory) {
     maven {
       credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
+        username = userProps.getProperty("artifactory.download.user")
+        password = userProps.getProperty("artifactory.download.token")
       }
-      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+      url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote"
     }
   } else {
     mavenCentral()
@@ -144,12 +144,12 @@ task copySamlFat_rs_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '*.arm'
+        include '*.jks', '*.arm', 'ec_key.p12'
       }
       copy {
         from new File(projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '.arm'
+        include '*.jks', '.arm', 'ec_key.p12'
       }
       // copySecurityDefaultFilesToServer
       copy {
@@ -277,12 +277,12 @@ task copySamlFat_sp_server(dependsOn: [':com.ibm.ws.security.fat.common:assemble
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '*.arm'
+        include '*.jks', '*.arm', 'ec_key.p12'
       }
       copy {
         from new File(projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '.arm'
+        include '*.jks', '.arm', 'ec_key.p12'
       }
       // copySecurityDefaultFilesToServer
       copy {
@@ -421,12 +421,12 @@ task copySamlFat_secondSP_mergedSPRS_server(dependsOn: [':com.ibm.ws.security.fa
       copy {
         from new File(project(':com.ibm.ws.security.saml.sso_fat.common').projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '*.arm'
+        include '*.jks', '*.arm', 'ec_key.p12'
       }
       copy {
         from new File(projectDir, 'securitykeys')
         into new File(autoFvtDir, "publish/servers/${serverName}")
-        include '*.jks', '.arm'
+        include '*.jks', '.arm', 'ec_key.p12'
       }
       // copySecurityDefaultFilesToServer
       copy {

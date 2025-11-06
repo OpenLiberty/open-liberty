@@ -9,9 +9,10 @@
  *******************************************************************************/
 package io.openliberty.jpa.persistence.tests.web;
 
-
+import static componenttest.annotation.OnlyIfSysProp.DB_Not_Default;
 import static componenttest.annotation.SkipIfSysProp.DB_DB2;
 import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
+import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
 import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -20,18 +21,26 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Test;
 import org.junit.Ignore;
 
+import componenttest.annotation.OnlyIfSysProp;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import io.openliberty.jpa.persistence.tests.models.AsciiCharacter;
 import io.openliberty.jpa.persistence.tests.models.Book;
+import io.openliberty.jpa.persistence.tests.models.DateTimeEntity;
+import io.openliberty.jpa.persistence.tests.models.Employee;
 import io.openliberty.jpa.persistence.tests.models.Event;
 import io.openliberty.jpa.persistence.tests.models.Organization;
 import io.openliberty.jpa.persistence.tests.models.Participant;
@@ -42,14 +51,22 @@ import io.openliberty.jpa.persistence.tests.models.Ticket;
 import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
 import io.openliberty.jpa.persistence.tests.models.ConcatEntity;
+import io.openliberty.jpa.persistence.tests.models.PersistenceUnitEntity;
 import jakarta.annotation.Resource;
+import jakarta.persistence.CacheRetrieveMode;
+import jakarta.persistence.CacheStoreMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Expression;
+import jakarta.persistence.criteria.LocalDateField;
+import jakarta.persistence.criteria.LocalDateTimeField;
+import jakarta.persistence.criteria.LocalTimeField;
 import jakarta.persistence.criteria.Nulls;
 import jakarta.persistence.criteria.ParameterExpression;
 import jakarta.persistence.criteria.Root;
@@ -175,6 +192,7 @@ public class JakartaPersistenceServlet extends FATServlet {
      * @throws Exception
      */
     @Test
+    // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32688
     public void testEnumeratedValue() throws Exception {
 
         Ticket ticket1 = Ticket.of(1, "ticket1", TicketStatus.OPEN, Priority.HIGH);
@@ -470,9 +488,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     @Test
     public void testRecordAsEmbeddable_NoMatchAndOrdering() throws Exception {
         // Clean up any existing data
-        tx.begin();
-        em.createQuery("DELETE FROM Participant").executeUpdate();
-        tx.commit();
+        deleteAllEntities(Participant.class);
 
         // Setup test data
         Participant p1 = Participant.of("Anna", "Brown", 4);
@@ -509,6 +525,8 @@ public class JakartaPersistenceServlet extends FATServlet {
     @Test
     @SkipIfSysProp(DB_Oracle)
     public void testRecordAsEmbeddable_NullEdgeCaseAndOrdering() throws Exception {
+        deleteAllEntities(Participant.class);
+        
         // Setup test data with null, empty, and edge case values
         Participant p1 = Participant.of("Anna", null, 13); // Null last name (should be excluded)
         Participant p2 = Participant.of("Mike", "Green", 14); // Valid
@@ -571,7 +589,9 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test // Verifies that a JPQL query using an alias returns the correct hexadecimal value for a persisted AsciiCharacter
-    public void testAsciiCharacterQueryReturnsHexadecimalWithAlias() {
+    public void testAsciiCharacterQueryReturnsHexadecimalWithAlias() throws Exception {
+        deleteAllEntities(AsciiCharacter.class);
+        
         int id = (int) (System.currentTimeMillis() % Integer.MAX_VALUE);
         AsciiCharacter character = new AsciiCharacter();
         character.setId(id);
@@ -601,7 +621,9 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    public void testInvalidFieldInAsciiCharacterQuery() {
+    public void testInvalidFieldInAsciiCharacterQuery() throws Exception {
+        deleteAllEntities(AsciiCharacter.class);
+        
         try {
             em.createQuery("SELECT nonExistentField FROM AsciiCharacter", String.class).getResultList();
         } catch (Exception e) {
@@ -615,7 +637,9 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test // Verifies that multiple persisted AsciiCharacter entries return correct hexadecimal values via JPQL query
-    public void testAsciiCharacterMultipleResultsQuery() {
+    public void testAsciiCharacterMultipleResultsQuery() throws Exception {
+        deleteAllEntities(AsciiCharacter.class);
+        
         try {
             tx.begin();
             em.persist(AsciiCharacter.of(65)); // 'A'
@@ -631,6 +655,8 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     @Test
     public void testAsciiCharacterwithSpecialCharacter() throws Exception {
+        deleteAllEntities(AsciiCharacter.class);
+        
         AsciiCharacter character = AsciiCharacter.of(42); // *
         String result;
         tx.begin();
@@ -649,6 +675,7 @@ public class JakartaPersistenceServlet extends FATServlet {
 
     @Test(expected = AssertionError.class)
     public void testAsciiCharacterNullCharacter() throws Exception {
+        deleteAllEntities(AsciiCharacter.class);
         AsciiCharacter character = null;
         tx.begin();
         try {
@@ -666,6 +693,7 @@ public class JakartaPersistenceServlet extends FATServlet {
     @Test
     @SkipIfSysProp({ DB_DB2, DB_Oracle })
     public void testAsciiCharacterNonExistentCharacter() throws Exception {
+        deleteAllEntities(AsciiCharacter.class);
         AsciiCharacter character = new AsciiCharacter();
         character.setThisCharacter((char) 200); // Choose a code outside standard ASCII (0-127)
         character.setHexadecimal(null); // set to null
@@ -710,18 +738,19 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue:https://github.com/OpenLiberty/open-liberty/issues/31884")
+    //Reference issue:https://github.com/OpenLiberty/open-liberty/issues/31884
+    @OnlyIfSysProp({ DB_Not_Default }) //Skips the test for Derby (default DB) as it doesn't support fractional-second precision
     public void testSecondPrecision() throws Exception {
         deleteAllEntities(Event.class);
 
-        LocalDateTime original = LocalDateTime.of(2025, 6, 11, 12, 0, 0, 123_456_789); 
+        LocalDateTime original = LocalDateTime.of(2025, 6, 11, 12, 0, 0, 444_777_999); 
         Event event = new Event(1L, original);
 
         tx.begin();
         em.persist(event);
+        em.flush();
+        em.clear();
         tx.commit();
-
-        em.clear(); 
 
         Event result;
         try {
@@ -732,7 +761,8 @@ public class JakartaPersistenceServlet extends FATServlet {
             throw e;
         }
 
-        assertEquals(123_450_000, result.timestamp.getNano());
+        assertTrue("Unexpected nanoseconds value: " + result.timestamp.getNano(),
+                   Set.of(444_770_000, 444_780_000).contains(result.timestamp.getNano()));
     }
 
     @Test
@@ -868,6 +898,989 @@ public class JakartaPersistenceServlet extends FATServlet {
     }
 
     /**
+     * this test extract the calendar YEAR from java.time.LocalDate
+     *
+     * @throws Exception
+     */
+    @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31802
+    @SkipIfSysProp({
+        DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
+    })
+    public void testExtractYearFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalDateField<Integer> yearLocalDateField = LocalDateField.YEAR;
+        Expression<Integer> yearExpression = criteriaBuilder.extract(yearLocalDateField, from.get("localDateData"));
+        criteriaQuery.select(yearExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals("Extracted Year should be 2021", 2021, ((Number) result.get(1)).intValue());
+        assertEquals("Extracted Year should be 2020", 2020, ((Number) result.get(2)).intValue());
+        assertEquals("Extracted Year should be 2022", 2022, ((Number) result.get(3)).intValue());
+
+    }
+
+    /**
+     * this test extract the QUARTER of the year numbered from 1 to 4 from java.time.LocalDate
+     *
+     * @throws Exception
+     */
+    @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31802
+    @SkipIfSysProp({
+        DB_SQLServer //Failing on SQLServer (No mention of NULLS FIRST/LAST keywords in Documentation)
+    })
+    public void testExtractQuarterFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2022, 06, 07), LocalTime.of(12, 0), LocalDateTime.of(2022, 06, 07, 12, 0));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2020, 12, 31), LocalTime.of(01, 59), LocalDateTime.of(2020, 12, 31, 01, 59));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2021, 01, 01), LocalTime.of(00, 30), LocalDateTime.of(2021, 01, 01, 00, 30));
+        DateTimeEntity q4 = new DateTimeEntity(10000);
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        em.persist(q4);
+        tx.commit();
+
+        CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+        CriteriaQuery<Integer> criteriaQuery = criteriaBuilder.createQuery(Integer.class);
+        Root<DateTimeEntity> from = criteriaQuery.from(DateTimeEntity.class);
+        LocalDateField<Integer> quarterLocalDateField = LocalDateField.QUARTER;
+        Expression<Integer> quarterExpression = criteriaBuilder.extract(quarterLocalDateField, from.get("localDateData"));
+        criteriaQuery.select(quarterExpression);
+        criteriaQuery.orderBy(criteriaBuilder.desc(from.get("name"), Nulls.FIRST));
+        List<Integer> result = em.createQuery(criteriaQuery).getResultList();
+        assertEquals(4, result.size());
+        assertEquals(null, result.get(0));
+        assertEquals("Extracted Quarter should be 1", 1, ((Number) result.get(1)).intValue());
+        assertEquals("Extracted Quarter should be 4", 4, ((Number) result.get(2)).intValue());
+        assertEquals("Extracted Quarter should be 2", 2, ((Number) result.get(3)).intValue());
+
+    }
+    
+    @Test
+    @SkipIfSysProp({
+        DB_SQLServer, //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32957
+        DB_Oracle //Oracle DB doesn't have any conversion function into TIME so whole TIMESTAMP is returned and result is converted to time in EclipseLink/Java
+    })
+    public void testExtractTimeFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 15, 9, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 8, 22), LocalTime.of(14, 45), LocalDateTime.of(2022, 8, 22, 14, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 11, 05), LocalTime.of(14, 45), LocalDateTime.of(2024, 11, 5, 14, 45));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(TIME FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, LocalTime.of(14, 45))
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        
+        assertEquals(2, results.size());
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 11, 5), results.get(0).getLocalDateData());
+        assertEquals("q2", results.get(1).getName());
+        assertEquals(LocalDateTime.of(2022, 8, 22, 14, 45), results.get(1).getLocalDateTimeData());
+    }
+    
+    @Test
+    public void testExtractDateFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 15, 9, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 8, 22), LocalTime.of(14, 45), LocalDateTime.of(2022, 8, 22, 14, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 7, 15), LocalTime.of(11, 20), LocalDateTime.of(2024, 7, 15, 11, 20));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(DAY FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 15)  // Day = 15
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 7, 15), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(9, 30), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 3, 15, 9, 30), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractWeekFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        // Using dates that fall in the same ISO week
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2024, 1, 8), LocalTime.of(10, 15), LocalDateTime.of(2024, 1, 8, 10, 15));   // Week 2 of 2024
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2024, 1, 14), LocalTime.of(16, 30), LocalDateTime.of(2024, 1, 14, 16, 30)); // Week 2 of 2024
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 1, 22), LocalTime.of(12, 45), LocalDateTime.of(2024, 1, 22, 12, 45)); // Week 4 of 2024
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(WEEK FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 2)  // Week 2
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        
+        assertEquals(2, results.size());
+
+        assertEquals("q2", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 1, 14), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(10, 15), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2024, 1, 8, 10, 15), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractQuarterFromLocalDataWithJPQL() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 2, 15), LocalTime.of(8, 30), LocalDateTime.of(2023, 2, 15, 8, 30));   // Q1
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2023, 7, 20), LocalTime.of(14, 15), LocalDateTime.of(2023, 7, 20, 14, 15)); // Q3
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2023, 3, 10), LocalTime.of(16, 45), LocalDateTime.of(2023, 3, 10, 16, 45)); // Q1
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(QUARTER FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 1)  // Quarter 1 (Jan-Mar)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        
+        assertEquals(2, results.size());
+
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2023, 3, 10), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(8, 30), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 2, 15, 8, 30), results.get(1).getLocalDateTimeData());
+    }
+    
+    @Test
+    public void testExtractMonthFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 03, 15), LocalTime.of(9, 30), LocalDateTime.of(2023, 03, 15, 9, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 8, 22), LocalTime.of(14, 45), LocalDateTime.of(2022, 8, 22, 14, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 03, 05), LocalTime.of(11, 20), LocalDateTime.of(2024, 03, 05, 11, 20));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(MONTH FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 3)  // March = 3
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        
+        assertEquals(2, results.size());
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDateTime.of(2024, 03, 05, 11, 20), results.get(0).getLocalDateTimeData());
+        assertEquals(LocalTime.of(9, 30), results.get(1).getLocalTimeData());
+    }
+    
+    @Test
+    public void testExtractYearFromLocalDataWithJPQL() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 4, 18), LocalTime.of(10, 45), LocalDateTime.of(2023, 4, 18, 10, 45));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 6, 25), LocalTime.of(16, 20), LocalDateTime.of(2022, 6, 25, 16, 20));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2023, 8, 30), LocalTime.of(8, 45), LocalDateTime.of(2023, 8, 30, 8, 50));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(YEAR FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 2023)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2023, 8, 30), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(10, 45), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 4, 18, 10, 45), results.get(1).getLocalDateTimeData());
+    }
+    
+    @Test
+    public void testExtractDayFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 3, 25), LocalTime.of(9, 30), LocalDateTime.of(2023, 3, 25, 9, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 8, 12), LocalTime.of(14, 45), LocalDateTime.of(2022, 8, 12, 14, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 12, 25), LocalTime.of(11, 20), LocalDateTime.of(2024, 12, 25, 11, 20));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(DAY FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 25)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 12, 25), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(9, 30), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 3, 25, 9, 30), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractHourFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 5, 10), LocalTime.of(14, 30), LocalDateTime.of(2023, 5, 10, 14, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 7, 15), LocalTime.of(9, 45), LocalDateTime.of(2022, 7, 15, 9, 45));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 9, 20), LocalTime.of(14, 15), LocalDateTime.of(2024, 9, 20, 14, 15));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(HOUR FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 14)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 9, 20), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(14, 30), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 5, 10, 14, 30), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractMinuteFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 4, 18), LocalTime.of(10, 45), LocalDateTime.of(2023, 4, 18, 10, 45));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 6, 25), LocalTime.of(16, 20), LocalDateTime.of(2022, 6, 25, 16, 20));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 8, 30), LocalTime.of(8, 45), LocalDateTime.of(2024, 8, 30, 8, 45));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(MINUTE FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 45)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDate.of(2024, 8, 30), results.get(0).getLocalDateData());
+        assertEquals(LocalTime.of(10, 45), results.get(1).getLocalTimeData());
+        assertEquals(LocalDateTime.of(2023, 4, 18, 10, 45), results.get(1).getLocalDateTimeData());
+    }
+
+    @Test
+    public void testExtractSecondFromLocalData() throws Exception {
+        deleteAllEntities(DateTimeEntity.class);
+        DateTimeEntity q1 = new DateTimeEntity(1, "q1", LocalDate.of(2023, 2, 14), LocalTime.of(13, 25, 30), LocalDateTime.of(2023, 2, 14, 13, 25, 30));
+        DateTimeEntity q2 = new DateTimeEntity(2, "q2", LocalDate.of(2022, 11, 8), LocalTime.of(17, 50, 15), LocalDateTime.of(2022, 11, 8, 17, 50, 15));
+        DateTimeEntity q3 = new DateTimeEntity(3, "q3", LocalDate.of(2024, 5, 22), LocalTime.of(11, 35, 30), LocalDateTime.of(2024, 5, 22, 11, 35, 30));
+
+        tx.begin();
+        em.persist(q1);
+        em.persist(q2);
+        em.persist(q3);
+        tx.commit();
+
+        Stream<DateTimeEntity> resultDate;
+        try {
+            resultDate = em.createQuery(
+                "SELECT NEW io.openliberty.jpa.persistence.tests.models.DateTimeEntity(id, name, localDateData, localTimeData, localDateTimeData) " +
+                "FROM DateTimeEntity " +
+                "WHERE EXTRACT(SECOND FROM localDateTimeData) = ?1 " +
+                "ORDER BY name DESC")
+                .setParameter(1, 30.0)
+                .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+        
+        List<DateTimeEntity> results = resultDate.collect(Collectors.toList());
+        assertEquals(2, results.size());
+        
+        assertEquals("q3", results.get(0).getName());
+        assertEquals(LocalDateTime.of(2024, 5, 22, 11, 35, 30), results.get(0).getLocalDateTimeData());
+        assertEquals(LocalDate.of(2023, 2, 14), results.get(1).getLocalDateData());
+        assertEquals(LocalTime.of(13, 25, 30), results.get(1).getLocalTimeData());
+    }
+    
+    @Test
+    @SkipIfSysProp({
+        DB_Postgres    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32848
+    })
+    public void testOLGH32848() throws Exception {
+        deleteAllEntities(Employee.class);
+        Employee abc = Employee.of("ABC", 50000, "O+");
+        Employee xyz = Employee.of("XYZ", 35000, "AB-");
+        
+        tx.begin();
+        em.persist(abc);
+        em.persist(xyz);
+        tx.commit();
+        
+        tx.begin();
+        
+        try {
+        em.createQuery("UPDATE Employee e SET e.info = ?1 WHERE e.id = ?2")
+          .setParameter(1, null)
+          .setParameter(2, abc.id)
+          .executeUpdate();
+        
+        tx.commit();
+        
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189")
+    public void testCacheRetrieveMode_EMLevel_Bypass() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheRetrieveMode_EMLevel_Bypass";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        tx.begin();
+        PersistenceUnitEntity entity;
+
+        try {
+            em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+            
+            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
+            update.setParameter(1, id);
+            update.executeUpdate();
+            
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            resetCacheModes();
+        }
+
+        assertEquals(Integer.valueOf(444), entity.value);
+    }
+    
+    @Test
+    public void testCacheRetrieveMode_EMLevel_Use_Default() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheRetrieveMode_EMLevel_Use_Default";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        tx.begin();
+        PersistenceUnitEntity entity;
+
+        try {
+            //Default cache retrieve mode is USE — no  need to set explicitly
+            
+            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
+            update.setParameter(1, id);
+            update.executeUpdate();
+            
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189")
+    public void testCacheRetrieveMode_QueryLevel_Bypass() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheRetrieveMode_QueryLevel_Bypass";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        tx.begin();
+        PersistenceUnitEntity entity;
+        try {
+            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
+            update.setParameter(1, id);
+            update.executeUpdate();
+
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        
+        assertEquals(Integer.valueOf(444), entity.value);
+    }
+    
+    @Test
+    public void testCacheRetrieveMode_QueryLevel_Use_Default() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheRetrieveMode_QueryLevel_Use_Default";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        tx.begin();
+        PersistenceUnitEntity entity;
+        try {
+            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
+            update.setParameter(1, id);
+            update.executeUpdate();
+
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            //Default cache retrieve mode is USE — no  need to set explicitly
+
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        
+        assertEquals(Integer.valueOf(222), entity.value);
+    }
+
+    @Test
+    //Test passes due to default behaviour but issue persists - Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
+    public void testCacheRetrieveMode_QueryOverridesEM_UseOverridesBypass() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheRetrieveMode_QueryOverridesEM_UseOverridesBypass";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        tx.begin();
+        PersistenceUnitEntity entity;
+        try {
+            em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+
+            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
+            update.setParameter(1, id);
+            update.executeUpdate();
+
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheRetrieveMode(CacheRetrieveMode.USE);
+
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        } finally {
+            resetCacheModes();
+        }
+        
+        assertEquals(Integer.valueOf(222), entity.value);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189")
+    public void testCacheRetrieveMode_QueryOverridesEM_BypassOverridesUse() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheRetrieveMode_QueryOverridesEM_BypassOverridesUse";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        tx.begin();
+        PersistenceUnitEntity entity;
+        try {
+            em.setCacheRetrieveMode(CacheRetrieveMode.USE);
+
+            Query update = em.createQuery("UPDATE PersistenceUnitEntity SET value = value * 2 WHERE id = ?1");
+            update.setParameter(1, id);
+            update.executeUpdate();
+
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        
+        assertEquals(Integer.valueOf(444), entity.value);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189")
+    public void testCacheStoreMode_EMLevel_Bypass() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_EMLevel_Bypass";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+        em.setCacheStoreMode(CacheStoreMode.BYPASS);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            resetCacheModes();
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertFalse(inCache);
+    }
+    
+    @Test
+    //Test passes due to default behaviour but issue persists - Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
+    public void testCacheStoreMode_EMLevel_Use_Default() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_EMLevel_Use_Default";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+        
+        //Default cache store mode is USE — no  need to set explicitly
+        
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertTrue(inCache);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189")
+    public void testCacheStoreMode_QueryLevel_Bypass() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_QueryLevel_Bypass";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheStoreMode(CacheStoreMode.BYPASS);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertFalse(inCache);
+    }
+    
+    @Test
+    public void testCacheStoreMode_QueryLevel_Use_default() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_QueryLevel_Use_default";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            
+            //Default cache store mode is USE — no  need to set explicitly
+            
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertTrue(inCache);
+    }
+
+    @Test
+    //Test passes due to default behaviour but issue persists - Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
+    public void testCacheStoreMode_QueryOverridesEM_UseOverridesBypass() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_QueryOverridesEM_UseOverridesBypass";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+        em.setCacheStoreMode(CacheStoreMode.BYPASS);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheStoreMode(CacheStoreMode.USE);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            resetCacheModes();
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertTrue(inCache);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189")
+    public void testCacheStoreMode_QueryOverridesEM_BypassOverridesUse() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_QueryOverridesEM_BypassOverridesUse";
+        
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+        em.setCacheStoreMode(CacheStoreMode.USE);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheStoreMode(CacheStoreMode.BYPASS);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertFalse(inCache);
+    }
+    
+    @Test
+    //Test passes due to default behaviour but issue persists - Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
+    public void testCacheStoreMode_EMLevel_Refresh() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_EMLevel_Refresh";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+        
+        em.setCacheStoreMode(CacheStoreMode.REFRESH);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            resetCacheModes();
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertTrue(inCache);
+    }
+
+    @Test
+    //Test passes due to default behaviour but issue persists - Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
+    public void testCacheStoreMode_QueryLevel_Refresh() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_QueryLevel_Refresh";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheStoreMode(CacheStoreMode.REFRESH);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertTrue(inCache);
+    }
+
+    @Test
+    //Test passes due to default behaviour but issue persists - Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189
+    public void testCacheStoreMode_QueryOverridesEM_RefreshOverridesBypass() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_QueryOverridesEM_RefreshOverridesBypass";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+        
+        em.setCacheStoreMode(CacheStoreMode.BYPASS);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheStoreMode(CacheStoreMode.REFRESH);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            resetCacheModes();
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertTrue(inCache);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33189")
+    public void testCacheStoreMode_QueryOverridesEM_BypassOverridesRefresh() throws Exception {
+        deleteAllEntities(PersistenceUnitEntity.class);
+        String id = "testCacheStoreMode_QueryOverridesEM_BypassOverridesRefresh";
+
+        tx.begin();
+        em.persist(PersistenceUnitEntity.of(id, 222));
+        em.flush();
+        tx.commit();
+
+        em.getEntityManagerFactory().getCache().evict(PersistenceUnitEntity.class, id);
+        
+        em.setCacheStoreMode(CacheStoreMode.REFRESH);
+
+        PersistenceUnitEntity entity;
+        try {
+            Query query = em.createQuery("FROM PersistenceUnitEntity WHERE id = ?1");
+            query.setParameter(1, id);
+            query.setCacheStoreMode(CacheStoreMode.BYPASS);
+            entity = (PersistenceUnitEntity) query.getSingleResult();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            resetCacheModes();
+        }
+
+        assertEquals(Integer.valueOf(222), entity.value);
+
+        boolean inCache = em.getEntityManagerFactory().getCache().contains(PersistenceUnitEntity.class, id);
+        assertFalse(inCache);
+    }
+
+
+    /**
      * Utility method to drop all entities from table.
      *
      * Order to tests is not guaranteed and thus we should be pessimistic and
@@ -880,5 +1893,14 @@ public class JakartaPersistenceServlet extends FATServlet {
         em.createQuery("DELETE FROM " + clazz.getSimpleName())
                         .executeUpdate();
         tx.commit();
+    }
+    
+    /**
+     * Helper method to reset EntityManager cache modes to defaults after tests.
+     * This ensures tests don't interfere with each other when using the same EM instance.
+     */
+    private void resetCacheModes() {
+        em.setCacheRetrieveMode(CacheRetrieveMode.USE);
+        em.setCacheStoreMode(CacheStoreMode.USE);
     }
 }

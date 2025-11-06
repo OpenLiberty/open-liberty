@@ -278,14 +278,32 @@ if [ -z "${JAVA_HOME}" ]; then
   JAVA_PATH_FROM_PATH=$(command -v java)
   if [ -n "${JAVA_PATH_FROM_PATH}" ] ; then
     JPMS_MODULE_FILE_LOCATION=$(dirname $(dirname $JAVA_PATH_FROM_PATH))/lib/modules
+    IBM_SDK_FIPS140_3_FILE_LOCATION=$(dirname "$(dirname "${JAVA_PATH_FROM_PATH}")")/jre/fips140-3
   fi
 else
   JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
+  IBM_SDK_FIPS140_3_FILE_LOCATION="${JAVA_HOME}/fips140-3"
 fi
 
 # If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
 if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
   JVM_ARGS="--add-opens java.base/java.lang=ALL-UNNAMED ${JVM_ARGS}"
+fi
+
+# If ENABLE_FIPS140_3 is set by the user then add appropiate FIPS140-3 JVM options
+if [ -n "${ENABLE_FIPS140_3+set}" ] && [ "${ENABLE_FIPS140_3}" != false ]; then
+  if [ -d "${IBM_SDK_FIPS140_3_FILE_LOCATION}" ]; then
+    JVM_ARGS="-Xenablefips140-3 -Dcom.ibm.jsse2.usefipsprovider=true -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS ${JVM_ARGS}"
+  else
+    if grep -q "OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced" "${JAVA_HOME}/conf/security/java.security" ; then
+      SEMERU_FIPS=true
+    elif grep -q "OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced" "$(dirname $(dirname $(command -v java)))/conf/security/java.security" ; then
+      SEMERU_FIPS=true
+    fi
+    if [ -n SEMERU_FIPS ]; then
+      JVM_ARGS="-Dsemeru.fips=true -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Liberty -Djava.security.properties=\"${WLP_INSTALL_DIR}/lib/security/fips140_3/FIPS140-3-Liberty.properties\" ${JVM_ARGS}"
+    fi
+  fi
 fi
 
 # Prevent the Java invocation appearing as an application on a mac

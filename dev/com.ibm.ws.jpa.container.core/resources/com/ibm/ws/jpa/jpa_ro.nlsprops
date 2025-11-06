@@ -344,3 +344,8 @@ PROVIDER_FATAL_CWWJP9993E.explanation=Furnizorul JPA (Java Persistence API) a \u
 PROVIDER_FATAL_CWWJP9993E.useraction=Consulta\u0163i documenta\u0163ia furnizorului JPA.
 
 #-------------------------------------------------------------------------------
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W=CWWJP9994W: Serverul nu poate crea boabe pentru {0} PersistenceUnit deoarece: {1}.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.explanation=A ap\u0103rut o excep\u021bie atunci c\u00e2nd CDI a \u00eencercat s\u0103 creeze bean-ul pentru o unitate de persisten\u021b\u0103. CDI nu poate injecta un manager de entit\u0103\u021bi, o fabric\u0103 de manageri de entit\u0103\u021bi sau clase de utilit\u0103\u021bi legate de unitatea de persisten\u021b\u0103 respectiv\u0103.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.useraction=Rezolva\u021bi excep\u021bia.
+
+#-------------------------------------------------------------------------------

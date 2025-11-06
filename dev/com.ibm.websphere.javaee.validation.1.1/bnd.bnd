@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ Import-Package: !org.apache.geronimo.osgi.registry.api, \
 Private-Package: org.apache.geronimo.osgi.locator
 
 Include-Resource: \
-  @${repo;com.ibm.ws:geronimo-validation;1.0.0.SNAPSHOT}!/META-INF/NOTICE
+  @\${repo;com.ibm.ws:geronimo-validation;1.0.0.SNAPSHOT}!/META-INF/NOTICE
 
 instrument.disabled: true
 

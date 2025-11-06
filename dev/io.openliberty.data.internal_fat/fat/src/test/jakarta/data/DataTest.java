@@ -38,6 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.inmemory.web.ProviderTestServlet;
 import test.jakarta.data.web.DataTestServlet;
+import test.jakarta.data.web.eclipselink.DataEclipseLinkServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
@@ -54,15 +55,20 @@ public class DataTest extends FATServletClient {
                                    // work around to prevent bad behavior from EclipseLink (see #30575)
                                    "CWWKD1103E.*romanNumeralSymbolsAsListOfArrayList",
                                    // work around to prevent bad behavior from EclipseLink (see #30575)
-                                   "CWWKD1103E.*romanNumeralSymbolsAsSetOfArrayList"
+                                   "CWWKD1103E.*romanNumeralSymbolsAsSetOfArrayList",
+                                   "CWWKD1119E.*minNumberOfEachNameLength" // cannot infer count for GROUP BY
                     };
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
 
     @Server("io.openliberty.data.internal.fat")
-    @TestServlets({ @TestServlet(servlet = DataTestServlet.class, contextRoot = "DifferentAppName"),
-                    @TestServlet(servlet = ProviderTestServlet.class, contextRoot = "ProviderTestApp") })
+    @TestServlets({ @TestServlet(servlet = DataTestServlet.class,
+                                 contextRoot = "DifferentAppName"),
+                    @TestServlet(servlet = DataEclipseLinkServlet.class,
+                                 contextRoot = "DifferentAppName"),
+                    @TestServlet(servlet = ProviderTestServlet.class,
+                                 contextRoot = "ProviderTestApp") })
     public static LibertyServer server;
 
     @BeforeClass
@@ -74,7 +80,9 @@ public class DataTest extends FATServletClient {
         // Set up server DataSource properties
         DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
 
-        WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp", "test.jakarta.data.web");
+        WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp",
+                                                      "test.jakarta.data.web",
+                                                      "test.jakarta.data.web.eclipselink");
         ShrinkHelper.exportAppToServer(server, war);
 
         JavaArchive providerJar = ShrinkWrap.create(JavaArchive.class, "palindrome-data-provider.jar")

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,7 @@ import com.ibm.wsspi.http.HttpInboundConnection;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
 /**
- *
+ * This package is not SPI even though it is in wsspi.
  */
 public interface HttpInboundConnectionExtended extends HttpInboundConnection {
 
@@ -71,7 +71,7 @@ public interface HttpInboundConnectionExtended extends HttpInboundConnection {
      *
      * @return
      */
-    boolean useForwardedHeaders();
+    boolean useRemoteIpOptions();
 
     /**
      * Since Servlet 6.0 : support jakarta.servlet.ServletRequest#getProtocolRequestId()

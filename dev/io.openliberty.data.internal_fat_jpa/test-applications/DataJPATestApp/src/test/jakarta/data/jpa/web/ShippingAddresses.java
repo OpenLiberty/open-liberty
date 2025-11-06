@@ -12,7 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import java.util.List;
 import java.util.Set;
 
 import jakarta.data.repository.Delete;
@@ -23,15 +22,10 @@ import jakarta.data.repository.Save;
 /**
  * Repository for testing Inheritance and DiscriminatorColumn/Value.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface ShippingAddresses {
-    long countByStreetAddressRecipientInfoEmpty();
-
-    List<ShippingAddress> findByStreetAddressRecipientInfoNotEmpty();
 
     StreetAddress[] findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(int minHouseNumber, int maxHouseNumber);
-
-    List<ShippingAddress> findByStreetAddress_recipientInfoNotEmpty();
 
     WorkAddress[] findByStreetAddress_streetNameAndFloorNumber(String streetName, int floorNumber);
 

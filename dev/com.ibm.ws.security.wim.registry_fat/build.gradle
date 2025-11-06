@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,15 +24,21 @@ dependencies {
     'com.unboundid:unboundid-ldapsdk:5.1.0',
     project(':com.ibm.ws.com.unboundid')
 }
+jar.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.custom:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
-autoFVT.doLast {
+autoFVT {
+  def apacheDirectory = project(':com.ibm.ws.org.apache.directory.server')
+  def registryServletProject = project(':com.ibm.ws.security.registry_test.servlet')
+  def registryCustomProject = project(':com.ibm.ws.security.registry_test.custom')
+  def registryDelayProject = project(':com.ibm.ws.security.wim.repository_test.custom.delay') 
+  doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
    */
   copy {
-    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    from apacheDirectory.projectDir
     into autoFvtDir
     include 'apacheds-2.0.0-M15/**'
   }
@@ -51,7 +57,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application')
+      from new File(registryServletProject.buildDir, 'test-application')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
       include '*.war'
     }
@@ -61,11 +67,11 @@ autoFVT.doLast {
    * Copy sample custom UserRegistry feature to this test bucket.
    */
   copy { 
-    from project(':com.ibm.ws.security.registry_test.custom').file('publish/features/customRegistrySample-1.0.mf')
+    from registryCustomProject.file('publish/features/customRegistrySample-1.0.mf')
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
   }
   copy {
-    from new File(project(':com.ibm.ws.security.registry_test.custom').buildDir, 'com.ibm.ws.security.registry_test.custom.jar')
+    from new File(registryCustomProject.buildDir, 'com.ibm.ws.security.registry_test.custom.jar')
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles/internalfeatures')
     rename 'com.ibm.ws.security.registry_test.custom.jar', 'com.ibm.ws.security.registry_test.custom_1.0.jar'
   }
@@ -74,12 +80,13 @@ autoFVT.doLast {
    * Copy sample CustomRepositoryDelay user feature to this test bucket.
    */
   copy { 
-    from project(':com.ibm.ws.security.wim.repository_test.custom.delay').file('publish/usr/extension/lib/features/customRepositorySampleDelay-1.0.mf')
+    from registryDelayProject.file('publish/usr/extension/lib/features/customRepositorySampleDelay-1.0.mf')
     into new File(autoFvtDir, 'publish/features')
   }
   copy {
-    from new File(project(':com.ibm.ws.security.wim.repository_test.custom.delay').buildDir, 'com.ibm.ws.security.wim.repository_test.custom.delay.jar')
+    from new File(registryDelayProject.buildDir, 'com.ibm.ws.security.wim.repository_test.custom.delay.jar')
     into new File(autoFvtDir, 'publish/bundles')
     rename 'com.ibm.ws.security.wim.repository_test.custom.delay.jar', 'com.ibm.ws.security.wim.repository_test.custom.delay_1.0.jar'
+  }
   }
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -882,6 +882,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: O aplica\u021bie a \u00eenceput sau 
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=Urma de stiv\u0103 a fost capturat\u0103 atunci c\u00e2nd a fost creat\u0103 tranzac\u021bia. Urma de stiv\u0103 ajut\u0103 utilizatorii s\u0103 determine ce aplica\u021bii \u00eencep tranzac\u021bii \u00een timpul pornirii aplica\u021biei \u0219i apoi s\u0103 provoace e\u0219ecul cererii de punct de control.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examina\u021bi urma de stiv\u0103 pentru a determina ce aplica\u021bie a \u00eenceput o tranzac\u021bie nou\u0103 \u00een timpul cererii de punct de control al serverului.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: Tranzac\u021bia nu poate fi reluat\u0103 pe firul curent deoarece este activ\u0103 pe un alt fir ( {0} ).
+WTRN0156_CANNOT_RESUME.explanation=Liberty nu permite ca o tranzac\u021bie s\u0103 fie activ\u0103 simultan pe mai multe fire.
+WTRN0156_CANNOT_RESUME.useraction=Suspend\u0103 tranzac\u021bia \u00eenainte de a o relua pe un alt fir.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: Tranzac\u021bia nu poate fi reluat\u0103 pe firul curent deoarece este activ\u0103 \u00een alt\u0103 parte.
+WTRN0157_CANNOT_RESUME.explanation=Liberty nu permite ca o tranzac\u021bie s\u0103 fie activ\u0103 simultan pe mai multe fire.
+WTRN0157_CANNOT_RESUME.useraction=Suspend\u0103 tranzac\u021bia \u00eenainte de a o relua pe un alt fir.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

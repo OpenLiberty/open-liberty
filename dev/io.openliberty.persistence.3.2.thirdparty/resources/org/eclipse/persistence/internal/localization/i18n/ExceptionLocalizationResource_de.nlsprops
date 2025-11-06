@@ -327,6 +327,8 @@ metamodel_managed_type_attribute_type_incorrect=Es wurde der Attributtyp [{2}] f
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Das deklarierte Attribut [{0}] des verwalteten Typs [{1}] ist nicht vorhanden, ist aber f\u00fcr eine Superklasse deklariert.
 
+missing_jpql_parser_class=Die JPQL-Parser-Klasse konnte nicht geladen werden.
+
 missing_parameter_value=Das Abfrageargument {0} wurde nicht in der w\u00e4hrend der Abfrageausf\u00fchrung angegebenen Parameterliste gefunden.
 
 missing_toplink_bean_definition_for=Die TopLink-Bean-Definition f\u00fcr {0} fehlt.
@@ -411,7 +413,7 @@ schema_validation=Schemapr\u00fcfung
 
 schema_validation_failed=Schemapr\u00fcfung fehlgeschlagen
 
-schema_validation_missing_table=Der Tabellenbereich {0} wurde im Schema nicht gefunden.
+schema_validation_missing_table=Die Tabelle {0} wird im Schema nicht gefunden
 
 schema_validation_table_different_columns=Die Tabelle {0} enth\u00e4lt unterschiedliche Spalten im Schema.
 

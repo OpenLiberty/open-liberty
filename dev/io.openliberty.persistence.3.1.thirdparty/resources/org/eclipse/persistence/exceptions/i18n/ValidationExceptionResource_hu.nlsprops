@@ -633,7 +633,7 @@
 
 7356=A(z) [{1}] elj\u00e1r\u00e1s nem hajthat\u00f3 v\u00e9gre, mert a(z) {0} jelenleg nem t\u00e1mogat t\u00f6bb kimeneti param\u00e9tert
 
-7357=A "[{0} ]" URL a k\u00f6vetkez\u0151h\u00f6z: "[{1} ]" er\u0151forr\u00e1s nem tartozik egy \u00e9rv\u00e9nyes perzisztencia gy\u00f6k\u00e9rhez, a Jakarta Persistence specifik\u00e1ci\u00f3 szerint
+7357=A "[ {0} ]" URL a "[ {1} ]" er\u0151forr\u00e1shoz nem tartozik a Jakarta Persistence specifik\u00e1ci\u00f3 \u00e1ltal meghat\u00e1rozott \u00e9rv\u00e9nyes perszisztencia gy\u00f6k\u00e9rhez.
 
 7358=Helytelen ASM szolg\u00e1ltat\u00e1sn\u00e9v van megadva.
 

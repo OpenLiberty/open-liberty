@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010, 2016 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 #CMVCPATHNAME com.ibm.ws.collective.utility/resources/com/ibm/ws/collective/utility/resources/UtilityMessages.nlsprops
 #ISMESSAGEFILE FALSE
@@ -61,53 +58,36 @@ password.entriesDidNotMatch=A jelszavak nem egyeznek.
 
 # Messages common to collective utility tasks
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-common.encodeError=\n\
-Nem k\u00f3dolhat\u00f3 az argumentum jelszava: {0}
+common.encodeError=\nNem k\u00f3dolhat\u00f3 az argumentum jelszava: {0}
 
-common.hostError=\n\
-A megadott hosztn\u00e9v nem t\u0171nik \u00e9rv\u00e9nyesnek: {0}\n\
-Ellen\u0151rizze, hogy a hosztn\u00e9v helyes-e, \u00e9s hogy a rendszer rendelkezik-e h\u00e1l\u00f3zati kapcsolattal.
+common.hostError=\nA megadott hosztn\u00e9v nem t\u0171nik \u00e9rv\u00e9nyesnek: {0}\nEllen\u0151rizze, hogy a hosztn\u00e9v helyes-e, \u00e9s hogy a rendszer rendelkezik-e h\u00e1l\u00f3zati kapcsolattal.
 
-common.portError=\n\
-A megadott {0} port nem \u00e9rhet\u0151 el. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a port helyes.
+common.portError=\nA megadott {0} port nem \u00e9rhet\u0151 el. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a port helyes.
 
-common.connectionError=\n\
-Az MBean m\u0171velet nem hajthat\u00f3 v\u00e9gre.\n\
-Hiba: {0}
+common.connectionError=\nAz MBean m\u0171velet nem hajthat\u00f3 v\u00e9gre.\nHiba: {0}
 
-common.compatibilityError=\n\
-Az MBean m\u0171velet nem \u00e9rhet\u0151 el, mivel nincs meghat\u00e1rozva a vez\u00e9rl\u0151n. A vez\u00e9rl\u0151 verzi\u00f3sz\u00e1ma val\u00f3sz\u00edn\u0171leg alacsonyabb, mint a tag\u00e9. \n\
-Hiba: {0}
+common.compatibilityError=\nAz MBean m\u0171velet nem \u00e9rhet\u0151 el, mivel nincs meghat\u00e1rozva a vez\u00e9rl\u0151n. A vez\u00e9rl\u0151 verzi\u00f3sz\u00e1ma val\u00f3sz\u00edn\u0171leg alacsonyabb, mint a tag\u00e9. \nHiba: {0}
 
-common.renameFailed=\n\
-Nem nevezhet\u0151 \u00e1t {0} erre: {1}
+common.renameFailed=\nNem nevezhet\u0151 \u00e1t {0} erre: {1}
 
-common.regenerateKey=Alap\u00e9rtelmezett HTTPS kulcst\u00e1rol\u00f3 f\u00e1jl l\u00e9tezik itt: {0}.\n\
-Ez a tan\u00fas\u00edtv\u00e1ny \u00fajra el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fcl, az eredeti megtart\u00e1s\u00e1val.\n
+common.regenerateKey=Alap\u00e9rtelmezett HTTPS kulcst\u00e1rol\u00f3 f\u00e1jl l\u00e9tezik itt: {0}.\nEz a tan\u00fas\u00edtv\u00e1ny \u00fajra el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fcl, az eredeti megtart\u00e1s\u00e1val.\n
 
-common.regenerateTrust=Alap\u00e9rtelmezett HTTPS tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 f\u00e1jl l\u00e9tezik itt: {0}.\n\
-Ez a tan\u00fas\u00edtv\u00e1ny \u00fajra el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fcl, az eredeti megtart\u00e1s\u00e1val.\n
+common.regenerateTrust=Alap\u00e9rtelmezett HTTPS tan\u00fas\u00edtv\u00e1nyt\u00e1rol\u00f3 f\u00e1jl l\u00e9tezik itt: {0}.\nEz a tan\u00fas\u00edtv\u00e1ny \u00fajra el\u0151\u00e1ll\u00edt\u00e1sra ker\u00fcl, az eredeti megtart\u00e1s\u00e1val.\n
 
-common.validityTooShort=\n\
-A megadott \u00e9rv\u00e9nyess\u00e9g ({0}) t\u00fal r\u00f6vid. A minim\u00e1lis \u00e9rv\u00e9nyess\u00e9g 365 nap.
+common.validityTooShort=\nA megadott \u00e9rv\u00e9nyess\u00e9g ({0}) t\u00fal r\u00f6vid. A minim\u00e1lis \u00e9rv\u00e9nyess\u00e9g 365 nap.
 
-common.invalidDN=\n\
-A(z) {0} sz\u00e1m\u00e1ra megadott megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v \u00e9rv\u00e9nytelen: {1}
+common.invalidDN=\nA(z) {0} sz\u00e1m\u00e1ra megadott megk\u00fcl\u00f6nb\u00f6ztetett n\u00e9v \u00e9rv\u00e9nytelen: {1}
 
-common.invalidEndpoint=A(z) {0} m\u00e1solat c\u00e9l v\u00e9gpontja nem a sz\u00fcks\u00e9ges form\u00e1tum\u00fa.\n\
-A c\u00e9l a m\u00e1solat replik\u00e1l\u00e1si portja, \u00e9s annak a gazda:port form\u00e1tumban\n\
-kell lennie.
+common.invalidEndpoint=A(z) {0} m\u00e1solat c\u00e9l v\u00e9gpontja nem a sz\u00fcks\u00e9ges form\u00e1tum\u00fa.\nA c\u00e9l a m\u00e1solat replik\u00e1l\u00e1si portja, \u00e9s annak a gazda:port form\u00e1tumban\nkell lennie.
 
 common.updateServerXML=Adja hozz\u00e1 a k\u00f6vetkez\u0151 sorokat a server.xml f\u00e1jlhoz az enged\u00e9lyez\u00e9shez:\n
 
 
 # Messages for establishing SSL trust
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslTrust.autoAccept=A tan\u00fas\u00edtv\u00e1nyl\u00e1nc automatikus elfogad\u00e1s a c\u00e9lkiszolg\u00e1l\u00f3 eset\u00e9n.\n\
-Tan\u00fas\u00edtv\u00e1ny t\u00e1rgy megk\u00fcl\u00f6nb\u00f6ztetett neve: {0}
+sslTrust.autoAccept=A tan\u00fas\u00edtv\u00e1nyl\u00e1nc automatikus elfogad\u00e1s a c\u00e9lkiszolg\u00e1l\u00f3 eset\u00e9n.\nTan\u00fas\u00edtv\u00e1ny t\u00e1rgy megk\u00fcl\u00f6nb\u00f6ztetett neve: {0}
 
-sslTrust.genDigestError=A(z) {0} kivonat nem \u00e1ll\u00edthat\u00f3 el\u0151. \
-Hiba: {1}
+sslTrust.genDigestError=A(z) {0} kivonat nem \u00e1ll\u00edthat\u00f3 el\u0151. Hiba: {1}
 
 sslTrust.noDefaultTrust=Nem l\u00e9tes\u00fclt SSL megb\u00edzhat\u00f3s\u00e1g a c\u00e9lkiszolg\u00e1l\u00f3val.
 
@@ -123,12 +103,13 @@ sslTrust.certSerial=Sorozatsz\u00e1m: {0}
 
 sslTrust.certExpires=Lej\u00e1rat: {0}
 
+sslTrust.certSHA256Digest=SHA256 digest: {0}
+
 sslTrust.certSHADigest=SHA-1 kivonat: {0}
 
 sslTrust.certMD5Digest=MD5 kivonat: {0}
 
-sslTrust.promptToAcceptTrust=Elfogadja a fenti tan\u00fas\u00edtv\u00e1nyl\u00e1ncot? \
-(i/n) 
+sslTrust.promptToAcceptTrust=Elfogadja a fenti tan\u00fas\u00edtv\u00e1nyl\u00e1ncot? (i/n) 
 # Note to translator this value must be the same as the translation for y in the sslTrust.promptToAcceptTrust brackets.
 yes.response.short=i
 yes.response.full=igen
@@ -140,8 +121,7 @@ sslTrust.rejectTrust=A felhaszn\u00e1l\u00f3 visszautas\u00edtotta a tan\u00fas\
 
 # Messages for registering a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-hostAuthInfo.bothCredentialsSet=A(z) {0} \u00e9s a(z) {1} is be van \u00e1ll\u00edtva. V\u00e1lasszon egyet.\n\
-Csak egyetlen hiteles\u00edt\u00e9si eszk\u00f6zt kell megadni.
+hostAuthInfo.bothCredentialsSet=A(z) {0} \u00e9s a(z) {1} is be van \u00e1ll\u00edtva. V\u00e1lasszon egyet.\nCsak egyetlen hiteles\u00edt\u00e9si eszk\u00f6zt kell megadni.
 
 hostAuthInfo.sshKeyPasswordWithoutKey=SSH priv\u00e1t kulcs jelsz\u00f3 a megfelel\u0151 priv\u00e1t kulcs n\u00e9lk\u00fcl lett megadva.
 
@@ -149,61 +129,36 @@ hostAuthInfo.useSudoFalseWithSudoOptions=useSudo be\u00e1ll\u00edt\u00e1sa false
 
 # Messages for registering a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-encoding.aesRequiresKey=Az aes k\u00f3dol\u00e1shoz kulcs sz\u00fcks\u00e9ges. \
-Adjon meg egyet a --key param\u00e9terrel.
+encoding.aesRequiresKey=Az aes k\u00f3dol\u00e1shoz kulcs sz\u00fcks\u00e9ges. Adjon meg egyet a --key param\u00e9terrel.
 
-encoding.xorDoesNotSupportKey=Az xor k\u00f3dol\u00e1s nem t\u00e1mogatja a kulcsot. \
-Ne adjon meg --key param\u00e9tert.
+encoding.xorDoesNotSupportKey=Az xor k\u00f3dol\u00e1s nem t\u00e1mogatja a kulcsot. Ne adjon meg --key param\u00e9tert.
 
 encoding.unsupportedEncoding=Nem t\u00e1mogatott k\u00f3dol\u00e1si \u00e9rt\u00e9k: {0}.
 
 # Messages for registering a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-ssh.invalidSSHKeyPair=\n\
-A megadott SSH kulcsp\u00e1r \u00e9rv\u00e9nytelen.\n\
-Hiba: {0}
+ssh.invalidSSHKeyPair=\nA megadott SSH kulcsp\u00e1r \u00e9rv\u00e9nytelen.\nHiba: {0}
 
-ssh.couldNotCreateSSHKeys=\n\
-Az alap\u00e9rtelmezett SSH kulcsok nem hozhat\u00f3k l\u00e9tre hoszthiteles\u00edt\u00e9shez.\n\
-Hiba: {0}
+ssh.couldNotCreateSSHKeys=\nAz alap\u00e9rtelmezett SSH kulcsok nem hozhat\u00f3k l\u00e9tre hoszthiteles\u00edt\u00e9shez.\nHiba: {0}
 
-ssh.couldNotReadSSHKeys=\n\
-Az SSH kulcsok nem olvashat\u00f3k (vagy \u00edrhat\u00f3k).\n\
-Hiba: {0}
+ssh.couldNotReadSSHKeys=\nAz SSH kulcsok nem olvashat\u00f3k (vagy \u00edrhat\u00f3k).\nHiba: {0}
 
 ssh.updateAuthorizedKeys=Jogosult kulcsok friss\u00edt\u00e9se \u00faj nyilv\u00e1nos kulccsal...
 
-ssh.cannotUpdateAuthorizedKeys=\n\
-Jogosult kulcsok nem friss\u00edthet\u0151k a k\u00f6vetkez\u0151 felhaszn\u00e1l\u00f3hoz: {0}\n\
-Jogosult kulcsok f\u00e1jlj\u00e1t a rendszer a felhaszn\u00e1l\u00f3 alapk\u00f6nyvt\u00e1r\u00e1ban kereste: {1}\n\
-Friss\u00edtse a jogosult kulcsok f\u00e1jlj\u00e1t a k\u00f6vetkez\u0151 nyilv\u00e1nos kulccsal:\n\
-{2}\n\
-Hiba: {3}
+ssh.cannotUpdateAuthorizedKeys=\nJogosult kulcsok nem friss\u00edthet\u0151k a k\u00f6vetkez\u0151 felhaszn\u00e1l\u00f3hoz: {0}\nJogosult kulcsok f\u00e1jlj\u00e1t a rendszer a felhaszn\u00e1l\u00f3 alapk\u00f6nyvt\u00e1r\u00e1ban kereste: {1}\nFriss\u00edtse a jogosult kulcsok f\u00e1jlj\u00e1t a k\u00f6vetkez\u0151 nyilv\u00e1nos kulccsal:\n{2}\nHiba: {3}
 
 
 # Messages for creation of a collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-create.start=Sz\u00fcks\u00e9ges tan\u00fas\u00edtv\u00e1nyok l\u00e9trehoz\u00e1sa egy\u00fcttes kialak\u00edt\u00e1s\u00e1hoz...\n\
-Ez eltarthat egy ideig.
+create.start=Sz\u00fcks\u00e9ges tan\u00fas\u00edtv\u00e1nyok l\u00e9trehoz\u00e1sa egy\u00fcttes kialak\u00edt\u00e1s\u00e1hoz...\nEz eltarthat egy ideig.
 
-create.abort=\n\
-Egy\u00fcttes vez\u00e9rl\u0151 kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1nak megszak\u00edt\u00e1sa.
+create.abort=\nEgy\u00fcttes vez\u00e9rl\u0151 kiszolg\u00e1l\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1nak megszak\u00edt\u00e1sa.
 
-create.errGetHostName=\n\
-A hosztn\u00e9v nem \u00e1llap\u00edthat\u00f3 meg. Az alap\u00e9rtelmezett {0} \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.\n\
-Ok: {1}\n\
-A hosztn\u00e9v kifejezett megad\u00e1s\u00e1hoz haszn\u00e1lja a --hostName param\u00e9tert.
+create.errGetHostName=\nA hosztn\u00e9v nem \u00e1llap\u00edthat\u00f3 meg. Az alap\u00e9rtelmezett {0} \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.\nOk: {1}\nA hosztn\u00e9v kifejezett megad\u00e1s\u00e1hoz haszn\u00e1lja a --hostName param\u00e9tert.
 
-create.errorAlreadyHasResources=\n\
-A kiszolg\u00e1l\u00f3 resources/collective k\u00f6nyvt\u00e1ra m\u00e1r l\u00e9tezik.\n\
-Az egy\u00fcttes \u00fajb\u00f3li l\u00e9trehoz\u00e1s\u00e1hoz t\u00e1vol\u00edtsa el a teljes k\u00f6nyvt\u00e1rat.\n\
-Megl\u00e9v\u0151 egy\u00fcttes kiterjeszt\u00e9s\u00e9hez haszn\u00e1lja a replicate feladatot.
+create.errorAlreadyHasResources=\nA kiszolg\u00e1l\u00f3 resources/collective k\u00f6nyvt\u00e1ra m\u00e1r l\u00e9tezik.\nAz egy\u00fcttes \u00fajb\u00f3li l\u00e9trehoz\u00e1s\u00e1hoz t\u00e1vol\u00edtsa el a teljes k\u00f6nyvt\u00e1rat.\nMegl\u00e9v\u0151 egy\u00fcttes kiterjeszt\u00e9s\u00e9hez haszn\u00e1lja a replicate feladatot.
 
-create.configLocationInDefaults=\n\
-A --createConfigFile param\u00e9terben megadott hely a\n\
-configDropins/defaults k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3. Ez nem \u00e9rv\u00e9nyes hely az\n\
-el\u0151\u00e1ll\u00edtott egy\u00fcttes konfigur\u00e1ci\u00f3nak, mert az \u00f6sszes vez\u00e9rl\u0151\n\
-osztozik a helyen. Adjon meg m\u00e1sik helyet.
+create.configLocationInDefaults=\nA --createConfigFile param\u00e9terben megadott hely a\nconfigDropins/defaults k\u00f6nyvt\u00e1rban tal\u00e1lhat\u00f3. Ez nem \u00e9rv\u00e9nyes hely az\nel\u0151\u00e1ll\u00edtott egy\u00fcttes konfigur\u00e1ci\u00f3nak, mert az \u00f6sszes vez\u00e9rl\u0151\nosztozik a helyen. Adjon meg m\u00e1sik helyet.
 
 create.genCertControllerRoot=A vez\u00e9rl\u0151 gy\u00f6k\u00e9rtan\u00fas\u00edtv\u00e1ny sikeresen el\u0151\u00e1ll\u00edtva.
 
@@ -213,46 +168,31 @@ create.genCertServerIdentity=A kiszolg\u00e1l\u00f3 azonoss\u00e1g tan\u00fas\u0
 
 create.genCertHTTPS=A HTTPS tan\u00fas\u00edtv\u00e1ny sikeresen el\u0151\u00e1ll\u00edtva.
 
-create.failedKSSave=\n\
-A(z) {0} kulcst\u00e1rol\u00f3 nem menthet\u0151
+create.failedKSSave=\nA(z) {0} kulcst\u00e1rol\u00f3 nem menthet\u0151
 
-create.cleanupFail=\n\
-Hiba az el\u0151\u00e1ll\u00edtott f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00f6r\u00f6lhet\u0151\n\
-T\u00e1vol\u00edtsa el saj\u00e1t kez\u0171leg a k\u00f6nyvt\u00e1rat, ellen\u0151rizze a\n\
-\ f\u00e1jlenged\u00e9lyeket, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+create.cleanupFail=\nHiba az el\u0151\u00e1ll\u00edtott f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00f6r\u00f6lhet\u0151\nT\u00e1vol\u00edtsa el saj\u00e1t kez\u0171leg a k\u00f6nyvt\u00e1rat, ellen\u0151rizze a\n f\u00e1jlenged\u00e9lyeket, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
 create.successful=A(z) {0} egy\u00fcttes vez\u00e9rl\u0151 konfigur\u00e1ci\u00f3j\u00e1nak be\u00e1ll\u00edt\u00e1sa sikeresen megt\u00f6rt\u00e9nt.\n
 
-create.configureSecurity=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adminisztr\u00e1ci\u00f3s biztons\u00e1g be van \u00e1ll\u00edtva a kiszolg\u00e1l\u00f3ra.\n\
-Adminisztr\u00e1tori felhaszn\u00e1l\u00f3 sz\u00fcks\u00e9ges az egy\u00fcttesbe tagok felv\u00e9tel\u00e9hez.
+create.configureSecurity=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az adminisztr\u00e1ci\u00f3s biztons\u00e1g be van \u00e1ll\u00edtva a kiszolg\u00e1l\u00f3ra.\nAdminisztr\u00e1tori felhaszn\u00e1l\u00f3 sz\u00fcks\u00e9ges az egy\u00fcttesbe tagok felv\u00e9tel\u00e9hez.
 
 create.certUtil.NotAvailable=A k\u00e9rt m\u0171velet ezzel a WebSphere kiad\u00e1ssal nem \u00e9rhet\u0151 el.
 
 # Messages for joining a collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-join.start=Egy\u00fcttes csatlakoztat\u00e1sa a c\u00e9l vez\u00e9rl\u0151vel {0}:{1}...\n\
-Ez eltarthat egy ideig.
+join.start=Egy\u00fcttes csatlakoztat\u00e1sa a c\u00e9l vez\u00e9rl\u0151vel {0}:{1}...\nEz eltarthat egy ideig.
 
-join.abort=\n\
-Egy\u00fcttes csatlakoztat\u00e1sa megszak\u00edtva.
+join.abort=\nEgy\u00fcttes csatlakoztat\u00e1sa megszak\u00edtva.
 
-join.errorAlreadyHasResources=A resources/collective k\u00f6nyvt\u00e1r m\u00e1r l\u00e9tezik a kiszolg\u00e1l\u00f3n.\n\
-Lehet, hogy a kiszolg\u00e1l\u00f3 m\u00e1r tag.\n\
-Az egy\u00fcttes \u00fajracsatlakoztat\u00e1sa \u00e9rdek\u00e9ben futtassa az elt\u00e1vol\u00edt\u00e1si feladatot, vagy saj\u00e1t kez\u0171leg\n\
-t\u00f6r\u00f6lje a resources/collective k\u00f6nyvt\u00e1rat, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+join.errorAlreadyHasResources=A resources/collective k\u00f6nyvt\u00e1r m\u00e1r l\u00e9tezik a kiszolg\u00e1l\u00f3n.\nLehet, hogy a kiszolg\u00e1l\u00f3 m\u00e1r tag.\nAz egy\u00fcttes \u00fajracsatlakoztat\u00e1sa \u00e9rdek\u00e9ben futtassa az elt\u00e1vol\u00edt\u00e1si feladatot, vagy saj\u00e1t kez\u0171leg\nt\u00f6r\u00f6lje a resources/collective k\u00f6nyvt\u00e1rat, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
-join.writeKeystoreFail=\n\
-Hiba a sz\u00fcks\u00e9ges kulcst\u00e1rol\u00f3 {0} lemezre \u00edr\u00e1sa sor\u00e1n
+join.writeKeystoreFail=\nHiba a sz\u00fcks\u00e9ges kulcst\u00e1rol\u00f3 {0} lemezre \u00edr\u00e1sa sor\u00e1n
 
-join.cleanupFail=\n\
-Hiba az el\u0151\u00e1ll\u00edtott f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00f6r\u00f6lhet\u0151\n\
-T\u00e1vol\u00edtsa el saj\u00e1t kez\u0171leg a k\u00f6nyvt\u00e1rat, ellen\u0151rizze a\n\
-f\u00e1jlenged\u00e9lyeket, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+join.cleanupFail=\nHiba az el\u0151\u00e1ll\u00edtott f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00f6r\u00f6lhet\u0151\nT\u00e1vol\u00edtsa el saj\u00e1t kez\u0171leg a k\u00f6nyvt\u00e1rat, ellen\u0151rizze a\nf\u00e1jlenged\u00e9lyeket, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
 join.mbeanComplete=MBean k\u00e9r\u00e9s sikeresen befejez\u0151d\u00f6tt a vez\u00e9rl\u0151re.
 
-join.registeredAlready=\u00dagy t\u0171nik, a megadott {0} kiszolg\u00e1l\u00f3 m\u00e1r tag.\n\
-Az egy\u00fcttes \u00fajracsatlakoztat\u00e1s\u00e1hoz futtassa az elt\u00e1vol\u00edt\u00e1si feladatot, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+join.registeredAlready=\u00dagy t\u0171nik, a megadott {0} kiszolg\u00e1l\u00f3 m\u00e1r tag.\nAz egy\u00fcttes \u00fajracsatlakoztat\u00e1s\u00e1hoz futtassa az elt\u00e1vol\u00edt\u00e1si feladatot, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
 join.successful=A(z) {0} kiszolg\u00e1l\u00f3 egy\u00fcttese sikeresen csatlakoztatva. \n
 
@@ -260,13 +200,11 @@ join.useHostCredentialsButOtherCtedentialsAreSet=Ha a useHostCredentials be van 
 
 deployAdminMetadata.mbeanComplete=A vez\u00e9rl\u0151h\u00f6z k\u00fcld\u00f6tt AdminMetadataManagerMBean k\u00e9r\u00e9s sikeresen befejez\u0151d\u00f6tt.
 
-deployAdminMetadata.start=Adminisztr\u00e1ci\u00f3s metaadatok telep\u00edt\u00e9se az egy\u00fcttes lerakatba...\n\
-Ez eltarthat egy ideig.
+deployAdminMetadata.start=Adminisztr\u00e1ci\u00f3s metaadatok telep\u00edt\u00e9se az egy\u00fcttes lerakatba...\nEz eltarthat egy ideig.
 
 allocateDeployVariables.mbeanComplete=A vez\u00e9rl\u0151h\u00f6z k\u00fcld\u00f6tt CollectiveRepositoryMBean k\u00e9r\u00e9s sikeresen befejez\u0151d\u00f6tt.
 
-allocateDeployVariables.start=Telep\u00edt\u00e9si v\u00e1ltoz\u00f3k kioszt\u00e1sa az egy\u00fcttes lerakatban...\n\
-Ez eltarthat egy ideig.
+allocateDeployVariables.start=Telep\u00edt\u00e9si v\u00e1ltoz\u00f3k kioszt\u00e1sa az egy\u00fcttes lerakatban...\nEz eltarthat egy ideig.
 
 AllocatedDeployVars=A kiosztott telep\u00edt\u00e9si v\u00e1ltoz\u00f3:
 deployVarsNotFound=A nem defini\u00e1lt telep\u00edt\u00e9si v\u00e1ltoz\u00f3: {0}
@@ -275,16 +213,11 @@ deployVarsAreAllocated=A telep\u00edt\u00e9si v\u00e1ltoz\u00f3k kioszt\u00e1sa 
 # Messages for generating a collective key
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 genKey.start=Kulcst\u00e1rol\u00f3 el\u0151\u00e1ll\u00edt\u00e1sa a c\u00e9lvez\u00e9rl\u0151vel: {0}:{1}...\n
-genKey.abort=\n\
-genKey megszak\u00edt\u00e1sa.
+genKey.abort=\ngenKey megszak\u00edt\u00e1sa.
 
-genKey.writeKeystoreFail=\n\
-Hiba a sz\u00fcks\u00e9ges kulcst\u00e1rol\u00f3 {0} lemezre \u00edr\u00e1sa sor\u00e1n
+genKey.writeKeystoreFail=\nHiba a sz\u00fcks\u00e9ges kulcst\u00e1rol\u00f3 {0} lemezre \u00edr\u00e1sa sor\u00e1n
 
-genKey.cleanupFail=\n\
-Hiba az el\u0151\u00e1ll\u00edtott f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00e1vol\u00edthat\u00f3 el\n\
-T\u00e1vol\u00edtsa el a f\u00e1jlt saj\u00e1t kez\u0171leg, ellen\u0151rizze a f\u00e1jlenged\u00e9lyeket,\n\
-majd pr\u00f3b\u00e1lkozzon \u00fajra.
+genKey.cleanupFail=\nHiba az el\u0151\u00e1ll\u00edtott f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00e1vol\u00edthat\u00f3 el\nT\u00e1vol\u00edtsa el a f\u00e1jlt saj\u00e1t kez\u0171leg, ellen\u0151rizze a f\u00e1jlenged\u00e9lyeket,\nmajd pr\u00f3b\u00e1lkozzon \u00fajra.
 
 genKey.mbeanComplete=MBean k\u00e9r\u00e9s sikeresen befejez\u0151d\u00f6tt a vez\u00e9rl\u0151re.
 
@@ -293,46 +226,32 @@ genKey.generatedKeystore=A(z) {0} kulcst\u00e1rol\u00f3 sikeresen el\u0151\u00e1
 
 # Messages for replicating a controller 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-replicate.start=A(z) {0}:{1} c\u00e9l egy\u00fcttes vez\u00e9rl\u0151 replik\u00e1l\u00e1sa...\n\
-Ez eltarthat egy ideig.
+replicate.start=A(z) {0}:{1} c\u00e9l egy\u00fcttes vez\u00e9rl\u0151 replik\u00e1l\u00e1sa...\nEz eltarthat egy ideig.
 
-replicate.abort=\n\
-Vez\u00e9rl\u0151 replik\u00e1l\u00e1s\u00e1nak megszak\u00edt\u00e1sa.
+replicate.abort=\nVez\u00e9rl\u0151 replik\u00e1l\u00e1s\u00e1nak megszak\u00edt\u00e1sa.
 
-replicate.errorAlreadyHasResources=A resources/collective k\u00f6nyvt\u00e1r m\u00e1r l\u00e9tezik a kiszolg\u00e1l\u00f3n.\n\
-Lehet, hogy a kiszolg\u00e1l\u00f3 m\u00e1r vez\u00e9rl\u0151.\n\
-A vez\u00e9rl\u0151 replik\u00e1l\u00e1s\u00e1hoz futtassa a remove feladatot, vagy saj\u00e1t kez\u0171leg\n\
-t\u00f6r\u00f6lje a resources/collective k\u00f6nyvt\u00e1rat, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+replicate.errorAlreadyHasResources=A resources/collective k\u00f6nyvt\u00e1r m\u00e1r l\u00e9tezik a kiszolg\u00e1l\u00f3n.\nLehet, hogy a kiszolg\u00e1l\u00f3 m\u00e1r vez\u00e9rl\u0151.\nA vez\u00e9rl\u0151 replik\u00e1l\u00e1s\u00e1hoz futtassa a remove feladatot, vagy saj\u00e1t kez\u0171leg\nt\u00f6r\u00f6lje a resources/collective k\u00f6nyvt\u00e1rat, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
-replicate.writeKeystoreFail=\n\
-Hiba a sz\u00fcks\u00e9ges kulcst\u00e1rol\u00f3 {0} lemezre \u00edr\u00e1sa sor\u00e1n
+replicate.writeKeystoreFail=\nHiba a sz\u00fcks\u00e9ges kulcst\u00e1rol\u00f3 {0} lemezre \u00edr\u00e1sa sor\u00e1n
 
-replicate.writeFileFail=\n\
-Hiba a sz\u00fcks\u00e9ges f\u00e1jl lemezre \u00edr\u00e1sa sor\u00e1n: {0}
+replicate.writeFileFail=\nHiba a sz\u00fcks\u00e9ges f\u00e1jl lemezre \u00edr\u00e1sa sor\u00e1n: {0}
 
-replicate.cleanupFail=\n\
-Hiba az el\u0151\u00e1ll\u00edtott f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00f6r\u00f6lhet\u0151\n\
-T\u00e1vol\u00edtsa el saj\u00e1t kez\u0171leg a k\u00f6nyvt\u00e1rat, ellen\u0151rizze a\n\
-f\u00e1jlenged\u00e9lyeket, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+replicate.cleanupFail=\nHiba az el\u0151\u00e1ll\u00edtott f\u00e1jlok elt\u00e1vol\u00edt\u00e1sa sor\u00e1n. A(z) {0} nem t\u00f6r\u00f6lhet\u0151\nT\u00e1vol\u00edtsa el saj\u00e1t kez\u0171leg a k\u00f6nyvt\u00e1rat, ellen\u0151rizze a\nf\u00e1jlenged\u00e9lyeket, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
 replicate.mbeanComplete=MBean k\u00e9r\u00e9s sikeresen befejez\u0151d\u00f6tt a vez\u00e9rl\u0151re.
 
-replicate.registeredAlready=\u00dagy t\u0171nik, a megadott {0} kiszolg\u00e1l\u00f3 m\u00e1r tag.\n\
-A vez\u00e9rl\u0151 replik\u00e1l\u00e1s\u00e1hoz futtassa az elt\u00e1vol\u00edt\u00e1si feladatot, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+replicate.registeredAlready=\u00dagy t\u0171nik, a megadott {0} kiszolg\u00e1l\u00f3 m\u00e1r tag.\nA vez\u00e9rl\u0151 replik\u00e1l\u00e1s\u00e1hoz futtassa az elt\u00e1vol\u00edt\u00e1si feladatot, majd pr\u00f3b\u00e1lkozzon \u00fajra.
 
 replicate.success=A vez\u00e9rl\u0151 sikeresen replik\u00e1lva kiszolg\u00e1l\u00f3k\u00e9nt: {0} \n
 
 
-replicate.configureSecurity=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00faj kiszolg\u00e1l\u00f3 adminisztr\u00e1ci\u00f3s biztons\u00e1ga\n\
-pontosan \u00fagy van be\u00e1lll\u00edtva, mint az aktu\u00e1lis egy\u00fcttes vez\u00e9rl\u0151. Egy\u00fattal \u00e1ll\u00edtsa be a\n\
-collectiveRootKeys jelszav\u00e1t a helyes jelsz\u00f3ra.\n
+replicate.configureSecurity=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00faj kiszolg\u00e1l\u00f3 adminisztr\u00e1ci\u00f3s biztons\u00e1ga\npontosan \u00fagy van be\u00e1lll\u00edtva, mint az aktu\u00e1lis egy\u00fcttes vez\u00e9rl\u0151. Egy\u00fattal \u00e1ll\u00edtsa be a\ncollectiveRootKeys jelszav\u00e1t a helyes jelsz\u00f3ra.\n
 
 # Messages for leaving a collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 remove.attemptUnregister=A kiszolg\u00e1l\u00f3 bejegyz\u00e9s\u00e9nek t\u00f6rl\u00e9si k\u00eds\u00e9rlete az egy\u00fcttesb\u0151l...
 
-remove.unregisteredAlready=A(z) {0} kiszolg\u00e1l\u00f3 nincs regisztr\u00e1lva.\n\
-Lehet, hogy m\u00e1sik hosztn\u00e9v alatt van bejegyezve.
+remove.unregisteredAlready=A(z) {0} kiszolg\u00e1l\u00f3 nincs regisztr\u00e1lva.\nLehet, hogy m\u00e1sik hosztn\u00e9v alatt van bejegyezve.
 
 remove.unregisterFailed=A(z) {0} kiszolg\u00e1l\u00f3 bejegyz\u00e9se hiba miatt nem t\u00f6r\u00f6lhet\u0151.
 
@@ -343,25 +262,21 @@ remove.attemptResourceDelete=K\u00eds\u00e9rlet az egy\u00fcttes er\u0151forr\u0
 remove.noFilesRemoved=Nem ker\u00fclt elt\u00e1vol\u00edt\u00e1sra egy\u00fcttes er\u0151forr\u00e1s.
 remove.noResources=Nem tal\u00e1lhat\u00f3 egy\u00fcttes er\u0151forr\u00e1s.
 
-remove.manuallyRemove=A(z) {0} alatt n\u00e9h\u00e1ny f\u00e1jl nem t\u00e1vol\u00edthat\u00f3 el.\n\
-Ezeket saj\u00e1t kez\u0171leg kell elt\u00e1vol\u00edtania.
+remove.manuallyRemove=A(z) {0} alatt n\u00e9h\u00e1ny f\u00e1jl nem t\u00e1vol\u00edthat\u00f3 el.\nEzeket saj\u00e1t kez\u0171leg kell elt\u00e1vol\u00edtania.
 
 remove.filesSuccess=Az egy\u00fcttes tags\u00e1g er\u0151forr\u00e1sai sikeresen elt\u00e1vol\u00edtva.
 
-remove.updateXML=\n\
-Friss\u00edtse a server.xml f\u00e1jlt, \u00e9s t\u00e1vol\u00edtsa el a k\u00f6vetkez\u0151 elemeket:
+remove.updateXML=\nFriss\u00edtse a server.xml f\u00e1jlt, \u00e9s t\u00e1vol\u00edtsa el a k\u00f6vetkez\u0151 elemeket:
 
 removeAllAdminMetadata.mbeanComplete=A vez\u00e9rl\u0151h\u00f6z k\u00fcld\u00f6tt AdminMetadataManagerMBean k\u00e9r\u00e9s sikeresen befejez\u0151d\u00f6tt.
 
-removeAllAdminMetadata.start=Minden adminisztr\u00e1ci\u00f3s metaadat elt\u00e1vol\u00edt\u00e1sa az egy\u00fcttes lerakatb\u00f3l...\n\
-Ez eltarthat egy ideig.
+removeAllAdminMetadata.start=Minden adminisztr\u00e1ci\u00f3s metaadat elt\u00e1vol\u00edt\u00e1sa az egy\u00fcttes lerakatb\u00f3l...\nEz eltarthat egy ideig.
 
 remove.removeAllAdminMetadataFailed=A(z) {0} er\u0151forr\u00e1st\u00edpus\u00fa \u00e9s {1} azonoss\u00e1g\u00fa adminisztr\u00e1ci\u00f3s metaadatok hiba miatt nem t\u00e1vol\u00edthat\u00f3k el az egy\u00fcttes lerakatb\u00f3l.
 
 getAdminMetadata.mbeanComplete=A vez\u00e9rl\u0151h\u00f6z k\u00fcld\u00f6tt AdminMetadataManagerMBean k\u00e9r\u00e9s sikeresen befejez\u0151d\u00f6tt.
 
-releaseDeployVariables.start=Minden telep\u00edt\u00e9si v\u00e1ltoz\u00f3 felszabad\u00edt\u00e1sa az egy\u00fcttes lerakatb\u00f3l...\n\
-Ez eltarthat egy ideig.
+releaseDeployVariables.start=Minden telep\u00edt\u00e9si v\u00e1ltoz\u00f3 felszabad\u00edt\u00e1sa az egy\u00fcttes lerakatb\u00f3l...\nEz eltarthat egy ideig.
 
 releaseDeployVariables.mbeanComplete=A vez\u00e9rl\u0151h\u00f6z k\u00fcld\u00f6tt CollectiveRepositoryMBean k\u00e9r\u00e9s sikeresen befejez\u0151d\u00f6tt.
 
@@ -369,8 +284,7 @@ remove.releaseDeployVariablesFailed=A(z) {1} hosztn\u00e9vhez tartoz\u00f3 {0} t
 
 # Messages for registering a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-registerHost.abort=\n\
-registerHost megszak\u00edt\u00e1sa.
+registerHost.abort=\nregisterHost megszak\u00edt\u00e1sa.
 
 registerHost.attemptRegister=A hoszt regisztr\u00e1l\u00e1sa az egy\u00fctteshez...
 
@@ -383,8 +297,7 @@ registerHost.registerSuccess=A(z) {0} hoszt sikeresen regisztr\u00e1lva.
 
 # Messages for updating a host to the collective
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-updateHost.abort=\n\
-updateHost megszak\u00edt\u00e1sa.
+updateHost.abort=\nupdateHost megszak\u00edt\u00e1sa.
 
 updateHost.attemptRegister=A hoszt hiteles\u00edt\u00e9si inform\u00e1ci\u00f3inak friss\u00edt\u00e9se...
 
@@ -410,8 +323,7 @@ addReplica.attempt=A v\u00e9gpont hozz\u00e1ad\u00e1sa a m\u00e1solatk\u00e9szle
 
 addReplica.alreadyAdded=A(z) {0} m\u00e1solatv\u00e9gpont m\u00e1r r\u00e9sze a m\u00e1solatk\u00e9szletnek.
 
-addReplica.invalidEndpoint=A(z) {0} m\u00e1solatv\u00e9gpont nem adhat\u00f3 hozz\u00e1 a m\u00e1solatk\u00e9szlethez.\n\
-Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a m\u00e1solatv\u00e9gpont helyes, \u00e9s hogy a m\u00e1solat fut.
+addReplica.invalidEndpoint=A(z) {0} m\u00e1solatv\u00e9gpont nem adhat\u00f3 hozz\u00e1 a m\u00e1solatk\u00e9szlethez.\nGy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a m\u00e1solatv\u00e9gpont helyes, \u00e9s hogy a m\u00e1solat fut.
 
 addReplica.error=A(z) {0} m\u00e1solat v\u00e9gpont egy hiba miatt nem vehet\u0151 fel.
 
@@ -436,8 +348,7 @@ setMaintenanceMode.error=A(z) {0} karbantart\u00e1si m\u00f3dj\u00e1t hiba miatt
 
 setMaintenanceMode.success=A(z) {0} karbantart\u00e1si m\u00f3dja sikeresen be\u00e1ll\u00edt\u00e1sra ker\u00fclt.
 
-setMaintenanceMode.alt=Alternat\u00edv kiszolg\u00e1l\u00f3t kell ind\u00edtani. \
-A(z) {0} karbantart\u00e1si m\u00f3dja akkor lesz be\u00e1ll\u00edtva, ha az alternat\u00edv kiszolg\u00e1l\u00f3 elindult.
+setMaintenanceMode.alt=Alternat\u00edv kiszolg\u00e1l\u00f3t kell ind\u00edtani. A(z) {0} karbantart\u00e1si m\u00f3dja akkor lesz be\u00e1ll\u00edtva, ha az alternat\u00edv kiszolg\u00e1l\u00f3 elindult.
 
 setMaintenanceMode.noAltServer=Nem \u00e1ll\u00edthat\u00f3 be a karbantart\u00e1si m\u00f3d a k\u00f6vetkez\u0151h\u00f6z: {0}, mert nem \u00e9rhet\u0151 el egy alternat\u00edv kiszolg\u00e1l\u00f3.
 
@@ -457,7 +368,6 @@ getMaintenanceMode.inMM={0} karbantart\u00e1si m\u00f3dban van.
 
 getMaintenanceMode.notInMM={0} nincs karbantart\u00e1s m\u00f3dban.
 
-getMaintenanceMode.alt=Alternat\u00edv kiszolg\u00e1l\u00f3t kell ind\u00edtani. \
-A(z) {0} karbantart\u00e1si m\u00f3dja akkor lesz be\u00e1ll\u00edtva, ha az alternat\u00edv kiszolg\u00e1l\u00f3 elindult.
+getMaintenanceMode.alt=Alternat\u00edv kiszolg\u00e1l\u00f3t kell ind\u00edtani. A(z) {0} karbantart\u00e1si m\u00f3dja akkor lesz be\u00e1ll\u00edtva, ha az alternat\u00edv kiszolg\u00e1l\u00f3 elindult.
 
 getMaintenanceMode.error=A(z) {0} karbantart\u00e1si m\u00f3dj\u00e1t egy hiba miatt nem lehet lek\u00e9rdezni.

@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# Define the bundle for this FAT
+
+Bundle-Name: test.startphase.condition
+Bundle-SymbolicName: test.startphase.condition
+
+# hide the implementation packages
+Private-Package: \
+ test.startphase.condition
+
+-dsannotations: \
+ test.startphase.condition.TestStartPhaseConditionActive,\
+ test.startphase.condition.TestStartPhaseConditionApplication,\
+ test.startphase.condition.TestStartPhaseConditionApplicationEarly,\
+ test.startphase.condition.TestStartPhaseConditionApplicationLate,\
+ test.startphase.condition.TestStartPhaseConditionContainers,\
+ test.startphase.condition.TestStartPhaseConditionContainersEarly,\
+ test.startphase.condition.TestStartPhaseConditionContainersLate,\
+ test.startphase.condition.TestStartPhaseConditionServices,\
+ test.startphase.condition.TestStartPhaseConditionServicesEarly,\
+ test.startphase.condition.TestStartPhaseConditionServicesLate

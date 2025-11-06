@@ -1,0 +1,6 @@
+- stepName: Launcher SHA
+  workType: Jenkins
+  projectName: getGitCommitSHA
+  timeoutInMinutes: 120
+  properties:
+    commitsAPI: "https://github.ibm.com/api/v3/repos/${git.launcher.clone.username}/rtc-build-launcher/commits/${git.launcher.clone.branch}"

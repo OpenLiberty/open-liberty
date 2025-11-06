@@ -1,4 +1,5 @@
 net.sourceforge.nekohtml:nekohtml:1.9.23.ibm
+org.apache.commons:commons-weaver-privilizer:1.1.0.ibm
 org.glassfish:jakarta.json:2.0.2.ibm
 org.glassfish:javax.json:1.0.5.ibm
 org.glassfish:javax.json:1.1.5.ibm

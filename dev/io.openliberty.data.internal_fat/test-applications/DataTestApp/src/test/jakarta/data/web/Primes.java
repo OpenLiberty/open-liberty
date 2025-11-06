@@ -51,7 +51,7 @@ import jakarta.enterprise.concurrent.Asynchronous;
  * Repository with data that is pre-populated.
  * This should be treated as read-only to avoid interference between with tests.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Primes {
     @Find
     CursoredPage<Prime> all(Order<Prime> sorts, PageRequest req);
@@ -370,10 +370,17 @@ public interface Primes {
                     """)
     Stack<String> minMaxSumCountAverageStack(long numBelow);
 
+    @Query("SELECT MIN(numberId)" +
+           " WHERE numberId < ?1" +
+           " GROUP BY LENGTH(name)")
+    @OrderBy("LENGTH(name)")
+    Page<Long> minNumberOfEachNameLength(long max,
+                                         PageRequest req);
+
     @Query("SELECT o.name FROM Prime o WHERE o.numberId < ?1")
     Page<String> namesBelow(long numBelow, Sort<Prime> sort, PageRequest pageRequest);
 
-    @Query(value = "SELECT NEW java.util.AbstractMap.SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name")
+    @Query(value = "SELECT NEW java.util.AbstractMap$SimpleImmutableEntry(p.numberId, p.name) FROM Prime p WHERE p.numberId <= ?1 ORDER BY p.name")
     Page<Map.Entry<Long, String>> namesByNumber(long maxNumber, PageRequest pagination);
 
     @Query("SELECT prime.name, prime.hex FROM  Prime  prime  WHERE prime.numberId <= ?1")
@@ -416,6 +423,18 @@ public interface Primes {
 
     @Query("SELECT numberId WHERE ID(THIS)=:num")
     Optional<Short> numberAsShortWrapper(long num);
+
+    @Query("""
+                    SELECT p1 FROM Prime p1 WHERE LENGTH(p1.hex) = :hexLen
+                    EXCEPT
+                    SELECT p2 FROM Prime p2 WHERE LENGTH(p2.name) = :excludeNameLen""")
+    List<Prime> ofHexLengthNotNameLength(int hexLen,
+                                         int excludeNameLen
+    // TODO ORDER BY for set operations is undefined in the query language.
+    // If added, enable the following and remove the manual sorting from the
+    // corresponding test
+    // Order<Prime> order
+    );
 
     // discouraged usage, but testing what happens
     @Query("SELECT COUNT(THIS) WHERE ID(THIS) < :max")
@@ -468,6 +487,9 @@ public interface Primes {
     @Query("SELECT hex WHERE numberId=:id")
     Optional<Character> singleHexDigit(long id);
 
+    @Query("WHERE numberId = (SELECT MIN(p.numberId) FROM Prime p)")
+    Prime smallest();
+
     @Query("SELECT hex WHERE numberId=?1")
     Optional<String> toHexadecimal(long num);
 
@@ -482,6 +504,15 @@ public interface Primes {
     @Query("where (numberId <= :maximum) and numberId>=10 order by name asc")
     Page<Prime> within10toXAndSortedByName(long maximum, PageRequest pageRequest);
 
+    @Query("""
+                    SELECT p1 FROM Prime p1 WHERE p1.numberId BETWEEN ?1 AND ?2
+                    INTERSECT
+                    SELECT p2 FROM Prime p2 WHERE p2.numberId BETWEEN ?3 AND ?4""")
+    // TODO once it is known how to write the JPQL for ORDER BY add it to the above
+    // and remove the manual sorting from the test
+    List<Prime> withinBoth(long min1, long max1,
+                           long min2, long max2);
+
     @OrderBy(value = "even", descending = true)
     @OrderBy(value = "name", descending = false)
     // Query used to contain (numberId-(numberId/10)* 10)<>3
@@ -491,6 +522,16 @@ public interface Primes {
     CursoredPage<Prime> withinButNotEndingIn7or3(@Param("min") long minimum,
                                                  @Param("max") long maximum,
                                                  PageRequest pageRequest);
+
+    @Query("""
+                    SELECT o FROM Prime o WHERE o.numberId BETWEEN ?1 AND ?2
+                    UNION
+                    SELECT o FROM Prime o WHERE o.numberId BETWEEN ?3 AND ?4""")
+    // TODO once it is known how to write the JPQL for ORDER BY, enable this
+    // and remove the manual sorting from the test
+    // @OrderBy(_Prime.NAME)
+    List<Prime> withinEither(long min1, long max1,
+                             long min2, long max2);
 
     @Query("WHERE (LENGTH(TRIM(name))=?1 AND numberId BETWEEN ?2 AND ?3)")
     List<Prime> withTrimmedNameLengthAndNumBetween(int length, long min, long max);

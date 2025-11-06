@@ -17,6 +17,8 @@ import static org.junit.Assert.fail;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
 import com.ibm.websphere.simplicity.ProgramOutput;
@@ -35,7 +37,9 @@ public class FATUtils {
 	private static final int RETRY_COUNT = 5;
 	private static final int RETRY_INTERVAL = 10000;
 
-    /**
+	private static final boolean PARALLEL_DEFAULT = false;
+
+	/**
      * @param servers
      * @return Mean server start time
      * @throws Exception
@@ -276,11 +280,88 @@ public class FATUtils {
         }
     }
 
-	public static void stopServers(LibertyServer... servers) throws Exception {
-		stopServers((String[])null, servers);
+	private static void stopServer(String[] toleratedMsgs, LibertyServer server) {
+        final String method = "stopServer";
+
+        assertNotNull("Attempted to stop a null server", server);
+        int attempt = 0;
+        int maxAttempts = 5;
+        Log.info(c, method, "Stopping " + server.getServerName());
+        do {
+            if (attempt++ > 0) {
+                Log.info(c, method, "Waiting 5 seconds after stop failure before making attempt " + attempt);
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+                    Log.error(c, method, e);
+                }
+            }
+
+            if (!server.isStarted()) {
+                Log.info(c, method,
+                         "Server " + server.getServerName() + " is not started. No need to stop it.");
+                break;
+            }
+
+            ProgramOutput po = null;
+            try {
+                po = server.stopServer(toleratedMsgs);
+            } catch (Exception e) {
+                Log.error(c, method, e, "Server stop attempt " + attempt + " failed with return code " + (po != null ? po.getReturnCode() : "<unavailable>"));
+            }
+
+            if (po != null) {
+                String s;
+                int rc = po.getReturnCode();
+
+                Log.info(c, method, "ReturnCode: " + rc);
+
+                if (rc == 0) {
+                    break;
+                } else {
+                    String pid = server.getPid();
+                    Log.info(c, method,
+                             "Non zero return code stopping server " + server.getServerName() + "." + ((pid != null ? "(pid:" + pid + ")" : "")));
+
+                    s = po.getStdout();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(c, method, "Stdout: " + s.trim());
+
+                    s = po.getStderr();
+
+                    if (s != null && !s.isEmpty())
+                        Log.info(c, method, "Stderr: " + s.trim());
+
+                    server.printProcessHoldingPort(server.getHttpDefaultPort());
+                }
+            }
+        } while (attempt < maxAttempts);
+
+        if (server.isStarted()) {
+            try {
+				server.postStopServerArchive();
+			} catch (Exception e) {
+	            Log.error(c, method, e);
+			}
+            Log.error(c, method, new Exception("Failed to stop " + server.getServerName() + " after " + attempt + " attempts"));
+        }
 	}
 
-		
+	public static void stopServers(boolean parallel, String[] toleratedMsgs, LibertyServer... servers) {
+	    Stream<LibertyServer> serverStream = Arrays.stream(servers);
+	    if (parallel) serverStream = serverStream.parallel();
+	    serverStream.forEach(s -> stopServer(toleratedMsgs, s));
+	}
+
+	public static void stopServers(boolean parallel, LibertyServer... servers) throws Exception {
+		stopServers(parallel, (String[])null, servers);
+	}
+
+	public static void stopServers(LibertyServer... servers) throws Exception {
+		stopServers(PARALLEL_DEFAULT, (String[])null, servers);
+	}
+
 	public static <T> T runWithRetries(Repeatable<T> r) throws Exception {
 		return runWithRetries(RETRY_COUNT, RETRY_INTERVAL, r);
 	}

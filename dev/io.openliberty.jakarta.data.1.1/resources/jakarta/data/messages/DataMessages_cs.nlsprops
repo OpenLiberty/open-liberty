@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=Argument {0} je povinn\u00fd
+002.no.elements=Seznam {0} nesm\u00ed b\u00fdt pr\u00e1zdn\u00fd
+003.null.element=Seznam {0} nesm\u00ed m\u00edt nulov\u00fd prvek
+004.arg.negative=Argument {0} nem\u016f\u017ee b\u00fdt z\u00e1porn\u00fd
+005.zero.not.allowed=Argument {0} nem\u016f\u017ee b\u00fdt 0
+006.zero.size.key=Kl\u00ed\u010d se mus\u00ed skl\u00e1dat alespo\u0148 z jednoho prvku
+007.wildcard.conflict=Nelze pou\u017e\u00edt stejn\u00fd znak ( {0} ) pro oba z\u00e1stupn\u00e9 znaky
+008.escape.conflict=Nelze pou\u017e\u00edt stejn\u00fd znak ( {0} ) pro z\u00e1stupn\u00fd znak i znak escape
+009.unknown.number.type=Neo\u010dek\u00e1van\u00fd podtyp \u010d\u00edsla: {0}
+010.unknown.total=Celkov\u00fd po\u010det prvk\u016f nen\u00ed k dispozici
+011.unknown.attr.type=Instance {0} byla z\u00edsk\u00e1na zp\u016fsobem, kter\u00fd neidentifikuje typ atributu. U statick\u00fdch t\u0159\u00edd metamodelu pou\u017eijte metodu.of, kter\u00e1 je definov\u00e1na na podtypu atributu, pro zad\u00e1n\u00ed t\u0159\u00eddy entity a typu atributu entity.
+012.unknown.decl.type=Instance {0} byla z\u00edsk\u00e1na zp\u016fsobem, kter\u00fd neidentifikuje t\u0159\u00eddu entity, kter\u00e1 atribut deklaruje. U statick\u00fdch t\u0159\u00edd metamodelu pou\u017eijte metodu.of, kter\u00e1 je definov\u00e1na na podtypu atributu, pro zad\u00e1n\u00ed t\u0159\u00eddy entity a typu atributu entity.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,6 +37,8 @@ import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * Class for RS Encryption tests.
@@ -56,6 +59,9 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
 
     private static final JwtTokenActions actions = new JwtTokenActions();
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled(OPServerName);
 
     @BeforeClass
     public static void setupBeforeTest() throws Exception {
@@ -136,28 +142,6 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         Log.info(thisClass, _testName, jwtToken);
 
         return jwtToken;
-    }
-
-    /**
-     * TODO when issue 17485 is completed, remove setting/passing parms and update the builder configs that encrypt with ES algs
-     * with keyManagementKeyAlgorithm set to ECDH-ES
-     *
-     * Update the keyManagementKeyAlgorithm to be used in creating the JWT. This allows us to create Elliptic Curve encrypted
-     * tokens
-     *
-     * @param alg
-     *            - the algorithm to set
-     * @return - parms to pass to the builder servlet
-     * @throws Exception
-     */
-    public List<NameValuePair> setParmsForECWorkaround(String alg) throws Exception {
-
-        testOPServer.addIgnoredServerException(MessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE + ".*" + "ECDH-ES");
-
-        List<NameValuePair> parms = new ArrayList<NameValuePair>();
-        parms.add(new NameValuePair(JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_ES));
-        parms.add(new NameValuePair(JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), alg)));
-        return parms;
     }
 
     /**
@@ -324,10 +308,10 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         return "snoop/Sign" + sigAlg + "Encrypt" + decryptAlg;
     }
 
-    public String createTokenWithBadElement(int badPart) throws Exception {
+    public String createTokenWithBadElement(int badPart, String builderAlg) throws Exception {
 
         String thisMethod = "createTokenWithBadElement";
-        String jwtToken = createTokenWithSubject("SignRS256EncryptRS256Builder");
+        String jwtToken = createTokenWithSubject(setBuilderName(builderAlg, builderAlg));
         Log.info(thisClass, thisMethod, jwtToken);
         String[] jwtTokenArray = jwtToken.split("\\.");
         Log.info(thisClass, thisMethod, "size: " + jwtTokenArray.length);
@@ -357,6 +341,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_EncryptTokenRS256_RSDecryptRS256() throws Exception {
 
         genericEncryptTest(Constants.SIGALG_RS256, Constants.SIGALG_RS256);
@@ -369,6 +354,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_EncryptTokenRS384_RSDecryptRS384() throws Exception {
 
         genericEncryptTest(Constants.SIGALG_RS384, Constants.SIGALG_RS384);
@@ -381,6 +367,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_EncryptTokenRS512_RSDecryptRS512() throws Exception {
 
         genericEncryptTest(Constants.SIGALG_RS512, Constants.SIGALG_RS512);
@@ -396,8 +383,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenES256_RSDecryptES256() throws Exception {
 
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(Constants.SIGALG_ES256, Constants.SIGALG_ES256, setParmsForECWorkaround(JwtConstants.SIGALG_ES256));
+        genericEncryptTest(Constants.SIGALG_ES256, Constants.SIGALG_ES256);
 
     }
 
@@ -409,8 +395,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenES384_RSDecryptES384() throws Exception {
 
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(Constants.SIGALG_ES384, Constants.SIGALG_ES384, setParmsForECWorkaround(Constants.SIGALG_ES384));
+        genericEncryptTest(Constants.SIGALG_ES384, Constants.SIGALG_ES384);
 
     }
 
@@ -422,8 +407,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenES512_RSDecryptES512() throws Exception {
 
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(Constants.SIGALG_ES512, Constants.SIGALG_ES512, setParmsForECWorkaround(Constants.SIGALG_ES512));
+        genericEncryptTest(Constants.SIGALG_ES512, Constants.SIGALG_ES512);
 
     }
 
@@ -439,16 +423,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenNotWithRS256_RSDecryptRS256() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_RS256;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RS specifies original alg for sign, but RS256 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -462,16 +443,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenNotWithRS384_RSDecryptRS384() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_RS384;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RS specifies original alg for sign, but RS384 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -486,16 +464,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenNotWithRS512_RSDecryptRS512() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_RS512;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RS specifies original alg for sign, but RS512 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -509,16 +484,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenNotWithES256_RSDecryptES256() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_ES256;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RS specifies original alg for sign, but ES256 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -532,16 +504,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenNotWithES384_RSDecryptES384() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_ES384;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RS specifies original alg for sign, but ES384 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -555,16 +524,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_EncryptTokenNotWithES512_RSDecryptES512() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_ES512;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RS specifies original alg for sign, but ES512 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -582,6 +548,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_SignWithVariousAlgs_EncryptWithRS256_DecryptWithRS256() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_RS256;
@@ -601,6 +568,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_SignWithVariousAlgs_EncryptWithRS384_DecryptWithRS384() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_RS384;
@@ -619,6 +587,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_SignWithVariousAlgs_EncryptWithRS512_DecryptWithRS512() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_RS512;
@@ -642,7 +611,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         String encryptDecryptAlg = Constants.SIGALG_ES256;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null);
             }
         }
 
@@ -661,7 +630,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         String encryptDecryptAlg = Constants.SIGALG_ES384;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null);
             }
         }
     }
@@ -679,7 +648,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         String encryptDecryptAlg = Constants.SIGALG_ES512;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null);
             }
         }
     }
@@ -691,8 +660,8 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     /****************************************************************/
     @Test
     public void NoOPEncryption1ServerTests_SignWithValidAlg_EncryptValid_DecryptInvalidKeyManagementKeyAlias() throws Exception {
-        String rpEncryptAlg = Constants.SIGALG_RS256;
-        String rpDecryptAlg = Constants.SIGALG_RS256;
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String rpDecryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
         genericEncryptTest(rpEncryptAlg, setBuilderName(rpEncryptAlg), rpDecryptAlg, "snoop/InvalidKeyManagementKeyAlias", msgs);
@@ -700,8 +669,8 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
 
     @Test
     public void NoOPEncryption1ServerTests_SignWithValidAlg_EncryptValid_DecryptNonExistantKeyManagementKeyAlias() throws Exception {
-        String rpEncryptAlg = Constants.SIGALG_RS256;
-        String rpDecryptAlg = Constants.SIGALG_RS256;
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String rpDecryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
         genericEncryptTest(rpEncryptAlg, setBuilderName(rpEncryptAlg), rpDecryptAlg, "snoop/NonExistantKeyManagementKeyAlias", msgs);
@@ -780,6 +749,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     /* enabled - show that we fail with the appropriate errors */
     /*******************************************************************/
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_SignWithValidAlg_EncryptWithRS256_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_RS256;
         String rpEncryptAlg = Constants.SIGALG_RS256;
@@ -790,6 +760,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_SignWithValidAlg_EncryptWithRS384_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_RS384;
         String rpEncryptAlg = Constants.SIGALG_RS384;
@@ -800,6 +771,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_SignWithValidAlg_EncryptWithRS512_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_RS512;
         String rpEncryptAlg = Constants.SIGALG_RS512;
@@ -814,7 +786,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         String rpEncryptAlg = Constants.SIGALG_ES256;
         String rpDecryptAlg = Constants.SIGALG_NONE;
 
-        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsMessages(), setParmsForECWorkaround(rpEncryptAlg));
+        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsMessages());
     }
 
     @Test
@@ -823,7 +795,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         String rpEncryptAlg = Constants.SIGALG_ES384;
         String rpDecryptAlg = Constants.SIGALG_NONE;
 
-        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsMessages(), setParmsForECWorkaround(rpEncryptAlg));
+        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsMessages());
     }
 
     @Test
@@ -832,7 +804,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
         String rpEncryptAlg = Constants.SIGALG_ES512;
         String rpDecryptAlg = Constants.SIGALG_NONE;
 
-        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsMessages(), setParmsForECWorkaround(rpEncryptAlg));
+        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsMessages());
     }
 
     /*************** Various JWE header content tests ***************/
@@ -849,11 +821,15 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_consumeTokenThatWasEncryptedUsingOtherContentEncryptionAlg() throws Exception {
 
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
         parms.add(new NameValuePair(JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192));
-        parms.add(new NameValuePair(JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), JwtConstants.SIGALG_RS256)));
+        parms.add(new NameValuePair(JwtConstants.PARAM_KEY_MGMT_ALG, keyManagementAlg));
+        parms.add(new NameValuePair(JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), rpEncryptAlg)));
 
-        genericEncryptTest(Constants.SIGALG_RS256, Constants.SIGALG_RS256, parms);
+        genericEncryptTest(rpEncryptAlg, rpEncryptAlg, parms);
     }
 
     /**
@@ -863,6 +839,7 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_consumeTokenThatWasEncryptedUsingOtherKeyManagementKeyAlg() throws Exception {
 
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
@@ -880,17 +857,24 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_JWETypeNotJose() throws Exception {
 
+        String sigAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         // We're going to use a test JWT token builder to create a token that has "notJOSE" in the JWE header type field
         // the Liberty builder won't allow us to update that field, so, we need to peice a token together
-        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg)), keyManagementAlg);
         builder.setIssuer("client01");
-        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
-        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setAlorithmHeaderValue(sigAlg);
+        if (testOPServer.getServer().isFIPS140_3EnabledAndSupported()){
+            builder.setECKey(testOPServer.getServer().getServerRoot() + "/ES256private-key-pkcs#8.pem");
+        } else {
+            builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        }
         builder.setClaim("token_src", "testcase builder");
         // calling buildJWE will override the header contents
         String jwtToken = builder.buildJWE("notJOSE", "jwt");
 
-        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(sigAlg));
         positiveTest(updatedTestSettings, jwtToken);
 
     }
@@ -898,17 +882,24 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_JWEContentTypeNotJwt() throws Exception {
 
+        String sigAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         // We're going to use a test JWT token builder to create a token that has "not_jwt" in the JWE header content type field
         // the Liberty builder won't allow us to update that field, so, we need to peice a token together
-        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg)), keyManagementAlg);
         builder.setIssuer("client01");
-        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
-        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setAlorithmHeaderValue(sigAlg);
+        if (testOPServer.getServer().isFIPS140_3EnabledAndSupported()){
+            builder.setECKey(testOPServer.getServer().getServerRoot() + "/ES256private-key-pkcs#8.pem");
+        } else {
+            builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        }
         builder.setClaim("token_src", "testcase builder");
         // calling buildJWE will override the header contents
         String jwtToken = builder.buildJWE("JOSE", "not_jwt");
 
-        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(sigAlg));
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE, MessageConstants.CWWKS6057E_CTY_NOT_JWT_FOR_NESTED_JWS };
 
         negativeTest(updatedTestSettings, jwtToken, msgs);
@@ -924,13 +915,17 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
     @Test
     public void NoOPEncryption1ServerTests_simpleJsonPayload() throws Exception {
 
+        String sigAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         List<NameValuePair> extraparms = new ArrayList<NameValuePair>();
         extraparms.add(new NameValuePair("token_src", "alternate JWE builder"));
+        extraparms.add(new NameValuePair(JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_ES));
 
         // build a jwt token whose payload contains only json data - make sure that we do not allow this format (it's not supported at this time)
-        String jwtToken = tokenBuilderHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)), extraparms);
+        String jwtToken = tokenBuilderHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), sigAlg)), keyManagementAlg, extraparms);
 
-        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(sigAlg));
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6065E_NESTED_JWS_REQUIRED_BUT_NOT_FOUND };
 
         negativeTest(updatedTestSettings, jwtToken, msgs);
@@ -942,10 +937,24 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_RSUsesShortPrivateKey() throws Exception {
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "/snoop/SignRS256EncryptShortRS256", msgs);
+
+    }
+
+    /**
+     * The RS should not allow a key shorter than 2048 in the config
+     *
+     * @throws Exception
+     */
+    @Test
+    public void NoOPEncryption1ServerTests_RSUsesShortPrivateKey_ECDH_ES() throws Exception {
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, "/snoop/SignES256EncryptShortES256", msgs);
 
     }
 
@@ -955,10 +964,24 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * a public key, not a private key
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_RSUsesPublicKey() throws Exception {
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "/snoop/SignRS256EncryptPublicRS256", msgs);
+
+    }
+
+    /**
+     * The RS should not use a public key to decrypt - should use the private key
+     * The RS fails to find the key - there is a key with a name that matches the keyManagementKeyAlias, but the key is
+     * a public key, not a private key
+     */
+    @Test
+    public void NoOPEncryption1ServerTests_RSUsesPublicKey_ECDH_ES() throws Exception {
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, "/snoop/SignES256EncryptPublicES256", msgs);
 
     }
 
@@ -973,10 +996,25 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_RSMissingSSLRef_serverWideSSLConfigDoesNotHaveKeyMgmtKeyAlias() throws Exception {
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, "not present" };
-        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "/snoop/RS_sslRefOmitted", msgs);
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "/snoop/RS_sslRefOmitted_RSA_OAEP", msgs);
+
+    }
+
+    /**
+     * Test that the RS will fall back to using the server-wide ssl config if an sslRef is missing from the openidConnectClient
+     * config
+     *
+     * @throws Exception
+     */
+    @Test
+    public void NoOPEncryption1ServerTests_RSMissingSSLRef_serverWideSSLConfigDoesNotHaveKeyMgmtKeyAlias_ECDH() throws Exception {
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, "not present" };
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, "/snoop/RS_sslRefOmitted_ECDH_ES", msgs);
 
     }
 
@@ -990,12 +1028,34 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void NoOPEncryption1ServerTests_RStrustStoreRefOmitted() throws Exception {
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS1739E_JWT_KEY_NOT_FOUND };
-        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "/snoop/RS_trustStoreRefOmitted", msgs);
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "/snoop/RS_trustStoreRefOmitted_RSA_OAEP", msgs);
 
     }
+
+    /**
+     * Test that the RS will fall back to using the key and trust stores in the sslRef if the trustStoreRef is missing from the
+     * openidConnectClient config
+     *
+     * @throws Exception
+     */
+    @Test
+    public void NoOPEncryption1ServerTests_RStrustStoreRefOmitted_ECDH_ES() throws Exception {
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS1739E_JWT_KEY_NOT_FOUND };
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, "/snoop/RS_trustStoreRefOmitted_ECDH_ES", msgs);
+
+    }
+
+    /**
+     * RSA-OAEP JWE Structure Validation Tests
+     * Validates the Social Client's ability to properly validate the structure of JWE
+     * (JSON Web Encryption) that use RSA-OAEP as the key management algorithm.
+     * The tests validates each aspect of the 5 part JWE structure (JOSE Header, Encrypted Key, IV, Ciphertext, Auth tag)
+     */
 
     /**
      * Test that the RS detects that the JWE is invalid as it has too many parts (6) (one of which is completely invalid)
@@ -1003,7 +1063,8 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_JWETooManyParts() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_JWETooManyParts_encryption_RSA_OAEP() throws Exception {
 
         String jwtToken = createTokenWithSubject("SignRS256EncryptRS256Builder") + "." + badTokenSegment;
 
@@ -1020,7 +1081,8 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_JWETooFewParts() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_JWETooFewParts_encryption_RSA_OAEP() throws Exception {
 
         String jwtToken = createTokenWithSubject("SignRS256EncryptRS256Builder");
         String badJweToken = jwtToken.substring(0, jwtToken.lastIndexOf(".") - 1);
@@ -1038,12 +1100,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_JWE_Part1_isInvalid() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_JWE_Part1_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
 
         String[] msgs = new String[] { MessageConstants.CWWKS1725E_VALIDATION_ENDPOINT_URL_NOT_VALID_OR_FAILED };
-        negativeTest(updatedTestSettings, createTokenWithBadElement(1), msgs);
+        negativeTest(updatedTestSettings, createTokenWithBadElement(1, Constants.SIGALG_RS256), msgs);
 
     }
 
@@ -1053,12 +1116,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_JWE_Part2_isInvalid() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_JWE_Part2_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
-        negativeTest(updatedTestSettings, createTokenWithBadElement(2), msgs);
+        negativeTest(updatedTestSettings, createTokenWithBadElement(2, Constants.SIGALG_RS256), msgs);
 
     }
 
@@ -1068,12 +1132,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_JWE_Par3_isInvalid() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_JWE_Par3_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
-        negativeTest(updatedTestSettings, createTokenWithBadElement(3), msgs);
+        negativeTest(updatedTestSettings, createTokenWithBadElement(3, Constants.SIGALG_RS256), msgs);
 
     }
 
@@ -1083,12 +1148,13 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_JWE_Part4_isInvalid() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_JWE_Part4_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
-        negativeTest(updatedTestSettings, createTokenWithBadElement(4), msgs);
+        negativeTest(updatedTestSettings, createTokenWithBadElement(4, Constants.SIGALG_RS256), msgs);
 
     }
 
@@ -1098,12 +1164,116 @@ public class NoOPEncryptionRSServerTests extends MangleJWTTestTools {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_JWE_Part5_isInvalid() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_JWE_Part5_isInvalid_encryption_RSA_OAEP() throws Exception {
 
         TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_RS256));
 
         String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
-        negativeTest(updatedTestSettings, createTokenWithBadElement(5), msgs);
+        negativeTest(updatedTestSettings, createTokenWithBadElement(5, Constants.SIGALG_RS256), msgs);
+
+    }
+
+    /**
+     * ECDH-ES JWE Structure Validation Tests
+     * Validates the Social Client's ability to properly validate the structure of JWE
+     * (JSON Web Encryption) that use ECDH-ES as the key management algorithm.
+     * Unlike the RSA-OAEP tests, there is no specific test for Part 2 (Encrypted Key) in the ECDH-ES
+     * tests, as ECDH-ES uses direct key agreement (not requiring and effectively ignoring part 2 of the JWE).
+     */
+
+    /**
+     * Test that the RS detects that the JWE is invalid as it has too many parts (6) (one of which is completely invalid)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWETooManyParts_encryption_ECDH_ES() throws Exception {
+
+        String jwtToken = createTokenWithSubject("SignES256EncryptES256Builder") + "." + badTokenSegment;
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_ES256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE };
+        negativeTest(updatedTestSettings, jwtToken, msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid as it has too few parts - the token only has 4 parts.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWETooFewParts_encryption_ECDH_ES() throws Exception {
+
+        String jwtToken = createTokenWithSubject("SignES256EncryptES256Builder");
+        String badJweToken = jwtToken.substring(0, jwtToken.lastIndexOf(".") - 1);
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_ES256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE };
+        negativeTest(updatedTestSettings, badJweToken, msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 1 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part1_isInvalid_encryption_ECDH_ES() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_ES256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1725E_VALIDATION_ENDPOINT_URL_NOT_VALID_OR_FAILED };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(1, Constants.SIGALG_ES256), msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 3 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Par3_isInvalid_encryption_ECDH_ES() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_ES256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(3, Constants.SIGALG_ES256), msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 4 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part4_isInvalid_encryption_ECDH_ES() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_ES256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(4, Constants.SIGALG_ES256), msgs);
+
+    }
+
+    /**
+     * Test that the RS detects that the JWE is invalid - Part 5 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part5_isInvalid_encryption_ECDH_ES() throws Exception {
+
+        TestSettings updatedTestSettings = rsTools.updateRSProtectedResource(testSettings, setAppName(Constants.SIGALG_ES256));
+
+        String[] msgs = new String[] { MessageConstants.CWWKS1737E_JWT_VALIDATION_FAILURE, MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE };
+        negativeTest(updatedTestSettings, createTokenWithBadElement(5, Constants.SIGALG_ES256), msgs);
 
     }
 

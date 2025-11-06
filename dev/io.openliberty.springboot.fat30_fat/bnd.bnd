@@ -59,11 +59,13 @@ tested.features: \
   websocket-2.1, \
   xmlbinding-4.0, \
   xmlws-4.0, \
+  monitor-1.0, \
 \
   springBoot-2.0, \
   springBoot-3.0, \
   messaging-3.1, \
-  jndi-1.0
+  jndi-1.0,\
+  localconnector-1.0
   
 
 src: \
@@ -71,13 +73,44 @@ src: \
   test-applications/ejbapp1/src
 
 -buildpath: \
-  com.ibm.ws.componenttest.2.0;version=latest,\
-  io.openliberty.org.apache.commons.logging;version=latest,\
-  io.openliberty.org.apache.commons.codec;version=latest,\
-  io.openliberty.org.apache.xercesImpl;version=latest, \
-  io.openliberty.jakarta.enterpriseBeans.4.0;version=latest, \
-  io.openliberty.jakarta.cdi.3.0;version=latest, \
-\
+	com.ibm.ws.componenttest.2.0;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.xercesImpl;version=latest,\
+	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
+	io.openliberty.jakarta.cdi.3.0;version=latest,\
+	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
+	net.sourceforge.htmlunit:htmlunit-cssparser;version='1.6.0',\
+	net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version='2.44.0',\
+	net.sourceforge.htmlunit:webdriver;version='2.6',\
+	org.seleniumhq.webdriver:webdriver-common;version='0.9.7376',\
+	org.brotli:dec;version='0.1.2',\
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	io.openliberty.jakarta.websocket.2.1;version=latest,\
+	io.openliberty.jakarta.websocket.client.2.1;version=latest,\
+	com.ibm.ws.org.apache.httpcomponents;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest,\
+	io.openliberty.springboot.fat30.actuator.app;version=latest,\
+	io.openliberty.springboot.fat30.app;version=latest,\
+	io.openliberty.springboot.fat30.data.app;version=latest,\
+	io.openliberty.springboot.fat30.java.app;version=latest,\
+	io.openliberty.springboot.fat30.multicontext.app;version=latest,\
+	io.openliberty.springboot.fat30.war.app;version=latest,\
+	io.openliberty.springboot.fat30.webanno.app;version=latest,\
+	io.openliberty.springboot.fat30.webflux.app;version=latest,\
+	io.openliberty.springboot.fat30.websocket.app;version=latest,\
+	io.openliberty.springboot.fat30.security.app;version=latest,\
+	io.openliberty.springboot.fat30.transactions.app;version=latest,\
+	io.openliberty.springboot.fat30.jms.app;version=latest,\
+	io.openliberty.org.testcontainers;version=latest,\
+	io.openliberty.springboot.fat30.concurrency.app;version=latest,\
+	io.openliberty.springboot.fat30.aop.app;version=latest,\
+	io.openliberty.springboot.fat30.validation.app;version=latest,\
+	io.openliberty.springboot.fat30.mbean.app;version=latest,\
+	io.openliberty.springboot.fat30.http.app;version=latest,\
+	io.openliberty.springboot.fat30.http.contextroot.app;version=latest,\
+	org.springframework.context
   net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
   net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
   net.sourceforge.htmlunit:neko-htmlunit;strategy=exact;version=2.44.0,\
@@ -89,21 +122,4 @@ src: \
   io.openliberty.jakarta.websocket.2.1;version=latest, \
   io.openliberty.jakarta.websocket.client.2.1;version=latest, \
 \
-  com.ibm.ws.org.apache.httpcomponents;version=latest, \
-\
-  io.openliberty.springboot.fat30.actuator.app;version=latest,\
-  io.openliberty.springboot.fat30.app;version=latest,\
-  io.openliberty.springboot.fat30.data.app;version=latest,\
-  io.openliberty.springboot.fat30.java.app;version=latest,\
-  io.openliberty.springboot.fat30.multicontext.app;version=latest,\
-  io.openliberty.springboot.fat30.war.app;version=latest,\
-  io.openliberty.springboot.fat30.webanno.app;version=latest,\
-  io.openliberty.springboot.fat30.webflux.app;version=latest,\
-  io.openliberty.springboot.fat30.websocket.app;version=latest,\
-  io.openliberty.springboot.fat30.security.app;version=latest,\
-  io.openliberty.springboot.fat30.transactions.app;version=latest,\
-  io.openliberty.springboot.fat30.jms.app;version=latest,\
-  io.openliberty.org.testcontainers;version=latest,\
-  io.openliberty.springboot.fat30.concurrency.app;version=latest,\
-  io.openliberty.springboot.fat30.validation.app;version=latest,\
-  io.openliberty.springboot.fat30.aop.app;version=latest
+  com.ibm.ws.org.apache.httpcomponents;version=latest

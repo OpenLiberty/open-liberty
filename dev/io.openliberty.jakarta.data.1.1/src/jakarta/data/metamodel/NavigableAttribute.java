@@ -13,6 +13,7 @@
 package jakarta.data.metamodel;
 
 import jakarta.data.expression.NavigableExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -27,10 +28,9 @@ public interface NavigableAttribute<T, U> //
                                               String name,
                                               Class<U> attributeType) {
 
-        if (entityClass == null ||
-            name == null ||
-            attributeType == null)
-            throw new NullPointerException();
+        Messages.requireNonNull(entityClass, "entityClass");
+        Messages.requireNonNull(name, "name");
+        Messages.requireNonNull(attributeType, "attributeType");
 
         return new NavigableAttributeRecord<>(entityClass, name, attributeType);
     }

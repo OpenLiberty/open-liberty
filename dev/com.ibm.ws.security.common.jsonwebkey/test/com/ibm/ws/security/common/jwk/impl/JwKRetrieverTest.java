@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,8 @@ public class JwKRetrieverTest extends CommonTestClass {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.common.*=all");
 
     private final String kid = "test-key-id";
+    private final String x5t = "U1dkoqHSjCUk2fdBHU-qSCpQXZc=";
+    private final String x5tS256 = "h2d0YhmNecvX5YUU8Yl_-qG-1J2Yy0E-UJdAhV9E2Rg=";
 
     private String configId;
     private String sslConfigurationName;
@@ -109,11 +111,11 @@ public class JwKRetrieverTest extends CommonTestClass {
         JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
                 jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
 
-        PublicKey publicKey1 = jwkRetriever.getPublicKeyFromJwk(null, null, "sig", false);
+        PublicKey publicKey1 = jwkRetriever.getPublicKeyFromJwk(null, null, null, "sig", false);
 
         assertNotNull("Should have successfully loaded the public key, but didn't.", publicKey1);
 
-        PublicKey publicKey2 = jwkRetriever.getPublicKeyFromJwk(null, null, "sig", false);
+        PublicKey publicKey2 = jwkRetriever.getPublicKeyFromJwk(null, null, null, "sig", false);
 
         assertNotNull("Should have successfully re-loaded the public key, but didn't.", publicKey2);
         assertEquals("Retrieved keys did not match but should have.", publicKey1, publicKey2);
@@ -153,6 +155,28 @@ public class JwKRetrieverTest extends CommonTestClass {
 
         assertNotNull("Should have found a key when a relative location to a single, valid PEM key and a kid is specified.", publicKey);
     }
+    
+    @Test
+    public void testGetPublicKeyFromJwk_relativeLocationPEM_x5tSpecified() throws Exception {
+        keyLocation = RELATIVE_PEM_LOCATION;
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(null, x5t, false);
+
+        assertNotNull("Should have found a key when a relative location to a single, valid PEM key and x5t is specified.", publicKey);
+    }
+    
+    @Test
+    public void testGetPublicKeyFromJwk_relativeLocationPEM_x5tS256Specified() throws Exception {
+        keyLocation = RELATIVE_PEM_LOCATION;
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(null, null, x5tS256, false);
+
+        assertNotNull("Should have found a key when a relative location to a single, valid PEM key and x5t#S256 is specified.", publicKey);
+    }
 
     @Test
     public void testGetPublicKeyFromJwk_relativeLocationPEM_noKidSpecified() throws Exception {
@@ -185,6 +209,28 @@ public class JwKRetrieverTest extends CommonTestClass {
         PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(null, null, true);
 
         assertNotNull("Should have found a key when text for a single, valid PEM key and no kid is specified.", publicKey);
+    }
+    
+    @Test
+    public void testGetPublicKeyFromJwk_publicKeyTextPEM_x5tSpecified() throws Exception {
+        publickey = PemKeyUtilTest.PEM_KEY_TEXT;
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(null, x5t, true);
+
+        assertNotNull("Should have found a key when text for a single, valid PEM key and x5t is specified.", publicKey);
+    }
+    
+    @Test
+    public void testGetPublicKeyFromJwk_publicKeyTextPEM_x5tS256Specified() throws Exception {
+        publickey = PemKeyUtilTest.PEM_KEY_TEXT;
+        JwKRetriever jwkRetriever = new JwKRetriever(configId, sslConfigurationName, jwkEndpointUrl,
+                jwkSet, sslSupport, hnvEnabled, null, null, signatureAlgorithm, publickey, keyLocation);
+
+        PublicKey publicKey = jwkRetriever.getPublicKeyFromJwk(null, null, x5tS256, true);
+
+        assertNotNull("Should have found a key when text for a single, valid PEM key and x5t#S256 is specified.", publicKey);
     }
 
     @Test

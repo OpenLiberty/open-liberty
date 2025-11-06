@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.InvalidTokenException;
 import com.ibm.websphere.security.jwt.KeyException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
@@ -295,7 +296,8 @@ public class JweHelper {
     static String getKeyManagementKeyAlgFromConfig(JwtConfig jwtConfig) {
         String configuredKeyManagementAlg = jwtConfig.getKeyManagementKeyAlgorithm();
         if (configuredKeyManagementAlg == null) {
-            configuredKeyManagementAlg = KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+            // If FIPS140-3 is enabled, use ECDH-ES as the default, else use RSA-OAEP
+            configuredKeyManagementAlg = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? KeyManagementAlgorithmIdentifiers.ECDH_ES: KeyManagementAlgorithmIdentifiers.RSA_OAEP;
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Key management algorithm not specified in server config. Defaulting to [" + configuredKeyManagementAlg + "]");
             }

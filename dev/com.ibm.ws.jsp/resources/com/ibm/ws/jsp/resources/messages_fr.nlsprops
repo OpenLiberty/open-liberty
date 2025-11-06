@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1289,3 +1289,7 @@ jsp.bothsourcelevelset.warning.useraction=Indiquez uniquement l'attribut de nive
 jsp.javasourcelevel.value=CWWJS0008I: La valeur de l''attribut JSP javaSourceLevel est "{0}".
 jsp.javasourcelevel.value.explanation=
 jsp.javasourcelevel.value.useraction=
+
+pages.removed.directive.error=CWWJS0009E: La directive " {0} " n''est plus support\u00e9e car elle a \u00e9t\u00e9 supprim\u00e9e dans {1}.
+pages.removed.directive.error.explanation = Cette directive n'est plus prise en charge. 
+pages.removed.directive.error.useraction = Supprimer l'utilisation de la directive.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -146,6 +146,12 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** A delay to start ffdc log cleanup. For internal test use only. */
     protected volatile int ffdcCleanupStartDelay = -1;
 
+    protected volatile int throttleMaxMessagesPerWindow = 1000;
+
+    protected volatile String throttleType = "messageID";
+
+    protected volatile int throttleMapSize = 500;
+
     private final boolean checkpoint;
 
     private volatile boolean restore = false;
@@ -237,10 +243,16 @@ public class LogProviderConfigImpl implements LogProviderConfig {
                                                                    TimeUnit.MINUTES);
 
         maxFfdcAge = LoggingConfigUtils.getLongDurationValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MAX_FFDC_AGE), maxFfdcAge,
-                                                                   TimeUnit.MINUTES);
+                                                             TimeUnit.MINUTES);
 
         stackTraceSingleEntry = LoggingConfigUtils.getBooleanValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_STACK_TRACE_SINGLE_ENTRY),
                                                                    stackTraceSingleEntry);
+
+        throttleMaxMessagesPerWindow = LoggingConfigUtils.getIntValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_THROTTLE_MAX_MESSAGES_PER_WINDOW),
+                                                                      throttleMaxMessagesPerWindow);
+
+        throttleType = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_THROTTLE_TYPE), throttleType);
+
     }
 
     /**
@@ -304,6 +316,11 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         ffdcCleanupStartDelay = InitConfgAttribute.FFDC_CLEANUP_START_DELAY.getIntValue(c, ffdcCleanupStartDelay, isInit);
 
         stackTraceSingleEntry = InitConfgAttribute.STACK_JOIN_CONFIGURATION.getBooleanValueAndSaveInit(c, stackTraceSingleEntry, isInit);
+
+        throttleMaxMessagesPerWindow = InitConfgAttribute.THROTTLE_MAX_MESSAGES_PER_WINDOW.getIntValue(c, throttleMaxMessagesPerWindow, isInit);
+        throttleType = InitConfgAttribute.THROTTLE_TYPE.getStringValueAndSaveInit(c, throttleType, isInit);
+        throttleMapSize = InitConfgAttribute.THROTTLE_MAP_SIZE.getIntValue(c, throttleMapSize, isInit);
+
     }
 
     /**
@@ -513,6 +530,19 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     public int getFfdcCleanupStartDelay() {
         return ffdcCleanupStartDelay;
     }
+
+    public int getThrottleMaxMessagesPerWindow() {
+        return throttleMaxMessagesPerWindow;
+    }
+
+    public String getThrottleType() {
+        return throttleType;
+    }
+
+    public int getThrottleMapSize() {
+        return throttleMapSize;
+    }
+
     /**
      * @return true if we should use the logger -> tr handler
      */
@@ -578,7 +608,10 @@ public class LogProviderConfigImpl implements LogProviderConfig {
         ROLLOVER_INTERVAL("rolloverInterval", "com.ibm.ws.logging.rollover.interval"),
         MAX_FFDC_AGE("maxFfdcAge", "com.ibm.ws.logging.max.ffdc.age"),
         FFDC_CLEANUP_START_DELAY("ffdcCleanupStartDelay", "com.ibm.ws.logging.ffdc.cleanup.start.delay"),
-        NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY);
+        NEW_LOGS_ON_START("newLogsOnStart", FileLogHolder.NEW_LOGS_ON_START_PROPERTY),
+        THROTTLE_MAX_MESSAGES_PER_WINDOW("throttleMaxMessagesPerWindow", "com.ibm.ws.logging.throttle.max.messages.per.window"),
+        THROTTLE_TYPE("throttleType", "com.ibm.ws.logging.throttle.type"),
+        THROTTLE_MAP_SIZE("throttleMapSize", "com.ibm.ws.logging.throttle.map.size");
 
         final String configKey;
         final String propertyKey;

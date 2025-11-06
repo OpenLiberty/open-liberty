@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -43,6 +43,13 @@ public class JPAScopeInfo {
 
     // Collection or persistence.xml information at this scope.
     private final Map<String, JPAPxmlInfo> pxmlsInfo;
+
+    /**
+     * @return the pxmlsInfo
+     */
+    public Map<String, JPAPxmlInfo> getPxmlsInfo() {
+        return pxmlsInfo;
+    }
 
     /**
      * Constructor.

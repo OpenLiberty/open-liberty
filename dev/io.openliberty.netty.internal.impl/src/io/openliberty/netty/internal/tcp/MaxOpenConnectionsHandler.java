@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
@@ -21,18 +21,18 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.openliberty.netty.internal.ConfigConstants;
 
 /**
- * Channel handler which keeps track of the overall connection count and terminates new 
+ * Channel handler which keeps track of the overall connection count and terminates new
  * connections once the configured threshold has been reached.
  */
 @Sharable
 public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
-    
+
     private static final TraceComponent tc = Tr.register(MaxOpenConnectionsHandler.class, TCPMessageConstants.NETTY_TRACE_NAME, TCPMessageConstants.TCP_BUNDLE);
 
     private final AtomicInteger connections = new AtomicInteger();
     private final int maxConnections;
     private long lastConnExceededTime = 0L;
-    
+
     public MaxOpenConnectionsHandler(int maxConnectionCount) {
         maxConnections = maxConnectionCount;
     }

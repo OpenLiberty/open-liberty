@@ -71,8 +71,8 @@ DynamicImport-Package: \
  javafx.*
  
 Include-Resource: \
-  @${repo;org.hibernate.validator:hibernate-validator;6.2.5.Final;EXACT}!/META-INF/*.xsd, \
-  @${repo;org.hibernate.validator:hibernate-validator;6.2.5.Final;EXACT}!/META-INF/services/*,\
+  @\${repo;org.hibernate.validator:hibernate-validator;6.2.5.Final;EXACT}!/META-INF/*.xsd, \
+  @\${repo;org.hibernate.validator:hibernate-validator;6.2.5.Final;EXACT}!/META-INF/services/*,\
   org=resources/org
   
 Service-Component:\

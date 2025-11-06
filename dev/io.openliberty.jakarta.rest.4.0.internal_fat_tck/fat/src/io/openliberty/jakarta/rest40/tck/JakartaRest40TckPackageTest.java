@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -94,7 +94,7 @@ public class JakartaRest40TckPackageTest {
             }
 
             TCKRunner.build(server, Type.JAKARTA, "Restful Web Services")
-                            .withPlatfromVersion("11")
+                            .withPlatformVersion("11")
                             .withAdditionalMvnProps(props)
                             .runTCK();
         }

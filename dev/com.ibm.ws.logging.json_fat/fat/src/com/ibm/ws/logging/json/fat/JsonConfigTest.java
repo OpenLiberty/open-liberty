@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -262,10 +262,14 @@ public class JsonConfigTest {
         runApplication(consoleLogFile);
         //check output are in application's JSON format
         checkLine("\\{\"key\":\"value\"\\}");
+        checkLine("\\{\"new\":\"line\"\\}$");
         checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}");
+        checkLine("\\{\"new\":\"line\",\"loglevel\":\"System.err\"\\}$");
         checkLine("\\{\\}");
         checkLine("\\{\"key\":\"value\"\\}", consoleLogFile);
+        checkLine("\\{\"new\":\"line\"\\}$", consoleLogFile);
         checkLine("\\{\"key\":\"value\",\"loglevel\":\"System.err\"\\}", consoleLogFile);
+        checkLine("\\{\"new\":\"line\",\"loglevel\":\"System.err\"\\}$", consoleLogFile);
         checkLine("\\{\\}", consoleLogFile);
 
         //update file
@@ -273,10 +277,14 @@ public class JsonConfigTest {
         //check output are in liberty JSON format
         runApplication(consoleLogFile);
         checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*new.*line.*\".*\\}");
         checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}");
+        checkLine("\\{.*\"message\":\".*new.*line.*,.*loglevel.*System.err.*\".*\\}");
         checkLine("\\{.*\"message\":\".*\".*\\}");
         checkLine("\\{.*\"message\":\".*key.*value.*\".*\\}", consoleLogFile);
+        checkLine("\\{.*\"message\":\".*new.*line.*\".*\\}", consoleLogFile);
         checkLine("\\{.*\"message\":\".*key.*value.*,.*loglevel.*System.err.*\".*\\}", consoleLogFile);
+        checkLine("\\{.*\"message\":\".*new.*line.*,.*loglevel.*System.err.*\".*\\}", consoleLogFile);
         checkLine("\\{.*\"message\":\".*\".*\\}", consoleLogFile);
 
     }
