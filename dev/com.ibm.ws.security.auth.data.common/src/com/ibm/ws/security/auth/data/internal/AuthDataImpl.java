@@ -25,8 +25,6 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.auth.data.AuthData;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
-import io.openliberty.checkpoint.spi.CheckpointPhase;
-
 /**
  * The auth data from server.xml.
  */
@@ -39,7 +37,7 @@ public class AuthDataImpl implements AuthData {
     protected static final String CFG_KEY_PASSWORD = "password";
 
     private String username;
-    private String password;
+    private String encryptedPass;
     private String principal;
     private Path krb5TicketCache;
 
@@ -47,14 +45,7 @@ public class AuthDataImpl implements AuthData {
     protected void activate(@Sensitive Map<String, Object> props) {
         username = (String) props.get(CFG_KEY_USER);
         SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
-        String configuredPassword = sps == null ? "" : new String(sps.getChars());
-
-        // Cipher algorithims may be unavailable at server checkpoint
-        password = configuredPassword;
-        CheckpointPhase.onRestore(() -> {
-            password = PasswordUtil.passwordDecode(configuredPassword);
-        });
-
+        encryptedPass = sps == null ? "" : new String(sps.getChars());
         principal = (String) props.get("krb5Principal");
         String sCcache = (String) props.get("krb5TicketCache");
         if (sCcache != null) {
@@ -82,7 +73,7 @@ public class AuthDataImpl implements AuthData {
     @Override
     @Sensitive
     public char[] getPassword() {
-        return password.toCharArray();
+        return PasswordUtil.passwordDecode(encryptedPass).toCharArray();
     }
 
     /** {@inheritDoc} */
