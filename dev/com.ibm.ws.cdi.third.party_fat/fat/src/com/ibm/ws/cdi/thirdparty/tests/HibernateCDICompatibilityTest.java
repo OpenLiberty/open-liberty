@@ -38,6 +38,8 @@ import com.ibm.ws.cdi.thirdparty.apps.hibernateCompatibilityWar.web.HibernateCom
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -46,7 +48,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class HibernateCDICompatibilityTest extends FATServletClient {
 
     public static final String HIBERNATE_COMPAT_APP_NAME = "hibernateCompatibilityTest";
