@@ -126,6 +126,11 @@ CWMCM0016E.error.sending.response.exception=CWMCM0016E: Unexpected Server Error.
 CWMCM0016E.error.sending.response.exception.explanation=An error occurred while trying to send the response.
 CWMCM0016E.error.sending.response.exception.useraction=No action is required.
 
+# Used for server logging
+CWMCM0017W.cdi.inactive.warning=CWMCM0017W: CDI is not active, skipping MCP servlet registration.
+CWMCM0017W.cdi.inactive.warning.explanation=If there are no CDI beans, then CDI is not active. Without CDI, the MCP server feature is unable to work.
+CWMCM0017W.cdi.inactive.warning.useraction=To use MCP, create a CDI managed bean that has an appropriate scope annotation (e.g., @ApplicationScoped or @RequestScoped).
+
 # Used as part of a response to a client
 # do not translate jsonrpc
 # {0} = jsonrpc value

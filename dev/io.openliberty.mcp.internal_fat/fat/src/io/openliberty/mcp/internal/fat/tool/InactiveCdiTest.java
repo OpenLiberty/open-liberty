@@ -37,7 +37,8 @@ public class InactiveCdiTest extends FATServletClient {
     @Server("mcp-server")
     public static LibertyServer server;
 
-    private static final String EXPECTED_ERROR_MESSAGE = "SRVE0190E: File not found: /mcp";
+    private static final String CDI_INACTIVE_WARNING_MESSAGE = "CWMCM0017W: CDI is not active, skipping MCP servlet registration";
+    private static final String FILE_NOT_FOUND_ERROR_MESSAGE = "SRVE0190E: File not found: /mcp";
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -48,11 +49,12 @@ public class InactiveCdiTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(EXPECTED_ERROR_MESSAGE);
+        server.stopServer(CDI_INACTIVE_WARNING_MESSAGE, FILE_NOT_FOUND_ERROR_MESSAGE);
     }
 
     @Test
     public void testMcpCallWithoutCDIReturnsNotFoundError() throws Exception {
+        assertNotNull(server.waitForStringInLogUsingMark(CDI_INACTIVE_WARNING_MESSAGE, server.getDefaultLogFile()));
         String initializeRequest = """
                         {
                           "jsonrpc": "2.0",
@@ -83,6 +85,6 @@ public class InactiveCdiTest extends FATServletClient {
                                                        .method("POST")
                                                        .expectCode(404)
                                                        .run(String.class);
-        assertNotNull(server.waitForStringInLogUsingMark(EXPECTED_ERROR_MESSAGE, server.getDefaultLogFile())); // expect a file not found error in the logs
+        assertNotNull(server.waitForStringInLogUsingMark(FILE_NOT_FOUND_ERROR_MESSAGE, server.getDefaultLogFile())); // expect a file not found error in the logs
     }
 }
