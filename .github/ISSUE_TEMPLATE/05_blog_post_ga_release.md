@@ -28,7 +28,35 @@ Please provide a summary of the update, including the following points:
 
 
    </GHA-BLOG-SUMMARY>
+   
+## Select Blog Tags
+Mark all applicable tags by changing `[ ]` to `[x]`:
 
+- [ ] announcements
+- [ ] microprofile
+- [ ] java-se
+- [ ] release
+- [ ] beta
+- [ ] maven
+- [ ] spring
+- [ ] security
+- [ ] docker
+- [ ] gradle
+- [ ] metrics
+- [ ] jakarta-ee
+- [ ] kubernetes
+- [ ] community
+- [ ] test
+- [ ] developer-experience
+- [ ] openshift
+- [ ] monitoring
+- [ ] performance-enhancements
+- [ ] data-sources
+- [ ] case-study
+- [ ] reactive
+- [ ] java-ee
+- [ ] devops
+      
 ## What happens next?
 - Add the label for the GA you're targeting: `target:YY00X`.
 - Make sure this blog post is linked back to the Epic for this feature/function.
