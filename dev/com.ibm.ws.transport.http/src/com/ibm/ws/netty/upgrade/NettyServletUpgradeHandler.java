@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -69,6 +70,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     private final AtomicInteger waitingThreads = new AtomicInteger(0);
     private final AtomicBoolean peerClosed = new AtomicBoolean(false);
     private final AtomicBoolean immediateTimeout = new AtomicBoolean(false);
+    private final AtomicInteger queuedBytes = new AtomicInteger(0);
     
     private TCPReadCompletedCallback callback;
     private VirtualConnection vc;
@@ -83,12 +85,10 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     @Override
     public void handlerAdded(ChannelHandlerContext context) throws Exception {
         this.context = context;
-        snap("handlerAdded");
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
-        snap("userEventTriggered:" + event);
         // java.io.EOFException: Connection closed: Read failed.  Possible end of stream encountered. local=ip:port remote=ip:port
         if (!peerClosed.get() && (event instanceof ChannelInputShutdownEvent || event instanceof ChannelInputShutdownReadComplete)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -118,43 +118,33 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     @Override
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
-        snap("channelRead");
-        Tr.debug(this, tc, String.format(
-            "UPG: channelRead: +%d bytes, queued=%d, async=%s, need=%d", ((ByteBuf)message).readableBytes(), queuedDataSize(), isReadingAsync, minBytesToRead));
-
-
         if (message instanceof ByteBuf) {
             ByteBuf buf = (ByteBuf) message;
+            final int n = buf.readableBytes();
             queue.add(buf.retain());
+            queuedBytes.addAndGet(n);
             ReferenceCountUtil.release(buf);
 
-            if(isReadingAsync && queuedDataSize() >= minBytesToRead){
+            if (isReadingAsync && queuedBytes.get() >= minBytesToRead) {
                 isReadingAsync = false;
-
-                if(callback!=null){
+                if (callback != null) {
                     HttpDispatcher.getExecutorService().execute(() -> {
                         try {
-                            
-                            Tr.debug(this, tc, String.format(
-                                "UPG: deliveryng async: queuedAfter=%d (need=%d)",
-                                queuedDataSize(), minBytesToRead));
                             callback.complete(vc, readContext);
-                        } catch (Exception e) {}
+                        } catch (Exception ignore) {
+                        }
                     });
                 }
-                    
-            } else if(queuedDataSize() >= minBytesToRead){
+            } else if (queuedBytes.get() >= minBytesToRead) {
                 signalReadReady();
             }
             return;
-            
-        } 
+        }
         context.fireChannelRead(message);
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext context) throws Exception {
-        snap("channelInactive");
         peerClosed.set(true);
         if (isReadingAsync && callback != null) {
             isReadingAsync = false;
@@ -169,12 +159,11 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         super.channelInactive(context);
     }
 
-    public void immediateTimeout(){
-        if (context != null && context.executor().inEventLoop()) {
-            HttpDispatcher.getExecutorService().execute(this::immediateTimeout);
+    public void immediateTimeout() {
+        if (context != null && !context.executor().inEventLoop()) {
+            context.executor().execute(this::immediateTimeout);
             return;
         }
-        snap("immediateTimeout");
         immediateTimeout.set(true);
         signalReadReady();
 
@@ -183,11 +172,11 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
             HttpDispatcher.getExecutorService().execute(() -> {
                 try {
                     callback.error(vc, readContext, new SocketTimeoutException("Immediate timeout requested"));
-                } catch (Exception ignore) { }
+                } catch (Exception ignore) {
+                }
             });
         }
-
-        if(context != null){
+        if (context != null) {
             context.executor().execute(() -> immediateTimeout.set(false));
         } else {
             immediateTimeout.set(false);
@@ -226,59 +215,83 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         return isReadingAsync;
     }
 
-    public synchronized long setToBuffer() {
+    public long setToBuffer() {
         
         if (readContext == null || !containsQueuedData())
             return 0L;
-        
-        WsByteBuffer[] buffers = readContext.getBuffers();
 
-        if (buffers == null || buffers.length == 0 || buffers[0] == null) 
-            return 0L;
-            
-        int capacity = 0;
-        for (WsByteBuffer buffer: buffers){
-            if(buffer == null) break;
-            capacity += Math.max(0, buffer.remaining());
-        }
-
-        final int queued = queuedDataSize();
-        if (capacity <= 0 || queued <= 0) 
+        final WsByteBuffer[] buffers = readContext.getBuffers();
+        if (buffers == null || buffers.length == 0 || buffers[0] == null)
             return 0L;
 
-        final int toRead = Math.min(capacity, queued);
-        Tr.debug(this, tc, "setToBuffer queued=" + queue + " capacity= " + capacity + " toRead=" + toRead);
-
-        ByteBuf chunk = read(toRead, null);
-        try{
-            byte[] bytes = ByteBufUtil.getBytes(chunk, chunk.readerIndex(), toRead, false);
-            int off = 0;
-            for (WsByteBuffer buffer: buffers){
-                if (buffer == null || off >= bytes.length) break;
-                final int can = Math.min(buffer.remaining(), bytes.length - off);
-                if(can <= 0) continue;
-        
-                final java.nio.ByteBuffer j = buffer.getWrappedByteBuffer();
-                final int before = j.position();
-                j.put(bytes, off, can); 
-                final int after = j.position();
-                Tr.debug(this, tc, "copy can=" + can + " off=" + off 
-                            + " bb.pos(before->after)=" + before+"->"+after+ 
-                            " ws.remaining(beforeCopy)="+ buffer.remaining());
-
-
-
-                buffer.position(j.position()); 
-                off += can;
-                
-
-                 
-                
+        final AtomicLong written = new AtomicLong(0L);
+        final Runnable task = () -> {
+            int capacity = 0;
+            for (WsByteBuffer b : buffers) {
+                if (b == null)
+                    break;
+                capacity += Math.max(0, b.remaining());
             }
-            return off;
-        } finally{
-            chunk.release();
+            final int available = queuedBytes.get();
+            final int toRead = Math.min(capacity, available);
+            if (toRead <= 0) {
+                written.set(0L);
+                return;
+            }
+
+            ByteBuf chunk = read(toRead, null); 
+            try {
+                int remaining = chunk.readableBytes();
+                int copied = 0;
+
+                for (WsByteBuffer b : buffers) {
+                    if (b == null || remaining == 0)
+                        break;
+                    final java.nio.ByteBuffer dst = b.getWrappedByteBuffer();
+                    final int can = Math.min(dst.remaining(), remaining);
+                    if (can <= 0)
+                        continue;
+
+                    final int lim = dst.limit();
+                    final int pos = dst.position();
+                    dst.limit(pos + can);
+                    chunk.readBytes(dst);
+                    dst.limit(lim);
+
+                    b.position(dst.position());
+                    remaining -= can;
+                    copied += can;
+                }
+
+            
+                if (copied > 0) {
+                    queuedBytes.addAndGet(-copied);
+                }
+                written.set(copied);
+            } finally {
+                chunk.release();
+            }
+        };
+
+        if (context != null && !context.executor().inEventLoop()) {
+            final java.util.concurrent.CountDownLatch latch = new java.util.concurrent.CountDownLatch(1);
+            context.executor().execute(() -> {
+                try {
+                    task.run();
+                } finally {
+                    latch.countDown();
+                }
+            });
+            try {
+                latch.await(1, java.util.concurrent.TimeUnit.SECONDS);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+        } else {
+            task.run();
         }
+
+        return written.get();
     }
 
     @Override
@@ -299,11 +312,11 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     public boolean containsQueuedData() {
-        return !queue.isEmpty();
+        return queuedBytes.get() > 0;
     }
 
     public int queuedDataSize() {
-        return queue.readableBytes();
+        return queuedBytes.get();
     }
 
     public boolean isImmediateTimeout() {
@@ -311,11 +324,16 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     }
 
     public synchronized ByteBuf read(int size, ChannelPromise promise) {
+        if (context != null && !context.executor().inEventLoop()) {
+            throw new IllegalStateException("Upgrade queue read must run on the channel EventLoop");
+        }
         if (!containsQueuedData())
             return Unpooled.EMPTY_BUFFER;
-        if (promise == null)
-            return queue.remove(size, new VoidChannelPromise(channel, true));
-        return queue.remove(size, promise);
+
+        ByteBuf out = (promise == null) ? queue.remove(size, new VoidChannelPromise(channel, true)) : queue.remove(size, promise);
+
+
+        return out;
     }
 
     public void setReadListener(TCPReadCompletedCallback cb) {
@@ -325,20 +343,22 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     public void queueAsyncRead(long minBytesToRead) {
         this.minBytesToRead = (int) Math.max(1L, minBytesToRead);
         this.isReadingAsync = true;
+
         if (!channel.config().isAutoRead())
             channel.eventLoop().execute(channel::read);
 
-        //If we have enough bytes, just complete now
-        if (queuedDataSize() >= this.minBytesToRead && callback != null){
+        final int q = queuedBytes.get();
+        if (q >= this.minBytesToRead && callback != null) {
             this.isReadingAsync = false;
-            HttpDispatcher.getExecutorService().execute(()->{
-                try{
+            HttpDispatcher.getExecutorService().execute(() -> {
+                try {
                     callback.complete(vc, readContext);
-                } catch (Throwable throwable){
-                    try{
-                        callback.error(vc, readContext, (throwable instanceof IOException) ? (IOException) throwable:
-                                new EOFException(String.valueOf(throwable)));
-                    } catch (Throwable ignore){}
+                } catch (Throwable t) {
+                    try {
+                        callback.error(vc, readContext,
+                                       (t instanceof IOException) ? (IOException) t : new EOFException(String.valueOf(t)));
+                    } catch (Throwable ignore) {
+                    }
                 }
             });
         }
@@ -358,23 +378,6 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     public void setTCPReadContext(TCPReadRequestContext tcpReadContext) {
         this.readContext = tcpReadContext;
-    }
-
-    private String cid() {
-        String ch = (channel != null && channel.id() != null) ? channel.id().asShortText() : "no-ch";
-        return "cid=" + ch + "@" + Integer.toHexString(System.identityHashCode(this));
-    }
-
-    private void snap(String where) {
-        String inEL = (context != null && context.executor() != null) ? String.valueOf(context.executor().inEventLoop()) : "n/a";
-        Tr.debug(this, tc,
-                 String.format("%s %s where=%s active=%s open=%s autoRead=%s inEL=%s async=%s peerClosed=%s immTO=%s waiters=%d queued=%d need=%d",
-                               getClass().getSimpleName(), cid(), where,
-                               channel != null && channel.isActive(),
-                               channel != null && channel.isOpen(),
-                               channel != null && channel.config().isAutoRead(),
-                               inEL, isReadingAsync, peerClosed.get(), immediateTimeout.get(),
-                               waitingThreads.get(), queuedDataSize(), minBytesToRead));
     }
 
 }

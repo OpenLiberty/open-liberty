@@ -15,11 +15,13 @@ import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.locks.LockSupport;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -42,6 +44,8 @@ import io.openliberty.http.options.TcpOption;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
+
+import io.netty.util.concurrent.EventExecutor;
 
 /**
  *
@@ -102,21 +106,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         return in;
     }
 
-    /**
-     * Performs reads on the connection until at least the specified number of bytes have been read.
-     * This call is always synchronous, and will result in blocking the thread until the minimum
-     * number of bytes has been read. A numBytes value of 0 will cause the read to return immediately.
-     * Upon completion of the read, WsByteBuffer(s) position will be set to the end of the data.
-     * If timeout is set equal to IMMED_TIMEOUT, then an attempt to immediately timeout the previous
-     * read will be made, and this read will return 0.
-     *
-     * @param numBytes - minimum number of bytes to read. Max value for numBytes is 2147483647
-     * @param timeout  - timeout value to associate with this request (milliseconds)
-     * @return long - number of bytes read
-     * @throws IOException
-     */
+
     @Override
     public long read(long numBytes, int timeout) throws IOException {
+
         if(aborted) throw new IOException("I/O Aborted");
 
 
@@ -156,34 +149,32 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         final HttpInputStreamImpl in = input();
         if (buffers == null || buffers.length == 0 || buffers[0] == null)
             throw new IOException("Buffers not set for read()");
-        
-        if(numBytes <= 0){
+
+        if (numBytes <= 0) {
             int available;
-            try{
+            try {
                 available = Math.max(0, in.available());
-            } catch (IOException ioe){
+            } catch (IOException ioe) {
                 available = 0;
             }
-            if(available <= 0) return 0L;
+            if (available <= 0)
+                return 0L;
 
             int capacity = 0;
-            for (WsByteBuffer buffer: buffers){
-                if (buffer == null) break;
+            for (WsByteBuffer buffer : buffers) {
+                if (buffer == null)
+                    break;
                 capacity += buffer.remaining();
             }
             final int chunk = Math.min(8192, Math.min(available, capacity));
             final byte[] temp = new byte[chunk];
             final int n = in.read(temp, 0, chunk);
-            if (n > 0){
+            if (n > 0) {
                 int off = 0;
-                for (WsByteBuffer buffer: buffers){
-                    if (buffer == null || off >= n) break;
-                    final int can = Math.min(buffer.remaining(), n - off);
-                    if (can > 0){
-                        buffer.getWrappedByteBuffer().put(temp, off, can);
-                        buffer.position(buffer.position()+can);
-                        off += can;
-                    }
+                for (WsByteBuffer buffer : buffers) {
+                    if (buffer == null || off >= n)
+                        break;
+                    off += copyInto(buffer, temp, off, n - off);
                 }
                 return n;
             }
@@ -193,69 +184,57 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         final int effectiveTimeout = normalizeTimeout(timeout);
         final long deadlineNs = (effectiveTimeout == NO_TIMEOUT) ? Long.MAX_VALUE : System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(effectiveTimeout);
 
-        ensureReadIfManual();
+        final boolean wasAuto = pushAutoRead(); 
+        try {
+            ensureReadIfManual(); 
 
-        final byte[] scratch = new byte[8192];
-        long delivered = 0L;
+            final byte[] scratch = new byte[8192];
+            long delivered = 0L;
 
-        while (true) {
-            int target = 0;
-            for (WsByteBuffer b : buffers) {
-                if (b == null)
-                    break;
-                target += b.remaining();
-            }
-            if (numBytes > 0)
-                target = (int) Math.min(target, Math.max(0, numBytes - delivered));
-            if (target == 0)
-                return delivered;
-
-            final int chunk = Math.min(target, scratch.length);
-            final int n = in.read(scratch, 0, chunk);
-
-            if (n > 0) {
-                int off = 0;
+            while (true) {
+                int target = 0;
                 for (WsByteBuffer b : buffers) {
-                    if (b == null || off >= n)
+                    if (b == null)
                         break;
-                    final int can = Math.min(b.remaining(), n - off);
-                    if (can > 0) {
-                        b.getWrappedByteBuffer().put(scratch, off, can);
-                        b.position(b.position()+can);
-                        off += can;
-                    }
+                    target += b.remaining();
                 }
-                delivered += n;
-                if (numBytes > 0 && delivered >= numBytes)
+                if (numBytes > 0) {
+                    target = (int) Math.min(target, Math.max(0, numBytes - delivered));
+                }
+                if (target == 0)
                     return delivered;
-                continue;
-            }
 
-            if (n == -1)
-                return delivered; // EOF
+                final int chunk = Math.min(target, scratch.length);
+                final int n = in.read(scratch, 0, chunk);
 
-            // cooperative small wait and nudge read if manual
-            if (!nettyChannel.config().isAutoRead())
-                nettyChannel.eventLoop().execute(nettyChannel::read);
-
-            if (deadlineNs != Long.MAX_VALUE && System.nanoTime() > deadlineNs)
-                throw new SocketTimeoutException("Failed to read data within the specified timeout.");
-
-            // wake on next EL tick
-            final Object lock = new Object();
-            nettyChannel.eventLoop().execute(() -> {
-                synchronized (lock) {
-                    lock.notify();
+                if (n > 0) {
+                    int off = 0;
+                    for (WsByteBuffer b : buffers) {
+                        if (b == null || off >= n)
+                            break;
+                        off += copyInto(b, scratch, off, n - off);
+                    }
+                    delivered += n;
+                    if (numBytes > 0 && delivered >= numBytes)
+                        return delivered;
+                    continue;
                 }
-            });
-            try {
-                synchronized (lock) {
-                    lock.wait(1L);
+
+                if (n == -1)
+                    return delivered; 
+
+                if (!nettyChannel.config().isAutoRead()) {
+                    nettyChannel.eventLoop().execute(nettyChannel::read);
                 }
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-                throw new IOException("Thread interrupted while reading.", ie);
+
+                if (deadlineNs != Long.MAX_VALUE && System.nanoTime() > deadlineNs) {
+                    throw new SocketTimeoutException("sync timeout; delivered=" + delivered
+                                                     + " need=" + numBytes + " bufRemain=" + remaining(buffers));
+                }
+                LockSupport.parkNanos(TimeUnit.MILLISECONDS.toNanos(1));
             }
+        } finally {
+            popAutoRead(wasAuto); 
         }
     }
 
@@ -265,46 +244,49 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         h.setVC(vc);
 
         if (numBytes <= 0) {
-            // Inspect only; do not wait
             ensureReadIfManual();
-            Tr.debug(tc, "numBytes<= 0  containsQueuedData="+h.containsQueuedData());
             return h.containsQueuedData() ? h.setToBuffer() : 0L;
         }
 
         final int t = normalizeTimeout(timeout);
         final long need = Math.max(1L, numBytes);
-        final long deadlineNs = (t == NO_TIMEOUT) ? Long.MAX_VALUE
-                                                  : System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(t);
+        final long deadlineNs = (t == NO_TIMEOUT) ? Long.MAX_VALUE : System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(t);
 
-        ensureReadIfManual();
-        // Fast path
-        if (h.containsQueuedData() && h.queuedDataSize() >= need) {
-            long copied = h.setToBuffer();
-            Tr.debug(tc, "(Fast path) UPG sync read: need="+need+" copied="+copied+ " queuedAfter="+h.queuedDataSize());
-            return copied;
-        }
-        // Cooperative wait loop with read nudges; timeout enforced here.
-        while (nettyChannel.isActive()) {
-            final long now = System.nanoTime();
-            if (deadlineNs != Long.MAX_VALUE && now >= deadlineNs) {
-                throw new SocketTimeoutException("Failed to read data within the specified timeout.");
-            }
-            final long remainingMs = (deadlineNs == Long.MAX_VALUE) ? 250L
-                                    : Math.max(1L, TimeUnit.NANOSECONDS.toMillis(deadlineNs - now));
-           try {
-                h.waitForDataRead(Math.min(remainingMs, 250L)); // slice wait
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-                throw new IOException("Interrupted while waiting for upgraded read data.", ie);
-            }
+        final boolean wasAuto = pushAutoRead(); 
+        try {
+            ensureReadIfManual();
+
+    
             if (h.containsQueuedData() && h.queuedDataSize() >= need) {
                 long copied = h.setToBuffer();
-                Tr.debug(tc, "(Fast path) UPG sync read: need=" + need + " copied=" + copied + " queuedAfter=" + h.queuedDataSize());
                 return copied;
             }
-            ensureReadIfManual();
+
+            while (nettyChannel.isActive()) {
+                final long now = System.nanoTime();
+                if (deadlineNs != Long.MAX_VALUE && now >= deadlineNs) {
+                    throw new SocketTimeoutException("Failed to read data within the specified timeout.");
+                }
+                final long remainingMs = (deadlineNs == Long.MAX_VALUE) ? 250L : Math.max(1L, TimeUnit.NANOSECONDS.toMillis(deadlineNs - now));
+                try {
+                    h.waitForDataRead(Math.min(remainingMs, 250L)); 
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw new IOException("Interrupted while waiting for upgraded read data.", ie);
+                }
+
+                if (h.containsQueuedData() && h.queuedDataSize() >= need) {
+                    long copied = h.setToBuffer();
+                    Tr.debug(tc, "(Fast path) UPG sync read: need=" + need + " copied=" + copied + " queuedAfter=" + h.queuedDataSize());
+                    return copied;
+                }
+
+                ensureReadIfManual();
+            }
+            throw new EOFException("Channel inactive during read");
+        } finally {
+            popAutoRead(wasAuto); 
         }
-        throw new EOFException("Channel inactive during read");
     }
 
     @Override
@@ -329,17 +311,14 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         if (isUpgraded()) {
 
             final int effectiveTimeout = normalizeTimeout(timeout);
-            // For IMMED/ABORT we won't actually read; skip buffer ensure in those two cases.
             if (effectiveTimeout != IMMED_TIMEOUT && effectiveTimeout != ABORT_TIMEOUT) {
-                ensureBuffersOrJIT(numBytes, /* isAsync = */ true);
+                ensureBuffersOrJIT(numBytes, true);
             }
             return upgradedAsyncRead(numBytes, callback, forceQueue, timeout);
         }
 
-        // Non-upgrade async: arm a one-shot runnable that re-enters the sync path when data arrives.
         final int effectiveTimeout = normalizeTimeout(timeout);
 
-        // IMMED cancels any prior wait and returns immediately
         if (effectiveTimeout == IMMED_TIMEOUT)
             return null;
         if (effectiveTimeout == ABORT_TIMEOUT) {
@@ -349,33 +328,38 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         ensureBuffersOrJIT(numBytes, true);
 
+        final boolean wasAuto = pushAutoRead();
+
         Runnable r = () -> {
             try {
                 read(numBytes, effectiveTimeout);
-                if (callback != null)
+                if (callback != null) {
                     callback.complete(vc, this);
+                }
             } catch (Throwable t) {
                 if (callback != null) {
                     callback.error(vc, this, (t instanceof EOFException) ? (EOFException) t : new EOFException(t.toString()));
                 }
+            } finally {
+                popAutoRead(wasAuto); 
             }
         };
 
         nettyChannel.attr(com.ibm.ws.http.netty.NettyHttpConstants.ASYNC_READ_CALLBACK).set(r);
 
-        // If bytes already available (or finished), run now
         try {
-            HttpInputStreamImpl in = input();
-            boolean isEE7 = (in instanceof HttpInputStreamEE7);
-            if (in.available() > 0 || (isEE7 && ((HttpInputStreamEE7) in).isFinished())) {
+            HttpInputStreamImpl in2 = input();
+            boolean isEE7 = (in2 instanceof HttpInputStreamEE7);
+            if (in2.available() > 0 || (isEE7 && ((HttpInputStreamEE7) in2).isFinished())) {
                 Runnable pending = nettyChannel.attr(com.ibm.ws.http.netty.NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
                 if (pending != null)
                     HttpDispatcher.getExecutorService().execute(pending);
             }
-        } catch (IOException ignore) { /* dispatcher close handles this */}
+        } catch (IOException ignore) { }
 
         ensureReadIfManual();
         return null;
+
     }
 
     public VirtualConnection upgradedAsyncRead(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
@@ -383,7 +367,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         h.setTCPReadContext(this);
         h.setVC(vc);
 
-        // IMMED cancels prior async wait
         if (timeout == IMMED_TIMEOUT) {
             h.immediateTimeout();
             return null;
@@ -395,100 +378,102 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
 
         final long need = Math.max(1L, numBytes);
+        final boolean wasAuto = pushAutoRead(); 
         ensureReadIfManual();
 
-        if (h.containsQueuedData() && h.queuedDataSize() >= need) {
-            //if (!forceQueue) {
-                long copied = h.setToBuffer();
-                Tr.debug(tc, "(Fast path) UPG async read (sync complete): need=" + need
-                             + " copied=" + copied + " queuedAfter=" + h.queuedDataSize());
-            //    return vc; // completed synchronously
-            //} else {
-                // Forced async: offload copy+callback to Dispatcher, and return null
-                if (callback != null) {
-                    HttpDispatcher.getExecutorService().execute(() -> {
-                        //long copied = h.setToBuffer();
-                        Tr.debug(tc, "(Fast path) UPG async read (forced async): need=" + need
-                                     + " copied=" + copied + " queuedAfter=" + h.queuedDataSize());
-                        
-                        try {
-                            callback.complete(vc, this);
-                        } catch (Exception e) {/* keep async semantic */}             
-                    });
-                }
-                return null; // indicates async completion
-            //}
-        }
-        
-
-
-
-
-        // Wrap the callback to cancel the scheduled timeout on either complete() or error()
         final io.netty.util.concurrent.EventExecutor el = nettyChannel.eventLoop();
-        final java.util.concurrent.atomic.AtomicReference<io.netty.util.concurrent.ScheduledFuture<?>> toRef =
-                new java.util.concurrent.atomic.AtomicReference<>(null);
+        final java.util.concurrent.atomic.AtomicReference<io.netty.util.concurrent.ScheduledFuture<?>> toRef = new java.util.concurrent.atomic.AtomicReference<>(null);
 
         final TCPReadCompletedCallback wrapped = new TCPReadCompletedCallback() {
+            
             @Override
             public void complete(VirtualConnection v, TCPReadRequestContext ctx) {
+
+
                 io.netty.util.concurrent.ScheduledFuture<?> f = toRef.getAndSet(null);
-                if (f != null) {
+                if (f != null)
                     try {
                         f.cancel(false);
                     } catch (Throwable ignore) {
                     }
-                }
-                if (callback != null) {
-                    HttpDispatcher.getExecutorService().execute(() -> {
-                        try {
-                            callback.complete(v, ctx);
-                        } catch (Throwable ignore) {
-                        }
-                    });
+                try {
+                    if (callback != null) {
+                        HttpDispatcher.getExecutorService().execute(() -> {
+                            try {
+                                callback.complete(v, ctx);
+                            } catch (Throwable ignore) {
+                            }
+                        });
+                    }
+                } finally {
+                    popAutoRead(wasAuto);
                 }
             }
 
             @Override
             public void error(VirtualConnection v, TCPReadRequestContext ctx, java.io.IOException e) {
                 io.netty.util.concurrent.ScheduledFuture<?> f = toRef.getAndSet(null);
-                if (f != null) {
+                if (f != null)
                     try {
                         f.cancel(false);
                     } catch (Throwable ignore) {
                     }
-                }
-                if (callback != null) {
-                    HttpDispatcher.getExecutorService().execute(() -> {
-                        try {
-                            callback.error(v, ctx, e);
-                        } catch (Throwable ignore) {
-                        }
-                    });
+                try {
+                    if (callback != null) {
+                        HttpDispatcher.getExecutorService().execute(() -> {
+                            try {
+                                callback.error(v, ctx, e);
+                            } catch (Throwable ignore) {
+                            }
+                        });
+                    }
+                } finally {
+                    popAutoRead(wasAuto);
                 }
             }
         };
 
+        if (callback != null)
+            h.setReadListener(wrapped); 
 
-        if (callback != null) h.setReadListener(wrapped);
-        h.queueAsyncRead(need);                  
+
+        if (h.containsQueuedData() && h.queuedDataSize() >= need) {
+            long copied = h.setToBuffer();
+            if (!forceQueue) {
+                popAutoRead(wasAuto);
+                return vc; 
+            } else {
+                if (callback != null) {
+                    HttpDispatcher.getExecutorService().execute(() -> {
+                        try {
+                            callback.complete(vc, this);
+                        } finally {
+                            popAutoRead(wasAuto);
+                        }
+                    });
+                } else {
+                    popAutoRead(wasAuto);
+                }
+                return null;
+            }
+        }
+
+        h.queueAsyncRead(need);
         ensureReadIfManual();
 
         final int t = normalizeTimeout(timeout);
         if (t != NO_TIMEOUT) {
             toRef.set(el.schedule(() -> {
-                // If still armed, fail the read
                 if (h.isAsyncReadArmed() && nettyChannel.isActive()) {
                     try {
                         wrapped.error(vc, this, new SocketTimeoutException("Read operation timed out"));
-                    } catch (Throwable ignore) {}
+                    } catch (Throwable ignore) {
+                    }
                 }
             }, t, TimeUnit.MILLISECONDS));
         }
         return null;
     }
-
-    
 
     @Override
     public void setJITAllocateSize(int numBytes) {
@@ -543,8 +528,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     }
 
     private void ensureReadIfManual() {
-        if (!nettyChannel.config().isAutoRead())
+        if (!nettyChannel.config().isAutoRead()) {
             nettyChannel.eventLoop().execute(nettyChannel::read);
+        }
     }
 
     private boolean isUpgraded() {
@@ -578,18 +564,18 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         final int toRead = Math.min(available, want);
         final byte[] scratch = new byte[toRead];
         final int n = in.read(scratch, 0, toRead);
+
         if (n <= 0) return 0L;
 
+
+
         int off = 0;
+        ByteBuffer bb;
         for (WsByteBuffer buffer: buffers){
             if (buffer == null || off>=n) break;
-            final int can = Math.min(buffer.remaining(), n - off);
-            if (can > 0){
-                buffer.getWrappedByteBuffer().put(scratch, off, can);
-                buffer.position(buffer.position()+can);
-                off += can;
-            }
+            off += copyInto(buffer, scratch, off, n - off);
         }
+
         return n;
     }
 
@@ -600,8 +586,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         h.setVC(vc);
         if (!h.containsQueuedData()) return 0L;
         long copied = h.setToBuffer();
-        Tr.debug(tc, "UPG sync drain (numBytes==0): copied="+copied);
-
 
         return copied;
     }
@@ -648,4 +632,66 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             }
         }
     }
+
+    private static int copyInto(WsByteBuffer buf, byte[] src, int off, int len) {
+        final java.nio.ByteBuffer bb = buf.getWrappedByteBuffer();
+        final int can = Math.min(bb.remaining(), len);
+        if (can > 0) {
+            bb.put(src, off, can);
+            buf.position(bb.position()); 
+        }
+        return can;
+    }
+
+    private static long remaining(WsByteBuffer[] bufs) {
+        long tot = 0;
+        if (bufs == null)
+            return 0;
+        for (WsByteBuffer b : bufs) {
+            if (b == null)
+                break;
+            tot += Math.max(0, b.remaining());
+        }
+        return tot;
+    }
+
+    private boolean pushAutoRead() {
+        final EventExecutor el = nettyChannel.eventLoop();
+        final boolean wasAuto = nettyChannel.config().isAutoRead();
+        if (!wasAuto) {
+            if (el.inEventLoop()) {
+                nettyChannel.config().setAutoRead(true);
+                nettyChannel.read();
+            } else {
+                final CountDownLatch latch = new CountDownLatch(1);
+                el.execute(() -> {
+                    try {
+                        nettyChannel.config().setAutoRead(true);
+                        nettyChannel.read();
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+                try {
+                    latch.await(1, TimeUnit.SECONDS);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
+        }
+        return wasAuto;
+    }
+
+    private void popAutoRead(boolean wasAuto) {
+        if (!wasAuto) {
+            final EventExecutor el = nettyChannel.eventLoop();
+            if (el.inEventLoop()) {
+                nettyChannel.config().setAutoRead(false);
+            } else {
+                el.execute(() -> nettyChannel.config().setAutoRead(false));
+            }
+        }
+    }
+
+
 }

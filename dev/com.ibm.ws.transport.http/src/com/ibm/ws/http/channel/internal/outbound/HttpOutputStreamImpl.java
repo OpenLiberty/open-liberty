@@ -488,16 +488,19 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             return;
         }
         try {
-            
+            final boolean is101 = isUpgrade101();
             Tr.debug(tc, "flushHeaders: willFireObserver=" + (obs != null && !this.WCheadersWritten)
                          + " WCheadersWritten=" + this.WCheadersWritten);
 
             Tr.debug(tc, "flushHeaders -> isUpgrade101: " + isUpgrade101() );
 
-            if (isUpgrade101()) {
-                awaitUpgradePipelineInstalled();
-            }
+            
             this.isc.sendResponseHeaders();
+            if (is101) {
+                // Now tell the dispatcher to flip and wait briefly so the upgrade handler is in place.
+                awaitUpgradePipelineInstalled(); // fires UPGRADE_101_COMMITTED_EVENT and waits up to ~750ms
+            }
+
         } catch (MessageSentException mse) {
             FFDCFilter.processException(mse, getClass().getName(),
                                         "flushHeaders", new Object[] { this, this.isc });
@@ -570,8 +573,11 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                     // on a closed stream, use the final write api
 
                     System.out.println("DEBUG: skipping finishResponseMessage?: " + is101);
-                    if(!is101)
+                    if (is101) {
+                        this.isc.finishResponseMessage(null); // <— CHANGED: don’t skip for 101
+                    } else {
                         this.isc.finishResponseMessage(content);
+                    }
                     this.isClosing = false;
                     this.hasFinished = true;
                 }
@@ -588,6 +594,12 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             this.error = ioe;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Received exception during write: " + ioe);
+            }
+            if (isUpgrade101() && !this.hasFinished) {
+                try {
+                    this.isc.finishResponseMessage(null);
+                } catch (Throwable ignore) {}
+                this.hasFinished = true;
             }
             Throwable th = ioe.getCause();
             if (th instanceof FlowControlException || th instanceof StreamClosedException) {
@@ -655,12 +667,20 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             validate();
             this.closed = true;
             this.ignoreFlush = false;
-            if(isUpgrade101()){
-                System.out.println("DEBUG HttpOutputStreamImpl isUpgrade101 calling clear and returning ");
-                clear();
-                return;
+            if (isUpgrade101()) {
+                // Make sure WC is notified; this triggers access logging like legacy
+                if (!this.hasFinished && this.isc != null) {
+                    try {
+                        this.isc.finishResponseMessage(null);
+                    } catch (Throwable ignore) {
+                    }
+                    this.hasFinished = true;
+                }
+                // do NOT just clear and return; allow the link/service-context to perform its normal end-of-response actions
+                // We'll still clear buffers in finally.
+            } else {
+                flushBuffers();
             }
-            flushBuffers();
         } catch (IOException ioe) {
             this.closed = true;
             this.ignoreFlush = false;
