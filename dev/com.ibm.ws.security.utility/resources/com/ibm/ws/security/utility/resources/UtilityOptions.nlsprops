@@ -85,8 +85,8 @@ encode.option-key.base64Key=\
 \ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\
 \tA base64 encoded AES-256 bit key to be used to encrypt and decrypt the\n\
-\tpassword. The key can be provided to the server by defining the \n\
-\tvariable wlp.aes.encryption.key whose value is the key. If --base64Key is\n\
+\tpassword. This key must be provided to the server by defining the\n\
+\tvariable wlp.aes.encryption.key. If --base64Key is\n\
 \tspecified then --aesConfigFile and --key cannot be specified.
 encode.option-key.aesConfigFile=\
 \ \ \ \ --aesConfigFile=aesConfigFile
@@ -231,10 +231,9 @@ sslCert.option-key.passwordBase64Key=\
 \ \ \ \ --passwordBase64Key=base64Key
 sslCert.option-desc.passwordBase64Key=\
 \tA base64 encoded AES-256 bit key to be used to encrypt and decrypt the\n\
-\tpassword. The key can be provided to the server by defining the \n\
-\twlp.aes.encryption.key variable, whose value is the key.\n\
-\tIf --passwordBase64Key is specified then --aesConfigFile and --passwordKey\n\
-\tcannot be specified.
+\tpassword. This key must be provided to the server by defining the\n\
+\tvariable wlp.aes.encryption.key. If --passwordBase64Key is\n\
+\tspecified then --aesConfigFile and --passwordKey cannot be specified.
 sslCert.option-key.aesConfigFile=\
 \ \ \ \ --aesConfigFile=aesConfigFile
 sslCert.option-desc.aesConfigFile=\
@@ -293,10 +292,9 @@ createLTPAKeys.option-key.passwordBase64Key=\
 \ \ \ \ --passwordBase64Key=base64Key
 createLTPAKeys.option-desc.passwordBase64Key=\
 \tA base64 encoded AES-256 bit key to be used to encrypt and decrypt the\n\
-\tpassword. The key can be provided to the server by defining the \n\
-\tvariable wlp.aes.encryption.key whose value is the key. If \n\
-\t--passwordBase64Key is specified then --aesConfigFile and --passwordKey\n\
-\tcannot be specified.
+\tpassword. This key must be provided to the server by defining the\n\
+\tvariable wlp.aes.encryption.key. If --passwordBase64Key is\n\
+\tspecified then --aesConfigFile and --passwordKey cannot be specified.
 createLTPAKeys.option-key.aesConfigFile=\
 \ \ \ \ --aesConfigFile=aesConfigFile
 createLTPAKeys.option-desc.aesConfigFile=\
@@ -430,9 +428,8 @@ generateaeskey.option-key.key=\
 generateaeskey.option-desc.key=\
 \tSpecify a key for use during AES encryption. This string is\n\
 \thashed to produce an encryption key which will be used to encrypt\n\
-\tand decrypt passwords. The encryption key is saved in base64 format\n\
-\tin a variable named wlp.aes.encryption.key. If this option is\n\
-\tomitted, a random key is be generated.
+\tand decrypt passwords. If this option is omitted, a random key is\n
+\tbe generated.
 generateaeskey.option-key.createConfigFile=\
 \ \ \ \ --createConfigFile=name
 generateaeskey.option-desc.createConfigFile=\
