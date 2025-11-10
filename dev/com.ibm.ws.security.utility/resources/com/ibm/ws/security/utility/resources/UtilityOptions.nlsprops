@@ -427,9 +427,9 @@ generateaeskey.option-key.key=\
 \ \ \ \ --key=[key]
 generateaeskey.option-desc.key=\
 \tSpecify a key for use during AES encryption. This string is\n\
-\thashed to produce an encryption key which will be used to encrypt\n\
+\thashed to produce an encryption key which is used to encrypt\n\
 \tand decrypt passwords. If this option is omitted, a random key is\n
-\tbe generated.
+\tgenerated.
 generateaeskey.option-key.createConfigFile=\
 \ \ \ \ --createConfigFile=name
 generateaeskey.option-desc.createConfigFile=\
