@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
                                     .copy("/etc/otelcol/config.yaml", "/etc/otelcol/config.yaml"))
                     .withFileFromFile("/etc/otelcol/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
                     .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector"))
-                    .withExposedPorts(8888, 8889, 4317)
+                    .withExposedPorts(8888, 8889, 4317, 4318)
                     .withNetwork(network)
                     .withNetworkAliases("otel-collector-metrics")
                     .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Begin running and processing data.*").withStartupTimeout(Duration.ofMinutes(1)));
@@ -87,7 +87,7 @@ public class ContainerJSPApplicationTest extends BaseTestClass {
         ShrinkHelper.exportDropinAppToServer(server, testWAR,
                                              DeployOptions.SERVER_ONLY);
 
-        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
+        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
         server.startServer();
 
         //Read to run a smarter planet

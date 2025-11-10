@@ -67,7 +67,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
                                     .copy("/etc/otelcol/config.yaml", "/etc/otelcol/config.yaml"))
                     .withFileFromFile("/etc/otelcol/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
                     .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector"))
-                    .withExposedPorts(8888, 8889, 4317)
+                    .withExposedPorts(8888, 8889, 4317, 4318)
                     .withNetwork(network)
                     .withNetworkAliases("otel-collector-metrics")
                     .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Begin running and processing data.*").withStartupTimeout(Duration.ofMinutes(1)));
@@ -90,7 +90,7 @@ public class ContainerRestApplicationTest extends BaseTestClass {
         ShrinkHelper.exportDropinAppToServer(server, testWAR,
                                              DeployOptions.SERVER_ONLY);
 
-        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
+        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
         server.startServer();
 
