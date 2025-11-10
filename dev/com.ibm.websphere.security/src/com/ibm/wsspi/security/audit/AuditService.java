@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,4 +55,13 @@ public interface AuditService {
      */
     boolean validateEventsAndOutcomes(String handlerName, List<Map<String, Object>> configuredEvents);
 
+    /**
+     * Determines whether to generate a new session 
+     * @return - true indicating a new session should be generated  
+     *           false indicating to use the existing behavior.
+     */
+    public default Boolean isGenerateNewSession() {
+        return Boolean.FALSE;
+    }
+    
 }

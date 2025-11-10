@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,7 +59,7 @@ import com.ibm.wsspi.security.audit.AuditService;
  * This class is the security audit service. It handles audit config and is also
  * a collector manager Source for audit events.
  */
-@Component(service = { AuditService.class, Source.class }, configurationPid = "com.ibm.ws.security.audit.event", configurationPolicy = ConfigurationPolicy.OPTIONAL,
+@Component(service = { AuditService.class, Source.class }, configurationPid = { "com.ibm.ws.security.audit", "com.ibm.ws.security.audit.event" }, configurationPolicy = ConfigurationPolicy.OPTIONAL,
            property = "service.vendor=IBM", immediate = true)
 
 public class AuditServiceImpl implements AuditService, Source {
@@ -85,6 +85,7 @@ public class AuditServiceImpl implements AuditService, Source {
 
     private static final String INCORRECT_AUDIT_EVENT_CONFIGURATION = "INCORRECT_AUDIT_EVENT_CONFIGURATION";
     private static final String INCORRECT_AUDIT_OUTCOME_CONFIGURATION = "INCORRECT_AUDIT_OUTCOME_CONFIGURATION";
+    private static final String CFG_GENERATE_NEW_SESSION = "generateNewSession";
 
     /** Event topic used for queued work */
     // cl-ol public static final Topic TOPIC_QUEUED_WORK = new Topic("com/ibm/ws/jmx/QUEUED_AUDIT_WORK");
@@ -132,6 +133,7 @@ public class AuditServiceImpl implements AuditService, Source {
     private boolean auditServiceStarted = false;
     private boolean emitted1 = false;
     private final boolean emitted2 = false;
+    private boolean generateNewSession = false;
     private boolean emitMsgOnce = true; 
 
     @Activate
@@ -143,7 +145,15 @@ public class AuditServiceImpl implements AuditService, Source {
             for (Map.Entry<String, Object> entry : configuration.entrySet()) {
                 String key = entry.getKey();
                 Object value = entry.getValue();
-                if (key.equals(AuditConstants.EVENT_NAME)) {
+                // Handle audit-level configuration (com.ibm.ws.security.audit)
+                if (key.equals(CFG_GENERATE_NEW_SESSION)) {
+                    Boolean generateNewSessionState = (Boolean) value;
+                    if (generateNewSessionState != null) {
+                        generateNewSession = generateNewSessionState;
+                    }
+                }
+                // Handle event-level configuration (com.ibm.ws.security.audit.event)
+                else if (key.equals(AuditConstants.EVENT_NAME)) {
                     setEventName(value);
                 } else if (key.equals(AuditConstants.CUSTOM)) {
                     setIsCustomEvent(value);

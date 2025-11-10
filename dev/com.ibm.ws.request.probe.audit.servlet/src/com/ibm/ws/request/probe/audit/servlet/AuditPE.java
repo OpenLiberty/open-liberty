@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -336,10 +336,12 @@ public class AuditPE implements ProbeExtension {
 						auditManager.setLocalPort(String.valueOf(req.getLocalPort()));
 						String sessionID = null;
 						final HttpServletRequest f_req = req;
+						final boolean generateNewSession = (auditServiceRef != null && auditServiceRef.getService() != null)
+								? auditServiceRef.getService().isGenerateNewSession() : false;
 						sessionID = AccessController.doPrivileged(new PrivilegedAction<String>() {
 							@Override
 							public String run() {
-								HttpSession session = f_req.getSession();
+								HttpSession session = f_req.getSession(generateNewSession);
 								if (session != null) {
 									return session.getId();
 								} else {

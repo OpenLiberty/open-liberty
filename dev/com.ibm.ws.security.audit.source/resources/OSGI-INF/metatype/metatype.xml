@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011 IBM Corporation and others.
+    Copyright (c) 2011, 2025 IBM Corporation and others.
         All rights reserved. This program and the accompanying materials
 	    are made available under the terms of the Eclipse Public License 2.0
 	        which accompanies this distribution, and is available at
@@ -15,6 +15,9 @@
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
+<OCD id="com.ibm.ws.security.audit.metatype" name="%audit.name" description="%audit.desc" ibm:alias="audit">
+   <AD id="generateNewSession" name="%generateNewSession" description="%generateNewSession.desc" required="false" type="Boolean" default="false"/>   
+</OCD>
 
 <OCD id="com.ibm.ws.security.audit.event.metatype" name="%auditEvent.name" description="%auditEvent.desc" ibm:alias="auditEvent">
    <AD id="eventName" name="%eventName.name" description="%eventName.desc" required="false" type="String">
@@ -52,7 +55,11 @@
    </AD>
 </OCD>
 
- <Designate factoryPid="com.ibm.ws.security.audit.event">
+<Designate pid="com.ibm.ws.security.audit">
+    <Object ocdref="com.ibm.ws.security.audit.metatype"/>
+</Designate>
+
+<Designate factoryPid="com.ibm.ws.security.audit.event">
     <Object ocdref="com.ibm.ws.security.audit.event.metatype"/>
 </Designate>
 
