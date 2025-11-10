@@ -127,10 +127,9 @@ CWMCM0016E.error.sending.response.exception.explanation=An error occurred while 
 CWMCM0016E.error.sending.response.exception.useraction=No action is required.
 
 # Used for server logging
-CWMCM0017W.cdi.inactive.warning=CWMCM0017W: CDI is not active, skipping MCP servlet registration.
-CWMCM0017W.cdi.inactive.warning.explanation=If there are no CDI beans, then CDI is not active. Without CDI, the MCP server feature is unable to work.
-CWMCM0017W.cdi.inactive.warning.useraction=To use MCP, create a CDI managed bean that has an appropriate scope annotation (e.g., @ApplicationScoped or @RequestScoped).
-
+CWMCM0017W.cdi.inactive.warning=CWMCM0017W: CDI is not active, the MCP Server cannot start. Check that any MCP annotations are placed on methods of CDI beans which have an appropriate scope annotation (e.g. @ApplicationScoped)
+CWMCM0017W.cdi.inactive.warning.explanation=CDI is not active which may occur if there are no CDI beans in the application.
+CWMCM0017W.cdi.inactive.warning.useraction=Check that any MCP annotations are placed on methods of CDI beans which have an appropriate scope annotation (e.g., @ApplicationScoped or @RequestScoped). If your application archive contains a CDI extension, ensure it also includes a beans.xml. If your application has a beans.xml, check that "bean-discovery-mode" is not "none".
 # Used as part of a response to a client
 # do not translate jsonrpc
 # {0} = jsonrpc value
