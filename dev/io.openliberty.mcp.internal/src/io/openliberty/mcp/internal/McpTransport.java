@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
@@ -32,6 +33,9 @@ import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
 import io.openliberty.mcp.internal.responses.McpResponse;
 import io.openliberty.mcp.internal.responses.McpResultResponse;
+import io.openliberty.mcp.internal.sessions.McpSession;
+import io.openliberty.mcp.internal.sessions.McpSessionId;
+import io.openliberty.mcp.internal.sessions.McpSessionStore;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
@@ -166,7 +170,7 @@ public class McpTransport {
      * <p>
      * Intended only for sending the Session ID header with initialize response
      */
-    void setResponseHeader(String name, String value) {
+    void setResponseHeader(String name, @Sensitive String value) {
         res.setHeader(name, value);
     }
 
@@ -186,7 +190,7 @@ public class McpTransport {
      *
      * @return the session ID string, or {@code null} if none is available
      */
-    public String getSessionId() {
+    public McpSessionId getSessionId() {
         return sessionInfo == null ? null : sessionInfo.getSessionId();
     }
 

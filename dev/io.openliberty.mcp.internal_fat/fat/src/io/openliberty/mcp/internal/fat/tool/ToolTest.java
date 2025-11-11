@@ -16,6 +16,7 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -3024,6 +3025,27 @@ public class ToolTest extends FATServletClient {
         String duplicateResponse = client.callMCP(requestTemplate);
 
         JSONAssert.assertEquals(expectedResponseString, duplicateResponse, true);
+    }
+
+    @Test
+    public void testSessionIdNotTraced() throws Exception {
+        String sessionId = client.getSessionId();
+        assertNotNull("Expected session ID from MCP initialization", sessionId);
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "textContentTool",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+        client.callMCP(request);
+        assertNull(server.waitForStringInTrace(sessionId, 12000));
     }
 
     @Test

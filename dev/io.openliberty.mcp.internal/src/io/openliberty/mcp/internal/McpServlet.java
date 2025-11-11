@@ -39,6 +39,9 @@ import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
+import io.openliberty.mcp.internal.sessions.McpSession;
+import io.openliberty.mcp.internal.sessions.McpSessionId;
+import io.openliberty.mcp.internal.sessions.McpSessionStore;
 import io.openliberty.mcp.messaging.Cancellation;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolResponse;
@@ -446,7 +449,7 @@ public class McpServlet extends HttpServlet {
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
         McpRequestId mcpReqId = notificationParams.getRequestId();
-        String sessionId = transport.getSessionId();
+        McpSessionId sessionId = transport.getSessionId();
         if (sessionId == null) {
             transport.sendEmptyResponse();
             return;
@@ -470,7 +473,7 @@ public class McpServlet extends HttpServlet {
     }
 
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
-        String sessionId = transport.getSessionId();
+        McpSessionId sessionId = transport.getSessionId();
         if (sessionId != null) {
             return new ExecutionRequestId(transport.getMcpRequest().id(),
                                           sessionId);

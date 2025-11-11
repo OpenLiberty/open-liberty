@@ -23,6 +23,7 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
+import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.messaging.Cancellation;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -70,13 +71,13 @@ public class McpRequestTracker {
      * Will skip cancellation if the server is in stateless mode.
      * request is cancelled with a fixed reason: {@code "Session cancelled"}
      */
-    public void cancelSessionRequests(String sessionId) {
+    public void cancelSessionRequests(McpSessionId sessionId) {
         Boolean stateless = mcpConfigService.run(McpConfiguration::isStateless).orElse(false);
         if (Boolean.TRUE.equals(stateless)) {
             return;
         }
 
-        Set<ExecutionRequestId> requests = sessionToRequestIds.remove(sessionId);
+        Set<ExecutionRequestId> requests = sessionToRequestIds.remove(sessionId.value());
         if (requests == null) {
             return;
         }

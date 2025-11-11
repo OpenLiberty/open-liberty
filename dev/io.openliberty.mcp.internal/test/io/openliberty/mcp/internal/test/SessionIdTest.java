@@ -7,8 +7,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.requests;
+package io.openliberty.mcp.internal.test;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 import io.openliberty.mcp.internal.sessions.McpSessionId;
 
-public record ExecutionRequestId(McpRequestId id, McpSessionId sessionId) {}
+public class SessionIdTest {
+
+    @Test
+    public void testSessionIdToString() {
+        McpSessionId id = new McpSessionId("123456789");
+        assertEquals("123******", id.toString());
+    }
+
+}
