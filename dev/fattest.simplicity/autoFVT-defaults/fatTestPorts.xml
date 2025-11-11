@@ -25,4 +25,7 @@
     </iiopEndpoint>
 
     <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
+    
+    <logging throttleMaxMessagesPerWindow="0"/>
+
 </server>

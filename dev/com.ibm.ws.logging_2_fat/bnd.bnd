@@ -18,7 +18,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/ffdc-servlet/src, \
-	test-applications/quick-log-test/src
+	test-applications/quick-log-test/src, \
+	test-applications/logger-servlet/src
 	
 
 fat.project: true
