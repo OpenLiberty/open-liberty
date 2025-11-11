@@ -72,6 +72,8 @@ public class ContainerNoAppTest extends BaseTestClass {
         trustAll();
         server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4318));
 
+        FATSuite.setTelProperties(null, server);
+
         server.startServer();
 
         //Read to run a smarter planet
