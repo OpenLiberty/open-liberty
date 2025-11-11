@@ -2257,6 +2257,7 @@ public final class JAXRSUtils {
     }
 
     public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct) {
+        Thread.dumpStack(); // dump stack when this error occurs
         org.apache.cxf.common.i18n.Message errorMsg = new org.apache.cxf.common.i18n.Message(name, BUNDLE, cls.getName(), mediaTypeToString(ct));
         String errorMessage = errorMsg.toString();
         Tr.error(tc, errorMessage); // Libery Change
