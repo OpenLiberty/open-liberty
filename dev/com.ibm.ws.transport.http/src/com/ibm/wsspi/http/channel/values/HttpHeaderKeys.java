@@ -239,6 +239,9 @@ public class HttpHeaderKeys extends HeaderKeys {
 
     public static final HttpHeaderKeys HDR_ORIGIN = new HttpHeaderKeys("Origin");
 
+    /** Enumerated object for the HTTP header key CONTENT-SECURITY-POLICY */
+    public static final HttpHeaderKeys HDR_CONTENT_SECURITY_POLICY = new HttpHeaderKeys("Content-Security-Policy");
+
     /** Max value of header keys that will be kept in key storage */
     public static final int ORD_MAX = 1024;
 
