@@ -124,7 +124,7 @@ public class LogThrottleTest {
         hitWebPage("logger-servlet", "LoggerServlet", false, "numMessages=6");
 
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
-        assertEquals("Configuration updated message wasn't printed the correct number of times.", lines.size(), 5);
+        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5);
     }
 
     /*
@@ -136,7 +136,7 @@ public class LogThrottleTest {
         hitWebPage("logger-servlet", "LoggerServlet", false, "numMessages=25");
 
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
-        assertEquals("Configuration updated message wasn't printed the correct number of times.", lines.size(), 5);
+        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5);
     }
 
     /*
@@ -160,13 +160,18 @@ public class LogThrottleTest {
     public void testLogThrottlingActiveFullMessage() throws Exception {
         setUp(defaultServer, "testLogThrottlingActiveFullMessage");
         serverInUse.setServerConfigurationFile(THROTTLING_FULL_MESSAGE_XML);
+        ServerConfiguration serverConfig = serverInUse.getServerConfiguration();
+        Logging loggingObj = serverConfig.getLogging();
+        loggingObj.setThrottleMaxMessagesPerWindow("5");
+        Thread.sleep(5000);
+
         hitWebPage("logger-servlet", "LoggerServlet", false, "numMessages=8");
 
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
         List<String> lines2 = serverInUse.findStringsInLogs("TESTA0002W");
 
-        assertEquals("Configuration updated message wasn't printed the correct number of times.", lines.size(), 5);
-        assertFalse("Configuration updated message wasn't printed the correct number of times.", lines2.size() == lines.size()); //This message shouldn't be getting throttled due to message variation
+        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5);
+        assertFalse("Full message configuration is not functioning correctly.", lines2.size() == lines.size()); //This message shouldn't be getting throttled due to message variation
     }
 
     /*
