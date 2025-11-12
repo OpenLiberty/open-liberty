@@ -19,8 +19,12 @@ public class SessionIdTest {
 
     @Test
     public void testSessionIdToString() {
-        McpSessionId id = new McpSessionId("123456789");
-        assertEquals("123******", id.toString());
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < 36; i++)
+            sb.append(1);
+
+        McpSessionId testMcpSessionId = new McpSessionId(sb.toString());
+        assertEquals("111111" + "*".repeat(30), testMcpSessionId.toString());
     }
 
 }

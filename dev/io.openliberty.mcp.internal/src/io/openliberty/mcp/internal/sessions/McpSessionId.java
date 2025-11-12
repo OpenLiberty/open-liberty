@@ -9,13 +9,16 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.sessions;
 
-public record McpSessionId(String value) {
+import com.ibm.websphere.ras.annotation.Sensitive;
+
+public record McpSessionId(@Sensitive String value) {
 
     @Override
     public String toString() {
-        if (value.length() <= 3)
+        int visibleSessionIdLength = 6;
+        if (value.length() <= visibleSessionIdLength)
             return value;
-        return value.substring(0, 3) + "*".repeat(value.length() - 3);
+        return value.substring(0, visibleSessionIdLength) + "*".repeat(value.length() - visibleSessionIdLength);
     }
 
 }
