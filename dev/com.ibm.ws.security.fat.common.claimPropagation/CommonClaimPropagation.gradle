@@ -38,7 +38,7 @@ dependencies {
                 'rhino:js:1.6R5',
                 project(':com.ibm.ws.org.apache.commons.compress'),
                 project(':com.ibm.ws.com.unboundid'),
-                'com.unboundid:unboundid-ldapsdk:5.1.0'
+                'com.unboundid:unboundid-ldapsdk:7.0.3'
  
   // NOTE: More current js versions have a bug that prevents multiple redirects - this causes
   // a couple of our tests to fail.

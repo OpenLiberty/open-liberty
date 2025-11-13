@@ -1,2 +1,6 @@
 -Dcom.sun.jndi.ldap.object.disableEndpointIdentification=true
 -Djdk.tls.acknowledgeCloseNotify=true
+-Djavax.net.debug=all
+-Dcom.unboundid.ldap.sdk.debug.enabled=true
+-Dcom.unboundid.ldap.sdk.debug.level=all
+-Dcom.unboundid.ldap.sdk.debug.file=ldapSdk.log

@@ -21,7 +21,7 @@ dependencies {
   requiredLibs project(':com.ibm.ws.security.registry'),
     project(':com.ibm.ws.security.registry_test.custom'),
     project(':com.ibm.ws.security.registry_test.servlet'),
-    'com.unboundid:unboundid-ldapsdk:5.1.0',
+    'com.unboundid:unboundid-ldapsdk:7.0.3',
     project(':com.ibm.ws.com.unboundid')
 }
 jar.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'

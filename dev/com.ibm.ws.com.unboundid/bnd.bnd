@@ -21,11 +21,11 @@ Export-Package: \
     com.ibm.ws.com.unboundid; version=1.0.0
 
 Include-Resource: \
-    @\${repo;com.unboundid:unboundid-ldapsdk;5.1.0;EXACT}, \
+    @${repo;com.unboundid:unboundid-ldapsdk;7.0.3;EXACT}, \
     resources=resources
   
 -buildpath: \
-	com.unboundid:unboundid-ldapsdk;version=5.1.0,\
+	com.unboundid:unboundid-ldapsdk;version=7.0.3,\
 	fattest.simplicity;version=latest,\
 	org.apache.commons.io
     

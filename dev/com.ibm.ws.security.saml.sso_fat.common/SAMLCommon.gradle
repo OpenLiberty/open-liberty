@@ -38,7 +38,7 @@ dependencies {
                'rhino:js:1.6R5',
                'xml-apis:xml-apis:1.4.01',
                project(':com.ibm.ws.com.unboundid'),
-               'com.unboundid:unboundid-ldapsdk:5.1.0'
+               'com.unboundid:unboundid-ldapsdk:7.0.3'
 
   /*
    * Previously we had an uber jar named htmlunit-2.20-OSGi.jar. It appears to have contained all of
