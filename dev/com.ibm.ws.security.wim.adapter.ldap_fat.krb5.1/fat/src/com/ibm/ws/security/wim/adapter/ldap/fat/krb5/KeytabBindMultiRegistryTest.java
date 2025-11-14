@@ -56,6 +56,9 @@ public class KeytabBindMultiRegistryTest extends CommonBindTest {
     @Test
     @AllowedFFDC({ "javax.naming.CommunicationException", "javax.security.auth.login.LoginException" })
     public void multiLdapRegistry() throws Exception {
+        if ("PKIX".equalsIgnoreCase(provider)) {
+            return;
+        }
         Log.info(c, testName.getMethodName(), "Run failover tests with two registries and allowOpIfRepoDown=false");
         try {
             ServerConfiguration newServer = emptyConfiguration.clone();
@@ -96,6 +99,9 @@ public class KeytabBindMultiRegistryTest extends CommonBindTest {
     @Test
     @AllowedFFDC({ "javax.naming.CommunicationException", "javax.security.auth.login.LoginException" })
     public void multiLdapRegistryAllowOp() throws Exception {
+        if ("PKIX".equalsIgnoreCase(provider)) {
+            return;
+        }
         Log.info(c, testName.getMethodName(), "Run failover tests with two registries and allowOpIfRepoDown=true");
         try {
             ServerConfiguration newServer = emptyConfiguration.clone();

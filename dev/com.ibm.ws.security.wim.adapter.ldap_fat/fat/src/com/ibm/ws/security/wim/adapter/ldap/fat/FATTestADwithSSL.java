@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.security.Security;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -28,7 +29,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.com.unboundid.InMemoryADLDAPServer;
+import com.ibm.ws.com.unboundid.InMemoryTDSLDAPServer;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
@@ -49,6 +54,7 @@ public class FATTestADwithSSL {
     private static final Class<?> c = FATTestADwithSSL.class;
     private static UserRegistryServletConnection servlet;
     private final LeakedPasswordChecker passwordChecker = new LeakedPasswordChecker(server);
+    private static InMemoryADLDAPServer ldapServer;
 
     /**
      * Updates the sample, which is expected to be at the hard-coded path.
@@ -56,12 +62,29 @@ public class FATTestADwithSSL {
      */
     @BeforeClass
     public static void setUp() throws Exception {
-        LDAPUtils.addLDAPVariables(server);
+        //LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
         server.startServer(c.getName() + ".log");
 
+        String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
+        boolean canUseInMemoryLdap = !"PKIX".equalsIgnoreCase(provider);
+
+        // Add LDAP variables to bootstrap properties file
+        LDAPUtils.addLDAPVariables(server, canUseInMemoryLdap);
+
+        if (canUseInMemoryLdap) {
+            ldapServer = new InMemoryADLDAPServer();
+            // Update LDAP configuration with In-Memory Server
+            ServerConfiguration serverConfig = server.getServerConfiguration();
+            LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
+            ldap.setHost("localhost");
+            ldap.setPort(String.valueOf(ldapServer.getLdapsPort()));
+            ldap.setBindDN(InMemoryTDSLDAPServer.getBindDN());
+            ldap.setBindPassword(InMemoryTDSLDAPServer.getBindPassword());
+            server.updateServerConfiguration(serverConfig);
+        }
         //Make sure the application has come up before proceeding
         assertNotNull("Application userRegistry does not appear to have started.",
                       server.waitForStringInLog("CWWKZ0001I:.*userRegistry"));

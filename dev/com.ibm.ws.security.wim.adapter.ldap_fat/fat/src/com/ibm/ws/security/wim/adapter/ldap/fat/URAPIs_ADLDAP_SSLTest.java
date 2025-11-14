@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.Security;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -95,24 +96,27 @@ public class URAPIs_ADLDAP_SSLTest {
      * @throws Exception If there was an issue setting up the Liberty server.
      */
     private static void setupLibertyServer() throws Exception {
-        /*
-         * Add LDAP variables to bootstrap properties file
-         */
-        LDAPUtils.addLDAPVariables(server);
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
+        String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
+        boolean canUseInMemoryLdap = !"PKIX".equalsIgnoreCase(provider);
 
-        /*
-         * Update LDAP configuration with In-Memory Server
-         */
-        ServerConfiguration serverConfig = server.getServerConfiguration();
-        LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
-        ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapsPort()));
-        ldap.setBindDN(InMemoryADLDAPServer.getBindDN());
-        ldap.setBindPassword(InMemoryADLDAPServer.getBindPassword());
-        server.updateServerConfiguration(serverConfig);
+        // Add LDAP variables to bootstrap properties file
+        LDAPUtils.addLDAPVariables(server, canUseInMemoryLdap);
+
+        if (canUseInMemoryLdap) {
+            /*
+             * Update LDAP configuration with In-Memory Server
+             */
+            ServerConfiguration serverConfig = server.getServerConfiguration();
+            LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
+            ldap.setHost("localhost");
+            ldap.setPort(String.valueOf(ldapServer.getLdapsPort()));
+            ldap.setBindDN(InMemoryADLDAPServer.getBindDN());
+            ldap.setBindPassword(InMemoryADLDAPServer.getBindPassword());
+            server.updateServerConfiguration(serverConfig);
+        }
         /*
          * Make sure the application has come up before proceeding
          */

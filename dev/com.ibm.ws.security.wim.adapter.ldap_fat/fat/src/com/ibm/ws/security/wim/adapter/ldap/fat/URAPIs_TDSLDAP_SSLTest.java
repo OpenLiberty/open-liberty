@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -20,6 +20,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.Security;
 import java.util.List;
 
 import org.junit.AfterClass;
@@ -103,17 +104,22 @@ public class URAPIs_TDSLDAP_SSLTest {
         Log.info(c, "setUp", "Starting the server... (will wait for userRegistry servlet to start)");
         server.copyFileToLibertyInstallRoot("lib/features", "internalfeatures/securitylibertyinternals-1.0.mf");
         server.addInstalledAppForValidation("userRegistry");
+        String provider = Security.getProperty("ssl.KeyManagerFactory.algorithm");
+        boolean canUseInMemoryLdap = !"PKIX".equalsIgnoreCase(provider);
+        LDAPUtils.addLDAPVariables(server, canUseInMemoryLdap);
 
-        /*
-         * Update LDAP configuration with In-Memory Server
-         */
-        ServerConfiguration serverConfig = server.getServerConfiguration();
-        LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
-        ldap.setHost("localhost");
-        ldap.setPort(String.valueOf(ldapServer.getLdapsPort()));
-        ldap.setBindDN(InMemoryTDSLDAPServer.getBindDN());
-        ldap.setBindPassword(InMemoryTDSLDAPServer.getBindPassword());
-        server.updateServerConfiguration(serverConfig);
+        if (canUseInMemoryLdap) {
+            /*
+             * Update LDAP configuration with In-Memory Server
+             */
+            ServerConfiguration serverConfig = server.getServerConfiguration();
+            LdapRegistry ldap = serverConfig.getLdapRegistries().get(0);
+            ldap.setHost("localhost");
+            ldap.setPort(String.valueOf(ldapServer.getLdapsPort()));
+            ldap.setBindDN(InMemoryTDSLDAPServer.getBindDN());
+            ldap.setBindPassword(InMemoryTDSLDAPServer.getBindPassword());
+            server.updateServerConfiguration(serverConfig);
+        }
         /*
          * Make sure the application has come up before proceeding
          */
