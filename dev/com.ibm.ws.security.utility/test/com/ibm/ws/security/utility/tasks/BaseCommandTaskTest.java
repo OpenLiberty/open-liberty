@@ -40,6 +40,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.crypto.util.AesConfigFileParser;
 import com.ibm.ws.crypto.util.UnsupportedConfigurationException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
 import com.ibm.wsspi.security.crypto.PasswordEncryptException;
@@ -465,7 +466,8 @@ public class BaseCommandTaskTest {
     public void validateEncodingProperties() throws Exception {
         Path tempFile = Files.createTempFile("test-keys", ".xml");
 
-        try {
+        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class);) {
+            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
 
             String testKey = "test";
             testEncodingPropertyConversion("--base64Key", PasswordUtil.PROPERTY_AES_KEY, testKey);
