@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.crypto.CryptoUtils;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
@@ -44,6 +45,8 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.SerializableProtectedString;
 
 public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig {
+    // Flag tells us if the message for a call to a beta method has been issued
+    private static boolean issuedBetaMessage = false;
     public static final TraceComponent tc = Tr.register(RsSamlConfigImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
     public static final String KEY_ID = "id";
     public static final Object KEY_PROVIDER_ID = "id";
@@ -320,14 +323,54 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
             // Already log insure algorithm at top of the class
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
         } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            if (!ProductInfo.getBetaEdition()) {
+                throw new UnsupportedOperationException("The samlWebSso20 signatureMethodAlgorithm option, SHA384, is beta and is not available.");
+            } else {
+                if (!issuedBetaMessage) {
+                    Tr.info(tc, "BETA: A beta option has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                    issuedBetaMessage = !issuedBetaMessage;
+                }
+            }
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA384;
         } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            if (!ProductInfo.getBetaEdition()) {
+                throw new UnsupportedOperationException("The samlWebSso20 signatureMethodAlgorithm option, SHA512, is beta and is not available.");
+            } else {
+                if (!issuedBetaMessage) {
+                    Tr.info(tc, "BETA: A beta option has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                    issuedBetaMessage = !issuedBetaMessage;
+                }
+            }
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA512;
         } else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA256.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            if (!ProductInfo.getBetaEdition()) {
+                throw new UnsupportedOperationException("The samlWebSso20 signatureMethodAlgorithm option, SHA256withECDSA, is beta and is not available.");
+            } else {
+                if (!issuedBetaMessage) {
+                    Tr.info(tc, "BETA: A beta option has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                    issuedBetaMessage = !issuedBetaMessage;
+                }
+            }
             return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA256;
         } else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA384.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            if (!ProductInfo.getBetaEdition()) {
+                throw new UnsupportedOperationException("The samlWebSso20 signatureMethodAlgorithm option, SHA384withECDSA, is beta and is not available.");
+            } else {
+                if (!issuedBetaMessage) {
+                    Tr.info(tc, "BETA: A beta option has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                    issuedBetaMessage = !issuedBetaMessage;
+                }
+            }
             return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA384;
         } else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA512.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            if (!ProductInfo.getBetaEdition()) {
+                throw new UnsupportedOperationException("The samlWebSso20 signatureMethodAlgorithm option, SHA512withECDSA, is beta and is not available.");
+            } else {
+                if (!issuedBetaMessage) {
+                    Tr.info(tc, "BETA: A beta option has been invoked for the class " + this.getClass().getName() + " for the first time.");
+                    issuedBetaMessage = !issuedBetaMessage;
+                }
+            }
             return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA512;
         }
         return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;

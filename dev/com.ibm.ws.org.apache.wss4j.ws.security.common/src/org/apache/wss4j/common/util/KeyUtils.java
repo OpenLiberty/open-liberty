@@ -239,7 +239,7 @@ public final class KeyUtils {
         try {
             // Liberty Change Start: set FIPS default
             if (digest == null) {
-                digest = CryptoUtils.isFips140_3Enabled() 
+                digest = CryptoUtils.isFips140_3EnabledWithBetaGuard() 
                     ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) 
                     : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1); // Liberty Change: Backport 4.x
             }

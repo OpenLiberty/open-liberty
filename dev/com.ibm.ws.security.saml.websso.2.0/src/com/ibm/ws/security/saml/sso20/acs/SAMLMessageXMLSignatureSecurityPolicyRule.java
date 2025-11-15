@@ -208,7 +208,7 @@ public class SAMLMessageXMLSignatureSecurityPolicyRule extends BaseSAMLXMLSignat
         @SuppressWarnings("rawtypes")
         String configMethod = ((BasicMessageContext) samlMsgCtx).getSsoConfig().getSignatureMethodAlgorithm();
         String messageMethod = signature.getSignatureAlgorithm();
-        if (CryptoUtils.isFips140_3Enabled() && SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1.equals(messageMethod)) {
+        if (CryptoUtils.isFips140_3EnabledWithBetaGuard() && SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1.equals(messageMethod)) {
             throw new MessageHandlerException("The server is configured with FIPS 140-3 enabled mode, but the received SAML assertion is signed with RSA-SHA1, which is not allowed in FIPS 140-3 mode");
         }
 

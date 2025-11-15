@@ -66,7 +66,7 @@ public final class UsernameTokenUtil {
         MessageDigest sha = null;
         try {
             // Liberty Change Start: FIPS default to SHA256
-            sha = CryptoUtils.isFips140_3Enabled() 
+            sha = CryptoUtils.isFips140_3EnabledWithBetaGuard() 
                 ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256) 
                 : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1);
             // Liberty Change End

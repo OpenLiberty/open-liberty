@@ -325,6 +325,9 @@ public class LTPAKeyRotationTests {
      * <LI>When FIPS is enabled on IBM JDK 8, a backup key file is not created
      * <LI>When FIPS is enabled on Semeru, a backup key file is created and a compatible LTPA key file is generated
      * </OL>
+     * 
+     * TODO: After removal of betaguard reconfigure test as regeneration will occur regardless of FIPS enablement and platform
+     * Beta check in LTPAKeyInfoManager only allows LTPA key backup and regeneration on Semeru FIPS 140-3
      */
     @Test
     @CheckForLeakedPasswords({ validPassword })
@@ -338,30 +341,27 @@ public class LTPAKeyRotationTests {
             // ltpa is ver1 on startup since fips is NOT enabled
             verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "1.0");
 
-            // copy version2 (fips) ltpa to server
             copyFileToServerResourcesSecurityDir(ALT_FIPS_PRIMARY_KEY_PATH);
+            assertNotNull("Error message for LTPA key creation should be found in the log due to missing 3DESKey property",
+                server.waitForStringInLog("CWWKS4102E", 5000));
+
+            // should NOT regenerate ltpa to fips-compatible keys
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".fips");
+
+        } else if (ibmJdk8Fips140_3Enabled) {
+
+            // ltpa is ver1 on startup since fips is NOT enabled
             verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "2.0");
 
-            // should regenerate ltpa to non-fips-compatible keys and backup incompatible key
-            waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
-            assertFileWasCreated(DEFAULT_KEY_PATH + ".fips");
+            copyFileToServerResourcesSecurityDir(ALT_PRIMARY_KEY_PATH);
+            assertNotNull("Error message for LTPA key creation should be found in the log due to missing SharedKey property",
+                server.waitForStringInLog("CWWKS4102E", 5000));
 
-            copyFileToServerResourcesSecurityDir(ALT_FIPS_PRIMARY_KEY_PATH);
-            verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "2.0");
+            // should NOT regenerate ltpa to fips-compatible keys
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".nofips");
 
-            moveLogMark();
-
-            // should regenerate key again
-            waitForLTPAKeysCreatedMessage();
-            waitForLTPAConfigurationReadyMessage();
-
-            // verify version 2 keys was generated
-            assertFileWasCreated(DEFAULT_KEY_PATH);
-            verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "1.0");
-
-        } else {
-
+        } else if (semeruFips140_3Enabled) {
+            
             // ltpa is ver2 on startup since fips is enabled
             verifyLTPAKeyVersion(DEFAULT_KEY_PATH, "2.0");
 

@@ -703,6 +703,9 @@ public class LTPAValidationKeyTests {
      * <LI> non-fips: com.ibm.websphere.ltpa.3DESKey property is missing exception (TODO: Will change after removal of beta-guard in LTPAKeyInfoManager.java)
      * <LI> fips : LTPA primary key with 3DESKey property will be backed up and a FIPS 140-3 compliant key will be created (No error message)
      * </OL>
+     * 
+     * TODO: After removal of betaguard reconfigure test as regeneration will occur regardless of FIPS enablement and platform
+     * Beta check in LTPAKeyInfoManager only allows LTPA key backup and regeneration on Semeru FIPS 140-3
      */
     @Test
     @AllowedFFDC({ "java.lang.IllegalArgumentException" })
@@ -717,17 +720,26 @@ public class LTPAValidationKeyTests {
             copyFileToServerResourcesSecurityDir(ALT_FIPS_VALIDATION_KEY2_PATH, server1);
 
             // Configure the server, and replace the LTPA key with the fips key
-            renameKeyAndWaitForLtpaConfigReady(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, server1);
+            renameKeyAndWaitForMessage(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, server1, "CWWKS4102E");
 
-            // No error message will be seen in the traces
-            assertNull("Error message for LTPA key creation should not be found in the logs", server1.waitForStringInLogUsingMark("CWWKS4102E", 5000));
+            assertNull("Warning message for validation key should not be found in the log when FIPS 140-3 is NOT enabled.",
+                       server1.waitForStringInLogUsingMark("CWWKS4116W", 5000));
 
-            assertNotNull("Expected warning message for validation key not found in the log.",
-                          server1.waitForStringInLogUsingMark("CWWKS4117W", 5000));
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".fips", server1);
+        } else if (ibmJdk8Fips140_3Enabled) {
+            // Copy valid fips primary and validation keys into server 1
+            copyFileToServerResourcesSecurityDir("alternate/validation1.keys", server1);
+            copyFileToServerResourcesSecurityDir("alternate/validation2.keys", server1);
 
-            assertFileWasCreated(DEFAULT_KEY_PATH + ".fips", server1);
-        } else {
+            // Configure the server, and replace the LTPA key with the fips key
+            renameKeyAndWaitForMessage(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, server1, "CWWKS4102E");
 
+            assertNull("Warning message for validation key should not be found in the log when FIPS 140-3 is NOT enabled.",
+                       server1.waitForStringInLogUsingMark("CWWKS4116W", 5000));
+
+            assertFileWasNotCreated(DEFAULT_KEY_PATH + ".nofips", server1);
+
+        } else if (semeruFips140_3Enabled) {
             // Copy valid non fips primary and validation keys into server 1
             // Use the full path as keys we overwrite ALT_VALIDATION_KEY1_PATH to ALT_FIPS_VALIDATION_KEY1_PATH if fips is enabled
             copyFileToServerResourcesSecurityDir("alternate/validation1.keys", server1);

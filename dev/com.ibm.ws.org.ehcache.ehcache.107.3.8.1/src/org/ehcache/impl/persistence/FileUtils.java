@@ -124,7 +124,7 @@ final class FileUtils {
      */
     static String safeIdentifier(String name) {
         // Liberty Change Start: Prevent sha1 toggle from being true when FIPs is enabled
-        if (CryptoUtils.isFips140_3Enabled()) {
+        if (CryptoUtils.isFips140_3EnabledWithBetaGuard()) {
             return safeIdentifier(name, false);
         } else {
             return safeIdentifier(name, true);
@@ -162,7 +162,7 @@ final class FileUtils {
     private static MessageDigest getSha1Digest() {
         try {
             // Liberty Change Start: Use SHA256 Message Digest giinstead of SHA-1 when FIPS 140-3 is enabled.
-            MessageDigest digest = CryptoUtils.isFips140_3Enabled() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1);
+            MessageDigest digest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1);
             // Liberty Change End
             return digest;
         } catch (NoSuchAlgorithmException e) {
