@@ -14,7 +14,6 @@ package com.ibm.ws.security.utility.tasks;
 
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,8 +49,8 @@ public class EncodeTask extends BaseCommandTask {
                                                                 BaseCommandTask.ARG_PASSWORD, BaseCommandTask.ARG_HASH_SALT, BaseCommandTask.ARG_HASH_ITERATION,
                                                                 BaseCommandTask.ARG_HASH_ALGORITHM,
                                                                 BaseCommandTask.ARG_HASH_ENCODED, BaseCommandTask.ARG_KEYRING, BaseCommandTask.ARG_KEYRING_TYPE,
-                                                                BaseCommandTask.ARG_KEY_LABEL, BaseCommandTask.ARG_BASE64_KEY, BaseCommandTask.ARG_AES_CONFIG_FILE);
-    private static final List<String> BETA_ARG_TABLE = new ArrayList<>();
+                                                                BaseCommandTask.ARG_KEY_LABEL);
+    private static final List<String> BETA_ARG_TABLE = Arrays.asList(BaseCommandTask.ARG_BASE64_KEY, BaseCommandTask.ARG_AES_CONFIG_FILE);
     private static final List<String> BETA_OPTS = BETA_ARG_TABLE.stream().map(s -> s.startsWith("--") ? s.substring(2) : s).collect(Collectors.toList());
 
     public EncodeTask(String scriptName) {

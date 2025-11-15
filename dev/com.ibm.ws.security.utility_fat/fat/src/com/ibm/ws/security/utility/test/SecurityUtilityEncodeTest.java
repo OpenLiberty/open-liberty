@@ -265,7 +265,9 @@ public class SecurityUtilityEncodeTest {
         String base64Key = Base64.getEncoder().encodeToString(keyBytes);
         String textToEncode = "secretPassword";
         
-        Properties testEnvironment = new Properties();
+        // Use beta edition flag
+        Properties betaEnv = new Properties();
+        betaEnv.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
 
         ProgramOutput po = machine.execute(
             securityUtilityPath,
@@ -276,7 +278,7 @@ public class SecurityUtilityEncodeTest {
                 textToEncode
             },
             installRoot,
-            testEnvironment);
+            betaEnv);
 
         Log.info(thisClass, name.getMethodName(), "Output for encode with --base64Key: " + po.getStdout()); 
         Log.info(thisClass, name.getMethodName(), "Executed encode with --base64Key: " + po.getCommand());
@@ -305,7 +307,7 @@ public class SecurityUtilityEncodeTest {
                 "--encoding=aes",
                 "--aesConfigFile=" + validKeyFile.getAbsolutePath()
             },
-            testEnvironment);
+            betaEnv);
         printManifestIfRC32(po2);
         assertEquals("securityUtility encode unexpectedly failed with valid AES key.", SUCCESS_RC, po2.getReturnCode());
 
@@ -326,7 +328,8 @@ public void testMutuallyExclusiveKeyOptions_keyAndBase64Key() throws Exception {
     String testBase64Key = "dGVzdA==";
     String testPassword = "secretPassword";
     
-    Properties testEnvironment = new Properties();
+    Properties betaEnv = new Properties();
+    betaEnv.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
     
     ProgramOutput po = machine.execute(
         securityUtilityPath,
@@ -338,7 +341,7 @@ public void testMutuallyExclusiveKeyOptions_keyAndBase64Key() throws Exception {
             testPassword
         },
         installRoot,
-        testEnvironment);
+        betaEnv);
 
     assertEquals("encode with both --key and --base64Key should fail", FAILURE_RC, po.getReturnCode());
 }
@@ -362,7 +365,8 @@ public void testMutuallyExclusiveKeyOptions_keyAndSecureKeyFile() throws Excepti
      catch (Exception e) {
     fail("Cannot write the xml file: " + e.getMessage());
     }
-    Properties testEnvironment = new Properties();
+    Properties betaEnv = new Properties();
+    betaEnv.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
 
     ProgramOutput po = machine.execute(
         securityUtilityPath,
@@ -374,7 +378,7 @@ public void testMutuallyExclusiveKeyOptions_keyAndSecureKeyFile() throws Excepti
             testPassword
         },
         installRoot,
-        testEnvironment);
+        betaEnv);
 
     assertEquals("encode with both --key and --aesConfigFile should fail", FAILURE_RC, po.getReturnCode());
 
@@ -399,7 +403,8 @@ public void testMutuallyExclusiveKeyOptions_base64KeyAndSecureKeyFile() throws E
     catch (Exception e) {
     fail("Cannot write the xml file: " + e.getMessage());
     }
-    Properties testEnvironment = new Properties();
+    Properties betaEnv = new Properties();
+    betaEnv.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
 
     ProgramOutput po = machine.execute(
         securityUtilityPath,
@@ -411,7 +416,7 @@ public void testMutuallyExclusiveKeyOptions_base64KeyAndSecureKeyFile() throws E
             testPassword
         },
         installRoot,
-        testEnvironment);
+        betaEnv);
 
     assertEquals("encode with both --base64Key and --aesConfigFile should fail", FAILURE_RC, po.getReturnCode());
 
@@ -425,7 +430,8 @@ public void testMutuallyExclusiveKeyOptions_base64KeyAndSecureKeyFile() throws E
     @Test
     public void testSecureKeyFileWithBothKeysFails() throws Exception {
 
-        Properties testEnvironment = new Properties();
+        Properties betaEnv = new Properties();
+        betaEnv.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
 
         byte[] keyBytes = new byte[32]; // 256 bits
         new SecureRandom().nextBytes(keyBytes);
@@ -452,7 +458,7 @@ public void testMutuallyExclusiveKeyOptions_base64KeyAndSecureKeyFile() throws E
                 "--encoding=aes",
                 "--aesConfigFile=" + badKeyFile.getAbsolutePath()
             },
-            testEnvironment);
+            betaEnv);
 
         // Log command and output
         Log.info(thisClass, name.getMethodName(), "Executed: " + po.getCommand());
@@ -468,7 +474,8 @@ public void testMutuallyExclusiveKeyOptions_base64KeyAndSecureKeyFile() throws E
      */
     @Test
     public void testEncodeFailsWithInvalidAESKey() throws Exception {
-    Properties testEnvironment = new Properties();
+    Properties betaEnv = new Properties();
+        betaEnv.put("JVM_ARGS", "-Dcom.ibm.ws.beta.edition=true");
         
     // Prepare secureKeyFile with invalid AES key
     File invalidKeyFile = File.createTempFile("invalidAESKey", ".xml");
@@ -489,7 +496,7 @@ public void testMutuallyExclusiveKeyOptions_base64KeyAndSecureKeyFile() throws E
             "--encoding=aes",
             "--aesConfigFile=" + invalidKeyFile.getAbsolutePath()
         },
-        testEnvironment);
+        betaEnv);
 
     assertEquals("securityUtility encode unexpectedly succeeded with invalid AES key.", FAILURE_RC, po.getReturnCode());
 
