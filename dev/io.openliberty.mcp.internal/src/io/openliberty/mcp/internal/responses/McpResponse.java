@@ -12,7 +12,7 @@ package io.openliberty.mcp.internal.responses;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.internal.requests.McpRequestId;
+import io.openliberty.mcp.request.RequestId;
 import jakarta.json.bind.annotation.JsonbNillable;
 
 /**
@@ -21,10 +21,10 @@ import jakarta.json.bind.annotation.JsonbNillable;
 @JsonbNillable
 public abstract class McpResponse {
     private String jsonrpc;
-    private McpRequestId id;
+    private RequestId id;
     private static final TraceComponent tc = Tr.register(McpResponse.class);
 
-    public McpResponse(String jsonrpc, McpRequestId id) {
+    public McpResponse(String jsonrpc, RequestId id) {
         if (jsonrpc == null || !jsonrpc.equals("2.0"))
             throw new IllegalArgumentException(Tr.formatMessage(tc, "jsonrpc field must be present. Only JSONRPC 2.0 is currently supported\"", jsonrpc));
         if (id == null)
@@ -38,7 +38,7 @@ public abstract class McpResponse {
         return jsonrpc;
     }
 
-    public McpRequestId getId() {
+    public RequestId getId() {
         return id;
     }
 }

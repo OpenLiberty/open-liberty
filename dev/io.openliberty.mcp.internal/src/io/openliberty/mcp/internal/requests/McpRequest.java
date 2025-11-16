@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.MCPRequestValidationException;
+import io.openliberty.mcp.request.RequestId;
 import jakarta.json.Json;
 import jakarta.json.JsonException;
 import jakarta.json.JsonNumber;
@@ -26,6 +27,11 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.annotation.JsonbCreator;
+import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.json.bind.annotation.JsonbTypeDeserializer;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
 
 /**
  * A JSON-RPC 2.0 request or notification.
@@ -37,12 +43,50 @@ import jakarta.json.bind.Jsonb;
  * @param method the method name
  * @param params the method parameters parsed as JSON
  */
-public record McpRequest(String jsonrpc,
-                         McpRequestId id,
-                         String method,
-                         JsonObject params) {
+public class McpRequest {
 
     private static final TraceComponent tc = Tr.register(McpRequest.class);
+
+    private String jsonrpc;
+
+    @JsonbTypeSerializer(McpRequestIdSerializer.class)
+    @JsonbTypeDeserializer(McpRequestIdDeserializer.class)
+    private RequestId id;
+
+    private String method;
+
+    @JsonbProperty("params")
+    private JsonObject params;
+
+    @JsonbCreator
+    public McpRequest(@JsonbProperty("jsonrpc") String jsonrpc,
+                      @JsonbProperty("id") RequestId id,
+                      @JsonbProperty("method") String method,
+                      @JsonbProperty("params") JsonObject params) {
+        this.jsonrpc = jsonrpc;
+        this.id = id;
+        this.method = method;
+        this.params = params;
+    }
+
+    @JsonbProperty("id")
+    @JsonbTypeSerializer(McpRequestIdSerializer.class)
+    @JsonbTypeDeserializer(McpRequestIdDeserializer.class)
+    public RequestId getId() {
+        return id;
+    }
+
+    public String getJsonrpc() {
+        return jsonrpc;
+    }
+
+    public String getMethod() {
+        return method;
+    }
+
+    public JsonObject getParams() {
+        return params;
+    }
 
     /**
      * Gets the request method as a {@link RequestMethod}.
@@ -50,6 +94,7 @@ public record McpRequest(String jsonrpc,
      * @return the matching {@link RequestMethod} enum value
      * @throws JSONRPCException if the method does not map to a {@code RequestMethod} value
      */
+    @JsonbTransient
     public RequestMethod getRequestMethod() {
         return RequestMethod.getForMethodName(this.method);
     }
@@ -99,7 +144,7 @@ public record McpRequest(String jsonrpc,
             return createMCPNotificationRequest(jsonRpc, method, params);
         }
 
-        McpRequestId idObj = parseAndValidateId(id, errors);
+        RequestId idObj = parseAndValidateId(id, errors);
 
         if (!errors.isEmpty()) {
             throw new MCPRequestValidationException(errors);
@@ -125,16 +170,16 @@ public record McpRequest(String jsonrpc,
         }
     }
 
-    private static McpRequestId parseAndValidateId(JsonValue id, List<String> errors) {
+    private static RequestId parseAndValidateId(JsonValue id, List<String> errors) {
         return switch (id.getValueType()) {
-            case NUMBER -> new McpRequestId(((JsonNumber) id).bigDecimalValue());
+            case NUMBER -> new RequestId(((JsonNumber) id).bigDecimalValue());
             case STRING -> {
                 String idString = ((JsonString) id).getString();
                 if (idString.isBlank()) {
                     errors.add(Tr.formatMessage(tc, "jsonrpc.exception.validation.empty.string.id", idString));
                     yield null;
                 }
-                yield new McpRequestId(idString);
+                yield new RequestId(idString);
             }
             default -> {
                 errors.add(Tr.formatMessage(tc, "jsonrpc.exception.validation.invalid.id.type"));

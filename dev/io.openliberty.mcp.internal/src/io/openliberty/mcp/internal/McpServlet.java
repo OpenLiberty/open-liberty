@@ -35,11 +35,13 @@ import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
-import io.openliberty.mcp.internal.requests.McpRequestId;
+import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
+import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 import io.openliberty.mcp.messaging.Cancellation;
+import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -47,6 +49,7 @@ import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
@@ -76,7 +79,10 @@ public class McpServlet extends HttpServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         super.init(config);
-        jsonb = JsonbBuilder.create();
+        JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
+                                                   .withDeserializers(new McpRequestIdDeserializer());
+
+        jsonb = JsonbBuilder.create(jsonbConfig);
     }
 
     @Override
@@ -445,7 +451,7 @@ public class McpServlet extends HttpServlet {
 
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
-        McpRequestId mcpReqId = notificationParams.getRequestId();
+        RequestId mcpReqId = notificationParams.getRequestId();
         String sessionId = transport.getSessionId();
         if (sessionId == null) {
             transport.sendEmptyResponse();
@@ -472,7 +478,7 @@ public class McpServlet extends HttpServlet {
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
         String sessionId = transport.getSessionId();
         if (sessionId != null) {
-            return new ExecutionRequestId(transport.getMcpRequest().id(),
+            return new ExecutionRequestId(transport.getMcpRequest().getId(),
                                           sessionId);
         } else {
             return null;

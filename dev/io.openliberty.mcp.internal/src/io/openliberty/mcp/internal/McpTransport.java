@@ -28,10 +28,10 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.McpRequest;
-import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
 import io.openliberty.mcp.internal.responses.McpResponse;
 import io.openliberty.mcp.internal.responses.McpResultResponse;
+import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
@@ -208,7 +208,7 @@ public class McpTransport {
      * @throws IOException
      */
     public void sendResponse(Object result) {
-        McpResponse mcpResponse = new McpResultResponse(mcpRequest.id(), result);
+        McpResponse mcpResponse = new McpResultResponse(mcpRequest.getId(), result);
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
@@ -242,7 +242,7 @@ public class McpTransport {
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? new McpRequestId("") : mcpRequest.id(), e);
+        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? new RequestId("") : mcpRequest.getId(), e);
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
