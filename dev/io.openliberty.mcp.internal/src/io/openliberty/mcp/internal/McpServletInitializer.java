@@ -18,6 +18,7 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.http.VirtualHost;
 
 import jakarta.servlet.FilterRegistration;
@@ -39,18 +40,23 @@ public class McpServletInitializer implements ServletContainerInitializer {
     private String mcpEndpoint = "/mcp"; // TODO: make configurable
 
     @Override
-    public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException {
-        if (ToolRegistry.get().hasTools()) {
-            Dynamic reg = context.addServlet("io.openliberty.mcp.servlet", McpServlet.class);
-            reg.addMapping(mcpEndpoint);
-            reg.setAsyncSupported(true);
+    @FFDCIgnore(IllegalStateException.class)
+    public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException, IllegalStateException {
+        try {
+            if (ToolRegistry.get().hasTools()) {
+                Dynamic reg = context.addServlet("io.openliberty.mcp.servlet", McpServlet.class);
+                reg.addMapping(mcpEndpoint);
+                reg.setAsyncSupported(true);
 
-            FilterRegistration.Dynamic filterReg = context.addFilter("io.openliberty.mcp.servlet.filter", McpForwardFilter.class);
-            filterReg.addMappingForUrlPatterns(null, false, "/mcp/");
-            filterReg.setAsyncSupported(true);
+                FilterRegistration.Dynamic filterReg = context.addFilter("io.openliberty.mcp.servlet.filter", McpForwardFilter.class);
+                filterReg.addMappingForUrlPatterns(null, false, "/mcp/");
+                filterReg.setAsyncSupported(true);
 
-            String fullMcpUrl = virtualHost.getUrlString(context.getContextPath() + mcpEndpoint, false);
-            Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
+                String fullMcpUrl = virtualHost.getUrlString(context.getContextPath() + mcpEndpoint, false);
+                Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
+            }
+        } catch (IllegalStateException e) {
+            Tr.warning(tc, "CWMCM0017W.cdi.inactive.warning"); // called if ToolRegistry.get() has an issue with CDI
         }
     }
 

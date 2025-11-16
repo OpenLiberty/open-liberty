@@ -10,13 +10,17 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -33,6 +37,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
@@ -3023,6 +3028,33 @@ public class ToolTest extends FATServletClient {
         String duplicateResponse = client.callMCP(requestTemplate);
 
         JSONAssert.assertEquals(expectedResponseString, duplicateResponse, true);
+    }
+
+    @Test
+    @Mode(FULL)
+    public void testSessionIdNotTraced() throws Exception {
+        String sessionId = client.getSessionId();
+        int visibleSessionIdLength = 6;
+        String redactedSessionId = sessionId.substring(0, visibleSessionIdLength) + "*".repeat(sessionId.length() - visibleSessionIdLength);
+
+        assertNotNull("Expected session ID from MCP initialization", sessionId);
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "textContentTool",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+        client.callMCP(request);
+
+        assertNotNull(server.waitForStringInTrace(Pattern.quote(redactedSessionId)));
+        assertNull(server.waitForStringInTrace(sessionId, 3000)); // wait 3 seconds to confirm full session Id not found in trace
     }
 
     @Test

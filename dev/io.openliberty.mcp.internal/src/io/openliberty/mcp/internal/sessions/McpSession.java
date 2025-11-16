@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal;
+package io.openliberty.mcp.internal.sessions;
 
 import java.time.Instant;
 
@@ -17,12 +17,12 @@ import java.time.Instant;
 
 public class McpSession {
 
-    private final String sessionId;
+    private final McpSessionId sessionId;
     private final Instant created;
     private Instant lastAccessed;
 
     public McpSession(String sessionId) {
-        this.sessionId = sessionId;
+        this.sessionId = new McpSessionId(sessionId);
         this.created = Instant.now();
         this.lastAccessed = this.created;
     }
@@ -35,7 +35,7 @@ public class McpSession {
         this.lastAccessed = Instant.now();
     }
 
-    public String getSessionId() {
+    public McpSessionId getSessionId() {
         return sessionId;
     }
 
