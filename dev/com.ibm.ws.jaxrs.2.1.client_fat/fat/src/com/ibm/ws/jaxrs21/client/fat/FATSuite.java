@@ -39,9 +39,9 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({ AlwaysPassesTest.class,
                 JAXRS21ClientCallbackTest.class,
-                // JAXRS21ClientCompletionStageRxInvokerTest.class,  //commented out temporarily - see issue #33408
-                // JAXRS21ClientCXFRxInvokerTest.class,              //commented out temporarily - see issue #33408
-                // JAXRS21ClientJerseyRxInvokerTest.class,           //commented out temporarily - see issue #33408
+                JAXRS21ClientCompletionStageRxInvokerTest.class,  
+                JAXRS21ClientCXFRxInvokerTest.class,             
+                JAXRS21ClientJerseyRxInvokerTest.class,           
                 JAXRS21ClientLTPATest.class,
                 JAXRS21ClientSSLProxyAuthTest.class,
                 JAXRS21ClientSSLTest.class,
