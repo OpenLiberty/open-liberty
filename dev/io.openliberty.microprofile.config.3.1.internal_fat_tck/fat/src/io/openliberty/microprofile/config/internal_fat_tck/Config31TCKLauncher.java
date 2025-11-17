@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 import io.openliberty.microprofile.config.fat.repeat.ConfigRepeatActions;
 
 /**
@@ -61,8 +62,9 @@ public class Config31TCKLauncher {
     @Test
     @AllowedFFDC // The tested deployment exceptions cause FFDC so we have to allow for this.
     public void launchConfig31Tck() throws Exception {
-        TCKRunner.build(server, Type.MICROPROFILE, "Config")
+        TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.CONFIG)
                         .withDefaultSuiteFileName()
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                         .runTCK();
     }
 }

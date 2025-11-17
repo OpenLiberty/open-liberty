@@ -344,3 +344,8 @@ PROVIDER_FATAL_CWWJP9993E.explanation=Dostawca interfejsu API Java Persistence (
 PROVIDER_FATAL_CWWJP9993E.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy JPA.
 
 #-------------------------------------------------------------------------------
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W=CWWJP9994W: Serwer nie mo\u017ce utworzy\u0107 fasoli dla {0} PersistenceUnit, poniewa\u017c: {1}.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.explanation=Wyst\u0105pi\u0142 wyj\u0105tek, gdy CDI pr\u00f3bowa\u0142o utworzy\u0107 fasol\u0119 dla jednostki trwa\u0142o\u015bci. CDI nie mo\u017ce wstrzykn\u0105\u0107 mened\u017cera encji, fabryki mened\u017cera encji ani klas narz\u0119dziowych zwi\u0105zanych z t\u0105 jednostk\u0105 trwa\u0142o\u015bci.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.useraction=Rozwi\u0105zanie wyj\u0105tku.
+
+#-------------------------------------------------------------------------------

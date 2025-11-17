@@ -222,10 +222,10 @@
         </dependency>        
         <dependency>
             <groupId>io.openliberty</groupId>
-            <artifactId>io.openliberty.org.jboss.logging35</artifactId>
+            <artifactId>io.openliberty.org.jboss.logging36</artifactId>
             <version>1</version>
             <scope>system</scope>
-            <systemPath>${io.openliberty.org.jboss.logging35_}</systemPath>
+            <systemPath>${io.openliberty.org.jboss.logging36_}</systemPath>
         </dependency>        
         <dependency>
             <groupId>io.openliberty</groupId>

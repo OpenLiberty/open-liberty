@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -436,6 +436,10 @@ warning.tooManySymbolicLinks=CWWKE0096W: Sono stati rilevati troppi collegamenti
 warning.tooManySymbolicLinks.explanation=I collegamenti simbolici sono collegamenti che puntano ad altri file o directory. Questo errore si verifica quando il sistema rileva troppi collegamenti simbolici in una catena e non \u00e8 in grado di risolvere il percorso.
 warning.tooManySymbolicLinks.useraction=Per risolvere questo problema, controllare i link simbolici nel percorso e assicurarsi che non creino riferimenti circolari. \u00c8 inoltre possibile utilizzare il comando 'readlink' per esaminare singoli collegamenti nella catena.
 
+warning.javaHomeNotSet=CWWKE0097W: La variabile d'ambiente JAVA_HOME non \u00e8 impostata.
+warning.javaHomeNotSet.explanation=Lo script del server non \u00e8 in grado di determinare la posizione dell'installazione di Java. Questo problema non si verifica se la variabile d'ambiente JAVA_HOME \u00e8 impostata correttamente o se l'eseguibile "java", trovato cercando nel PATH, si trova in un'installazione Java completa. Il percorso di installazione di Java \u00e8 necessario per trovare i file di configurazione specifici della versione, come java9.options. Se l'installazione di Java non viene trovata, questi file non vengono caricati e le applicazioni che si basano su di essi potrebbero non comportarsi come previsto.
+warning.javaHomeNotSet.useraction=Impostare la variabile d'ambiente JAVA_HOME.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Impossibile utilizzare l''opzione --include={0}; verr\u00e0 invece utilizzata --include=wlp.
 warn.packageRuntime.include.unknownOption.explanation=L'opzione \u00e8 stata ignorata perch\u00e9 non \u00e8 stata riconosciuta.
 warn.packageRuntime.include.unknownOption.useraction=Ripetere il comando utilizzando opzioni valide. Provare ad utilizzare --help per un elenco delle opzioni valide.
@@ -865,3 +869,7 @@ info.list.of.defined.servers=I seguenti server sono definiti in relazione alla d
 info.communicate.server=Si \u00e8 verificato un errore di comunicazione tra il comando {0} e il server {1}.
 
 info.serialFilterLoaded=Agent filtro seriale caricato.
+
+# {0} The full path to a configured logs directory.
+# Displayed when creating a server dump, if an alternate server logs directory has been configured.
+info.dump.server.alt.logs=Rilevata la directory dei log del server configurata all''indirizzo {0}.

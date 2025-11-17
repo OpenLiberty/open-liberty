@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -145,9 +145,6 @@ public class GenericTCPChain extends GenericChain {
 
                 serverBootstrap = nettyBundle.createTCPBootstrap(options);
                 serverBootstrap.childHandler(new SipTCPInitializer(serverBootstrap.getBaseInitializer()));
-                if (isTLS) {
-                    context = GenericEndpointImpl.getTlsProvider().getInboundSSLContext(this.currentConfig.sslOptions, ep.getHost(), Integer.toString(ep.getPort()));
-                }
                 nettyBundle.start(serverBootstrap, ep.getHost(), ep.getPort(), future -> {
                     if (future.isSuccess()) {
                         if (c_logger.isTraceDebugEnabled()) {
@@ -183,8 +180,9 @@ public class GenericTCPChain extends GenericChain {
             parent.init(ch);
             ChannelPipeline pipeline = ch.pipeline();
             if (isTLS) {
-                SSLEngine engine = context.newEngine(ch.alloc());
-                pipeline.addFirst("ssl", new SslHandler(engine, false));
+                EndPointInfo ep = nettyBundle.getEndpointManager().getEndPoint(getEndpointName());
+                SslHandler handler = GenericEndpointImpl.getTlsProvider().getInboundSSLContext(currentConfig.sslOptions, ep.getHost(), Integer.toString(ep.getPort()), ch);
+                pipeline.addFirst("ssl", handler);
             }
             pipeline.addLast("decoder", new SipMessageBufferStreamDecoder());
             pipeline.addLast("handler", new SipStreamHandler());

@@ -23,4 +23,4 @@ Import-Package: !sun.misc,*
 Dynamic-Import: sun.misc
 
 Include-Resource: \
-  @${repo;org.jboss.classfilewriter:jboss-classfilewriter;1.2.5.Final;EXACT}!/!META-INF/maven/*
+  @\${repo;org.jboss.classfilewriter:jboss-classfilewriter;1.2.5.Final;EXACT}!/!META-INF/maven/*

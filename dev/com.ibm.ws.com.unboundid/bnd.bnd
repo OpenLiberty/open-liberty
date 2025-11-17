@@ -18,14 +18,15 @@ test.project: true
 generate.replacement: true
 
 Export-Package: \
-    com.ibm.ws.com.unboundid; version=1.0.0
+    com.ibm.ws.com.unboundid;version=1.0.0, \
+    com.unboundid.util.ssl;version="7.0.3"
 
 Include-Resource: \
-    @${repo;com.unboundid:unboundid-ldapsdk;5.1.0;EXACT}, \
+    @${repo;com.unboundid:unboundid-ldapsdk;7.0.3;EXACT}!/!(com/unboundid/util/ssl/WrapperKeyManager.class), \
     resources=resources
-  
+
 -buildpath: \
-	com.unboundid:unboundid-ldapsdk;version=5.1.0,\
-	fattest.simplicity;version=latest,\
-	org.apache.commons.io
+    com.unboundid:unboundid-ldapsdk;version=7.0.3, \
+    fattest.simplicity;version=latest, \
+    org.apache.commons.io
     

@@ -56,7 +56,8 @@ instrument.disabled: true
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.kernel.boot.logging;version=latest,\
 	com.ibm.ws.kernel.boot.cmdline;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+  com.ibm.ws.kernel.service;version=latest
 
 -dependson: \
 	com.ibm.ws.logging.hpel.binarylogviewer, \

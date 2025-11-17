@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -49,6 +49,7 @@ public final class SpringConstants {
     public static final String XMI_VIRTUAL_HOST_END = "\">\n" +
                                                       "</webappbnd:WebAppBinding>";
     public static final String APP_ARGS = "applicationArgument";
+    public static final String APP_SET_EE_CONTEXT_ON_STARTUP = "setEEContextOnStartup";
 
     public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";
     public static final String ID_HTTP_ENDPOINT = "springBootHttpEndpoint-";

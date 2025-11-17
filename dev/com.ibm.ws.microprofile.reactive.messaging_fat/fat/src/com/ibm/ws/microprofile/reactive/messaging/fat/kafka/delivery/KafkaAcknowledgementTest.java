@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.ConnectorProperties;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.common.KafkaTestConstants;
 import com.ibm.ws.microprofile.reactive.messaging.fat.kafka.framework.AbstractKafkaTestServlet;
-import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 import com.ibm.ws.microprofile.reactive.messaging.fat.repeats.ReactiveMessagingActions;
+import com.ibm.ws.microprofile.reactive.messaging.fat.suite.PlaintextTests;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -54,10 +54,10 @@ public class KafkaAcknowledgementTest {
         PropertiesAsset appConfig = new PropertiesAsset()
                         .addProperty(AbstractKafkaTestServlet.KAFKA_BOOTSTRAP_PROPERTY, PlaintextTests.kafkaContainer.getBootstrapServers())
                         .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), KafkaReceptionBean.CHANNEL_NAME,
-                                                                           KafkaAcknowledgementTestServlet.APP_GROUPID))
+                                                                           KafkaReceptionBean.GROUP_ID))
                         .include(ConnectorProperties.simpleOutgoingChannel(PlaintextTests.connectionProperties(), KafkaDeliveryBean.CHANNEL_NAME))
                         .include(ConnectorProperties.simpleIncomingChannel(PlaintextTests.connectionProperties(), KafkaPostProcessReceptionBean.POST_PROCESS_CHANNEL,
-                                                                           KafkaAcknowledgementTestServlet.APP_GROUPID));
+                                                                           KafkaPostProcessReceptionBean.GROUP_ID));
 
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibraries(kafkaClientLibs())

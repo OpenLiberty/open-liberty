@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,23 +11,16 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-task copyTestApps (dependsOn: [':com.ibm.ws.wsat.migration_fat.1:autoFVT']) {
-  doLast {
-    copy {
-      from project(':com.ibm.ws.wsat.migration_fat.1').autoFvtDir
-      into autoFvtDir
-      include 'test-applications/**'
-    }
-  }
+task copyTestApps (type:Copy) {
+  dependsOn ':com.ibm.ws.wsat.migration_fat.1:autoFVT'
+  from project(':com.ibm.ws.wsat.migration_fat.1').autoFvtDir
+  into autoFvtDir
+  include 'test-applications/**'
 }
 
-task copyCommonFiles {
-  doLast {
-    copy {
-      from project(':com.ibm.ws.wsat.migration_fat.1').file('publish')
-      into new File('publish')
-    }
-  }
+task copyCommonFiles(type:Copy) {
+  from project(':com.ibm.ws.wsat.migration_fat.1').file('publish')
+  into 'publish'
 }
 
 clean.doLast {

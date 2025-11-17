@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=\uc2e4\ud328\uc758 \uc6d0\uc778\uc744 \uc21
 CWWKC1103.skip.run.failed=CWWKC1103E: Trigger.skipRun \uc624\ud37c\ub808\uc774\uc158\uc774 {2} \uc624\ub958\uc640 \ud568\uaed8 \uc2e4\ud328\ud588\uae30 \ub54c\ubb38\uc5d0 executor \uc11c\ube44\uc2a4 {1}\uc5d0 \uc81c\ucd9c\ud55c {0} \ud0dc\uc2a4\ud06c\uc758 \uc2e4\ud589\uc744 \uac74\ub108\ub6f0\uc5c8\uc2b5\ub2c8\ub2e4.
 CWWKC1103.skip.run.failed.explanation=Trigger\uc758 skipRun \uc624\ud37c\ub808\uc774\uc158\uc774 \uc2e4\ud328\ud588\uc73c\ubbc0\ub85c \ud0dc\uc2a4\ud06c\uc758 \ud604\uc7ac \uc2e4\ud589 \uc2dc\ub3c4\ub97c \uac74\ub108\ub6f0\uc5c8\uc2b5\ub2c8\ub2e4.
 CWWKC1103.skip.run.failed.useraction=\uc2e4\ud328\uc758 \uc6d0\uc778\uc744 \uc218\uc815\ud558\uace0, \ud0dc\uc2a4\ud06c\ub97c \ub2e4\uc2dc \uc81c\ucd9c\ud560\uc9c0 \uc5ec\ubd80\ub97c \uacb0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+CWWKC1108.override.virtual=CWWKC1108I: Liberty \uc11c\ubc84\uc5d0 \uc758\ud55c \uac00\uc0c1 \uc2a4\ub808\ub4dc \uc0dd\uc131\uc774 \ube44\ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c {0} \uad00\ub9ac\ud615 \uc2a4\ub808\ub4dc \ud329\ud1a0\ub9ac\uc5d0\uc11c \ud50c\ub7ab\ud3fc \uc2a4\ub808\ub4dc\ub97c \uc0dd\uc131\ud569\ub2c8\ub2e4.
+CWWKC1108.override.virtual.explanation=ThreadTypeOverride SPI\ub294 Liberty \uc11c\ubc84\uc5d0 \uc758\ud55c \uac00\uc0c1 \uc2a4\ub808\ub4dc \uc0dd\uc131\uc744 \ube44\ud65c\uc131\ud654\ud588\uc2b5\ub2c8\ub2e4.
+CWWKC1108.override.virtual.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
 CWWKC1110.task.canceled=CWWKC1110I: {1} \uc2e4\ud589\uc790 \uc11c\ube44\uc2a4\uc5d0 \uc81c\ucd9c\ub41c {0} \uc791\uc5c5\uc774 \ucde8\uc18c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 CWWKC1110.task.canceled.explanation=\uc791\uc5c5\uc774 \ucde8\uc18c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.

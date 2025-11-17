@@ -48,7 +48,7 @@ public interface ExtensionFactory
 	 * 			this factory will handle.
 	 * 
 	 * This method will be called by the webcontainer while setting up its internal URL
-	 * routing datastructures. Patters supplied in this list should be in accord with the 
+	 * routing data structures. Patterns supplied in this list should be in accord with the 
 	 * allowable patterns specified in the Java Servlet Specification (under URL patterns).
 	 */
 	@SuppressWarnings("unchecked")

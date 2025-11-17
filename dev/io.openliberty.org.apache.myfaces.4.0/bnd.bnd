@@ -27,9 +27,9 @@ instrument.classesExcludes: \
   org/**/*.class
 
 Include-Resource: \
-  @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
-  @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
-  @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
+  @\${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
+  @\${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
+  @\${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
 
 Service-Component: \
@@ -136,4 +136,5 @@ Import-Package: \
   com.ibm.websphere.org.osgi.service.component;version=latest,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
+  com.ibm.ws.kernel.service;version=latest, \
   io.openliberty.jakarta.annotation.2.1;version=latest

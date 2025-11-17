@@ -22,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Assert;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
@@ -33,6 +34,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -42,6 +44,7 @@ import componenttest.topology.impl.LibertyServer;
 public class OpenAPITestUtil {
 
     private final static int TIMEOUT = 30000;
+    private final static Class<OpenAPITestUtil> c = OpenAPITestUtil.class;
 
     /**
      * Change Liberty features (Mark is set first on log. Then wait for feature updated message using mark)
@@ -239,7 +242,14 @@ public class OpenAPITestUtil {
 
     public static void checkServer(JsonNode root,
                                    String... expectedUrls) {
+
+        String m = "checkServer";
+        Log.entering(c, m, ArrayUtils.insert(0, expectedUrls, root.toPrettyString()));
+
         JsonNode serversNode = root.get("servers");
+
+        Log.info(c, m, "Checking for " + String.join(", ", expectedUrls) + " in JSON: " + serversNode.toPrettyString());
+
         assertNotNull(serversNode);
         assertTrue(serversNode.isArray());
         ArrayNode servers = (ArrayNode) serversNode;
@@ -253,10 +263,16 @@ public class OpenAPITestUtil {
     public static void checkPaths(JsonNode root,
                                   int expectedCount,
                                   String... containedPaths) {
+
+        String m = "checkPaths";
+        Log.entering(c, m, ArrayUtils.insert(0, containedPaths, root.toPrettyString(), "" + expectedCount));
+
         JsonNode pathsNode = root.get("paths");
         assertNotNull(pathsNode);
         assertTrue(pathsNode.isObject());
         ObjectNode paths = (ObjectNode) pathsNode;
+
+        Log.info(c, m, "Checking for " + String.join(", ", containedPaths) + " in JSON: " + paths.toPrettyString());
 
         assertEquals("FAIL: Found incorrect number of server objects.", expectedCount, paths.size());
         List<String> expected = Arrays.asList(containedPaths);
@@ -268,7 +284,17 @@ public class OpenAPITestUtil {
     public static void checkInfo(JsonNode root,
                                  String defaultTitle,
                                  String defaultVersion) {
+
+        String m = "checkInfo";
+        Log.entering(c, m, new String[] {
+            root.toPrettyString(), defaultTitle, defaultVersion
+        });
+
         JsonNode infoNode = root.get("info");
+
+        Log.info(c, m,
+            "Checking for " + defaultTitle + " and " + defaultVersion + " in JSON: " + infoNode.toPrettyString());
+
         assertNotNull(infoNode);
 
         assertNotNull("Title is not specified to the default value", infoNode.get("title"));
@@ -285,7 +311,18 @@ public class OpenAPITestUtil {
                                  String expectedTitle,
                                  String expectedVersion,
                                  String expectedDescription) {
+
+        String m = "checkInfo";
+        Log.entering(c, m, new String[] {
+            root.toPrettyString(), expectedTitle, expectedVersion, expectedDescription
+        });
+
         JsonNode infoNode = root.get("info");
+
+        Log.info(c, m,
+            "Checking for " + expectedTitle + ", " + expectedVersion + " and " + expectedDescription + " in JSON: "
+                + infoNode.toPrettyString());
+
         assertNotNull(infoNode);
 
         assertNotNull("Title is not specified", infoNode.get("title"));

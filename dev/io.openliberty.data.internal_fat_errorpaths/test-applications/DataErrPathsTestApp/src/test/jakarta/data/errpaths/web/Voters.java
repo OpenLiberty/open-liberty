@@ -16,6 +16,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -212,6 +213,11 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     List<Voter> findByAddressContainsOrderByAsc(String addressSubstring);
 
     /**
+     * This invalid method attempts to combine the IgnoreCase and In keywords.
+     */
+    List<Voter> findByAddressIgnoreCaseIn(Set<String> addresses);
+
+    /**
      * This invalid method has a conflict between its OrderBy annotation and
      * method name keyword.
      */
@@ -313,6 +319,14 @@ public interface Voters extends BasicRepository<Voter, Integer> {
      */
     @Query("SELECT v.ssn FROM Voter v WHERE v.ssn >= ?1 AND v.ssn <= ?2")
     long findSSNAsLongBetween(long min, long max);
+
+    /**
+     * This invalid method includes GROUP BY in a query that is used for
+     * cursor-based pagination.
+     */
+    @Query("FROM Voter v GROUP BY v.address")
+    @OrderBy("ssn")
+    CursoredPage<Voter> groupedByAddress(PageRequest pageReq);
 
     /**
      * This invalid method defines an ordering for results of a delete operation
@@ -568,6 +582,19 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     Voter storeInDatabase(Voter voter, PageRequest pageReq);
 
     /**
+     * This invalid method includes UNION in a query that is used for
+     * cursor-based pagination.
+     */
+    @Query("""
+                    SELECT v1 FROM Voter v1 WHERE v1.address = ?1
+                     UNION
+                    SELECT v2 FROM Voter v2 WHERE v2.address = ?2""")
+    @OrderBy("ssn")
+    CursoredPage<Voter> unionOfAddresses(String address1,
+                                         String address2,
+                                         PageRequest pageReq);
+
+    /**
      * This invalid method has a query that requires a single positional parameter,
      * but the method supplies 3 parameters.
      */
@@ -581,6 +608,32 @@ public interface Voters extends BasicRepository<Voter, Integer> {
      */
     @Query("WHERE LENGTH(address) < ?1 ORDER BY ssn ASC")
     List<Voter> withAddressShorterThan(@Param("maxLength") int maxAddressLength);
+
+    /**
+     * This invalid method includes INTERSECT in a query that is used for
+     * cursor-based pagination.
+     */
+    @Query("""
+                    SELECT v FROM Voter v WHERE v.name = ?1
+                     INTERSECT
+                    SELECT v FROM Voter v WHERE v.address = ?2""")
+    @OrderBy("ssn")
+    CursoredPage<Voter> withNameAndAddress(String name,
+                                           String address,
+                                           PageRequest pageReq);
+
+    /**
+     * This invalid method includes EXCEPT in a query that is used for
+     * cursor-based pagination.
+     */
+    @Query("""
+                    SELECT this FROM Voter WHERE name = ?1
+                     EXCEPT
+                    SELECT this FROM Voter WHERE address = ?2""")
+    @OrderBy("ssn")
+    CursoredPage<Voter> withNameNotAddress(String name,
+                                           String address,
+                                           PageRequest pageReq);
 
     /**
      * This invalid method places the Limit special parameter ahead of

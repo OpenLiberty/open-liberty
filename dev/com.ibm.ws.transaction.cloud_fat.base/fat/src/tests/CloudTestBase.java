@@ -12,10 +12,13 @@
  *******************************************************************************/
 package tests;
 
+import java.util.HashSet;
 import java.util.List;
 
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.log.Log;
@@ -43,6 +46,7 @@ public class CloudTestBase extends TxFATServletClient {
         TxTestContainerSuite.dropTables(testRecoveryTables);
     }
 
+    protected static HashSet<String> serversUsed = null;
     protected List<LibertyServer> serversToCleanup;
     protected String[] toleratedMsgs = new String[] { ".*" };
 
@@ -52,6 +56,9 @@ public class CloudTestBase extends TxFATServletClient {
             // If any servers have been added to the serversToCleanup array, we'll stop them now
             // test is long gone so we don't care about messages & warnings anymore
             if (serversToCleanup != null) {
+                serversToCleanup.forEach(s -> {
+                    serversUsed.add(s.getServerName());
+                });
                 FATUtils.stopServers(toleratedMsgs, serversToCleanup.stream().toArray(LibertyServer[]::new));
             } else {
                 Log.info(CloudTestBase.class, "cleanup", "No servers to stop");
@@ -72,5 +79,19 @@ public class CloudTestBase extends TxFATServletClient {
     public void setup() throws Exception {
         TxTestContainerSuite.assertHealthy();
         serversToCleanup = null;
+    }
+
+    @BeforeClass
+    public static void beforeCloudTestBase() throws Exception {
+        serversUsed = new HashSet<String>();
+    }
+
+    @AfterClass
+    public static void teardown() throws Exception {
+        dropTables();
+
+        serversUsed.forEach(s -> {
+            Log.info(CloudTestBase.class, "teardown", "server used: " + s);
+        });
     }
 }

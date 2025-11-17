@@ -21,13 +21,14 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Utility class to generate hash code
  */
 public class HashUtils {
     private static final TraceComponent tc = Tr.register(HashUtils.class);
-    private static String DEFAULT_ALGORITHM = "SHA-256";
+    private static String DEFAULT_ALGORITHM = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
     private static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     /**

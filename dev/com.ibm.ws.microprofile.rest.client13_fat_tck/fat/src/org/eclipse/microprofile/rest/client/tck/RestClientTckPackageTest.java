@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,14 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import componenttest.topology.impl.LibertyServerFactory;
+import com.ibm.websphere.simplicity.log.Log;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -35,11 +43,31 @@ public class RestClientTckPackageTest {
 
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
-    @Server("FATServer")
-    public static LibertyServer server;
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer("FATServer");
+
+    // Define fipsEnabled
+    private static final boolean fipsEnabled;
+
+    static {
+        boolean isFipsEnabled = false;
+        try {
+            isFipsEnabled = server.isFIPS140_3EnabledAndSupported();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        fipsEnabled = isFipsEnabled;
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Log.info(RestClientTckPackageTest.class, "setup", "fipsEnabled: " + fipsEnabled);
+        if (fipsEnabled) {
+            Path cwd = Paths.get(".");
+            Log.info(RestClientTckPackageTest.class, "setup", "cwd = " + cwd.toAbsolutePath());
+            Path fipsFile = Paths.get("publish/tckRunner/tck/tck-suite.xml-fips");
+            Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
+            Files.copy(fipsFile, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
+        }       
         server.startServer();
     }
 
@@ -55,7 +83,7 @@ public class RestClientTckPackageTest {
     public void testRestClient13Tck() throws Exception {
         // Skip running on the windows platform when not running locally.
         if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
-            TCKRunner.build(server, Type.MICROPROFILE, "Rest Client")
+            TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.REST_CLIENT)
                             .withDefaultSuiteFileName()
                             .runTCK();
         }

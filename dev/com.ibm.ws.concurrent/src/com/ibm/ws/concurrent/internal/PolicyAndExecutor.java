@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ class PolicyAndExecutor {
             b.append(policy.getClass().getName()).append('@') //
                             .append(Integer.toHexString(policy.hashCode()));
         b.append(", ");
-        if (policy == null)
+        if (executor == null)
             b.append("null");
         else
             b.append(executor.getClass().getName()).append('@')//

@@ -55,7 +55,9 @@ public enum DatabaseContainerType {
     Oracle("ojdbc8.jar", //
            OracleContainer.class.getCanonicalName(), //
            Properties_oracle.class, //
-           DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23-full-faststart")//
+           // NOTE: avoid using 23-full-faststart due to breaking changes
+           //       https://github.com/gvenzl/oci-oracle-free/issues/122
+           DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23.9-full-faststart")//
                            .asCompatibleSubstituteFor("gvenzl/oracle-free"), //
            "OracleDB"),
     Postgres("postgresql.jar", //

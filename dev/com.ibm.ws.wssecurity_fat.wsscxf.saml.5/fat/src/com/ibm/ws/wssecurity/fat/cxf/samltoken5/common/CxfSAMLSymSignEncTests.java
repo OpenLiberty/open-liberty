@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,6 @@
  *******************************************************************************/
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken5.common;
-
-
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +44,6 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)

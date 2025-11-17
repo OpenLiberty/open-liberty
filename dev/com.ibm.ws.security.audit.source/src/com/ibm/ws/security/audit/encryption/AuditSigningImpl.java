@@ -433,7 +433,7 @@ public class AuditSigningImpl implements AuditSigning {
         byte[] signedData = null;
         MessageDigest md = null;
         try {
-            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512);
+            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512);
         } catch (java.security.NoSuchAlgorithmException e) {
             throw new AuditSigningException(e);
         }
@@ -507,7 +507,7 @@ public class AuditSigningImpl implements AuditSigning {
         byte[] messageDigest = null;
         MessageDigest md = null;
         try {
-            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512);
+            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512);
         } catch (java.security.NoSuchAlgorithmException e) {
             throw new AuditSigningException(e);
         }

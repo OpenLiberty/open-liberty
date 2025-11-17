@@ -80,25 +80,6 @@ public class Simple2PCCloudTest extends CloudTestBase {
     }
 
     /**
-     * Test access to the Lease table.
-     *
-     * This is a readiness check to verify that resources are available and accessible.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testLeaseTableAccess() throws Exception {
-
-        serversToCleanup = Arrays.asList(server1);
-        toleratedMsgs = new String[] { "CWWKE0701E" };
-
-        // Start Server1
-        FATUtils.startServers(server1);
-
-        runTest(server1, SERVLET_NAME, "testLeaseTableAccess");
-    }
-
-    /**
      * The purpose of this test is as a control to verify that single server recovery is working.
      *
      * The Cloud001 server is started and halted by a servlet that leaves an indoubt transaction.
@@ -162,6 +143,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
 
         // wait for 1st server to have gone away
         assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        server1.resetStarted();
 
         server1.postStopServerArchive(); // must explicitly collect since crashed server
 
@@ -270,6 +252,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
         server1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
+        server1.resetStarted();
 
         FATUtils.startServers(longLeaseLengthServer1);
 

@@ -10,17 +10,15 @@
  *******************************************************************************/
 package test.jakarta.data.web;
 
-import java.util.ArrayList;
-
 /**
  * A record to use as a result type for selecting attributes of the Prime entity.
+ * EclipseLink decided to disallow collection attributes such as
+ * ArrayList<String> romanNumeralSymbols
+ * so it is omitted from from this record.
  */
 public record RomanNumeral(
                 String name,
-                String romanNumeral
-// , TODO enable once EclipseLink bug #30501 is fixed
-// ArrayList<String> romanNumeralSymbols
-) {
+                String romanNumeral) {
 
     /**
      * Format in an easy way for tests to compare results.
@@ -30,9 +28,9 @@ public record RomanNumeral(
         StringBuilder s = new StringBuilder();
         s.append(name).append(" ");
         s.append(romanNumeral).append(" ( ");
+        // If collection attributes are ever allowed, the following could become
+        // for (String symbol : romanNumeralSymbols)
         for (char symbol : romanNumeral.toCharArray())
-        // TODO replace the above with the following once EclipseLink bug #30501 is fixed
-        //for (String symbol : romanNumeralSymbols)
             s.append(symbol).append(' ');
         s.append(")");
         return s.toString();

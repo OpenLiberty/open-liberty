@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,16 +24,12 @@ dependencies {
                project(':com.ibm.ws.transaction.core_fat.base')
 }
 
-task copyCommonFiles {
-  doLast {
-    /*
-     * Copy common publish files.
-     */
-    copy {
-      from project(':com.ibm.ws.transaction.core_fat.base').file('publish/servers/com.ibm.ws.transaction')
-      into new File('publish/servers/com.ibm.ws.transaction')
-    }
-  }
+/*
+ * Copy common publish files.
+ */
+task copyCommonFiles(type:Copy) {
+  from project(':com.ibm.ws.transaction.core_fat.base').file('publish/servers/com.ibm.ws.transaction')
+  into new File('publish/servers/com.ibm.ws.transaction')
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

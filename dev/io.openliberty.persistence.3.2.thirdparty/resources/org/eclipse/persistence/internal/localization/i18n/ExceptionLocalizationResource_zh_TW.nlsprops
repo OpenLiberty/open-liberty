@@ -327,6 +327,8 @@ metamodel_managed_type_attribute_type_incorrect=\u5728\u53d7\u7ba1\u7406\u985e\u
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=\u53d7\u7ba1\u7406\u985e\u578b [{1}] \u4e2d\u6240\u5ba3\u544a\u7684\u5c6c\u6027 [{0}] \u4e0d\u5b58\u5728\uff1b\u4e0d\u904e\uff0c\u5b83\u662f\u5ba3\u544a\u5728\u8d85\u985e\u5225\u4e2d\u3002
 
+missing_jpql_parser_class=\u7121\u6cd5\u8f09\u5165 JPQL \u89e3\u6790\u5668\u985e\u5225\u3002
+
 missing_parameter_value=\u5728\u57f7\u884c\u67e5\u8a62\u671f\u9593\uff0c\u5728\u6240\u63d0\u4f9b\u7684\u53c3\u6578\u6e05\u55ae\u4e2d\u627e\u4e0d\u5230\u67e5\u8a62\u5f15\u6578 {0}\u3002
 
 missing_toplink_bean_definition_for=\u907a\u6f0f {0} \u7684 TopLink Bean \u5b9a\u7fa9
@@ -411,7 +413,7 @@ schema_validation=\u7db1\u76ee\u9a57\u8b49
 
 schema_validation_failed=\u7db1\u76ee\u9a57\u8b49\u5931\u6557
 
-schema_validation_missing_table=\u5728\u7db1\u76ee\u4e2d\u627e\u4e0d\u5230 {0} \u8868\u683c vas
+schema_validation_missing_table=\u5728\u6a21\u5f0f\u4e2d\u627e\u4e0d\u5230 {0} \u8868
 
 schema_validation_table_different_columns={0} \u8868\u683c\u5728\u7db1\u76ee\u4e2d\u6709\u4e0d\u540c\u7684\u76f4\u6b04
 

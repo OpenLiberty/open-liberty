@@ -145,4 +145,15 @@ public class TcpOptionsDefaultTests {
         // Validate that hostNameIncludeList default null.
         assertNotNull("The default value of hostNameIncludeList was not null!", server.waitForStringInTrace("hostNameIncludeList: null"));
     }
+
+    /**
+     * The test will check the default value of inactivityTimeout by searching the trace file.
+     *
+     * The default value is 60 seconds will be logged as 60000 miliseconds.
+     */
+    @Test
+    public void testInactivityTimeout_default() throws Exception {
+        // Validate that inActivityTimeout default is 60s.
+        assertNotNull("The default value of inactivityTimeout was not: 60000!", server.waitForStringInTraceUsingMark("inactivityTimeout: 60000"));
+    }
 }

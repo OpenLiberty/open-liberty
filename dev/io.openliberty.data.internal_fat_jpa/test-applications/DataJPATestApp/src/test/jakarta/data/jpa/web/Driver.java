@@ -12,6 +12,7 @@ package test.jakarta.data.jpa.web;
 
 import java.time.LocalDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -33,7 +34,7 @@ public class Driver {
     @Column
     public int heightInInches;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn
     public DriversLicense license;
 

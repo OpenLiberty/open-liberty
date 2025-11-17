@@ -298,6 +298,7 @@ public class BestMatch {
                (library.getArtifactId().equals("mockserver-netty")) ||
                (library.getArtifactId().equals("woodstox-core") && (library.getVersion().equals("6.2.6") || library.getVersion().equals("6.2.4"))) ||
                (library.getArtifactId().equals("commons-io") && (library.getVersion().equals("2.13.0"))) ||
+               (library.getArtifactId().equals("netty-codec-http2") && (library.getVersion().equals("4.1.110.Final"))) ||
                (library.getArtifactId().equals("netty-codec-http")
                 && (library.getVersion().equals("4.1.73.Final") || library.getVersion().equals("4.1.78.Final") || library.getVersion().equals("4.1.92.Final")))
                ||

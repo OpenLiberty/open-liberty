@@ -104,6 +104,10 @@ cls.library.path.invalid=CWWKL0019W: The [{0}] library specifies a path with the
 cls.library.path.invalid.explanation=To add a path to a library in the server configuration, you must specify a path that exists.
 cls.library.path.invalid.useraction=Edit the server configuration and modify the path attribute of the library element.
 
+app.classloader.removed=CWWKL0020W: The thread context class loader for the [{0}] thread no longer references the [{1}] application, which is stopped.
+app.classloader.removed.explanation=app.classloader.removed.explanation=When an application starts a thread, the application thread context class loader is inherited by the new thread.  If the thread continues to run after the application stops, its context class loader no longer references the stopped application.
+app.classloader.removed.useraction=Validate that the application stops all threads that it starts when the application stops. 
+
 ####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
 #################################################################################
 

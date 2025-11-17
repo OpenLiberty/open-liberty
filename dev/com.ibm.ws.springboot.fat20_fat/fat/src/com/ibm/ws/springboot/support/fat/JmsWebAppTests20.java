@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
 public class JmsWebAppTests20 extends JmsAbstractTests {
@@ -39,6 +40,7 @@ public class JmsWebAppTests20 extends JmsAbstractTests {
 
     @ExpectedFFDC("org.springframework.web.util.NestedServletException")
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testJmsWebApplicationWithTransaction() throws Exception {
         testJmsWithTransaction();
     }

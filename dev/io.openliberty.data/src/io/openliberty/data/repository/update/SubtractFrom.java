@@ -23,7 +23,9 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Select;
 
 /**
  * <p>Annotates a repository method parameter to indicate subtracting the

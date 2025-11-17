@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1289,3 +1289,7 @@ jsp.bothsourcelevelset.warning.useraction=Csak a javaSourceLevel attrib\u00fatum
 jsp.javasourcelevel.value=CWWJS0008I: A JSP attrib\u00fatum javaSourceszintje "{0}".
 jsp.javasourcelevel.value.explanation=
 jsp.javasourcelevel.value.useraction=
+
+pages.removed.directive.error=CWWJS0009E: A " {0} " ir\u00e1nyelv m\u00e1r nem t\u00e1mogatott, mivel a {1} elt\u00e1vol\u00edtotta.
+pages.removed.directive.error.explanation = Az ir\u00e1nyelv m\u00e1r nem t\u00e1mogatott. 
+pages.removed.directive.error.useraction = T\u00f6r\u00f6lje az ir\u00e1nyelv haszn\u00e1lat\u00e1t.

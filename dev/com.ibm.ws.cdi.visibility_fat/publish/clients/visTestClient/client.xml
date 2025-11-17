@@ -8,13 +8,17 @@
     </featureManager>
     
     <enterpriseApplication location="visTest.ear" defaultClientModule="visTestAppClient.jar">
-        <classloader commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
+        <classloader overrideLibraryRef="visTestOverrideLib" commonLibraryRef="visTestCommonLib" privateLibraryRef="visTestPrivateLib" />
     </enterpriseApplication>
     
     <library id="visTestPrivateLib">
        <fileset includes="visTestPrivateLib.jar"/>
     </library>
-    
+
+    <library id="visTestOverrideLib">
+       <fileset includes="visTestOverrideLib.jar"/>
+    </library>
+
     <library id="visTestCommonLib">
        <fileset includes="visTestCommonLib.jar"/>
     </library>

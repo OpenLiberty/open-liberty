@@ -44,6 +44,7 @@ import com.google.gson.stream.JsonToken;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Some utility functions for {@link JsonToken}s.
@@ -316,7 +317,7 @@ public class JsonTokenUtil {
         // left 128 bits of hash value of access token
         byte[] left_hash = new byte[16];
         String atHash = null;
-        String hashAlg = "SHA-256";//this.getSigner().getSignatureAlgorithm().getHashAlgorithm();
+        String hashAlg = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;//this.getSigner().getSignatureAlgorithm().getHashAlgorithm();
         MessageDigest digest = null;
         try {
             digest = MessageDigest.getInstance(hashAlg);

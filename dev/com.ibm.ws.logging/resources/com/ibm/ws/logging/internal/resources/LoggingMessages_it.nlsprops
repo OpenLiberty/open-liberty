@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: I seguenti messaggi sono nascosti nei fi
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=I messaggi configurati per essere nascosti non vengono scritti nei file console.log e messages.log. Vengono scritti nel file trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Non \u00e8 richiesta alcuna azione
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: Il formato di output di messages.log \u00e8 stato aggiornato a '{0}'.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Il formato di output di messages.log \u00e8 stato aggiornato a ''{0}''.
 MESSAGE_FORMAT_UPDATED.explanation=Il formato di output per messages.log \u00e8 stato aggiornato.
 MESSAGE_FORMAT_UPDATED.useraction=Non sono richieste azioni.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: Il formato di output della console \u00e8 stato aggiornato a '{0}'.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Il formato di output della console \u00e8 stato aggiornato a ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=Il formato di output per la console \u00e8 stato aggiornato.
 CONSOLE_FORMAT_UPDATED.useraction=Non sono richieste azioni.
 
@@ -169,6 +169,10 @@ LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Specificare un intervallo di 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Manca il nome intestazione per uno o pi\u00f9 campi accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=La registrazione JSON usa l'attributo logFormat da accessLogging per selezionare quali campi messaggio http_access.log includere. \u00c8 necessario fornire un nome intestazione quando si usano i campi %i o %o nell'attributo accessLogging logFormat.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Fornire un nome intestazione per il campo nell'attributo accessLogging logFormat.
+
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: I log vengono strozzati a causa del volume elevato.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=I registri vengono attualmente strozzati a causa dell'elevato volume.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=Risolvere eventuali problemi che causano una registrazione eccessiva o aumentare la soglia di registrazione configurando l'attributo di registrazione throttleMaxMessagesPerWindow. 
 
 FFDC_FILE_DELETION=TRAS3014I: Eliminati {0} file FFDC basati sul valore maxFfdcAge configurato.
 FFDC_FILE_DELETION.explanation=Il numero di file FFDC eliminati durante una ripulitura FFDC.

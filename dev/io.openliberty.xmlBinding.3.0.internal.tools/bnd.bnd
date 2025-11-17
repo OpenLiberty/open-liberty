@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -77,17 +77,17 @@ Export-Package: \
   org.glassfish.jaxb.*;version="3.0";thread-context=true
 
 Include-Resource: \
-  @${repo;org.glassfish.jaxb:codemodel;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:jaxb-core;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:jaxb-jxc;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:jaxb-runtime;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:jaxb-xjc;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:txw2;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;org.glassfish.jaxb:xsom;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;com.sun.xml.bind.external:rngom;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;com.sun.istack:istack-commons-runtime;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;com.sun.istack:istack-commons-tools;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;org.glassfish.jaxb:codemodel;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;org.glassfish.jaxb:jaxb-core;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;org.glassfish.jaxb:jaxb-jxc;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;org.glassfish.jaxb:jaxb-runtime;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;org.glassfish.jaxb:jaxb-xjc;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;org.glassfish.jaxb:txw2;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;org.glassfish.jaxb:xsom;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;com.sun.xml.bind.external:rngom;3.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;com.sun.istack:istack-commons-runtime;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;com.sun.istack:istack-commons-tools;4.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
   META-INF/services/jakarta.xml.bind.JAXBContext=resources/META-INF/services/jakarta.xml.bind.JAXBContext, \
   META-INF/services/jakarta.xml.bind.JAXBContextFactory=resources/META-INF/services/jakarta.xml.bind.JAXBContextFactory
 

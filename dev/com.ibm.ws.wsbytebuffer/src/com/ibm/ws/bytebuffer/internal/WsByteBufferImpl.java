@@ -964,7 +964,7 @@ public class WsByteBufferImpl implements WsByteBuffer, Externalizable {
 
         } else if (wsBBRoot.actionState == PooledWsByteBufferImpl.COPY_WHEN_NEEDED_STATE2) {
 
-            // in STATE2 new rules apply to the get, becuase newer "put" data will be
+            // in STATE2 new rules apply to the get, because newer "put" data will be
             // in the nonDirect buffer, compared to the older "read" data in the direct buffer
             if (wsBBRoot.putMax != -1) {
 

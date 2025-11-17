@@ -1,6 +1,7 @@
 <server>
   <featureManager>
     <feature>componenttest-1.0</feature>
+    <feature>mpConfig-2.0</feature>
     <feature>mpRestClient-2.0</feature>
     <feature>jaxrs-2.1</feature>
     <feature>jsonb-1.0</feature>

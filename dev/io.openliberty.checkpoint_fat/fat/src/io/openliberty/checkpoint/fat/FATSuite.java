@@ -49,7 +49,6 @@ import componenttest.rules.repeater.RepeatActions.EEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -220,50 +219,10 @@ public class FATSuite {
 
     public static RepeatTests defaultMPRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
-                                          MicroProfileActions.MP70_EE10, // first test in LITE mode
-                                          // Nothing specific for EE 11 that we should repeat for checkpoint
-                                          // MicroProfileActions.MP70_EE11,
-                                          MicroProfileActions.MP61, // rest are FULL mode
+                                          MicroProfileActions.MP71_EE11, // first test in LITE mode
+                                          MicroProfileActions.MP70_EE10, // rest are FULL mode
+                                          MicroProfileActions.MP61,
                                           MicroProfileActions.MP41,
                                           MicroProfileActions.MP50);
-    }
-
-    public static RepeatTests MPHealthFileBasedRepeat(String serverName) {
-        return MicroProfileActions.repeat(serverName,
-                                          MicroProfileActions.MP70_EE10, // First test in LITE mode
-                                          // Nothing specific for EE 11 that we should repeat for checkpoint
-                                          // MicroProfileActions.MP70_EE11,
-                                          MicroProfileActions.MP61, // rest are FULL mode
-                                          MicroProfileActions.MP50,
-                                          HealthActions.MP41_MPHEALTH40); //  mpHealth-4.0 FULL w/ MP41 EE8
-
-    }
-
-    public static final String MP50_MPTEL11_ID = MicroProfileActions.MP50_ID + "_MPTEL11";
-    public static final FeatureSet MP50_MPTEL11 = MicroProfileActions.MP50
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP50_MPTEL11_ID);
-    public static final String MP41_MPTEL11_ID = MicroProfileActions.MP41_ID + "_MPTEL11";
-    public static final FeatureSet MP41_MPTEL11 = MicroProfileActions.MP41
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP41_MPTEL11_ID);
-
-    public static RepeatTests mpTelemetryRepeat(String serverName) {
-        return MicroProfileActions.repeat(serverName,
-                                          // first test in LITE mode
-                                          MicroProfileActions.MP70_EE10,
-                                          MicroProfileActions.MP61, // rest are FULL mode
-                                          MP50_MPTEL11,
-                                          MP41_MPTEL11);
-    }
-
-    public static RepeatTests mpTelemetryRepeat2(String serverName) {
-        return MicroProfileActions.repeat(serverName,
-                                          // first test in LITE mode
-                                          // TODO need to figure out why mpTelemetry-2.0 isn't working for the test app
-                                          //MicroProfileActions.MP70_EE10,
-                                          MicroProfileActions.MP61, // rest are FULL mode
-                                          MP50_MPTEL11,
-                                          MP41_MPTEL11);
     }
 }

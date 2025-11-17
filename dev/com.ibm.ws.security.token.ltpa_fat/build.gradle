@@ -63,7 +63,9 @@ assemble.dependsOn ltpaTest
  **
  ******************************************************************
  ******************************************************************/
-autoFVT.doLast {
+autoFVT {
+  def securityServletProject = project(':com.ibm.ws.webcontainer.security_test.servlets')
+  doLast {
     
   /*
    * Copy basicauth.war into test servers.
@@ -79,17 +81,17 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      from new File(securityServletProject.buildDir, 'test-application/basicauth.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'basicauth.zip', 'basicauth.war'
     }
     copy { 
-      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/formlogin.zip')
+      from new File(securityServletProject.buildDir, 'test-application/formlogin.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'formlogin.zip', 'formlogin.war'
     }
     copy {
-      from new File(project(':com.ibm.ws.security.token.ltpa_fat').buildDir, 'test-application/ltpaTest.zip')
+      from new File(buildDir, 'test-application/ltpaTest.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'ltpaTest.zip', 'ltpaTest.war'
   	}
@@ -129,5 +131,6 @@ autoFVT.doLast {
       from new File(projectDir, 'publish/files/alternateFIPS/server.xml')
       into new File(autoFvtDir, 'lib/LibertyFATTestFiles/alternateFIPS')
     }
+  }
   }
 }

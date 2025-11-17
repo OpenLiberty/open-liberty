@@ -27,7 +27,7 @@ import jakarta.data.repository.Repository;
 /**
  * For testing entity attribute names with reserved keywords in them.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Things {
 
     Stream<Thing> findByALike(String aPattern);

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,14 +21,14 @@ public abstract class AbstractLibertyVariable implements LibertyVariable {
 
     final Pattern obscuredValuePattern = Pattern.compile("(\\{aes\\}|\\{xor\\}).*");
     final String OBSCURED_VALUE = "*****";
-    final String ENCRYPTION_KEY = "wlp.password.encryption.key";
+    final Pattern encryptionKeyPattern = Pattern.compile("wlp.password.encryption.key|wlp.aes.encryption.key");
 
     @Trivial
     private String getObscuredValue(String value) {
         if (isSensitive())
             return OBSCURED_VALUE;
 
-        if (ENCRYPTION_KEY.equals(getName()))
+        if (encryptionKeyPattern.matcher(getName()).matches())
             return OBSCURED_VALUE;
 
         if (value == null)

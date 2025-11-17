@@ -104,7 +104,9 @@
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/SignES384Encryptnone,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/SignES512Encryptnone,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptShortRS256,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/SignES256EncryptShortES256,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/SignRS256EncryptPublicRS256,
+					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/SignES256EncryptPublicES256,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_trustStoreRefOmitted,
 					https://localhost:${bvt.prop.security_2_HTTP_default.secure}/ibm/api/social-login/redirect/RP_sslRefOmitted"
 				scope="ALL_SCOPES"

@@ -310,7 +310,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: Urm\u0103toarele depozit
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Acest mesaj este pur informativ.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Sistemul adaug\u0103 aliasul semnatar {0} la depozitul de chei local {1} cu urm\u0103torul digest SHA: {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Sistemul adaug\u0103 semnatarul alias {0} la depozitul local de chei {1} cu urm\u0103torul digest {3} : {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Acest mesaj este pur informativ.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 # -------------------------------------------------------------------------------------------------

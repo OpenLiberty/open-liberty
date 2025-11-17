@@ -50,4 +50,9 @@ public class PurchaseOrder {
         order.purchasedOn = OffsetDateTime.now();
         return order;
     }
+
+    @Override
+    public String toString() {
+        return "PurchaseOrder [id=" + id + ", purchasedBy=" + purchasedBy + ", purchasedOn=" + purchasedOn + ", total=" + total + ", versionNum=" + versionNum + "]";
+    }
 }

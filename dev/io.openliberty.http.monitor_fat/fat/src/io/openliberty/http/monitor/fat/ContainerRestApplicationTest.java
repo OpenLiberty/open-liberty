@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package io.openliberty.http.monitor.fat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.time.Duration;
 
 import javax.ws.rs.HttpMethod;
 
@@ -21,8 +22,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.GenericContainer;
+import org.testcontainers.containers.Network;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -53,18 +57,25 @@ public class ContainerRestApplicationTest extends BaseTestClass {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    @ClassRule
     public static RepeatTests rt = FATSuite.allMPRepeatsWithMPTel20OrLater(SERVER_NAME);
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
+    public static Network network = Network.newNetwork();
+
     //TODO remove withDockerfileFromBuilder and instead create a dockerfile
-    @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
                     .withDockerfileFromBuilder(builder -> builder.from(IMAGE_NAME)
-                                    .copy("/etc/otelcol-contrib/config.yaml", "/etc/otelcol-contrib/config.yaml"))
-                    .withFileFromFile("/etc/otelcol-contrib/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
-                    .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector-contrib"))
-                    .withExposedPorts(8888, 8889, 4317);
+                                    .copy("/etc/otelcol/config.yaml", "/etc/otelcol/config.yaml"))
+                    .withFileFromFile("/etc/otelcol/config.yaml", new File(PATH_TO_AUTOFVT_TESTFILES + "config.yaml")))
+                    .withLogConsumer(new SimpleLogConsumer(ContainerServletApplicationTest.class, "opentelemetry-collector"))
+                    .withExposedPorts(8888, 8889, 4317)
+                    .withNetwork(network)
+                    .withNetworkAliases("otel-collector-metrics")
+                    .waitingFor(new LogMessageWaitStrategy().withRegEx(".*Begin running and processing data.*").withStartupTimeout(Duration.ofMinutes(1)));
+
+    @ClassRule
+    public static RuleChain chain = RuleChain.outerRule(network)
+                    .around(container)
+                    .around(rt);
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -79,7 +90,8 @@ public class ContainerRestApplicationTest extends BaseTestClass {
         ShrinkHelper.exportDropinAppToServer(server, testWAR,
                                              DeployOptions.SERVER_ONLY);
 
-        server.addEnvVar("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
+        server.addEnvVar("OTEL_EXPORTER_OTLP_ENDPOINT", "http://" + container.getHost() + ":" + container.getMappedPort(4317));
+
         server.startServer();
 
         //Read to run a smarter planet

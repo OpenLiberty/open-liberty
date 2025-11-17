@@ -53,6 +53,7 @@ public class oAuth20DerbySetup extends HttpServlet {
     final static String SALT = "checkSalt";
     final static String ALGORITHM = "checkAlgorithm";
     final static String ITERATION = "checkIteration";
+    final static String KEYLENGTH = "checkKeyLength";
     final static String ACCESS_TOKEN = "checkAccessToken";
     final static String CLEAR_CLIENTS = "clearClients";
 
@@ -86,6 +87,7 @@ public class oAuth20DerbySetup extends HttpServlet {
             String getSalt = request.getParameter(SALT);
             String getAlgorithm = request.getParameter(ALGORITHM);
             String getIteration = request.getParameter(ITERATION);
+            String getKeyLength = request.getParameter(KEYLENGTH);
             String checkAccessToken_plain = request.getParameter(ACCESS_TOKEN + "_plain");
             String checkAccessToken_hashed = request.getParameter(ACCESS_TOKEN + "_hashed");
             String checkAccessToken = setCheckAccessToken(checkAccessToken_plain, checkAccessToken_hashed);
@@ -154,6 +156,17 @@ public class oAuth20DerbySetup extends HttpServlet {
                 writer.close();
             } else if ("true".equals(dropTable)) {
                 dropClientConfigTable(OAuthFvtDataSource);
+            } else if (getKeyLength != null) {
+                String clientID = request.getParameter(CLIENT_ID_WEB);
+                String compID = request.getParameter(COMP_ID);
+                System.out.println("Request to get key length for client " + clientID + " compId " + compID);
+                String type = getKeyLength(OAuthFvtDataSource, clientID, compID);
+                System.out.println("Key length is" + type);
+
+                PrintWriter writer = response.getWriter();
+                writer.write(type);
+                writer.flush();
+                writer.close();
             } else {
                 String redirectUri = "http://localhost:" + port + "/oauthclient/redirect.jsp";
                 String redirectUri2 = "http://localhost:" + port + "/oauthclient/authorize_redirect.jsp";
@@ -765,6 +778,64 @@ public class oAuth20DerbySetup extends HttpServlet {
 
         return accessTokenEncodingType;
 
+    }
+
+    private String getKeyLength(DataSource ds, String clientId, String compID) throws Exception {
+        if (clientId == null) {
+            System.out.println("oAuth20DerbySetup No clientId provided for getKeyLength");
+            return "No clientId provided";
+        }
+        if (compID == null) {
+            System.out.println("oAuth20DerbySetup No compID provided for getKeyLength, using default: OAuthConfigDerby");
+            compID = DEFAULT_COMPID;
+        }
+
+        Connection con = ds.getConnection(DB_USER, DB_PWD);
+        System.out.println("getKeyLength for " + clientId + " schema " + schemaName);
+
+        String keyLength = null;
+        try {
+            Statement stmt = con.createStatement();
+            String query = "select * from " + schemaName + ".OAUTH20CLIENTCONFIG";
+            ResultSet rs = stmt.executeQuery(query);
+
+            while (rs.next()) {
+                // Search on everything for debug
+                System.out.println("db entry : " + rs.getString("COMPONENTID")
+                                   + " " + rs.getString("CLIENTID") + " "
+                                   //   + rs.getString("CLIENTSECRET") + " "
+                                   + rs.getString("DISPLAYNAME") + " "
+                                   + rs.getString("REDIRECTURI") + " "
+                                   + rs.getInt("Enabled") + " "
+                                   + rs.getString(7));
+
+                if (rs.getString("CLIENTID").equals(clientId) && rs.getString("COMPONENTID").equals(compID)) {
+                    System.out.println("Found client " + rs.getString("CLIENTSECRET"));
+
+                    JSONObject clientMetadata = JSONObject.parse(rs.getString(7));
+                    keyLength = String.valueOf(clientMetadata.get(HASH_LENGTH));
+
+                    if (keyLength == null) {
+                        System.out.println("getKeyLength: length is null");
+                    }
+
+                    break;
+                }
+            }
+        } catch (Throwable x) {
+            System.out.println("getKeyLength unexpected exception"
+                               + x.getMessage());
+        } finally {
+            System.out.println("getKeyLength - time to close");
+            con.close();
+        }
+
+        if (keyLength == null) {
+            System.out.println("getKeyLength: Could not find client " + clientId);
+            return "null_hash_len";
+        }
+
+        return keyLength;
     }
 
     private void clearAllClients(DataSource ds) throws Exception {

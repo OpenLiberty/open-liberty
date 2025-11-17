@@ -864,13 +864,17 @@ public class SessionCacheTestServlet extends FATServlet {
     public void testStringBufferAppendWithoutSetAttribute(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String key = request.getParameter("key");
         HttpSession session = request.getSession(true);
-        StringBuffer value = (StringBuffer) session.getAttribute(key);
-        value.append("Appended");
+        if (session != null) {
+            StringBuffer value = (StringBuffer) session.getAttribute(key);
+            if (value!= null)
+                value.append("Appended");
+        }
     }
 
     public void testTimeoutExtensionA(HttpServletRequest request, HttpServletResponse response) throws Exception {
         HttpSession session = request.getSession(true);
-        session.setMaxInactiveInterval(500); // seconds
+        if (session != null)
+            session.setMaxInactiveInterval(500); // seconds
     }
 
     public void testTimeoutExtensionB(HttpServletRequest request, HttpServletResponse response) throws Exception {

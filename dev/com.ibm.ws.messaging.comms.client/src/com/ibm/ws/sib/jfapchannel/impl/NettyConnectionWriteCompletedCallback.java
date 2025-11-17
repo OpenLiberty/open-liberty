@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -306,25 +306,20 @@ public class NettyConnectionWriteCompletedCallback extends BaseConnectionWriteCa
 	}
 
 	/**
-	 * Returns the single WsByteBuffer set in 'writeCtx', ensuring that it is a direct byte buffer and is of
-	 * sufficient capacity.
+	 * Returns the single direct WsByteBuffer set in 'writeCtx'
+	 * 
 	 * @return the (single, non-null) byte buffer set in 'writeCtx'.
 	 */
 	private WsByteBuffer getWriteContextBuffer() {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getWriteContextBuffer");
-		WsByteBuffer writeBuffer = null;
+		WsByteBuffer writeBuffer = writeCtx.getBuffer();
 
 		if (firstInvocation.compareAndSet(true, false) || (writeBuffer == null)) {
 			final int writeBufferSize =
 					Integer.parseInt(RuntimeInfo.getProperty("com.ibm.ws.sib.jfapchannel.DEFAULT_WRITE_BUFFER_SIZE", "" + JFapChannelConstants.DEFAULT_WRITE_BUFFER_SIZE));
 
-			// TODO: Verify this code if necessary and if not remove
-			//	         if ((writeBuffer != null) && (!writeBuffer.isDirect() || writeBuffer.capacity() < writeBufferSize)) {
-			//	            writeBuffer.release();
-			//	            writeBuffer = null;
-			//	         }
-
 			writeBuffer = WsByteBufferPool.getInstance().allocateDirect(writeBufferSize);      // F196678.10
+			writeCtx.setBuffer(writeBuffer);  // See OLGH31353, cache just like ConnectionWriteCompletedCallback
 		}
 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "getWriteContextBuffer", writeBuffer);
@@ -341,6 +336,22 @@ public class NettyConnectionWriteCompletedCallback extends BaseConnectionWriteCa
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled() && (t != null)) SibTr.exception(this, tc, t);                     // F176003
 		if (connection.isLoggingIOEvents()) connection.getConnectionEventRecorder().logDebug("error method invoked on write context " + System.identityHashCode(wrc) + " with exception " + t);
 		try {
+
+			WsByteBuffer buffer = writeCtx.getBuffer();
+			writeCtx.setBuffer(null);
+
+			 if (buffer != null) {
+				try {
+				 	buffer.release();
+				} catch (RuntimeException e) {
+					//Absorb any exceptions if it gets released by another thread (for example by Connection.nonThreadSafePhysicalClose).
+                    //No FFDC code needed
+                   if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Caught exception on releasing buffer.", e);
+				}
+			 } 
+			 else {
+             	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Request has no buffers: " + writeCtx);
+          	 }
 
 			// Deal with the error by invalidating the connection.  That'll teach 'em.
 			final String message = "IOException received - " + t == null ? "" : t.getMessage();

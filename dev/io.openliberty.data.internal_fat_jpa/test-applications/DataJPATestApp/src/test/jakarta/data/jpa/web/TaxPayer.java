@@ -16,6 +16,7 @@ import java.util.Set;
 import jakarta.persistence.Basic;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 
 /**
@@ -27,7 +28,7 @@ public class TaxPayer {
         Single, MarriedFilingJointly, MarriedFilingSeparately, HeadOfHousehold
     }
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     public Set<AccountId> bankAccounts;
 
     @Basic(optional = false)

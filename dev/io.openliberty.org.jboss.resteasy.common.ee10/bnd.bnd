@@ -183,16 +183,16 @@ instrument.classesExcludes: \
   org/jboss/resteasy/util/ThreadLocalStack.class
 
 Include-Resource:\
-  @${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-client-api;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-core;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
-  @${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-client-api;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-core;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
+  @\${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
+  @\${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
+  @\${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
+  @\${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
   io/openliberty=${bin}/io/openliberty, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
   META-INF=resources/META-INF

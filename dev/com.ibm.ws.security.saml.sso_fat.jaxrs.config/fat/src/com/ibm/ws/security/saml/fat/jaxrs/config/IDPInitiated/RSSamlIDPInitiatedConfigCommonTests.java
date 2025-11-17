@@ -40,7 +40,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.utils.RSCommonUtils;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-
+import com.ibm.ws.common.crypto.CryptoUtils;
 /**
  * In general, these tests perform a simple IdP initiated SAML Web SSO, using
  * httpunit to simulate browser requests. In this scenario, a Web client
@@ -219,7 +219,7 @@ public class RSSamlIDPInitiatedConfigCommonTests extends SAMLCommonTest {
         // Make minor updates to default settings
         RSSamlProviderSettings defaultRsSettings = rsConfigSettings.getDefaultRSSamlProviderSettings();
         defaultRsSettings.setHeaderName("saml_token");
-        defaultRsSettings.setSignatureMethodAlgorithm("SHA1");
+        defaultRsSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1);
         defaultRsSettings.setAuthFilterRef(null);
         // Nullify some "pure" SAML attributes
         defaultRsSettings.setIdpMetadata(null);

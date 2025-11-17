@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -822,9 +822,11 @@ public class SessionContext {
         if (j2eeName != null) {
             addToJ2eeNameList(j2eeName, al.size(), mHttpSessionAttributeListenersJ2eeNames);
         }
-        mHttpSessionAttributeListeners.addAll(al);
-        if (mHttpSessionAttributeListeners.size() > 0) {
-            sessionAttributeListener = true;
+        synchronized (mHttpSessionAttributeListeners) {
+            mHttpSessionAttributeListeners.addAll(al);
+            if (mHttpSessionAttributeListeners.size() > 0) {
+                sessionAttributeListener = true;
+            }
         }
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, methodNames[ADD_HTTP_SESSION_ATTRIBUTE_LISTENER], "addHttpSessionAttributeListener:" + al);
@@ -1186,8 +1188,10 @@ public class SessionContext {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[ADD_HTTP_SESSION_ATTRIBUTE_LISTENER], "J2EE name is " + J2EEName);
         }
-        mHttpSessionAttributeListeners.add(listener);
-        mHttpSessionAttributeListenersJ2eeNames.add(J2EEName);
+        synchronized (mHttpSessionAttributeListeners) {
+            mHttpSessionAttributeListeners.add(listener);
+            mHttpSessionAttributeListenersJ2eeNames.add(J2EEName);
+        }
         sessionAttributeListener = true;
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_CORE.exiting(methodClassName, methodNames[ADD_HTTP_SESSION_ATTRIBUTE_LISTENER]);

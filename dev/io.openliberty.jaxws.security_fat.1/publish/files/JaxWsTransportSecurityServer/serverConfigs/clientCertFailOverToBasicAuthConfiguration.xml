@@ -11,15 +11,15 @@
      <!-- Server SSL configuration -->
      <ssl id="defaultSSLConfig" keyStoreRef="serverKeyStore" trustStoreRef="serverTrustStore" 
         clientAuthenticationSupported="true"/>
-     <keyStore id="serverKeyStore" location="serverKey.jks" type="JKS" password="passw0rd" /> 
-     <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="serverKeyStore" location="serverKey.p12" type="PKCS12" password="passw0rd" /> 
+     <keyStore id="serverTrustStore" location="trust.p12" type="PKCS12" password="passw0rd" /> 
 
      <!-- Allow fail over to basic-auth -->
      <webAppSecurity allowFailOverToBasicAuth="true" /> 
      <!-- customize SSL configuration -->
      <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" /> 
-     <keyStore id="clientKeyStore" location="clientKey.jks" type="JKS" password="passw0rd" /> 
-     <keyStore id="clientTrustStore" location="clientTrust.jks" type="JKS" password="passw0rd" /> 
+     <keyStore id="clientKeyStore" location="clientKey.p12" type="PKCS12" password="passw0rd" /> 
+     <keyStore id="clientTrustStore" location="clientTrust.p12" type="PKCS12" password="passw0rd" /> 
      
     <application id="TransportSecurityClient" name="TransportSecurityClient" location="TransportSecurityClient.war"
         context="TransportSecurityClient" type="war" />

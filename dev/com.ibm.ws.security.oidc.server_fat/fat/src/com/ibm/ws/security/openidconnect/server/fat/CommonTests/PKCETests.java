@@ -35,6 +35,7 @@ import com.meterware.httpunit.WebResponse;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Test class for PKCE. Tests PKCE (code_challenge, code_challenge_method, code_verifier) handling within the OP.
@@ -1347,7 +1348,7 @@ public class PKCETests extends CommonTest {
 
         Log.info(thisClass, _testName, "Verifier value: " + verifier);
         byte[] bytes = verifier.getBytes("US-ASCII");
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
+        MessageDigest md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
         //        md.update(bytes, 0, bytes.length);
         md.update(bytes);
         byte[] digest = md.digest();

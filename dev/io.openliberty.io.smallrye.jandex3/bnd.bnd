@@ -12,7 +12,7 @@
 #*******************************************************************************
 
 -include=\
-	jar:${fileuri;${repo;io.smallrye:jandex;3.2.3;EXACT}}!/META-INF/MANIFEST.MF,\
+	jar:${fileuri;\${repo;io.smallrye:jandex;3.2.3;EXACT}}!/META-INF/MANIFEST.MF,\
 	bnd.overrides
 
 instrument.disabled: true

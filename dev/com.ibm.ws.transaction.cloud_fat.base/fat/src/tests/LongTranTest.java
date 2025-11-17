@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,11 @@ package tests;
 
 import static org.junit.Assert.assertNotNull;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -29,17 +28,15 @@ import org.junit.runner.RunWith;
 import com.ibm.tx.jta.ut.util.LastingXAResourceImpl;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-public class LongTranTest extends FATServletClient {
+public class LongTranTest extends CloudTestBase {
 
     public static final String APP_NAME = "longtran";
     public static final String SERVLET_NAME = APP_NAME + "/LongtranServlet";
@@ -69,29 +66,17 @@ public class LongTranTest extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testLongRunningTranAtShutdown() throws Exception {
-        final String method = "testLongRunningTranAtShutdown";
-        StringBuilder sb = null;
+
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(server);
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "normalTran");
-        } catch (Throwable e) {
-        }
-        Log.info(this.getClass(), method, "normalTran returned: " + sb);
-
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "longRunningTran");
-        } catch (Throwable e) {
-        }
-        Log.info(this.getClass(), method, "longRunningTran returned: " + sb);
+        runTest(server, SERVLET_NAME, "normalTran");
+        runTest(server, SERVLET_NAME, "longRunningTran");
 
         // Stop server1
         // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
         FATUtils.stopServers(new String[] { "CWWKE0701E" }, server);
-
-        // Lastly, clean up XA resource file
-        server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
     }
 
     /**
@@ -107,36 +92,24 @@ public class LongTranTest extends FATServletClient {
     @Test
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testLongRunningTranMarkedRBOnlyAtShutdown() throws Exception {
-        final String method = "testLongRunningTranMarkedRBOnlyAtShutdown";
-        StringBuilder sb = null;
+
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(server);
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "normalTran");
-        } catch (Throwable e) {
-        }
-        Log.info(this.getClass(), method, "normalTran returned: " + sb);
-
-        try {
-            sb = runTestWithResponse(server, SERVLET_NAME, "longRunningTranRBOnly");
-        } catch (Throwable e) {
-        }
-        Log.info(this.getClass(), method, "longRunningTranRBOnly returned: " + sb);
+        runTest(server, SERVLET_NAME, "normalTran");
+        runTest(server, SERVLET_NAME, "longRunningTranRBOnly");
 
         // Stop server1
         // "WTRN0075W", "WTRN0076W", "CWWKE0701E" error messages are expected/allowed
         FATUtils.stopServers(new String[] { "CWWKE0701E" }, server);
 
         // Server appears to have stopped ok. Check for key string to see whether the long running tran was marked rollback only
-        String stateString = readTranState();
-        assertNotNull("transaction not marked rollback only", stateString.contains("marked rollbackOnly"));
-        // Lastly, clean up XA resource file
-        server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
+        assertNotNull("transaction not marked rollback only", readTranState().contains("marked rollbackOnly"));
     }
 
     @After
-    public void cleanup() throws Exception {
+    public void after() throws Exception {
 
         // Clean up XA resource files
         server.deleteFileFromLibertyInstallRoot("/usr/shared/" + LastingXAResourceImpl.STATE_FILE_ROOT);
@@ -145,32 +118,23 @@ public class LongTranTest extends FATServletClient {
         server.deleteDirectoryFromLibertyInstallRoot("/usr/shared/resources/data");
     }
 
-    private String readTranState() {
+    private String readTranState() throws Exception {
         String stateString = "";
-        try {
-            RemoteFile rf = server.getFileFromLibertyInstallRoot("/usr/shared/longtran.dat");
-            System.out.println("readTranState: Reading state from " + rf.getAbsolutePath() + " of size " + rf.length());
-            InputStream is = rf.openForReading();
 
-            int bufferSize = 1024;
-            char[] buffer = new char[bufferSize];
-            StringBuilder out = new StringBuilder();
-            Reader in = new InputStreamReader(is, StandardCharsets.UTF_8);
-            for (int numRead; (numRead = in.read(buffer, 0, buffer.length)) > 0;) {
-                out.append(buffer, 0, numRead);
-            }
-            stateString = out.toString();
-            System.out.println("readTranState: read string - " + stateString);
-        } catch (FileNotFoundException e) {
-            System.out.println("readTranState: Caught exc " + e);
-            e.printStackTrace();
-        } catch (IOException e) {
-            System.out.println("readTranState: Caught exc " + e);
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.out.println("Caught exc " + e);
-            e.printStackTrace();
+        RemoteFile rf = server.getFileFromLibertyInstallRoot("/usr/shared/longtran.dat");
+        System.out.println("readTranState: Reading state from " + rf.getAbsolutePath() + " of size " + rf.length());
+        InputStream is = rf.openForReading();
+
+        int bufferSize = 1024;
+        char[] buffer = new char[bufferSize];
+        StringBuilder out = new StringBuilder();
+        Reader in = new InputStreamReader(is, StandardCharsets.UTF_8);
+        for (int numRead; (numRead = in.read(buffer, 0, buffer.length)) > 0;) {
+            out.append(buffer, 0, numRead);
         }
+        stateString = out.toString();
+        System.out.println("readTranState: read string - " + stateString);
+
         return stateString;
     }
 }

@@ -120,6 +120,10 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         opServer.addIgnoredErrors(Arrays.asList(MessageConstants.CWWKS1617E_USERINFO_REQUEST_BAD_TOKEN));
         deployMyApps();
 
+        // Wait to ensure LTPA configuration has completed before starting tests
+        opServer.waitForStringInLog("CWWKS4105I");
+        rpServer.waitForStringInLog("CWWKS4105I");
+
     }
 
     /**

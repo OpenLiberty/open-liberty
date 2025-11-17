@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,8 +29,6 @@ import com.ibm.tx.jta.ut.util.XAResourceImpl;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet("/heuristics")
@@ -896,7 +894,6 @@ public class HeuristicsServlet extends FATServlet {
     }
 
     @Test
-    @Mode(TestMode.LITE)
     @ExpectedFFDC(value = { "javax.transaction.xa.XAException", "javax.transaction.RollbackException" })
     public void testHE043() {
 

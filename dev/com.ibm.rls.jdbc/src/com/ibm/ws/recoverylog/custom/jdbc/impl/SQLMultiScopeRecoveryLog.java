@@ -518,11 +518,11 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
     @Override
     @FFDCIgnore({ PeerLostLogOwnershipException.class })
     public void openLog(boolean localRecovery) throws LogCorruptedException, LogAllocationException, InternalLogException {
+        if (tc.isEntryEnabled())
+            Tr.entry(tc, "openLog", localRecovery, this);
 
         synchronized (_DBAccessIntentLock) {
             synchronized (this) {
-                if (tc.isEntryEnabled())
-                    Tr.entry(tc, "openLog", localRecovery, this);
 
                 // If this recovery log instance has experienced a serious internal error then prevent this operation from
                 // executing.
@@ -2827,6 +2827,9 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
             ret = specStatement.executeUpdate();
         }
 
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "{0} now owns the locking row in {1}", _currentProcessServerName, fullTableName);
+
         if (tc.isEntryEnabled())
             Tr.exit(tc, "insertLockingRow", ret);
     }
@@ -4302,10 +4305,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                     isClaimed = true;
                 }
             } else {
-                // We didn't find the partner_log HA Lock row in the table. This is unexpected
-                if (tc.isEntryEnabled())
-                    Tr.exit(tc, "openLog", "InternalLogException didn't find the partner_log HA Lock row in the table");
-                throw new InternalLogException("Could not find partner_log HA Lock row");
+                // Log was present but empty
+                insertLockingRow(conn, _recoveryTableName + "PARTNER_LOG" + _recoveryTableNameSuffix, (short) _recoveryAgent.clientIdentifier(),
+                                 _useNewLockingScheme ? now.toEpochMilli() : 1);
+                isClaimed = true;
             }
         }
 
@@ -4389,10 +4392,10 @@ public class SQLMultiScopeRecoveryLog implements LogCursorCallback, MultiScopeLo
                         isClaimed = true;
                     }
                 } else {
-                    // We didn't find the tran_log HA Lock row in the table. This is unexpected
-                    if (tc.isEntryEnabled())
-                        Tr.exit(tc, "openLog", "InternalLogException didn't find the tran_log HA Lock row in the table");
-                    throw new InternalLogException("Could not find tran_log HA Lock row");
+                    // Log was present but empty
+                    insertLockingRow(conn, _recoveryTableName + "TRAN_LOG" + _recoveryTableNameSuffix, (short) _recoveryAgent.clientIdentifier(),
+                                     _useNewLockingScheme ? now.toEpochMilli() : 1);
+                    isClaimed = true;
                 }
             }
         }

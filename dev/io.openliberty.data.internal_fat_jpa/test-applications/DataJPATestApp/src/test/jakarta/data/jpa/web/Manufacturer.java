@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 
@@ -29,7 +30,8 @@ public class Manufacturer {
     private UUID id;
 
     @OneToMany(cascade = CascadeType.ALL,
-               mappedBy = "manufacturer")
+               mappedBy = "manufacturer",
+               fetch = FetchType.EAGER)
     private Set<Model> models;
 
     private String name;

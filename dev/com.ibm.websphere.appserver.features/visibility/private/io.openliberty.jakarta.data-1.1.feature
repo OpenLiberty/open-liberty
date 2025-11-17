@@ -5,10 +5,9 @@ singleton=true
 -features=\
   com.ibm.websphere.appserver.eeCompatible-11.0,\
   io.openliberty.jakarta.annotation-3.0,\
-  io.openliberty.jakarta.cdi-4.1,\
-  io.openliberty.noShip-1.0
+  io.openliberty.jakarta.cdi-4.1
 -bundles=\
   io.openliberty.jakarta.data.1.1; location:="dev/api/spec/,lib/"
-kind=noship
-edition=full
+kind=beta
+edition=core
 WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=Jav\u00edtsa ki a hiba kiv\u00e1lt\u00f3 ok
 CWWKC1103.skip.run.failed=CWWKC1103E: A(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak elk\u00fcld\u00f6tt {0} feladat v\u00e9grehajt\u00e1sa kihagy\u00e1sra ker\u00fclt, mert a Trigger.skipRun m\u0171velet a k\u00f6vetkez\u0151 hib\u00e1val meghi\u00fasult: {2}.
 CWWKC1103.skip.run.failed.explanation=A trigger skipRun m\u0171velete meghi\u00fasult, ez\u00e9rt a feladat aktu\u00e1lis v\u00e9grehajt\u00e1si k\u00eds\u00e9rlete kihagy\u00e1sra ker\u00fclt.
 CWWKC1103.skip.run.failed.useraction=Jav\u00edtsa ki a hiba kiv\u00e1lt\u00f3 ok\u00e1t \u00e9s d\u00f6ntse el, hogy elk\u00fcldi-e \u00fajra a feladatot.
+
+CWWKC1108.override.virtual=CWWKC1108I: A {0} kezelt sz\u00e1lgy\u00e1r platformsz\u00e1lakat hoz l\u00e9tre, mivel a virtu\u00e1lis sz\u00e1lak l\u00e9trehoz\u00e1sa a Liberty kiszolg\u00e1l\u00f3 \u00e1ltal le van tiltva.
+CWWKC1108.override.virtual.explanation=A ThreadTypeOverride SPI letiltotta a virtu\u00e1lis sz\u00e1lak l\u00e9trehoz\u00e1s\u00e1t a Liberty kiszolg\u00e1l\u00f3n.
+CWWKC1108.override.virtual.useraction=Nincs teend\u0151.
 
 CWWKC1110.task.canceled=CWWKC1110I: A(z) {0} feladat, amelyet elk\u00fcldtek a(z) {1} v\u00e9grehajt\u00f3 szolg\u00e1ltat\u00e1snak, t\u00f6r\u00f6lve lett.
 CWWKC1110.task.canceled.explanation=A feladatot t\u00f6r\u00f6lt\u00e9k.

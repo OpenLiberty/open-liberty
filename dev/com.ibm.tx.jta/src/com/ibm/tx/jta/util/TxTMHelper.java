@@ -44,6 +44,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.recoverylog.spi.RecLogService;
 import com.ibm.ws.recoverylog.spi.RecLogServiceImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
@@ -66,7 +67,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
     protected static RuntimeException _resyncException;
 
-    protected RecLogServiceImpl _recLogService;
+    protected RecLogService _recLogService;
 
     protected RecoveryDirector _recoveryDirector;
 
@@ -174,7 +175,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     }
 
     @Reference
-    public void setRecoveryLogService(ServiceReference<RecLogServiceImpl> ref) {
+    public void setRecoveryLogService(ServiceReference<RecLogService> ref) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setRecoveryLogService", ref);
 
@@ -515,8 +516,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             // ConfigurationProviderManager.stop(true);
 
             _recoveryAgent.stop(false);
-
-            _recLogService.stop();
 
             // Issue #23676. The JCA component needs TX services at shutdown. If TranManagerSet.cleanup() is called,
             // as it was previously at this point, then that removes the current (shutdown) thread's reference to the TM.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,10 @@ repositories {
   if (isUsingArtifactory) {
     maven {
       credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
+        username = userProps.getProperty("artifactory.download.user")
+        password = userProps.getProperty("artifactory.download.token")
       }
-      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+      url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote"
     }
   } else {
     mavenCentral()
@@ -90,7 +90,11 @@ autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.social_fat:assemble'
 assemble.dependsOn StubbedOKDServiceLogin_ZIP
-autoFVT.doLast {
+autoFVT {
+  def oidcCommonProject = project(':com.ibm.ws.security.oauth.oidc_fat.common')
+  def socialFatProject = project(':com.ibm.ws.security.social_fat')
+  def fatCommonProject = project(':com.ibm.ws.security.fat.common')
+  doLast {
 
   def servers = [
 	"com.ibm.ws.security.social_fat.stubbedOKDServiceLogin.op",
@@ -99,7 +103,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(":com.ibm.ws.security.oauth.oidc_fat.common").projectDir, "securitykeys")
+      from new File(oidcCommonProject.projectDir, "securitykeys")
       into new File(autoFvtDir, "publish/servers/" + server)
       include 'commonKeyStore.jks', 'commonBasicKeyStore.jks', 'commonTrustStore.jks'
       include 'commonBadTrustStore.jks', 'commonConfigServerDefault.jks', 'rsa_*.jks'
@@ -110,7 +114,7 @@ autoFVT.doLast {
       include '**.jks'
     }    
     copy {
-      from project(':com.ibm.ws.security.social_fat').file('publish/files/serversettings')
+      from socialFatProject.file('publish/files/serversettings')
       into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
       include '**.xml'
     }   
@@ -120,7 +124,7 @@ autoFVT.doLast {
       include '**.xml'
     }        
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      from new File(fatCommonProject.buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
   }
@@ -131,7 +135,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application")
+      from new File(oidcCommonProject.buildDir, "test-application")
       into new File(autoFvtDir, "publish/servers/" + server + '/test-apps')
       include 'helloworld.war.zip'
       rename 'helloworld.war.zip', 'helloworld.war'
@@ -150,5 +154,5 @@ autoFVT.doLast {
     }    
 
   }   
-
+  }
 }

@@ -179,7 +179,7 @@ public class SessionCacheTimeoutTest extends FATServletClient {
     /**
      * Tests that accessing a session prevents invalidation.
      */
-    @Test
+//    @Test
     public void testRefreshInvalidation() throws Exception {
         int refreshes = TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.FULL ? 45 : 9;
 

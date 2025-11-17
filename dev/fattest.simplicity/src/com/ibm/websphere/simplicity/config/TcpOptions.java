@@ -24,6 +24,7 @@ public class TcpOptions extends ConfigElement {
     private String addressExcludeList;
     private String hostNameIncludeList;
     private String hostNameExcludeList;
+    private String inactivityTimeout;
     private Integer maxOpenConnections;
     private Integer portOpenRetries;
     private Integer soLinger;
@@ -46,6 +47,10 @@ public class TcpOptions extends ConfigElement {
 
     public String getHostNameExcludeList() {
         return hostNameExcludeList;
+    }
+
+    public String getInactivityTimeout() {
+        return inactivityTimeout;
     }
 
     public Integer getMaxOpenConnections() {
@@ -86,6 +91,11 @@ public class TcpOptions extends ConfigElement {
     }
 
     @XmlAttribute
+    public void setInactivityTimeout(String inactivityTimeout) {
+        this.inactivityTimeout = inactivityTimeout;
+    }
+
+    @XmlAttribute
     public void setMaxOpenConnections(Integer maxOpenConnections) {
         this.maxOpenConnections = maxOpenConnections;
     }
@@ -114,6 +124,8 @@ public class TcpOptions extends ConfigElement {
             buf.append("hostNameIncludeList=\"" + hostNameIncludeList + "\" ");
         if (getHostNameExcludeList() != null)
             buf.append("hostNameExcludeList=\"" + hostNameExcludeList + "\" ");
+        if (getInactivityTimeout() != null)
+            buf.append("inactivityTimeout=\"" + inactivityTimeout + "\" ");
         if (getMaxOpenConnections() != null)
             buf.append("maxOpenConnections=\"" + maxOpenConnections + "\" ");
         if (getPortOpenRetries() != null)

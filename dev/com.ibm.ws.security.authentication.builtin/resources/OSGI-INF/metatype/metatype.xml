@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2023 IBM Corporation and others.
+    Copyright (c) 2011, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -30,12 +30,13 @@
         <AD id="useDisplayNameForSecurityName" name="%useDisplayNameForSecurityName" description="%useDisplayNameForSecurityName.desc"
             required="false" type="Boolean"
             default="false" />
+	<AD id="ignoreCustomCacheKey" name="%ignoreCustomCacheKey" description="%ignoreCustomCacheKey.desc" 
+            required="false" type="Boolean" default="false"/>
         <AD id="fillInGroupInformationForHashtableLogin" name="internal" description="internal use only"
             required="false" type="Boolean"
             default="false" />
-	 	
- 	 	<AD id="CollectiveAuthenticationPlugin.target" name="internal"  description="internal use only"
- 	 		required="false" type="String" default="(name=${wlp.collective.auth.plugin})" />            
+ 	<AD id="CollectiveAuthenticationPlugin.target" name="internal"  description="internal use only"
+            required="false" type="String" default="(name=${wlp.collective.auth.plugin})" />
     </OCD>
 
     <Designate pid="com.ibm.ws.security.authentication" >
@@ -57,6 +58,7 @@
         <AD id="allowBasicAuthLookup" name="%allowBasicAuthLookup" description="%allowBasicAuthLookup.desc"
             required="false" type="Boolean"
             default="true" />
+
             
         <!-- 
               JCache configuration.

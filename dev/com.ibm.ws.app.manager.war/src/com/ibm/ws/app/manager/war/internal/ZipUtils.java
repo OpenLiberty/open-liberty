@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -87,11 +92,11 @@ public class ZipUtils {
 
     /**
      * Attempt to recursively delete a target file.
-     * 
-     * Answer null if the delete was successful.  Answer the first
+     *
+     * Answer null if the delete was successful. Answer the first
      * file which could not be deleted if the delete failed.
-     * 
-     * If the delete fails, wait 400 MS then try again.  Do this
+     *
+     * If the delete fails, wait 400 MS then try again. Do this
      * for the entire delete operation, not for each file deletion.
      *
      * A test must be done to verify that the file exists before
@@ -100,15 +105,15 @@ public class ZipUtils {
      *
      * @param file The file to delete recursively.
      *
-     * @return Null if the file was deleted.  The first file which
-     *     could not be deleted if the file could not be deleted.
+     * @return Null if the file was deleted. The first file which
+     *         could not be deleted if the file could not be deleted.
      */
     @Trivial
     public static File deleteWithRetry(File file) {
         String methodName = "deleteWithRetry";
 
         String filePath;
-        if ( tc.isDebugEnabled() ) {
+        if (tc.isDebugEnabled()) {
             filePath = file.getAbsolutePath();
             Tr.debug(tc, methodName + ": Recursively delete [ " + filePath + " ]");
         } else {
@@ -116,14 +121,14 @@ public class ZipUtils {
         }
 
         File firstFailure = delete(file);
-        if ( firstFailure == null ) {
-            if ( filePath != null ) {
+        if (firstFailure == null) {
+            if (filePath != null) {
                 Tr.debug(tc, methodName + ": Successful first delete [ " + filePath + " ]");
             }
             return null;
         }
 
-        if ( filePath != null ) {
+        if (filePath != null) {
             Tr.debug(tc, methodName + ": Failed first delete [ " + filePath + " ]: Sleep up to 50 ms and retry");
         }
 
@@ -133,96 +138,125 @@ public class ZipUtils {
         // If the first delete attempt failed, try again, up to a limit based on
         // the expected quiesce time of the zip file cache.
 
-        File secondFailure = firstFailure;
-        for ( int tryNo = 0; (secondFailure != null) && tryNo < RETRY_COUNT; tryNo++ ) {
+        File retryFailure = firstFailure;
+        int tryNo;
+        for (tryNo = 0; (retryFailure != null) && tryNo < RETRY_COUNT; tryNo++) {
             try {
                 Thread.sleep(RETRY_AMOUNT);
-            } catch ( InterruptedException e ) {
+            } catch (InterruptedException e) {
                 // FFDC
             }
-            secondFailure = delete(file);
+            retryFailure = delete(file);
         }
 
-        if ( secondFailure == null ) {
-            if ( filePath != null ) {
-                Tr.debug(tc, methodName + ": Successful first delete [ " + filePath + " ]");
+        if (retryFailure == null) {
+            if (filePath != null) {
+                Tr.debug(tc, methodName + ": Successful delete of [ " + filePath + " ] after [ " + tryNo + " ] retries");
             }
             return null;
         } else {
-            if ( filePath != null ) {
-                Tr.debug(tc, methodName + ": Failed second delete [ " + filePath + " ]");
+            if (filePath != null) {
+                Tr.debug(tc, methodName + ": Failed to delete [ " + filePath + " ]. Tried [ " + (tryNo + 1) + " ] times.");
             }
-            return secondFailure;
+            return retryFailure;
         }
     }
 
     /**
-     * Attempt to recursively delete a file.
+     * Recursively deletes the specified file or directory.
+     * <p>
+     * - If the input is a symbolic link, the link itself is deleted but not followed.<br>
+     * - If the input is a directory, all contents (files and subdirectories) are recursively deleted.<br>
+     * - The method attempts to delete all files and directories under the specified root, even after encountering failures.<br>
+     * - If any deletion fails, the method continues with the remaining files and directories.
+     * </p>
      *
-     * Do not retry in case of a failure.
-     *
-     * A test must be done to verify that the file exists before
-     * invoking this method: If the file does not exist, the
-     * delete operation will fail.
-     *
-     * @param file The file to recursively delete.
-     *
-     * @return Null if the file was deleted.  The first file which
-     *     could not be deleted if the file could not be deleted.
+     * @param file the file or directory to delete; must not be {@code null}
+     * @return {@code null} if the entire tree was successfully deleted;<br>
+     *         otherwise, returns the first {@link File} that failed to be deleted
+     * @throws IllegalArgumentException if {@code file} is {@code null}
      */
-    @Trivial
     public static File delete(File file) {
         String methodName = "delete";
 
-        String filePath;
-        if ( tc.isDebugEnabled() ) {
-            filePath = file.getAbsolutePath();
-        } else {
-            filePath = null;
+        if (file == null) {
+            throw new IllegalArgumentException("File must not be null");
         }
 
-        if ( file.isDirectory() ) {
-            if ( filePath != null ) {
-                Tr.debug(tc, methodName + ": Delete directory [ " + filePath + " ]");
-            }
+        Path path = file.toPath();
 
-            File firstFailure = null;
-
-            File[] subFiles = file.listFiles();
-            if ( subFiles != null ) {
-                for ( File subFile : subFiles ) {
-                    File nextFailure = delete(subFile);
-                    if ( (nextFailure != null) && (firstFailure == null) ) {
-                        firstFailure = nextFailure;
-                    }
-                }
-            }
-
-            if ( firstFailure != null ) {
-                if ( filePath != null ) {
-                    Tr.debug(tc, methodName +
-                        ": Cannot delete [ " + filePath + " ]" +
-                        " Child [ " + firstFailure.getAbsolutePath() + " ] could not be deleted.");
-                }
-                return firstFailure;
-            }
-        } else {
-            if ( filePath != null ) {
-                Tr.debug(tc, methodName + ": Delete simple file [ " + filePath + " ]");
-            }
-        }
-
-        if ( !file.delete() ) {
-            if ( filePath != null ) {
-                Tr.debug(tc, methodName + ": Failed to delete [ " + filePath + " ]");
-            }
-            return file;
-        } else {
-            if ( filePath != null ) {
-                Tr.debug(tc, methodName + ": Deleted [ " + filePath + " ]");
+        // If the root file or directory is a symlink, we delete the link and we're done
+        if (Files.isSymbolicLink(path)) {
+            if (!file.delete()) {
+                return file;
             }
             return null;
         }
+
+        final File[] failedFile = new File[1]; // first failure will be stored here
+
+        if (file.isDirectory()) {
+            try {
+                // Note that Files.walkFileTree does not follow symbolic links by default.
+                // We never want to follow symbolic links.
+                Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
+
+                    @Override
+                    public FileVisitResult visitFile(Path subPath, BasicFileAttributes attrs) {
+                        File f = subPath.toFile();
+                        if (!f.delete() && failedFile[0] == null) {
+                            failedFile[0] = f;
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult postVisitDirectory(Path dir, IOException exc) {
+
+                        // Log the exception if there was one, but don't stop the walk
+                        if (exc != null && tc.isDebugEnabled()) {
+                            Tr.debug(tc, methodName + ": Exception while visiting directory [ " + dir + " ]: " + exc.getMessage());
+                        }
+
+                        // Don't delete the root directory here — it will be deleted after walkFileTree finishes
+                        if (!dir.equals(path)) {
+                            File d = dir.toFile();
+                            if (!d.delete() && failedFile[0] == null) {
+                                failedFile[0] = d;
+                            }
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                    @Override
+                    public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                        if (failedFile[0] == null) {
+                            failedFile[0] = file.toFile();
+                        }
+                        return FileVisitResult.CONTINUE;
+                    }
+
+                });
+            } catch (IOException e) {
+                // An exception occurred in Files.walkFileTree when trying to access a file.
+                // Here, we do not know which file caused the failure, and the traversal stops.
+                // This is an unlikely event, since we've overridden visitFileFailed.
+                if (failedFile[0] == null) {
+                    failedFile[0] = file; // report root directory by default
+                }
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, methodName + ": Exception walking file tree - " + e.getMessage());
+                }
+            }
+        }
+
+        // Delete the root directory or file last
+        if (!file.delete()) {
+            if (failedFile[0] == null) {
+                failedFile[0] = file;
+            }
+        }
+        return failedFile[0];
     }
 
     //

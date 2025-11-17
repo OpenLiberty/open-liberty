@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,102 +54,103 @@ public class Recovery {
 				+ testNumber+" ("+decodeTestNumber(testNumber) + ")==========");
 
 		TxTestUtils.setTestResourcesFile();
+		XAResourceImpl.clear();
 
 		switch (testNumber) {
 		case 1:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			XAResourceImpl.dumpState();
 	        Runtime.getRuntime().halt(0);
 	        break;
 		case 2:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 3:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
 			break;
 		case 4:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 5:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.NORMAL, ResourceAction.KILL_ON_ROLLBACK);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.NORMAL, ResourceAction.KILL_ON_ROLLBACK);
 			break;
 		case 6:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE);
 			break;
 		case 7:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 8:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
 			break;
 		case 9:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 10:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.KILL_ON_ROLLBACK);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.KILL_ON_ROLLBACK);
 			break;
 		case 11:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.HEURISTIC_ROLLBACK_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.HEURISTIC_ROLLBACK_ON_COMMIT);
 			break;
 		case 12:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.HEURISTIC_MIXED_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.HEURISTIC_MIXED_ON_COMMIT);
 			break;
 		case 13:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.HEURISTIC_COMMIT_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.HEURISTIC_COMMIT_ON_COMMIT);
 			break;
 		case 14:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.HEURISTIC_HAZARD_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.HEURISTIC_HAZARD_ON_COMMIT);
 			break;
 		case 15:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.HEURISTIC_ROLLBACK_ON_ROLLBACK);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.HEURISTIC_ROLLBACK_ON_ROLLBACK);
 			break;
 		case 16:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.HEURISTIC_COMMIT_ON_ROLLBACK);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.HEURISTIC_COMMIT_ON_ROLLBACK);
 			break;
 		case 17:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.HEURISTIC_MIXED_ON_ROLLBACK);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.HEURISTIC_MIXED_ON_ROLLBACK);
 			break;
 		case 18:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.HEURISTIC_HAZARD_ON_ROLLBACK);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.HEURISTIC_HAZARD_ON_ROLLBACK);
 			break;
 		case 37:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.RMFAIL_ON_NTH_RECOVER);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.RMFAIL_ON_NTH_RECOVER);
 			break;
 		case 38:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.RMERR_ON_NTH_RECOVER);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.RMERR_ON_NTH_RECOVER);
 			break;
 		case 39:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.INVAL_ON_NTH_RECOVER);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.INVAL_ON_NTH_RECOVER);
 			break;
 		case 40:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.PROTO_ON_NTH_RECOVER);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.PROTO_ON_NTH_RECOVER);
 			break;
 		case 41:
-	        result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.KILL_ON_RECOVERY);
+	        result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.KILL_ON_RECOVERY);
 			break;
 		case 42:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK_AND_RECOVERY, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK_AND_RECOVERY, ResourceAction.NORMAL);
 			break;
 		case 43:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			break;
 		case 44:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			break;
 		case 45:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.RMFAIL_ON_NTH_RECOVER, ResourceAction.RMFAIL_ON_NTH_RECOVER);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.RMFAIL_ON_NTH_RECOVER, ResourceAction.RMFAIL_ON_NTH_RECOVER);
 			break;
 		case 46:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			break;
 		case 47:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			break;
 		case 48:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.RUNTIME_EXCEPTION_ON_RECOVER_RETRY, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.RUNTIME_EXCEPTION_ON_RECOVER_RETRY, ResourceAction.NORMAL);
 			break;
 		case 49:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_PREPARE, ResourceAction.KILL_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_PREPARE, ResourceAction.KILL_ON_COMMIT);
 			break;
 		case 10101:
 		case 10201:
@@ -178,19 +179,19 @@ public class Recovery {
 		case 120102:
 		case 120202:
 		case 120302:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			break;
 		case 10102:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			callServlet("SuicideServlet"+"01",url);
 			break;
 		case 10202:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			XAResourceImpl.dumpState();
 			Runtime.getRuntime().halt(0);
 			break;
 		case 10302:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			System.out.println("First Kill the other server '" + url + "'");
 			try{
 				callServlet("SuicideServlet"+"01",url);
@@ -203,38 +204,38 @@ public class Recovery {
 			Runtime.getRuntime().halt(0);
 			break;
 		case 30102:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
 			break;
 		case 30202:
 		case 50101:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
 			break;
 		case 30302:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
 			break;
 		case 40102:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 40202:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 40302:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 50201:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
 			break;
 		case 50301:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_PREPARE);
 			break;
 		case 60101:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 60201:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 60301:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 70101:
 		case 70201:
@@ -248,59 +249,59 @@ public class Recovery {
 		case 100102:
 		case 100202:
 		case 100302:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.NORMAL);
 			break;	
 		case 70102:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_2_KILLS_OTHER(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_2_KILLS_OTHER(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
 			break;
 		case 70202:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
 			break;
 		case 70302:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
 			break;
 		case 80102:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 80202:
 		case 100101:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 80302:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 90101:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
 			break;
 		case 90201:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_2_KILLS_OTHER(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_2_KILLS_OTHER(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
 			break;
 		case 90301:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_2_KILLS_BOTH(url), ResourceAction.NORMAL, ResourceAction.KILL_ON_COMMIT);
 			break;
 		case 100201:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 100301:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 110102:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 110202:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 120101:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 110302:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 120201:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK);
 			break;
 		case 120301:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK);
 			break;
 		case 130101:
 		case 130201:
@@ -317,52 +318,52 @@ public class Recovery {
 			result = "No resource to enlist";
 			break;
 		case 130102:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 130202:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 130302:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_PREPARE, ResourceAction.NORMAL);
 			break;
 		case 140102:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 140202:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 140302:
-			result = enlistResources(EXPECT_COMMIT, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_COMMIT, ResourceAction.NORMAL);
 			break;
 		case 150102:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_OTHER(url), ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 150202:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 150302:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_1_KILLS_BOTH(url), ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 160102:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_OTHER(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 160202:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 160302:
-			result = enlistResources(EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, RESOURCE_2_KILLS_BOTH(url), ResourceAction.ROLLBACK_ON_PREPARE, ResourceAction.KILL_ON_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 301101:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL);
 			callServlet("SuicideServlet"+"01",url);
 			break;
 		case 301201:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL);
 			XAResourceImpl.dumpState();
 	        Runtime.getRuntime().halt(0);
 			break;
 		case 301301:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL);
 			try{
 				callServlet("SuicideServlet"+"01",url);
 			}catch (SocketException e){
@@ -374,11 +375,11 @@ public class Recovery {
 			break;
 		case 302101:
 		case 303101:
-			result = enlistResources(EXPECT_ROLLBACK, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_ROLLBACK, ResourceAction.NORMAL);
 			break;
 		case 302201:
 		case 302301:
-			result = enlistResources(EXPECT_COMMIT, ResourceAction.NORMAL);
+			result = enlistResources(testNumber, EXPECT_COMMIT, ResourceAction.NORMAL);
 			break;
 		}
 
@@ -401,11 +402,11 @@ public class Recovery {
 		return sb.toString();
 	}
 
-	private String enlistResources(int expectedDirection, ResourceAction... resourceActions) {
-		return enlistResources(expectedDirection, null, resourceActions);
+	private String enlistResources(int testNumber, int expectedDirection, ResourceAction... resourceActions) {
+		return enlistResources(testNumber, expectedDirection, null, resourceActions);
 	}
 
-	private String enlistResources(int expectedDirection, KillProfile[] killProfiles, ResourceAction... resourceActions) {
+	private String enlistResources(int testNumber, int expectedDirection, KillProfile[] killProfiles, ResourceAction... resourceActions) {
 
 		int TMstatus = -1;
 		int resourceCount = 0;
@@ -415,8 +416,17 @@ public class Recovery {
 			TMstatus = TM.getStatus();
 
 			for (ResourceAction ra : resourceActions) {
-				final Serializable xaResInfo = XAResourceInfoFactory
-						.getXAResourceInfo(resourceCount);
+				final Serializable xaResInfo;
+
+				if (testNumber < 50) {
+					// Single process - use sequential resources
+					xaResInfo = XAResourceInfoFactory
+							.getXAResourceInfo(resourceCount);
+				} else {
+					// Multi process - use random resources
+					xaResInfo = XAResourceInfoFactory
+							.getXAResourceInfo();
+				}
 
 				final KillProfile kp;
 				if (killProfiles == null || resourceCount >= killProfiles.length) {

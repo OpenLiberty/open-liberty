@@ -92,10 +92,20 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
      */
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment env, SpringApplication app) {
+        boolean updatedEnvironmentProcessorAvailable =
+                        isClassAvailable("org.springframework.boot.EnvironmentPostProcessor");
+
+        // org.springframework.boot.EnvironmentPostProcessor was added in Spring Boot version 4.0.0-M3.
+        // They decided to keep the lagacy org.springframework.boot.env.EnvironmentPostProcessor from Spring Boot versions 4.0.0-RC1 until 4.2.0 (See https://github.com/spring-projects/spring-boot/issues/47272)
+        // Once the legacy org.springframework.boot.env.EnvironmentPostProcessor is removed, this class (com.ibm.ws.springboot.support.shutdown.FeatureAuditor) will no longer be looked up by the spring code.
+        // And the class which implements the org.springframework.boot.EnvironmentPostProcessor will only be looked up.
+        if (updatedEnvironmentProcessorAvailable) {
+            return;
+        }
         String appSpringBootVersion = SpringBootVersion.getVersion();
         boolean appHasSpring30 = ( appSpringBootVersion.compareTo("3.0.0") >= 0 );
         boolean appHasSpring20 = ( !appHasSpring30 && appSpringBootVersion.compareTo("2.0.0") >= 0 );
-        boolean appHasSpring15 = ( !appHasSpring30 && !appHasSpring20 );
+        boolean appHasSpring15 = ( appSpringBootVersion.compareTo("2.0.0") < 0 );
 
         // System.out.println("SB Version [ " + appSpringBootVersion + " ]");
         // System.out.println("SB 30 [ " + appHasSpring30 + " ]");
@@ -132,11 +142,14 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
             isClassAvailable("com.ibm.ws.springboot.support.web.server.version20.container.LibertyConfiguration");
         boolean libertyHasSpring30 =
             isClassAvailable("io.openliberty.springboot.support.web.server.version30.container.LibertyConfiguration");
+        boolean libertyHasSpring40 =
+                        isClassAvailable("io.openliberty.springboot.support.web.server.version40.container.LibertyConfiguration");
 
         String libertySpringFeature =
             (libertyHasSpring15 ? "springBoot-1.5" :
              (libertyHasSpring20 ? "springBoot-2.0" :
-              (libertyHasSpring30 ? "springBoot-3.0" : null)));
+              (libertyHasSpring30 ? "springBoot-3.0" :
+                (libertyHasSpring40 ? "springBoot-4.0": null))));
 
         // System.out.println("Liberty spring feature [ " + libertySpringFeature + " ]");
 
@@ -270,8 +283,8 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
 
         if ( appHasSpring30 ) {
             // Don't test '!libertyHasSpring30'; that may not be set.
-            if ( libertyHasSpring15 || libertyHasSpring20 ) {
-                ApplicationTr.error("error.spring3.required");
+            if ( libertyHasSpring15 || libertyHasSpring20 || libertyHasSpring40) {
+                ApplicationTr.error("error.spring3.required", "springBoot-3.0", libertySpringFeature, "3.0");
                 // "CWWKC0273E: Error: Feature springBoot-3.0 must be provisioned:
                 // Feature springBoot-1.5 or springBoot-2.0 is provisioned
                 // and the application has Spring 3.0 content."
@@ -287,13 +300,13 @@ public class FeatureAuditor implements EnvironmentPostProcessor {
 
         } else {
             // Don't test '!libertyHasSpring20'; that may not be set.
-            if ( appHasSpring20 && (libertyHasSpring15 || libertyHasSpring30) ) {
+            if ( appHasSpring20 && (libertyHasSpring15 || libertyHasSpring30 || libertyHasSpring40) ) {
                 ApplicationTr.error("error.spring.required.20", "springBoot-2.0", libertySpringFeature, "2.0");
                 // "CWWKC0253E: Error: Feature {0} must be provisioned:
                 // Feature {1} is provisioned and the application has Spring {2} content.
 
             // Don't test '!libertyHasSpring15'; that may not be set.
-            } else if ( appHasSpring15 && (libertyHasSpring20 || libertyHasSpring30) ) {
+            } else if ( appHasSpring15 && (libertyHasSpring20 || libertyHasSpring30 || libertyHasSpring40) ) {
                 ApplicationTr.error("error.spring.required.15", "springBoot-1.5", libertySpringFeature, "1.5");
                 // "CWWKC0252E: Error: Feature {0} must be provisioned:
                 // Feature {1} is provisioned and the application has Spring {2} content.

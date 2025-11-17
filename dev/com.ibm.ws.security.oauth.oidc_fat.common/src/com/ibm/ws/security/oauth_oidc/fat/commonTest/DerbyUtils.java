@@ -192,6 +192,11 @@ public class DerbyUtils {
         return checkDerbyEntry(httpString, defaultPort, clientID, null, "checkAccessToken_" + encodingType);
     }
 
+    public static String checkKeyLength(String httpString, Integer defaultPort, String clientID, String compID)
+            throws Exception {
+        return checkDerbyEntry(httpString, defaultPort, clientID, compID, "checkKeyLength");
+    }
+
     public static String checkDerbyEntry(String httpString, Integer defaultPort, String clientID, String compID,
             String checkType) throws Exception {
 

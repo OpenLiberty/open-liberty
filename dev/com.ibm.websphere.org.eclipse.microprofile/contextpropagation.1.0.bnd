@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018,2020 IBM Corporation and others.
+# Copyright (c) 2018,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -25,9 +25,9 @@ Export-Package: \
   org.eclipse.microprofile.context.spi;version=1.0
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api;1.0;EXACT}
+  @\${repo;org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api;1.0;EXACT}
 #  Repository details for switching to a snapshot instead of release candidate.
-#  @${repo;com.ibm.ws.org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api;0.20190322.204445.1;EXACT}
+#  @\${repo;com.ibm.ws.org.eclipse.microprofile.context-propagation:microprofile-context-propagation-api;0.20190322.204445.1;EXACT}
 
 -maven-dependencies: \
    dep1;groupId=org.eclipse.microprofile.context-propagation;artifactId=microprofile-context-propagation-api;version=1.0;scope=runtime

@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 import java.security.DigestOutputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -69,10 +70,10 @@ public final class MethodHashing {
     // https://issues.redhat.com/browse/RESTEASY-3585 
     private static MessageDigest getMessageDigest() throws NoSuchAlgorithmException {
 //        try {
-//            return MessageDigest.getInstance("SHA-1");
+//            return MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1);
 //        } catch (Throwable ignore) {
 //        }
-        return MessageDigest.getInstance("SHA-256");
+        return MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
     }
     // Liberty Change End
 }

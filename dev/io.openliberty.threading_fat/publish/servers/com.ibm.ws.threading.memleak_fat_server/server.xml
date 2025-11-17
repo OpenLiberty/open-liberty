@@ -1,0 +1,9 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>usr:threadingMemLeakTestFeature-1.0</feature>
+    </featureManager>
+    <include location="../fatTestPorts.xml"/>
+    <applicationMonitor updateTrigger="disabled"/>
+    <config updateTrigger="disabled"/>
+</server>

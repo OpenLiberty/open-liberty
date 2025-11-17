@@ -36,6 +36,8 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 import test.common.SharedOutputManager;
 
 
@@ -65,7 +67,7 @@ public class SignatureAlgorithmsTest {
    private static final Collection<AssertionInfo> ais = mockery.mock(Collection.class, "ais");
    private static final AssertionInfo ai = mockery.mock(AssertionInfo.class, "ai");
    private static final AbstractBinding transport = mockery.mock(AbstractBinding.class, "transport");
-   private static final String method = "sha1";
+   private static final String method = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase();
 
    @Rule
    public final TestName testName = new TestName();

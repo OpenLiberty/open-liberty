@@ -124,7 +124,8 @@ CWWKD1009.lifecycle.param.err=CWWKD1009E: The {0} method of the {1} repository \
 CWWKD1009.lifecycle.param.err.explanation=Lifecycle methods must have a single \
  entity parameter.
 CWWKD1009.lifecycle.param.err.useraction=Update the repository method to have a \
- single parameter that is an entity or an array of List of the entity.
+ single parameter that is an entity, an array of the entity, or a List of the \
+ entity.
 
 CWWKD1010.unknown.entity.attr=CWWKD1010E: An entity attribute named {0} is \
  not found on the {1} entity class for the {2} method of the {3} repository \
@@ -174,18 +175,22 @@ CWWKD1013.cde.missing.param.anno.explanation=Parameters of repository count, \
 CWWKD1013.cde.missing.param.anno.useraction=Update the repository method such \
  that all parameters correspond to entity attributes.
 
-CWWKD1014.upd.missing.param.anno=CWWKD1014E: Parameter {0} of the {1} method of \
- the {2} repository interface does not match an entity attribute. Parameters that \
- do not match an entity attribute must have one of the parameter annotations: {3}. \
- To define a condition for the restriction of query results, the parameter must \
- be annotated with the By annotation and the By annotation value must be \
- assigned to be the entity attribute name. Alternatively, enable the \
- -parameters compile option and give the parameter the same name as the entity \
- attribute.
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: The {0} method of the {1} repository \
+ is not a valid lifecycle Update method because the method has {2} parameters. \
+ Repository methods that are annotated with a lifecycle annotation must have \
+ exactly 1 parameter, which must be the entity, an array of the entity, or a \
+ List of the entity. \
+ The {0} method is also not a valid parameter-based update operation because \
+ method parameter {3} does not have an annotation ({4}) that indicates the entity \
+ attribute name. Alternatively, enable the -parameters compile option and give the \
+ parameter the same name as the entity attribute.
 CWWKD1014.upd.missing.param.anno.explanation=Parameters of repository update \
- methods must correspond to entity attributes.
+ methods must correspond to entity attributes. Alternatively, lifecycle methods \
+ must have a single entity parameter.
 CWWKD1014.upd.missing.param.anno.useraction=Update the repository method such that \
- all parameters correspond to entity attributes.
+ all parameters correspond to entity attributes. Alternatively, update the \
+ repository method to have a single parameter that is an entity, an array of the \
+ entity, or a List of the entity.
 
 CWWKD1015.null.entity.param=CWWKD1015E: The {0} method of the {1} repository \
  interface cannot accept a null entity.
@@ -219,7 +224,7 @@ CWWKD1018.confl.special.param.useraction=Update the repository to not use \
 
 CWWKD1019.mixed.positional.named=CWWKD1019E: The {0} method of the {1} repository \
  interface cannot have a query that mixes positional and named parameters. \
- The interface defines a mix of {2} positional parameters and
+ The interface defines a mix of {2} positional parameters and \
  {3} named parameters {4} for the Query annotation value: {5}. A query with \
  positional parameters must reference each parameter by its ordinal value, \
  starting with ?1, and the method parameters must not have the Param annotation. \
@@ -296,15 +301,18 @@ CWWKD1026.ignore.case.not.text.useraction=Ensure the sort criteria is applied \
  to the correct entity attribute and remove the instruction to ignore case if the \
  entity attribute does not represent text.
 
-CWWKD1027.anno.missing.attr.name=CWWKD1027E: Parameter {0} of the {1} method of \
- the {2} repository interface is annotated with an {3} annotation that does not \
- specify an entity attribute name as its value. The annotation must either specify \
- the entity attribute name as its value, or the -parameters compile option must be \
- enabled and the parameter must have the same name as the entity attribute.
-CWWKD1027.anno.missing.attr.name.explanation=Parameters of repository update \
- methods must correspond to entity attributes.
-CWWKD1027.anno.missing.attr.name.useraction=Update the repository method to \
- indicate the entity attribute to which the parameter pertains.
+CWWKD1027.datastore.lacks.java.comp=CWWKD1027E: One or more repository interfaces \
+ ({0}) from the {1} application artifact specify a {2} dataStore value that \
+ does not match a data source resource reference or persistence unit reference \
+ because it lacks a java:comp/env/ namespace prefix. Consider changing the \
+ Repository annotation to specify {3}.
+CWWKD1027.datastore.lacks.java.comp.explanation=JNDI names of data source \
+ resource references and persistence unit references must include a java: \
+ namespace prefix.
+CWWKD1027.datastore.lacks.java.comp.useraction=Ensure that the data store value \
+ of the Repository annotation includes a java: namespace prefix when the value \
+ indicates the JNDI name of a data source resource reference or persistence unit \
+ reference.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: The {0} method of the {1} repository \
  interface requests the first {2} results, which exceeds the maximum allowed \
@@ -323,8 +331,8 @@ CWWKD1029.first.neg.or.zero.useraction=Update the repository method to specify \
  a positive maximum number of results.
 
 CWWKD1030.ql.lacks.entity=CWWKD1030E: The entity name is missing from the {0} \
- query that is specified for the {1} method of the {2} repository. In Jakarta \
- Data Query Language, {3} queries should be formed like: {4}.
+ query that is specified for the {1} method of the {2} repository. \
+ For {3} queries, use the form: {4}.
 CWWKD1030.ql.lacks.entity.explanation=The query contains a clause that requires \
  the entity name.
 CWWKD1030.ql.lacks.entity.useraction=Update the query for repository method to \
@@ -361,13 +369,13 @@ CWWKD1033.ql.orderby.disallowed.explanation=The ORDER BY clause is incompatible 
 CWWKD1033.ql.orderby.disallowed.useraction=Replace the ORDER BY clause with \
  annotations that specify the sort criteria.
 
-CWWKD1034.ql.where.required=CWWKD1034E: The query that is specified by the \
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: The query that is specified by the \
  {0} method of the {1} repository interface must end in a WHERE clause because \
  the method returns {2}. There WHERE clause ends at position {3}, but the \
  length of the query is {4}. The query is: {5}.
-CWWKD1034.ql.where.required.explanation=A WHERE clause is required when \
+CWWKD1034.ql.req.end.in.where.explanation=A WHERE clause is required when \
  using cursor-based pagination.
-CWWKD1034.ql.where.required.useraction=Add a WHERE clause to the query.
+CWWKD1034.ql.req.end.in.where.useraction=Add a WHERE clause to the query.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: A page request with the {0} pagination \
  mode must not be supplied to the {1} method of the {2} repository interface \
@@ -613,9 +621,9 @@ CWWKD1060.name.out.of.scope.useraction=Update the Repository annotation to \
 
 CWWKD1061.comp.name.in.ejb=CWWKD1061E: One or more repository interfaces ({0}) \
  that are defined in the {1} enterprise bean module of the {2} application \
- configure a {2} value for the {3} attribute. However, {4} names are not accessible \
+ configure a {3} value for the {4} attribute. However, {5} names are not accessible \
  to enterprise bean modules. Use a name from one of the following \
- namespaces: {5}.
+ namespaces: {6}.
 CWWKD1061.comp.name.in.ejb.explanation=The specified namespace is not accessible \
  to the enterprise bean module where the repository interface is defined.
 CWWKD1061.comp.name.in.ejb.useraction=Update the Repository annotation to \
@@ -1177,3 +1185,38 @@ CWWKD1116.resource.unavailable.explanation=A resource that the repositories \
  require did not become available.
 CWWKD1116.resource.unavailable.useraction=Verify the configuration of resources \
  that the repositories use.
+
+CWWKD1117.anno.constraint.conflict=CWWKD1117E: Parameter {0} of the {1} method \
+ of the {2} repository interface cannot be annotated with the annotations: {3}. \
+ One or more of the annotations are incompatible with the {4} type of the \
+ repository method parameter.
+CWWKD1117.anno.constraint.conflict.explanation=Constraint and its subtypes \
+ cannot be combined with parameter annotations other than the By annotation.
+CWWKD1117.anno.constraint.conflict.useraction=Remove the conflicting annotation \
+ or specify the entity attribute type instead of a Constraint type.
+
+CWWKD1118.param.anno.conflict=CWWKD1118E: Parameter {0} of the {1} method \
+ of the {2} repository interface cannot be annotated with the annotations: {3}. \
+ Two or more of the annotations conflict with each other.
+CWWKD1118.param.anno.conflict.explanation=The combination of parameter \
+ annotations is not valid.
+CWWKD1118.param.anno.conflict.useraction=Remove one or more of the conflicting \
+ annotations from the repository method parameter.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: The {0} method of the {1} repository \
+ interface retrieves pages that do not include a total count of elements and pages \
+ because the query contains the {2} keyword. The full query is: {3}.
+CWWKD1119.keyword.prevents.count.explanation=The keyword is incompatible with \
+ the ability to obtain a total count of elements and pages.
+CWWKD1119.keyword.prevents.count.useraction=Replace the query with one that \
+ does not use the keyword or avoid requesting a total count of elements and pages.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: The {0} method of the {1} repository \
+ interface specifies a query that includes the {2} keyword, which is incompatible \
+ with cursor-based pagination. Queries for cursor-based pagination must end with \
+ a WHERE clause and must not include subqueries. The query is: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Keywords such as GROUP BY, HAVING, \
+ ORDER BY, EXCEPT, INTERSECT, and UNION are not compatible with cursor-based \
+ pagination.
+CWWKD1120.cursor.keyword.mismatch.useraction=Rewrite the query to include only \
+ the clauses: SELECT, FROM, and WHERE.

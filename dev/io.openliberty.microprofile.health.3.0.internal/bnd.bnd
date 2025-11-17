@@ -42,17 +42,17 @@ Import-Package: \
   *
 
 Export-Package: \
-	io.openliberty.microprofile.health.internal.common,\
-	io.openliberty.microprofile.health30.impl,\
-	io.openliberty.microprofile.health30.spi.impl;version=1.0
+    io.openliberty.microprofile.health.internal.common,\
+    io.openliberty.microprofile.health30.impl,\
+    io.openliberty.microprofile.health30.spi.impl;version=1.0
 
 Private-Package: \
-	io.openliberty.microprofile.health.resources,\
-	com.ibm.ws.microprofile.health.internal,\
-	com.ibm.ws.microprofile.health.services,\
-	com.ibm.ws.microprofile.health.services.impl,\
-	com.ibm.ws.microprofile.health.util,\
-	io.openliberty.microprofile.health30.*
+    io.openliberty.microprofile.health.resources,\
+    com.ibm.ws.microprofile.health.internal,\
+    com.ibm.ws.microprofile.health.services,\
+    com.ibm.ws.microprofile.health.services.impl,\
+    com.ibm.ws.microprofile.health.util,\
+    io.openliberty.microprofile.health30.*
 
 Include-Resource: \
     META-INF/services=resources/META-INF/services, \
@@ -95,7 +95,7 @@ testsrc: test/src
         org.hamcrest:hamcrest-all;version=1.3, \
         org.jmock:jmock-junit4;version=2.5.1, \
         org.jmock:jmock;version=2.5.1, \
-        org.glassfish:javax.json;version=1.0.4, \
+        com.ibm.ws.org.glassfish.json.1.0;version=latest, \
         com.ibm.ws.org.slf4j.api;version=latest, \
         com.ibm.ws.org.slf4j.jdk14;version=latest, \
         ./resources/;version=file

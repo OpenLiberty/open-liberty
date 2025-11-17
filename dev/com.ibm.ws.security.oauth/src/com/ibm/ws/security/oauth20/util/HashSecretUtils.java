@@ -31,7 +31,7 @@ import com.ibm.ws.common.encoder.Base64Coder;
 public class HashSecretUtils {
     private static final TraceComponent tc = Tr.register(HashSecretUtils.class);
 
-    private static boolean fips140_3Enabled = CryptoUtils.isFips140_3EnabledWithBetaGuard();
+    private static boolean fips140_3Enabled = CryptoUtils.isFips140_3Enabled();
 
     /*
      * Hash information for client secret

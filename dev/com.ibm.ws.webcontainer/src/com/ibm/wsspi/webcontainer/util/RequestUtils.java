@@ -707,7 +707,7 @@ public class RequestUtils {
     }
 
    /**
-    * Used to retrive the "true" uri that represents the current request.
+    * Used to retrieve the "true" uri that represents the current request.
     * If include request_uri attribute is set, it returns that value.
     * Otherwise, it returns the default of req.getRequestUri
     * @param req

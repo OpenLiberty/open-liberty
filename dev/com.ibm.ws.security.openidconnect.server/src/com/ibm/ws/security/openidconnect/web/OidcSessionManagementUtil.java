@@ -20,6 +20,7 @@ import com.ibm.oauth.core.internal.OAuthUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.encoder.Base64Coder;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Class used to facilitate compliance with the OpenID Connect Session
@@ -57,7 +58,7 @@ public class OidcSessionManagementUtil {
 
         String newState = null;
         try {
-            String hashAlg = "SHA-256";
+            String hashAlg = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
             MessageDigest messageDigest = MessageDigest.getInstance(hashAlg);
             byte[] digest = messageDigest.digest(stringToHash.getBytes(ENCODING));
             if (digest != null) {

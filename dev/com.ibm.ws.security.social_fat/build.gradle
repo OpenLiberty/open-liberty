@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2024 IBM Corporation and others.
+ * Copyright (c) 2017,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,7 +40,9 @@ dependencies {
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble'
 
-autoFVT.doLast {
+autoFVT {
+  def securityFatCommonProject = project(':com.ibm.ws.security.fat.common')
+  doLast {
 
   def servers = [
 	"com.ibm.ws.security.social_fat"
@@ -48,14 +50,14 @@ autoFVT.doLast {
 
   servers.each { server ->
     copy { 
-      from new File(project(":com.ibm.ws.security.fat.common").buildDir, "test-application/testmarker.war")
+      from new File(securityFatCommonProject.buildDir, "test-application/testmarker.war")
       into new File(autoFvtDir, "publish/servers/" + server + "/dropins")
     }
     copy { 
-      from new File(project(":com.ibm.ws.security.fat.common").buildDir, "test-application/formlogin.war")
+      from new File(securityFatCommonProject.buildDir, "test-application/formlogin.war")
       into new File(autoFvtDir, "publish/servers/" + server + "/apps")
     }
 
   }
-  
+  }
 }

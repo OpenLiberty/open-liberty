@@ -27,7 +27,7 @@ instrument.classesIncludes: \
 publish.wlp.jar.suffix: dev/api/stable
 
 -includeresource: \
-   @${repo;org.crac:crac;1.4.0;EXACT},\
+   @\${repo;org.crac:crac;1.4.0;EXACT},\
    org/crac=${bin}/org/crac
 
 -buildpath: \

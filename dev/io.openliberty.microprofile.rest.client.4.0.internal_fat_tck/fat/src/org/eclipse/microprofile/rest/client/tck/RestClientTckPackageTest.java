@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,13 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 import componenttest.topology.utils.tck.TCKUtilities;
+import componenttest.topology.utils.tck.TCKResultsConstants;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -49,14 +56,34 @@ public class RestClientTckPackageTest {
                                                                MicroProfileActions.MP70_EE10, // 4.0+EE10
                                                                MicroProfileActions.MP70_EE11); // 4.0+EE11
 
-    @Server(SERVER_NAME)
-    public static LibertyServer server;
+    public static LibertyServer server = LibertyServerFactory.getLibertyServer(SERVER_NAME);
+
+    // Define fipsEnabled
+    private static final boolean fipsEnabled;
+
+    static {
+        boolean isFipsEnabled = false;
+        try {
+            isFipsEnabled = server.isFIPS140_3EnabledAndSupported();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        fipsEnabled = isFipsEnabled;
+    }
 
     @BeforeClass
     public static void setup() throws Exception {
         String javaVersion = System.getProperty("java.version");
         Log.info(RestClientTckPackageTest.class, "setup", "javaVersion: " + javaVersion);
         System.out.println("java.version = " + javaVersion);
+        Log.info(RestClientTckPackageTest.class, "setup", "fipsEnabled: " + fipsEnabled);
+        if (fipsEnabled) {
+            Path cwd = Paths.get(".");
+            Log.info(RestClientTckPackageTest.class, "setup", "cwd = " + cwd.toAbsolutePath());
+            Path fipsFile = Paths.get("publish/tckRunner/tck/tck-suite.xml-fips");
+            Path tckSuiteFile = Paths.get("publish/tckRunner/tck/tck-suite.xml");
+            Files.copy(fipsFile, tckSuiteFile, StandardCopyOption.REPLACE_EXISTING);
+        }       
 //        if (javaVersion.startsWith("1.8")) {
 //            useTCKSuite("java8");
 //        } else if (TestModeFilter.shouldRun(TestMode.FULL)) {
@@ -86,8 +113,9 @@ public class RestClientTckPackageTest {
     public void testRestClient40Tck() throws Exception {
         // Skip running on the windows platform when not running locally.
         if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
-            TCKRunner.build(server, Type.MICROPROFILE, "Rest Client")
+            TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.REST_CLIENT)
                             .withDefaultSuiteFileName()
+                            .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                             .runTCK();
         }
     }

@@ -108,7 +108,7 @@ public class oAuth20MongoSetup extends HttpServlet {
     final static String ALGORITHM = "checkAlgorithm";
     final static String ITERATION = "checkIteration";
     final static String CLEAR_CLIENTS = "clearClients";
-
+    final static String KEYLENGTH = "checkKeyLength";
     // must match constants in OidcBaseClient
     public static final String HASH_SALT = "salt"; // must match constants in OidcBaseClient
     public static final String HASH_ALGORITHM = "hash_alg"; // must match constants in OidcBaseClient
@@ -136,9 +136,10 @@ public class oAuth20MongoSetup extends HttpServlet {
             String getSalt = request.getParameter(SALT);
             String getAlgorithm = request.getParameter(ALGORITHM);
             String getIteration = request.getParameter(ITERATION);
+            String getKeyLength = request.getParameter(KEYLENGTH);
             String hashLen = request.getParameter(HASH_LENGTH);
             String iterations = request.getParameter(HASH_ITERATIONS);
-            
+
             connect(request.getParameter(DB_NAME), request.getParameter(DB_USER), request.getParameter(DB_HOST),
                     request.getParameter(DB_PORT), request.getParameter(DB_PWD));
 
@@ -221,6 +222,17 @@ public class oAuth20MongoSetup extends HttpServlet {
                 dropClientConfigTableMongo();
             } else if ("true".equals(dropDB)) {
                 dropDatabase();
+            } else if (getKeyLength != null) {
+                String clientID = request.getParameter(CLIENT_ID_WEB);
+                String compID = request.getParameter(COMP_ID);
+                System.out.println("Request to get key length for client " + clientID + " compId " + compID);
+                String type = getKeyLength(clientID, compID);
+                System.out.println("Key Length is " + type);
+
+                PrintWriter writer = response.getWriter();
+                writer.write(type);
+                writer.flush();
+                writer.close();
             } else { // default setup
                 checkAndDrop();
                 System.out.println("Precheck on mongoDB -- ");
@@ -473,6 +485,27 @@ public class oAuth20MongoSetup extends HttpServlet {
             return "null_salt";
         }
         return salt;
+
+    }
+
+    private String getKeyLength(String clientId, String providerId) throws Exception {
+
+        DBObject dbo = getDBObject(clientId, providerId);
+
+        if (dbo == null) {
+            System.out.println("getKeyLength: Could not find client " + clientId + " providerId " + providerId);
+            return "null_client";
+        }
+
+        String cs = (String) dbo.get(METADATA);
+
+        JSONObject clientMetadata = JSONObject.parse(cs);
+        String keyLen = (String) clientMetadata.get(HASH_LENGTH);
+
+        if (keyLen == null) {
+            return "null_hash_len";
+        }
+        return keyLen;
 
     }
 

@@ -15,6 +15,7 @@ package com.ibm.ws.security.common.jwk.impl;
 import java.security.Key;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class JwkKidBuilder {
 
@@ -26,7 +27,7 @@ public class JwkKidBuilder {
         if (cert != null && cert.getEncoded() != null) {
             byte[] certhash = null;
             try {
-                certhash = MessageDigest.getInstance("SHA-256").digest(cert.getEncoded());
+                certhash = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256).digest(cert.getEncoded());
             } catch (NoSuchAlgorithmException e) {
             }
             if (certhash != null) {

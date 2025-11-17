@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: A k\u00f6vetkez\u0151 \u00fczenetek rejt
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Az \u00fczenetek \u00fagy vannak be\u00e1ll\u00edtva, hogy ne legyenek be\u00edrva a console.log \u00e9s messages.log f\u00e1jlokba. Ezek a trace.log f\u00e1jlba ker\u00fclnek. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nem kell semmit tennie
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: A messages.log kimeneti form\u00e1tuma  '{0}' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: A messages.log kimeneti form\u00e1tuma  '' {0} '' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
 MESSAGE_FORMAT_UPDATED.explanation=A messages.log kimeneti form\u00e1tuma friss\u00edt\u00e9sre ker\u00fclt.
 MESSAGE_FORMAT_UPDATED.useraction=Nincs teend\u0151.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: A konzol kimeneti form\u00e1tuma '{0}' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: A konzol kimeneti form\u00e1tuma  '' {0} '' be\u00e1ll\u00edt\u00e1sra lett friss\u00edtve.
 CONSOLE_FORMAT_UPDATED.explanation=A konzol kimeneti form\u00e1tuma friss\u00edt\u00e9sre ker\u00fclt.
 CONSOLE_FORMAT_UPDATED.useraction=Nincs teend\u0151.
 
@@ -169,6 +169,10 @@ LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Adjon meg 1 perces vagy nagyo
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Legal\u00e1bb egy accessLogging logFormat mez\u0151 eset\u00e9n hi\u00e1nyzik a fejl\u00e9c neve: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=A JSON napl\u00f3z\u00e1s a logFormat attrib\u00fatumot haszn\u00e1lja az accessLogging sor\u00e1n, amikor kiv\u00e1lasztja a szerepeltetett http_access.log \u00fczenetmez\u0151ket. A(z) %i vagy %o mez\u0151k haszn\u00e1latakor az accessLogging logFormat attrib\u00fatumban meg kell adni egy fejl\u00e9cnevet.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Adjon meg a mez\u0151h\u00f6z egy fejl\u00e9cnevet az accessLogging logFormat attrib\u00fatumban.
+
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: A napl\u00f3kat a nagy mennyis\u00e9g miatt korl\u00e1tozz\u00e1k.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=A napl\u00f3kat jelenleg a nagy mennyis\u00e9g miatt korl\u00e1tozz\u00e1k.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=A throttleMaxMessagesPerWindow napl\u00f3z\u00e1si attrib\u00fatum be\u00e1ll\u00edt\u00e1s\u00e1val oldja meg a t\u00falzott napl\u00f3z\u00e1st okoz\u00f3 probl\u00e9m\u00e1kat, vagy n\u00f6velje a napl\u00f3z\u00e1si k\u00fcsz\u00f6b\u00e9rt\u00e9ket. 
 
 FFDC_FILE_DELETION=TRAS3014I: T\u00f6r\u00f6lt {0} FFDC f\u00e1jlok a be\u00e1ll\u00edtott maxFfdcAge \u00e9rt\u00e9k alapj\u00e1n.
 FFDC_FILE_DELETION.explanation=Az FFDC ki\u00fcr\u00edt\u00e9s sor\u00e1n t\u00f6r\u00f6lt FFDC f\u00e1jlok sz\u00e1ma.

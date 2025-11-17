@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.http.monitor;
 
+
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -17,13 +18,17 @@ import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.ws.app.manager.module.DeployedAppInfoFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.wsspi.application.handler.ApplicationTypeSupported;
+
 
 @Component(service = { ApplicationStateListener.class }, configurationPid = "com.ibm.ws.monitor.internal.MonitoringFrameworkExtender", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 public class MonitorAppStateListener implements ApplicationStateListener{
@@ -36,8 +41,29 @@ public class MonitorAppStateListener implements ApplicationStateListener{
      * By Default, without any monitor-1.0 filters on, all monitor components are enabled
      */
     private static volatile boolean isHTTPEnabled = true;
-	
-
+    
+    /*
+     * Targeted with (type=spring)
+     * Cheap way of using static, but ServletFilter needs to know.
+     */
+    private static ApplicationTypeSupported springApplicationTypeSupported = null;
+    
+    
+    @Reference(target = "(type=spring)")
+    public void setApplicationTypeSupported(ApplicationTypeSupported appTypeSupported) {
+    	springApplicationTypeSupported = appTypeSupported;
+    }
+    
+    public void unsetApplicationTypeSupported(ApplicationTypeSupported appTypeSupported) {
+    	if (springApplicationTypeSupported == appTypeSupported) {
+    		springApplicationTypeSupported = null;
+    	}
+    }
+    
+    public static boolean isSpringFeatureEnabled() {
+    	return (springApplicationTypeSupported != null);
+    }
+    
     public static boolean isHTTPEnabled() {
         return isHTTPEnabled;
     }

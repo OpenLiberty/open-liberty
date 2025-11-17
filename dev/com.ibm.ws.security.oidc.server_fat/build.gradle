@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,13 +33,20 @@ dependencies {
  **
  ******************************************************************
  ******************************************************************/
-assemble.dependsOn ':com.ibm.ws.security.fat.common:assemble'
-assemble.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
-assemble.dependsOn ':com.ibm.ws.security.oauth_test.custom_store:assemble'
-assemble.dependsOn ':com.ibm.ws.security.oauth_test.custom_servlets:assemble'
-assemble.dependsOn ':com.ibm.ws.security.oauth_test.servlets:assemble'
-assemble.doLast {
+assemble {
+  dependsOn ':com.ibm.ws.security.fat.common:assemble'
+  dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
+  dependsOn ':com.ibm.ws.security.oauth_test.custom_store:assemble'
+  dependsOn ':com.ibm.ws.security.oauth_test.custom_servlets:assemble'
+  dependsOn ':com.ibm.ws.security.oauth_test.servlets:assemble'
 
+  def fat_commonProject = project(':com.ibm.ws.security.fat.common')
+  def oidc_commonProject = project(':com.ibm.ws.security.oauth.oidc_fat.common')
+  def custom_servletsProject = project(':com.ibm.ws.security.oauth_test.custom_servlets')
+  def custom_storeProject = project(':com.ibm.ws.security.oauth_test.custom_store')
+  def test_servletsProject = project(':com.ibm.ws.security.oauth_test.servlets')
+
+  doLast {
   /****************************************************************
    *
    * Since this project is not a FAT project (fat.project: true), 
@@ -68,13 +75,13 @@ assemble.doLast {
   servers.each { server ->
   
     copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthclient.zip')
+      from new File(oidc_commonProject.buildDir, 'test-application/oauthclient.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
       rename 'oauthclient.zip', 'oauthclient.war'
     }
 
     copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthtaidemo.ear')
+      from new File(oidc_commonProject.buildDir, 'test-application/oauthtaidemo.ear')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
 
@@ -85,7 +92,7 @@ assemble.doLast {
     }
 
     copy {
-      from new File(project(':com.ibm.ws.security.oauth_test.servlets').buildDir, 'test-application/oAuth20DerbySetup.war')
+      from new File(test_servletsProject.buildDir, 'test-application/oAuth20DerbySetup.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
 
@@ -96,7 +103,7 @@ assemble.doLast {
     }
 
     copy {
-      from new File(project(':com.ibm.ws.security.oauth_test.custom_servlets').buildDir, 'test-application/oAuth20MongoSetup.war')
+      from new File(custom_servletsProject.buildDir, 'test-application/oAuth20MongoSetup.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
     }
 
@@ -107,7 +114,7 @@ assemble.doLast {
     }
 
 	copy {
-	  from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, '/securitykeys')
+	  from new File(oidc_commonProject.projectDir, '/securitykeys')
 	  into new File(autoFvtDir, 'publish/servers/' + server)
 	  include 'commonKeyStore.jks'
 	  include 'commonSslServerTrust.jks'
@@ -116,7 +123,7 @@ assemble.doLast {
 	}
 
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      from new File(fat_commonProject.buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
   }
@@ -132,13 +139,13 @@ assemble.doLast {
   ]
   servers.each { server ->
     copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, "test-application/testMediator.zip")
+      from new File(oidc_commonProject.buildDir, "test-application/testMediator.zip")
       into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
       rename 'testMediator.zip', 'testMediator.jar'
     }
 
 	copy {
-	  from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+	  from new File(oidc_commonProject.projectDir, "/securitykeys")
 	  into new File(autoFvtDir, 'publish/servers/' + server)
 	  include 'commonOpKeyStore.jks'
 	}
@@ -157,7 +164,7 @@ assemble.doLast {
   ]
   servers.each { server ->
 	copy {
-	  from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, "/securitykeys")
+	  from new File(oidc_commonProject.projectDir, "/securitykeys")
 	  into new File(autoFvtDir, 'publish/servers/' + server)
 	  include 'commonBasicKeyStore.jks'
 	  include 'commonTrustStore.jks'
@@ -174,17 +181,17 @@ assemble.doLast {
    *
    ****************************************************************/
   copy { 
-    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
+    from new File(custom_storeProject.buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
     into new File(autoFvtDir, 'publish/bundles')
     rename 'com.ibm.ws.security.oauth_test.custom_store.jar', 'security.custom.store_1.0.jar'
   }
   copy { 
-    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
+    from new File(custom_storeProject.buildDir, 'com.ibm.ws.security.oauth_test.custom_store.jar')
     into new File(autoFvtDir, 'publish/shared')
     rename 'com.ibm.ws.security.oauth_test.custom_store.jar', 'security.custom.store_1.0.jar'
   }
   copy { 
-    from new File(project(':com.ibm.ws.security.oauth_test.custom_store').projectDir, 'publish/features/customStoreSample-1.0.mf')
+    from new File(custom_storeProject.projectDir, 'publish/features/customStoreSample-1.0.mf')
     into new File(autoFvtDir, 'publish/features')
   }
   
@@ -197,5 +204,6 @@ assemble.doLast {
     from configurations.mongoJavaDriver
     into new File(autoFvtDir, 'publish/shared')
     rename 'mongo-java-driver-.*.jar', 'mongo-java-driver.jar'
+  }
   }
 }

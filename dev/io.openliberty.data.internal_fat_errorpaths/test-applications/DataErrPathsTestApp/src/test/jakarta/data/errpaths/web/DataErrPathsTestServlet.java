@@ -569,7 +569,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  + " a PageRequest.");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1022E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardPage"))
                 throw x;
         }
@@ -588,7 +588,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities but does not return them");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardLimited"))
                 throw x;
         }
@@ -636,7 +636,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities but does not return them");
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardOrdered"))
                 throw x;
         }
@@ -655,7 +655,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " deletes entities and returns an update count: " + count);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1097E:") ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
                 !x.getMessage().contains("discardSorted"))
                 throw x;
         }
@@ -891,6 +891,26 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an appropriate error is raised when a repository method attempts
+     * to use an EXCEPT query with cursor-based pagainstion.
+     */
+    @Test
+    public void testExceptWithCursorPagination() {
+        try {
+            CursoredPage<Voter> page;
+            page = voters.withNameNotAddress("Vincent",
+                                             "770 W Silver Lake Dr NE, Rochester, MN 55906",
+                                             PageRequest.ofSize(5));
+            fail("Obtained a cursored page for an EXCEPT query. " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1120E:") ||
+                !x.getMessage().contains("EXCEPT"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised when an exists Query by Method Name method
      * tries to return a true/false value as int.
      */
@@ -1093,6 +1113,45 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an appropriate error is raised when a repository method attempts
+     * to use a GROUP BY query for cursor-based pagainstion.
+     */
+    @Test
+    public void testGroupByQueryForCursorPagination() {
+        try {
+            CursoredPage<Voter> page1 = //
+                            voters.groupedByAddress(PageRequest.ofSize(4));
+            fail("Obtained a cursored page for a GROUP BY query. " + page1);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1120E:") ||
+                !x.getMessage().contains("FROM Voter v GROUP BY v.address"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised for the invalid combination of the
+     * IgnoreCase and In keywords on a Query by Method Name method.
+     */
+    @Test
+    public void testIgnoreCaseIn() {
+        Set<String> addresses = Set.of("401 9th Ave NW, Rochester, MN 55901",
+                                       "88 23RD AVE SW, Rochester, MN 55902");
+        try {
+            List<Voter> found = voters.findByAddressIgnoreCaseIn(addresses);
+            fail("Should not be able to combine IgnoreCase and In keywords." +
+                 " Found: " + found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1074E:") ||
+                !x.getMessage().contains("IgnoreCase") ||
+                !x.getMessage().contains("In"))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised for a repository insert method with a parameter
      * that can insert multiple entities and a return type that can only return
      * one inserted entity.
@@ -1217,6 +1276,26 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1018E") ||
                 !x.getMessage().contains("occupying"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised when a repository method attempts
+     * to use an INTERSECT query for cursor-based pagainstion.
+     */
+    @Test
+    public void testIntersectionForCursorPagination() {
+        try {
+            CursoredPage<Voter> page;
+            page = voters.withNameAndAddress("Vincent",
+                                             "770 W Silver Lake Dr NE, Rochester, MN 55906",
+                                             PageRequest.ofSize(5));
+            fail("Obtained a cursored page for an INTERSECT query. " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1120E:") ||
+                !x.getMessage().contains("INTERSECT"))
                 throw x;
         }
     }
@@ -1371,7 +1450,7 @@ public class DataErrPathsTestServlet extends FATServlet {
                  " multiple parameters. Result: " + list);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1009E") ||
+                !x.getMessage().startsWith("CWWKD1014E") ||
                 !x.getMessage().contains("changeBoth"))
                 throw x;
         }
@@ -1558,6 +1637,26 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Supply a null Limit results in NullPointerException.
+     */
+    @Test
+    public void testNullLimit() {
+        try {
+            List<Voter> found = voters
+                            .findBySsnLessThanEqualOrderBySsnDesc(999999999, null);
+            fail("Repository method with a null Limit must raise" +
+                 " NullPointerException. Instead: " + found);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Limit.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
      * BasicRepository.findAll(PageRequest, null) must raise NullPointerException.
      */
     @Test
@@ -1589,6 +1688,47 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() != null &&
                 x.getMessage().startsWith("CWWKD1087E") &&
                 x.getMessage().contains(PageRequest.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Attempt to supply a NULL Sort parameter.
+     */
+    @Test
+    public void testNullSortArgument() {
+        Page<Voter> page;
+        try {
+            page = voters.selectByName("Vincent",
+                                       PageRequest.ofSize(9),
+                                       null);
+            fail("Obtained a page sorted by NULL: " + page);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Sort.class.getName()))
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * Attempt to supply a NULL varargs Sort parameter.
+     */
+    @Test
+    public void testNullSortArray() {
+        Page<Voter> page;
+        try {
+            page = voters.selectAll(PageRequest.ofSize(3),
+                                    (Sort[]) null);
+            fail("Obtained a page sorted by NULL: " + page);
+        } catch (NullPointerException x) {
+            if (x.getMessage() != null &&
+                x.getMessage().startsWith("CWWKD1087E") &&
+                x.getMessage().contains(Sort.class.getName() + "[]"))
                 ; // expected
             else
                 throw x;
@@ -1747,9 +1887,12 @@ public class DataErrPathsTestServlet extends FATServlet {
             List<Voter> found = voters.sortedByEndOfAddress();
             fail("OrderBy annotation with invalid function must cause an error." +
                  " Instead, the repository method returned: " + found);
-        } catch (MappingException x) {
+        } catch (Exception x) {
+            // Jakarta Data cannot filter out invalid functions without
+            // inadvertently filtering out some valid functions as well.
+            // So instead, we let the Jakarta Persistence provider raise the
+            // error,
             if (x.getMessage() != null &&
-                x.getMessage().startsWith("CWWKD1010E") &&
                 x.getMessage().contains("last5DigitsOf(address)"))
                 ; // expected
             else
@@ -2146,6 +2289,26 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1015E") ||
                 !x.getMessage().contains("addOrUpdate"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised when a repository method attempts
+     * to use a UNION query for cursor-based pagainstion.
+     */
+    @Test
+    public void testUnionForCursorPagination() {
+        try {
+            CursoredPage<Voter> page;
+            page = voters.unionOfAddresses("701 Silver Creek Rd NE, Rochester, MN 55906",
+                                           "770 W Silver Lake Dr NE, Rochester, MN 55906",
+                                           PageRequest.ofSize(4));
+            fail("Obtained a cursored page for a UNION query. " + page);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1120E:") ||
+                !x.getMessage().contains("UNION"))
                 throw x;
         }
     }

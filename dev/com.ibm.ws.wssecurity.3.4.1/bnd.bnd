@@ -41,6 +41,10 @@ Private-Package:\
  
 Import-Package: \
   javax.servlet.*;resolution:=optional;version="[2.6.0,3.0.0)",\
+  org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)",\
+  org.apache.xml.security.*;version="[2.3.0,5.0.0)",\
+  org.apache.wss4j.*;version="[2.3.0,5.0.0)",\
+  javax.xml.soap;version=!,\
   *
  
  -dsannotations:com.ibm.ws.wssecurity.internal.WSSecurityClientConfiguration
@@ -121,8 +125,8 @@ instrument.classesExcludes: com/ibm/ws/wssecurity/resources/*.class
 	com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3;version=latest,\
 	com.ibm.ws.org.apache.xml.resolver.1.2;version=latest,\
 	com.ibm.ws.org.joda.time.2.9.9;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest,\
-	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
+	io.openliberty.org.opensaml.opensaml.core;version=latest,\
+	io.openliberty.net.shibboleth.utilities.java.support;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.prereq.wsdl4j.1.6.2;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\

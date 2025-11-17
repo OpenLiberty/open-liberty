@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2022 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -18,15 +18,15 @@ javac.target: 11
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=11))"
 
--include= jar:${fileuri;${repo;org.jboss.weld.se:weld-se-core;[5.1,5.2)}}!/META-INF/MANIFEST.MF,\
-          jar:${fileuri;${repo;org.jboss.weld.environment:weld-environment-common;[5.1,5.2)}}!/META-INF/MANIFEST.MF,\
+-include= jar:${fileuri;\${repo;org.jboss.weld.se:weld-se-core;[5.1,5.2)}}!/META-INF/MANIFEST.MF,\
+          jar:${fileuri;\${repo;org.jboss.weld.environment:weld-environment-common;[5.1,5.2)}}!/META-INF/MANIFEST.MF,\
           bnd.overrides
 
 Bundle-SymbolicName: io.openliberty.org.jboss.weld5.se; singleton:=true
 
 -includeresource: \
-  @${repo;org.jboss.weld.se:weld-se-core;[5.1,5.2)},\
-  @${repo;org.jboss.weld.environment:weld-environment-common;[5.1,5.2)}
+  @\${repo;org.jboss.weld.se:weld-se-core;[5.1,5.2)},\
+  @\${repo;org.jboss.weld.environment:weld-environment-common;[5.1,5.2)}
 
 instrument.disabled: true
 

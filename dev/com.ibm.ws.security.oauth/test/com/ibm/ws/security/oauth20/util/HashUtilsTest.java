@@ -23,6 +23,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 
 import test.common.SharedOutputManager;
@@ -81,7 +82,7 @@ public class HashUtilsTest {
         String code_verifier = getEncoded(code);
         String code_challenge = getDigest(code_verifier, "nourlsafe");
 
-        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", StandardCharsets.US_ASCII);
+        String challenge = HashUtils.encodedDigest(code_verifier, CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, StandardCharsets.US_ASCII);
 
         org.junit.Assert.assertNotSame("code verifier is encoded non url safe", challenge, code_challenge);
 
@@ -96,7 +97,7 @@ public class HashUtilsTest {
         String code_verifier = getEncodedUsingLocalEncoder(code);
         String code_challenge = getDigest(code_verifier, "local");
 
-        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", StandardCharsets.US_ASCII);
+        String challenge = HashUtils.encodedDigest(code_verifier, CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, StandardCharsets.US_ASCII);
 
         org.junit.Assert.assertNotSame("code verifier is encoded using local", challenge, code_challenge);
 
@@ -111,7 +112,7 @@ public class HashUtilsTest {
         String code_verifier = getUrlSafeEncoded(code);
         String code_challenge = getDigest(code_verifier, "urlsafe");
 
-        String challenge = HashUtils.encodedDigest(code_verifier, "SHA-256", StandardCharsets.US_ASCII);
+        String challenge = HashUtils.encodedDigest(code_verifier, CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256, StandardCharsets.US_ASCII);
 
         org.junit.Assert.assertEquals("code verifier is encoded and url safe and should be same", challenge, code_challenge);
 
@@ -147,7 +148,7 @@ public class HashUtilsTest {
         }
         MessageDigest md = null;
         try {
-            md = MessageDigest.getInstance("SHA-256");
+            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
         } catch (NoSuchAlgorithmException e) {
             return null;
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ apply from: '../com.ibm.ws.security.saml.sso_fat.common/SAMLCommon.gradle'
 apply plugin: 'war'
 
 // We aren't making a war for the entire project
-war { enabled false }
+war { enabled = false }
 
 /*
  * This is where all application ZIP and WARs will be built.

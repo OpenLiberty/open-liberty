@@ -36,7 +36,7 @@ import jakarta.data.repository.Update;
  * Repository for the City entity, which uses IdClass to define a composite id
  * across the City name and stateName.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Cities {
     @Find
     Optional<Set<Integer>> areaCodes(String name, String stateName);
@@ -45,7 +45,12 @@ public interface Cities {
     @OrderBy("name")
     Stream<AreaInfo> areaInfo(String stateName);
 
-    @Query("SELECT VERSION(THIS) WHERE ID(THIS) = ?1")
+    @Query("FROM City WHERE (name=?1 AND id(this)<>?2)")
+    @OrderBy("stateName")
+    Stream<City> byNameButNotId(String cityName,
+                                CityId exceptFor);
+
+    @Query("SELECT VERSION(this) WHERE ID(this) = ?1")
     long currentVersion(CityId id);
 
     @Query("SELECT VERSION(THIS) WHERE name = ?1 AND stateName = ?2")
@@ -139,6 +144,16 @@ public interface Cities {
     CursoredPage<City> smallerThanOrNotNamed(int maxPopulation,
                                              String nameToExclude,
                                              PageRequest pageReq);
+
+    @Query("""
+                    WHERE ?1 = id(this)
+                       OR lower(id(this)) = lower(?2)
+                       OR id(this) = ?3
+                    """)
+    @OrderBy("name")
+    Stream<City> whereIdIsOneOf(CityId id1,
+                                CityId id2WithCaseIgnored,
+                                CityId id3);
 
     @Find
     @OrderBy("stateName")

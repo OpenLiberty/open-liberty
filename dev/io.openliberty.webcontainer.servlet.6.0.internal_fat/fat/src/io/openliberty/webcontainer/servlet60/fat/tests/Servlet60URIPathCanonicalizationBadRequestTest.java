@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
 package io.openliberty.webcontainer.servlet60.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -110,7 +111,18 @@ public class Servlet60URIPathCanonicalizationBadRequestTest {
     }
 
     private void testRequest(String testPath, int expectedStatus, String testMethod) throws Exception {
+        testRequest(testPath, expectedStatus, testMethod, null);
+    }
+
+    /*
+     * additionalTest:
+     * 1. "content_type_json" : test request with Content-Type: application/json. Verify the response for Content-Type: application/json
+     * 2. "accept_json" : test request with Accept: application/json. Verify the response for Content-Type: application/json
+     */
+    private void testRequest(String testPath, int expectedStatus, String testMethod, String additionalTest) throws Exception {
         LOG.info(testMethod + " [" + testPath + "]");
+
+        boolean optional_testJsonContentTypeResponse = false;
 
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME
                      + "/DecodeNormalizeURI" + testPath;
@@ -118,6 +130,18 @@ public class Servlet60URIPathCanonicalizationBadRequestTest {
         LOG.info("\n Sending Request [" + url + "]");
         HttpGet getMethod = new HttpGet(url);
         getMethod.addHeader("TEST_NAME", testMethod + " , testing [" + testPath + "]");
+
+        //add more optional tests as needed ...
+        if (additionalTest != null) {
+            switch (additionalTest) {
+                case "content_type_json":
+                    optional_testJsonContentTypeResponse = true;
+                    getMethod.addHeader("Content-Type", "application/json");
+                case "accept_json":
+                    optional_testJsonContentTypeResponse = true;
+                    getMethod.addHeader("Accept", "application/json");
+            }
+        }
 
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             try (CloseableHttpResponse response = client.execute(getMethod)) {
@@ -128,8 +152,15 @@ public class Servlet60URIPathCanonicalizationBadRequestTest {
 
                 assertTrue("The expected status code [" + expectedStatus + "] . Actual status code [" + statusCode + "]", statusCode == expectedStatus);
 
-                if (expectedStatus == 400)
+                if (expectedStatus == 400) {
                     assertTrue("The response code does not contain [CWWWC0005I]. Actual response [" + responseText + "]", responseText.contains("CWWWC0005I"));
+
+                    if (optional_testJsonContentTypeResponse) {
+                        String headerValue = response.getHeader("Content-Type").getValue();
+                        if (headerValue != null && !headerValue.toLowerCase().contains("application/json"))
+                            fail("Response headers do not contain \"Content-Type: application/json\"");
+                    }
+                }
             }
         }
     }
@@ -365,5 +396,17 @@ public class Servlet60URIPathCanonicalizationBadRequestTest {
     @Test
     public void test_BadURI_34() throws Exception {
         testRequest("/../jsp/..%2flandingPage.jsp", 400, "test_BadURI_34");
+    }
+
+    //35 test response application/json  /foo/%00/bar       //Control %00 is NULL character
+    @Test
+    public void test_BadURI_35_content_json() throws Exception {
+        testRequest("/foo%00/bar", 400, "test_BadURI_35_content_json", "content_type_json");
+    }
+
+    //36 test response application/json  /foo/%00/bar       //Control %00 is NULL character
+    @Test
+    public void test_BadURI_36_accept_json() throws Exception {
+        testRequest("/foo%00/bar", 400, "test_BadURI_36_accept_json", "accept_json");
     }
 }

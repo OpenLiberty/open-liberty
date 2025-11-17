@@ -2,6 +2,7 @@
 <classpath>
     <classpathentry kind="src" path="fat/src"/>
     <classpathentry kind="src" path="test-applications/FileUploadFileCountMaxTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/FileUploadPartHeaderSizeMax.war/src"/>
     <classpathentry kind="src" path="test-applications/SameContextRootTestApp1.war/src"/>
     <classpathentry kind="src" path="test-applications/SameContextRootTestApp2.war/src"/>
     <classpathentry kind="src" path="test-applications/Test400BadRequestURI.war/src"/>

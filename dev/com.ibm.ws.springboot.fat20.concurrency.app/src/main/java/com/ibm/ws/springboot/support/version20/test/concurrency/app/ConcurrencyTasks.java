@@ -48,22 +48,10 @@ public class ConcurrencyTasks {
 	}
 	
 	@Async("taskExecutor1")
-	public CompletableFuture<String> task3(String message) throws FileNotFoundException, IOException {
-			 try {
-	               InputStream inputStream = ConcurrencyTasks.class.getResourceAsStream("AsyncTask3File.txt");
-	               if (inputStream != null) {
-	                   BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-	                   String line;
-	                   while ((line = reader.readLine()) != null) {
-	                       System.out.println("Async Task 3: File content:\n" + line);
-	                   }
-	                   reader.close();
-	               } else {
-	                   System.out.println("File not found!");
-	               }
-	           } catch (Exception e) {
-	               e.printStackTrace();
-	           }
+	public CompletableFuture<String> task3(String message) throws Exception {
+		System.out.println("Async Task 3: " + Thread.currentThread().getName());
+		TimeUnit.SECONDS.sleep(4);
+		AppRunner.assertManagedThread(message + ": Async Task 3");
 		return CompletableFuture.completedFuture("Async Task 3 passed");
 	}
 }

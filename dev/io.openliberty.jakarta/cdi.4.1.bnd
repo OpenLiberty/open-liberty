@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -60,10 +60,10 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -includeresource: \
-   @${repo;jakarta.inject:jakarta.inject-api;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class),\
-   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class),\
-   @${repo;jakarta.enterprise:jakarta.enterprise.cdi-el-api;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class),\
-   @${repo;jakarta.enterprise:jakarta.enterprise.lang-model;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+   @\${repo;jakarta.inject:jakarta.inject-api;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @\${repo;jakarta.enterprise:jakarta.enterprise.cdi-api;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @\${repo;jakarta.enterprise:jakarta.enterprise.cdi-el-api;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class),\
+   @\${repo;jakarta.enterprise:jakarta.enterprise.lang-model;4.1.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.inject;artifactId=jakarta.inject-api;version=2.0.1;scope=runtime,\

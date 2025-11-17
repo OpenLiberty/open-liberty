@@ -20,7 +20,8 @@ Subsystem-Name: MicroProfile 6.1
   io.openliberty.mpJwt-2.1, \
   io.openliberty.mpMetrics-5.1, \
   io.openliberty.mpRestClient-3.0, \
-  io.openliberty.mpTelemetry-1.1; ibm.tolerates:= "2.0"
+  io.openliberty.mpTelemetry-1.1; ibm.tolerates:= "2.0", \
+  io.openliberty.mpHealth.4.0.ee.10.0.mp-6.1
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

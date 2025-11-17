@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -37,6 +37,7 @@ import org.opensaml.xmlsec.signature.support.SignatureConstants;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.Constants.SignatureMethodAlgorithm;
@@ -110,6 +111,7 @@ public class SsoConfigImplTest {
                     allowing(confAdmin).getConfiguration(SsoConfigImpl.CFG_KEY_AUTH_FILTER_REF, null);
                     will(returnValue(config));
                     allowing(parentSsoService).searchTrustAnchors(with(any(Collection.class)), with(any(String.class)));
+                    allowing(parentSsoService).getSignatureCertificate();
                 } catch (Exception e) {
                     e.printStackTrace();
                     fail("Unexpected exception was thrown: " + e);
@@ -597,7 +599,7 @@ public class SsoConfigImplTest {
             e.printStackTrace();
             fail("Unexpected exception was thrown: " + e);
         }
-        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, "SHA256");
+        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_signatureMethodAlgorithm, CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256);
 
         String result = ssoConfig.getSignatureMethodAlgorithm();
 

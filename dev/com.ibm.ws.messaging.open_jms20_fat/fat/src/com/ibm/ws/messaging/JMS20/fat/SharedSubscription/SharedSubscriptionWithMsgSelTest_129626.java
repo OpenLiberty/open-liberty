@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -284,18 +284,22 @@ public class SharedSubscriptionWithMsgSelTest_129626 {
         // We allow up to 120 seconds to receive all of the messages,
         // although normally there should be minimal delay and anything more that 10 seconds means that the test infrastructure is not 
         // providing enough resources.
+        
+        // The test has "temporarily" been changed to allow 30 seconds rather than 10. The test isn't functionally failing, but it seems that it is regularly taking
+        // longer to complete, triggering the "test infrastructure failure" results. Changing the timeout will prevent these failures while the infrastructure is running slowly.
+        // A potential improvement here would be to issue a warning in these cases instead of a failure.
         long receiveStartMilliseconds = System.currentTimeMillis();
         int count = clientServer.waitForMultipleStringsInLogUsingMark(20, "Received in MDB[1-2]: testBasicMDBTopic:");
-        assertEquals("Incorrect number of messages:"+count, count, 20);
+        assertEquals("Incorrect number of messages:", 20, count);
         long receiveMilliseconds = System.currentTimeMillis()-receiveStartMilliseconds;
-        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<10*1000);
+        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<30*1000);
         
         clientServer.setMarkToEndOfLog();
         runInServlet("testBasicMDBTopic_TCP");
         receiveStartMilliseconds = System.currentTimeMillis();
         count = clientServer.waitForMultipleStringsInLogUsingMark(20, "Received in MDB[1-2]: testBasicMDBTopic_TCP:");
-        assertEquals("Incorrect number of messages:"+count, count, 20);
+        assertEquals("Incorrect number of messages:", 20, count);
         receiveMilliseconds = System.currentTimeMillis()-receiveStartMilliseconds;
-        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<10*1000);
+        assertTrue("Test infrastructure failure, excessive time to receive:"+receiveMilliseconds, receiveMilliseconds<30*1000);
     }
 }

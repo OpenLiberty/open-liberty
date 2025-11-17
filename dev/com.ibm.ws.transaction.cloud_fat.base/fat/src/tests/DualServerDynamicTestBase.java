@@ -28,7 +28,6 @@ import com.ibm.ws.transaction.fat.util.SetupRunner;
 import com.ibm.ws.transaction.fat.util.TxShrinkHelper;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
 
-import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -37,7 +36,6 @@ import componenttest.topology.impl.LibertyServer;
  * These tests are based on the original JTAREC recovery tests.
  * Test plan is attached to RTC WI 213854
  */
-@Mode
 public class DualServerDynamicTestBase extends CloudTestBase {
 
     protected static LibertyServer serverTemplate;
@@ -55,7 +53,7 @@ public class DualServerDynamicTestBase extends CloudTestBase {
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        DatabaseContainerUtil.build(server, testContainer).withDatabaseProperties().modify();
     }
 
     public void setUp(LibertyServer server) throws Exception {

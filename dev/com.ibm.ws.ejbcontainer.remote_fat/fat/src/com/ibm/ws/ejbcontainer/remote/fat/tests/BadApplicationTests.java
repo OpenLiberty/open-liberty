@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,13 +59,17 @@ public class BadApplicationTests extends AbstractTest {
     }
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")).andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")) //
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")) //
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")) //
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer")) //
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.remote.fat.BadAppServer"));
 
     private static Set<String> installedApps;
 
     @BeforeClass
     public static void beforeClass() throws Exception {
-        eeVersion = JakartaEEAction.isEE10OrLaterActive() ? "EE10" : JakartaEEAction.isEE9Active() ? "EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "EE8" : "";
+        eeVersion = JakartaEEAction.isEE11OrLaterActive() ? "EE11" : JakartaEEAction.isEE10Active() ? "EE10" : JakartaEEAction.isEE9Active() ? "EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "EE8" : "";
 
         // Use ShrinkHelper to build the Ears & Wars
 

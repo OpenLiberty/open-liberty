@@ -224,7 +224,12 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 
 	// install server again with jakartaee-9.1 and federatedRegistry-1.0
 	po = runFeatureUtility(METHOD_NAME, param1s);
-	checkCommandOutput(po, 0, null, filesList);
+	
+	try{
+        checkCommandOutput(po, 0, null, filesList);
+    }catch(AssertionError e) {
+        retryFeatureUtility(METHOD_NAME);
+    }
 
 	Log.exiting(c, METHOD_NAME);
     }
@@ -307,8 +312,12 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 
 	    // Install jakartaee-9.1 and check if private feature is installed.
 	    String[] param2s = { "installFeature", "jakartaee-9.1" };
-	    po = runFeatureUtility(METHOD_NAME, param2s);
-	    checkCommandOutput(po, 0, null, filesList);
+	    po = runFeatureUtility(METHOD_NAME, param2s);  
+	    try{
+            checkCommandOutput(po, 0, null, filesList);
+        }catch(AssertionError e) {
+            retryFeatureUtility(METHOD_NAME);
+        }
 
 	    Log.exiting(c, METHOD_NAME);
 

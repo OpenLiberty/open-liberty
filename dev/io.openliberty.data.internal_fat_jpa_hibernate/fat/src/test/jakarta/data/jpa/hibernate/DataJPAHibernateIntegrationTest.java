@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -29,6 +30,7 @@ import test.jakarta.data.jpa.hibernate.integration.web.DataJPAHibernateIntegrati
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 25) // TODO remove once Hibernate upgrades their ByteBuddy dependency to a version that supports java 26+
 public class DataJPAHibernateIntegrationTest extends FATServletClient {
     private static final String APP_NAME = "DataJPAHibernateIntegrationApp";
 

@@ -1,0 +1,29 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ ********************************************************************************/
+plugins {
+  id 'org.springframework.boot' version '3.5.3'
+  id 'war'
+  id 'io.spring.dependency-management' version '1.1.7'
+}
+apply from: '../wlp-gradle/subprojects/springboot2.gradle'
+
+group = 'com.ibm.ws.example.spring'
+version = '0.0.1-SNAPSHOT'
+java {
+  sourceCompatibility = 1.8
+}
+
+dependencies {
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  implementation('org.springframework.boot:spring-boot-starter-aop')
+  implementation('org.aspectj:aspectjweaver:1.9.24')
+  providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
+}

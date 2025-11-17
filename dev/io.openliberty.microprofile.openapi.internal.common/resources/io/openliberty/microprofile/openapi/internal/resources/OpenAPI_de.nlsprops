@@ -1,13 +1,10 @@
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME N/A
 #COMPONENTPREFIX CWWKO
@@ -173,3 +170,11 @@ OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Entfernen Sie die Eigenschaft 
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Das Anmerkungselement {0} in der Klasse {1} wird ignoriert, da es die OpenAPI -Version {2} erfordert, die aktuelle OpenAPI -Version jedoch {3} ist.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=Das Anmerkungselement bezieht sich auf ein Merkmal, das einer neueren Version OpenAPI hinzugef\u00fcgt wurde als der konfigurierten. Die verwendete Version von OpenAPI kann diese Informationen nicht darstellen, weshalb sie aus der erstellten OpenAPI -Dokumentation ausgeschlossen wird.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Entfernen Sie das Anmerkungselement oder setzen Sie openAPIVersion auf eine Version, die es in server.xml unterst\u00fctzt.
+
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W=CWWKO1688W: Beim Lesen des OpenAPI Cache f\u00fcr die Anwendung {0} ist ein Fehler aufgetreten. Der Cache wird nicht verwendet. Fehler: {1}
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.explanation=Die Funktion MicroProfile OpenAPI speichert einige Daten, die beim Start der Anwendung berechnet wurden, um zu vermeiden, dass diese Daten bei k\u00fcnftigen Serverstarts erneut berechnet werden, wenn die Anwendung unver\u00e4ndert bleibt. Beim Versuch, diese Daten zu lesen, ist ein Fehler aufgetreten, so dass sie neu berechnet werden m\u00fcssen.
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W=CWWKO1689W: Beim Schreiben des OpenAPI Cache f\u00fcr die Anwendung {0} ist ein Fehler aufgetreten. Der Cache wird beim n\u00e4chsten Start nicht mehr verf\u00fcgbar sein. Fehler: {1}
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.explanation=Die Funktion MicroProfile OpenAPI speichert einige Daten, die beim Start der Anwendung berechnet wurden, um zu vermeiden, dass diese Daten bei k\u00fcnftigen Serverstarts erneut berechnet werden, wenn die Anwendung unver\u00e4ndert bleibt. Beim Versuch, diese Daten zu schreiben, ist ein Fehler aufgetreten, so dass sie beim n\u00e4chsten Start des Servers neu berechnet werden.
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.

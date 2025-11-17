@@ -12,12 +12,14 @@ bVersion=1.0
 
 src: \
     fat/src,\
+    test-applications/RequestAutoDecompress.war/src,\
     test-applications/ResponseHeadersTest.war/src,\
     test-applications/SameSiteTest.war/src,\
     test-applications/SameSiteSecurityTest.war/src,\
     test-applications/PartitionedTest.war/src,\
     test-applications/IncompatibleClientTest.war/src,\
-    test-applications/WebSphereServletEvent.war/src
+    test-applications/WebSphereServletEvent.war/src,\
+    test-applications/WebSphereSpiHttpRequestURL.war/src
 
 fat.project: true
 
@@ -43,7 +45,12 @@ tested.features:\
 -buildpath: \
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	io.openliberty.org.apache.commons.codec;version=latest,\
+	com.ibm.websphere.appserver.spi.servlet;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.ws.transport.http;version=latest, \
+	com.ibm.ws.webcontainer;version=latest, \
+	com.ibm.ws.webcontainer.servlet.3.1;version=latest, \
+    com.ibm.ws.webcontainer.servlet.4.0;version=latest, \
 	org.apache.httpcomponents.client5:httpclient5;version='5.0.2',\
 	org.apache.httpcomponents.core5:httpcore5;version='5.0.2',\
 	com.ibm.websphere.appserver.api.servlet

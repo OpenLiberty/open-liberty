@@ -16,6 +16,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+import jakarta.data.messages.Messages;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
@@ -108,7 +109,7 @@ public record CursoredPageRecord<T>(
         if (totalElements >= 0)
             return totalElements;
         else
-            throw new IllegalStateException("total elements are not available");
+            throw new IllegalStateException(Messages.get("010.unknown.total"));
     }
 
     @Override
@@ -117,7 +118,7 @@ public record CursoredPageRecord<T>(
             int maxPageSize = pageRequest.size();
             return (totalElements + (maxPageSize - 1)) / maxPageSize;
         } else {
-            throw new IllegalStateException("total elements are not available");
+            throw new IllegalStateException(Messages.get("010.unknown.total"));
         }
     }
 }

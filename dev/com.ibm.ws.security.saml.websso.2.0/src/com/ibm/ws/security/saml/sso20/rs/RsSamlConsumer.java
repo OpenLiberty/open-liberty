@@ -51,8 +51,7 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
                                                    TraceConstants.TRACE_GROUP,
                                                    TraceConstants.MESSAGE_BUNDLE);
     @SuppressWarnings("rawtypes")
-    static RsSamlConsumer<?, ?, ?> instance =
-                    new RsSamlConsumer();
+    static RsSamlConsumer<?, ?, ?> instance = new RsSamlConsumer();
 
     public static RsSamlConsumer<?, ?, ?> getInstance() {
         return instance;
@@ -64,12 +63,11 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
 
     @SuppressWarnings("unchecked")
     @FFDCIgnore({ SamlException.class })
-    public BasicMessageContext<InboundMessageType, OutboundMessageType>
-                    handleSAMLResponse(HttpServletRequest req,
-                                       HttpServletResponse res,
-                                       SsoSamlService ssoService,
-                                       SsoRequest samlRequest,
-                                       String headerContent) throws SamlException {
+    public BasicMessageContext<InboundMessageType, OutboundMessageType> handleSAMLResponse(HttpServletRequest req,
+                                                                                           HttpServletResponse res,
+                                                                                           SsoSamlService ssoService,
+                                                                                           SsoRequest samlRequest,
+                                                                                           String headerContent) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> messageContext = null;
         try {
             @SuppressWarnings("rawtypes")
@@ -81,12 +79,12 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
             // And Base64 does not contains "<" or ">"
             if (headerContent.startsWith("<") && headerContent.endsWith(">")) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "SAML assertion in header" );
+                    Tr.debug(tc, "SAML assertion in header");
                 }
                 bytes = headerContent.getBytes(StandardCharsets.UTF_8);
             } else {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Encoded SAML assertion in header" );
+                    Tr.debug(tc, "Encoded SAML assertion in header");
                 }
                 //bytes = Base64.decode(headerContent);
                 bytes = decodeSaml(headerContent);//Base64.decodeBase64(headerContent); //v3
@@ -94,9 +92,7 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
             if (bytes == null) {
                 // the incoming saml_token is not in good shape
                 //SAML_BAD_INBOUND_SAML_TOKEN=CWWKS5208E: The inbound SAML Assertion is not valid [{0}].
-                throw new SamlException("SAML_BAD_INBOUND_SAML_TOKEN",
-                                null,
-                                new Object[] { headerContent });
+                throw new SamlException("SAML_BAD_INBOUND_SAML_TOKEN", null, new Object[] { headerContent });
             }
             ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(bytes);
             ByteArrayDecoder byteArrayDecoder = new ByteArrayDecoder();
@@ -105,8 +101,8 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
 
             //decrypt EncryptedAssertion, and add decrypted assertion to Assertion list
             List<Assertion> assertions = decryptEncryptedAssertion(messageContext);
-            MessageContext<SAMLObject> mc = messageContext.getMessageContext(); //v3
-            
+            MessageContext mc = messageContext.getMessageContext(); //v3 , v4 update
+
             mc.getSubcontext(SAMLPeerEntityContext.class, true).setRole(IDPSSODescriptor.DEFAULT_ELEMENT_NAME); //v3
             mc.getSubcontext(SAMLProtocolContext.class, true).setProtocol(SAMLConstants.SAML20P_NS); //@v3
             //Search for first valid assertion without exception
@@ -148,8 +144,7 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
                     if (assertion.getSubject() == null) {
                         lastException = new SamlException("SAML20_ELEMENT_ERR",
                                         // SAML20_NO_SUBJECT_ERR=CWWKS5042E: The SAML Assertion MUST contain a Subject element.
-                                        null,
-                                        new Object[] { "Subject" });
+                                        null, new Object[] { "Subject" });
                         if (tc.isDebugEnabled()) {
                             Tr.debug(tc, "Assertion " + assertion.getID() + " does not contain Subject");
                         }
@@ -159,8 +154,7 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
 
             if (validatedAssertion != null) {
                 messageContext.setValidatedAssertion(validatedAssertion);
-            }
-            else {
+            } else {
                 if (lastException != null)
                     throw lastException;
                 if (lastSamlException != null)
@@ -186,8 +180,7 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
             String headerName = ssoSamlService.getConfig().getHeaderName();
             throw new SamlException("RS_SAML_RESPONSE_NOT_SUPPORTED",
                             // RS_SAML_RESPONSE_NOT_SUPPORTED=CWWKS5085E: The SAML Response in the content of the header [{0}] in the HTTP request is not supported.
-                            null,
-                            new Object[] { headerName });
+                            null, new Object[] { headerName });
         }
         if (objectMessage instanceof EncryptedAssertion) {
             try {
@@ -219,26 +212,32 @@ public class RsSamlConsumer<InboundMessageType extends SAMLObject, OutboundMessa
         return assertionList;
         //return samlResponse.getAssertions();
     }
-    
-    public @Sensitive byte[] decodeSaml(@Sensitive String s) /*throws DecodingException*/ {
-        
+
+    public @Sensitive byte[] decodeSaml(@Sensitive String s) /* throws DecodingException */ {
+
         s = s.replace('_', '/');
         switch (s.length() % 4) {
-          case 0: break;
-          case 2: s += "=="; break;
-          case 3: s += "="; break;
-          default: throw new IllegalArgumentException("Illegal Base64URL string!");
+            case 0:
+                break;
+            case 2:
+                s += "==";
+                break;
+            case 3:
+                s += "=";
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal Base64URL string!");
         }
         String headerContent = new String(s);
         byte[] bytes = Base64.decodeBase64(headerContent);
-        
+
         // Check to see if it's gzip-compressed
         // GZIP Magic Two-Byte Number: 0x8b1f (35615)
         if (bytes != null && bytes.length >= 4) {
-            int head = ((int) bytes[0] & 0xff) | ((bytes[1] << 8) & 0xff00);
+            int head = (bytes[0] & 0xff) | ((bytes[1] << 8) & 0xff00);
             if (java.util.zip.GZIPInputStream.GZIP_MAGIC == head) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "compressed SAML assertion in header" );
+                    Tr.debug(tc, "compressed SAML assertion in header");
                 }
                 java.io.ByteArrayInputStream bais = null;
                 java.util.zip.GZIPInputStream gzis = null;

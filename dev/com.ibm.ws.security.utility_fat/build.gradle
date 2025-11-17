@@ -1,0 +1,104 @@
+/*******************************************************************************
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - Gradle conversion of build.xml
+ *******************************************************************************/
+
+def puTestPublishDir = file("${projectDir}/../com.ibm.ws.security.utility_fat/build/libs/autoFVT/publish")
+def puTestFeatureDir = file("${puTestPublishDir}/features")
+def puTestBundleDir  = file("${puTestPublishDir}/bundles")
+def puTestFilesDir   = file("${puTestPublishDir}/files")
+
+def puCcBaseDir      = file("${projectDir}/../com.ibm.ws.crypto.sample.customencryption/build/libs/publish")
+def puCcBundleDir    = file("${puCcBaseDir}/usr/extension/lib")
+def puCcFeatureDir   = file("${puCcBundleDir}/features")
+def puCcExtensionDir = file("${puCcBaseDir}/bin/tools/extensions/ws-customPasswordEncryption")
+
+configurations {
+    requiredLibs {
+        transitive = false
+    }
+}
+
+dependencies {
+    requiredLibs project(':com.ibm.ws.security.client_fat'),
+                 project(':com.ibm.ws.crypto.sample.customencryption')
+}
+
+// Copy custom encryption feature and related files
+task copyCustomFiles {
+    dependsOn ':com.ibm.ws.crypto.sample.customencryption:build'
+    doLast {
+        // Verify source paths exist
+        if (!puCcBundleDir.exists()) throw new GradleException("Bundle dir not found: ${puCcBundleDir}")
+        if (!puCcFeatureDir.exists()) throw new GradleException("Feature dir not found: ${puCcFeatureDir}")
+        if (!puCcExtensionDir.exists()) throw new GradleException("Extension dir not found: ${puCcExtensionDir}")
+
+        puTestBundleDir.mkdirs()
+        puTestFeatureDir.mkdirs()
+        puTestFilesDir.mkdirs()
+        
+		delete "${puTestBundleDir}/com.ibm.ws.crypto.sample.customencryption_1.0.jar"
+		
+        // Bundle JAR
+        copy {
+            from puCcBundleDir
+            include 'com.ibm.ws.crypto.sample.customencryption_1.0.jar'
+            into puTestBundleDir
+        }
+
+        // Feature manifest
+        copy {
+            from puCcFeatureDir
+            include 'customEncryption-1.0.mf'
+            into puTestFeatureDir
+        }
+
+        // L10N properties
+        copy {
+            from file("${puCcFeatureDir}/l10n")
+            include 'customEncryption-1.0.properties'
+            into file("${puTestFeatureDir}/l10n")
+        }
+
+        // Extension JAR
+        copy {
+            from puCcExtensionDir
+            include 'customEncryption.jar'
+            into puTestFilesDir
+        }
+    }
+}
+
+// Copy the EAR from client FAT
+task addEarFile {
+    dependsOn ':com.ibm.ws.security.client_fat:assemble'
+    doLast {
+        def earSource = file("${projectDir}/../com.ibm.ws.security.client_fat/build/libs/test-application/earDD.ear")
+        def destDir   = file("${buildDir}/autoFVT/publish/clients/mySSLCmdClient/apps")
+
+        if (!earSource.exists()) {
+            throw new GradleException("EAR file not found: ${earSource}")
+        }
+
+        destDir.mkdirs()
+
+        copy {
+            from earSource
+            into destDir
+            rename { "earDD.ear" }
+        }
+    }
+}
+
+addRequiredLibraries {
+    dependsOn copyCustomFiles
+    dependsOn addEarFile
+}

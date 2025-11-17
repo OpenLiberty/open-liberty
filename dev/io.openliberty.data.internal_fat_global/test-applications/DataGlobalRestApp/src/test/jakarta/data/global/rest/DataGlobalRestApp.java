@@ -27,6 +27,8 @@ public class DataGlobalRestApp extends Application {
      * Set up some data before tests run.
      */
     public void startup(@Observes Startup event) {
+        System.out.println("REST Application Observed Startup");
+
         referrals.save(Referral.of("startup@openliberty.io",
                                    "Startup Event",
                                    5075556789L));

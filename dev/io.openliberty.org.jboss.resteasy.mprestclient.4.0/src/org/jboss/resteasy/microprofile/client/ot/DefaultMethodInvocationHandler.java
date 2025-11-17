@@ -40,10 +40,11 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
                                           final Object target,
                                           final Set<Object> providerInstances,
                                           final ResteasyClient client,
-                                          final BeanManager beanManager) {
+                                          final BeanManager beanManager,
+                                          final ClassLoader classLoader) {
         this.delegateHandler = new ProxyInvocationHandler(restClientInterface, target, providerInstances, client);
         this.restClientInterface = restClientInterface;
-        this.target = createDefaultMethodTarget(restClientInterface);
+        this.target = createDefaultMethodTarget(restClientInterface, classLoader);
     }
 
     @Override
@@ -54,9 +55,9 @@ public class DefaultMethodInvocationHandler implements InvocationHandler {
         return delegateHandler.invoke(proxy, method, args);
     }
 
-    private static Object createDefaultMethodTarget(Class<?> interfaceClass) {
+    private static Object createDefaultMethodTarget(Class<?> interfaceClass, ClassLoader classLoader) {
         return AccessController.doPrivileged((PrivilegedAction<Object>) () -> 
-            Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(),new Class[]{interfaceClass}, (Object proxy, Method method, Object[] arguments) -> null));
+            Proxy.newProxyInstance(classLoader, new Class[]{interfaceClass}, (Object proxy, Method method, Object[] arguments) -> null));
     }
 
     private static Object invokeDefaultMethod(Class<?> declaringClass, Object o, Method m, Object[] params)

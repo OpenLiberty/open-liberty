@@ -660,6 +660,65 @@
 		trustStoreRef="trust_allSigAlg"
 		keyManagementKeyAlias="rs256"
 	/>
+
+	<jwtConsumer
+		id="bad_sslRef_decrypt_ES256"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		sslRef="badSSLRef"
+		trustedAlias="ES256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="es256"
+	/>
+
+		<jwtConsumer
+		id="good_decrypt_ES256"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="ES256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="es256"
+	/>
+
+	<jwtConsumer
+		id="good_decrypt_ES384"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="ES384"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="es384"
+	/>
+
+	<jwtConsumer
+		id="good_decrypt_ES512"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="ES512"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="es512"
+	/>
+
+		<jwtConsumer
+		id="bad_decrypt_ES256"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		sslRef="ssl_allSigAlg"
+		trustedAlias="ES256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="bogusName"
+	/>
+
+	<jwtConsumer
+		id="missing_sslRef_decrypt_ES256"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		trustedAlias="ES256"
+		trustStoreRef="trust_allSigAlg"
+		keyManagementKeyAlias="es256"
+	/>
 		
 	<jwtConsumer
 		id="decrypt_ES384"
@@ -785,6 +844,39 @@
 		keyAlias="rs256"
 		keyManagementKeyAlgorithm="RSA-OAEP"
 		keyManagementKeyAlias="rs512"
+        contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+		id="key_encrypt_good_ES256"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="es256"
+		keyManagementKeyAlgorithm="ECDH-ES"
+		keyManagementKeyAlias="es256"
+        contentEncryptionAlgorithm="A256GCM" />
+        
+	<jwtBuilder
+		id="key_encrypt_good_ES384"
+		issuer="client01"
+		signatureAlgorithm="ES384"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="es384"
+		keyManagementKeyAlgorithm="ECDH-ES"
+		keyManagementKeyAlias="es384"
+        contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
+		id="key_encrypt_good_ES512"
+		issuer="client01"
+		signatureAlgorithm="ES512"
+		keyStoreRef="key_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		keyAlias="es512"
+		keyManagementKeyAlgorithm="ECDH-ES"
+		keyManagementKeyAlias="es512"
         contentEncryptionAlgorithm="A256GCM" />
 
 </server>

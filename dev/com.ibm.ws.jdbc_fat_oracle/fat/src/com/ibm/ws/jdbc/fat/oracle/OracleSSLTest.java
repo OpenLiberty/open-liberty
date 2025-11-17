@@ -18,6 +18,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
+import org.junit.Rule;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jdbc.fat.oracle.containters.OracleSSLContainer;
@@ -26,6 +27,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import ssl.web.OracleSSLTestServlet;
@@ -41,6 +43,9 @@ public class OracleSSLTest extends FATServletClient {
 
     public static final String JEE_APP = "oraclesslfat";
     public static final String SERVLET_NAME = "OracleSSLTestServlet";
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.jdbc.fat.oracle.ssl");
 
     @Server("com.ibm.ws.jdbc.fat.oracle.ssl")
     @TestServlet(servlet = OracleSSLTestServlet.class, path = JEE_APP + "/" + SERVLET_NAME)

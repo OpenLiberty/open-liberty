@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.crypto.ltpakeyutil.KeyEncryptor;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
@@ -66,6 +68,9 @@ import com.ibm.wsspi.kernel.service.utils.TimestampUtils;
  * Note:
  * key version start with 0 or no index. For example 3DESKey or 3DESKey_0
  * (key verion 0 is blank or 0)
+ *
+ * com.ibm.websphere.ltpa.version=1.0 - No FIPS
+ * com.ibm.websphere.ltpa.version=2.0 - FIPS
  */
 public class LTPAKeyInfoManager {
 
@@ -78,8 +83,10 @@ public class LTPAKeyInfoManager {
     private final List<String> importFileCache = new ArrayList<String>();
     private final Map<String, byte[]> keyCache = new Hashtable<String, byte[]>();
     private final Map<String, String> realmCache = new Hashtable<String, String>();
+    private final String suffixNoFips = ".nofips";
+    private final String suffixFips = ".fips";
 
-    private static List<LTPAValidationKeysInfo> ltpaValidationKeysInfos = new ArrayList<LTPAValidationKeysInfo>();
+    private static CopyOnWriteArrayList<LTPAValidationKeysInfo> ltpaValidationKeysInfos = new CopyOnWriteArrayList<LTPAValidationKeysInfo>();
 
     /**
      * Load the contents of the properties file.
@@ -104,7 +111,8 @@ public class LTPAKeyInfoManager {
             if (is != null)
                 try {
                     is.close();
-                } catch (IOException e) {}
+                } catch (IOException e) {
+                }
         }
         return props;
     }
@@ -201,7 +209,7 @@ public class LTPAKeyInfoManager {
      * @throws IOException
      * @throws Exception
      */
-    private void loadLtpaKeysFile(WsLocationAdmin locService, String keyImportFile, byte[] keyPassword, boolean validationKey,
+    private void loadLtpaKeysFile(WsLocationAdmin locService, String keyImportFile, @Sensitive byte[] keyPassword, boolean validationKey,
                                   OffsetDateTime validUntilDateOdt) throws IOException, Exception {
         // Need to load the key import file
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -213,17 +221,34 @@ public class LTPAKeyInfoManager {
 
         if (ltpaKeyFileResource != null) {
             props = loadPropertiesFile(ltpaKeyFileResource);
+            String version = props.getProperty(LTPAKeyFileUtility.LTPA_VERSION_PROPERTY);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "LTPA key version: " + version);
+            }
+            if ((CryptoUtils.isFips140_3Enabled() && "1.0".equals(version)) ||
+                (!CryptoUtils.isFips140_3Enabled() && "2.0".equals(version))) {
+                if (validationKey) {
+                    if ("1.0".equals(version))
+                        Tr.warning(tc, "LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE", keyImportFile);
+                    else
+                        Tr.warning(tc, "LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE", keyImportFile);
+                    return;
+                } else {
+                    backupLtpaKeyFile(locService, keyImportFile, ltpaKeyFileResource, version);
+                    if (restoreLtpaKeyFile(locService, keyImportFile, ltpaKeyFileResource)) {
+                        props = loadPropertiesFile(ltpaKeyFileResource);
+                    } else {
+                        //regenerate the primary key
+                        props = createPrimaryKeyFile(locService, keyImportFile, keyPassword);
+                    }
+                }
+            }
+
         } else if (validationKey) { //validationKeys file does not exist so error
             Tr.error(tc, "LTPA_KEYS_FILE_DOES_NOT_EXIST", keyImportFile);
             return;
         } else { //Primary keys file does not exist so create the primary key
-            long start = System.currentTimeMillis();
-            Tr.info(tc, "LTPA_CREATE_KEYS_START");
-
-            LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
-            props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
-
-            Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
+            props = createPrimaryKeyFile(locService, keyImportFile, keyPassword);
         }
 
         if (props == null || props.isEmpty()) {
@@ -293,6 +318,74 @@ public class LTPAKeyInfoManager {
                 Tr.debug(this, tc, "LTPAValidationKeysInfo size: " + ltpaValidationKeysInfos.size());
             }
         }
+    }
+
+    /**
+     * @param locService
+     * @param keyImportFile
+     * @param ltpaKeyFileResource
+     * @param version
+     * @return
+     * @throws IOException
+     */
+    private void backupLtpaKeyFile(WsLocationAdmin locService, String keyImportFile, WsResource ltpaKeyFileResource, String version) throws IOException {
+        String suffix = suffixNoFips;
+        if ("2.0".equals(version)) {
+            suffix = suffixFips;
+        }
+        WsResource ltpaFileBackup = locService.resolveResource(keyImportFile + suffix);
+
+        if (ltpaFileBackup.exists()) {
+            ltpaFileBackup.delete();
+        }
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Backup the LTPA key file: " + keyImportFile + suffix);
+        }
+        ltpaKeyFileResource.moveTo(ltpaFileBackup);
+    }
+
+    /**
+     * @param locService
+     * @param keyImportFile
+     * @WsResource ltpaKeyFileResource
+     * @return
+     * @throws IOException
+     */
+    private boolean restoreLtpaKeyFile(WsLocationAdmin locService, String keyImportFile, WsResource ltpaKeyFileResource) throws IOException {
+        String suffix = suffixNoFips;
+        if (CryptoUtils.isFips140_3Enabled()) {
+            suffix = suffixFips;
+        }
+
+        WsResource ltpaFileBackup = locService.resolveResource(keyImportFile + suffix);
+        if (ltpaFileBackup.exists()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Restoring the LTPA key file backup: " + keyImportFile + suffix);
+            }
+            ltpaFileBackup.moveTo(ltpaKeyFileResource);
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param locService
+     * @param keyImportFile
+     * @param keyPassword
+     * @return
+     * @throws Exception
+     */
+    private Properties createPrimaryKeyFile(WsLocationAdmin locService, String keyImportFile, @Sensitive byte[] keyPassword) throws Exception {
+        long start = System.currentTimeMillis();
+        Tr.info(tc, "LTPA_CREATE_KEYS_START");
+
+        LTPAKeyFileCreator creator = new LTPAKeyFileCreatorImpl();
+        Properties props = creator.createLTPAKeysFile(locService, keyImportFile, keyPassword);
+
+        Tr.audit(tc, "LTPA_CREATE_KEYS_COMPLETE", TimestampUtils.getElapsedTime(start), keyImportFile);
+        return props;
     }
 
     /**

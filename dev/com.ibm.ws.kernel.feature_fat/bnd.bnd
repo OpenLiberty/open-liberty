@@ -32,7 +32,8 @@ src: \
 	test-bundles/test.override.requires.javax.swing.plaf/src, \
 	test-bundles/test.feature.fragment.bundle/src, \
 	test-bundles/test.feature.host.bundle/src, \
-	test-bundles/test.active.condition/src
+	test-bundles/test.active.condition/src, \
+	test-bundles/test.startphase.condition/src
 
 fat.project: true
 

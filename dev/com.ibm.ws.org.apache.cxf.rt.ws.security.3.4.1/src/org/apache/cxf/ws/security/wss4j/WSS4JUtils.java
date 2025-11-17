@@ -350,11 +350,11 @@ public final class WSS4JUtils {
             Properties props = WSS4JUtils.getProps(s, propsURL);
             if (props == null) {
                 // Liberty Change Start
-                //LOG.fine("Cannot find Crypto Signature properties: " + s);
                 // Liberty Change End
                 Exception ex = new Exception("Cannot find Crypto Signature properties: " + s);
                 throw new WSSecurityException(WSSecurityException.ErrorCode.FAILURE, ex);
             }
+
             signCrypto = CryptoFactory.getInstance(props, Loader.getClassLoader(CryptoFactory.class),
                                                    passwordEncryptor);
 

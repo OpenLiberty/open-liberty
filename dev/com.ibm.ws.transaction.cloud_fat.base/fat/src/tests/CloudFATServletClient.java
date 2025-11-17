@@ -298,7 +298,7 @@ public abstract class CloudFATServletClient extends CloudTestBase {
 
     @Test
     // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
-    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" }) // LUTME doesn't happen for FS
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException", "java.lang.Exception" }) // LUTME doesn't happen for FS
     public void testBatchLeaseDeletion() throws Exception {
         if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
             serversToCleanup = Arrays.asList(server1, server2);

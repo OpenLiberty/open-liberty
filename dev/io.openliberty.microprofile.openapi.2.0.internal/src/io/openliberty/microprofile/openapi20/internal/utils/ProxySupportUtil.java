@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,14 +12,16 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.utils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.servlet.http.HttpServletRequest;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
 
-import javax.servlet.http.HttpServletRequest;
-import java.net.MalformedURLException;
-import java.net.URL;
+import io.openliberty.microprofile.openapi.internal.common.services.OpenAPIEndpointProvider;
 
 /**
  * Handle proxy requests
@@ -38,14 +40,18 @@ public class ProxySupportUtil {
             return;
         serverInfo.setHost(url.getHost());
         Integer port = url.getPort() == -1 ? url.getDefaultPort() : url.getPort();
-        if (port != serverInfo.getHttpPort() && port != serverInfo.getHttpsPort()) {
-            if (Constants.PROTOCOL_HTTPS.equalsIgnoreCase(url.getProtocol())) {
-                serverInfo.setHttpPort(-1);
-                serverInfo.setHttpsPort(port);
-            } else {
-                serverInfo.setHttpPort(port);
-                serverInfo.setHttpsPort(-1);
-            }
+        if (Constants.PROTOCOL_HTTP.equalsIgnoreCase(url.getProtocol()) && port != serverInfo.getHttpPort()) {
+            // We're using HTTP but not connecting to liberty's HTTP port
+            // -> we're not connecting directly to liberty
+            // -> we should overwrite the ports read from liberty's config
+            serverInfo.setHttpPort(port);
+            serverInfo.setHttpsPort(-1);
+        } else if (Constants.PROTOCOL_HTTPS.equalsIgnoreCase(url.getProtocol()) && port != serverInfo.getHttpsPort()) {
+            // We're using HTTPS but not connecting to liberty's HTTPS port
+            // -> we're not connecting directly to liberty
+            // -> we should overwrite the ports read from liberty's config
+            serverInfo.setHttpPort(-1);
+            serverInfo.setHttpsPort(port);
         }
     }
 
@@ -59,8 +65,8 @@ public class ProxySupportUtil {
         String uiPath = docPath + DEFAULT_UI_PATH;
 
         if (openAPIEndpointProvider != null) {
-           docPath = openAPIEndpointProvider.getOpenAPIDocUrl();
-           uiPath = openAPIEndpointProvider.getOpenAPIUIUrl();
+            docPath = openAPIEndpointProvider.getOpenAPIDocUrl();
+            uiPath = openAPIEndpointProvider.getOpenAPIUIUrl();
         }
 
         if (docPath == null) {

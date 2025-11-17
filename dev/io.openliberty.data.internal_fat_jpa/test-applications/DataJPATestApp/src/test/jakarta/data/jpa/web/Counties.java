@@ -33,7 +33,7 @@ import javax.naming.InitialContext;
 /**
  * Repository for the County entity.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Counties {
 
     boolean deleteByNameAndLastUpdated(String name, LocalDateTime version);
@@ -109,8 +109,16 @@ public interface Counties {
         EntityManager emOuter1 = getEntityManager();
         EntityManager emInner = getAutoClosedEntityManager();
         EntityManager emOuter2 = getEntityManager();
-        return new Object[] { emOuter1, emOuter2, emOuter1.isOpen(), emOuter2.isOpen(), emInner.isOpen() };
+        return new Object[] {
+                              emOuter1,
+                              emOuter2,
+                              emOuter1.isOpen(),
+                              emOuter2.isOpen(),
+                              emInner.isOpen()
+        };
     }
 
-    boolean updateByNameSetZipCodes(String name, int... zipcodes);
+    @Query("UPDATE County SET zipcodes=?2 WHERE name=?1")
+    boolean setZipCodesFor(String name,
+                           int... zipcodes);
 }

@@ -487,6 +487,11 @@ public class DataSourceResourceFactoryBuilder implements ResourceFactoryBuilder 
 
                 // Do not check for privateLibraryRef for java:global data source definitions, applicationName is null when java:global is used
                 if (applicationName != null) {
+                    Object overrideLibraryRef = classloaderProps.get("overrideLibraryRef");
+                    if (overrideLibraryRef != null && overrideLibraryRef instanceof String[])
+                        for (String pid : (String[]) overrideLibraryRef)
+                            libraryFilter.append(FilterUtils.createPropertyFilter(Constants.SERVICE_PID, pid));
+
                     Object privateLibraryRef = classloaderProps.get("privateLibraryRef");
                     if (privateLibraryRef != null && privateLibraryRef instanceof String[])
                         for (String pid : (String[]) privateLibraryRef)

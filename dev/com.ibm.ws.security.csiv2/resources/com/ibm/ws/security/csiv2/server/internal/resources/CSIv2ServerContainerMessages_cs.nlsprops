@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Ujist\u011bte se, \u017ee 
 
 # Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
 # -------------------------------------------------------------------------------------------------
-NO_USER_REGISTRY=CWWKS9660E: Objekt orb s atributem ID {0} vy\u017eaduje registr u\u017eivatel\u016f, ale za {1} sekund nebyl \u017e\u00e1dn\u00fd registr u\u017eivatel\u016f dostupn\u00fd.   V d\u016fsledku toho nebudou spu\u0161t\u011bny \u017e\u00e1dn\u00e9 aplikace. Zkontrolujte, zda jste v souboru server.xml nakonfigurovali p\u0159\u00edslu\u0161n\u00fd registr u\u017eivatel\u016f.
+NO_USER_REGISTRY=CWWKS9660E: Prvek orb s atributem ID {0} vy\u017eaduje registr u\u017eivatel\u016f, ale za {1} sekund nebyl \u017e\u00e1dn\u00fd registr u\u017eivatel\u016f dostupn\u00fd. V d\u016fsledku toho nebudou spu\u0161t\u011bny \u017e\u00e1dn\u00e9\naplikace. Zkontrolujte, zda jste v souboru server.xml nakonfigurovali p\u0159\u00edslu\u0161n\u00fd registr u\u017eivatel\u016f. V prost\u0159ed\u00edch, kter\u00e1 pou\u017e\u00edvaj\u00ed komponenty zalo\u017een\u00e9 na ORB, jako jsou aplikace EJB, je nutn\u00e9 definovat registr u\u017eivatel\u016f. Pokud se tyto sou\u010d\u00e1sti nepou\u017e\u00edvaj\u00ed, lze tuto zpr\u00e1vu bezpe\u010dn\u011b ignorovat.
 NO_USER_REGISTRY.explanation=Nebyla spu\u0161t\u011bna \u017e\u00e1dn\u00e1 aplikace, proto\u017ee zabezpe\u010den\u00fd zprost\u0159edkovatel ORB (Object Request Broker) na serveru vy\u017eaduje registr u\u017eivatel\u016f, ale \u017e\u00e1dn\u00fd registr u\u017eivatel\u016f nebyl nalezen. Aplikace se spust\u00ed po nakonfigurov\u00e1n\u00ed p\u0159\u00edslu\u0161n\u00e9ho registru u\u017eivatel\u016f.
 NO_USER_REGISTRY.useraction=Ujist\u011bte se, \u017ee jste nakonfigurovali registr u\u017eivatel\u016f, kter\u00fd odpov\u00edd\u00e1 va\u0161emu prost\u0159ed\u00ed.
 

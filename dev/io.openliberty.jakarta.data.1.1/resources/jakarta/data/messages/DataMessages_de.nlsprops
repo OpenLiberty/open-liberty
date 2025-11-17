@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=Das Argument {0} ist erforderlich
+002.no.elements=Die Liste {0} darf nicht leer sein
+003.null.element=Die Liste {0} darf kein Nullelement enthalten
+004.arg.negative=Das Argument {0} kann nicht negativ sein
+005.zero.not.allowed=Das Argument {0} kann nicht 0 sein
+006.zero.size.key=Der Schl\u00fcssel muss aus mindestens einem Element bestehen
+007.wildcard.conflict=Es kann nicht das gleiche Zeichen ( {0} ) f\u00fcr beide Platzhalter verwendet werden
+008.escape.conflict=Es kann nicht dasselbe Zeichen ( {0} ) f\u00fcr einen Platzhalter und ein Escape-Zeichen verwendet werden
+009.unknown.number.type=Unerwarteter Subtyp von Number: {0}
+010.unknown.total=Eine Gesamtzahl der Elemente ist nicht verf\u00fcgbar
+011.unknown.attr.type=Die Instanz {0} wurde auf eine Weise beschafft, die den Typ des Attributs nicht erkennen l\u00e4sst. Bei statischen Metamodell-Klassen verwenden Sie eine.of-Methode, die auf einem Attribut-Subtyp definiert ist, um die Entit\u00e4tsklasse und den Entit\u00e4tsattributtyp anzugeben.
+012.unknown.decl.type=Die Instanz {0} wurde auf eine Weise erhalten, die die Entit\u00e4tsklasse, die das Attribut deklariert, nicht identifiziert. Bei statischen Metamodell-Klassen verwenden Sie eine.of-Methode, die auf einem Attribut-Subtyp definiert ist, um die Entit\u00e4tsklasse und den Entit\u00e4tsattributtyp anzugeben.

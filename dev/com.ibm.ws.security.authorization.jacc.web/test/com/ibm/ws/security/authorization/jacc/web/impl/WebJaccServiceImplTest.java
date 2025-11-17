@@ -34,6 +34,7 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.security.authorization.jacc.PolicyConfigurationManager;
 import com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManagerImpl;
@@ -112,7 +113,9 @@ public class WebJaccServiceImplTest {
         } else {
             System.clearProperty(JACC_FACTORY_EE9);
         }
-        Policy.setPolicy(policy);
+        if (JavaInfo.majorVersion() <= 21) {
+            Policy.setPolicy(policy);
+        }
     }
 
     /**

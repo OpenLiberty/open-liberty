@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -58,8 +59,9 @@ public class OpentracingRestClientTCKLauncher {
     public void launchOpenTracing20RestClientTck() throws Exception {
         String suiteName = "rest-client-tck-suite.xml";
 
-        TCKRunner.build(server, Type.MICROPROFILE, "Open Tracing")
+        TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.OPEN_TRACING)
                         .withSuiteFileName(suiteName)
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_41) //Latest MicroProfile version
                         .runTCK();
     }
 }

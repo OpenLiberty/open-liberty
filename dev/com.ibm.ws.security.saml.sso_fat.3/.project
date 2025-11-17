@@ -3,8 +3,6 @@
 	<name>com.ibm.ws.security.saml.sso_fat.3</name>
 	<comment></comment>
 	<projects>
-		<project>com.ibm.ws.security_fat.common</project>
-                <project>com.ibm.ws.security.saml.sso_fat.common</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

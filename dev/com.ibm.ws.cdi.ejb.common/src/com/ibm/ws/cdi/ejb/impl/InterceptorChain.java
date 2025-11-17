@@ -131,6 +131,8 @@ public class InterceptorChain implements InvocationContext {
         if (interceptor instanceof CommonBean) {
             commonBean = (CommonBean<S>) interceptor;
             interceptorInstance = (S) this.activeInterceptors.get(commonBean.getIdentifier());
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Interceptor " + interceptor.getName() + " : " + interceptor.getBeanClass() + " was not a CommonBean");
         }
 
         //TODO - investigate if we should use activeInterceptors for interceptors that are not CommonBean

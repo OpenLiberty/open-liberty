@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -15,10 +15,10 @@ bVersion: 1.0
 
 #Common Versions
 # NOTE: previous update of docker-java above 3.4.0 caused
-# errors on our AIX systems. When updating this in the 
+# errors on our AIX systems. When updating this in the
 # future make sure to run a personal AIX SOE build.
 # Likely due to update: https://github.com/docker-java/docker-java/pull/2364
-testContainerVersion: 1.21.0
+testContainerVersion: 1.21.3
 dockerJavaVersion: 3.4.0
 
 Bundle-Name: FAT Testcontainer Bundle
@@ -28,22 +28,21 @@ Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 #Notice: com.sun.jna.*;version="5.8.0"
 # Will cause many bnd build warnings as many of it's packages contain
 # binary files instead of class files. This is expected and necessary
-Export-Package: \
-	com.github.*;version="${dockerJavaVersion}",\
-	com.sun.jna.*;version="5.8.0",\
-	org.apache.commons.codec.*;version="1.16.1",\
-	org.apache.commons.compress.*;version="1.26.0",\
-	org.apache.commons.io.*;version="2.15.1",\
-	org.testcontainers.*;version="${testContainerVersion}";-split-package:=merge-last,\
-	org.rnorth.*;version="1.0.8",\
-	
-	
+Export-Package:\
+    com.github.*;version="${dockerJavaVersion}",\
+    com.sun.jna.*;version="5.8.0",\
+    org.apache.commons.codec.*;version="1.16.1",\
+    org.apache.commons.compress.*;version="1.26.0",\
+    org.apache.commons.io.*;version="2.19.0",\
+    org.rnorth.*;version="1.0.8",\
+    org.testcontainers.*;version="${testContainerVersion}";-split-package:=merge-last
+
 
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
 # This will ensure that the other docker container strategies are accessible at runtime.
-Include-Resource: \
-	@${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**,\
-	openliberty=resources/openliberty
+Include-Resource:\
+    @\${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**,\
+    openliberty=resources/openliberty
 
 publish.wlp.jar.disabled: true
 
@@ -57,24 +56,25 @@ generate.replacement: true
 # jackson-annotations that is not backwards compatible with this then we will need to upgrade
 # the version we include in FATs by updating /cnf/build.gradle configurations binaries.
 #TODO - remove org.testcontainers:oracle-xe once all containers have been re-built using oracle-free
--buildpath: \
-	com.github.docker-java:docker-java-api;version=${dockerJavaVersion},\
-	com.github.docker-java:docker-java-transport;version=${dockerJavaVersion},\
-	com.github.docker-java:docker-java-transport-zerodep;version=${dockerJavaVersion},\
-	com.ibm.ws.org.apache.commons.compress;version=latest,\
-	com.ibm.ws.org.apache.commons.io;version=latest, \
-	io.openliberty.org.apache.commons.codec;version=latest, \
-	org.testcontainers:testcontainers;version=${testContainerVersion},\
-	org.testcontainers:database-commons;version=${testContainerVersion},\
-	org.testcontainers:jdbc;version=${testContainerVersion},\
-	org.testcontainers:db2;version=${testContainerVersion},\
-	org.testcontainers:kafka;version=${testContainerVersion},\
-	org.testcontainers:mongodb;version=${testContainerVersion},\
-	org.testcontainers:mssqlserver;version=${testContainerVersion},\
-	org.testcontainers:oracle-free;version=${testContainerVersion},\
-	org.testcontainers:postgresql;version=${testContainerVersion},\
-	org.testcontainers:selenium;version=${testContainerVersion},\
-	org.rnorth.duct-tape:duct-tape;version=1.0.8,\
-	com.ibm.ws.org.slf4j.simple;version=latest,\
-	com.ibm.ws.org.slf4j.api;version=latest,\
-	net.java.dev.jna:jna;version=5.8.0
+-buildpath:\
+    com.github.docker-java:docker-java-api;version=${dockerJavaVersion},\
+    com.github.docker-java:docker-java-transport-zerodep;version=${dockerJavaVersion},\
+    com.github.docker-java:docker-java-transport;version=${dockerJavaVersion},\
+    com.ibm.ws.org.apache.commons.compress;version=latest,\
+    com.ibm.ws.org.apache.commons.io;version=latest,\
+    com.ibm.ws.org.slf4j.api;version=latest,\
+    com.ibm.ws.org.slf4j.simple;version=latest,\
+    io.openliberty.org.apache.commons.codec;version=latest,\
+    net.java.dev.jna:jna;version=5.8.0,\
+    org.rnorth.duct-tape:duct-tape;version=1.0.8,\
+    org.testcontainers:database-commons;version=${testContainerVersion},\
+    org.testcontainers:db2;version=${testContainerVersion},\
+    org.testcontainers:jdbc;version=${testContainerVersion},\
+    org.testcontainers:kafka;version=${testContainerVersion},\
+    org.testcontainers:mongodb;version=${testContainerVersion},\
+    org.testcontainers:mssqlserver;version=${testContainerVersion},\
+    org.testcontainers:oracle-free;version=${testContainerVersion},\
+    org.testcontainers:postgresql;version=${testContainerVersion},\
+    org.testcontainers:selenium;version=${testContainerVersion},\
+    org.testcontainers:testcontainers;version=${testContainerVersion}
+

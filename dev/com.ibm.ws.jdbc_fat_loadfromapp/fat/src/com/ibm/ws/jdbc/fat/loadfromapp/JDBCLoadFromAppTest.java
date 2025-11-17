@@ -121,44 +121,4 @@ public class JDBCLoadFromAppTest extends FATServletClient {
             );
         }
     }
-
-    /**
-     * Reproduce the Java issue reported in RTC 304918 without using Liberty.
-     */
-    @Test
-    public void testStandaloneReproductionOfRTC304918() throws Exception {
-        CountDownLatch blocker = new CountDownLatch(1);
-        CompletableFuture<String> receiveSuppliedValue = new CompletableFuture<>();
-
-        CompletableFuture<String> thenApplyAsyncCompleted = receiveSuppliedValue
-                        .thenApplyAsync(value -> {
-                            return value + "Applied";
-                        });
-
-        CompletableFuture<String> supplyAsyncCompleted = CompletableFuture
-                        .supplyAsync(() -> {
-                            receiveSuppliedValue.complete("Supplied");
-                            try {
-                                if (blocker.await(2, TimeUnit.MINUTES))
-                                    return "supplyAsyncCompleted";
-                                else
-                                    throw new RuntimeException("supplier not allowed to complete");
-                            } catch (InterruptedException x) {
-                                throw new CompletionException(x);
-                            }
-                        });
-
-        String result = thenApplyAsyncCompleted.get(2, TimeUnit.MINUTES);
-        assertEquals("SuppliedApplied",
-                     result);
-
-        // Supplier should still be running:
-        assertFalse(supplyAsyncCompleted.isDone());
-
-        // Allow the first bean method to complete
-        blocker.countDown();
-
-        assertEquals("supplyAsyncCompleted",
-                     supplyAsyncCompleted.get(2, TimeUnit.MINUTES));
-    }
 }

@@ -20,11 +20,17 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.junit.Rule;
+
+import javax.net.ssl.KeyManagerFactory;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 /**
  * Test cases for client certificate on JAX-WS transport security
@@ -52,9 +58,14 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
 
     protected static final int SECURE_PORT = server.getHttpDefaultSecurePort();
 
+     private static final Class<?> c = ClientCertificateTest.class;
+
     protected static final int PORT = server.getHttpDefaultPort();
 
     protected static final int WAIT_TIME_OUT = 10 * 1000;
+
+    @Rule
+    public TestName name = new TestName();
 
     private boolean checkAppUpdate = false;
 
@@ -171,6 +182,11 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
     @Test
     @Mode(Mode.TestMode.FULL)
     public void testCertInClientKeyStoreButNotInServerTrustStore() throws Exception {
+        String algorithm = KeyManagerFactory.getDefaultAlgorithm();
+        boolean isPKIX = algorithm.equalsIgnoreCase("PKIX") ? true : false;
+
+        if(!isPKIX){
+
         prepareForTest("serverConfigs/" + PATCHY_SERVER_TRUST_STORE_CONFIG, "clientCert_provider_web.xml",
                        "bindings/certInClientKSButNotInServerTS.xml");
 
@@ -182,6 +198,9 @@ public class ClientCertificateTest extends AbstractJaxWsTransportSecurityTest {
         assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
 
         runTest(params, CERT_NOT_TRUST_SERVER_INFO);
+        } else {
+            Log.info(c, name.getMethodName(), "Skipping test for PKIX provider - " + name.getMethodName());
+        }
 
     }
 

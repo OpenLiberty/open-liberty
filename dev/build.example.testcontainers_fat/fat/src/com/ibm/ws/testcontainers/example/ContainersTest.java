@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,9 +31,14 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.generic.ContainersTestServlet;
 
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+
 /**
  * Example test class showing how to setup a GenericContainer
+ * Note: The annotation @SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule is used only when the build environment is eanbled with FIPS,
+ * which indicates the test is excluded as out of scope for FIPS compliant testing due to sample usage.
  */
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 @RunWith(FATRunner.class)
 public class ContainersTest extends FATServletClient {
 
@@ -80,6 +85,9 @@ public class ContainersTest extends FATServletClient {
                                     .withRegEx(".*database system is ready to accept connections.*\\s")
                                     .withTimes(2)
                                     .withStartupTimeout(Duration.ofSeconds(60)));
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("build.example.testcontainers");    
 
     @BeforeClass
     public static void setUp() throws Exception {

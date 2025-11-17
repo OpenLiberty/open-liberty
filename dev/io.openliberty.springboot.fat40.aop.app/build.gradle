@@ -1,0 +1,41 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ ********************************************************************************/
+
+plugins {
+  id 'org.springframework.boot' version '4.0.0-RC1'
+  id 'war'
+  id 'io.spring.dependency-management' version '1.1.7'
+}
+apply from: '../wlp-gradle/subprojects/spring.gradle'
+
+group = 'com.ibm.ws.example.spring'
+version = '0.0.1-SNAPSHOT'
+java {
+  sourceCompatibility = 17
+}
+
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+dependencies {
+  implementation('org.springframework.boot:spring-boot-starter-web')
+  implementation('org.springframework.boot:spring-boot-starter-aop:4.0.0-M2')
+  implementation('org.aspectj:aspectjweaver:1.9.24')
+  // Should use spring-boot-starter-tomcat as provideCompile, but gradle plugin
+  // is putting too much in lib-provided: see https://github.com/spring-gradle-plugins/dependency-management-plugin/issues/409.
+  // This was fixed in RC1 but highest released version for AOP starter is still M2.
+  // providedCompile('org.springframework.boot:spring-boot-starter-tomcat')
+  providedRuntime('org.apache.tomcat.embed:tomcat-embed-core')
+  providedRuntime('org.apache.tomcat.embed:tomcat-embed-el')
+  providedRuntime('org.apache.tomcat.embed:tomcat-embed-websocket')
+}
+bootJar {
+  duplicatesStrategy 'warn'
+}

@@ -19,7 +19,7 @@ import jakarta.persistence.EntityManager;
  * Repository with an entity that has ElementCollection attributes
  * and non-ElementCollection attributes.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface ECRepo extends DataRepository<ECEntity, String> {
 
     EntityManager getEntityManager();

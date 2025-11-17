@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Los mensajes siguientes est\u00e1n ocult
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Los mensajes que se han configurado para estar ocultos no se escriben en los archivos console.log y messages.log. Se escriben en el archivo trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=No se requiere ninguna acci\u00f3n
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: El formato de salida de messages.log se ha actualizado ahora a '{0}'.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: El formato de salida de messages.log se ha actualizado ahora a '' {0} ''.
 MESSAGE_FORMAT_UPDATED.explanation=Ahora el formato de salida para messages.log se ha actualizado.
 MESSAGE_FORMAT_UPDATED.useraction=No se requiere ninguna acci\u00f3n.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: El formato de salida de consola se ha actualizado ahora a '{0}'.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: El formato de salida de consola se ha actualizado ahora a ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=Ahora el formato de salida para la consola se ha actualizado.
 CONSOLE_FORMAT_UPDATED.useraction=No se requiere ninguna acci\u00f3n.
 
@@ -169,6 +169,10 @@ LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Especifique un intervalo de r
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Falta el nombre de cabecera de uno o m\u00e1s de los campos accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=El registro de JSON utiliza el atributo logFormat de accessLogging para seleccionar qu\u00e9 campos de mensaje http_access.log message deben incluirse. Debe suministrarse un nombre de cabecera cuando se utilizan los campo %i o %o en el atributo accessLogging logFormat.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Proporcione un nombre de cabecera para el campo en el atributo accessLogging logFormat.
+
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: Los registros est\u00e1n siendo estrangulados debido al alto volumen.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=Los registros est\u00e1n siendo estrangulados debido a su gran volumen.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=Resuelva cualquier problema que cause un registro excesivo o aumente el umbral de registro configurando el atributo de registro throttleMaxMessagesPerWindow. 
 
 FFDC_FILE_DELETION=TRAS3014I: Se han suprimido {0} archivos FFDC basados en el valor maxFfdcAge configurado.
 FFDC_FILE_DELETION.explanation=El n\u00famero de archivos FFDC que se han suprimido durante una limpieza FFDC.

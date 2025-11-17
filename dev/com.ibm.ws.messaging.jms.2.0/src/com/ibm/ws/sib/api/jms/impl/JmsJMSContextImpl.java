@@ -645,7 +645,7 @@ public class JmsJMSContextImpl implements JmsJMSContext {
         try {
             // Create messageproducer first, since we reuse most in jmsproducer
             // destination is passed as null because during send,destination is passed
-            // jmssession.createproducer() is not used becuase it stores the list of producers
+            // jmssession.createproducer() is not used because it stores the list of producers
             // which is not required for simplified API's
             MessageProducer msgProducer = jmsSession.instantiateProducer(null);
             jmsProducer = new JmsJMSProducerImpl(msgProducer);

@@ -21,7 +21,8 @@ src: \
 fat.project: true
 
 tested.features: jaxrs-2.0, el-3.0, restfulwsclient-3.0, restfulws-3.0, appsecurity-4.0, cdi-2.0, expressionlanguage-4.0, pages-3.0, \
-                 jsonp-1.1, jaxrsclient-2.1, restfulws-3.1, appsecurity-5.0, pages-3.1, jaspic-1.1, appauthentication-2.0, appauthentication-3.0, xmlbinding-3.0, checkpoint
+                 jsonp-1.1, jaxrsclient-2.1, restfulws-3.1, appsecurity-5.0, pages-3.1, jaspic-1.1, appauthentication-2.0, appauthentication-3.0, xmlbinding-3.0, checkpoint, \
+                 expressionLanguage-6.0, appsecurity-6.0, appauthentication-3.1, cdi-4.1, pages-4.0, servlet-6.1, noship-1.0
 
 -buildpath: \
     com.ibm.json4j;version=latest,\

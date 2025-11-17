@@ -74,7 +74,8 @@ Include-Resource: \
     com.ibm.ws.webcontainer.security;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.app.manager.lifecycle;version=latest,\
-    com.ibm.ws.kernel.service;version=latest
+    com.ibm.ws.kernel.service;version=latest,\
+    io.openliberty.security.javaeesec.internal;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file,\

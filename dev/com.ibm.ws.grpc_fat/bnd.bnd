@@ -11,7 +11,7 @@
 bVersion=1.0
 
 grpcVersion=1.69.0
-nettyVersion=4.1.119.Final
+nettyVersion=4.1.126.Final
 
 
 src: \
@@ -108,4 +108,5 @@ tested.features:\
     com.ibm.websphere.appserver.api.distributedMap;version=latest,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
     com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
-    io.openliberty.org.apache.xercesImpl;version=latest
+    io.openliberty.org.apache.xercesImpl;version=latest,\
+    com.ibm.ws.org.apache.commons.lang3;version=latest

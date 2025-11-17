@@ -15,6 +15,7 @@ import com.ibm.oauth.core.api.error.oauth20.InvalidGrantException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.oauth20.util.HashUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * Class to use for generating and validating PKCE code challenges using the "S256" code challenge method.
@@ -24,7 +25,7 @@ public class PkceMethodS256 extends ProofKeyForCodeExchangeMethod {
     private static final TraceComponent tc = Tr.register(PkceMethodS256.class);
 
     public static String CHALLENGE_METHOD = "S256";
-    public static String CODE_CHALLENGE_ALG_METHOD = "SHA-256";
+    public static String CODE_CHALLENGE_ALG_METHOD = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
 
     @Override
     public String getCodeChallengeMethod() {

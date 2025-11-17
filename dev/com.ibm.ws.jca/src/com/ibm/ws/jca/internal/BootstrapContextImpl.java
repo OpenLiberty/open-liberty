@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -92,6 +92,8 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.WSContextService;
 import com.ibm.wsspi.threadcontext.jca.JCAContextProvider;
 import com.ibm.wsspi.threading.WSExecutorService;
+
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 /**
  * Bootstrap context for a resource adapter
@@ -321,6 +323,16 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             bvalHelper.setBeanValidationSvc(svc);
         }
 
+        CheckpointPhase checkpoint = CheckpointPhase.getPhase();
+        if (checkpoint == CheckpointPhase.BEFORE_APP_START) {
+            CheckpointPhase.onRestore(() -> configureOnActivate());
+        } else {
+            configureOnActivate();
+        }
+        latches.put(resourceAdapterID, latch); // only add latch if activate is successful
+    }
+
+    private void configureOnActivate() throws Exception {
         try {
             beginContext(raMetaData);
             resourceAdapter = configureResourceAdapter();
@@ -358,8 +370,6 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                 stopTask(raThreadContextDescriptor, threadContext);
             }
         }
-
-        latches.put(resourceAdapterID, latch); // only add latch if activate is successful
     }
 
     /**
@@ -367,12 +377,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * Resource adapter config properties are also configured on the instance
      * if they are valid for the type of object and haven't already been configured.
      *
-     * @param instance managed connection factory, admin object, or activation spec instance.
-     * @param id name identifying the resource.
-     * @param configProps config properties.
+     * @param instance        managed connection factory, admin object, or activation spec instance.
+     * @param id              name identifying the resource.
+     * @param configProps     config properties.
      * @param activationProps activation config properties from the container. Null if not configuring an activation spec.
-     * @param adminObjSvc from the MEF may be passed when activation spec is to be configured, otherwise null.
-     * @param destinationRef reference to the AdminObjectService for the destination that is configured on the activation spec. Otherwise null.
+     * @param adminObjSvc     from the MEF may be passed when activation spec is to be configured, otherwise null.
+     * @param destinationRef  reference to the AdminObjectService for the destination that is configured on the activation spec. Otherwise null.
      * @throws Exception if an error occurs.
      */
     @FFDCIgnore(value = { NumberFormatException.class, Throwable.class })
@@ -687,12 +697,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * Returns a queue name or topic name (if the specified type is String) or a destination.
      *
-     * @param value destination id, if any, specified in the activation config.
-     * @param type interface required for the destination setter method.
+     * @param value           destination id, if any, specified in the activation config.
+     * @param type            interface required for the destination setter method.
      * @param destinationType destination interface type (according to the activation spec config properties)
-     * @param destinationRef reference to the AdminObjectService for the destination that is configured on the activation spec. Otherwise null.
+     * @param destinationRef  reference to the AdminObjectService for the destination that is configured on the activation spec. Otherwise null.
      * @param activationProps endpoint activation properties.
-     * @param adminObjSvc admin object service from MEF, or null
+     * @param adminObjSvc     admin object service from MEF, or null
      * @return queue name or topic name (if the specified type is String) or a destination.
      * @throws Exception if unable to get the destination.
      */
@@ -814,7 +824,7 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * Returns the name of the queue or topic.
      *
      * @param destinationType type of destination (javax.jms.Queue or javax.jms.Topic).
-     * @param value instance of the above type.
+     * @param value           instance of the above type.
      * @return name of the queue or topic.
      * @throws Exception if unable to obtain the destination name.
      */
@@ -1258,7 +1268,8 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      *
      * @param ref reference the service
      */
-    protected void unsetContextService(ServiceReference<WSContextService> ref) {}
+    protected void unsetContextService(ServiceReference<WSContextService> ref) {
+    }
 
     /**
      * Declarative Services method for unsetting the Jakarta/Java EE version

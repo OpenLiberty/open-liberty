@@ -192,7 +192,7 @@ public interface OAuth20Constants extends OAuthConstants {
     public static final String HASH = "hash"; // matches result from PasswordUtil.getCryptoAlgorithm
 
     // With FIPS enabled we want a 128 byte salt length minimum.
-    public static final String APP_PASSWORD_HASH_SALT = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? "notrandomnotrandom" : "notrandom";
+    public static final String APP_PASSWORD_HASH_SALT = CryptoUtils.isFips140_3Enabled() ? "notrandomnotrandom" : "notrandom";
     public static final String PLAIN_ENCODING = "plain";
     public static final String APP_PASSWORD_TOKEN_STATE_ID = "iamapppasswordorapptokenstateid";
     public final static String XOR = "xor"; // matches result from PasswordUtil.getCryptoAlgorithm

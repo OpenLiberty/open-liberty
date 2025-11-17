@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -180,6 +180,31 @@ public class MismatchingSOAPActionMTOMTest {
 
         List<String> expectedResponses = new ArrayList<String>(1);
         expectedResponses.add("getAttachment() returned");
+        assertTrue(printExpectedResponses(expectedResponses, false), checkExpectedResponses(urlBuilder.toString(), expectedResponses, false, HttpURLConnection.HTTP_OK));
+    }
+
+    /**
+     * TestDescription: When ibm-mtom-enabled is set to false
+     * MTOM is disabled only for response
+     *
+     * <webservice-endpoint-properties ibm-mtom-enabled="false" />
+     *
+     * Result:
+     * - response Content-Type is expected to be text/xml
+     *
+     * @throws IOException
+     */
+    @Test
+    public void testDisableMtomForResponse() throws Exception {
+
+        server.reconfigureServer("MTOMTestServer/disableMtomForResponse.xml", "CWWKG0017I");
+
+        String soapAction = "";
+        int port = server.getHttpDefaultPort();
+        StringBuilder urlBuilder = new StringBuilder("http://").append(clientServer.getHostname()).append(":").append(clientServer.getHttpDefaultPort()).append(SERVLET_PATH).append("?service=MTOMService").append("&port=").append(port).append("&setSoapAction=").append(soapAction);
+
+        List<String> expectedResponses = new ArrayList<String>(1);
+        expectedResponses.add("Content-Type -> text/xml");
         assertTrue(printExpectedResponses(expectedResponses, false), checkExpectedResponses(urlBuilder.toString(), expectedResponses, false, HttpURLConnection.HTTP_OK));
     }
 

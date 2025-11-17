@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  *******************************************************************************/
 
 package com.ibm.ws.security.saml.impl;
-
 
 import org.opensaml.core.config.Configuration;
 import org.opensaml.core.config.ConfigurationService;
@@ -47,6 +46,7 @@ public class Activator implements BundleActivator {
                                                   "/saml2-assertion-delegation-restriction-config.xml",
                                                   "/saml2-ecp-config.xml",
                                                   "/saml2-metadata-algorithm-config.xml",
+                                                  "/saml2-metadata-attr-config.xml",
                                                   "/saml2-metadata-config.xml",
                                                   "/saml2-metadata-idp-discovery-config.xml",
                                                   "/saml2-metadata-query-config.xml",
@@ -75,15 +75,19 @@ public class Activator implements BundleActivator {
         // Currently, we initialize it when the static boolean is not true
         if (!bInit) {
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Initializing the opensaml3 library...");
-            }         
-            Configuration configuration = new MapBasedConfiguration();
-            ConfigurationService.setConfiguration(configuration);
-
-            providerRegistry = new XMLObjectProviderRegistry();
-            configuration.register(XMLObjectProviderRegistry.class, providerRegistry,
-                                   ConfigurationService.DEFAULT_PARTITION_NAME);
+                Tr.debug(tc, "Initializing the opensaml4 library...");
+            }
+            //ClassLoader loader = Thread.currentThread().getContextClassLoader();
+            //Thread thread = Thread.currentThread();
+            //thread.setContextClassLoader(XMLObjectProviderRegistry.class.getClassLoader());
             try {
+                Configuration configuration = new MapBasedConfiguration();
+                ConfigurationService.setConfiguration(configuration);
+
+                providerRegistry = new XMLObjectProviderRegistry();
+                configuration.register(XMLObjectProviderRegistry.class, providerRegistry,
+                                       ConfigurationService.DEFAULT_PARTITION_NAME);
+
                 // We are not using org.apache.santuario.xmlsec
                 // We will need to initialize the xmlsec with our own security
 
@@ -131,18 +135,23 @@ public class Activator implements BundleActivator {
 
             } catch (Exception e) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "unable to bootstrap the opensaml3 library - config Exception:" + e);
+                    Tr.debug(tc, "unable to bootstrap the opensaml4 library - config Exception:" + e);
                 }
-            }
+            } /*
+               * finally {
+               * thread.setContextClassLoader(loader);
+               * }
+               */
             bInit = true;
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "opensaml3 library bootstrap complete");
+                Tr.debug(tc, "opensaml4 library bootstrap complete");
             }
         }
     }
 
     @Override
-    public void stop(BundleContext ctx) throws Exception {}
+    public void stop(BundleContext ctx) throws Exception {
+    }
 
     /**
      * Initializes the default global security configuration.

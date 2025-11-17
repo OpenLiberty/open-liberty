@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,10 +24,15 @@ dependencies {
     project(':com.ibm.ws.security.registry_test.servlet')
 }
 
+jar.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
+
 autoFVT.dependsOn ':com.ibm.ws.security.registry_test.servlet:assemble'
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 
-autoFVT.doLast {
+autoFVT {
+  def securityServletProject = project(':com.ibm.ws.webcontainer.security_test.servlets')
+  def registryServletProject = project(':com.ibm.ws.security.registry_test.servlet')
+  doLast {
   /*
    * Copy the clientcert.zip into test servers.
    */
@@ -37,7 +42,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/clientcert.zip')
+      from new File(securityServletProject.buildDir, 'test-application/clientcert.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'clientcert.zip', 'clientcert.war'
     }
@@ -53,7 +58,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application/userRegistry.war')
+      from new File(registryServletProject.buildDir, 'test-application/userRegistry.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
   }
@@ -69,6 +74,7 @@ autoFVT.doLast {
    copy { 
      from new File(appBuildDir, 'com.ibm.ws.security.registry.basic.certificate.mapper.sample_1.0.jar')
      into new File(autoFvtDir, 'publish/bundles')
+   }
    }
 }
 

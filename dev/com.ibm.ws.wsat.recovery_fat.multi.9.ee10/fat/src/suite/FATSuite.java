@@ -16,7 +16,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+import com.ibm.ws.transaction.fat.util.PostgresqlContainerSuite;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -29,13 +29,13 @@ import tests.ReroutePeerRecoveryTest;
 @SuiteClasses({
 	ReroutePeerRecoveryTest.class,
 })
-public class FATSuite extends TxTestContainerSuite {
+public class FATSuite extends PostgresqlContainerSuite {
 
 	static {
-	    testContainer = new PostgreSQLContainer(TxTestContainerSuite.POSTGRES_SSL)
-	                    .withDatabaseName(TxTestContainerSuite.POSTGRES_DB)
-	                    .withUsername(TxTestContainerSuite.POSTGRES_USER)
-	                    .withPassword(TxTestContainerSuite.POSTGRES_PASS)
+	    testContainer = new PostgreSQLContainer(getPostgresqlImageName())
+	                    .withDatabaseName(POSTGRES_DB)
+	                    .withUsername(POSTGRES_USER)
+	                    .withPassword(POSTGRES_PASS)
 	                    .withSSL()
 	                    .withLogConsumer(new SimpleLogConsumer(ReroutePeerRecoveryTest.class, "postgre-ssl"));
 

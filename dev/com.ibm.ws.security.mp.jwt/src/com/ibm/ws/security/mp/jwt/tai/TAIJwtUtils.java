@@ -34,6 +34,7 @@ import com.ibm.ws.security.jwt.utils.JwtUtils;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
 import com.ibm.ws.security.mp.jwt.impl.DefaultJsonWebTokenImpl;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class TAIJwtUtils {
 
@@ -86,7 +87,7 @@ public class TAIJwtUtils {
     private static String getSha256Digest(String in) {
         MessageDigest md = null;
         try {
-            md = MessageDigest.getInstance("SHA-256");
+            md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
         } catch (NoSuchAlgorithmException e) {
             return null; // and emit ffdc
         }

@@ -66,7 +66,9 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Una sau mai multe valori ale par
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty utilizeaz\u0103 acum algoritmi mai puternici pentru parolele {aes} \u0219i {hash} nou generate.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Asigura\u021bi-v\u0103 c\u0103 valorile parolelor {aes} \u0219i {hash} sunt generate cu cea mai recent\u0103 versiune a Liberty.
 
-
+AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=Lungimea cheie a valorii specificate \u00een variabila wlp.aes.encryption.key trebuie s\u0103 fie de 256 de bi\u021bi.
+AESKEYMANAGER_NOT_BASE64_EXCEPTION=Valoarea care este specificat\u0103 \u00een variabila wlp.aes.encryption.key trebuie s\u0103 fie codificat\u0103 base64.
+AESKEYMANAGER_BASE64_VARIABLE_NOT_SET=Variabila wlp.aes.encryption.key trebuie s\u0103 fie setat\u0103 pentru a decoda parolele.
 # ---------------- This is an exception message ------------
 PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Au fost detectate mai multe implement\u0103ri CustomPasswordEncryption. Doar o implementare CustomPasswordEncryption este suportat\u0103. Lista implement\u0103rilor CustomPasswordEncryption detectate este urm\u0103toarea:
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=A fost raportat\u0103 o eroare la procesarea fi\u015fierului manifest extensie {0}. Acest fi\u015fier a fost ignorat. Criptarea personalizat\u0103 nu este disponibil\u0103. Mesajul de eroare este {1}.

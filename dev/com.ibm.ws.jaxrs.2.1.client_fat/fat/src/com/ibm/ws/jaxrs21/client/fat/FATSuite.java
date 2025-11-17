@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,9 +39,9 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({ AlwaysPassesTest.class,
                 JAXRS21ClientCallbackTest.class,
-                JAXRS21ClientCompletionStageRxInvokerTest.class,
-                JAXRS21ClientCXFRxInvokerTest.class,
-                JAXRS21ClientJerseyRxInvokerTest.class,
+                // JAXRS21ClientCompletionStageRxInvokerTest.class,  //commented out temporarily - see issue #33408
+                // JAXRS21ClientCXFRxInvokerTest.class,              //commented out temporarily - see issue #33408
+                // JAXRS21ClientJerseyRxInvokerTest.class,           //commented out temporarily - see issue #33408
                 JAXRS21ClientLTPATest.class,
                 JAXRS21ClientSSLProxyAuthTest.class,
                 JAXRS21ClientSSLTest.class,

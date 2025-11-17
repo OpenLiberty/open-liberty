@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class SHA2Utils {
 
@@ -25,7 +26,7 @@ public class SHA2Utils {
 
     static {
         try {
-            messagedigest = MessageDigest.getInstance("SHA-256");
+            messagedigest = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
         } catch (NoSuchAlgorithmException e) {
             //should not happen
         }

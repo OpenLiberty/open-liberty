@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test. *
@@ -51,8 +52,9 @@ public class Mpjwt21TCKLauncher_noaud_noenv {
     public void launchMpjwt21TCK_noaud_noenv() throws Exception {
         String suiteName = "tck_suite_noaud_noenv.xml";
 
-        TCKRunner.build(server, Type.MICROPROFILE, "JWT Auth")
+        TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.JWT_AUTH)
                         .withSuiteFileName(suiteName)
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                         .runTCK();
     }
 }

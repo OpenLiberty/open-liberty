@@ -169,7 +169,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>32.0.1-android</version>
+      <version>32.0.1-jre</version>
     </dependency>
     <dependency>
       <groupId>com.google.inject</groupId>
@@ -319,7 +319,12 @@
     <dependency>
       <groupId>com.sun.mail</groupId>
       <artifactId>jakarta.mail</artifactId>
-      <version>2.0.1</version>
+      <version>1.6.8</version>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>jakarta.mail</artifactId>
+      <version>2.0.2</version>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind.external</groupId>
@@ -389,7 +394,7 @@
     <dependency>
       <groupId>com.unboundid</groupId>
       <artifactId>unboundid-ldapsdk</artifactId>
-      <version>5.1.0</version>
+      <version>7.0.3</version>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
@@ -414,12 +419,12 @@
     <dependency>
       <groupId>commons-fileupload</groupId>
       <artifactId>commons-fileupload</artifactId>
-      <version>1.5</version>
+      <version>1.6.0</version>
     </dependency>
     <dependency>
       <groupId>commons-io</groupId>
       <artifactId>commons-io</artifactId>
-      <version>2.15.1</version>
+      <version>2.19.0</version>
     </dependency>
     <dependency>
       <groupId>commons-lang</groupId>
@@ -465,6 +470,11 @@
       <groupId>io.dropwizard.metrics</groupId>
       <artifactId>metrics-core</artifactId>
       <version>4.1.5</version>
+    </dependency>
+    <dependency>
+      <groupId>io.dropwizard.metrics</groupId>
+      <artifactId>metrics-core</artifactId>
+      <version>4.2.25</version>
     </dependency>
     <dependency>
       <groupId>io.github.classgraph</groupId>
@@ -564,57 +574,57 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-buffer</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http2</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-http</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec-socks</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-codec</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-common</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler-proxy</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-handler</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-resolver</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-unix-common</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-transport</artifactId>
-      <version>4.1.119.Final</version>
+      <version>4.1.126.Final</version>
     </dependency>
     <dependency>
       <groupId>io.openliberty.arquillian</groupId>
@@ -1167,6 +1177,11 @@
       <version>3.5.16</version>
     </dependency>
     <dependency>
+      <groupId>io.projectreactor</groupId>
+      <artifactId>reactor-core</artifactId>
+      <version>3.8.0-M5</version>
+    </dependency>
+    <dependency>
       <groupId>io.prometheus</groupId>
       <artifactId>simpleclient</artifactId>
       <version>0.15.0</version>
@@ -1284,17 +1299,17 @@
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>mutiny-reactive-streams-operators-jakarta</artifactId>
-      <version>2.5.6</version>
+      <version>2.7.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>mutiny-zero-flow-adapters</artifactId>
-      <version>1.0.0</version>
+      <version>1.1.1</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
       <artifactId>mutiny</artifactId>
-      <version>2.5.6</version>
+      <version>2.7.0</version>
     </dependency>
     <dependency>
       <groupId>io.smallrye.reactive</groupId>
@@ -1614,7 +1629,12 @@
     <dependency>
       <groupId>jakarta.mail</groupId>
       <artifactId>jakarta.mail-api</artifactId>
-      <version>2.0.1</version>
+      <version>1.6.8</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.mail</groupId>
+      <artifactId>jakarta.mail-api</artifactId>
+      <version>2.0.2</version>
     </dependency>
     <dependency>
       <groupId>jakarta.mail</groupId>
@@ -1705,6 +1725,11 @@
       <groupId>jakarta.servlet</groupId>
       <artifactId>jakarta.servlet-api</artifactId>
       <version>6.1.0</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.tck.arquillian</groupId>
+      <artifactId>tck-porting-lib</artifactId>
+      <version>11.0.1</version>
     </dependency>
     <dependency>
       <groupId>jakarta.transaction</groupId>
@@ -1837,11 +1862,6 @@
       <version>1.5.6</version>
     </dependency>
     <dependency>
-      <groupId>javax.mail</groupId>
-      <artifactId>javax.mail-api</artifactId>
-      <version>1.6.2</version>
-    </dependency>
-    <dependency>
       <groupId>javax.persistence</groupId>
       <artifactId>persistence-api</artifactId>
       <version>1.0.2</version>
@@ -1919,12 +1939,12 @@
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy-agent</artifactId>
-      <version>1.16.1</version>
+      <version>1.17.8</version>
     </dependency>
     <dependency>
       <groupId>net.bytebuddy</groupId>
       <artifactId>byte-buddy</artifactId>
-      <version>1.16.1</version>
+      <version>1.17.8</version>
     </dependency>
     <dependency>
       <groupId>net.java.dev.jna</groupId>
@@ -2069,7 +2089,7 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <version>3.14.0</version>
+      <version>3.18.0</version>
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
@@ -2203,16 +2223,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-security-saml</artifactId>
-      <version>3.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-security</artifactId>
-      <version>3.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-transports-http-hc</artifactId>
       <version>3.5.5</version>
     </dependency>
@@ -2239,11 +2249,6 @@
     <dependency>
       <groupId>org.apache.cxf</groupId>
       <artifactId>cxf-rt-ws-policy</artifactId>
-      <version>3.5.5</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.cxf</groupId>
-      <artifactId>cxf-rt-ws-security</artifactId>
       <version>3.5.5</version>
     </dependency>
     <dependency>
@@ -2529,7 +2534,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-api</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -2554,7 +2559,7 @@
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
       <artifactId>myfaces-impl</artifactId>
-      <version>3.0.2</version>
+      <version>3.0.3</version>
     </dependency>
     <dependency>
       <groupId>org.apache.myfaces.core</groupId>
@@ -2654,7 +2659,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-el-api</artifactId>
-      <version>11.0.7</version>
+      <version>11.0.10</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tomcat</groupId>
@@ -2669,7 +2674,7 @@
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-jasper-el</artifactId>
-      <version>11.0.7</version>
+      <version>11.0.10</version>
     </dependency>
     <dependency>
       <groupId>org.apache.wink</groupId>
@@ -2692,44 +2697,14 @@
       <version>2.0.3</version>
     </dependency>
     <dependency>
-      <groupId>org.apache.wss4j</groupId>
-      <artifactId>wss4j-bindings</artifactId>
-      <version>2.4.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wss4j</groupId>
-      <artifactId>wss4j-policy</artifactId>
-      <version>2.4.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wss4j</groupId>
-      <artifactId>wss4j-ws-security-common</artifactId>
-      <version>2.4.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wss4j</groupId>
-      <artifactId>wss4j-ws-security-dom</artifactId>
-      <version>2.4.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wss4j</groupId>
-      <artifactId>wss4j-ws-security-policy-stax</artifactId>
-      <version>2.4.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wss4j</groupId>
-      <artifactId>wss4j-ws-security-stax</artifactId>
-      <version>2.4.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.wss4j</groupId>
-      <artifactId>wss4j-ws-security-web</artifactId>
-      <version>2.4.1</version>
-    </dependency>
-    <dependency>
       <groupId>org.apache.xbean</groupId>
       <artifactId>xbean-asm8-shaded</artifactId>
       <version>4.17</version>
+    </dependency>
+    <dependency>
+      <groupId>org.aspectj</groupId>
+      <artifactId>aspectjrt</artifactId>
+      <version>1.9.24</version>
     </dependency>
     <dependency>
       <groupId>org.asynchttpclient</groupId>
@@ -2744,22 +2719,37 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpg-jdk18on</artifactId>
-      <version>1.78.1</version>
+      <version>1.82</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpg-jdk18on</artifactId>
+      <version>1.82</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk18on</artifactId>
-      <version>1.78.1</version>
+      <version>1.82</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
-      <version>1.78.1</version>
+      <version>1.82</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk18on</artifactId>
+      <version>1.82</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcutil-jdk18on</artifactId>
-      <version>1.78.1</version>
+      <version>1.82</version>
+    </dependency>
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcutil-jdk18on</artifactId>
+      <version>1.82</version>
     </dependency>
     <dependency>
       <groupId>org.brotli</groupId>
@@ -2804,7 +2794,7 @@
     <dependency>
       <groupId>org.eclipse.angus</groupId>
       <artifactId>angus-mail</artifactId>
-      <version>2.0.1</version>
+      <version>2.0.5</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.birt.runtime.3_7_1</groupId>
@@ -3000,6 +2990,11 @@
       <groupId>org.eclipse.jetty</groupId>
       <artifactId>jetty-websocket</artifactId>
       <version>8.2.0.v20160908</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jnosql.communication</groupId>
+      <artifactId>jnosql-communication-semistructured</artifactId>
+      <version>1.1.4</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.jnosql.mapping</groupId>
@@ -3349,17 +3344,17 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.antlr</artifactId>
-      <version>2.7.15</version>
+      <version>2.7.16</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.asm</artifactId>
-      <version>9.8.0</version>
+      <version>9.9.0</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>2.7.15</version>
+      <version>2.7.16</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3369,17 +3364,17 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>4.0.6</version>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>5.0.0-B08</version>
+      <version>5.0.0-B11</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>2.7.15</version>
+      <version>2.7.16</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3389,17 +3384,17 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>4.0.6</version>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>5.0.0-B08</version>
+      <version>5.0.0-B11</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>2.7.15</version>
+      <version>2.7.16</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3409,17 +3404,17 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>4.0.6</version>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>5.0.0-B08</version>
+      <version>5.0.0-B11</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>2.7.15</version>
+      <version>2.7.16</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3429,22 +3424,47 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>4.0.6</version>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>5.0.0-B08</version>
+      <version>5.0.0-B11</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
-      <version>4.0.6</version>
+      <version>4.0.8</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
-      <version>5.0.0-B08</version>
+      <version>5.0.0-B11</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.equinox.console</artifactId>
+      <version>1.4.1100</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.equinox.coordinator</artifactId>
+      <version>1.5.500</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.equinox.metatype</artifactId>
+      <version>1.6.900</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.equinox.region</artifactId>
+      <version>1.5.800</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.platform</groupId>
+      <artifactId>org.eclipse.osgi</artifactId>
+      <version>3.23.200</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.transformer</groupId>
@@ -3693,23 +3713,8 @@
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
-      <artifactId>jakarta.json</artifactId>
-      <version>2.0.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
       <artifactId>javax.faces</artifactId>
       <version>2.3.9</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.json</artifactId>
-      <version>1.0.4</version>
-    </dependency>
-    <dependency>
-      <groupId>org.glassfish</groupId>
-      <artifactId>javax.json</artifactId>
-      <version>1.1.4</version>
     </dependency>
     <dependency>
       <groupId>org.hamcrest</groupId>
@@ -3729,7 +3734,7 @@
     <dependency>
       <groupId>org.hibernate.orm</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>7.0.0.Beta1</version>
+      <version>7.0.9.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate.validator</groupId>
@@ -3929,7 +3934,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-cdi</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3944,7 +3949,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client-api</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3969,7 +3974,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-client</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3984,7 +3989,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core-spi</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -3999,7 +4004,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-core</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -4014,7 +4019,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jaxb-provider</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -4029,7 +4034,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-multipart-provider</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -4044,7 +4049,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-rxjava2</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -4059,7 +4064,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-servlet-initializer</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
@@ -4079,7 +4084,7 @@
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-validator-provider</artifactId>
-      <version>7.0.0.Alpha2</version>
+      <version>7.0.0.Final</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.shrinkwrap</groupId>
@@ -4155,6 +4160,11 @@
       <groupId>org.jboss.weld</groupId>
       <artifactId>weld-porting-package-tck</artifactId>
       <version>6.0.0.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jctools</groupId>
+      <artifactId>jctools-core</artifactId>
+      <version>4.0.5</version>
     </dependency>
     <dependency>
       <groupId>org.jetbrains.kotlin</groupId>
@@ -4534,27 +4544,27 @@
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-analysis</artifactId>
-      <version>9.8</version>
+      <version>9.9</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-commons</artifactId>
-      <version>9.8</version>
+      <version>9.9</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-tree</artifactId>
-      <version>9.8</version>
+      <version>9.9</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm-util</artifactId>
-      <version>9.8</version>
+      <version>9.9</version>
     </dependency>
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
-      <version>9.8</version>
+      <version>9.9</version>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>
@@ -4627,6 +4637,11 @@
       <version>0.9.7376</version>
     </dependency>
     <dependency>
+      <groupId>org.skyscreamer</groupId>
+      <artifactId>jsonassert</artifactId>
+      <version>2.0-rc1</version>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.36</version>
@@ -4648,6 +4663,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-autoconfigure</artifactId>
       <version>1.5.9.RELEASE</version>
     </dependency>
@@ -4663,6 +4683,31 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-autoconfigure</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-jpa</artifactId>
+      <version>4.0.0-M3</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-servlet</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-web-server</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-webmvc</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>1.5.9.RELEASE</version>
     </dependency>
@@ -4675,6 +4720,16 @@
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot</artifactId>
       <version>3.3.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.0.0-M1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot</artifactId>
+      <version>4.0.0-M3</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
@@ -4693,6 +4748,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-commons</artifactId>
+      <version>4.0.0-M4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-jpa</artifactId>
       <version>2.7.6</version>
     </dependency>
@@ -4700,6 +4760,11 @@
       <groupId>org.springframework.data</groupId>
       <artifactId>spring-data-jpa</artifactId>
       <version>3.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.data</groupId>
+      <artifactId>spring-data-jpa</artifactId>
+      <version>4.0.0-M4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.security</groupId>
@@ -4808,6 +4873,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-beans</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-context</artifactId>
       <version>3.0.7.RELEASE</version>
     </dependency>
@@ -4828,6 +4898,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-context</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
       <version>3.0.7.RELEASE</version>
     </dependency>
@@ -4845,6 +4920,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-core</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-core</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4883,6 +4963,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-jdbc</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
       <version>5.3.39</version>
     </dependency>
@@ -4890,6 +4975,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-jms</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-jms</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4903,6 +4993,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-orm</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
       <version>5.3.39</version>
     </dependency>
@@ -4910,6 +5005,11 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-tx</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-tx</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
@@ -4933,6 +5033,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-web</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-webflux</artifactId>
       <version>5.3.21</version>
     </dependency>
@@ -4943,6 +5048,11 @@
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
+      <artifactId>spring-webflux</artifactId>
+      <version>7.0.0-M7</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
       <artifactId>spring-webmvc</artifactId>
       <version>4.3.13.RELEASE</version>
     </dependency>
@@ -4970,61 +5080,66 @@
       <groupId>org.springframework</groupId>
       <artifactId>spring-websocket</artifactId>
       <version>6.1.14</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework</groupId>
+      <artifactId>spring-websocket</artifactId>
+      <version>7.0.0-M7</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>database-commons</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>db2</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>jdbc</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>kafka</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mongodb</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mssqlserver</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>oracle-free</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>oracle-xe</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>postgresql</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>selenium</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>testcontainers</artifactId>
-      <version>1.21.0</version>
+      <version>1.21.3</version>
     </dependency>
     <dependency>
       <groupId>org.testng</groupId>
@@ -5067,6 +5182,26 @@
       <version>1.9.23.ibm</version>
     </dependency>
     <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-weaver-privilizer</artifactId>
+      <version>1.1.0.ibm</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>jakarta.json</artifactId>
+      <version>2.0.2.ibm</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
+      <version>1.0.5.ibm</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
+      <version>1.1.5.ibm</version>
+    </dependency>
+    <dependency>
       <groupId>com.fasterxml</groupId>
       <artifactId>classmate</artifactId>
       <version>1.3.4</version>
@@ -5100,11 +5235,6 @@
       <groupId>com.sun.mail</groupId>
       <artifactId>javax.mail</artifactId>
       <version>1.5.6</version>
-    </dependency>
-    <dependency>
-      <groupId>com.sun.mail</groupId>
-      <artifactId>javax.mail</artifactId>
-      <version>1.6.2</version>
     </dependency>
     <dependency>
       <groupId>com.sun.org.apache.xml.internal</groupId>
@@ -5388,11 +5518,6 @@
     </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
-      <artifactId>commons-weaver-privilizer</artifactId>
-      <version>1.1</version>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.commons</groupId>
       <artifactId>commons-weaver-processor</artifactId>
       <version>1.1</version>
     </dependency>
@@ -5510,26 +5635,6 @@
       <groupId>org.apache.neethi</groupId>
       <artifactId>neethi</artifactId>
       <version>3.0.2</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.equinox.console</artifactId>
-      <version>1.4.300</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.equinox.coordinator</artifactId>
-      <version>1.4.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.equinox.metatype</artifactId>
-      <version>1.6.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.platform</groupId>
-      <artifactId>org.eclipse.equinox.region</artifactId>
-      <version>1.5.100</version>
     </dependency>
     <dependency>
       <groupId>org.jboss.classfilewriter</groupId>

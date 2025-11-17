@@ -64,7 +64,7 @@ CWWKD1008.ambig.rtrn.err.useraction=Atualize o m\u00e9todo do reposit\u00f3rio p
 
 CWWKD1009.lifecycle.param.err=CWWKD1009E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o pode ter par\u00e2metros {2} porque o m\u00e9todo \u00e9 anotado com a anota\u00e7\u00e3o de ciclo de vida {3}. Os m\u00e9todos de reposit\u00f3rio anotados com uma anota\u00e7\u00e3o de ciclo de vida devem ter exatamente um par\u00e2metro, que deve ser a entidade ou uma matriz ou lista da entidade.
 CWWKD1009.lifecycle.param.err.explanation=Os m\u00e9todos de ciclo de vida devem ter um \u00fanico par\u00e2metro de entidade.
-CWWKD1009.lifecycle.param.err.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para ter um \u00fanico par\u00e2metro que seja uma entidade ou uma matriz de Lista da entidade.
+CWWKD1009.lifecycle.param.err.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para ter um \u00fanico par\u00e2metro que seja uma entidade, uma matriz da entidade ou uma lista da entidade.
 
 CWWKD1010.unknown.entity.attr=CWWKD1010E: Um atributo de entidade chamado {0} n\u00e3o foi encontrado na classe de entidade {1} para o m\u00e9todo {2} da interface do reposit\u00f3rio {3}. Os nomes de atributos v\u00e1lidos para a entidade s\u00e3o: {4}.
 CWWKD1010.unknown.entity.attr.explanation=O m\u00e9todo de reposit\u00f3rio est\u00e1 tentando usar um atributo de entidade que n\u00e3o existe.
@@ -82,9 +82,9 @@ CWWKD1013.cde.missing.param.anno=CWWKD1013E: O par\u00e2metro {0} do m\u00e9todo
 CWWKD1013.cde.missing.param.anno.explanation=Os par\u00e2metros dos m\u00e9todos count, delete e exists do reposit\u00f3rio devem corresponder aos atributos da entidade.
 CWWKD1013.cde.missing.param.anno.useraction=Atualize o m\u00e9todo do reposit\u00f3rio de modo que todos os par\u00e2metros correspondam aos atributos da entidade.
 
-CWWKD1014.upd.missing.param.anno=CWWKD1014E: O par\u00e2metro {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} n\u00e3o corresponde a um atributo de entidade. Os par\u00e2metros que n\u00e3o correspondem a um atributo de entidade devem ter uma das anota\u00e7\u00f5es de par\u00e2metro: {3}. Para definir uma condi\u00e7\u00e3o para a restri\u00e7\u00e3o dos resultados da consulta, o par\u00e2metro deve ser anotado com a anota\u00e7\u00e3o By e o valor da anota\u00e7\u00e3o By deve ser atribu\u00eddo ao nome do atributo da entidade. Como alternativa, ative a op\u00e7\u00e3o de compila\u00e7\u00e3o -parameters e d\u00ea ao par\u00e2metro o mesmo nome do atributo de entidade.
-CWWKD1014.upd.missing.param.anno.explanation=Os par\u00e2metros dos m\u00e9todos de atualiza\u00e7\u00e3o do reposit\u00f3rio devem corresponder aos atributos da entidade.
-CWWKD1014.upd.missing.param.anno.useraction=Atualize o m\u00e9todo do reposit\u00f3rio de modo que todos os par\u00e2metros correspondam aos atributos da entidade.
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: O m\u00e9todo {0} do reposit\u00f3rio {1} n\u00e3o \u00e9 um m\u00e9todo v\u00e1lido de atualiza\u00e7\u00e3o do ciclo de vida porque o m\u00e9todo tem par\u00e2metros {2}. Os m\u00e9todos de reposit\u00f3rio anotados com uma anota\u00e7\u00e3o de ciclo de vida devem ter exatamente um par\u00e2metro, que deve ser a entidade, uma matriz da entidade ou uma lista da entidade. O m\u00e9todo {0} tamb\u00e9m n\u00e3o \u00e9 uma opera\u00e7\u00e3o v\u00e1lida de atualiza\u00e7\u00e3o baseada em par\u00e2metros porque o par\u00e2metro do m\u00e9todo {3} n\u00e3o tem uma anota\u00e7\u00e3o ( {4} ) que indique o nome do atributo da entidade. Como alternativa, ative a op\u00e7\u00e3o de compila\u00e7\u00e3o -parameters e d\u00ea ao par\u00e2metro o mesmo nome do atributo de entidade.
+CWWKD1014.upd.missing.param.anno.explanation=Os par\u00e2metros dos m\u00e9todos de atualiza\u00e7\u00e3o do reposit\u00f3rio devem corresponder aos atributos da entidade. Como alternativa, os m\u00e9todos de ciclo de vida devem ter um \u00fanico par\u00e2metro de entidade.
+CWWKD1014.upd.missing.param.anno.useraction=Atualize o m\u00e9todo do reposit\u00f3rio de modo que todos os par\u00e2metros correspondam aos atributos da entidade. Como alternativa, atualize o m\u00e9todo do reposit\u00f3rio para ter um \u00fanico par\u00e2metro que seja uma entidade, uma matriz da entidade ou uma lista da entidade.
 
 CWWKD1015.null.entity.param=CWWKD1015E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o pode aceitar uma entidade nula.
 CWWKD1015.null.entity.param.explanation=Os m\u00e9todos de ciclo de vida exigem uma inst\u00e2ncia de entidade n\u00e3o nula.
@@ -102,8 +102,7 @@ CWWKD1018.confl.special.param=CWWKD1018E: O m\u00e9todo {0} do reposit\u00f3rio 
 CWWKD1018.confl.special.param.explanation=Alguns dos par\u00e2metros especiais do Jakarta Data, como Limit e PageRequest, n\u00e3o podem ser combinados em uma \u00fanica assinatura de m\u00e9todo de reposit\u00f3rio.
 CWWKD1018.confl.special.param.useraction=Atualize o reposit\u00f3rio para n\u00e3o usar os dois tipos de par\u00e2metros especiais do Jakarta Data na mesma assinatura de m\u00e9todo.
 
-CWWKD1019.mixed.positional.named=CWWKD1019E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o pode ter uma consulta que misture par\u00e2metros posicionais e nomeados. A interface define uma combina\u00e7\u00e3o de par\u00e2metros posicionais {2} e
- {3} par\u00e2metros nomeados {4} para o valor da anota\u00e7\u00e3o Query: {5}. Uma consulta com par\u00e2metros posicionais deve fazer refer\u00eancia a cada par\u00e2metro por seu valor ordinal, come\u00e7ando com ?1, e os par\u00e2metros do m\u00e9todo n\u00e3o devem ter a anota\u00e7\u00e3o Param. Em uma consulta com par\u00e2metros nomeados, cada par\u00e2metro deve ser referenciado por seu nome, como {6}, e os par\u00e2metros do m\u00e9todo devem ter a anota\u00e7\u00e3o Param, como {7}. Como alternativa, a ativa\u00e7\u00e3o da op\u00e7\u00e3o de compila\u00e7\u00e3o -parameters permite que os par\u00e2metros do m\u00e9todo indiquem o par\u00e2metro nomeado por meio da correspond\u00eancia com seu nome, por exemplo, {8}.
+CWWKD1019.mixed.positional.named=CWWKD1019E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} n\u00e3o pode ter uma consulta que misture par\u00e2metros posicionais e nomeados. A interface define uma combina\u00e7\u00e3o de par\u00e2metros posicionais {2} e par\u00e2metros nomeados {3} {4} para o valor de anota\u00e7\u00e3o Query: {5}. Uma consulta com par\u00e2metros posicionais deve fazer refer\u00eancia a cada par\u00e2metro por seu valor ordinal, come\u00e7ando com?1, e os par\u00e2metros do m\u00e9todo n\u00e3o devem ter a anota\u00e7\u00e3o Param. Em uma consulta com par\u00e2metros nomeados, cada par\u00e2metro deve ser referenciado por seu nome, como {6}, e os par\u00e2metros do m\u00e9todo devem ter a anota\u00e7\u00e3o Param, como {7}. Como alternativa, a ativa\u00e7\u00e3o da op\u00e7\u00e3o de compila\u00e7\u00e3o -parameters permite que os par\u00e2metros do m\u00e9todo indiquem o par\u00e2metro nomeado por meio da correspond\u00eancia com seu nome, por exemplo, {8}.
 CWWKD1019.mixed.positional.named.explanation=As consultas com par\u00e2metros devem usar todos os par\u00e2metros nomeados ou todos os par\u00e2metros posicionais, n\u00e3o uma combina\u00e7\u00e3o.
 CWWKD1019.mixed.positional.named.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para usar somente par\u00e2metros nomeados ou somente par\u00e2metros posicionais.
 
@@ -135,9 +134,9 @@ CWWKD1026.ignore.case.not.text=CWWKD1026E: O atributo {0} da entidade {1} n\u00e
 CWWKD1026.ignore.case.not.text.explanation=A classifica\u00e7\u00e3o com mai\u00fasculas e min\u00fasculas ignorada s\u00f3 \u00e9 poss\u00edvel com atributos de entidade que representam texto.
 CWWKD1026.ignore.case.not.text.useraction=Certifique-se de que os crit\u00e9rios de classifica\u00e7\u00e3o sejam aplicados ao atributo de entidade correto e remova a instru\u00e7\u00e3o para ignorar o caso se o atributo de entidade n\u00e3o representar texto.
 
-CWWKD1027.anno.missing.attr.name=CWWKD1027E: O par\u00e2metro {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} \u00e9 anotado com uma anota\u00e7\u00e3o {3} que n\u00e3o especifica um nome de atributo de entidade como seu valor. A anota\u00e7\u00e3o deve especificar o nome do atributo da entidade como seu valor, ou a op\u00e7\u00e3o de compila\u00e7\u00e3o -parameters deve estar ativada e o par\u00e2metro deve ter o mesmo nome do atributo da entidade.
-CWWKD1027.anno.missing.attr.name.explanation=Os par\u00e2metros dos m\u00e9todos de atualiza\u00e7\u00e3o do reposit\u00f3rio devem corresponder aos atributos da entidade.
-CWWKD1027.anno.missing.attr.name.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para indicar o atributo de entidade ao qual o par\u00e2metro pertence.
+CWWKD1027.datastore.lacks.java.comp=CWWKD1027E: Uma ou mais interfaces de reposit\u00f3rio ( {0} ) do artefato do aplicativo {1} especificam um valor {2} dataStore que n\u00e3o corresponde a uma refer\u00eancia de recurso de fonte de dados ou refer\u00eancia de unidade de persist\u00eancia porque n\u00e3o tem um prefixo de namespace java:comp/env/. Considere a possibilidade de alterar a anota\u00e7\u00e3o Repository para especificar {3}.
+CWWKD1027.datastore.lacks.java.comp.explanation=Os nomes JNDI de refer\u00eancias a recursos de fonte de dados e refer\u00eancias a unidades de persist\u00eancia devem incluir um prefixo de namespace java:.
+CWWKD1027.datastore.lacks.java.comp.useraction=Certifique-se de que o valor do armazenamento de dados da anota\u00e7\u00e3o Repository inclua um prefixo de namespace java: quando o valor indicar o nome JNDI de uma refer\u00eancia de recurso de fonte de dados ou refer\u00eancia de unidade de persist\u00eancia.
 
 CWWKD1028.first.exceeds.max=CWWKD1028E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} solicita os primeiros {2} resultados, o que excede o n\u00famero m\u00e1ximo permitido de resultados: {3}.
 CWWKD1028.first.exceeds.max.explanation=O n\u00famero m\u00e1ximo de resultados da consulta \u00e9 limitado pelas restri\u00e7\u00f5es do sistema e pelo valor especificado.
@@ -147,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: O m\u00e9todo {0} da interface do reposi
 CWWKD1029.first.neg.or.zero.explanation=O n\u00famero m\u00e1ximo de resultados da consulta deve ser um n\u00famero positivo.
 CWWKD1029.first.neg.or.zero.useraction=Atualize o m\u00e9todo do reposit\u00f3rio para especificar um n\u00famero m\u00e1ximo positivo de resultados.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: O nome da entidade est\u00e1 faltando na consulta {0} especificada para o m\u00e9todo {1} do reposit\u00f3rio {2}. Na linguagem de consulta de dados Jakarta, as consultas {3} devem ser formadas como: {4}.
+CWWKD1030.ql.lacks.entity=CWWKD1030E: O nome da entidade est\u00e1 faltando na consulta {0} especificada para o m\u00e9todo {1} do reposit\u00f3rio {2}. Para consultas em {3}, use o formul\u00e1rio: {4}.
 CWWKD1030.ql.lacks.entity.explanation=A consulta cont\u00e9m uma cl\u00e1usula que exige o nome da entidade.
 CWWKD1030.ql.lacks.entity.useraction=Atualize a consulta do m\u00e9todo de reposit\u00f3rio para incluir o nome da entidade.
 
@@ -163,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: O m\u00e9todo {0} da interface do re
 CWWKD1033.ql.orderby.disallowed.explanation=A cl\u00e1usula ORDER BY \u00e9 incompat\u00edvel com a pagina\u00e7\u00e3o baseada em cursor.
 CWWKD1033.ql.orderby.disallowed.useraction=Substitua a cl\u00e1usula ORDER BY por anota\u00e7\u00f5es que especifiquem os crit\u00e9rios de classifica\u00e7\u00e3o.
 
-CWWKD1034.ql.where.required=CWWKD1034E: A consulta especificada pelo m\u00e9todo {0} da interface do reposit\u00f3rio {1} deve terminar em uma cl\u00e1usula WHERE porque o m\u00e9todo retorna {2}. A cl\u00e1usula WHERE termina na posi\u00e7\u00e3o {3}, mas o comprimento da consulta \u00e9 {4}. A consulta \u00e9: {5}.
-CWWKD1034.ql.where.required.explanation=\u00c9 necess\u00e1ria uma cl\u00e1usula WHERE ao usar a pagina\u00e7\u00e3o baseada em cursor.
-CWWKD1034.ql.where.required.useraction=Adicione uma cl\u00e1usula WHERE \u00e0 consulta.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: A consulta especificada pelo m\u00e9todo {0} da interface do reposit\u00f3rio {1} deve terminar em uma cl\u00e1usula WHERE, pois o m\u00e9todo retorna {2}. A cl\u00e1usula WHERE termina na posi\u00e7\u00e3o {3}, mas o comprimento da consulta \u00e9 {4}. A consulta \u00e9: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=\u00c9 necess\u00e1ria uma cl\u00e1usula WHERE ao usar a pagina\u00e7\u00e3o baseada em cursor.
+CWWKD1034.ql.req.end.in.where.useraction=Adicione uma cl\u00e1usula WHERE \u00e0 consulta.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: Uma solicita\u00e7\u00e3o de p\u00e1gina com o modo de pagina\u00e7\u00e3o {0} n\u00e3o deve ser fornecida ao m\u00e9todo {1} da interface do reposit\u00f3rio {2} porque o m\u00e9todo retorna {3} em vez de {4}.
 CWWKD1035.incompat.page.mode.explanation=O modo de pagina\u00e7\u00e3o solicitado n\u00e3o \u00e9 compat\u00edvel com o tipo de retorno do m\u00e9todo do reposit\u00f3rio.
@@ -271,7 +270,7 @@ CWWKD1060.name.out.of.scope=CWWKD1060E: A interface do reposit\u00f3rio {0} no a
 CWWKD1060.name.out.of.scope.explanation=O namespace especificado n\u00e3o \u00e9 acess\u00edvel a partir do artefato em que a interface do reposit\u00f3rio est\u00e1 definida.
 CWWKD1060.name.out.of.scope.useraction=Atualize a anota\u00e7\u00e3o Repository para especificar um nome de armazenamento de dados que seja vis\u00edvel para o m\u00f3dulo ou biblioteca que fornece a interface do reposit\u00f3rio.
 
-CWWKD1061.comp.name.in.ejb=CWWKD1061E: Uma ou mais interfaces de reposit\u00f3rio{0}) definidas no m\u00f3dulo do enterprise bean {1} do aplicativo {2} configuram um valor {2} para o atributo {3}. Entretanto, os nomes {4} n\u00e3o s\u00e3o acess\u00edveis aos m\u00f3dulos de bean corporativo. Use um nome de um dos seguintes namespaces: {5}.
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: Uma ou mais interfaces de reposit\u00f3rio ( {0} ) definidas no m\u00f3dulo de bean empresarial {1} do aplicativo {2} configuram um valor {3} para o atributo {4}. No entanto, os nomes {5} n\u00e3o s\u00e3o acess\u00edveis aos m\u00f3dulos de bean corporativos. Use um nome de um dos seguintes namespaces: {6}.
 CWWKD1061.comp.name.in.ejb.explanation=O namespace especificado n\u00e3o \u00e9 acess\u00edvel ao m\u00f3dulo do enterprise bean em que a interface do reposit\u00f3rio est\u00e1 definida.
 CWWKD1061.comp.name.in.ejb.useraction=Atualize a anota\u00e7\u00e3o Repository para especificar um nome de armazenamento de dados que seja vis\u00edvel para o m\u00f3dulo enterprise bean que fornece a interface do reposit\u00f3rio.
 
@@ -480,3 +479,39 @@ CWWKD1110.incompat.with.collection.useraction=Atualize o m\u00e9todo do reposit\
 CWWKD1111.unsupported.convert=CWWKD1111E: A implementa\u00e7\u00e3o {0} AttributeConverter converte os valores de {1} para o tipo {2}, que n\u00e3o \u00e9 compat\u00edvel com a especifica\u00e7\u00e3o Jakarta Data. A especifica\u00e7\u00e3o Jakarta Data \u00e9 compat\u00edvel com os tipos de enumera\u00e7\u00e3o Java, os tipos temporais {3} e os seguintes tipos b\u00e1sicos: {4}. O provedor Jakarta Data integrado tamb\u00e9m oferece suporte a alguns tipos de Jakarta Persistence.
 CWWKD1111.unsupported.convert.explanation=A implementa\u00e7\u00e3o AttributeConverter n\u00e3o pode ser usada com o provedor Jakarta Data integrado porque converte valores em um tipo n\u00e3o compat\u00edvel.
 CWWKD1111.unsupported.convert.useraction=Atualize a implementa\u00e7\u00e3o do AttributeConverter para converter valores em um dos tipos compat\u00edveis.
+
+CWWKD1112.record.entity.verify.err=CWWKD1112W: Uma classe de entidade para o registro {0} est\u00e1 definida, mas pode n\u00e3o funcionar. A verifica\u00e7\u00e3o dos bytes da classe de entidade Jakarta Persistence, que foi gerada para a classe de entidade, falhou. A classe de entidade definida \u00e9 usada por uma ou mais interfaces de reposit\u00f3rio ( {1} ) no artefato do aplicativo {2}. O erro \u00e9: {3}.
+CWWKD1112.record.entity.verify.err.explanation=Quando um reposit\u00f3rio usa uma entidade de registro, uma entidade do Jakarta Persistence \u00e9 gerada para representar a entidade de registro. A verifica\u00e7\u00e3o dos bytes da classe de entidade Jakarta Persistence gerada falhou.
+CWWKD1112.record.entity.verify.err.useraction=Verifique se a implementa\u00e7\u00e3o da entidade de registro est\u00e1 de acordo com os requisitos e conven\u00e7\u00f5es de uma entidade de registro.
+
+CWWKD1113.server.stopping=CWWKD1113I: Um ou mais reposit\u00f3rios ( {0} ) n\u00e3o foram inicializados porque o servidor est\u00e1 sendo desligado.
+CWWKD1113.server.stopping.explanation=O servidor est\u00e1 sendo desligado e n\u00e3o tentar\u00e1 inicializar os reposit\u00f3rios.
+CWWKD1113.server.stopping.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+CWWKD1114.app.stopping=CWWKD1114I: Um ou mais reposit\u00f3rios ( {0} ) n\u00e3o foram inicializados porque o aplicativo {1} est\u00e1 no estado {2}.
+CWWKD1114.app.stopping.explanation=O aplicativo est\u00e1 parando ou foi interrompido e n\u00e3o tentar\u00e1 inicializar os reposit\u00f3rios.
+CWWKD1114.app.stopping.useraction=Inicie o aplicativo para disponibilizar os reposit\u00f3rios.
+
+CWWKD1115.app.unavailable=CWWKD1115E: Um ou mais reposit\u00f3rios ( {0} ) n\u00e3o foram inicializados porque o aplicativo {1} n\u00e3o est\u00e1 dispon\u00edvel.
+CWWKD1115.app.unavailable.explanation=O aplicativo que define os reposit\u00f3rios n\u00e3o est\u00e1 dispon\u00edvel. Os reposit\u00f3rios n\u00e3o podem ser inicializados.
+CWWKD1115.app.unavailable.useraction=Inicie o aplicativo para disponibilizar os reposit\u00f3rios.
+
+CWWKD1116.resource.unavailable=CWWKD1116E: Um ou mais reposit\u00f3rios ( {0} ) n\u00e3o foram inicializados porque o recurso {1} n\u00e3o ficou dispon\u00edvel em {2} segundos.
+CWWKD1116.resource.unavailable.explanation=Um recurso que os reposit\u00f3rios exigem n\u00e3o ficou dispon\u00edvel.
+CWWKD1116.resource.unavailable.useraction=Verifique a configura\u00e7\u00e3o dos recursos que os reposit\u00f3rios usam.
+
+CWWKD1117.anno.constraint.conflict=CWWKD1117E: O par\u00e2metro {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} n\u00e3o pode ser anotado com as anota\u00e7\u00f5es: {3}. Uma ou mais das anota\u00e7\u00f5es s\u00e3o incompat\u00edveis com o tipo {4} do par\u00e2metro do m\u00e9todo do reposit\u00f3rio.
+CWWKD1117.anno.constraint.conflict.explanation=A restri\u00e7\u00e3o e seus subtipos n\u00e3o podem ser combinados com anota\u00e7\u00f5es de par\u00e2metro que n\u00e3o sejam a anota\u00e7\u00e3o By.
+CWWKD1117.anno.constraint.conflict.useraction=Remova a anota\u00e7\u00e3o conflitante ou especifique o tipo de atributo de entidade em vez de um tipo de restri\u00e7\u00e3o.
+
+CWWKD1118.param.anno.conflict=CWWKD1118E: O par\u00e2metro {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} n\u00e3o pode ser anotado com as anota\u00e7\u00f5es: {3}. Duas ou mais anota\u00e7\u00f5es entram em conflito entre si.
+CWWKD1118.param.anno.conflict.explanation=A combina\u00e7\u00e3o de anota\u00e7\u00f5es de par\u00e2metros n\u00e3o \u00e9 v\u00e1lida.
+CWWKD1118.param.anno.conflict.useraction=Remova uma ou mais das anota\u00e7\u00f5es conflitantes do par\u00e2metro do m\u00e9todo do reposit\u00f3rio.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} recupera p\u00e1ginas que n\u00e3o incluem uma contagem total de elementos e p\u00e1ginas porque a consulta cont\u00e9m a palavra-chave {2}. A consulta completa \u00e9: {3}.
+CWWKD1119.keyword.prevents.count.explanation=A palavra-chave \u00e9 incompat\u00edvel com a capacidade de obter uma contagem total de elementos e p\u00e1ginas.
+CWWKD1119.keyword.prevents.count.useraction=Substitua a consulta por outra que n\u00e3o use a palavra-chave ou evite solicitar uma contagem total de elementos e p\u00e1ginas.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} especifica uma consulta que inclui a palavra-chave {2}, que \u00e9 incompat\u00edvel com a pagina\u00e7\u00e3o baseada em cursor. As consultas para pagina\u00e7\u00e3o baseada em cursor devem terminar com uma cl\u00e1usula WHERE e n\u00e3o devem incluir subconsultas. A consulta \u00e9: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Palavras-chave como GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT e UNION n\u00e3o s\u00e3o compat\u00edveis com a pagina\u00e7\u00e3o baseada em cursor.
+CWWKD1120.cursor.keyword.mismatch.useraction=Reescreva a consulta para incluir apenas as cl\u00e1usulas: SELECT, FROM e WHERE.

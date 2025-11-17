@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.io.OutputStream;
 
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * GenerateChecksums
@@ -57,6 +58,10 @@ public class GenerateZipChecksums extends Task {
             if (!zipFile.getName().endsWith(".zip")) {
                 continue;
             }
+
+            // FIPS 140-3: Algorithm assessment complete; no changes required.
+            // MD5 is used for file comparison / checksums which isn't a cryptographic use case
+            // We can't update the hashing algorithm used here because Ifix/ESA's only provide MD5 checksums
             //generate the cs file from each packaged zip
             String md5Checksum = MD5Utils.getFileMD5String(zipFile);
             String sha2Checksum = SHA2Utils.getFileSHA2String(zipFile);

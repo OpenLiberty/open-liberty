@@ -19,8 +19,6 @@
 package org.apache.aries.jndi.startup;
 
 import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Supplier;
 
 import javax.naming.NamingException;
 import javax.naming.spi.InitialContextFactory;
@@ -88,34 +85,6 @@ public class Activator implements BundleActivator {
 
     private ObjectFactoryBuilder originalOFBuilder;
     private OSGiObjectFactoryBuilder ofBuilder;
-
-    //In Java20+ the ObjectFactoryBuilder static field is in the NamingManagerHelper class.
-    private final Class<?> objectFactoryBuilderHolder = new Supplier<Class<?>>() {
-        @Override
-        public Class<?> get() {
-            if (javaMajorVersion() >= 20) {
-                try {
-                    return Class.forName("com.sun.naming.internal.NamingManagerHelper");
-                } catch (ClassNotFoundException e) {
-                }
-            }
-            return NamingManager.class;
-        }
-    }.get();
-
-    private int javaMajorVersion() {
-        String version = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty("java.version");
-            }
-        });
-
-        String[] versionElements = version.split("\\D");
-
-        // Pre-JDK 9 java.version is 1.MAJOR.MINOR. Post-JDK 9 java.version is MAJOR.MINOR
-        return Integer.valueOf(versionElements[Integer.valueOf(versionElements[0]) == 1 ? 1 : 0]);
-    }
 
     public static Collection<ServiceReference<InitialContextFactoryBuilder>> getInitialContextFactoryBuilderServices() {
         return instance.icfBuilders.getReferences();
@@ -231,7 +200,7 @@ public class Activator implements BundleActivator {
                 } catch (IllegalStateException e) {
                     // use reflection to force the builder to be used
                     if (isPropertyEnabled(context, FORCE_BUILDER)) {
-                        originalOFBuilder = swapStaticField(objectFactoryBuilderHolder, ObjectFactoryBuilder.class, builder);
+                        swapObjectFactoryBuilderStaticField(builder);
                     }
                 }
                 ofBuilder = builder;
@@ -266,7 +235,7 @@ public class Activator implements BundleActivator {
             swapStaticField(NamingManager.class, InitialContextFactoryBuilder.class, originalICFBuilder);
         }
         if (ofBuilder != null) {
-            swapStaticField(objectFactoryBuilderHolder, ObjectFactoryBuilder.class, originalOFBuilder);
+            swapObjectFactoryBuilderStaticField(originalOFBuilder);
         }
 
         icfBuilders.close();
@@ -275,6 +244,23 @@ public class Activator implements BundleActivator {
         initialContextFactories.close();
 
         instance = null;
+    }
+
+    private void swapObjectFactoryBuilderStaticField(ObjectFactoryBuilder value) {
+        try {
+            // Try in NamingManager first.
+            swapStaticField(NamingManager.class, ObjectFactoryBuilder.class, value);
+        } catch (IllegalStateException ise) {
+            // The field may have been moved to NamingManagerHelper depending on the JDK version, so let's try there.
+            try {
+                Class<?> namingManagerHelperClass = Class.forName("com.sun.naming.internal.NamingManagerHelper");
+                swapStaticField(namingManagerHelperClass, ObjectFactoryBuilder.class, value);
+            } catch (ClassNotFoundException cnfe) {
+                // The NamingManagerHelper class does not exist, so the IllegalStateException may have been
+                // due to another reason, so let's throw the original exception.
+                throw ise;
+            }
+        }
     }
 
     private boolean isPropertyEnabled(BundleContext context, String key) {

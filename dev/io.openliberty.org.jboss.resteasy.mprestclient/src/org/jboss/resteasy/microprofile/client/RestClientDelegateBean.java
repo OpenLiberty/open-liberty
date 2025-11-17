@@ -1,3 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+/*
+ * JBoss, Home of Professional Open Source.
+ *
+ * Copyright 2021 Red Hat, Inc., and individual contributors
+ * as indicated by the @author tags.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.jboss.resteasy.microprofile.client;
 
 import org.eclipse.microprofile.config.Config;
@@ -20,6 +47,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.net.ssl.HostnameVerifier;
 import javax.ws.rs.Priorities;
 
+import java.io.Closeable; // Liberty change
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -332,15 +360,18 @@ public class RestClientDelegateBean implements Bean<Object>, PassivationCapable 
 
     @Override
     public void destroy(Object instance, CreationalContext<Object> creationalContext) {
-        // Liberty Change Start
-//        if (instance instanceof AutoCloseable) {
-//            try {
-//                ((AutoCloseable) instance).close();
-//            } catch (Exception e) {
-//                LOGGER.debugf(e, "Failed to close client %s", instance);
-//            }
-//        }
-        // Liberty Change End
+        // Liberty change start
+        // The Proxy set of interfaces includes Closeable so we need to use
+        // it to close the underlying Restful Web Services Client instance
+        // to prevent RESTEASY004687 warnings from being written to the logs.
+        if (instance instanceof Closeable) {
+            try {
+                ((Closeable) instance).close();
+            } catch (Exception e) {
+                LOGGER.debugf(e, "Failed to close client %s", instance);
+            }
+        }
+        // Liberty change end
     }
 
     @Override

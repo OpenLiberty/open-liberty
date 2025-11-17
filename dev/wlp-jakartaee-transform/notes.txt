@@ -302,8 +302,8 @@ dev/wlp-gradle/subprojects/tasks.gradle
 
 dev/wlp-jakartaee-transform/bnd.bnd
 
--include= jar:${fileuri;${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.2.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.2.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 -includeresource: \
-    @${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.2.0}!/!META-INF/maven/*
+    @\${repo;org.eclipse.transformer:org.eclipse.transformer.cli;0.2.0}!/!META-INF/maven/*
     org.eclipse.transformer:org.eclipse.transformer.cli;version=0.2.0,\
     org.eclipse.transformer:org.eclipse.transformer;version=0.2.0,\

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -39,7 +39,6 @@ import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
-import javax.security.enterprise.identitystore.IdentityStorePermission;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
 
@@ -50,6 +49,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
+import io.openliberty.security.jakartasec.identitystore.permissions.IdentityStorePermissionService;
 
 /**
  * Liberty's LDAP {@link IdentityStore} implementation.
@@ -170,10 +171,7 @@ public class LdapIdentityStore implements IdentityStore {
             return new HashSet<String>();
         }
 
-        SecurityManager secManager = System.getSecurityManager();
-        if (secManager != null) {
-            secManager.checkPermission(new IdentityStorePermission("getGroups"));
-        }
+        IdentityStorePermissionService.checkPermission("getGroups");
 
         String userDn = validationResult.getCallerDn();
         if (userDn == null || userDn.isEmpty()) {

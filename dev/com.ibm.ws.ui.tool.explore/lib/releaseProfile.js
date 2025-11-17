@@ -1,19 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2017 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var dojoVersion = '1.12.11';
+var dojoVersion = '1.13.10';
 var gridxVersion = '1.3.9';
-var idxVersion = '1.5.2.6';
+var idxVersion = '1.5.2.6_2';
 var d3Version = '3.5.10';
 
 var profile = {
@@ -24,7 +24,7 @@ var profile = {
   cssOptimize : "comments",
   stripConsole : 'normal', // Values: none, normal, warn, all
   optimize : false, // Values: falsy, comment.keeplines, comment, shrinksafe.keeplines, shrinksafe, closure.keepLines, closure
-  // layerOptimize is overwritten in ant_build.js\public_imports\internal_imports\dojo.xml to use shrinksafe for local & personal builds, and closure otherwise 
+  // layerOptimize is overwritten in ant_build.js\public_imports\internal_imports\dojo.xml to use shrinksafe for local & personal builds, and closure otherwise
   layerOptimize : 'closure', // Values: falsy, comment.keeplines, comment, shrinksafe.keeplines, shrinksafe, closure.keepLines, closure
   useSourceMaps: false,
   selectorEngine : 'lite',
@@ -156,7 +156,7 @@ var profile = {
   layers : {
     'dojo/dojo' : {
       copyright: '../ant_build.js/legal/javascript_copyright.txt',
-      include : [ 'dojo/i18n', 
+      include : [ 'dojo/i18n',
                   'dojo/domReady',
                   'dojox/gfx/svg',
                   'dijit/registry',

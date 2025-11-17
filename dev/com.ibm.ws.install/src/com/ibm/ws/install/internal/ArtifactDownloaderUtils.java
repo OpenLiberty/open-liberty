@@ -19,7 +19,6 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.Authenticator;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
@@ -45,6 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -156,8 +156,10 @@ public class ArtifactDownloaderUtils {
     }
 
     public static String getChecksum(String filename, String format) throws NoSuchAlgorithmException, IOException {
-        if (format.equals("SHA256")) {
-            format = "SHA-256";
+        if (format.equals(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256)) {
+            format = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+        } else if (format.equals(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512)) {
+            format = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512;
         }
         byte[] b = createChecksum(filename, format);
         String result = "";
@@ -324,6 +326,9 @@ public class ArtifactDownloaderUtils {
      * @throws MalformedURLException
      */
     public static void setProxyAuthenticator(Map<String, Object> envMap) throws MalformedURLException {
+        if (envMap == null) {
+            return;
+        }
         if (envMap.get("https.proxyUser") != null) {
             Authenticator.setDefault(new SystemPropertiesProxyAuthenticator((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword")));
         } else if (envMap.get("http.proxyUser") != null) {

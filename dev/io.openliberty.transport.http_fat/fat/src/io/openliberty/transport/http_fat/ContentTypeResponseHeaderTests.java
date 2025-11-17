@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.transport.http_fat;
@@ -12,10 +12,7 @@ package io.openliberty.transport.http_fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.HashMap;
@@ -28,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -50,7 +46,7 @@ public class ContentTypeResponseHeaderTests {
 
     /**
      *
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
@@ -69,7 +65,7 @@ public class ContentTypeResponseHeaderTests {
 
     /**
      * shut down the test server
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -89,7 +85,7 @@ public class ContentTypeResponseHeaderTests {
         String faviconContentType = getContentType(TEST_APP_CONTEXT_ROOT + "/favicon.ico");
         assertEquals("Incorrect MIME type for favicon.ico", "image/x-icon", faviconContentType);
 
-        Log.info(c, "testFaviconMimeType", "Successfully verified favicon.ico MIME type: " + faviconContentType);
+        LOG.info("Successfully verified favicon.ico MIME type: " + faviconContentType);
     }
 
     /**
@@ -114,13 +110,13 @@ public class ContentTypeResponseHeaderTests {
             String actualMimeType = getContentType(TEST_APP_CONTEXT_ROOT + path);
             assertEquals("Incorrect MIME type for " + path, expectedMimeType, actualMimeType);
 
-            Log.info(c, "testCommonMimeTypes", "Successfully verified MIME type for " + path + ": " + actualMimeType);
+            LOG.info("Successfully verified MIME type for " + path + ": " + actualMimeType);
         }
     }
 
     /**
      * Helper method to get the Content-Type from a response
-     * 
+     *
      * @param path The path to request
      * @return The Content-Type header value
      * @throws Exception If an error occurs
@@ -132,7 +128,7 @@ public class ContentTypeResponseHeaderTests {
         int responseCode = con.getResponseCode();
         // Accept 404 responses since we're only checking headers, not content
         assertTrue("Unexpected response code: " + responseCode,
-                responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NOT_FOUND);
+                   responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_NOT_FOUND);
 
         String contentType = con.getHeaderField("Content-Type");
 
@@ -146,7 +142,7 @@ public class ContentTypeResponseHeaderTests {
 
     /**
      * Creates an HttpURLConnection to the specified path
-     * 
+     *
      * @param path The path to connect to
      * @return An HttpURLConnection
      * @throws IOException If an error occurs

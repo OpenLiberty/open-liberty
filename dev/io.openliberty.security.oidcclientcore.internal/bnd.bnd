@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
@@ -80,8 +80,12 @@ Export-Package: \
 	com.ibm.ws.security.test.common;version=latest,\
 	com.ibm.json4j;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
-	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
-	com.ibm.websphere.security;version=latest
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.logging;version=latest, \
+  	org.mockito:mockito-core;version=4.11.0, \
+  	org.mockito:mockito-inline;version=4.11.0, \
+  	net.bytebuddy:byte-buddy;version=1.17.8, \
+  	net.bytebuddy:byte-buddy-agent;version=1.17.8
 	

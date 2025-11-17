@@ -311,7 +311,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: V klientu existuj\u00ed 
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Syst\u00e9m p\u0159id\u00e1v\u00e1 alias podepisuj\u00edc\u00edho subjektu {0} do lok\u00e1ln\u00edho \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {1} s n\u00e1sleduj\u00edc\u00edm ov\u011b\u0159ov\u00e1n\u00edm typu digest - SHA: {2}.
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: Syst\u00e9m p\u0159id\u00e1v\u00e1 alias podepisuj\u00edc\u00edho {0} do m\u00edstn\u00edho \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {1} s n\u00e1sleduj\u00edc\u00edm {3} digestem: {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 # -------------------------------------------------------------------------------------------------

@@ -11,7 +11,7 @@
   
     <!-- use the default SSL configuration -->
     <!-- moved the location under ${server.config.dir} instead of current directory -->
-	<keyStore id="defaultKeyStore" password="passw0rd" location="${server.config.dir}/resources/security/serverKey.jks"/>
+	<keyStore id="defaultKeyStore" password="passw0rd" location="${server.config.dir}/resources/security/serverKey.p12"/>
 	
 	
    <include location="../fatTestPorts.xml"/>

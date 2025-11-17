@@ -7,6 +7,6 @@
 # 
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
--include= jar:${fileuri;${repo;commons-beanutils:commons-beanutils;1.11.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;commons-beanutils:commons-beanutils;1.11.0}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -buildpath: commons-beanutils:commons-beanutils;version=1.11.0

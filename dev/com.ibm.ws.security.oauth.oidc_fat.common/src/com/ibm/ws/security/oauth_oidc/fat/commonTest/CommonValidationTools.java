@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2593,6 +2593,8 @@ public class CommonValidationTools {
         assertNotNull("The client ID is null, token cannot be validated", testSettings.getClientID());
         String salt = null;
         String algorithm = null;
+        String iterations = null;
+        String keyLength = null;
 
         // Pull hash information from the database/custom store
         assertNotNull("The http string isn't set, can't pull salt and algorithm from the database",
@@ -2604,11 +2606,20 @@ public class CommonValidationTools {
                     testSettings.getClientID(), testSettings.getComponentID());
             algorithm = DerbyUtils.checkAlgorithm(testSettings.getHttpString(), testSettings.getHttpPort(),
                     testSettings.getClientID(), testSettings.getComponentID());
+            iterations = DerbyUtils.checkIteration(testSettings.getHttpString(), testSettings.getHttpPort(),
+                    testSettings.getClientID(), testSettings.getComponentID());
+            keyLength = DerbyUtils.checkKeyLength(testSettings.getHttpString(), testSettings.getHttpPort(),
+                    testSettings.getClientID(), testSettings.getComponentID());
+
         } else if (testSettings.getStoreType() == StoreType.CUSTOM
                 || testSettings.getStoreType() == StoreType.CUSTOMBELL) {
             salt = MongoDBUtils.checkSalt(testSettings.getHttpString(), testSettings.getHttpPort(),
                     testSettings.getClientID(), testSettings.getComponentID());
             algorithm = MongoDBUtils.checkAlgorithm(testSettings.getHttpString(), testSettings.getHttpPort(),
+                    testSettings.getClientID(), testSettings.getComponentID());
+            iterations = MongoDBUtils.checkIteration(testSettings.getHttpString(), testSettings.getHttpPort(),
+                    testSettings.getClientID(), testSettings.getComponentID());
+            keyLength = MongoDBUtils.checkKeyLength(testSettings.getHttpString(), testSettings.getHttpPort(),
                     testSettings.getClientID(), testSettings.getComponentID());
         } else {
             fail("The store type is not set to database or customstore, cannot retrieve hash information for verifying the token. Store type provided is "
@@ -2622,8 +2633,25 @@ public class CommonValidationTools {
         assertNotNull("Should have retrieved an algorithm for client " + testSettings.getClientID(), algorithm);
         assertNotSame("Algorithm not found for client " + testSettings.getClientID(), "null_algorithm", algorithm);
 
-        // Log.info(thisClass, thisMethod, "salt retrieved: " + salt + " algorithm retrieved:" + algorithm);
-        return HashSecretUtils.hashSecret(clientSecret, testSettings.getClientID(), false, salt, algorithm, 0, 0);
+        // Log.info(thisClass, thisMethod, "salt retrieved: " + salt + " algorithm
+        // retrieved:" + algorithm);
+        int iter = 0;
+        try {
+            iter = Integer.valueOf(iterations);
+        } catch (NumberFormatException nfe) {
+            Log.info(thisClass, thisMethod,
+                    "Hash iterations query returned '" + iterations + "'. Could not parse value, using 0 as default.");
+        }
+
+        int keyLen = 0;
+        try {
+            keyLen = Integer.valueOf(keyLength);
+        } catch (NumberFormatException nfe) {
+            Log.info(thisClass, thisMethod,
+                    "Key Length query returned '" + keyLength + "'. Could not parse value, using 0 as default.");
+        }
+        return HashSecretUtils.hashSecret(clientSecret, testSettings.getClientID(), false, salt, algorithm, iter,
+                keyLen);
 
     }
 

@@ -37,7 +37,6 @@ import javax.jms.Message;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
-import javax.jms.StreamMessage;
 import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.QueueConnection;
@@ -185,7 +184,7 @@ public class DeliveryDelayServlet extends HttpServlet {
         return numMsgs;
     }
 
-    private static final long defaultTestDeliveryDelay = 10000;
+    private static final long defaultTestDeliveryDelay = 5000;
     
     
     /**
@@ -366,17 +365,17 @@ public class DeliveryDelayServlet extends HttpServlet {
     }
 
     public void testSetDeliveryDelayTopic_Tcp(HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-        boolean valid = testSetDeliveryDelay(jmsTCFTCP, jmsTopic, false);
+        if (!testSetDeliveryDelay(jmsTCFTCP, jmsTopic, false)) testNotValid(response);
     }
     
     public void testSetDeliveryDelayTopicDurSub(
             HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-    	testSetDeliveryDelay(jmsTCFBindings, jmsTopic, true);
+    	if (!testSetDeliveryDelay(jmsTCFBindings, jmsTopic, true)) testNotValid(response);
     }
     
     public void testSetDeliveryDelayTopicDurSub_Tcp(
             HttpServletRequest request, HttpServletResponse response) throws JMSException, TestException {
-    	boolean valid = testSetDeliveryDelay(jmsTCFTCP, jmsTopic, true);
+    	if (!testSetDeliveryDelay(jmsTCFTCP, jmsTopic, true)) testNotValid(response);
     }
     
     /**

@@ -58,7 +58,7 @@ instrument.disabled: true
 # The coordinator jar is added via includeresource, as it means that non-class files get
 # pulled in, specifically the the jbossts properties file
 -includeresource: \
-  @${repo;org.jboss.narayana.rts:lra-coordinator-jar;5.10.6.Final;EXACT}!/!(META-INF/*)
+  @\${repo;org.jboss.narayana.rts:lra-coordinator-jar;5.10.6.Final;EXACT}!/!(META-INF/*)
 
 -buildpath: \
   org.jboss.logging:jboss-logging;version=3.4.1.Final, \

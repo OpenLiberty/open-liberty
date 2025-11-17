@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -882,6 +882,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Aplikacja rozpocz\u0119\u0142a lub w
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=Stos wywo\u0142a\u0144 zosta\u0142 przechwycony podczas tworzenia transakcji. \u015aledzenie stosu pomaga u\u017cytkownikom okre\u015bli\u0107, kt\u00f3re aplikacje rozpoczynaj\u0105 transakcje podczas uruchamiania aplikacji, a nast\u0119pnie powoduj\u0105 niepowodzenie \u017c\u0105dania punktu kontrolnego.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Sprawd\u017a stos wywo\u0142a\u0144, aby okre\u015bli\u0107, kt\u00f3ra aplikacja rozpocz\u0119\u0142a now\u0105 transakcj\u0119 podczas \u017c\u0105dania punktu kontrolnego serwera.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: Transakcja nie mo\u017ce zosta\u0107 wznowiona w bie\u017c\u0105cym w\u0105tku, poniewa\u017c jest aktywna w innym w\u0105tku ( {0} ).
+WTRN0156_CANNOT_RESUME.explanation=Liberty nie pozwala na jednoczesn\u0105 aktywno\u015b\u0107 transakcji na wielu w\u0105tkach.
+WTRN0156_CANNOT_RESUME.useraction=Zawieszenie transakcji przed wznowieniem jej w innym w\u0105tku.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: Transakcja nie mo\u017ce zosta\u0107 wznowiona w bie\u017c\u0105cym w\u0105tku, poniewa\u017c jest ona aktywna w innym miejscu.
+WTRN0157_CANNOT_RESUME.explanation=Liberty nie pozwala na jednoczesn\u0105 aktywno\u015b\u0107 transakcji na wielu w\u0105tkach.
+WTRN0157_CANNOT_RESUME.useraction=Zawieszenie transakcji przed wznowieniem jej w innym w\u0105tku.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

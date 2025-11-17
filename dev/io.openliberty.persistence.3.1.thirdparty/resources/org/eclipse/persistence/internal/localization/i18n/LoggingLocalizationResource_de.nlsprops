@@ -169,9 +169,9 @@ elements={0}{1}-Elemente
 
 enable_batch_operations_as_true_not_supported=Die native WLS-CMP-Einstellung "enable-batch-operations-as-true" wird in EclipseLink CMP nicht direkt unterst\u00fctzt. Weitere Einzelheiten finden Sie in der Ver\u00f6ffentlichung zur Migration.
 
-encryptor_script_description=Diese Anwendung entschl\u00fcsselt intern ein altes verschl\u00fcsseltes Passwort, das von einem fr\u00fcheren EclipseLink Version und verschl\u00fcsselt sie mit dem neuesten Algorithmus.
+encryptor_script_description=Diese Anwendung hat ein altes verschl\u00fcsseltes Passwort, das von einer fr\u00fcheren Version von EclipseLink verwendet wurde. Verschl\u00fcsseln Sie sie erneut mit dem neuesten Algorithmus.
 
-encryptor_script_output=Das neu verschl\u00fcsselte Passwort lautet: {0}
+encryptor_script_output=Das wiederverschl\u00fcsselte Passwort lautet: {0}
 
 encryptor_script_usage=Die Nutzung ist `passwordUpdate.sh|.cmd -ip <altes verschl\u00fcsseltes Passwort>`
 
@@ -318,6 +318,8 @@ jpars_could_not_find_session_bean=Es wurde eine Session-Bean mit dem folgenden J
 jta_cannot_be_disabled_in_cmp=Wenn CMP (Container Managed Persistence) verwendet wird, kann JTA nicht inaktiviert werden. EclipseLink betrachtet JTA als aktiviert.
 
 jta_duplicate_ctrl_property=Die JTA-Transaktionscontrollerklasse ist sowohl in der Eigenschaft "eclipselink.target-server" als auch in "eclipselink.jta.controller" definiert. Es wird der Wert aus "eclipselink.target-server" verwendet.
+
+jta_tm_lookup_failure=Die Instanz TransactionManager kann nicht aufgerufen werden: {0}
 
 jta_tsr_lookup_failure=Die TransactionSynchronizationRegistry-Instanz {0} kann nicht per Lookup gesucht werden.
 

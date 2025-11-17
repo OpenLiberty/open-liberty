@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2021 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ class SipResolverUdpTransport implements SipResolverTransport {
 
             /** open the listener socket */
             try {
-                _framework.startOutbound(bootstrap, "*", 0, f -> {
+                _framework.startOutbound(bootstrap, _currentSocketAddress.getHostString(), _currentSocketAddress.getPort(), f -> {
                     if (f.isCancelled() || !f.isSuccess()) {
                         if (c_logger.isWarnEnabled()) {
                             c_logger.warn("Resolver channel exception during connect: " + f.cause().getMessage());
@@ -661,9 +661,9 @@ class SipResolverUdpTransport implements SipResolverTransport {
                 parent.init(ch);
             }
             ChannelPipeline pipeline = ch.pipeline();
-            // TODO: revisit write and read timeouts
-//          pipeline.addLast("writeTimeoutHandler", new WriteTimeoutHandler(WRITE_TIMEOUT, TimeUnit.MILLISECONDS));
-//          pipeline.addLast("readTimeoutHandler", new ReadTimeoutHandler(READ_TIMEOUT, TimeUnit.MILLISECONDS));
+            // Timeout handlers look to be unneccessary for UDP
+            // https://github.com/OpenLiberty/open-liberty/issues/31408
+            // CHFW's SipResolverUdpTransport doesn't set timeouts either
             pipeline.addLast("decoder", new SipMessageBufferDatagramDecoder());
             pipeline.addLast(CHAINNAME, new SipResolverUdpTransportHandler());
         }

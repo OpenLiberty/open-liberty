@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 
 @RunWith(FATRunner.class)
 public class MPContextPropagationTCKLauncher {
@@ -46,7 +47,7 @@ public class MPContextPropagationTCKLauncher {
     })
     @Test
     public void launchMPContextPropagation_1_2_Tck() throws Exception {
-        TCKRunner.build(server, Type.MICROPROFILE, "Context Propogation")
+        TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.CONTEXT_PROPAGATION)
                         .withDefaultSuiteFileName()
                         .runTCK();
     }

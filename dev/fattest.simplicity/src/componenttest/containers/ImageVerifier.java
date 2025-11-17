@@ -56,7 +56,7 @@ public final class ImageVerifier {
 
         //Add images from the testcontainers project (tracked in fattest.simplicity/bnd.bnd)
         for (String image : Arrays.asList("ghcr.io/testcontainers/ryuk:0.12.0",
-                                          "testcontainers/sshd:1.2.0",
+                                          "ghcr.io/testcontainers/sshd:1.3.0",
                                           "ghcr.io/testcontainers/vnc-recorder:1.4.0",
                                           "public.ecr.aws/docker/library/alpine:3.17")) {
             _expectedImages.add(DockerImageName.parse(image));

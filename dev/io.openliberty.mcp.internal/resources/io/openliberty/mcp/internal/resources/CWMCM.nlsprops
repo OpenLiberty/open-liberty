@@ -1,0 +1,153 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCM
+#COMPONENTNAMEFOR CWMCM MCP Server
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0001E.blank.arguments=CWMCM0001E: The {0} MCP tool method has one or more arguments with blank names.
+CWMCM0001E.blank.arguments.explanation=MCP Tool arguments were provided but they had missing names. Each argument to a tool method must have a name.
+CWMCM0001E.blank.arguments.useraction=Provide non-empty values for all required arguments.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+CWMCM0002E.duplicate.arguments=CWMCM0002E: The {0} MCP tool method has more than one argument named {1}.
+CWMCM0002E.duplicate.arguments.explanation=One or more arguments have the same name. Each argument of an MCP tool method must have a different name.
+CWMCM0002E.duplicate.arguments.useraction=Give each tool argument a different name.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0003E.missing.tool.argument.name=CWMCM0003E: The {0} MCP tool method has one or more arguments without a name specified.
+CWMCM0003E.missing.tool.argument.name.explanation=One or more Tool argument names were not provided for MCP Tools.
+CWMCM0003E.missing.tool.argument.name.useraction=Either add a name to the @ToolArg annotation, or to add the -parameters compiler option to use the parameter name.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The list of qualified names of the tool
+CWMCM0004E.duplicate.tools=CWMCM0004E: There are multiple MCP tool methods named {0}. The methods are {1}.
+CWMCM0004E.duplicate.tools.explanation=One or more MCP Tool names occurred multiple times. The server expects one name per tool for uniqueness.
+CWMCM0004E.duplicate.tools.useraction=Only provide a unique name for each MCP Tool.
+
+# Used for server logging
+# do not translate MCP
+CWMCM0005E.validation.error=CWMCM0005E: There are one or more MCP validation errors. Check logs for more details.
+CWMCM0005E.validation.error.explanation=The application cannot be started because there are MCP validation errors.
+CWMCM0005E.validation.error.useraction=Check logs for more details.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0006E.duplicate.special.arguments=CWMCM0006E: The {0} MCP Tool has more than one parameter with the {1} type. Use only one {1} parameter in each Tool method.
+CWMCM0006E.duplicate.special.arguments.explanation=One or more special arguments occurred multiple times, only one is expected.
+CWMCM0006E.duplicate.special.arguments.useraction=Remove the extra instances.
+
+# Used for server logging
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0007E.invalid.arguments=CWMCM0007E: The {0} MCP Tool has a parameter of type {1} which is not a recognized special argument type and does not have a `@ToolArg` annotation.
+CWMCM0007E.invalid.arguments.explanation=One or more parameters were not annotated as tool arguments and are not recognized special argument types.
+CWMCM0007E.invalid.arguments.useraction=Check whether you have the correct class imported for your argument, or you meant to include @ToolArg.
+
+# Used as part of a response to a client
+# {0} = Request id
+CWMCM0008E.invalid.request.params=CWMCM0008E: A request with the {0} ID is in progress.
+CWMCM0008E.invalid.request.params.explanation=A request with the same ID is in progress. Requests from the same client must have unique IDs.
+CWMCM0008E.invalid.request.params.useraction=Use a unique ID for every request.
+
+# Used as part of a response to a client
+# do not translate GET, POST
+CWMCM0009I.get.disallowed=CWMCM0009I: GET requests are not supported.
+CWMCM0009I.get.disallowed.explanation=A GET request was sent but this functionality is not supported.
+CWMCM0009I.get.disallowed.useraction=No action is required.
+
+# Used for server logging
+# {0} = tool name
+# {1} = exception details
+CWMCM0010E.internal.server.error.detailed=CWMCM0010E: The {0} tool method threw an unexpected exception. The exception is {1}
+CWMCM0010E.internal.server.error.detailed.explanation=The tool method threw an unexpected exception.
+CWMCM0010E.internal.server.error.detailed.useraction=Review the server message.log and FFDC logs to identify the problem.
+
+# Used as part of a response to a client
+CWMCM0011E.internal.server.error=CWMCM0011E: An internal server error occurred while running the tool.
+CWMCM0011E.internal.server.error.explanation=The server was not able to complete the tool call request.
+CWMCM0011E.internal.server.error.useraction=Check that the request is correct. More information about the failure might be in the server messages.log.
+
+# Used for server logging
+# do not translate bean
+# {0} = bean error details
+# {1} = tool name
+CWMCM0012E.bean.release.fail=CWMCM0012E: An error occurred when releasing the CDI bean after calling the {1} tool. The error is: {0}
+CWMCM0012E.bean.release.fail.explanation=When calling a tool method, an instance of the CDI bean that declares the method is acquired before calling the method and released afterwards. An error occurred when releasing the bean instance.
+CWMCM0012E.bean.release.fail.useraction=Review the server message.log and FFDC logs to identify the problem.
+
+# Used for server logging and client response
+# do not translate MCP-Protocol-Version, MCP
+# {0} = List of supported MCP-Protocol-Version values
+CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: An unsupported MCP-Protocol-Version header was provided. Supported values: {0}
+CWMCM0013E.unsupported.mcp.http.version.explanation=The protocol version in the MCP-Protocol-Version header is not supported by the server.
+CWMCM0013E.unsupported.mcp.http.version.useraction=Use a supported protocol version.
+
+# Used as part of a response to a client
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+CWMCM0014E.unexpected.server.error=CWMCM0014E: Unexpected Server Error. Method={0} RequestURI={1} RequestQuery={2}
+CWMCM0014E.unexpected.server.error.explanation=An unexpected server error occurred while processing the request. The request cannot be completed.
+CWMCM0014E.unexpected.server.error.useraction=No action is required.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0015E.unexpected.server.error.exception=CWMCM0015E: Unexpected Server Error. Method={0} RequestURI={1} RequestQuery={2}, Exception: {3}
+CWMCM0015E.unexpected.server.error.exception.explanation=An unexpected server error occurred while processing the request. The request cannot be completed.
+CWMCM0015E.unexpected.server.error.exception.useraction=Review the server message.log and FFDC logs to identify the problem.
+
+# Used for server logging
+# {0} = ExceptionMessage
+CWMCM0016E.error.sending.response.exception=CWMCM0016E: Unexpected Server Error. Exception: {0}
+CWMCM0016E.error.sending.response.exception.explanation=An error occurred while trying to send the response.
+CWMCM0016E.error.sending.response.exception.useraction=No action is required.
+
+# Used as part of a response to a client
+# do not translate jsonrpc
+# {0} = jsonrpc value
+jsonrpc.exception.validation.invalid.version=The jsonrpc field must be present. Only JSONRPC 2.0 is currently supported.
+
+# Used as part of a response to a client
+jsonrpc.validation.empty.method=The method field is empty.
+
+# Used as part of a response to a client
+# {0} = id value
+jsonrpc.exception.validation.empty.string.id=The id field is invalid. The id must not be blank if a string is provided.
+
+# Used as part of a response to a client
+jsonrpc.exception.validation.invalid.id.type=The id type is not an acceptable type. The id must be a string or integer.
+
+# Used as part of a response to a client
+jsonrpc.missing.params=The request does not have any arguments in parameters.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.extra.arguments=The following arguments were passed but were not found in the method: {0}.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.missing.arguments=The following arguments were expected by the method but were not provided: {0}.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ import jakarta.persistence.EntityManager;
 /**
  * Experiments with auto-generated keys.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Orders extends CrudRepository<PurchaseOrder, UUID> {
 
     @Query("UPDATE Orders o SET o.total = o.total * :rate + :shipping WHERE o.id = :id")

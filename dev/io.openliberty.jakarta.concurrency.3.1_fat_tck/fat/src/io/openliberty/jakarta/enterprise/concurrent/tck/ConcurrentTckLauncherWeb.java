@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -84,12 +84,13 @@ public class ConcurrentTckLauncherWeb {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchConcurrent31TCKWeb() throws Exception {
         TCKRunner.build(server, Type.JAKARTA, "Concurrency")
-                        .withPlatfromVersion("11")
+                        .withPlatformVersion("11")
                         .withQualifiers("web")
                         .withAdditionalMvnProps(additionalProps)
                         .withLogging(Map.of("ee.jakarta.tck.concurrent", Level.ALL,
                                             "org.jboss.arquillian", Level.ALL, //TODO reduce logging after debugging defect 300064 is finished
-                                            "io.openliberty.arquillian", Level.ALL)) //TODO reduce logging after debugging defect 300064 is finished
+                                            "io.openliberty.arquillian", Level.ALL, //TODO reduce logging after debugging defect 300064 is finished
+                                            "com.ibm.ws.fat.util.tck", Level.ALL)) //TODO reduce logging after debugging defect 300064 is finished
                         .runTCK();
     }
 }

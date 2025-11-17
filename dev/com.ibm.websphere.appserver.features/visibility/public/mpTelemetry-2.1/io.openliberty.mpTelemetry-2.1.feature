@@ -52,7 +52,7 @@ IBM-SPI-Package: io.openliberty.microprofile.telemetry.spi
 -jars=io.openliberty.io.opentelemetry.2.1 ; location:="dev/api/stable/,lib/",\
   io.openliberty.microprofile.telemetry.spi; location:="dev/spi/ibm/"
 -files=dev/spi/ibm/javadoc/io.openliberty.microprofile.telemetry.spi_1.0-javadoc.zip
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

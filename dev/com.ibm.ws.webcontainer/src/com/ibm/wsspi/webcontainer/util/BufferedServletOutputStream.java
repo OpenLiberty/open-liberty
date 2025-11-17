@@ -88,7 +88,7 @@ public class BufferedServletOutputStream extends WSServletOutputStream implement
 	/**
 	 * Should we close the underlying stream on close ?
 	 * This flag is used for handling servlet chains which uses piped streams
-	 * to establish comunication from the filtered servlet to its servlet
+	 * to establish communication from the filtered servlet to its servlet
 	 * filter.
 	 * By closing the filtered servlet output stream, we trigger the end 
 	 * of the filter's input stream.

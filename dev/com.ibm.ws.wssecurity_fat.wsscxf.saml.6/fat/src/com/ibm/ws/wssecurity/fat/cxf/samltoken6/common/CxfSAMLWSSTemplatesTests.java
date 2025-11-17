@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * WSS Template tests
  */
 
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -320,6 +319,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Test should fail to access the server side service.
      */
     
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
     @Test
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient_omitProtectionPolicy() throws Exception {
     	

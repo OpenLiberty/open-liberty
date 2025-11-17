@@ -1,0 +1,127 @@
+/*******************************************************************************
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+ext {
+  jnosqlVersion = '1.1.2'
+}
+
+configurations {
+  jnosql
+  arquillian
+  wlp
+}
+
+dependencies {
+  def withoutJakartaAPI = { 
+  	exclude group: 'jakarta.nosql', module: 'jakarta.nosql-api'
+  }
+  
+  jnosql "org.eclipse.jnosql.databases:jnosql-mongodb:${jnosqlVersion}", withoutJakartaAPI
+  
+  arquillian 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1'
+  
+  //TODO Configure WLP dependency if doing verification testing, Examples below:
+  //wlp 'io.openliberty.beta:openliberty-runtime:24.0.0.5-beta@zip'
+}
+
+
+task addJNoSQL(type: Copy) {
+  mustRunAfter jar
+  from configurations.jnosql
+  into new File(autoFvtDir, 'publish/shared/resources/jnosql')
+}
+
+addRequiredLibraries.dependsOn addJNoSQL
+addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn copyJdbcDrivers
+
+// These tasks are used only for external users who do not want to build all of liberty to run TCK
+
+task configure() {
+  // Determine server to use
+  configure.ext.fromServer = 'io.openliberty.jakarta.data.1.1.' + System.getProperty('jakarta.tck.platform')
+  if (System.getProperty('jakarta.tck.platform') == null ) {
+    println('System property jakarta.tck.platfrom was not set. Set this property to core, web, or full')
+  } else if (!fromServer.endsWith('core') && !fromServer.endsWith('web') && !fromServer.endsWith('full')) {
+    println("System property jakarta.tck.platfrom was set to ${fromServer}. Valid values are core, web, or full")
+  } else {
+    println("Using server ${fromServer}")
+  }
+
+  // Other helpful config properties
+  configure.ext.serverEnv = new File(project.projectDir, 'wlp/usr/servers/io.openliberty.jakarta.data.1.1/server.env')
+}
+
+
+task getWLP(type: Copy) {
+  mustRunAfter configure
+  from configurations.wlp.collect{zipTree (it)}
+  into project.projectDir
+}
+
+task copyArquillianFeatureWLP(type: Copy) {
+  mustRunAfter getWLP
+  from configurations.arquillian
+  into new File(project.projectDir, 'wlp/usr/extension/')
+}
+
+task createServer(type: Exec) {
+  mustRunAfter getWLP
+  workingDir project.projectDir
+  commandLine './wlp/bin/server', 'create', 'io.openliberty.jakarta.data.1.1'
+}
+
+
+task copyDerbyWLP(type: Copy) {
+  mustRunAfter createServer
+  from configurations.derby
+  into new File(project.projectDir, 'wlp/usr/shared/resources/jdbc/')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task copyConfigWLP(type: Copy) {
+  mustRunAfter createServer  
+  from new File(project.projectDir, "publish/servers/${configure.ext.fromServer}")
+  into new File(project.projectDir, 'wlp/usr/servers/io.openliberty.jakarta.data.1.1/')
+  exclude '**/bootstrap.properties' //Specific to Open Liberty test infrastructure
+  exclude 'configDropins/*'         //Specific to Open Liberty test infrastructure
+}
+
+task createEnvProperties() {
+  mustRunAfter copyConfigWLP
+  
+  doLast {
+    configure.ext.serverEnv << '\n' << 'DB_DRIVER=derby.jar'
+  }
+}
+
+task copyRunnerWLP(type: Copy) {
+  mustRunAfter createServer
+  from new File(project.projectDir, 'publish/tckRunner/')
+  into new File(project.projectDir, 'wlp/')
+  exclude 'standalone'                  //ignore standalone pom.xml
+  exclude 'platform/pom.xml'            //remove the pom we use for dev testing
+  rename 'verification.xml', 'pom.xml'  //replace with the verification pom
+}
+
+task buildWLP {
+  dependsOn 'configure'
+  dependsOn 'getWLP'
+  dependsOn 'copyArquillianFeatureWLP'
+  dependsOn 'createServer'
+  dependsOn 'copyDerbyWLP'
+  dependsOn 'copyConfigWLP'
+  dependsOn 'createEnvProperties'
+  dependsOn 'copyRunnerWLP'
+ }

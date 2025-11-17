@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -882,6 +882,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Una aplicaci\u00f3n ha iniciado o ha
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=El rastreo de pila se captur\u00f3 cuando se cre\u00f3 la transacci\u00f3n. El rastreo de pila ayuda a los usuarios a determinar qu\u00e9 aplicaciones inician transacciones durante el inicio de la aplicaci\u00f3n y, a continuaci\u00f3n, hace que la solicitud de punto de comprobaci\u00f3n falle.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examine el rastreo de pila para determinar qu\u00e9 aplicaci\u00f3n ha iniciado una nueva transacci\u00f3n durante la solicitud de punto de comprobaci\u00f3n del servidor.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: La transacci\u00f3n no puede reanudarse en el hilo actual porque est\u00e1 activa en un hilo diferente ( {0} ).
+WTRN0156_CANNOT_RESUME.explanation=Liberty no permite que una transacci\u00f3n est\u00e9 activa simult\u00e1neamente en varios subprocesos.
+WTRN0156_CANNOT_RESUME.useraction=Suspende la transacci\u00f3n antes de reanudarla en otro hilo.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: La transacci\u00f3n no se puede reanudar en el hilo actual porque est\u00e1 activo en otro lugar.
+WTRN0157_CANNOT_RESUME.explanation=Liberty no permite que una transacci\u00f3n est\u00e9 activa simult\u00e1neamente en varios subprocesos.
+WTRN0157_CANNOT_RESUME.useraction=Suspende la transacci\u00f3n antes de reanudarla en otro hilo.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -15,7 +15,8 @@
 -sub: *.bnd
 
 bVersion=1.0
-cxfVersion=3.5.5
+cxfVersion=3.5.5.1
+cxfExportVersion=3.5.5
 
 WS-TraceGroup: WSSECURITY
 
@@ -40,41 +41,43 @@ Import-Package:  \
   com.ibm.websphere.ras.annotation, \
   com.ibm.ws.ffdc, \
   javax.servlet.*;version="[0.0.0,3.0.0)", \
+  org.apache.jcp.xml.dsig.internal.*;version="[2.3.0,5.0.0)", \
+  org.apache.xml.security.*;version="[2.3.0,5.0.0)", \
   *
 
 Export-Package: \
-  org.apache.cxf.ws.security.sts.provider.operation;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.wss4j.policyvalidators;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.sts.provider;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.policy.builders;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.sts.provider.model;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.trust.delegation;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.sts.provider.model.wstrust14;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.policy;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.cache;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.policy.model;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.policy.custom;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.wss4j.policyhandlers;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.sts.provider.model.secext;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.trust;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.kerberos;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.policy.interceptors;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.sts.provider.model.xmldsig;version=${cxfVersion}, \
-  org.apache.cxf.ws.security;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.sts.provider.model.utility;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.wss4j;version=${cxfVersion}, \
-  org.apache.cxf.ws.security.tokenstore;version=${cxfVersion}
+  org.apache.cxf.ws.security.sts.provider.operation;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.wss4j.policyvalidators;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.sts.provider;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.policy.builders;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.trust.delegation;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.wstrust14;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.policy;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.cache;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.policy.model;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.policy.custom;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.wss4j.policyhandlers;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.secext;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.trust;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.kerberos;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.policy.interceptors;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.xmldsig;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.sts.provider.model.utility;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.wss4j;version=${cxfExportVersion}, \
+  org.apache.cxf.ws.security.tokenstore;version=${cxfExportVersion}
 
 DynamicImport-Package: \
   org.apache.cxf.*, \
   com.ctc.wstx.*
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/cxf/*, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/!META-INF/maven/*, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/DEPENDENCIES, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/LICENSE, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/NOTICE, \
+  @\${repo;io.openliberty.org.apache.cxf:cxf-rt-ws-security;${cxfVersion};EXACT}!/META-INF/cxf/*, \
   META-INF/cxf/bus-extensions.txt=resources/META-INF/cxf/bus-extensions.txt, \
   cxf-ehcache.xml=resources/cxf-ehcache.xml, \
   org/apache/cxf=${bin}/org/apache/cxf
@@ -91,23 +94,30 @@ instrument.classesIncludes: \
   org/apache/cxf/ws/security/wss4j/WSS4JOutInterceptor.class
 
 -buildpath: \
-  org.apache.cxf:cxf-rt-ws-security;strategy=exact;version=${cxfVersion}, \
+  io.openliberty.org.apache.cxf:cxf-rt-ws-security;strategy=exact;version=${cxfVersion}, \
   com.ibm.ws.org.apache.cxf.cxf.core.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.bindings.soap.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.frontend.jaxws.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.cxf.rt.transports.http.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.ws.policy.3.2;version=latest, \
+  com.ibm.ws.org.apache.cxf.rt.ws.mex.3.4.1;version=latest, \
   com.ibm.ws.org.apache.cxf.cxf.rt.wsdl.3.2;version=latest, \
   com.ibm.ws.org.apache.cxf.rt.security.3.4.1;version=latest, \
   com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1;version=latest, \
   com.ibm.ws.org.apache.neethi.3.1.1;version=latest, \
+  com.ibm.ws.org.apache.wss4j.bindings;version=latest, \
   com.ibm.ws.org.apache.wss4j.policy;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.dom;version=latest, \
+  com.ibm.ws.org.apache.wss4j.ws.security.policy.stax;version=latest, \
   com.ibm.ws.org.apache.wss4j.ws.security.stax;version=latest, \
   com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
   com.ibm.ws.org.ehcache.ehcache.107.3.8.1;version=latest, \
-  com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest, \
+  io.openliberty.org.opensaml.opensaml.core;version=latest, \
   com.ibm.ws.org.slf4j.api;version=latest, \
   com.ibm.websphere.appserver.spi.logging, \
   com.ibm.websphere.javaee.jws.1.0;version=latest, \
+  com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
   org.codehaus.woodstox:stax2-api;version='4.2', \
-  org.codehaus.woodstox:woodstox-core-asl;version='4.2.0'
+  org.codehaus.woodstox:woodstox-core-asl;version='4.2.0', \
+  com.ibm.websphere.javaee.jcache.1.1.core;version=latest

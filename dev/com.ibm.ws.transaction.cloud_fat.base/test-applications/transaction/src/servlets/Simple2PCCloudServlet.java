@@ -32,6 +32,7 @@ import java.util.UUID;
 
 import javax.annotation.Resource;
 import javax.annotation.Resource.AuthenticationType;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -40,6 +41,8 @@ import javax.transaction.xa.XAResource;
 
 import com.ibm.tx.jta.ExtendedTransactionManager;
 import com.ibm.tx.jta.TransactionManagerFactory;
+import com.ibm.tx.jta.ut.util.DBUtils;
+import com.ibm.tx.jta.ut.util.DBUtils.DBProduct;
 import com.ibm.tx.jta.ut.util.TxTestUtils;
 import com.ibm.tx.jta.ut.util.XAResourceFactoryImpl;
 import com.ibm.tx.jta.ut.util.XAResourceImpl;
@@ -49,31 +52,42 @@ import com.ibm.tx.jta.ut.util.XAResourceInfoFactory;
 @WebServlet("/Simple2PCCloudServlet")
 public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
-    @Resource(name = "jdbc/derby", shareable = true, authenticationType = AuthenticationType.APPLICATION)
-    DataSource ds;
     @Resource(name = "jdbc/tranlogDataSource", shareable = true, authenticationType = AuthenticationType.APPLICATION)
     DataSource dsTranLog;
+
+    DBUtils.DBProduct dbProduct = DBUtils.DBProduct.Unknown;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+
+        try (Connection con = getConnection(dsTranLog)) {
+            dbProduct = DBUtils.identifyDB(con);
+            System.out.println("Database identified to be " + dbProduct);
+        } catch (SQLException e) {
+            throw new ServletException(e);
+        }
+    }
 
     public void testLeaseTableAccess(HttpServletRequest request,
                                      HttpServletResponse response) throws Exception {
 
-        try (Connection con = getConnection(ds)) {
+        try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
 
-            // Statement used to drop table
-            try (Statement stmt = con.createStatement()) {
-                String selForUpdateString = "SELECT LEASE_OWNER" +
-                                            " FROM WAS_LEASES_LOG" +
-                                            " WHERE SERVER_IDENTITY='cloud0011' FOR UPDATE OF LEASE_OWNER";
-                System.out.println("testLeaseTableAccess: " + selForUpdateString);
-                ResultSet rs = stmt.executeQuery(selForUpdateString);
+            String selForUpdateString = "SELECT LEASE_OWNER FROM WAS_LEASES_LOG" +
+                                        (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                        " WHERE SERVER_IDENTITY='cloud0011'" +
+                                        ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE") +
+                                        ((DBProduct.Postgresql == dbProduct || DBProduct.Sqlserver == dbProduct) ? "" : " OF LEASE_OWNER");
+            System.out.println("testLeaseTableAccess: " + selForUpdateString);
+
+            try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(selForUpdateString)) {
                 String owner = null;
                 while (rs.next()) {
                     owner = rs.getString("LEASE_OWNER");
                     System.out.println("testLeaseTableAccess: owner is - " + owner);
                 }
-
-                rs.close();
 
                 if (owner == null) {
                     throw new Exception("No rows were returned for " + selForUpdateString);
@@ -84,14 +98,10 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
                                       " WHERE SERVER_IDENTITY='cloud0011'";
                 System.out.println("testLeaseTableAccess: " + updateString);
                 stmt.executeUpdate(updateString);
-            } catch (Exception x) {
-                System.out.println("testLeaseTableAccess: caught exception - " + x);
             }
 
             System.out.println("testLeaseTableAccess: commit changes to database");
             con.commit();
-        } catch (Exception ex) {
-            System.out.println("testLeaseTableAccess: caught exception in testSetup: " + ex);
         }
     }
 
@@ -100,18 +110,14 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
-            final DatabaseMetaData mdata = con.getMetaData();
-            final String dbName = mdata.getDatabaseProductName();
-            final boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
-            final boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
 
             // Statement used to drop table
             final String selForUpdateString = "SELECT LEASE_OWNER" +
                                               " FROM WAS_LEASES_LOG" +
-                                              (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                              ((DBProduct.Sqlserver == dbProduct) ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                               " WHERE SERVER_IDENTITY='cloud0011'" +
-                                              ((isSQLServer) ? "" : " FOR UPDATE") +
-                                              ((isPostgreSQL || isSQLServer) ? "" : " OF LEASE_TIME");
+                                              ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE") +
+                                              (((DBProduct.Postgresql == dbProduct) || (DBProduct.Sqlserver == dbProduct)) ? "" : " OF LEASE_TIME");
             System.out.println("modifyLeaseOwner: " + selForUpdateString);
             try (Statement stmt = con.createStatement(); ResultSet rs = stmt.executeQuery(selForUpdateString)) {
 
@@ -220,19 +226,14 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
-            DatabaseMetaData mdata = con.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
-            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
 
-            // Statement used to drop table
             try (Statement stmt = con.createStatement()) {
                 String selForUpdateString = "SELECT LEASE_OWNER" +
                                             " FROM WAS_LEASES_LOG" +
-                                            (isSQLServer ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
+                                            (DBProduct.Sqlserver == dbProduct ? " WITH (ROWLOCK, UPDLOCK, HOLDLOCK)" : "") +
                                             " WHERE SERVER_IDENTITY='cloud0011'" +
-                                            ((isSQLServer) ? "" : " FOR UPDATE") +
-                                            ((isPostgreSQL || isSQLServer) ? "" : " OF LEASE_OWNER");
+                                            ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE") +
+                                            ((DBProduct.Postgresql == dbProduct || DBProduct.Sqlserver == dbProduct) ? "" : " OF LEASE_OWNER");
                 System.out.println("setupV1LeaseLog: " + selForUpdateString);
                 ResultSet rs = stmt.executeQuery(selForUpdateString);
                 String owner = null;
@@ -321,28 +322,15 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
-            DatabaseMetaData mdata = con.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
+
             System.out.println("insertOrphanLease with cleanup");
-            // Access the Database
-            boolean isPostgreSQL = false;
-            boolean isSQLServer = false;
-            if (dbName.toLowerCase().contains("postgresql")) {
-                // we are PostgreSQL
-                isPostgreSQL = true;
-                System.out.println("insertOrphanLease: This is a PostgreSQL Database");
-            } else if (dbName.toLowerCase().contains("microsoft sql")) {
-                // we are MS SQL Server
-                isSQLServer = true;
-                System.out.println("insertOrphanLease: This is an MS SQL Server Database");
-            }
 
             String queryString = "SELECT LEASE_TIME" +
                                  " FROM WAS_LEASES_LOG" +
-                                 (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 ((DBProduct.Sqlserver == dbProduct) ? " WITH (UPDLOCK)" : "") +
                                  " WHERE SERVER_IDENTITY='nonexistant'" +
-                                 (isSQLServer ? "" : " FOR UPDATE") +
-                                 (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
+                                 ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE") +
+                                 ((DBProduct.Sqlserver == dbProduct) || (DBProduct.Postgresql == dbProduct) ? "" : " OF LEASE_TIME");
             System.out.println("insertOrphanLease: Attempt to select the row for UPDATE using - " + queryString);
 
             try (Statement claimPeerlockingStmt = con.createStatement(); ResultSet claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString)) {
@@ -427,11 +415,6 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
-            DatabaseMetaData mdata = con.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-            boolean isPostgreSQL = dbName.toLowerCase().contains("postgresql");
-            boolean isOracle = dbName.toLowerCase().contains("oracle");
-            boolean isSQLServer = dbName.toLowerCase().contains("microsoft sql");
 
             try (Statement stmt = con.createStatement()) {
                 String dropTableString = "DROP TABLE WAS_LEASES_LOG";
@@ -444,7 +427,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
             // Now set up old school WAS_LEASES_LOG table
             try (Statement stmt = con.createStatement()) {
-                if (isOracle) {
+                if (DBProduct.Oracle == dbProduct) {
                     System.out.println("setupNonIndexedLeaseLog: Create Oracle Table using: " + oracleTableString);
                     stmt.executeUpdate(oracleTableString);
                     String oracleIndexString = "CREATE INDEX IXWS_LEASE ON WAS_LEASES_LOG( \"SERVER_IDENTITY\" ASC) ";
@@ -453,7 +436,7 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
                     // Create index on the new table
                     stmt.execute(oracleIndexString);
-                } else if (isPostgreSQL) {
+                } else if (DBProduct.Postgresql == dbProduct) {
                     System.out.println("setupNonIndexedLeaseLog: Create PostgreSQL Table using: " + postgreSQLTableString);
                     stmt.execute(postgreSQLTableString);
                     String postgresqlIndexString = "CREATE INDEX IXWS_LEASE ON WAS_LEASES_LOG( SERVER_IDENTITY ASC) ";
@@ -560,26 +543,13 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
 
         try (Connection con = getConnection(dsTranLog)) {
             con.setAutoCommit(false);
-            DatabaseMetaData mdata = con.getMetaData();
-            String dbName = mdata.getDatabaseProductName();
-
-            // Access the Database
-            boolean isPostgreSQL = false;
-            boolean isSQLServer = false;
-            if (dbName.toLowerCase().contains("postgresql")) {
-                // we are PostgreSQL
-                isPostgreSQL = true;
-            } else if (dbName.toLowerCase().contains("microsoft sql")) {
-                // we are MS SQL Server
-                isSQLServer = true;
-            }
 
             String queryString = "SELECT LEASE_TIME" +
                                  " FROM WAS_LEASES_LOG" +
-                                 (isSQLServer ? " WITH (UPDLOCK)" : "") +
+                                 ((DBProduct.Sqlserver == dbProduct) ? " WITH (UPDLOCK)" : "") +
                                  " WHERE SERVER_IDENTITY='nonexistant'" +
-                                 (isSQLServer ? "" : " FOR UPDATE") +
-                                 (isSQLServer || isPostgreSQL ? "" : " OF LEASE_TIME");
+                                 ((DBProduct.Sqlserver == dbProduct) ? "" : " FOR UPDATE") +
+                                 ((DBProduct.Sqlserver == dbProduct) || (DBProduct.Postgresql == dbProduct) ? "" : " OF LEASE_TIME");
 
             try (Statement claimPeerlockingStmt = con.createStatement(); ResultSet claimPeerLockingRS = claimPeerlockingStmt.executeQuery(queryString)) {
 
@@ -631,5 +601,40 @@ public class Simple2PCCloudServlet extends Base2PCCloudServlet {
     public void setupBatchOfOrphanLeases2() throws Exception {
 
         setupBatchOfOrphanLeases(10, 20);
+    }
+
+    public void emptyServer2Tables(HttpServletRequest request,
+                                   HttpServletResponse response) throws Exception {
+
+        final List<String> tables = Arrays.asList("WAS_TRAN_LOGCLOUD0021", "WAS_PARTNER_LOGCLOUD0021");
+
+        try (Connection con = getConnection(dsTranLog); Statement stmt = con.createStatement()) {
+            for (String table : tables) {
+                final String truncateTableString = "TRUNCATE TABLE " + table +
+                                                   ((DBProduct.DB2 == dbProduct) ? " IMMEDIATE;" : "");
+                final int truncateReturn = stmt.executeUpdate(truncateTableString);
+                System.out.println("emptyServer2Tables: " + truncateTableString + " returned " + truncateReturn);
+            }
+        }
+    }
+
+    // Run a tran that is expected to succeed
+    public void normalTran(HttpServletRequest request,
+                           HttpServletResponse response) throws Exception {
+        final ExtendedTransactionManager tm = TransactionManagerFactory.getTransactionManager();
+        XAResourceImpl.clear();
+        final Serializable xaResInfo1 = XAResourceInfoFactory.getXAResourceInfo(0);
+        final Serializable xaResInfo2 = XAResourceInfoFactory.getXAResourceInfo(1);
+
+        tm.begin();
+        final XAResource xaRes1 = XAResourceFactoryImpl.instance().getXAResourceImpl(xaResInfo1);
+        int recoveryId1 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo1);
+        tm.enlist(xaRes1, recoveryId1);
+
+        final XAResource xaRes2 = XAResourceFactoryImpl.instance().getXAResource(xaResInfo2);
+        int recoveryId2 = tm.registerResourceInfo(XAResourceInfoFactory.filter, xaResInfo2);
+        tm.enlist(xaRes2, recoveryId2);
+
+        tm.commit();
     }
 }

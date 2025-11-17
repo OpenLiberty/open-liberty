@@ -1,13 +1,10 @@
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME N/A
 #COMPONENTPREFIX CWWKO
@@ -173,3 +170,11 @@ OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=T\u00e1vol\u00edtsa el a Micro
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Az {1} oszt\u00e1lyban l\u00e9v\u0151 {0} megjegyz\u00e9s elemet figyelmen k\u00edv\u00fcl hagyjuk, mivel az OpenAPI {2} verzi\u00f3j\u00e1t ig\u00e9nyli, de az aktu\u00e1lis OpenAPI verzi\u00f3 {3}.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=A megjegyz\u00e9s elem az OpenAPI specifik\u00e1ci\u00f3 egy \u00fajabb verzi\u00f3j\u00e1hoz hozz\u00e1adott funkci\u00f3ra vonatkozik, mint a konfigur\u00e1lt. A haszn\u00e1lt OpenAPI verzi\u00f3 nem tudja megjelen\u00edteni ezt az inform\u00e1ci\u00f3t, ez\u00e9rt nem szerepel az elk\u00e9sz\u00edtett OpenAPI dokument\u00e1ci\u00f3ban.
 OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Fontolja meg a megjegyz\u00e9s elem elt\u00e1vol\u00edt\u00e1s\u00e1t vagy openAPIVersion konfigur\u00e1ci\u00f3s elem be\u00e1ll\u00edt\u00e1s\u00e1t egy olyan verzi\u00f3ra, amely t\u00e1mogatja azt a server.xml f\u00e1jlban.
+
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W=CWWKO1688W: Hiba t\u00f6rt\u00e9nt a OpenAPI gyors\u00edt\u00f3t\u00e1r olvas\u00e1sakor a {0} alkalmaz\u00e1s sz\u00e1m\u00e1ra. A gyors\u00edt\u00f3t\u00e1rat nem haszn\u00e1ljuk. A hiba: {1}
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.explanation=A MicroProfile OpenAPI funkci\u00f3 t\u00e1rolja az alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n kisz\u00e1m\u00edtott adatokat, hogy elker\u00fclje az adatok \u00fajb\u00f3li kisz\u00e1m\u00edt\u00e1s\u00e1t a kiszolg\u00e1l\u00f3 k\u00e9s\u0151bbi ind\u00edt\u00e1sakor, ha az alkalmaz\u00e1s nem v\u00e1ltozik. Hiba t\u00f6rt\u00e9nt az adatok beolvas\u00e1sakor, ez\u00e9rt az adatokat \u00fajra kell sz\u00e1molni.
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W=CWWKO1689W: Hiba t\u00f6rt\u00e9nt a OpenAPI gyors\u00edt\u00f3t\u00e1r \u00edr\u00e1sa sor\u00e1n a {0} alkalmaz\u00e1s sz\u00e1m\u00e1ra. A gyors\u00edt\u00f3t\u00e1r a k\u00f6vetkez\u0151 ind\u00edt\u00e1skor nem lesz el\u00e9rhet\u0151. A hiba: {1}
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.explanation=A MicroProfile OpenAPI funkci\u00f3 t\u00e1rolja az alkalmaz\u00e1s ind\u00edt\u00e1sa sor\u00e1n kisz\u00e1m\u00edtott adatokat, hogy elker\u00fclje az adatok \u00fajb\u00f3li kisz\u00e1m\u00edt\u00e1s\u00e1t a kiszolg\u00e1l\u00f3 k\u00e9s\u0151bbi ind\u00edt\u00e1sakor, ha az alkalmaz\u00e1s nem v\u00e1ltozik. Hiba t\u00f6rt\u00e9nt az adatok \u00edr\u00e1sa sor\u00e1n, ez\u00e9rt a szerver k\u00f6vetkez\u0151 ind\u00edt\u00e1sakor \u00fajra ki lesz sz\u00e1m\u00edtva.
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.

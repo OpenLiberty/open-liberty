@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package http2.test.driver.war.servlets;
 
@@ -47,7 +44,11 @@ public class HttpMethodTests extends H2FATDriverServlet {
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
@@ -98,7 +99,8 @@ public class HttpMethodTests extends H2FATDriverServlet {
         String testName = "testConnectMethodError";
 
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
-
+        // Allow frames after end of stream due to lack of timing/answer control
+        h2Client.allowFramesAfterEndOfStream();
         FrameRstStream errorFrame = new FrameRstStream(3, PROTOCOL_ERROR, false);
         h2Client.addExpectedFrame(errorFrame);
 
@@ -133,8 +135,10 @@ public class HttpMethodTests extends H2FATDriverServlet {
         // So that the test doesn't end prematurely when the reset is received, send a ping and
         // expect a response.
         // send over a PING frame and expect a response
-        pingFrame = new FramePing(0, pingData, false);
-        h2Client.sendFrame(pingFrame);
+        FramePing sendPingFrame = new FramePing(0, pingData, false);
+        h2Client.sendFrame(sendPingFrame);
+
+        h2Client.waitFor(pingFrame);
 
         blockUntilConnectionIsDone.await();
         this.handleErrors(h2Client, testName);
@@ -153,7 +157,11 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondHeadersReceived.add(new H2HeaderField(":status", "200"));
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         secondHeadersReceived.add(new H2HeaderField("content-length", "6"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
@@ -185,7 +193,11 @@ public class HttpMethodTests extends H2FATDriverServlet {
         secondHeadersReceived.add(new H2HeaderField("date", ".*")); //regex because date will vary
         secondHeadersReceived.add(new H2HeaderField("content-length", "0"));
         secondHeadersReceived.add(new H2HeaderField("allow", "GET, HEAD, POST, TRACE, OPTIONS"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, true, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, true, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
@@ -216,7 +228,11 @@ public class HttpMethodTests extends H2FATDriverServlet {
         // set up the header we expect to receive
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
         secondHeadersReceived.add(new H2HeaderField(":status", "400"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 
@@ -248,7 +264,11 @@ public class HttpMethodTests extends H2FATDriverServlet {
         // set up the header we expect to receive
         List<H2HeaderField> secondHeadersReceived = new ArrayList<H2HeaderField>();
         secondHeadersReceived.add(new H2HeaderField(":status", "404"));
-        FrameHeadersClient secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
+        FrameHeadersClient secondFrameHeaders;
+        if (USING_NETTY)
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 15, false, true, false, true, false, false);
+        else
+            secondFrameHeaders = new FrameHeadersClient(3, null, 0, 0, 0, false, true, false, false, false, false);
         secondFrameHeaders.setHeaderFields(secondHeadersReceived);
         h2Client.addExpectedFrame(secondFrameHeaders);
 

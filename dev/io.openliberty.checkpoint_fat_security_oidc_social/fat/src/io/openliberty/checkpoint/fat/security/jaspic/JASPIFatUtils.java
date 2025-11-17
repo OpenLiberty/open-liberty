@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,39 +23,45 @@ import componenttest.topology.impl.LibertyServer;
 public class JASPIFatUtils {
 
     /**
-     * Install the jaspicUserTestFeature-1.0 or jaspicUserTestFeature-2.0 user feature and bundle into the Liberty server.
+     * Install the user feature and bundle into the Liberty server.
      *
      * @param myServer The server to install onto.
      * @throws Exception If the install failed.
      */
     public static void installJaspiUserFeature(LibertyServer myServer) throws Exception {
-        if (JakartaEEAction.isEE10OrLaterActive()) {
-            myServer.installUserBundle("com.ibm.ws.security.jaspic.test_3.0");
+        if (JakartaEEAction.isEE11Active()) {
+            myServer.installUserBundle("com.ibm.ws.security.jaspic.test.jakarta");
+            myServer.installUserFeature("jaspicUserTestFeature-3.1");
+        } else if (JakartaEEAction.isEE10Active()) {
+            myServer.installUserBundle("com.ibm.ws.security.jaspic.test.jakarta");
             myServer.installUserFeature("jaspicUserTestFeature-3.0");
         } else if (JakartaEEAction.isEE9Active()) {
-            myServer.installUserBundle("com.ibm.ws.security.jaspic.test_2.0");
+            myServer.installUserBundle("com.ibm.ws.security.jaspic.test.jakarta");
             myServer.installUserFeature("jaspicUserTestFeature-2.0");
         } else {
-            myServer.installUserBundle("com.ibm.ws.security.jaspic.test_1.0");
+            myServer.installUserBundle("com.ibm.ws.security.jaspic.test");
             myServer.installUserFeature("jaspicUserTestFeature-1.0");
         }
     }
 
     /**
-     * Uninstall the jaspicUserTestFeature-1.0 or jaspicUserTestFeature-2.0 user feature and bundle from the Liberty server.
+     * Uninstall user feature and bundle from the Liberty server.
      *
      * @param myServer The server to uninstall from.
      * @throws Exception If the uninstall failed.
      */
     public static void uninstallJaspiUserFeature(LibertyServer myServer) throws Exception {
-        if (JakartaEEAction.isEE10OrLaterActive()) {
-            myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test_3.0");
+        if (JakartaEEAction.isEE11Active()) {
+            myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test.jakarta");
+            myServer.uninstallUserFeature("jaspicUserTestFeature-3.1");
+        } else if (JakartaEEAction.isEE10Active()) {
+            myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test.jakarta");
             myServer.uninstallUserFeature("jaspicUserTestFeature-3.0");
         } else if (JakartaEEAction.isEE9Active()) {
-            myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test_2.0");
+            myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test.jakarta");
             myServer.uninstallUserFeature("jaspicUserTestFeature-2.0");
         } else {
-            myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test_1.0");
+            myServer.uninstallUserBundle("com.ibm.ws.security.jaspic.test");
             myServer.uninstallUserFeature("jaspicUserTestFeature-1.0");
         }
     }

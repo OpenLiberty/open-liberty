@@ -13,13 +13,13 @@
        clientAuthenticationSupported="true" verifyHostname="false"/> 
 
    <!-- customize SSL configuration for testEnableCNCheck -->
-   <keyStore id="serverKeyStore" location="oldServerKey.jks" type="JKS" password="passw0rd" /> 
-   <keyStore id="serverTrustStore" location="trust.jks" type="JKS" password="passw0rd" /> 
+   <keyStore id="serverKeyStore" location="oldServerKey.p12" type="PKCS12" password="passw0rd" /> 
+   <keyStore id="serverTrustStore" location="trust.p12" type="PKCS12" password="passw0rd" /> 
 
    <!-- customize SSL configuration -->
    <ssl id="customizeSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" verifyHostname="false" /> 
-   <keyStore id="clientKeyStore" location="clientKey.jks" type="JKS" password="passw0rd" /> 
-   <keyStore id="clientTrustStore" location="clientTrust.jks" type="JKS" password="passw0rd" /> 
+   <keyStore id="clientKeyStore" location="clientKey.p12" type="PKCS12" password="passw0rd" /> 
+   <keyStore id="clientTrustStore" location="clientTrust.p12" type="PKCS12" password="passw0rd" /> 
     
    <application id="TransportSecurityClient" name="TransportSecurityClient" location="TransportSecurityClient.war"
        context="TransportSecurityClient" type="war" />

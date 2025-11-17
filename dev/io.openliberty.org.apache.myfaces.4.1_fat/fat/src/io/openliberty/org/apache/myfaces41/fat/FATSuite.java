@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import io.openliberty.org.apache.myfaces41.fat.test.CompositeExtensionTest;
 import io.openliberty.org.apache.myfaces41.fat.test.ConfigTests;
 import io.openliberty.org.apache.myfaces41.fat.test.ContentLengthTest;
 import io.openliberty.org.apache.myfaces41.fat.test.Faces41CDITests;
+import io.openliberty.org.apache.myfaces41.fat.test.Faces41ResolverTests;
 import io.openliberty.org.apache.myfaces41.fat.test.FacesConfigVersion41Test;
 import io.openliberty.org.apache.myfaces41.fat.test.FacesMessagesTest;
 import io.openliberty.org.apache.myfaces41.fat.test.RenderIdTest;
@@ -42,7 +43,8 @@ import io.openliberty.org.apache.myfaces41.fat.test.UUIDConverterTest;
                 FacesMessagesTest.class,
                 RenderIdTest.class,
                 RowStatePreservedTest.class,
-                FacesConfigVersion41Test.class
+                FacesConfigVersion41Test.class,
+                Faces41ResolverTests.class
 })
 
 public class FATSuite {

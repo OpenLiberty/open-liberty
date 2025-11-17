@@ -306,9 +306,10 @@ public class MongoDBUtils {
         } catch (Exception e) {
             // "Timed out" is checked in the output.txt and can cause a spurious failure
             String exceptionMsg = e.toString().replaceAll("Timed out", "Took too long");
-            Log.info(thisClass, method, "Couldn't create a connection to " + mongoService.getServiceName() + " on " + mongoService.getAddress() + ". " + exceptionMsg);
-			ExternalTestServiceReporter.reportUnhealthy(mongoService,
-					"Couldn't connect to server. Exception: " + exceptionMsg);
+            Log.info(thisClass, method, "Couldn't create a connection to " + mongoService.getServiceName() + " on "
+                    + mongoService.getAddress() + ". " + exceptionMsg);
+            ExternalTestServiceReporter.reportUnhealthy(mongoService,
+                    "Couldn't connect to server. Exception: " + exceptionMsg);
             return false;
         } finally {
             if (trustStore != null) {
@@ -507,6 +508,11 @@ public class MongoDBUtils {
     public static String checkIteration(String httpString, Integer defaultPort, String clientID, String compID)
             throws Exception {
         return checkEntry(httpString, defaultPort, clientID, compID, "checkIteration");
+    }
+
+    public static String checkKeyLength(String httpString, Integer defaultPort, String clientID, String compID)
+            throws Exception {
+        return checkEntry(httpString, defaultPort, clientID, compID, "checkKeyLength");
     }
 
     /**

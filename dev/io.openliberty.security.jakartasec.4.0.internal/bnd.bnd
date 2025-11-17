@@ -29,6 +29,7 @@ Export-Package: \
     io.openliberty.security.jakartasec.credential,\
     io.openliberty.security.jakartasec.el,\
     io.openliberty.security.jakartasec.identitystore,\
+    io.openliberty.security.jakartasec.identitystore.permissions,\
     io.openliberty.security.jakartasec.tokens
 
 Import-Package: \
@@ -52,4 +53,6 @@ instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resource
     com.ibm.ws.security;version=latest,\
     io.openliberty.jakarta.expressionLanguage.6.0;version=latest,\
     com.ibm.json4j;version=latest,\
-    io.openliberty.cdi.4.0.internal.interfaces;version=latest
+    io.openliberty.cdi.4.0.internal.interfaces;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+    io.openliberty.jakarta.cdi.4.0;version=latest

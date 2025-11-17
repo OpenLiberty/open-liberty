@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,13 @@ import jakarta.inject.Inject;
 @Singleton
 public class StartupSingletonEJB {
 
-    //TODO Renable when  javax.naming.NameNotFoundException is fixed
-    //FutureEMBuilder: InitialContext.doLookup(dataStore)
     @Inject
     EJBModuleDSDRepo repo;
 
     @PostConstruct
     public void init() {
+        System.out.println("Startup Singleton EJB PostConstruct");
+
         repo.acquire(0);
     }
 }

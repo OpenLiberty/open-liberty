@@ -15,10 +15,6 @@ bVersion=1.0
 
 -sub: *.bnd
 
-Bundle-Name: io.openliberty.http.monitor
-Bundle-SymbolicName: io.openliberty.http.monitor
-Bundle-Description: io.openliberty.http.monitor; version=${bVersion}
-
 src: src
 
 -dsannotations: \
@@ -62,4 +58,6 @@ DynamicImport-Package: \
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.container.service,\
 	com.ibm.ws.kernel.boot.core;version=latest,\
-	com.ibm.websphere.javaee.jsf.2.2
+	com.ibm.websphere.javaee.jsf.2.2,\
+	com.ibm.ws.app.manager;version=latest,\
+	com.ibm.ws.app.manager.module;version=latest,

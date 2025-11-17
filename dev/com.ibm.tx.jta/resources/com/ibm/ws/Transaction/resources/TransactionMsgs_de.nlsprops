@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -882,6 +882,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: Eine Anwendung hat w\u00e4hrend der 
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=Der Stack-Trace wurde erfasst, als die Transaktion erstellt wurde. Der Stack-Trace hilft Benutzern, zu ermitteln, welche Anwendungen Transaktionen w\u00e4hrend des Anwendungsstarts starten und dann das Fehlschlagen der Pr\u00fcfpunktanforderung verursachen.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=\u00dcberpr\u00fcfen Sie den Stack-Trace, um festzustellen, welche Anwendung w\u00e4hrend der Serverpr\u00fcfpunktanforderung eine neue Transaktion gestartet hat.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: Die Transaktion kann nicht auf dem aktuellen Thread fortgesetzt werden, da sie auf einem anderen Thread aktiv ist ( {0} ).
+WTRN0156_CANNOT_RESUME.explanation=Liberty erlaubt es nicht, dass eine Transaktion gleichzeitig auf mehreren Threads aktiv ist.
+WTRN0156_CANNOT_RESUME.useraction=Unterbrechen Sie die Transaktion, bevor Sie sie in einem anderen Thread fortsetzen.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: Die Transaktion kann auf dem aktuellen Thread nicht fortgesetzt werden, da sie an anderer Stelle aktiv ist.
+WTRN0157_CANNOT_RESUME.explanation=Liberty erlaubt es nicht, dass eine Transaktion gleichzeitig auf mehreren Threads aktiv ist.
+WTRN0157_CANNOT_RESUME.useraction=Unterbrechen Sie die Transaktion, bevor Sie sie in einem anderen Thread fortsetzen.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

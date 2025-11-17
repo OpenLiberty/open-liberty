@@ -25,14 +25,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger; // Liberty Change
+
 import javax.security.auth.Subject;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import org.apache.cxf.binding.soap.SoapMessage;
-import org.apache.cxf.common.logging.LogUtils; // Liberty Change
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.headers.Header;
 import org.apache.cxf.helpers.CastUtils;
@@ -77,13 +76,14 @@ import org.apache.wss4j.policy.model.UsernameToken;
 import org.apache.xml.security.exceptions.Base64DecodingException;
 import org.apache.xml.security.utils.XMLUtils;
 
+
+import com.ibm.websphere.ras.annotation.Trivial; // Liberty Change
+
 /**
  *
  */
+@Trivial 
 public class UsernameTokenInterceptor extends AbstractTokenInterceptor {
-    //Liberty Change Start
-    private static final Logger LOG = LogUtils.getL7dLogger(UsernameTokenInterceptor.class);
-    //Liberty Change End
     public UsernameTokenInterceptor() {
         super();
     }

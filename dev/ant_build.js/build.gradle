@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,10 +16,10 @@ repositories {
     if (isUsingArtifactory) {
         maven {
             credentials {
-                username userProps.getProperty("artifactory.download.user")
-                password userProps.getProperty("artifactory.download.token")
+                username = userProps.getProperty("artifactory.download.user")
+                password = userProps.getProperty("artifactory.download.token")
             }
-            url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            url = "https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty"
             metadataSources {
                 mavenPom()
                 artifact()
@@ -27,7 +27,7 @@ repositories {
         }
     } else {
         maven {
-            url ("https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            url = "https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/"
             metadataSources {
                 mavenPom()
                 artifact()
@@ -87,9 +87,9 @@ dependencies {
     library "org.webjars.npm:svg4everybody:2.1.9"
     library "org.webjars.npm:d3:3.5.10"
     library "org.eclipse.che.lib:che-orion-editor:6.19.0-20250520"
-    library "idx:idx:1.5.2.6@zip"
+    library "idx:idx:1.5.2.6_2@zip"
     library "manekinekko:dojo-doh-junit-report:master@zip"
-    library "org.dojotoolkit:dojo:1.12.11@zip"
+    library "org.dojotoolkit:dojo:1.13.10@zip"
     library "org.webjars:gridx:1.3.9@zip"
     library "closure-externs:externs-jquery-3.2:1.0.0"
     library "rave:rave:1.8.0.12@zip"
@@ -137,8 +137,8 @@ def dependencyToPath = [
   "xerces:xercesImpl:2.12.2": "lib/cssValidator/lib/xercesImpl-2.12.2.jar",
   "xml-apis:xml-apis:1.4.01": "lib/cssValidator/lib/xml-apis-1.4.01.jar",
   "css-validator:css-validator:1.0.0": "lib/cssValidator/css-validator.jar",
-  "idx:idx:1.5.2.6": "lib/dojo/idx-1.5.2.6.zip",
-  "org.dojotoolkit:dojo:1.12.11": "lib/dojo/dojo-1.12.11.zip",
+  "idx:idx:1.5.2.6_2": "lib/dojo/idx-1.5.2.6_2.zip",
+  "org.dojotoolkit:dojo:1.13.10": "lib/dojo/dojo-1.13.10.zip",
   "org.webjars:gridx:1.3.9": "lib/dojo/gridx-1.3.9.zip",
   "rave:rave:1.8.0.12": "lib/dojo/rave-1.8.0.12.zip",
   "manekinekko:dojo-doh-junit-report:master": "lib/dojo-doh-junit-report/dojo-doh-junit-report-master.zip",
@@ -175,7 +175,9 @@ def copyDependency(File file, Map dependencyToPath) {
             from file
             into path
             rename '.*', name
-            fileMode = Integer.parseInt('755', 8)
+            filePermissions {
+                unix(Integer.parseInt('755', 8))
+            }
         }
     } catch (Exception e) {
         String gav = "${groupDir.getName()}:${nameDir.getName()}:${versionDir.getName()}"

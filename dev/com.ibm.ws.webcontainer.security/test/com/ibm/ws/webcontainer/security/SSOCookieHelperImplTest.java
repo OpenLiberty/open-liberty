@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security;
 
@@ -61,7 +58,6 @@ public class SSOCookieHelperImplTest {
     private final WebAppSecurityConfig config = mock.mock(WebAppSecurityConfig.class);
     private final SSOCookieHelperImpl ssoCookieHelper = new SSOCookieHelperImpl(config);
     private final Subject subject = new Subject();
-    private final JwtSSOTokenHelper jwtSSOTokenHelper = mock.mock(JwtSSOTokenHelper.class);
 
     private class SSOCookieHelperImplTestDouble extends SSOCookieHelperImpl {
 
@@ -623,27 +619,6 @@ public class SSOCookieHelperImplTest {
             }
         });
         ssoCookieHelper.createLogoutCookies(req, resp);
-    }
-
-    @Test
-    public void splitString() {
-        String buf = "abcdefghijklmnopqrstuvwxyz"; //26
-        String[] result = ssoCookieHelper.splitString(buf, 1);
-        assertTrue(result.length == 26);
-
-        result = ssoCookieHelper.splitString(buf, 3);
-        assertTrue(result.length == 9);
-        assertTrue(result[8].equals("yz"));
-
-        result = ssoCookieHelper.splitString(buf, 25);
-        assertTrue(result.length == 2);
-        assertTrue(result[0].length() == 25);
-        assertTrue(result[1].equals("z"));
-
-        result = ssoCookieHelper.splitString(buf, 26);
-        assertTrue(result.length == 1);
-        assertTrue(result[0].equals(buf));
-
     }
 
     private class SSOCookieHelperImplTestDouble2 extends SSOCookieHelperImpl {

@@ -21,6 +21,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -114,15 +115,18 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer, Defer
         }
     }
 
-    @Reference
-    private ExecutorService executor;
-    @Reference
-    private FutureMonitor futureMonitor;
-
-    @Reference
-    private LibertyProcess libertyProcess;
-
+    private final ExecutorService executor;
+    private final FutureMonitor futureMonitor;
+    private final LibertyProcess libertyProcess;
     private final Map<String, ComponentMetaData> components = new ConcurrentHashMap<>();
+
+    @Activate
+    public SpringBootRuntimeContainer(@Reference ExecutorService executor, @Reference FutureMonitor futureMonitor,
+                                      @Reference LibertyProcess libertyProcess) {
+        this.executor = executor;
+        this.futureMonitor = futureMonitor;
+        this.libertyProcess = libertyProcess;
+    }
 
     @Override
     public ModuleMetaData createModuleMetaData(ExtendedModuleInfo moduleInfo) throws MetaDataException {
@@ -141,6 +145,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer, Defer
 
     private void invokeSpringMain(Future<Boolean> mainInvokeResult, SpringBootModuleInfo springBootModuleInfo) {
         final SpringBootApplicationImpl springBootApplication = springBootModuleInfo.getSpringBootApplication();
+        final boolean setEEContextOnStartup = springBootApplication.setEEContextOnStartup();
         final Method main;
 
         SpringBootComponentMetaData springBootComponentMetaData = ((SpringModuleMetaData) springBootModuleInfo.getMetaData()).getComponentMetaData();
@@ -156,7 +161,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer, Defer
         });
 
         try {
-            if (currentCmd == null) {
+            if (setEEContextOnStartup && currentCmd == null) {
                 accessor.beginContext(springBootComponentMetaData);
             }
             springBootApplication.registerSpringConfigFactory();
@@ -172,7 +177,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer, Defer
                 Thread.currentThread().setContextClassLoader(previousTccl);
                 return null;
             });
-            if (currentCmd == null) {
+            if (setEEContextOnStartup && currentCmd == null) {
                 accessor.endContext();
             }
         }
@@ -186,7 +191,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer, Defer
                 return null;
             });
             try {
-                if (currentCmd == null) {
+                if (setEEContextOnStartup && currentCmd == null) {
                     accessor.beginContext(springBootComponentMetaData);
                 }
                 // get the application args to pass from the springBootApplication
@@ -215,7 +220,7 @@ public class SpringBootRuntimeContainer implements ModuleRuntimeContainer, Defer
                     Thread.currentThread().setContextClassLoader(execPreviousTccl);
                     return null;
                 });
-                if (currentCmd == null) {
+                if (setEEContextOnStartup && currentCmd == null) {
                     accessor.endContext();
                 }
             }

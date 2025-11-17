@@ -15,20 +15,20 @@
   
   <dataSource jndiName="jdbc/krb/basic">
     <jdbcDriver libraryRef="pglib"/>
-    <properties.postgresql user="${KRB5_USER}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}" password="${KRB5_PASS}"/>
+    <properties.postgresql user="${KRB5_PRIN}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
+    <containerAuthData krb5Principal="${KRB5_PRIN}" password="${KRB5_PASS}"/>
   </dataSource>
   
   <dataSource jndiName="jdbc/krb/xa" type="javax.sql.XADataSource">
     <jdbcDriver libraryRef="pglib" />
-    <properties.postgresql user="${KRB5_USER}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}" password="${KRB5_PASS}"/>
+    <properties.postgresql user="${KRB5_PRIN}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
+    <containerAuthData krb5Principal="${KRB5_PRIN}" password="${KRB5_PASS}"/>
   </dataSource>
 
   <dataSource jndiName="jdbc/krb/DataSource" type="javax.sql.DataSource">
     <jdbcDriver libraryRef="pglib" />
-    <properties.postgresql user="${KRB5_USER}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
-    <containerAuthData krb5Principal="${KRB5_USER}" password="${KRB5_PASS}"/>
+    <properties.postgresql user="${KRB5_PRIN}" databaseName="${PG_DBNAME}" serverName="${PG_HOSTNAME}" portNumber="${PG_PORT}"/>
+    <containerAuthData krb5Principal="${KRB5_PRIN}" password="${KRB5_PASS}"/>
   </dataSource>
   
   <!-- Mis-configured datasource: bogus name for krb5Principal -->

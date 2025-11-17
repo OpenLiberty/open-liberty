@@ -66,7 +66,9 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Co najmniej jedna warto\u015b\u0
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty u\u017cywa teraz silniejszych algorytm\u00f3w dla nowo generowanych hase\u0142 {aes} i {hash}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Upewnij si\u0119, \u017ce warto\u015bci hase\u0142 {aes} i {hash} zosta\u0142y wygenerowane przy u\u017cyciu najnowszej wersji Liberty.
 
-
+AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=D\u0142ugo\u015b\u0107 klucza warto\u015bci okre\u015blonej w zmiennej wlp.aes.encryption.key musi wynosi\u0107 256 bit\u00f3w.
+AESKEYMANAGER_NOT_BASE64_EXCEPTION=Warto\u015b\u0107 okre\u015blona w zmiennej wlp.aes.encryption.key musi by\u0107 zakodowana pod adresem base64.
+AESKEYMANAGER_BASE64_VARIABLE_NOT_SET=Zmienna wlp.aes.encryption.key musi by\u0107 ustawiona na dekodowanie hase\u0142.
 # ---------------- This is an exception message ------------
 PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Wykryto wi\u0119cej ni\u017c jedn\u0105 implementacj\u0119 CustomPasswordEncryption. Obs\u0142ugiwana jest tylko jedna implementacja CustomPasswordEncryption. Lista wykrytych implementacji CustomPasswordEncryption jest nast\u0119puj\u0105ca:
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Zg\u0142oszono b\u0142\u0105d podczas przetwarzania pliku manifestu rozszerzenia {0}. Ten plik zosta\u0142 zignorowany. Szyfrowanie niestandardowe nie jest dost\u0119pne. Komunikat o b\u0142\u0119dzie: {1}.
