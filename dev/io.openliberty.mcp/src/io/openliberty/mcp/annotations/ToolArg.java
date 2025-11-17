@@ -29,6 +29,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.util.Optional;
 
+import io.openliberty.mcp.tools.DefaultValueConverter;
+
 /**
  * Annotates a parameter of a {@link Tool} method.
  */
@@ -49,4 +51,15 @@ public @interface ToolArg {
      * An argument is required by default unless the type of the annotated parameter is {@link Optional}.
      */
     boolean required() default true;
+
+    /**
+     * The default value is used when an MCP client does not provide an argument value.
+     * <p>
+     * {@link String}, primitive types and corresponding wrappers, and enums are converted automatically. For any other
+     * parameter type a custom {@link DefaultValueConverter} is needed.
+     *
+     * @see DefaultValueConverter
+     */
+    String defaultValue() default "";
+
 }

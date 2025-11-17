@@ -73,7 +73,7 @@ public record ToolMetadata(String name,
 
     public static final String MISSING_TOOL_ARG_NAME = "<<<MISSING TOOL_ARG NAME>>>";
 
-    public record ArgumentMetadata(Type type, int index, String description, boolean required, boolean isDuplicate) {}
+    public record ArgumentMetadata(Type type, int index, String description, boolean required, String defaultValue, boolean isDuplicate) {}
 
     public record SpecialArgumentMetadata(SpecialArgumentType.Resolution typeResolution, int index) {}
 
@@ -191,6 +191,7 @@ public record ToolMetadata(String name,
                                                          param.getPosition(),
                                                          argAnnotation.description(),
                                                          argAnnotation.required(),
+                                                         argAnnotation.defaultValue(),
                                                          isDuplicateArg));
             }
 

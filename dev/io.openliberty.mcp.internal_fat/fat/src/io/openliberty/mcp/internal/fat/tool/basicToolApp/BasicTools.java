@@ -360,6 +360,53 @@ public class BasicTools {
         return false;
     }
 
+    @Tool(name = "testToolArgStringNotRequired", title = "ToolArgStringNotRequired", description = "ToolArgNotRequired")
+    public String testToolArgStringNotRequired(@ToolArg(name = "value", description = "String value", required = false) String value) {
+        return value;
+    }
+
+    @Tool(name = "testToolArgIntNotRequired", title = "ToolArgIntNotRequired", description = "ToolArgNotRequired")
+    public int testToolArgIntNotRequired(@ToolArg(name = "value", description = "int value", required = false) int value) {
+        return value;
+    }
+
+    @Tool(name = "testToolArgArrayNotRequired", title = "ToolArgArrayNotRequired", description = "ToolArgNotRequired")
+    public int[] testToolArgArrayNotRequired(@ToolArg(name = "value", description = "Array of ints", required = false) int[] value) {
+        return value;
+    }
+
+    @Tool(name = "testMultipleToolArgsOneNotRequired", title = "testMultipleToolArgsOneNotRequired", description = "MultipleToolArgsOneNotRequired")
+    public String testMultipleToolArgsOneNotRequired(@ToolArg(name = "planet", description = "planet you live in") String planet,
+                                                     @ToolArg(name = "year", description = "current year", required = false) int year) {
+        return "Planet " + planet + " was created in the year " + year;
+    }
+
+    @Tool(name = "testToolArgObjectNotRequired", title = "ToolArgObjectNotRequired", description = "ToolArgNotRequired")
+    public City testToolArgObjectNotRequired(@ToolArg(name = "value", description = "City object value", required = false) City value) {
+        return value;
+    }
+
+    @Tool(name = "testToolArgStringDefaultValue", title = "ToolArg String Default Value", description = "Test tool defaults to default value when argument not provided")
+    public String testToolArgStringDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet) {
+        return planet;
+    }
+
+    @Tool(name = "testToolArgIntDefaultValue", title = "ToolArg Int Default Value", description = "Test tool defaults to default value when argument not provided")
+    public int testToolArgIntDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "2025") int year) {
+        return year;
+    }
+
+    @Tool(name = "testMultipleToolArgsOneDefaultValue", title = "testMultipleToolArgsOneDefaultValue", description = "MultipleToolArgsOneDefaultValue")
+    public String testMultipleToolArgsOneDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet,
+                                                      @ToolArg(name = "year", description = "current year") int year) {
+        return "Planet " + planet + " was created in the year " + year;
+    }
+
+//    @Tool(name = "testToolArgObjectDefaultValue", title = "ToolArg Object Default Value", description = "Test tool defaults to default value when argument not provided")
+//    public City testToolArgObjectDefaultValue(@ToolArg(name = "city", description = "city you live in", required = false, defaultValue = "TODO") City city) {
+//        return city;
+//    }
+
     /////////////////////////////////////////////
     // Special characters in Tool and  parameters
 

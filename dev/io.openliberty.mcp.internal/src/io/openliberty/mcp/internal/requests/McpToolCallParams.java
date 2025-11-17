@@ -97,18 +97,110 @@ public class McpToolCallParams {
                 String json = jsonb.toJson(argValue);
                 result.put(argName, jsonb.fromJson(json, argMetadata.type()));
             }
-            argsProcessed.add(argName);
+
         }
         validateProcessedArgs(argsProcessed, metadatas.keySet());
 
         return result;
     }
 
-    private void validateProcessedArgs(Set<String> processedArgs, Set<String> expectedArgs) {
-        if (!processedArgs.equals(expectedArgs)) {
-            List<String> data = generateArgumentMismatchData(processedArgs, expectedArgs);
-            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, data);
+    /**
+     * The null value to use for different types. Null for objects or 0 for primitives.
+     *
+     * @param type the type to get the null value for
+     * @return the null value for the class inputted as a parameter
+     */
+    public static Object nullToolArgValue(Class<?> type) {
+        if (!type.isPrimitive())
+            return null;
+        if (type == boolean.class)
+            return false;
+        if (type == char.class)
+            return '\0';
+        if (type == byte.class)
+            return (byte) 0;
+        if (type == short.class)
+            return (short) 0;
+        if (type == int.class)
+            return 0;
+        if (type == long.class)
+            return 0L;
+        if (type == float.class)
+            return 0f;
+        if (type == double.class)
+            return 0d;
+        return null;
+    }
+
+    /**
+     * Converts a the value stored in a string to a Java object of type {@code type}
+     *
+     * @param value the string to be converted into a Java object
+     * @param type the type of Java object you want the string to be converted to
+     * @return the value as a Java object of type {@code type}
+     */
+    public static Object convert(String value, Type type) {
+        if (String.class.equals(type)) {
+            return value;
         }
+        type = box(type);
+        DefaultValueConverter<?> converter = CONVERTERS.get(type);
+        if (converter != null) {
+            return converter.convert(value);
+        }
+        if (type instanceof Class clazz) {
+            if (clazz.isEnum()) {
+                for (Object constant : clazz.getEnumConstants()) {
+                    if (constant.toString().equalsIgnoreCase(value)) {
+                        return constant;
+                    }
+                }
+            }
+        }
+        throw new IllegalArgumentException(
+                                           "Unable to convert the default value for argument type [" + type
+                                           + "] - provide a custom converter implementation");
+    }
+
+    public static final Map<Type, DefaultValueConverter<?>> CONVERTERS = Map.of(
+                                                                                Boolean.class, new BuiltinDefaultValueConverters.BooleanConverter(),
+                                                                                Byte.class, new BuiltinDefaultValueConverters.ByteConverter(),
+                                                                                Short.class, new BuiltinDefaultValueConverters.ShortConverter(),
+                                                                                Integer.class, new BuiltinDefaultValueConverters.IntegerConverter(),
+                                                                                Long.class, new BuiltinDefaultValueConverters.LongConverter(),
+                                                                                Float.class, new BuiltinDefaultValueConverters.FloatConverter(),
+                                                                                Double.class, new BuiltinDefaultValueConverters.DoubleConverter(),
+                                                                                Character.class, new BuiltinDefaultValueConverters.CharacterConverter());
+
+    /**
+     * Converts primitive types to their wrapper classes
+     *
+     * @param type the type to be boxed
+     * @return the boxed wrapper type if {@code type} is a primitive, otherwise it returns {@code type}
+     */
+    public static Type box(Type type) {
+        if (type instanceof Class clazz) {
+            if (!clazz.isPrimitive()) {
+                return type;
+            } else if (clazz.equals(Boolean.TYPE)) {
+                return Boolean.class;
+            } else if (clazz.equals(Character.TYPE)) {
+                return Character.class;
+            } else if (clazz.equals(Byte.TYPE)) {
+                return Byte.class;
+            } else if (clazz.equals(Short.TYPE)) {
+                return Short.class;
+            } else if (clazz.equals(Integer.TYPE)) {
+                return Integer.class;
+            } else if (clazz.equals(Long.TYPE)) {
+                return Long.class;
+            } else if (clazz.equals(Float.TYPE)) {
+                return Float.class;
+            } else if (clazz.equals(Double.TYPE)) {
+                return Double.class;
+            }
+        }
+        return type;
     }
 
     public List<String> generateArgumentMismatchData(Set<String> processed, Set<String> expected) {

@@ -668,6 +668,199 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void testToolCallWithoutNonRequiredStringArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgStringNotRequired",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithoutNonRequiredIntArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgIntNotRequired",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "0"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithoutNonRequiredArrayArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgArrayNotRequired",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithoutNonRequiredObjectArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgObjectNotRequired",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithTwoToolArgsWithoutNonRequiredArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testMultipleToolArgsOneNotRequired",
+                            "arguments": {
+                              "planet": "Earth"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Planet Earth was created in the year 0"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithToolArgStringDefaultValue() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgStringDefaultValue",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Jupiter"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithToolArgIntDefaultValue() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgIntDefaultValue",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "2025"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithTwoToolArgsWithOneDefaultValue() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testMultipleToolArgsOneDefaultValue",
+                            "arguments": {
+                              "year": "2000"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Planet Jupiter was created in the year 2000"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+//
+//    @Test
+//    public void testToolCallWithToolArgCustomObjectDefaultValue() throws Exception {
+//        String request = """
+//                          {
+//                          "jsonrpc": "2.0",
+//                          "id": 2,
+//                          "method": "tools/call",
+//                          "params": {
+//                            "name": "testToolArgObjectDefaultValue",
+//                            "arguments": {}
+//                          }
+//                        }
+//                        """;
+//
+//        String response = client.callMCP(request);
+//        String expectedResponseString = """
+//                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "2025"}], "isError": false}}
+//                        """;
+//        JSONAssert.assertEquals(expectedResponseString, response, true);
+//    }
+
+    @Test
     public void testToolList() throws Exception {
         String request = """
                         {
@@ -1540,6 +1733,150 @@ public class ToolTest extends FATServletClient {
                                         "description": "ToolArgNotRequired",
                                         "title": "ToolArgNotRequired"
                                      },
+                                     {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "value": {
+                                                    "description": "String value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": []
+                                        },
+
+                                        "name": "testToolArgStringNotRequired",
+                                        "description": "ToolArgNotRequired",
+                                        "title": "ToolArgStringNotRequired"
+                                     },
+                                     {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "value": {
+                                                    "description": "int value",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": []
+                                        },
+
+                                        "name": "testToolArgIntNotRequired",
+                                        "description": "ToolArgNotRequired",
+                                        "title": "ToolArgIntNotRequired"
+                                     },
+                                     {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "value": {
+                                                    "description": "City object value",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "country": { "type": "string" },
+                                                        "isCapital": { "type": "boolean" },
+                                                        "name": { "type": "string" },
+                                                        "population": { "type": "integer" }
+                                                      },
+                                                      "required": ["name", "country", "population", "isCapital"]
+                                                }
+                                            },
+                                            "required": []
+                                        },
+
+                                        "name": "testToolArgObjectNotRequired",
+                                        "description": "ToolArgNotRequired",
+                                        "title": "ToolArgObjectNotRequired"
+                                     },
+                                     {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "value": {
+                                                    "description": "Array of ints",
+                                                    "type": "array",
+                                                    "items": {"type": "integer"}
+                                                }
+                                            },
+                                            "required": []
+                                        },
+
+                                        "name": "testToolArgArrayNotRequired",
+                                        "description": "ToolArgNotRequired",
+                                        "title": "ToolArgArrayNotRequired"
+                                     },
+                                     {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "planet": {
+                                                    "description": "planet you live in",
+                                                    "type": "string"
+                                                },
+                                                "year": {
+                                                    "description": "current year",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [planet]
+                                        },
+
+                                        "name": "testMultipleToolArgsOneNotRequired",
+                                        "description": "MultipleToolArgsOneNotRequired",
+                                        "title": "testMultipleToolArgsOneNotRequired"
+                                     },
+                                     {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "planet": {
+                                                    "description": "planet you live in",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": []
+                                        },
+
+                                        "name": "testToolArgStringDefaultValue",
+                                        "description": "Test tool defaults to default value when argument not provided",
+                                        "title": "ToolArg String Default Value"
+                                     },
+                                     {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "year": {
+                                                    "description": "current year",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": []
+                                        },
+
+                                        "name": "testToolArgIntDefaultValue",
+                                        "description": "Test tool defaults to default value when argument not provided",
+                                        "title": "ToolArg Int Default Value"
+                                        },
+                                      {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "planet": {
+                                                    "description": "planet you live in",
+                                                    "type": "string"
+                                                },
+                                                "year": {
+                                                    "description": "current year",
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [year]
+                                        },
+
+                                        "name": "testMultipleToolArgsOneDefaultValue",
+                                        "description": "MultipleToolArgsOneDefaultValue",
+                                        "title": "testMultipleToolArgsOneDefaultValue"
+                                     },
                                     {
                                         "inputSchema": {
                                             "type": "object",
@@ -2314,7 +2651,7 @@ public class ToolTest extends FATServletClient {
                             "jsonrpc": "2.0"
                         }
                          """;
-
+        System.out.println("ACTUAL RESPONSE = " + jsonResponse.toString());
         JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
