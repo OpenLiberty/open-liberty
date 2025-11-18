@@ -455,13 +455,13 @@ public class McpServlet extends HttpServlet {
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
         RequestId mcpReqId = notificationParams.getRequestId();
-        String sessionId = transport.getSessionId();
+        McpSessionId sessionId = transport.getSessionId();
         if (sessionId == null) {
             transport.sendEmptyResponse();
             return;
         }
 
-        ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId);
+        ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId.toString());
         Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -481,8 +481,9 @@ public class McpServlet extends HttpServlet {
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
         McpSessionId sessionId = transport.getSessionId();
         if (sessionId != null) {
-            return new ExecutionRequestId(transport.getMcpRequest().getId(),
-                                          sessionId);
+            return new ExecutionRequestId(
+                                          transport.getMcpRequest().getId(),
+                                          sessionId.toString());
         } else {
             return null;
         }
