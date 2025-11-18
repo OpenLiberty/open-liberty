@@ -4239,9 +4239,6 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testQueryByMethodNameWithoutBy() {
-        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33287")) {
-            return; //TODO remove skip when fixed in Hibernate or Liberty
-        }
 
         vehicles.delete();
 
@@ -4318,20 +4315,26 @@ public class DataTestServlet extends FATServlet {
                                      .map(v -> v.model)
                                      .collect(Collectors.toList()));
 
-        assertEquals(List.of("Impreza", "HR-V"),
-                     vehicles.deleteFoundOrderByPriceAscVinIdAsc(Limit.of(2))
-                                     .stream()
-                                     .map(v -> v.model)
-                                     .collect(Collectors.toList()));
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33287")) {
+            //TODO remove skip when fixed in Hibernate or Liberty
+            assertEquals(5L, vehicles.delete());
+            assertEquals(0L, vehicles.countEverything());
+        } else {
+            assertEquals(List.of("Impreza", "HR-V"),
+                         vehicles.deleteFoundOrderByPriceAscVinIdAsc(Limit.of(2))
+                                         .stream()
+                                         .map(v -> v.model)
+                                         .collect(Collectors.toList()));
 
-        assertEquals(3L, vehicles.countEverything());
+            assertEquals(3L, vehicles.countEverything());
 
-        assertEquals(List.of("CR-V", "Explorer", "Outback"),
-                     vehicles.deleteAll()
-                                     .stream()
-                                     .map(v -> v.model)
-                                     .sorted()
-                                     .collect(Collectors.toList()));
+            assertEquals(List.of("CR-V", "Explorer", "Outback"),
+                         vehicles.deleteAll()
+                                         .stream()
+                                         .map(v -> v.model)
+                                         .sorted()
+                                         .collect(Collectors.toList()));
+        }
 
         assertEquals(false, vehicles.existsAny());
         assertEquals(0L, vehicles.findAll().count());
@@ -5873,9 +5876,6 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testUpdateMultiple() {
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33277")) {
-            return; //TODO remove skip when fixed in Hibernate or Liberty
-        }
 
         products.clear();
 
@@ -6051,9 +6051,6 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testVersionedUpdateViaQuery() {
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33277")) {
-            return; //TODO remove skip when fixed in Hibernate or Liberty
-        }
 
         Product prod1 = new Product();
         prod1.pk = UUID.nameUUIDFromBytes("Q6008-U8-21001".getBytes());

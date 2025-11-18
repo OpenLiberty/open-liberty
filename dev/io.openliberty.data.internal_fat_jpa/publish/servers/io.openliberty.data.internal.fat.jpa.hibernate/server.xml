@@ -42,9 +42,9 @@
   </dataSource>
 
   <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+    <fileset dir="${shared.resource.dir}/jdbcJava17Plus" includes="${env.DB_DRIVER}"/>
     <fileset dir="${shared.resource.dir}/jpa32_hibernate_orm" includes="*.jar"/>
   </library>
 
-  <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+  <javaPermission codeBase="${shared.resource.dir}/jdbcLatest/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 </server>

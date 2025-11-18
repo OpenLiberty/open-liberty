@@ -52,11 +52,6 @@ public class DataJPAHibernateTest extends FATServletClient {
         server.startServer();
     }
 
-    //NOTE: Hibernate does not support the version of Derby we use during DatabaseRotation
-    // HHH000511: The 10.11.1 version for [org.hibernate.community.dialect.DerbyDialect] is no longer supported, hence certain features may not work properly.
-    // The minimum supported version is 10.15.2. Check the community dialects project for available legacy versions.
-    // for now this test still works, but it might start failing with future Hibernate versions
-
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();

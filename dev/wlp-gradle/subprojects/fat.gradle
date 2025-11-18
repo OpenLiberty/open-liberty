@@ -39,25 +39,49 @@ task cleanBeforeRun(type: Delete) {
   delete new File(autoFvtDir, 'results')
 }
 
+// See derby/java support matrix https://db.apache.org/derby/derby_downloads.html
+ext {
+    derbyJava8PlusVersion = '10.11.1.1' // TODO update to 10.14.2.0
+    derbyJava17PlusVersion = '10.16.1.1'
+    derbyJava21PlusVersion = '10.17.1.0' // Unused for now
+}
+
 configurations {
   requiredLibs
   jdbcDrivers { transitive = false; }
+  jdbcDriversJava17Plus { transitive = false; }
   testcontainers { transitive = false; }
   derby
+  derbyJava17Plus { transitive = false; }
   jakartaTransformer { transitive = false; }
   jakartaTransformerPreJava17 { transitive = false; }
   jakartaTransformerJava17Plus { transitive = false; }
 }
 
 dependencies {
-  derby 'org.apache.derby:derby:10.11.1.1'
+  derby "org.apache.derby:derby:${derbyJava8PlusVersion}"
+  
+  derbyJava17Plus "org.apache.derby:derby:${derbyJava17PlusVersion}",
+              "org.apache.derby:derbytools:${derbyJava17PlusVersion}",
+              "org.apache.derby:derbyshared:${derbyJava17PlusVersion}"
 
   jdbcDrivers 'com.ibm.db2:jcc:12.1.0.0',
-		'org.postgresql:postgresql:42.7.2',
-		'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
-		'org.apache.derby:derbyclient:10.11.1.1',
-		'org.apache.derby:derby:10.11.1.1',
-		'com.oracle.database.jdbc:ojdbc8:23.4.0.24.05'
+        'org.postgresql:postgresql:42.7.2',
+        'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
+        "org.apache.derby:derbyclient:${derbyJava8PlusVersion}",
+        "org.apache.derby:derby:${derbyJava8PlusVersion}",
+        'com.oracle.database.jdbc:ojdbc8:23.4.0.24.05'
+
+   //TODO - update other drivers to Java 17 versions (i.e. ojdbc17)
+   jdbcDriversJava17Plus 'com.ibm.db2:jcc:12.1.0.0',
+        'org.postgresql:postgresql:42.7.2',
+        'com.microsoft.sqlserver:mssql-jdbc:9.2.1.jre8',
+        "org.apache.derby:derbyclient:${derbyJava17PlusVersion}",
+        "org.apache.derby:derby:${derbyJava17PlusVersion}",
+        "org.apache.derby:derbytools:${derbyJava17PlusVersion}",
+        "org.apache.derby:derbyshared:${derbyJava17PlusVersion}",
+        'com.oracle.database.jdbc:ojdbc8:23.4.0.24.05'
+        
 
   jakartaTransformer 'commons-cli:commons-cli:1.5.0',
        project(':com.ibm.ws.org.slf4j.api'),
@@ -114,6 +138,15 @@ task addDerby(type: Copy) {
   rename 'derby-.*.jar', 'derby.jar'
 }
 
+task addDerbyJava17Plus(type: Copy) {
+    mustRunAfter jar
+    from configurations.derbyJava17Plus
+    into new File(autoFvtDir, 'publish/shared/resources/derbyJava17Plus')
+    rename 'derby-.*.jar', 'derby.jar'
+    rename 'derbyshared-.*.jar', 'derbyshared.jar'
+    rename 'derbytools-.*.jar', 'derbytools.jar'
+}
+
 task copyJdbcDrivers(type: Copy) {
   mustRunAfter jar
   from configurations.jdbcDrivers
@@ -125,6 +158,20 @@ task copyJdbcDrivers(type: Copy) {
   rename 'postgresql.*.jar', 'postgresql.jar'
   rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
 }
+
+task copyJdbcDriversJava17Plus(type: Copy) {
+    mustRunAfter jar
+    from configurations.jdbcDriversJava17Plus
+    into new File(autoFvtDir, 'publish/shared/resources/jdbcJava17Plus')
+    rename 'jcc.*.jar', 'jcc.jar'
+    rename 'derby-.*.jar', 'derby.jar'
+    rename 'derbyclient-.*.jar', 'derbyclient.jar'
+    rename 'derbyshared-.*.jar', 'derbyshared.jar'
+    rename 'derbytools-.*.jar', 'derbytools.jar'
+    rename 'ojdbc8.*.jar', 'ojdbc8.jar'
+    rename 'postgresql.*.jar', 'postgresql.jar'
+    rename 'mssql-jdbc.*.jar', 'mssql-jdbc.jar'
+  }
 
 task copyFeatureBundles {
   def projectName = project.name
@@ -233,7 +280,7 @@ task autoFVT {
       println printPrefix + ' tests the following features: ' + featureDeps
       def fatDeps = new groovy.json.JsonBuilder()
       def root = fatDeps {
-    	'feature-deps' featureDeps
+        'feature-deps' featureDeps
       }
       new File(autoFvtDir, prefix + 'fat-metadata.json').write(new groovy.json.JsonBuilder(root).toPrettyString())
     } else {
@@ -630,29 +677,29 @@ task runfat(type: Exec) {
     
   // Artifactory Registry Properties
   if ( gradle.userProps.containsKey("artifactory.download.server") )
-	environment "ARTIFACTORY_DOWNLOAD_SERVER", gradle.userProps.getProperty("artifactory.download.server")
+    environment "ARTIFACTORY_DOWNLOAD_SERVER", gradle.userProps.getProperty("artifactory.download.server")
 
   if ( gradle.userProps.containsKey("artifactory.download.user") )
-	environment "ARTIFACTORY_DOWNLOAD_USER", gradle.userProps.getProperty("artifactory.download.user")
+    environment "ARTIFACTORY_DOWNLOAD_USER", gradle.userProps.getProperty("artifactory.download.user")
 
   if ( gradle.userProps.containsKey("artifactory.download.token") )
-	environment "ARTIFACTORY_DOWNLOAD_TOKEN", gradle.userProps.getProperty("artifactory.download.token")
+    environment "ARTIFACTORY_DOWNLOAD_TOKEN", gradle.userProps.getProperty("artifactory.download.token")
 
   if ( gradle.userProps.containsKey("artifactory.docker.server") )
-	environment "ARTIFACTORY_DOCKER_SERVER", gradle.userProps.getProperty("artifactory.docker.server")
+    environment "ARTIFACTORY_DOCKER_SERVER", gradle.userProps.getProperty("artifactory.docker.server")
 
   if ( gradle.userProps.containsKey("artifactory.force.external.repo") )
-	environment "ARTIFACTORY_FORCE_EXTERNAL_REPO", gradle.userProps.getProperty("artifactory.force.external.repo")
-  	
+    environment "ARTIFACTORY_FORCE_EXTERNAL_REPO", gradle.userProps.getProperty("artifactory.force.external.repo")
+      
   // Internal Registry Properties
   if ( gradle.userProps.containsKey("docker_registry.server") )
-	environment "DOCKER_REGISTRY_SERVER", gradle.userProps.getProperty("docker_registry.server")
-	
+    environment "DOCKER_REGISTRY_SERVER", gradle.userProps.getProperty("docker_registry.server")
+    
   if ( gradle.userProps.containsKey("docker_registry.user") )
-	environment "DOCKER_REGISTRY_USER", gradle.userProps.getProperty("docker_registry.user")
-	
+    environment "DOCKER_REGISTRY_USER", gradle.userProps.getProperty("docker_registry.user")
+    
   if ( gradle.userProps.containsKey("docker_registry.password") )
-	environment "DOCKER_REGISTRY_PASSWORD", gradle.userProps.getProperty("docker_registry.password")
+    environment "DOCKER_REGISTRY_PASSWORD", gradle.userProps.getProperty("docker_registry.password")
   
   //Add fat.test.localrun to JVM environment.
   //Not accessible during builds since tests are run on child systems with a different JVM

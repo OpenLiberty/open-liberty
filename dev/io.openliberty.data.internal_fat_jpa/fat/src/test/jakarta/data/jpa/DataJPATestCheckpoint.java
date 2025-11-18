@@ -45,7 +45,7 @@ import test.jakarta.data.jpa.web.eclipselink.DataJPAEclipseLinkServlet;
 public class DataJPATestCheckpoint extends FATServletClient {
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
 
     @Server("io.openliberty.data.internal.checkpoint.fat.jpa")
     @TestServlets({
@@ -63,6 +63,7 @@ public class DataJPATestCheckpoint extends FATServletClient {
         // Set up server DataSource properties
         DatabaseContainerUtil.build(server, testContainer) //
                         .withDriverReplacement() //
+                        .withPermissionReplacement() //
                         .withDatabaseProperties() //
                         .modify();
 

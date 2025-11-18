@@ -59,7 +59,12 @@ public interface Products {
     @Query("DELETE FROM Product p WHERE p.name LIKE ?1")
     int purge(String namePattern);
 
-    @Query("UPDATE Product SET price = price - (?2 * price) WHERE name LIKE CONCAT('%', ?1, '%')")
+    @Query("""
+                    UPDATE Product
+                       SET price = price - (?2 * price),
+                           version = version + 1
+                     WHERE name LIKE CONCAT('%', ?1, '%')
+                    """)
     long putOnSale(String nameContains, float discount);
 
     @Query("SELECT name")
@@ -80,7 +85,7 @@ public interface Products {
     @Save
     Product[] saveMultiple(Product... p);
 
-    @Query("UPDATE Product SET price=?3 WHERE pk=?1 AND version=?2")
+    @Query("UPDATE Product SET price=?3, version=?2+1 WHERE pk=?1 AND version=?2")
     boolean setPrice(UUID pk,
                      long version,
                      float newPrice);

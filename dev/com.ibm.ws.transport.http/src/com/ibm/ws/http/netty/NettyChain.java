@@ -21,8 +21,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
-import com.ibm.ws.http.internal.HttpChain.ActiveConfiguration;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -243,7 +241,7 @@ public class NettyChain extends HttpChain {
                 Map<String, Object> tcpOptions = new HashMap<>(this.getOwner().getTcpOptions());
                 tcpOptions.put(ConfigConstants.EXTERNAL_NAME, endpointName);
 
-                bootstrap = nettyFramework.createTCPBootstrap(tcpOptions);
+                bootstrap = nettyFramework.createTCPBootstrapInbound(tcpOptions);
                 HttpPipelineInitializer.HttpPipelineBuilder pipelineBuilder = new HttpPipelineInitializer.HttpPipelineBuilder(this)
                     .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
                     .with(ConfigElement.HTTP_OPTIONS, httpOptions)
@@ -263,7 +261,7 @@ public class NettyChain extends HttpChain {
                 bootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
                 bootstrap.childHandler(httpPipeline);
 
-                serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
+                serverChannel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;

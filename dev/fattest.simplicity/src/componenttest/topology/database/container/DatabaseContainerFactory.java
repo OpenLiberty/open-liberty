@@ -12,7 +12,6 @@
  *******************************************************************************/
 package componenttest.topology.database.container;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +27,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.depchain.FeatureDependencyProcessor;
+import componenttest.topology.impl.JavaInfo;
 
 /**
  * This is a factory class that creates database test-containers.
@@ -78,6 +78,15 @@ public class DatabaseContainerFactory {
     /**
      * @see #create()
      *
+     *      Uses the latest version of Derby Embedded
+     */
+    public static JdbcDatabaseContainer<?> createLatest() throws IllegalArgumentException {
+        return create(DatabaseContainerType.DerbyJava17Plus);
+    }
+
+    /**
+     * @see #create()
+     *
      *      This method let's you specify the default database type if one is not provided.
      *      This should mainly be used if you want to use derby client instead of derby embedded as your default.
      */
@@ -121,8 +130,15 @@ public class DatabaseContainerFactory {
 
     //Private Method: used to initialize test container.
     private static JdbcDatabaseContainer<?> initContainer(DatabaseContainerType dbContainerType) {
-        //Check to see if JDBC Driver is available.
-        isJdbcDriverAvailable(dbContainerType);
+
+        // Validate state of environment
+        if (dbContainerType.getMinJavaLevel() > JavaInfo.JAVA_VERSION) {
+            throw new IllegalStateException("Cannot initialize a container of type " + dbContainerType +
+                                            " as the driver requires a minimum java level of " + dbContainerType.getMinJavaLevel() +
+                                            " but the system's java level is " + JavaInfo.JAVA_VERSION +
+                                            " either restrict this test using @MinimumJavaLevel(javaLevel = " + dbContainerType.getMinJavaLevel() +
+                                            ") or choose a different container type.");
+        }
 
         //Create container
         JdbcDatabaseContainer<?> cont = null;
@@ -189,28 +205,6 @@ public class DatabaseContainerFactory {
         }
 
         return cont;
-    }
-
-    /**
-     * Check to see if the JDBC driver necessary for this test-container is in the location
-     * where the server expects to find it. <br>
-     *
-     * JDBC drivers are not publicly available for some databases. In those cases the
-     * driver will need to be provided by the user to run this test-container.
-     *
-     * @return boolean - true if and only if driver exists. Otherwise, false.
-     */
-    private static boolean isJdbcDriverAvailable(DatabaseContainerType type) {
-        File temp = new File("publish/shared/resources/jdbc/" + type.getDriverName());
-        boolean result = temp.exists();
-
-        if (result) {
-            Log.info(c, "isJdbcDriverAvailable", "FOUND: " + type + " JDBC driver in location: " + temp.getAbsolutePath());
-        } else {
-            Log.warning(c, "MISSING: " + type + " JDBC driver not in location: " + temp.getAbsolutePath());
-        }
-
-        return result;
     }
 
     /**

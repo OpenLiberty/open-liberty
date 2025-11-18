@@ -2318,13 +2318,38 @@
     </dependency>
     <dependency>
       <groupId>org.apache.derby</groupId>
+      <artifactId>derby</artifactId>
+      <version>10.16.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
       <artifactId>derbyclient</artifactId>
       <version>10.11.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.derby</groupId>
+      <artifactId>derbyclient</artifactId>
+      <version>10.16.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
       <artifactId>derbynet</artifactId>
       <version>10.11.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbynet</artifactId>
+      <version>10.16.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbyshared</artifactId>
+      <version>10.16.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.derby</groupId>
+      <artifactId>derbytools</artifactId>
+      <version>10.16.1.1</version>
     </dependency>
     <dependency>
       <groupId>org.apache.directory.server</groupId>
@@ -2723,18 +2748,13 @@
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
-      <artifactId>bcpg-jdk18on</artifactId>
-      <version>1.82</version>
-    </dependency>
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
       <artifactId>bcpkix-jdk18on</artifactId>
       <version>1.82</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcprov-jdk18on</artifactId>
-      <version>1.82</version>
+      <version>1.78.1</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>
@@ -2744,7 +2764,7 @@
     <dependency>
       <groupId>org.bouncycastle</groupId>
       <artifactId>bcutil-jdk18on</artifactId>
-      <version>1.82</version>
+      <version>1.78.1</version>
     </dependency>
     <dependency>
       <groupId>org.bouncycastle</groupId>

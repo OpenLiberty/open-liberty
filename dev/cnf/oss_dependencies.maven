@@ -459,8 +459,13 @@ org.apache.deltaspike.core:deltaspike-core-impl:1.5.0
 org.apache.deltaspike.modules:deltaspike-scheduler-module-api:1.5.0
 org.apache.deltaspike.modules:deltaspike-scheduler-module-impl:1.5.0
 org.apache.derby:derby:10.11.1.1
+org.apache.derby:derby:10.16.1.1
 org.apache.derby:derbyclient:10.11.1.1
+org.apache.derby:derbyclient:10.16.1.1
 org.apache.derby:derbynet:10.11.1.1
+org.apache.derby:derbynet:10.16.1.1
+org.apache.derby:derbyshared:10.16.1.1
+org.apache.derby:derbytools:10.16.1.1
 org.apache.directory.server:apacheds-all:2.0.0-M24
 org.apache.directory.server:apacheds-service:2.0.0-M15
 org.apache.directory.server:kerberos-client:2.0.0-M24
@@ -541,7 +546,9 @@ org.asynchttpclient:async-http-client:2.12.3
 org.bitbucket.b_c:jose4j:0.9.5
 org.bouncycastle:bcpg-jdk18on:1.82
 org.bouncycastle:bcpkix-jdk18on:1.82
+org.bouncycastle:bcprov-jdk18on:1.78.1
 org.bouncycastle:bcprov-jdk18on:1.82
+org.bouncycastle:bcutil-jdk18on:1.78.1
 org.bouncycastle:bcutil-jdk18on:1.82
 org.brotli:dec:0.1.2
 org.checkerframework:checker-compat-qual:2.5.2

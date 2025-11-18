@@ -78,7 +78,7 @@ src: \
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest, \
 	com.ibm.ws.security.javaeesec.cdi;version=latest,\
-	org.apache.derby:derby;version=10.11.1.1,\
+	org.apache.derby:derby;strategy=exact;version=10.11.1.1,\
 	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
 	com.ibm.ws.com.unboundid;version=latest,\

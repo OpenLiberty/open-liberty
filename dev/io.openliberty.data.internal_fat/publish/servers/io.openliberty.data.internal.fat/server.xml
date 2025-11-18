@@ -40,7 +40,7 @@
 
   <!-- For DataSourceDefinition java:app/jdbc/DerbyDataSource which is used by the Vehicles repository -->
   <library id="DerbyLib">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
+    <fileset dir="${shared.resource.dir}/derbyJava17Plus" includes="*.jar"/>
   </library>
 
   <!-- For all other repositories: -->
@@ -50,10 +50,13 @@
   </dataSource>
 
   <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+    <fileset dir="${shared.resource.dir}/jdbcJava17Plus" includes="${env.DB_DRIVER}"/>
   </library>
 
-  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codeBase="${shared.resource.dir}/derbyJava17Plus/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codeBase="${shared.resource.dir}/derbyJava17Plus/derbytools.jar" className="java.security.AllPermission"/>
+  <javaPermission codeBase="${shared.resource.dir}/derbyJava17Plus/derbyshared.jar" className="java.security.AllPermission"/>
+  
   <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
   <javaPermission codeBase="${server.config.dir}/apps/ProviderTestApp.war" className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>

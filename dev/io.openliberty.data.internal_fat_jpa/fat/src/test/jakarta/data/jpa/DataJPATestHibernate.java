@@ -69,10 +69,10 @@ public class DataJPATestHibernate extends FATServletClient {
 
     // TODO update tests to run in database rotation
 //    @ClassRule
-//    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+//    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createType(DatabaseContainerType.Derby);
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createType(DatabaseContainerType.DerbyJava17Plus);
 
     @Server("io.openliberty.data.internal.fat.jpa.hibernate")
     @TestServlets({

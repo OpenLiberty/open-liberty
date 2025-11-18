@@ -41,17 +41,12 @@
   </dataSource>
 
   <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/derby16" includes="derby.jar derbyshared.jar derbytools.jar"/>
+    <fileset dir="${shared.resource.dir}/derbyJava17Plus" includes="*.jar"/>
   </library>
   
   <library id="HibernateLib">
       <fileset dir="${shared.resource.dir}/jpa32_hibernate" includes="*.jar"/>
   </library>
-
-  <!-- JDBC driver permissions -->
-  <javaPermission codeBase="${shared.resource.dir}/derby16/derby.jar" className="java.security.AllPermission"/>
-  <javaPermission codeBase="${shared.resource.dir}/derby16/derbyshared.jar" className="java.security.AllPermission"/>
-  <javaPermission codeBase="${shared.resource.dir}/derby16/derbytools.jar" className="java.security.AllPermission"/>
   
   <!-- Java 2 Security issue with ANTLR: https://github.com/antlr/antlr4/issues/3720 -->
   <javaPermission className="java.lang.RuntimePermission" name="getenv.TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT"/>

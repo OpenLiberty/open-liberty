@@ -504,9 +504,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @FFDCIgnore({ NettyException.class })
     @Override
-    public ServerBootstrapExtended createTCPBootstrap(Map<String, Object> tcpOptions) throws NettyException {
+    public ServerBootstrapExtended createTCPBootstrapInbound(Map<String, Object> tcpOptions) throws NettyException {
         try {
-            return TCPUtils.createTCPBootstrap(this, tcpOptions);
+            return TCPUtils.createTCPBootstrapInbound(this, tcpOptions);
         } catch (NettyException e) {
             Tr.error(tc, "chain.initialization.error", new Object[] { tcpOptions.get(ConfigConstants.EXTERNAL_NAME), e.toString() });
             throw e;
@@ -520,8 +520,8 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
-    public BootstrapExtended createUDPBootstrap(Map<String, Object> options) throws NettyException {
-        return UDPUtils.createUDPBootstrap(this, options);
+    public BootstrapExtended createUDPBootstrapInbound(Map<String, Object> options) throws NettyException {
+        return UDPUtils.createUDPBootstrapInbound(this, options);
     }
 
     @Override
@@ -531,8 +531,8 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     @FFDCIgnore({ NettyException.class })
-    public Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
-                         ChannelFutureListener bindListener) throws NettyException {
+    public Channel startInbound(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+                                ChannelFutureListener bindListener) throws NettyException {
 
         BootstrapConfiguration config = bootstrap.getConfiguration();
         String externalName = "NOT_DEFINED";
@@ -541,7 +541,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         }
 
         try {
-            return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
+            return TCPUtils.startInbound(this, bootstrap, inetHost, inetPort, bindListener);
         } catch (NettyException e) {
             Tr.error(tc, "chain.initialization.error", new Object[] { externalName, e.toString() });
             throw e;
@@ -549,9 +549,9 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
-    public Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort,
-                         ChannelFutureListener bindListener) throws NettyException {
-        return UDPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
+    public Channel startInbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+                                ChannelFutureListener bindListener) throws NettyException {
+        return UDPUtils.startInbound(this, bootstrap, inetHost, inetPort, bindListener);
     }
 
     @Override

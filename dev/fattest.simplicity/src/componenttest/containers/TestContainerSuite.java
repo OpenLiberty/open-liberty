@@ -41,8 +41,11 @@ public class TestContainerSuite {
 
     private static final Class<?> c = TestContainerSuite.class;
 
-    private static final Path configSource = Paths.get(System.getProperty("user.home"), ".testcontainers.properties");
-    private static final Path configBackup = Paths.get(System.getProperty("java.io.tmpdir"), ".testcontainers.backup.properties");
+    private static final Path tcConfigSource = Paths.get(System.getProperty("user.home"), ".testcontainers.properties");
+    private static final Path tcConfigBackup = Paths.get(System.getProperty("java.io.tmpdir"), ".testcontainers.backup.properties");
+
+    private static final Path djConfigSource = Paths.get(System.getProperty("user.home"), ".docker-java.properties");
+    private static final Path djConfigBackup = Paths.get(System.getProperty("java.io.tmpdir"), ".docker-java.backup.properties");
 
     /**
      * THIS METHOD CALL IS REQUIRED TO USE TESTCONTAINERS PLEASE READ:
@@ -72,7 +75,8 @@ public class TestContainerSuite {
         Log.info(TestContainerSuite.class, "<init>", "Setting up testcontainers");
         configureLogging();
         verifyDockerConfig();
-        generateConfig();
+        generateTcConfig();
+        generateDjConfig();
     }
 
     @ClassRule
@@ -112,9 +116,17 @@ public class TestContainerSuite {
         }
 
         // Levels
-        System.setProperty("org.slf4j.simpleLogger.log.org.testcontainers", "debug");
+        // Container logs: debug
         System.setProperty("org.slf4j.simpleLogger.log.tc", "debug");
+        // Jakarta Transformer: disabled
+        System.setProperty("org.slf4j.simpleLogger.log.Transformer", "off");
+        // Testcontainers configuration/lifecycle: debug
+        System.setProperty("org.slf4j.simpleLogger.log.org.testcontainers", "debug");
+        // Docker transport layer: warn
         System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava", "warn");
+        // Docker HTTP client: debug --verify requests are using the correct API version
+        System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.impl.classic.MainClientExec", "debug");
+        // Docker sockets: disabled -- everything is output to WARN
         System.setProperty("org.slf4j.simpleLogger.log.com.github.dockerjava.zerodep.shaded.org.apache.hc.client5.http.wire", "off");
     }
 
@@ -176,20 +188,20 @@ public class TestContainerSuite {
      * the properties necessary to connect and use a remote docker host if one is required
      * by the {@link #useRemoteDocker()} method.
      */
-    private static void generateConfig() {
-        final String m = "generateConfig";
+    private static void generateTcConfig() {
+        final String m = "generateTcConfig";
 
         Properties tcProps = new Properties();
 
         //Create new config file or load existing config properties
-        if (configSource.toFile().exists()) {
-            Log.info(c, m, "Testcontainers config already exists at: " + configSource.toAbsolutePath());
+        if (tcConfigSource.toFile().exists()) {
+            Log.info(c, m, "Testcontainers config already exists at: " + tcConfigSource.toAbsolutePath());
 
-            if (!swapConfigFiles(configSource, configBackup)) {
+            if (!swapConfigFiles(tcConfigSource, tcConfigBackup)) {
                 throw new RuntimeException("Could not backup existing Testcontainers config.");
             }
         } else {
-            Log.info(c, m, "Testcontainers config being created at: " + configSource.toAbsolutePath());
+            Log.info(c, m, "Testcontainers config being created at: " + tcConfigSource.toAbsolutePath());
         }
 
         //If using remote docker then setup strategy
@@ -226,7 +238,7 @@ public class TestContainerSuite {
         tcProps.setProperty("sshd.container.image", "ghcr.io/testcontainers/sshd:1.3.0");
 
         try {
-            tcProps.store(new FileOutputStream(configSource.toFile()), "Modified by FAT framework");
+            tcProps.store(new FileOutputStream(tcConfigSource.toFile()), "Modified by FAT framework");
             Log.info(c, m, "Testcontainers config properties: " + tcProps.toString());
         } catch (IOException e) {
             Log.error(c, m, e);
@@ -235,11 +247,55 @@ public class TestContainerSuite {
     }
 
     /**
+     * Moves existing ~/.docker-java.properties file (if present) to a backup location.
+     * Then generates a new ~/.docker-java.properties file in it's place.
+     *
+     * This method must run AFTER {@link #generateTcConfig()}
+     */
+    private static void generateDjConfig() {
+        final String m = "generateDjConfig";
+
+        Properties djProps = new Properties();
+
+        //Create new config file or load existing config properties
+        if (djConfigSource.toFile().exists()) {
+            Log.info(c, m, "Docker-java config already exists at: " + djConfigSource.toAbsolutePath());
+
+            if (!swapConfigFiles(djConfigSource, djConfigBackup)) {
+                throw new RuntimeException("Could not backup existing Docker-java config.");
+            }
+        } else {
+            Log.info(c, m, "Docker-java config being created at: " + djConfigSource.toAbsolutePath());
+        }
+
+        if (useRemoteDocker()) {
+            if (ExternalDockerClientFilter.instance().isValid()) {
+                djProps.setProperty("api.version", ExternalDockerClientFilter.instance().getMinApiVersion().getVersion());
+            } else {
+                Log.warning(c, "Unable to find valid External Docker Client");
+            }
+        }
+
+        try {
+            djProps.store(new FileOutputStream(djConfigSource.toFile()), "Modified by FAT framework");
+            Log.info(c, m, "Docker-java config properties: " + djProps.toString());
+        } catch (IOException e) {
+            Log.error(c, m, e);
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    /**
      * Moves the .testcontainers.properties file from the backup location (if present)
      * into it's original location at ~/.testcontainers.properties.
      */
     private static void restoreConfig() {
-        if (!swapConfigFiles(configBackup, configSource)) {
+        if (!swapConfigFiles(tcConfigBackup, tcConfigSource)) {
+            throw new RuntimeException("Could not restore original Testcontainers config.");
+        }
+
+        if (!swapConfigFiles(djConfigBackup, djConfigSource)) {
             throw new RuntimeException("Could not restore original Testcontainers config.");
         }
     }

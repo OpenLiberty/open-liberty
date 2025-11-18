@@ -41,4 +41,4 @@ tested.features: xmlBinding-3.0, servlet-5.0, jpacontainer-3.0, persistence-3.0,
 	com.ibm.ws.org.apache.commons.io;version=latest,\
 	com.ibm.ws.kernel.feature;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	org.apache.derby:derby;version=10.11.1.1
+	org.apache.derby:derby;strategy=exact;version=10.11.1.1

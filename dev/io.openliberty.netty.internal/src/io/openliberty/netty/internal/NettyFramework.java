@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public interface NettyFramework {
      * @param tcpOptions
      * @return ServerBootstrap
      */
-    ServerBootstrapExtended createTCPBootstrap(Map<String, Object> tcpOptions) throws NettyException;
+    ServerBootstrapExtended createTCPBootstrapInbound(Map<String, Object> tcpOptions) throws NettyException;
 
     /**
      * Create a TCP bootstrap for outbound connections: handles registering the
@@ -55,7 +55,7 @@ public interface NettyFramework {
      * @return BootstrapExtended
      * @throws NettyException
      */
-    BootstrapExtended createUDPBootstrap(Map<String, Object> options) throws NettyException;
+    BootstrapExtended createUDPBootstrapInbound(Map<String, Object> options) throws NettyException;
 
     /**
      * Create a UDP bootstrap for outbound connections: handles registering the
@@ -78,8 +78,8 @@ public interface NettyFramework {
      * @return Channel for the ServerChannel, or null if the server is not yet
      *         started
      */
-    Channel start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
-                  ChannelFutureListener bindListener) throws NettyException;
+    Channel startInbound(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+                         ChannelFutureListener bindListener) throws NettyException;
 
     /**
      * Binds a Bootstrap to the given host and port, and registers the Channel with
@@ -91,7 +91,7 @@ public interface NettyFramework {
      * @return Channel for the ServerChannel, or null if the server is not yet
      *         started
      */
-    Channel start(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException;
+    Channel startInbound(BootstrapExtended bootstrap, String inetHost, int inetPort, ChannelFutureListener bindListener) throws NettyException;
 
     /**
      * Binds (UDP) or connects (TCP) an outbound Bootstrap to the given host and

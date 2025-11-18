@@ -258,10 +258,10 @@ public class NettyInboundChain implements InboundChain{
             Map<String, Object> options = new HashMap<String, Object>();
             options.putAll(_currentConfig.tcpOptions);
             options.put(ConfigConstants.EXTERNAL_NAME, _endpointName);
-            bootstrap = _nettyFramework.createTCPBootstrap(options);
+            bootstrap = _nettyFramework.createTCPBootstrapInbound(options);
             bootstrap.childHandler(new JMSServerInitializer(bootstrap.getBaseInitializer(), this));
             NettyInboundChain parent = this;
-            this.serverChan = _nettyFramework.start(bootstrap, ep.getHost(), ep.getPort(), f ->{
+            this.serverChan = _nettyFramework.startInbound(bootstrap, ep.getHost(), ep.getPort(), f ->{
                 if (f.isCancelled() || !f.isSuccess()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         SibTr.debug(this, tc, "Channel exception during connect: " + f.cause().getMessage());

@@ -65,7 +65,7 @@ public class DataJPATest extends FATServletClient {
                     };
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
 
     @Server("io.openliberty.data.internal.fat.jpa")
     @TestServlets({

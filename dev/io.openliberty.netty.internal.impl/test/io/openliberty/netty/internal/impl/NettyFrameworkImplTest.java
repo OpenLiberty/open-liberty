@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.impl;
@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
@@ -29,6 +28,7 @@ import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -40,7 +40,6 @@ import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.tcp.TCPChannelInitializerImpl;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
-import io.openliberty.netty.internal.tcp.TCPMessageConstants;
 import test.common.SharedOutputManager;
 
 /**
@@ -49,7 +48,7 @@ import test.common.SharedOutputManager;
 public class NettyFrameworkImplTest {
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
-            .trace(NettyConstants.NETTY_TRACE_STRING);
+                    .trace(NettyConstants.NETTY_TRACE_STRING);
     private List<Channel> testChannels = null;
     NettyFrameworkImpl framework = null;
     Map<String, Object> options;
@@ -84,7 +83,7 @@ public class NettyFrameworkImplTest {
     @After
     public void tearDown() throws Exception {
         // Skip tear down if beta edition is not set
-        if(!ProductInfo.getBetaEdition()) {
+        if (!ProductInfo.getBetaEdition()) {
             return;
         }
         framework.deactivate(null, null);
@@ -110,13 +109,13 @@ public class NettyFrameworkImplTest {
 
     /**
      * Verify that a TCP boostrap can be created as expected
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testCreateTCPBootstrap() throws Exception {
         setTCPConfig();
-        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrapInbound(options);
         Assert.assertTrue((boolean) bootstrap.config().options().get(ChannelOption.SO_REUSEADDR));
         Assert.assertEquals(10, bootstrap.config().childOptions().get(ChannelOption.SO_LINGER));
         Assert.assertTrue(bootstrap.getBaseInitializer() instanceof TCPChannelInitializerImpl);
@@ -125,17 +124,17 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on a TCP channel
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testTCPStart() throws Exception {
         setTCPConfig();
-        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrapInbound(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
         framework.setServerStarted(null);
         final CountDownLatch activeChannelLatch = new CountDownLatch(1);
-        framework.start(bootstrap, LOCALHOST, TCP_PORT, callback -> {
+        framework.startInbound(bootstrap, LOCALHOST, TCP_PORT, callback -> {
             if (callback.isSuccess()) {
                 testChannels.add(callback.channel());
             } else {
@@ -152,12 +151,12 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on a UDP channel
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testUDPStart() throws Exception {
-        BootstrapExtended bootstrap = framework.createUDPBootstrap(options);
+        BootstrapExtended bootstrap = framework.createUDPBootstrapInbound(options);
         bootstrap.handler(new SimpleChannelInboundHandler<ByteBuf>() {
             @Override
             protected void channelRead0(ChannelHandlerContext ctx, ByteBuf buf) throws Exception {
@@ -166,7 +165,7 @@ public class NettyFrameworkImplTest {
         });
         framework.setServerStarted(null);
         final CountDownLatch activeChannelLatch = new CountDownLatch(1);
-        framework.start(bootstrap, LOCALHOST, UDP_PORT, callback -> {
+        framework.startInbound(bootstrap, LOCALHOST, UDP_PORT, callback -> {
             if (callback.isSuccess()) {
                 testChannels.add(callback.channel());
             } else {
@@ -183,12 +182,12 @@ public class NettyFrameworkImplTest {
 
     /**
      * Create an outbound UDP channel
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testUDPStartOutbound() throws Exception {
-    	testUDPStart();
+        testUDPStart();
         BootstrapExtended bootstrap = framework.createUDPBootstrapOutbound(null);
         bootstrap.handler(new SimpleChannelInboundHandler<ByteBuf>() {
             @Override
@@ -215,7 +214,7 @@ public class NettyFrameworkImplTest {
     /**
      * Create an inbound TCP channel, then create a new outbound TCP channel and
      * connect to the inbound channel
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -250,17 +249,17 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on a TCP channel and verify stop()
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testAsyncStop() throws Exception {
         setTCPConfig();
-        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrapInbound(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
         framework.setServerStarted(null);
         final CountDownLatch activeChannelLatch = new CountDownLatch(1);
-        framework.start(bootstrap, LOCALHOST, TCP_PORT, callback -> {
+        framework.startInbound(bootstrap, LOCALHOST, TCP_PORT, callback -> {
             if (callback.isSuccess()) {
                 testChannels.add(callback.channel());
             } else {
@@ -286,17 +285,17 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on a TCP channel and verify stop()
-     * 
+     *
      * @throws Exception
      */
     @Test
     public void testSyncStop() throws Exception {
         setTCPConfig();
-        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrapInbound(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
         framework.setServerStarted(null);
         final CountDownLatch activeChannelLatch = new CountDownLatch(1);
-        framework.start(bootstrap, LOCALHOST, TCP_PORT, future -> {
+        framework.startInbound(bootstrap, LOCALHOST, TCP_PORT, future -> {
             if (future.isSuccess()) {
                 testChannels.add(future.channel());
             } else {
@@ -316,7 +315,7 @@ public class NettyFrameworkImplTest {
 
     /**
      * Start listening on three TCP channel, then tear them down individually
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -324,11 +323,11 @@ public class NettyFrameworkImplTest {
         setTCPConfig();
         int secondPort = TCP_PORT + 1;
         int thirdPort = TCP_PORT + 2;
-        ServerBootstrapExtended bootstrap = framework.createTCPBootstrap(options);
+        ServerBootstrapExtended bootstrap = framework.createTCPBootstrapInbound(options);
         bootstrap.childHandler(bootstrap.getBaseInitializer());
         final CountDownLatch connectionLatch = new CountDownLatch(3);
         framework.setServerStarted(null);
-        framework.start(bootstrap, LOCALHOST, TCP_PORT, future -> {
+        framework.startInbound(bootstrap, LOCALHOST, TCP_PORT, future -> {
             if (future.isSuccess()) {
                 testChannels.add(future.channel());
                 connectionLatch.countDown();
@@ -337,7 +336,7 @@ public class NettyFrameworkImplTest {
                 connectionLatch.countDown();
             }
         });
-        framework.start(bootstrap, LOCALHOST, secondPort, future -> {
+        framework.startInbound(bootstrap, LOCALHOST, secondPort, future -> {
             if (future.isSuccess()) {
                 testChannels.add(future.channel());
                 connectionLatch.countDown();
@@ -346,7 +345,7 @@ public class NettyFrameworkImplTest {
                 connectionLatch.countDown();
             }
         });
-        framework.start(bootstrap, LOCALHOST, thirdPort, future -> {
+        framework.startInbound(bootstrap, LOCALHOST, thirdPort, future -> {
             if (future.isSuccess()) {
                 testChannels.add(future.channel());
                 connectionLatch.countDown();
