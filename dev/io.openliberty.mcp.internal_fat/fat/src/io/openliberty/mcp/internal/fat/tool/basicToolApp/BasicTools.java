@@ -451,7 +451,7 @@ public class BasicTools {
                                                                                                                     description = "Person object") Optional<Person> person) {
         employeeList.add(person.get());
         Jsonb jsonb = JsonbBuilder.create();
-        return ToolResponse.structuredSuccess(employeeList, jsonb);
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, null);
     }
 
 }

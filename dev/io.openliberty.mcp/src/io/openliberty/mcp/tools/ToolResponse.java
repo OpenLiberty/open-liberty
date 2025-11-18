@@ -28,7 +28,6 @@ import java.util.Map;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.meta.MetaKey;
-import jakarta.json.bind.Jsonb;
 
 /**
  * Response to a {@code tools/call} request from the client.
@@ -38,11 +37,14 @@ import jakarta.json.bind.Jsonb;
  * @param structuredContent the optional structured result of the tool call
  * @param _meta the optional metadata
  */
-public record ToolResponse(boolean isError, List<? extends Content> content, Object structuredContent, Map<MetaKey, Object> _meta) {
+public record ToolResponse(boolean isError,
+                           List<? extends Content> content,
+                           Object structuredContent,
+                           Map<MetaKey, Object> _meta) {
 
     /**
-     * @param <C> the content type
-     * @param content the content
+     * @param <C>
+     * @param content
      * @return a successful response with the specified content items
      */
     @SafeVarargs
@@ -51,8 +53,8 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param <C> the content type
-     * @param content the content
+     * @param <C>
+     * @param content
      * @return a successful response with the specified content items
      */
     public static <C extends Content> ToolResponse success(List<C> content) {
@@ -60,7 +62,7 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param message the error message
+     * @param message
      * @return an unsuccessful response with single text content item
      */
     public static ToolResponse error(String message) {
@@ -68,7 +70,7 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param message the message to include as text content in the response
+     * @param message
      * @return a successful response with single text content item
      */
     public static ToolResponse success(String message) {
@@ -76,7 +78,7 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param structuredContent the structured content to include in the response
+     * @param structuredContent
      * @return an unsuccessful response with structured content
      */
     public static ToolResponse structuredError(Object structuredContent) {
@@ -84,11 +86,11 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param message
+     * @param structuredContent
      * @return a successful response with structured content
      */
-    public static ToolResponse structuredSuccess(Object structuredContent, Jsonb jsonb) {
-        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(structuredContent))), structuredContent, null);
+    public static ToolResponse structuredSuccess(Object structuredContent) {
+        return new ToolResponse(false, null, structuredContent, null);
     }
 
     public ToolResponse(boolean isError, List<? extends Content> content, Map<MetaKey, Object> _meta) {
@@ -101,8 +103,7 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
 
     public ToolResponse {
         if (content == null && structuredContent == null) {
-            throw new IllegalArgumentException("content and structuredContent must not both be null");
+            throw new IllegalArgumentException("content must not be null");
         }
     }
-
 }

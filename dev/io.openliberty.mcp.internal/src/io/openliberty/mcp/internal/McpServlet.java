@@ -25,6 +25,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.content.Content;
+import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.config.McpConfiguration;
@@ -318,7 +319,7 @@ public class McpServlet extends HttpServlet {
         } else if (result instanceof String s) {
             return ToolResponse.success(s);
         } else if (includeStructuredContent) {
-            return ToolResponse.structuredSuccess(result, jsonb);
+            return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(result))), result, null);
         } else {
             return ToolResponse.success(Objects.toString(result));
         }

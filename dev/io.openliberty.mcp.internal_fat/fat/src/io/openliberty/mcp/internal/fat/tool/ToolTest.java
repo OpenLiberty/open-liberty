@@ -3203,7 +3203,7 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
-    public void testAddPersonToListTooLResponse() throws Exception {
+    public void testAddPersonToListToolResponse() throws Exception {
 //        Based on the following context
 //        Address companyAddress = new Address(100, new Street("Hursley Park Rd", "Private Property"), "so21 2er", "inside hursley park");
 //        Person companyPerson = new Person("Shareholder 1", companyAddress, null);
