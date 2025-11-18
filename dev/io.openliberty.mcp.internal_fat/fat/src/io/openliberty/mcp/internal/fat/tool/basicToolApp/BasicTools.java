@@ -30,6 +30,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.adapter.JsonbAdapter;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbTransient;
@@ -448,7 +450,8 @@ public class BasicTools {
                                                                                                            @ToolArg(name = "person",
                                                                                                                     description = "Person object") Optional<Person> person) {
         employeeList.add(person.get());
-        return ToolResponse.structuredSuccess(employeeList);
+        Jsonb jsonb = JsonbBuilder.create();
+        return ToolResponse.structuredSuccess(employeeList, jsonb);
     }
 
 }

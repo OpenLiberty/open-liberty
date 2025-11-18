@@ -29,7 +29,6 @@ import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.meta.MetaKey;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 
 /**
  * Response to a {@code tools/call} request from the client.
@@ -88,8 +87,7 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
      * @param message
      * @return a successful response with structured content
      */
-    public static ToolResponse structuredSuccess(Object structuredContent) {
-        Jsonb jsonb = JsonbBuilder.create();
+    public static ToolResponse structuredSuccess(Object structuredContent, Jsonb jsonb) {
         return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(structuredContent))), structuredContent, null);
     }
 
