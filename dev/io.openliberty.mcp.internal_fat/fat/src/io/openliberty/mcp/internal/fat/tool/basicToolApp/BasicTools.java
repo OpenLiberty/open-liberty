@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.fat.tool.basicToolApp;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.ImageContent;
 import io.openliberty.mcp.content.Role;
 import io.openliberty.mcp.content.TextContent;
+import io.openliberty.mcp.meta.MetaKey;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
@@ -451,7 +453,9 @@ public class BasicTools {
                                                                                                                     description = "Person object") Optional<Person> person) {
         employeeList.add(person.get());
         Jsonb jsonb = JsonbBuilder.create();
-        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, null);
+        Map<MetaKey, Object> _meta = new HashMap<>();
+        _meta.put(MetaKey.from("timestamp"), 1762860699);
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
     }
 
 }
