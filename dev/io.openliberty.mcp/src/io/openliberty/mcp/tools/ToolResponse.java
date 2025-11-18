@@ -86,8 +86,8 @@ public record ToolResponse(boolean isError,
     }
 
     /**
-     * @param message a message, returned as unstructured text content
      * @param structuredContent the structured content
+     * @return a successful response with structured content
      */
     public static ToolResponse structuredSuccess(Object structuredContent) {
         return new ToolResponse(false, null, structuredContent, null);
