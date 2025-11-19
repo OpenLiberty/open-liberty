@@ -200,16 +200,6 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
     @Override
     public HttpOutputStreamImpl getBody() {
         if (null == this.body) {
-            System.out.println("DEBUG getBody() HttpResponseImpl setting a new input stream!");
-
-            StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-            // Start from index 1 to skip the printCurrentStackTrace method itself
-            for (int i = 1; i < elements.length; i++) {
-                StackTraceElement s = elements[i];
-                System.out.println("\tat " + s.getClassName() + "." + s.getMethodName() +
-                                   "(" + s.getFileName() + ":" + s.getLineNumber() + ")");
-            }
-
             if (HttpDispatcher.useEE7Streams()) {
                 this.body = new HttpOutputStreamEE7(this.isc);
             } else {
@@ -221,10 +211,7 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
                 if (messageContentLength != -1) { //it's set
                     this.body.setContentLength(getContentLength());
                 }
-            }
-
-
-            
+            }   
         }
         return this.body;
     }
@@ -336,7 +323,6 @@ public class HttpResponseImpl implements HttpResponse, HttpResponseExt {
      */
     @Override
     public void reset() {
-        System.out.println("DEBUG HttpResponseImpl$reset was called. This might affect observer of httpoputstream");
         this.message.clear();
         this.body.clear();
     }

@@ -839,6 +839,10 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
     private boolean isUpgrade101() {
         // isc/response exist because we just validated earlier in flushHeaders()
+        ChannelHandlerContext ctx = ((HttpInboundServiceContextImpl) isc).getNettyContext();
+        if (ctx == null)
+            return false;
+
         HttpResponseMessage resp = this.isc.getResponse();
         if (resp == null)
             return false;

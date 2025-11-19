@@ -84,7 +84,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private volatile long decodedBytesRead;
     private volatile long decodedBytesProduced = 0L;
 
-    private volatile long remainingContentLength = -1L; // -1 => unknown
+    private volatile long remainingContentLength = -1L;
     private volatile boolean isChunked = false;
 
     /**
@@ -268,7 +268,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         } else { // multiRead enabled and first read
             if (getBufferFromChannel()) {
                 // store the channel buffer
-                System.out.println("POST DATA BUFFER ADD : Think it is first read. Size is: "+ postDataBuffer.size());
                 postDataBuffer.add(postDataIndex, this.buffer.duplicate());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "checkMultiReadBuffer, buffer ->" + postDataBuffer.get(postDataIndex)
@@ -301,7 +300,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             }
             int localIx = postDataIndex;
             while (getBufferFromChannel()) {
-                System.out.println("POST DATA BUFFER, thinks not all data read . size is: "+postDataBuffer.size());
                 postDataBuffer.add(postDataIndex, this.buffer.duplicate());
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -718,23 +716,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     if (out != fragmentSource) 
                         fragmentSource.release();
                     this.buffer = out;
-                    //this.bytesRead += this.buffer.remaining();
                     this.decodedBytesProduced += this.buffer.remaining();
-                    //If multi-read is enabled, store duplicate for next read
-                    // if(enableMultiReadofPostData && postDataBuffer !=null){
-
-                    //     System.out.println("THIS IS LIKELY THE ISSUE IF SEEN TWICE");
-                    //     Thread.dumpStack();
-
-                    //     postDataBuffer.add(postDataIndex, this.buffer.duplicate());
-                    //     System.out.println("POST DATA BUFFER SIZE: " + postDataBuffer.size()+" , index at: "+postDataIndex);
-                    //     postDataIndex++;
-                    // }
-                    // if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    //     Tr.debug(tc, String.format(
-                    //                                "stream.buffered: produced=%d decodedBytesProduced=%d rawBytes=%d readChannelComplete=%s",
-                    //                                buffer.remaining(), this.decodedBytesProduced, this.bytesRead, this.readChannelComplete));
-                    // }
                     return true;
                 } else{
                     //No data produced, compression might need more data
