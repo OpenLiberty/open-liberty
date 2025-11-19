@@ -332,7 +332,7 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
         @Trivial
         @Override
         public String getName() {
-            return ( (this.name == null) ? this.varFileName : this.name );
+            return ((this.name == null) ? this.varFileName : this.name);
         }
 
         @Trivial
@@ -463,7 +463,8 @@ public class ConfigVariableRegistry implements VariableRegistry, ConfigVariables
 
     /*
      * Checks cached variable values against the current variable values.
-     * Returns true if at least one variable has changed. False, otherwise.
+     * Returns a map of variable keys that have changed and their DeltaType.
+     * If no variables have changed then an empty map is returned.
      */
     public synchronized Map<String, DeltaType> variablesChanged() {
         Map<String, DeltaType> changed = null;
