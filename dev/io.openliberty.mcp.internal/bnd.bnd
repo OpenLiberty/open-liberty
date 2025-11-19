@@ -46,9 +46,7 @@ Bundle-Localization: \
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
-	com.ibm.ws.kernel.service;version=latest,\
-	org.springframework.web,\
-	com.ibm.ws.logging.core
+	com.ibm.ws.kernel.service;version=latest
 
 
 -testpath: \

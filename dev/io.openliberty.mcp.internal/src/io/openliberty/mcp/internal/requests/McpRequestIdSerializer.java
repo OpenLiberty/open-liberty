@@ -10,7 +10,6 @@
 package io.openliberty.mcp.internal.requests;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import io.openliberty.mcp.request.RequestId;
 import jakarta.json.bind.JsonbException;
@@ -34,23 +33,10 @@ public class McpRequestIdSerializer implements JsonbSerializer<RequestId> {
 
         if (val instanceof String str) {
             generator.write(str);
-        } else if (val instanceof Integer i) {
-            generator.write(i);
-        } else if (val instanceof Long l) {
-            generator.write(l);
-        } else if (val instanceof Double d) {
-            generator.write(d);
-        } else if (val instanceof Float f) {
-            generator.write(f);
-        } else if (val instanceof BigDecimal bd) {
-            generator.write(bd);
-        } else if (val instanceof BigInteger bi) {
-            generator.write(bi);
         } else if (val instanceof Number num) {
-            // fallback for any other number types
             generator.write(new BigDecimal(num.toString()));
         } else {
-            throw new JsonbException("Unsupported RequestId value type: " + val.getClass());
+            throw new JsonbException("Unsupported ID type for serialization: " + val.getClass().getName());
         }
     }
 }

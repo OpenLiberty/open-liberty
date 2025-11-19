@@ -43,8 +43,6 @@ public class McpRequestIdDeserializer implements JsonbDeserializer<RequestId> {
                 return new RequestId(strVal);
             case NUMBER:
                 return new RequestId(((JsonNumber) jsonVal).bigDecimalValue());
-            case NULL:
-                return new RequestId("Request ID must not be null");
             default:
                 throw new JSONRPCException(JSONRPCErrorCode.PARSE_ERROR, Tr.formatMessage(tc, "CWMCM0021E.jsonrpc.validation.invalid.id.type"));
 
