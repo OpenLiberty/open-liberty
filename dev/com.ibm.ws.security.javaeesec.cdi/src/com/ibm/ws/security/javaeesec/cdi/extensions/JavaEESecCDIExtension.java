@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1044,6 +1044,13 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      */
     private boolean isAuthMechOverridden() {
         WebAppSecurityConfig webAppSecConfig = getWebAppSecurityConfig();
+        if (webAppSecConfig == null) {
+            // In an EJB-only context, WebAppSecurityConfig is not initialized
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "WebAppSecurityConfig is null, likely in an EJB-only context");
+            }
+            return false;
+        }
         String value = webAppSecConfig.getOverrideHttpAuthMethod();
         if (value != null) {
             if ((value.equals(LoginConfiguration.FORM) || value.equals(LoginConfiguration.BASIC))) {

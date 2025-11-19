@@ -13,7 +13,7 @@ package com.ibm.ws.runtime.metadata;
  * Mix-in interface to not require dependency on web container function by the
  * SyncToOSThread function
  */
-public interface SyncToOSThreadMetaData extends ModuleMetaData {
+public interface SyncToOSThreadMetaData extends ComponentMetaData {
 
     /**
      * Returns true of the SyncToOSThread function is enabled
