@@ -12,8 +12,6 @@ bVersion=1.0
 
 -sub: *.bnd
 
-Bundle-Name: io.openliberty.microprofile.telemetry.logging.internal.common
-Bundle-SymbolicName: io.openliberty.microprofile.telemetry.logging.internal.common
 Bundle-Description: MicroProfile.telemetry.logging, common code
 WS-TraceGroup: TELEMETRY
 

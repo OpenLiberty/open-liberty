@@ -19,7 +19,7 @@ import com.ibm.ws.security.audit.source.utils.ByteArray;
  * A package local class for performing encryption and decryption of keys based on a key
  */
 public class AuditKeyEncryptor {
-    private final String algorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
+    private final String algorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256; // Semerun 1.8 does not support string SHA256
     byte[] password;
     byte[] passwordDigestBytes;
     AuditCrypto des;

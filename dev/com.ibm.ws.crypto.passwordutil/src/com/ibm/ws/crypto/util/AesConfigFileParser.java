@@ -31,7 +31,6 @@ import org.xml.sax.SAXParseException;
 
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.security.crypto.PasswordEncryptException;
 
 /**
@@ -61,17 +60,15 @@ public class AesConfigFileParser {
 
         String base64Key = null;
         String passKey = null;
-        if (ProductInfo.getBetaEdition()) {
 
-            try {
-                Map<String, String> encryptionVars = extractVariables(aesConfigFilePath);
-                base64Key = encryptionVars.get(AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY);
-                passKey = encryptionVars.get(AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY);
-            } catch (ParserConfigurationException | SAXException | IOException e) {
-                throw new PasswordEncryptException(e);
-            }
-
+        try {
+            Map<String, String> encryptionVars = extractVariables(aesConfigFilePath);
+            base64Key = encryptionVars.get(AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY);
+            passKey = encryptionVars.get(AESKeyManager.NAME_WLP_PASSWORD_ENCRYPTION_KEY);
+        } catch (ParserConfigurationException | SAXException | IOException e) {
+            throw new PasswordEncryptException(e);
         }
+
         if ((base64Key == null && passKey == null)) {
             throw new UnsupportedCryptoAlgorithmException();
         } else if (base64Key != null && passKey != null) {

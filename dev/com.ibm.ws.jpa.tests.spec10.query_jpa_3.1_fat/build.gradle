@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,30 +47,29 @@ task addHibernate_JPA31(type: Copy) {
   into new File(autoFvtDir, 'publish/shared/resources/jpa_query_fat_jpa31_hibernate')
 }
 
-task copyFAT {
+task copyFAT(type: Copy) {
     dependsOn ':com.ibm.ws.jpa.tests.spec10.query_fat.common:build'
-    copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.query_fat.common').file('fat/src/com/ibm/ws/jpa/tests/spec10/query/tests')
-      into new File('fat/src/com/ibm/ws/jpa/tests/spec10/query/tests')
-    }
+    from project(':com.ibm.ws.jpa.tests.spec10.query_fat.common').file('fat/src/com/ibm/ws/jpa/tests/spec10/query/tests')
+    into new File('fat/src/com/ibm/ws/jpa/tests/spec10/query/tests')
 }
 
 task copyCommonFiles {
+  def commonProject = project(':com.ibm.ws.jpa.tests.spec10.query_fat.common')
   dependsOn ':com.ibm.ws.jpa.tests.spec10.query_fat.common:build'
   doLast {
     /*
      * Copy test application resources.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.query_fat.common').file('test-applications')
+      from commonProject.file('test-applications')
       into new File('test-applications')
     }
-    
+
     /*
      * Copy common publish files.
      */
     copy {
-      from project(':com.ibm.ws.jpa.tests.spec10.query_fat.common').file('publish')
+      from commonProject.file('publish')
       into new File('publish')
     }
   }
@@ -85,8 +84,14 @@ addRequiredLibraries {
   dependsOn copyTestContainers
 }
 
-jar {
+compileJava {
   dependsOn copyCommonFiles
+  dependsOn copyFAT
+}
+
+processResources {
+  dependsOn copyCommonFiles
+  dependsOn copyFAT
 }
 
 autoFVT.dependsOn copyCommonFiles

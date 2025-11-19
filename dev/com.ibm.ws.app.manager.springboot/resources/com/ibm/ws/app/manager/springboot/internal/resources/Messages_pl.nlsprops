@@ -62,7 +62,7 @@ error.spring.required.20.explanation=Obecnie skonfigurowana funkcja Spring Boot 
 error.spring.required.20.useraction=Skonfiguruj funkcj\u0119 Spring Boot w wersji zgodnej z zawarto\u015bci\u0105 aplikacji.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: Nale\u017cy skonfigurowa\u0107 funkcj\u0119 springBoot-3.0. Opcja springBoot-1.5 lub springBoot-2.0 jest skonfigurowana, a aplikacja posiada zawarto\u015b\u0107 Spring 3.0.
+error.spring3.required=CWWKC0273E: Funkcj\u0119 {0} nale\u017cy skonfigurowa\u0107 w pliku server.xml. Funkcja {1} jest skonfigurowana, a aplikacja ma zawarto\u015b\u0107 Spring Boot {2}.
 error.spring3.required.explanation=Obecnie skonfigurowana funkcja Spring Boot nie jest zgodna z zawarto\u015bci\u0105 aplikacji.
 error.spring3.required.useraction=Skonfiguruj funkcj\u0119 Spring Boot w wersji zgodnej z zawarto\u015bci\u0105 aplikacji.
 

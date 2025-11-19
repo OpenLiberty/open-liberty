@@ -225,23 +225,21 @@ public class LTPAKeyInfoManager {
             if (tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "LTPA key version: " + version);
             }
-            if (CryptoUtils.isRunningBetaMode()) {
-                if ((CryptoUtils.isFips140_3Enabled() && "1.0".equals(version)) ||
-                    (!CryptoUtils.isFips140_3Enabled() && "2.0".equals(version))) {
-                    if (validationKey) {
-                        if ("1.0".equals(version))
-                            Tr.warning(tc, "LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE", keyImportFile);
-                        else
-                            Tr.warning(tc, "LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE", keyImportFile);
-                        return;
+            if ((CryptoUtils.isFips140_3Enabled() && "1.0".equals(version)) ||
+                (!CryptoUtils.isFips140_3Enabled() && "2.0".equals(version))) {
+                if (validationKey) {
+                    if ("1.0".equals(version))
+                        Tr.warning(tc, "LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE", keyImportFile);
+                    else
+                        Tr.warning(tc, "LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE", keyImportFile);
+                    return;
+                } else {
+                    backupLtpaKeyFile(locService, keyImportFile, ltpaKeyFileResource, version);
+                    if (restoreLtpaKeyFile(locService, keyImportFile, ltpaKeyFileResource)) {
+                        props = loadPropertiesFile(ltpaKeyFileResource);
                     } else {
-                        backupLtpaKeyFile(locService, keyImportFile, ltpaKeyFileResource, version);
-                        if (restoreLtpaKeyFile(locService, keyImportFile, ltpaKeyFileResource)) {
-                            props = loadPropertiesFile(ltpaKeyFileResource);
-                        } else {
-                            //regenerate the primary key
-                            props = createPrimaryKeyFile(locService, keyImportFile, keyPassword);
-                        }
+                        //regenerate the primary key
+                        props = createPrimaryKeyFile(locService, keyImportFile, keyPassword);
                     }
                 }
             }

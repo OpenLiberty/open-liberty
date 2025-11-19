@@ -12,18 +12,10 @@
  *******************************************************************************/
 package basic.war;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.ByteBuffer;
-
 import jakarta.websocket.OnMessage;
 import jakarta.websocket.OnOpen;
 import jakarta.websocket.Session;
-
 import jakarta.websocket.server.ServerEndpoint;
-
-import io.openliberty.wsoc.common.Utils;
 
 /*
  * Server endpoint which sets a negative IdleTimeout

@@ -72,7 +72,7 @@ public abstract class WebSocketAbstractTests extends AbstractSpringTests {
     }
 
     public void testEchoWebSocket40() throws Exception {
-        Log.info(getClass(), "testWebSocket30", wsContainer.toString());
+        Log.info(getClass(), "testWebSocket40", wsContainer.toString());
         Session session = wsContainer.connectToServer(clientEndpoint, new URI("ws://" + server.getHostname() + ":" + server.getHttpDefaultPort() + getContextRoot() + "echo"));
         assertNotNull("Session cannot be null", session);
         assertTrue("Session is not open", session.isOpen());

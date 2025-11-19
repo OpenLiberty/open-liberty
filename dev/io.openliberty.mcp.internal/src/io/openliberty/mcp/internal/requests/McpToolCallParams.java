@@ -16,6 +16,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolMetadata.ArgumentMetadata;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
@@ -34,6 +37,7 @@ public class McpToolCallParams {
 
     private String name;
     private ToolMetadata metadata;
+    private static final TraceComponent tc = Tr.register(McpToolCallParams.class);
 
     /**
      * @return the metadata
@@ -65,7 +69,7 @@ public class McpToolCallParams {
 
     public Object[] getArguments(Jsonb jsonb) {
         if (this.arguments == null) {
-            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Missing arguments in params"));
+            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of(Tr.formatMessage(tc, "jsonrpc.missing.params")));
         }
         if (parsedArguments == null) {
             parsedArguments = parseArguments(arguments, jsonb);
@@ -110,10 +114,10 @@ public class McpToolCallParams {
         extra.removeAll(expected);
         ArrayList<String> data = new ArrayList<>();
         if (!extra.isEmpty()) {
-            data.add("args " + extra + " passed but not found in method");
+            data.add(Tr.formatMessage(tc, "jsonrpc.extra.arguments", extra));
         }
         if (!missing.isEmpty()) {
-            data.add("args " + missing + " were expected by the method");
+            data.add(Tr.formatMessage(tc, "jsonrpc.missing.arguments", missing));
         }
         return !data.isEmpty() ? data : null;
     }

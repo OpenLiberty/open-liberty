@@ -507,3 +507,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Elimine la anotaci\u00f3n conflict
 CWWKD1118.param.anno.conflict=CWWKD1118E: El par\u00e1metro {0} del m\u00e9todo {1} de la interfaz del repositorio {2} no puede ser anotado con las anotaciones: {3}. Dos o m\u00e1s anotaciones entran en conflicto entre s\u00ed.
 CWWKD1118.param.anno.conflict.explanation=La combinaci\u00f3n de anotaciones de par\u00e1metros no es v\u00e1lida.
 CWWKD1118.param.anno.conflict.useraction=Eliminar una o m\u00e1s de las anotaciones conflictivas del par\u00e1metro del m\u00e9todo repositorio.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: El m\u00e9todo {0} de la interfaz del repositorio {1} recupera p\u00e1ginas que no incluyen un recuento total de elementos y p\u00e1ginas porque la consulta contiene la palabra clave {2}. La consulta completa es: {3}.
+CWWKD1119.keyword.prevents.count.explanation=La palabra clave es incompatible con la posibilidad de obtener un recuento total de elementos y p\u00e1ginas.
+CWWKD1119.keyword.prevents.count.useraction=Sustituya la consulta por otra que no utilice la palabra clave o evite solicitar un recuento total de elementos y p\u00e1ginas.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: El m\u00e9todo {0} de la interfaz del repositorio {1} especifica una consulta que incluye la palabra clave {2}, que es incompatible con la paginaci\u00f3n basada en cursor. Las consultas para la paginaci\u00f3n basada en el cursor deben terminar con una cl\u00e1usula WHERE y no deben incluir subconsultas. La consulta es: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Las palabras clave como GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT y UNION no son compatibles con la paginaci\u00f3n basada en cursor.
+CWWKD1120.cursor.keyword.mismatch.useraction=Reescribe la consulta para incluir s\u00f3lo las cl\u00e1usulas SELECT, FROM y WHERE.

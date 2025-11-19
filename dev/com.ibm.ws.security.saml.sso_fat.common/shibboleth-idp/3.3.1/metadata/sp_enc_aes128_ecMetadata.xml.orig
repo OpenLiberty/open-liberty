@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<md:EntityDescriptor
+	xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata"
+	entityID="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes128_ec"
+>
+	<md:SPSSODescriptor
+		AuthnRequestsSigned="false"
+		WantAssertionsSigned="true"
+		protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol"
+	>
+
+		<md:KeyDescriptor use="signing">
+			<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+				<ds:X509Data>
+					<ds:X509Certificate>MIIB3TCCAYOgAwIBAgIIGU+b9RssTr8wCgYIKoZIzj0EAwIwYzELMAkGA1UEBhMC
+dXMxDjAMBgNVBAgTBXRleGFzMQ8wDQYDVQQHEwZhdXN0aW4xDDAKBgNVBAoTA2li
+bTERMA8GA1UECxMIcnVudGltZXMxEjAQBgNVBAMTCWxvY2FsdXNlcjAeFw0yNTA4
+MzEyMjA2MTRaFw0zNTA4MjkyMjA2MTRaMGMxCzAJBgNVBAYTAnVzMQ4wDAYDVQQI
+EwV0ZXhhczEPMA0GA1UEBxMGYXVzdGluMQwwCgYDVQQKEwNpYm0xETAPBgNVBAsT
+CHJ1bnRpbWVzMRIwEAYDVQQDEwlsb2NhbHVzZXIwWTATBgcqhkjOPQIBBggqhkjO
+PQMBBwNCAAR+jgDNLh1vVCABhMMMrtlcyGv2d0UmymnbxcR7wAfv0MadsBJAk6Dr
+7JNDInnYYrpOKL14sbUnefG5N4hBE7CCoyEwHzAdBgNVHQ4EFgQU8qJz/5pgTAr3
+5Spkt3EKWiVIYm4wCgYIKoZIzj0EAwIDSAAwRQIgGz08ZBkU30de6sOZHTDBJZt2
+tbUw5iLzXep02KBHrLoCIQC8jkUyBRLdd4z1mBKDSl07Q6Ex7n9APYHfqYwQ8/Hf
+8g==
+					</ds:X509Certificate>
+				</ds:X509Data>
+			</ds:KeyInfo>
+		</md:KeyDescriptor>
+
+		<md:KeyDescriptor use="encryption">
+			<ds:KeyInfo xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
+				<ds:X509Data>
+					<ds:X509Certificate>MIIB3TCCAYOgAwIBAgIIGU+b9RssTr8wCgYIKoZIzj0EAwIwYzELMAkGA1UEBhMC
+dXMxDjAMBgNVBAgTBXRleGFzMQ8wDQYDVQQHEwZhdXN0aW4xDDAKBgNVBAoTA2li
+bTERMA8GA1UECxMIcnVudGltZXMxEjAQBgNVBAMTCWxvY2FsdXNlcjAeFw0yNTA4
+MzEyMjA2MTRaFw0zNTA4MjkyMjA2MTRaMGMxCzAJBgNVBAYTAnVzMQ4wDAYDVQQI
+EwV0ZXhhczEPMA0GA1UEBxMGYXVzdGluMQwwCgYDVQQKEwNpYm0xETAPBgNVBAsT
+CHJ1bnRpbWVzMRIwEAYDVQQDEwlsb2NhbHVzZXIwWTATBgcqhkjOPQIBBggqhkjO
+PQMBBwNCAAR+jgDNLh1vVCABhMMMrtlcyGv2d0UmymnbxcR7wAfv0MadsBJAk6Dr
+7JNDInnYYrpOKL14sbUnefG5N4hBE7CCoyEwHzAdBgNVHQ4EFgQU8qJz/5pgTAr3
+5Spkt3EKWiVIYm4wCgYIKoZIzj0EAwIDSAAwRQIgGz08ZBkU30de6sOZHTDBJZt2
+tbUw5iLzXep02KBHrLoCIQC8jkUyBRLdd4z1mBKDSl07Q6Ex7n9APYHfqYwQ8/Hf
+8g==
+					</ds:X509Certificate>
+				</ds:X509Data>
+			</ds:KeyInfo>
+			<md:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#aes128-gcm">
+			</md:EncryptionMethod>
+			<md:EncryptionMethod Algorithm="http://www.w3.org/2001/04/xmlenc#kw-aes128">
+			</md:EncryptionMethod>
+		</md:KeyDescriptor>
+
+		<md:SingleLogoutService
+			Location="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes128_ec/slo"
+			Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" />		
+		<md:AssertionConsumerService
+			Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST"
+			Location="https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp_enc_aes128_ec/acs"
+			index="0"
+			isDefault="true" />
+	</md:SPSSODescriptor>
+</md:EntityDescriptor>

@@ -507,3 +507,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Rimuovere l'annotazione in conflit
 CWWKD1118.param.anno.conflict=CWWKD1118E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere annotato con le annotazioni: {3}. Due o pi\u00f9 annotazioni sono in conflitto tra loro.
 CWWKD1118.param.anno.conflict.explanation=La combinazione di annotazioni dei parametri non \u00e8 valida.
 CWWKD1118.param.anno.conflict.useraction=Rimuovere una o pi\u00f9 annotazioni in conflitto dal parametro del metodo del repository.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Il metodo {0} dell''interfaccia del repository {1} recupera le pagine che non includono un conteggio totale degli elementi e delle pagine perch\u00e9 la query contiene la parola chiave {2}. L''interrogazione completa \u00e8: {3}.
+CWWKD1119.keyword.prevents.count.explanation=La parola chiave \u00e8 incompatibile con la possibilit\u00e0 di ottenere un conteggio totale di elementi e pagine.
+CWWKD1119.keyword.prevents.count.useraction=Sostituire la query con una che non utilizzi la parola chiave o evitare di richiedere il conteggio totale degli elementi e delle pagine.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Il metodo {0} dell''interfaccia del repository {1} specifica una query che include la parola chiave {2}, incompatibile con la paginazione a cursore. Le query per la paginazione a cursore devono terminare con una clausola WHERE e non devono includere sottoquery. L''interrogazione \u00e8: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Parole chiave come GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT e UNION non sono compatibili con la paginazione a cursore.
+CWWKD1120.cursor.keyword.mismatch.useraction=Riscrivere la query per includere solo le clausole: SELECT, FROM e WHERE.

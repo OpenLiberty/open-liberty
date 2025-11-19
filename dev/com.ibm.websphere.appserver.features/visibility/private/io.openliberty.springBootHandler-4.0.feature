@@ -5,7 +5,7 @@ visibility=private
 	com.ibm.websphere.appserver.eeCompatible-11.0
 -bundles=\
  com.ibm.ws.app.manager.springboot.jakarta, \
- io.openliberty.springboot.support.shutdown.version40, \
+ com.ibm.ws.springboot.support.shutdown, \
  com.ibm.ws.springboot.utility
 -files=\
  bin/tools/ws-springbootutil.jar, \

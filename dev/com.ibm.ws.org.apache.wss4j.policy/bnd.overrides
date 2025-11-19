@@ -22,3 +22,7 @@ WS-TraceGroup: WSS4J
 
 Export-Package: \
  org.apache.wss4j.policy.*;version=${bVersion}
+ 
+Import-Package: \
+ !javax.xml.bind.*, \
+ *

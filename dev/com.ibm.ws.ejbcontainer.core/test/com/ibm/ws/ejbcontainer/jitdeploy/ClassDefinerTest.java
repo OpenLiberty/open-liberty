@@ -22,7 +22,10 @@ import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
 import java.util.concurrent.Callable;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
+
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Test;
 
 public class ClassDefinerTest
@@ -216,6 +219,8 @@ public class ClassDefinerTest
     @Test
     public void testSecurity() throws Exception
     {
+        // AccessController.checkPermission is not supported on Java 25
+        Assume.assumeTrue(JavaInfo.majorVersion() <= 21);
         byte[] classBytes = readClassBytes(TestSecurity.class);
         for (ClassDefiner definer : new ClassDefiner[] { new ClassDefiner() })
         {

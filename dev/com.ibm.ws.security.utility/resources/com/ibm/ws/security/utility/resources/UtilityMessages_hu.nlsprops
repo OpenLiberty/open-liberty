@@ -40,7 +40,9 @@ encode.enterText=Sz\u00f6veg be\u00edr\u00e1sa:
 encode.reenterText=Sz\u00f6veg \u00fajb\u00f3li be\u00edr\u00e1sa:
 encode.readError=Hiba a sz\u00f6veg olvas\u00e1sakor.
 encode.entriesDidNotMatch=A bejegyz\u00e9sek nem egyeznek.
-
+encode.mutuallyExclusiveArgError=A bemeneti f\u00e1jl nem adhatja meg a {0} \u00e9s a {1} tulajdons\u00e1gokat.
+encode.aesConfigFileEncryptionAmbiguous=HIBA: A bemeneti f\u00e1jl nem haszn\u00e1lhat\u00f3, ha tartalmazza a {0} \u00e9s a {1} v\u00e1ltoz\u00f3kat is.
+encode.aesConfigFileMissingEncryptionVariables=Nem lehet k\u00f3dolni a jelsz\u00f3t; vagy a bemeneti f\u00e1jl nem tartalmazza a {0} vagy a {1} v\u00e1ltoz\u00f3kat, vagy a bemeneti f\u00e1jl rosszul form\u00e1zott.
 
 password.enterText=\u00cdrja be a jelsz\u00f3t:
 password.reenterText=Jelsz\u00f3 ism\u00e9telt be\u00edr\u00e1sa:
@@ -98,7 +100,7 @@ createLTPAKeys.fileExists=A(z) {0} f\u00e1jl m\u00e1r l\u00e9tezik.  Nem hozhat\
 createLTPAKeys.createdFile=A l\u00e9trehozott LTPA kulcsf\u00e1jl: {0}\nVegye fel a  k\u00f6vetkez\u0151 be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlba: \n {1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=A Java telep\u00edt\u00e9se vagy nem a IBM Semeru Runtimes vagy a IBM SDK, vagy ha igen, akkor nem t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nTelep\u00edtse a Jav\u00e1t a IBM Semeru Runtimes vagy a IBM SDK oldalr\u00f3l olyan verzi\u00f3val \u00e9s oper\u00e1ci\u00f3s rendszerrel, amely t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nHa a IBM Semeru futtat\u00f3programot haszn\u00e1lja, haszn\u00e1lja a 11.0.29.0, 17.0.17.0, 21.0.9.0 vagy magasabb verzi\u00f3t.\nHa a IBM SDK-t haszn\u00e1lja, haszn\u00e1lja a 8.0.8.30 vagy magasabb verzi\u00f3t.
+configureFIPS.notIbmSdkNorSemeru=A Java telep\u00edt\u00e9se vagy nem a IBM Semeru Runtimes vagy a IBM SDK, vagy ha igen, akkor nem t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nTelep\u00edtse a Jav\u00e1t a IBM Semeru Runtimes vagy a IBM SDK oldalr\u00f3l olyan verzi\u00f3val \u00e9s oper\u00e1ci\u00f3s rendszerrel, amely t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nHa a IBM Semeru futtat\u00f3programot haszn\u00e1lja, haszn\u00e1lja a 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0 vagy magasabb verzi\u00f3t.\nHa a IBM SDK-t haszn\u00e1lja, haszn\u00e1lja a 8.0.8.30 vagy magasabb verzi\u00f3t.
 
 configureFIPS.zosNotAvailable=A securityUtility configureFIPS parancs nem t\u00e1mogatott a z/OS oldalon.
 
@@ -129,3 +131,8 @@ configureFIPS.fipsNotEnabled=A FIPS 140-3 m\u00e1r nincs enged\u00e9lyezve a {0}
 configureFIPS.restartServer=A m\u00f3dos\u00edt\u00e1s alkalmaz\u00e1s\u00e1hoz ind\u00edtsa \u00fajra a {0} kiszolg\u00e1l\u00f3t.
 configureFIPS.restartClient=A m\u00f3dos\u00edt\u00e1s alkalmaz\u00e1s\u00e1hoz ind\u00edtsa \u00fajra a {0} \u00fcgyfelet.
 configureFIPS.restart=A m\u00f3dos\u00edt\u00e1s alkalmaz\u00e1s\u00e1hoz ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3kat \u00e9s az \u00fcgyfeleket.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=Jelsz\u00f3 titkos\u00edt\u00e1s XML f\u00e1jl sikeresen l\u00e9trehozva.\nA m\u00f3dos\u00edt\u00e1sok aktiv\u00e1l\u00e1s\u00e1hoz adjon hozz\u00e1 egy hivatkoz\u00e1st az XML f\u00e1jl hely\u00e9re a server.xml f\u00e1jlhoz: <include location="{0}" />
+generateaeskey.failFileExists=A {0} f\u00e1jl l\u00e9tezik, \u00e9s nem lesz fel\u00fcl\u00edrva. Vagy adjon meg egy m\u00e1sik f\u00e1jlnevet, vagy t\u00e1vol\u00edtsa el a megl\u00e9v\u0151 f\u00e1jlt, miel\u0151tt \u00fajra megpr\u00f3b\u00e1lja.
+generateaeskey.failFileIsDirectory=A f\u00e1jln\u00e9vhez megadott {0} \u00e9rt\u00e9k egy k\u00f6nyvt\u00e1r. Adja meg a a teljes f\u00e1jlnevet, \u00e9s pr\u00f3b\u00e1lja meg \u00fajra.

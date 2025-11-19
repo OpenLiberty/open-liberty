@@ -29,6 +29,7 @@ Subsystem-Name: Application Security 4.0 (Jakarta Security 2.0)
   io.openliberty.expressionLanguage-4.0, \
   io.openliberty.webAppSecurity-2.0
 -bundles=\
+  io.openliberty.security.javaeesec.internal.jakarta, \
   io.openliberty.security.jakartasec.2.0.internal, \
   io.openliberty.security.jakartasec.2.0.internal.cdi, \
   io.openliberty.security.authentication.internal.filter, \

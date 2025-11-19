@@ -43,10 +43,12 @@ public class McpServletInitializer implements ServletContainerInitializer {
         if (ToolRegistry.get().hasTools()) {
             Dynamic reg = context.addServlet("io.openliberty.mcp.servlet", McpServlet.class);
             reg.addMapping(mcpEndpoint);
+            reg.setAsyncSupported(true);
 
             FilterRegistration.Dynamic filterReg = context.addFilter("io.openliberty.mcp.servlet.filter", McpForwardFilter.class);
             filterReg.addMappingForUrlPatterns(null, false, "/mcp/");
-            
+            filterReg.setAsyncSupported(true);
+
             String fullMcpUrl = virtualHost.getUrlString(context.getContextPath() + mcpEndpoint, false);
             Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
         }

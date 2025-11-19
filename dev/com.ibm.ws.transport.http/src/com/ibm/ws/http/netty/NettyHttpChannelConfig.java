@@ -251,7 +251,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
         if (this.useSameSiteOptions && (options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_LAX) ||
                                         options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_NONE) ||
                                         options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_STRICT) ||
-                                        options.containsKey("partitioned"))) {
+                                        options.containsKey(HttpConfigConstants.PROPNAME_SAMESITE_PARTITION))) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, method, "Http Channel Config: SameSite configuration has been enabled");
@@ -260,7 +260,7 @@ public class NettyHttpChannelConfig extends HttpChannelConfig {
             parseCookiesSameSiteLax(options.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX));
             parseCookiesSameSiteNone(options.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE));
             parseCookiesSameSiteStrict(options.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT));
-            parseCookiesSameSitePartitioned(options.get("partitioned"));
+            parseCookiesSameSitePartitioned(options.get(HttpConfigConstants.PROPNAME_SAMESITE_PARTITION));
 
             initSameSiteCookiesPatterns();
 

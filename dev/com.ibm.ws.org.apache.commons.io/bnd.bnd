@@ -7,6 +7,6 @@
 # 
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
--include= jar:${fileuri;${repo;commons-io:commons-io;2.19.0;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;commons-io:commons-io;2.19.0;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -buildpath: commons-io:commons-io;strategy=exact;version=2.19.0

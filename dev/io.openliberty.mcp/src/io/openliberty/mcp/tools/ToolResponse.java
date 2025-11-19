@@ -67,7 +67,7 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param message
+     * @param message the message to include as text content in the response
      * @return a successful response with single text content item
      */
     public static ToolResponse success(String message) {
@@ -75,7 +75,7 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param message
+     * @param structuredContent the structured content to include in the response
      * @return an unsuccessful response with structured content
      */
     public static ToolResponse structuredError(Object structuredContent) {
@@ -83,8 +83,8 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param message
-     * @param structuredContent
+     * @param message a message, returned as unstructured text content
+     * @param structuredContent the structured content
      * @return a successful response with structured content
      */
     public static ToolResponse structuredSuccess(String message, Object structuredContent) {

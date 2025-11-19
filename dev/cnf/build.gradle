@@ -128,16 +128,17 @@ task dependabotGenerate() {
 def pluginsProject = project(':wlp-bndPlugins')
 
 task updatePluginClasses(type: Copy) {
+    def currentProject = project
     dependsOn ':wlp-bndPlugins:jar'
     dependsOn dependabotGenerate
     from zipTree(bnd.get('build.bnd.plugins.jar'))
     into project.file('bndplugins/classes')
     doLast {
-        println 'Refresh bnd Projects after building bnd plugins in ' + project.name
+        println 'Refresh bnd Projects after building bnd plugins in ' + currentProject.name
         bnd.project.refresh()
         bnd.project.clear()
         parent.subprojects {
-            if (project != pluginsProject) {
+            if (currentProject != pluginsProject) {
                 bnd.project.refresh()
                 bnd.project.clear()
             }
@@ -190,7 +191,7 @@ parent.subprojects {
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
-import groovy.util.XmlSlurper
+import groovy.xml.XmlSlurper
 
 String getVersionFromReleaseRepo(String org, String name) {
     def versions = []
@@ -219,13 +220,13 @@ task createGradleBootstrap {
         def depsList = []
         gradleBndProjects.each { projectName ->
             def bndProject = bndWorkspace.getProject(projectName)
-            if (!bndProject.isNoBundles()) {
-                String org
-                if ('true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))) {
-                    org = 'test'
-                } else {
-                    org = 'dev'
-                }
+            // Only add the bundle to the gradle bootstrap if there are bundles in
+            // the project and it is not a test project or we are generating
+            // replacement if it is a test project.
+            boolean testProject = 'true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))
+            boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', testProject ? 'false' : 'true'))
+            if (!bndProject.isNoBundles() && generateReplacement) {
+                String org = testProject ? 'test' : 'dev'
                 for (String bsn : bndProject.getBsns()) {
                     String version = null
                     try {
@@ -310,12 +311,7 @@ task createGeneratedReplacementProjects {
             if (!generateReplacement) {
                 return
             }
-            String org
-            if (testProject) {
-                org = 'test'
-            } else {
-                org = 'dev'
-            }
+            String org = testProject ? 'test' : 'dev'
             List bsns = bndProject.getBsns()
             int bsnCount = bndProject.isNoBundles() ? 0 : bsns.size()
             String classpathEntries = ""
@@ -378,8 +374,8 @@ def releaserepo = file(bnd.get('releaserepo', 'release')) /* Release repository.
 import aQute.bnd.gradle.Index
 
 task ('index', type: Index) {
-    description 'Index the release repository. (Does not depend on releaseNeeded)'
-    group 'release'
+    description = 'Index the release repository. (Does not depend on releaseNeeded)'
+    group = 'release'
     repositoryName = "OpenLiberty ${version}"
     destinationDirectory = releaserepo
     gzip = true
@@ -393,8 +389,8 @@ task ('index', type: Index) {
 }
 
 task('createIndex') {
-    description 'Index the release repository.'
-    group 'release'
+    description = 'Index the release repository.'
+    group = 'release'
     dependsOn copyMavenLibs
     dependsOn everythingElseHasBeenReleased
     finalizedBy index
@@ -466,13 +462,13 @@ publish {
 publishing {
   publications {
     gradle(MavenPublication) {
-        artifactId 'gradle-bootstrap'
-        version project.version
+        artifactId = 'gradle-bootstrap'
+        version = project.version
         artifact zipGradleBootstrap
     }
     libertyVersions(MavenPublication) {
-        artifactId 'liberty-versions'
-        version project.version
+        artifactId = 'liberty-versions'
+        version = project.version
         artifact project.file('build/liberty-versions.props')
     }
   }

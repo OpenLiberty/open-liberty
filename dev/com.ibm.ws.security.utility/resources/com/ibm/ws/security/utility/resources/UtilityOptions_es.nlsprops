@@ -51,13 +51,17 @@ help.usage.options=\t{0} help [nombreAcci\u00f3n]
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 encode.desc=\tCodifica el texto proporcionado.\n\n\tSi su contrase\u00f1a incluye caracteres especiales, debe escapar cada car\u00e1cter especial para ayudar a garantizar que la contrase\u00f1a se codifica correctamente.\n\tLos caracteres especiales y de escape pueden variar en funci\u00f3n de su sistema operativo.\n\tPor ejemplo, en sistemas UNIX, pa$$W0rd debe proporcionarse como pa\\$\\$W0rd.\n\tPara m\u00e1s informaci\u00f3n, consulte la documentaci\u00f3n de codificaci\u00f3n de Open Liberty securityUtility.
 #Note to translator the word "encode" should not be translated
-encode.usage.options=\t{0} encode [opciones]
-encode.option-key.text=\ \ \ \ textoACodificar
-encode.option-desc.text=\tSi no se especifican argumentos, la herramienta entrar\u00e1 en modalidad \n\tinteractiva; de lo contrario, el texto proporcionado se codificar\u00e1.\n\tEl texto con espacios debe escribirse completamente entre comillas si se especifica como un argumento.
+encode.usage.options=\t{0} codificar [opciones] textToEncode
+encode.option-key.1.text=\ \ \ \ textToEncode
+encode.option-desc.1.text=\tSi no se especifica ning\u00fan argumento, la herramienta entrar\u00e1 en modo interactivo de lo contrario, se codificar\u00e1 el texto proporcionado.\n\tEl texto con espacios debe entrecomillarse completamente si se especifica como argumento.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tEspecifica c\u00f3mo codificar la contrase\u00f1a. Las codificaciones admitidas son xor, aes, aes-128, y hash. La codificaci\u00f3n por omisi\u00f3n es xor. Aes cifra utilizando una clave de aes-256 bits.\n\taes-128 puede utilizarse para la compatibilidad con versiones del servidor anteriores a 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[clave]
-encode.option-desc.key=\tEspecificar una clave que se utilizar\u00e1 al codificar mediante AES. Se utilizar\u00e1\n\tun c\u00f3digo hash con la serie para producir una clave de cifrado, que se utilizar\u00e1 para cifrar y\n\tdescifrar la contrase\u00f1a. La clave puede suministrarse al servidor\n\tdefiniendo la variable wlp.password.encryption.key, cuyo valor es la\n\tclave. Si no se especifica esta opci\u00f3n, se utilizar\u00e1 una clave predeterminada.
+encode.option-desc.key=\tEspecifique una clave que se utilizar\u00e1 al codificar mediante AES. Esta cadena se hash para producir una clave de cifrado, que se utiliza para cifrar y descifrar la contrase\u00f1a. La clave puede proporcionarse al servidor definiendo la variable wlp.password.encryption.key cuyo valor es la clave. Si no se especifica esta opci\u00f3n, se utilizar\u00e1 una clave predeterminada.
+encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
+encode.option-desc.base64Key=\tUna clave de bits AES-256 codificada en base64 que se utilizar\u00e1 para cifrar y descifrar la contrase\u00f1a. La clave puede proporcionarse al servidor definiendo la variable variable wlp.aes.encryption.key cuyo valor es la clave. Si se especifica --base64Key entonces --aesConfigFile y --key no pueden ser especificados.
+encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+encode.option-desc.aesConfigFile=\tUn archivo de propiedades XML o Java con una variable denominada wlp.password.encryption.key o wlp.aes.encryption.key con valores respectivamente. Ambas variables no pueden especificarse en el mismo fichero.\n\tSi se especifica --aesConfigFile, entonces no se pueden especificar --key y --base64Key.
 encode.option-key.notrim=\ \ \ \ --notrim
 encode.option-desc.notrim=\tEspecifique si los caracteres de espacios se eliminar\u00e1n al principio y\n\tal final del texto especificado. Si se especifica esta opci\u00f3n, el texto proporcionado\n\tse codificar\u00e1 tal cual. \n\tSi no se especifica esta opci\u00f3n, los caracteres de espacio al principio\n\ty al final del texto especificado se eliminar\u00e1n. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
@@ -113,6 +117,11 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=informaci\u00f3n de extensi\u00f3n de c
 sslCert.option-desc.ext=\tInformaci\u00f3n de extensi\u00f3n de certificado para a\u00f1adir al certificado.\n\tLa extensi\u00f3n predeterminada es una entrada de nombre alternativo de asunto \n\tque utiliza el nombre de host. Este distintivo sigue la misma sintaxis que el distintivo -ext del mandato\n\t Jave Keytool. Este distintivo se puede utilizar varias veces en el mandato\n 
 #line.
 
+sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+sslCert.option-desc.passwordBase64Key=\tUna clave de bits AES-256 codificada en base64 que se utilizar\u00e1 para cifrar y descifrar la contrase\u00f1a. La clave puede proporcionarse al servidor definiendo la variable wlp.aes.encryption.key cuyo valor es la clave.\n\tSi se especifica --passwordBase64Key, entonces --aesConfigFile y --passwordKey no se pueden especificar.
+sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+sslCert.option-desc.aesConfigFile=\tUn archivo de propiedades XML o Java con una variable denominada wlp.password.encryption.key o wlp.aes.encryption.key con valores respectivamente. Ambas variables no pueden especificarse en el mismo fichero.\n\tSi se especifica --aesConfigFile, entonces --passwordBase64Key y --passwordKey no se pueden especificar.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -134,6 +143,10 @@ createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
 createLTPAKeys.option-desc.password.encoding=\tEspecifica c\u00f3mo codificar la contrase\u00f1a de claves LTPA en server.xml.\n\tLas codificaciones soportadas son xor y aes. La codificaci\u00f3n predeterminada es xor. \n\tUtilice el mandato securityUtility encode --listCustom para ver si existen\n\tcifrados personalizados adicionales que est\u00e9n soportados.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[clave]
 createLTPAKeys.option-desc.password.key=\tEspecifica una clave que se utilizar\u00e1 al codificar la contrase\u00f1a de claves LTPA mediante\n\tAES. Se utilizar\u00e1 un c\u00f3digo hash con la serie para producir una clave de cifrado, que \n\tse utilizar\u00e1 para cifrar y descifrar la contrase\u00f1a. La clave puede\n\tsuministrarse al servidor definiendo la variable\n\twlp.password.encryption.key, cuyo valor es la clave. Si no se especifica\n\testa opci\u00f3n, se utilizar\u00e1 una clave predeterminada.
+createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+createLTPAKeys.option-desc.passwordBase64Key=\tUna clave de bits AES-256 codificada en base64 que se utilizar\u00e1 para cifrar y descifrar la contrase\u00f1a. La clave puede proporcionarse al servidor definiendo la variable variable wlp.aes.encryption.key cuyo valor es la clave. Si se especifica --passwordBase64Key entonces --aesConfigFile y --passwordKey no se pueden especificar.
+createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+createLTPAKeys.option-desc.aesConfigFile=\tUn archivo de propiedades XML o Java con una variable denominada wlp.password.encryption.key o wlp.aes.encryption.key con valores respectivamente. Ambas variables no pueden especificarse en el mismo fichero.\n\tSi se especifica --aesConfigFile, entonces --passwordBase64Key y --passwordKey no se pueden especificar.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -181,3 +194,19 @@ configureFIPS.option-desc.3.customProfileFile=\tEl archivo en el que se escribir
 configureFIPS.option-key.4.disable=\ \ \ \ --disable
 
 configureFIPS.option-desc.4.disable=\tDesactive FIPS 140-3 estableciendo la variable de entorno ENABLE_FIPS140_3 a false. Esta opci\u00f3n puede utilizarse con las opciones de cliente y servidor para especificar el cliente o servidor que debe desactivar FIPS 140-3.\n\tEn caso contrario, desactiva FIPS 140-3 para todos los clientes, servidores y comandos, excepto aquellos clientes y servidores que fueron individualmente.
+
+
+
+# -------- Generate AES-256 KEY OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+generateaeskey.desc=\tGenera un valor que se coloca en la variable de configuraci\u00f3n wlp.aes.encryption.key para el cifrado aes.
+generateaeskey.usage.options=\t{0} generateAESKey [opciones]
+generateaeskey.option-key.key=\ \ \ \ --key =[key]
+generateaeskey.option-desc.key=\tEspecifique una clave para utilizar durante el cifrado AES. Esta cadena se hash para producir una clave de cifrado que se utilizar\u00e1 para cifrar y descifrar contrase\u00f1as. La clave de cifrado se guarda en formato base64 en una variable llamada wlp.aes.encryption.key. Si se omite esta opci\u00f3n se genera una clave aleatoria.
+generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
+generateaeskey.option-desc.createConfigFile=\tCrea un archivo XML con el valor generado guardado en una variable llamada wlp.aes.encryption.key. Si no se proporciona, el valor generado se escribir\u00e1 en la pantalla de la consola.

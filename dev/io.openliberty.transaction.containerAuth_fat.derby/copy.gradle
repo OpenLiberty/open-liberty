@@ -12,13 +12,14 @@
  *******************************************************************************/
 
 task copyCommonFiles {
+  def containerAuthProject = project(':io.openliberty.transaction.containerAuth_fat.derby')
   doLast {
     copy {
-      from project(':io.openliberty.transaction.containerAuth_fat.derby').file('publish')
+      from containerAuthProject.file('publish')
       into new File('publish')
     }
     copy {
-      from project(':io.openliberty.transaction.containerAuth_fat.derby').file('test-applications')
+      from containerAuthProject.file('test-applications')
       into new File('test-applications')
     }
   }

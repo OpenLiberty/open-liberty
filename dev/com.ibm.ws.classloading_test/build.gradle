@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,12 +15,14 @@ test {
     dependsOn ':com.ibm.ws.classloading_test.jarA:jar'
     dependsOn ':com.ibm.ws.classloading_test.jarB:jar'
 
+    def servlet3_1Project = project(':com.ibm.websphere.javaee.servlet.3.1')
+
     doFirst {
-        ant.jar(destfile: new File(compileTestJava.destinationDir, 'test.jar'), manifest: project.file('test-resources/PackageDefineTestResources/MANIFEST.MF')) {
-            fileset(dir: compileTestJava.destinationDir, includes: "test/,test2/")
+        ant.jar(destfile: new File(compileTestJava.destinationDirectory.getAsFile().get(), 'test.jar'), manifest: file('test-resources/PackageDefineTestResources/MANIFEST.MF')) {
+            fileset(dir: compileTestJava.destinationDirectory.getAsFile().get(), includes: "test/,test2/")
         }
     }
 
     jvmArgs = ["--add-opens", "java.base/java.lang=ALL-UNNAMED",
-               "-Dservlet.jar.location=" + project(':com.ibm.websphere.javaee.servlet.3.1').configurations.archives.artifacts.files.asPath]
+               "-Dservlet.jar.location=" + servlet3_1Project.configurations.archives.artifacts.files.asPath]
 }

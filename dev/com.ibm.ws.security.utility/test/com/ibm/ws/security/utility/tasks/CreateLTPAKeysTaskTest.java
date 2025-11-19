@@ -13,9 +13,7 @@
 package com.ibm.ws.security.utility.tasks;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.PrintStream;
@@ -39,7 +37,6 @@ import org.mockito.Mockito;
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
 import com.ibm.ws.crypto.util.AesConfigFileParser;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -141,45 +138,31 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void getTaskHelp() {
-        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class)) {
-            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(false);
 
-            CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
-            String help = task.getTaskHelp();
-            System.out.println(help);
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String help = task.getTaskHelp();
+        System.out.println(help);
 
-            assertTrue("FAIL: The task help did not contain the option '" + TEST_UTILITY_NAME + " createLTPAKeys'",
-                       help.contains(TEST_UTILITY_NAME + " createLTPAKeys"));
-            assertTrue("FAIL: The task help did not contain the word 'LTPA'",
-                       help.contains("LTPA"));
-            assertTrue("FAIL: The task help did not contain the word 'ltpa.keys'",
-                       help.contains("ltpa.keys"));
-            assertTrue("FAIL: The task help did not contain the option '--password'",
-                       help.contains("--password"));
-            assertTrue("FAIL: The task help did not contain the option '--server'",
-                       help.contains("--server"));
-            assertTrue("FAIL: The task help did not contain the option '--file'",
-                       help.contains("--file"));
-            assertTrue("FAIL: The task help did not contain the option '--passwordEncoding'",
-                       help.contains("--passwordEncoding"));
-            assertTrue("FAIL: The task help did not contain the option '--passwordKey'",
-                       help.contains("--passwordKey"));
-            assertFalse("FAIL: The task help should not contain the option '--passwordBase64Key'",
-                        help.contains("--passwordBase64Key"));
-            assertFalse("FAIL: The task help should not contain the option '--aesConfigFile'",
-                        help.contains("--aesConfigFile"));
-
-            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
-            task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
-            help = task.getTaskHelp();
-            System.out.println(help);
-
-            assertTrue("FAIL: The task help did not contain the option '--passwordBase64Key'",
-                       help.contains("--passwordBase64Key"));
-            assertTrue("FAIL: The task help did not contain the option '--aesConfigFile'",
-                       help.contains("--aesConfigFile"));
-        }
-
+        assertTrue("FAIL: The task help did not contain the option '" + TEST_UTILITY_NAME + " createLTPAKeys'",
+                   help.contains(TEST_UTILITY_NAME + " createLTPAKeys"));
+        assertTrue("FAIL: The task help did not contain the word 'LTPA'",
+                   help.contains("LTPA"));
+        assertTrue("FAIL: The task help did not contain the word 'ltpa.keys'",
+                   help.contains("ltpa.keys"));
+        assertTrue("FAIL: The task help did not contain the option '--password'",
+                   help.contains("--password"));
+        assertTrue("FAIL: The task help did not contain the option '--server'",
+                   help.contains("--server"));
+        assertTrue("FAIL: The task help did not contain the option '--file'",
+                   help.contains("--file"));
+        assertTrue("FAIL: The task help did not contain the option '--passwordEncoding'",
+                   help.contains("--passwordEncoding"));
+        assertTrue("FAIL: The task help did not contain the option '--passwordKey'",
+                   help.contains("--passwordKey"));
+        assertTrue("FAIL: The task help did not contain the option '--passwordBase64Key'",
+                   help.contains("--passwordBase64Key"));
+        assertTrue("FAIL: The task help did not contain the option '--aesConfigFile'",
+                   help.contains("--aesConfigFile"));
     }
 
     /**
@@ -462,35 +445,31 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void handleTask_specifiedFile_fileCreated_base64_aes() throws Exception {
-        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class)) {
-            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
-            CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
-            String[] args = new String[] { "securityUtility", "--passwordEncoding=aes", "--passwordBase64Key=JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=",
-                                           "--password=Liberty",
-                                           "--file=targetLtpaKeysFile" };
 
-            mock.checking(new Expectations() {
-                {
-                    one(fileUtil).exists("targetLtpaKeysFile");
-                    will(returnValue(false));
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "securityUtility", "--passwordEncoding=aes", "--passwordBase64Key=JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=",
+                                       "--password=Liberty",
+                                       "--file=targetLtpaKeysFile" };
 
-                    one(ltpaKeyFileUtil).createLTPAKeysFile(with("targetLtpaKeysFile"), with(any(byte[].class)));
+        mock.checking(new Expectations() {
+            {
+                one(fileUtil).exists("targetLtpaKeysFile");
+                will(returnValue(false));
 
-                    one(stdout).println(with(stringContaining("<ltpa", "targetLtpaKeysFile", "{aes}")));
-                }
-            });
+                one(ltpaKeyFileUtil).createLTPAKeysFile(with("targetLtpaKeysFile"), with(any(byte[].class)));
 
-            assertEquals("FAIL: The task did not report execution OK",
-                         SecurityUtilityReturnCodes.OK,
-                         task.handleTask(stdin, stdout, stderr, args));
-        }
+                one(stdout).println(with(stringContaining("<ltpa", "targetLtpaKeysFile", "{aes}")));
+            }
+        });
+
+        assertEquals("FAIL: The task did not report execution OK",
+                     SecurityUtilityReturnCodes.OK,
+                     task.handleTask(stdin, stdout, stderr, args));
     }
 
     @Test
     public void handleTask_specifiedFile_fileCreated_aesConfigFile_aes() throws Exception {
-        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class);
-                        MockedStatic<AesConfigFileParser> passwordUtil = Mockito.mockStatic(AesConfigFileParser.class, Mockito.CALLS_REAL_METHODS)) {
-            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(true);
+        try (MockedStatic<AesConfigFileParser> passwordUtil = Mockito.mockStatic(AesConfigFileParser.class, Mockito.CALLS_REAL_METHODS)) {
 
             Map<String, String> props = new HashMap<>();
             props.put(PasswordUtil.PROPERTY_AES_KEY, "JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=");
@@ -519,29 +498,6 @@ public class CreateLTPAKeysTaskTest {
             assertEquals("FAIL: The task did not report execution OK",
                          SecurityUtilityReturnCodes.OK,
                          task.handleTask(stdin, stdout, stderr, args));
-        }
-    }
-
-    /**
-     * Test method for
-     * {@link com.ibm.ws.security.utility.tasks.CreateLTPAKeysTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
-     * .
-     */
-    @Test
-    public void handleTask_specifiedFile_fileCreated_beta_check() throws Exception {
-        try (MockedStatic<ProductInfo> productInfoMock = Mockito.mockStatic(ProductInfo.class)) {
-            productInfoMock.when(() -> ProductInfo.getBetaEdition()).thenReturn(false);
-            CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
-            String[] args = new String[] { "securityUtility", "--passwordEncoding=aes", "--passwordBase64Key=JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=",
-                                           "--password=Liberty",
-                                           "--file=targetLtpaKeysFile" };
-
-            try {
-                task.handleTask(stdin, stdout, stderr, args);
-                fail("Should not have completed without throwing IllegalArgumentException");
-            } catch (IllegalArgumentException e) {
-                //intentionally empty, test fails if IllegalArgumentException not caught.
-            }
         }
     }
 

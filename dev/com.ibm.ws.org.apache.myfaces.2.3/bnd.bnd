@@ -56,9 +56,9 @@ instrument.classesExcludes: \
   org/**/*.class
 
 Include-Resource: \
-  @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
-  @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
-  @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
+  @\${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
+  @\${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
+  @\${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
 
 # Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the 

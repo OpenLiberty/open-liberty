@@ -9,18 +9,31 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.basicToolApp;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
+import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.Tool.Annotations;
 import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.content.AudioContent;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.ImageContent;
+import io.openliberty.mcp.content.Role;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.bind.adapter.JsonbAdapter;
+import jakarta.json.bind.annotation.JsonbProperty;
+import jakarta.json.bind.annotation.JsonbTransient;
+import jakarta.json.bind.annotation.JsonbTypeAdapter;
 
 /**
  *
@@ -51,13 +64,11 @@ public class BasicTools {
 
         ImageContent image = new ImageContent(
                                               "base64-encoded-image",
-                                              "image/png",
-                                              null);
+                                              "image/png");
 
         AudioContent audio = new AudioContent(
                                               "base64-encoded-audio",
-                                              "audio/mpeg",
-                                              null);
+                                              "audio/mpeg");
 
         return ToolResponse.success(List.of(text, image, audio));
 
@@ -70,37 +81,65 @@ public class BasicTools {
 
                        new ImageContent(
                                         "base64-encoded-image",
-                                        "image/png",
-                                        null),
+                                        "image/png"),
 
                        new AudioContent(
                                         "base64-encoded-audio",
-                                        "audio/mpeg",
-                                        null));
+                                        "audio/mpeg"));
     }
 
     @Tool(name = "textContentTool", title = "Text Content Tool", description = "Returns text content object")
-    public TextContent textContentTool(
-                                       @ToolArg(name = "input", description = "input string to echo back as content") String input) {
+    public TextContent textContentTool(@ToolArg(name = "input", description = "input string to echo back as content") String input) {
         return new TextContent("Echo: " + input);
     }
 
+    @Tool(name = "textContentToolWithContentAnnotation", title = "Text Content Tool With Content Annotation", description = "Returns text content object with annotation")
+    public TextContent textContentToolWithContentAnnotation(@ToolArg(name = "input", description = "input string to echo back as content") String input) {
+        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT,
+                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
+                                                                               .format(DateTimeFormatter.ISO_INSTANT),
+                                                                  0.5);
+        return new TextContent("Echo: " + input, null, annotations);
+    }
+
     @Tool(name = "imageContentTool", title = "Image Content Tool", description = "Returns image content object")
-    public ImageContent imageContentTool(
-                                         @ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
+    public ImageContent imageContentTool(@ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
+        return new ImageContent(
+                                imageData,
+                                "image/png");
+    }
+
+    @Tool(name = "imageContentToolWithContentAnnotation", title = "Image Content Tool With Content Annotation", description = "Returns image content object with annotation")
+    public ImageContent imageContentToolWithContentAnnotation(@ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
+        Content.Annotations annotations = new Content.Annotations(Role.USER,
+                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
+                                                                               .format(DateTimeFormatter.ISO_INSTANT),
+                                                                  0.8);
         return new ImageContent(
                                 imageData,
                                 "image/png",
-                                null);
+                                null,
+                                annotations);
     }
 
     @Tool(name = "audioContentTool", title = "Audio Content Tool", description = "Returns audio content object")
-    public AudioContent audioContentTool(
-                                         @ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
+    public AudioContent audioContentTool(@ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
+        return new AudioContent(
+                                audioData,
+                                "audio/mpeg");
+    }
+
+    @Tool(name = "audioContentToolWithContentAnnotation", title = "Audio Content Tool With Content Annotation", description = "Returns audio content object with annotation")
+    public AudioContent audioContentToolWithContentAnnotation(@ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
+        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT,
+                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
+                                                                               .format(DateTimeFormatter.ISO_INSTANT),
+                                                                  0.3);
         return new AudioContent(
                                 audioData,
                                 "audio/mpeg",
-                                null);
+                                null,
+                                annotations);
     }
 
     //tool name is not present -> use method name
@@ -347,5 +386,58 @@ public class BasicTools {
     public String reservedNamesInToolArgNameVariant(@ToolArg(name = "class", description = "reservedNamesInToolArgName") String arg1,
                                                     @ToolArg(name = "void", description = "reservedNamesInToolArgName") String arg2) {
         return arg1;
+    }
+
+    // Complex Schema
+
+    @Schema(description = "A person object contains address, company objects")
+    public static record Person(@JsonbProperty("fullname") String name, Address address, Company company) {};
+
+    public static record Address(int number, @Schema(description = "A street object to represent complex streets") Street street, String postcode,
+                                 @JsonbTransient String directions) {};
+
+    @JsonbTypeAdapter(StreetAdapter.class)
+    @Schema("{\"properties\": {  \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ], \"type\": \"object\"}")
+    public static record Street(String streetname, String roadtype) {}
+
+    public static record Company(String name, Address address, @Schema(description = "A list of shareholder (person object)") List<Person> shareholders,
+                                 @Schema(value = "{\"properties\": {\"key\":{ \"type\": \"integer\" }, \"value\":{ \"$ref\": \"#/$defs/person\" }},\"required\": [ ], \"type\": \"object\"}") Optional<Map<String, Person>> shareholderRegistry) {};
+
+    public static class StreetAdapter implements JsonbAdapter<Street, JsonObject> {
+
+        /** {@inheritDoc} */
+        @Override
+        public Street adaptFromJson(JsonObject arg0) throws Exception {
+            return new Street(arg0.getString("streetName"), arg0.getString("roadType"));
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public JsonObject adaptToJson(Street arg0) throws Exception {
+            return Json.createObjectBuilder().add("streetName", arg0.streetname()).add("roadType", arg0.roadtype()).build();
+        }
+    }
+
+    public static interface NumberRestrictor {
+        public Number getMax();
+
+        public Number getMin();
+
+        public void setMax(Number number);
+
+        public void setMin(Number number);
+    }
+
+    @Tool(name = "checkPerson", title = "checks if person is shareholder", description = "Returns boolean", structuredContent = false)
+    public boolean checkPerson(@ToolArg(name = "person", description = "Person object") Person person, @ToolArg(name = "company", description = "Company object") Company company) {
+        return true;
+    }
+
+    @Tool(name = "addPersonToList", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
+    public @Schema(description = "Returns list of person object") List<Person> addPersonToList(@ToolArg(name = "employeeList",
+                                                                                                        description = "List of people") List<Person> employeeList,
+                                                                                               @ToolArg(name = "person", description = "Person object") Optional<Person> person) {
+        employeeList.add(person.get());
+        return employeeList;
     }
 }

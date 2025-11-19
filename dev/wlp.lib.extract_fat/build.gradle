@@ -1,12 +1,13 @@
 
 task addRequiredFiles(type: Copy) {
+  def kernelFeatureProject = project(':com.ibm.ws.kernel.feature')
   dependsOn ':com.ibm.ws.kernel.feature:jar'
   from new File(projectDir, 'publish/files/sampleServer.xml')
   into new File(autoFvtDir, 'lib/LibertyFATTestFiles/')
   rename 'sampleServer.xml', 'productSampleServer.xml'
   doLast {
     ant.zip(destfile: new File(autoFvtDir, 'lib/LibertyFATTestFiles/wlp.lib.extract.zip')) {
-      zipfileset(src: new File(project(':com.ibm.ws.kernel.feature').buildDir, 'com.ibm.ws.kernel.feature.jar'), includes: 'wlp/**/*.class')
+      zipfileset(src: new File(kernelFeatureProject.buildDir, 'com.ibm.ws.kernel.feature.jar'), includes: 'wlp/**/*.class')
     }
   }
 }

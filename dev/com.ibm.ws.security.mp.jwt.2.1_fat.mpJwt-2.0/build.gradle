@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,18 +58,20 @@ autoFVT.dependsOn ':com.ibm.ws.security.fat.common.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common.mp.jwt:assemble'
 autoFVT.dependsOn ':com.ibm.ws.security.mp.jwt.2.1_fat.commonTest:buildfat'
 
-autoFVT.doFirst {
+autoFVT {
+  def commonProject = project(':com.ibm.ws.security.mp.jwt.2.1_fat.commonTest')
+  doFirst {
   /*
    * This is a HACK to generate the fat-metadata.json file when starting the FVT framework.
    */
 
   copy {
-    from project(':com.ibm.ws.security.mp.jwt.2.1_fat.commonTest').autoFvtDir
+    from commonProject.autoFvtDir
     into autoFvtDir
     include 'publish/**'
     include 'test-applications/**'
     include 'lib/**'
-
+  }
   }
 }
 

@@ -647,3 +647,5 @@
 
 7363=A STRING felsorol\u00e1sos t\u00edpus eset\u00e9ben csak a java.lang.String t\u00edpus haszn\u00e1lhat\u00f3 a @EnumeratedValue \u00e1ltal jel\u00f6lt attrib\u00fatumt\u00edpusk\u00e9nt. A [ {0} ] attrib\u00fatum ellen\u0151rz\u00e9se a [ {1} ] enum oszt\u00e1lyban.
 
+7364=Az entit\u00e1sban [ {0} ] a NamedNativeQuery [ {1} ] egy implicit SqlResultSetMapping ("entit\u00e1sok", "oszt\u00e1lyok" vagy "oszlopok" attrib\u00fatum) \u00e9s egy k\u00fcls\u0151 SqlResultSetMapping attrib\u00fatumot haszn\u00e1lnak, amelyre a "resultSetMapping" attrib\u00fatum hivatkozik. Ez a kombin\u00e1ci\u00f3 nem megengedett.
+

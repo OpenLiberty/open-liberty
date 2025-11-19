@@ -92,7 +92,10 @@ def appDefs =
     [ 'io.openliberty.springboot.fat40.jms.app', '.war'],
     [ 'io.openliberty.springboot.fat40.transactions.app', '.war'],
     [ 'io.openliberty.springboot.fat40.data.app', '.war'],
-    [ 'io.openliberty.springboot.fat40.validation.app', '.war']]
+    [ 'io.openliberty.springboot.fat40.validation.app', '.war'],
+    [ 'io.openliberty.springboot.fat40.http.app', '.war'],
+    [ 'io.openliberty.springboot.fat40.http.contextroot.app', '.war'],
+    [ 'io.openliberty.springboot.fat40.aop.app', '.war']]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

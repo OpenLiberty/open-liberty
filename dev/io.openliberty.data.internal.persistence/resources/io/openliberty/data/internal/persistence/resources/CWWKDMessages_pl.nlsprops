@@ -507,3 +507,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Usu\u0144 sprzeczn\u0105 adnotacj\
 CWWKD1118.param.anno.conflict=CWWKD1118E: Parametr {0} metody {1} interfejsu repozytorium {2} nie mo\u017ce by\u0107 opatrzony adnotacj\u0105: {3}. Co najmniej dwie adnotacje s\u0105 ze sob\u0105 sprzeczne.
 CWWKD1118.param.anno.conflict.explanation=Kombinacja adnotacji parametr\u00f3w jest nieprawid\u0142owa.
 CWWKD1118.param.anno.conflict.useraction=Usuni\u0119cie jednej lub wi\u0119cej sprzecznych adnotacji z parametru metody repozytorium.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Metoda {0} interfejsu repozytorium {1} pobiera strony, kt\u00f3re nie zawieraj\u0105 ca\u0142kowitej liczby element\u00f3w i stron, poniewa\u017c zapytanie zawiera s\u0142owo kluczowe {2}. Pe\u0142ne zapytanie brzmi: {3}.
+CWWKD1119.keyword.prevents.count.explanation=S\u0142owo kluczowe jest niezgodne z mo\u017cliwo\u015bci\u0105 uzyskania ca\u0142kowitej liczby element\u00f3w i stron.
+CWWKD1119.keyword.prevents.count.useraction=Zamie\u0144 zapytanie na takie, kt\u00f3re nie u\u017cywa s\u0142owa kluczowego lub unikaj \u017c\u0105dania ca\u0142kowitej liczby element\u00f3w i stron.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Metoda {0} interfejsu repozytorium {1} okre\u015bla zapytanie zawieraj\u0105ce s\u0142owo kluczowe {2}, kt\u00f3re jest niekompatybilne z paginacj\u0105 opart\u0105 na kursorze. Zapytania dla paginacji opartej na kursorze musz\u0105 ko\u0144czy\u0107 si\u0119 klauzul\u0105 WHERE i nie mog\u0105 zawiera\u0107 podzapyta\u0144. Zapytanie brzmi: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=S\u0142owa kluczowe takie jak GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT i UNION nie s\u0105 kompatybilne z paginacj\u0105 opart\u0105 na kursorach.
+CWWKD1120.cursor.keyword.mismatch.useraction=Przepisz zapytanie tak, aby zawiera\u0142o tylko klauzule: SELECT, FROM i WHERE.

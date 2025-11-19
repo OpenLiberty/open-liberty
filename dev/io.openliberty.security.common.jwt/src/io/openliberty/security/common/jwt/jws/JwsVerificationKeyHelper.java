@@ -109,7 +109,7 @@ public class JwsVerificationKeyHelper {
         String kid = jws.getKeyIdHeaderValue();
         // Support for 'x5t' header remains for interoperability purposes.
         // If FIPS 140-3 is enabled, usage of the 'x5t' header for signature verification is disabled
-        String x5t = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? null : jws.getX509CertSha1ThumbprintHeaderValue();
+        String x5t = CryptoUtils.isFips140_3Enabled() ? null : jws.getX509CertSha1ThumbprintHeaderValue();
         String x5tS256 = jws.getX509CertSha256ThumbprintHeaderValue();
         JwKRetriever jwkRetriever = createJwkRetriever(signatureAlgorithmFromJws);
         return jwkRetriever.getPublicKeyFromJwk(kid, x5t, x5tS256, "sig", false);

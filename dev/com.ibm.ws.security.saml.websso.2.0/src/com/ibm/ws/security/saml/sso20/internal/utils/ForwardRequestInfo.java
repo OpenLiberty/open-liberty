@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.common.random.RandomUtils;
 import com.ibm.ws.security.common.web.JavaScriptUtils;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.error.SamlException;
@@ -47,6 +48,12 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
     boolean bNeedFragment = true;
 
     private long fragmentCookieMaxAgeSec = 10*60; //10 minutes
+
+    String cspHeader = null;
+
+    private final int NONCE_LENGTH = 30;
+
+    private final String CONTENT_SECURITY_POLICY_NONCE_INSERT = "%NONCE%";
 
     /**
      *
@@ -152,7 +159,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
                     }
                     sb.append("\" method=\"" + this.method + "\"><div>");
                     if (this.bNeedFragment) {
-                        sb.append(handleFragmentCookies());
+                        sb.append(handleFragmentCookiesAndNonce(resp));
                     }
                     if (this.parameters != null && !this.parameters.isEmpty()) {
                         Set<Entry<String, String[]>> set = this.parameters.entrySet();
@@ -228,7 +235,7 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
     /**
      * @return
      */
-    String handleFragmentCookies() {
+    protected String handleFragmentCookiesAndNonce(HttpServletResponse resp) {
 
         String cookieName = Constants.COOKIE_NAME_SAML_FRAGMENT + getFragmentCookieId();
         String cookieMaxAge = "Max-Age=" + String.valueOf(this.fragmentCookieMaxAgeSec) + ";";
@@ -236,8 +243,32 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "cookie " + cookieName + " , " + cookieMaxAge);
         }
+        String noncerand = null;
+        if (this.cspHeader != null) {
+            String header = null;
+            if (cspHeader.contains(CONTENT_SECURITY_POLICY_NONCE_INSERT)) {
+                noncerand = RandomUtils.getRandomAlphaNumeric(NONCE_LENGTH);
+                header = this.cspHeader.replace(CONTENT_SECURITY_POLICY_NONCE_INSERT, noncerand); 
+            } else {
+                header = this.cspHeader;
+            }
+            resp.addHeader("Content-Security-Policy", header);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "CSP header=" + header);
+            }
+        }
         StringBuffer sb = new StringBuffer();
-        sb.append("\n<SCRIPT type=\"TEXT/JAVASCRIPT\" language=\"JavaScript\">\n");
+        sb.append("\n<SCRIPT type=\"TEXT/JAVASCRIPT\" language=\"JavaScript\"");
+        if (noncerand != null) {
+            String scriptNonce = " nonce=\"" + noncerand + "\">";
+            sb.append(scriptNonce);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "script nonce="+scriptNonce);
+            }
+        } else {
+            sb.append(">");
+        }
+        sb.append("\n");
         sb.append("document.cookie = '");
         sb.append(cookieName + "=' + encodeURIComponent(window.location.href) + ';" + cookieMaxAge + "Path=/;"); // session cookie
         JavaScriptUtils jsUtils = new JavaScriptUtils();
@@ -399,4 +430,10 @@ public class ForwardRequestInfo extends HttpRequestInfo implements Serializable 
         this.fragmentCookieMaxAgeSec = authnRequestTime / 1000;
     }
 
+    /**
+     * @param cspHeader
+     */
+    public void setCspHeader(String cspHeader) {
+        this.cspHeader = cspHeader;
+    }
 }

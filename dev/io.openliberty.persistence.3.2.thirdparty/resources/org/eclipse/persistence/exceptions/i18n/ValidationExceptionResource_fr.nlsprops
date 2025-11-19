@@ -647,3 +647,5 @@
 
 7363=Pour un type \u00e9num\u00e9r\u00e9 STRING, seul le type java.lang.String peut \u00eatre utilis\u00e9 comme type d''attribut marqu\u00e9 par @EnumeratedValue. V\u00e9rifier l''attribut [ {0} ] dans la classe d''\u00e9num\u00e9ration [ {1} ].
 
+7364=Dans l''entit\u00e9 [ {0} ] dans NamedNativeQuery [ {1} ], un SqlResultSetMapping implicite (attribut "entities", "classes" ou "columns") est utilis\u00e9 avec un SqlResultSetMapping externe auquel il est fait r\u00e9f\u00e9rence par l''attribut "resultSetMapping". Cette combinaison n''est pas autoris\u00e9e.
+

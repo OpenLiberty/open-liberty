@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2024 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,16 +10,16 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.eclipse:yasson;3.0.4;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;org.eclipse:yasson;3.0.4;EXACT}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 yassonVersion: 3.0.4
 
 instrument.disabled: true
 
 Include-Resource: \
-   @${repo;org.eclipse:yasson;${yassonVersion};EXACT}!/org/eclipse/yasson/*,\
-   @${repo;org.eclipse:yasson;${yassonVersion};EXACT}!/META-INF/versions/*,\
-   @${repo;org.eclipse:yasson;${yassonVersion};EXACT}!/META-INF/services/jakarta.json.bind.spi.JsonbProvider,\
+   @\${repo;org.eclipse:yasson;${yassonVersion};EXACT}!/org/eclipse/yasson/*,\
+   @\${repo;org.eclipse:yasson;${yassonVersion};EXACT}!/META-INF/versions/*,\
+   @\${repo;org.eclipse:yasson;${yassonVersion};EXACT}!/META-INF/services/jakarta.json.bind.spi.JsonbProvider,\
    =resources/
 
 -buildpath: \

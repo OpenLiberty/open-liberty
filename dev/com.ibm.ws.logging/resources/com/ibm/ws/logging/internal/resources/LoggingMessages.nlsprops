@@ -170,6 +170,10 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Header name is missing for o
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=JSON logging uses the logFormat attribute from accessLogging to select which http_access.log message fields to include. A header name must be supplied when using the %i or %o fields in the accessLogging logFormat attribute.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Provide a header name for the field in the accessLogging logFormat attribute.
 
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: The logs are being throttled due to high volume.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=The logs are currently being throttled due to high volume.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=Resolve any issues that cause excessive logging or increase the logging threshold by configuring the throttleMaxMessagesPerWindow logging attribute. 
+
 FFDC_FILE_DELETION=TRAS3014I: Deleted {0} FFDC files based on the configured maxFfdcAge value.
 FFDC_FILE_DELETION.explanation=The number of FFDC files that were deleted during a FFDC cleanup.
 FFDC_FILE_DELETION.useraction=No action is required.

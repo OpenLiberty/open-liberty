@@ -11,7 +11,7 @@ Java Key Store (JKS):
 - client-truststore.jks
 
 These files were generated when we built the database image:
-* openliberty/testcontainers/oracle-ssl:23-full-faststart
+* openliberty/testcontainers/oracle-ssl:23.9-full-faststart
 
 These files are stored in the container under the following directories: 
 - Oracle Wallet: /client/oracle/wallet

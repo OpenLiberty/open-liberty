@@ -7026,8 +7026,8 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     public void JwtBuilderAPIBasicTests_encryptWith_nullKeyMgmtKeyAlg_publicKey_A256GCM() throws Exception {
 
         String builderId = "jwt1";
-        String keyMgmtKeyAlg = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
-        String sigAlg = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
+        String keyMgmtKeyAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+        String sigAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
         Log.info(thisClass, "Key Management", "key management alg:" + keyMgmtKeyAlg);
 
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(keyMgmtKeyAlg, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
@@ -7055,9 +7055,9 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     @Test
     public void JwtBuilderAPIBasicTests_encryptWith_nullKeyMgmtKeyAlg_goodBuilderConfig() throws Exception {
 
-        String builderId = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? "encryptJwtES256" : "encryptJwtRS256";
-        String keyMgmtKeyAlg = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
-        String sigAlg = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
+        String builderId = builderServer.isFIPS140_3EnabledAndSupported() ? "encryptJwtES256" : "encryptJwtRS256";
+        String keyMgmtKeyAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+        String sigAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(keyMgmtKeyAlg, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         // create settings that will be passed to the test app as well as used to create what to expect in the results

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -111,6 +111,7 @@ public class SsoConfigImplTest {
                     allowing(confAdmin).getConfiguration(SsoConfigImpl.CFG_KEY_AUTH_FILTER_REF, null);
                     will(returnValue(config));
                     allowing(parentSsoService).searchTrustAnchors(with(any(Collection.class)), with(any(String.class)));
+                    allowing(parentSsoService).getSignatureCertificate();
                 } catch (Exception e) {
                     e.printStackTrace();
                     fail("Unexpected exception was thrown: " + e);
@@ -159,6 +160,7 @@ public class SsoConfigImplTest {
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_reAuthnCushion, 0L);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_useRelayStateForTarget, true);
         SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_servletRequestLogoutPerformsSamlLogout, true);
+        SAML_CONFIG_PROPS.put(SsoConfigImpl.KEY_cspHeader, "script-src 'self' 'nonce-%NONCE%' ; object-src 'self'; frame-src 'self'");
     }
 
     private void setFilterIdMapProps() {
@@ -265,6 +267,10 @@ public class SsoConfigImplTest {
         boolean useRelayStateForTarget = (Boolean) SAML_CONFIG_PROPS.get(SsoConfigImpl.KEY_useRelayStateForTarget);
         assertTrue("useRelayStateForTarget should be " + useRelayStateForTarget + " and got " + ssoConfig.getUseRelayStateForTarget(),
                    useRelayStateForTarget == ssoConfig.getUseRelayStateForTarget());
+
+        String cspHeader = (String) SAML_CONFIG_PROPS.get(SsoConfigImpl.KEY_cspHeader);
+        assertTrue("contentSecurityPolicy should be " + cspHeader + " and got " + ssoConfig.getCspHeader(),
+                   cspHeader.equals(ssoConfig.getCspHeader()));
     }
 
     @Test

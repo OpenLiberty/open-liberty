@@ -40,7 +40,9 @@ encode.enterText=Entrez du texte :
 encode.reenterText=Entrez \u00e0 nouveau le texte :
 encode.readError=Erreur de lecture de texte.
 encode.entriesDidNotMatch=Les entr\u00e9es ne concordent pas.
-
+encode.mutuallyExclusiveArgError=Le fichier d''entr\u00e9e ne peut pas sp\u00e9cifier \u00e0 la fois les propri\u00e9t\u00e9s {0} et {1}.
+encode.aesConfigFileEncryptionAmbiguous=ERREUR : Le fichier d''entr\u00e9e ne peut pas \u00eatre utilis\u00e9 s''il contient \u00e0 la fois les variables {0} et {1}.
+encode.aesConfigFileMissingEncryptionVariables=Impossible d''encoder le mot de passe; soit le fichier d''entr\u00e9e ne contient pas les variables {0} ou {1}, soit le fichier d''entr\u00e9e est malform\u00e9.
 
 password.enterText=Entrez le mot de passe :
 password.reenterText=Entrer de nouveau le mot de passe :
@@ -98,7 +100,7 @@ createLTPAKeys.fileExists=Le fichier {0} existe d\u00e9j\u00e0.  Impossible de c
 createLTPAKeys.createdFile=Fichier de cl\u00e9s LTPA cr\u00e9\u00e9 : {0}\nInclure la configuration suivante dans votre fichier server.xml\n{1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=L'installation de Java ne provient pas de IBM Semeru Runtimes ni de IBM SDK, ou si c'est le cas, elle ne prend pas en charge la norme FIPS 140-3.\nInstallez Java \u00e0 partir de IBM Semeru Runtimes ou IBM SDK en utilisant une version et un syst\u00e8me d'exploitation compatibles avec la norme FIPS 140-3.\nSi vous utilisez IBM Semeru Runtimes, utilisez la version 11.0.29.0, 17.0.17.0, 21.0.9.0, ou une version plus r\u00e9cente.\nSi vous utilisez le SDK IBM, utilisez la version 8.0.8.30 ou une version plus r\u00e9cente.
+configureFIPS.notIbmSdkNorSemeru=L'installation de Java ne provient pas de IBM Semeru Runtimes ni de IBM SDK, ou si c'est le cas, elle ne prend pas en charge la norme FIPS 140-3.\nInstallez Java \u00e0 partir de IBM Semeru Runtimes ou IBM SDK en utilisant une version et un syst\u00e8me d'exploitation compatibles avec la norme FIPS 140-3.\nSi vous utilisez IBM Semeru Runtimes, utilisez la version 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, ou une version plus r\u00e9cente.\nSi vous utilisez le SDK IBM, utilisez la version 8.0.8.30 ou une version plus r\u00e9cente.
 
 configureFIPS.zosNotAvailable=La commande securityUtility configureFIPS n'est pas prise en charge sur z/OS.
 
@@ -129,3 +131,8 @@ configureFIPS.fipsNotEnabled=FIPS 140-3 n''est d\u00e9j\u00e0 pas activ\u00e9 da
 configureFIPS.restartServer=Red\u00e9marrez le serveur {0} pour appliquer la modification.
 configureFIPS.restartClient=Red\u00e9marrez le client {0} pour appliquer la modification.
 configureFIPS.restart=Red\u00e9marrez vos serveurs et vos clients pour appliquer la modification.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=Le fichier XML de cryptage du mot de passe a \u00e9t\u00e9 cr\u00e9\u00e9 avec succ\u00e8s.\nPour activer les modifications, ajoutez une r\u00e9f\u00e9rence \u00e0 l''emplacement du fichier XML \u00e0 votre fichier server.xml : <include location="{0}" />
+generateaeskey.failFileExists=Le fichier {0} existe et ne sera pas \u00e9cras\u00e9. Sp\u00e9cifiez un autre nom de fichier ou supprimez le fichier existant avant de r\u00e9essayer un nom de fichier diff\u00e9rent ou supprimer le fichier existant avant de r\u00e9essayer.
+generateaeskey.failFileIsDirectory=La valeur {0} sp\u00e9cifi\u00e9e pour le nom de fichier est un r\u00e9pertoire. Indiquez le nom complet du fichier et r\u00e9essayez le nom complet du fichier et r\u00e9essayez.

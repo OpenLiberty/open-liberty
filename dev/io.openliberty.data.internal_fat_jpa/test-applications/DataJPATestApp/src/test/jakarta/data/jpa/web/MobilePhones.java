@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.util.List;
 import java.util.UUID;
 
 import jakarta.data.repository.CrudRepository;
@@ -23,6 +24,10 @@ import jakarta.data.repository.Repository;
  */
 @Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface MobilePhones extends CrudRepository<Mobile, UUID> {
+
+    List<Mobile> findByEmailsEmpty();
+
+    List<Mobile> findByEmailsNotEmpty();
 
     @Delete
     public long removeAll();

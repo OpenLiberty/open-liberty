@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,15 +17,11 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -34,9 +30,6 @@ import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.jsf22.fat.FATSuite;
 import com.ibm.ws.jsf22.fat.JSFUtils;
-import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
-import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
-import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -45,6 +38,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 import junit.framework.Assert;
 
 /**
@@ -62,12 +57,6 @@ public class JSFCompELTests {
 
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
-
-    @ClassRule
-    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                    .withAccessToHost(true)
-                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
-
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -135,7 +124,7 @@ public class JSFCompELTests {
 
             for (String expectedResponse : expectedResponseStrings) {
                 if (!page.asText().contains(expectedResponse)) {
-                    Assert.fail("The page did not contain the following expected response: " + expectedResponse);
+                    Assert.fail("The page did not contain the following expected response: " + expectedResponse + "\n" + page.asText());
                 }
             }
         }
@@ -149,7 +138,12 @@ public class JSFCompELTests {
                                         "The order and number of ELResolvers are correct!",
                                         "Invoked JSF 2.2 new methods in ComponentSystemEvent, isAppropriateListener() and processListener()"
         };
-        this.verifyResponse(contextRoot, "ComponentEventListener.xhtml", expectedInResponse);
+
+        if (JakartaEEAction.isEE11OrLaterActive()) {
+            this.verifyResponse(contextRoot, "ComponentEventListener.xhtml?isFaces41OrLater=true", expectedInResponse);
+        } else {
+            this.verifyResponse(contextRoot, "ComponentEventListener.xhtml", expectedInResponse);
+        }
     }
 
     //this tests Jira http://java.net/jira/browse/JAVASERVERFACES_SPEC_PUBLIC-1092
@@ -259,16 +253,12 @@ public class JSFCompELTests {
     @Test
     public void testAjaxEvent() throws Exception {
         // Fix the response once RTC is fixed
-
-        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
-
+        ExtendedWebDriver driver = FATSuite.getWebDriver();
         String url = JSFUtils.createSeleniumURLString(jsfTestServer2, contextRoot, "AjaxEvent.xhtml");
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();
-
         assertTrue("true not found in page", page.isInPage("true"));
-
     }
 
 }

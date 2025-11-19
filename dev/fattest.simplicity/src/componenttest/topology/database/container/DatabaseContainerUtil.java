@@ -12,14 +12,18 @@
  *******************************************************************************/
 package componenttest.topology.database.container;
 
+import java.io.File;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
@@ -64,10 +68,13 @@ public final class DatabaseContainerUtil {
     //Logging Constants
     private static final Class<DatabaseContainerUtil> c = DatabaseContainerUtil.class;
 
-    //Driver replacement key
+    // Location server expects to find JDBC drivers
+    private static File sharedResourcesDir = new File("publish/shared/resources");
+
+    // Replacement keys
     private static String DRIVER_KEY = "DB_DRIVER";
     private static String USER_KEY = "DB_USER";
-    private static String PASS_KEY = "DB_PASS"; 
+    private static String PASS_KEY = "DB_PASS";
 
     private static final String toReplacementString(String key) {
         return "${env." + key + "}";
@@ -75,10 +82,14 @@ public final class DatabaseContainerUtil {
 
     //Required fields
     private final LibertyServer server;
+    private final DatabaseContainerType databaseType;
+
+    // Calculated fields
     private final ServerConfiguration serverClone;
     private final JdbcDatabaseContainer<?> databaseCont;
-    private final DatabaseContainerType databaseType;
-   
+    private final File driverDir;
+    private final String relativeDriverDir;
+    private final boolean hasDriverPermissionVariable;
 
     //Optional fields
     private boolean useGeneric = true;
@@ -92,18 +103,38 @@ public final class DatabaseContainerUtil {
     private Set<JavaPermission> permissions = Collections.emptySet();
     private boolean isModifiable = false;
 
+    //Optional additions/removals
+    private Set<JavaPermission> addPermissions = Collections.emptySet();
+    private Set<JavaPermission> removePermissions = Collections.emptySet();
+
     ///// Constructor /////
     private DatabaseContainerUtil(LibertyServer serv, JdbcDatabaseContainer<?> cont) throws Exception {
+        // Setup required fields
         this.server = Objects.requireNonNull(serv);
         this.serverClone = server.getServerConfiguration().clone();
 
         this.databaseCont = Objects.requireNonNull(cont);
         this.databaseType = DatabaseContainerType.valueOf(databaseCont);
 
+        this.driverDir = findJdbcDriverLocation(databaseType)
+                        .orElseThrow(() -> new IllegalStateException("Could not find where the JDBC Driver was located"));
+        this.relativeDriverDir = driverDir.getAbsolutePath()
+                        .replace(sharedResourcesDir.getAbsolutePath(), "${shared.resource.dir}");
+
+        this.hasDriverPermissionVariable = serverClone.getJavaPermissions()
+                        .stream()
+                        .filter(p -> Objects.nonNull(p.getCodeBase()))
+                        .filter(p -> p.getCodeBase().contains(toReplacementString(DRIVER_KEY)))
+                        .findAny()
+                        .isPresent();
+
         boolean isDerby = DatabaseContainerType.valueOf(databaseCont) == DatabaseContainerType.Derby ||
                           DatabaseContainerType.valueOf(databaseCont) == DatabaseContainerType.DerbyClient;
 
-        if (isDerby) {
+        boolean isDerbyJava17Plus = DatabaseContainerType.valueOf(databaseCont) == DatabaseContainerType.DerbyJava17Plus ||
+                                    DatabaseContainerType.valueOf(databaseCont) == DatabaseContainerType.DerbyClientJava17Plus;
+
+        if (isDerby || isDerbyJava17Plus) {
             this.datasources = Collections.emptySet();
             this.authDatas = Collections.emptySet();
             this.isModifiable = false;
@@ -111,11 +142,11 @@ public final class DatabaseContainerUtil {
         }
 
         //Get a list of datasources that need to be updated
-        Set<DataSource> dsSet = new HashSet<>(); 
-        
+        Set<DataSource> dsSet = new HashSet<>();
+
         //Get general dataSources
         dsSet.addAll(serverClone.getDataSources());
-        
+
         //Get datasources that are nested under databasestores
         for (DatabaseStore dbs : serverClone.getDatabaseStores()) {
             dsSet.addAll(dbs.getDataSources());
@@ -137,9 +168,9 @@ public final class DatabaseContainerUtil {
                         .flatMap(ds -> findAuthDataLocations(ds).stream())
                         .distinct()
                         .collect(Collectors.toSet());
-        
+
         //TODO what about authData elements inside a <databaseStore> element?
-        
+
         //If there is nothing to modify, this is not modifiable
         this.isModifiable |= !this.datasources.isEmpty() || !this.authDatas.isEmpty();
     }
@@ -176,24 +207,69 @@ public final class DatabaseContainerUtil {
      * </pre>
      *
      * TODO consider requiring fat.modify = true for this replacement
+     *
      * @return this
      */
     public DatabaseContainerUtil withDriverReplacement() {
-         this.libraries = new HashMap<>();
+        this.libraries = new HashMap<>();
 
         //Get filesets
         for (Library lib : serverClone.getLibraries())
             for (Fileset fs : lib.getFilesets())
-                if (fs.getIncludes().equals(toReplacementString(DRIVER_KEY)))
-                    this.libraries.put(getElementId(lib), fs); //Reference library id here since it will be more recognizable
-        
-        this.permissions = serverClone.getJavaPermissions().stream()
-                        .filter(p -> p.getCodeBase().contains(toReplacementString(DRIVER_KEY)))
-                        .collect(Collectors.toSet());
-        
-        this.isModifiable |= !this.libraries.isEmpty() || !this.permissions.isEmpty();
+                if (fs.getIncludes().equals(toReplacementString(DRIVER_KEY))) {
+                    //Reference library id here since it will be more recognizable
+                    //We could check the fileset to verify it was configured with the correct relativeDriverDir
+                    this.libraries.put(getElementId(lib), fs);
+                }
+
+        this.isModifiable |= !this.libraries.isEmpty();
 
         return this;
+    }
+
+    /**
+     * If Java 2 Security is enabled:
+     *
+     * Performs substitution of the permission element with the name of the driver for the database used at runtime.
+     * This is helpful during checkpoint tests since the JVM will return null for environment variables before checkpoint.
+     *
+     * Example (${env.DB_DRIVER} will be replaced):
+     *
+     * <pre>
+     * <code>
+     *   &lt;javaPermission codebase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}"
+     *                      className="java.security.AllPermission"/&gt;
+     * </code>
+     * </pre>
+     *
+     * Will also add additional permission elements to server for each support
+     * library for this driver.
+     *
+     * @return this
+     */
+    public DatabaseContainerUtil withPermissionReplacement() {
+        if (server.isJava2SecurityEnabled()) {
+            this.permissions = serverClone.getJavaPermissions()
+                            .stream()
+                            .filter(p -> Objects.nonNull(p.getCodeBase()))
+                            .filter(p -> p.getCodeBase().contains(toReplacementString(DRIVER_KEY)))
+                            .collect(Collectors.toSet());
+
+            this.addPermissions = databaseType.getSupportLibraries()
+                            .stream()
+                            .map(name -> {
+                                JavaPermission p = new JavaPermission();
+                                p.setCodeBase(this.relativeDriverDir + "/" + name);
+                                p.setClassName("java.security.AllPermission");
+                                return p;
+                            })
+                            .collect(Collectors.toSet());
+
+            this.isModifiable |= !this.permissions.isEmpty() || !this.addPermissions.isEmpty();
+        }
+
+        return this;
+
     }
 
     /**
@@ -209,10 +285,38 @@ public final class DatabaseContainerUtil {
      * </code>
      * </pre>
      *
+     * Will also add additional permission elements to server for each support
+     * library for this driver (which will require a config update).
+     *
      * @return this
      */
     public DatabaseContainerUtil withDriverVariable() {
-        this.server.addEnvVar("DB_DRIVER", databaseType.getDriverName());
+        this.server.addEnvVar(DRIVER_KEY, databaseType.streamAllArtifacts().collect(Collectors.joining(", ")));
+
+        /**
+         * It is inadequate to just add the driver key, we must also add additional
+         * permissions for support libraries since there are places where ${env.DB_DRIVER}
+         * are used for permissions.
+         */
+        if (server.isJava2SecurityEnabled() && hasDriverPermissionVariable) {
+            this.addPermissions = databaseType.streamAllArtifacts()
+                            .map(name -> {
+                                JavaPermission p = new JavaPermission();
+                                p.setCodeBase(this.relativeDriverDir + "/" + name);
+                                p.setClassName("java.security.AllPermission");
+                                return p;
+                            })
+                            .collect(Collectors.toSet());
+
+            this.removePermissions = serverClone.getJavaPermissions()
+                            .stream()
+                            .filter(p -> Objects.nonNull(p.getCodeBase()))
+                            .filter(p -> p.getCodeBase().contains(toReplacementString(DRIVER_KEY)))
+                            .collect(Collectors.toSet());
+
+            this.isModifiable |= !this.addPermissions.isEmpty() || !this.removePermissions.isEmpty();
+        }
+
         return this;
     }
 
@@ -226,8 +330,8 @@ public final class DatabaseContainerUtil {
      * @return      this
      */
     public DatabaseContainerUtil withAuthVariables(String user, String pass) {
-        this.server.addEnvVar("DB_USER", user);
-        this.server.addEnvVar("DB_PASS", pass);
+        this.server.addEnvVar(USER_KEY, user);
+        this.server.addEnvVar(PASS_KEY, pass);
         return this;
     }
 
@@ -257,15 +361,15 @@ public final class DatabaseContainerUtil {
 
     ///// Termination /////
     public void modify() throws Exception {
-        
+
         final String m = "modify";
-        
+
         //Skip modify if there is nothing to modify
         if (!isModifiable) {
             Log.info(c, m, "Nothing was found to be modifiable and therefore we will skip the modify step.");
             return;
         }
-        
+
         //If a test suite legitimately wants to call this method outside of the Database Rotation SOE
         //Then we need to fail them on the IBMi SOE to avoid generic errors that arise when trying to infer datasource types.
         if (useGeneric && System.getProperty("os.name").equalsIgnoreCase("OS/400")) {
@@ -276,10 +380,10 @@ public final class DatabaseContainerUtil {
 
         // modify datasources
         if (!datasources.isEmpty()) {
-            
+
             //Create generic or specific properties
             DataSourceProperties commonProps = useGeneric ? new Properties() : databaseType.getDataSourceProps();
-            
+
             //Common configuration
             commonProps.setServerName(databaseCont.getHost());
             commonProps.setPortNumber(Integer.toString(databaseCont.getFirstMappedPort()));
@@ -321,15 +425,15 @@ public final class DatabaseContainerUtil {
             for (DataSource ds : datasources) {
                 Log.info(c, m, "FOUND: DataSource to be enlisted in database rotation. ID: " + getElementId(ds));
 
-                if(ds.getDataSourceProperties().size() != 1) {
+                if (ds.getDataSourceProperties().size() != 1) {
                     throw new RuntimeException("Expected exactly one set of DataSoure properties for DataSource: " + getElementId(ds));
                 }
-                
+
                 //Make a clone of common props and determine username/password
                 DataSourceProperties clone = (DataSourceProperties) commonProps.clone();
-                
-                for(DataSourceProperties originalProps : ds.getDataSourceProperties()) {
-                    if(canUpdate(originalProps)) {
+
+                for (DataSourceProperties originalProps : ds.getDataSourceProperties()) {
+                    if (canUpdate(originalProps)) {
                         clone.setUser(databaseCont.getUsername());
                         clone.setPassword(databaseCont.getPassword());
                     } else {
@@ -337,7 +441,7 @@ public final class DatabaseContainerUtil {
                         clone.setPassword(originalProps.getPassword());
                     }
                 }
-                
+
                 //Replace dataSource properties
                 ds.replaceDatasourceProperties(clone);
             }
@@ -345,11 +449,11 @@ public final class DatabaseContainerUtil {
 
         // Modify authDatas
         for (AuthData ad : authDatas) {
-            if(!canUpdate(ad)) {
+            if (!canUpdate(ad)) {
                 Log.info(c, m, "SKIP: AuthData cannot be enlisted in database rotation. ID: " + getElementId(ad));
                 continue;
             }
-            
+
             Log.info(c, m, "FOUND: AuthData to be enlisted in database rotation.  ID: " + getElementId(ad));
 
             ad.setUser(databaseCont.getUsername());
@@ -359,17 +463,31 @@ public final class DatabaseContainerUtil {
         // Modify libraries
         for (Map.Entry<String, Fileset> entry : libraries.entrySet()) {
             Log.info(c, m, "FOUND: Library to be enlisted in database rotation.  ID: " + entry.getKey());
-            
+
             //Replace includes with driver name
-            entry.getValue().setIncludes(databaseType.getDriverName());
+            entry.getValue().setIncludes(databaseType.streamAllArtifacts().collect(Collectors.joining(", ")));
         }
-        
+
+        // Remove permissions
+        for (JavaPermission permission : removePermissions) {
+            Log.info(c, m, "REMOVE: Permission to be enlisted in database rotation. ID: " + getElementId(permission));
+
+            serverClone.getJavaPermissions().remove(permission);
+        }
+
         // Modify permissions
         for (JavaPermission permission : permissions) {
             Log.info(c, m, "FOUND: Permission to be enlisted in database rotation. ID: " + getElementId(permission));
-            
+
             String codeBase = permission.getCodeBase();
             permission.setCodeBase(codeBase.replace(toReplacementString(DRIVER_KEY), databaseType.getDriverName()));
+        }
+
+        // Add permissions
+        for (JavaPermission permission : addPermissions) {
+            Log.info(c, m, "ADD: Permission for database rotation. ID: " + getElementId(permission));
+
+            serverClone.getJavaPermissions().add(permission);
         }
 
         //Update config
@@ -377,17 +495,6 @@ public final class DatabaseContainerUtil {
     }
 
     ///// Deprecated static methods ////
-
-    /**
-     * Instead use:
-     * <code>
-     * DatabaseContainerUtil.build(server, cont).withDriverReplacement().withDatabaseProperties().modify();
-     * </code>
-     */
-    @Deprecated //TODO remove once Websphere Liberty repository is updated
-    public static void setupDataSourcePropertiesForCheckpoint(LibertyServer serv, JdbcDatabaseContainer<?> cont) throws CloneNotSupportedException, Exception {
-        DatabaseContainerUtil.build(serv, cont).withDriverReplacement().withDatabaseProperties().modify();
-    }
 
     /**
      * Instead use:
@@ -417,100 +524,144 @@ public final class DatabaseContainerUtil {
      */
     private String getElementId(ConfigElement element) {
         return element.getId() == null ? //
-               element.getClass().getSimpleName() + "@" + Integer.toHexString(element.toString().hashCode()) : //
-               element.getId();
+                        element.getClass().getSimpleName() + "@" + Integer.toHexString(element.toString().hashCode()) : //
+                        element.getId();
     }
-    
-    
+
     /**
      * <pre>
      * Determine if we can update AuthData based on the following checks:
-     * 
+     *
      * 1. The original AuthData set fat.modify to true (not null, false, or any other string)
      * 2. The original AuthData did not contain the username ${env.DB_USER} and password ${env.DB_PASS}
      * </pre>
-     * 
-     * @param props The original AuthData element
-     * @return true if the original AuthData can be updated, false otherwise.
+     *
+     * @param  props The original AuthData element
+     * @return       true if the original AuthData can be updated, false otherwise.
      */
     private boolean canUpdate(AuthData ad) {
-        if(ad.getFatModify() == null || //
-           ad.getFatModify().equalsIgnoreCase("false")) {
+        if (ad.getFatModify() == null || //
+            ad.getFatModify().equalsIgnoreCase("false")) {
             return false;
         }
-        
-        if(ad.getUser().equalsIgnoreCase(toReplacementString(USER_KEY)) && //
-           ad.getPassword().equalsIgnoreCase(toReplacementString(PASS_KEY))) {
+
+        if (ad.getUser().equalsIgnoreCase(toReplacementString(USER_KEY)) && //
+            ad.getPassword().equalsIgnoreCase(toReplacementString(PASS_KEY))) {
             return false;
         }
-        
+
         return ad.getFatModify().equalsIgnoreCase("true");
     }
-    
+
     /**
      * <pre>
      * Determine if we can update DataSourceProperties based on the following checks:
-     * 
+     *
      * 1. The original DataSourceProperties contained a username and password
      * 2. The original DataSourceProperties did not contain the username ${env.DB_USER} and password ${env.DB_PASS}
      * </pre>
-     * 
-     * @param props The original DataSourceProperties element
-     * @return true if the original DataSourceProperties can be updated, false otherwise.
+     *
+     * @param  props The original DataSourceProperties element
+     * @return       true if the original DataSourceProperties can be updated, false otherwise.
      */
     private boolean canUpdate(DataSourceProperties props) {
-        if(props.getUser() == null && props.getPassword() == null) {
+        if (props.getUser() == null && props.getPassword() == null) {
             return false;
         }
-        
-        if(props.getUser().equalsIgnoreCase(toReplacementString(USER_KEY)) && //
-                        props.getPassword().equalsIgnoreCase(toReplacementString(PASS_KEY))) {
+
+        if (props.getUser().equalsIgnoreCase(toReplacementString(USER_KEY)) && //
+            props.getPassword().equalsIgnoreCase(toReplacementString(PASS_KEY))) {
             return false;
         }
-        
+
         return true;
     }
 
     /**
      * <pre>
      * Authentication data for a dataSource can be found in any of the following locations:
-     * 
+     *
      * 1. Within the {@code <containerAuthData... />} element of the dataSource.
      * 2. Within the {@code <recoveryAuthData... />} element of the dataSource.
      * 3. Within the {@code <dataSource containerAuthDataRef... /> attribute of the dataSource
-     * 
+     *
      * </pre>
-     * 
+     *
      * @param ds The dataSource
+     *
      * @return a set of AuthDatas that the dataSource references or contains.
      */
     private Set<AuthData> findAuthDataLocations(DataSource ds) {
-        
+
         Set<AuthData> authDataElements = new HashSet<>();
-        
+
         authDataElements.addAll(ds.getContainerAuthDatas());
-        
-        if(ds.getContainerAuthDataRef() != null) {
+
+        if (ds.getContainerAuthDataRef() != null) {
             authDataElements.add(serverClone.getAuthDataElements().getById(ds.getContainerAuthDataRef()));
         }
-        
-        if(ds.getRecoveryAuthDataRef() != null) {
+
+        if (ds.getRecoveryAuthDataRef() != null) {
             authDataElements.add(serverClone.getAuthDataElements().getById(ds.getRecoveryAuthDataRef()));
         }
-        
+
         return authDataElements;
+    }
+
+    /**
+     * Search for the JDBC driver and optional support libraries necessary for
+     * this database container in locations where the server might expect to find it. <br>
+     *
+     * @return Optional - directory of JDBC driver and support libraries if found, empty otherwise.
+     */
+    public Optional<File> findJdbcDriverLocation(DatabaseContainerType type) {
+
+        // Set of possible locations for JDBC drivers (directory prefixed with jdbc)
+        final Set<File> jdbcResourceDirs = Stream.of(sharedResourcesDir.listFiles())
+                        .filter(file -> file.isDirectory())
+                        .filter(dir -> dir.toPath().getFileName().toString().startsWith("jdbc"))
+                        .collect(Collectors.toSet());
+
+        for (File directory : jdbcResourceDirs) {
+            Log.info(c, "findJdbcDriverLocation", "Searching " + directory + " for JDBC driver and supporting libraries.");
+
+            final AtomicBoolean foundAll = new AtomicBoolean(true);
+
+            // Search for each file
+            type.streamAllArtifacts()
+                            .map(name -> new File(directory, name))
+                            .forEach(file -> {
+                                boolean foundFile = file.exists();
+
+                                if (foundFile) {
+                                    Log.info(c, "isJdbcDriverAvailable", "\tFOUND: " + type + " container's JDBC driver in location: " + file.getAbsolutePath());
+                                } else {
+                                    Log.info(c, "isJdbcDriverAvailable", "\tMISSING: " + type + " container's JDBC driver from location: " + file.getAbsolutePath());
+                                }
+
+                                //equivalent to foundAll &= foundFile
+                                foundAll.compareAndSet(true, foundFile);
+                            });
+
+            // Found all in single directory
+            if (foundAll.get()) {
+                return Optional.of(directory);
+            }
+        }
+
+        return Optional.empty();
     }
 
     @Override
     public String toString() {
         return "DatabaseContainerUtil"
-                        + System.lineSeparator() + "[server=" + server.getServerName() + ", databaseType=" + databaseType + ", isModifiable=" + isModifiable 
-                        + System.lineSeparator() + "\tdatasources=" + datasources.stream().map(ds -> getElementId(ds)).collect(Collectors.toList())
-                        + System.lineSeparator() + "\tauthDatas=" + authDatas.stream().map(ad -> getElementId(ad)).collect(Collectors.toList()) 
-                        + System.lineSeparator() + "\tlibraries=" + libraries.keySet()
-                        + System.lineSeparator() + "\tpermissions=" + permissions.stream().map(ps -> getElementId(ps)).collect(Collectors.toList())
-                        + System.lineSeparator() + "]";
+               + System.lineSeparator() + "[server=" + server.getServerName() + ", databaseType=" + databaseType + ", isModifiable=" + isModifiable
+               + System.lineSeparator() + "\tdatasources=" + datasources.stream().map(ds -> getElementId(ds)).collect(Collectors.toList())
+               + System.lineSeparator() + "\tauthDatas=" + authDatas.stream().map(ad -> getElementId(ad)).collect(Collectors.toList())
+               + System.lineSeparator() + "\tlibraries=" + libraries.keySet()
+               + System.lineSeparator() + "\tpermissions=" + permissions.stream().map(ps -> getElementId(ps)).collect(Collectors.toList())
+               + System.lineSeparator() + "\taddPermissions=" + addPermissions.stream().map(ps -> getElementId(ps)).collect(Collectors.toList())
+               + System.lineSeparator() + "]";
     }
-    
-    
+
 }

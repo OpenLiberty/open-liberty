@@ -784,7 +784,7 @@ goto:eof
             if not defined file (
                set file=!WLP_INSTALL_DIR!\lib\security\fips140_3\FIPS140-3-Liberty.properties
             )
-            for /f "delims== " %%l in (!file!) do (
+            for /f "usebackq delims== " %%l in ("!file!") do (
               set line=%%l
               if /i "!line:~0,18!" == "RestrictedSecurity" (
                 set "line=!line:~19!"
@@ -793,7 +793,7 @@ goto:eof
                 )
               )
             )
-            set JVM_OPTIONS=-Dsemeru.fips=true -Dsemeru.customprofile=!profileName! -Djava.security.propertiesList=!ENABLE_FIPS140_3! !JVM_OPTIONS!
+            set JVM_OPTIONS=-Dsemeru.fips=true -Dsemeru.customprofile=!profileName! -Djava.security.propertiesList="!ENABLE_FIPS140_3!" !JVM_OPTIONS!
         )
       )
     )

@@ -43,7 +43,8 @@ tested.features: \
   jndi-1.0, \
   localConnector-1.0, \
   messaging-3.1, \
-  persistence-3.2
+  persistence-3.2, \
+  monitor-1.0
   
 -buildpath: \
   com.ibm.ws.componenttest.2.0;version=latest,\
@@ -81,5 +82,8 @@ tested.features: \
   io.openliberty.springboot.fat40.jms.app;version=latest, \
   io.openliberty.springboot.fat40.transactions.app;version=latest, \
   io.openliberty.springboot.fat40.data.app;version=latest, \
-  io.openliberty.springboot.fat40.validation.app;version=latest
+  io.openliberty.springboot.fat40.validation.app;version=latest, \
+  io.openliberty.springboot.fat40.http.app;version=latest, \
+  io.openliberty.springboot.fat40.http.contextroot.app;version=latest, \
+  io.openliberty.springboot.fat40.aop.app;version=latest
 

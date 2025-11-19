@@ -1,0 +1,33 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Sample Custom Password Encryption
+Bundle-SymbolicName: com.ibm.ws.crypto.sample.customencryption
+Bundle-Description: WAS Sample Custom Encryption Code, version=${bVersion}
+Bundle-ActivationPolicy: lazy
+
+# For each exported package, create (in that package) a package-info.java...
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+
+Export-Package: \
+ com.ibm.ws.crypto.sample.customencryption;provide:=true
+
+  
+Import-Package: *
+
+-dsannotations: \
+  com.ibm.ws.crypto.sample.customencryption.CustomEncryptionImpl
+
+instrument.disabled: true
+
+-buildpath: \
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+  com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+  com.ibm.ws.crypto.passwordutil;version=latest
+
+publish.wlp.jar.disabled: true
+test.project: true

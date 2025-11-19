@@ -46,22 +46,6 @@ public interface NumericExpression<T, N extends Number & Comparable<N>> //
         return NumericCast.of(this, Long.class);
     }
 
-    default NumericExpression<T, N> divide(N divisor) {
-        return NumericOperatorExpression.of(Operator.DIVIDE,
-                                            this,
-                                            divisor);
-    }
-
-    default NumericExpression<T, N> //
-                    divide(NumericExpression<? super T, N> divisorExpression) {
-        return NumericOperatorExpression.of(Operator.DIVIDE,
-                                            this,
-                                            divisorExpression);
-    }
-
-    // TODO either remove divide (above) or dividedBy (below), depending on
-    // what ends up in the API.
-
     default NumericExpression<T, N> dividedBy(N divisor) {
         return NumericOperatorExpression.of(Operator.DIVIDE,
                                             this,

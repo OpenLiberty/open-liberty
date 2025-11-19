@@ -40,7 +40,9 @@ encode.enterText=Immetti testo:
 encode.reenterText=Reimmetti testo:
 encode.readError=Errore di lettura del testo.
 encode.entriesDidNotMatch=Le immissioni non corrispondevano.
-
+encode.mutuallyExclusiveArgError=Il file di input non pu\u00f2 specificare entrambe le propriet\u00e0 {0} e {1}.
+encode.aesConfigFileEncryptionAmbiguous=ERRORE: Il file di input non pu\u00f2 essere utilizzato se contiene entrambe le variabili {0} e {1}.
+encode.aesConfigFileMissingEncryptionVariables=Impossibile codificare la password; il file di input non contiene le variabili {0} o {1}, oppure il file di input \u00e8 malformato.
 
 password.enterText=Immetti password:
 password.reenterText=Reimmetti password:
@@ -98,7 +100,7 @@ createLTPAKeys.fileExists=Il file {0} gi\u00e0 esiste.  Impossibile creare un fi
 createLTPAKeys.createdFile=File di chiavi LTPA creato: {0}\n Includere la seguente configurazione in server.xml\n{1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=L'installazione di Java non proviene da IBM Semeru Runtimes n\u00e9 da IBM SDK, o se lo \u00e8, non supporta FIPS 140-3.\nInstallare Java da IBM Semeru Runtimes o da IBM SDK utilizzando una versione e un sistema operativo che supporti FIPS 140-3.\nSe si utilizza il runtime IBM Semeru, utilizzare le versioni 11.0.29.0, 17.0.17.0, 21.0.9.0 o successive.\nSe si utilizza l'SDK IBM, utilizzare la versione 8.0.8.30 o superiore.
+configureFIPS.notIbmSdkNorSemeru=L'installazione di Java non proviene da IBM Semeru Runtimes n\u00e9 da IBM SDK, o se lo \u00e8, non supporta FIPS 140-3.\nInstallare Java da IBM Semeru Runtimes o da IBM SDK utilizzando una versione e un sistema operativo che supporti FIPS 140-3.\nSe si utilizza il runtime IBM Semeru, utilizzare le versioni 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0 o successive.\nSe si utilizza l'SDK IBM, utilizzare la versione 8.0.8.30 o superiore.
 
 configureFIPS.zosNotAvailable=Il comando securityUtility configureFIPS non \u00e8 supportato su z/OS.
 
@@ -129,3 +131,8 @@ configureFIPS.fipsNotEnabled=FIPS 140-3 non \u00e8 gi\u00e0 abilitato nel file {
 configureFIPS.restartServer=Riavviare il server {0} per applicare la modifica.
 configureFIPS.restartClient=Riavviare il client {0} per applicare la modifica.
 configureFIPS.restart=Riavviare i server e i client per applicare la modifica.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=Il file XML di codifica della password \u00e8 stato creato con successo.\nPer attivare le modifiche, aggiungere un riferimento alla posizione del file XML al file server.xml : <include location="{0}" />
+generateaeskey.failFileExists=Il file {0} esiste e non verr\u00e0 sovrascritto. Specificate un nome di file un altro nome di file o rimuovere il file esistente prima di riprovare.
+generateaeskey.failFileIsDirectory=Il valore {0} specificato per il nome del file \u00e8 una directory. Specificare il nome completo del file e riprovare.

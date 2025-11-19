@@ -142,7 +142,7 @@ steps:
 - stepName: Copyright Header Check
   workType: Jenkins
   projectName: copyrightHeaderCheck
-  timeoutInMinutes: 120
+  timeoutInMinutes: 1440
   properties:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
@@ -150,7 +150,7 @@ steps:
 - stepName: Prohibited Terms Check
   workType: Jenkins
   projectName: prohibitedTermsCheck
-  timeoutInMinutes: 120
+  timeoutInMinutes: 1440
   properties:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
@@ -158,7 +158,7 @@ steps:
 - stepName: GenAI Assistance Code Check
   workType: Jenkins
   projectName: genAICodeCheck
-  timeoutInMinutes: 120
+  timeoutInMinutes: 1440
   properties:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
@@ -166,7 +166,7 @@ steps:
 - stepName: DHE Server Artifacts Check
   workType: Jenkins
   projectName: dheServerCheck
-  timeoutInMinutes: 120
+  timeoutInMinutes: 1440
   properties:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
@@ -174,7 +174,7 @@ steps:
 - stepName: Code Checklist Creation
   workType: Jenkins
   projectName: codeCheckListBuilder
-  timeoutInMinutes: 120
+  timeoutInMinutes: 1440
   dependsOn:
   - stepName: PR Changes
     awaitOutputProperties: true

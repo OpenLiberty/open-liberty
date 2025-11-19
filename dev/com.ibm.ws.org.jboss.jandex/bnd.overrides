@@ -5,4 +5,4 @@ Bundle-Name: jandex
 Bundle-SymbolicName: com.ibm.ws.org.jboss.jandex
 
 Include-Resource:\
-        @${repo;org.jboss:jandex;2.4.3.Final;EXACT}!/!META-INF/*
+        @\${repo;org.jboss:jandex;2.4.3.Final;EXACT}!/!META-INF/*

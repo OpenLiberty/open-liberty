@@ -38,12 +38,19 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(ExpectedAppFailureValidator.APP_START_FAILED_CODE); // will be extended for translations
+        server.stopServer(ExpectedAppFailureValidator.APP_START_FAILED_CODE,
+                          "CWMCM0001E", // Blank arguments
+                          "CWMCM0002E", // Duplicate arguments
+                          "CWMCM0004E", // Duplicate toold
+                          "CWMCM0005E", // There are one or more MCP validation errors.
+                          "CWMCM0006E", // Duplicate special arguments.
+                          "CWMCM0007E" // Invalid Special arguments.
+        );
     }
 
     @Test
     public void testDuplicateToolDeploymentError() throws Exception {
-        String expectedErrorHeader = "More than one MCP tool has the same name:";
+        String expectedErrorHeader = "CWMCM0004E: There are multiple MCP tool methods named (.+?). The methods are (.+?).";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest.bob",
                                                  "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest.duplicateBob",
                                                  "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest2.duplicateBob",
@@ -56,7 +63,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testBlankToolArg() throws Exception {
-        String expectedErrorHeader = "Blank arguments found in MCP Tool:";
+        String expectedErrorHeader = "CWMCM0001E: The (.+?) MCP tool method has one or more arguments with blank names";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.argNameisBlank",
                                                  "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.argNameisBlankVariant");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Blank Tool Arg: ", expectedErrorHeader, expectedErrorList, server);
@@ -64,7 +71,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testDuplicatesToolArgs() throws Exception {
-        String expectedErrorHeader = "Duplicate arguments found in MCP Tool:";
+        String expectedErrorHeader = "CWMCM0002E: The (.+?) MCP tool method has more than one argument named (.+?)";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.duplicateParam.*arg",
                                                  "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.duplicateParamVariant.*arg");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Duplicate Tool Arg: ", expectedErrorHeader, expectedErrorList, server);
@@ -72,14 +79,14 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testDuplicateSpecialArgsTestCase() throws Exception {
-        String expectedErrorHeader = "Only 1 instance is allowed, of type: ";
+        String expectedErrorHeader = "The (.+?) MCP Tool has more than one parameter with the (.+?) type. Use only one (.+?) parameter in each Tool method.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateSpecialArgsErrorTest.duplicateCancellation");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Duplicate Special Args: ", expectedErrorHeader, expectedErrorList, server);
     }
 
     @Test
     public void testInvalidSpecialArgsTestCase() throws Exception {
-        String expectedErrorHeader = "Special argument type not supported: ";
+        String expectedErrorHeader = "The (.+?) MCP Tool has a parameter of type (.+?) which is not a recognized special argument type and does not have a `@ToolArg` annotation.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidSpecialArgsErrorTest.invalidSpecialArgumentTool");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Special Args: ", expectedErrorHeader, expectedErrorList, server);
     }

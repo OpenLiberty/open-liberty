@@ -37,6 +37,7 @@ import io.openliberty.security.oidcclientcore.authentication.AuthorizationReques
 import io.openliberty.security.oidcclientcore.exceptions.OidcUrlNotHttpsException;
 import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
 import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
+import io.openliberty.security.oidcclientcore.storage.OidcClientStorageConstants;
 import io.openliberty.security.oidcclientcore.storage.OidcStorageUtils;
 import io.openliberty.security.oidcclientcore.storage.StorageProperties;
 
@@ -115,6 +116,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
     @Override
     protected StorageProperties getNonceStorageProperties() {
         CookieStorageProperties props = new CookieStorageProperties();
+        props.setStorageLifetimeSeconds((int) clientConfig.getAuthenticationTimeLimitInSeconds());
         return props;
     }
 
@@ -338,7 +340,7 @@ public class OidcAuthorizationRequest extends AuthorizationRequest {
         }
         sb.append("<script type=\"text/javascript\" language=\"javascript\">")
                 .append("var loc=window.location.href;")
-                .append("document.cookie=\"").append(cookieName).append("=\"").append("+loc+").append("\";" + strDomain + " path=/;");
+                .append("document.cookie=\"").append(cookieName).append("=\"").append("+loc+").append("\";" + strDomain + " path=/;").append(" max-age=" + getOriginalRequestUrlStorageProperties().getStorageLifetimeSeconds() + ";");
 
         JavaScriptUtils jsUtils = new JavaScriptUtils();
         String cookieProps = jsUtils.createHtmlCookiePropertiesString(jsUtils.getWebAppSecurityConfigCookieProperties());

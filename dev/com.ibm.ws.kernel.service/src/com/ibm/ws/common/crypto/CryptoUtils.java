@@ -95,6 +95,9 @@ public class CryptoUtils {
     public static final String SIGNATURE_ALGORITHM_SHA1WITHRSA = "SHA1withRSA";
     public static final String SIGNATURE_ALGORITHM_SHA256WITHRSA = "SHA256withRSA";
     public static final String SIGNATURE_ALGORITHM_SHA512WITHRSA = "SHA512withRSA";
+    public static final String SIGNATURE_ALGORITHM_ECDSAWITHSHA256 = "ECDSAwithSHA256";
+    public static final String SIGNATURE_ALGORITHM_ECDSAWITHSHA384 = "ECDSAwithSHA384";
+    public static final String SIGNATURE_ALGORITHM_ECDSAWITHSHA512 = "ECDSAwithSHA512";
     public static final String RSA_SHA_512 = "RSA/SHA-512";
     public static final String RSA_SHA_1 = "RSA/SHA-1";
     public static final String CRYPTO_ALGORITHM_RSA = "RSA";
@@ -424,26 +427,7 @@ public class CryptoUtils {
         return isEnhancedSecurity;
     }
 
-    /**
-     * Checks if Beta is enabled and FIPS 140-3 is enabled for either Semeru or IBM JDK.
-     *
-     * @return true if Beta is enabled and FIPS 140-3 is enabled for either Semeru or IBM JDK. Otherwise, false.
-     */
-    public static boolean isFips140_3EnabledWithBetaGuard() {
-        return isRunningBetaMode() && isFips140_3Enabled();
-    }
-
-    /**
-     * Checks if Beta is enabled and FIPS 140-3 is enabled for Semeru.
-     * Private for now unless there is a use-case to add functionality specific to IBM Semeru FIPS 140-3.
-     *
-     * @return true if Beta is enabled and FIPS 140-3 is enabled for Semeru. Otherwise, false.
-     */
-    private static boolean isSemeruFips140_3EnabledWithBetaGuard() {
-        return isRunningBetaMode() && isSemeruFips140_3Enabled();
-    }
-
-    public static boolean isRunningBetaMode() {
+    private static boolean isRunningBetaMode() {
         if (!ProductInfo.getBetaEdition()) {
             return false;
         } else {
@@ -561,7 +545,7 @@ public class CryptoUtils {
      */
     public static boolean checkFipsCompatibleSalt(String saltString, boolean logIfIncompatible) {
         boolean isCompatible = true;
-        if (CryptoUtils.isFips140_3EnabledWithBetaGuard() && saltString != null && !saltString.isEmpty() && saltString.length() < FIPS1403_PBKDF2_MINIMUM_SALT_LENGTH_BYTES) {
+        if (CryptoUtils.isFips140_3Enabled() && saltString != null && !saltString.isEmpty() && saltString.length() < FIPS1403_PBKDF2_MINIMUM_SALT_LENGTH_BYTES) {
             isCompatible = false;
         }
         // TODO delete this logging
@@ -648,15 +632,15 @@ public class CryptoUtils {
     }
 
     public static int getPbkdf2Salt(int dflt) {
-        return isFips140_3EnabledWithBetaGuard() ? FIPS1403_PBKDF2_SALT_LENGTH_BYTES : dflt;
+        return isFips140_3Enabled() ? FIPS1403_PBKDF2_SALT_LENGTH_BYTES : dflt;
     }
 
     public static int getPbkdf2Iterations(int dflt) {
-        return isFips140_3EnabledWithBetaGuard() ? FIPS1403_PBKDF2_ITERATIONS : dflt;
+        return isFips140_3Enabled() ? FIPS1403_PBKDF2_ITERATIONS : dflt;
     }
 
     public static int getPbkdf2KeyLength(int dflt) {
-        return isFips140_3EnabledWithBetaGuard() ? FIPS1403_PBKDF2_KEY_LENGTH_BITS : dflt;
+        return isFips140_3Enabled() ? FIPS1403_PBKDF2_KEY_LENGTH_BITS : dflt;
     }
 
     public static final byte[] AES_V0_SALT = new byte[] { -89, -94, -125, 57, 76, 90, -77, 79, 50, 21, 10, -98, 47, 23, 17, 56, -61, 46, 125, -128 };

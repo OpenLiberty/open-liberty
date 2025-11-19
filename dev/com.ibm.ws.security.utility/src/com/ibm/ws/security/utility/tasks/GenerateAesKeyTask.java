@@ -41,7 +41,7 @@ public class GenerateAesKeyTask extends BaseCommandTask {
     private static final List<String> VALID_ARGUMENTS = Collections.unmodifiableList(
                                                                                      Arrays.asList(BaseCommandTask.ARG_KEY, ARG_FILE));
 
-    private static final String TASK_NAME = "generateAESKey";
+    protected static final String TASK_NAME = "generateAESKey";
     private final IFileUtility fileUtil;
 
     /**
@@ -89,8 +89,12 @@ public class GenerateAesKeyTask extends BaseCommandTask {
         if (builder.getFilePath() == null) {
             stdout.println(builder.getKey());
         } else {
-            builder.generateXML();
-            stdout.println(getMessage("generate.success", new File(builder.getFilePath()).getAbsolutePath()));
+            if (builder.generateXML()) {
+                stdout.println(getMessage("generate.success", new File(builder.getFilePath()).getAbsolutePath()));
+            } else {
+                // no need to print additional information, file utility will explain why the file write failed.
+                return SecurityUtilityReturnCodes.ERR_GENERIC;
+            }
         }
         return SecurityUtilityReturnCodes.OK;
 
@@ -125,9 +129,10 @@ public class GenerateAesKeyTask extends BaseCommandTask {
         String keyPhrase = null;
         String filePath = null;
 
-        for (String arg : args) {
+        for (int i = 1; i < args.length; i++) {
+            String arg = args[i];
             if (!arg.startsWith("--")) {
-                continue;
+                throw new IllegalArgumentException(getMessage("invalidArg", arg));
             }
 
             int index = arg.indexOf('=');
@@ -149,6 +154,9 @@ public class GenerateAesKeyTask extends BaseCommandTask {
                 }
                 keyPhrase = value;
             } else if (ARG_FILE.equals(option)) {
+                if (value == null) {
+                    throw new IllegalArgumentException(getMessage("missingValue", option));
+                }
                 File file = new File(value);
                 if (fileUtil.isDirectory(file)) {
                     throw new IllegalArgumentException(getMessage("generateaeskey.failFileIsDirectory", value));
@@ -247,8 +255,8 @@ public class GenerateAesKeyTask extends BaseCommandTask {
          * @throws NoSuchAlgorithmException
          *
          */
-        public void generateXML() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
-            generateXML(this.getKey(), this.filePath);
+        public boolean generateXML() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+            return generateXML(this.getKey(), this.filePath);
         }
 
         /**
@@ -259,10 +267,17 @@ public class GenerateAesKeyTask extends BaseCommandTask {
          * @throws IOException
          * @throws InvalidKeySpecException
          * @throws NoSuchAlgorithmException
+         * @returns true if the file was created successfully, false if the file couldn't be created.
          */
-        private void generateXML(String key, String filePath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        private boolean generateXML(String key, String filePath) throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
             String xmlContent = formatXml(AESKeyManager.NAME_WLP_BASE64_AES_ENCRYPTION_KEY, key);
-            fileUtil.writeToFile(stderr, xmlContent, new File(filePath));
+            File outFile = new File(filePath);
+
+            if (!fileUtil.createParentDirectory(stderr, outFile)) {
+                throw new IOException(getMessage("fileUtility.failedDirCreate", filePath));
+            }
+            return fileUtil.writeToFile(stderr, xmlContent, outFile);
+
         }
 
         /**

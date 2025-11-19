@@ -1,0 +1,6 @@
+<server description="LTPA Test Server">
+	<include location="../fatTestPorts.xml" />
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+	</featureManager>
+</server> 

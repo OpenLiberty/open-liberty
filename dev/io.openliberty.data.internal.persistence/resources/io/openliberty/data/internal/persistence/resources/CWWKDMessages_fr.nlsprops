@@ -508,3 +508,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Supprimer l'annotation conflictuel
 CWWKD1118.param.anno.conflict=CWWKD1118E: Le param\u00e8tre {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} ne peut pas \u00eatre annot\u00e9 avec les annotations : {3}. Deux ou plusieurs annotations sont contradictoires.
 CWWKD1118.param.anno.conflict.explanation=La combinaison d'annotations de param\u00e8tres n'est pas valide.
 CWWKD1118.param.anno.conflict.useraction=Supprimer une ou plusieurs des annotations conflictuelles du param\u00e8tre de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} permet de r\u00e9cup\u00e9rer des pages qui n''incluent pas un nombre total d''\u00e9l\u00e9ments et de pages parce que la requ\u00eate contient le mot-cl\u00e9 {2}. La requ\u00eate compl\u00e8te est la suivante : {3}.
+CWWKD1119.keyword.prevents.count.explanation=Le mot-cl\u00e9 est incompatible avec la possibilit\u00e9 d'obtenir un d\u00e9compte total des \u00e9l\u00e9ments et des pages.
+CWWKD1119.keyword.prevents.count.useraction=Remplacez la requ\u00eate par une autre qui n'utilise pas le mot-cl\u00e9 ou \u00e9vitez de demander un nombre total d'\u00e9l\u00e9ments et de pages.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} sp\u00e9cifie une requ\u00eate qui inclut le mot-cl\u00e9 {2}, ce qui est incompatible avec la pagination bas\u00e9e sur le curseur. Les requ\u00eates pour la pagination par curseur doivent se terminer par une clause WHERE et ne doivent pas inclure de sous-requ\u00eates. La requ\u00eate est la suivante : {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Les mots-cl\u00e9s tels que GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT et UNION ne sont pas compatibles avec la pagination bas\u00e9e sur le curseur.
+CWWKD1120.cursor.keyword.mismatch.useraction=R\u00e9\u00e9crivez la requ\u00eate pour n'inclure que les clauses : SELECT, FROM et WHERE.

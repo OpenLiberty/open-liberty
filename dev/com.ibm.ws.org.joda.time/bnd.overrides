@@ -15,5 +15,5 @@ Export-Package: \
 Private-Package: org.joda.time.*;version="1.6.2"
 
 Include-Resource: \
- @${repo;joda-time:joda-time;1.6.2}!/org/joda/time/**/*xml,\
- @${repo;joda-time:joda-time;1.6.2}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|org/*)
+ @\${repo;joda-time:joda-time;1.6.2}!/org/joda/time/**/*xml,\
+ @\${repo;joda-time:joda-time;1.6.2}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|org/*)

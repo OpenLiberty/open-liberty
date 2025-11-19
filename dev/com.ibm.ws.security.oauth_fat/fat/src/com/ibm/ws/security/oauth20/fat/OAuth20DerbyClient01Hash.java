@@ -22,10 +22,6 @@ import org.junit.runner.RunWith;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 
-import componenttest.topology.impl.JavaInfo;
-import componenttest.topology.impl.JavaInfo.Vendor;
-import com.ibm.websphere.simplicity.log.Log;
-
 @RunWith(FATRunner.class)
 public class OAuth20DerbyClient01Hash extends OAuth20Client01Common {
 
@@ -55,22 +51,14 @@ public class OAuth20DerbyClient01Hash extends OAuth20Client01Common {
                       server.waitForStringInLog("CWWKZ0001I.*oAuth20DerbySetup"));
     }
 
-    /**
-     * Temporary workaround for RTC 305962 on IBM Java8 FIPS SOE builds where beta guard is not enabled and the default iterations value 2048 is used.
-     * TODO: Once the beta guard is removed from Semeru FIPS SOE builds, the workaround will also be removed and the enhanced value will be used for both java with FIPS.
-     *
-     */ 
     @Override
     @Test
     @AllowedFFDC({ "java.sql.SQLRecoverableException" })
     public void testOAuthDerbyCodeFlow() throws Exception {
         super.testOAuthDerbyCodeFlow();
-  
-        JavaInfo javaInfo = JavaInfo.forServer(server);
-        Log.info(thisClass, "testOAuthDerbyCodeFlow", "javaInfo.majorVersion() is: " + javaInfo.majorVersion() + ", and " + "isIBMJVM() is: " + server.isIBMJVM());
-        boolean isIBMJVMGreaterOrEqualTo11 = ((javaInfo.majorVersion() >= 11) && (server.isIBMJVM()));
-        boolean isSemeruFips = (server.isFIPS140_3EnabledAndSupported() && isIBMJVMGreaterOrEqualTo11) ;
-        String iterations = isSemeruFips ? "210000" : "2048"; 
+
+        boolean isFips = server.isFIPS140_3EnabledAndSupported();
+        String iterations = isFips ? "210000" : "2048";
 
         String msg = checkDerbyEntry("http://" + server.getHostname() + ":" + server.getHttpDefaultPort(), server.getHttpDefaultPort(), "dclient01", "OAuthConfigDerby");
         assertNotNull("Servlet should have returned a secret type", msg);

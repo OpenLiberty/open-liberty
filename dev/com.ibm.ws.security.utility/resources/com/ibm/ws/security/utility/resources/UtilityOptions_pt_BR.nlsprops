@@ -51,13 +51,17 @@ help.usage.options=\t{0} help [actionName]
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 encode.desc=\tCodificar o texto fornecido.\n\n\tSe a sua senha incluir caracteres especiais, voc\u00ea dever\u00e1 escapar de cada caractere especial para ajudar a garantir que a senha seja codificada corretamente.\n\tOs caracteres especiais e os caracteres de escape podem variar de acordo com o seu sistema operacional.\n\tPor exemplo, em sistemas UNIX, pa$$W0rd deve ser fornecido como pa\\$\\$W0rd.\n\tPara obter mais informa\u00e7\u00f5es, consulte a documenta\u00e7\u00e3o de codifica\u00e7\u00e3o do Open Liberty securityUtility.
 #Note to translator the word "encode" should not be translated
-encode.usage.options=\t{0} encode [options]
-encode.option-key.text=\ \ \ \ textToEncode
-encode.option-desc.text=\tSe nenhum argumento for especificado, a ferramenta entrar\u00e1 no\n\tmodo interativo; caso contr\u00e1rio, o texto fornecido ser\u00e1 codificado.\n\tTexto com espa\u00e7os deve estar totalmente entre aspas se especificado como um argumento.
+encode.usage.options=\t{0} codificar [op\u00e7\u00f5es] textToEncode
+encode.option-key.1.text=\ \ \ \ textToEncode
+encode.option-desc.1.text=\tSe nenhum argumento for especificado, a ferramenta entrar\u00e1 no modo interativo caso contr\u00e1rio, o texto fornecido ser\u00e1 codificado.\n\tO texto com espa\u00e7os deve ser totalmente citado se for especificado como um argumento.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tEspecifique como codificar a senha. As codifica\u00e7\u00f5es compat\u00edveis s\u00e3o xor, aes, aes-128, e hash. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. O Aes criptografa usando uma chave de aes-256 bits.\n\taes-128 pode ser usado para compatibilidade com vers\u00f5es do servidor anteriores a 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[chave]
-encode.option-desc.key=\tEspecifique uma chave a ser usada ao codificar usando AES. Ser\u00e1 feito hash dessa\n\tsequ\u00eancia para produzir uma chave de criptografia que ser\u00e1 usada para criptografar\n\te decriptografar a senha. A chave pode ser fornecida ao servidor\n\tdefinindo-se a vari\u00e1vel wlp.password.encryption.key cujo valor \u00e9 a\n\tchave. Se esta op\u00e7\u00e3o n\u00e3o for fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
+encode.option-desc.key=\tEspecifique uma chave a ser utilizada quando a codifica\u00e7\u00e3o utilizando AES. Essa string ser\u00e1 transformada em hash para produzir uma chave de criptografia, que \u00e9 usada para criptografar e descriptografar a senha. A chave pode ser fornecida ao servidor definindo a vari\u00e1vel wlp.password.encryption.key cujo valor \u00e9 a chave. Se esta op\u00e7\u00e3o n\u00e3o for fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
+encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
+encode.option-desc.base64Key=\tUma chave de AES-256 bit codificada em base64 a ser usada para criptografar e descriptografar a senha senha. A chave pode ser fornecida ao servidor definindo a vari\u00e1vel vari\u00e1vel wlp.aes.encryption.key cujo valor \u00e9 a chave. Se --base64Key for for especificado, ent\u00e3o --aesConfigFile e --key n\u00e3o poder\u00e3o ser especificados.
+encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+encode.option-desc.aesConfigFile=\tUm arquivo de propriedades XML ou Java com uma vari\u00e1vel chamada wlp.password.encryption.key ou wlp.aes.encryption.key com valores v\u00e1lidos de v\u00e1lidos, respectivamente. Ambas as vari\u00e1veis n\u00e3o podem ser especificadas no mesmo arquivo.\n\tSe --aesConfigFile for especificado, --key e --base64Key n\u00e3o poder\u00e3o ser especificados.
 encode.option-key.notrim=\ \ \ \ --notrim
 encode.option-desc.notrim=\tEspecifique se os caracteres de espa\u00e7o ser\u00e3o removidos do in\u00edcio e\n\tdo t\u00e9rmino do texto especificado. Se essa op\u00e7\u00e3o for especificada, o texto\n\tfornecido ser\u00e1 codificado no estado em que se encontra.\n\tSe essa op\u00e7\u00e3o n\u00e3o for especificada, os caracteres de espa\u00e7o do in\u00edcio\n\te do t\u00e9rmino do texto especificado ser\u00e3o removidos. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
@@ -113,6 +117,11 @@ sslCert.option-key.ext=\ \ \ \ Informa\u00e7\u00f5es da extens\u00e3o --extInfo=
 sslCert.option-desc.ext=\tInforma\u00e7\u00f5es da extens\u00e3o de certificado a serem inclu\u00eddas no certificado.\n\tA extens\u00e3o padr\u00e3o \u00e9 uma entrada de Nome alternativo do assunto que usa o \n\tnome do host. Esta sinaliza\u00e7\u00e3o segue a mesma sintaxe que a sinaliza\u00e7\u00e3o -ext \n\t do comando Java Keytool. Essa sinaliza\u00e7\u00e3o pode ser usada v\u00e1rias vezes no comando\n 
 #line.
 
+sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+sslCert.option-desc.passwordBase64Key=\tUma chave de AES-256 bit codificada em base64 a ser usada para criptografar e descriptografar a senha senha. A chave pode ser fornecida ao servidor definindo a vari\u00e1vel wlp.aes.encryption.key cujo valor \u00e9 a chave.\n\tSe --passwordBase64Key for especificado, ent\u00e3o --aesConfigFile e --passwordKey n\u00e3o poder\u00e3o ser especificados.
+sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+sslCert.option-desc.aesConfigFile=\tUm arquivo de propriedades XML ou Java com uma vari\u00e1vel chamada wlp.password.encryption.key ou wlp.aes.encryption.key com valores v\u00e1lidos de v\u00e1lidos, respectivamente. Ambas as vari\u00e1veis n\u00e3o podem ser especificadas no mesmo arquivo.\n\tSe --aesConfigFile for especificado, ent\u00e3o --passwordBase64Key e --passwordKey n\u00e3o poder\u00e3o ser especificados.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -134,6 +143,10 @@ createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
 createLTPAKeys.option-desc.password.encoding=\tEspecifique como codificar a senha de chaves de LTPA no server.xml.\n\tAs codifica\u00e7\u00f5es suportadas s\u00e3o xor e aes. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. \n\tUse o comando securityUtility encode --listCustom para verificar se algumas\n \tcriptografias customizadas adicionais s\u00e3o suportadas.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[chave]
 createLTPAKeys.option-desc.password.key=\tEspecifique uma chave a ser usada ao codificar a senha de chaves de LTPA usando\n \tAES. Ser\u00e1 feito hash dessa sequ\u00eancia para produzir uma chave de criptografia\n\tque ser\u00e1 usada para criptografar e decriptografar a senha. A chave pode\n\tser fornecida para o servidor definindo-se a vari\u00e1vel\n\twlp.password.encryption.key cujo valor \u00e9 a senha. Se esta op\u00e7\u00e3o n\u00e3o\n\tfor fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
+createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+createLTPAKeys.option-desc.passwordBase64Key=\tUma chave de AES-256 bit codificada em base64 a ser usada para criptografar e descriptografar a senha senha. A chave pode ser fornecida ao servidor definindo a vari\u00e1vel vari\u00e1vel wlp.aes.encryption.key cujo valor \u00e9 a chave. Se --passwordBase64Key for especificado, ent\u00e3o --aesConfigFile e --passwordKey n\u00e3o podem ser especificados.
+createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+createLTPAKeys.option-desc.aesConfigFile=\tUm arquivo de propriedades XML ou Java com uma vari\u00e1vel chamada wlp.password.encryption.key ou wlp.aes.encryption.key com valores v\u00e1lidos de v\u00e1lidos, respectivamente. Ambas as vari\u00e1veis n\u00e3o podem ser especificadas no mesmo arquivo.\n\tSe --aesConfigFile for especificado, ent\u00e3o --passwordBase64Key e --passwordKey n\u00e3o poder\u00e3o ser especificados.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -181,3 +194,19 @@ configureFIPS.option-desc.3.customProfileFile=\tO arquivo para gravar o perfil p
 configureFIPS.option-key.4.disable=\ \ \ \ --disable
 
 configureFIPS.option-desc.4.disable=\tDesative o FIPS 140-3 definindo a vari\u00e1vel de ambiente ENABLE_FIPS140_3 como false. Essa op\u00e7\u00e3o pode ser usada com as op\u00e7\u00f5es cliente e servidor para especificar o cliente ou o servidor para desativar o FIPS 140-3.\n\tCaso contr\u00e1rio, ele desativa o FIPS 140-3 para todos os clientes, servidores e comandos comandos, exceto os clientes e servidores que foram individualmente habilitados.
+
+
+
+# -------- Generate AES-256 KEY OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+generateaeskey.desc=\tGera um valor a ser colocado na vari\u00e1vel de configura\u00e7\u00e3o wlp.aes.encryption.key para criptografia aes.
+generateaeskey.usage.options=\t{0} generateAESKey [op\u00e7\u00f5es]
+generateaeskey.option-key.key=\ \ \ \ --key =[chave]
+generateaeskey.option-desc.key=\tEspecifique uma chave para uso durante a criptografia AES. Essa string \u00e9 transformada em hash para produzir uma chave de criptografia que ser\u00e1 usada para criptografar e descriptografar as senhas. A chave de criptografia \u00e9 salva no formato base64 em uma vari\u00e1vel denominada wlp.aes.encryption.key. Se essa op\u00e7\u00e3o for for omitida, ser\u00e1 gerada uma chave aleat\u00f3ria.
+generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
+generateaeskey.option-desc.createConfigFile=\tCria um arquivo XML com o valor gerado salvo em uma vari\u00e1vel chamada wlp.aes.encryption.key. Se n\u00e3o for fornecido, o valor gerado ser\u00e1 gravado na tela do console.

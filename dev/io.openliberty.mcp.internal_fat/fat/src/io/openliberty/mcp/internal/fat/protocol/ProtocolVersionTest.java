@@ -160,7 +160,7 @@ public class ProtocolVersionTest {
                                                                              .run(String.class);
 
         assertThat("Expected error message about invalid protocol version",
-                   response, containsString("Unsupported MCP-Protocol-Version header"));
+                   response, containsString("CWMCM0013E: An unsupported MCP-Protocol-Version header was provided."));
         assertThat("Expected error message to contain expected version",
                    response, containsString("Supported values: 2025-06-18, 2025-03-26"));
     }

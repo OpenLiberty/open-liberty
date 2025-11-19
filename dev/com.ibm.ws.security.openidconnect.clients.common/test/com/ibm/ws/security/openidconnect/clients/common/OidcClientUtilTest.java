@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,8 @@ import com.ibm.ws.security.test.common.CommonTestClass;
 
 import io.openliberty.security.oidcclientcore.http.HttpConstants;
 import io.openliberty.security.oidcclientcore.http.OidcClientHttpUtil;
+import io.openliberty.security.oidcclientcore.storage.CookieBasedStorage;
+import io.openliberty.security.oidcclientcore.storage.CookieStorageProperties;
 import test.common.SharedOutputManager;
 
 public class OidcClientUtilTest extends CommonTestClass {
@@ -70,6 +72,8 @@ public class OidcClientUtilTest extends CommonTestClass {
     protected final HttpResponse mockHttpResponse = mock.mock(HttpResponse.class, "mockHttpResponse");
     protected final HttpUtils mockHttpUtils = mock.mock(HttpUtils.class, "mockHttpUtils");
     protected final BasicCredentialsProvider mockBcp = mock.mock(BasicCredentialsProvider.class, "mockBcp");
+    protected final CookieBasedStorage cookieBasedStorage = mock.mock(CookieBasedStorage.class);
+    protected final CookieStorageProperties cookieStorageProperties = mock.mock(CookieStorageProperties.class);
     private static final String authMethod = "basic";
 
     final String access_token = "access_token";
@@ -242,6 +246,74 @@ public class OidcClientUtilTest extends CommonTestClass {
             });
             Map<String, Object> tokenResponse = oicu.checkToken(strTokenEndpoint, strClientId, strClientSecret, access_token_content, false, authMethod, sslSocketFactory, false);
             assertEquals("token response = ", tokenResponse.get(access_token), "qOuZdH6Anmxclul5d71AXoDbFVmRG2dPnHn9moaw");
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testStoreCookieValue_nullCookieValue() {
+        try {
+            final String cookieValue = null;
+            // Should be a no-op
+            OidcClientUtil.storeCookieValue(cookieBasedStorage, cookieStorageProperties, cookieValue);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testStoreCookieValue_emptyCookieValue() {
+        try {
+            final String cookieValue = "";
+            // Should be a no-op
+            OidcClientUtil.storeCookieValue(cookieBasedStorage, cookieStorageProperties, cookieValue);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testStoreCookieValue_shortCookieValue() {
+        try {
+            final String cookieValue = "some short cookie value";
+            mock.checking(new Expectations() {
+                {
+                    one(cookieBasedStorage).store(ClientConstants.WAS_OIDC_CODE, cookieValue, cookieStorageProperties);
+                }
+            });
+            OidcClientUtil.storeCookieValue(cookieBasedStorage, cookieStorageProperties, cookieValue);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testStoreCookieValue_hugeCookieValue() {
+        try {
+            int testStringLength = 5000;
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < testStringLength; i++) {
+                sb.append('A');
+            }
+            final String cookieValue = sb.toString();
+
+            StringBuilder expectedFirstCookieValue = new StringBuilder();
+            for (int i = 0; i < OidcClientUtil.SPLIT_COOKIES_AT_VALUE_LENGTH; i++) {
+                expectedFirstCookieValue.append('A');
+            }
+            StringBuilder expectedSecondCookieValue = new StringBuilder();
+            for (int i = 0; i < (testStringLength - OidcClientUtil.SPLIT_COOKIES_AT_VALUE_LENGTH); i++) {
+                expectedSecondCookieValue.append('A');
+            }
+            mock.checking(new Expectations() {
+                {
+                    one(cookieBasedStorage).store(ClientConstants.WAS_OIDC_CODE + OidcClientUtil.SPLIT_COOKIE_SUFFIX + "0", expectedFirstCookieValue.toString(), cookieStorageProperties);
+                    one(cookieBasedStorage).store(ClientConstants.WAS_OIDC_CODE + OidcClientUtil.SPLIT_COOKIE_SUFFIX + "1", expectedSecondCookieValue.toString(), cookieStorageProperties);
+                    one(cookieBasedStorage).store(ClientConstants.WAS_OIDC_CODE + OidcClientUtil.NUMBER_OF_SPLIT_COOKIES_NAME_SUFFIX, "2", cookieStorageProperties);
+                }
+            });
+            OidcClientUtil.storeCookieValue(cookieBasedStorage, cookieStorageProperties, cookieValue);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

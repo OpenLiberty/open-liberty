@@ -61,8 +61,8 @@ tested.features:\
   checkpoint
 
 -includeresource: \
-  @${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*, \
-  @${repo;com.ibm.ws.wssecurity.example.cbhwss4j}!/!META-INF/*, \
+  @\${repo;com.ibm.ws.wssecurity.example.cbh}!/!META-INF/*, \
+  @\${repo;com.ibm.ws.wssecurity.example.cbhwss4j}!/!META-INF/*, \
   =${bin}
 
 -buildpath: \

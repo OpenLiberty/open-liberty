@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.inbound;
 
@@ -87,13 +84,11 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private volatile long remainingContentLength = -1L;
     private volatile boolean isChunked = false;
 
-    /**
-     * Constructor.
-     *
-     * @param context
-     */
     public HttpInputStreamImpl(HttpInboundServiceContext context) {
         this.isc = context;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "HttpInputStreamImpl ENTRY, constructor for CHFW inputStream, isc [" + isc + "], this [" + this + "]");
+        }
     }
 
     private boolean isCompressed(String encoding) {

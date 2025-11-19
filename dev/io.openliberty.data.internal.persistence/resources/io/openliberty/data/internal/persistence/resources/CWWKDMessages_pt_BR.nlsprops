@@ -507,3 +507,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Remova a anota\u00e7\u00e3o confli
 CWWKD1118.param.anno.conflict=CWWKD1118E: O par\u00e2metro {0} do m\u00e9todo {1} da interface do reposit\u00f3rio {2} n\u00e3o pode ser anotado com as anota\u00e7\u00f5es: {3}. Duas ou mais anota\u00e7\u00f5es entram em conflito entre si.
 CWWKD1118.param.anno.conflict.explanation=A combina\u00e7\u00e3o de anota\u00e7\u00f5es de par\u00e2metros n\u00e3o \u00e9 v\u00e1lida.
 CWWKD1118.param.anno.conflict.useraction=Remova uma ou mais das anota\u00e7\u00f5es conflitantes do par\u00e2metro do m\u00e9todo do reposit\u00f3rio.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} recupera p\u00e1ginas que n\u00e3o incluem uma contagem total de elementos e p\u00e1ginas porque a consulta cont\u00e9m a palavra-chave {2}. A consulta completa \u00e9: {3}.
+CWWKD1119.keyword.prevents.count.explanation=A palavra-chave \u00e9 incompat\u00edvel com a capacidade de obter uma contagem total de elementos e p\u00e1ginas.
+CWWKD1119.keyword.prevents.count.useraction=Substitua a consulta por outra que n\u00e3o use a palavra-chave ou evite solicitar uma contagem total de elementos e p\u00e1ginas.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} especifica uma consulta que inclui a palavra-chave {2}, que \u00e9 incompat\u00edvel com a pagina\u00e7\u00e3o baseada em cursor. As consultas para pagina\u00e7\u00e3o baseada em cursor devem terminar com uma cl\u00e1usula WHERE e n\u00e3o devem incluir subconsultas. A consulta \u00e9: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Palavras-chave como GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT e UNION n\u00e3o s\u00e3o compat\u00edveis com a pagina\u00e7\u00e3o baseada em cursor.
+CWWKD1120.cursor.keyword.mismatch.useraction=Reescreva a consulta para incluir apenas as cl\u00e1usulas: SELECT, FROM e WHERE.

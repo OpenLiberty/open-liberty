@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2024 IBM Corporation and others.
+# Copyright (c) 1997, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1643,3 +1643,7 @@ read.write.bytebuffer.null.useraction=Modifique o c\u00f3digo do aplicativo para
 read.write.failed.isReady.false=CWWWC0011E: Uma tentativa de ler uma opera\u00e7\u00e3o InputStream ou gravar em uma opera\u00e7\u00e3o OutputStream falhou porque a API isReady retorna false.
 read.write.failed.isReady.false.explanation=Se a API isReady retornar false, n\u00e3o ser\u00e1 poss\u00edvel chamar um m\u00e9todo de leitura ou grava\u00e7\u00e3o..
 read.write.failed.isReady.false.useraction=Modifique a l\u00f3gica de aplicativo para assegurar que o fluxo esteja pronto para uma opera\u00e7\u00e3o InputStream ou OutputStream .
+
+sendRedirect.cannot.convert.relative.url=CWWWC0012E: O sendRedirect relativo URL no aplicativo n\u00e3o pode ser convertido em um URL v\u00e1lido.
+sendRedirect.cannot.convert.relative.url.explanation=O URL relativo fornecido pode conter caracteres ou \u00edndices de passagem de caminho inv\u00e1lidos.
+sendRedirect.cannot.convert.relative.url.useraction=Verifique o local sendRedirect URL no aplicativo antes de chamar o m\u00e9todo response.sendRedirect( )

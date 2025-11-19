@@ -33,6 +33,11 @@ public sealed interface Content permits TextContent, ImageContent, AudioContent 
     Type type();
 
     /**
+     * @return the optional annotations
+     */
+    Annotations annotations();
+
+    /**
      * Casts and returns this object as a text content, or throws an {@link IllegalArgumentException} if the content object does
      * not represent a {@link TextContent}.
      *
@@ -85,6 +90,13 @@ public sealed interface Content permits TextContent, ImageContent, AudioContent 
     default String getType() {
         return type().toString().toLowerCase();
     }
+
+    /**
+     * @param audience (may be {@code null})
+     * @param lastModified (may be {@code null})
+     * @param priority (may be {@code null})
+     */
+    public record Annotations(Role audience, String lastModified, Double priority) {}
 
     enum Type {
         TEXT,

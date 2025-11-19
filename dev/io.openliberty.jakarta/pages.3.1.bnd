@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -36,7 +36,7 @@ Import-Package: \
   org.xml.sax.helpers; resolution:=optional
 
 -includeresource: \
-  @${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @\${repo;jakarta.servlet.jsp:jakarta.servlet.jsp-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.servlet.jsp;artifactId=jakarta.servlet.jsp-api;version=3.1.1;scope=runtime

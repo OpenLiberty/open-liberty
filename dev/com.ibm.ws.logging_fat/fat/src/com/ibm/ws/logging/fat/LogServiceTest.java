@@ -214,6 +214,28 @@ public class LogServiceTest {
     }
 
     @Test
+    public void testFrameworkLoaderPackagesTrace() throws Exception {
+        // test intentionally sets one pacakge to info and another to debug to make sure one doeesn't override the other
+        setTraceSpecification("org.eclipse.osgi/debug/loader/packages=debug:org.eclipse.osgi/debug/loader/packages/+/org.osgi.framework.wiring=debug:org.eclipse.osgi/debug/loader/packages/+/org.osgi.framework=info");
+
+        classload("org.osgi.framework.wiring.BundleWiring");
+        List<String> found = server.findStringsInLogsAndTraceUsingMark("LoggerName:org.eclipse.osgi/debug/loader/packages");
+        assertFalse("Expected to find debug/loader/packages LoggerName.", found.isEmpty());
+        // need to escape parenthises for regex here.  Expecting to not have trace for the org.osgi.framework package
+        found = server.findStringsInLogsAndTraceUsingMark("findClass\\(org.osgi.framework.wiring.BundleWiring\\)");
+        assertFalse("Expected to find debug for loading the BundleWiring class.", found.isEmpty());
+
+        server.setMarkToEndOfLog();
+        server.setMarkToEndOfLog(server.getConsoleLogFile());
+        server.setTraceMarkToEndOfDefaultTrace();
+
+        classload("org.osgi.framework.Filter");
+        // need to escape parenthises for regex here.  Expecting to not have trace for the org.osgi.framework package
+        found = server.findStringsInLogsAndTraceUsingMark("findClass\\(org.osgi.framework.Filter\\)");
+        assertTrue("Expected not to find debug for loading the Filter class.", found.isEmpty());
+    }
+
+    @Test
     public void testTrace() throws Exception {
         // we turn all logservice and should see all logs
         setTraceSpecification("logservice=all");

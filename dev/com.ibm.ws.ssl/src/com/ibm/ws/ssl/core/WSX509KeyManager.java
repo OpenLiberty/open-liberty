@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2024 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.cert.X509Certificate;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.KeyManager;
 import javax.net.ssl.KeyManagerFactory;
@@ -32,6 +34,7 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEHelper;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.config.KeyStoreManager;
 import com.ibm.ws.ssl.config.SSLConfigManager;
 import com.ibm.ws.ssl.config.WSKeyStore;
@@ -260,13 +263,20 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
                 Tr.exit(tc, "chooseClientAlias: null");
             return null;
         } else if (clientAlias != null && !clientAlias.equals("")) {
+            String algorithm = KeyManagerFactory.getDefaultAlgorithm();
+            boolean isPKIX = algorithm.equalsIgnoreCase("PKIX") ? true : false;
             String[] list = km.getClientAliases(keyType, issuers);
-
             if (list != null) {
                 boolean found = false;
                 for (int i = 0; i < list.length && !found; i++) {
-                    if (clientAlias.equalsIgnoreCase(list[i]))
+                    if (isPKIX && resolvePKIXAlias(clientAlias, list[i])) {
+                        clientAlias = list[i];
                         found = true;
+
+                    } else {
+                        if (clientAlias.equalsIgnoreCase(list[i]))
+                            found = true;
+                    }
                 }
 
                 if (found) {
@@ -284,10 +294,37 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
                 }
             }
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+            if (isPKIX) {
+                // error case, list of aliases is empty
+                if (list == null || list.length == 0) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                        Tr.exit(tc, "chooseClientAlias (no aliases available)", null);
+                    return null;
+                }
+                
+                // error case, alias not found in the list.
+                String prefixedClientAlias = clientAlias;
+                String prefix = getPrefix(list[0]);
+                
+                if (prefix != null && !clientAlias.startsWith(prefix)) {
+                    prefixedClientAlias = prefix + clientAlias;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Applied prefix to client alias",
+                                 new Object[] { "Original: " + clientAlias, "Prefixed: " + prefixedClientAlias });
+                    }
+                }
+                
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "chooseClientAlias (default)", new Object[] { prefixedClientAlias });
+                return prefixedClientAlias;
+
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                 Tr.exit(tc, "chooseClientAlias (default)", new Object[] { clientAlias });
-            // error case, alias not found in the list.
-            return clientAlias;
+                // error case, alias not found in the list.
+                return clientAlias;
+            }
+
         } else {
             String[] keyArray = new String[] { keyType };
             String alias = km.chooseClientAlias(keyArray, issuers, null);
@@ -377,7 +414,8 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
     public String chooseServerAlias(String keyType, Principal[] issuers) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "chooseServerAlias", new Object[] { keyType, issuers });
-
+        String algorithm = KeyManagerFactory.getDefaultAlgorithm();
+        boolean isPKIX = algorithm.equalsIgnoreCase("PKIX") ? true : false;
         Map<String, Object> connectionInfo = JSSEHelper.getInstance().getInboundConnectionInfo();
         String certMappingFile = certMappingKeyManager.getProperty(CertMappingKeyManager.PROTOCOL_HTTPS_CERT_MAPPING_FILE);
         String mappedAlias = null;
@@ -396,9 +434,13 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
                 if (list != null) {
                     boolean found = false;
                     for (int i = 0; i < list.length && !found; i++) {
-                        if (serverAlias.equalsIgnoreCase(list[i]))
+                        if (isPKIX && resolvePKIXAlias(serverAlias, list[i])) {
+                            serverAlias = list[i];
                             found = true;
-
+                        } else {
+                            if (serverAlias.equalsIgnoreCase(list[i]))
+                                found = true;
+                        }
                     }
 
                     if (found) {
@@ -414,8 +456,8 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
                         }
                         return serverAlias.toLowerCase();
                     }
-                }
 
+                }
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
                     Tr.exit(tc, "chooseServerAlias (default)", new Object[] { serverAlias });
                 return serverAlias;
@@ -440,6 +482,40 @@ public final class WSX509KeyManager extends X509ExtendedKeyManager implements X5
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.exit(tc, "chooseServerAlias", new Object[] { mappedAlias });
         return mappedAlias;
+    }
+
+    /**
+     * This is needed because when using PKIX as the KeyManagerFactory, the alias gets converted from default to 1.0.default. 
+     * So we need to have a way to handle the prefix. 
+     */
+    private boolean resolvePKIXAlias(String alias, String keyManagerAlias) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "resolvePKIXAlias", "KeyManager Factory algorithm is PKIX");
+        if (keyManagerAlias.toLowerCase().contains(alias.toLowerCase())) {
+            Pattern r = Pattern.compile("\\d+\\.\\d+\\." + alias + "$", Pattern.CASE_INSENSITIVE);
+            Matcher m = r.matcher(keyManagerAlias);
+            if (m.find()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "resolvePKIXAlias", "Should use alias:" + keyManagerAlias);
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Extract the numeric prefix from an alias string (e.g., "1.0." from "1.0.default")
+     *
+     * @param alias The alias to extract the prefix from
+     * @return The numeric prefix or null if no prefix pattern is found
+     */
+    public String getPrefix(String alias) {
+        Pattern pattern = Pattern.compile("^(\\d+\\.\\d+\\.)");
+        Matcher matcher = pattern.matcher(alias);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
     }
 
     /*

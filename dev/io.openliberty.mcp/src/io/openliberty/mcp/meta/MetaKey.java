@@ -29,13 +29,16 @@ import java.util.stream.Collectors;
  * A key for additional metadata defined in the {@code _meta} part of the message.
  * <p>
  * {@code _meta} keys have two segments: an optional prefix, and a name.
+ *
+ * @param prefix the prefix
+ * @param name the name
  */
 public record MetaKey(String prefix, String name) {
 
     /**
      * Create a new key from the specified string value, i.e. from {@code foo.bar/myKey}.
      *
-     * @param value
+     * @param value the value to create the key, which must include a name and can include a prefix
      * @return the key
      */
     public static MetaKey from(String value) {
@@ -49,7 +52,7 @@ public record MetaKey(String prefix, String name) {
     /**
      * Create a new key with the specified name but without a prefix.
      *
-     * @param name
+     * @param name the name of the new key
      * @return the key
      */
     public static MetaKey of(String name) {
@@ -61,7 +64,8 @@ public record MetaKey(String prefix, String name) {
      * <p>
      * Note that {@code modelcontextprotocol} and {@code mcp} labels are reserved for MCP spec.
      *
-     * @param name
+     * @param name the name
+     * @param prefixLabels the prefix labels, which will be joined with period characters to form the prefix
      * @return the key
      */
     public static MetaKey of(String name, String... prefixLabels) {

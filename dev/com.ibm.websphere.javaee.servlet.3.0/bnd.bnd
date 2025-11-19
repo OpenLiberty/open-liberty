@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -23,9 +23,9 @@ Export-Package: \
     javax.servlet.resources;thread-context=true;version="2.6.0"
 
 Include-Resource: \
-  @${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0;EXACT}!/META-INF/LICENSE, \
-  @${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0;EXACT}!/META-INF/NOTICE, \
-  @${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0;EXACT}!/javax/servlet/resources/**
+  @\${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0;EXACT}!/META-INF/LICENSE, \
+  @\${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0;EXACT}!/META-INF/NOTICE, \
+  @\${repo;org.apache.geronimo.specs.geronimo-servlet_3.0_spec;1.0;EXACT}!/javax/servlet/resources/**
 
 instrument.disabled: true
 

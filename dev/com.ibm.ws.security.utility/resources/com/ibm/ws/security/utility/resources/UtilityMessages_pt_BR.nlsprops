@@ -40,7 +40,9 @@ encode.enterText=Inserir texto:
 encode.reenterText=Reinserir texto:
 encode.readError=Erro ao ler texto.
 encode.entriesDidNotMatch=Entradas n\u00e3o corresponderam.
-
+encode.mutuallyExclusiveArgError=O arquivo de entrada n\u00e3o pode especificar as propriedades {0} e {1}.
+encode.aesConfigFileEncryptionAmbiguous=ERRO: O arquivo de entrada n\u00e3o poder\u00e1 ser usado se contiver as vari\u00e1veis {0} e {1}.
+encode.aesConfigFileMissingEncryptionVariables=N\u00e3o \u00e9 poss\u00edvel codificar a senha; ou o arquivo de entrada n\u00e3o cont\u00e9m as vari\u00e1veis {0} ou {1}, ou o arquivo de entrada est\u00e1 malformado.
 
 password.enterText=Inserir Senha:
 password.reenterText=Reinserir senha:
@@ -98,7 +100,7 @@ createLTPAKeys.fileExists=O arquivo {0} j\u00e1 existe.  N\u00e3o \u00e9 poss\u0
 createLTPAKeys.createdFile=Arquivo-chave de LTPA criado: {0}\n Inclua a seguinte configura\u00e7\u00e3o no server.xml\n {1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=A instala\u00e7\u00e3o do Java n\u00e3o \u00e9 do IBM Semeru Runtimes nem do IBM SDK ou, se for, n\u00e3o \u00e9 compat\u00edvel com o FIPS 140-3.\nInstale o Java em IBM Semeru Runtimes ou IBM SDK usando uma vers\u00e3o e um sistema operacional compat\u00edveis com FIPS 140-3.\nSe estiver usando IBM Semeru Runtimes, use a vers\u00e3o 11.0.29.0, 17.0.17.0, 21.0.9.0, ou superior.\nSe estiver usando o SDK IBM, use a vers\u00e3o 8.0.8.30 ou superior.
+configureFIPS.notIbmSdkNorSemeru=A instala\u00e7\u00e3o do Java n\u00e3o \u00e9 do IBM Semeru Runtimes nem do IBM SDK ou, se for, n\u00e3o \u00e9 compat\u00edvel com o FIPS 140-3.\nInstale o Java a partir de IBM Semeru Runtimes ou IBM SDK usando uma vers\u00e3o e um sistema operacional compat\u00edveis com FIPS 140-3.\nSe estiver usando IBM Semeru Runtimes, use a vers\u00e3o 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, ou superior.\nSe estiver usando o SDK IBM, use a vers\u00e3o 8.0.8.30 ou superior.
 
 configureFIPS.zosNotAvailable=O comando securityUtility configureFIPS n\u00e3o \u00e9 compat\u00edvel com z/OS.
 
@@ -129,3 +131,8 @@ configureFIPS.fipsNotEnabled=O FIPS 140-3 j\u00e1 n\u00e3o est\u00e1 ativado no 
 configureFIPS.restartServer=Reinicie o servidor {0} para aplicar a altera\u00e7\u00e3o.
 configureFIPS.restartClient=Reinicie o cliente {0} para aplicar a altera\u00e7\u00e3o.
 configureFIPS.restart=Reinicie seus servidores e clientes para aplicar a altera\u00e7\u00e3o.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=Arquivo XML de criptografia de senha criado com sucesso.\nPara ativar as altera\u00e7\u00f5es, adicione uma refer\u00eancia ao local do arquivo XML em seu arquivo server.xml : <include location="{0}" />
+generateaeskey.failFileExists=O arquivo {0} existe e n\u00e3o ser\u00e1 sobrescrito. Especifique um nome de arquivo diferente ou remova o arquivo existente antes de tentar novamente.
+generateaeskey.failFileIsDirectory=O valor {0} especificado para o nome do arquivo \u00e9 um diret\u00f3rio. Especifique o nome completo do arquivo e tente novamente.

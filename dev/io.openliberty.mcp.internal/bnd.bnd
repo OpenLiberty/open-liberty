@@ -22,10 +22,17 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 WS-TraceGroup: MCP
 
+Include-Resource: \
+        OSGI-INF=resources/OSGI-INF
+
+Bundle-Localization: \
+        OSGI-INF/l10n/metatype
+
 -dsannotations: \
  io.openliberty.mcp.internal.McpServletInitializer,\
- io.openliberty.mcp.internal.McpCdiExtensionMetadata
-
+ io.openliberty.mcp.internal.McpCdiExtensionMetadata,\
+ io.openliberty.mcp.internal.config.McpConfiguration
+ 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
@@ -38,7 +45,8 @@ WS-TraceGroup: MCP
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
-	com.ibm.ws.transport.http
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.kernel.service;version=latest
 
 
 -testpath: \

@@ -70,7 +70,7 @@ generate.replacement: true
 
 # These are the images used by the org.testcontainers and componenttest.topology.database.container packages
 fat.test.container.images:\
-    ghcr.io/gvenzl/oracle-free:23-full-faststart,\
+    ghcr.io/gvenzl/oracle-free:23.9-full-faststart,\
     ghcr.io/testcontainers/ryuk:0.12.0,\
     ghcr.io/testcontainers/sshd:1.3.0,\
     ghcr.io/testcontainers/vnc-recorder:1.4.0,\
@@ -133,8 +133,8 @@ fat.test.container.images:\
     jakarta.tck.arquillian:tck-porting-lib;version=11.0.1
 
 -testpath:\
-    net.bytebuddy:byte-buddy-agent;version=1.16.1,\
-    net.bytebuddy:byte-buddy;version=1.16.1,\
+    net.bytebuddy:byte-buddy-agent;version=1.17.8,\
+    net.bytebuddy:byte-buddy;version=1.17.8,\
     org.mockito:mockito-core;version=4.11.0,\
     org.mockito:mockito-inline;version=4.11.0,\
     org.objenesis:objenesis;version=3.4

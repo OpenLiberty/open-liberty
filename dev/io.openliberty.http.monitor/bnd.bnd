@@ -15,10 +15,6 @@ bVersion=1.0
 
 -sub: *.bnd
 
-Bundle-Name: io.openliberty.http.monitor
-Bundle-SymbolicName: io.openliberty.http.monitor
-Bundle-Description: io.openliberty.http.monitor; version=${bVersion}
-
 src: src
 
 -dsannotations: \

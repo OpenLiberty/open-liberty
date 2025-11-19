@@ -297,7 +297,7 @@ public class JweHelper {
         String configuredKeyManagementAlg = jwtConfig.getKeyManagementKeyAlgorithm();
         if (configuredKeyManagementAlg == null) {
             // If FIPS140-3 is enabled, use ECDH-ES as the default, else use RSA-OAEP
-            configuredKeyManagementAlg = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? KeyManagementAlgorithmIdentifiers.ECDH_ES: KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+            configuredKeyManagementAlg = CryptoUtils.isFips140_3Enabled() ? KeyManagementAlgorithmIdentifiers.ECDH_ES: KeyManagementAlgorithmIdentifiers.RSA_OAEP;
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Key management algorithm not specified in server config. Defaulting to [" + configuredKeyManagementAlg + "]");
             }

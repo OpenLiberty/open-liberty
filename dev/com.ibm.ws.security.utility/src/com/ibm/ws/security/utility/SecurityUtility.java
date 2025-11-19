@@ -170,10 +170,8 @@ public class SecurityUtility extends UtilityTemplate {
         util.registerTask(new CreateSSLCertificateTask(certCreator, fileUtil, SCRIPT_NAME));
         util.registerTask(new CreateLTPAKeysTask(ltpaKeyFileCreator, fileUtil, SCRIPT_NAME));
         util.registerTask(new TLSProfilerTask(fileUtil, SCRIPT_NAME));
-        if (ProductInfo.getBetaEdition()) {
-            util.registerTask(new ConfigureFIPSTask(fileUtil, SCRIPT_NAME));
-            util.registerTask(new GenerateAesKeyTask(fileUtil, SCRIPT_NAME));
-        }
+        util.registerTask(new ConfigureFIPSTask(fileUtil, SCRIPT_NAME));
+        util.registerTask(new GenerateAesKeyTask(fileUtil, SCRIPT_NAME));
 
         // Kick everything off
         int rc = util.runProgram(args).getReturnCode();

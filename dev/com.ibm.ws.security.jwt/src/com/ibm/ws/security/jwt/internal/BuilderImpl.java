@@ -93,7 +93,7 @@ public class BuilderImpl implements Builder {
     private final static String KEY_JWT_SERVICE = "jwtConfig";
     private static final String CFG_KEY_ID = "id";
 
-    public static final String DEFAULT_KEY_MANAGEMENT_ALGORITHM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? KeyManagementAlgorithmIdentifiers.ECDH_ES : KeyManagementAlgorithmIdentifiers.RSA_OAEP;
+    public static final String DEFAULT_KEY_MANAGEMENT_ALGORITHM = CryptoUtils.isFips140_3Enabled() ? KeyManagementAlgorithmIdentifiers.ECDH_ES : KeyManagementAlgorithmIdentifiers.RSA_OAEP;
     public static final String DEFAULT_CONTENT_ENCRYPTION_ALGORITHM = ContentEncryptionAlgorithmIdentifiers.AES_256_GCM;
 
     private final Object initlock = new Object() {

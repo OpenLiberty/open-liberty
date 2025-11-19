@@ -1,4 +1,0 @@
-Bundle-SymbolicName: springBoot40Closer
-Private-Package: io.openliberty.springboot.support.shutdown.*
-Include-Resource: resources/container
--maven-dependencies:

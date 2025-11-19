@@ -2596,7 +2596,7 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
     // Added for servlet 3.1 support - method is overidden by SRTServletRequest31 
     protected Hashtable parsePostData() throws IOException {
-        if( getContentLength() > 0){
+        if( getContentLength() > 0 && !isCompressedData()){
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  //306998.15
                 logger.logp(Level.FINE, CLASS_NAME,"parsePostData", "parsing post data based upon content length");
             return RequestUtils.parsePostData(getContentLength(), getInputStream(), getReaderEncoding(), this.multiReadPropertyEnabled);  // MultiRead
@@ -4468,5 +4468,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
 
         for (int i = 0; i < cookie.length; i++)
             logger.logp(Level.FINE, CLASS_NAME,"displayCookies", " " + cookie[i]);
+    }
+    
+    protected boolean isCompressedData() {
+        String contentEncoding = _request.getHeader("Content-Encoding");
+        return (contentEncoding != null && ("gzip".equalsIgnoreCase(contentEncoding) || "x-gzip".equalsIgnoreCase(contentEncoding) || "deflate".equalsIgnoreCase(contentEncoding)));
     }
 }

@@ -10,5 +10,5 @@
 <server>
 
     <include location="common.xml"/>
-    
+
 </server>

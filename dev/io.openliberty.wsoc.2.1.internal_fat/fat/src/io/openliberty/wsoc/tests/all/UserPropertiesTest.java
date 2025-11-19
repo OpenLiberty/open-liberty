@@ -1,19 +1,16 @@
 package io.openliberty.wsoc.tests.all;
 
-import io.openliberty.wsoc.util.wsoc.WsocTest;
-import io.openliberty.wsoc.util.wsoc.WsocTestContext;
-import io.openliberty.wsoc.util.wsoc.WsocTestRunner;
-import io.openliberty.wsoc.common.Constants;
-import io.openliberty.wsoc.endpoints.client.basic.ClientUserPropertiesClientEP;
-import io.openliberty.wsoc.endpoints.client.basic.ServerUserPropertiesClientEP;
-import io.openliberty.wsoc.endpoints.client.basic.ClientUserPropertiesClientEP.UserPropertyClientEndpointConfig;
-import jakarta.websocket.ClientEndpointConfig.Builder;
-
-import jakarta.websocket.ClientEndpointConfig;
-
 import java.util.List;
 
 import org.junit.Assert;
+
+import io.openliberty.wsoc.common.Constants;
+import io.openliberty.wsoc.endpoints.client.basic.ClientUserPropertiesClientEP;
+import io.openliberty.wsoc.endpoints.client.basic.ServerUserPropertiesClientEP;
+import io.openliberty.wsoc.util.wsoc.WsocTest;
+import io.openliberty.wsoc.util.wsoc.WsocTestContext;
+import io.openliberty.wsoc.util.wsoc.WsocTestRunner;
+import jakarta.websocket.ClientEndpointConfig;
 
 public class UserPropertiesTest {
     

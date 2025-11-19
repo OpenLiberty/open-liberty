@@ -16,10 +16,10 @@ repositories {
     if (isUsingArtifactory) {
         maven {
             credentials {
-                username userProps.getProperty("artifactory.download.user")
-                password userProps.getProperty("artifactory.download.token")
+                username = userProps.getProperty("artifactory.download.user")
+                password = userProps.getProperty("artifactory.download.token")
             }
-            url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            url = "https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty"
             metadataSources {
                 mavenPom()
                 artifact()
@@ -27,7 +27,7 @@ repositories {
         }
     } else {
         maven {
-            url ("https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            url = "https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/"
             metadataSources {
                 mavenPom()
                 artifact()
@@ -175,7 +175,9 @@ def copyDependency(File file, Map dependencyToPath) {
             from file
             into path
             rename '.*', name
-            fileMode = Integer.parseInt('755', 8)
+            filePermissions {
+                unix(Integer.parseInt('755', 8))
+            }
         }
     } catch (Exception e) {
         String gav = "${groupDir.getName()}:${nameDir.getName()}:${versionDir.getName()}"

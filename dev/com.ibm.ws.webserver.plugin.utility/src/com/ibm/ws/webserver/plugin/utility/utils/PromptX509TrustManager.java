@@ -51,7 +51,7 @@ public class PromptX509TrustManager implements X509TrustManager {
         this.trustManagers = trustManagers;
         this.autoAccept = autoAccept;
 
-        this.FIPS_ENABLED = CryptoUtils.isFips140_3EnabledWithBetaGuard();
+        this.FIPS_ENABLED = CryptoUtils.isFips140_3Enabled();
     }
 
     @Override

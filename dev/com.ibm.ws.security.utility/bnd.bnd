@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -23,7 +23,7 @@ Private-Package: \
   com.ibm.ws.security.utility.*
   
 -includeresource: \
-    OSGI-OPT/websphere/lib/ws-securityutil.jar=${repo;com.ibm.ws.security.utility.securityutil}
+    OSGI-OPT/websphere/lib/ws-securityutil.jar=\${repo;com.ibm.ws.security.utility.securityutil}
 
 instrument.disabled: true
 
@@ -51,6 +51,6 @@ instrument.disabled: true
     com.ibm.ws.kernel.boot;version=latest, \
     org.mockito:mockito-core;version=4.11.0, \
     org.mockito:mockito-inline;version=4.11.0, \
-    net.bytebuddy:byte-buddy;version=1.16.1, \
-    net.bytebuddy:byte-buddy-agent;version=1.16.1, \
+    net.bytebuddy:byte-buddy;version=1.17.8, \
+    net.bytebuddy:byte-buddy-agent;version=1.17.8, \
 	com.ibm.ws.logging;version=latest

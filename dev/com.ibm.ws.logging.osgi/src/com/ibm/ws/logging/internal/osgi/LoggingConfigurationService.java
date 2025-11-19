@@ -235,7 +235,9 @@ public class LoggingConfigurationService implements ManagedService {
             logLevels = new HashMap<>();
             contextLogLevels.put(contextName, logLevels);
         }
-        if (replace || !logLevels.containsKey(loggerName)) {
+        LogLevel existing = logLevels.get(loggerName);
+        // only replace existing if it doesn't imply the new logLevel
+        if (existing == null || (replace && !existing.implies(logLevel))) {
             logLevels.put(loggerName, logLevel);
         }
     }

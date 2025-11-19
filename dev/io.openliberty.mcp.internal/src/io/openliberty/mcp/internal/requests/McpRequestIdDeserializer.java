@@ -11,6 +11,9 @@ package io.openliberty.mcp.internal.requests;
 
 import java.lang.reflect.Type;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import jakarta.json.JsonNumber;
@@ -24,6 +27,7 @@ import jakarta.json.stream.JsonParser;
  * Instructions for how Jsonb should deserialize JSON values into a {@link McpRequestId} type
  */
 public class McpRequestIdDeserializer implements JsonbDeserializer<McpRequestId> {
+    private static final TraceComponent tc = Tr.register(McpRequestIdDeserializer.class);
 
     @Override
     public McpRequestId deserialize(JsonParser parser, DeserializationContext ctx, Type rtType) {
@@ -32,12 +36,12 @@ public class McpRequestIdDeserializer implements JsonbDeserializer<McpRequestId>
             case STRING:
                 String strVal = ((JsonString) jsonVal).getString();
                 if (strVal.isBlank())
-                    throw new JSONRPCException(JSONRPCErrorCode.PARSE_ERROR, "MCP Request Id must not be blank");
+                    throw new JSONRPCException(JSONRPCErrorCode.PARSE_ERROR, Tr.formatMessage(tc, "CWMCM0019E.jsonrpc.validation.empty.string.id", strVal));
                 return new McpRequestId(strVal);
             case NUMBER:
                 return new McpRequestId(((JsonNumber) jsonVal).bigDecimalValue());
             default:
-                throw new JSONRPCException(JSONRPCErrorCode.PARSE_ERROR, "MCP Request Id must be a string or number");
+                throw new JSONRPCException(JSONRPCErrorCode.PARSE_ERROR, Tr.formatMessage(tc, "CWMCM0021E.jsonrpc.validation.invalid.id.type"));
 
         }
     }

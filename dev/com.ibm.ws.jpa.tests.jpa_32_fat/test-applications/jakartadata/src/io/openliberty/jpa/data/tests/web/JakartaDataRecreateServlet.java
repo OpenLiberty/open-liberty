@@ -57,6 +57,8 @@ import io.openliberty.jpa.data.tests.models.City;
 import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
 import io.openliberty.jpa.data.tests.models.County;
+import io.openliberty.jpa.data.tests.models.CreditCard;
+import io.openliberty.jpa.data.tests.models.CreditCard.Issuer;
 import io.openliberty.jpa.data.tests.models.DemographicInfo;
 import io.openliberty.jpa.data.tests.models.DemographicInformation;
 import io.openliberty.jpa.data.tests.models.Door;
@@ -2513,6 +2515,23 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
         assertEquals(1, showtimesTodayList.size());
         assertEquals(t1.movie, showtimesTodayList.get(0).movie);
+    }
+
+    @Test
+    @SkipIfSysProp(DB_Oracle) // Reference Issue: https://github.com/OpenLiberty/open-liberty/issues/33246
+    public void testOLGH33246() throws Exception {
+//        deleteAllEntities(CreditCard.class);
+
+        CreditCard c1 = CreditCard.of(1000921011110001L, 101, LocalDate.of(2021, 1, 10), LocalDate.of(2025, 1, 10), Issuer.AmericanExtravagance);
+
+        tx.begin();
+        try {
+            em.merge(c1);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e; // Rethrows PersistenceException during failure
+        }
     }
 
     /**

@@ -32,12 +32,12 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.inmemory.web.ProviderTestServlet;
 import test.jakarta.data.web.DataTestServlet;
+import test.jakarta.data.web.eclipselink.DataEclipseLinkServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
@@ -59,23 +59,27 @@ public class DataTest extends FATServletClient {
                     };
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
 
     @Server("io.openliberty.data.internal.fat")
-    @TestServlets({ @TestServlet(servlet = DataTestServlet.class, contextRoot = "DifferentAppName"),
-                    @TestServlet(servlet = ProviderTestServlet.class, contextRoot = "ProviderTestApp") })
+    @TestServlets({ @TestServlet(servlet = DataTestServlet.class,
+                                 contextRoot = "DifferentAppName"),
+                    @TestServlet(servlet = DataEclipseLinkServlet.class,
+                                 contextRoot = "DifferentAppName"),
+                    @TestServlet(servlet = ProviderTestServlet.class,
+                                 contextRoot = "ProviderTestApp") })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Get driver type
-        DatabaseContainerType type = DatabaseContainerType.valueOf(testContainer);
-        server.addEnvVar("DB_DRIVER", type.getDriverName());
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .modify();
 
-        // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
-
-        WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp", "test.jakarta.data.web");
+        WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp",
+                                                      "test.jakarta.data.web",
+                                                      "test.jakarta.data.web.eclipselink");
         ShrinkHelper.exportAppToServer(server, war);
 
         JavaArchive providerJar = ShrinkWrap.create(JavaArchive.class, "palindrome-data-provider.jar")

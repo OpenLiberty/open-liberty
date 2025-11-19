@@ -168,6 +168,11 @@ public class TxTestUtils {
 
     private static class UOWScopeCallbackImpl implements UOWScopeCallback {
 
+		// Constants defined in dev/com.ibm.tx.jta/src/com/ibm/ws/Transaction/UOWCallback.java#L27
+		// static public final int PRE_BEGIN  = 0;
+        // static public final int POST_BEGIN = 1;
+        // static public final int PRE_END    = 2;
+        // static public final int POST_END   = 3;
     	private Set<Integer> _contextChanges = new HashSet<Integer>();
 
     	public boolean allCallbacksCalled() {
@@ -182,10 +187,11 @@ public class TxTestUtils {
         public void contextChange(int changeType, UOWScope uowScope) throws IllegalStateException {
         	
             System.out.println("Change Type: " + changeType + ", UOWScope: " + uowScope);
+			for (StackTraceElement ste : Thread.currentThread().getStackTrace()) {
+                System.out.println(ste + "\n");
+            }
+			
             _contextChanges.add(changeType);
         }
-
     }
 }
-
-

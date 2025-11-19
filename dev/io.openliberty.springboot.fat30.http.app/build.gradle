@@ -12,31 +12,24 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '3.0.7'
+  id 'org.springframework.boot' version '3.5.3'
+  id 'war'
+  id 'io.spring.dependency-management' version '1.1.7'
 }
 apply from: '../wlp-gradle/subprojects/spring.gradle'
-def sv = springVersions[ '3.0' ]
-
-apply plugin: 'war'
-apply plugin: 'io.spring.dependency-management'
 
 group = 'com.ibm.ws.example.spring'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = 1.8
+java {
+  sourceCompatibility = 1.8
+}
 
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
-
 dependencies {
-  implementation('org.springframework.boot:spring-boot-starter-web') // + ':' + sv['springBoot'])
+  implementation('org.springframework.boot:spring-boot-starter-web')
 
   providedCompile 'org.springframework.boot:spring-boot-starter-tomcat'
   providedCompile 'jakarta.servlet.jsp.jstl:jakarta.servlet.jsp.jstl-api'
   providedCompile 'org.apache.tomcat.embed:tomcat-embed-jasper'
-}
-
-// Disable jar because it would need a dependency on ':io.openliberty.springboot.fat30.war.app:module:compileTestJava' and 
-// ':com.ibm.ws.springboot.fat20.war.app:module:processTestResources' which seems silly since we don't actually need a jar for this project.  We only need the war.
-jar {
-  enabled = false
 }

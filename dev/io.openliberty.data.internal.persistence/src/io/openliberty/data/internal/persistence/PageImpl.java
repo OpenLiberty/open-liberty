@@ -70,12 +70,16 @@ public class PageImpl<T> implements Page<T> {
      * Construct a new Page.
      *
      * @param queryInfo   query information.
+     * @param em          the entity manager.
      * @param pageRequest the request for this page.
      * @param args        values that are supplied to the repository method.
+     * @throws Exception if an error occurs.
      */
-    @FFDCIgnore(Exception.class)
     @Trivial
-    PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
+    PageImpl(QueryInfo queryInfo,
+             EntityManager em,
+             PageRequest pageRequest,
+             Object[] args) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "<init>", queryInfo, pageRequest, queryInfo.loggable(args));
@@ -96,23 +100,19 @@ public class PageImpl<T> implements Page<T> {
         this.pageRequest = pageRequest;
         this.args = args;
 
-        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
-        try {
-            jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
-            queryInfo.setParameters(query, args);
+        jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
+        queryInfo.setParameters(query, args);
 
-            int maxPageSize = pageRequest.size();
-            query.setFirstResult(queryInfo.computeOffset(pageRequest));
-            query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
+        if (queryInfo.entityInfo.loadGraph != null)
+            query.setHint(Util.LOADGRAPH, queryInfo.entityInfo.loadGraph);
 
-            @SuppressWarnings("unchecked")
-            List<T> resultList = query.getResultList();
-            results = resultList;
-        } catch (Exception x) {
-            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
-        } finally {
-            em.close();
-        }
+        int maxPageSize = pageRequest.size();
+        query.setFirstResult(queryInfo.computeOffset(pageRequest));
+        query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
+
+        @SuppressWarnings("unchecked")
+        List<T> resultList = query.getResultList();
+        results = resultList;
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>");

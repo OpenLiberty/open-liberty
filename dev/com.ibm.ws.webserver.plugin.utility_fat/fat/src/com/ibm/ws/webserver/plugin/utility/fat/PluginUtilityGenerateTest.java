@@ -207,7 +207,7 @@ public class PluginUtilityGenerateTest {
         final String methodName = "verifyDigestAlgorithmsWhenFIPSEnabled";
         Log.entering(c, methodName);
 
-        if(CryptoUtils.isFips140_3EnabledWithBetaGuard()){
+        if(CryptoUtils.isFips140_3Enabled()){
             AUTO_ACCEPT_CERTIFICATES = false; // For a prompt
             
             File PcfgFile = eraseExistingFiles(PLUGIN_CFG_FILENAME,remoteAccessServer,null);

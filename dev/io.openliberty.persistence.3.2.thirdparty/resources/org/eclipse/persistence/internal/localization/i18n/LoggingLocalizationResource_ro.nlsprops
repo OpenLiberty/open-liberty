@@ -87,7 +87,7 @@ broadcast_remote_command_wrong_type=Avertisment: {0}: mesajul primit {1} ce con\
 
 cache_key_null_identity_map=CacheKey instan\u021b\u0103: {0}, stocat\u0103 \u00een harta de identitate, are o cheie primar\u0103 nul\u0103.
 
-cache_key_null_read_lock_manager=CacheKey instan\u021b\u0103: {0}, blocat\u0103 de cache read lock manager are, o cheie primar\u0103 nul\u0103.
+cache_key_null_read_lock_manager=CacheKey instan\u021b\u0103: {0}, blocat\u0103 de managerul de blocare a citirii \u00een cache, are o cheie primar\u0103 nul\u0103.
 
 cannot_get_nested_collection_type=Nu a putut fi ob\u0163inut tipul colec\u0163iei imbricate.
 

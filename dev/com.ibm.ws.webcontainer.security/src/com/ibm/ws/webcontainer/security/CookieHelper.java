@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package com.ibm.ws.webcontainer.security;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
@@ -156,6 +154,26 @@ public class CookieHelper {
             }
         }
         return found;
+    }
+
+    public static String[] splitValueIntoMaximumLengthChunks(String cookieValue, int maxValueLength) {
+        ArrayList<String> al = new ArrayList<String>();
+        if (maxValueLength <= 0 || cookieValue == null || cookieValue.length() == 0) {
+            return al.toArray(new String[0]);
+        }
+        int begin = 0;
+        int end = 0;
+        int length = cookieValue.length();
+        while (true) {
+            end = begin + (length - end < maxValueLength ? length - end : maxValueLength);
+            al.add(cookieValue.substring(begin, end));
+            if (end >= length) {
+                break;
+            }
+            begin += (end - begin);
+        }
+
+        return al.toArray(new String[0]);
     }
 
 }

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal;
 
@@ -1162,7 +1159,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             // PK22096 - default to "/" if not found, should have caught empty
             // string inputs previously (http://host:port is valid)
             this.myURIBytes = SLASH;
-            if (tc.isDebugEnabled()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Defaulting to slash since no URI data found");
             }
             return;
@@ -2207,9 +2204,9 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
     }
 
     /**
-     * Obtains the request end time by leveraging the recorded start of the response. 
-     * The service context marks the start of the response time when it is done 
-     * processing the request, so the start of the response coincides with the end 
+     * Obtains the request end time by leveraging the recorded start of the response.
+     * The service context marks the start of the response time when it is done
+     * processing the request, so the start of the response coincides with the end
      * time for the request.
      */
     @Override

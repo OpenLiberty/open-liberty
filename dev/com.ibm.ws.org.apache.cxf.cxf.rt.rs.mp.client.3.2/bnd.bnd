@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2022 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ Service-Component: \
     properties:="resources=${app-resources}"
 
 -includeresource: \
-  @${repo;org.apache.cxf:cxf-rt-rs-mp-client;${cxfVersion};EXACT}!/!META-INF/MANIFEST.MF, \
+  @\${repo;org.apache.cxf:cxf-rt-rs-mp-client;${cxfVersion};EXACT}!/!META-INF/MANIFEST.MF, \
   org/apache/cxf=${bin}/org/apache/cxf
 
 -buildpath: \

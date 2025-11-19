@@ -27,7 +27,7 @@ import jakarta.data.repository.Save;
  * The entity type for this repository only appears as a type parameter.
  * Do not add methods that would allow it to be discovered any other way.
  */
-@Repository(dataStore = "java:module/jdbc/env/DerbyDataSourceRef")
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Vehicles {
 
     long count();
@@ -67,6 +67,6 @@ public interface Vehicles {
     @Query("UPDATE Vehicle SET price=price+?2 WHERE (vinId=?1)")
     boolean updateByVinIdAddPrice(String vin, float priceIncrease);
 
-    @Query("WHERE LOWER(ID(THIS)) = ?1")
+    @Query("WHERE LOWER(ID(this)) = ?1")
     Optional<Vehicle> withVINLowerCase(String lowerCaseVIN);
 }

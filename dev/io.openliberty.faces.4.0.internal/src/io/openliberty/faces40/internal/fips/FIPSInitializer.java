@@ -37,7 +37,7 @@ public class FIPSInitializer implements ServletContainerInitializer {
     @Override
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException {
 
-        if (CryptoUtils.isFips140_3EnabledWithBetaGuard()) {
+        if (CryptoUtils.isFips140_3Enabled()) {
             /*
              * Note: org.apache.myfaces.MAC_ALGORITHM and org.apache.myfaces.ALGORITHM have used HmacSHA256 and AES 
              * since 3.0.0 and 4.0.0 (see MYFACES-4376). No need to set them here. 

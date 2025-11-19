@@ -22,6 +22,9 @@ After we obtain the signed CLA, you are welcome to open a pull request, and the 
 5. Based on the results of the build, and if further review is needed, more discussion will occur.
 6. If the reviewer is satisfied with the results, and agrees to the change, the PR will be merged to integration, otherwise the PR will be closed with an explaination and suggestion for followup.
 
+### Signing your commits
+
+All commits pushed to the open-liberty repo's will require gpg/ssh signing.   Setup is explained here (Non IBMr's - ignore the requirement around using the ibm email id...): https://github.com/OpenLiberty/open-liberty/wiki/Signing-commits
 
 ## Coding Standards
 Please ensure you follow the coding standards used throughout the existing code base. Some basic rules include:

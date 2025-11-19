@@ -15,7 +15,6 @@ package com.ibm.ws.security.utility.tasks;
 import java.io.PrintStream;
 import java.util.List;
 
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.SecurityUtilityTask;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -62,10 +61,6 @@ public class HelpTask extends BaseCommandTask {
      */
     public String getScriptUsage() {
         StringBuffer scriptUsage = new StringBuffer(NL);
-        if (ProductInfo.getBetaEdition()) {
-            scriptUsage.append("BETA: The SecurityUtility configureFIPS task is only available in beta." + NL + NL);
-            scriptUsage.append("BETA: The SecurityUtility generateAESKey task is only available in beta." + NL + NL);
-        }
         scriptUsage.append(getMessage("usage", scriptName));
         scriptUsage.append(" {");
         for (int i = 0; i < tasks.size(); i++) {

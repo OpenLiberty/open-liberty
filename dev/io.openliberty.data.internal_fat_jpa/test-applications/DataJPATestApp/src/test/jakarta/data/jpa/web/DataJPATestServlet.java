@@ -14,7 +14,6 @@ package test.jakarta.data.jpa.web;
 
 import static componenttest.annotation.SkipIfSysProp.DB_Not_Default;
 import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
-import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -83,6 +82,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.annotation.OnlyIfSysProp;
@@ -99,6 +99,7 @@ import test.jakarta.data.jpa.web.Residence.Occupant;
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataJPATestServlet extends FATServlet {
+    static final long TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2);
 
     @Inject
     Accounts accounts;
@@ -168,6 +169,37 @@ public class DataJPATestServlet extends FATServlet {
 
     @Inject
     Triangles triangles;
+
+    /**
+     * Indicates if testing with the Hibernate Persistence provider
+     * rather than EclipseLink.
+     *
+     * @return true if testing with the Hibernate Persistence provider.
+     */
+    public static final boolean isHibernate() {
+        return Boolean.valueOf(System.getenv("TEST_HIBERNATE"));
+    }
+
+    /**
+     * Temporary method to allow skipping tests for tests that
+     * fail due to incompatibilities between our Jakarta Data provider
+     * and Hibernate's Jakarta Persistence provider.
+     *
+     * @param issues - the issues that describe why the test must be skipped on Hibernate
+     *
+     * @return boolean - if we need to skip the test, false otherwise.
+     */
+    public static boolean skipForHibernate(String... issues) {
+        if (isHibernate()) {
+            System.out.println("Skipping test because: " + Arrays.asList(issues));
+
+            // FIXME - this is the proper way to skip a test via junit
+            // however, our FATServlet does not support catching an
+            // AssumptionViolatedException and serializing it back to the client.
+//            assumeTrue(!isHibernate());
+        }
+        return isHibernate();
+    }
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -296,6 +328,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testBigDecimal() {
+
         final ZoneId EASTERN = ZoneId.of("America/New_York");
 
         List<DemographicInfo> list = demographics.findByPublicDebtBetween(BigDecimal.valueOf(5000000000000.00), // 5 trillion
@@ -342,6 +375,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testByteArrayAttributeType() {
+
         // remove all data before test
         triangles.deleteByHypotenuseNot((byte) 0);
 
@@ -410,11 +444,19 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(Arrays.toString(list.get(4)), 0, Arrays.compare(new byte[] { 36, 77, 85 }, list.get(4)));
         assertEquals(Arrays.toString(list.get(5)), 0, Arrays.compare(new byte[] { 39, 80, 89 }, list.get(5)));
 
-        // select values including a function on byte[] column
-        // SQLServer does not support length for IMAGE values
-        // SQLServer JDBC Jar Name : mssql-jdbc.jar
-        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
-        if (!(jdbcJarName.startsWith("mssql-jdbc"))) {
+        boolean supportsLengthOfByteArray;
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33204")) {
+            // remove skip if ever supported by Hibernate
+            supportsLengthOfByteArray = false;
+        } else {
+            // select values including a function on byte[] column
+            // SQLServer does not support length for IMAGE values
+            // SQLServer JDBC Jar Name : mssql-jdbc.jar
+            String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+            supportsLengthOfByteArray = !(jdbcJarName.startsWith("mssql-jdbc"));
+        }
+
+        if (supportsLengthOfByteArray) {
             int[][] sidesInfo = triangles.sidesInfo((byte) 65);
             assertEquals(2, sidesInfo.length);
             assertEquals(0, sidesInfo[0][0]);
@@ -448,9 +490,11 @@ public class DataJPATestServlet extends FATServlet {
 
     /**
      * Comparison ignoring case on an entity attribute of type char.
+     * Also tests usage of a stream within a transaction.
      */
     @Test
-    public void testCharIgnoreCase() {
+    public void testCharIgnoreCase() throws Exception {
+
         // Clear out data before test
         employees.deleteByLastName("TestCharIgnoreCase");
 
@@ -460,10 +504,18 @@ public class DataJPATestServlet extends FATServlet {
                         new Employee(54, "Cecilia", "TestCharIgnoreCase", (short) 1073, 'D'),
                         new Employee(73, "Cindy", "TestCharIgnoreCase", (short) 1054, 'c'));
 
-        assertEquals(List.of(14, 33, 73, 54),
-                     employees.findByBadgeAccessLevelIgnoreCaseGreaterThan("B")
-                                     .map(e -> e.empNum)
-                                     .collect(Collectors.toList()));
+        tran.begin();
+        try {
+            assertEquals(List.of(14, 33, 73, 54),
+                         employees.findByBadgeAccessLevelIgnoreCaseGreaterThan("B")
+                                         .map(e -> e.empNum)
+                                         .collect(Collectors.toList()));
+        } finally {
+            if (tran.getStatus() == Status.STATUS_ACTIVE)
+                tran.commit();
+            else
+                tran.rollback();
+        }
 
         employees.deleteByLastName("TestCharIgnoreCase");
     }
@@ -474,6 +526,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testCollectionAttribute() {
+
         assertEquals(Set.of(507),
                      cities.areaCodes("Rochester", "Minnesota").orElseThrow());
 
@@ -815,6 +868,10 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testElementCollection() throws Exception {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33205")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+
         ECEntity e1 = new ECEntity();
         e1.setId("EC1");
         e1.setIntArray(new int[] { 14, 12, 1 });
@@ -1322,34 +1379,6 @@ public class DataJPATestServlet extends FATServlet {
                                              .map(a -> a.houseNumber + " " + a.streetName)
                                              .collect(Collectors.toList()));
 
-        List<ShippingAddress> found = shippingAddresses
-                        .findByStreetAddressRecipientInfoNotEmpty();
-        ShippingAddress a = null;
-        for (ShippingAddress s : found) {
-            if (a1.id.equals(s.id))
-                a = s;
-        }
-        // TODO Replace above for loop with the following once EclipseLink bug #31559 is fixed
-        // assertEquals(1, found.size());
-        // a = found.get(0);
-        assertEquals(a1.id, a.id);
-        assertEquals(a1.city, a.city);
-        assertEquals(a1.state, a.state);
-        assertEquals(a1.zipCode, a.zipCode);
-        assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
-        assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
-        assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
-
-        long count = shippingAddresses.countByStreetAddressRecipientInfoEmpty();
-        // TODO Enable once EclipseLink bug #31559 is fixed:
-        // assertEquals(3L, count);
-
-        // [EclipseLink-4002] Internal Exception: java.sql.SQLIntegrityConstraintViolationException:
-        //                    DELETE on table 'SHIPPINGADDRESS' caused a violation of foreign key constraint 'SHPPNGSHPPNGDDRSSD' for key (1001)
-        // TODO Entity removal fails without the above error unless we add the following lines to first remove the rows from the collection attribute's table,
-        a1.streetAddress.recipientInfo = new ArrayList<>();
-        shippingAddresses.save(a1);
-
         assertEquals(4, shippingAddresses.removeAll());
     }
 
@@ -1358,6 +1387,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testEmbeddableCollection() {
+
         taxpayers.delete();
 
         AccountId a1 = AccountId.of(15561600, 391588);
@@ -1393,7 +1423,12 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(t -> t.ssn)
                                      .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("AccountId:66320100:410224", "AccountId:77512000:705030", "AccountId:88191200:410224"),
+        if (!isHibernate())
+            return; // TODO enable once EclipseLink #33293 is fixed
+
+        assertIterableEquals(List.of("AccountId:66320100:410224",
+                                     "AccountId:77512000:705030",
+                                     "AccountId:88191200:410224"),
                              taxpayers.findAccountsBySSN(234002340L)
                                              .stream()
                                              .map(AccountId::toString)
@@ -1544,6 +1579,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testEmbeddableIntermixNamePatterns() {
+
         assertIterableEquals(List.of("HALCON", "Geotek"),
                              businesses.in("Stewartville", "MN")
                                              .map(b -> b.name)
@@ -1621,20 +1657,31 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
-     * Repository method where the result type is the embeddable class of one of the entity attributes.
+     * Repository method where the result type is the embeddable class of one of
+     * the entity attributes. Also tests stream operations within a transaction.
      */
     @Test
-    public void testEmbeddableTypeAsResult() {
-        assertIterableEquals(List.of("NW 19th St",
-                                     "NW 37th St",
-                                     "NW 4th Ave",
-                                     "NW Civic Center Dr",
-                                     "NW Lakeridge Pl",
-                                     "NW Members Parkway",
-                                     "W Highway 14"),
-                             businesses.findByLocationAddressZip(ZipCode.of(55901))
-                                             .map(loc -> loc.address.street.direction + " " + loc.address.street.name)
-                                             .collect(Collectors.toList()));
+    public void testEmbeddableTypeAsResult() throws Exception {
+
+        tran.begin();
+        try {
+            assertIterableEquals(List.of("NW 19th St",
+                                         "NW 37th St",
+                                         "NW 4th Ave",
+                                         "NW Civic Center Dr",
+                                         "NW Lakeridge Pl",
+                                         "NW Members Parkway",
+                                         "W Highway 14"),
+                                 businesses.findByLocationAddressZip(ZipCode.of(55901))
+                                                 .map(loc -> loc.address.street.direction +
+                                                             " " + loc.address.street.name)
+                                                 .collect(Collectors.toList()));
+        } finally {
+            if (tran.getStatus() == Status.STATUS_ACTIVE)
+                tran.commit();
+            else
+                tran.rollback();
+        }
     }
 
     /**
@@ -1642,6 +1689,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testEmbeddableTypeAsResultDepth3() {
+
         assertIterableEquals(List.of("N Broadway Ave",
                                      "NE Wellner Dr",
                                      "SE 9th St",
@@ -1659,6 +1707,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testEmbeddedId() {
+
         // Clear out data before test
         accounts.deleteByOwnerEndsWith("TestEmbeddedId");
 
@@ -1748,6 +1797,60 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Tests the Empty (and NotEmpty) Query by Method Name keyword.
+     */
+    @Test
+    public void testEmptyAndNotEmpty() {
+        mobilePhones.removeAll();
+
+        Mobile m1 = mobilePhones.insert(Mobile.of(OS.ANDROID,
+                                                  List.of("Camera",
+                                                          "Photos",
+                                                          "Email"),
+                                                  List.of()));
+
+        Mobile m2 = mobilePhones.insert(Mobile.of(OS.IOS,
+                                                  List.of(),
+                                                  List.of("email1@openliberty.io",
+                                                          "email2@openliberty.io",
+                                                          "email3@openliberty.io")));
+
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33290")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+
+        List<Mobile> list = mobilePhones.findByEmailsEmpty();
+        assertEquals(list.toString(), 1, list.size());
+        Mobile m = list.get(0);
+        assertEquals(OS.ANDROID,
+                     m.operatingSystem);
+        assertEquals(m1.deviceId,
+                     m.deviceId);
+        assertEquals(List.of("Camera",
+                             "Photos",
+                             "Email"),
+                     m.apps);
+        assertEquals(List.of(),
+                     m.emails);
+
+        list = mobilePhones.findByEmailsNotEmpty();
+        assertEquals(list.toString(), 1, list.size());
+        m = list.get(0);
+        assertEquals(OS.IOS,
+                     m.operatingSystem);
+        assertEquals(m2.deviceId,
+                     m.deviceId);
+        assertEquals(List.of(),
+                     m.apps);
+        assertEquals(List.of("email1@openliberty.io",
+                             "email2@openliberty.io",
+                             "email3@openliberty.io"),
+                     m.emails);
+
+        mobilePhones.removeAll();
+    }
+
+    /**
      * Tests CrudRepository methods that supply entities as parameters.
      * Also tests compatibility with Converters using OffsetDateTimeToStringConverter
      */
@@ -1812,57 +1915,61 @@ public class DataJPATestServlet extends FATServlet {
             return orders.save(o1updated);
         }).get(2, TimeUnit.MINUTES);
 
-        tran.begin();
-        try {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            ; //TODO remove skip when fixed in Hibernate or Liberty
+        } else {
+            tran.begin();
             try {
-                orders.delete(o1);
-                fail("Deletion must be rejected when the version doesn't match.");
-            } catch (OptimisticLockingFailureException x) {
-                System.out.println("Deletion was rejected as it ought to be when the version does not match.");
+                try {
+                    orders.delete(o1);
+                    fail("Deletion must be rejected when the version doesn't match.");
+                } catch (OptimisticLockingFailureException x) {
+                    System.out.println("Deletion was rejected as it ought to be when the version does not match.");
+                }
+
+                assertEquals(Status.STATUS_MARKED_ROLLBACK, tran.getStatus());
+            } finally {
+                tran.rollback();
             }
 
-            assertEquals(Status.STATUS_MARKED_ROLLBACK, tran.getStatus());
-        } finally {
-            tran.rollback();
+            PurchaseOrder o2old = new PurchaseOrder();
+            o2old.id = o2.id;
+            o2old.purchasedBy = o2.purchasedBy;
+            o2old.purchasedOn = o2.purchasedOn;
+            o2old.total = o2.total;
+            o2old.versionNum = o2.versionNum;
+
+            // increment version of second entity
+            o2.total = 22.99f;
+            o2 = orders.save(o2);
+
+            // attempt to save second entity at an old version
+            o2old.total = 99.22f;
+            try {
+                PurchaseOrder unexpected = orders.save(o2old);
+                fail("Should not be able to update old version of entity: " + unexpected);
+            } catch (OptimisticLockingFailureException x) {
+                // expected
+            }
+
+            // attempt to save second entity at an old version in combination with addition of another entity
+            PurchaseOrder o6 = new PurchaseOrder();
+            o6.purchasedBy = "testEntitiesAsParameters-Customer6";
+            o6.purchasedOn = OffsetDateTime.now();
+            o6.total = 60.99f;
+            try {
+                Iterable<PurchaseOrder> unexpected = orders.saveAll(List.of(o6, o2old));
+                fail("Should not be able to update old version of entity: " + unexpected);
+            } catch (OptimisticLockingFailureException x) {
+                // expected
+            }
+
+            // verify that the second entity remains at its second version (22.99) and that the addition of the sixth entity was rolled back
+            List<Float> orderTotals = orders.findTotalByPurchasedByIn(List.of("testEntitiesAsParameters-Customer2",
+                                                                              "testEntitiesAsParameters-Customer6"));
+            assertEquals(orderTotals.toString(), 1, orderTotals.size());
+            assertEquals(22.99f, orderTotals.get(0), 0.001f);
         }
-
-        PurchaseOrder o2old = new PurchaseOrder();
-        o2old.id = o2.id;
-        o2old.purchasedBy = o2.purchasedBy;
-        o2old.purchasedOn = o2.purchasedOn;
-        o2old.total = o2.total;
-        o2old.versionNum = o2.versionNum;
-
-        // increment version of second entity
-        o2.total = 22.99f;
-        o2 = orders.save(o2);
-
-        // attempt to save second entity at an old version
-        o2old.total = 99.22f;
-        try {
-            PurchaseOrder unexpected = orders.save(o2old);
-            fail("Should not be able to update old version of entity: " + unexpected);
-        } catch (OptimisticLockingFailureException x) {
-            // expected
-        }
-
-        // attempt to save second entity at an old version in combination with addition of another entity
-        PurchaseOrder o6 = new PurchaseOrder();
-        o6.purchasedBy = "testEntitiesAsParameters-Customer6";
-        o6.purchasedOn = OffsetDateTime.now();
-        o6.total = 60.99f;
-        try {
-            Iterable<PurchaseOrder> unexpected = orders.saveAll(List.of(o6, o2old));
-            fail("Should not be able to update old version of entity: " + unexpected);
-        } catch (OptimisticLockingFailureException x) {
-            // expected
-        }
-
-        // verify that the second entity remains at its second version (22.99) and that the addition of the sixth entity was rolled back
-        List<Float> orderTotals = orders.findTotalByPurchasedByIn(List.of("testEntitiesAsParameters-Customer2",
-                                                                          "testEntitiesAsParameters-Customer6"));
-        assertEquals(orderTotals.toString(), 1, orderTotals.size());
-        assertEquals(22.99f, orderTotals.get(0), 0.001f);
 
         orders.deleteAll(List.of(o3, o2));
 
@@ -1874,8 +1981,13 @@ public class DataJPATestServlet extends FATServlet {
 
         PurchaseOrder o;
         assertNotNull(o = map.get("testEntitiesAsParameters-Customer1"));
-        assertEquals(11.99f, o.total, 0.001f);
-        assertEquals(o1_v1 + 1, o.versionNum); // updated once
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33206")) {
+            // Hibernate does not see the update that was made on another thread
+            ; //TODO remove skip when fixed in Hibernate or Liberty
+        } else {
+            assertEquals(11.99f, o.total, 0.001f);
+            assertEquals(o1_v1 + 1, o.versionNum); // updated once
+        }
 
         assertNotNull(o = map.get("testEntitiesAsParameters-Customer5"));
         assertEquals(50.99f, o.total, 0.001f);
@@ -1898,9 +2010,15 @@ public class DataJPATestServlet extends FATServlet {
         if (!jdbcJarName.startsWith("mssql-jdbc") &&
             !jdbcJarName.startsWith("postgresql")) {
             try {
-
-                orders.insertAll(List.of(o7, o5));
-                fail("Should not be able insert an entity with an Id that is already present.");
+                // TODO When using Hibernate, o7 insert succeeds,
+                // causing subsequent failure on:
+                // orders.insertAll(List.of(o7, o8))
+                if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33200")) {
+                    ; //TODO remove skip when fixed in Hibernate or Liberty
+                } else {
+                    orders.insertAll(List.of(o7, o5));
+                    fail("Should not be able insert an entity with an Id that is already present.");
+                }
             } catch (EntityExistsException x) {
                 // expected
             }
@@ -1932,6 +2050,10 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(o7_v1, o7.versionNum);
         assertEquals(o8_v1, o8.versionNum);
+
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
 
         o7.total = 77.99f;
         o8.total = 88.99f;
@@ -1968,11 +2090,15 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(77.99f, totals.get(1), 0.001f);
         assertEquals(11.99f, totals.get(2), 0.001f); // not updated due to version mismatch
 
-        try {
-            orders.update(o1);
-            fail("Attempt to update an outdated version of an entity must raise OptimisticLockingFailureException.");
-        } catch (OptimisticLockingFailureException x) {
-            // pass
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            ; //TODO remove skip when fixed in Hibernate or Liberty
+        } else {
+            try {
+                orders.update(o1);
+                fail("Attempt to update an outdated version of an entity must raise OptimisticLockingFailureException.");
+            } catch (OptimisticLockingFailureException x) {
+                // pass
+            }
         }
 
         assertEquals(11.99f, totals.get(2), 0.001f); // still not updated due to version mismatch
@@ -2133,6 +2259,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testExistsViaQueryLanguage() {
+
         assertEquals(true, businesses.isLocatedAt(2800, "37th St", "NW", "IBM"));
         assertEquals(false, businesses.isLocatedAt(200, "1st St", "SW", "IBM"));
     }
@@ -2143,6 +2270,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testExtractFromDateFunctions1() {
+
         // EXTRACT YEAR
         assertEquals(List.of(4000921041110001L, 4000921042220002L),
                      creditCards.expiringInOrBefore(2024));
@@ -2182,6 +2310,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testExtractFromDateFunction2() {
+
         // EXTRACT YEAR
         assertEquals(List.of(1000921011110001L, 1000921011120002L, 1000921011130003L,
                              4000921041110001L, 4000921042220002L,
@@ -2250,6 +2379,10 @@ public class DataJPATestServlet extends FATServlet {
         // Populate database
         UUID id = mobilePhones.insert(Mobile.of(OS.ANDROID, apps, emails)).deviceId;
 
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33290")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+
         // Outside of transaction, returned entity should be detached
         Mobile johnsMobile = mobilePhones.findById(id).orElseThrow();
 
@@ -2264,10 +2397,140 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Attempt a find-and-delete operation within a UserTransaction. The
+     * returned entities must operate as detached.
+     */
+    @Test
+    public void testFindAndDeleteInTransaction() throws Exception {
+
+        cities.save(new City("Grand Forks", "North Dakota", 59845, Set.of(701)));
+        cities.save(new City("Bismarck", "North Dakota", 77772, Set.of(701)));
+        cities.save(new City("Fargo", "North Dakota", 136285, Set.of(701)));
+
+        City bismarck;
+        City grandForks;
+
+        tran.begin();
+        try {
+            List<City> removed = cities.removeByStateName("North Dakota");
+
+            assertEquals(Set.of("Grand Forks",
+                                "Bismarck",
+                                "Fargo"),
+                         removed.stream()
+                                         .map(c -> c.name)
+                                         .collect(Collectors.toSet()));
+
+            bismarck = removed.stream()
+                            .filter(c -> "Bismarck".equals(c.name))
+                            .findFirst()
+                            .orElseThrow();
+            // The entity must be detached so this update must not commit
+            bismarck.population = 77777;
+
+            grandForks = removed.stream()
+                            .filter(c -> "Grand Forks".equals(c.name))
+                            .findFirst()
+                            .orElseThrow();
+            // The entity must be detached so this update must not commit
+            grandForks.population = 59800;
+        } finally {
+            tran.commit();
+        }
+
+        List<City> found = cities.removeByStateName("North Dakota");
+
+        assertEquals(found.toString(), 0, found.size());
+
+        bismarck.changeCount = 0;
+        bismarck = cities.save(bismarck);
+
+        assertEquals(77777, bismarck.population);
+
+        bismarck = cities.findByName("Bismarck")
+                        .findFirst()
+                        .orElseThrow();
+
+        assertEquals(77777, bismarck.population);
+
+        List<City> removed = cities.removeByStateName("North Dakota");
+
+        assertEquals(removed.toString(), 1, removed.size());
+    }
+
+    /**
+     * Perform a find operation within a transaction. Update the resulting
+     * entity while still in a transaction. Verify that the updates are not
+     * written to the database because the entity returned by the stateless
+     * repository find operation is detached.
+     */
+    @Test
+    public void testFindInTransaction() throws Exception {
+        PurchaseTime saturdayAt8AM = new PurchaseTime( //
+                        LocalTime.of(8, 0, 0), LocalDate.of(2025, 11, 8));
+
+        PurchaseTime saturdayAt9AM = new PurchaseTime( //
+                        LocalTime.of(9, 0, 0), LocalDate.of(2025, 11, 8));
+
+        PurchaseTime saturdayAt2PM = new PurchaseTime( //
+                        LocalTime.of(14, 0, 0), LocalDate.of(2025, 11, 8));
+
+        PurchaseTime saturdayAt3PM = new PurchaseTime( //
+                        LocalTime.of(15, 0, 0), LocalDate.of(2025, 11, 8));
+
+        PurchaseTime saturdayAt8PM = new PurchaseTime( //
+                        LocalTime.of(20, 0, 0), LocalDate.of(2025, 11, 8));
+
+        purchases.removeByTimeOfPurchaseBetween(saturdayAt8AM,
+                                                saturdayAt8PM);
+
+        purchases.make(Purchase.of((short) 201,
+                                   "TestFindInTransaction-1",
+                                   saturdayAt9AM,
+                                   2.15f));
+
+        purchases.make(Purchase.of((short) 202,
+                                   "TestFindInTransaction-2",
+                                   saturdayAt2PM,
+                                   12.95f));
+
+        purchases.make(Purchase.of((short) 203,
+                                   "TestFindInTransaction-3",
+                                   saturdayAt8PM,
+                                   3.95f));
+
+        tran.begin();
+        try {
+            List<Purchase> found = purchases
+                            .findByTimeOfPurchaseBetween(saturdayAt2PM,
+                                                         saturdayAt3PM);
+            assertEquals(found.toString(), 1, found.size());
+
+            Purchase p = found.get(0);
+            // The entity must be detached so this update must not commit
+            p.total = 52.95f;
+        } finally {
+            tran.commit();
+        }
+
+        List<Purchase> found = purchases
+                        .findByTimeOfPurchaseBetween(saturdayAt2PM,
+                                                     saturdayAt3PM);
+        assertEquals(found.toString(), 1, found.size());
+
+        Purchase p = found.get(0);
+        assertEquals(12.95f, p.total, 0.01f);
+
+        assertEquals(3, purchases.removeByTimeOfPurchaseBetween(saturdayAt8AM,
+                                                                saturdayAt8PM));
+    }
+
+    /**
      * Reproduces issue 27925.
      */
     @Test
     public void testForeignKey() {
+
         Manufacturer toyota = new Manufacturer();
         toyota.setName("Toyota");
         toyota.setNotes("testForeignKey-1");
@@ -2300,6 +2563,7 @@ public class DataJPATestServlet extends FATServlet {
 
         Instant corollaLastMod;
         corollaLastMod = models.lastModified(corollaId).orElseThrow();
+
         List<Model> found = models.modifiedAt(corollaLastMod);
         assertEquals(false, found.isEmpty());
         corolla = null;
@@ -2525,6 +2789,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClass() {
+
         assertIterableEquals(List.of("Minnesota", "New York"),
                              cities.findByName("Rochester")
                                              .map(c -> c.stateName)
@@ -2547,6 +2812,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassDelete() {
+
         City winona = new City("Winona", "Minnesota", 25948, Set.of(507));
         winona = cities.save(winona); // must use updated copy of entity now that we have added a version to it
         cities.delete(winona);
@@ -2567,6 +2833,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassFindByComponentOfIdClass() {
+
         assertIterableEquals(List.of("Rochester Minnesota",
                                      "Rochester New York"),
                              cities.withNameOf("Rochester")
@@ -2613,6 +2880,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderByAnnotationReverseDirection() {
+
         assertIterableEquals(List.of("Springfield Oregon",
                                      "Springfield Ohio",
                                      "Springfield Missouri",
@@ -2796,6 +3064,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassOrderBySorts() {
+
         assertIterableEquals(List.of("Springfield Missouri",
                                      "Springfield Massachusetts",
                                      "Springfield Illinois",
@@ -2813,6 +3082,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdClassResult() {
+
         // single result
         CityId cityId = cities.findFirstByNameOrderByPopulationDesc("Springfield");
         assertEquals("Springfield", cityId.name);
@@ -2844,6 +3114,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testIdThatIsNotTheUniqueIdentifier() {
+
         // Clear out data before test
         employees.deleteByLastName("testIdThatIsNotTheUniqueIdentifier");
 
@@ -2967,6 +3238,41 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<StreetAddress, String> comparing(o -> o.streetName)));
 
         shippingAddresses.removeAll();
+    }
+
+    /**
+     * Attempt an insert operation within a UserTransaction. The returned entity
+     * must operate as detached.
+     */
+    @Test
+    public void testInsertInTransaction() throws Exception {
+        UUID id1;
+
+        tran.begin();
+        try {
+            Mobile m1 = mobilePhones.insert(Mobile.of(OS.ANDROID,
+                                                      List.of("settings",
+                                                              "email",
+                                                              "addresses"),
+                                                      List.of("insert1@openliberty.io")));
+
+            id1 = m1.deviceId;
+
+            // The entity must be detached so this update must not commit
+            m1.operatingSystem = OS.IOS;
+        } finally {
+            tran.commit();
+        }
+
+        Mobile m1 = mobilePhones.findById(id1).orElseThrow();
+        assertEquals(id1,
+                     m1.deviceId);
+        assertEquals(OS.ANDROID,
+                     m1.operatingSystem);
+        assertEquals(List.of("insert1@openliberty.io"),
+                     m1.emails);
+
+        mobilePhones.delete(m1);
     }
 
     /**
@@ -3175,6 +3481,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testManyToOneIdClass() {
+
         assertIterableEquals(List.of("Discrooger card #2000921022220002",
                                      "MonsterCard card #3000921032220002",
                                      "Feesa card #4000921042220002",
@@ -3192,6 +3499,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testManyToOneM11M() {
+
         assertIterableEquals(List.of(5000921051110001L, 5000921052220002L,
                                      1000921011110001L, 1000921011120002L, 1000921011130003L,
                                      2000921021110001L, 2000921022220002L),
@@ -3209,6 +3517,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testManyToOneMM11() {
+
         assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
                                      "Matthew@tests.openliberty.io",
                                      "Maximilian@tests.openliberty.io",
@@ -3268,6 +3577,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testMappedSuperclass() {
+
         tariffs.deleteByLeviedBy("USA");
 
         Tariff t1 = new Tariff();
@@ -3444,6 +3754,54 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Tests a versioned updated where multiple threads attempt to update at the
+     * same version. The first attempt must succeed and the second attempt must
+     * raise OptimisticLockingFailureException.
+     */
+    @Test
+    public void testMultipleThreadsVersionedUpdate() throws Exception {
+        orders.deleteAll();
+
+        PurchaseOrder o = new PurchaseOrder();
+        o.purchasedBy = "testMultipleThreadsVersionedUpdate";
+        o.purchasedOn = OffsetDateTime.now();
+        o.total = 0.00f;
+        o = orders.create(o);
+
+        final UUID id = o.id;
+        final int versionAfterCreate = o.versionNum;
+        final float totalAfterCreate = o.total;
+
+        // update only if at the initial version (on another thread)
+        CompletableFuture.supplyAsync(() -> {
+            PurchaseOrder o1 = new PurchaseOrder();
+            o1.id = id;
+            o1.purchasedBy = "testMultipleThreadsVersionedUpdate";
+            o1.purchasedOn = OffsetDateTime.now();
+            o1.total = 1.00f;
+            o1.versionNum = versionAfterCreate;
+
+            orders.modify(o1);
+            return true;
+        }).get(TIMEOUT_MS, TimeUnit.MILLISECONDS);
+
+        // again attempt to update only if at the initial version (from same thread)
+        PurchaseOrder o2 = new PurchaseOrder();
+        o2.id = id;
+        o2.purchasedBy = "testMultipleThreadsVersionedUpdate";
+        o2.purchasedOn = OffsetDateTime.now();
+        o2.total = totalAfterCreate + 2.00f;
+        o2.versionNum = versionAfterCreate;
+        try {
+            orders.modify(o2);
+            fail("Updated same version " + versionAfterCreate + " of entity " + o +
+                 " twice. Total is: " + orders.findById(id).orElseThrow().total);
+        } catch (OptimisticLockingFailureException x) {
+            ; // pass
+        }
+    }
+
+    /**
      * Use a custom join query so that a OneToMany association can query by attributes of the many side of the relationship.
      */
     @Test
@@ -3500,6 +3858,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testOneToOne() {
+
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
 
         Driver d1 = new Driver("Owen TestOneToOne", 100101000, LocalDate.of(2000, 1, 1), 71, 210, //
@@ -3797,11 +4156,63 @@ public class DataJPATestServlet extends FATServlet {
     }
 
     /**
+     * Attempt a save operation within a UserTransaction. The returned entity
+     * must operate as detached.
+     */
+    @Test
+    public void testSaveInTransaction() throws Exception {
+        cities.deleteByStateName("Montana");
+
+        tran.begin();
+        try {
+            City billings = cities.save(new City( //
+                            "Billings", //
+                            "Montana", //
+                            117116, //
+                            Set.of(406)));
+
+            // The entity must be detached so this update must not commit
+            billings.population = 117117;
+        } finally {
+            tran.commit();
+        }
+
+        City city = cities.findByStateName("Montana")
+                        .findFirst()
+                        .orElseThrow();
+
+        assertEquals("Billings", city.name);
+        assertEquals("Montana", city.stateName);
+        assertEquals(117116, city.population);
+        assertEquals(Set.of(406), city.areaCodes);
+
+        cities.deleteByStateName("Montana");
+    }
+
+    /**
      * Repository method that queries for the IdClass using id(this)
      * and sorts based on the attributes of the IdClass.
      */
     @Test
     public void testSelectIdClass() {
+
+        List<String> found;
+        if (isHibernate()) {
+            // Hibernate correctly returns a stream of IdClass
+            @SuppressWarnings("unchecked")
+            Stream<CityId> stream = (Stream<CityId>) (Stream<?>) cities.ids();
+            found = stream
+                            .map(id -> id.getStateName() + ":" + id.name)
+                            .collect(Collectors.toList());
+        } else {
+            // TODO replace the following with the above once #29073 is fixed
+            // and correct the repository method return type to match
+            // EclipseLink incorrectly returns a stream of Object[]
+            found = cities.ids()
+                            .map(id -> id[0] + ":" + id[1])
+                            .collect(Collectors.toList());
+        }
+
         assertEquals(List.of("Illinois:Springfield",
                              "Kansas:Kansas City",
                              "Massachusetts:Springfield",
@@ -3811,11 +4222,7 @@ public class DataJPATestServlet extends FATServlet {
                              "New York:Rochester",
                              "Ohio:Springfield",
                              "Oregon:Springfield"),
-                     cities.ids()
-                                     .map(id -> id[0] + ":" + id[1])
-                                     // TODO replace above with the following #29073 is fixed
-                                     //.map(id -> id.getStateName() + ":" + id.name)
-                                     .collect(Collectors.toList()));
+                     found);
     }
 
     /**
@@ -3824,6 +4231,10 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testSortByVersionFunction() {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();
@@ -3935,7 +4346,6 @@ public class DataJPATestServlet extends FATServlet {
     /**
      * Test passing a Sort created with Sort.of, particularly the ignoreCase parameter
      */
-    @SkipIfSysProp(DB_SQLServer) //SQLServer does not sort by case by default, thus ignoreCase=false will produce the same result as ignoreCase=true
     @Test
     public void testSortOf() {
         City eagan = cities.save(new City("eagan", "minnesota", 67_396, Set.of(651)));
@@ -4007,23 +4417,31 @@ public class DataJPATestServlet extends FATServlet {
      * but lacking all other clauses, such that the only FROM clause is found
      * within the ORDER BY clause. The Jakarta Data implementation should
      * insert a FROM clause prior to the ORDER BY clause to form a valid
-     * query.
+     * query. Also tests use of a stream within a transaction.
      */
     @Test
-    public void testSubqueryInSelect() {
+    public void testSubqueryInSelect() throws Exception {
 
-        assertEquals(List.of(2002,
-                             2003,
-                             2004,
-                             2005,
-                             2006,
-                             2007,
-                             2008,
-                             2009,
-                             2010),
-                     demographics.yearsUpTo(2010)
-                                     .sorted()
-                                     .collect(Collectors.toList()));
+        tran.begin();
+        try {
+            assertEquals(List.of(2002,
+                                 2003,
+                                 2004,
+                                 2005,
+                                 2006,
+                                 2007,
+                                 2008,
+                                 2009,
+                                 2010),
+                         demographics.yearsUpTo(2010)
+                                         .sorted()
+                                         .collect(Collectors.toList()));
+        } finally {
+            if (tran.getStatus() == Status.STATUS_ACTIVE)
+                tran.commit();
+            else
+                tran.rollback();
+        }
     }
 
     /**
@@ -4031,6 +4449,10 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testTimeAsVersion() throws Exception {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+
         /*
          * Reference Issue: https://github.com/eclipse-ee4j/eclipselink/issues/205
          * Without using the Eclipselink Oracle plugin the precision of Timestamp is 1 second
@@ -4126,6 +4548,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testUnannotatedCollection() {
+
         assertEquals(0, counties.deleteByNameIn(List.of("Olmsted", "Fillmore", "Winona", "Wabasha")));
 
         int[] olmstedZipCodes = new int[] { 55901, 55902, 55903, 55904, 55905, 55906, 55920, 55923, 55929, 55932, 55934, 55940, 55960, 55963, 55964, 55972, 55976 };
@@ -4275,7 +4698,30 @@ public class DataJPATestServlet extends FATServlet {
      * which are different code paths.
      */
     @Test
+    /**
+     * This test also now fails on EclipseLink. After switching to CascadeType.ALL
+     * when replacing the original card's security code EclipseLink
+     * attempts to merge the new entity:
+     * eclipselink.ps.transaction 3 Merge clone with references Discrooger card #5000921051110001 (551) for Maximilian@tests.openliberty.io valid from 2024-05-10 to
+     * 2028-05-10
+     *
+     * then executes an additional select statement to find the debitor (likely to see if it needs to also be updated):
+     * eclipselink.ps.query 3 Execute query ReadAllQuery(name="cards" referenceClass=CreditCard sql="SELECT t1.NUMBER, t1.ISSUER, t1.EXPIRESON, t1.ISSUEDON,
+     * t1.SECURITYCODE, t1.DEBTOR_CUSTOMERID FROM Customer_CreditCard t0, CreditCard t1 WHERE ((t0.Customer_CUSTOMERID = ?) AND ((t1.ISSUER = t0.ISSUER) AND (t1.NUMBER =
+     * t0.NUMBER)))")
+     * eclipselink.ps.sql 3 SELECT t1.NUMBER, t1.ISSUER, t1.EXPIRESON, t1.ISSUEDON, t1.SECURITYCODE, t1.DEBTOR_CUSTOMERID FROM Customer_CreditCard t0, CreditCard t1 WHERE
+     * ((t0.Customer_CUSTOMERID = ?) AND ((t1.ISSUER = t0.ISSUER) AND (t1.NUMBER = t0.NUMBER)))
+     * eclipselink.ps.query 3 Execute query ReadObjectQuery(name="debtor" referenceClass=Customer )
+     *
+     * then just returns the original entity (custom trace added during debug):
+     * io.openliberty.data.internal.persistence.QueryInfo 3 after merge: Discrooger card #5000921051110001 (501) for Maximilian@tests.openliberty.io valid from 2021-05-10
+     * to 2025-05-10
+     *
+     * TODO need to investigate this more and possibly replicate the issue and open a bug with EclipseLink
+     */
+    @Ignore("See comments ")
     public void testUpdateEntityWithIdClass() {
+
         CreditCard original = creditCards
                         .findByIssuedOnWithMonthIn(Set.of(Month.MAY.getValue()))
                         .findFirst()
@@ -4323,23 +4769,32 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testUpdateEntityWithIdClassAndVersion() {
+
         CityId mnId = CityId.of("Rochester", "Minnesota");
         CityId nyId = CityId.of("Rochester", "New York");
 
-        long mnVer = cities.currentVersion(mnId.name, mnId.getStateName());
-        long nyVer = cities.currentVersion(nyId.name, nyId.getStateName());
+        long mnVer;
+        long nyVer;
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
+            // TODO once fixed in Hibernate, update the JPQL query to use VERSION(THIS)
+            // instead of lower case VERSION(this)
+            mnVer = cities.currentVersion(mnId);
+            nyVer = cities.currentVersion(nyId);
+        } else {
+            mnVer = cities.currentVersion(mnId.name, mnId.getStateName());
+            nyVer = cities.currentVersion(nyId.name, nyId.getStateName());
 
-        // TODO enable once EclipseLink #29073 is fixed, and maybe remove the above
-        //long mnVer = cities.currentVersion(mnId);
-        //long nyVer = cities.currentVersion(nyId);
+            // TODO enable once EclipseLink #29073 is fixed, and maybe remove the above
+            //mnVer = cities.currentVersion(mnId);
+            //nyVer = cities.currentVersion(nyId);
 
-        // TODO allow this test to run once 28589 is fixed
-        // and verify that EclipseLink does not corrupt the area code value
-        // for the following subsequent tests:
-        // testCollectionAttribute, testIdClassOrderBySorts, testIdClassOrderByAnnotationWithCursorPagination,
-        // testIdClassOrderByNamePatternWithCursorPagination, testIdClassOrderByAnnotationReverseDirection
-        if (true)
+            // TODO allow this test to run once 28589 is fixed
+            // and verify that EclipseLink does not corrupt the area code value
+            // for the following subsequent tests:
+            // testCollectionAttribute, testIdClassOrderBySorts, testIdClassOrderByAnnotationWithCursorPagination,
+            // testIdClassOrderByNamePatternWithCursorPagination, testIdClassOrderByAnnotationReverseDirection
             return;
+        }
 
         City[] updated = cities.modifyData(City.of(mnId, 122413, Set.of(507, 924), mnVer),
                                            City.of(nyId, 208546, Set.of(585), nyVer));
@@ -4359,6 +4814,51 @@ public class DataJPATestServlet extends FATServlet {
         // restore original data
         cities.modifyStats(City.of(mnId, 121395, Set.of(507), mnVer + 1),
                            City.of(nyId, 211328, Set.of(585), nyVer + 1));
+    }
+
+    /**
+     * Attempt an update operation within a UserTransaction. The returned entity
+     * must operate as detached.
+     */
+    @Test
+    public void testUpdateInTransaction() throws Exception {
+
+        Mobile m1 = mobilePhones.insert(Mobile.of(OS.ANDROID,
+                                                  List.of("settings",
+                                                          "messages",
+                                                          "maps",
+                                                          "photos"),
+                                                  List.of("update1@openliberty.io",
+                                                          "update2@openliberty.io")));
+
+        UUID id1 = m1.deviceId;
+
+        tran.begin();
+        try {
+            m1.operatingSystem = OS.IOS;
+            m1 = mobilePhones.update(m1);
+
+            // The entity must be detached so this update must not commit
+            m1.operatingSystem = OS.WINDOWS;
+        } finally {
+            tran.commit();
+        }
+
+        m1 = mobilePhones.findById(id1).orElseThrow();
+
+        assertEquals(id1,
+                     m1.deviceId);
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
+            //TODO remove skip when fixed in Hibernate
+        } else {
+            assertEquals(OS.IOS,
+                         m1.operatingSystem);
+        }
+        assertEquals(List.of("update1@openliberty.io",
+                             "update2@openliberty.io"),
+                     m1.emails);
+
+        mobilePhones.delete(m1);
     }
 
     /**
@@ -4442,6 +4942,10 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testUpdateWithEntityResults() {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();
@@ -4631,6 +5135,10 @@ public class DataJPATestServlet extends FATServlet {
         int newVersion = o1.versionNum;
         UUID id = o1.id;
 
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
+
         // Attempt deletion at old version
         o1 = new PurchaseOrder();
         o1.id = id;
@@ -4692,6 +5200,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testVersionedRemoval() {
+
         City duluth = cities.save(new City("Duluth", "Minnesota", 86697, Set.of(218)));
         long oldVersion = duluth.changeCount;
 
@@ -4703,6 +5212,9 @@ public class DataJPATestServlet extends FATServlet {
         duluth.changeCount = oldVersion;
         try {
             cities.remove(duluth);
+            if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+                return; //TODO remove skip when fixed in Hibernate or Liberty
+            }
             fail("Attempt to delete with an outdated version must raise OptimisticLockingFailureException.");
         } catch (OptimisticLockingFailureException x) {
             // pass
@@ -4739,9 +5251,20 @@ public class DataJPATestServlet extends FATServlet {
         orders.modify(o1);
 
         o1 = orders.findById(o1.id).orElseThrow();
+        // Hibernate merge was ignored, and old value remains in database
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
+            return; //TODO remove skip when fixed in Hibernate or worked around in Liberty
+        }
         assertEquals(10.19f, o1.total, 0.001f);
         int newVersion = o1.versionNum;
         UUID id = o1.id;
+
+        // Hibernate has o1.versionNum still being 0 here, breaking the test
+        // that intends to force an error by attempting an update at the
+        // old version
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            return; //TODO remove skip when fixed in Hibernate or Liberty
+        }
 
         o1 = new PurchaseOrder();
         o1.id = id;
@@ -4855,6 +5378,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testWildcardStreamReturnType() {
+
         assertEquals(List.of("Geotek",
                              "HALCON"),
                      businesses.findAsStreamByCity("Stewartville", "MN")

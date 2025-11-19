@@ -40,7 +40,9 @@ encode.enterText=Zadejte text:
 encode.reenterText=Znovu zadejte text:
 encode.readError=Chyba p\u0159i \u010dten\u00ed textu.
 encode.entriesDidNotMatch=Polo\u017eky si neodpov\u00eddaly.
-
+encode.mutuallyExclusiveArgError=Ve vstupn\u00edm souboru nelze zadat vlastnosti {0} a {1}.
+encode.aesConfigFileEncryptionAmbiguous=CHYBA: Vstupn\u00ed soubor nelze pou\u017e\u00edt, pokud obsahuje prom\u011bnn\u00e9 {0} a {1}.
+encode.aesConfigFileMissingEncryptionVariables=Nelze zak\u00f3dovat heslo; bu\u010f vstupn\u00ed soubor neobsahuje prom\u011bnn\u00e9 {0} nebo {1}, nebo je vstupn\u00ed soubor chybn\u011b vytvo\u0159en.
 
 password.enterText=Zadejte heslo:
 password.reenterText=Potvr\u010fte heslo:
@@ -98,7 +100,7 @@ createLTPAKeys.fileExists=Soubor {0} ji\u017e existuje. Nelze vytvo\u0159it soub
 createLTPAKeys.createdFile=Vytvo\u0159en\u00fd soubor s kl\u00ed\u010di LTPA: {0}\nZahr\u0148te n\u00e1sleduj\u00edc\u00ed konfiguraci do souboru server.xml\n{1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=Instalace Javy bu\u010f nen\u00ed z IBM Semeru Runtimes ani IBM SDK, nebo pokud ano, nepodporuje FIPS 140-3.\nNainstalujte Javu z IBM Semeru Runtimes nebo IBM SDK pomoc\u00ed verze a opera\u010dn\u00edho syst\u00e9mu, kter\u00fd podporuje FIPS 140-3.\nPokud pou\u017e\u00edv\u00e1te IBM Semeru Runtimes, pou\u017eijte verzi 11.0.29.0, 17.0.17.0, 21.0.9.0 nebo vy\u0161\u0161\u00ed.\nPokud pou\u017e\u00edv\u00e1te IBM SDK, pou\u017eijte verzi 8.0.8.30 nebo vy\u0161\u0161\u00ed.
+configureFIPS.notIbmSdkNorSemeru=Instalace Javy bu\u010f nepoch\u00e1z\u00ed z IBM Semeru Runtimes ani IBM SDK, nebo pokud ano, nepodporuje FIPS 140-3.\nNainstalujte Javu z IBM Semeru Runtimes nebo IBM SDK pomoc\u00ed verze a opera\u010dn\u00edho syst\u00e9mu, kter\u00fd podporuje FIPS 140-3.\nPokud pou\u017e\u00edv\u00e1te IBM Semeru Runtimes, pou\u017eijte verzi 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, nebo vy\u0161\u0161\u00ed.\nPokud pou\u017e\u00edv\u00e1te IBM SDK, pou\u017eijte verzi 8.0.8.30 nebo vy\u0161\u0161\u00ed.
 
 configureFIPS.zosNotAvailable=P\u0159\u00edkaz securityUtility configureFIPS nen\u00ed podporov\u00e1n na adrese z/OS.
 
@@ -129,3 +131,8 @@ configureFIPS.fipsNotEnabled=FIPS 140-3 ji\u017e nen\u00ed v souboru {0} povolen
 configureFIPS.restartServer=Restartujte server {0}, aby se zm\u011bna pou\u017eila.
 configureFIPS.restartClient=Restartujte klienta {0}, aby se zm\u011bna pou\u017eila.
 configureFIPS.restart=Restartujte servery a klienty, aby se zm\u011bna pou\u017eila.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=Soubor XML pro \u0161ifrov\u00e1n\u00ed hesel byl \u00fasp\u011b\u0161n\u011b vytvo\u0159en.\nChcete-li zm\u011bny aktivovat, p\u0159idejte odkaz na um\u00edst\u011bn\u00ed souboru XML do souboru server.xml : <include location="{0}" />
+generateaeskey.failFileExists=Soubor {0} existuje a nebude p\u0159eps\u00e1n. Bu\u010f zadejte jin\u00fd n\u00e1zev souboru, nebo st\u00e1vaj\u00edc\u00ed soubor p\u0159ed dal\u0161\u00edm pokusem odstra\u0148te.
+generateaeskey.failFileIsDirectory=Hodnota {0} zadan\u00e1 pro n\u00e1zev souboru je adres\u00e1\u0159. Zadejte cel\u00fd n\u00e1zev souboru a zkuste to znovu.

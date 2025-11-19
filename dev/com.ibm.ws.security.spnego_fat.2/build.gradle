@@ -21,7 +21,7 @@ dependencies {
                'org.apache.httpcomponents:httpcore:4.1.2',
                'org.apache.sshd:sshd-common:2.12.1',
                'org.apache.sshd:sshd-core:2.12.1',
-               'org.bouncycastle:bcprov-jdk18on:1.78.1', // required for sshd and cannot use io.openliberty.org.bouncycastle.bcprov-jdk18on
+               'org.bouncycastle:bcprov-jdk18on:1.82', // required for sshd and cannot use io.openliberty.org.bouncycastle.bcprov-jdk18on
                project(':io.openliberty.org.apache.commons.codec'),
                project(':com.ibm.ws.security.spnego.fat.common'),
                project(':com.ibm.ws.webcontainer.security_test.servlets')

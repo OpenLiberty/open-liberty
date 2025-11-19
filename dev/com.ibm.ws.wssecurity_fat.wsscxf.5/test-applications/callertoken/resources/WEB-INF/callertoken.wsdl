@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<wsdl:definitions name="callertoken"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:tns="http://caller.libertyfat.test/contract"
+        targetNamespace="http://caller.libertyfat.test/contract"
+        xmlns:wsp="http://www.w3.org/ns/ws-policy"
+        xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd"
+        xmlns:wsaws="http://www.w3.org/2005/08/addressing" 
+        xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702"
+        xmlns:sp13="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200802"
+        xmlns:x1="http://caller.libertyfat.test/types" >
+
+    
+    <!-- bac01 Caller with and UserNameToken -->
+	<wsp:Policy wsu:Id="Basic128GCMSha256ECDHESWithUserNameToken">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:UsernameToken
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:WssUsernameToken10/>
+                             </wsp:Policy>
+                          </sp:UsernameToken>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp-cxf:Basic128GCMSha256ECDHES xmlns:sp-cxf="http://cxf.apache.org/custom/security-policy"/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+
+    <!-- bac02 Caller HTTP with ECDH-ES encryption and Supporting UNT  -->
+    <wsp:Policy wsu:Id="Basic128GCMSha256ECDHESWithSupportingUNT">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedSupportingTokens>
+                   <wsp:Policy>
+                      <sp:UsernameToken
+                         sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                         <wsp:Policy>                 
+                            <sp:HashPassword/>
+                            <sp:WssUsernameToken11/>
+                         </wsp:Policy>
+                      </sp:UsernameToken>
+                   </wsp:Policy>
+                </sp:EncryptedSupportingTokens>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:RequireThumbprintReference/>
+                                <sp:WssX509V3Token11/>
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp-cxf:Basic128GCMSha256ECDHES xmlns:sp-cxf="http://cxf.apache.org/custom/security-policy"/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+            <sp:EncryptedParts>
+                <sp:Body/>
+            </sp:EncryptedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+
+    <!-- bac03 Caller with and UserNameToken -->
+	<wsp:Policy wsu:Id="Basic192GCMSha256ECDHESWithUserNameToken">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:UsernameToken
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:WssUsernameToken10/>
+                             </wsp:Policy>
+                          </sp:UsernameToken>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp-cxf:Basic192GCMSha256ECDHES xmlns:sp-cxf="http://cxf.apache.org/custom/security-policy"/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+    <!-- bac04 Caller HTTP with ECDH-ES and Supporting UNT  -->
+    <wsp:Policy wsu:Id="Basic192GCMSha256ECDHESWithSupportingUNT">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedSupportingTokens>
+                   <wsp:Policy>
+                      <sp:UsernameToken
+                         sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                         <wsp:Policy>
+                            <sp:WssUsernameToken11/>
+                         </wsp:Policy>
+                      </sp:UsernameToken>
+                   </wsp:Policy>
+                </sp:EncryptedSupportingTokens>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:RequireThumbprintReference/>
+                                <sp:WssX509V3Token11/>
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp-cxf:Basic192GCMSha256ECDHES xmlns:sp-cxf="http://cxf.apache.org/custom/security-policy"/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+            <sp:EncryptedParts>
+                <sp:Body/>
+            </sp:EncryptedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+    <!-- bac05 Caller with UserNameToken -->
+    <wsp:Policy wsu:Id="Basic256GCMSha256ECDHESWithUserNameToken">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:UsernameToken
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:WssUsernameToken10/>
+                             </wsp:Policy>
+                          </sp:UsernameToken>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp-cxf:Basic256GCMSha256ECDHES xmlns:sp-cxf="http://cxf.apache.org/custom/security-policy"/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+            <sp:EncryptedParts>
+                <sp:Body/>
+            </sp:EncryptedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+    <!-- bac06 Caller HTTP with ECDH-ES and Supporting UNT  -->
+    <wsp:Policy wsu:Id="Basic256GCMSha256ECDHESWithSupportingUNT">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedSupportingTokens>
+                   <wsp:Policy>
+                      <sp:UsernameToken
+                         sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                         <wsp:Policy>
+                            <sp:WssUsernameToken11/>
+                         </wsp:Policy>
+                      </sp:UsernameToken>
+                   </wsp:Policy>
+                </sp:EncryptedSupportingTokens>
+                <sp:SymmetricBinding>
+                  <wsp:Policy>
+                    <sp:ProtectionToken>
+                       <wsp:Policy>
+                          <sp:X509Token
+                             sp:IncludeToken="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702/IncludeToken/AlwaysToRecipient">
+                             <wsp:Policy>
+                                <sp:RequireThumbprintReference/>
+                                <sp:WssX509V3Token11/>
+                             </wsp:Policy>
+                          </sp:X509Token>
+                       </wsp:Policy>
+                    </sp:ProtectionToken>
+                    <sp:Layout>
+                       <wsp:Policy>
+                          <sp:Lax/>
+                       </wsp:Policy>
+                    </sp:Layout>
+                    <sp:IncludeTimestamp/>
+                    <sp:OnlySignEntireHeadersAndBody/>
+                    <sp:AlgorithmSuite>
+                       <wsp:Policy>
+                          <sp-cxf:Basic256GCMSha256ECDHES xmlns:sp-cxf="http://cxf.apache.org/custom/security-policy"/>
+                       </wsp:Policy>
+                    </sp:AlgorithmSuite>
+                 </wsp:Policy>
+              </sp:SymmetricBinding>
+              <sp:SignedParts>
+                  <sp:Body/>
+              </sp:SignedParts>
+            <sp:EncryptedParts>
+                <sp:Body/>
+            </sp:EncryptedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="http://caller.libertyfat.test/types">
+                <xsd:element name="requestString">
+                        <xsd:complexType>
+                                <xsd:sequence>
+                                        <xsd:element name="stringreq" type="xsd:string"/>
+                                </xsd:sequence>
+                        </xsd:complexType>
+                </xsd:element>
+                <xsd:element name="responseString">
+                        <xsd:complexType>
+                                <xsd:sequence>
+                                        <xsd:element name="stringres" type="xsd:string"/>
+                                </xsd:sequence>
+                        </xsd:complexType>
+                </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+
+   <wsdl:message name="getVersionRequest">
+      <wsdl:part element="x1:requestString" name="getVersion"/>
+   </wsdl:message>
+   <wsdl:message name="getVersionResponse">
+      <wsdl:part element="x1:responseString" name="getVersionReturn"/>
+   </wsdl:message>
+
+   <wsdl:portType name="FVTVersionBAC">
+      <wsdl:operation name="invoke">
+         <wsdl:input message="tns:getVersionRequest" name="getVersionRequest"/>
+         <wsdl:output message="tns:getVersionResponse" name="getVersionResponse"/>
+      </wsdl:operation>
+   </wsdl:portType>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding01" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#Basic128GCMSha256ECDHESWithUserNameToken"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC01Service">
+      <wsdl:port name="UrnCallerToken01" binding="tns:UrnCallerTokenSoapBinding01">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC01Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding02" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#Basic128GCMSha256ECDHESWithSupportingUNT"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC02Service">
+      <wsdl:port name="UrnCallerToken02" binding="tns:UrnCallerTokenSoapBinding02">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC02Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding03" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#Basic192GCMSha256ECDHESWithUserNameToken"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC03Service">
+      <wsdl:port name="UrnCallerToken03" binding="tns:UrnCallerTokenSoapBinding03">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC03Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding04" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#Basic192GCMSha256ECDHESWithSupportingUNT"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC04Service">
+      <wsdl:port name="UrnCallerToken04" binding="tns:UrnCallerTokenSoapBinding04">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC04Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding05" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#Basic256GCMSha256ECDHESWithUserNameToken"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC05Service">
+      <wsdl:port name="UrnCallerToken05" binding="tns:UrnCallerTokenSoapBinding05">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC05Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding06" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#Basic256GCMSha256ECDHESWithSupportingUNT"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC06Service">
+      <wsdl:port name="UrnCallerToken06" binding="tns:UrnCallerTokenSoapBinding06">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC06Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding07" type="tns:FVTVersionBAC">
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsp:PolicyReference URI="#SymmetricEndorsingPolicy"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC07Service">
+      <wsdl:port name="UrnCallerToken07" binding="tns:UrnCallerTokenSoapBinding07">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC07Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding08" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#SymmetricEndorsingTLSPolicy"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC08Service">
+      <wsdl:port name="UrnCallerToken08" binding="tns:UrnCallerTokenSoapBinding08">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC08Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding09" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#CallerSymmetricProtectTokensPolicy"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC09Service">
+      <wsdl:port name="UrnCallerToken09" binding="tns:UrnCallerTokenSoapBinding09">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC09Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+   <wsdl:binding name="UrnCallerTokenSoapBinding10" type="tns:FVTVersionBAC">
+      <wsp:PolicyReference URI="#CallerTransportEndorsingPolicy"/>
+      <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+      <wsdl:operation name="invoke">
+         <soap:operation soapAction=""/>
+         <wsdl:input name="getVersionRequest">
+            <soap:body use="literal"/>
+         </wsdl:input>
+         <wsdl:output name="getVersionResponse">
+            <soap:body use="literal"/>
+         </wsdl:output>
+      </wsdl:operation>
+   </wsdl:binding>
+
+   <wsdl:service name="FatBAC10Service">
+      <wsdl:port name="UrnCallerToken10" binding="tns:UrnCallerTokenSoapBinding10">
+         <soap:address location="http://localhost:8010/callertoken/FatBAC10Service"/>
+      </wsdl:port>
+   </wsdl:service>
+
+
+</wsdl:definitions>
+
+

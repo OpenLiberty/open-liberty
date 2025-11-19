@@ -18,10 +18,23 @@
         <servlet-class>com.ibm.ws.wssecurity.fat.callerclient.CxfCallerSvcClient</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
+    
+   <servlet id="Servlet_2">
+        <servlet-name>callerclient1</servlet-name>
+        <display-name>callerclient1</display-name>
+        <description>ECDH CXF Caller UNT Service Client</description>
+        <servlet-class>com.ibm.ws.wssecurity.fat.callerclient.ECDHCxfCallerSvcClient</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
     <servlet-mapping id="ServletMapping_1">
         <servlet-name>callerclient</servlet-name>
         <url-pattern>/CxfCallerSvcClient</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping id="ServletMapping_2">
+        <servlet-name>callerclient1</servlet-name>
+        <url-pattern>/ECDHCxfCallerSvcClient</url-pattern>
     </servlet-mapping>
     
     <session-config>

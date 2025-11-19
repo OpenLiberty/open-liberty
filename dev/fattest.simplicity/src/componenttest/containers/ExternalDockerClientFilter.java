@@ -19,6 +19,7 @@ import javax.net.SocketFactory;
 
 import org.testcontainers.dockerclient.InvalidConfigurationException;
 import org.testcontainers.shaded.com.github.dockerjava.core.DefaultDockerClientConfig;
+import org.testcontainers.shaded.com.github.dockerjava.core.RemoteApiVersion;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -41,12 +42,14 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
      */
     private static final String FORCE_DOCKER_HOST = System.getProperty("fat.test.docker.host");
     private static final String CHECK_PORT_AVAILABLE = System.getProperty("fat.test.docker.host.port");
+    private static final RemoteApiVersion DEFAULT_MIN_API_VERSION = RemoteApiVersion.VERSION_1_44;
 
     private boolean valid;
     private String host;
     private String hostname;
     private String verify;
     private String certPath;
+    private RemoteApiVersion apiVersion;
 
     //Singleton class
     private static ExternalDockerClientFilter instance;
@@ -108,6 +111,15 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
             return false;
         }
 
+        //NOTE: consul currently does not supply this property.
+        //      if it ever does use it as the minimum
+        RemoteApiVersion apiVer = RemoteApiVersion.parseConfigWithDefault(dockerService.getProperties().get("api.version"));
+
+        if (apiVer == RemoteApiVersion.UNKNOWN_VERSION) {
+            Log.info(c, m, "Unknown minimum docker api version, defaulting to " + DEFAULT_MIN_API_VERSION);
+            apiVer = DEFAULT_MIN_API_VERSION;
+        }
+
         File certDir = new File("docker-certificates");
         certDir.mkdirs();
 
@@ -119,6 +131,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
         host = dockerHostURL;
         verify = "1";
         certPath = certDir.getAbsolutePath();
+        apiVersion = apiVer;
 
         try {
             test();
@@ -182,6 +195,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
                         .withDockerHost(host) //
                         .withDockerTlsVerify(verify) //
                         .withDockerCertPath(certPath) //
+                        .withApiVersion(apiVersion) //
                         .build();
 
         try {
@@ -235,5 +249,9 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
 
     public String getCertPath() {
         return certPath;
+    }
+
+    public RemoteApiVersion getMinApiVersion() {
+        return apiVersion;
     }
 }

@@ -3,8 +3,8 @@
 confluentinc/cp-kafka:7.1.1
 elastic/logstash:7.16.3
 fbicodex/spnego-kdc-server:1.0
-ghcr.io/gvenzl/oracle-free:23-full-faststart
-ghcr.io/gvenzl/oracle-free:23-slim-faststart
+ghcr.io/gvenzl/oracle-free:23.9-full-faststart
+ghcr.io/gvenzl/oracle-free:23.9-slim-faststart
 ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.127.0
 ghcr.io/testcontainers/ryuk:0.12.0
 ghcr.io/testcontainers/sshd:1.3.0
@@ -30,8 +30,8 @@ localhost/openliberty/testcontainers/keyserver-simple:3.11.6
 localhost/openliberty/testcontainers/ldap-kdc-server:1.0.0.1
 localhost/openliberty/testcontainers/ldap-server:3.17
 localhost/openliberty/testcontainers/ldap-server:3.18
-localhost/openliberty/testcontainers/oracle-krb5:23.0.0.1-full-faststart
-localhost/openliberty/testcontainers/oracle-ssl:23-full-faststart
+localhost/openliberty/testcontainers/oracle-krb5:23.9-full-faststart
+localhost/openliberty/testcontainers/oracle-ssl:23.9-full-faststart
 localhost/openliberty/testcontainers/postgres-init:17-alpine
 localhost/openliberty/testcontainers/postgres-krb5:17.0.0.1
 localhost/openliberty/testcontainers/postgres-ssl:17.0.0.1

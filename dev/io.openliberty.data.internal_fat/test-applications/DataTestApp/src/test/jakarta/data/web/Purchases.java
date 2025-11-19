@@ -24,7 +24,7 @@ import jakarta.data.repository.Repository;
  * Repository for an entity where one of the attributes is a record that is in
  * this case used as an embeddable, but elsewhere used as an entity.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Purchases extends DataRepository<Purchase, Long> {
 
     @Insert

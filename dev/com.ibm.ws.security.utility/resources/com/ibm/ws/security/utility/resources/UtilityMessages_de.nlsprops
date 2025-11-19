@@ -40,7 +40,9 @@ encode.enterText=Text eingeben:
 encode.reenterText=Text erneut eingeben:
 encode.readError=Fehler beim Lesen des Textes.
 encode.entriesDidNotMatch=Die Eintr\u00e4ge stimmen nicht \u00fcberein.
-
+encode.mutuallyExclusiveArgError=In der Eingabedatei k\u00f6nnen die Eigenschaften {0} und {1} nicht gleichzeitig angegeben werden.
+encode.aesConfigFileEncryptionAmbiguous=ERROR: Die Eingabedatei kann nicht verwendet werden, wenn sie sowohl die Variablen {0} als auch {1} enth\u00e4lt.
+encode.aesConfigFileMissingEncryptionVariables=Kennwort kann nicht verschl\u00fcsselt werden; entweder enth\u00e4lt die Eingabedatei nicht die Variablen {0} oder {1}, oder die Eingabedatei ist fehlerhaft.
 
 password.enterText=Kennwort eingeben:
 password.reenterText=Kennwort erneut eingeben:
@@ -98,7 +100,7 @@ createLTPAKeys.fileExists=Die Datei {0} ist bereits vorhanden. Es kann keine Dat
 createLTPAKeys.createdFile=Datei mit LTPA-Schl\u00fcsseln erstellt: {0}\nF\u00fcgen Sie die folgende Konfiguration in Ihrer Datei server.xml hinzu:\n{1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=Die Java-Installation ist entweder nicht von IBM Semeru Runtimes oder IBM SDK, oder wenn sie es ist, unterst\u00fctzt sie FIPS 140-3 nicht.\nInstallieren Sie Java entweder von IBM Semeru Runtimes oder IBM SDK unter Verwendung einer Version und eines Betriebssystems, das FIPS 140-3 unterst\u00fctzt.\nWenn Sie IBM Semeru Runtimes verwenden, benutzen Sie die Versionen 11.0.29.0, 17.0.17.0, 21.0.9.0 oder h\u00f6her.\nWenn Sie IBM SDK verwenden, benutzen Sie die Version 8.0.8.30 oder h\u00f6her.
+configureFIPS.notIbmSdkNorSemeru=Die Java-Installation ist entweder nicht von IBM Semeru Runtimes oder IBM SDK, oder wenn sie es ist, unterst\u00fctzt sie FIPS 140-3 nicht.\nInstallieren Sie Java entweder von IBM Semeru Runtimes oder IBM SDK unter Verwendung einer Version und eines Betriebssystems, das FIPS 140-3 unterst\u00fctzt.\nWenn Sie IBM Semeru Runtimes verwenden, benutzen Sie die Versionen 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0 oder h\u00f6her.\nWenn Sie IBM SDK verwenden, benutzen Sie die Version 8.0.8.30 oder h\u00f6her.
 
 configureFIPS.zosNotAvailable=Der Befehl securityUtility configureFIPS wird auf z/OS nicht unterst\u00fctzt.
 
@@ -129,3 +131,8 @@ configureFIPS.fipsNotEnabled=FIPS 140-3 ist bereits in der Datei {0} nicht aktiv
 configureFIPS.restartServer=Starten Sie den {0} Server neu, um die \u00c4nderung zu \u00fcbernehmen.
 configureFIPS.restartClient=Starten Sie den {0} Client neu, um die \u00c4nderung zu \u00fcbernehmen.
 configureFIPS.restart=Starten Sie Ihre Server und Clients neu, um die \u00c4nderung zu \u00fcbernehmen.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=XML-Datei zur Passwortverschl\u00fcsselung erfolgreich erstellt.\nUm die \u00c4nderungen zu aktivieren, f\u00fcgen Sie einen Verweis auf den Speicherort der XML-Datei in Ihre Datei server.xml ein: <include location="{0}" />
+generateaeskey.failFileExists=Die Datei {0} existiert und wird nicht \u00fcberschrieben. Geben Sie entweder einen einen anderen Dateinamen an, oder entfernen Sie die vorhandene Datei, bevor Sie es erneut versuchen.
+generateaeskey.failFileIsDirectory=Der f\u00fcr den Dateinamen angegebene Wert {0} ist ein Verzeichnis. Geben Sie den vollst\u00e4ndigen Dateinamen an und versuchen Sie es erneut.

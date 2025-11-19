@@ -62,7 +62,7 @@ error.spring.required.20.explanation=O recurso Spring Boot configurado atualment
 error.spring.required.20.useraction=Configure uma vers\u00e3o do recurso Spring Boot que seja compat\u00edvel com o conte\u00fado do aplicativo.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: O recurso springBoot-3.0 deve ser configurado. O recurso springBoot-1.5 ou springBoot-2.0 est\u00e1 configurado e o aplicativo tem conte\u00fado do Spring 3.0.
+error.spring3.required=CWWKC0273E: O recurso {0} deve ser configurado no arquivo server.xml. O recurso {1} est\u00e1 configurado e o aplicativo tem conte\u00fado Spring Boot {2}.
 error.spring3.required.explanation=O recurso Spring Boot configurado atualmente n\u00e3o \u00e9 compat\u00edvel com o conte\u00fado do aplicativo.
 error.spring3.required.useraction=Configure uma vers\u00e3o do recurso Spring Boot que seja compat\u00edvel com o conte\u00fado do aplicativo.
 

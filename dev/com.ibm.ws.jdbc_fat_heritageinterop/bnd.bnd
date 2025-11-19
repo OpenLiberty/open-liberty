@@ -36,4 +36,4 @@ fat.project: true
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.jdbc,\
 	com.ibm.ws.logging,\
-	org.apache.derby:derby;version=10.11.1.1
+	org.apache.derby:derby;strategy=exact;version=10.11.1.1

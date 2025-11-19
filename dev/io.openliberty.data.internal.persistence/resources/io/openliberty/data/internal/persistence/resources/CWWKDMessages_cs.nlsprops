@@ -509,3 +509,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Odstra\u0148te konfliktn\u00ed ano
 CWWKD1118.param.anno.conflict=CWWKD1118E: Parametr {0} metody {1} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {2} nelze opat\u0159it anotacemi: {3}. Dv\u011b nebo v\u00edce anotac\u00ed jsou ve vz\u00e1jemn\u00e9m rozporu.
 CWWKD1118.param.anno.conflict.explanation=Kombinace anotac\u00ed parametr\u016f nen\u00ed platn\u00e1.
 CWWKD1118.param.anno.conflict.useraction=Odstran\u011bn\u00ed jedn\u00e9 nebo v\u00edce konfliktn\u00edch anotac\u00ed z parametru metody \u00falo\u017ei\u0161t\u011b.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} na\u010dte str\u00e1nky, kter\u00e9 neobsahuj\u00ed celkov\u00fd po\u010det prvk\u016f a str\u00e1nek, proto\u017ee dotaz obsahuje kl\u00ed\u010dov\u00e9 slovo {2}. Cel\u00fd dotaz zn\u00ed: {3}.
+CWWKD1119.keyword.prevents.count.explanation=Kl\u00ed\u010dov\u00e9 slovo nen\u00ed kompatibiln\u00ed s mo\u017enost\u00ed z\u00edskat celkov\u00fd po\u010det prvk\u016f a str\u00e1nek.
+CWWKD1119.keyword.prevents.count.useraction=Nahra\u010fte dotaz dotazem, kter\u00fd nepou\u017e\u00edv\u00e1 kl\u00ed\u010dov\u00e9 slovo, nebo se vyhn\u011bte po\u017eadavku na celkov\u00fd po\u010det prvk\u016f a str\u00e1nek.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Metoda {0} rozhran\u00ed \u00falo\u017ei\u0161t\u011b {1} zad\u00e1v\u00e1 dotaz, kter\u00fd obsahuje kl\u00ed\u010dov\u00e9 slovo {2}, co\u017e je nekompatibiln\u00ed se str\u00e1nkov\u00e1n\u00edm zalo\u017een\u00fdm na kurzoru. Dotazy pro str\u00e1nkov\u00e1n\u00ed pomoc\u00ed kurzoru mus\u00ed kon\u010dit klauzul\u00ed WHERE a nesm\u00ed obsahovat poddotazy. Dotaz zn\u00ed: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Kl\u00ed\u010dov\u00e1 slova jako GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT a UNION nejsou kompatibiln\u00ed se str\u00e1nkov\u00e1n\u00edm pomoc\u00ed kurzoru.
+CWWKD1120.cursor.keyword.mismatch.useraction=P\u0159epi\u0161te dotaz tak, aby obsahoval pouze tyto klauzule: SELECT, FROM a WHERE.

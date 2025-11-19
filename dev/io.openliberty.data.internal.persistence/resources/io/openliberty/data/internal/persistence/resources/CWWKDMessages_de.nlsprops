@@ -507,3 +507,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Entfernen Sie die kollidierende An
 CWWKD1118.param.anno.conflict=CWWKD1118E: Der Parameter {0} der Methode {1} der Repository-Schnittstelle {2} kann nicht mit den folgenden Anmerkungen versehen werden: {3}. Zwei oder mehr Anmerkungen stehen im Widerspruch zueinander.
 CWWKD1118.param.anno.conflict.explanation=Die Kombination von Parametervermerken ist nicht g\u00fcltig.
 CWWKD1118.param.anno.conflict.useraction=Entfernen Sie eine oder mehrere der widerspr\u00fcchlichen Anmerkungen aus dem Parameter der Repository-Methode.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Die Methode {0} der Repository-Schnittstelle {1} ruft Seiten ab, die keine Gesamtzahl von Elementen und Seiten enthalten, weil die Abfrage das Schl\u00fcsselwort {2} enth\u00e4lt. Die vollst\u00e4ndige Abfrage lautet: {3}.
+CWWKD1119.keyword.prevents.count.explanation=Das Schl\u00fcsselwort ist unvereinbar mit der M\u00f6glichkeit, eine Gesamtzahl von Elementen und Seiten zu erhalten.
+CWWKD1119.keyword.prevents.count.useraction=Ersetzen Sie die Abfrage durch eine, die das Schl\u00fcsselwort nicht verwendet, oder vermeiden Sie die Abfrage einer Gesamtzahl von Elementen und Seiten.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Die Methode {0} der Repository-Schnittstelle {1} gibt eine Abfrage an, die das Schl\u00fcsselwort {2} enth\u00e4lt, das mit der cursorbasierten Paginierung nicht kompatibel ist. Abfragen f\u00fcr die cursorbasierte Paginierung m\u00fcssen mit einer WHERE-Klausel enden und d\u00fcrfen keine Unterabfragen enthalten. Die Abfrage lautet: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Schl\u00fcsselw\u00f6rter wie GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT und UNION sind nicht mit der cursorbasierten Paginierung kompatibel.
+CWWKD1120.cursor.keyword.mismatch.useraction=Schreiben Sie die Abfrage so um, dass sie nur die Klauseln enth\u00e4lt: SELECT, FROM und WHERE.

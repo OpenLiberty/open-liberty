@@ -33,6 +33,7 @@ import org.osgi.service.condition.Condition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.pseudo.internal.PseudoContextFactory;
 import com.ibm.ws.kernel.service.util.JavaInfo;
@@ -94,6 +95,8 @@ public class Activator implements BundleActivator {
                     Tr.debug(tc, "Failed to install initialContextFactoryBuilder because it was already installed", ex);
             }
 
+            // If FIPS 140-3 is enabled, log the enabled message
+            CryptoUtils.isFips140_3Enabled();
         } catch (Exception t) {
             Tr.audit(tc, "frameworkShutdown");
 

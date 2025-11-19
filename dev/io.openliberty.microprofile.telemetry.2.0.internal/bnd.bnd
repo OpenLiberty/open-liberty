@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2024 IBM Corporation and others.
+# Copyright (c) 2024, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@ bVersion=1.0
 
 -sub: *.bnd
 
-Bundle-Name: io.openliberty.microprofile.telemetry.2.0.internal
-Bundle-SymbolicName: io.openliberty.microprofile.telemetry.2.0.internal
 Bundle-Activator: io.openliberty.microprofile.telemetry20.internal.helper.InstrumenterActivator
 Bundle-Description: MicroProfile.telemetry, version 2.0
 

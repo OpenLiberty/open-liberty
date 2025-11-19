@@ -510,3 +510,11 @@ CWWKD1117.anno.constraint.conflict.useraction=T\u00e1vol\u00edtsa el az ellentmo
 CWWKD1118.param.anno.conflict=CWWKD1118E: A {2} t\u00e1rol\u00f3interf\u00e9sz {1} met\u00f3dus\u00e1nak {0} param\u00e9tere nem jel\u00f6lhet\u0151 a k\u00f6vetkez\u0151 megjegyz\u00e9sekkel: {3}. K\u00e9t vagy t\u00f6bb megjegyz\u00e9s ellentmond egym\u00e1snak.
 CWWKD1118.param.anno.conflict.explanation=A param\u00e9ter megjegyz\u00e9sek kombin\u00e1ci\u00f3ja nem \u00e9rv\u00e9nyes.
 CWWKD1118.param.anno.conflict.useraction=T\u00e1vol\u00edtson el egy vagy t\u00f6bb ellentmond\u00e1sos megjegyz\u00e9st a t\u00e1rol\u00e1si m\u00f3dszer param\u00e9ter\u00e9b\u0151l.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: A {1} t\u00e1rol\u00f3fel\u00fclet {0} m\u00f3dszere olyan oldalakat h\u00edv le, amelyek nem tartalmazz\u00e1k az elemek \u00e9s oldalak teljes sz\u00e1m\u00e1t, mivel a lek\u00e9rdez\u00e9s tartalmazza a {2} kulcssz\u00f3t. A teljes lek\u00e9rdez\u00e9s: {3}.
+CWWKD1119.keyword.prevents.count.explanation=A kulcssz\u00f3 nem kompatibilis az elemek \u00e9s oldalak \u00f6sszl\u00e9tsz\u00e1m\u00e1nak meghat\u00e1roz\u00e1s\u00e1val.
+CWWKD1119.keyword.prevents.count.useraction=Cser\u00e9lje ki a lek\u00e9rdez\u00e9st egy olyanra, amely nem haszn\u00e1lja a kulcssz\u00f3t, vagy ker\u00fclje el az elemek \u00e9s oldalak teljes sz\u00e1m\u00e1nak lek\u00e9rdez\u00e9s\u00e9t.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: A {1} t\u00e1rol\u00f3fel\u00fclet {0} met\u00f3dusa olyan lek\u00e9rdez\u00e9st ad meg, amely tartalmazza a {2} kulcssz\u00f3t, ami nem kompatibilis a kurzoralap\u00fa lapoz\u00e1ssal. A kurzoralap\u00fa lapoz\u00e1sra vonatkoz\u00f3 lek\u00e9rdez\u00e9seknek WHERE z\u00e1rad\u00e9kkal kell v\u00e9gz\u0151dni\u00fck, \u00e9s nem tartalmazhatnak al-lek\u00e9rdez\u00e9seket. A lek\u00e9rdez\u00e9s: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Az olyan kulcsszavak, mint a GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT \u00e9s UNION nem kompatibilisek a kurzoralap\u00fa lapoz\u00e1ssal.
+CWWKD1120.cursor.keyword.mismatch.useraction=\u00cdrja \u00e1t a lek\u00e9rdez\u00e9st \u00fagy, hogy csak a z\u00e1rad\u00e9kokat tartalmazza: SELECT, FROM \u00e9s WHERE.

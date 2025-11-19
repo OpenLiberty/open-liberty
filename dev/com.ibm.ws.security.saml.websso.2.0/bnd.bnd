@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -32,15 +32,19 @@ Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, \
     net.shibboleth.utilities.java.support.component.*, \
     net.shibboleth.utilities.java.support.resolver.*, \
     net.shibboleth.utilities.java.support.xml.*, \
+    org.opensaml.core.config,\
+    org.opensaml.core.xml.*,\
+    org.opensaml.core.xml.config.*,\
+    org.opensaml.messaging.handler;version="[3.4.5,5)", \
     org.opensaml.saml.common.binding.security.impl.*, \
     org.opensaml.saml.metadata.resolver.impl.*, \
     org.opensaml.saml.saml2.binding.decoding.impl.*, \
     org.opensaml.saml.saml2.core.impl.*, \
     org.opensaml.saml.saml2.metadata, \
-    org.opensaml.saml.common;version="[3.4.0,4.0.0)", \
-    org.opensaml.saml.common.*;version="[3.4.0,4.0.0)", \
-    org.opensaml.saml.config.impl;version="[3.4.0,4.0.0)", \
-    org.opensaml.xmlsec.config.impl;version="[3.4.0,4.0.0)", \
+    org.opensaml.saml.common, \
+    org.opensaml.saml.common.*, \
+    org.opensaml.saml.config.impl, \
+    org.opensaml.xmlsec.config.impl, \
     *
         
 # nlsmessages locates under com.ibm.ws.security.saml.sso20.internal.resources        
@@ -144,17 +148,17 @@ Service-Component: \
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.ws.security.authentication.filter;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
-	com.ibm.ws.kernel.boot.core;version=latest, \
-    com.ibm.ws.kernel.service;version=latest,\
-    com.ibm.ws.kernel.security.thread;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
-	com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.messaging.api.3.4.5;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.messaging.impl.3.4.5;version=latest,\
-	com.ibm.ws.org.opensaml.opensaml.storage.api.3.4.5;version=latest,\
+	io.openliberty.net.shibboleth.utilities.java.support;version=latest,\
+	io.openliberty.org.opensaml.opensaml.core;version=latest,\
+	io.openliberty.org.opensaml.opensaml.messaging.api;version=latest,\
+	io.openliberty.org.opensaml.opensaml.messaging.impl;version=latest,\
+	io.openliberty.org.opensaml.opensaml.storage.api;version=latest,\
 	com.ibm.ws.org.slf4j.api;version=latest,\
 	com.ibm.websphere.appserver.api.saml20;version=latest,\
 	com.ibm.ws.security.sso.common;version=latest,\
@@ -175,6 +179,10 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
 	org.hamcrest:hamcrest-all;version='1.3',\
 	org.jmock:jmock-junit4;strategy=exact;version='2.5.1',\
 	org.jmock:jmock;strategy=exact;version='2.5.1',\
+	org.mockito:mockito-core;version='4.11.0',\
+	org.mockito:mockito-inline;version='4.11.0',\
+  net.bytebuddy:byte-buddy;version=1.17.8,\
+  net.bytebuddy:byte-buddy-agent;version=1.17.8,\
 	com.ibm.ws.org.objenesis:objenesis;version='1.0',\
 	fattest.simplicity;version=latest,\
 	com.ibm.ws.security.test.common;version=latest,\
@@ -193,4 +201,7 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
 	com.ibm.ws.org.apache.commons.fileupload;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.threading;version=latest,\
-	com.ibm.ws.injection.core;version=latest
+	com.ibm.ws.injection.core;version=latest,\
+	io.openliberty.org.bouncycastle.bcprov-jdk18on;version=latest,\
+	io.openliberty.org.bouncycastle.bcpkix-jdk18on;version=latest,\
+	io.openliberty.org.bouncycastle.bcutil-jdk18on;version=latest

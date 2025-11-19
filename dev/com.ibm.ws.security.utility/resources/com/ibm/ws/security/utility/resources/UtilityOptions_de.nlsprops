@@ -51,13 +51,17 @@ help.usage.options=\t{0} help [Aktionsname]
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 encode.desc=\tKodieren Sie den angegebenen Text.\n\n\tWenn Ihr Kennwort Sonderzeichen enth\u00e4lt, m\u00fcssen Sie jedes Sonderzeichen entschl\u00fcsseln, um sicherzustellen, dass das Kennwort richtig kodiert ist.\n\tSonderzeichen und Escape-Zeichen k\u00f6nnen je nach Betriebssystem variieren.\n\tAuf UNIX-Systemen zum Beispiel muss pa$$W0rd als pa\\$\\$W0rd angegeben werden.\n\tWeitere Informationen finden Sie in der Open Liberty securityUtility encode Dokumentation.
 #Note to translator the word "encode" should not be translated
-encode.usage.options=\t{0} encode [Optionen]
-encode.option-key.text=\ \ \ \ textToEncode
-encode.option-desc.text=\tWenn Sie keine Argumente angeben, wird das Tool im interaktiven\n\tModus aufgerufen. Andernfalls wird der angegebene Text codiert.\n\tText mit Leerzeichen muss in Anf\u00fchrungszeichen gesetzt werden,\n\twenn er als Argument angegeben wird.
+encode.usage.options=\t{0} kodieren [Optionen] textToEncode
+encode.option-key.1.text=\ \ \ \ textToEncode
+encode.option-desc.1.text=\tWenn keine Argumente angegeben werden, wechselt das Werkzeug in den interaktiven modus; andernfalls wird der angegebene Text kodiert.\n\tText mit Leerzeichen muss vollst\u00e4ndig in Anf\u00fchrungszeichen gesetzt werden, wenn er als Argument angegeben wird.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tGeben Sie an, wie das Kennwort verschl\u00fcsselt werden soll. Unterst\u00fctzte Kodierungen sind xor, aes, aes-128, und Hash. Die Standardcodierung ist xor. Aes verschl\u00fcsselt mit einem aes-256 Bit-Schl\u00fcssel.\n\taes-128 kann f\u00fcr die Kompatibilit\u00e4t mit Serverversionen vor 25.0.0.2 verwendet werden. {2}
 encode.option-key.key=\ \ \ \ --key=[Schl\u00fcssel]
-encode.option-desc.key=\tGibt den bei der Codierung mit AES zu verwendenden Schl\u00fcssel an. \n\tDie Zeichenfolge wird hashverschl\u00fcsselt, um einen Chiffrierschl\u00fcssel\n\tzu erzeugen, der zur Verschl\u00fcsselung und Entschl\u00fcsselung des\n\tKennworts verwendet wird. Der Schl\u00fcssel kann durch Definition \n\tder Variablen wlp.password.encryption.key, deren Wert der \n\tSchl\u00fcssel ist, an den Server \u00fcbergeben werden. Wenn Sie diese\n\tOption nicht angeben, wird ein Standardschl\u00fcssel verwendet.
+encode.option-desc.key=\tGibt einen bei der Codierung mit AES zu verwendenden Schl\u00fcssel an. Diese Zeichenfolge wird wird ein Hashwert gebildet, der zum Ver- und Entschl\u00fcsseln des entschl\u00fcsselung des Passworts verwendet wird. Der Schl\u00fcssel kann dem Server zur Verf\u00fcgung gestellt werden, indem die Variable wlp.password.encryption.key definiert wird, deren Wert der schl\u00fcssel ist. Wenn Sie diese\\n\n\\tOption nicht angeben, wird ein Standardschl\u00fcssel verwendet.
+encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
+encode.option-desc.base64Key=\tEin base64 verschl\u00fcsselter AES-256 Bit-Schl\u00fcssel, der zum Ver- und Entschl\u00fcsseln des kennwort. Der Schl\u00fcssel kann dem Server zur Verf\u00fcgung gestellt werden, indem man die variable wlp.aes.encryption.key definiert wird, deren Wert der Schl\u00fcssel ist. Wenn --base64Key angegeben ist angegeben, k\u00f6nnen --aesConfigFile und --key nicht angegeben werden.
+encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+encode.option-desc.aesConfigFile=\tEine XML- oder Java-Eigenschaftendatei mit einer Variablen namens wlp.password.encryption.key oder wlp.aes.encryption.key mit g\u00fcltigen werten. Beide Variablen k\u00f6nnen nicht in der gleichen Datei angegeben werden.\n\tWenn --aesConfigFile angegeben wird, k\u00f6nnen --key und --base64Key nicht angegeben werden.
 encode.option-key.notrim=\ \ \ \ --notrim
 encode.option-desc.notrim=\tGibt an, ob Leerzeichen am Anfang und\n\tEnde des angegebenen Texts entfernt werden. Wenn Sie diese\n\tOption angeben, wird der bereitgestellte Text so codiert, wie\n\ter ist. \tWenn Sie diese Option nicht angeben, werden die Leerzeichen \n\tam Anfang und am Ende des angegebenen Texts entfernt. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
@@ -113,6 +117,11 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=Erweiterungsinformationen f\u00fcr das 
 sslCert.option-desc.ext=\tDie Zertifikatserweiterungsinformationen, die dem Zertifikat hinzugef\u00fcgt werden sollen.\n\tDie Standarderweiterung ist ein alternativer Namenseintrag f\u00fcr das Subject, bei dem \n\tder Hostname verwendet wird. Dieses Flag verwendet dieselbe Syntax wie das Flag -ext im \n\t Java-Befehl ''keytool''. Dieses Flag kann im Befehl mehrfach verwendet werden.\n 
 #line.
 
+sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+sslCert.option-desc.passwordBase64Key=\tEin base64 verschl\u00fcsselter AES-256 Bit-Schl\u00fcssel, der zum Ver- und Entschl\u00fcsseln des kennwort. Der Schl\u00fcssel kann dem Server zur Verf\u00fcgung gestellt werden, indem die Variable wlp.aes.encryption.key variable definiert wird, deren Wert der Schl\u00fcssel ist.\n\tWenn --passwordBase64Key angegeben ist, k\u00f6nnen --aesConfigFile und --passwordKey nicht angegeben werden.
+sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+sslCert.option-desc.aesConfigFile=\tEine XML- oder Java-Eigenschaftendatei mit einer Variablen namens wlp.password.encryption.key oder wlp.aes.encryption.key mit g\u00fcltigen werten. Beide Variablen k\u00f6nnen nicht in der gleichen Datei angegeben werden.\n\tWenn --aesConfigFile angegeben ist, k\u00f6nnen --passwordBase64Key und --passwordKey nicht angegeben werden.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -134,6 +143,10 @@ createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
 createLTPAKeys.option-desc.password.encoding=\tGibt an, wie das Kennwort f\u00fcr die LTPA-Schl\u00fcssel in\n\tder Datei server.xml codiert werden soll. Die unterst\u00fctzten\n\t Codierungen sind xor und aes. Die Standardcodierung ist xor. \n\tVerwenden Sie den Befehl securityUtility encode --listCustom,\n\tum festzustellen, ob zus\u00e4tzliche angepasste Verschl\u00fcsselungen\n\tunterst\u00fctzt werden.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[Schl\u00fcssel]
 createLTPAKeys.option-desc.password.key=\tGibt den bei der Codierung des Kennworts f\u00fcr\n\tdie LTPA-Schl\u00fcssel mit AES zu verwendenden Schl\u00fcssel an. Diese\n\tZeichenfolge wird hashverschl\u00fcsselt, um einen Chiffrierschl\u00fcssel\n\tzu erzeugen, der zur Verschl\u00fcsselung und Entschl\u00fcsselung des\n\tKennworts Verschl\u00fcsselung und Entschl\u00fcsselung des Kennworts verwendet\n\twird. Der Schl\u00fcssel kann durch Definition der Variablen\n\twlp.password.encryption.key, deren Wert der Schl\u00fcssel ist,\n\tan den Server \u00fcbergeben werden. Wenn Sie diese Option nicht angeben,\n\twird ein Standardschl\u00fcssel verwendet.
+createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+createLTPAKeys.option-desc.passwordBase64Key=\tEin base64 verschl\u00fcsselter AES-256 Bit-Schl\u00fcssel, der zum Ver- und Entschl\u00fcsseln des kennwort. Der Schl\u00fcssel kann dem Server zur Verf\u00fcgung gestellt werden, indem man die variable wlp.aes.encryption.key definiert wird, deren Wert der Schl\u00fcssel ist. Wenn --passwordBase64Key angegeben ist, k\u00f6nnen --aesConfigFile und --passwordKey nicht angegeben werden.
+createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+createLTPAKeys.option-desc.aesConfigFile=\tEine XML- oder Java-Eigenschaftendatei mit einer Variablen namens wlp.password.encryption.key oder wlp.aes.encryption.key mit g\u00fcltigen werten. Beide Variablen k\u00f6nnen nicht in der gleichen Datei angegeben werden.\n\tWenn --aesConfigFile angegeben ist, k\u00f6nnen --passwordBase64Key und --passwordKey nicht angegeben werden.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -181,3 +194,19 @@ configureFIPS.option-desc.3.customProfileFile=\tDie Datei, in die das IBM Semeru
 configureFIPS.option-key.4.disable=\ \ \ \ --disable
 
 configureFIPS.option-desc.4.disable=\tDeaktivieren Sie FIPS 140-3, indem Sie die Umgebungsvariable ENABLE_FIPS140_3 auf false setzen. Diese Option kann zusammen mit den Optionen Client und Server verwendet werden verwendet werden, um den Client oder Server anzugeben, der FIPS 140-3 deaktivieren soll.\n\tAndernfalls deaktiviert es FIPS 140-3 f\u00fcr alle Clients, Server und befehle, au\u00dfer f\u00fcr die Clients und Server, die individuell aktiviert wurden.
+
+
+
+# -------- Generate AES-256 KEY OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+generateaeskey.desc=\tErzeugt einen Wert, der in die Konfigurationsvariable wlp.aes.encryption.key f\u00fcr die aes-Verschl\u00fcsselung.
+generateaeskey.usage.options=\t{0} generateAESKey [Optionen]
+generateaeskey.option-key.key=\ \ \ \ --key =[Schl\u00fcssel]
+generateaeskey.option-desc.key=\tGeben Sie einen Schl\u00fcssel f\u00fcr die Verwendung bei der AES-Verschl\u00fcsselung an. Diese Zeichenfolge wird gehasht, um einen Chiffrierschl\u00fcssel zu erzeugen, der zum Verschl\u00fcsseln und Entschl\u00fcsselung von Passw\u00f6rtern verwendet wird. Der Verschl\u00fcsselungscode wird im Format base64 gespeichert in einer Variablen namens wlp.aes.encryption.key gespeichert. Wenn diese Option weggelassen wird, wird ein Zufallsschl\u00fcssel erzeugt.
+generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
+generateaeskey.option-desc.createConfigFile=\tErstellt eine XML-Datei mit dem generierten Wert, der in einer Variablen namens wlp.aes.encryption.key gespeichert wird. Wenn nicht angegeben, wird der generierte Wert in den Konsolenbildschirm geschrieben.

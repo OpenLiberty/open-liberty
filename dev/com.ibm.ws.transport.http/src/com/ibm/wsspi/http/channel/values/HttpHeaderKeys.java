@@ -424,8 +424,18 @@ public class HttpHeaderKeys extends HeaderKeys {
                 if (returnFalseForInvalidName) {
                     return false;
                 }
-                IllegalArgumentException iae = new IllegalArgumentException("Header name contained an invalid character " + i);
-                FFDCFilter.processException(iae, HttpHeaderKeys.class.getName() + ".validateHeaderName(String)", "1", name);
+                final String msg = "Header name contained an invalid character " + i 
+                                   + " | char=" + toPrintable(c)
+                                   + " code=" + (int) c + "(0x" + Integer.toHexString(c) + ")"
+                                   + " pos=" + (i + 1)
+                                   + " name=\"" + name + "\"";
+
+                final IllegalArgumentException iae = new IllegalArgumentException(msg);
+                FFDCFilter.processException(
+                                            iae,
+                                            HttpHeaderKeys.class.getName() + ".validateHeaderName(String)",
+                                            "1",
+                                            name);
                 throw iae;
             }
         }
@@ -446,6 +456,25 @@ public class HttpHeaderKeys extends HeaderKeys {
                         (c == '~');
 
         return valid;
+    }
+
+    /**
+     * Returns a compact representation of a header-name character
+     * suitable for diagnostics. This is for header name, not values.
+     *
+     * @param c the character from the header name being validated
+     * @return a short printable form of {@code c} for logging
+     */
+    private static String toPrintable(char c) {
+        if (c == ' ')
+            return "\\u0020(SPACE)";
+        if (c == '\t')
+            return "\\u0009(TAB)";
+        if (c == '\r')
+            return "\\u000D(CR)";
+        if (c == '\n')
+            return "\\u000A(LF)";
+        return Character.isISOControl(c) ? String.format("\\u%04x", (int) c) : String.valueOf(c);
     }
 
     /** private headers defined as sensitive */

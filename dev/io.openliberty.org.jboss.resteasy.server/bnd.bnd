@@ -70,7 +70,7 @@ instrument.disabled: false
 
 
 Include-Resource:\
-  @${repo;org.jboss.resteasy:resteasy-servlet-initializer;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-servlet-initializer;${resteasy-version};EXACT}, \
   com/ibm/websphere=${bin}/com/ibm/websphere, \
   io/openliberty=${bin}/io/openliberty
 

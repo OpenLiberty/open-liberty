@@ -14,6 +14,7 @@ package com.ibm.ws.security.utility.tasks;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +25,6 @@ import java.util.stream.Collectors;
 
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -43,7 +43,7 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
     static final String ARG_PASSWORD = "--password";
     static final String ARG_SERVER = "--server";
     static final String ARG_FILE = "--file";
-    private static final List<String> BETA_ARG_TABLE = Arrays.asList(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, BaseCommandTask.ARG_AES_CONFIG_FILE);
+    private static final List<String> BETA_ARG_TABLE = new ArrayList<>();
     private static final List<String> BETA_OPTS = BETA_ARG_TABLE.stream().map(s -> s.startsWith("--") ? s.substring(2) : s).collect(Collectors.toList());
     private final LTPAKeyFileUtility ltpaKeyFileUtil;
     private final IFileUtility fileUtility;
@@ -89,14 +89,9 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
     /** {@inheritDoc} */
     @Override
     boolean isKnownArgument(String arg) {
-        boolean isKnown = arg.equals(ARG_SERVER) || arg.equals(ARG_PASSWORD) ||
-                          arg.equals(ARG_PASSWORD_ENCODING) || arg.equals(ARG_PASSWORD_KEY) ||
-                          arg.equals(ARG_FILE);
-        if (!isKnown && ProductInfo.getBetaEdition()) {
-            isKnown = arg.equals(ARG_PASSWORD_BASE64_KEY) || arg.equals(ARG_AES_CONFIG_FILE);
-
-        }
-        return isKnown;
+        return arg.equals(ARG_SERVER) || arg.equals(ARG_PASSWORD) ||
+               arg.equals(ARG_PASSWORD_ENCODING) || arg.equals(ARG_PASSWORD_KEY) ||
+               arg.equals(ARG_FILE) || arg.equals(ARG_PASSWORD_BASE64_KEY) || arg.equals(ARG_AES_CONFIG_FILE);
     }
 
     /** {@inheritDoc} */

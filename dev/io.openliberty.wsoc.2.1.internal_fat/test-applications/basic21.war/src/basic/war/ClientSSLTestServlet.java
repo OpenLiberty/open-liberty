@@ -21,16 +21,13 @@ import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
-
-import jakarta.websocket.ContainerProvider;
-import jakarta.websocket.WebSocketContainer;
-import jakarta.websocket.ClientEndpointConfig;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import jakarta.servlet.ServletException;
+import jakarta.websocket.ClientEndpointConfig;
+import jakarta.websocket.ContainerProvider;
+import jakarta.websocket.WebSocketContainer;
 
 /*
  * Not used by FAT, but kept for testing / troubleshooting.

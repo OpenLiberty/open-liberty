@@ -9,12 +9,16 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.responses;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.openliberty.mcp.internal.requests.McpRequestId;
 
 /**
  *
  */
 public class McpResultResponse extends McpResponse {
+    private static final TraceComponent tc = Tr.register(McpResultResponse.class);
 
     /**
      * @param id

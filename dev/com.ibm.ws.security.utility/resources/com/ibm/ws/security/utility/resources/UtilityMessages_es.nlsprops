@@ -40,7 +40,9 @@ encode.enterText=Especifique el texto:
 encode.reenterText=Vuelva a especificar el texto:
 encode.readError=Error al leer el texto.
 encode.entriesDidNotMatch=Las entradas no coinciden.
-
+encode.mutuallyExclusiveArgError=El archivo de entrada no puede especificar las propiedades {0} y {1}.
+encode.aesConfigFileEncryptionAmbiguous=ERROR: No se puede utilizar el archivo de entrada si contiene las variables {0} y {1}.
+encode.aesConfigFileMissingEncryptionVariables=No se puede codificar la contrase\u00f1a; o bien el archivo de entrada no contiene las variables {0} o {1}, o bien el archivo de entrada est\u00e1 mal formado.
 
 password.enterText=Especifique la contrase\u00f1a:
 password.reenterText=Volver a especificar la contrase\u00f1a:
@@ -98,7 +100,7 @@ createLTPAKeys.fileExists=El archivo {0} ya existe.  No se puede crear un archiv
 createLTPAKeys.createdFile=Se ha creado el archivo de claves LTPA: {0}\nIncluya la siguiente configuraci\u00f3n en server.xml\n{1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=La instalaci\u00f3n de Java no es de IBM Semeru Runtimes ni de IBM SDK, o si lo es, no es compatible con FIPS 140-3.\nInstale Java desde IBM Semeru Runtimes o IBM SDK utilizando una versi\u00f3n y un sistema operativo compatibles con FIPS 140-3.\nSi utiliza IBM Semeru Runtimes, utilice la versi\u00f3n 11.0.29.0, 17.0.17.0, 21.0.9.0, o superior.\nSi utiliza IBM SDK, utilice la versi\u00f3n 8.0.8.30 o superior.
+configureFIPS.notIbmSdkNorSemeru=La instalaci\u00f3n de Java no es de IBM Semeru Runtimes ni de IBM SDK, o si lo es, no es compatible con FIPS 140-3.\nInstale Java desde IBM Semeru Runtimes o IBM SDK utilizando una versi\u00f3n y un sistema operativo compatibles con FIPS 140-3.\nSi utiliza IBM Semeru Runtimes, utilice la versi\u00f3n 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, o superior.\nSi utiliza IBM SDK, utilice la versi\u00f3n 8.0.8.30 o superior.
 
 configureFIPS.zosNotAvailable=El comando securityUtility configureFIPS no es compatible con z/OS.
 
@@ -129,3 +131,8 @@ configureFIPS.fipsNotEnabled=FIPS 140-3 ya no est\u00e1 activado en el archivo {
 configureFIPS.restartServer=Reinicie el servidor {0} para aplicar el cambio.
 configureFIPS.restartClient=Reinicie el cliente {0} para aplicar el cambio.
 configureFIPS.restart=Reinicie sus servidores y clientes para aplicar el cambio.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=Archivo XML de encriptaci\u00f3n de contrase\u00f1a creado correctamente.\nPara activar los cambios, a\u00f1ada una referencia a la ubicaci\u00f3n del archivo XML a su archivo server.xml : <include location="{0}" />
+generateaeskey.failFileExists=El archivo {0} existe y no se sobrescribir\u00e1. Especifique un o elimine el archivo existente antes de volver a intentarlo.
+generateaeskey.failFileIsDirectory=El valor {0} especificado para el nombre del archivo es un directorio. Especifique el nombre de archivo completo e int\u00e9ntelo de nuevo.

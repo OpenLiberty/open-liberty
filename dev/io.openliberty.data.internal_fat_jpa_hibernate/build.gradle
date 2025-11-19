@@ -22,7 +22,6 @@ ext {
 
 configurations {
   hibernateJPA32
-  derby16 // See derby/java compatibility matrix https://db.apache.org/derby/derby_downloads.html
 }
 
 dependencies {
@@ -37,9 +36,6 @@ dependencies {
   
   hibernateJPA32 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
   hibernateJPA32 "org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}", withoutJakartaAPI
-  
-  derby16 "org.apache.derby:derby:10.16.1.1",
-          "org.apache.derby:derbytools:10.16.1.1"
 
   //Annotation processor - generates .java files in build/libs/generated/sources
   //Some generated .java files import hibernate dependencies, need this compileOnly dependency
@@ -131,18 +127,6 @@ task addHibernatePermissions() {
 }
 
 /*
- * Copy Derby 16 into shared resources
- */
-task addDerby16(type: Copy) {
-  shouldRunAfter jar
-  from configurations.derby16
-  into new File(autoFvtDir, 'publish/shared/resources/derby16')
-  rename 'derby-.*.jar', 'derby.jar'
-  rename 'derbyshared-.*.jar', 'derbyshared.jar'
-  rename 'derbytools-.*.jar', 'derbytools.jar'
-}
-
-/*
  * Copy generated source code into a source folder for Eclipse
  */
 def generated_src = new File('generated-src')
@@ -172,10 +156,10 @@ task addGeneratedSources() {
  */
 
 addRequiredLibraries.dependsOn copyTestContainers
-addRequiredLibraries.dependsOn copyJdbcDrivers
+addRequiredLibraries.dependsOn copyJdbcDriversJava17Plus
 
 addRequiredLibraries.dependsOn addHibernateJPA32
-addRequiredLibraries.dependsOn addDerby16
+addRequiredLibraries.dependsOn addDerbyJava17Plus
 
 jar.dependsOn addHibernatePermissions
 

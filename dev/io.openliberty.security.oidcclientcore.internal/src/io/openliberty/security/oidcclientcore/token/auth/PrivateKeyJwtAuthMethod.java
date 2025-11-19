@@ -168,7 +168,7 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
     private void setHeaderValues(JsonWebSignature jws) throws Exception {
         jws.setAlgorithmHeaderValue(clientAssertionSigningAlgorithm);
         jws.setHeader("typ", "JWT");
-        jws.setHeader(CryptoUtils.isFips140_3EnabledWithBetaGuard() ? "x5t#S256" : "x5t", getX5tForPublicKey());
+        jws.setHeader(CryptoUtils.isFips140_3Enabled() ? "x5t#S256" : "x5t", getX5tForPublicKey());
     }
 
     String getX5tForPublicKey() throws Exception {
@@ -177,7 +177,7 @@ public class PrivateKeyJwtAuthMethod extends TokenEndpointAuthMethod {
         if (x509Cert == null) {
             x509Cert = getX509CertificateFromSslRef();
         }
-        return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? X509Util.x5tS256(x509Cert) : X509Util.x5t(x509Cert);
+        return CryptoUtils.isFips140_3Enabled() ? X509Util.x5tS256(x509Cert) : X509Util.x5t(x509Cert);
     }
 
     @FFDCIgnore(Exception.class)

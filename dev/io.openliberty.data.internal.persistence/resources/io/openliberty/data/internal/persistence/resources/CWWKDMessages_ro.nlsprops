@@ -507,3 +507,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Elimina\u021bi adnotarea conflictu
 CWWKD1118.param.anno.conflict=CWWKD1118E: Parametrul {0} al metodei {1} din interfa\u021ba depozitului {2} nu poate fi adnotat cu adnot\u0103rile: {3}. Dou\u0103 sau mai multe dintre adnot\u0103ri intr\u0103 \u00een conflict \u00eentre ele.
 CWWKD1118.param.anno.conflict.explanation=Combina\u021bia de adnot\u0103ri ale parametrilor nu este valabil\u0103.
 CWWKD1118.param.anno.conflict.useraction=Elimina\u021bi una sau mai multe dintre adnot\u0103rile conflictuale din parametrul metodei depozitului.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Metoda {0} a interfe\u021bei depozitului {1} recupereaz\u0103 pagini care nu includ un num\u0103r total de elemente \u0219i pagini deoarece interogarea con\u021bine cuv\u00e2ntul-cheie {2}. Interogarea complet\u0103 este: {3}.
+CWWKD1119.keyword.prevents.count.explanation=Cuv\u00e2ntul cheie este incompatibil cu capacitatea de a ob\u021bine un num\u0103r total de elemente \u0219i pagini.
+CWWKD1119.keyword.prevents.count.useraction=\u00cenlocui\u021bi interogarea cu una care nu utilizeaz\u0103 cuv\u00e2ntul cheie sau evita\u021bi solicitarea unui num\u0103r total de elemente \u0219i pagini.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Metoda {0} a interfe\u021bei depozitului {1} specific\u0103 o interogare care include cuv\u00e2ntul-cheie {2}, care este incompatibil\u0103 cu paginarea bazat\u0103 pe cursor. Interog\u0103rile pentru paginarea bazat\u0103 pe cursor trebuie s\u0103 se \u00eencheie cu o clauz\u0103 WHERE \u0219i nu trebuie s\u0103 includ\u0103 subinterog\u0103ri. Interogarea este: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Cuvinte-cheie precum GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT \u0219i UNION nu sunt compatibile cu paginarea bazat\u0103 pe cursor.
+CWWKD1120.cursor.keyword.mismatch.useraction=Rescrie\u021bi interogarea pentru a include doar clauzele: SELECT, FROM \u0219i WHERE.

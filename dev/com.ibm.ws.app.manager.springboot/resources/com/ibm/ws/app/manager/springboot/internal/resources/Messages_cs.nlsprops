@@ -62,7 +62,7 @@ error.spring.required.20.explanation=Aktu\u00e1ln\u011b nakonfigurovan\u00e1 fun
 error.spring.required.20.useraction=Nakonfigurujte verzi funkce Spring Boot, kter\u00e1 je kompatibiln\u00ed s obsahem aplikace.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: Mus\u00ed b\u00fdt nakonfigurov\u00e1na funkce springBoot-3.0. Je nakonfigurov\u00e1na funkce springBoot-1.5 nebo springBoot-2.0 a aplikace m\u00e1 obsah Spring 3.0.
+error.spring3.required=CWWKC0273E: Funkce {0} mus\u00ed b\u00fdt nakonfigurov\u00e1na v souboru server.xml. Funkce {1} je nakonfigurov\u00e1na a aplikace m\u00e1 obsah Spring Boot {2}.
 error.spring3.required.explanation=Aktu\u00e1ln\u011b nakonfigurovan\u00e1 funkce Spring Boot nen\u00ed kompatibiln\u00ed s obsahem aplikace.
 error.spring3.required.useraction=Nakonfigurujte verzi funkce Spring Boot, kter\u00e1 je kompatibiln\u00ed s obsahem aplikace.
 

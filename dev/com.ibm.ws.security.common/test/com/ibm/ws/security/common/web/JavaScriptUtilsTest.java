@@ -219,13 +219,18 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String name = "some prop";
             String value = "some value";
 
-            final String expectedCookieString = name + "=" + value + "; " +PARTITIONED_PROP+ " SameSite=None; secure;";
-
             getWebAppSecurityConfigCookiePropertiesExpectations(false, "None", "true");
 
             String result = utils.getJavaScriptHtmlCookieString(name, value);
 
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+            final String expectedCookieString = name + "=" + value + ";";
+            verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
+
+            Map<String, String> cookieProps = new HashMap<String, String>();
+            cookieProps.put("Partitioned", null);
+            cookieProps.put("SameSite", "None");
+            cookieProps.put("secure", null);
+            verifyCookiePropertyStrings(result, cookieProps);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -265,13 +270,16 @@ public class JavaScriptUtilsTest extends CommonTestClass {
             String value = "some value";
             Map<String, String> cookieProps = new HashMap<String, String>();
 
-            final String expectedCookieString = name + "=" + value + "; " +PARTITIONED_PROP+ " SameSite=None; secure;";
-
             getWebAppSecurityConfigCookiePropertiesExpectations(false, "None", "true");
 
             String result = utils.getJavaScriptHtmlCookieString(name, value, cookieProps);
+            final String expectedCookieString = name + "=" + value + ";";
+            verifyPattern(result, Pattern.quote(expectedCookieString), "Expected cookie name and value did not appear in the result.");
 
-            verifyCaseInsensitiveQuotedPatternMatches(result, DOCUMENT_COOKIE_START + expectedCookieString + DOCUMENT_COOKIE_END, "Cookie string did not match expected pattern.");
+            cookieProps.put("Partitioned", null);
+            cookieProps.put("SameSite", "None");
+            cookieProps.put("secure", null);
+            verifyCookiePropertyStrings(result, cookieProps);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);

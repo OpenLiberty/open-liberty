@@ -21,7 +21,7 @@ Export-Package: \
   com.ibm.ws.product.utility.*
 
 -includeresource: \
-    OSGI-OPT/websphere/lib/ws-productutil.jar=${repo;com.ibm.ws.product.utility.productutil}
+    OSGI-OPT/websphere/lib/ws-productutil.jar=\${repo;com.ibm.ws.product.utility.productutil}
 
 instrument.disabled: true
 

@@ -1,20 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2024 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright The RestEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.jboss.resteasy.core;
@@ -27,8 +13,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -39,6 +23,7 @@ import jakarta.ws.rs.core.Application;
 import jakarta.ws.rs.ext.Providers;
 import jakarta.ws.rs.sse.Sse;
 import jakarta.ws.rs.sse.SseEventSink;
+
 import org.jboss.resteasy.plugins.providers.sse.SseImpl;
 import org.jboss.resteasy.plugins.server.servlet.ResteasyContextParameters;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
@@ -49,7 +34,7 @@ import org.jboss.resteasy.spi.ResteasyDeployment;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
 import org.jboss.resteasy.spi.ValueInjector;
 import org.jboss.resteasy.spi.util.Types;
-import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
+import org.eclipse.osgi.internal.loader.EquinoxClassLoader; //Liberty Change
 
 /**
  * @author <a href="mailto:bill@burkecentral.com">Bill Burke</a>
@@ -57,7 +42,7 @@ import org.eclipse.osgi.internal.loader.EquinoxClassLoader;
  */
 @SuppressWarnings("unchecked")
 public class ContextParameterInjector implements ValueInjector {
-    private static Constructor<?> constructor;
+    private static final Constructor<?> constructor;
     private static final ClassLoader myClassLoader; // liberty change
     private static final boolean isOSGiEnv; // liberty change
 
@@ -69,26 +54,18 @@ public class ContextParameterInjector implements ValueInjector {
     private volatile boolean outputStreamWasWritten = false;
 
     static {
-        constructor = AccessController.doPrivileged(new PrivilegedAction<Constructor<?>>() {
-            @Override
-            public Constructor<?> run() {
-                try {
-                    Class.forName("jakarta.servlet.http.HttpServletResponse", false,
-                            Thread.currentThread().getContextClassLoader());
-                    Class<?> clazz = Class.forName("org.jboss.resteasy.core.ContextServletOutputStream");
-                    return clazz.getDeclaredConstructor(ContextParameterInjector.class, OutputStream.class);
-                } catch (Exception e) {
-                    return null;
-                }
-            }
-        });
-        // liberty change start
-        myClassLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-            @Override
-            public ClassLoader run() {
-                return ContextParameterInjector.class.getClassLoader();
-            }
-        });
+        Constructor<?> c;
+        try {
+            Class.forName("jakarta.servlet.http.HttpServletResponse", false,
+                    Thread.currentThread().getContextClassLoader());
+            Class<?> clazz = Class.forName("org.jboss.resteasy.core.ContextServletOutputStream");
+            c = clazz.getDeclaredConstructor(ContextParameterInjector.class, OutputStream.class);
+        } catch (Exception ignore) {
+            c = null;
+        }
+        constructor = c;
+		// liberty change start
+        myClassLoader = ContextParameterInjector.class.getClassLoader();
         boolean isOSGi = false;
         try {
             isOSGi = myClassLoader instanceof EquinoxClassLoader;
@@ -222,10 +199,8 @@ public class ContextParameterInjector implements ValueInjector {
             Object delegate = factory.getContextData(rawType, genericType, annotations, false);
             Class<?>[] intfs = computeInterfaces(delegate, rawType);
             ClassLoader clazzLoader = null;
-            final SecurityManager sm = System.getSecurityManager();
-            if (sm == null) {
-                clazzLoader = delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
-                // Liberty change start
+            clazzLoader = delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
+            // Liberty change start
                 
                 // The class loader may be null for primitives, void or the type was loaded from the bootstrap class loader.
                 // In such cases we should use the TCCL.
@@ -245,35 +220,6 @@ public class ContextParameterInjector implements ValueInjector {
                     clazzLoader = myClassLoader;
                 }
                 //Liberty change end
-            } else {
-                clazzLoader = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-                    @Override
-                    public ClassLoader run() {
-                        ClassLoader result = delegate == null ? rawType.getClassLoader() : delegate.getClass().getClassLoader();
-                        //Liberty change start                        
-                        // The class loader may be null for primitives, void or the type was loaded from the bootstrap class loader.
-                        // In such cases we should use the TCCL.
-                        //if (result == null) {
-                        //result = Thread.currentThread().getContextClassLoader();
-                        //}
-                        //return result;
-
-                        // !isOSGiEnv is the case where it is not an OSGi environment.  Mainly this scenario is the TCK scenario.
-                        // clazzLoader == null is for primitives or classes loaded by bootstrap classlaoder
-                        // clazzLoader instanceof EquinoxClassLoader means it is from a Liberty bundle instead of an application
-                        try {
-                            if (!isOSGiEnv || result == null || result instanceof EquinoxClassLoader) {
-                                result = myClassLoader;
-                            }
-                        } catch (Throwable t) {
-                            // This catch block is a just in case scenario that shouldn't happen, but if it did...
-                            result = myClassLoader;
-                        }
-                        return result;
-                        //Liberty change end
-                    }
-                });
-            }
             return Proxy.newProxyInstance(clazzLoader, intfs, new GenericDelegatingProxy());
         }
     }

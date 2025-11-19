@@ -24,16 +24,12 @@ dependencies {
                project(":com.ibm.ws.transaction.fat.util")
 }
 
-task copyCommonFiles {
-  doLast {
-    /*
-     * Copy common publish files.
-     */
-    copy {
-      from project(':com.ibm.ws.wsat.recovery_fat.multi.9').file('publish')
-      into new File('publish')
-    }
-  }
+/*
+ * Copy common publish files.
+ */
+task copyCommonFiles(type:Copy) {
+  from project(':com.ibm.ws.wsat.recovery_fat.multi.9').file('publish')
+  into 'publish'
 }
 
 jar {
@@ -42,11 +38,14 @@ jar {
 
 autoFVT.dependsOn copyCommonFiles
 
-autoFVT.doLast {
+autoFVT {
+  def baseProject = project(':com.ibm.ws.wsat.recovery_fat.lps')
+  doLast {
   copy {
-    from project(':com.ibm.ws.wsat.recovery_fat.lps').autoFvtDir
+    from baseProject.autoFvtDir
     into autoFvtDir
     include 'test-applications/**'
+  }
   }
 }
 

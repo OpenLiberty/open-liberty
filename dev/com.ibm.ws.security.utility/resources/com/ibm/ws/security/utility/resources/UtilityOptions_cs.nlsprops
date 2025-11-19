@@ -51,13 +51,17 @@ help.usage.options=\t{0} help [n\u00e1zev_akce]
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 encode.desc=\tZak\u00f3dovan\u00fd text.\n\n\tPokud va\u0161e heslo obsahuje speci\u00e1ln\u00ed znaky, mus\u00edte ka\u017ed\u00fd speci\u00e1ln\u00ed znak escapovat, abyste zajistili spr\u00e1vn\u00e9 zak\u00f3dov\u00e1n\u00ed hesla.\n\tSpeci\u00e1ln\u00ed znaky a znaky escape se mohou li\u0161it podle va\u0161eho opera\u010dn\u00edho syst\u00e9mu.\n\tNap\u0159\u00edklad v syst\u00e9mech UNIX mus\u00ed b\u00fdt pa$$W0rd zad\u00e1no jako pa\\$\\$W0rd .\n\tDal\u0161\u00ed informace najdete v dokumentaci ke k\u00f3dov\u00e1n\u00ed Open Liberty securityUtility .
 #Note to translator the word "encode" should not be translated
-encode.usage.options=\t{0} encode [volby]
-encode.option-key.text=\ \ \ \ text_k_zak\u00f3dov\u00e1n\u00ed
-encode.option-desc.text=\tPokud nejsou zad\u00e1ny \u017e\u00e1dn\u00e9 argumenty, p\u0159ejde n\u00e1stroj do interaktivn\u00edho \n\tre\u017eimu. Jinak bude zak\u00f3dov\u00e1n zadan\u00fd text.\n\tPokud je jako argument zad\u00e1n text s mezerami, mus\u00ed b\u00fdt cel\u00fd uzav\u0159en\u00fd do uvozovek.
+encode.usage.options=\t{0} encode [options] textToEncode
+encode.option-key.1.text=\ \ \ \ textToEncode
+encode.option-desc.1.text=\tPokud nejsou zad\u00e1ny \u017e\u00e1dn\u00e9 argumenty, n\u00e1stroj vstoup\u00ed do interaktivn\u00edho re\u017eimu jinak se zadan\u00fd text zak\u00f3duje.\n\tText s mezerami mus\u00ed b\u00fdt pln\u011b uvozen, pokud je uveden jako argument.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tZadejte zp\u016fsob k\u00f3dov\u00e1n\u00ed hesla. Podporovan\u00e1 k\u00f3dov\u00e1n\u00ed jsou xor, aes, aes-128, a hash. V\u00fdchoz\u00ed k\u00f3dov\u00e1n\u00ed je xor. Aes \u0161ifruje pomoc\u00ed aes-256 bitov\u00e9ho kl\u00ed\u010de.\n\taes-128 lze pou\u017e\u00edt pro kompatibilitu s verzemi serveru p\u0159ed 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[kl\u00ed\u010d]
-encode.option-desc.key=\tUr\u010dete kl\u00ed\u010d, kter\u00fd m\u00e1 b\u00fdt pou\u017eit pro zak\u00f3dov\u00e1n\u00ed metodou AES. Tento \u0159et\u011bzec bude\n\tha\u0161ov\u00e1n za \u00fa\u010delem vytvo\u0159en\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de, kter\u00fd bude pou\u017eit k \u0161ifrov\u00e1n\u00ed\n\ta de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze poskytnout serveru definov\u00e1n\u00edm prom\u011bnn\u00e9\n\twlp.password.encryption.key, jej\u00ed\u017e hodnotou bude\n\tkl\u00ed\u010d. Nen\u00ed-li tato volba zad\u00e1na, pou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.
+encode.option-desc.key=\tZadejte kl\u00ed\u010d, kter\u00fd m\u00e1 b\u00fdt pou\u017eit p\u0159i k\u00f3dov\u00e1n\u00ed pomoc\u00ed AES. Tento \u0159et\u011bzec bude a vytvo\u0159\u00ed \u0161ifrovac\u00ed kl\u00ed\u010d, kter\u00fd se pou\u017eije k za\u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze serveru poskytnout pomoc\u00ed definov\u00e1n\u00edm prom\u011bnn\u00e9 wlp.password.encryption.key, jej\u00ed\u017e hodnota je key. Nen\u00ed-li tato volba zad\u00e1na, pou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.
+encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
+encode.option-desc.base64Key=\tbase64 zak\u00f3dovan\u00fd AES-256 bitov\u00fd kl\u00ed\u010d, kter\u00fd se pou\u017eije k \u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze serveru poskytnout definov\u00e1n\u00edm parametru prom\u011bnn\u00e9 wlp.aes.encryption.key, jej\u00ed\u017e hodnotou je kl\u00ed\u010d. Pokud je --base64Key pak nelze zadat --aesConfigFile a --key.
+encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+encode.option-desc.aesConfigFile=\tSoubor vlastnost\u00ed XML nebo Java s prom\u011bnnou s n\u00e1zvem wlp.password.encryption.key nebo wlp.aes.encryption.key s platn\u00fdm hodnotami. Ob\u011b prom\u011bnn\u00e9 nelze zadat ve stejn\u00e9m souboru.\n\tPokud je zad\u00e1na adresa --aesConfigFile, nelze zadat adresy --key a --base64Key.
 encode.option-key.notrim=\ \ \ \ --notrim
 encode.option-desc.notrim=\tUr\u010duje, zda se maj\u00ed ze za\u010d\u00e1tku a konce uveden\u00e9ho textu odebrat znaky\n\tmezer. Je-li uvedena tato volba, bude poskytnut\u00fd text\n\tzak\u00f3dov\u00e1n tak, jak je. \n\tNen\u00ed-li tato volba uvedena, odeberou se znaky mezer ze za\u010d\u00e1tku a \n\tkonce uveden\u00e9ho textu. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
@@ -113,6 +117,11 @@ sslCert.option-key.ext=\ \ \ \ Informace o roz\u0161\u00ed\u0159en\u00ed --extIn
 sslCert.option-desc.ext=\tInformace o roz\u0161\u00ed\u0159en\u00ed certifik\u00e1tu p\u0159id\u00e1van\u00e9 k certifik\u00e1tu.\n\tV\u00fdchoz\u00ed p\u0159\u00edpona je polo\u017eka Alternativn\u00ed n\u00e1zev subjektu uv\u00e1d\u011bj\u00edc\u00ed \n\tn\u00e1zev hostitele. Tento p\u0159\u00edznak se shoduje se stejnou syntax\u00ed jako p\u0159\u00edznak -ext \n\t n\u00e1stroje Jave Keytool. Tento p\u0159\u00edznak lze v p\u0159\u00edkazu pou\u017e\u00edt v\u00edcekr\u00e1t \n  
 #line.
 
+sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+sslCert.option-desc.passwordBase64Key=\tbase64 zak\u00f3dovan\u00fd AES-256 bitov\u00fd kl\u00ed\u010d, kter\u00fd se pou\u017eije k \u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze serveru poskytnout definov\u00e1n\u00edm parametru wlp.aes.encryption.key prom\u011bnn\u00e9, jej\u00ed\u017e hodnotou je kl\u00ed\u010d.\n\tPokud je zad\u00e1n --passwordBase64Key, pak --aesConfigFile a --passwordKey nelze zadat.
+sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+sslCert.option-desc.aesConfigFile=\tSoubor vlastnost\u00ed XML nebo Java s prom\u011bnnou s n\u00e1zvem wlp.password.encryption.key nebo wlp.aes.encryption.key s platn\u00fdm hodnotami. Ob\u011b prom\u011bnn\u00e9 nelze zadat ve stejn\u00e9m souboru.\n\tPokud je zad\u00e1n --aesConfigFile, pak --passwordBase64Key a --passwordKey nelze zadat.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -134,6 +143,10 @@ createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
 createLTPAKeys.option-desc.password.encoding=\tUr\u010dete zp\u016fsob k\u00f3dov\u00e1n\u00ed hesla ke kl\u00ed\u010d\u016fm LTPA v souboru server.xml.\n\tPodporovan\u00e1 k\u00f3dov\u00e1n\u00ed jsou xor a aes. V\u00fdchoz\u00ed k\u00f3dov\u00e1n\u00ed je xor. \n\tP\u0159\u00edkazem securityUtility encode --listCustom zjist\u00edte, zda se podporuje \n\tn\u011bkter\u00e9 z dal\u0161\u00edch vlastn\u00edch \u0161ifrov\u00e1n\u00ed.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[kl\u00ed\u010d]
 createLTPAKeys.option-desc.password.key=\tUr\u010dete kl\u00ed\u010d, kter\u00fd bude pou\u017eit p\u0159i k\u00f3dov\u00e1n\u00ed hesla ke kl\u00ed\u010d\u016fm LTPA metodou \n\tAES. Tento \u0159et\u011bzec bude ha\u0161ov\u00e1n za \u00fa\u010delem vytvo\u0159en\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de, kter\u00fd\n\tbude pou\u017e\u00edv\u00e1n k \u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze poskytnout\n\tserveru definov\u00e1n\u00edm prom\u011bnn\u00e9\n\twlp.password.encryption.key, jej\u00ed\u017e hodnotou bude kl\u00ed\u010d. Nen\u00ed-li tato volba zad\u00e1na,\n\tpou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.
+createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+createLTPAKeys.option-desc.passwordBase64Key=\tbase64 zak\u00f3dovan\u00fd AES-256 bitov\u00fd kl\u00ed\u010d, kter\u00fd se pou\u017eije k \u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze serveru poskytnout definov\u00e1n\u00edm parametru prom\u011bnn\u00e9 wlp.aes.encryption.key, jej\u00ed\u017e hodnotou je kl\u00ed\u010d. Pokud --passwordBase64Key je zad\u00e1na adresa --aesConfigFile a --passwordKey nelze zadat.
+createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+createLTPAKeys.option-desc.aesConfigFile=\tSoubor vlastnost\u00ed XML nebo Java s prom\u011bnnou s n\u00e1zvem wlp.password.encryption.key nebo wlp.aes.encryption.key s platn\u00fdm hodnotami. Ob\u011b prom\u011bnn\u00e9 nelze zadat ve stejn\u00e9m souboru.\n\tPokud je zad\u00e1n --aesConfigFile, pak --passwordBase64Key a --passwordKey nelze zadat.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -181,3 +194,19 @@ configureFIPS.option-desc.3.customProfileFile=\tSoubor, do kter\u00e9ho se zap\u
 configureFIPS.option-key.4.disable=\ \ \ \ --disable
 
 configureFIPS.option-desc.4.disable=\tZak\u00e1zat FIPS 140-3 nastaven\u00edm prost\u0159ed\u00ed ENABLE_FIPS140_3 na hodnotu false. Tuto mo\u017enost lze pou\u017e\u00edt u klienta i serveru k zad\u00e1n\u00ed klienta nebo serveru, kter\u00fd m\u00e1 zak\u00e1zat FIPS 140-3.\n\tV opa\u010dn\u00e9m p\u0159\u00edpad\u011b zak\u00e1\u017ee FIPS 140-3 pro v\u0161echny klienty, servery a po\u010d\u00edta\u010de p\u0159\u00edkazy, s v\u00fdjimkou t\u011bch klient\u016f a server\u016f, kter\u00e9 byly jednotliv\u011b povoleny.
+
+
+
+# -------- Generate AES-256 KEY OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+generateaeskey.desc=\tGeneruje hodnotu, kter\u00e1 se vlo\u017e\u00ed do konfigura\u010dn\u00ed prom\u011bnn\u00e9 wlp.aes.encryption.key pro \u0161ifrov\u00e1n\u00ed aes.
+generateaeskey.usage.options=\t{0} generateAESKey [mo\u017enosti]
+generateaeskey.option-key.key=\ \ \ \ --key =[kl\u00ed\u010d]
+generateaeskey.option-desc.key=\tZadejte kl\u00ed\u010d pro pou\u017eit\u00ed p\u0159i \u0161ifrov\u00e1n\u00ed AES. Tento \u0159et\u011bzec je za\u0161ifrov\u00e1n, \u010d\u00edm\u017e se z\u00edsk\u00e1 \u0161ifrovac\u00ed kl\u00ed\u010d, kter\u00fd se pou\u017eije k za\u0161ifrov\u00e1n\u00ed \u0159et\u011bzce a de\u0161ifrov\u00e1n\u00ed hesel. \u0160ifrovac\u00ed kl\u00ed\u010d je ulo\u017een ve form\u00e1tu base64 v prom\u011bnn\u00e9 s n\u00e1zvem wlp.aes.encryption.key. Pokud je tato mo\u017enost vynech\u00e1na, bude vygenerov\u00e1n n\u00e1hodn\u00fd kl\u00ed\u010d.
+generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
+generateaeskey.option-desc.createConfigFile=\tVytvo\u0159\u00ed soubor XML s vygenerovanou hodnotou ulo\u017eenou v prom\u011bnn\u00e9 s n\u00e1zvem wlp.aes.encryption.key. Pokud nen\u00ed zad\u00e1na, pou\u017eije se vygenerovan\u00e1 hodnota bude vyps\u00e1na na obrazovku konzoly.

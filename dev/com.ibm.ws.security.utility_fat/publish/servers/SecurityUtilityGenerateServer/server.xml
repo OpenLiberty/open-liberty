@@ -1,0 +1,3 @@
+<server description="Generate command server">
+    <include location="../fatTestPorts.xml"/>
+</server>

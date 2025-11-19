@@ -65,7 +65,7 @@ public class DataJPATest extends FATServletClient {
                     };
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
 
     @Server("io.openliberty.data.internal.fat.jpa")
     @TestServlets({
@@ -78,7 +78,12 @@ public class DataJPATest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        DatabaseContainerUtil.build(server, testContainer).withDriverVariable().withDatabaseProperties().modify();
+        FATSuite.standardizeCollation(testContainer);
+
+        DatabaseContainerUtil.build(server, testContainer) //
+                        .withDriverVariable() //
+                        .withDatabaseProperties() //
+                        .modify();
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp",
                                                       "test.jakarta.data.jpa.web",

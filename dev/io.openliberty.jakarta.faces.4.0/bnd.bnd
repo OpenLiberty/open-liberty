@@ -31,7 +31,7 @@ DynamicImport-Package: \
 
 # For JS overlays, use META-INF=@src/META-INF
 -includeresource: \
-	@${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/!(META-INF/maven/*|module-info.class)
+	@\${repo;org.apache.myfaces.core:myfaces-api;${Implementation-Version};EXACT}!/!(META-INF/maven/*|module-info.class)
 
 instrument.disabled: true
 

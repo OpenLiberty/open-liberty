@@ -13,8 +13,10 @@ package test.jakarta.data.jpa.web;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
@@ -25,13 +27,14 @@ import jakarta.persistence.OneToMany;
 @Entity
 public class Customer {
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     public Set<CreditCard> cards;
 
     @Id
     public int customerId;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL,
+                fetch = FetchType.EAGER)
     public Set<DeliveryLocation> deliveryLocations;
 
     @Column

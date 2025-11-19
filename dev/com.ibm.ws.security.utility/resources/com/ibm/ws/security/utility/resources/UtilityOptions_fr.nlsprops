@@ -51,13 +51,17 @@ help.usage.options=\t{0} help [actionName]
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 encode.desc=\tEncoder le texte fourni.\n\n\tSi votre mot de passe comprend des caract\u00e8res sp\u00e9ciaux, vous devez \u00e9chapper chacun d''entre eux afin de garantir que le mot de passe est correctement encod\u00e9.\n\tLes caract\u00e8res sp\u00e9ciaux et les caract\u00e8res d''\u00e9chappement peuvent varier en fonction de votre syst\u00e8me d''exploitation.\n\tPar exemple, sur les syst\u00e8mes UNIX, pa$$W0rd doit \u00eatre fourni sous la forme pa\\$\\$W0rd.\n\tPour plus d''informations, voir la documentation de l''encodeur Open Liberty securityUtility.
 #Note to translator the word "encode" should not be translated
-encode.usage.options=\t{0} encode [options]
-encode.option-key.text=\ \ \ \ textToEncode
-encode.option-desc.text=\tSans aucun argument sp\u00e9cifi\u00e9, passage en mode   \n\tinteractif ; sinon, le texte fourni sera cod\u00e9.\n\tUn texte incluant des espaces doit \u00eatre plac\u00e9 entre guillemets s''il est sp\u00e9cifi\u00e9 en tant qu''argument.
+encode.usage.options=\t{0} encode [options] textToEncode
+encode.option-key.1.text=\ \ \ \ textToEncode
+encode.option-desc.1.text=\tSi aucun argument n''est sp\u00e9cifi\u00e9, l''outil entrera en mode interactif sinon, le texte fourni sera encod\u00e9.\n\tLe texte contenant des espaces doit \u00eatre enti\u00e8rement mis entre guillemets s''il est sp\u00e9cifi\u00e9 comme argument.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tIndiquez comment coder le mot de passe. Les encodages pris en charge sont xor, aes, aes-128, et hash. Le codage par d\u00e9faut est xor. Le cryptage Aes s''effectue \u00e0 l''aide d''une cl\u00e9 de aes-256 bits.\n\taes-128 peut \u00eatre utilis\u00e9 pour assurer la compatibilit\u00e9 avec les versions du serveur ant\u00e9rieures \u00e0 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[key]
-encode.option-desc.key=\tIndiquez une cl\u00e9 \u00e0 utiliser lors du codage utilisant la norme AES (Advanced Encryption Standard).\n \tCette cha\u00eene sera hach\u00e9e afin de produire une cl\u00e9 de chiffrement qui sera utilis\u00e9e\n\tpour le chiffrement et le d\u00e9chiffrement du mot de passe. \n\t La cl\u00e9 peut \u00eatre fournie au serveur en\n\td\u00e9finissant la variable wlp.password.encryption.key dont la valeur est la\n\tcl\u00e9. Sans cette option fournie, une cl\u00e9 par d\u00e9faut est utilis\u00e9e.
+encode.option-desc.key=\tIndiquer une cl\u00e9 \u00e0 utiliser lors du codage \u00e0 l''aide\nde la norme AES. Cette cha\u00eene sera hach\u00e9e pour produire une cl\u00e9 de chiffrement, qui est utilis\u00e9e pour chiffrer et d\u00e9chiffrer le mot de passe d\u00e9crypter le mot de passe. La cl\u00e9 peut \u00eatre fournie au serveur en d\u00e9finissant la variable wlp.password.encryption.key dont la valeur est la cl\u00e9. Sans cette option fournie, une cl\u00e9 par d\u00e9faut est utilis\u00e9e.
+encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
+encode.option-desc.base64Key=\tUne cl\u00e9 cod\u00e9e base64 AES-256 bit \u00e0 utiliser pour crypter et d\u00e9crypter le mot de passe mot de passe. La cl\u00e9 peut \u00eatre fournie au serveur en d\u00e9finissant la variable la variable wlp.aes.encryption.key dont la valeur est la cl\u00e9. Si --base64Key est sp\u00e9cifi\u00e9 est sp\u00e9cifi\u00e9, alors --aesConfigFile et --key ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s.
+encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+encode.option-desc.aesConfigFile=\tUn fichier de propri\u00e9t\u00e9s XML ou Java avec une variable nomm\u00e9e wlp.password.encryption.key ou wlp.aes.encryption.key avec des valeurs respectivement. Les deux variables ne peuvent pas \u00eatre sp\u00e9cifi\u00e9es dans le m\u00eame fichier.\n\tSi --aesConfigFile est sp\u00e9cifi\u00e9, --key et --base64Key ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s.
 encode.option-key.notrim=\ \ \ \ --notrim
 encode.option-desc.notrim=\tIndiquez si les caract\u00e8res espace sont retir\u00e9s en d\u00e9but et\n\ten fin du texte sp\u00e9cifi\u00e9. Si cette option est sp\u00e9cifi\u00e9e, le texte\n\tfourni sera cod\u00e9 tel quel.\n\tSans cette option sp\u00e9cifi\u00e9e, les caract\u00e8res espace de \n\td\u00e9but et de fin du texte sp\u00e9cifi\u00e9 sont retir\u00e9s. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
@@ -113,6 +117,11 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=informations d''extension de certificat
 sslCert.option-desc.ext=\tInformations d''extension de certificat \u00e0 ajouter au certificat.\n\tL''extension par d\u00e9faut est une entr\u00e9e Subject Alternative Name (SAN) qui utilise\n\tle nom d''h\u00f4te. Cet indicateur respecte la m\u00eame syntaxe que l''indicateur -ext de la commande\n\tJava Keytool. Il peut \u00eatre utilis\u00e9 plusieurs fois sur la ligne de\n commande.
 #line.
 
+sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+sslCert.option-desc.passwordBase64Key=\tUne cl\u00e9 cod\u00e9e base64 AES-256 bit \u00e0 utiliser pour crypter et d\u00e9crypter le mot de passe mot de passe. La cl\u00e9 peut \u00eatre fournie au serveur en d\u00e9finissant la variable wlp.aes.encryption.key dont la valeur est la cl\u00e9.\n\tSi --passwordBase64Key est sp\u00e9cifi\u00e9, --aesConfigFile et --passwordKey ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s.
+sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+sslCert.option-desc.aesConfigFile=\tUn fichier de propri\u00e9t\u00e9s XML ou Java avec une variable nomm\u00e9e wlp.password.encryption.key ou wlp.aes.encryption.key avec des valeurs respectivement. Les deux variables ne peuvent pas \u00eatre sp\u00e9cifi\u00e9es dans le m\u00eame fichier.\n\tSi --aesConfigFile est sp\u00e9cifi\u00e9, --passwordBase64Key et --passwordKey ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -134,6 +143,10 @@ createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
 createLTPAKeys.option-desc.password.encoding=\tIndiquez le mode de codate du mot de passe des cl\u00e9s LTPA dans le \n\tfichier server.xml.\n\tLes codages pris en charge sont xor et aes. Le codage par d\u00e9faut est xor. \n\tUtilisez la commande securityUtility encode --listCustom pour \n\td\u00e9terminer si des chiffrements personnalis\u00e9s suppl\u00e9mentaires sont \n\tpris en charge.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[key]
 createLTPAKeys.option-desc.password.key=\tIndiquez une cl\u00e9 \u00e0 utiliser lors du codage du mot de passe des \n\tcl\u00e9s LTPA avec AES. Cette cha\u00eene sera hach\u00e9e afin de produire une cl\u00e9 \n\tde chiffrement qui sera utilis\u00e9e pour le chiffrement et le \n\td\u00e9chiffrement du mot de passe. La cl\u00e9 peut \u00eatre fournie au serveur \n\ten d\u00e9finissant la variable twlp.password.encryption.key dont la valeur \n\test la cl\u00e9. Si cette option n''est pas fournie, une cl\u00e9 par d\u00e9faut \n\tsera utilis\u00e9e.
+createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+createLTPAKeys.option-desc.passwordBase64Key=\tUne cl\u00e9 cod\u00e9e base64 AES-256 bit \u00e0 utiliser pour crypter et d\u00e9crypter le mot de passe mot de passe. La cl\u00e9 peut \u00eatre fournie au serveur en d\u00e9finissant la variable la variable wlp.aes.encryption.key dont la valeur est la cl\u00e9. Si l''on sp\u00e9cifie --passwordBase64Key est sp\u00e9cifi\u00e9, alors --aesConfigFile et --passwordKey ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s.
+createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+createLTPAKeys.option-desc.aesConfigFile=\tUn fichier de propri\u00e9t\u00e9s XML ou Java avec une variable nomm\u00e9e wlp.password.encryption.key ou wlp.aes.encryption.key avec des valeurs respectivement. Les deux variables ne peuvent pas \u00eatre sp\u00e9cifi\u00e9es dans le m\u00eame fichier.\n\tSi --aesConfigFile est sp\u00e9cifi\u00e9, --passwordBase64Key et --passwordKey ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -181,3 +194,19 @@ configureFIPS.option-desc.3.customProfileFile=\tLe fichier dans lequel \u00e9cri
 configureFIPS.option-key.4.disable=\ \ \ \ --disable
 
 configureFIPS.option-desc.4.disable=\tD\u00e9sactivez FIPS 140-3 en d\u00e9finissant la variable d''environnement ENABLE_FIPS140_3 \u00e0 false. Cette option peut \u00eatre utilis\u00e9e avec les options client et serveur pour sp\u00e9cifier le client ou le serveur qui doit d\u00e9sactiver la norme FIPS 140-3.\n\tSinon, il d\u00e9sactive la norme FIPS 140-3 pour tous les clients, serveurs et commandes, \u00e0 l''exception des clients et des serveurs qui ont \u00e9t\u00e9 individuellement modifi\u00e9s en fonction de la norme FIPS 140-3 commandes, \u00e0 l''exception des clients et des serveurs qui ont \u00e9t\u00e9 activ\u00e9s individuellement individuellement.
+
+
+
+# -------- Generate AES-256 KEY OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+generateaeskey.desc=\tG\u00e9n\u00e8re une valeur \u00e0 placer dans la variable de configuration wlp.aes.encryption.key pour le cryptage aes.
+generateaeskey.usage.options=\t{0} generateAESKey [options]
+generateaeskey.option-key.key=\ \ \ \ --key =[cl\u00e9]
+generateaeskey.option-desc.key=\tSp\u00e9cifiez une cl\u00e9 \u00e0 utiliser lors du cryptage AES. Cette cha\u00eene est hach\u00e9e pour produire une cl\u00e9 de chiffrement qui sera utilis\u00e9e pour chiffrer et d\u00e9chiffrer les mots de passe et d\u00e9crypter les mots de passe. La cl\u00e9 de cryptage est enregistr\u00e9e au format base64 dans une variable nomm\u00e9e wlp.aes.encryption.key. Si cette option est omis, une cl\u00e9 al\u00e9atoire est g\u00e9n\u00e9r\u00e9e.
+generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
+generateaeskey.option-desc.createConfigFile=\tCr\u00e9e un fichier XML avec la valeur g\u00e9n\u00e9r\u00e9e sauvegard\u00e9e dans une variable nomm\u00e9e wlp.aes.encryption.key. Si elle n''est pas fournie, la valeur g\u00e9n\u00e9r\u00e9e sera \u00e9crite sur l''\u00e9cran de la console.

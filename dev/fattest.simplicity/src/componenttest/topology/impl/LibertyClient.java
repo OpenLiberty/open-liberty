@@ -132,7 +132,6 @@ public class LibertyClient {
     protected static final String EBCDIC_CHARSET_NAME = "IBM1047";
 
     protected volatile boolean isStarted = false;
-    protected volatile boolean isStopped = false;
     protected boolean isStartedConsoleLogLevelOff = false;
 
     protected int osgiConsolePort = 5678; // The port number of the OSGi Console
@@ -253,6 +252,8 @@ public class LibertyClient {
     protected final List<String> fixedIgnoreErrorsList = new ArrayList<String>();
 
     protected boolean checkingDisabled;
+
+    private final Map<String, String> envVars = new HashMap<>();
 
     /**
      * @param clientCleanupProblem the clientCleanupProblem to set
@@ -561,7 +562,12 @@ public class LibertyClient {
         if (preClean)
             preStartClientLogsTidy();
 
-        Properties envVars = new Properties();
+
+        Properties useEnvVars = new Properties();
+        useEnvVars.putAll(envVars);
+        if (!useEnvVars.isEmpty())
+            Log.info(c, method, "Adding env vars: " + useEnvVars);
+        envVars.clear();
 
         final String cmd = installRoot + "/bin/client";
         ArrayList<String> parametersList = new ArrayList<String>();
@@ -570,7 +576,7 @@ public class LibertyClient {
             Log.info(c, method, "Setting up commands for debug");
             parametersList.add("debug");
             parametersList.add(clientToUse);
-            envVars.setProperty("DEBUG_PORT", DEBUGGING_PORT);
+            useEnvVars.setProperty("DEBUG_PORT", DEBUGGING_PORT);
             // set client time out to 15 minutes to give time to connect. Timed exit likely kicks in after that, so
             // a larger value is worthless (and, since we multiply it by two later, will wrap if you use MAX_VALUE)
             clientStartTimeout = 15 * 60 * 60 * 1000;
@@ -601,7 +607,7 @@ public class LibertyClient {
         final String[] parameters = parametersList.toArray(new String[] {});
 
         //Need to ensure JAVA_HOME is set correctly - can't rely on user's environment to be set to the same Java as the build/runtime environment
-        envVars.setProperty("JAVA_HOME", machineJava);
+        useEnvVars.setProperty("JAVA_HOME", machineJava);
 
         // Pick up global JVM args (forced by build properties)
         String JVM_ARGS = GLOBAL_JVM_ARGS;
@@ -652,7 +658,7 @@ public class LibertyClient {
                     line = reader.readLine();
                 }
             } catch (Exception e) {
-                Log.info(c, "startClientWithArgs", "caught exception checking bootstap.properties file for Java 2 Security properties, e: ", e.getMessage());
+                Log.info(c, method, "caught exception checking bootstap.properties file for Java 2 Security properties, e: ", e.getMessage());
             } finally {
                 if (reader != null)
                     reader.close();
@@ -666,7 +672,7 @@ public class LibertyClient {
                 }
 
                 // If we are running on Java 18 through 23, then we need to explicitly enable the security manager
-                Log.info(c, "startClientWithArgs", "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
+                Log.info(c, method, "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
                 JVM_ARGS += " -Djava.security.manager=allow";
             }
         }
@@ -678,27 +684,34 @@ public class LibertyClient {
                 JVM_ARGS += " -Duse.enhanced.security.algorithms=true";
                 JVM_ARGS += " -Dcom.ibm.ws.beta.edition=true";
             } else {
+                // If the test is setting itself up for FIPS140-3, don't enable if through through here
+                Properties clientEnv = getClientEnv();
+                Properties defaultEnv = getDefaultEnv();
+                Map<String, String> opts = getJvmOptionsAsMap();
+                if (clientEnv.containsKey("ENABLE_FIPS140_3") || defaultEnv.containsKey("ENABLE_FIPS140_3") || opts.containsKey("-Xenablefips140-3") || opts.containsKey("-Dsemeru.fips")) {
+                    Log.info(c, method, "Test has defined its own settings for FIPS140-3");
+                } else {
+                    Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
 
-                Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
+                    if (javaInfo.majorVersion() >= 11) {
+                        Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
+                                + " with IBM Java " + javaInfo.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
 
-                if (javaInfo.majorVersion() >= 11) {
-                    Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
-                                                       + " with IBM Java " + javaInfo.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
+                        JVM_ARGS += " -Dsemeru.fips=true";
+                        JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Custom";
+                        JVM_ARGS += " -Djava.security.properties=" + getSemeruFips140_3CustomProfileLocationAndPrintFileContents();
+                        JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
+                        // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+                    } else if (javaInfo.majorVersion() == 8) {
+                        Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
+                                + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
 
-                    JVM_ARGS += " -Dsemeru.fips=true";
-                    JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Custom";
-                    JVM_ARGS += " -Djava.security.properties=" + getSemeruFips140_3CustomProfileLocationAndPrintFileContents();
-                    JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
-                    // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
-                } else if (javaInfo.majorVersion() == 8) {
-                    Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
-                                                       + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
-
-                    JVM_ARGS += " -Xenablefips140-3";
-                    JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
-                    JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
-                    JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
-                    // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+                        JVM_ARGS += " -Xenablefips140-3";
+                        JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
+                        JVM_ARGS += " -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS";
+                        JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
+                        // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
+                    }
                 }
             }
         }
@@ -761,13 +774,13 @@ public class LibertyClient {
             JVM_ARGS += " -Dcom.ibm.ws.logging.trace.specification=" + configuredTrace;
         }
 
-        envVars.setProperty("JVM_ARGS", JVM_ARGS);
+        useEnvVars.setProperty("JVM_ARGS", JVM_ARGS);
 
         // This takes the custom console file name used for tests into consideration
-        envVars.setProperty("LOG_DIR", logsRoot);
-        envVars.setProperty("LOG_FILE", consoleFileName);
+        useEnvVars.setProperty("LOG_DIR", logsRoot);
+        useEnvVars.setProperty("LOG_FILE", consoleFileName);
 
-        Log.info(c, method, "Using additional env props: " + envVars.toString());
+        Log.info(c, method, "Using additional env props: " + useEnvVars.toString());
 
         Log.info(c, method, "Starting Client with command: " + cmd);
 
@@ -828,11 +841,11 @@ public class LibertyClient {
                 f.getParentFile().mkdirs();
             OutputStream redirect = new FileOutputStream(f);
             String workDir = new File(this.clientOutputRoot).getAbsolutePath();
-            localMachine.executeAsync(cmd, parameters, workDir, envVars, redirect);
+            localMachine.executeAsync(cmd, parameters, workDir, useEnvVars, redirect);
             Log.info(c, method, "Started client process in debug mode");
             output = null;
         } else {
-            output = machine.execute(cmd, parameters, machine.getWorkDir(), envVars, 300);
+            output = machine.execute(cmd, parameters, machine.getWorkDir(), useEnvVars, 300);
 
             int rc = output.getReturnCode();
             Log.info(c, method, "Response from script is: " + output.getStdout());
@@ -1474,7 +1487,7 @@ public class LibertyClient {
             // If the client started successfully, we're started
             // (but the opposite isn't true since the client could already have been running)
             if (clientStopped) {
-                isStopped = true;
+                isStarted = false;
                 Log.info(c, method, "Client has stopped successfully");
             }
         } catch (Exception e) {
@@ -3985,7 +3998,7 @@ public class LibertyClient {
     }
 
     //FIPS 140-3
-    public boolean isFIPS140_3EnabledAndSupported() {
+    public boolean isFIPS140_3EnabledAndSupported() throws Exception {
         String methodName = "isFIPS140_3EnabledAndSupported";
 
         // short circuit this function so that it returns true if GLOBAL_ENHANCED_ALGO is true, this way the tests behave as though FIPS is enabled.
@@ -4012,6 +4025,17 @@ public class LibertyClient {
         return GLOBAL_CLIENT_FIPS_140_3 && (isIBMJVM8 || isIBMJVMGreaterOrEqualTo11);
     }
 
+    public void addEnvVar(String key, String value) {
+        if (!Pattern.matches("[a-zA-Z_]+[a-zA-Z0-9_]*", key)) {
+            throw new IllegalArgumentException("Invalid environment variable key '" + key +
+                    "'. Environment variable keys must consist of characers [a-zA-Z0-9_] " +
+                    "in order to work on all OSes.");
+        }
+        if (isStarted())
+            throw new RuntimeException("Cannot add env vars to a running server");
+        envVars.put(key, value);
+    }
+
     //FIPS 140-3
     public Properties getClientEnv() {
         Properties props = new Properties();
@@ -4030,6 +4054,19 @@ public class LibertyClient {
             String clientEnv = FileUtils.readFile(getClientRoot() + "/client.env");
             props.load(new StringReader(clientEnv.replace("\\", "\\\\")));
         } catch (IOException ignore) {
+        }
+
+        return props;
+    }
+
+    public Properties getDefaultEnv() {
+        Properties props = new Properties();
+
+        try {
+            String serverEnv = FileUtils.readFile(getInstallRoot() + "/etc/default.env");
+            props.load(new StringReader(serverEnv.replace("\\", "\\\\")));
+        } catch (IOException ignore) {
+            // Ignore
         }
 
         return props;

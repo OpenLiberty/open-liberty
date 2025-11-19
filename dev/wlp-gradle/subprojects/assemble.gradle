@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2023 IBM Corporation and others.
+ * Copyright (c) 2019,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -119,11 +119,13 @@ if (bnd.get('publish.wlp.jar.suffix', 'lib').contains('api/ibm') || bnd.get('pub
 
 if (!bnd.get('publish.tool.jar', '').empty) {
     task publishToolScripts(type: Copy) {
-        enabled !bnd.get('publish.tool.script', '').empty
+        enabled = !bnd.get('publish.tool.script', '').empty
         dependsOn jar
         from cnf.file('resources/bin')
         into buildImage.file('wlp/bin/' + bnd.get('publish.tool.script.subdir', ''))
-        fileMode 0755
+        filePermissions {
+            unix(Integer.parseInt('755', 8))
+        }
         rename 'tool(.*)', bnd.get('publish.tool.script') + '$1'
         filter(org.apache.tools.ant.filters.ReplaceTokens,
                 tokens: [TOOL_JAR: bnd.get('publish.tool.script.subdir', '') + 'tools/' + bnd.get('publish.tool.jar', ''),
@@ -185,7 +187,9 @@ if (project.file('publish/bin').exists()) {
         dependsOn jar
         from project.file('publish/bin')
         into buildImage.file('wlp/bin')
-        fileMode 0755
+        filePermissions {
+            unix(Integer.parseInt('755', 8))
+        }
     }
     assemble.dependsOn publishBinScripts
 }

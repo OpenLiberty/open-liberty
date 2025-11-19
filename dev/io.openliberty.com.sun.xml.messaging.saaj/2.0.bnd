@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020,2023 IBM Corporation and others.
+# Copyright (c) 2020,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -16,11 +16,11 @@ bVersion=1.0
 Bundle-SymbolicName: io.openliberty.com.sun.xml.messaging.saaj.2.0; singleton:=true
 
 -includeresource: \
-  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPFactory, \
-  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPConnectionFactory, \
-  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SAAJMetaFactory, \
-  @${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.MessageFactory
+  @\${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  @\${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPFactory, \
+  @\${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SOAPConnectionFactory, \
+  @\${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.SAAJMetaFactory, \
+  @\${repo;com.sun.xml.messaging.saaj:saaj-impl;2.0.1;EXACT}!/META-INF/services/jakarta.xml.soap.MessageFactory
 
 -maven-dependencies: \
    dep1;groupId=com.sun.xml.messaging.saaj;artifactId=saaj-impl;version=2.0.1;scope=runtime

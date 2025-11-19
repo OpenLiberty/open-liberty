@@ -19,7 +19,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 bVersion=1.0
 
-resteasy-version=7.0.0.Alpha2
+resteasy-version=7.0.0.Final
 resteasy-tracing-api-version=1.1.0.Final
 apache-mime4j-version=0.8.10
 
@@ -183,16 +183,16 @@ instrument.classesExcludes: \
   org/jboss/resteasy/util/ThreadLocalStack.class
 
 Include-Resource:\
-  @${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-client-api;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-core;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
-  @${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
-  @${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
-  @${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-client;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-client-api;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-core;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-core-spi;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-multipart-provider;${resteasy-version};EXACT}, \
+  @\${repo;org.jboss.resteasy:resteasy-tracing-api;${resteasy-tracing-api-version};EXACT}, \
+  @\${repo;org.apache.james:apache-mime4j-core;${apache-mime4j-version};EXACT}, \
+  @\${repo;org.apache.james:apache-mime4j-dom;${apache-mime4j-version};EXACT}, \
+  @\${repo;org.apache.james:apache-mime4j-storage;${apache-mime4j-version};EXACT}, \
+  @\${repo;com.ibm.async:asyncutil;0.1.0;EXACT}, \
   io/openliberty=${bin}/io/openliberty, \
   org/jboss/resteasy=${bin}/org/jboss/resteasy, \
   META-INF=resources/META-INF
@@ -224,7 +224,7 @@ Include-Resource:\
 	com.ibm.ws.container.service.compat;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.threading,\
-	io.openliberty.org.jboss.logging35,\
+	io.openliberty.org.jboss.logging36,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

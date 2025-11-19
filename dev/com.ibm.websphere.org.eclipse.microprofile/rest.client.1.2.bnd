@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019,2020 IBM Corporation and others.
+# Copyright (c) 2019,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -34,7 +34,7 @@ Import-Package: \
 	*
 
 Include-Resource: \
-  @${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;1.2.0;EXACT}
+  @\${repo;org.eclipse.microprofile.rest.client:microprofile-rest-client-api;1.2.0;EXACT}
 
   -maven-dependencies: \
    dep1;groupId=org.eclipse.microprofile.rest.client;artifactId=microprofile-rest-client-api;version=1.2.0;scope=runtime

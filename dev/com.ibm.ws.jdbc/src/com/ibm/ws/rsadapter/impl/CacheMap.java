@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2017 IBM Corporation and others.
+ * Copyright (c) 2001, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -263,7 +263,7 @@ public class CacheMap {
         // Look through the entries in the bucket to find one that matches for removal.
 
         for (int i = bucketSize - 1; i >= 0; i--) {
-            if (bucketKeys[i].equals(key)) {
+            if (key.equals(bucketKeys[i])) {
                 // If we emptied the bucket then remove its MRU/LRU entry.
 
                 if ((bucketSizes[bucketIndex] = --bucketSize) == 0) {

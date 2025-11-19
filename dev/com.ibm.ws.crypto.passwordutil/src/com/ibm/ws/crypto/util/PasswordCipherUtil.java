@@ -55,7 +55,6 @@ import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.crypto.util.custom.CustomManifest;
 import com.ibm.ws.crypto.util.custom.CustomUtils;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.crypto.CustomPasswordEncryption;
 import com.ibm.wsspi.security.crypto.EncryptedInfo;
@@ -278,7 +277,7 @@ public class PasswordCipherUtil {
             return aesDecipherV0(encrypted_bytes);
         } else if (encrypted_bytes[0] == 1) {
             return aesDecipherV1(encrypted_bytes);
-        } else if (encrypted_bytes[0] == 2 && ProductInfo.getBetaEdition()) {
+        } else if (encrypted_bytes[0] == 2) {
             return aesDecipherV2(encrypted_bytes);
         } else {
             throw new InvalidPasswordCipherException();
@@ -363,9 +362,7 @@ public class PasswordCipherUtil {
             String base64Key = null;
             if (properties != null) {
                 cryptoKey = properties.get(PasswordUtil.PROPERTY_CRYPTO_KEY);
-                if (ProductInfo.getBetaEdition()) {
-                    base64Key = properties.get(PasswordUtil.PROPERTY_AES_KEY);
-                }
+                base64Key = properties.get(PasswordUtil.PROPERTY_AES_KEY);
             }
             if (base64Key != null) {
                 if (logger.isLoggable(Level.FINE))

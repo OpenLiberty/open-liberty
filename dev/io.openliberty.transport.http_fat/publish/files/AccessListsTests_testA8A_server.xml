@@ -1,24 +1,27 @@
-<!-- Copyright (c) 2021 IBM Corporation and others. All rights reserved. 
-	This program and the accompanying materials are made available under the 
-	terms of the Eclipse Public License 2.0 which accompanies this distribution, 
-	and is available at http://www.eclipse.org/legal/epl-2.0/ Contributors: 
-	IBM Corporation - initial API and implementation
--->
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
 <server>
 
-	<featureManager>
-		<feature>servlet-3.1</feature>
-		<feature>componenttest-1.0</feature>
-		<feature>timedexit-1.0</feature>
-	</featureManager>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
 
-	<httpEndpoint id="defaultHttpEndpoint" host="*"
-		httpPort="${bvt.prop.HTTP_default}"
-		httpsPort="${bvt.prop.HTTP_default.secure}">
-		<!-- INSERT_A8A is wildcarded prefix of test client: denied -->
-		<tcpOptions hostNameExcludeList="INSERT_A8A, one.two.three, edge.noMatch.ibm.com, hi.good.bye.com, 5.5.5.5"/>
-	</httpEndpoint>
+    <httpEndpoint id="defaultHttpEndpoint" host="*"
+        httpPort="${bvt.prop.HTTP_default}"
+        httpsPort="${bvt.prop.HTTP_default.secure}">
+        <!-- INSERT_A8A is wildcarded prefix of test client: denied -->
+        <tcpOptions hostNameExcludeList="INSERT_A8A, one.two.three, edge.noMatch.ibm.com, hi.good.bye.com, 5.5.5.5"/>
+    </httpEndpoint>
 
-	<application location="app1.war" />
+    <application location="app1.war" />
 
 </server>

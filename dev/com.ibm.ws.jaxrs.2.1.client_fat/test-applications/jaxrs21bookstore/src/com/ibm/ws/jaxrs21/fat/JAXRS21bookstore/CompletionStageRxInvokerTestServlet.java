@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,14 +55,6 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
     private static final long FUTURE_TIMEOUT = 10000;
     private static final long SLEEP = 20000;
     private static final long clientBuilderTimeout = 15000;
-
-    private static final boolean isZOS() {
-        String osName = System.getProperty("os.name");
-        if (osName.toLowerCase().contains("os/") || osName.toLowerCase().contains("z/os") || osName.toLowerCase().contains("zos")) {
-            return true;
-        }
-        return false;
-}
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -708,13 +700,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
     public void testCompletionStageRxInvoker_getCbConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
@@ -757,13 +744,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
     public void testCompletionStageRxInvoker_getIbmConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
@@ -806,13 +788,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
     public void testCompletionStageRxInvoker_getIbmOverridesCbConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.connectTimeout(clientBuilderTimeout, TimeUnit.MILLISECONDS);
@@ -984,13 +961,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
     public void testCompletionStageRxInvoker_postCbConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.connectTimeout(TIMEOUT, TimeUnit.MILLISECONDS);
@@ -1033,13 +1005,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
     public void testCompletionStageRxInvoker_postIbmConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);
@@ -1082,13 +1049,8 @@ public class CompletionStageRxInvokerTestServlet extends HttpServlet {
     public void testCompletionStageRxInvoker_postIbmOverridesCbConnectionTimeout(Map<String, String> param, StringBuilder ret) {
         String target = null;
 
-        if (isZOS()) {
-            // https://stackoverflow.com/a/904609/6575578
-            target = "http://example.com:81";
-        } else {
-            //Connect to telnet port - which should be disabled on all non-Z test machines - so we should expect a timeout
-            target = "http://localhost:23/blah";
-        }
+        // https://stackoverflow.com/a/904609/6575578
+        target = "http://10.255.255.1/blah";
 
         ClientBuilder cb = ClientBuilder.newBuilder();
         cb.property("com.ibm.ws.jaxrs.client.connection.timeout", TIMEOUT);

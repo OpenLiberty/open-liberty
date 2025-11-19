@@ -647,3 +647,5 @@
 
 7363=Para um tipo enumerado STRING, somente o tipo java.lang.String pode ser usado como um tipo de atributo marcado por @EnumeratedValue. Verifique o atributo [ {0} ] na classe enum [ {1} ].
 
+7364=Na entidade [ {0} ] em NamedNativeQuery [ {1} ], um SqlResultSetMapping impl\u00edcito (atributo "entities", "classes" ou "columns") \u00e9 usado junto com um SqlResultSetMapping externo que \u00e9 referenciado pelo atributo "resultSetMapping". Essa combina\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+

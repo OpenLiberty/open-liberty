@@ -96,7 +96,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     Stream<Business> in(@By("location_address.city") String city,
                         @By("location.address_state") String state);
 
-    @Query("SELECT CASE WHEN COUNT(THIS) > 0 THEN TRUE ELSE FALSE END" +
+    @Query("SELECT CASE WHEN COUNT(this) > 0 THEN TRUE ELSE FALSE END" +
            " WHERE location.address.houseNum = :houseNum" +
            "   AND location.address.street.name = :streetName" +
            "   AND location.address.street.direction = :streetDir" +

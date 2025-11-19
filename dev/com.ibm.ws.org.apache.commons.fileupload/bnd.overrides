@@ -5,5 +5,5 @@ bVersion=1.0
 
 Private-Package: org.apache.commons.fileupload.portlet
 
-Include-Resource: @${repo;org.apache.commons.commons-fileupload;1.6.0;EXACT}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/versions/9/module-info.class)
+Include-Resource: @\${repo;org.apache.commons.commons-fileupload;1.6.0;EXACT}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/versions/9/module-info.class)
 

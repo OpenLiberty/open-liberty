@@ -57,7 +57,10 @@ public class ToolErrorHandlingTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.stopServer(
+                          "CWMCM0010E", //  Tool method threw an unexpected exception
+                          "CWMCM0011E" // An internal server error occurred
+        );
     }
 
     @Test
@@ -123,7 +126,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                             "content": [
                               {
                                 "type": "text",
-                                "text": "Internal server error"
+                                "text": "CWMCM0011E: An internal server error occurred while running the tool."
                               }
                             ]
                           }
@@ -268,7 +271,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                 "content": [
                                   {
                                     "type": "text",
-                                    "text": "Internal server error"
+                                    "text": "CWMCM0011E: An internal server error occurred while running the tool."
                                   }
                                 ]
                               }
@@ -341,7 +344,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                             "content": [
                               {
                                 "type": "text",
-                                "text": "Internal server error"
+                                "text": "CWMCM0011E: An internal server error occurred while running the tool."
                               }
                             ]
                           }

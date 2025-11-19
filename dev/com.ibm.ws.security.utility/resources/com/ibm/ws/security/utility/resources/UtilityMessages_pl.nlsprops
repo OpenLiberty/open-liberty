@@ -40,7 +40,9 @@ encode.enterText=Wpisz tekst:
 encode.reenterText=Wpisz tekst ponownie:
 encode.readError=B\u0142\u0105d odczytu tekstu.
 encode.entriesDidNotMatch=Wpisy nie s\u0105 zgodne.
-
+encode.mutuallyExclusiveArgError=Plik wej\u015bciowy nie mo\u017ce okre\u015bla\u0107 zar\u00f3wno w\u0142a\u015bciwo\u015bci {0}, jak i {1}.
+encode.aesConfigFileEncryptionAmbiguous=B\u0141\u0104D: Nie mo\u017cna u\u017cy\u0107 pliku wej\u015bciowego, je\u015bli zawiera on zar\u00f3wno zmienne {0}, jak i {1}.
+encode.aesConfigFileMissingEncryptionVariables=Nie mo\u017cna zakodowa\u0107 has\u0142a; albo plik wej\u015bciowy nie zawiera zmiennych {0} lub {1}, albo plik wej\u015bciowy jest zniekszta\u0142cony.
 
 password.enterText=Wprowad\u017a has\u0142o:
 password.reenterText=Wprowad\u017a ponownie has\u0142o:
@@ -98,7 +100,7 @@ createLTPAKeys.fileExists=Plik {0} ju\u017c istnieje.  Nie mo\u017cna utworzy\u0
 createLTPAKeys.createdFile=Utworzono plik kluczy LTPA: {0}\n Do pliku server.xml dodaj nast\u0119puj\u0105c\u0105 konfiguracj\u0119\n {1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=Instalacja Java nie pochodzi z IBM Semeru Runtimes ani IBM SDK, a je\u015bli tak, to nie obs\u0142uguje FIPS 140-3.\nZainstaluj Jav\u0119 z IBM Semeru Runtimes lub IBM SDK przy u\u017cyciu wersji i systemu operacyjnego obs\u0142uguj\u0105cego FIPS 140-3.\nJe\u015bli u\u017cywasz IBM Semeru Runtimes, u\u017cyj wersji 11.0.29.0, 17.0.17.0, 21.0.9.0, lub wy\u017cszej.\nJe\u015bli korzystasz z IBM SDK, u\u017cyj wersji 8.0.8.30 lub wy\u017cszej.
+configureFIPS.notIbmSdkNorSemeru=Instalacja Java nie pochodzi z IBM Semeru Runtimes ani IBM SDK, a je\u015bli tak, to nie obs\u0142uguje FIPS 140-3.\nZainstaluj Jav\u0119 z IBM Semeru Runtimes lub IBM SDK przy u\u017cyciu wersji i systemu operacyjnego obs\u0142uguj\u0105cego FIPS 140-3.\nJe\u015bli u\u017cywasz IBM Semeru Runtimes, u\u017cyj wersji 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, lub wy\u017cszej.\nJe\u015bli korzystasz z IBM SDK, u\u017cyj wersji 8.0.8.30 lub wy\u017cszej.
 
 configureFIPS.zosNotAvailable=Polecenie securityUtility configureFIPS nie jest obs\u0142ugiwane na stronie z/OS.
 
@@ -129,3 +131,8 @@ configureFIPS.fipsNotEnabled=FIPS 140-3 nie jest ju\u017c w\u0142\u0105czony w p
 configureFIPS.restartServer=Uruchom ponownie serwer {0}, aby zastosowa\u0107 zmian\u0119.
 configureFIPS.restartClient=Uruchom ponownie klienta {0}, aby zastosowa\u0107 zmian\u0119.
 configureFIPS.restart=Uruchom ponownie serwery i klient\u00f3w, aby zastosowa\u0107 zmian\u0119.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=Plik XML szyfrowania has\u0142a zosta\u0142 pomy\u015blnie utworzony.\nAby aktywowa\u0107 zmiany, dodaj odniesienie do lokalizacji pliku XML do pliku server.xml : <include location="{0}" />
+generateaeskey.failFileExists=Plik {0} istnieje i nie zostanie nadpisany. Przed ponown\u0105 pr\u00f3b\u0105 nale\u017cy inn\u0105 nazw\u0119 pliku lub usun\u0105\u0107 istniej\u0105cy plik przed ponown\u0105 pr\u00f3b\u0105.
+generateaeskey.failFileIsDirectory=Warto\u015b\u0107 {0} okre\u015blona dla nazwy pliku jest katalogiem. Podaj pe\u0142n\u0105 nazw\u0119 pliku i spr\u00f3buj ponownie.

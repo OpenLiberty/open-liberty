@@ -46,18 +46,28 @@ public class ToolTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "toolTest.war").addPackage(BasicTools.class.getPackage());
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "toolTest.war")
+                                   .addPackage(BasicTools.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
         server.startServer();
 
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
+
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.stopServer(
+                          "CWMCM0010E", //The JSON-RPC request is not valid JSON.
+                          "CWMCM0011E", // The JSON-RPC request was invalid.
+                          "CWMCM0012E", // The requested JSON-RPC method is not found.
+                          "CWMCM0013E", // JSON-RPC PC request contained invalid parameters.
+                          "CWMCM0014E", // An Internal Server Error occurred whilst processing the JSON-RPC request.
+                          "CWMCM0010E", //  Tool method threw an unexpected exception
+                          "CWMCM0011E" // An internal server error occurred
+        );
     }
 
     @Test
@@ -161,9 +171,9 @@ public class ToolTest extends FATServletClient {
         String expectedResponseString = """
                         {"error":{"code":-32600,
                         "data":[
-                            "jsonrpc field must be present. Only JSONRPC 2.0 is currently supported",
-                            "method must be present and not empty",
-                            "id must be a string or number"
+                            "The jsonrpc field must be present. Only JSONRPC 2.0 is currently supported.",
+                            "The method field is empty.",
+                            "The id type is not an acceptable type. The id must be a string or integer."
                             ],
                         "message":"Invalid request"},
                         "id":null,
@@ -210,7 +220,7 @@ public class ToolTest extends FATServletClient {
         String expectedResponseString = """
                         {"error":{"code":-32602,
                         "data":[
-                            "Missing arguments in params"
+                            "The request does not have any arguments in parameters."
                             ],
                         "message":"Invalid params"},
                         "id":"2",
@@ -239,8 +249,8 @@ public class ToolTest extends FATServletClient {
         String expectedResponseString = """
                         {"error":{"code":-32602,
                         "data":[
-                            "args [other] passed but not found in method",
-                            "args [input] were expected by the method"
+                            "The following arguments were passed but were not found in the method: [other].",
+                            "The following arguments were expected by the method but were not provided: [input]."
                             ],
                         "message": "Invalid params"},
                         "id":"2",
@@ -312,6 +322,47 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void testToolReturnsListOfContentWithAnnotations() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "textContentToolWithContentAnnotation",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+
+        String expectedResponseString = """
+                        {
+                          "id": 1,
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "annotations": {
+                                  "audience": "assistant",
+                                  "lastModified": "2025-08-26T08:40:00Z",
+                                  "priority": 0.5
+                                },
+                                "text": "Echo: hello",
+                                "type": "text"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
     public void testToolReturnsImageContentList() throws Exception {
         String request = """
                         {
@@ -350,6 +401,49 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void testToolReturnsImageContentListWithAnnotations() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "imageContentToolWithContentAnnotation",
+                            "arguments": {
+                              "imageData": "base64-encoded-image"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        String expectedResponseString = """
+                        {
+                            "id": 1,
+                            "jsonrpc": "2.0",
+                            "result": {
+                              "content": [
+                                {
+                                  "annotations": {
+                                    "audience": "user",
+                                    "lastModified": "2025-08-26T08:40:00Z",
+                                    "priority": 0.8
+                                  },
+                                  "data": "base64-encoded-image",
+                                  "mimeType": "image/png",
+                                  "type": "image"
+                                }
+                              ],
+                              "isError": false
+                            }
+                         }
+                         """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
     public void testToolReturnsAudioContentList() throws Exception {
         String request = """
                         {
@@ -367,12 +461,54 @@ public class ToolTest extends FATServletClient {
         String response = client.callMCP(request);
 
         String expectedResponseString = """
+                        {
+                           "id": 1,
+                           "jsonrpc": "2.0",
+                           "result": {
+                             "content": [
+                               {
+                                 "data": "base64-encoded-audio",
+                                 "mimeType": "audio/mpeg",
+                                 "type": "audio"
+                               }
+                             ],
+                             "isError": false
+                           }
+                         }
+                         """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolReturnsAudioContentListWithAnnotations() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "audioContentToolWithContentAnnotation",
+                            "arguments": {
+                              "audioData": "base64-encoded-audio"
+                            }
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+
+        String expectedResponseString = """
                                                 {
                           "id": 1,
                           "jsonrpc": "2.0",
                           "result": {
                             "content": [
                               {
+                                "annotations": {
+                                  "audience": "assistant",
+                                  "lastModified": "2025-08-26T08:40:00Z",
+                                  "priority": 0.3
+                                },
                                 "data": "base64-encoded-audio",
                                 "mimeType": "audio/mpeg",
                                 "type": "audio"
@@ -695,7 +831,7 @@ public class ToolTest extends FATServletClient {
                                             "properties": {
                                                 "num1": {
                                                     "description": "long",
-                                                    "type": "number"
+                                                    "type": "integer"
                                                 }
                                             },
                                             "required": [
@@ -729,7 +865,7 @@ public class ToolTest extends FATServletClient {
                                             "properties": {
                                                 "num1": {
                                                     "description": "byte",
-                                                    "type": "number"
+                                                    "type": "integer"
                                                 }
                                             },
                                             "required": [
@@ -763,7 +899,7 @@ public class ToolTest extends FATServletClient {
                                             "properties": {
                                                 "num1": {
                                                     "description": "short",
-                                                    "type": "number"
+                                                    "type": "integer"
                                                 }
                                             },
                                             "required": [
@@ -780,7 +916,7 @@ public class ToolTest extends FATServletClient {
                                             "properties": {
                                                 "num1": {
                                                     "description": "Long",
-                                                    "type": "number"
+                                                    "type": "integer"
                                                 }
                                             },
                                             "required": [
@@ -814,7 +950,7 @@ public class ToolTest extends FATServletClient {
                                             "properties": {
                                                 "num1": {
                                                     "description": "Byte",
-                                                    "type": "number"
+                                                    "type": "integer"
                                                 }
                                             },
                                             "required": [
@@ -848,7 +984,7 @@ public class ToolTest extends FATServletClient {
                                             "properties": {
                                                 "num1": {
                                                     "description": "Short",
-                                                    "type": "number"
+                                                    "type": "integer"
                                                 }
                                             },
                                             "required": [
@@ -1097,6 +1233,23 @@ public class ToolTest extends FATServletClient {
                                       "inputSchema": {
                                         "type": "object",
                                         "properties": {
+                                          "input": {
+                                            "description": "input string to echo back as content",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "input"
+                                        ]
+                                      },
+                                      "name": "textContentToolWithContentAnnotation",
+                                      "description": "Returns text content object with annotation",
+                                      "title": "Text Content Tool With Content Annotation"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
                                           "imageData": {
                                             "description": "Base64-encoded image",
                                             "type": "string"
@@ -1109,6 +1262,23 @@ public class ToolTest extends FATServletClient {
                                       "name": "imageContentTool",
                                       "description": "Returns image content object",
                                       "title": "Image Content Tool"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "imageData": {
+                                            "description": "Base64-encoded image",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "imageData"
+                                        ]
+                                      },
+                                      "name": "imageContentToolWithContentAnnotation",
+                                      "description": "Returns image content object with annotation",
+                                      "title": "Image Content Tool With Content Annotation"
                                     },
                                     {
                                       "inputSchema": {
@@ -1128,6 +1298,49 @@ public class ToolTest extends FATServletClient {
                                       "title": "Audio Content Tool"
                                     },
                                     {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "audioData": {
+                                            "description": "Base64-encoded audio",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "audioData"
+                                        ]
+                                      },
+                                      "name": "audioContentToolWithContentAnnotation",
+                                      "description": "Returns audio content object with annotation",
+                                      "title": "Audio Content Tool With Content Annotation"
+                                    },
+                                    {
+                                        "outputSchema": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "country": {
+                                                        "type": "string"
+                                                    },
+                                                    "isCapital": {
+                                                        "type": "boolean"
+                                                    },
+                                                    "name": {
+                                                        "type": "string"
+                                                    },
+                                                    "population": {
+                                                        "type": "integer"
+                                                    }
+                                                },
+                                                "required": [
+                                                    "name",
+                                                    "country",
+                                                    "population",
+                                                    "isCapital"
+                                                ]
+                                            }
+                                        },
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {},
@@ -1138,6 +1351,12 @@ public class ToolTest extends FATServletClient {
                                         "title": "City List"
                                     },
                                     {
+                                        "outputSchema": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {},
@@ -1148,6 +1367,12 @@ public class ToolTest extends FATServletClient {
                                         "title": "String List"
                                     },
                                     {
+                                        "outputSchema": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "integer"
+                                            }
+                                        },
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {},
@@ -1158,6 +1383,29 @@ public class ToolTest extends FATServletClient {
                                         "title": "Array of ints"
                                     },
                                     {
+                                        "outputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "country": {
+                                                    "type": "string"
+                                                },
+                                                "isCapital": {
+                                                    "type": "boolean"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "population": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "country",
+                                                "population",
+                                                "isCapital"
+                                            ]
+                                        },
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {
@@ -1217,6 +1465,318 @@ public class ToolTest extends FATServletClient {
                                         "description": "Defined in static inner class",
                                         "title": "Static Inner Tool"
                                       },
+                                    {
+                                        "inputSchema": {
+                                            "$defs": {
+                                                "Company": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "address": {
+                                                            "$ref": "#/$defs/Address"
+                                                        },
+                                                        "name": {
+                                                            "type": "string"
+                                                        },
+                                                        "shareholders": {
+                                                            "description": "A list of shareholder (person object)",
+                                                            "type": "array",
+                                                            "items": {
+                                                                "$ref": "#/$defs/Person"
+                                                            }
+                                                        },
+                                                        "shareholderRegistry": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "value": {
+                                                                    "$ref": "#/$defs/person"
+                                                                },
+                                                                "key": {
+                                                                    "type": "integer"
+                                                                }
+                                                            },
+                                                            "required": []
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "name",
+                                                        "address",
+                                                        "shareholders"
+                                                    ]
+                                                },
+                                                "Address": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "number": {
+                                                            "type": "integer"
+                                                        },
+                                                        "street": {
+                                                            "description": "A street object to represent complex streets",
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "streetName": {
+                                                                    "type": "string"
+                                                                },
+                                                                "roadType": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "streetName"
+                                                            ]
+                                                        },
+                                                        "postcode": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "number",
+                                                        "street",
+                                                        "postcode"
+                                                    ]
+                                                },
+                                                "Person": {
+                                                    "description": "A person object contains address, company objects",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "address": {
+                                                            "$ref": "#/$defs/Address"
+                                                        },
+                                                        "company": {
+                                                            "$ref": "#/$defs/Company"
+                                                        },
+                                                        "fullname": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "fullname",
+                                                        "address",
+                                                        "company"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "object",
+                                            "properties": {
+                                                "person": {
+                                                    "description": "Person object",
+                                                    "$ref": "#/$defs/Person"
+                                                },
+                                                "company": {
+                                                    "description": "Company object",
+                                                    "$ref": "#/$defs/Company"
+                                                }
+                                            },
+                                            "required": [
+                                                "person",
+                                                "company"
+                                            ]
+                                        },
+                                        "name": "checkPerson",
+                                        "description": "Returns boolean",
+                                        "title": "checks if person is shareholder"
+                                    },
+                                    {
+                                        "outputSchema": {
+                                            "$defs": {
+                                                "Address": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "number": {
+                                                            "type": "integer"
+                                                        },
+                                                        "street": {
+                                                            "description": "A street object to represent complex streets",
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "streetName": {
+                                                                    "type": "string"
+                                                                },
+                                                                "roadType": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "streetName"
+                                                            ]
+                                                        },
+                                                        "postcode": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "number",
+                                                        "street",
+                                                        "postcode"
+                                                    ]
+                                                },
+                                                "Person": {
+                                                    "description": "A person object contains address, company objects",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "address": {
+                                                            "$ref": "#/$defs/Address"
+                                                        },
+                                                        "company": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "address": {
+                                                                    "$ref": "#/$defs/Address"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "shareholders": {
+                                                                    "description": "A list of shareholder (person object)",
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "$ref": "#/$defs/Person"
+                                                                    }
+                                                                },
+                                                                "shareholderRegistry": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "value": {
+                                                                            "$ref": "#/$defs/person"
+                                                                        },
+                                                                        "key": {
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "required": []
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "name",
+                                                                "address",
+                                                                "shareholders"
+                                                            ]
+                                                        },
+                                                        "fullname": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "fullname",
+                                                        "address",
+                                                        "company"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/$defs/Person"
+                                            },
+                                            "description": "Returns list of person object"
+                                        },
+                                        "inputSchema": {
+                                            "$defs": {
+                                                "Address": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "number": {
+                                                            "type": "integer"
+                                                        },
+                                                        "street": {
+                                                            "description": "A street object to represent complex streets",
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "streetName": {
+                                                                    "type": "string"
+                                                                },
+                                                                "roadType": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "streetName"
+                                                            ]
+                                                        },
+                                                        "postcode": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "number",
+                                                        "street",
+                                                        "postcode"
+                                                    ]
+                                                },
+                                                "Person": {
+                                                    "description": "A person object contains address, company objects",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "address": {
+                                                            "$ref": "#/$defs/Address"
+                                                        },
+                                                        "company": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "address": {
+                                                                    "$ref": "#/$defs/Address"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "shareholders": {
+                                                                    "description": "A list of shareholder (person object)",
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "$ref": "#/$defs/Person"
+                                                                    }
+                                                                },
+                                                                "shareholderRegistry": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "value": {
+                                                                            "$ref": "#/$defs/person"
+                                                                        },
+                                                                        "key": {
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "required": []
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "name",
+                                                                "address",
+                                                                "shareholders"
+                                                            ]
+                                                        },
+                                                        "fullname": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "fullname",
+                                                        "address",
+                                                        "company"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "object",
+                                            "properties": {
+                                                "employeeList": {
+                                                    "description": "List of people",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/$defs/Person"
+                                                    }
+                                                },
+                                                "person": {
+                                                    "description": "Person object",
+                                                    "$ref": "#/$defs/Person"
+                                                }
+                                            },
+                                            "required": [
+                                                "employeeList",
+                                                "person"
+                                            ]
+                                        },
+                                        "name": "addPersonToList",
+                                        "description": "adds person to people list",
+                                        "title": "adds person to people list"
+                                    }
                                 ]
                             },
                             "id": 1,
@@ -1224,7 +1784,6 @@ public class ToolTest extends FATServletClient {
                         }
                          """;
 
-        // Lenient mode test (false boolean in 3rd parameter
         JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
@@ -1253,7 +1812,7 @@ public class ToolTest extends FATServletClient {
         String response = client.callMCP(request);
 
         String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Internal server error"}], "isError": true}}
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"CWMCM0011E: An internal server error occurred while running the tool."}], "isError": true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
         assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
@@ -2094,5 +2653,369 @@ public class ToolTest extends FATServletClient {
                         {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testCheckPersonCall() throws Exception {
+//        Based on the following context
+//        Address companyAddress = new Address(100, new Street("Hursley Park Rd", "Private Property"), "so21 2er", "inside hursley park");
+//        Person companyPerson = new Person("Shareholder 1", companyAddress, null);
+//        List<Person> companyList = new ArrayList<>();
+//        companyList.add(companyPerson);
+//        Map<String, Person> companyMap = new HashMap<>();
+//        companyMap.put("1", companyPerson);
+//        Company company = new Company("IBM", companyAddress, companyList, companyMap);
+//        Address personAddress = new Address(002, new Street("Poles Ln", "n/a"), "so21 2rt", "near hursley park");
+//        Person person = new Person("John Smith", personAddress, company);
+
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "checkPerson",
+                            "arguments": {
+                                            "person":{
+                                            "address": {
+                                                "number": 2,
+                                                "postcode": "so21 2rt",
+                                                "street": {
+                                                    "streetName": "Poles Ln",
+                                                    "roadType": "n/a"
+                                                }
+                                            },
+                                            "company": {
+                                                "address": {
+                                                    "number": 100,
+                                                    "postcode": "so21 2er",
+                                                    "street": {
+                                                        "streetName": "Hursley Park Rd",
+                                                        "roadType": "Private Property"
+                                                    }
+                                                },
+                                                "name": "IBM",
+                                                "shareholder": [
+                                                    {
+                                                        "address": {
+                                                            "number": 100,
+                                                            "postcode": "so21 2er",
+                                                            "street": {
+                                                                "streetName": "Hursley Park Rd",
+                                                                "roadType": "Private Property"
+                                                            }
+                                                        },
+                                                        "fullname": "Shareholder 1"
+                                                    }
+                                                ],
+                                                "shareholderRegistry": {
+                                                    "1": {
+                                                        "address": {
+                                                            "number": 100,
+                                                            "postcode": "so21 2er",
+                                                            "street": {
+                                                                "streetName": "Hursley Park Rd",
+                                                                "roadType": "Private Property"
+                                                            }
+                                                        },
+                                                        "fullname": "Shareholder 1"
+                                                    }
+                                                }
+                                            },
+                                            "fullname": "John Smith"
+                                        },
+                                        "company": {
+                                                "address": {
+                                                    "number": 100,
+                                                    "postcode": "so21 2er",
+                                                    "street": {
+                                                        "streetName": "Hursley Park Rd",
+                                                        "roadType": "Private Property"
+                                                    }
+                                                },
+                                                "name": "IBM",
+                                                "shareholder": [
+                                                    {
+                                                        "address": {
+                                                            "number": 100,
+                                                            "postcode": "so21 2er",
+                                                            "street": {
+                                                                "streetName": "Hursley Park Rd",
+                                                                "roadType": "Private Property"
+                                                            }
+                                                        },
+                                                        "fullname": "Shareholder 1"
+                                                    }
+                                                ],
+                                                "shareholderRegistry": {
+                                                    "1": {
+                                                        "address": {
+                                                            "number": 100,
+                                                            "postcode": "so21 2er",
+                                                            "street": {
+                                                                "streetName": "Hursley Park Rd",
+                                                                "roadType": "Private Property"
+                                                            }
+                                                        },
+                                                        "fullname": "Shareholder 1"
+                                                    }
+                                                }
+                                            }
+                                    }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONObject jsonResponse = new JSONObject(response);
+        // Strict Mode tests
+        String expectedResponseString = """
+                        {"result":{"isError":false,"content":[{"text":"true","type":"text"}]},"id":2,"jsonrpc":"2.0"}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testAddPersonToListWithOptionalField() throws Exception {
+//        Based on the following context
+//        Address companyAddress = new Address(100, new Street("Hursley Park Rd", "Private Property"), "so21 2er", "inside hursley park");
+//        Person companyPerson = new Person("Shareholder 1", companyAddress, null);
+//        List<Person> companyList = new ArrayList<>();
+//        companyList.add(companyPerson);
+//        Map<String, Person> companyMap = new HashMap<>();
+//        companyMap.put("1", companyPerson);
+//        Company company = new Company("IBM", companyAddress, companyList, companyMap);
+//        Address personAddress = new Address(002, new Street("Poles Ln", "n/a"), "so21 2rt", "near hursley park");
+//        Person person = new Person("John Smith", personAddress, company);
+
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "addPersonToList",
+                            "arguments": {
+                                            "person":{
+                                            "address": {
+                                                "number": 2,
+                                                "postcode": "so21 2rt",
+                                                "street": {
+                                                    "streetName": "Poles Ln",
+                                                    "roadType": "n/a"
+                                                }
+                                            },
+                                            "company": {
+                                                "address": {
+                                                    "number": 100,
+                                                    "postcode": "so21 2er",
+                                                    "street": {
+                                                        "streetName": "Hursley Park Rd",
+                                                        "roadType": "Private Property"
+                                                    }
+                                                },
+                                                "name": "IBM",
+                                                "shareholder": [
+                                                    {
+                                                        "address": {
+                                                            "number": 100,
+                                                            "postcode": "so21 2er",
+                                                            "street": {
+                                                                "streetName": "Hursley Park Rd",
+                                                                "roadType": "Private Property"
+                                                            }
+                                                        },
+                                                        "fullname": "Shareholder 1"
+                                                    }
+                                                ]
+                                            },
+                                            "fullname": "John Smith"
+                                        },
+                                        "employeeList": [
+                                                    {
+                                                        "address": {
+                                                            "number": 2,
+                                                            "postcode": "so21 2rt",
+                                                            "street": {
+                                                                "streetName": "Poles Ln",
+                                                                "roadType": "n/a"
+                                                            }
+                                                        },
+                                                        "company": {
+                                                            "address": {
+                                                                "number": 100,
+                                                                "postcode": "so21 2er",
+                                                                "street": {
+                                                                    "streetName": "Hursley Park Rd",
+                                                                    "roadType": "Private Property"
+                                                                }
+                                                            },
+                                                            "name": "IBM",
+                                                            "shareholder": [
+                                                                {
+                                                                    "address": {
+                                                                        "number": 100,
+                                                                        "postcode": "so21 2er",
+                                                                        "street": {
+                                                                            "streetName": "Hursley Park Rd",
+                                                                            "roadType": "Private Property"
+                                                                        }
+                                                                    },
+                                                                    "fullname": "Shareholder 1"
+                                                                }
+                                                            ],
+                                                            "shareholderRegistry": {
+                                                                "1": {
+                                                                    "address": {
+                                                                        "number": 100,
+                                                                        "postcode": "so21 2er",
+                                                                        "street": {
+                                                                            "streetName": "Hursley Park Rd",
+                                                                            "roadType": "Private Property"
+                                                                        }
+                                                                    },
+                                                                    "fullname": "Shareholder 1"
+                                                                }
+                                                            }
+                                                        },
+                                                        "fullname": "John Smith"
+                                                    },
+                                                    {
+                                                        "address": {
+                                                            "number": 100,
+                                                            "postcode": "so21 2er",
+                                                            "street": {
+                                                                "streetName": "Hursley Park Rd",
+                                                                "roadType": "Private Property"
+                                                            }
+                                                        },
+                                                        "fullname": "Shareholder 1"
+                                                    }
+                                                ]
+                                    }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONObject jsonResponse = new JSONObject(response);
+        // Strict Mode tests
+        String expectedResponseString = """
+                                                                {
+                            "result": {
+                                "isError": false,
+                                "structuredContent": [
+                                    {
+                                        "address": {
+                                            "number": 2,
+                                            "street": {
+                                                "streetName": "Poles Ln",
+                                                "roadType": "n/a"
+                                            },
+                                            "postcode": "so21 2rt"
+                                        },
+                                        "company": {
+                                            "address": {
+                                                "number": 100,
+                                                "street": {
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
+                                                },
+                                                "postcode": "so21 2er"
+                                            },
+                                            "shareholderRegistry": {
+                                                "1": {
+                                                    "address": {
+                                                        "number": 100,
+                                                        "street": {
+                                                            "streetName": "Hursley Park Rd",
+                                                            "roadType": "Private Property"
+                                                        },
+                                                        "postcode": "so21 2er"
+                                                    },
+                                                    "fullname": "Shareholder 1"
+                                                }
+                                            },
+                                            "name": "IBM"
+                                        },
+                                        "fullname": "John Smith"
+                                    },
+                                    {
+                                        "address": {
+                                            "number": 100,
+                                            "street": {
+                                                "streetName": "Hursley Park Rd",
+                                                "roadType": "Private Property"
+                                            },
+                                            "postcode": "so21 2er"
+                                        },
+                                        "fullname": "Shareholder 1"
+                                    },
+                                    {
+                                        "address": {
+                                            "number": 2,
+                                            "street": {
+                                                "streetName": "Poles Ln",
+                                                "roadType": "n/a"
+                                            },
+                                            "postcode": "so21 2rt"
+                                        },
+                                        "company": {
+                                            "address": {
+                                                "number": 100,
+                                                "street": {
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
+                                                },
+                                                "postcode": "so21 2er"
+                                            },
+                                            "name": "IBM"
+                                        },
+                                        "fullname": "John Smith"
+                                    }
+                                ],
+                                "content": [
+                                    {
+                                        "text": "[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]",
+                                        "type": "text"
+                                    }
+                                ]
+                            },
+                            "id": 2,
+                            "jsonrpc": "2.0"
+                        }
+                                                                                                """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testReusingRequestIdAfterCompletionSucceeds() throws Exception {
+
+        String requestTemplate = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echo",
+                            "arguments": {
+                              "input": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String expectedResponseString = """
+                        {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
+                        """;
+
+        // First request call
+        String response = client.callMCP(requestTemplate);
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+
+        // Second request - same ID
+        String duplicateResponse = client.callMCP(requestTemplate);
+
+        JSONAssert.assertEquals(expectedResponseString, duplicateResponse, true);
     }
 }

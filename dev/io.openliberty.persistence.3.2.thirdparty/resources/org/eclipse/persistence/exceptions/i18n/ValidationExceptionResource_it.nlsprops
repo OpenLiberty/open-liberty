@@ -647,3 +647,5 @@
 
 7363=Per un tipo enumerato STRING, solo il tipo java.lang.String pu\u00f2 essere utilizzato come tipo di attributo contrassegnato da @EnumeratedValue. Controllare l''attributo [ {0} ] nella classe enum [ {1} ].
 
+7364=Nell''entit\u00e0 [ {0} ] in NamedNativeQuery [ {1} ], viene utilizzato un SqlResultSetMapping implicito (attributo "entities", "classes" o "columns") insieme a un SqlResultSetMapping esterno a cui fa riferimento l''attributo "resultSetMapping". Questa combinazione non \u00e8 consentita.
+

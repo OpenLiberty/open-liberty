@@ -20,7 +20,9 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.StringJoiner;
 
 import org.apache.commons.io.FilenameUtils;
@@ -57,16 +59,14 @@ public class ConfigureFIPSTask extends BaseCommandTask {
                                            "# Visit the link for more information about configuring this file:",
                                            "# https://ibm.biz/BdeU7c",
                                            "#",
-                                           "# To find the FIPS140-3-Liberty profile configuration, see wlp/lib/security/FIPS140-3-Liberty.properties",
+                                           "# To find the FIPS140-3-Liberty profile configuration, see wlp/lib/security/fips140_3/FIPS140-3-Liberty.properties",
                                            "#",
-                                           "# Example configuration for allowing SHA-1 for the io.openliberty.myClass class in the existing OpenJCEPlusFIPS provider",
-                                           "# and adding a new io.openliberty.myProvider provider:",
-                                           "#",
-                                           "# RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3-Liberty-Application.desc.name = OpenJCEPlusFIPS Cryptographic Module FIPS 140-3 for Liberty Application",
-                                           "# RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3-Liberty-Application.extends = RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3-Liberty",
-                                           "# RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3-Liberty-Application.jce.provider.1 = com.ibm.crypto.plus.provider.OpenJCEPlusFIPS [+ \\",
+                                           "# Example configuration to add for allowing SHA-1 for the io.openliberty.myClass class in the existing OpenJCEPlusFIPS provider:",
+                                           "# RestrictedSecurity.OpenJCEPlusFIPS." + PROFILE_NAME_HOLDER + ".jce.provider.1 = com.ibm.crypto.plus.provider.OpenJCEPlusFIPS [+ \\",
                                            "#     {MessageDigest, SHA-1, *, FullClassName:io.openliberty.myClass}]",
-                                           "# RestrictedSecurity.OpenJCEPlusFIPS.FIPS140-3-Liberty-Application.jce.provider.16 = io.openliberty.myProvider",
+                                           "#",
+                                           "# Example configuration to add for registering a new io.openliberty.myProvider provider:",
+                                           "# RestrictedSecurity.OpenJCEPlusFIPS." + PROFILE_NAME_HOLDER + ".jce.provider.51 = io.openliberty.myProvider",
                                            "#",
                                            "RestrictedSecurity.OpenJCEPlusFIPS." + PROFILE_NAME_HOLDER
                                                 + ".desc.name = OpenJCEPlusFIPS Cryptographic Module FIPS 140-3 for Liberty Application",
@@ -357,7 +357,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
 
                 previousCustomProfileFile = customProfileFile;
             }
-            customProfileFilePaths = "\"" + String.join(PATH_SEPARATOR, customProfileFileLocations) + "\"";
+            customProfileFilePaths = String.join(PATH_SEPARATOR, customProfileFileLocations);
         }
 
         File envFile = new File(envFileLocation);
@@ -393,15 +393,19 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         }
 
         boolean enabled = false;
-        StringJoiner joiner = new StringJoiner(NL);
+        List<String> lines = new ArrayList<>();
         boolean fileEndsWithNewLineChar = false;
+        boolean variableExpansionEnabled = false;
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(fileUtility.resolvePath(file)), CHARSET))) {
             String line = "";
             while ((line = reader.readLine()) != null) {
+                if (line.replaceAll("\\s", "").equalsIgnoreCase("#enable_variable_expansion")) {
+                    variableExpansionEnabled = true;
+                }
                 if (line.startsWith(ENABLE_FIPS140_3_ENV_VAR + "=")) {
                     if (line.equals(ENABLE_FIPS140_3_ENV_VAR + "=false")) {
-                        joiner.add(ENABLE_FIPS140_3_ENV_VAR + "=" + value);
+                        lines.add(ENABLE_FIPS140_3_ENV_VAR + "=" + value);
                         enabled = true;
                     } else {
                         stdout.println(getMessage("configureFIPS.abortEnvFile"));
@@ -409,7 +413,7 @@ public class ConfigureFIPSTask extends BaseCommandTask {
                         return SecurityUtilityReturnCodes.ERR_GENERIC;
                     }
                 } else {
-                    joiner.add(line);
+                    lines.add(line);
                 }
             }
 
@@ -421,7 +425,24 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         }
 
         if (!enabled) {
-            joiner.add(ENABLE_FIPS140_3_ENV_VAR + "=" + value);
+            lines.add(ENABLE_FIPS140_3_ENV_VAR + "=" + value);
+        }
+
+        StringJoiner joiner = new StringJoiner(NL);
+        for (String line : lines) {
+            if (variableExpansionEnabled) {
+                String[] keyValue = line.split("=", 2);
+                if (keyValue.length == 2) {
+                    String envVarKey = keyValue[0];
+                    if (envVarKey.equals(ENABLE_FIPS140_3_ENV_VAR)) {
+                        String envVarValue = keyValue[1];
+                        if (envVarValue.contains(" ")) {
+                            line = envVarKey + "=" + "\"" + envVarValue + "\"";
+                        }
+                    }
+                }
+            }
+            joiner.add(line);
         }
 
         try {

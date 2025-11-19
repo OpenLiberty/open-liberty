@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,6 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.crypto.UnsupportedCryptoAlgorithmException;
 import com.ibm.ws.crypto.certificateutil.DefaultSSLCertificateCreator;
 import com.ibm.ws.crypto.certificateutil.DefaultSubjectDN;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -62,7 +61,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
     static final String JKS = "jks";
     static final String PKCS12 = "pkcs12";
 
-    private static final List<String> BETA_ARG_TABLE = Arrays.asList(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, BaseCommandTask.ARG_AES_CONFIG_FILE);
+    private static final List<String> BETA_ARG_TABLE = new ArrayList<>();
     private static final List<String> BETA_OPTS = BETA_ARG_TABLE.stream().map(s -> s.startsWith("--") ? s.substring(2) : s).collect(Collectors.toList());
 
     private final DefaultSSLCertificateCreator creator;
@@ -155,7 +154,7 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
             if (!fileUtility.exists(clientDir)) {
                 usrClients = fileUtility.resolvePath(usrClients);
                 stdout.println(getMessage("sslCert.abort"));
-                stdout.println(getMessage("sslCert.clientNotFound", clientName, usrClients));
+                stdout.println(getMessage("clientNotFound", clientName, usrClients));
                 return SecurityUtilityReturnCodes.ERR_CLIENT_NOT_FOUND;
             }
             dir = clientDir;
@@ -246,10 +245,8 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
                           arg.equals(ARG_PASSWORD_ENCODING) || arg.equals(ARG_PASSWORD_KEY) ||
                           arg.equals(ARG_CREATE_CONFIG_FILE) || arg.equals(ARG_KEYSIZE) ||
                           arg.equals(ARG_CLIENT) || arg.equals(ARG_SIGALG) ||
-                          arg.equals(ARG_KEY_TYPE) || arg.equals(ARG_EXT);
-        if (!isKnown && ProductInfo.getBetaEdition()) {
-            isKnown = arg.equals(ARG_PASSWORD_BASE64_KEY) || arg.equals(ARG_AES_CONFIG_FILE);
-        }
+                          arg.equals(ARG_KEY_TYPE) || arg.equals(ARG_EXT) || arg.equals(ARG_PASSWORD_BASE64_KEY) ||
+                          arg.equals(ARG_AES_CONFIG_FILE);
         return isKnown;
     }
 

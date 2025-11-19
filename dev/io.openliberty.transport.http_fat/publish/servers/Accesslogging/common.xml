@@ -11,9 +11,8 @@
 
     <featureManager>
         <feature>servlet-3.1</feature>
-
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
-    
+
 </server>

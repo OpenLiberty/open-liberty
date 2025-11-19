@@ -55,6 +55,6 @@ task addKafkaClientLibs (type: Copy) {
     shouldRunAfter autoFVT
 }
 
-zipAutoFVT.dependsOn addKafkaClientCommonLibs
-zipAutoFVT.dependsOn addKafkaClient3Libs
-zipAutoFVT.dependsOn addKafkaClientLibs
+customizeAutoFVT.dependsOn addKafkaClientCommonLibs
+customizeAutoFVT.dependsOn addKafkaClient3Libs
+customizeAutoFVT.dependsOn addKafkaClientLibs

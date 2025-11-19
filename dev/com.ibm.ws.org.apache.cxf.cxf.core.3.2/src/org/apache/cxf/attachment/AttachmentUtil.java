@@ -55,14 +55,17 @@ import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
 import javax.activation.URLDataSource;
 
+import org.apache.cxf.common.util.PropertyUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.common.util.SystemPropertyAction; // Liberty Change
+import org.apache.cxf.endpoint.Endpoint;
 import org.apache.cxf.helpers.HttpHeaderHelper;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.io.CachedOutputStream;
 import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
+import org.apache.cxf.service.model.EndpointInfo;
 import org.apache.cxf.common.logging.LogUtils;  // Liberty Change
 
 // Liberty Change - Backport https://github.com/apache/cxf/pull/960
@@ -83,7 +86,11 @@ public final class AttachmentUtil {
     private static final CommandMap DEFAULT_COMMAND_MAP = CommandMap.getDefaultCommandMap();
     private static final MailcapCommandMap COMMAND_MAP = new EnhancedMailcapCommandMap();
     private static final Logger LOG = LogUtils.getL7dLogger(AttachmentUtil.class);  // Liberty Change
-
+    
+    // Liberty change begin
+    public static final String IBM_MTOM_ENABLED = "ibm-mtom-enabled";
+    // Liberty change end
+    
     static final class EnhancedMailcapCommandMap extends MailcapCommandMap {
         @Override
         public synchronized DataContentHandler createDataContentHandler(
@@ -684,5 +691,32 @@ public final class AttachmentUtil {
     private static DataSource loadDataSource(String contentId, Collection<Attachment> atts) {
         return new LazyDataSource(contentId, atts);
     }
+    
+    // Liberty change begin
+    public static boolean mtomOverride(org.apache.cxf.message.Message message, boolean defaultValue)     {
+        boolean mtomEnabled = defaultValue;
+        Object  mtomEnabledBySystemProperty = getPropertyFromEndPointInfo(message, IBM_MTOM_ENABLED);
+        if(!MessageUtils.isRequestor(message) && (mtomEnabledBySystemProperty != null))   {
+                // override mtomEnabled for outbound response if property is set
+                mtomEnabled = PropertyUtils.isTrue(mtomEnabledBySystemProperty); 
+        }
+        return mtomEnabled;   
+    }
 
+    /*
+     * @return  If <propertyName> end point info property value is set returns that value,
+     *          If no value set returns null
+     */
+    public static Object getPropertyFromEndPointInfo(org.apache.cxf.message.Message message, String propertyName)     {
+        Object propertyValue = null;
+        Endpoint endpoint = message.getExchange().getEndpoint();
+        if(endpoint != null)    {
+            EndpointInfo endpointInfo = endpoint.getEndpointInfo();
+            if(endpointInfo!= null)    {
+                propertyValue = endpointInfo.getProperty(propertyName);        
+            }
+        }
+        return propertyValue;
+    }
+    // Liberty change end
 }

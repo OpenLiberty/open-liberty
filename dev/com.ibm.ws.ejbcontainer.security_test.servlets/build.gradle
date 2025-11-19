@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@
 apply plugin: 'war'
 
 // We aren't making a war for the entire project
-war { enabled false }
+war { enabled = false }
 
 assemble.dependsOn war
 
@@ -553,7 +553,7 @@ task SecurityIntf_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBinWAR_JAR(type: Jar, dependsOn: classes) { 
-  description 'Build SecurityEJBinWAR.jar file for pure annotation tests packaging in EAR.'
+  description = 'Build SecurityEJBinWAR.jar file for pure annotation tests packaging in EAR.'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "SecurityEJBinWAR.jar"
    
@@ -572,7 +572,7 @@ task SecurityEJBinWAR_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBJarInWAR_JAR(type: Jar, dependsOn: classes) {
-  description 'Build SecurityEJBJarInWAR.jar file for ejb-jar.xml tests for packaging in EAR.'
+  description = 'Build SecurityEJBJarInWAR.jar file for ejb-jar.xml tests for packaging in EAR.'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "SecurityEJBJarInWAR.jar"
    
@@ -591,7 +591,7 @@ task SecurityEJBJarInWAR_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task SecurityEJBJarMCInWAR_JAR(type: Jar, dependsOn: classes) {
-  description 'Build SecurityEJBJarMCInWAR.jar files for ejb-jar.xml tests for packaging in EAR.'
+  description = 'Build SecurityEJBJarMCInWAR.jar files for ejb-jar.xml tests for packaging in EAR.'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "SecurityEJBJarMCInWAR.jar"
    
@@ -610,7 +610,7 @@ task SecurityEJBJarMCInWAR_JAR(type: Jar, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task ejbinwarservlet_WAR(type: War, dependsOn: SecurityEJBinWAR_JAR) {
-  description 'WAR to be used for Pure Annotations tests'
+  description = 'WAR to be used for Pure Annotations tests'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbinwarservlet.war"
   classpath = classpath.filter{ false }
@@ -641,7 +641,7 @@ task ejbinwarservlet_WAR(type: War, dependsOn: SecurityEJBinWAR_JAR) {
  ******************************************************************
  ******************************************************************/
 task ejbinwarservletX01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
-  description 'WAR to be used for ejb-jar X01 test'
+  description = 'WAR to be used for ejb-jar X01 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbinwarservletX01.war"
   classpath = classpath.filter{ false }
@@ -672,7 +672,7 @@ task ejbinwarservletX01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
  ******************************************************************
  ******************************************************************/
 task ejbinwarservletM01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
-  description 'WAR to be used for ejb-jar M01 test'
+  description = 'WAR to be used for ejb-jar M01 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbinwarservletM01.war"
   classpath = classpath.filter{ false }
@@ -703,7 +703,7 @@ task ejbinwarservletM01_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
  ******************************************************************
  ******************************************************************/
 task ejbinwarservletMC06_WAR(type: War, dependsOn: SecurityEJBJarMCInWAR_JAR) {
-  description 'WAR to be used for ejb-jar MC06 metadata-complete test'
+  description = 'WAR to be used for ejb-jar MC06 metadata-complete test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbinwarservletMC06.war"
   classpath = classpath.filter{ false }
@@ -734,7 +734,7 @@ task ejbinwarservletMC06_WAR(type: War, dependsOn: SecurityEJBJarMCInWAR_JAR) {
  ******************************************************************
  ******************************************************************/
 task ejbinwarservletM07_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
-  description 'WAR to be used for ejb-jar M07 test'
+  description = 'WAR to be used for ejb-jar M07 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbinwarservletM07.war"
   classpath = classpath.filter{ false }
@@ -765,7 +765,7 @@ task ejbinwarservletM07_WAR(type: War, dependsOn: SecurityEJBJarInWAR_JAR) {
  ******************************************************************
  ******************************************************************/
 task ejbinstandalone_WAR(type: War, dependsOn: classes) {
-  description 'Build  WAR for EJB in WAR pure annotations tests'
+  description = 'Build  WAR for EJB in WAR pure annotations tests'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbinstandalone.war"
   classpath = classpath.filter{ false }
@@ -796,7 +796,7 @@ task ejbinstandalone_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task ejbjarinstandaloneX02_WAR(type: War, dependsOn: classes) {
-  description 'Build  WAR for EJB in WAR ejb-jar X02 test'
+  description = 'Build  WAR for EJB in WAR ejb-jar X02 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbjarinstandaloneX02.war"
   classpath = classpath.filter{ false }
@@ -827,7 +827,7 @@ task ejbjarinstandaloneX02_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task ejbjarinstandaloneM02_WAR(type: War, dependsOn: classes) {
-  description 'Build  WAR for EJB in WAR ejb-jar M02 test'
+  description = 'Build  WAR for EJB in WAR ejb-jar M02 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbjarinstandaloneM02.war"
   classpath = classpath.filter{ false }
@@ -858,7 +858,7 @@ task ejbjarinstandaloneM02_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task ejbjarinstandaloneMC06_WAR(type: War, dependsOn: classes) {
-  description 'Build  WAR for EJB in WAR ejb-jar MC06 test'
+  description = 'Build  WAR for EJB in WAR ejb-jar MC06 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbjarinstandaloneMC06.war"
   classpath = classpath.filter{ false }
@@ -889,7 +889,7 @@ task ejbjarinstandaloneMC06_WAR(type: War, dependsOn: classes) {
  ******************************************************************
  ******************************************************************/
 task ejbjarinstandaloneM08_WAR(type: War, dependsOn: classes) {
-  description 'Build  WAR for EJB in WAR ejb-jar M08 test'
+  description = 'Build  WAR for EJB in WAR ejb-jar M08 test'
   destinationDirectory = file(appBuildDir)
   archiveFileName = "ejbjarinstandaloneM08.war"
   classpath = classpath.filter{ false }

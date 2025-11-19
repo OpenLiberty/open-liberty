@@ -64,7 +64,7 @@ public class MissingSslFeatureTests40 extends AbstractSpringTests {
     }
 
     @Test
-    public void testMissingSslFeatureFor30() throws Exception {
+    public void testMissingSslFeatureFor40() throws Exception {
         testMissingSslFeature();
     }
 

@@ -1,5 +1,5 @@
 <%--
-    Copyright (c) 2014, 2022 IBM Corporation and others.
+    Copyright (c) 2014, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -36,7 +36,8 @@
 			response.setHeader("X-XSS-Protection", "1");	
 			response.setHeader("X-Content-Type-Options", "nosniff");	
 			response.setHeader("X-Frame-Options", "SAMEORIGIN");
-			response.setHeader("Content-Security-Policy", "default-src 'self' 'unsafe-inline' 'unsafe-eval'");
+			response.setHeader("Content-Security-Policy", "default-src 'self' 'unsafe-inline' 'unsafe-eval'; form-action 'self'; frame-ancestors 'self'");
+			response.setHeader("Strict-Transport-Security", "max-age=99999999");
 		%>
 	</head>
 	<body>

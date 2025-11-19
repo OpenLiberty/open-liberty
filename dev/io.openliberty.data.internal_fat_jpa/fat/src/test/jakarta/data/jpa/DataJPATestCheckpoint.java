@@ -45,7 +45,7 @@ import test.jakarta.data.jpa.web.eclipselink.DataJPAEclipseLinkServlet;
 public class DataJPATestCheckpoint extends FATServletClient {
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
 
     @Server("io.openliberty.data.internal.checkpoint.fat.jpa")
     @TestServlets({
@@ -58,8 +58,14 @@ public class DataJPATestCheckpoint extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.standardizeCollation(testContainer);
+
         // Set up server DataSource properties
-        DatabaseContainerUtil.build(server, testContainer).withDriverReplacement().withDatabaseProperties().modify();
+        DatabaseContainerUtil.build(server, testContainer) //
+                        .withDriverReplacement() //
+                        .withPermissionReplacement() //
+                        .withDatabaseProperties() //
+                        .modify();
 
         WebArchive war = ShrinkHelper.buildDefaultApp("DataJPATestApp",
                                                       "test.jakarta.data.jpa.web",

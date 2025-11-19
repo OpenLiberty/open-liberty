@@ -647,3 +647,5 @@
 
 7363=Pentru un tip enumerat STRING, numai tipul java.lang.String poate fi utilizat ca tip de atribut marcat prin @EnumeratedValue. Verifica\u021bi atributul [ {0} ] \u00een clasa enum [ {1} ].
 
+7364=\u00cen entitatea [ {0} ] din NamedNativeQuery [ {1} ], se utilizeaz\u0103 un SqlResultSetMapping implicit (atributul "entities", "classes" sau "columns") \u00eempreun\u0103 cu un SqlResultSetMapping extern la care se face trimitere prin atributul "resultSetMapping". Aceast\u0103 combina\u021bie nu este permis\u0103.
+

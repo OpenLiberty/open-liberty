@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -131,7 +131,9 @@ assemble {
 
 autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:assemble'
 
-autoFVT.doLast {
+autoFVT {
+  def securityServletProject = project(':com.ibm.ws.webcontainer.security_test.servlets')
+  doLast {
   /*
    * Copy the basicauth.war into test servers.
    */
@@ -143,7 +145,7 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+      from new File(securityServletProject.buildDir, 'test-application/basicauth.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'basicauth.zip', 'basicauth.war'
     }
@@ -157,7 +159,7 @@ autoFVT.doLast {
     'io.openliberty.jcache.internal.fat.ltpa.cookie.cache.2'
   ]
   servers.each { server ->    copy { 
-      from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/formlogin.zip')
+      from new File(securityServletProject.buildDir, 'test-application/formlogin.zip')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       rename 'formlogin.zip', 'formlogin.war'
     }
@@ -191,4 +193,5 @@ autoFVT.doLast {
    */
   delete new File(autoFvtDir, 'lib/htmlunit-2.44.0.jar')
   delete new File(autoFvtDir, 'lib/com.ibm.ws.org.apache.commons.lang3.jar')
+  }
 }

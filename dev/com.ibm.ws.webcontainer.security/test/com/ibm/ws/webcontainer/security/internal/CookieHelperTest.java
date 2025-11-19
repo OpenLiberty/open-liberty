@@ -1,23 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
@@ -269,6 +268,73 @@ public class CookieHelperTest {
 
         CookieHelper.addCookiesToResponse(cookieList, resp);
         mock.assertIsSatisfied();
+    }
+
+    @Test
+    public void test_splitValueIntoMaximumLengthChunks_negativeChunkLength() {
+        String cookieValue = "chocolate chip";
+        int maxValueLength = -1;
+        String[] valueChunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieValue, maxValueLength);
+        assertNotNull(valueChunks);
+        assertEquals("Should have returned an empty array, but got: " + Arrays.toString(valueChunks), 0, valueChunks.length);
+    }
+
+    @Test
+    public void test_splitValueIntoMaximumLengthChunks_zeroChunkLength() {
+        String cookieValue = "chocolate chip";
+        int maxValueLength = 0;
+        String[] valueChunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieValue, maxValueLength);
+        assertNotNull(valueChunks);
+        assertEquals("Should have returned an empty array, but got: " + Arrays.toString(valueChunks), 0, valueChunks.length);
+    }
+
+    @Test
+    public void test_splitValueIntoMaximumLengthChunks_nullCookieValue() {
+        String cookieValue = null;
+        int maxValueLength = 10;
+        String[] valueChunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieValue, maxValueLength);
+        assertNotNull(valueChunks);
+        assertEquals("Should have returned an empty array, but got: " + Arrays.toString(valueChunks), 0, valueChunks.length);
+    }
+
+    @Test
+    public void test_splitValueIntoMaximumLengthChunks_emptyCookieValue() {
+        String cookieValue = "";
+        int maxValueLength = 10;
+        String[] valueChunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieValue, maxValueLength);
+        assertNotNull(valueChunks);
+        assertEquals("Should have returned an empty array, but got: " + Arrays.toString(valueChunks), 0, valueChunks.length);
+    }
+
+    @Test
+    public void test_splitValueIntoMaximumLengthChunks_stringLengthShorterThanChunkLength() {
+        String cookieValue = "abc";
+        int maxValueLength = 10;
+        String[] valueChunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieValue, maxValueLength);
+        assertNotNull(valueChunks);
+        assertEquals("Array was not the expected length. Got: " + Arrays.toString(valueChunks), 1, valueChunks.length);
+    }
+
+    @Test
+    public void test_splitValueIntoMaximumLengthChunks_stringLengthEqualsChunkLength() {
+        String cookieValue = "abc";
+        int maxValueLength = 3;
+        String[] valueChunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieValue, maxValueLength);
+        assertNotNull(valueChunks);
+        assertEquals("Array was not the expected length. Got: " + Arrays.toString(valueChunks), 1, valueChunks.length);
+    }
+
+    @Test
+    public void test_splitValueIntoMaximumLengthChunks_stringLengthLongerThanChunkLength() {
+        String cookieValue = "1234567890";
+        int maxValueLength = 3;
+        String[] valueChunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieValue, maxValueLength);
+        assertNotNull(valueChunks);
+        assertEquals("Array was not the expected length. Got: " + Arrays.toString(valueChunks), 4, valueChunks.length);
+        assertEquals("First chunk did not match expected value.", "123", valueChunks[0]);
+        assertEquals("Second chunk did not match expected value.", "456", valueChunks[1]);
+        assertEquals("Third chunk did not match expected value.", "789", valueChunks[2]);
+        assertEquals("Fourth chunk did not match expected value.", "0", valueChunks[3]);
     }
 
 }

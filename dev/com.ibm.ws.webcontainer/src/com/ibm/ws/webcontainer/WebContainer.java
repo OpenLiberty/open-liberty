@@ -1716,24 +1716,32 @@ public abstract class WebContainer extends BaseContainer {
     public abstract URIMatcherFactory getURIMatcherFactory();
     
     public static void sendBadRequestResponse(IRequest req, IResponse res) throws IOException {
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-            logger.entering(CLASS_NAME, "sendBadRequestResponse");
-        
-        res.addHeader("Content-Type", "text/html");
-        res.setStatusCode(400);
+        String respContentType = "text/html";
+        String reqContentType = req.getContentType();
 
         String formattedMessage = nls.getFormattedMessage("bad.request.uri:.{0}", new Object[] { ResponseUtils.encodeDataString(truncateURI(req.getRequestURI())) },
                         "Bad request URI");
+        String output = "<H1>" + formattedMessage + "</H1><BR>";
 
-        String output = "<H1>"
-                        + formattedMessage
-                        + "</H1><BR>";
+        if (reqContentType != null) {
+            if (reqContentType.toLowerCase().contains("application/json"))
+                respContentType = "application/json";
+        } else if ((reqContentType = req.getHeader("accept")) != null){
+            if (reqContentType.toLowerCase().contains("application/json"))
+                respContentType = "application/json";
+        }
+
+        res.setStatusCode(400);
+        res.addHeader("Content-Type", respContentType);
+        
+        if (respContentType.contains("json")) {
+            output = "{\"error_message\" : \"" + formattedMessage + "\"}";
+        }
 
         byte[] outBytes = output.getBytes();
         res.getOutputStream().write(outBytes, 0, outBytes.length);
 
-        //always display 400 trace
-        logger.exiting(CLASS_NAME, "sendBadRequestResponse - 400 Bad Request ["+ formattedMessage + "]" );
+        logger.logp(Level.FINE, CLASS_NAME, "sendBadRequestResponse", "400 Bad Request ["+ formattedMessage + "]");
     }
 
     // ================== CLASS ================== 721610

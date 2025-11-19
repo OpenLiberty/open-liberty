@@ -246,7 +246,7 @@ public class TAIEncryptionUtils {
     }
     
     KeyVersion getAesKeyVersion() {
-    	return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? KeyVersion.AES_V1 : KeyVersion.AES_V0;
+    	return CryptoUtils.isFips140_3Enabled() ? KeyVersion.AES_V1 : KeyVersion.AES_V0;
     }
 
     byte[] getClientSecretHash(@Sensitive String clientSecret) {

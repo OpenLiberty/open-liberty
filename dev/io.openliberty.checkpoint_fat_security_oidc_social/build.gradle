@@ -12,16 +12,16 @@
  *******************************************************************************/
 apply plugin: 'war'
 
-war { enabled false } // We aren't making a war for the entire project
+war { enabled = false } // We aren't making a war for the entire project
 
 repositories {
   if (isUsingArtifactory) {
     maven {
       credentials {
-        username userProps.getProperty("artifactory.download.user")
-        password userProps.getProperty("artifactory.download.token")
+        username = userProps.getProperty("artifactory.download.user")
+        password = userProps.getProperty("artifactory.download.token")
       }
-      url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+      url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote"
     }
   } else {
     mavenCentral()

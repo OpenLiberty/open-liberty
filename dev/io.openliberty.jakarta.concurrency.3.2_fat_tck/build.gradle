@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@
 // Custom repository for Open Liberty version used for certification
 repositories {
   ivy {
-    url 'https://public.dhe.ibm.com/ibmdl/export/pub/software/'
+    url = 'https://public.dhe.ibm.com/ibmdl/export/pub/software/'
     
     //https://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime/tck/2024-04-23_2000/openliberty-24.0.0.6-beta-cl240520240423-2000.zip'
     

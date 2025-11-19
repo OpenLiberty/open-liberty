@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,25 +15,25 @@ task zipMessageFiles(type: Zip) {
   dependsOn parent.subprojects.copyPiiFiles
   archiveBaseName = 'openPII'
   from "${projectDir}/nlssrc"
-  destinationDirectory = distsDirectory
+  destinationDirectory = layout.buildDirectory.dir("distributions")
 }
 
 task zipMessageXmlFiles(type: Zip) {
   archiveBaseName = 'openPIIXml'
   from "${projectDir}/nlsxml"
-  destinationDirectory = distsDirectory
+  destinationDirectory = layout.buildDirectory.dir("distributions")
 }
 
 publishing {
   publications {
     maven(MavenPublication) {
-      artifactId 'openPII'
-      version project.version
+      artifactId = 'openPII'
+      version = project.version
       artifact zipMessageFiles
     }
     nlsxml(MavenPublication) {
-      artifactId 'openPIIXml'
-      version project.version
+      artifactId = 'openPIIXml'
+      version = project.version
       artifact zipMessageXmlFiles
     }
   }

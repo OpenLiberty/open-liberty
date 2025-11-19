@@ -15,7 +15,9 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import io.openliberty.mcp.internal.requests.ExecutionRequestId;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
+
+import io.openliberty.mcp.internal.config.McpConfiguration;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -27,11 +29,16 @@ import jakarta.inject.Inject;
 @ApplicationScoped
 public class McpSessionStore {
 
+    @Inject
+    McpRequestTracker requestTracker;
+
     private static final Duration SESSION_TIMEOUT = Duration.ofMinutes(10);
     private final ConcurrentMap<String, McpSession> sessions = new ConcurrentHashMap<>();
+    private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpSessionStore.class, McpConfiguration.class);
 
-    @Inject
-    McpConnectionTracker connectionTracker;
+    public boolean isStateless() {
+        return mcpConfigService.run(McpConfiguration::isStateless).orElse(false);
+    }
 
     /**
      * Creates a new MCP session with a unique session ID and stores it.
@@ -39,6 +46,11 @@ public class McpSessionStore {
      * @return the newly generated session ID
      */
     public String createSession() {
+
+        if (isStateless()) {
+            return null;
+        }
+
         String sessionId = UUID.randomUUID().toString();
         sessions.put(sessionId, new McpSession(sessionId));
         return sessionId;
@@ -53,6 +65,9 @@ public class McpSessionStore {
      * @return the corresponding {@link McpSession}, or {@code null} if not found
      */
     public McpSession getSession(String sessionId) {
+        if (isStateless()) {
+            return null;
+        }
         McpSession session = sessions.get(sessionId);
         if (session != null) {
             session.touch();
@@ -75,8 +90,9 @@ public class McpSessionStore {
      */
     public void deleteSession(String sessionId) {
         McpSession session = sessions.remove(sessionId);
+
         if (session != null) {
-            connectionTracker.cancelSessionRequests(session);
+            requestTracker.cancelSessionRequests(session.getSessionId());
         }
     }
 
@@ -88,15 +104,4 @@ public class McpSessionStore {
         sessions.entrySet().removeIf(entry -> Duration.between(entry.getValue().getLastAccessed(), now).compareTo(SESSION_TIMEOUT) > 0);
     }
 
-    /**
-     * Cancels a request associated with a session.
-     */
-    public boolean cancelRequest(String sessionId, ExecutionRequestId requestId) {
-        McpSession session = getSession(sessionId);
-        if (session != null && session.isRequestActive(requestId)) {
-            session.removeRequest(requestId);
-            return true;
-        }
-        return false;
-    }
 }

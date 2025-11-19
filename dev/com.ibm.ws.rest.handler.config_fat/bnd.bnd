@@ -38,7 +38,7 @@ fat.project: true
     com.ibm.websphere.org.osgi.core;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    org.apache.derby:derby;version=10.11.1.1,\
+    org.apache.derby:derby;strategy=exact;version=10.11.1.1,\
     com.ibm.ws.security.jaas.common;version=latest,\
     com.ibm.ws.microprofile.openapi;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.openapi.1.0;version=latest

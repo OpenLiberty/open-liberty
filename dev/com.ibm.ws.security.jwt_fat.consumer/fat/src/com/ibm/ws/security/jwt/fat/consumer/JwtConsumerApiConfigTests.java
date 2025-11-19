@@ -2278,6 +2278,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
         List<NameValuePair> otherBuilderParms = new ArrayList<NameValuePair>();
         otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConsumerConstants.CONTENT_ENCRYPT_ALG_192));
         otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(consumerServer, JwtConsumerConstants.SIGALG_RS256)));
+        otherBuilderParms.add(new NameValuePair(JwtConsumerConstants.PARAM_KEY_MGMT_ALG, JwtConsumerConstants.DEFAULT_KEY_MGMT_KEY_ALG));
 
         String jwtToken = actions.getJwtTokenUsingBuilder(_testName, consumerServer, "key_encrypt_good_RS256", otherBuilderParms);
 

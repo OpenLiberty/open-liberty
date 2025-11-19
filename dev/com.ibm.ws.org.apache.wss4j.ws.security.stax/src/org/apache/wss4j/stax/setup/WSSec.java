@@ -569,7 +569,7 @@ public class WSSec {
      */
     private static String getRsaSignatureAlgorithm() {
         // FIPS 140-3: rsa-sha1 not compliant with FIPS 140-3. If FIPS is enabled then use rsa-sha512 signature algorithm.
-        return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? WSSConstants.NS_XMLDSIG_RSASHA512: WSSConstants.NS_XMLDSIG_RSASHA1;
+        return CryptoUtils.isFips140_3Enabled() ? WSSConstants.NS_XMLDSIG_RSASHA512: WSSConstants.NS_XMLDSIG_RSASHA1;
     }
 
     /**
@@ -577,7 +577,7 @@ public class WSSec {
      */
     private static String getHmacSignatureAlgorithm() {
         // FIPS 140-3: SHA-1 not compliant with FIPS 140-3. If FIPS is enabled then use hmac-sha512 signature algorithm.
-        return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? WSSConstants.NS_XMLDSIG_HMACSHA512 : WSSConstants.NS_XMLDSIG_HMACSHA1;
+        return CryptoUtils.isFips140_3Enabled() ? WSSConstants.NS_XMLDSIG_HMACSHA512 : WSSConstants.NS_XMLDSIG_HMACSHA1;
     }
 
     /**
@@ -585,6 +585,6 @@ public class WSSec {
      */
     private static String getSignatureDigestAlgorithm() {
         // FIPS 140-3: SHA-1 not compliant with FIPS 140-3. If FIPS is enabled then use SHA-512 digest.
-        return CryptoUtils.isFips140_3EnabledWithBetaGuard() ? WSSConstants.NS_XENC_SHA512 : WSSConstants.NS_XMLDSIG_SHA1;
+        return CryptoUtils.isFips140_3Enabled() ? WSSConstants.NS_XENC_SHA512 : WSSConstants.NS_XMLDSIG_SHA1;
     }
 }

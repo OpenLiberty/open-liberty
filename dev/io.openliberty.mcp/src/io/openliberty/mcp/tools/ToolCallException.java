@@ -21,6 +21,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.tools;
 
+import io.openliberty.mcp.annotations.Tool;
+
 /**
  * Indicates a business logic error in a {@link Tool} method.
  * <p>

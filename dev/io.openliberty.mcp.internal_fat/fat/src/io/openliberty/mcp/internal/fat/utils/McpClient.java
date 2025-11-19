@@ -184,5 +184,4 @@ public class McpClient extends ExternalResource {
 
         assertNull("Notification request received a response", response);
     }
-
 }

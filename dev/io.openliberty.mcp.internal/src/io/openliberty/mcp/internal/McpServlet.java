@@ -11,19 +11,23 @@ package io.openliberty.mcp.internal;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
+import io.openliberty.mcp.internal.config.McpConfiguration;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
@@ -56,19 +60,18 @@ public class McpServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final TraceComponent tc = Tr.register(McpServlet.class);
+    private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpServlet.class, McpConfiguration.class);
+
     private Jsonb jsonb;
 
     @Inject
     BeanManager bm;
 
     @Inject
-    McpConnectionTracker connectionTracker;
-
-    @Inject
     McpSessionStore sessionStore;
 
     @Inject
-    McpConnectionTracker connection;
+    McpRequestTracker requestTracker;
 
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -79,21 +82,12 @@ public class McpServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         McpTransport transport = new McpTransport(req, resp, jsonb);
-        String accept = req.getHeader("Accept");
-        // Return 405, with SSE-specific message if "text/event-stream" is requested.
-        if (accept != null && HeaderValidation.acceptContains(accept, "text/event-stream")) {
-            HttpResponseException e = new HttpResponseException(
-                                                                HttpServletResponse.SC_METHOD_NOT_ALLOWED,
-                                                                "GET not supported yet. SSE not implemented.")
-                                                                                                              .withHeader("Allow", "POST");
-            transport.sendHttpException(e);
-        } else {
-            HttpResponseException e = new HttpResponseException(
-                                                                HttpServletResponse.SC_METHOD_NOT_ALLOWED,
-                                                                "GET method not allowed.")
-                                                                                          .withHeader("Allow", "POST");
-            transport.sendHttpException(e);
-        }
+        String excpetionMessage = Tr.formatMessage(tc, "CWMCM0009I.get.disallowed");
+        HttpResponseException e = new HttpResponseException(
+                                                            HttpServletResponse.SC_METHOD_NOT_ALLOWED,
+                                                            excpetionMessage).withHeader("Allow", "POST");
+        transport.sendHttpException(e);
+
     }
 
     @Override
@@ -101,16 +95,22 @@ public class McpServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, JSONRPCException {
         McpTransport transport = new McpTransport(req, resp, jsonb);
         try {
+            Boolean stateless = mcpConfigService.run(config -> {
+                boolean s = config.isStateless();
+                return s;
+            }).orElse(false);
+
             transport.init(sessionStore);
 
             RequestMethod method = transport.getMcpRequest().getRequestMethod();
-            if (method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
+
+            if (!stateless && method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
                 McpSession session = transport.getSession();
                 if (session == null) {
-                    throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, "Missing Mcp-Session-Id header");
+                    throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST,
+                                                    "Missing Mcp-Session-Id header");
                 }
             }
-
             callRequest(transport);
         } catch (JSONRPCException e) {
             transport.sendJsonRpcException(e);
@@ -142,6 +142,14 @@ public class McpServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        boolean stateless = Boolean.TRUE.equals(
+                                                mcpConfigService.run(McpConfiguration::isStateless).orElse(false));
+
+        if (stateless) {
+            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
+            return;
+        }
+
         final String sessionId = req.getHeader(McpTransport.MCP_SESSION_ID_HEADER);
 
         if (sessionId == null) {
@@ -153,7 +161,7 @@ public class McpServlet extends HttpServlet {
             McpSession session = sessionStore.getSession(sessionId);
 
             if (session != null) {
-                connectionTracker.cancelSessionRequests(session);
+                requestTracker.cancelSessionRequests(sessionId);
             }
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {
@@ -161,26 +169,53 @@ public class McpServlet extends HttpServlet {
         }
     }
 
-    @FFDCIgnore({ JSONRPCException.class, InvocationTargetException.class, IllegalAccessException.class, IllegalArgumentException.class })
+    @FFDCIgnore({ IllegalAccessException.class, IllegalArgumentException.class })
     private void callTool(McpTransport transport) {
+
         ExecutionRequestId requestId = createOngoingRequestId(transport);
         McpToolCallParams params = transport.getParams(McpToolCallParams.class);
 
-        if (params.getMetadata() == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
-            }
-            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Method " + params.getName() + " not found"));
+        if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
+            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
+                                       Tr.formatMessage(tc, "CWMCM0008E.invalid.request.params", requestId.id()));
         }
-
-        McpSession sessionInfo = transport.getSession();
-        if (sessionInfo != null) {
-            sessionInfo.addRequest(requestId);
-        }
-
-        CreationalContext<Object> cc = bm.createCreationalContext(null);
-        Object bean = bm.getReference(params.getBean(), params.getBean().getBeanClass(), cc);
         try {
+            if (params.getMetadata() == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
+                }
+                throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Method " + params.getName() + " not found"));
+            }
+
+            if (params.getMetadata().returnsCompletionStage()) {
+                callToolMethodAndSendResponseAsync(transport, requestId, params, params.getMethod());
+            } else {
+                callToolSynchronously(transport, requestId, params, params.getMethod());
+            }
+        } catch (IllegalAccessException e) {
+            throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, List.of("Could not call " + params.getName()));
+        } catch (IllegalArgumentException e) {
+            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Incorrect arguments in params"));
+        }
+    }
+
+    @FFDCIgnore({ JSONRPCException.class, InvocationTargetException.class })
+    private void callToolSynchronously(McpTransport transport,
+                                       ExecutionRequestId requestId,
+                                       McpToolCallParams params,
+                                       Method method)
+                    throws IllegalAccessException, IllegalArgumentException {
+        CreationalContext<Object> cc = bm.createCreationalContext(null);
+
+        if (requestId != null) {
+            CancellationImpl cancellation = new CancellationImpl();
+            cancellation.setRequestId(requestId);
+            requestTracker.registerOngoingRequest(requestId, cancellation);
+        }
+
+        try {
+            Object bean = bm.getReference(params.getBean(), params.getBean().getBeanClass(), cc);
+
             Object[] arguments = params.getArguments(jsonb);
             addSpecialArguments(arguments, requestId, params.getMetadata());
 
@@ -188,27 +223,11 @@ public class McpServlet extends HttpServlet {
                 Tr.event(this, tc, "Calling tool " + params.getMetadata().name(), arguments);
             }
 
-            // Call the tool method
-            Object result = params.getMethod().invoke(bean, arguments);
+            // Call the tool method synchronously
+            Object result = method.invoke(bean, arguments);
 
-            boolean includeStructuredContent = params.getMetadata().annotation().structuredContent();
+            transport.sendResponse(evaluateToolResponse(result, params));
 
-            // Map method response to a ToolResponse
-            if (result instanceof ToolResponse response) {
-                transport.sendResponse(response);
-            } else if (result instanceof List<?> list && !list.isEmpty() && list.stream().allMatch(item -> item instanceof Content)) {
-                @SuppressWarnings("unchecked")
-                List<Content> contents = (List<Content>) list;
-                transport.sendResponse(ToolResponse.success(contents));
-            } else if (result instanceof Content content) {
-                transport.sendResponse(ToolResponse.success(content));
-            } else if (result instanceof String s) {
-                transport.sendResponse(ToolResponse.success(s));
-            } else if (includeStructuredContent) {
-                transport.sendResponse(ToolResponse.structuredSuccess(jsonb.toJson(result), result));
-            } else {
-                transport.sendResponse(ToolResponse.success(Objects.toString(result)));
-            }
         } catch (JSONRPCException e) {
             throw e;
         } catch (InvocationTargetException e) {
@@ -216,24 +235,93 @@ public class McpServlet extends HttpServlet {
             if (isBusinessException(t, params)) {
                 transport.sendResponse(toErrorResponse(e.getCause()));
             } else {
-                Tr.error(tc, "The {0} tool method threw an unexpected exception. The exception was {1}",
+                Tr.error(tc, "CWMCM0010E.internal.server.error.detailed",
                          params.getMetadata().name(),
                          e.getCause());
-                transport.sendResponse(ToolResponse.error("Internal server error"));
+                transport.sendResponse(ToolResponse.error(Tr.formatMessage(tc, "CWMCM0011E.internal.server.error")));
             }
-        } catch (IllegalAccessException e) {
-            throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, List.of("Could not call " + params.getName()));
-        } catch (IllegalArgumentException e) {
-            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Incorrect arguments in params"));
         } finally {
-            if (connection.isOngoingRequest(requestId)) {
-                connection.deregisterOngoingRequest(requestId);
+            cleanup(requestId, cc, params);
+        }
+    }
+
+    @FFDCIgnore({ InvocationTargetException.class })
+    private void callToolMethodAndSendResponseAsync(McpTransport transport,
+                                                    ExecutionRequestId requestId,
+                                                    McpToolCallParams params,
+                                                    Method method)
+                    throws IllegalAccessException, IllegalArgumentException {
+        CreationalContext<Object> cc = bm.createCreationalContext(null);
+
+        if (requestId != null) {
+            CancellationImpl cancellation = new CancellationImpl();
+            cancellation.setRequestId(requestId);
+            requestTracker.registerOngoingRequest(requestId, cancellation);
+        }
+
+        try {
+            Object bean = bm.getReference(params.getBean(), params.getBean().getBeanClass(), cc);
+
+            Object[] arguments = params.getArguments(jsonb);
+            addSpecialArguments(arguments, requestId, params.getMetadata());
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Calling tool " + params.getMetadata().name(), arguments);
             }
-            try {
-                cc.release();
-            } catch (Exception ex) {
-                Tr.warning(tc, "Failed to release bean: " + ex);
+            CompletionStage<?> stage = ((CompletionStage<?>) method.invoke(bean, arguments));
+            stage = stage.thenApply(result -> evaluateToolResponse(result, params))
+                         .exceptionally(throwable -> {
+                             Tr.error(tc,
+                                      "CWMCM0010E.internal.server.error.detailed",
+                                      params.getMetadata().name(),
+                                      throwable.getCause());
+                             return ToolResponse.error(Tr.formatMessage(tc, "CWMCM0011E.internal.server.error"));
+                         });
+            transport.sendResultAsync(stage)
+                     .whenComplete((result, throwable) -> cleanup(requestId, cc, params));
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getCause();
+            if (isBusinessException(t, params)) {
+                transport.sendResponse(toErrorResponse(e.getCause()));
+            } else {
+                Tr.error(tc, "CWMCM0010E.internal.server.error.detailed",
+                         params.getMetadata().name(),
+                         e.getCause());
+                transport.sendResponse(ToolResponse.error(Tr.formatMessage(tc, "CWMCM0011E.internal.server.error")));
             }
+            cleanup(requestId, cc, params);
+        }
+    }
+
+    private void cleanup(ExecutionRequestId requestId, CreationalContext<Object> cc, McpToolCallParams params) {
+        if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
+            requestTracker.deregisterOngoingRequest(requestId);
+        }
+        try {
+            cc.release();
+        } catch (Exception ex) {
+            Tr.warning(tc, "CWMCM0012E.bean.release.fail", ex, params.getName());
+        }
+    }
+
+    private Object evaluateToolResponse(Object result, McpToolCallParams params) {
+        boolean includeStructuredContent = params.getMetadata().annotation().structuredContent();
+
+        // Map method response to a ToolResponse
+        if (result instanceof ToolResponse response) {
+            return response;
+        } else if (result instanceof List<?> list && !list.isEmpty() && list.stream().allMatch(item -> item instanceof Content)) {
+            @SuppressWarnings("unchecked")
+            List<Content> contents = (List<Content>) list;
+            return ToolResponse.success(contents);
+        } else if (result instanceof Content content) {
+            return ToolResponse.success(content);
+        } else if (result instanceof String s) {
+            return ToolResponse.success(s);
+        } else if (includeStructuredContent) {
+            return ToolResponse.structuredSuccess(jsonb.toJson(result), result);
+        } else {
+            return ToolResponse.success(Objects.toString(result));
         }
     }
 
@@ -269,16 +357,24 @@ public class McpServlet extends HttpServlet {
      * @param requestId the ongoing request Id
      * @param toolMetadata the tool metadata
      */
-    private void addSpecialArguments(Object[] argumentsArray, ExecutionRequestId requestId, ToolMetadata toolMetadata) {
+    private void addSpecialArguments(Object[] argumentsArray,
+                                     ExecutionRequestId requestId,
+                                     ToolMetadata toolMetadata) {
         for (SpecialArgumentMetadata argMetadata : toolMetadata.specialArguments()) {
             switch (argMetadata.typeResolution().specialArgsType()) {
                 case CANCELLATION -> {
-                    CancellationImpl cancellation = new CancellationImpl();
-                    cancellation.setRequestId(requestId);
-                    connection.registerOngoingRequest(requestId, cancellation);
+                    CancellationImpl cancellation;
+                    if (requestId != null) {
+                        cancellation = (CancellationImpl) requestTracker.getOngoingRequestCancellation(requestId);
+                    } else {
+                        cancellation = new CancellationImpl();
+                    }
+
+                    // Always inject it into args
                     argumentsArray[argMetadata.index()] = cancellation;
                 }
                 default -> {
+
                 }
             }
         }
@@ -353,15 +449,21 @@ public class McpServlet extends HttpServlet {
 
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
-        McpRequestId mcpRedId = notificationParams.getRequestId();
-        ExecutionRequestId requestId = new ExecutionRequestId(mcpRedId, transport.getSessionId());
+        McpRequestId mcpReqId = notificationParams.getRequestId();
+        String sessionId = transport.getSessionId();
+        if (sessionId == null) {
+            transport.sendEmptyResponse();
+            return;
+        }
+
+        ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId);
         Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Cancellation requested for " + requestId);
         }
 
-        Cancellation cancellation = connection.getOngoingRequestCancellation(requestId);
+        Cancellation cancellation = requestTracker.getOngoingRequestCancellation(requestId);
         if (cancellation != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(this, tc, "Cancelling task");
@@ -372,7 +474,12 @@ public class McpServlet extends HttpServlet {
     }
 
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
-        return new ExecutionRequestId(transport.getMcpRequest().id(),
-                                      transport.getSessionId());
+        String sessionId = transport.getSessionId();
+        if (sessionId != null) {
+            return new ExecutionRequestId(transport.getMcpRequest().id(),
+                                          sessionId);
+        } else {
+            return null;
+        }
     }
 }

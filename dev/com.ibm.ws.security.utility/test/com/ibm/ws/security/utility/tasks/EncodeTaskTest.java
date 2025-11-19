@@ -13,7 +13,6 @@
 package com.ibm.ws.security.utility.tasks;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.fail;
 
 import java.io.PrintStream;
 
@@ -144,25 +143,6 @@ public class EncodeTaskTest {
         String[] args = { "encode", plaintext, "extraArg" };
         try {
             encode.handleTask(stdin, stdout, stderr, args);
-        } catch (Exception e) {
-            throw e;
-        }
-
-    }
-
-    /**
-     * Test method for
-     * {@link com.ibm.ws.security.utility.tasks.EncodeTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
-     * This test exists to ensure our beta toggles are working as expected. When this feature leaves beta we can delete this test.
-     *
-     * @throws Exception
-     */
-    @Test(expected = IllegalArgumentException.class)
-    public void handleTask_base64KeyBetaOff() throws Exception {
-        String[] args = { "encode", plaintext, "--encoding=aes", "--base64Key=pVB1v3IS07bsRBgbpoKJhB7OQZLVMFwIxBF5PrJctb0=" };
-        try {
-            encode.handleTask(stdin, stdout, stderr, args);
-            fail();
         } catch (Exception e) {
             throw e;
         }

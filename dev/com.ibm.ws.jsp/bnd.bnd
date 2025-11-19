@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -115,9 +115,9 @@ Import-Package: \
 
 Include-Resource: \
    @lib/bsf.jar, \
-   standard.jar=${repo;com.ibm.ws.javax.j2ee:standardtld;1.2}, \
-   standard.tags.2.0.jar=${repo;io.openliberty.jakarta.servlet.jsp.jstl.2.0.internal}, \
-   standard.tags.3.0.jar=${repo;io.openliberty.jakarta.servlet.jsp.tags.3.0.internal}, \
+   standard.jar=\${repo;com.ibm.ws.javax.j2ee:standardtld;1.2}, \
+   standard.tags.2.0.jar=\${repo;io.openliberty.jakarta.servlet.jsp.jstl.2.0.internal}, \
+   standard.tags.3.0.jar=\${repo;io.openliberty.jakarta.servlet.jsp.tags.3.0.internal}, \
    ard.jar=lib/ard.jar, \
    OSGI-INF=resources/OSGI-INF, \
    com/ibm/ws/jsp/webcontainerext/packageinfo=src/com/ibm/ws/jsp/webcontainerext/packageinfo, \

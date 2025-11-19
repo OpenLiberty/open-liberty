@@ -29,16 +29,19 @@ addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn addJakartaTransformer
 addRequiredLibraries.dependsOn copyTestContainers
 
-autoFVT.doLast {
+autoFVT {
+  def baseProject = project(':com.ibm.ws.transaction.cloud_fat.base')
+  doLast {
   copy {
-    from project(':com.ibm.ws.transaction.cloud_fat.base').file('publish/0servers')
+    from baseProject.file('publish/0servers')
     into new File(autoFvtDir, 'publish/servers')
     include '**'
   }
   copy {
-    from project(':com.ibm.ws.transaction.cloud_fat.base').file('publish/1servers')
+    from baseProject.file('publish/1servers')
     into new File(autoFvtDir, 'publish/servers')
     include '**'
+  }
   }
 }
 

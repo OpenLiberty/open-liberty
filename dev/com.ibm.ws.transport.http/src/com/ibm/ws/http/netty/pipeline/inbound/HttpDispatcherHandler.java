@@ -100,10 +100,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     // NEW: per-request marker to avoid double-enqueue when FullHttpRequest is used
     private boolean aggregatedBodyEnqueued;
 
-    // --- compact tracing helpers ---
-    private static final io.netty.util.AttributeKey<Long> ATTR_SEQ = io.netty.util.AttributeKey.valueOf("ug.seq");
-    private static final io.netty.util.AttributeKey<Long> ATTR_TID = io.netty.util.AttributeKey.valueOf("ug.tid");
-
     private enum CommitTrigger {
         FLUSH_OBSERVER, EARLY_BYTES, RETRY_TASK
     }
@@ -142,10 +138,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             return;
         }
         super.userEventTriggered(ctx, evt);
-    }
-
-    public void processMessageDirectly(FullHttpRequest request) throws Exception {
-        channelRead0(context, request);
     }
 
     @Override
@@ -529,7 +521,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private void sendErrorMessage(Throwable cause) {
-        Tr.debug(tc, "Sending a 400 for throwable [" + cause + "]");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Sending a 400 for throwable [" + cause + "]");
+        }
         loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
         HttpUtil.setKeepAlive(errorResponse, false);
         this.context.writeAndFlush(errorResponse);

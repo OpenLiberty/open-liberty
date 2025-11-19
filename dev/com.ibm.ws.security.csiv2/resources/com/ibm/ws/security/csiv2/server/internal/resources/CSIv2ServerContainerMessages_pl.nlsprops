@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -41,14 +41,14 @@ CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: Mechanizmy warstwy uwierzytelniani
 CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=Podane mechanizmy warstwy uwierzytelniania zabezpiecze\u0144 klienta maj\u0105 warto\u015b\u0107 NULL.
 CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Sprawd\u017a, czy podany mechanizm warstwy uwierzytelniania zabezpiecze\u0144 klienta to GSSUP lub LTPA albo GSSUP, LTPA.
 
-CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E:  Konfiguracja SSL {0} przychodz\u0105cej warstwy transportowej CSIv2 nie odpowiada konfiguracji SSL w punkcie ko\u0144cowym IIOP.
-CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation= Przychodz\u0105ca warstwa transportowa CSIv2 korzysta z konfiguracji SSL, ale punkt ko\u0144cowy IIOP nie u\u017cywa tej samej konfiguracji SSL.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: \ Konfiguracja SSL {0} przychodz\u0105cej warstwy transportowej CSIv2 nie odpowiada konfiguracji SSL w punkcie ko\u0144cowym IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=Przychodz\u0105ca warstwa transportowa CSIv2 korzysta z konfiguracji SSL, ale punkt ko\u0144cowy IIOP nie u\u017cywa tej samej konfiguracji SSL.
 CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=W pliku server.xml przychodz\u0105cej warstwy transportowej CSIv2 ustaw jedn\u0105 z konfiguracji SSL u\u017cywanych przez punkt ko\u0144cowy IIOP.
 
 #Do not translate iiopsOptions
-CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E:  Punkt ko\u0144cowy IIOP nie ma konfiguracji SSL, a przychodz\u0105ca warstwa transportowa CSIv2 wymaga, aby punkt ko\u0144cowy IIOP u\u017cywa\u0142 konfiguracji SSL {0}.
-CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation= Punkt ko\u0144cowy IIOP nie ma co najmniej jednego elementu iiopsOptions z konfiguracj\u0105 SSL, do kt\u00f3rego mo\u017ce si\u0119 odwo\u0142a\u0107 przychodz\u0105ca warstwa transportowa CSIv2.
-CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction= Dla punktu ko\u0144cowego IIOP ustaw co najmniej jeden element iiopsOptions z konfiguracj\u0105 SSL u\u017cywan\u0105 przez przychodz\u0105c\u0105 warstw\u0119 transportow\u0105 CSIv2.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: \ Punkt ko\u0144cowy IIOP nie ma konfiguracji SSL, a przychodz\u0105ca warstwa transportowa CSIv2 wymaga, aby punkt ko\u0144cowy IIOP u\u017cywa\u0142 konfiguracji SSL {0}.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=Punkt ko\u0144cowy IIOP nie ma co najmniej jednego elementu iiopsOptions z konfiguracj\u0105 SSL, do kt\u00f3rego mo\u017ce si\u0119 odwo\u0142a\u0107 przychodz\u0105ca warstwa transportowa CSIv2.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=Dla punktu ko\u0144cowego IIOP ustaw co najmniej jeden element iiopsOptions z konfiguracj\u0105 SSL u\u017cywan\u0105 przez przychodz\u0105c\u0105 warstw\u0119 transportow\u0105 CSIv2.
 
 # Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
 # -------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Upewnij si\u0119, \u017ce 
 
 # Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
 # -------------------------------------------------------------------------------------------------
-NO_USER_REGISTRY=CWWKS9660E: Element orb o atrybucie id {0} wymaga rejestru u\u017cytkownik\u00f3w, ale w ci\u0105gu {1} s nie udost\u0119pniono \u017cadnego rejestru u\u017cytkownik\u00f3w.   W wyniku tego \u017cadna aplikacja nie zostanie uruchomiona. Upewnij si\u0119, \u017ce w pliku server.xml skonfigurowano odpowiedni rejestr u\u017cytkownik\u00f3w.
+NO_USER_REGISTRY=CWWKS9660E: Element orb o atrybucie id {0} wymaga rejestru u\u017cytkownik\u00f3w, ale w ci\u0105gu {1} s nie udost\u0119pniono \u017cadnego rejestru u\u017cytkownik\u00f3w. W\nwyniku tego \u017cadna aplikacja nie zostanie uruchomiona. Upewnij si\u0119, \u017ce w pliku server.xml skonfigurowano odpowiedni rejestr u\u017cytkownik\u00f3w. W przypadku \u015brodowisk korzystaj\u0105cych z komponent\u00f3w opartych na ORB, takich jak aplikacje EJB, wymagane jest zdefiniowanie rejestru u\u017cytkownik\u00f3w. Je\u015bli te komponenty nie s\u0105 u\u017cywane, komunikat ten mo\u017cna bezpiecznie zignorowa\u0107.
 NO_USER_REGISTRY.explanation=Nie uruchomiono \u017cadnej aplikacji, poniewa\u017c zabezpieczony obiektowy broker zapyta\u0144 (Object Request Broker - ORB) na serwerze wymaga rejestru u\u017cytkownik\u00f3w, ale nie znaleziono \u017cadnego rejestru u\u017cytkownik\u00f3w. Aplikacje zostan\u0105 uruchomione po skonfigurowaniu odpowiedniego rejestru u\u017cytkownik\u00f3w.
 NO_USER_REGISTRY.useraction=Upewnij si\u0119, \u017ce skonfigurowano rejestr u\u017cytkownik\u00f3w odpowiedni dla danego \u015brodowiska.
 

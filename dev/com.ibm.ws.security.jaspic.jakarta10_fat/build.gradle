@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,7 @@ configurations {
 
 apply plugin: 'war'
 
-war { enabled false } // We aren't making a war for the entire project
+war { enabled = false } // We aren't making a war for the entire project
 
 dependencies {
   requiredLibs 'org.apache.httpcomponents:httpclient:4.1.2',
@@ -108,18 +108,20 @@ assemble.dependsOn JASPIServerAuthRegistrationTestServlet_WAR
  ******************************************************************/
 autoFVT.dependsOn ':com.ibm.ws.security.jaspic.test:assemble'
 
-autoFVT.doLast {
+autoFVT {
+  def jaspicTestProject = project(':com.ibm.ws.security.jaspic.test')
+  doLast {
 
   /*
    * Copy the JASPI user test feature.
    */
   copy {
-     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jakarta.jar')
+     from new File(jaspicTestProject.projectDir, '/build/libs/com.ibm.ws.security.jaspic.test.jakarta.jar')
      into new File(autoFvtDir, 'publish/bundles')
      rename 'com.ibm.ws.security.jaspic.test.jakarta.jar', 'com.ibm.ws.security.jaspic.test_2.1.jar'
   }
   copy {
-     from new File(project(':com.ibm.ws.security.jaspic.test').projectDir , "/publish/features/jaspicUserTestFeature-3.0.mf")  
+     from new File(jaspicTestProject.projectDir , "/publish/features/jaspicUserTestFeature-3.0.mf")  
      into new File(autoFvtDir, 'publish/features')
   }
     
@@ -131,9 +133,10 @@ autoFVT.doLast {
   ]
   servers.each { server ->
     copy { 
-      from new File(project.buildDir, 'test-application')
+      from new File(buildDir, 'test-application')
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
       include 'JASPIServerAuthRegistrationTestServlet.war'
     }
+  }
   }
 }

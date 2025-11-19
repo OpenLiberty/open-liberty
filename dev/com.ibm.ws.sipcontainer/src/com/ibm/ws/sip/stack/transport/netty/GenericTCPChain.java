@@ -143,9 +143,9 @@ public class GenericTCPChain extends GenericChain {
                 options.putAll(getCurrentConfig().tcpOptions);
                 options.put(ConfigConstants.EXTERNAL_NAME, getName());
 
-                serverBootstrap = nettyBundle.createTCPBootstrap(options);
+                serverBootstrap = nettyBundle.createTCPBootstrapInbound(options);
                 serverBootstrap.childHandler(new SipTCPInitializer(serverBootstrap.getBaseInitializer()));
-                nettyBundle.start(serverBootstrap, ep.getHost(), ep.getPort(), future -> {
+                nettyBundle.startInbound(serverBootstrap, ep.getHost(), ep.getPort(), future -> {
                     if (future.isSuccess()) {
                         if (c_logger.isTraceDebugEnabled()) {
                             c_logger.traceDebug("SIP " + (isTLS ? "TLS" : "TCP") + " endpoint start success");

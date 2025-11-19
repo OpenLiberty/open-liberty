@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Stellen Sie sicher, dass K
 
 # Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
 # -------------------------------------------------------------------------------------------------
-NO_USER_REGISTRY=CWWKS9660E: Das Element orb mit dem id-Attribut {0} setzt eine Benutzerregistry voraus, aber auch nach {1} Sekunden war keine Benutzerregistry verf\u00fcgbar. Deshalb wird keine Anwendung gestartet. Stellen Sie sicher, dass Sie eine entsprechende Benutzerregistry in der Datei server.xml konfiguriert haben.
+NO_USER_REGISTRY=CWWKS9660E: Das Element orb mit dem id-Attribut {0} setzt eine Benutzerregistry voraus, aber auch nach {1} Sekunden war keine Benutzerregistry verf\u00fcgbar. Deshalb wird keine Anwendung gestartet. Stellen Sie sicher, dass Sie eine entsprechende Benutzerregistry in der Datei server.xml konfiguriert haben. F\u00fcr Umgebungen, die ORB-basierte Komponenten wie EJB-Anwendungen verwenden, ist die Definition einer Benutzerregistrierung erforderlich. Wenn diese Komponenten nicht verwendet werden, kann diese Meldung getrost ignoriert werden.
 NO_USER_REGISTRY.explanation=Es wurde keine Anwendung gestartet, weil ein gesicherter Object Request Broker (ORB) auf einem Server eine Benutzerregistry voraussetzt, aber es wurde keine Benutzerregistry gefunden. Nach der Konfiguration einer entsprechenden Benutzerregistry werden die Anwendungen gestartet.
 NO_USER_REGISTRY.useraction=Stellen Sie sicher, dass Sie eine entsprechende Benutzerregistry f\u00fcr Ihre Umgebung konfiguriert haben.
 

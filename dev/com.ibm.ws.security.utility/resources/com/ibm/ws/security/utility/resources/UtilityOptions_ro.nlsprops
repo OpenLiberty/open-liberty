@@ -51,13 +51,17 @@ help.usage.options=\t{0} help [actionName]
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 encode.desc=\tCodifica\u021bi textul furnizat.\n\n\tDac\u0103 parola include caractere speciale, trebuie s\u0103 evada\u021bi fiecare caracter special pentru a v\u0103 asigura c\u0103 parola este codificat\u0103 corect.\n\tCaracterele speciale \u0219i caracterele de escape pot varia \u00een func\u021bie de sistemul dvs. de operare.\n\tDe exemplu, pe sistemele UNIX, pa$$W0rd trebuie furnizat ca pa\\$\\$W0rd .\n\tPentru mai multe informa\u021bii, consulta\u021bi documenta\u021bia de codificare Open Liberty securityUtility .
 #Note to translator the word "encode" should not be translated
-encode.usage.options=\t{0} encode [op\u0163iuni]
-encode.option-key.text=\ \ \ \ textToEncode
-encode.option-desc.text=\tDac\u0103 nu este specificat niciun argument, unealta va introduce modul\n\tinteractiv; altfel, textul furnizat va fi codificat.\n\tTextul cu spa\u0163ii trebuie pus \u00een \u00eentregime \u00eentre ghilimele dac\u0103 este \nspecificat ca argument.
+encode.usage.options=\t{0} encode [op\u021biuni] textToEncode
+encode.option-key.1.text=\ \ \ \ textToEncode
+encode.option-desc.1.text=\tDac\u0103 nu sunt specificate argumente, instrumentul va intra \u00een modul interactiv \u00een caz contrar, textul furnizat va fi codificat.\n\tTextul cu spa\u021bii trebuie s\u0103 fie citat integral dac\u0103 este specificat ca argument.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tSpecifica\u021bi modul de codare a parolei. Codurile acceptate sunt xor, aes, aes-128, \u0219i hash. Codificarea implicit\u0103 este xor. Aes cripteaz\u0103 folosind o cheie aes-256 bit.\n\taes-128 poate fi utilizat pentru compatibilitate cu versiunile serverului anterioare 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[key]
-encode.option-desc.key=\tSpecifica\u0163i o cheie de folosit c\u00e2nd codifica\u0163i folosind AES. Acest \u015fir\n\tva fi f\u0103cut hash pentru a produce o cheie de criptare ce va fi folosit\u0103\n\tpentru a cripta \u015fi a decripta parola. Cheia poate fi furnizat\u0103 serverului\n\tdefinind variabila wlp.password.encryption.key a c\u0103rei valoare este\n\tcheia. Dac\u0103 aceast\u0103 op\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
+encode.option-desc.key=\tSpecifica\u0163i o cheie de utilizat c\u00e2nd codificarea se face utiliz\u00e2nd AES. Acest \u0219ir va fi ha\u0219urat pentru a produce o cheie de criptare, care este utilizat\u0103 pentru a cripta \u0219i decriptarea parolei. Cheia poate fi furnizat\u0103 serverului prin definirea variabilei wlp.password.encryption.key a c\u0103rei valoare este cheie. Dac\u0103 aceast\u0103 op\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
+encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
+encode.option-desc.base64Key=\tO cheie de AES-256 bi\u021bi codificat\u0103 base64 care urmeaz\u0103 s\u0103 fie utilizat\u0103 pentru criptarea \u0219i decriptarea parolei. Cheia poate fi furnizat\u0103 serverului prin definirea variabilei variabila wlp.aes.encryption.key a c\u0103rei valoare este cheia. Dac\u0103 se specific\u0103 --base64Key specificat, atunci --aesConfigFile \u0219i --key nu pot fi specificate.
+encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+encode.option-desc.aesConfigFile=\tUn fi\u0219ier de propriet\u0103\u021bi XML sau Java cu o variabil\u0103 numit\u0103 wlp.password.encryption.key sau wlp.aes.encryption.key cu valori valide respectiv valori valide. Ambele variabile nu pot fi specificate \u00een acela\u0219i fi\u0219ier.\n\tDac\u0103 este specificat --aesConfigFile, atunci --key \u0219i --base64Key nu pot fi specificate.
 encode.option-key.notrim=\ \ \ \ --notrim
 encode.option-desc.notrim=\tSpecifica\u0163i dac\u0103 spa\u0163iile sunt sau nu \u00eenl\u0103turate de la \u00eenceputul \u015fi\n\tsf\u00e2r\u015fitul textului specificat. Dac\u0103 este specificat\u0103 aceast\u0103 op\u0163iune, textul\n\tfurnizat va fi codificat ca atare.\n\tDac\u0103 aceast\u0103 op\u0163iune nu este specificat\u0103, spa\u0163iile de la \u00eenceputul\n\t\u015fi sf\u00e2r\u015fitul textului specificat vor fi \u00eenl\u0103turate. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
@@ -113,6 +117,11 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=informa\u0163ii extensii certificat
 sslCert.option-desc.ext=\tInforma\u0163iile de extensii certificat de ad\u0103ugat la certificat.\n\tExtensia implicit\u0103 este o intrare Subject Alternative Name care utilizeaz\u0103 \n\tnumele de gazd\u0103. Acest stegule\u0163 urmeaz\u0103 aceea\u015fi sintax\u0103 ca \u015fi stegule\u0163ul -ext\n\t al comenzii Java Keytool. Acest stegule\u0163 poate fi folosit de mai multe ori pe comand\u0103\n 
 #line.
 
+sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+sslCert.option-desc.passwordBase64Key=\tO cheie de AES-256 bi\u021bi codificat\u0103 base64 care urmeaz\u0103 s\u0103 fie utilizat\u0103 pentru criptarea \u0219i decriptarea parolei. Cheia poate fi furnizat\u0103 serverului prin definirea variabilei wlp.aes.encryption.key a c\u0103rei valoare este cheia.\n\tDac\u0103 este specificat --passwordBase64Key, atunci --aesConfigFile \u0219i --passwordKey nu pot fi specificate.
+sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+sslCert.option-desc.aesConfigFile=\tUn fi\u0219ier de propriet\u0103\u021bi XML sau Java cu o variabil\u0103 numit\u0103 wlp.password.encryption.key sau wlp.aes.encryption.key cu valori valide respectiv valori valide. Ambele variabile nu pot fi specificate \u00een acela\u0219i fi\u0219ier.\n\tDac\u0103 este specificat --aesConfigFile, atunci --passwordBase64Key \u0219i --passwordKey nu pot fi specificate.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -134,6 +143,10 @@ createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
 createLTPAKeys.option-desc.password.encoding=\tSpecifica\u0163i cum se codific\u0103 parola de cehi LTPA \u00een server.xml.\n\tCodific\u0103rile suportate sunt xor \u015fi aes. Codificarea implicit\u0103 este xor. \n\tUtiliza\u0163i comanda securityUtility encode --listCustom pentru a vedea\n\tdac\u0103 sunt suportate cript\u0103ri personalizate suplimentare.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[key]
 createLTPAKeys.option-desc.password.key=\tSpecifica\u0163i o cheie de utilizat c\u00e2nd codifica\u0163i parola cheilor LTPA\n\tfolosind AES. Acest \u015fir va fi f\u0103cut hash pentru a produce o cheie de \n\tcriptare care va fi folosit\u0103 pentru a cripta \u015fi decripta parola. Cheia \n\tpoate fi furnizat\u0103 serverului definind variabila\n\twlp.password.encryption.key a c\u0103rei valoare este cheia. Dac\u0103 aceast\u0103 \n\top\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
+createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+createLTPAKeys.option-desc.passwordBase64Key=\tO cheie de AES-256 bi\u021bi codificat\u0103 base64 care urmeaz\u0103 s\u0103 fie utilizat\u0103 pentru criptarea \u0219i decriptarea parolei. Cheia poate fi furnizat\u0103 serverului prin definirea variabilei variabila wlp.aes.encryption.key a c\u0103rei valoare este cheia. Dac\u0103 --passwordBase64Key este specificat, atunci --aesConfigFile \u0219i --passwordKey nu pot fi specificate.
+createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+createLTPAKeys.option-desc.aesConfigFile=\tUn fi\u0219ier de propriet\u0103\u021bi XML sau Java cu o variabil\u0103 numit\u0103 wlp.password.encryption.key sau wlp.aes.encryption.key cu valori valide respectiv valori valide. Ambele variabile nu pot fi specificate \u00een acela\u0219i fi\u0219ier.\n\tDac\u0103 este specificat --aesConfigFile, atunci --passwordBase64Key \u0219i --passwordKey nu pot fi specificate.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -181,3 +194,19 @@ configureFIPS.option-desc.3.customProfileFile=\tFi\u0219ierul \u00een care se sc
 configureFIPS.option-key.4.disable=\ \ \ \ --disable
 
 configureFIPS.option-desc.4.disable=\tDezactiva\u021bi FIPS 140-3 prin setarea variabilei de mediu ENABLE_FIPS140_3 la false. Aceast\u0103 op\u021biune poate fi utilizat\u0103 \u00eempreun\u0103 cu op\u021biunile client \u0219i server pentru a specifica clientul sau serverul pentru dezactivarea FIPS 140-3.\n\t\u00cen caz contrar, dezactiveaz\u0103 FIPS 140-3 pentru to\u021bi clien\u021bii, serverele \u0219i comenzi, cu excep\u021bia acelor clien\u021bi \u0219i servere care au fost activate individual.
+
+
+
+# -------- Generate AES-256 KEY OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+generateaeskey.desc=\tGenereaz\u0103 o valoare care s\u0103 fie plasat\u0103 \u00een variabila de configurare wlp.aes.encryption.key pentru criptarea aes.
+generateaeskey.usage.options=\t{0} generateAESKey [op\u021biuni]
+generateaeskey.option-key.key=\ \ \ \ --key =[cheie]
+generateaeskey.option-desc.key=\tSpecifica\u021bi o cheie pentru utilizare \u00een timpul cript\u0103rii AES. Acest \u0219ir este ha\u0219urat pentru a produce o cheie de criptare care va fi utilizat\u0103 pentru criptarea \u0219i decriptarea parolelor. Cheia de criptare este salvat\u0103 \u00een format base64 \u00eentr-o variabil\u0103 numit\u0103 wlp.aes.encryption.key. Dac\u0103 aceast\u0103 op\u021biune este omis\u0103, este generat\u0103 o cheie aleatorie.
+generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
+generateaeskey.option-desc.createConfigFile=\tCreeaz\u0103 un fi\u0219ier XML cu valoarea generat\u0103 salvat\u0103 \u00eentr-o variabil\u0103 numit\u0103 wlp.aes.encryption.key. Dac\u0103 nu este furnizat\u0103, valoarea generat\u0103 va fi scris\u0103 pe ecranul consolei.

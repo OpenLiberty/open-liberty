@@ -28,10 +28,8 @@ fat.project: true
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.security.registry_test.custom;version=latest,\
-	com.ibm.ws.security.registry_test.servlet;version=latest,\
 	com.ibm.ws.security.wim.adapter.ldap;version=latest,\
 	com.ibm.ws.security.wim.repository_test.custom;version=latest,\
-	com.ibm.ws.security.wim_test.servlet;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest,\
 	io.openliberty.org.apache.commons.logging;version=latest,\
 	org.apache.directory.server:apacheds-service;version=latest,\

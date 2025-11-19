@@ -28,6 +28,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.RecordComponent;
 import java.lang.reflect.Type;
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -62,6 +63,8 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.wsspi.application.Application;
 import com.ibm.wsspi.application.ApplicationState;
@@ -80,6 +83,7 @@ import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.Util;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
@@ -577,6 +581,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
     @Trivial
     public EntityManager createEntityManager() {
         EntityManager em = persistenceServiceUnit.createEntityManager();
+        em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "createEntityManager: " + em);
@@ -901,6 +906,29 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             writer.println(indent + "    converted to entity class:");
             writer.println(Util.toString(entityClass, indent + "    "));
         });
+    }
+
+    /**
+     * Returns true if the cause exception can be determined to be a
+     * connection-related error, otherwise false.
+     *
+     * @param cause the cause exception.
+     * @return true if known to be a connection-related error, otherise false.
+     */
+    @FFDCIgnore(Exception.class) // secondary error while reporting first error
+    @Override
+    public boolean isConnectionError(SQLException cause) {
+        boolean isConnectionError = false;
+        try {
+            WSJdbcDataSource ds = (WSJdbcDataSource) getDataSource(null, null);
+            isConnectionError = ds != null &&
+                                ds.getDatabaseHelper().isConnectionError(cause);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Could not obtain DataSource to check isConnectionError");
+        }
+
+        return isConnectionError || super.isConnectionError(cause);
     }
 
     @Override

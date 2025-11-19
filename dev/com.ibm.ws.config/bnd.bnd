@@ -60,7 +60,7 @@ com.ibm.ws.config.featuregen.internal.FeatureListMBeanImpl
     OSGI-INF/permissions.perm=resources/permissions.perm, \
     OSGI-INF/metatype=resources/OSGI-INF/metatype, \
     OSGI-INF/l10n=resources/OSGI-INF/l10n,\
-    @${repo;com.ibm.ws.org.eclipse.equinox.metatype}!/org/eclipse/equinox/metatype/impl/ExtendableHelper.class
+    @\${repo;com.ibm.ws.org.eclipse.equinox.metatype}!/org/eclipse/equinox/metatype/impl/ExtendableHelper.class
 
 instrument.classesExcludes: com/ibm/ws/config/internal/resources/*.class
 

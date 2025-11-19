@@ -15,6 +15,9 @@ import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
@@ -29,9 +32,11 @@ import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
 import io.openliberty.mcp.internal.responses.McpResponse;
 import io.openliberty.mcp.internal.responses.McpResultResponse;
+import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbException;
+import jakarta.servlet.AsyncContext;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -51,6 +56,7 @@ public class McpTransport {
     private McpProtocolVersion version;
     private String sessionId;
     private McpSession sessionInfo;
+    private static final AtomicInteger TIMEOUT_SECONDS = new AtomicInteger(30); //Make this configurable
 
     public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb) throws IOException {
         this.req = req;
@@ -77,8 +83,8 @@ public class McpTransport {
             String supportedValues = Arrays.stream(McpProtocolVersion.values())
                                            .map(McpProtocolVersion::getVersion)
                                            .collect(Collectors.joining(", "));
-            throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST,
-                                            "Unsupported MCP-Protocol-Version header. Supported values: " + supportedValues);
+            String excpetionMesaage = Tr.formatMessage(tc, "CWMCM0013E.unsupported.mcp.http.version", supportedValues);
+            throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, excpetionMesaage);
         }
         this.mcpRequest = toRequest();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
@@ -182,7 +188,7 @@ public class McpTransport {
      * @return the session ID string, or {@code null} if none is available
      */
     public String getSessionId() {
-        return sessionId;
+        return sessionInfo == null ? null : sessionInfo.getSessionId();
     }
 
     /**
@@ -223,9 +229,10 @@ public class McpTransport {
      * @param e the exception that was caught
      * @throws IOException
      */
-    public void sendError(Exception e) throws IOException {
-        Tr.error(tc, "Unexpected Server Error. Method={0} RequestURI={1} RequestQuery={2}", req.getMethod(), req.getRequestURI(), req.getQueryString());
-        res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred. Please try again later.");
+    public void sendError(Throwable e) throws IOException {
+        String excpetionMessage = Tr.formatMessage(tc, "CWMCM0014E.unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
+        Tr.error(tc, "CWMCM0015E.unexpected.server.error.exception", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
+        res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, excpetionMessage);
     }
 
     /**
@@ -261,12 +268,35 @@ public class McpTransport {
         String ipAddress = req.getRemoteAddr();
         String proxyAddress = req.getHeader("X-Forwarded-For");
         if (proxyAddress != null && !proxyAddress.equals(ipAddress)) {
-            throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, "Unknown proxy address.");
+            Tr.error(tc, "CWMCM0021E.unknown.proxy.address");
+            throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN, "");
         }
         return ipAddress;
     }
 
     public McpProtocolVersion getProtocolVersion() {
         return version;
+    }
+
+    public <T> CompletionStage<Void> sendResultAsync(CompletionStage<T> stage) {
+        AsyncContext asyncContext = req.startAsync();
+        asyncContext.setTimeout(TimeUnit.SECONDS.toMillis(TIMEOUT_SECONDS.get()));
+
+        return stage.handle((result, throwable) -> {
+            try {
+                if (throwable == null) {
+                    sendResponse(result);
+
+                } else {
+                    sendError(throwable);
+                }
+            } catch (Exception e) {
+                Tr.error(tc, "CWMCM0016E.error.sending.response.exception", e);
+                sendResponse(ToolResponse.error(Tr.formatMessage(tc, "CWMCM0011E.internal.server.error")));
+            } finally {
+                asyncContext.complete();
+            }
+            return null;
+        });
     }
 }

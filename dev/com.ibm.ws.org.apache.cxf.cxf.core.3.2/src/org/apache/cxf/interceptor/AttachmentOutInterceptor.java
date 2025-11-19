@@ -59,8 +59,6 @@ public class AttachmentOutInterceptor extends AbstractPhaseInterceptor<Message> 
     }
 
     public void handleMessage(Message message) {
-        
-
         boolean isFineEnabled = LOG.isLoggable(Level.FINE); // Liberty Change
         //avoid AttachmentOutInterceptor invoked twice on the 
         //same message
@@ -78,7 +76,10 @@ public class AttachmentOutInterceptor extends AbstractPhaseInterceptor<Message> 
         }
         // Make it possible to step into this process in spite of Eclipse
         // by declaring the Object.
-        boolean mtomEnabled = AttachmentUtil.isMtomEnabled(message);
+        // Liberty Change Start
+        boolean mtomEnabled = AttachmentUtil.mtomOverride(message, AttachmentUtil.isMtomEnabled(message));
+        // Liberty Change End
+        
         boolean writeAtts = MessageUtils.getContextualBoolean(message, WRITE_ATTACHMENTS, false)
             || (message.getAttachments() != null && !message.getAttachments().isEmpty());
 
@@ -118,7 +119,7 @@ public class AttachmentOutInterceptor extends AbstractPhaseInterceptor<Message> 
         // Add a final interceptor to write attachements
         message.getInterceptorChain().add(ending);
     }
-
+    
     protected String getMultipartType() {
         return "multipart/related";
     }
@@ -152,6 +153,4 @@ public class AttachmentOutInterceptor extends AbstractPhaseInterceptor<Message> 
         }
 
     }
-
-
 }

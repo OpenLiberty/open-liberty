@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -124,10 +124,10 @@ public class GenericUDPChain extends GenericChain  {
                     Map<String, Object> options = new HashMap<String, Object>();
                     options.putAll(getCurrentConfig().udpOptions);
                     options.put(ConfigConstants.EXTERNAL_NAME, getName());
-                    bootstrap = nettyBundle.createUDPBootstrap(options);
+                    bootstrap = nettyBundle.createUDPBootstrapInbound(options);
                     bootstrap.handler(new SipUDPInitializer(null));
 
-                    nettyBundle.start(bootstrap, ep.getHost(), ep.getPort(), future -> {
+                    nettyBundle.startInbound(bootstrap, ep.getHost(), ep.getPort(), future -> {
                         if (future.isSuccess()) {
                             if (c_logger.isTraceDebugEnabled()) {
                                 c_logger.traceDebug("SIP UDP endpoint start success");

@@ -40,7 +40,6 @@ autoFVT.doLast {
         'com.ibm.ws.wssecurity_fat.ssl', 
         'com.ibm.ws.wssecurity_fat.wsstemplates',
         'com.ibm.ws.wssecurity_fat.wsstemplateswithep'
-        
   ]
 
   servers.each { server ->
@@ -68,8 +67,7 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles/')
   }
 
-/* issue 23599 Copy CBH resource to this server only */
-
+  /* issue 23599 Copy CBH resource to this server only */
   servers = [
         'com.ibm.ws.wssecurity_fat.cbhcaller'
   ]

@@ -14,7 +14,9 @@ package test.jakarta.data.datastore.web;
 
 import java.sql.Connection;
 import java.util.List;
+import java.util.Optional;
 
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 import jakarta.persistence.EntityManager;
@@ -30,6 +32,8 @@ public interface PersistenceUnitRepo {
 
     Connection connection();
 
+    int countByIdStartsWith(String pattern);
+
     DataSource dataSource();
 
     EntityManager entityManager();
@@ -39,5 +43,9 @@ public interface PersistenceUnitRepo {
     @Save
     List<PersistenceUnitEntity> save(List<PersistenceUnitEntity> e);
 
-    int countByIdStartsWith(String pattern);
+    @Query("WHERE id = ?1")
+    Optional<PersistenceUnitEntity> singleItem(String id);
+
+    @Query("UPDATE PersistenceUnitEntity SET value = value * 3 WHERE id = ?1")
+    boolean triple(String id);
 }

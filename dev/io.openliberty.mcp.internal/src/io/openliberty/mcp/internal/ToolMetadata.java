@@ -9,25 +9,34 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletionStage;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
+import io.openliberty.mcp.content.Content;
+import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.Bean;
+import jakarta.json.JsonObject;
 
 public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> method,
                            Map<String, ArgumentMetadata> arguments,
                            List<SpecialArgumentMetadata> specialArguments,
                            String name, String title, String description,
-                           List<Class<? extends Throwable>> businessExceptions) {
+                           List<Class<? extends Throwable>> businessExceptions,
+                           boolean returnsCompletionStage,
+                           JsonObject inputSchema,
+                           JsonObject outputSchema) {
 
     public static final String MISSING_TOOL_ARG_NAME = "<<<MISSING TOOL_ARG NAME>>>";
 
@@ -45,13 +54,39 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
         String title = annotation.title().isEmpty() ? null : annotation.title();
         String description = annotation.description().isEmpty() ? null : annotation.description();
 
+        Type returnType = method.getJavaMember().getGenericReturnType();
+        Class<?> returnTypeClass = method.getJavaMember().getReturnType();
+
         WrapBusinessError wrapAnnotation = method.getAnnotation(WrapBusinessError.class);
         List<Class<? extends Throwable>> businessExceptions = (wrapAnnotation != null) ? List.of(wrapAnnotation.value()) : Collections.emptyList();
+        boolean returnsCompletionStage = CompletionStage.class.isAssignableFrom(returnTypeClass);
+        SchemaRegistry sr = SchemaRegistry.get();
 
-        return new ToolMetadata(annotation, bean, method, getArgumentMap(method), getSpecialArgumentList(method), name, title, description, businessExceptions);
+        JsonObject inputSchema = sr.getToolInputSchema(method);
+
+        boolean hasContentListReturn = (returnType instanceof ParameterizedType pt && ((Class<?>) pt.getRawType()).isAssignableFrom(List.class)
+                                        && ((Class<?>) pt.getActualTypeArguments()[0]).isAssignableFrom(Content.class));
+        boolean hasOutputSchema = (!returnTypeClass.isAssignableFrom(ToolResponse.class) && !hasContentListReturn && !returnTypeClass.isAssignableFrom(Content.class)
+                                   && !returnTypeClass.isAssignableFrom(String.class) && annotation.structuredContent());
+        JsonObject outputSchema = hasOutputSchema ? sr.getToolOutputSchema(method) : null;
+        outputSchema = (outputSchema == null || outputSchema.isEmpty()) ? null : outputSchema;
+
+        return new ToolMetadata(annotation,
+                                bean,
+                                method,
+                                getArgumentMap(method),
+                                getSpecialArgumentList(method),
+                                name,
+                                title,
+                                description,
+                                businessExceptions,
+                                returnsCompletionStage,
+                                inputSchema,
+                                outputSchema);
+
     }
 
-    private static Map<String, ArgumentMetadata> getArgumentMap(AnnotatedMethod<?> method) {
+    public static Map<String, ArgumentMetadata> getArgumentMap(AnnotatedMethod<?> method) {
         Map<String, ArgumentMetadata> result = new HashMap<>();
 
         for (AnnotatedParameter<?> param : method.getParameters()) {

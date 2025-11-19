@@ -30,7 +30,7 @@ public class DatabaseContainerTypeTest {
         assertEquals(DatabaseContainerType.DerbyClient, //
                      DatabaseContainerType.valueOf(new DerbyClientContainer()));
         assertEquals(DatabaseContainerType.Oracle, //
-                     DatabaseContainerType.valueOf(new OracleContainer(DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23-full-faststart")
+                     DatabaseContainerType.valueOf(new OracleContainer(DockerImageName.parse("ghcr.io/gvenzl/oracle-free:23.9-full-faststart")
                                      .asCompatibleSubstituteFor("gvenzl/oracle-free"))));
         assertEquals(DatabaseContainerType.Postgres, //
                      DatabaseContainerType.valueOf(new PostgreSQLContainer(DockerImageName.parse("public.ecr.aws/docker/library/postgres:17-alpine")
@@ -38,6 +38,10 @@ public class DatabaseContainerTypeTest {
         assertEquals(DatabaseContainerType.SQLServer,
                      DatabaseContainerType.valueOf(new MSSQLServerContainer<>(DockerImageName.parse("mcr.microsoft.com/mssql/server:2022-latest")
                                      .asCompatibleSubstituteFor("mcr.microsoft.com/mssql/server"))));
+        assertEquals(DatabaseContainerType.DerbyJava17Plus, //
+                     DatabaseContainerType.valueOf(new DerbyJava17PlusContainer()));
+        assertEquals(DatabaseContainerType.DerbyClientJava17Plus, //
+                     DatabaseContainerType.valueOf(new DerbyClientJava17PlusContainer()));
     }
 
     @Test
@@ -48,6 +52,8 @@ public class DatabaseContainerTypeTest {
         assertEquals(DatabaseContainerType.Oracle, DatabaseContainerType.valueOf("Oracle"));
         assertEquals(DatabaseContainerType.Postgres, DatabaseContainerType.valueOf("Postgres"));
         assertEquals(DatabaseContainerType.SQLServer, DatabaseContainerType.valueOf("SQLServer"));
+        assertEquals(DatabaseContainerType.DerbyJava17Plus, DatabaseContainerType.valueOf("DerbyJava17Plus"));
+        assertEquals(DatabaseContainerType.DerbyClientJava17Plus, DatabaseContainerType.valueOf("DerbyClientJava17Plus"));
     }
 
     @Test
@@ -86,6 +92,13 @@ public class DatabaseContainerTypeTest {
         } catch (IllegalArgumentException e) {
             //expected
         }
+
+        try {
+            DatabaseContainerType.valueOf("DerbyEmbeddedJava17Plus");
+            fail("Should not have been able to find type based on alias: DerbyEmbeddedJava17Plus");
+        } catch (IllegalArgumentException e) {
+            //expected
+        }
     }
 
     @Test
@@ -97,6 +110,8 @@ public class DatabaseContainerTypeTest {
         assertEquals(DatabaseContainerType.Postgres, DatabaseContainerType.valueOfAlias("Postgre"));
         assertEquals(DatabaseContainerType.Postgres, DatabaseContainerType.valueOfAlias("PostgreSQL"));
         assertEquals(DatabaseContainerType.SQLServer, DatabaseContainerType.valueOfAlias("MSSQLServer"));
+        assertEquals(DatabaseContainerType.DerbyJava17Plus, DatabaseContainerType.valueOfAlias("DerbyEmbeddedJava17Plus"));
+        assertEquals(DatabaseContainerType.DerbyClientJava17Plus, DatabaseContainerType.valueOfAlias("derbyclientjava17plus"));
     }
 
     @Test
@@ -142,5 +157,17 @@ public class DatabaseContainerTypeTest {
         } catch (IllegalArgumentException e) {
             //expected
         }
+    }
+
+    @Test
+    public void testAnonymousDriverName() {
+        //Ensure DatabaseContainerType maintains ordinal ordering
+        //for anonymous driver name generation.
+        assertEquals("driver0.jar", DatabaseContainerType.DB2.getAnonymousDriverName());
+        assertEquals("driver1.jar", DatabaseContainerType.Derby.getAnonymousDriverName());
+        assertEquals("driver2.jar", DatabaseContainerType.DerbyClient.getAnonymousDriverName());
+        assertEquals("driver3.jar", DatabaseContainerType.Oracle.getAnonymousDriverName());
+        assertEquals("driver4.jar", DatabaseContainerType.Postgres.getAnonymousDriverName());
+        assertEquals("driver5.jar", DatabaseContainerType.SQLServer.getAnonymousDriverName());
     }
 }

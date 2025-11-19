@@ -27,9 +27,9 @@ instrument.classesExcludes: \
   org/**/*.class
 
 Include-Resource: \
-  @${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
-  @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
-  @${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
+  @\${repo;org.apache.myfaces.core:myfaces-impl;${Implementation-Version};EXACT}!/META-INF/**, \
+  @\${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/resources/**, \
+  @\${repo;io.openliberty.jakarta.faces.4.0}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
 
 Service-Component: \

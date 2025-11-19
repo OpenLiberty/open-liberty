@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ Private-Package: \
   org.w3c.dom.html
 
 -includeresource: \
-   @${repo;xerces:xercesImpl;${Implementation-Version};EXACT}!/!META-INF/maven/*
+   @\${repo;xerces:xercesImpl;${Implementation-Version};EXACT}!/!META-INF/maven/*
 
 -buildpath: xerces:xercesImpl;version=${Implementation-Version}
 

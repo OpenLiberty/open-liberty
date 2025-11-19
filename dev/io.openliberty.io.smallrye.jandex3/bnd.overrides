@@ -5,4 +5,4 @@ Bundle-Name: jandex 3
 Bundle-SymbolicName: io.openliberty.io.smallrye.jandex3
 
 Include-Resource:\
-        @${repo;io.smallrye:jandex;3.2.3;EXACT}!/!META-INF/*
+        @\${repo;io.smallrye:jandex;3.2.3;EXACT}!/!META-INF/*

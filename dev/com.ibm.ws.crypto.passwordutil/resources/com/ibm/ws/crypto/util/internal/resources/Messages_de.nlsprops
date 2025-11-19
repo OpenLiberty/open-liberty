@@ -66,7 +66,9 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Ein oder mehrere in der Serverko
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty verwendet jetzt st\u00e4rkere Algorithmen f\u00fcr neu generierte {aes} - und {hash} -Passw\u00f6rter.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Stellen Sie sicher, dass die Kennwortwerte f\u00fcr {aes} und {hash} mit der neuesten Version von Liberty generiert werden.
 
-
+AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=Die Schl\u00fcssell\u00e4nge des Wertes, der in der Variablen wlp.aes.encryption.key angegeben ist, muss 256 Bit betragen.
+AESKEYMANAGER_NOT_BASE64_EXCEPTION=Der in der Variablen wlp.aes.encryption.key angegebene Wert muss base64 kodiert sein.
+AESKEYMANAGER_BASE64_VARIABLE_NOT_SET=Die Variable wlp.aes.encryption.key muss gesetzt werden, um Passw\u00f6rter zu entschl\u00fcsseln.
 # ---------------- This is an exception message ------------
 PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=Es wurden mehrere CustomPasswordEncryption-Implementierungen erkannt. Es wird nur eine einzige CustomPasswordEncryption-Implementierung unterst\u00fctzt. Die Liste der erkannten CustomPasswordEncryption-Implementierungen ist folgende:
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Bei der Verarbeitung der Erweiterungsmanifestdatei {0} wurde ein Fehler gemeldet. Diese Datei wurde ignoriert. Die angepasste Verschl\u00fcsselung ist nicht verf\u00fcgbar. Die Fehlernachricht ist {1}.

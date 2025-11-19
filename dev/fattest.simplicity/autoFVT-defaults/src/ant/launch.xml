@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2024 IBM Corporation and others.
+    Copyright (c) 2017, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@
 		<property name="simplicity.properties" value="${dir.component.root}/simplicity.properties" />
 		<property name="wsadminlib.py" value="${dir.src}/jython/wsadminlib.py" />
 		<property name="testinfo.properties" value="${dir.component.root}/build/testinfo.properties" />
+		<property file="${basedir}/fat.bnd.properties" />
+		<property file="${basedir}/fat.sys.properties" />
 		<iff if="zos.environment">
 			<then>
 				<!--  used for running on z/os -->
@@ -51,28 +53,54 @@
 		<!-- not necessary because it will be passed down by the calling ant script -->
 		<iff if="is.running.automated.build">
 			<else>
-				<condition property="filesToFind" value="FATSuiteLite.class;FATSuite.class;FATTest.class" else="FATSuite.class;FATTest.class">
-					<or>
-						<not>
-							<isset property="fat.test.mode" />
-						</not>
-						<equals arg1="${fat.test.mode}" arg2="lite" casesensitive="false" trim="true" />
-					</or>
-				</condition>
+				<iff>
+					<not>
+						<isset property="test.bucket.class"/>
+					</not>
+					<then>
+						<condition property="filesToFind" value="FATSuiteLite.class;FATSuite.class;FATTest.class" else="FATSuite.class;FATTest.class">
+							<or>
+								<not>
+									<isset property="fat.test.mode" />
+								</not>
+								<equals arg1="${fat.test.mode}" arg2="lite" casesensitive="false" trim="true" />
+							</or>
+						</condition>
 
-				<!-- Works out what tests to run for the autoFVT.zip-->
-				<scanJars entry="entry.point" filesToFind="${filesToFind}">
-					<fileset dir="${basedir}/build/lib" includes="**.jar" />
-				</scanJars>
+						<!-- Works out what tests to run for the autoFVT.zip-->
+						<scanJars entry="entry.point" filesToFind="${filesToFind}">
+							<fileset dir="${basedir}/build/lib" includes="**.jar" />
+						</scanJars>
 				
-				<echo message="entry point: ${entry.point}" />
-				
-				<property name="test.bucket.class" value="${entry.point}" />
+						<echo message="entry point: ${entry.point}" />
+
+						<!-- If we find more than one test bucket class, fail and instruct the user to set test.bucket.class -->
+						<iff>
+							<contains string="${entry.point}" substring="," />
+							<then>
+								<fail message="Found more than one test bucket. Specify -Dtest.bucket.class to specify the FATSuite to run, e.g -Dtest.bucket.class=com.ibm.ws.example.suite1.FATSuite" />
+							</then>
+						</iff>
+
+						<property name="test.bucket.class" value="${entry.point}" />
+					</then>
+				</iff>
 				<property name="test.bucket.name" value="${test.bucket.class}" />
 			</else>
 		</iff>
 	</target>
 
+	<!-- ant doesn't easily support getting a property value from a computed property name.  This macro copies the value from
+	     one property to be the value from another property.  It is similar contract to the propertycopy ant-contrib target. -->
+	<macrodef name="copyProperty">
+		<attribute name="from"/>
+		<attribute name="to"/>
+		<sequential>
+		    <property name="@{to}" value="${@{from}}"/>
+		</sequential>
+    </macrodef>
+
+	
 	<!-- Properties used: configuration.properties, local.properties, bootstrapping.properties, topology.properties, acute.properties, dir.log, dir.log.tmp -->
 	<target name="translateProperties" depends="initProperties">
 		<!-- ACUTE caches information in its topology properties file, so if the state of your server changed since your last invocation, ACUTE won't know about it unless you refresh the file -->
@@ -101,14 +129,17 @@
 		<echo>Initializing the classpath for ${test.bucket.name}</echo>
 		<property file="${bootstrapping.properties}" />
 
+		<property name="bucket.minimum.java.prop" value="${test.bucket.class}_fat.minimum.java.level"/>
+		<copyProperty from="${bucket.minimum.java.prop}" to="bucket.minimum.java"/>
+		
 		<!-- Work out the actual entry point based on the current java level and database properties -->
 		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
 
-		<!-- Get fat.minimum.java.level properties-->
-		<property file="${basedir}/fat.bnd.properties" />
-		<property file="${basedir}/fat.sys.properties" />
+		<condition property="fat.minimum.java" value="${bucket.minimum.java}" else="${fat.minimum.java.level}">
+			<isset property="${bucket.minimum.java.prop}" />
+		</condition>
 		
-		<!-- Enforce fat.minimum.java.level rule. If this test is compiled with a java level 
+		<!-- Enforce fat.minimum.java rule. If this test is compiled with a java level 
            higher than the one we're currently running we should skip these tests. 
            Example values for java.specification.version are:
            1.8,9,10,11,12,etc...
@@ -116,21 +147,21 @@
 		<condition property="skip.java.level" value="true">
 			<!-- this is tedious but as of Java 15 we can no longer use <script> blocks since nashorn was removed -->
 			<or>
-				<and> <equals arg1="11" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
-                <and> <equals arg1="25" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
-                <and> <equals arg1="25" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
-                <and> <equals arg1="25" arg2="${fat.minimum.java.level}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
-                <and> <equals arg1="25" arg2="${fat.minimum.java.level}"/> <equals arg1="21"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="11" arg2="${fat.minimum.java}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="17" arg2="${fat.minimum.java}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="17" arg2="${fat.minimum.java}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java}"/> <equals arg1="21"  arg2="${java.specification.version}"/> </and>
 		    </or>
 		</condition>
 
 		<!-- Output java level info -->
-		<echo message="fat.minimum.java.level=${fat.minimum.java.level}" />
+		<echo message="fat.minimum.java=${fat.minimum.java}" />
 		<echo message="java.specification.version=${java.specification.version}" />
 		<echo message="micro.version=${micro.version}" />
 
@@ -141,7 +172,7 @@
 				<property name="test.bucket.name.to.run" value="${test.bucket.class.to.run}" />
 
 				<echo message="FAT bucket WILL NOT run tests, due to the following properties:" />
-				<echo message="     This bucket uses java level:         ${fat.minimum.java.level}" />
+				<echo message="     This bucket uses java level:         ${fat.minimum.java}" />
 			</then>
 		</iff>
 
@@ -550,6 +581,7 @@
 						<propertyref prefix="bvt.prop." />
 						<mapper type="glob" from="bvt.prop.*" to="*" />
 					</syspropertyset>
+					<sysproperty key="test.bucket.class" value="${test.bucket.class.to.run}"/>
 					<!-- Add global properties -->
 					<syspropertyset>
 						<propertyref prefix="global." />

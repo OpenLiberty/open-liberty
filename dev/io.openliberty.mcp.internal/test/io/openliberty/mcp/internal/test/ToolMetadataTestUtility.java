@@ -23,6 +23,6 @@ public class ToolMetadataTestUtility {
     public static ToolMetadata createFrom(Tool annotation, Map<String, ToolMetadata.ArgumentMetadata> arguments, List<ToolMetadata.SpecialArgumentMetadata> specialArguments) {
         // used for unit Tests that pre-populate argumentData and create Tools within the tests
         String title = annotation.title().isEmpty() ? null : annotation.title();
-        return new ToolMetadata(annotation, null, null, arguments, specialArguments, annotation.name(), title, annotation.description(), null);
+        return new ToolMetadata(annotation, null, null, arguments, specialArguments, annotation.name(), title, annotation.description(), null, false, null, null);
     }
 }

@@ -272,7 +272,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
         JsonWebSignature jws = (JsonWebSignature) JsonWebSignature.fromCompactSerialization(jwt);
         assertEquals("JWT's alg header did not match expected value.", clientAssertionSigningAlgorithm, jws.getAlgorithmHeaderValue());
         assertEquals("JWT's typ header did not match expected value.", "JWT", jws.getHeader("typ"));
-        if (CryptoUtils.isFips140_3EnabledWithBetaGuard()){
+        if (CryptoUtils.isFips140_3Enabled()){
             assertEquals("JWT's x5t#S256 header did not match expected value.", "x5t#S256_" + testName.getMethodName(), jws.getHeader("x5t#S256"));
         } else {
             assertEquals("JWT's x5t header did not match expected value.", "x5t_" + testName.getMethodName(), jws.getHeader("x5t"));
@@ -293,7 +293,7 @@ public class PrivateKeyJwtAuthMethodTest extends CommonTestClass {
 
     private MockedStatic<CryptoUtils> setupMockFips140_3() {
         MockedStatic<CryptoUtils> cryptoUtilsMock = Mockito.mockStatic(CryptoUtils.class);
-        cryptoUtilsMock.when(CryptoUtils::isFips140_3EnabledWithBetaGuard).thenReturn(true);
+        cryptoUtilsMock.when(CryptoUtils::isFips140_3Enabled).thenReturn(true);
         return cryptoUtilsMock;
     }
 }

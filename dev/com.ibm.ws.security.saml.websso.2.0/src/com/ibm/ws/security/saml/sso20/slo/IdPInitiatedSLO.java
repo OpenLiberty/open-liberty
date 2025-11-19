@@ -13,13 +13,13 @@
 package com.ibm.ws.security.saml.sso20.slo;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
 import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.joda.time.DateTime;
 import org.opensaml.core.criterion.EntityIdCriterion;
 import org.opensaml.core.xml.XMLObjectBuilder;
 import org.opensaml.core.xml.XMLObjectBuilderFactory;
@@ -64,6 +64,7 @@ import com.ibm.ws.security.saml.sso20.internal.utils.SamlUtil;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
 import net.shibboleth.utilities.java.support.codec.Base64Support;
+import net.shibboleth.utilities.java.support.codec.EncodingException;
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
 import net.shibboleth.utilities.java.support.resolver.ResolverException;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
@@ -93,7 +94,7 @@ public class IdPInitiatedSLO {
             Tr.debug(tc, "IdPInitiatedSLO(" + service.getProviderId() + ")");
         }
     }
-    
+
     /**
      * @param ssoService2
      * @param msgCtx
@@ -200,7 +201,7 @@ public class IdPInitiatedSLO {
             //metadata = metadataProvider.getMetadata();
             // TODO: make sure that we have entityDescriptor type
             if (metadata2 != null) {
-                EntityDescriptor entityDescriptor = (EntityDescriptor) metadata2;
+                EntityDescriptor entityDescriptor = metadata2;
                 String idpEntityId = entityDescriptor.getEntityID();
                 //basicMsgCtx.setPeerEntityId(idpEntityId); //
                 IDPSSODescriptor ssoDescriptor = entityDescriptor.getIDPSSODescriptor(Constants.SAML20P_NS);
@@ -270,7 +271,7 @@ public class IdPInitiatedSLO {
             throw new SamlException("SAML20_SLOENDPOINT_NOT_IN_METADATA", null, new Object[] { ssoService.getProviderId() }); // CWWKS5214E
         }
         response.setDestination(basicMsgCtx.getPeerEntityEndpoint().getLocation());
-        response.setIssueInstant(new DateTime());
+        response.setIssueInstant(Instant.now()); //v4 update
         response.setVersion(SAMLVersion.VERSION_20);
         String id = SamlUtil.generateRandomID();
         response.setID(id);
@@ -333,7 +334,14 @@ public class IdPInitiatedSLO {
 
         byte[] logoutResBytes = logoutResponse.getBytes(StandardCharsets.UTF_8);
 
-        String samlResponse = Base64Support.encode(logoutResBytes, Base64Support.UNCHUNKED); //v3
+        String samlResponse = null;
+        try {
+            samlResponse = Base64Support.encode(logoutResBytes, Base64Support.UNCHUNKED);
+        } catch (EncodingException e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            //e.printStackTrace();
+        } //v3 , v4 update
 
         if (relayState == null || samlResponse == null || idpUrl == null) {
             // This should not happen
@@ -346,9 +354,9 @@ public class IdPInitiatedSLO {
         // requestInfo.setFragmentCookieId(cachingRequestInfo.getFragmentCookieId()); //TODO
         // If IdP sends the relaystate, then add it back into response
         if (this.idpRelayState != null) {
-         requestInfo.setParameter("RelayState", new String[] { this.idpRelayState }); // IdP sent one in the Logout request
+            requestInfo.setParameter("RelayState", new String[] { this.idpRelayState }); // IdP sent one in the Logout request
         }
-        
+
         requestInfo.setParameter("SAMLResponse", new String[] { samlResponse });
         requestInfo.redirectPostRequest(req,
                                         resp,
@@ -378,7 +386,7 @@ public class IdPInitiatedSLO {
             SignableSAMLObject signableMessage = (SignableSAMLObject) logoutResponse;
 
             XMLObjectBuilderFactory builderFactory = XMLObjectProviderRegistrySupport.getBuilderFactory();
-            XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>)builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
+            XMLObjectBuilder<Signature> signatureBuilder = (XMLObjectBuilder<Signature>) builderFactory.getBuilder(Signature.DEFAULT_ELEMENT_NAME);
             Signature signature = signatureBuilder.buildObject(Signature.DEFAULT_ELEMENT_NAME);
             signature.setSignatureAlgorithm(samlConfig.getSignatureMethodAlgorithm()); 
             signature.setCanonicalizationAlgorithm(SignatureConstants.ALGO_ID_C14N_EXCL_OMIT_COMMENTS);
@@ -394,13 +402,13 @@ public class IdPInitiatedSLO {
                                     //"CWWKS5063E: The Web Service Request failed due to the authentication is not successful.",
                                     null, new Object[] {});
                 }
-                marshaller.marshall(signableMessage);                
+                marshaller.marshall(signableMessage);
                 Thread.currentThread().setContextClassLoader(SignerProvider.class.getClassLoader());
                 Signer.signObject(signature);
             } catch (Exception e) {
                 throw new SamlException(e, true); // Let SamlException handles opensaml Exception
             } finally {
-                Thread.currentThread().setContextClassLoader(originalClassLoader); 
+                Thread.currentThread().setContextClassLoader(originalClassLoader);
             }
         }
     }

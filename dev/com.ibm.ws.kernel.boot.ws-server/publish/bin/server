@@ -1582,7 +1582,7 @@ enableFIPS140_3()
               profile=$match
             fi
           done
-          JVM_ARGS="${JVM_ARGS} -Dsemeru.fips=true -Dsemeru.customprofile=${profile} -Djava.security.propertiesList=${ENABLE_FIPS140_3}"
+          JVM_ARGS="${JVM_ARGS} -Dsemeru.fips=true -Dsemeru.customprofile=${profile} -Djava.security.propertiesList=\"${ENABLE_FIPS140_3}\""
         fi
       fi
     fi

@@ -676,6 +676,17 @@
         contentEncryptionAlgorithm="A256GCM" />   
 
 	<jwtBuilder
+        id="key_encrypt_rsaOaep256_ES256"
+        issuer="testIssuer"
+        signatureAlgorithm="ES256"
+        keyStoreRef="key_allSigAlg"
+        trustStoreRef="trust_allSigAlg"
+        keyAlias="es256"
+        keyManagementKeyAlgorithm="RSA-OAEP-256"
+        keyManagementKeyAlias="es256"
+        contentEncryptionAlgorithm="A256GCM" />
+
+	<jwtBuilder
 		id="key_encrypt_good_RS256_bad_contentEncryptAlg"
 		issuer="testIssuer"
 		signatureAlgorithm="RS256"

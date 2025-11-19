@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -36,12 +36,12 @@ Private-Package:\
    com.sun.tools.ws.wscompile;-split-package:=merge-last;version="2.2.10"
 
 -includeresource:\
- @${repo;com.sun.xml.ws:jaxws-rt;2.3.6;EXACT}!/!(META-INF/maven/*|module-info.class), \
- @${repo;com.sun.xml.ws:jaxws-tools;2.3.6;EXACT}!/!(META-INF/maven/*|module-info.class), \
- @${repo;com.sun.xml.ws:policy;2.4;EXACT}!/!META-INF/maven/*, \
- @${repo;com.sun.org.apache.xml.internal:resolver;20050927}!/!META-INF/maven/*, \
- @${repo;org.jvnet.staxex:stax-ex;1.7.7;EXACT}!/!META-INF/maven/*, \
- @${repo;com.sun.xml.stream.buffer:streambuffer;1.5.3;EXACT}!/!META-INF/maven/*, \
+ @\${repo;com.sun.xml.ws:jaxws-rt;2.3.6;EXACT}!/!(META-INF/maven/*|module-info.class), \
+ @\${repo;com.sun.xml.ws:jaxws-tools;2.3.6;EXACT}!/!(META-INF/maven/*|module-info.class), \
+ @\${repo;com.sun.xml.ws:policy;2.4;EXACT}!/!META-INF/maven/*, \
+ @\${repo;com.sun.org.apache.xml.internal:resolver;20050927}!/!META-INF/maven/*, \
+ @\${repo;org.jvnet.staxex:stax-ex;1.7.7;EXACT}!/!META-INF/maven/*, \
+ @\${repo;com.sun.xml.stream.buffer:streambuffer;1.5.3;EXACT}!/!META-INF/maven/*, \
  com/sun/tools/ws/wscompile=${bin}/com/sun/tools/ws/wscompile
 
 instrument.disabled: true

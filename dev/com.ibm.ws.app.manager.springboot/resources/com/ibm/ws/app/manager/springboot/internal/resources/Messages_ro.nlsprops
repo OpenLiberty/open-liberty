@@ -62,7 +62,7 @@ error.spring.required.20.explanation=Caracteristica Spring Boot configurat\u0103
 error.spring.required.20.useraction=Configura\u021bi o versiune a caracteristicii Spring Boot care este compatibil\u0103 cu con\u021binutul aplica\u021biei.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: Trebuie s\u0103 fie configurat\u0103 caracteristica springBoot-3.0. Este configurat\u0103 caracteristica springBoot-1.5 sau springBoot-2.0 \u0219i aplica\u021bia are con\u021binut Spring 3.0.
+error.spring3.required=CWWKC0273E: Trebuie s\u0103 fie configurat\u0103 caracteristica {0} \u00een fi\u0219ierul server.xml. Caracteristica {1} este configurat\u0103, iar aplica\u021bia are con\u021binut Spring Boot {2}.
 error.spring3.required.explanation=Caracteristica Spring Boot configurat\u0103 \u00een prezent nu este compatibil\u0103 cu con\u021binutul aplica\u021biei.
 error.spring3.required.useraction=Configura\u021bi o versiune a caracteristicii Spring Boot care este compatibil\u0103 cu con\u021binutul aplica\u021biei.
 
