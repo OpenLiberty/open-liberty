@@ -10,7 +10,6 @@
 package io.openliberty.mcp.internal.requests;
 
 import io.openliberty.mcp.request.RequestId;
-import jakarta.json.Json;
 import jakarta.json.bind.JsonbException;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
@@ -25,7 +24,7 @@ public class McpRequestIdSerializer implements JsonbSerializer<RequestId> {
     public void serialize(RequestId id, JsonGenerator generator, SerializationContext ctx) {
         Object val = id.value();
 
-        if (val == null) {
+        if (val == null || (val instanceof String str && str.isEmpty())) {
             generator.writeNull();
             return;
         }
@@ -33,7 +32,7 @@ public class McpRequestIdSerializer implements JsonbSerializer<RequestId> {
         if (val instanceof String str) {
             generator.write(str);
         } else if (val instanceof Number num) {
-            generator.write(Json.createValue(num.longValue()));
+            ctx.serialize(num, generator);
         } else {
             throw new JsonbException("Unsupported ID type for serialization: " + val.getClass().getName());
         }

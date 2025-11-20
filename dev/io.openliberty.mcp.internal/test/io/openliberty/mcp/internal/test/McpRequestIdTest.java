@@ -120,7 +120,7 @@ public class McpRequestIdTest {
 
         String actualJson = jsonb.toJson(req);
         String expectedJson = """
-                            {"id": "","jsonrpc":"2.0","method":"tools/call","params":{}}
+                            {"id":null ,"jsonrpc":"2.0","method":"tools/call","params":{}}
                         """;
 
         JSONAssert.assertEquals(expectedJson, actualJson, true);
