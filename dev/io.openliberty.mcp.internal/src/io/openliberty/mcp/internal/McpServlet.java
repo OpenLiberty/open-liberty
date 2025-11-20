@@ -461,7 +461,7 @@ public class McpServlet extends HttpServlet {
             return;
         }
 
-        ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId.toString());
+        ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId);
         Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -482,8 +482,8 @@ public class McpServlet extends HttpServlet {
         McpSessionId sessionId = transport.getSessionId();
         if (sessionId != null) {
             return new ExecutionRequestId(
-                                          transport.getMcpRequest().getId(),
-                                          sessionId.toString());
+                                          transport.getMcpRequest().id(),
+                                          sessionId);
         } else {
             return null;
         }

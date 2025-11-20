@@ -9,16 +9,15 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import java.math.BigDecimal;
-
 import io.openliberty.mcp.request.RequestId;
+import jakarta.json.Json;
 import jakarta.json.bind.JsonbException;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 
 /**
- * Instructions for how Jsonb should serialize {@link McpRequestId} types into JSON
+ * Instructions for how Jsonb should serialize {@link RequestId} types into JSON
  */
 public class McpRequestIdSerializer implements JsonbSerializer<RequestId> {
 
@@ -34,7 +33,7 @@ public class McpRequestIdSerializer implements JsonbSerializer<RequestId> {
         if (val instanceof String str) {
             generator.write(str);
         } else if (val instanceof Number num) {
-            generator.write(new BigDecimal(num.toString()));
+            generator.write(Json.createValue(num.longValue()));
         } else {
             throw new JsonbException("Unsupported ID type for serialization: " + val.getClass().getName());
         }

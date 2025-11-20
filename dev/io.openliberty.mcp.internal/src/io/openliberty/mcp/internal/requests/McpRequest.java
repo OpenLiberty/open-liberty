@@ -27,11 +27,7 @@ import jakarta.json.JsonObject;
 import jakarta.json.JsonString;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.annotation.JsonbCreator;
-import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbTransient;
-import jakarta.json.bind.annotation.JsonbTypeDeserializer;
-import jakarta.json.bind.annotation.JsonbTypeSerializer;
 
 /**
  * A JSON-RPC 2.0 request or notification.
@@ -43,50 +39,12 @@ import jakarta.json.bind.annotation.JsonbTypeSerializer;
  * @param method the method name
  * @param params the method parameters parsed as JSON
  */
-public class McpRequest {
+public record McpRequest(String jsonrpc,
+                         RequestId id,
+                         String method,
+                         JsonObject params) {
 
     private static final TraceComponent tc = Tr.register(McpRequest.class);
-
-    private String jsonrpc;
-
-    @JsonbTypeSerializer(McpRequestIdSerializer.class)
-    @JsonbTypeDeserializer(McpRequestIdDeserializer.class)
-    private RequestId id;
-
-    private String method;
-
-    @JsonbProperty("params")
-    private JsonObject params;
-
-    @JsonbCreator
-    public McpRequest(@JsonbProperty("jsonrpc") String jsonrpc,
-                      @JsonbProperty("id") RequestId id,
-                      @JsonbProperty("method") String method,
-                      @JsonbProperty("params") JsonObject params) {
-        this.jsonrpc = jsonrpc;
-        this.id = id;
-        this.method = method;
-        this.params = params;
-    }
-
-    @JsonbProperty("id")
-    @JsonbTypeSerializer(McpRequestIdSerializer.class)
-    @JsonbTypeDeserializer(McpRequestIdDeserializer.class)
-    public RequestId getId() {
-        return id;
-    }
-
-    public String getJsonrpc() {
-        return jsonrpc;
-    }
-
-    public String getMethod() {
-        return method;
-    }
-
-    public JsonObject getParams() {
-        return params;
-    }
 
     /**
      * Gets the request method as a {@link RequestMethod}.

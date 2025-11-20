@@ -13,8 +13,8 @@ package io.openliberty.mcp.request;
  * Represents the ID of a JSON-RPC request.
  * Must be a non-null String or Number.
  *
- * * @param value the value of the request ID, which must be a valid JSON-RPC ID
- * (string or number). Used to uniquely identify each request.
+ * @param value the value of the request ID, which must be a valid JSON-RPC ID
+ *     (string or number). Used to uniquely identify each request.
  */
 public record RequestId(Object value) {
     public RequestId {

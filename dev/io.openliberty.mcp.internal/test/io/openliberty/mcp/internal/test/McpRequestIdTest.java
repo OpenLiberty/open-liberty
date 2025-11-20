@@ -137,7 +137,7 @@ public class McpRequestIdTest {
                         }
                         """);
         McpRequest actualRequest = McpRequest.createValidMCPRequest(reader);
-        assertThat(actualRequest.getId().value(), equalTo("2"));
+        assertThat(actualRequest.id().value(), equalTo("2"));
     }
 
     @Test
@@ -151,7 +151,7 @@ public class McpRequestIdTest {
                         }
                         """);
         McpRequest actualRequest = McpRequest.createValidMCPRequest(reader);
-        assertThat(actualRequest.getId().value(), equalTo(new BigDecimal(2)));
+        assertThat(actualRequest.id().value(), equalTo(new BigDecimal(2)));
     }
 
     @Test

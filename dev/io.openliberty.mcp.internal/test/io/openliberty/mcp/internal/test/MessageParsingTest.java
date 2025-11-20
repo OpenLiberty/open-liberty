@@ -88,7 +88,7 @@ public class MessageParsingTest {
                         }
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.getId().value(), equalTo(new BigDecimal(2)));
+        assertThat(request.id().value(), equalTo(new BigDecimal(2)));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.TOOLS_CALL));
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         assertThat(toolCallRequest.getArguments(jsonb), arrayContaining("Hello"));
@@ -110,7 +110,7 @@ public class MessageParsingTest {
                         }
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.getId().value(), equalTo("2"));
+        assertThat(request.id().value(), equalTo("2"));
     }
 
     @Test(expected = JSONRPCException.class)
@@ -252,7 +252,7 @@ public class MessageParsingTest {
                         """);
 
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(request.getId().value(), equalTo("1"));
+        assertThat(request.id().value(), equalTo("1"));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.INITIALIZE));
         McpInitializeParams params = request.getParams(McpInitializeParams.class, jsonb);
         assertThat(params.getProtocolVersion(), equalTo("2024-11-05"));

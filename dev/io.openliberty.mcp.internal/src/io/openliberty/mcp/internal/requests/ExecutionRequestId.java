@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
+import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.request.RequestId;
 
-public record ExecutionRequestId(RequestId id, String sessionId) {}
+public record ExecutionRequestId(RequestId id, McpSessionId sessionId) {}
