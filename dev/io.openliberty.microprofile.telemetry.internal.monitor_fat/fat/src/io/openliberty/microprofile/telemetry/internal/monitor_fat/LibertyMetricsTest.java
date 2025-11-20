@@ -91,9 +91,6 @@ public class LibertyMetricsTest extends BaseTestClass {
 		String requestTimingStatsNotification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=RequestTimingStats,name=Default Executor\\]");
 		requestTimingStatsNotification = (requestTimingStatsNotification != null) ? "Found trace: " + requestTimingStatsNotification.trim() : "Could not find RequestTimingStats MBean Registration notification.";
 		Log.info(c, "waitForStringInTrace", requestTimingStatsNotification);
-		
-		Log.info(c, "CARL_DEBUG" ,"CARL_DEBUG: Forcing wait...");
-		TimeUnit.SECONDS.sleep(10);
 
 	    // Allow time for the collector to receive and expose metrics
 	    matchStringsWithRetries(() -> getContainerCollectorMetrics(container), new String[] {
