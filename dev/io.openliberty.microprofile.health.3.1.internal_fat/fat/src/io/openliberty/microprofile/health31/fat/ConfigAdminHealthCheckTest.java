@@ -157,14 +157,14 @@ public class ConfigAdminHealthCheckTest {
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
         getJSONPayload(conReady);
 
-        String configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp");
+        String configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp", 10000);
         String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp");
         log("DE_BUG configAdminLine: ", configAdminLine);
         log("DE_BUG stateMapLine: ", stateMapLine);
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
         assertNotNull("App was not detected by appTracker.", stateMapLine);
-        assertNotNull("Purposely failing.", null);
+        // assertNotNull("Purposely failing.", null);
 
     }
 
