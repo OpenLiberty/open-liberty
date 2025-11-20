@@ -37,10 +37,12 @@ import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import com.ibm.websphere.simplicity.RemoteFile;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 
 public abstract class SSLCommonTests extends AbstractSpringTests {
+    protected static final Class<?> c = SSLCommonTests.class;
 
     private static final String TEST_CLIENT_AUTH_NEED = "testClientAuthNeedWithClientSideKeyStore";
 
@@ -135,12 +137,13 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
     }
 
     public static String sendHttpsGet(String url, LibertyServer server, String ksPath, String ksPassword, String tsPath, String tsPassword) throws Exception {
-
+        final String m = "sendHttpsGet";
+        Log.info(c, m, "Using https on server: " + server.getServerName());
         String result = null;
         SSLContext sslcontext = SSLContext.getInstance("SSL");
 
         establishSSLcontext(sslcontext, server, ksPath, ksPassword, tsPath, tsPassword);
-
+        Log.info(c, m, "Established SSL Context.");
         URL requestUrl = getURL(url, server);
 
         HttpsURLConnection httpsConn = (HttpsURLConnection) requestUrl.openConnection();
@@ -150,6 +153,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
         httpsConn.setDoOutput(false);
         httpsConn.setDoInput(true);
 
+        Log.info(c, m, "Making SSL connection.");
         int code = httpsConn.getResponseCode();
         assertEquals("Expected response code not found.", 200, code);
 
@@ -163,6 +167,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
                 result = temp;
             temp = in.readLine();
         }
+        Log.info(c, m, "Https result: " + result);
         return result;
     }
 
