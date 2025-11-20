@@ -82,8 +82,10 @@ import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.ws.logging.utils.FileLogHolder;
+import com.ibm.ws.logging.utils.LogThrottlingUtils;
 import com.ibm.ws.logging.utils.RecursionCounter;
 import com.ibm.ws.logging.utils.SequenceNumber;
+import com.ibm.ws.logging.utils.ThrottleState;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
@@ -410,6 +412,9 @@ public class BaseTraceService implements TrService {
         captureSystemStreams();
         //Remove EMQ from BufferManager after a certain amount of time has passed
         BufferManagerEMQHelper.removeEMQByTimer();
+
+        LogThrottlingUtils.publish(this.throttleStates);
+
     }
 
     protected void registerLoggerHandlerSingleton() {

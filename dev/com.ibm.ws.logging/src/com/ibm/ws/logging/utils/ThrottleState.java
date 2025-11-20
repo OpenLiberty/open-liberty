@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.logging.internal.impl;
+package com.ibm.ws.logging.utils;
 
 import java.util.function.Supplier;
 
