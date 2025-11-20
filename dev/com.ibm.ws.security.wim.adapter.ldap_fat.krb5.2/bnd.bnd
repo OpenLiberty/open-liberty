@@ -26,7 +26,7 @@ fat.project: true
 	com.ibm.websphere.security.wim.base;verison=latest, \
 	com.ibm.ws.security.wim.adapter.ldap;verison=latest, \
 	com.ibm.ws.security.registry_test.servlet;version=latest, \
-	com.unboundid:unboundid-ldapsdk;version=5.1.0,\
+	com.unboundid:unboundid-ldapsdk;version=7.0.3,\
 	com.ibm.ws.com.unboundid;version=latest, \
 	com.ibm.ws.org.slf4j.jdk14;version=latest, \
 	com.ibm.ws.security.wim.adapter.ldap_fat.krb5.1;version=latest

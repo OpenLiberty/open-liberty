@@ -18,4 +18,4 @@ Export-Package: \
   org.apache.commons.beanutils.*
 
 Include-Resource: \
-    @${repo;commons-beanutils:commons-beanutils;1.11.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/NOTICE.txt|META-INF/LICENSE.txt
+    @\${repo;commons-beanutils:commons-beanutils;1.11.0}!/!META-INF/MANIFEST.MF|META-INF/maven/*|META-INF/NOTICE.txt|META-INF/LICENSE.txt

@@ -87,3 +87,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=S
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: Cheile de validare {0} trebuie regenerate utiliz\u00e2nd algoritmi criptografici care sunt certifica\u021bi FIPS 140-3.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Cheile de validare LTPA care sunt create f\u0103r\u0103 activarea FIPS 140-3 e\u0219ueaz\u0103 atunci c\u00e2nd FIPS 140-3 este activat.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utiliza\u021bi comanda securityUtility createLTPAKeys pentru a crea cheile de validare aprobate de FIPS atunci c\u00e2nd FIPS 140-3 este configurat.
+
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Cheile de validare {0} trebuie regenerate folosind algoritmi criptografici care nu sunt certifica\u021bi FIPS 140-3.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Cheile de validare LTPA care sunt create cu FIPS 140-3 activat e\u0219ueaz\u0103 atunci c\u00e2nd FIPS 140-3 este dezactivat.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utiliza\u021bi comanda securityUtility createLTPAKeys pentru a crea chei de validare neaprobate de FIPS atunci c\u00e2nd FIPS 140-3 este dezactivat.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -100,6 +100,15 @@ public interface AuthenticationService {
      *
      */
     public Boolean isUseDisplayNameForSecurityName();
+
+     /**
+     * 
+     * @return - true indicating authentication should proceed even if no custom Subject is found in the authentication cache, else returns false indicating re-login is required to create a new custom Subject.
+     *
+     */
+    public default Boolean ignoreCustomCacheKey() {
+        return Boolean.FALSE;
+    }
 
 
 }

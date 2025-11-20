@@ -344,3 +344,8 @@ PROVIDER_FATAL_CWWJP9993E.explanation=A Java Persistence API (JPA) szolg\u00e1lt
 PROVIDER_FATAL_CWWJP9993E.useraction=Tekintse meg a JPA szolg\u00e1ltat\u00f3 dokument\u00e1ci\u00f3j\u00e1t.
 
 #-------------------------------------------------------------------------------
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W=CWWJP9994W: A kiszolg\u00e1l\u00f3 nem tud babokat l\u00e9trehozni a {0} PersistenceUnit sz\u00e1m\u00e1ra, mert: {1}.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.explanation=Kiv\u00e9tel l\u00e9pett fel, amikor a CDI megpr\u00f3b\u00e1lta l\u00e9trehozni a babot egy perszisztencia egys\u00e9ghez. A CDI nem injekt\u00e1lhat egy entit\u00e1skezel\u0151t, egy entit\u00e1skezel\u0151 gy\u00e1rat vagy az adott perszisztenciaegys\u00e9ghez kapcsol\u00f3d\u00f3 seg\u00e9doszt\u00e1lyokat.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.useraction=Oldja meg a kiv\u00e9telt.
+
+#-------------------------------------------------------------------------------

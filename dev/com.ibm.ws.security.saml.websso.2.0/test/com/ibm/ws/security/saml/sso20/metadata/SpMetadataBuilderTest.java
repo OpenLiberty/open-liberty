@@ -261,6 +261,9 @@ public class SpMetadataBuilderTest {
                 allowing(providerRegistry).getParserPool();
                 will(returnValue(parserPool));
                 
+                allowing(element).hasAttributeNS(with(aNull(String.class)), with(equal("ID")));
+                will(returnValue(false));
+                
                 allowing(providerRegistry).getMarshallerFactory();
                 will(returnValue(marshallerFactory));
                 
@@ -327,9 +330,9 @@ public class SpMetadataBuilderTest {
                 one(ssoService).getSignatureCertificate();
                 will(returnValue(xCertificate509));
 
-                allowing(builderFactory).getBuilder(with(any(Element.class)));
+                allowing(builderFactory).getBuilderOrThrow(with(any(Element.class)));
                 will(returnValue(XMLObjectBuilder));
-                allowing(builderFactory).getBuilder(with(any(QName.class)));
+                allowing(builderFactory).getBuilderOrThrow(with(any(QName.class)));
                 will(returnValue(XMLObjectBuilder));
                 
                 allowing(XMLObjectBuilder).buildObject(X509Data.DEFAULT_ELEMENT_NAME);

@@ -1,20 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2021 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright The RestEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.jboss.resteasy.spi.config;
@@ -29,7 +15,6 @@ import java.util.function.Function;
 import org.jboss.resteasy.resteasy_jaxrs.i18n.Messages;
 import org.jboss.resteasy.spi.ResteasyConfiguration;
 import org.jboss.resteasy.spi.ResteasyProviderFactory;
-import org.jboss.resteasy.spi.config.security.ConfigPropertyPermission;
 
 /**
  * A default configuration which searches for a property in the following order:
@@ -71,10 +56,6 @@ public class DefaultConfiguration implements Configuration {
     @Override
     @SuppressWarnings("unchecked")
     public <T> Optional<T> getOptionalValue(final String name, final Class<T> type) {
-        final SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new ConfigPropertyPermission(name));
-        }
         final String value = resolver.apply(name);
         if (value == null) {
             return Optional.empty();
@@ -117,10 +98,6 @@ public class DefaultConfiguration implements Configuration {
 
     @Override
     public <T> T getValue(final String name, final Class<T> type) {
-        final SecurityManager sm = System.getSecurityManager();
-        if (sm != null) {
-            sm.checkPermission(new ConfigPropertyPermission(name));
-        }
         return getOptionalValue(name, type).orElseThrow(() -> Messages.MESSAGES.propertyNotFound(name));
     }
 

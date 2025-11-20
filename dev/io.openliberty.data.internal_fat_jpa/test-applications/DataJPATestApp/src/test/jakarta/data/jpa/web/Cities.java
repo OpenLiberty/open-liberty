@@ -36,7 +36,7 @@ import jakarta.data.repository.Update;
  * Repository for the City entity, which uses IdClass to define a composite id
  * across the City name and stateName.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Cities {
     @Find
     Optional<Set<Integer>> areaCodes(String name, String stateName);
@@ -50,7 +50,7 @@ public interface Cities {
     Stream<City> byNameButNotId(String cityName,
                                 CityId exceptFor);
 
-    @Query("SELECT VERSION(THIS) WHERE ID(THIS) = ?1")
+    @Query("SELECT VERSION(this) WHERE ID(this) = ?1")
     long currentVersion(CityId id);
 
     @Query("SELECT VERSION(THIS) WHERE name = ?1 AND stateName = ?2")

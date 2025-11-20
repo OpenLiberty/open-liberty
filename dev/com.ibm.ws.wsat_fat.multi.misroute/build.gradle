@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,21 +35,15 @@ task addDerbyToSharedDir(type: Copy) {
 
 autoFVT.dependsOn project(':com.ibm.ws.wsat_fat.multi').autoFVT
 
-autoFVT.doLast {
+autoFVT {
+  def wsatMultiProject = project(':com.ibm.ws.wsat_fat.multi')
+  doLast {
   copy {
-    from project(':com.ibm.ws.wsat_fat.multi').autoFvtDir
-    into autoFvtDir
-    include 'build/classes/tests/MultiServerTest.class'
-  }
-}
-
-autoFVT.dependsOn project(':com.ibm.ws.wsat_fat.multi').autoFVT
-
-autoFVT.doLast {
-  copy {
-    from project(':com.ibm.ws.wsat_fat.multi').autoFvtDir
+    from wsatMultiProject.autoFvtDir
     into autoFvtDir
     include 'test-applications/**'
+    include 'build/classes/tests/MultiServerTest.class'
+  }
   }
 }
 

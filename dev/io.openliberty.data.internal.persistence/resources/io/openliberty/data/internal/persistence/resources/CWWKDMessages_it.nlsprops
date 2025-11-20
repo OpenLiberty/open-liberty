@@ -146,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: Il metodo {0} dell''interfaccia del repo
 CWWKD1029.first.neg.or.zero.explanation=Il numero massimo di risultati della query deve essere un numero positivo.
 CWWKD1029.first.neg.or.zero.useraction=Aggiornare il metodo del repository per specificare un numero massimo positivo di risultati.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Il nome dell''entit\u00e0 manca nella query {0} specificata per il metodo {1} del repository {2}. In Jakarta Data Query Language, le query {3} devono essere formate come: {4}.
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Il nome dell''entit\u00e0 manca dalla query {0} specificata per il metodo {1} del repository {2}. Per le interrogazioni su {3}, utilizzare la forma: {4}.
 CWWKD1030.ql.lacks.entity.explanation=La query contiene una clausola che richiede il nome dell'entit\u00e0.
 CWWKD1030.ql.lacks.entity.useraction=Aggiornare il metodo query for repository per includere il nome dell'entit\u00e0.
 
@@ -162,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Il metodo {0} dell''interfaccia del 
 CWWKD1033.ql.orderby.disallowed.explanation=La clausola ORDER BY \u00e8 incompatibile con la paginazione a cursore.
 CWWKD1033.ql.orderby.disallowed.useraction=Sostituire la clausola ORDER BY con annotazioni che specificano i criteri di ordinamento.
 
-CWWKD1034.ql.where.required=CWWKD1034E: La query specificata dal metodo {0} dell''interfaccia del repository {1} deve terminare con una clausola WHERE perch\u00e9 il metodo restituisce {2}. La clausola WHERE termina alla posizione {3}, ma la lunghezza della query \u00e8 {4}. La query \u00e8: {5}.
-CWWKD1034.ql.where.required.explanation=Una clausola WHERE \u00e8 necessaria quando si utilizza la paginazione a cursore.
-CWWKD1034.ql.where.required.useraction=Aggiungere una clausola WHERE alla query.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: La query specificata dal metodo {0} dell''interfaccia del repository {1} deve terminare con una clausola WHERE perch\u00e9 il metodo restituisce {2}. La clausola WHERE termina alla posizione {3}, ma la lunghezza della query \u00e8 {4}. L''interrogazione \u00e8: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=Una clausola WHERE \u00e8 necessaria quando si utilizza la paginazione a cursore.
+CWWKD1034.ql.req.end.in.where.useraction=Aggiungere una clausola WHERE alla query.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: Una richiesta di pagina con la modalit\u00e0 di paginazione {0} non deve essere fornita al metodo {1} dell''interfaccia del repository {2}, perch\u00e9 il metodo restituisce {3} invece di {4}.
 CWWKD1035.incompat.page.mode.explanation=La modalit\u00e0 di paginazione richiesta non \u00e8 compatibile con il tipo di ritorno del metodo del repository.
@@ -507,3 +507,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Rimuovere l'annotazione in conflit
 CWWKD1118.param.anno.conflict=CWWKD1118E: Il parametro {0} del metodo {1} dell''interfaccia del repository {2} non pu\u00f2 essere annotato con le annotazioni: {3}. Due o pi\u00f9 annotazioni sono in conflitto tra loro.
 CWWKD1118.param.anno.conflict.explanation=La combinazione di annotazioni dei parametri non \u00e8 valida.
 CWWKD1118.param.anno.conflict.useraction=Rimuovere una o pi\u00f9 annotazioni in conflitto dal parametro del metodo del repository.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Il metodo {0} dell''interfaccia del repository {1} recupera le pagine che non includono un conteggio totale degli elementi e delle pagine perch\u00e9 la query contiene la parola chiave {2}. L''interrogazione completa \u00e8: {3}.
+CWWKD1119.keyword.prevents.count.explanation=La parola chiave \u00e8 incompatibile con la possibilit\u00e0 di ottenere un conteggio totale di elementi e pagine.
+CWWKD1119.keyword.prevents.count.useraction=Sostituire la query con una che non utilizzi la parola chiave o evitare di richiedere il conteggio totale degli elementi e delle pagine.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Il metodo {0} dell''interfaccia del repository {1} specifica una query che include la parola chiave {2}, incompatibile con la paginazione a cursore. Le query per la paginazione a cursore devono terminare con una clausola WHERE e non devono includere sottoquery. L''interrogazione \u00e8: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Parole chiave come GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT e UNION non sono compatibili con la paginazione a cursore.
+CWWKD1120.cursor.keyword.mismatch.useraction=Riscrivere la query per includere solo le clausole: SELECT, FROM e WHERE.

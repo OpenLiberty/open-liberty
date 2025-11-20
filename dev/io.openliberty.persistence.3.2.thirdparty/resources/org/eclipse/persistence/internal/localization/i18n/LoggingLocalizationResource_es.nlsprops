@@ -85,9 +85,9 @@ broadcast_remote_command_is_null=Aviso: {0}: se ha recibido el mensaje {1} que c
 
 broadcast_remote_command_wrong_type=Aviso: {0}: ha recibido el mensaje {1} que contiene un objeto del tipo {2} en lugar del tipo esperado RemoteCommand.
 
-cache_key_null_identity_map=CacheKey instancia: {0} almacenada en el mapa de identidad tiene, una clave primaria nula.
+cache_key_null_identity_map=CacheKey instancia: {0} almacenada en el mapa de identidades, tiene una clave primaria nula.
 
-cache_key_null_read_lock_manager=CacheKey instancia: {0}, bloqueada por el gestor de bloqueo de lectura de cach\u00e9 tiene, una clave primaria nula.
+cache_key_null_read_lock_manager=CacheKey instancia: {0}, bloqueada por el gestor de bloqueo de lectura de la cach\u00e9, tiene una clave primaria nula.
 
 cannot_get_nested_collection_type=El tipo de colecci\u00f3n anidada no se puede obtener.
 

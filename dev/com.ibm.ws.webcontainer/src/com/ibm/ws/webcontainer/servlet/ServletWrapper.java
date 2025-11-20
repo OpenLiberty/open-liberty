@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.servlet;
 
@@ -1211,11 +1208,10 @@ public abstract class ServletWrapper extends GenericServlet implements RequestPr
      * @see javax.servlet.Servlet#service(ServletRequest, ServletResponse)
      */
     public void service(ServletRequest req, ServletResponse res, WebAppServletInvocationEvent evt) throws ServletException, IOException {
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
-            logger.entering(CLASS_NAME, "service " + this.toString()+ " ,req-->"+ req + " ,res-->"+ res); //PM50111 // 569469
-        // logger.logp(Level.FINE, CLASS_NAME,"service", "service " +
-        // this.toString()); // PK26183
         boolean notify = notifyInvocationListeners && (evt != null);
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
+            logger.entering(CLASS_NAME, "service " + this.toString()+ " , req--> "+ req + " , res--> "+ res + " , notifyListeners -> " + notify); //PM50111 // 569469
+        
         if (unavailableUntil != -1) {
             lastAccessTime = System.currentTimeMillis();
             long timeDiff = unavailableUntil - lastAccessTime;

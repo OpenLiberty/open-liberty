@@ -147,7 +147,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: La m\u00e9thode {0} de l''interface de d
 CWWKD1029.first.neg.or.zero.explanation=Le nombre maximum de r\u00e9sultats de la requ\u00eate doit \u00eatre un nombre positif.
 CWWKD1029.first.neg.or.zero.useraction=Mise \u00e0 jour de la m\u00e9thode de d\u00e9p\u00f4t pour sp\u00e9cifier un nombre maximum positif de r\u00e9sultats.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Le nom de l''entit\u00e9 est absent de la requ\u00eate {0} sp\u00e9cifi\u00e9e pour la m\u00e9thode {1} du r\u00e9f\u00e9rentiel {2}. In Jakarta Data Query Language, {3} queries should be formed like: {4}.
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Le nom de l''entit\u00e9 est absent de la requ\u00eate {0} sp\u00e9cifi\u00e9e pour la m\u00e9thode {1} du r\u00e9f\u00e9rentiel {2}. Pour les requ\u00eates {3}, utilisez la forme : {4}.
 CWWKD1030.ql.lacks.entity.explanation=La requ\u00eate contient une clause qui demande le nom de l'entit\u00e9.
 CWWKD1030.ql.lacks.entity.useraction=Mise \u00e0 jour de la requ\u00eate pour la m\u00e9thode du r\u00e9f\u00e9rentiel afin d'inclure le nom de l'entit\u00e9.
 
@@ -163,9 +163,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: La m\u00e9thode {0} de l''interface 
 CWWKD1033.ql.orderby.disallowed.explanation=La clause ORDER BY est incompatible avec la pagination bas\u00e9e sur le curseur.
 CWWKD1033.ql.orderby.disallowed.useraction=Remplacer la clause ORDER BY par des annotations sp\u00e9cifiant les crit\u00e8res de tri.
 
-CWWKD1034.ql.where.required=CWWKD1034E: La requ\u00eate sp\u00e9cifi\u00e9e par la m\u00e9thode {0} de l''interface de r\u00e9f\u00e9rentiel {1} doit se terminer par une clause WHERE car la m\u00e9thode renvoie {2}. La clause WHERE se termine \u00e0 la position {3}, mais la longueur de la requ\u00eate est {4}. La requ\u00eate est la suivante : {5}.
-CWWKD1034.ql.where.required.explanation=Une clause WHERE est n\u00e9cessaire lors de l'utilisation de la pagination bas\u00e9e sur le curseur.
-CWWKD1034.ql.where.required.useraction=Ajoutez une clause WHERE \u00e0 la requ\u00eate.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: La requ\u00eate sp\u00e9cifi\u00e9e par la m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} doit se terminer par une clause WHERE car la m\u00e9thode renvoie {2}. La clause WHERE se termine \u00e0 la position {3}, mais la longueur de la requ\u00eate est {4}. La requ\u00eate est la suivante : {5}.
+CWWKD1034.ql.req.end.in.where.explanation=Une clause WHERE est n\u00e9cessaire lors de l'utilisation de la pagination bas\u00e9e sur le curseur.
+CWWKD1034.ql.req.end.in.where.useraction=Ajoutez une clause WHERE \u00e0 la requ\u00eate.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: Une demande de page avec le mode de pagination {0} ne doit pas \u00eatre fournie \u00e0 la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} car la m\u00e9thode renvoie {3} au lieu de {4}.
 CWWKD1035.incompat.page.mode.explanation=Le mode de pagination demand\u00e9 n'est pas compatible avec le type de retour de la m\u00e9thode du r\u00e9f\u00e9rentiel.
@@ -508,3 +508,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Supprimer l'annotation conflictuel
 CWWKD1118.param.anno.conflict=CWWKD1118E: Le param\u00e8tre {0} de la m\u00e9thode {1} de l''interface du r\u00e9f\u00e9rentiel {2} ne peut pas \u00eatre annot\u00e9 avec les annotations : {3}. Deux ou plusieurs annotations sont contradictoires.
 CWWKD1118.param.anno.conflict.explanation=La combinaison d'annotations de param\u00e8tres n'est pas valide.
 CWWKD1118.param.anno.conflict.useraction=Supprimer une ou plusieurs des annotations conflictuelles du param\u00e8tre de la m\u00e9thode du r\u00e9f\u00e9rentiel.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} permet de r\u00e9cup\u00e9rer des pages qui n''incluent pas un nombre total d''\u00e9l\u00e9ments et de pages parce que la requ\u00eate contient le mot-cl\u00e9 {2}. La requ\u00eate compl\u00e8te est la suivante : {3}.
+CWWKD1119.keyword.prevents.count.explanation=Le mot-cl\u00e9 est incompatible avec la possibilit\u00e9 d'obtenir un d\u00e9compte total des \u00e9l\u00e9ments et des pages.
+CWWKD1119.keyword.prevents.count.useraction=Remplacez la requ\u00eate par une autre qui n'utilise pas le mot-cl\u00e9 ou \u00e9vitez de demander un nombre total d'\u00e9l\u00e9ments et de pages.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} sp\u00e9cifie une requ\u00eate qui inclut le mot-cl\u00e9 {2}, ce qui est incompatible avec la pagination bas\u00e9e sur le curseur. Les requ\u00eates pour la pagination par curseur doivent se terminer par une clause WHERE et ne doivent pas inclure de sous-requ\u00eates. La requ\u00eate est la suivante : {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Les mots-cl\u00e9s tels que GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT et UNION ne sont pas compatibles avec la pagination bas\u00e9e sur le curseur.
+CWWKD1120.cursor.keyword.mismatch.useraction=R\u00e9\u00e9crivez la requ\u00eate pour n'inclure que les clauses : SELECT, FROM et WHERE.

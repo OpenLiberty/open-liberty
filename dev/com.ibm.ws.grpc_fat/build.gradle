@@ -16,10 +16,10 @@ buildscript {
         if (isUsingArtifactory) {
             maven {
                 credentials {
-                    username userProps.getProperty("artifactory.download.user")
-                    password userProps.getProperty("artifactory.download.token")
+                    username = userProps.getProperty("artifactory.download.user")
+                    password = userProps.getProperty("artifactory.download.token")
                 }
-                url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+                url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote"
             }
         } else {
             mavenCentral()
@@ -79,10 +79,10 @@ repositories {
     if (isUsingArtifactory) {
         maven {
             credentials {
-                username userProps.getProperty("artifactory.download.user")
-                password userProps.getProperty("artifactory.download.token")
+                username = userProps.getProperty("artifactory.download.user")
+                password = userProps.getProperty("artifactory.download.token")
             }
-            url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            url = "https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty"
             // for fats - this repository is used *only* contains artifacts with group "biz.aQute.bnd"
             content {
                 includeGroup "biz.aQute.bnd"
@@ -95,14 +95,14 @@ repositories {
         }
         maven {
             credentials {
-                username userProps.getProperty("artifactory.download.user")
-                password userProps.getProperty("artifactory.download.token")
+                username = userProps.getProperty("artifactory.download.user")
+                password = userProps.getProperty("artifactory.download.token")
             }
-            url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+            url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote"
         }
     } else {
         maven {
-            url ("https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            url = "https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/"
             content {
                 includeGroup "biz.aQute.bnd"
             }
@@ -221,6 +221,10 @@ sourceSets {
             srcDirs 'test-applications/StreamingService.war/src/java'
        }
     }
+}
+
+war {
+  duplicatesStrategy = 'warn'
 }
 
 addRequiredLibraries.dependsOn addJakartaTransformer

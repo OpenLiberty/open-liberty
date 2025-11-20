@@ -14,6 +14,7 @@ package test.jakarta.data.v1_1.web;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import jakarta.data.Limit;
@@ -68,6 +69,11 @@ public interface Fractions {
     @Query("SELECT numerator, denominator - numerator" +
            " ORDER BY denominator - numerator DESC, numerator ASC")
     Page<Ratio> pageOfRatios(PageRequest pageReq);
+
+    @Query("SELECT NEW test.jakarta.data.v1_1.web.Ratio(" +
+           "\t\tnumerator, denominator - numerator)" +
+           "\tWHERE numerator=?1 AND denominator=?2")
+    Optional<Ratio> singleRatio(int numerator, int denominator);
 
     @Query("SELECT numerator, denominator - numerator")
     Stream<Ratio> streamOfRatios();

@@ -31,7 +31,7 @@ task assembleTestContainerData(type: JavaExec) {
     
     // Run main method of CacheFiles class
     classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
-    main = "io.openliberty.org.testcontainers.generate.CacheFiles"
+    mainClass = "io.openliberty.org.testcontainers.generate.CacheFiles"
     args project.getProjectDir()
     
     // Debugging properties for testcontainers
@@ -63,7 +63,7 @@ task generateCustomImages(type: JavaExec) {
     
     // Run main method of CustomImages class
     classpath = configurations.runtime.plus(sourceSets.main.runtimeClasspath)
-    main = "io.openliberty.org.testcontainers.generate.CustomImages"
+    mainClass = "io.openliberty.org.testcontainers.generate.CustomImages"
     args project.getProjectDir()
     
     // Debugging properties for testcontainers

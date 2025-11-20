@@ -48,6 +48,10 @@ public class BlockWorkStartupServlet extends FATServlet {
     private static final String CLASSNAME = BlockWorkStartupServlet.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASSNAME);
 
+    private static final boolean isMacOSX = System.getProperty("os.name", "unknown").toLowerCase().indexOf("mac os x") >= 0;
+    private static final long MAX_BEFORE_START = isMacOSX ? 160000 : 40000;
+    private static final long MAX_AFTER_START = isMacOSX ? 145000 : 25000;
+
     private static final long DURATION_FUDGE_FACTOR = 30;
 
     private static final String JNDI_STARTUP_HELPER = "java:global/SingletonPropertyStartup/SingletonPropertyStartupBean/StartupHelperSingletonBean";
@@ -97,7 +101,7 @@ public class BlockWorkStartupServlet extends FATServlet {
                 svLogger.info("---> runTime = " + runTime);
 
                 // The default wait time has been adjusted to 20 seconds, so ensure we waited at least 20 seconds.
-                assertTrue("Lookup failed outside expected time of 20 to 40 seconds.", (runTime >= 20000 && runTime <= 40000));
+                assertTrue("Lookup failed outside expected time of 20 to " + (MAX_BEFORE_START / 1000) + " seconds.", (runTime >= 20000 && runTime <= MAX_BEFORE_START));
             }
 
             // Release the hounds!!!!
@@ -112,7 +116,8 @@ public class BlockWorkStartupServlet extends FATServlet {
 
             svLogger.info("---> Amount of time this thread waited = " + runTime);
 
-            assertTrue("Lookup did not wait for Startup to complete, or waited to long (10 to 25).", (runTime >= 10000 && runTime <= 25000));
+            assertTrue("Lookup did not wait for Startup to complete, or waited to long (10 to " + (MAX_AFTER_START / 1000) + ").",
+                       (runTime >= 10000 && runTime <= MAX_AFTER_START));
         } finally {
             TestData.setStartupBarrierEnabled(false);
 

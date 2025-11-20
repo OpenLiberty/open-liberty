@@ -38,7 +38,7 @@ public class FIPSInitializer implements ServletContainerInitializer {
     @Override
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException {
 
-        if (CryptoUtils.isFips140_3EnabledWithBetaGuard()) {
+        if (CryptoUtils.isFips140_3Enabled()) {
 
             /*
              * In Faces 3.0, org.apache.myfaces.MAC_ALGORITHM and org.apache.myfaces.ALGORITHM already use HmacSHA256 and AES.

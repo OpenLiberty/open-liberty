@@ -4,24 +4,22 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package io.openliberty.transport.http_fat;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,13 +27,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.RemoteFile;
-
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
 public class AccessLogRolloverTest {
@@ -44,12 +39,11 @@ public class AccessLogRolloverTest {
     private static final SimpleDateFormat FILE_DATE_NO_SECONDS = new SimpleDateFormat("_yy.MM.dd_HH.mm");
     private static final String CLASS_NAME = AccessLogRolloverTest.class.getName();
     private static final String TEST_SEPARATOR = "*******************";
-    private static final String FILE_SEPARATOR = "/";
     private static final String LOG_EXT = ".log";
 
     private static final long FILE_WAIT_SECONDS_PADDING = 1000;
     private static final long POLLING_TIMEOUT = 60000;
-    private static final long POllING_INTERVAL = 1000; 
+    private static final long POllING_INTERVAL = 1000;
 
     private static final Logger LOG = Logger.getLogger(AccessLogRolloverTest.class.getName());
 
@@ -95,11 +89,11 @@ public class AccessLogRolloverTest {
         LOG.info("Applying test-specific server configuration for maxFilesDefaultValue.");
         serverXml.setServerConfigurationFile("accessLogging/server-rollover-default-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
-    
+
         // Ensure test does not start near the top of a minute to avoid timing issues
         avoidTopOfMinute();
-    
-        // Wait for 3 rollovers to occur 
+
+        // Wait for 3 rollovers to occur
         LOG.info("Waiting for 3 log rollovers to complete...");
         Calendar cal = getNextRolloverTime(0, 1);
         for (int i = 0; i < 3; i++) {
@@ -122,14 +116,14 @@ public class AccessLogRolloverTest {
         LOG.info("Applying test-specific server configuration for maxFilesAfterRestart.");
         serverXml.setServerConfigurationFile("accessLogging/server-rollover-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
-    
+
         // Ensure test does not start near the top of a minute to avoid timing issues
         avoidTopOfMinute();
-    
+
         // Wait for 4 rollovers to occur (maxFiles = 3, interval = 1 min)
         LOG.info("Waiting for 4 log rollovers to complete...");
         Calendar cal = getNextRolloverTime(0, 1);
-        
+
         for (int i = 0; i < 4; i++) {
             checkForRolledLogsAtTime(cal);
             cal.add(Calendar.MINUTE, 1);
@@ -158,10 +152,10 @@ public class AccessLogRolloverTest {
 
     /*
      * Tests maxFiles = "0", a value of 0 means no limit, just checks if the server started properly
-     *  maxFiles="0"
+     * maxFiles="0"
      */
-   @Test
-   public void testZeroMaxFilesValue() throws Exception {
+    @Test
+    public void testZeroMaxFilesValue() throws Exception {
         LOG.info("Applying test-specific server configuration for ZeroMaxFilesValue.");
         serverXml.setServerConfigurationFile("accessLogging/server-rollover-zero-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
@@ -172,10 +166,10 @@ public class AccessLogRolloverTest {
 
     /*
      * Tests maxFiles = "i".Should output warning and set maxFiles to default 2
-     *  maxFiles="i"
+     * maxFiles="i"
      */
-   @Test
-   public void testInvalidMaxFilesValue() throws Exception {
+    @Test
+    public void testInvalidMaxFilesValue() throws Exception {
         LOG.info("Applying test-specific server configuration for InvalidMaxFilesValue");
         serverXml.setServerConfigurationFile("accessLogging/server-rollover-invalid-maxFiles.xml");
         serverXml.waitForStringInLogUsingMark("CWWKG0017I", 5000);
@@ -185,28 +179,28 @@ public class AccessLogRolloverTest {
         LOG.logp(Level.INFO, CLASS_NAME, "testInvalidMaxFilesValue", "Found warning: " + lines.toString());
         assertTrue("No CWWKG0083W warning was found indicating that i is an invalid value", lines.size() > 0);
 
-        // Stop the server while ignoring the expected warning "CWWKG0083W". 
+        // Stop the server while ignoring the expected warning "CWWKG0083W".
         // This warning is expected due to an invalid maxFiles value in the test configuration.
-        // Without this, the test would fail during server shutdown because the framework 
+        // Without this, the test would fail during server shutdown because the framework
         // treats all warnings/errors as failures by default.
-        serverInUse.stopServer("CWWKG0083W");   
+        serverInUse.stopServer("CWWKG0083W");
     }
 
     private void validateMaxBackupFiles(int maxFiles) throws Exception {
-    File logsDir = new File(getLogsDirPath());
-    assertTrue("Log directory does not exist: " + logsDir.getAbsolutePath(), logsDir.exists());
-    String[] logs = logsDir.list((dir, name) -> name.startsWith(ACCESS_LOG_PREFIX));
-    // null check
-    int logCount = (logs != null) ? logs.length : 0;
-    assertTrue("Expected at most " + maxFiles + " log files, but found " + logCount + ": " + 
-               (logs != null ? Arrays.toString(logs) : "No logs found"),
-               logCount == maxFiles);
+        File logsDir = new File(getLogsDirPath());
+        assertTrue("Log directory does not exist: " + logsDir.getAbsolutePath(), logsDir.exists());
+        String[] logs = logsDir.list((dir, name) -> name.startsWith(ACCESS_LOG_PREFIX));
+        // null check
+        int logCount = (logs != null) ? logs.length : 0;
+        assertTrue("Expected at most " + maxFiles + " log files, but found " + logCount + ": " +
+                   (logs != null ? Arrays.toString(logs) : "No logs found"),
+                   logCount == maxFiles);
     }
 
     private static String getLogsDirPath() throws Exception {
         return serverInUse.getDefaultLogFile().getParentFile().getAbsolutePath();
     }
-    
+
     private static void checkForRolledLogsAtTime(Calendar cal) throws Exception {
         LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
 
@@ -221,7 +215,7 @@ public class AccessLogRolloverTest {
             Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
 
         File logsDir = new File(getLogsDirPath());
-        
+
         boolean fileFound = false;
         long startTime = System.currentTimeMillis();
 
@@ -294,7 +288,7 @@ public class AccessLogRolloverTest {
             //wait to do a server config update at the start of the minute
             Thread.sleep(nextMinStartsInMs);
             Thread.sleep(avoidAfterMs); //padding
-        }}
-    
-}
+        }
+    }
 
+}

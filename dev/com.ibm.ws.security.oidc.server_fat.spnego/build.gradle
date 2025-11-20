@@ -42,7 +42,7 @@ dependencies {
                'jtidy:jtidy:4aug2000r7-dev',
                'org.apache.sshd:sshd-common:2.12.1',
                'org.apache.sshd:sshd-core:2.12.1',
-               'org.bouncycastle:bcprov-jdk18on:1.78.1', // required for sshd and cannot use io.openliberty.org.bouncycastle.bcprov-jdk18on
+               'org.bouncycastle:bcprov-jdk18on:1.82', // required for sshd and cannot use io.openliberty.org.bouncycastle.bcprov-jdk18on
                'net.sourceforge.htmlunit:htmlunit:2.44.0',
                'net.sourceforge.htmlunit:htmlunit-core-js:2.44.0',
                'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',

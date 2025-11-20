@@ -9,21 +9,16 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
-import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.internal.ToolMetadata.ArgumentMetadata;
+import jakarta.json.JsonObject;
 
 public class ToolDescription {
 
     private final String name;
     private final String title;
     private final String description;
-    private final InputSchemaObject inputSchema;
+    private final JsonObject inputSchema;
+    private final JsonObject outputSchema;
     private final AnnotationsDescription annotations;
 
     public String getName() {
@@ -38,8 +33,12 @@ public class ToolDescription {
         return description;
     }
 
-    public InputSchemaObject getInputSchema() {
+    public JsonObject getInputSchema() {
         return inputSchema;
+    }
+
+    public JsonObject getOutputSchema() {
+        return outputSchema;
     }
 
     public AnnotationsDescription getAnnotations() {
@@ -62,20 +61,8 @@ public class ToolDescription {
                                                           ann.openWorldHint() == true ? null : ann.openWorldHint(),
                                                           ann.title().isEmpty() ? null : ann.title());
         }
-        Map<String, ArgumentMetadata> argumentMap = toolMetadata.arguments();
-        Map<String, InputSchemaPrimitive> primitiveInputSchemaMap = new HashMap<>();
-        LinkedList<String> requiredParameterList = new LinkedList<>();
-
-        for (String argumentName : argumentMap.keySet()) {
-            ArgumentMetadata argumentMetadata = argumentMap.get(argumentName);
-            primitiveInputSchemaMap.put(argumentName, buildPrimitiveInputSchema(argumentMetadata));
-
-            if (argumentMetadata.required()) {
-                requiredParameterList.add(argumentName);
-            }
-        }
-
-        inputSchema = new InputSchemaObject("object", primitiveInputSchemaMap, requiredParameterList);
+        this.inputSchema = toolMetadata.inputSchema();
+        this.outputSchema = toolMetadata.outputSchema();
     }
 
     /*
@@ -90,41 +77,6 @@ public class ToolDescription {
                && ann.title().isEmpty();
 
     }
-
-    private InputSchemaPrimitive buildPrimitiveInputSchema(ArgumentMetadata argumentMetadata) {
-
-        Type type = argumentMetadata.type();
-        String argumentDescription = argumentMetadata.description();
-        if (argumentDescription.equals("")) {
-            argumentDescription = null;
-        }
-
-        InputSchemaPrimitive tempSchemaPrimitive;
-
-        boolean isJsonNumber = type.equals(long.class) || type.equals(double.class) || type.equals(byte.class) || type.equals(float.class) || type.equals(short.class)
-                               || type.equals(Long.class) || type.equals(Double.class) || type.equals(Byte.class) || type.equals(Float.class) || type.equals(Short.class);
-
-        if (isJsonNumber)
-            tempSchemaPrimitive = new InputSchemaPrimitive("number", argumentDescription);
-        else if (type.equals(String.class) || type.equals(Character.class) || type.equals(char.class))
-            tempSchemaPrimitive = new InputSchemaPrimitive("string", argumentDescription);
-        else if (type.equals(int.class) || type.equals(Integer.class))
-            tempSchemaPrimitive = new InputSchemaPrimitive("integer", argumentDescription);
-        else if (type.equals(boolean.class) || type.equals(Boolean.class))
-            tempSchemaPrimitive = new InputSchemaPrimitive("boolean", argumentDescription);
-        else
-            tempSchemaPrimitive = new InputSchemaPrimitive(type.getTypeName(), argumentDescription);
-        //else if (type.equals(Object.class)) {
-        // TODO Implement this using the InputSchema record
-        //}
-        return tempSchemaPrimitive;
-    }
-
-    public record InputSchema(List<InputSchemaObject> objs, List<InputSchemaPrimitive> primitives) {}
-
-    public record InputSchemaObject(String type, Map<String, InputSchemaPrimitive> properties, List<String> required) {}
-
-    public record InputSchemaPrimitive(String type, String description) {}
 
     public record AnnotationsDescription(
                                          Boolean readOnlyHint,

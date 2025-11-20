@@ -1105,7 +1105,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             //if remoteIp is not enabled or client address not verified as trusted.
             String scheme = getRemoteProto();
 
-            if (scheme == null && isc != null && !isc.useForwardedHeaders()) {
+            if (scheme == null && isc != null && !isc.useRemoteIpOptions()) {
                 //if remoteIp is not enabled, still verify for the x-forwarded-proto
                 scheme = getTrustedHeader(HttpHeaderKeys.HDR_X_FORWARDED_PROTO);
             }
@@ -1216,7 +1216,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         String remoteAddr = null;
 
-        if (isc != null && isc.useForwardedHeaders()) {
+        if (isc != null && isc.useRemoteIpOptions()) {
             remoteAddr = isc.getForwardedRemoteAddress();
 
         }
@@ -1301,7 +1301,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         String remoteHost = null;
         final HttpInboundServiceContextImpl finalSc = this.isc;
 
-        if (finalSc != null && finalSc.useForwardedHeaders()) {
+        if (finalSc != null && finalSc.useRemoteIpOptions()) {
             remoteHost = finalSc.getForwardedRemoteHost();
         }
         if (remoteHost == null) {
@@ -1334,7 +1334,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     @Override
     public int getRemotePort() {
 
-        if (isc != null && isc.useForwardedHeaders()) {
+        if (isc != null && isc.useRemoteIpOptions()) {
             if (isc.getForwardedRemotePort() != -1)
                 return isc.getForwardedRemotePort();
         }
@@ -1724,7 +1724,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     @Override
     public String getRemoteProto() {
 
-        if (isc != null && isc.useForwardedHeaders()) {
+        if (isc != null && isc.useRemoteIpOptions()) {
             return isc.getForwardedRemoteProto();
         }
         return null;
@@ -1732,10 +1732,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     }
 
     @Override
-    public boolean useForwardedHeaders() {
+    public boolean useRemoteIpOptions() {
 
         if (isc != null) {
-            return isc.useForwardedHeaders();
+            return isc.useRemoteIpOptions();
         }
         return false;
     }

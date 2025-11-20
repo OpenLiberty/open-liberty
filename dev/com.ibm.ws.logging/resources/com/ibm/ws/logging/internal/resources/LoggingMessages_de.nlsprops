@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Die folgenden Nachrichten werden aus den
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Als auszublendend konfigurierte Nachrichten werden nicht in die Dateien console.log und messages.log geschrieben. Sie werden in die Datei trace.log geschrieben. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Es ist keine Aktion erforderlich.
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt in '{0}' aktualisiert.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt in ''{0}'' aktualisiert.
 MESSAGE_FORMAT_UPDATED.explanation=Das Ausgabeformat f\u00fcr die Datei messages.log wurde jetzt aktualisiert.
 MESSAGE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: Das Konsolenausgabeformat wurde jetzt in '{0}' aktualisiert.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Das Konsolenausgabeformat wurde jetzt in ''{0}'' aktualisiert.
 CONSOLE_FORMAT_UPDATED.explanation=Das Konsolenausgabeformat wurde jetzt aktualisiert.
 CONSOLE_FORMAT_UPDATED.useraction=Es ist keine Aktion erforderlich. 
 
@@ -169,6 +169,10 @@ LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Geben Sie ein Protokollumlauf
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Der Headername fehlt f\u00fcr eines oder mehrere accessLogging logFormat-Felder: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Die JSON-Protokollierung verwendet das Attribut logFormat aus accessLogging, um auszuw\u00e4hlen, welche http_access.log-Nachrichtenfelder einbezogen werden sollen. Ein Headername muss angegeben werden, wenn die Felder %i oder %o im accessLogging logFormat-Attribut verwendet werden.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Geben Sie einen Headernamen f\u00fcr das Feld im Attribut accessLogging logFormat an.
+
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: Die Protokolle werden aufgrund des hohen Volumens gedrosselt.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=Die Protokolle werden derzeit aufgrund des hohen Volumens gedrosselt.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=Beheben Sie alle Probleme, die zu einer \u00fcberm\u00e4\u00dfigen Protokollierung f\u00fchren, oder erh\u00f6hen Sie den Schwellenwert f\u00fcr die Protokollierung, indem Sie das Attribut throttleMaxMessagesPerWindow logging konfigurieren. 
 
 FFDC_FILE_DELETION=TRAS3014I: {0} FFDC-Dateien wurden basierend auf dem konfigurierten maxFfdcAge-Wert gel\u00f6scht.
 FFDC_FILE_DELETION.explanation=Die Anzahl der FFDC-Dateien, die w\u00e4hrend einer FFDC-Bereinigung gel\u00f6scht wurden.

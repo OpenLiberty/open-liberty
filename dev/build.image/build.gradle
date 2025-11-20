@@ -48,6 +48,13 @@ task copyPropertiesToBuildImage (type:Copy) {
            tokens: [PRODUCT_VERSION: bnd.libertyRelease, PRODUCT_EDITION: bnd.productEdition, PRODUCT_LICENSE_TYPE: bnd.productLicenseType])
 }
 
+task copyFips1403PropertiesToBuildImage( type: Copy) {
+    dependsOn jar
+    from project.file('publish/wlp/security')
+    into project.file('wlp/lib/security/fips140_3')
+    include 'FIPS140-3-Liberty.properties'
+}
+
 task copyPublicKeyToBuildImage (type:Copy) {
     dependsOn jar
     from project.file('publish')
@@ -133,16 +140,17 @@ task publishTemplates (type:Copy) {
 
 task publishExtract {
     dependsOn ':wlp.lib.extract:jar'
+    def wlpLibExtractProject = project(':wlp.lib.extract')
     doLast {
         copy {
-            from(zipTree(new File(project(':wlp.lib.extract').buildDir, 'wlp.lib.extract.jar')))
+            from(zipTree(new File(wlpLibExtractProject.buildDir, 'wlp.lib.extract.jar')))
             exclude 'META-INF/'
-            into project.projectDir
+            into projectDir
         }
         copy {
-            from(zipTree(new File(project(':wlp.lib.extract').buildDir, 'wlp.lib.extract.jar')))
+            from(zipTree(new File(wlpLibExtractProject.buildDir, 'wlp.lib.extract.jar')))
             include 'META-INF/MANIFEST.MF'
-            into project.file('wlp/lib/extract')
+            into file('wlp/lib/extract')
         }
     }
 }
@@ -154,6 +162,7 @@ jar {
 assemble {
     dependsOn publishTemplates
     dependsOn copyPropertiesToBuildImage
+    dependsOn copyFips1403PropertiesToBuildImage
     dependsOn addServiceFingerprint
     dependsOn copyReadmeToBuildImage
     dependsOn copyBetaLicenseToBuildImage
@@ -185,11 +194,11 @@ task updatePoms {
     doLast {      
             def myArgs = [
               inputDir, tmpDir, failOnError]                 
-            javaexec {
+            providers.javaexec {
                 classpath configurations.updatePomClasspath
                 mainClass = updateClassName
                 args = myArgs
-            }
+            }.result.get()
         }
 }
 
@@ -223,6 +232,13 @@ class PackageLibertyWithFeatures extends DefaultTask {
     File outputTo
     @Internal
     Boolean isBeta
+
+    private final ExecOperations execOperations
+
+    @javax.inject.Inject
+    public PackageLibertyWithFeatures(ExecOperations execOperations) {
+        this.execOperations = execOperations
+    }
 
     def getFeaturePath(String feature) {
         def file = getFeaturePath(feature, "")
@@ -267,7 +283,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
 
         // Create server in order to minify an image that only includes kind=ga features
         project.delete project.file('wlp/usr/servers/packageOpenLiberty')
-        project.exec {
+        execOperations.exec {
             workingDir project.file('wlp/bin')
             def args = ["create", "packageOpenLiberty"]
             if (OperatingSystem.current().windows) {
@@ -288,7 +304,7 @@ class PackageLibertyWithFeatures extends DefaultTask {
 
             File archive = new File(project.buildDir, 'openliberty.zip')
             project.delete archive
-            project.exec {
+            execOperations.exec {
                 workingDir project.file('wlp/bin')
                 def args = ["package", "packageOpenLiberty", "--archive=${archive}", "--include=minify"]
                 if (completeFeatureList) { 
@@ -314,6 +330,12 @@ class PackageLibertyWithFeatures extends DefaultTask {
             project.copy {
                 from project.file('wlp')
                 include 'LICENSE'
+                into "$outputTo/wlp"
+            }
+
+            project.copy {
+                from project.file('wlp')
+                include 'lib/security/fips140_3/FIPS140-3-Liberty.properties'
                 into "$outputTo/wlp"
             }
 
@@ -351,44 +373,6 @@ class PackageLibertyWithFeatures extends DefaultTask {
             }
         }
     }
-}
-
-def testFeatures() {
-    def testFeatures = []
-    def tree = fileTree(dir: "$projectDir/wlp/lib/features", include: '*.mf')
-    tree.each {
-        Scanner scanner = new Scanner(it)
-        String line
-        while(scanner.hasNextLine()) {
-            line = scanner.nextLine()
-            if (line.indexOf("IBM-Test-Feature: true") != -1) {
-                testFeatures.add(it.getName())
-                break
-            }
-        }
-    }
-    testFeatures
-}
-
-def allFeatures() {
-    String features = ""
-    // Exec ./bin/productInfo featureInfo
-    new ByteArrayOutputStream().withStream { os ->
-        project.exec {
-            workingDir project.file('wlp/bin')
-            def args = ["featureInfo"]
-            if (OperatingSystem.current().windows) {
-                commandLine = ["cmd", "/c", "productInfo"] + args
-            } else {
-                commandLine = ["./productInfo"] + args
-            }
-            standardOutput = os
-        }
-        os.toString().eachLine {
-            features += '<feature>' + it.substring(0, it.indexOf(' ')) + '</feature>\n'
-        }
-    }
-    features
 }
 
 def gaPublicFeatures() {
@@ -465,7 +449,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
     //BETA
     task packageOpenLibertyBeta(type: PackageLibertyWithFeatures) {
-        enabled rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
+        enabled = rootProject.userProps["ghe.build.type"] == null || !rootProject.userProps["ghe.build.type"].contains("ifix")
         dependsOn parent.subprojects.assemble
         dependsOn copyBetaLicenseToBuildImage
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -648,7 +632,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
 
 // Generate checksums
 task genChecksums() {
-    enabled !isIFIXBuild
+    enabled = !isIFIXBuild
     dependsOn parent.subprojects.assemble
     dependsOn updatePoms
     doLast {
@@ -666,7 +650,7 @@ task zipOpenLibertyDev(type: Zip) {
     from projectDir
     include 'wlp/**'
     exclude 'wlp/usr/servers/**'
-    destinationDirectory = distsDirectory
+    destinationDirectory = layout.buildDirectory.dir("distributions")
     archiveVersion = releaseVersion
 }
 publish.dependsOn zipOpenLibertyDev
@@ -679,10 +663,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-all'
         from(packageOpenLibertyAll)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -699,10 +683,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty'
         from(packageOpenLiberty)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.runtime.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.runtime.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -719,10 +703,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-kernel'
         from(packageOpenLibertyKernel)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.kernel.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.kernel.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -739,10 +723,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-webProfile8'
         from(packageOpenLibertyWebProfile8)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.webprofile8.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.webprofile8.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -759,10 +743,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-javaee8'
         from(packageOpenLibertyJavaee8)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.javaee8.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.javaee8.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -779,10 +763,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-webProfile10'
         from(packageOpenLibertyWebProfile10)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.webprofile10.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.webprofile10.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -799,10 +783,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-jakartaee10'
         from(packageOpenLibertyJakartaee10)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.jakartaee10.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.jakartaee10.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -819,10 +803,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-webProfile11'
         from(packageOpenLibertyWebProfile11)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.webprofile11.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.webprofile11.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -839,10 +823,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-jakartaee11'
         from(packageOpenLibertyJakartaee11)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.jakartaee11.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.jakartaee11.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -859,10 +843,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-microProfile4'
         from(packageOpenLibertyMicroProfile4)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.microprofile4.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.microprofile4.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -879,10 +863,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty-microProfile7'
         from(packageOpenLibertyMicroProfile7)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = releaseVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.microprofile7.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.microprofile7.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -899,10 +883,10 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn genChecksums
         archiveBaseName = 'openliberty'
         from(packageOpenLibertyBeta)
-        destinationDirectory = distsDirectory
+        destinationDirectory = layout.buildDirectory.dir("distributions")
         archiveVersion = betaVersion
         doLast {
-            rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archivePath.toString())
+            rootProject.userProps.setProperty('zipopenliberty.beta.archivename', archiveFile.get().getAsFile().toString())
             rootProject.storeProps()
         }
     }
@@ -945,8 +929,8 @@ clean.doLast {
 publishing {
     publications {
         openLibertyDev(MavenPublication) {
-            artifactId 'openliberty'
-            version project.version
+            artifactId = 'openliberty'
+            version = project.version
             artifact zipOpenLibertyDev
         }
     }
@@ -957,12 +941,12 @@ if (isAutomatedBuild && !isIFIXBuild) {
         archiveBaseName = 'openliberty_test_report'
         from cnf.file('generated/testReports/allUnitTests')
         destinationDirectory = cnf.file('generated/testReports')
-        rootProject.userProps.setProperty('gradle.test.report.zip', archivePath.toString())
+        rootProject.userProps.setProperty('gradle.test.report.zip', archiveFile.get().getAsFile().toString())
         rootProject.storeProps()
     }
 
     task createJSONForPublicArtifacts {
-        enabled isAutomatedBuild
+        enabled = isAutomatedBuild
         dependsOn zipTestReport
         
         doLast {

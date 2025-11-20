@@ -41,7 +41,7 @@ Export-Package:\
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
 # This will ensure that the other docker container strategies are accessible at runtime.
 Include-Resource:\
-    @${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**,\
+    @\${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**,\
     openliberty=resources/openliberty
 
 publish.wlp.jar.disabled: true

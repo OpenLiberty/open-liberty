@@ -12,6 +12,11 @@
  *******************************************************************************/
 package com.ibm.ws.kernel.feature.internal;
 
+import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.ACTIVE;
+import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.CONTAINER;
+import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.PREPARE;
+import static com.ibm.wsspi.kernel.service.condition.StartPhaseCondition.StartPhase.SERVICE_EARLY;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.DataInputStream;
@@ -761,8 +766,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
             switch (featureChange.provisioningMode) {
                 case INITIAL_PROVISIONING:
                     // Get through kernel/core startup
-                    if (getStartLevel() < ProvisionerConstants.LEVEL_FEATURE_PREPARE) {
-                        BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_FEATURE_PREPARE);
+                    if (getStartLevel() < PREPARE.level()) {
+                        BundleLifecycleStatus startStatus = setStartLevel(PREPARE.level());
                         checkBundleStatus(startStatus);
                     }
                     break;
@@ -832,7 +837,7 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                 case INITIAL_PROVISIONING:
                     // Increment the start level to ensure application bundles can start,
                     // even if no features are loaded
-                    BundleLifecycleStatus startStatus = setStartLevel(ProvisionerConstants.LEVEL_ACTIVE);
+                    BundleLifecycleStatus startStatus = setStartLevel(ACTIVE.level());
                     checkBundleStatus(startStatus); // FFDC, etc.
                     checkServerReady();
 
@@ -1638,8 +1643,8 @@ public class FeatureManager implements FixManager, FeatureProvisioner, Framework
                     provisioner.installBundles(bundleContext,
                                                bundleCache,
                                                installStatus,
-                                               ProvisionerConstants.LEVEL_FEATURE_SERVICES - ProvisionerConstants.PHASE_INCREMENT,
-                                               ProvisionerConstants.LEVEL_FEATURE_CONTAINERS,
+                                               SERVICE_EARLY.level(),
+                                               CONTAINER.level(),
                                                fwStartLevel.getInitialBundleStartLevel(),
                                                locService);
                     // add all installed bundles to list of bundlesToStart.

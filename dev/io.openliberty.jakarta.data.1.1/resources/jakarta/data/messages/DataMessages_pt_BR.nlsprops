@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=O argumento {0} \u00e9 obrigat\u00f3rio
+002.no.elements=A lista {0} n\u00e3o pode estar vazia
+003.null.element=A lista {0} n\u00e3o pode ter um elemento nulo
+004.arg.negative=O argumento {0} n\u00e3o pode ser negativo
+005.zero.not.allowed=O argumento {0} n\u00e3o pode ser 0
+006.zero.size.key=A chave deve consistir em pelo menos um elemento
+007.wildcard.conflict=N\u00e3o \u00e9 poss\u00edvel usar o mesmo caractere ( {0} ) para ambos os curingas
+008.escape.conflict=N\u00e3o \u00e9 poss\u00edvel usar o mesmo caractere ( {0} ) para um caractere curinga e de escape
+009.unknown.number.type=Subtipo inesperado de Number: {0}
+010.unknown.total=A contagem total de elementos n\u00e3o est\u00e1 dispon\u00edvel
+011.unknown.attr.type=A inst\u00e2ncia {0} foi obtida de uma forma que n\u00e3o identifica o tipo do atributo. Para classes de metamodelo est\u00e1tico, use um m\u00e9todo.of definido em um subtipo de atributo para fornecer a classe de entidade e o tipo de atributo de entidade.
+012.unknown.decl.type=A inst\u00e2ncia {0} foi obtida de uma forma que n\u00e3o identifica a classe de entidade que declara o atributo. Para classes de metamodelo est\u00e1tico, use um m\u00e9todo.of definido em um subtipo de atributo para fornecer a classe de entidade e o tipo de atributo de entidade.

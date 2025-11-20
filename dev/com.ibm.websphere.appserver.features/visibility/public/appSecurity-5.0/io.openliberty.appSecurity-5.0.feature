@@ -38,6 +38,7 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   io.openliberty.org.apache.commons.codec, \
   io.openliberty.org.apache.commons.logging, \
   io.openliberty.security.common.internal, \
+  io.openliberty.security.javaeesec.internal.jakarta, \
   io.openliberty.security.jakartasec.2.0.internal, \
   io.openliberty.security.jakartasec.2.0.internal.cdi, \
   io.openliberty.security.oidcclientcore.internal.jakarta, \

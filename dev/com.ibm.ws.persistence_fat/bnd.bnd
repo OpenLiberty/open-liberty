@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -39,4 +39,6 @@ tested.features: xmlBinding-3.0, servlet-5.0, jpacontainer-3.0, persistence-3.0,
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.apache.commons.io;version=latest,\
-	org.apache.derby:derby;version=10.11.1.1
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	org.apache.derby:derby;strategy=exact;version=10.11.1.1

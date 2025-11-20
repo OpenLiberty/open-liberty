@@ -33,7 +33,7 @@ import javax.naming.InitialContext;
 /**
  * Repository for the County entity.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Counties {
 
     boolean deleteByNameAndLastUpdated(String name, LocalDateTime version);
@@ -118,7 +118,12 @@ public interface Counties {
         };
     }
 
-    @Query("UPDATE County SET zipcodes=?2 WHERE name=?1")
+    @Query("""
+                    UPDATE County
+                       SET zipcodes=?2,
+                           lastUpdated=LOCAL DATETIME
+                     WHERE name=?1
+                    """)
     boolean setZipCodesFor(String name,
                            int... zipcodes);
 }

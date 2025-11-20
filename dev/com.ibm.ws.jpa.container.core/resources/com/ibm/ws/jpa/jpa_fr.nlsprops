@@ -344,3 +344,8 @@ PROVIDER_FATAL_CWWJP9993E.explanation=Le fournisseur Java Persistence API (JPA) 
 PROVIDER_FATAL_CWWJP9993E.useraction=Voir la documentation du fournisseur JPA.
 
 #-------------------------------------------------------------------------------
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W=CWWJP9994W: Le serveur ne peut pas cr\u00e9er de beans pour {0} PersistenceUnit parce que : {1}.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.explanation=Une exception s'est produite lorsque CDI a tent\u00e9 de cr\u00e9er le bean pour une unit\u00e9 de persistance. CDI ne peut pas injecter un gestionnaire d'entit\u00e9s, une fabrique de gestionnaires d'entit\u00e9s ou des classes utilitaires li\u00e9es \u00e0 cette unit\u00e9 de persistance.
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.useraction=R\u00e9soudre l'exception.
+
+#-------------------------------------------------------------------------------

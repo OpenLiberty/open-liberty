@@ -45,6 +45,7 @@ import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.QueryInfo;
 import io.openliberty.data.internal.persistence.RepositoryImpl;
 import io.openliberty.data.internal.persistence.Util;
+import io.openliberty.data.internal.version.DataVersionCompatibility;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.repository.Repository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -402,13 +403,14 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
     }
 
     /**
-     * Returns the Jakarta Data provider.
+     * Obtains version-dependent capability for the supported Jakarta Data
+     * version.
      *
-     * @return the Jakarta Data provider.
+     * @return version-dependent capability.
      */
     @Trivial
-    public DataProvider provider() {
-        return provider;
+    public DataVersionCompatibility compat() {
+        return provider.compat;
     }
 
     /**
@@ -422,8 +424,6 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
             Tr.debug(this, tc, "setFutureEMBuilder", futureEMBuilder);
 
         this.futureEMBuilder = futureEMBuilder;
-
-        provider.producerCreated(futureEMBuilder.jeeName.getApplication(), this);
     }
 
     /**

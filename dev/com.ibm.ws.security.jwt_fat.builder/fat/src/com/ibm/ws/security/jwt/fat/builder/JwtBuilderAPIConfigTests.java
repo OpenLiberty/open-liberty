@@ -2151,9 +2151,9 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     @Test
     public void JwtBuilderAPIConfigTests_encryption_invalidKeyMgmtKeyAlg_goodAlias_goodContentEncryptAlg() throws Exception {
 
-        String builderId = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? "key_encrypt_good_ES256_bad_keyMgmtKey" : "key_encrypt_good_RS256_bad_keyMgmtKey";
-        String keyMgmtKeyAlg = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
-        String sigAlg = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
+        String builderId = builderServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_ES256_bad_keyMgmtKey" : "key_encrypt_good_RS256_bad_keyMgmtKey";
+        String keyMgmtKeyAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+        String sigAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
 
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(keyMgmtKeyAlg, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
@@ -2186,9 +2186,9 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     @Test
     public void JwtBuilderAPIConfigTests_encryption_missingKeyMgmtKeyAlg_goodAlias_goodContentEncryptAlg() throws Exception {
 
-        String builderId = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? "key_encrypt_good_ES256_missing_keyMgmtKey" : "key_encrypt_good_RS256_missing_keyMgmtKey";
-        String keyMgmtKeyAlg = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
-        String sigAlg = builderServer.isSemeruFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
+        String builderId = builderServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_good_ES256_missing_keyMgmtKey" : "key_encrypt_good_RS256_missing_keyMgmtKey";
+        String keyMgmtKeyAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+        String sigAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
 
         JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(keyMgmtKeyAlg, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
@@ -2222,8 +2222,11 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
     @SkipJavaSemeruWithFipsEnabledRule
     public void JwtBuilderAPIConfigTests_encryption_RSAOAEP256KeyMgmtKeyAlg_goodRS256Alias_goodContentEncryptAlg() throws Exception {
 
-        String builderId = "key_encrypt_rsaOaep256_RS256";
-        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
+        String builderId = builderServer.isFIPS140_3EnabledAndSupported() ? "key_encrypt_rsaOaep256_ES256" : "key_encrypt_rsaOaep256_RS256";
+        String keyMgmtKeyAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.KEY_MGMT_KEY_ALG_ES : JWTBuilderConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+        String sigAlg = builderServer.isFIPS140_3EnabledAndSupported() ? JWTBuilderConstants.SIGALG_ES256 : JWTBuilderConstants.SIGALG_RS256;
+
+        JSONObject expectationSettings = BuilderHelpers.setDefaultClaimsWithEncryption(keyMgmtKeyAlg, JWTBuilderConstants.DEFAULT_CONTENT_ENCRYPT_ALG);
 
         Expectations expectations = BuilderHelpers.createGoodBuilderExpectations(JWTBuilderConstants.JWT_BUILDER_SETAPIS_ENDPOINT, expectationSettings, builderServer);
 
@@ -2232,7 +2235,7 @@ public class JwtBuilderAPIConfigTests extends CommonSecurityFat {
 
         // NOTE:  even though the config specifies RSA-OAEP-256 for the KeyMgmtKeyAlg, we'll only allow the default RSA-OAEP to be used in the config
         // server startup will log a warning about the unsupported value and the config will use the default value (which is what we'll check for now)
-        validationUtils.validateJWEToken(response, (String) expectationSettings.get(HeaderConstants.ALGORITHM), JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, JWTBuilderConstants.SIGALG_RS256), (String) expectationSettings.get(HeaderConstants.ENCRYPTION));
+        validationUtils.validateJWEToken(response, (String) expectationSettings.get(HeaderConstants.ALGORITHM), JwtKeyTools.getComplexPrivateKeyForSigAlg(builderServer, sigAlg), (String) expectationSettings.get(HeaderConstants.ENCRYPTION));
 
     }
 

@@ -85,9 +85,9 @@ broadcast_remote_command_is_null=Ostrze\u017cenie: {0}: otrzymano komunikat {1} 
 
 broadcast_remote_command_wrong_type=Ostrze\u017cenie: {0}: odebrano komunikat {1} zawieraj\u0105cy obiekt typu {2} zamiast oczekiwanego typu RemoteCommand.
 
-cache_key_null_identity_map=CacheKey instancja: {0} przechowywana w mapie to\u017csamo\u015bci ma klucz podstawowy null.
+cache_key_null_identity_map=CacheKey instance: {0}, przechowywana w mapie to\u017csamo\u015bci, ma klucz podstawowy null.
 
-cache_key_null_read_lock_manager=CacheKey instancja: {0}, zablokowana przez mened\u017cera blokady odczytu pami\u0119ci podr\u0119cznej ma klucz podstawowy null.
+cache_key_null_read_lock_manager=CacheKey instance: {0}, zablokowana przez mened\u017cera blokady odczytu pami\u0119ci podr\u0119cznej, ma klucz podstawowy null.
 
 cannot_get_nested_collection_type=Nie mo\u017cna uzyska\u0107 zagnie\u017cd\u017conego typu kolekcji.
 

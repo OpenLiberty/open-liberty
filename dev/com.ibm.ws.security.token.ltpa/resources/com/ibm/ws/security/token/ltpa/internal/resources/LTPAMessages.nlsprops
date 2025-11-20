@@ -87,3 +87,7 @@ LTPA_UPDATE_TRIGGER_DISABLED_AND_MONITOR_INTERVAL_GREATER_THAN_ZERO.useraction=S
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4116W: The {0} validation keys must be regenerated using cryptographic algorithms that are FIPS 140-3 certified.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=The LTPA validation keys that are created without FIPS 140-3 enabled fail when FIPS 140-3 is enabled.
 LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use the securityUtility createLTPAKeys command to create the FIPS approved validation keys when FIPS 140-3 is configured.
+
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: The {0} validation keys must be regenerated using cryptographic algorithms that are not FIPS 140-3 certified.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=The LTPA validation keys that are created with FIPS 140-3 enabled fail when FIPS 140-3 is disabled.
+LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use the securityUtility createLTPAKeys command to create the non FIPS approved validation keys when FIPS 140-3 is disabled.

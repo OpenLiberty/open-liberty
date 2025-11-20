@@ -18,7 +18,8 @@ src:\
     test-applications/helpers/DatabaseManagement/src,\
     test-applications/jakartadata/src,\
     test-applications/jakartapersistence/src,\
-    test-applications/jpabootstrap/src
+    test-applications/jpabootstrap/src,\
+    test-applications/jpacdiintegration/src
 
 fat.project: true
 tested.features:\

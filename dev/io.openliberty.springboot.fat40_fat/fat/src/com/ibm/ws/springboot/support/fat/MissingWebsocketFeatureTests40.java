@@ -35,7 +35,7 @@ public class MissingWebsocketFeatureTests40 extends AbstractSpringTests {
     }
 
     @Test
-    public void testMissingWebsocketFor30() throws Exception {
+    public void testMissingWebsocketFor40() throws Exception {
         assertNotNull("No error message CWWKC0278E was found for missing websocket feature",
                       server.waitForStringInLog("CWWKC0278E"));
         stopServer(true, "CWWKC0278E", "CWWKZ0002E");

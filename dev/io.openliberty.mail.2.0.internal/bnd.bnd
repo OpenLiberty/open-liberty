@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -29,11 +29,11 @@ WS-TraceGroup: Mail
 ## for the app-resources header
 
 Include-Resource: \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/mailcap, \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/gfprobe-provider.xml, \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.charset.map, \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.default.address.map, \
-  @${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.default.providers  
+  @\${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/mailcap, \
+  @\${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/gfprobe-provider.xml, \
+  @\${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.charset.map, \
+  @\${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.default.address.map, \
+  @\${repo;io.openliberty.com.sun.mail.jakarta.mail.2.0}!/META-INF/javamail.default.providers  
 
 Service-Component: \
   io.openliberty.mail_2_0_internal${replace;${bVersion};\\.;_}.ResourceProvider; \

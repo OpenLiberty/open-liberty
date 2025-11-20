@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -70,6 +70,10 @@ public interface LoggingConstants {
     String ENV_WLP_LOGGING_ROLLOVER_INTERVAL = "WLP_LOGGING_ROLLOVER_INTERVAL";
 
     String ENV_WLP_LOGGING_MAX_FFDC_AGE = "WLP_LOGGING_MAX_FFDC_AGE";
+
+    String ENV_WLP_LOGGING_THROTTLE_MAX_MESSAGES_PER_WINDOW = "WLP_LOGGING_THROTTLE_MAX_MESSAGES_PER_WINDOW";
+
+    String ENV_WLP_LOGGING_THROTTLE_TYPE = "WLP_LOGGING_THROTTLE_TYPE";
 
     String DEFAULT_JSON_ACCESS_LOG_FIELDS = "default";
 

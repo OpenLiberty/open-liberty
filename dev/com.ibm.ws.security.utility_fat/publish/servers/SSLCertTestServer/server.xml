@@ -1,0 +1,6 @@
+<server description="SSL Test Server">
+<include location="../fatTestPorts.xml" />
+<featureManager>
+	<feature>transportSecurity-1.0</feature>
+</featureManager>
+</server> 

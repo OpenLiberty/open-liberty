@@ -28,6 +28,7 @@ import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 /**
@@ -69,9 +70,10 @@ public class Health40TCKLauncher {
         Map<String, String> additionalProps = new HashMap<>();
         additionalProps.put("test.url", protocol + "://" + host + ":" + port);
 
-        TCKRunner.build(server, Type.MICROPROFILE, "Health")
+        TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.HEALTH)
                         .withDefaultSuiteFileName()
                         .withAdditionalMvnProps(additionalProps)
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_71) //Latest MicroProfile version
                         .runTCK();
     }
 

@@ -1,0 +1,8 @@
+<client description="SSL Certificate Test Client">
+    <featureManager>
+    <feature>jakartaeeClient-9.1</feature>
+    <feature>appSecurityClient-1.0</feature>
+    </featureManager>
+    <application location="earDD.ear" name="earDD" type="ear" id="myDummyApp"/>
+    <include location="../fatTestPorts.xml"/>
+</client>

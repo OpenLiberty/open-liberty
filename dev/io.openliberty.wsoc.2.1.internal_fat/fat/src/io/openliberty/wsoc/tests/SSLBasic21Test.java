@@ -12,12 +12,9 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
-import static org.junit.Assert.assertNotNull;
-
 import java.io.File;
 import java.util.logging.Logger;
 
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -31,24 +28,17 @@ import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebBrowserFactory;
 import com.ibm.ws.fat.util.browser.WebResponse;
 
-import basic.war.UpgradeServlet;
-import componenttest.annotation.AllowedFFDC;
-import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-import io.openliberty.wsoc.tests.all.MiscTest;
-import io.openliberty.wsoc.tests.all.TimeOutTest;
-import io.openliberty.wsoc.tests.all.UpgradeTest;
-import io.openliberty.wsoc.tests.all.UserPropertiesTest;
+import io.openliberty.wsoc.tests.all.SSLTest;
 import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
 import io.openliberty.wsoc.util.WebServerControl;
 import io.openliberty.wsoc.util.WebServerSetup;
 import io.openliberty.wsoc.util.wsoc.WsocTest;
-import io.openliberty.wsoc.tests.all.SSLTest;
 
 /**
  *  WebSocket 2.1 Tests

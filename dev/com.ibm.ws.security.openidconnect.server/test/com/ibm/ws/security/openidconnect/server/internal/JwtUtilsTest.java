@@ -370,7 +370,7 @@ public class JwtUtilsTest {
     public void test_getPublicKeyFromJsonWebStructure_x5tMatches_Fips140_3Enabled() {
         try (MockedStatic<CryptoUtils> cryptoUtilsMock = Mockito.mockStatic(CryptoUtils.class)) {
 
-            cryptoUtilsMock.when(CryptoUtils::isFips140_3EnabledWithBetaGuard).thenReturn(true);
+            cryptoUtilsMock.when(CryptoUtils::isFips140_3Enabled).thenReturn(true);
 
             context.checking(new Expectations() {
                 {
@@ -406,7 +406,7 @@ public class JwtUtilsTest {
     public void test_getPublicKeyFromJsonWebStructure_x5tAndX5tS256Match_Fips140_3Enabled() {
         try (MockedStatic<CryptoUtils> cryptoUtilsMock = Mockito.mockStatic(CryptoUtils.class)) {
 
-            cryptoUtilsMock.when(CryptoUtils::isFips140_3EnabledWithBetaGuard).thenReturn(true);
+            cryptoUtilsMock.when(CryptoUtils::isFips140_3Enabled).thenReturn(true);
 
             context.checking(new Expectations() {
                 {
@@ -442,7 +442,7 @@ public class JwtUtilsTest {
     public void test_getPublicKeyFromJsonWebStructure_x5tAndKidMatch_Fips140_3Enabled() {
         try (MockedStatic<CryptoUtils> cryptoUtilsMock = Mockito.mockStatic(CryptoUtils.class)) {
 
-            cryptoUtilsMock.when(CryptoUtils::isFips140_3EnabledWithBetaGuard).thenReturn(true);
+            cryptoUtilsMock.when(CryptoUtils::isFips140_3Enabled).thenReturn(true);
 
             context.checking(new Expectations() {
                 {

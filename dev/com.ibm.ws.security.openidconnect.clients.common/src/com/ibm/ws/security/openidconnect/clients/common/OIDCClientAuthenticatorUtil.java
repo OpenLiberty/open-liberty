@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
@@ -18,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.net.ssl.SSLSocketFactory;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -96,8 +94,7 @@ public class OIDCClientAuthenticatorUtil {
         Hashtable<String, String> reqParameters = new Hashtable<String, String>();
 
         // the code cookie was set earlier by the code that receives the very first redirect back from the provider.
-        String encodedReqParams = CookieHelper.getCookieValue(req.getCookies(), ClientConstants.WAS_OIDC_CODE);
-        OidcClientUtil.invalidateReferrerURLCookie(req, res, ClientConstants.WAS_OIDC_CODE);
+        String encodedReqParams = getWasOidcCodeCookieValue(req, res);
         if (encodedReqParams != null && !encodedReqParams.isEmpty()) {
             boolean validCookie = validateReqParameters(clientConfig, reqParameters, encodedReqParams);
             if (validCookie) {
@@ -110,6 +107,53 @@ public class OIDCClientAuthenticatorUtil {
         }
 
         return processAuthenticateRequest(req, res, clientConfig, isImplicit, responseState, reqParameters);
+    }
+
+    String getWasOidcCodeCookieValue(HttpServletRequest req, HttpServletResponse res) {
+        Cookie[] cookies = req.getCookies();
+        String encodedReqParams = CookieHelper.getCookieValue(cookies, ClientConstants.WAS_OIDC_CODE);
+        OidcClientUtil.invalidateReferrerURLCookie(req, res, ClientConstants.WAS_OIDC_CODE);
+        if (encodedReqParams == null) {
+            // Did not find single code cookie; will check for a single, large value that was split
+            encodedReqParams = buildWasOidcCodeCookieValueFromMultipleCookies(cookies, req, res);
+        }
+        return encodedReqParams;
+    }
+
+    @FFDCIgnore(NumberFormatException.class)
+    String buildWasOidcCodeCookieValueFromMultipleCookies(Cookie[] cookies, HttpServletRequest req, HttpServletResponse res) {
+        String nameOfCountCookie = ClientConstants.WAS_OIDC_CODE + OidcClientUtil.NUMBER_OF_SPLIT_COOKIES_NAME_SUFFIX;
+        String expectedNumberOfCookies = CookieHelper.getCookieValue(cookies, nameOfCountCookie);
+        if (expectedNumberOfCookies == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Did not find a " + nameOfCountCookie + " cookie to specify the number of split cookies to expect");
+            }
+            return null;
+        }
+        OidcClientUtil.invalidateReferrerURLCookie(req, res, nameOfCountCookie);
+        int numberOfCookies = 0;
+        try {
+            numberOfCookies = Integer.parseInt(expectedNumberOfCookies);
+        } catch (NumberFormatException e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, nameOfCountCookie + " cookie value was not a number. Cookie value was: [" + expectedNumberOfCookies + "]");
+            }
+            return null;
+        }
+        StringBuilder codeCookieValue = new StringBuilder();
+        for (int i = 0; i < numberOfCookies; i++) {
+            String cookieFragmentName = ClientConstants.WAS_OIDC_CODE + OidcClientUtil.SPLIT_COOKIE_SUFFIX + i;
+            String cookieFragment = CookieHelper.getCookieValue(cookies, cookieFragmentName);
+            if (cookieFragment != null) {
+                codeCookieValue.append(cookieFragment);
+                OidcClientUtil.invalidateReferrerURLCookie(req, res, cookieFragmentName);
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Expected to find a " + cookieFragmentName + " cookie but did not.");
+                }
+            }
+        }
+        return codeCookieValue.toString();
     }
 
     ProviderAuthenticationResult processAuthenticateRequest(HttpServletRequest req, HttpServletResponse res, ConvergedClientConfig clientConfig, boolean isImplicit, String responseState, Hashtable<String, String> reqParameters) {

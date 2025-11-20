@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -34,7 +34,6 @@ import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
-import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import web.dbrotation.DbRotationServlet;
@@ -76,21 +75,21 @@ public class DatabaseRotationTest {
         ShrinkHelper.defaultApp(server, APP_NAME, "web.dbrotation");
 
         /*
-         * This static method will edit each <dataSource> element in your server.xml
+         * This builder method will edit each <dataSource> element in your server.xml
          * that has the attribute fat.modify="true".
          *
          * It will remove the old properties and replace them with the connection
          * properties for the specific database we are running against.
          *
          * If you want to replace with a generic <properties .. /> element use:
-         * DatabaseContainerUtil.setupDataSourceProperties(server, jdbcContainer);
+         * DatabaseContainerUtil.build(server, jdbcContainer)
+         * .withGenericProperties()
+         * .modify
          */
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, jdbcContainer);
-
-        /*
-         * Add DB_DRIVER variable to the server to tell the server where to look for the jdbc driver.
-         */
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(jdbcContainer).getDriverName());
+        DatabaseContainerUtil.build(server, jdbcContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable() //Add DB_DRIVER variable to the server to tell the server where to look for the jdbc driver.
+                        .modify();
 
         server.startServer();
     }

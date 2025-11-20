@@ -40,7 +40,7 @@ import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
  */
 @ManagedExecutorDefinition(name = "java:comp/PackageRepositoryExecutor",
                            maxAsync = 1)
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Packages extends BasicRepository<Package, Integer> {
 
     @Update

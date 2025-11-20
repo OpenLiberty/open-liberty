@@ -121,6 +121,10 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
 
         // Allow error messages that are issued because the app tries to log information that may not be set
         rpServer.addIgnoredErrors(Arrays.asList(MessageConstants.SESN0066E_RSP_COMMITTED_COOKIE_CANNOT_BE_SET, MessageConstants.SRVE8114W_CANNOT_SET_SESSION_COOKIE));
+
+        // Wait to ensure LTPA configuration has completed before starting tests
+        opServer.waitForStringInLog("CWWKS4105I");
+        rpServer.waitForStringInLog("CWWKS4105I");
         // rspValues used to validate the app output will be initialized before each test - any unique values (other than the
         //  app need to be updated by the test case - the app is updated by the invokeApp* methods)
     }

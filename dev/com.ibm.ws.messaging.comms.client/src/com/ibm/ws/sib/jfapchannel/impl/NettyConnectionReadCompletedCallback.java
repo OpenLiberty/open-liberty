@@ -100,9 +100,6 @@ public class NettyConnectionReadCompletedCallback extends BaseConnectionReadCall
 	// The number of times we have been invoked with complete() on this thread
 	private int invocationCount = 0;
 
-	// The last thread complete was invoked on
-	private Thread lastInvokedOnThread = null;
-
 	// The number of times we will allow complete() to be called recursively before thread switching
 	private static final int MAX_INVOCATIONS_BEFORE_THREAD_SWITCH = 10;
 
@@ -141,19 +138,14 @@ public class NettyConnectionReadCompletedCallback extends BaseConnectionReadCall
 	public void readCompleted(WsByteBuffer buff, IOReadRequestContext rctx, NettyNetworkConnection vc) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "readCompleted", new Object[] {buff});
 
-		// First update the invocation count. If we are being called back on the same thread as
-		// last time, increment the counter. Otherwise, start counting from 1 again.
-		synchronized (invocationCountLock)
+		// Update the invocation count. Otherwise, start counting from 1 again.
+		if (invocationCount <= MAX_INVOCATIONS_BEFORE_THREAD_SWITCH)
 		{
-			if (lastInvokedOnThread == Thread.currentThread())
-			{
-				invocationCount++;
-			}
-			else
-			{
-				invocationCount = 1;
-				lastInvokedOnThread = Thread.currentThread();
-			}
+			invocationCount++;
+		}
+		else
+		{
+			invocationCount = 1;
 		}
 
 		try
@@ -233,20 +225,12 @@ public class NettyConnectionReadCompletedCallback extends BaseConnectionReadCall
 						{
 							// Crude way to ensure we end up with the right sized read buffer.
 
-							//TODO: Check if we need this
-							//		                      contextBuffer.clear();
+							contextBuffer.clear();
 
-							// Decide whether to explicitly request a thread switch. We'll do this if we
-							// have been recursively called more than MAX_INVOCATIONS_BEFORE_THREAD_SWITCH
-							// TODO: Everything will be async. Check how to make this better since this is not needed I think
 							boolean forceQueue = false;
-							synchronized (invocationCountLock)
+							if (invocationCount > MAX_INVOCATIONS_BEFORE_THREAD_SWITCH)
 							{
-								if (invocationCount > MAX_INVOCATIONS_BEFORE_THREAD_SWITCH)
-								{
-									forceQueue = true;
-									lastInvokedOnThread = null;
-								}
+								forceQueue = true;
 							}
 
 							if (thisConnection.isLoggingIOEvents()) thisConnection.getConnectionEventRecorder().logDebug("invoking readCtx.read() on context "+System.identityHashCode(rctx)+" with a timeout of "+timeout);
@@ -519,7 +503,7 @@ public class NettyConnectionReadCompletedCallback extends BaseConnectionReadCall
 				}
 				// end F175658
 				else                                                                    // F174772
-				{                                                                       // F174772
+				{            
 					// begin F176003
 					// We used to set the first parameter to true here meaning that we
 					// need to notify the peer that we are having a bit of trouble.
@@ -528,34 +512,6 @@ public class NettyConnectionReadCompletedCallback extends BaseConnectionReadCall
 					// to notify the peer would mean that we would hang.
 					thisConnection.invalidate(false, t, "IOException received for connection - "+t.getMessage());   // D179618, D224570
 					// end F176003
-
-					//Note that this also deals with the buffer returned by getBuffer.
-					// TODO: Think we can remove this not necessary for Netty
-					final IOReadRequestContext req = readCtx;
-					final WsByteBuffer[] buffers = req.getBuffers();
-					if (buffers != null)
-					{
-						for(final WsByteBuffer buffer: buffers)
-						{
-							//Try and release the buffer.
-							//Absorb any exceptions if it gets released by another thread (for example by Connection.nonThreadSafePhysicalClose).
-							try
-							{
-								buffer.release();
-							}
-							catch(RuntimeException e)
-							{
-								//No FFDC code needed
-								if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Caught exception on releasing buffer.", e);
-							}
-						}
-
-						req.setBuffers(null);
-					}
-					else
-					{
-						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Request has no buffers: "+req);
-					}
 				}
 			}
 		}

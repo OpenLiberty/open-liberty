@@ -45,7 +45,7 @@ tested.features: \
 -buildpath: \
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	io.openliberty.jakarta.cdi.3.0,\
-	org.apache.derby:derby;version=latest,\
+	org.apache.derby:derby;strategy=exact;version=10.11.1.1,\
 	com.ibm.ws.kernel.boot,\
 	com.ibm.ws.security.fat.common.jwt;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

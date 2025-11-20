@@ -81,11 +81,12 @@ assemble {
 }
 
 task copyServerFiles_sharedConfig { 
+ def fatCommonProject = project(':com.ibm.ws.security.fat.common')
  doLast {
  
  /** copy common config files (like ssl config definitions)  We will override with project specific later **/
    copy {
-      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      from fatCommonProject.file('publish/shared/config')
       into new File(autoFvtDir, 'publish/shared/config')
       include '**/allAlgSSLSettings.xml'
    }
@@ -94,7 +95,9 @@ task copyServerFiles_sharedConfig {
 
 autoFVT.dependsOn ':com.ibm.ws.security.fat.common:assemble', copyServerFiles_sharedConfig
  
-autoFVT.doLast {
+autoFVT {
+  def fatCommonProject = project(':com.ibm.ws.security.fat.common')
+  doLast {
   
   def servers = [
 	'com.ibm.ws.security.jwtsso.fat'
@@ -103,12 +106,12 @@ autoFVT.doLast {
   servers.each { server ->
   
     copy { 
-     from project(':com.ibm.ws.security.fat.common').file('publish/shared/securityKeys')
+     from fatCommonProject.file('publish/shared/securityKeys')
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
      include '**/allAlg*.p12'
     }
     copy { 
-      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      from new File(fatCommonProject.buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
     }
     
@@ -122,5 +125,5 @@ autoFVT.doLast {
       into new File(autoFvtDir, 'publish/servers/' + server + '/apps')
     }
   }
-  
+  }
 }

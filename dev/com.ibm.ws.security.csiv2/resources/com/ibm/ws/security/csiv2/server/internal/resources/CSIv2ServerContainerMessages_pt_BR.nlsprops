@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -41,14 +41,14 @@ CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: O(s) mecanismo(s) da camada de aut
 CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=O(s) mecanismo(s) da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente \u00e9(s\u00e3o) nulo(s).
 CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Assegure-se de que o mecanismo da camada de autentica\u00e7\u00e3o de seguran\u00e7a do cliente especificado seja GSSUP ou LTPA ou GSSUP, LTPA.
 
-CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E:  A configura\u00e7\u00e3o de SSL {0} na camada de transporte de entrada de CSIv2 n\u00e3o corresponde a uma configura\u00e7\u00e3o de SSL no terminal do IIOP.
-CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation= A camada de transporte de entrada de CSIv2 usa uma configura\u00e7\u00e3o de SSL, mas o terminal do IIOP n\u00e3o usa a mesma configura\u00e7\u00e3o de SSL.
-CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction= Assegure-se de que a configura\u00e7\u00e3o de SSL na camada de transporte de entrada de CSIv2 no arquivo server.xml seja uma das configura\u00e7\u00f5es de SSL usada pelo terminal do IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: \ A configura\u00e7\u00e3o de SSL {0} na camada de transporte de entrada de CSIv2 n\u00e3o corresponde a uma configura\u00e7\u00e3o de SSL no terminal do IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=A camada de transporte de entrada de CSIv2 usa uma configura\u00e7\u00e3o de SSL, mas o terminal do IIOP n\u00e3o usa a mesma configura\u00e7\u00e3o de SSL.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=Assegure-se de que a configura\u00e7\u00e3o de SSL na camada de transporte de entrada de CSIv2 no arquivo server.xml seja uma das configura\u00e7\u00f5es de SSL usada pelo terminal do IIOP.
 
 #Do not translate iiopsOptions
-CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E:  O terminal do IIOP n\u00e3o possui uma configura\u00e7\u00e3o de SSL e a camada de transporte de entrada de CSIv2 requer que a configura\u00e7\u00e3o de SSL {0} seja usada no terminal do IIOP.
-CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation= O terminal do IIOP n\u00e3o possui pelo menos um elemento iiopsOptions com uma configura\u00e7\u00e3o de SSL \u00e0 qual a camada de transporte de entrada de CSIv2 pode se referir.
-CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction= Assegure-se de que o terminal do IIOP tenha pelo menos um elemento iiopsOptions com a mesma configura\u00e7\u00e3o de SSL usada pela camada de transporte de entrada de CSIv2.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: \ O terminal do IIOP n\u00e3o possui uma configura\u00e7\u00e3o de SSL e a camada de transporte de entrada de CSIv2 requer que a configura\u00e7\u00e3o de SSL {0} seja usada no terminal do IIOP.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=O terminal do IIOP n\u00e3o possui pelo menos um elemento iiopsOptions com uma configura\u00e7\u00e3o de SSL \u00e0 qual a camada de transporte de entrada de CSIv2 pode se referir.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=Assegure-se de que o terminal do IIOP tenha pelo menos um elemento iiopsOptions com a mesma configura\u00e7\u00e3o de SSL usada pela camada de transporte de entrada de CSIv2.
 
 # Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
 # -------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Assegure-se de que o armaz
 
 # Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
 # -------------------------------------------------------------------------------------------------
-NO_USER_REGISTRY=CWWKS9660E: O elemento orb com o atributo do id {0} requer um registro do usu\u00e1rio, mas nenhum registro de usu\u00e1rio se tornou dispon\u00edvel dentro de {1} segundos.   Como resultado, nenhum aplicativo ser\u00e1 iniciado. Certifique-se de ter configurado um registro do usu\u00e1rio apropriado no arquivo server.xml.
+NO_USER_REGISTRY=CWWKS9660E: O elemento orb com o atributo do id {0} requer um registro do usu\u00e1rio, mas nenhum registro de usu\u00e1rio se tornou dispon\u00edvel dentro de {1} segundos. Como resultado, nenhum aplicativo ser\u00e1 iniciado. Certifique-se de ter configurado um registro do usu\u00e1rio apropriado no arquivo server.xml. Para ambientes que usam componentes baseados em ORB, como aplicativos EJB, \u00e9 necess\u00e1rio definir um registro de usu\u00e1rio. Se esses componentes n\u00e3o estiverem em uso, essa mensagem pode ser ignorada com seguran\u00e7a.
 NO_USER_REGISTRY.explanation=Nenhum aplicativo foi iniciado porque um Object Request Broker (ORB) protegido em um servidor requer um registro do usu\u00e1rio, mas nenhum registro de usu\u00e1rio foi localizado. Ap\u00f3s um registro do usu\u00e1rio apropriado ser configurado, os aplicativos ser\u00e3o iniciados.
 NO_USER_REGISTRY.useraction=Certifique-se de ter configurado um registro do usu\u00e1rio apropriado para seu ambiente.
 

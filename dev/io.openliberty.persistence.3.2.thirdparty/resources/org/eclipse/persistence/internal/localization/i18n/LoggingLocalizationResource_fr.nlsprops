@@ -85,9 +85,9 @@ broadcast_remote_command_is_null=Avertissement : {0} : message {1} re\u00e7u con
 
 broadcast_remote_command_wrong_type=Avertissement : {0} : message {1} re\u00e7u contenant un objet de type {2} au lieu du type attendu RemoteCommand.
 
-cache_key_null_identity_map=CacheKey l''instance : {0}, stock\u00e9e dans la carte d''identit\u00e9, a une cl\u00e9 primaire nulle.
+cache_key_null_identity_map=CacheKey instance : {0}, stock\u00e9e dans la carte d''identit\u00e9, a une cl\u00e9 primaire nulle.
 
-cache_key_null_read_lock_manager=CacheKey instance : {0}, verrouill\u00e9e par le gestionnaire de verrou de lecture du cache a une cl\u00e9 primaire nulle.
+cache_key_null_read_lock_manager=CacheKey instance : {0}, verrouill\u00e9e par le gestionnaire de verrou de lecture du cache, a une cl\u00e9 primaire nulle.
 
 cannot_get_nested_collection_type=Le type de collection imbriqu\u00e9e ne peut pas \u00eatre obtenu.
 

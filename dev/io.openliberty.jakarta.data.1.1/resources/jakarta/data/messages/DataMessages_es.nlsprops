@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=El argumento {0} es obligatorio
+002.no.elements=La lista {0} no puede estar vac\u00eda
+003.null.element=La lista {0} no puede tener un elemento nulo
+004.arg.negative=El argumento {0} no puede ser negativo
+005.zero.not.allowed=El argumento {0} no puede ser 0
+006.zero.size.key=La clave debe constar de al menos un elemento
+007.wildcard.conflict=No se puede utilizar el mismo car\u00e1cter ( {0} ) para ambos comodines
+008.escape.conflict=No se puede utilizar el mismo car\u00e1cter ( {0} ) como comod\u00edn y como car\u00e1cter de escape
+009.unknown.number.type=Subtipo inesperado de N\u00famero: {0}
+010.unknown.total=No se dispone de un recuento total de elementos
+011.unknown.attr.type=La instancia {0} se ha obtenido de una forma que no identifica el tipo de atributo. Para las clases est\u00e1ticas del metamodelo, utilice un m\u00e9todo.of que est\u00e9 definido en un subtipo Attribute para proporcionar la clase de entidad y el tipo de atributo de entidad.
+012.unknown.decl.type=La instancia {0} se obtuvo de una forma que no identifica la clase de entidad que declara el atributo. Para las clases est\u00e1ticas del metamodelo, utilice un m\u00e9todo.of que est\u00e9 definido en un subtipo Attribute para proporcionar la clase de entidad y el tipo de atributo de entidad.

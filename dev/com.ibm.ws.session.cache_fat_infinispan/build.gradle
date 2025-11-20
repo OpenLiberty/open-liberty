@@ -81,19 +81,19 @@ task addInfinispanJCacheCommonsToSharedDir(type: Copy) {
 task addJbossLoggingToSharedDir(type: Copy) {
   from configurations.jbossLogging
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'jboss-logging-*.jar', 'jboss-logging.jar'
+  rename 'jboss-logging-3.4.1.*.jar', 'jboss-logging.jar'
 }
 
 task addJGroupsToSharedDir(type: Copy) {
   from configurations.jGroups
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'jgroups-*.jar', 'jgroups.jar'
+  rename 'jgroups-4.2.12*.jar', 'jgroups.jar'
 }
 
 task addProtoStreamToSharedDir(type: Copy) {
   from configurations.protostream
   into new File(autoFvtDir, 'publish/shared/resources/infinispan')
-  rename 'protostream-*.jar', 'protostream.jar'
+  rename 'protostream-4.4.1.*.jar', 'protostream.jar'
 }
 
 task addRxJavaToSharedDir(type: Copy) {

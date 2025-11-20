@@ -20,6 +20,6 @@ import jakarta.data.repository.Repository;
  * of the existence of the WorkAddress entity as a subtype of the ShippingAddress entity.
  * The Find(entityclass) annotation value in Data 1.1 should make this unnecessary.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface WorkAddresses extends DataRepository<WorkAddress, Long> {
 }

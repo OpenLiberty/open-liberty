@@ -33,6 +33,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.security.authorization.jacc.PolicyConfigurationManager;
 import com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManagerImpl;
 import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
@@ -110,7 +111,9 @@ public class JaccServiceImplTest {
         } else {
             System.clearProperty(JACC_FACTORY_EE9);
         }
-        Policy.setPolicy(policy);
+        if (JavaInfo.majorVersion() <= 21) {
+            Policy.setPolicy(policy);
+        }
     }
 
     /**

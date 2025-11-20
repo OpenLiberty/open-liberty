@@ -85,9 +85,9 @@ broadcast_remote_command_is_null=Warnung: {0}: Empfangene Nachricht {1} enth\u00
 
 broadcast_remote_command_wrong_type=Warnung: {0}: Empfangene Nachricht {1} enh\u00e4lt ein Objekt vom Typ {2} anstelle des erwarteten Typs RemoteCommand.
 
-cache_key_null_identity_map=CacheKey instanz: {0}, die in der Identit\u00e4tskarte gespeichert ist, hat einen Null-Prim\u00e4rschl\u00fcssel.
+cache_key_null_identity_map=CacheKey instanz: {0} die in der Identit\u00e4tskarte gespeichert ist, hat einen Null-Prim\u00e4rschl\u00fcssel.
 
-cache_key_null_read_lock_manager=CacheKey instanz: {0}, gesperrt durch den Cache-Lesesperr-Manager, hat einen Null-Prim\u00e4rschl\u00fcssel.
+cache_key_null_read_lock_manager=CacheKey instanz: {0} die vom Cache-Lesesesperren-Manager gesperrt ist, hat einen Null-Prim\u00e4rschl\u00fcssel.
 
 cannot_get_nested_collection_type=Der Typ der verschachtelten Datensammlung kann nicht abgerufen werden.
 

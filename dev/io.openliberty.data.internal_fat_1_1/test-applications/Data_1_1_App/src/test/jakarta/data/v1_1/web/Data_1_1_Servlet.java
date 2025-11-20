@@ -345,6 +345,18 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that performs a Query consisting of a SELECT
+     * clause that uses the NEW keyword to specify the constructor for a
+     * Java record.
+     */
+    @Test
+    public void testSelectNewQuery() {
+
+        assertEquals(new Ratio(5, 3),
+                     fractions.singleRatio(5, 8).orElseThrow());
+    }
+
+    /**
      * Use a repository method that performs a Query with SELECT and ORDER BY
      * clauses only, retrieving a subset of entity attributes as a Java record.
      */

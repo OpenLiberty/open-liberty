@@ -4,7 +4,7 @@ bVersion=1.2
 Bundle-SymbolicName: io.openliberty.org.apache.commons.logging
 
 Include-Resource: \
-   @${repo;commons-logging:commons-logging;1.2;EXACT}!/!META-INF/maven/*, \
+   @\${repo;commons-logging:commons-logging;1.2;EXACT}!/!META-INF/maven/*, \
    org/apache/commons/logging=${bin}/org/apache/commons/logging
 
 instrument.classesExcludes: \

@@ -38,7 +38,7 @@ public class OracleKerberosContainer extends OracleContainer implements Kerberos
      * to the parent constructor so we can lazily start this image.
      */
     private static final DockerImageName ORACLE_KRB5 = ImageBuilder
-                    .build("oracle-krb5:23.0.0.1-full-faststart")
+                    .build("oracle-krb5:23.9-full-faststart")
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("gvenzl/oracle-free");
 

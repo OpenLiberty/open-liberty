@@ -89,5 +89,5 @@ public class WSSecurityConstants {
     public static final String KEY_timeToLive = "timeToLive";
     public static final String KEY_audienceRestrictions = "audienceRestrictions";
 
-    public static final String WSSEC_DEFAULT_SIGNATURE_ALGORITHM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256 : CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1;
+    public static final String WSSEC_DEFAULT_SIGNATURE_ALGORITHM = CryptoUtils.isFips140_3Enabled() ? CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256 : CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1;
 }

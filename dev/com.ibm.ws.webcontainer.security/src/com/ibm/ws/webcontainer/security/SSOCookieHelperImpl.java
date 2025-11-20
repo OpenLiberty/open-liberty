@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.security.AccessController;
-import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +29,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
@@ -112,7 +110,7 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         if ((!req.isSecure()) && getJwtCookieSecure()) {
             Tr.warning(tc, "JWT_COOKIE_SECURITY_MISMATCH", new Object[] {}); // CWWKS9127W
         }
-        String[] chunks = splitString(cookieByteString, 3900);
+        String[] chunks = CookieHelper.splitValueIntoMaximumLengthChunks(cookieByteString, 3900);
         String cookieName = baseName;
         for (int i = 0; i < chunks.length; i++) {
             if (i > 98) {
@@ -172,23 +170,23 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
             if (sameSite.equals("None")) {
                 ssoCookie.setSecure(true);
                 Boolean partitioned = config.getPartitionedCookie();
-                if (partitioned!=null) {
+                if (partitioned != null) {
                     //web container wants the value as a n/v pair
-                    requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
+                    requestState.setCookieAttributes(cookieName, "Partitioned=" + partitioned.toString());
                 }
             }
         } else {
             Boolean partitioned = config.getPartitionedCookie();
-            if (partitioned!=null) {
+            if (partitioned != null) {
                 WebContainerRequestState requestState = WebContainerRequestState.getInstance(true);
                 // if SS has no value, then the WC wants us to pass on our partitioned value if
                 // one was specified by the user.  Even though Partitioned is an attribute and not a N/V pair,
                 // the WC wants us to set the attribute true/false and they'll translate it.
-                // 
+                //
                 // We could end up with Partitioned=true on a cookie with no SS setting.  This happens when:
                 // SS is disabled in WebAppSecurity.  SS is disabled in channel.  Partitioned=true in WebAppSecurity
                 // This behavior is expected at this time.
-                requestState.setCookieAttributes(cookieName, "Partitioned="+partitioned.toString());
+                requestState.setCookieAttributes(cookieName, "Partitioned=" + partitioned.toString());
             }
         }
 
@@ -505,27 +503,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
         URL url = new URL(requestUrl);
         String host = url.getHost().trim();
         return host;
-    }
-
-    @Trivial
-    protected String[] splitString(String buf, int blockSize) {
-        ArrayList<String> al = new ArrayList<String>();
-        if (blockSize <= 0 || buf == null || buf.length() == 0) {
-            return al.toArray(new String[0]);
-        }
-        int begin = 0;
-        int end = 0;
-        int length = buf.length();
-        while (true) {
-            end = begin + (length - end < blockSize ? length - end : blockSize);
-            al.add(buf.substring(begin, end));
-            if (end >= length) {
-                break;
-            }
-            begin += (end - begin);
-        }
-
-        return al.toArray(new String[0]);
     }
 
     /**

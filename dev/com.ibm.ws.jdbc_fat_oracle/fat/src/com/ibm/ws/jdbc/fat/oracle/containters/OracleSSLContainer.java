@@ -32,7 +32,7 @@ public class OracleSSLContainer extends OracleContainer {
     private static final String WALLET_PASS = "WalletPasswd123";
 
     private static final DockerImageName ORACLE_SSL = ImageBuilder
-                    .build("oracle-ssl:23-full-faststart")
+                    .build("oracle-ssl:23.9-full-faststart")
                     .getDockerImageName()
                     .asCompatibleSubstituteFor("gvenzl/oracle-free");
 

@@ -32,9 +32,17 @@ import com.ibm.wsspi.security.crypto.EncryptedInfo;
  * Password related utilities.
  */
 public class PasswordUtil {
+
+    /**
+     * <p>
+     * Constant that holds a raw base64 AES-256 key for encode and encode_password methods.
+     * If both PROPERTY_CRYPTO_KEY and PROPERTY_AES_KEY are set during encode, PROPERTY_AES_KEY will be used.
+     */
+    public final static String PROPERTY_AES_KEY = "aes.key";
     /**
      * <p>
      * Constant that holds the name of the property for specifying the encryption algorithm for the encode and encode_password method.
+     * If both PROPERTY_CRYPTO_KEY and PROPERTY_AES_KEY are set during encode, PROPERTY_AES_KEY will be used.
      * </p>
      **/
     public final static String PROPERTY_CRYPTO_KEY = "crypto.key";
@@ -761,4 +769,5 @@ public class PasswordUtil {
 
         return buffer.toString();
     }
+
 }

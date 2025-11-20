@@ -23,6 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
+import componenttest.topology.utils.tck.TCKResultsConstants;
 
 /**
  * This is a test class that runs a whole Maven TCK as one test FAT test.
@@ -51,8 +52,9 @@ public class OpentracingTCKLauncherMicroProfile {
     public void launchOpenTracing20TckMP() throws Exception {
         String suiteName = "tck-and-rest-client-tck.xml";
 
-        TCKRunner.build(server, Type.MICROPROFILE, "Open Tracing")
+        TCKRunner.build(server, Type.MICROPROFILE, TCKResultsConstants.OPEN_TRACING)
                         .withSuiteFileName(suiteName)
+                        .withPlatformVersion(TCKResultsConstants.MICROPROFILE_VERSION_41) //Latest MicroProfile version
                         .runTCK();
 
     }

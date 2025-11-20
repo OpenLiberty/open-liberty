@@ -53,7 +53,7 @@ public class XMLSecurityConstants {
     static {
         try {
             // Liberty Change Start: Use SecureRandom with default algorithm instead of SHA1PRNG when FIPS 140-3 is enabled.
-            SECURE_RANDOM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? new SecureRandom() : SecureRandom.getInstance(CryptoUtils.SHA1PRNG);
+            SECURE_RANDOM = CryptoUtils.isFips140_3Enabled() ? new SecureRandom() : SecureRandom.getInstance(CryptoUtils.SHA1PRNG);
             // Liberty Change End
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);

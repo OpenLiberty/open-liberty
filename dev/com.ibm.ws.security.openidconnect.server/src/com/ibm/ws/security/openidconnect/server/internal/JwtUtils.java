@@ -126,7 +126,7 @@ public class JwtUtils {
         String kid = jsonStruct.getKeyIdHeaderValue();
         // Support for 'x5t' header remains for interoperability purposes.
         // If FIPS 140-3 is enabled, usage of the 'x5t' header for signature verification is disabled
-        String x5t = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? null : jsonStruct.getX509CertSha1ThumbprintHeaderValue();
+        String x5t = CryptoUtils.isFips140_3Enabled() ? null : jsonStruct.getX509CertSha1ThumbprintHeaderValue();
         String x5tS256 = jsonStruct.getX509CertSha256ThumbprintHeaderValue();
 
         Key publicKey = null;

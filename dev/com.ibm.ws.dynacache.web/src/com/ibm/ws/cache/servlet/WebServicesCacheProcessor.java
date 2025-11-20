@@ -43,7 +43,7 @@ public class WebServicesCacheProcessor extends FragmentCacheProcessor {
    // id constants for type=BODY
    public static final String HASH = "Hash";
    public static final String LITERAL = "Literal";
-   private static final String HASH_TYPE = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256 : CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA;
+   private static final String HASH_TYPE = CryptoUtils.isFips140_3Enabled() ? CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256 : CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA;
 
    SAXParserFactory factory = null;
    SAXParser parser = null;

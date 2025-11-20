@@ -647,3 +647,5 @@
 
 7363=U v\u00fd\u010dtov\u00e9ho typu STRING lze jako typ atributu ozna\u010den\u00e9 @EnumeratedValue pou\u017e\u00edt pouze typ java.lang.String. Zkontrolujte atribut [ {0} ] ve v\u00fd\u010dtov\u00e9 t\u0159\u00edd\u011b [ {1} ].
 
+7364=V entit\u011b [ {0} ] v NamedNativeQuery [ {1} ] se pou\u017e\u00edv\u00e1 implicitn\u00ed SqlResultSetMapping (atribut "entity", "t\u0159\u00eddy" nebo "sloupce") spolu s extern\u00edm SqlResultSetMapping, na kter\u00fd odkazuje atribut "resultSetMapping". Tato kombinace nen\u00ed povolena.
+

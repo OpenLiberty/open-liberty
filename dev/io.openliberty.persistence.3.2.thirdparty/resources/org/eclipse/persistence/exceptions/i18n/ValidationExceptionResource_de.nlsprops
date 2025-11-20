@@ -647,3 +647,5 @@
 
 7363=Bei einem STRING-Aufz\u00e4hlungstyp kann nur der Typ java.lang.String als Attributtyp verwendet werden, der durch @EnumeratedValue gekennzeichnet ist. Pr\u00fcfen Sie das Attribut [ {0} ] in der Aufz\u00e4hlungsklasse [ {1} ].
 
+7364=In der Entit\u00e4t [ {0} ] in NamedNativeQuery [ {1} ] wird ein implizites SqlResultSetMapping (Attribut "Entit\u00e4ten", "Klassen" oder "Spalten") zusammen mit einem externen SqlResultSetMapping verwendet, auf das durch das Attribut "resultSetMapping" verwiesen wird. Diese Kombination ist nicht zul\u00e4ssig.
+

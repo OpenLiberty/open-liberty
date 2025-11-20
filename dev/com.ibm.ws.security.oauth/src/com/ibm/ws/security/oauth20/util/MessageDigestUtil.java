@@ -32,7 +32,7 @@ public class MessageDigestUtil {
 
     static {
         try {
-            md = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1);
+            md = CryptoUtils.isFips140_3Enabled() ? MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256) : MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1);
         } catch (NoSuchAlgorithmException e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Internal error initializing message digest", e);

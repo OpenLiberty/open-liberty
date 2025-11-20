@@ -62,7 +62,7 @@ error.spring.required.20.explanation=Das derzeit konfigurierte Feature Spring Bo
 error.spring.required.20.useraction=Konfigurieren Sie eine Version des Features Spring Boot, die mit Anwendungsinhalten kompatibel ist.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: Das Feature springBoot-3.0 muss konfiguriert sein. Das Feature springBoot-1.5 oder springBoot-2.0 ist konfiguriert und die Anwendung hat Inhalte von Spring 3.0.
+error.spring3.required=CWWKC0273E: Das Feature {0} muss in der Datei server.xml konfiguriert sein. Die Funktion {1} ist konfiguriert und die Anwendung hat Spring Boot {2} Inhalt.
 error.spring3.required.explanation=Das derzeit konfigurierte Feature Spring Boot ist nicht mit Anwendungsinhalten kompatibel.
 error.spring3.required.useraction=Konfigurieren Sie eine Version des Features Spring Boot, die mit Anwendungsinhalten kompatibel ist.
 

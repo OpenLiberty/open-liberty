@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,17 +10,45 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+// Always pull from mirror so we don't have to upload transitive dependencies to artifactory
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
-addRequiredLibraries.dependsOn addDerby
+ext {
+    hibernateVersion = '7.0.9.Final'
+}
 
-// Copy bundle io.openliberty.org.testcontainers to AutoFVT/lib/
-// This bundle is required both at compiletime and runtime.
+configurations {
+    hibernateJPA32
+}
+
+dependencies {
+    def withoutJakartaAPI = {
+        exclude group: 'jakarta.activation', module: 'jakarta.activation-api'
+        exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
+        exclude group: 'jakarta.persistence', module: 'jakarta.persistence-api'
+        exclude group: 'jakarta.transaction', module: 'jakarta.transaction-api'
+        exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
+    }
+    
+    hibernateJPA32 "org.hibernate.orm:hibernate-core:${hibernateVersion}", withoutJakartaAPI
+    hibernateJPA32 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
+    hibernateJPA32 "org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}", withoutJakartaAPI
+}
+
+/*
+ * Copy Hibernate and transitive dependencies into shared resources
+ */
+task addHibernateJPA32(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA32
+  into new File(autoFvtDir, 'publish/shared/resources/jpa32_hibernate_orm')
+}
+
 addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn copyJdbcDriversJava17Plus
 
-// If you are preforming database testing use the copyJdbcDrivers
-// task to copy the common JDBC drivers into the
-// publish/shared/resources/jdbc directory
-addRequiredLibraries.dependsOn copyJdbcDrivers
+addRequiredLibraries.dependsOn addDerbyJava17Plus
+addRequiredLibraries.dependsOn addHibernateJPA32
 
 apply plugin: 'java'
 

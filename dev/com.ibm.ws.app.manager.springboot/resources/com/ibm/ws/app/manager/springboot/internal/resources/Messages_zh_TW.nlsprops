@@ -62,7 +62,7 @@ error.spring.required.20.explanation=\u76ee\u524d\u914d\u7f6e\u7684 Spring Boot 
 error.spring.required.20.useraction=\u914d\u7f6e\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u76f8\u5bb9\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: \u5fc5\u9808\u914d\u7f6e springBoot-3.0 \u7279\u6027\u3002 \u5df2\u914d\u7f6e springBoot-1.5 \u6216 springBoot-2.0 \u7279\u6027\uff0c\u4e14\u61c9\u7528\u7a0b\u5f0f\u5177\u6709 Spring 3.0 \u5167\u5bb9\u3002
+error.spring3.required=CWWKC0273E: \u5fc5\u9808\u5728 server.xml \u6a94\u4e2d\u914d\u7f6e {0} \u7279\u6027\u3002 {1} \u529f\u80fd\u5df2\u8a2d\u5b9a\uff0c\u61c9\u7528\u7a0b\u5f0f\u6709 Spring Boot {2} \u5167\u5bb9\u3002
 error.spring3.required.explanation=\u76ee\u524d\u914d\u7f6e\u7684 Spring Boot \u7279\u6027\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u4e0d\u76f8\u5bb9\u3002
 error.spring3.required.useraction=\u914d\u7f6e\u8207\u61c9\u7528\u7a0b\u5f0f\u5167\u5bb9\u76f8\u5bb9\u7684 Spring Boot \u7279\u6027\u7248\u672c\u3002
 

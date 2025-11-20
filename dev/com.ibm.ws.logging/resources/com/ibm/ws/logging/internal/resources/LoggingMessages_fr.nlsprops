@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Les messages suivants sont masqu\u00e9s 
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Les messages qui sont configur\u00e9s pour \u00eatre masqu\u00e9s ne sont pas \u00e9crits dans les fichiers console.log et messages.log. Ils sont consign\u00e9s dans le fichier trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Aucune action n'est requise
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: Le format de sortie de messages.log a \u00e9t\u00e9 mis \u00e0 jour et est d\u00e9sormais '{0}'.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Le format de sortie de messages.log a \u00e9t\u00e9 mis \u00e0 jour et est d\u00e9sormais ''{0}''.
 MESSAGE_FORMAT_UPDATED.explanation=Le format de sortie de messages.log a \u00e9t\u00e9 mis \u00e0 jour.
 MESSAGE_FORMAT_UPDATED.useraction=Aucune action n'est requise.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: Le format de sortie de la console a \u00e9t\u00e9 mis \u00e0 jour et est d\u00e9sormais '{0}'.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Le format de sortie de la console a \u00e9t\u00e9 mis \u00e0 jour et est d\u00e9sormais ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=Le format de sortie de la console a \u00e9t\u00e9 mis \u00e0 jour.
 CONSOLE_FORMAT_UPDATED.useraction=Aucune action n'est requise.
 
@@ -158,11 +158,11 @@ JSON_FIELDS_INVALID_CHARACHTER=TRAS3011W: Un caract\u00e8re non valide a \u00e9t
 JSON_FIELDS_INVALID_CHARACHTER.explanation= Seuls les lettres, les nombres et les caract\u00e8res : sont accept\u00e9s dans la propri\u00e9t\u00e9 de mappage du nom de zone de journalisation JSON
 JSON_FIELDS_INVALID_CHARACHTER.useraction= Changez la valeur de votre propri\u00e9t\u00e9 de mappage de nom de zone de journalisation JSON pour supprimer les caract\u00e8res non valides
 
-LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W: La propri\u00e9t\u00e9 d'heure de d\u00e9but de remise \u00e0 z\u00e9ro du journal n'est pas format\u00e9e correctement. Par cons\u00e9quent, la valeur est d\u00e9finie sur une valeur par d\u00e9faut '00:00', qui correspond \u00e0 minuit.
+LOG_ROLLOVER_START_TIME_FORMAT_WARNING=TRAS3015W : La propri\u00e9t\u00e9 d'heure de d\u00e9but de remise \u00e0 z\u00e9ro du journal n'est pas format\u00e9e correctement. Par cons\u00e9quent, la valeur est d\u00e9finie sur une valeur par d\u00e9faut '00:00', qui correspond \u00e0 minuit.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.explanation=La propri\u00e9t\u00e9 d'heure de d\u00e9but de la remise \u00e0 z\u00e9ro doit \u00eatre format\u00e9e HH:MM, avec 00:00 correspondant \u00e0 minuit.
 LOG_ROLLOVER_START_TIME_FORMAT_WARNING.useraction=V\u00e9rifiez que la valeur de la propri\u00e9t\u00e9 de l'heure de d\u00e9but de la remise \u00e0 z\u00e9ro est correctement format\u00e9e au format HH:MM 24 heures, o\u00f9 00:00 correspond \u00e0 minuit.
 
-LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W: l'intervalle de remplacement du journal ne peut pas \u00eatre inf\u00e9rieur \u00e0 1 minute. Si une valeur inf\u00e9rieure \u00e0 1 minute est sp\u00e9cifi\u00e9e, l'intervalle de remise \u00e0 z\u00e9ro du journal est d\u00e9fini sur une valeur par d\u00e9faut de 1 jour.
+LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING=TRAS3013W : l'intervalle de remplacement du journal ne peut pas \u00eatre inf\u00e9rieur \u00e0 1 minute. Si une valeur inf\u00e9rieure \u00e0 1 minute est sp\u00e9cifi\u00e9e, l'intervalle de remise \u00e0 z\u00e9ro du journal est d\u00e9fini sur une valeur par d\u00e9faut de 1 jour.
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.explanation=L'intervalle de remise \u00e0 z\u00e9ro du journal ne peut pas \u00eatre inf\u00e9rieur \u00e0 1 minute.
 LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Indiquez un intervalle de remise \u00e0 z\u00e9ro du journal \u00e9gal ou sup\u00e9rieur \u00e0 1 minute.
 
@@ -170,7 +170,11 @@ JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Le nom d''en-t\u00eate manqu
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=La journalisation JSON utilise l'attribut logFormat provenant de accessLogging pour s\u00e9lectionner les zones de message http_access.log \u00e0 inclure. Un nom d'en-t\u00eate doit \u00eatre fourni en cas d'utilisation des zones %i ou %o dans l'attribut accessLogging logFormat.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Indiquez un nom d'en-t\u00eate pour la zone dans l'attribut accessLogging logFormat.
 
-FFDC_FILE_DELETION=TRAS3014I: {0} fichiers FFDC ont \u00e9t\u00e9 supprim\u00e9s conform\u00e9ment \u00e0 la valeur maxFfdcAge configur\u00e9e.
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: Les journaux sont ralentis en raison d'un volume \u00e9lev\u00e9.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=Les logs sont actuellement bloqu\u00e9s en raison d'un volume \u00e9lev\u00e9.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=R\u00e9solvez les probl\u00e8mes qui provoquent une journalisation excessive ou augmentez le seuil de journalisation en configurant l'attribut de journalisation throttleMaxMessagesPerWindow. 
+
+FFDC_FILE_DELETION=TRAS3014I : {0} fichiers FFDC ont \u00e9t\u00e9 supprim\u00e9s conform\u00e9ment \u00e0 la valeur maxFfdcAge configur\u00e9e.
 FFDC_FILE_DELETION.explanation=Nombre de fichiers FFDC supprim\u00e9s lors d'un nettoyage FFDC.
 FFDC_FILE_DELETION.useraction=Aucune action n'est\nrequise.
 

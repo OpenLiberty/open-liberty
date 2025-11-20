@@ -15,12 +15,38 @@ apply from: '../wlp-gradle/subprojects/repos.gradle'
 configurations.requiredLibs {
   transitive = false
 }
+
+sourceSets {
+  // Source set where we don't include parameter names
+  noParamNames {
+    java {
+      srcDirs = ['noParamNames']
+    }
+  }
+}
+
 dependencies {
   requiredLibs 'org.json:json:20080701',
                'org.skyscreamer:jsonassert:2.0-rc1'
+  noParamNamesCompileOnly project(':io.openliberty.mcp'),
+                              project(path: ':io.openliberty.jakarta', configuration: 'cdi40')
+  implementation sourceSets.noParamNames.output
 }
+
 /* Added to allow method parmaters to be available for MCP Tool Server*/ 
 // Allow us to test getting the name of a tool argument directly from the Java 
 compileJava {
-    options.compilerArgs << '-parameters'
+  options.compilerArgs << '-parameters'
+}
+
+// Build the noParamNames code into a jar
+tasks.register('noParamNamesJar', Jar) {
+  dependsOn noParamNamesClasses
+  from sourceSets.noParamNames.output
+  archiveFileName = 'noParamNames.jar'
+}
+
+// Build the noParamNames jar before the autoFVT zip so that it gets included in the zip
+tasks.named('autoFVT') {
+  dependsOn noParamNamesJar
 }

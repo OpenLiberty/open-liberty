@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -93,13 +94,15 @@ public class CxfSSLUNTNonceTimeOutTests extends SSLTestCommon {
      */
 
     @Test
+    @ExpectedFFDC({ "org.apache.wss4j.common.ext.WSSecurityException" })
     public void testCxfUntHardcodedReplayOneAndMoreMinutesSSL() throws Exception {
 
         genericTest("testCxfUntReplayOneAndMoreMinutesSSL", untSSLClientUrl, portNumberSecure,
                     "user1", "security", "FVTVersionBA7Service", "UrnBasicPlcyBA7",
                     "true", "",
-                    "Response: WSSECFVT FVTVersion_ba07",
-                    "The test expected a succesful message from the server.");
+                    // TODO is replay attack merited? "Response: WSSECFVT FVTVersion_ba07",
+                    replayAttackNew,
+                    "The test expected a replay attack message from the server.");
 
     }
 

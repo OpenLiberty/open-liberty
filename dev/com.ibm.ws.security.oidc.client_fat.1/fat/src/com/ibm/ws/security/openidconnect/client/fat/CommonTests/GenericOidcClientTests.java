@@ -43,6 +43,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
+import javax.net.ssl.KeyManagerFactory;
+
 /**
  * This is the test class that contains common code for all of the
  * OpenID Connect RP tests. There will be OP specific test classes that extend this class.
@@ -1198,53 +1200,62 @@ public class GenericOidcClientTests extends CommonTest {
     @Test
     public void OidcClientSSLTest_BadOPTrustStore() throws Exception {
 
-        // Reconfigure OP server with SSL settings
-        // Reconfigure RP server with SSL settings
-        List<String> opMsgs = new ArrayList<String>() {
-            {
-                add(MessageConstants.CWWKO0219I_TCP_CHANNEL_READY);
-            }
-        };
-        List<String> rpMsgs = new ArrayList<String>() {
-            {
-                add(MessageConstants.CWWKG0017I_CONFIG_UPDATE_COMPLETE);
-            }
-        };
+        String algorithm = KeyManagerFactory.getDefaultAlgorithm();
+        boolean isPKIX = algorithm.equalsIgnoreCase("PKIX") ? true : false;
 
-        // can't remove this reconfig - need to change the ssl config at the server level
-        ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_ssl_bad_truststore.xml", opMsgs, "rp_server_basic_ssl_bad_op_trust.xml", rpMsgs, null, null);
+        if(!isPKIX){
 
-        TestSettings updatedTestSettings = testSettings.copyTestSettings();
-        updatedTestSettings.setScope("openid profile");
+            // Reconfigure OP server with SSL settings
+            // Reconfigure RP server with SSL settings
+            List<String> opMsgs = new ArrayList<String>() {
+                {
+                    add(MessageConstants.CWWKO0219I_TCP_CHANNEL_READY);
+                }
+            };
+            List<String> rpMsgs = new ArrayList<String>() {
+                {
+                    add(MessageConstants.CWWKG0017I_CONFIG_UPDATE_COMPLETE);
+                }
+            };
 
-        WebConversation wc = new WebConversation();
+            // can't remove this reconfig - need to change the ssl config at the server level
+            ClientTestHelpers.reconfigServers(_testName, Constants.JUNIT_REPORTING, "op_server_basic_ssl_bad_truststore.xml", opMsgs, "rp_server_basic_ssl_bad_op_trust.xml", rpMsgs, null, null);
 
-        // set up null expectations so that the actual getLoginPage and processLoginForm helpers won't validate
-        // as we don't know which step will fail - let the test case do the checking.
-        String failingAction = Constants.GET_LOGIN_PAGE;
-        helpers.setOverrideSetServerMark(true);
-        WebResponse response = helpers.getLoginPage(_testName, wc, updatedTestSettings, null);
-        if (response == null) {
-            fail("WebResponse from getLogin page was null");
-        }
-        // due to redirects going through the test client, the first request may not fail, check when we submit the login page
-        // we set up our test clients such that they'll never fail the ssl checks.
-        if (AutomationTools.getResponseStatusCode(response) == Constants.OK_STATUS) {
+            TestSettings updatedTestSettings = testSettings.copyTestSettings();
+            updatedTestSettings.setScope("openid profile");
+
+            WebConversation wc = new WebConversation();
+
+            // set up null expectations so that the actual getLoginPage and processLoginForm helpers won't validate
+            // as we don't know which step will fail - let the test case do the checking.
+            String failingAction = Constants.GET_LOGIN_PAGE;
             helpers.setOverrideSetServerMark(true);
-            failingAction = Constants.LOGIN_USER;
-            response = helpers.processProviderLoginForm(_testName, wc, response, updatedTestSettings, null);
-        }
-        List<validationData> expectations = validationTools.add401Responses(failingAction);
-        expectations = vData.addExpectation(expectations, failingAction, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "Did not fail login", null, Constants.UNAUTHORIZED_MESSAGE);
-        expectations = validationTools.addMessageExpectation(testOPServer, expectations, failingAction, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not get a message indicating that there was an SSL HANDSHAKE exception in the messages.log", "CWPKI0022E");
-        expectations = validationTools.addMessageExpectation(testOPServer, expectations, failingAction, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not get a message indicating that the Cert needs to be added to the truststore in the messages.log", "commonBadTrustStore.jks");
-        testRPServer.addIgnoredServerException(MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER);
-        testRPServer.addIgnoredServerException("CWWKS1524E");
-        testRPServer.addIgnoredServerException("CWWKS1525E");
-        testRPServer.addIgnoredServerException("CWWKS1534E");
-        testOPServer.addIgnoredServerException("CWWKO0801E");
+            WebResponse response = helpers.getLoginPage(_testName, wc, updatedTestSettings, null);
+            if (response == null) {
+                fail("WebResponse from getLogin page was null");
+            }
+            // due to redirects going through the test client, the first request may not fail, check when we submit the login page
+            // we set up our test clients such that they'll never fail the ssl checks.
+            if (AutomationTools.getResponseStatusCode(response) == Constants.OK_STATUS) {
+                helpers.setOverrideSetServerMark(true);
+                failingAction = Constants.LOGIN_USER;
+                response = helpers.processProviderLoginForm(_testName, wc, response, updatedTestSettings, null);
+            }
+            List<validationData> expectations = validationTools.add401Responses(failingAction);
+            expectations = vData.addExpectation(expectations, failingAction, Constants.RESPONSE_MESSAGE, Constants.STRING_CONTAINS, "Did not fail login", null, Constants.UNAUTHORIZED_MESSAGE);
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, failingAction, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not get a message indicating that there was an SSL HANDSHAKE exception in the messages.log", "CWPKI0022E");
+            expectations = validationTools.addMessageExpectation(testOPServer, expectations, failingAction, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Did not get a message indicating that the Cert needs to be added to the truststore in the messages.log", "commonBadTrustStore.jks");
+            testRPServer.addIgnoredServerException(MessageConstants.CWWKS1708E_CLIENT_FAILED_TO_CONTACT_PROVIDER);
+            testRPServer.addIgnoredServerException("CWWKS1524E");
+            testRPServer.addIgnoredServerException("CWWKS1525E");
+            testRPServer.addIgnoredServerException("CWWKS1534E");
+            testOPServer.addIgnoredServerException("CWWKO0801E");
 
-        validationTools.validateResult(response, failingAction, expectations, updatedTestSettings);
+            validationTools.validateResult(response, failingAction, expectations, updatedTestSettings);
+        }
+        else{
+            Log.info(thisClass, _testName, "Skipping test for PKIX provider");
+        }
 
     }
 

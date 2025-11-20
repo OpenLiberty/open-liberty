@@ -14,7 +14,6 @@ import java.util.EnumSet;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.Tool.Annotations;
-import io.openliberty.mcp.annotations.Tool.OutputSchema;
 import jakarta.enterprise.util.AnnotationLiteral;
 
 /**
@@ -30,17 +29,17 @@ public class Literals {
      * Creates a literal {@link Tool} annotation which doesn't specify any {@link Annotations} or structuredContent.
      */
     public static Tool tool(String name, String title, String description) {
-        return tool(name, title, description, false, toolAnnotations(""), null);
+        return tool(name, title, description, false, toolAnnotations(""));
     }
 
     /**
      * Creates a literal {@link Tool} annotation which doesn't specify any {@link Annotations}.
      */
     public static Tool tool(String name, String title, String description, boolean structuredContent) {
-        return tool(name, title, description, structuredContent, toolAnnotations(""), null);
+        return tool(name, title, description, structuredContent, toolAnnotations(""));
     }
 
-    public static Tool tool(String name, String title, String description, boolean structuredContent, Annotations toolAnntations, OutputSchema outputSchema) {
+    public static Tool tool(String name, String title, String description, boolean structuredContent, Annotations toolAnntations) {
         return new ToolLiteral() {
             private static final long serialVersionUID = 1L;
 
@@ -67,11 +66,6 @@ public class Literals {
             @Override
             public Annotations annotations() {
                 return toolAnntations;
-            }
-
-            @Override
-            public OutputSchema outputSchema() {
-                return outputSchema;
             }
         };
     }

@@ -23,11 +23,12 @@ package io.openliberty.mcp.messaging;
 
 import java.util.Optional;
 
+import io.openliberty.mcp.annotations.Tool;
+
 /**
  * Can be used to determine if an MCP client requested a cancellation of an in-progress request.
  * <p>
- * {@link Tool}, {@link Prompt} methods can accept this class as a parameter. It will be automatically injected before the
- * method is invoked.
+ * {@link Tool} methods can accept this class as a parameter. It will be automatically injected before the method is invoked.
  *
  * @see #check()
  */

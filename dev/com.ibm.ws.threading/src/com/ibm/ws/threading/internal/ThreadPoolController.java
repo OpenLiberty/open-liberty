@@ -1060,19 +1060,21 @@ public final class ThreadPoolController {
      * @param throughput  the throughput of the current interval
      * @param cpuHigh     true if current cpu usage exceeds the 'high' threshold
      * @param lowActivity true if pool activity is low and queue is empty
+     * @param busyPool    true if idle thread count is less than one pool increment
      * @param systemCpuNA true if systemCpu is not available/valid
      *
      * @return the shrink score
      */
-    double getShrinkScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowActivity, boolean systemCpuNA) {
+    double getShrinkScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowActivity, boolean busyPool, boolean systemCpuNA) {
         double shrinkScore = 0.0;
         double shrinkMagic = 0.0;
         boolean flippedCoin = false;
         int downwardCompareSpan = 0;
 
-        // with available cpu and a deep request queue,
+        // with available CPU and a deep request queue, or
+        // if most threads in the pool are active,
         // no reason to shrink the thread pool
-        if (!cpuHigh && deepQueue) {
+        if (!cpuHigh && (deepQueue || busyPool)) {
             shrinkScore = 0.0;
             return shrinkScore;
         }
@@ -1216,18 +1218,19 @@ public final class ThreadPoolController {
      * @param throughput  the throughput of the current interval
      * @param cpuHigh     true if current cpu usage exceeds the 'high' threshold
      * @param lowActivity true if pool activity is low and queue is empty
+     * @param busyPool    true if idle thread count is less than one pool increment
      * @param systemCpuNA true if systemCpu is not available/valid
      *
      * @return the grow score
      */
-    double getGrowScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowActivity, boolean systemCpuNA) {
+    double getGrowScore(int poolSize, double forecast, double throughput, boolean cpuHigh, boolean lowActivity, boolean busyPool, boolean systemCpuNA) {
         double growScore = 0.0;
         boolean flippedCoin = false;
         int upwardCompareSpan = 0;
 
-        // with available cpu and a deep request queue,
-        // move directly to growing the thread pool
-        if (!cpuHigh && deepQueue) {
+        // with available CPU and a deep request queue or few idle threads,
+        // move directly to grow the thread pool
+        if (!cpuHigh && (deepQueue || busyPool)) {
             growScore = 1.0;
             return growScore;
         }
@@ -1342,18 +1345,20 @@ public final class ThreadPoolController {
     }
 
     /**
-     * Force an adjustment to the thread pool size if the change wouldn't shrink the
-     * pool to zero or grow it beyond {@link maxThreads}.
+     * Force an adjustment to the thread pool size if it has not changed recently.
+     * Prefer growing if the pool is busy, shrinking if the pool is small, and
+     * otherwise flip a coin.
      *
      * @param poolSize             the current pool size
      * @param calculatedAdjustment the adjustment calculated by grow and shrink scores
      * @param intervalCompleted    the number of tasks completed in the current interval
-     * @param lowActivity          true when pool activity is low and queue is empty
+     * @param lowActivity          true if pool activity is low and queue is empty
+     * @param busyPool             true if idle thread count is less than one pool increment
      *
      * @return the pool adjustment size to use
      */
     @Trivial
-    int forceVariation(int poolSize, int calculatedAdjustment, long intervalCompleted, boolean lowActivity) {
+    int forceVariation(int poolSize, int calculatedAdjustment, long intervalCompleted, boolean lowActivity, boolean busyPool) {
         // 08/08/2012: Count intervals without change
         if (calculatedAdjustment == 0 && intervalCompleted != 0) {
             consecutiveNoAdjustment++;
@@ -1362,20 +1367,30 @@ public final class ThreadPoolController {
         }
 
         int forcedAdjustment = calculatedAdjustment;
+        boolean canGrow = (poolSize + poolIncrement <= maxThreads);
+        boolean canShrink = ((poolSize - poolDecrement) >= currentMinimumPoolSize);
+
         if (consecutiveNoAdjustment >= MAX_INTERVALS_WITHOUT_CHANGE) {
             consecutiveNoAdjustment = 0;
-            if (flipCoin() && poolSize + poolIncrement <= maxThreads) {
-                // don't force an increase when pool activity is low
-                if (!lowActivity) {
-                    forcedAdjustment = poolIncrement;
-                    if (tc.isEventEnabled()) {
-                        Tr.event(tc, "force variation", (" forced increase: " + forcedAdjustment));
-                    }
+            if (busyPool && canGrow) {
+                forcedAdjustment = poolIncrement;
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "force variation", (" forced increase - busy pool: " + forcedAdjustment));
                 }
-            } else if ((poolSize - poolDecrement) >= currentMinimumPoolSize) {
+            } else if (lowActivity && canShrink) {
                 forcedAdjustment = -poolDecrement;
                 if (tc.isEventEnabled()) {
-                    Tr.event(tc, "force variation", (" forced decrease: " + forcedAdjustment));
+                    Tr.event(tc, "force variation", (" forced decrease - low activity: " + forcedAdjustment));
+                }
+            } else if ((!canShrink || flipCoin()) && canGrow) {
+                forcedAdjustment = poolIncrement;
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "force variation", (" forced increase - coin flip: " + forcedAdjustment));
+                }
+            } else if (canShrink) {
+                forcedAdjustment = -poolDecrement;
+                if (tc.isEventEnabled()) {
+                    Tr.event(tc, "force variation", (" forced decrease - coin flip: " + forcedAdjustment));
                 }
             }
         }
@@ -1466,6 +1481,7 @@ public final class ThreadPoolController {
         double throughput = 1000.0 * deltaCompleted / deltaTime;
         queueDepth = threadPool.getQueue().size();
         activeThreads = threadPool.getActiveCount();
+        int idleThreads = poolSize - activeThreads;
 
         double forecast = 0;
         double shrinkScore = 0;
@@ -1607,11 +1623,13 @@ public final class ThreadPoolController {
                     }
                 }
 
+                boolean busyPool = (idleThreads < poolIncrement);
+
                 setPoolIncrementDecrement(poolSize);
 
                 forecast = currentStats.getMovingAverage();
-                shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowActivity, systemCpuNA);
-                growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowActivity, systemCpuNA);
+                shrinkScore = getShrinkScore(poolSize, forecast, throughput, cpuHigh, lowActivity, busyPool, systemCpuNA);
+                growScore = getGrowScore(poolSize, forecast, throughput, cpuHigh, lowActivity, busyPool, systemCpuNA);
 
                 // Adjust the poolsize only if one of the scores is both larger than the scoreFilterLevel
                 // and sufficiently larger than the other score. These conditions reduce poolsize fluctuation
@@ -1631,7 +1649,7 @@ public final class ThreadPoolController {
                 }
 
                 // Force some random variation into the pool size algorithm
-                poolAdjustment = forceVariation(poolSize, poolAdjustment, deltaCompleted, lowActivity);
+                poolAdjustment = forceVariation(poolSize, poolAdjustment, deltaCompleted, lowActivity, busyPool);
 
                 // Change the pool size and save the result, will check it at start of next control cycle
                 targetPoolSize = adjustPoolSize(poolSize, poolAdjustment);
@@ -1812,24 +1830,30 @@ public final class ThreadPoolController {
              */
 
             if (!checkTargetPoolSize(poolSize)) {
+                hangIntervalCounter++;
                 if (!highCpu) {
                     setPoolIncrementDecrement(poolSize);
                     if (poolSize + poolIncrement <= maxThreads && poolSize < maxThreadsToBreakHang) {
-                        targetPoolSize = adjustPoolSize(poolSize, poolIncrement);
+                        int poolAdjustment = poolIncrement;
+                        // with available cpu and a persistently deep queue, grow the pool by more than usual
+                        if (deepQueue && consecutiveDeepQueueCycles > consecutiveDeepQueueThreshold) {
+                            poolAdjustment = Math.min(poolAdjustment * deepQueuePoolIncrementMultiple, maxThreads - poolSize);
+                        }
+                        targetPoolSize = adjustPoolSize(poolSize, poolAdjustment);
                         if (tc.isEventEnabled()) {
                             Tr.event(tc, "Increasing pool size to resolve hang, from " + poolSize + " to " + targetPoolSize);
                         }
-                        // update the poolSize set to resolve the hang, plus one-increment buffer
-                        int targetSize = poolSize + poolIncrement;
-                        if (hangBufferPoolSize < targetSize) {
-                            hangBufferPoolSize = targetSize;
+                        // update the pool size set to resolve the hang, plus one-increment buffer
+                        int hangBufferTargetSize = Math.min(targetPoolSize + poolIncrement, maxThreads);
+                        if (hangBufferPoolSize < hangBufferTargetSize) {
+                            hangBufferPoolSize = hangBufferTargetSize;
                             currentMinimumPoolSize = hangBufferPoolSize;
                         }
 
                     } else {
                         // there's a hang, but we can't add any more threads...  emit a warning the first time this
                         // happens for a given hang, but otherwise just bail
-                        if (hangMaxThreadsMessageEmitted == false && hangIntervalCounter > 0) {
+                        if (hangMaxThreadsMessageEmitted == false && hangIntervalCounter > 1) {
                             if (tc.isWarningEnabled()) {
                                 if (poolSizeWhenHangDetected != poolSize) {
                                     Tr.warning(tc, "unbreakableExecutorHang", poolSizeWhenHangDetected, poolSize);
@@ -1839,19 +1863,22 @@ public final class ThreadPoolController {
                             }
                             hangMaxThreadsMessageEmitted = true;
                         }
+                        // We return false here so that the rest of the thread pool controller logic can run,
+                        // since hang resolution cannot help once the pool size reaches maxThreadsToBreakHang
+
+                        return (false);
                     }
                 } else {
                     /**
                      * This is a 'hung-busy' state - work in queue and no tasks completed, but lots of cpu
                      * being used (either by the java process or the underlying system, or both).
                      * Since cpu is high, let's not keep adding threads, since more threads are unlikely to
-                     * help accomplish useful work, when there are few free cpu cyles available.
+                     * help accomplish useful work, when there are few free cpu cycles available.
                      */
                     if (tc.isEventEnabled()) {
                         Tr.event(tc, "Executor hung but no action taken because highCpu: " + highCpu);
                     }
                 }
-                hangIntervalCounter++;
             }
         } else {
             // no hang exists, so reset the appropriate variables that track hangs

@@ -571,6 +571,15 @@ public class TCKRunner {
     }
 
     /**
+     * Get the spec type that was set from the TCK launcher. Typically either JAKARTA or MICROPROFILE
+     *
+     * @return the spec type.
+     */
+    private Type getType() {
+        return this.type;
+    }
+
+    /**
      * Get a File which represents the mvn output file when the tests are run. Typically ${component_Root_Directory}/results/mvnOutput_test_${suite_name}
      *
      * @return the mvn output file when running tests.

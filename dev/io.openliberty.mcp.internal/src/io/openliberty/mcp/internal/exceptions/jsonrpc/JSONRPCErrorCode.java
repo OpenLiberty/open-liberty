@@ -16,6 +16,7 @@ package io.openliberty.mcp.internal.exceptions.jsonrpc;
  * @param message
  */
 public enum JSONRPCErrorCode {
+    // error codes and messages from https://www.jsonrpc.org/specification#error_object
     PARSE_ERROR(-32700, "Parse error"),
     INVALID_REQUEST(-32600, "Invalid request"),
     METHOD_NOT_FOUND(-32601, "Method not found"),

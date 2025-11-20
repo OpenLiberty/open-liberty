@@ -12,15 +12,15 @@
     <!-- 3/2021 added cxf-ehcache_ee8.xml -->
     
 		<signatureProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.type="JKS"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.p12" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.type="JKS"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerDefaultCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.p12" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
 
 	</wsSecurityClient>
 

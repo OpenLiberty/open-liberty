@@ -23,7 +23,7 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
 
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Apartments {
     @Delete
     public List<Apartment> removeAll(); //Need to return List<Apartment> since this repository lacks a primary entity

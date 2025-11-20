@@ -48,7 +48,7 @@ public class SignatureAlgorithms {
     static final String hmac_sha512 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512";
 
     static Map<String, String> RSA_MAP = new HashMap<String, String>();
-    static boolean fipsEnabled = CryptoUtils.isFips140_3EnabledWithBetaGuard();
+    static boolean fipsEnabled = CryptoUtils.isFips140_3Enabled();
     static {
         if (!fipsEnabled){
         RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), rsa_sha1);}

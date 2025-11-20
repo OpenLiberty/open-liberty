@@ -62,7 +62,7 @@ error.spring.required.20.explanation=La caracter\u00edstica Spring Boot configur
 error.spring.required.20.useraction=Configure una versi\u00f3n de la caracter\u00edstica Spring Boot que sea compatible con el contenido de la aplicaci\u00f3n.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: La caracter\u00edstica springBoot-3.0 debe configurarse. La caracter\u00edstica springBoot-1.5 o springBoot-2.0 est\u00e1 configurada y la aplicaci\u00f3n tiene contenido Spring 3.0.
+error.spring3.required=CWWKC0273E: La caracter\u00edstica {0} debe estar configurada en el archivo server.xml. La funci\u00f3n {1} est\u00e1 configurada y la aplicaci\u00f3n tiene Spring Boot {2} contenido.
 error.spring3.required.explanation=La caracter\u00edstica Spring Boot configurada actualmente no es compatible con el contenido de la aplicaci\u00f3n.
 error.spring3.required.useraction=Configure una versi\u00f3n de la caracter\u00edstica Spring Boot que sea compatible con el contenido de la aplicaci\u00f3n.
 

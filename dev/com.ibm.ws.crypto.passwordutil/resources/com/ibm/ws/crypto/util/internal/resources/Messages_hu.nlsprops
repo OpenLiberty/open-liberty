@@ -66,7 +66,9 @@ PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: A kiszolg\u00e1l\u00f3 konfigur\
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty mostant\u00f3l er\u0151sebb algoritmusokat haszn\u00e1l az \u00fajonnan gener\u00e1lt {aes} \u00e9s {hash} jelszavakhoz.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a {aes} \u00e9s a {hash} jelsz\u00f3\u00e9rt\u00e9kek a Liberty leg\u00fajabb verzi\u00f3j\u00e1val lettek gener\u00e1lva.
 
-
+AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=A wlp.aes.encryption.key v\u00e1ltoz\u00f3ban megadott \u00e9rt\u00e9k kulcshossz\u00e1nak 256 bitesnek kell lennie.
+AESKEYMANAGER_NOT_BASE64_EXCEPTION=A wlp.aes.encryption.key v\u00e1ltoz\u00f3ban megadott \u00e9rt\u00e9knek base64 k\u00f3dol\u00e1s\u00fanak kell lennie.
+AESKEYMANAGER_BASE64_VARIABLE_NOT_SET=A wlp.aes.encryption.key v\u00e1ltoz\u00f3t be kell \u00e1ll\u00edtani a jelszavak dek\u00f3dol\u00e1s\u00e1hoz.
 # ---------------- This is an exception message ------------
 PASSWORDUTIL_DUPLICATE_CUSTOM_ENCRYPTION=T\u00f6bb CustomPasswordEncryption megval\u00f3s\u00edt\u00e1s \u00e9szlelhet\u0151. Csak egyetlen CustomPasswordEncryption megval\u00f3s\u00edt\u00e1s t\u00e1mogatott. Az \u00e9szlelt CustomPasswordEncryption megval\u00f3s\u00edt\u00e1sok list\u00e1ja a k\u00f6vetkez\u0151:
 PASSWORDUTIL_ERROR_IN_EXTENSION_MANIFEST_FILE=Hiba t\u00f6rt\u00e9nt a kiterjeszt\u00e9s le\u00edr\u00f3f\u00e1jl feldolgoz\u00e1sakor: {0}. A f\u00e1jl figyelmen k\u00edv\u00fcl maradt. Az egy\u00e9ni titkos\u00edt\u00e1s nem \u00e9rhet\u0151 el. A hiba\u00fczenet: {1}.

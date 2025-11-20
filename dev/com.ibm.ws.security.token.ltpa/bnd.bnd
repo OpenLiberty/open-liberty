@@ -23,6 +23,8 @@ WS-TraceGroup: \
 Import-Package: \
 	!*.internal.*,\
 	!com.ibm.ws.kernel.boot.cmdline,\
+    com.ibm.ws.security, \
+    com.ibm.ws.security.registry, \
 	*
 
 Export-Package: com.ibm.ws.security.token.ltpa
@@ -86,6 +88,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	com.ibm.ws.security.token;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.org.osgi.core,\
+    com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
@@ -97,6 +100,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.security.fat.common;version=latest,\
+    com.ibm.ws.security.registry;version=latest,\
 	com.ibm.ws.config;version=latest
 
 -testpath: \

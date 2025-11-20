@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -31,7 +32,6 @@ import java.util.Set;
 
 import javax.xml.namespace.QName;
 
-import org.joda.time.DateTime;
 import org.opensaml.core.xml.Namespace;
 import org.opensaml.core.xml.NamespaceManager;
 import org.opensaml.core.xml.XMLObject;
@@ -67,6 +67,7 @@ import com.ibm.ws.security.saml.sso20.metadata.TraceConstants;
 import com.ibm.ws.security.saml.sso20.rs.ByteArrayDecoder;
 
 import net.shibboleth.utilities.java.support.codec.Base64Support;
+import net.shibboleth.utilities.java.support.codec.DecodingException;
 import net.shibboleth.utilities.java.support.xml.NamespaceSupport;
 import net.shibboleth.utilities.java.support.xml.SerializeSupport;
 
@@ -169,7 +170,8 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
      * @param xmlObject
      */
     private void handleSamlAuthnStatement(AuthnStatement authnStatement) throws SamlException {
-        this.authenticationInstant = authnStatement.getAuthnInstant().toDate();
+        //this.authenticationInstant = authnStatement.getAuthnInstant().toDate();
+        this.authenticationInstant = Date.from(authnStatement.getAuthnInstant()); //v4 update
         this.sessionIndex = authnStatement.getSessionIndex();
         this.maps.put(SINDEX, this.sessionIndex);
         if (authnStatement.getAuthnContext() != null) {
@@ -184,9 +186,9 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
             this.subjectIPAddress = locality.getAddress();
         }
 
-        DateTime sessionNotOnOrAfter = authnStatement.getSessionNotOnOrAfter();
+        Instant sessionNotOnOrAfter = authnStatement.getSessionNotOnOrAfter(); //v4 update
         if (sessionNotOnOrAfter != null) {
-            lSessionNotOnOrAfter = sessionNotOnOrAfter.getMillis();
+            lSessionNotOnOrAfter = sessionNotOnOrAfter.toEpochMilli(); //v4 update
         }
     }
 
@@ -205,7 +207,8 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
      * @throws SamlException
      */
     private void handleSamlConditions(Conditions conditions) throws SamlException {
-        this.samlExpires = conditions.getNotOnOrAfter().toDate();
+        //this.samlExpires = conditions.getNotOnOrAfter().toDate();
+        this.samlExpires = Date.from(conditions.getNotOnOrAfter()); //v4 update
         OneTimeUse onetimeuse = conditions.getOneTimeUse();
         if (onetimeuse != null) {
             this.oneTimeUse = true;
@@ -341,7 +344,7 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
                     X509Certificate x509Cert = (X509Certificate) certFactory.generateCertificate(bais);
                     this.signerCertificates.add(x509Cert);
                     this.signerCertificateDN.add(x509Cert.getSubjectDN().getName());
-                } catch (CertificateException e) {
+                } catch (CertificateException | DecodingException e) { //v4 update
                     // error handling
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "ERROR: Get an Exception while generate the X509Cerficate", e);
@@ -383,7 +386,8 @@ public class Saml20TokenImpl implements Saml20Token, Serializable {
 
         this.samlID = xmlAssertion.getID();
         this.assertionQName = xmlAssertion.getElementQName();
-        this.samlCreated = xmlAssertion.getIssueInstant().toDate();
+        //this.samlCreated = xmlAssertion.getIssueInstant().toDate();
+        this.samlCreated = Date.from(xmlAssertion.getIssueInstant()); //v4 update
     }
 
     /**

@@ -9,16 +9,19 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.exceptions.jsonrpc;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 /**
  *
  */
 public class JSONRPCException extends RuntimeException {
+    private static final TraceComponent tc = Tr.register(JSONRPCException.class);
     private static final long serialVersionUID = 1L;
     private JSONRPCErrorCode errorCode;
     private Object data;
 
     public JSONRPCException(JSONRPCErrorCode errorCode, Object data) {
-        super(errorCode.getMessage());
         this.errorCode = errorCode;
         this.data = data;
     }

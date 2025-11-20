@@ -85,9 +85,9 @@ broadcast_remote_command_is_null=Figyelmeztet\u00e9s: {0}: a fogadott {1} \u00fc
 
 broadcast_remote_command_wrong_type=Figyelmeztet\u00e9s: {0}: a fogadott {1} \u00fczenet a v\u00e1rt RemoteCommand t\u00edpus\u00fa objektum helyett {2} t\u00edpus\u00fa objektumot tartalmaz.
 
-cache_key_null_identity_map=CacheKey p\u00e9ld\u00e1ul: {0}, az identit\u00e1st\u00e9rk\u00e9pben t\u00e1rolt, null els\u0151dleges kulccsal rendelkezik.
+cache_key_null_identity_map=CacheKey p\u00e9ld\u00e1ul: {0}, amelyet az identit\u00e1st\u00e9rk\u00e9pben t\u00e1rolnak, null els\u0151dleges kulccsal rendelkezik.
 
-cache_key_null_read_lock_manager=CacheKey p\u00e9ld\u00e1ul: {0}, a gyors\u00edt\u00f3t\u00e1r olvas\u00e1si z\u00e1rol\u00e1skezel\u0151je \u00e1ltal z\u00e1rolt, null els\u0151dleges kulcs.
+cache_key_null_read_lock_manager=CacheKey p\u00e9ld\u00e1ul: {0}, amelyet a gyors\u00edt\u00f3t\u00e1r olvas\u00e1si z\u00e1rol\u00e1skezel\u0151je z\u00e1rolt, null els\u0151dleges kulccsal rendelkezik.
 
 cannot_get_nested_collection_type=A be\u00e1gyazott gy\u0171jtem\u00e9nyt\u00edpus nem k\u00e9rdezhet\u0151 le.
 

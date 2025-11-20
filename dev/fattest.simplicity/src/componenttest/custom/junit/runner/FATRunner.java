@@ -230,7 +230,12 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     Log.info(c, m, "***********************************");
                     Log.info(c, m, "");
                     Log.info(c, m, "entering " + getTestClass().getName() + "." + method.getName());
-                    Log.info(c, m, "");
+                    if (RepeatTestFilter.isAnyRepeatActionActive()) {
+                        Log.info(c, m, "current repeat action: " + RepeatTestFilter.getRepeatActionsAsString());
+                        Log.info(c, m, "");
+                    } else {
+                        Log.info(c, m, "");
+                    }
                     Log.info(c, m, "***********************************");
                     Map<String, FFDCInfo> ffdcBeforeTest = retrieveFFDCCounts();
 
@@ -342,7 +347,12 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     Log.info(c, m, "***********************************");
                     Log.info(c, m, "");
                     Log.info(c, m, "exiting " + getTestClass().getName() + "." + method.getName() + " (" + Duration.between(startTime, Instant.now()) + ")");
-                    Log.info(c, m, "");
+                    if (RepeatTestFilter.isAnyRepeatActionActive()) {
+                        Log.info(c, m, "current repeat action: " + RepeatTestFilter.getRepeatActionsAsString());
+                        Log.info(c, m, "");
+                    } else {
+                        Log.info(c, m, "");
+                    }
                     Log.info(c, m, "***********************************");
                 }
             }

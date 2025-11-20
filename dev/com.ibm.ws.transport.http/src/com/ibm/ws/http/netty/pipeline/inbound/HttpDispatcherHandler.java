@@ -58,8 +58,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     private final DefaultFullHttpResponse errorResponse;
     private static final String MAX_STREAMS_REFUSED_MESSAGE = "too many client-initiated streams have been refused; closing the connection";
 
-    // private HttpDispatcherLink link;
-
     public HttpDispatcherHandler(HttpChannelConfig config) {
         super(false);
         Objects.requireNonNull(config);
@@ -75,15 +73,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         context.channel().attr(NettyHttpConstants.STREAMS_REFUSED).set(0);
     }
 
-    // Method to allow direct invocation
-    // TODO check if this can be cleaned up and removed
-    public void processMessageDirectly(FullHttpRequest request) throws Exception {
-        channelRead0(context, request);
-    }
-
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
-        // TODO Need to see if we need to check decoder result from request to ensure data is properly parsed as expected
         if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
 
             FullHttpRequest msg = request;
@@ -184,7 +175,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Sending a 400 for throwable [" + cause + "]");
         }
-        // TODO Need a way to check if headers were already sent or not before sending an entire response
         loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
         HttpUtil.setKeepAlive(errorResponse, false);
         this.context.writeAndFlush(errorResponse);

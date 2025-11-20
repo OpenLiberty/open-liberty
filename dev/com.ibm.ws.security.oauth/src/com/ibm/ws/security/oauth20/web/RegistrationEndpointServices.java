@@ -682,7 +682,7 @@ public class RegistrationEndpointServices extends AbstractOidcEndpointServices {
         MessageDigest digest;
 
         try {
-            digest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ?  MessageDigest.getInstance(ALG_SHA256) : MessageDigest.getInstance(ALG_MD5);  //$NON-NLS-1$
+            digest = CryptoUtils.isFips140_3Enabled() ?  MessageDigest.getInstance(ALG_SHA256) : MessageDigest.getInstance(ALG_MD5);  //$NON-NLS-1$
         } catch (NoSuchAlgorithmException e) {
             // should never happen since all Java implementations must support MD5
             throw new RuntimeException(e);

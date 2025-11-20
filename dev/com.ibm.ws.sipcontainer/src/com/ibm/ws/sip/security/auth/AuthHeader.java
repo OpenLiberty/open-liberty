@@ -330,7 +330,7 @@ class AuthHeader {
 		addParam(header, DigestConstants.PROPERTY_NONCE, nonce, true);
 
 		//Based on whether fips is enabled or not
-		if (CryptoUtils.isFips140_3EnabledWithBetaGuard()){
+		if (CryptoUtils.isFips140_3Enabled()){
 		algorithm = (algorithm == null ? DigestConstants.ALG_SHA256 : algorithm);
 		}
 		else{

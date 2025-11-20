@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: N\u00e1sleduj\u00edc\u00ed zpr\u00e1vy j
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Zpr\u00e1vy, kter\u00e9 jsou nakonfigurovan\u00e9 jako skryt\u00e9, se nezap\u00ed\u0161\u00ed do soubor\u016f console.log a messages.log. Zap\u00ed\u0161\u00ed se do souboru trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: V\u00fdstupn\u00ed form\u00e1t souboru messages.log byl nyn\u00ed aktualizov\u00e1n na '{0}'.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: V\u00fdstupn\u00ed form\u00e1t souboru messages.log byl nyn\u00ed aktualizov\u00e1n na ''{0}''.
 MESSAGE_FORMAT_UPDATED.explanation=V\u00fdstupn\u00ed form\u00e1t souboru messages.log byl nyn\u00ed aktualizov\u00e1n.
 MESSAGE_FORMAT_UPDATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: V\u00fdstupn\u00ed form\u00e1t konzoly byl nyn\u00ed aktualizov\u00e1n na '{0}'.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: V\u00fdstupn\u00ed form\u00e1t konzoly byl nyn\u00ed aktualizov\u00e1n na ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=V\u00fdstupn\u00ed form\u00e1t pro konzolu byl nyn\u00ed aktualizov\u00e1n.
 CONSOLE_FORMAT_UPDATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
@@ -169,6 +169,10 @@ LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Zadejte interval p\u0159eto\u
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Chyb\u00ed n\u00e1zev z\u00e1hlav\u00ed pro jedno nebo v\u00edce pol\u00ed accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Protokolov\u00e1n\u00ed JSON pou\u017e\u00edv\u00e1 atribut logFormat z accessLogging pro v\u00fdb\u011br toho, jak\u00e1 pole zpr\u00e1v http_access.log se maj\u00ed zahrnout. P\u0159i pou\u017eit\u00ed pol\u00ed %i nebo %o v atributu accessLogging logFormat mus\u00ed b\u00fdt zad\u00e1n n\u00e1zev z\u00e1hlav\u00ed.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Zadejte n\u00e1zev z\u00e1hlav\u00ed pro pole v atributu accessLogging logFormat.
+
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: Protokoly jsou p\u0159i\u0161krcov\u00e1ny kv\u016fli velk\u00e9mu objemu.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=Protokoly jsou v sou\u010dasn\u00e9 dob\u011b omezov\u00e1ny z d\u016fvodu velk\u00e9ho objemu.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=Probl\u00e9my, kter\u00e9 zp\u016fsobuj\u00ed nadm\u011brn\u00e9 protokolov\u00e1n\u00ed nebo zv\u00fd\u0161en\u00ed prahu protokolov\u00e1n\u00ed, vy\u0159e\u0161te konfigurac\u00ed atributu protokolov\u00e1n\u00ed throttleMaxMessagesPerWindow. 
 
 FFDC_FILE_DELETION=TRAS3014I: Odstran\u011bno {0} soubor\u016f FFDC na z\u00e1klad\u011b konfigurovan\u00e9 hodnoty maxFfdcAge.
 FFDC_FILE_DELETION.explanation=Po\u010det soubor\u016f FFDC, kter\u00e9 byly odstran\u011bny b\u011bhem \u010di\u0161t\u011bn\u00ed FFDC.

@@ -41,7 +41,7 @@ public class CancellationImpl implements Cancellation {
     }
 
     /**
-     * This method cancels the request by setting a reason field
+     * Cancels the request with a provided reason.
      */
     public void cancel(Optional<String> reason) {
         this.reason = reason;

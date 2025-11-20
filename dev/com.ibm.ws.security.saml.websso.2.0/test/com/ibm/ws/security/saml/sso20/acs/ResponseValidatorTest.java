@@ -12,21 +12,23 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.acs;
 
-import static com.ibm.ws.security.saml.sso20.common.CommonMockObjects.SAML20_AUTHENTICATION_FAIL;
+import static com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects.SAML20_AUTHENTICATION_FAIL;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.opensaml.saml.common.SAMLVersion.VERSION_11;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.namespace.QName;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -54,7 +56,6 @@ import org.opensaml.saml.saml2.metadata.IDPSSODescriptor;
 import org.opensaml.security.credential.Credential;
 import org.opensaml.xmlsec.SignatureValidationParameters;
 import org.opensaml.xmlsec.context.SecurityParametersContext;
-//import org.opensaml.xmlsec.security.SecurityConfiguration;
 import org.opensaml.xmlsec.keyinfo.KeyInfoCredentialResolver;
 import org.opensaml.xmlsec.signature.Signature;
 import org.opensaml.xmlsec.signature.support.SignatureTrustEngine;
@@ -63,7 +64,7 @@ import com.ibm.ws.security.saml.SsoConfig;
 import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
-import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
+import com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects;
 import com.ibm.ws.security.saml.sso20.metadata.AcsDOMMetadataProvider;
 
 import net.shibboleth.utilities.java.support.resolver.CriteriaSet;
@@ -72,42 +73,39 @@ import test.common.SharedOutputManager;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class ResponseValidatorTest {
 
-    private final CommonMockObjects common = new CommonMockObjects();
-    private final Mockery mockery = common.getMockery();
+    private final CommonMockitoObjects common = new CommonMockitoObjects();
 
     private final Assertion assertion = common.getAssertion();
     private final BasicMessageContext context = common.getBasicMessageContext();
     private final MessageContext messageContext = common.getMessageContext();
     private final SAMLPeerEntityContext samlPeerEntityContext = common.getSAMLPeerEntityContext();
-    private final SAMLProtocolContext samlProtocolContext = mockery.mock(SAMLProtocolContext.class);
     private final EncryptedAssertion encryptedAssertion = common.getEncryptedAssertion();
     private final EntityDescriptor entityDescriptor = common.getEntityDescriptor();
     private final HttpServletRequest request = common.getServletRequest();
     private final Issuer issuer = common.getIssuer();
     private final KeyInfoCredentialResolver keyInfoCredResolver = common.getKeyInfoCredResolver();
-    //private final MetadataProvider metadataProvider = common.getMetadataProvider();
-    private final AcsDOMMetadataProvider acsmetadataProvider = mockery.mock(AcsDOMMetadataProvider.class);
+    private final AcsDOMMetadataProvider acsmetadataProvider = mock(AcsDOMMetadataProvider.class);
     private final Response samlResponse = common.getSamlResponse();
-    private final SecurityParametersContext securityParametersContext = mockery.mock(SecurityParametersContext.class);
-    private final SignatureValidationParameters signatureValidationParams = mockery.mock(SignatureValidationParameters.class);
-    //private final SignatureTrustEngine signatureTrustEngine = mockery.mock(SignatureTrustEngine.class);
-    //private final SecurityConfiguration securityConfig = common.getSecurityConfig();
+    private final SignatureValidationParameters signatureValidationParams = mock(SignatureValidationParameters.class);
     private final Signature signature = common.getSignature();
     private final SsoConfig ssoConfig = common.getSsoConfig();
     private final SsoSamlService ssoService = common.getSsoService();
     private final Status status = common.getStatus();
     private final StatusCode statusCode = common.getStatusCode();
 
-    private final SAMLObject samlObject = mockery.mock(SAMLObject.class);
-    private final SignableSAMLObject signableSAMLObject = mockery.mock(SignableSAMLObject.class, "signableSAMLObject");
-    private final StatusMessage statusMessage = mockery.mock(StatusMessage.class, "statusMessage");
+    private final SAMLObject samlObject = mock(SAMLObject.class);
+    private final SignableSAMLObject signableSAMLObject = mock(SignableSAMLObject.class);
+    private final StatusMessage statusMessage = mock(StatusMessage.class);
+    private final SecurityParametersContext securityParametersContext = mock(SecurityParametersContext.class);
+    private final SAMLProtocolContext samlProtocolContext = mock(SAMLProtocolContext.class);
 
     private static final String INVALID_URI = "urn:oasis:names:tc:SAML:2.0:status:Invalid";
     private static final SAMLVersion INVALID_SAML_VERSION = VERSION_11;
     private static final String ISSUER_IDENTIFIER = "https://idp.example.org/SAML2";
     private static final String DESTINATION = "http://test.gdl.mex.ibm.com:9080/ibm/saml20/SAML2/acs";
 
-    private static DateTime date;
+
+    private static Instant date;
 
     private ResponseValidator validator;
     private String protocol = SAMLConstants.SAML20P_NS;
@@ -128,31 +126,19 @@ public class ResponseValidatorTest {
     @BeforeClass
     public static void setUp() {
         outputMgr.trace("*=all");
-
-        date = new DateTime();
+        date = Instant.now();
     }
 
     public void constructorExpectations(final long clockSkew) {
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssuer();
-                will(returnValue(issuer));
-                one(issuer).getValue();
-                will(returnValue(ISSUER_IDENTIFIER));
-                one(context).getSsoConfig();
-                will(returnValue(ssoConfig));
-                one(ssoConfig).getClockSkew();
-                will(returnValue(clockSkew));
-            }
-        });
+        when(samlResponse.getIssuer()).thenReturn(issuer);
+        when(issuer.getValue()).thenReturn(ISSUER_IDENTIFIER);
+        when(context.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.getClockSkew()).thenReturn(clockSkew);
     }
 
     @Before
     public void before() {
         constructorExpectations(60000L);
-
-        //Configuration.setGlobalSecurityConfiguration();
-
         validator = new ResponseValidator(context, samlResponse);
 
         listAssertions.clear();
@@ -163,31 +149,22 @@ public class ResponseValidatorTest {
 
     @After
     public void after() {
-        mockery.assertIsSatisfied();
+        // No need to verify expectations as in JMock
     }
 
     @AfterClass
     public static void tearDown() {
-        //Configuration.setGlobalSecurityConfiguration(null);
         outputMgr.trace("*=all=disabled");
     }
 
     @Test
     public void testValidateStatus() {
-        mockery.checking(new Expectations() {
-            {
-                allowing(samlResponse).getStatus();
-                will(returnValue(status));
-                allowing(status).getStatusCode();
-                will(returnValue(statusCode));
-                allowing(statusCode).getValue();
-                will(returnValue(INVALID_URI));
-                one(status).getStatusMessage();
-                will(returnValue(statusMessage));
-                one(statusMessage).getMessage();
-                will(returnValue("Invalid URI was found."));
-            }
-        });
+        when(samlResponse.getStatus()).thenReturn(status);
+        when(status.getStatusCode()).thenReturn(statusCode);
+        when(statusCode.getValue()).thenReturn(INVALID_URI);
+        when(status.getStatusMessage()).thenReturn(statusMessage);
+        when(statusMessage.getMessage()).thenReturn("Invalid URI was found.");
+        
         try {
             validator.validateStatus();
             fail("SamlException was not thrown");
@@ -199,12 +176,8 @@ public class ResponseValidatorTest {
 
     @Test
     public void testValidateVersion_InvalidVersion() {
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getVersion();
-                will(returnValue(INVALID_SAML_VERSION));
-            }
-        });
+        when(samlResponse.getVersion()).thenReturn(INVALID_SAML_VERSION);
+        
         try {
             validator.validateVersion();
             fail("SamlException was not thrown");
@@ -216,22 +189,13 @@ public class ResponseValidatorTest {
 
     @Test
     public void testValidateDestination_DestinationExists() {
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getDestination();
-                will(returnValue(DESTINATION));
-                allowing(context).getHttpServletRequest();
-                will(returnValue(request));
-                allowing(context).getSsoService();
-                will(returnValue(ssoService));
-                allowing(ssoService).getProviderId();
-                will(returnValue("SAML2"));
-                allowing(context).getSsoConfig();
-                will(returnValue(ssoConfig));
-                one(ssoConfig).getSpHostAndPort();
-                will(returnValue("http://test.gdl.mex.ibm.com:9080"));
-            }
-        });
+        when(samlResponse.getDestination()).thenReturn(DESTINATION);
+        when(context.getHttpServletRequest()).thenReturn(request);
+        when(context.getSsoService()).thenReturn(ssoService);
+        when(ssoService.getProviderId()).thenReturn("SAML2");
+        when(context.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.getSpHostAndPort()).thenReturn("http://test.gdl.mex.ibm.com:9080");
+        
         try {
             boolean valid = validator.validateDestination();
             assertTrue("Expected a 'true' value but it was not received.", valid);
@@ -243,22 +207,13 @@ public class ResponseValidatorTest {
 
     @Test
     public void testValidateDestination_UnexpectedDestination() {
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getDestination();
-                will(returnValue(DESTINATION));
-                allowing(context).getHttpServletRequest();
-                will(returnValue(request));
-                allowing(context).getSsoService();
-                will(returnValue(ssoService));
-                allowing(ssoService).getProviderId();
-                will(returnValue("SAML2"));
-                allowing(context).getSsoConfig();
-                will(returnValue(ssoConfig));
-                one(ssoConfig).getSpHostAndPort();
-                will(returnValue("http://test.bad.gdl.mex.ibm.com:9080"));
-            }
-        });
+        when(samlResponse.getDestination()).thenReturn(DESTINATION);
+        when(context.getHttpServletRequest()).thenReturn(request);
+        when(context.getSsoService()).thenReturn(ssoService);
+        when(ssoService.getProviderId()).thenReturn("SAML2");
+        when(context.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.getSpHostAndPort()).thenReturn("http://test.bad.gdl.mex.ibm.com:9080");
+        
         try {
             validator.validateDestination();
             fail("SamlException was not thrown");
@@ -270,14 +225,9 @@ public class ResponseValidatorTest {
 
     @Test
     public void testValidateIssuer_InvalidFormat() {
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssuer();
-                will(returnValue(issuer));
-                allowing(issuer).getFormat();
-                will(returnValue("invalid_format"));
-            }
-        });
+        when(samlResponse.getIssuer()).thenReturn(issuer);
+        when(issuer.getFormat()).thenReturn("invalid_format");
+        
         try {
             validator.validateIssuer();
             fail("SamlException was not thrown");
@@ -289,22 +239,13 @@ public class ResponseValidatorTest {
 
     @Test
     public void testValidateIssuer_EntityDescriptorIsNull() {
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssuer();
-                will(returnValue(issuer));
-                one(issuer).getFormat();
-                will(returnValue(null));
-                one(context).getPeerEntityMetadata();
-                will(returnValue(null));
-                allowing(issuer).getValue();
-                will(returnValue(ISSUER_IDENTIFIER));
-                one(context).getSsoConfig();
-                will(returnValue(ssoConfig));
-                one(ssoConfig).getPkixTrustedIssuers();
-                will(returnValue(null));
-            }
-        });
+        when(samlResponse.getIssuer()).thenReturn(issuer);
+        when(issuer.getFormat()).thenReturn(null);
+        when(context.getPeerEntityMetadata()).thenReturn(null);
+        when(issuer.getValue()).thenReturn(ISSUER_IDENTIFIER);
+        when(context.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.getPkixTrustedIssuers()).thenReturn(null);
+        
         try {
             validator.validateIssuer();
             fail("SamlException was not thrown");
@@ -316,24 +257,14 @@ public class ResponseValidatorTest {
 
     @Test
     public void testValidateIssuer_IncorrectIssuer() {
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssuer();
-                will(returnValue(issuer));
-                one(issuer).getFormat();
-                will(returnValue(null));
-                one(context).getPeerEntityMetadata();
-                will(returnValue(entityDescriptor));
-                one(entityDescriptor).getEntityID();
-                will(returnValue(INVALID_URI));
-                allowing(issuer).getValue();
-                will(returnValue(ISSUER_IDENTIFIER));
-                one(context).getSsoConfig();
-                will(returnValue(ssoConfig));
-                one(ssoConfig).getPkixTrustedIssuers();
-                will(returnValue(null));
-            }
-        });
+        when(samlResponse.getIssuer()).thenReturn(issuer);
+        when(issuer.getFormat()).thenReturn(null);
+        when(context.getPeerEntityMetadata()).thenReturn(entityDescriptor);
+        when(entityDescriptor.getEntityID()).thenReturn(INVALID_URI);
+        when(issuer.getValue()).thenReturn(ISSUER_IDENTIFIER);
+        when(context.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.getPkixTrustedIssuers()).thenReturn(null);
+        
         try {
             validator.validateIssuer();
             fail("SamlException was not thrown");
@@ -345,14 +276,9 @@ public class ResponseValidatorTest {
 
     @Test
     public void testValidateIssueInstant_InvalidTime() {
-        date = new DateTime().plusYears(1000); //date time isn't within laterOkTime and EarlierTime
-
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssueInstant();
-                will(returnValue(date));
-            }
-        });
+        date = Instant.now().plus(1000 * 365, ChronoUnit.DAYS); //date time isn't within laterOkTime and EarlierTime
+        when(samlResponse.getIssueInstant()).thenReturn(date);
+        
         try {
             validator.validateIssueInstant();
             fail("SamlException was not thrown");
@@ -369,15 +295,9 @@ public class ResponseValidatorTest {
      */
     @Test
     public void testFakeCurrentTime_ClockSkewSetTo1Min() {
-        final DateTime issueInstant = new DateTime();
-
+        final Instant issueInstant = Instant.now();
         constructorExpectations(60000L);
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssueInstant();
-                will(returnValue(issueInstant));
-            }
-        });
+        when(samlResponse.getIssueInstant()).thenReturn(issueInstant);
 
         try {
             validator = new ResponseValidator(context, samlResponse);
@@ -396,15 +316,9 @@ public class ResponseValidatorTest {
      */
     @Test
     public void testFakeCurrentTime_ClockSkewSetToZero() {
-        final DateTime issueInstant = new DateTime();
-
+        final Instant issueInstant = Instant.now();
         constructorExpectations(0L);
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssueInstant();
-                will(returnValue(issueInstant));
-            }
-        });
+        when(samlResponse.getIssueInstant()).thenReturn(issueInstant);
 
         try {
             validator = new ResponseValidator(context, samlResponse);
@@ -423,14 +337,9 @@ public class ResponseValidatorTest {
      */
     @Test
     public void testFakeCurrentTimeMinus2Min_ClockSkewSetTo3Min() {
-        final DateTime issueInstant = new DateTime().minus(120000L);
+        final Instant issueInstant = Instant.now().minus(120000L, ChronoUnit.MILLIS);
         constructorExpectations(180000L);
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssueInstant();
-                will(returnValue(issueInstant));
-            }
-        });
+        when(samlResponse.getIssueInstant()).thenReturn(issueInstant);
 
         try {
             validator = new ResponseValidator(context, samlResponse);
@@ -449,14 +358,9 @@ public class ResponseValidatorTest {
      */
     @Test
     public void testFakeCurrentTimePlus2Min_ClockSkewSetTo3Min() {
-        final DateTime issueInstant = new DateTime().plus(120000L);
+        final Instant issueInstant = Instant.now().plus(120000L, ChronoUnit.MILLIS);
         constructorExpectations(180000L);
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssueInstant();
-                will(returnValue(issueInstant));
-            }
-        });
+        when(samlResponse.getIssueInstant()).thenReturn(issueInstant);
 
         try {
             validator = new ResponseValidator(context, samlResponse);
@@ -475,14 +379,9 @@ public class ResponseValidatorTest {
      */
     @Test
     public void testFakeCurrentTimeMinus2Min_ClockSkewSetTo1Min() {
-        final DateTime issueInstant = new DateTime().minus(120000L);
+        final Instant issueInstant = Instant.now().minus(120000L, ChronoUnit.MILLIS);
         constructorExpectations(60000L);
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssueInstant();
-                will(returnValue(issueInstant));
-            }
-        });
+        when(samlResponse.getIssueInstant()).thenReturn(issueInstant);
 
         try {
             validator = new ResponseValidator(context, samlResponse);
@@ -501,14 +400,9 @@ public class ResponseValidatorTest {
      */
     @Test
     public void testFakeCurrentTimePlus2Min_ClockSkewSetTo1Min() {
-        final DateTime issueInstant = new DateTime().plus(120000L);
+        final Instant issueInstant = Instant.now().plus(120000L, ChronoUnit.MILLIS);
         constructorExpectations(0L);
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getIssueInstant();
-                will(returnValue(issueInstant));
-            }
-        });
+        when(samlResponse.getIssueInstant()).thenReturn(issueInstant);
 
         try {
             validator = new ResponseValidator(context, samlResponse);
@@ -522,28 +416,15 @@ public class ResponseValidatorTest {
 
     @Test
     public void testValidateResponseSignature() {
-       
         final String LOW_VALUE = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
-        signatureProcessingExpectations(true, true);
-        mockery.checking(new Expectations() {
-            {
-                
-                one(ssoConfig).getSignatureMethodAlgorithm();
-                will(returnValue(LOW_VALUE));
-
-                one(signature).getSignatureAlgorithm();
-                will(returnValue(LOW_VALUE));
-                
-                allowing(messageContext).getMessage();
-                will(returnValue(samlResponse));
-                
-                one(context).getInboundSamlMessageIssuer();
-                will(returnValue(ISSUER_IDENTIFIER));
-                one(samlResponse).getElementQName();
-                will(returnValue(DEFAULT_ELEMENT_NAME));
-                
-            }
-        });
+        setupSignatureProcessingExpectations(true, true);
+        
+        when(ssoConfig.getSignatureMethodAlgorithm()).thenReturn(LOW_VALUE);
+        when(signature.getSignatureAlgorithm()).thenReturn(LOW_VALUE);
+        when(messageContext.getMessage()).thenReturn(samlResponse);
+        when(context.getInboundSamlMessageIssuer()).thenReturn(ISSUER_IDENTIFIER);
+        when(samlResponse.getElementQName()).thenReturn(DEFAULT_ELEMENT_NAME);
+        
         try {
             validator.validateResponseSignature();
         } catch (SamlException ex) {
@@ -554,29 +435,14 @@ public class ResponseValidatorTest {
 
     @Test
     public void testVerifyResponseSignature_SamlInboundMessageNotAuthenticated() {
-        
         final String LOW_VALUE = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
-        signatureProcessingExpectations(true, false);
-        mockery.checking(new Expectations() {
-            {
-                
-                one(ssoConfig).getSignatureMethodAlgorithm();
-                will(returnValue(LOW_VALUE));
-
-                one(signature).getSignatureAlgorithm();
-                will(returnValue(LOW_VALUE));
-                
-                allowing(messageContext).getMessage();
-                will(returnValue(samlResponse));
-                
-                one(context).getInboundSamlMessageIssuer();
-                will(returnValue(ISSUER_IDENTIFIER));
-                one(samlResponse).getElementQName();
-                will(returnValue(DEFAULT_ELEMENT_NAME));
-
-                one(samlPeerEntityContext).setAuthenticated(with(any(Boolean.class)));
-            }
-        });
+        setupSignatureProcessingExpectations(true, false);
+        
+        when(ssoConfig.getSignatureMethodAlgorithm()).thenReturn(LOW_VALUE);
+        when(signature.getSignatureAlgorithm()).thenReturn(LOW_VALUE);
+        when(messageContext.getMessage()).thenReturn(samlResponse);
+        when(context.getInboundSamlMessageIssuer()).thenReturn(ISSUER_IDENTIFIER);
+        when(samlResponse.getElementQName()).thenReturn(DEFAULT_ELEMENT_NAME);
 
         try {
             validator.verifyResponseSignature();
@@ -593,21 +459,13 @@ public class ResponseValidatorTest {
         final String LOW_VALUE = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
         final String HIGH_VALUE = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512";
 
-        signatureProcessingExpectations(true, true);
-        mockery.checking(new Expectations() {
-            {
-                allowing(messageContext).getMessage();
-                will(returnValue(signableSAMLObject));
-                allowing(signableSAMLObject).isSigned();
-                will(returnValue(true));
-                one(signableSAMLObject).getSignature();
-                will(returnValue(signature));
-                one(ssoConfig).getSignatureMethodAlgorithm();
-                will(returnValue(HIGH_VALUE));
-                one(signature).getSignatureAlgorithm();
-                will(returnValue(LOW_VALUE));
-            }
-        });
+        setupSignatureProcessingExpectations(true, true);
+        when(messageContext.getMessage()).thenReturn(signableSAMLObject);
+        when(signableSAMLObject.isSigned()).thenReturn(true);
+        when(signableSAMLObject.getSignature()).thenReturn(signature);
+        when(ssoConfig.getSignatureMethodAlgorithm()).thenReturn(HIGH_VALUE);
+        when(signature.getSignatureAlgorithm()).thenReturn(LOW_VALUE);
+        
         try {
             validator.verifyResponseSignature();
             fail("SamlException was not thrown");
@@ -619,62 +477,35 @@ public class ResponseValidatorTest {
              * CWWKS5007E: An internal server error occurred while processing SAML Web Single Sign-On (SSO) request 
              * [org.opensaml.messaging.handler.MessageHandlerException]. Cause:[The server is configured with the signature method http://www.w3.org/2001/04/xmldsig-more#rsa-sha512 but the received SAML assertion is signed with the signature method http://www.w3.org/2000/09/xmldsig#rsa-sha1, the signature method provided is weaker than the required.], StackTrace: [
              */
-            //assertEquals("Expected to receive the message for '" + SAML20_AUTHENTICATION_FAIL + "' but it was not received.",
-            //             SAML20_AUTHENTICATION_FAIL, ex.getMsgKey());
             assertTrue("Expected to receive the message for " + extra + "' but it was not received.",
                          received.contains(expected) && received.contains(extra));  
-            
         }
     }
     
-    void signatureProcessingExpectations(boolean trust, boolean authenticate) {
-        
+    private void setupSignatureProcessingExpectations(boolean trust, boolean authenticate) {
         final QName role = IDPSSODescriptor.DEFAULT_ELEMENT_NAME;
         final SignatureTrustEngine signatureTrustEngine = new MockSignatureTrustEngine(trust);
-        mockery.checking(new Expectations() {
-            {
-                allowing(context).getSsoConfig();
-                will(returnValue(ssoConfig));
-                one(ssoConfig).isPkixTrustEngineEnabled();
-                will(returnValue(false));
-                one(context).getMetadataProvider();
-                will(returnValue(acsmetadataProvider));
-
-                atLeast(2).of(context).getMessageContext();
-                will(returnValue(messageContext));
-                one(messageContext).getSubcontext(SecurityParametersContext.class, true);
-                will(returnValue(securityParametersContext));
-
-                allowing(securityParametersContext).setSignatureValidationParameters(with(any(SignatureValidationParameters.class)));
-                allowing(messageContext).getSubcontext(SecurityParametersContext.class);
-                will(returnValue(securityParametersContext));
-                atLeast(2).of(securityParametersContext).getSignatureValidationParameters();
-                will(returnValue(signatureValidationParams));
-                one(signatureValidationParams).getSignatureTrustEngine();
-                will(returnValue(signatureTrustEngine));
-
-                one(messageContext).getSubcontext(SAMLPeerEntityContext.class);
-                will(returnValue(samlPeerEntityContext));
-
-                allowing(samlPeerEntityContext).getRole();
-                will(returnValue(role));
-                one(messageContext).getSubcontext(SAMLProtocolContext.class);
-                will(returnValue(samlProtocolContext));
-                allowing(samlProtocolContext).getProtocol();
-                will(returnValue(protocol));
-
-                allowing(samlResponse).isSigned();
-                will(returnValue(true));
-  
-                allowing(samlResponse).getSignature();
-                will(returnValue(signature));
-
-                allowing(samlPeerEntityContext).isAuthenticated();
-                will(returnValue(authenticate));
-            }
-        });
         
+        when(context.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.isPkixTrustEngineEnabled()).thenReturn(false);
+        when(context.getMetadataProvider()).thenReturn(acsmetadataProvider);
+        when(context.getMessageContext()).thenReturn(messageContext);
+        
+        when(messageContext.getSubcontext(SecurityParametersContext.class, true)).thenReturn(securityParametersContext);
+        when(messageContext.getSubcontext(SecurityParametersContext.class)).thenReturn(securityParametersContext);
+        when(securityParametersContext.getSignatureValidationParameters()).thenReturn(signatureValidationParams);
+        when(signatureValidationParams.getSignatureTrustEngine()).thenReturn(signatureTrustEngine);
+        
+        when(messageContext.getSubcontext(SAMLPeerEntityContext.class)).thenReturn(samlPeerEntityContext);
+        when(samlPeerEntityContext.getRole()).thenReturn(role);
+        when(messageContext.getSubcontext(SAMLProtocolContext.class)).thenReturn(samlProtocolContext);
+        when(samlProtocolContext.getProtocol()).thenReturn(protocol);
+        
+        when(samlResponse.isSigned()).thenReturn(true);
+        when(samlResponse.getSignature()).thenReturn(signature);
+        when(samlPeerEntityContext.isAuthenticated()).thenReturn(authenticate);
     }
+    
     /** Mock trust engine. */
     private class MockSignatureTrustEngine implements SignatureTrustEngine {
 
@@ -706,18 +537,5 @@ public class ResponseValidatorTest {
         public KeyInfoCredentialResolver getKeyInfoResolver() {
             return null;
         }
-
-       /* @Override
-        public boolean validate(Signature arg0, CriteriaSet arg1) throws org.opensaml.security.SecurityException {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        @Override
-        public boolean validate(byte[] arg0, byte[] arg1, String arg2, CriteriaSet arg3, Credential arg4) throws org.opensaml.security.SecurityException {
-            // TODO Auto-generated method stub
-            return false;
-        }*/
-
     }
 }

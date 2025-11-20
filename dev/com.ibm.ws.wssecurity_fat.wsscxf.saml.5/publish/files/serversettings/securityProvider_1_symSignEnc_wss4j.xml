@@ -14,10 +14,10 @@
 	<!-- 3/2021 update with cxf-ehcache_ee8.xml -->
 	
 		<encryptionProperties
-			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.type="JKS"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509serverdefault"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/samlServerDefault.p12" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/samlServerDefault.jks" />
 	</wsSecurityProvider>
 
 

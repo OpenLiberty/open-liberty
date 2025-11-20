@@ -16,7 +16,7 @@ singleton=true
  com.ibm.ws.org.jasypt.jasypt.1.9.3, \
  com.ibm.ws.org.apache.neethi.3.1.1, \
  com.ibm.ws.org.joda.time.2.9.9, \
- com.ibm.ws.org.opensaml.opensaml.core.3.4.5.jakarta, \
- com.ibm.ws.net.shibboleth.utilities.java.support.7.5.1.jakarta
+ io.openliberty.org.opensaml.opensaml.core.jakarta, \
+ io.openliberty.net.shibboleth.utilities.java.support.jakarta
 kind=ga
 edition=base

@@ -108,7 +108,7 @@ import com.ibm.wsspi.cache.CacheStatistics;
 public class MBeans extends StandardMBean implements CacheAdmin {
 
     private static TraceComponent tc = Tr.register(MBeans.class, DynaCacheConstants.TRACE_GROUP, DynaCacheConstants.NLS_FILE);
-    private static String MESSAGE_DIGEST_ALGORITHM = CryptoUtils.isFips140_3EnabledWithBetaGuard() ? CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256 : CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
+    private static String MESSAGE_DIGEST_ALGORITHM = CryptoUtils.isFips140_3Enabled() ? CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256 : CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
     private static MessageDigest messageDigest = null;
 
     public MBeans() {

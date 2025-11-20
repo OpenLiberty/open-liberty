@@ -15,6 +15,7 @@ package componenttest.topology.utils;
 import java.io.ByteArrayInputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,6 +27,7 @@ import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonStructure;
 
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpConnectionManager;
 import org.apache.commons.httpclient.HttpMethod;
@@ -57,6 +59,7 @@ public class HttpRequest {
     private Integer timeout;
     private boolean silent = false;
     private int responseCode = -1;
+    private Header[] responseHeaders;
 
     private static String concat(String... pathParts) {
         String base = "";
@@ -249,6 +252,8 @@ public class HttpRequest {
                 throw new Exception("Unexpected response: " + responseCode + "\nResponse Body: " + responseBody);
             }
 
+            responseHeaders = request.getResponseHeaders();
+
             String responseBody = request.getResponseBodyAsString();
             if (responseBody != null && !responseBody.isEmpty()) {
                 printResponseContents(responseBody);
@@ -275,6 +280,14 @@ public class HttpRequest {
 
     public int getResponseCode() {
         return responseCode;
+    }
+
+    public String getResponseHeader(String headerName) {
+        return Arrays.stream(responseHeaders)
+                        .filter(h -> h.getName().equals(headerName))
+                        .map(h -> h.getValue())
+                        .findAny()
+                        .orElse(null);
     }
 
     private void printResponseContents(String contents) {

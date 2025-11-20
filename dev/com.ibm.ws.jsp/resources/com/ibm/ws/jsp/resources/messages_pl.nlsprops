@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1289,3 +1289,7 @@ jsp.bothsourcelevelset.warning.useraction=Nale\u017cy poda\u0107 tylko atrybut p
 jsp.javasourcelevel.value=CWWJS0008I: Poziom javaSourceatrybutu JSP ma warto\u015b\u0107 "{0}".
 jsp.javasourcelevel.value.explanation=
 jsp.javasourcelevel.value.useraction=
+
+pages.removed.directive.error=CWWJS0009E: Dyrektywa " {0} " nie jest ju\u017c obs\u0142ugiwana, poniewa\u017c zosta\u0142a usuni\u0119ta w {1}.
+pages.removed.directive.error.explanation = Dyrektywa nie jest ju\u017c obs\u0142ugiwana. 
+pages.removed.directive.error.useraction = Usuni\u0119cie u\u017cycia dyrektywy.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,8 +27,6 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 
 /**
@@ -48,7 +46,6 @@ import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
  */
 
 //issue 23060
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
 @LibertyServerWrapper
 @RunWith(FATRunner.class)

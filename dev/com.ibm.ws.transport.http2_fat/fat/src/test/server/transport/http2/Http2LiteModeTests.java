@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -162,6 +162,18 @@ public class Http2LiteModeTests extends FATServletClient {
      */
     @Test
     public void testHeaderAndData() throws Exception {
+        runTest(Http2FullModeTests.defaultServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Test Server can receive data on it's first upgrade request.
+     * Test Outcome: Data is read and returned on the response.
+     * Spec Section: Basic Functionality
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testDataPost() throws Exception {
         runTest(Http2FullModeTests.defaultServletPath, testName.getMethodName());
     }
 

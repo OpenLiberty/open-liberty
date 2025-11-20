@@ -1,0 +1,11 @@
+apply plugin: 'java'
+
+group = 'com.ibm.ws.example'
+version = '0.0.1-SNAPSHOT'
+java {
+    sourceCompatibility = 17
+}
+
+jar {
+    enabled = true
+}

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,8 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 	private static final TraceComponent tc = SibTr.register(NettyIOWriteRequestContext.class,
 			JFapChannelConstants.MSG_GROUP,
 			JFapChannelConstants.MSG_BUNDLE);
+
+	private WsByteBuffer buffer = null;
 
 	/** Log class info on load */
 	static
@@ -104,5 +106,12 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 
 	}
 
+	public WsByteBuffer getBuffer(){
+		return this.buffer;
+	}
+
+	public void setBuffer(WsByteBuffer buffer){
+		this.buffer = buffer;
+	}
 
 }

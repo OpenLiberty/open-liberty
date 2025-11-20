@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Assurez-vous que le magasi
 
 # Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
 # -------------------------------------------------------------------------------------------------
-NO_USER_REGISTRY=CWWKS9660E: L''\u00e9l\u00e9ment orb avec l''ID d''attribut {0} n\u00e9cessite un registre d''utilisateurs, mais aucun n''est devenu disponible dans les {1} secondes.   Par cons\u00e9quent, les application ne d\u00e9marreront pas. V\u00e9rifiez que vous avez configur\u00e9 un registre d''utilisateurs dans le fichier server.xml.
+NO_USER_REGISTRY=CWWKS9660E: L''\u00e9l\u00e9ment orb avec l''ID d''attribut {0} n\u00e9cessite un registre d''utilisateurs, mais aucun n''est devenu disponible dans les {1} secondes. Par cons\u00e9quent, les application ne d\u00e9marreront pas. V\u00e9rifiez que vous avez configur\u00e9 un registre d''utilisateurs dans le fichier server.xml. Pour les environnements qui utilisent des composants bas\u00e9s sur l''ORB, tels que les applications EJB, la d\u00e9finition d''un registre d''utilisateurs est n\u00e9cessaire. Si ces composants ne sont pas utilis\u00e9s, ce message peut \u00eatre ignor\u00e9.
 NO_USER_REGISTRY.explanation=Aucune application n'a d\u00e9marr\u00e9 car une fonction ORB (Object Request Broker) s\u00e9curis\u00e9e sur un serveur a besoin d'un registre d'utilisateurs, mais aucun n'a \u00e9t\u00e9 trouv\u00e9. Les applications d\u00e9marreront lorsqu'un registre d'utilisateurs aura \u00e9t\u00e9 configur\u00e9.
 NO_USER_REGISTRY.useraction=V\u00e9rifiez que vous avez configur\u00e9 un registre d'utilisateurs ad\u00e9quat pour votre environnement.
 

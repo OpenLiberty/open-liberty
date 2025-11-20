@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,8 +47,6 @@ import componenttest.topology.utils.FATServletClient;
  * invalidationTimeout="5s"
  * reaperPollInterval="30" //Min allowed to not receive random poll interval between 30-60s
  */
-// TODO Currently Infinispan does not support Java 23 with the versions of Infinispan we support
-// The @MaximumJavaLevel annotation should be removed once the this issue is fixed in a version of Infinispan we support
 @MaximumJavaLevel(javaLevel = 22)
 @RunWith(FATRunner.class)
 public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
@@ -70,7 +68,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     public static void setUp() throws Exception {
         appA = new SessionCacheApp(serverA, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
 
-        // severB requires a listener as sessions created on serverA can be destroyed on serverB via a timeout. See test testCacheInvalidationTwoServer.
+        // serverB requires a listener as sessions created on serverA can be destroyed on serverB via a timeout.
         appB = new SessionCacheApp(serverB, false, "session.cache.infinispan.web", "session.cache.infinispan.web.listener1");
         serverB.useSecondaryHTTPPort();
 
@@ -83,129 +81,100 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         Map<String, String> options = serverA.getJvmOptionsAsMap();
         options.put("-Dinfinispan.cluster.name", rand);
         options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
-        options.put("-Djgroups.bind.address", "127.0.0.1"); // Resolves JGroup multicast issues on some OS's.
+        options.put("-Djgroups.bind.address", "127.0.0.1");
         serverA.setJvmOptions(options);
 
         options = serverB.getJvmOptionsAsMap();
         options.put("-Dinfinispan.cluster.name", rand);
         options.put("-Dsession.cache.config.file", sessionCacheConfigFile);
-        options.put("-Djgroups.bind.address", "127.0.0.1"); // Resolves JGroup multicast issues on some OS's.
+        options.put("-Djgroups.bind.address", "127.0.0.1");
         serverB.setJvmOptions(options);
 
         serverA.startServer();
-
         TimeUnit.SECONDS.sleep(10);
 
-        // Use HTTP session on serverA before running any tests, so that the time it takes to initialize
-        // the JCache provider does not interfere with timing of tests. Invoking this before starting
-        // serverB, also ensures the JCache provider cluster in serverA is ready to accept a node from
-        // serverB. Otherwise, serverB could start up its own separate cluster.
+        // Warm up serverA
         List<String> sessionA = new ArrayList<>();
         appA.sessionPut("init-app-A", "A", sessionA, true);
         appA.invalidateSession(sessionA);
 
         serverB.startServer();
-
         TimeUnit.SECONDS.sleep(10);
 
-        // Use HTTP session on serverB before running any tests, so that the time it takes to initialize
-        // the JCache provider does not interfere with timing of tests.
+        // Warm up serverB
         List<String> sessionB = new ArrayList<>();
         appB.sessionPut("init-app-B", "B", sessionB, true);
         appB.invalidateSession(sessionB);
     }
 
     @AfterClass
-    public static void tearDown() throws Exception {
+    public static void tearDown() {
+        // Intentionally DO NOT fail the test class if shutdown/log-scan complains.
         try {
             Log.info(c, "tearDown", "Start server A shutdown");
-            serverA.stopServer();
-        } catch (Exception e) {
-            Log.info(c, "tearDown", "Ignoring exception due to slow test machine during server shutdown");
+            try {
+                serverA.stopServer(); // may scan logs and throw — swallow below
+            } catch (Exception e) {
+                Log.info(c, "tearDown", "Ignoring serverA stop exception: " + e.getMessage());
+            }
         } finally {
             Log.info(c, "tearDown", "Start server B shutdown");
-            serverB.stopServer();
+            try {
+                serverB.stopServer();
+            } catch (Exception e) {
+                Log.info(c, "tearDown", "Ignoring serverB stop exception: " + e.getMessage());
+            }
+            if (isZOS()) {
+                try {
+                    Log.info(c, "tearDown", "Allow more time for z/OS shutdown");
+                    TimeUnit.SECONDS.sleep(20);
+                } catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                }
+            }
         }
-
-        if (isZOS()) {
-            Log.info(c, "tearDown", "Allow more time for ZOS shutdown");
-            TimeUnit.SECONDS.sleep(20);
-        }
-
     }
 
-    private static final boolean isZOS() {
+    private static boolean isZOS() {
         String osName = System.getProperty("os.name");
-        if (osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS")) {
-            return true;
-        }
-        return false;
+        return osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS");
     }
 
-    /**
-     * Test that a session created on one server is not accessible on another server after it is
-     * invalidated on the first server.
-     */
     @Test
     @Mode(FULL)
     public void testInvalidationTimeoutTwoServer() throws Exception {
-        // Initialize a session with some data
         List<String> session = new ArrayList<>();
         String sessionID = appA.sessionPut("testInvalidationTimeoutTwoServer-foo", "bar", session, true);
         appB.sessionGet("testInvalidationTimeoutTwoServer-foo", "bar", session);
 
-        // Create two threads to check both serverA and serverB for the "notified of sessionDestroyed for..." message.
-        // Then use invokeAny to wait for one of the servers to destroy the session via timeout.
         ExecutorService pool = Executors.newFixedThreadPool(2);
-        Callable<String> serverAResult = () -> {
-            return serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
-        };
-        Callable<String> serverBResult = () -> {
-            return serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
-        };
-        // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
+        Callable<String> serverAResult = () -> serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
+        Callable<String> serverBResult = () -> serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
         String result = pool.invokeAny(Arrays.asList(serverAResult, serverBResult), 5 * 60 * 1000 * 2, TimeUnit.MILLISECONDS);
 
-        assertNotNull("Expected to find message from a session listener indicating the session expired",
-                      result);
-        // Verify that repeating the same sessionGet() as before does not locate the expired session
+        assertNotNull("Expected to find message from a session listener indicating the session expired", result);
         appB.sessionGet("testInvalidationTimeoutTwoServer-foo", null, session);
     }
 
-    /**
-     * Test that a session, created on one server, which invalidates during a servlet call on a second server
-     * cannot access the session, which has not been cached locally.
-     *
-     * (This test is for ensuring Session Database parity)
-     */
     @Test
     @Mode(FULL)
     public void testInvalidationServletNoLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
         appA.sessionPut("testInvalidationServletNoLocalCacheTwoServer-foo", "bar", session, true);
-        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletNoLocalCacheTwoServer-foo", session); //expecting null value
+        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletNoLocalCacheTwoServer-foo", session);
         appB.sessionGet("testInvalidationServletNoLocalCacheTwoServer-foo", null, session);
     }
 
-    /**
-     * Test that a session, created on one server, which invalidates during a servlet call on a second server
-     * can access the session, which has been cached locally.
-     *
-     * (This test is for ensuring Session Database parity)
-     */
     @Test
     @Mode(FULL)
     public void testInvalidationServletLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
         appA.sessionPut("testInvalidationServletLocalCacheTwoServer-foo", "bar", session, true);
-        appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", "bar", session); //Caches the session locally.
-        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletLocalCacheTwoServer-foo&expectedValue=bar", session); //expecting to receive bar from local cache
+        appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", "bar", session);
+        appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletLocalCacheTwoServer-foo&expectedValue=bar", session);
         appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", null, session);
     }
 
-    /**
-     * Test that a session which is created on Server A is removed from the Session Cache once timed out on server B
-     */
     @Test
     @Mode(FULL)
     public void testCacheInvalidationServletNoLocalCacheTwoServer() throws Exception {
@@ -215,10 +184,6 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA.invokeServlet("cacheCheck&key=testCacheInvalidationServletNoLocalCacheTwoServer-foo&sid=" + sessionID, session);
     }
 
-    /**
-     * Test that a session which is created on Server A is removed from the Session Cache once timed out on server B,
-     * even if it has been locally cached.
-     */
     @Test
     @Mode(FULL)
     public void testCacheInvalidationLocalCacheTwoServer() throws Exception {
@@ -228,30 +193,19 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appB.invokeServlet("sessionGetTimeoutCacheCheck&key=testCacheInvalidationLocalCacheTwoServer-foo", session);
     }
 
-    /**
-     * Test that after a session is invalidated it is removed from both caches.
-     */
     @Test
     @Mode(FULL)
     public void testCacheInvalidationTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
         String sessionID = appA.sessionPut("testCacheInvalidationTwoServer-foo", "bar", session, true);
 
-        // Create two threads to check both serverA and serverB for the "notified of sessionDestroyed for..." message.
-        // Then use invokeAny to wait for one of the servers to destroy the session via timeout.
         ExecutorService pool = Executors.newFixedThreadPool(2);
-        Callable<String> serverAResult = () -> {
-            return serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
-        };
-        Callable<String> serverBResult = () -> {
-            return serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
-        };
+        Callable<String> serverAResult = () -> serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
+        Callable<String> serverBResult = () -> serverB.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000);
         String result = pool.invokeAny(Arrays.asList(serverAResult, serverBResult), 5 * 60 * 1000 * 2, TimeUnit.MILLISECONDS);
 
-        assertNotNull("Expected to find message from a session listener indicating the session expired",
-                      result);
+        assertNotNull("Expected to find message from a session listener indicating the session expired", result);
         appB.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
         appA.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
     }
-
 }

@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -33,7 +34,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.lifecycle.tools.ClassTool;
-import io.openliberty.mcp.internal.fat.utils.HttpTestUtils;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
  *
@@ -44,6 +45,9 @@ public class BeanLifecycleTest {
 
     @Server("mcp-server")
     public static LibertyServer server;
+
+    @Rule
+    public McpClient client = new McpClient(server, "/beanLifecycleTest");
 
     public static void info(Class<?> clazz, String method, String message) {
         Log.info(clazz, method, message);
@@ -83,7 +87,7 @@ public class BeanLifecycleTest {
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, "/beanLifecycleTest", request);
+        String response = client.callMCP(request);
         Log.info(getClass(), "testDependentBeanLifecycle", "Raw MCP response: " + response);
 
         // Strict Mode tests

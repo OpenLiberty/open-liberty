@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,6 @@
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken2.TwoServerTests;
 
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +37,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 
@@ -54,7 +53,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
-@SkipForRepeat({ RepeatWithEE7cbh20.ID, EE9_FEATURES, EE10_FEATURES })
+
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -701,7 +700,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for realmIdentifier in the message
      */
     
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_inRegistry_realmIdentifierBad() throws Exception {
         
@@ -722,7 +721,7 @@ public class CxfSAMLCaller2ServerTests extends CxfSAMLCallerTests {
      * Bad Attribute exception - looking for realmIdentifier in the message
      */
     
-    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID })
+    @ExpectedFFDC(value = { "com.ibm.ws.wssecurity.caller.SamlCallerTokenException" }, repeatAction = { EmptyAction.ID, JakartaEE10Action.ID })
     @Test
     public void testCxfCaller_mapToUserRegistry_Group_notInRegistry_realmIdentifierBad() throws Exception {
         

@@ -174,7 +174,7 @@ public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
         boolean mustunderstand = true;
         mustunderstand = translateMustUnderstandProperty(message);
         sh.setMustUnderstand(mustunderstand);
-		// Liberty Change End
+        // Liberty Change End
         if (actor != null && actor.length() > 0) {
             sh.setActor(actor);
         }
@@ -182,7 +182,7 @@ public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
         return sh;
     }
     
-	// Liberty Change Start
+    // Liberty Change Start
     /**
      * @param message
      * @return
@@ -203,8 +203,7 @@ public abstract class AbstractTokenInterceptor extends AbstractSoapInterceptor {
         } 
         return true;
     }
-	
-		// Liberty Change End
+     // Liberty Change End
 
     protected String getPassword(String userName, AbstractToken info,
                                  int usage, SoapMessage message) {

@@ -10,10 +10,6 @@
 package com.ibm.ws.http.netty.message;
 
 import java.net.InetSocketAddress;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -26,7 +22,6 @@ import java.util.Set;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.genericbnf.internal.GenericUtils;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
@@ -348,7 +343,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
      */
     @Override
     public boolean isBodyExpected() {
-        if(super.isBodyExpected()) {
+        if (super.isBodyExpected()) {
             return !request.method().equals(HttpMethod.TRACE); // Trace method does not have a body
         }
         return false;
@@ -417,12 +412,17 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public StringBuffer getRequestURL() {
+        StringBuffer sb = new StringBuffer(getScheme() + "://");
+        sb.append(getTargetHost());
+        sb.append(':');
+        sb.append(getTargetPort());
+        sb.append(getRequestURI());
 
-        String host = context.getLocalAddr().getCanonicalHostName();
-        int port = context.getLocalPort();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "getRequestURL() returning [" + sb.toString() + "]");
+        }
 
-        return new StringBuffer(getScheme() + "://" + host + ":" + port + getRequestURI());
-
+        return sb;
     }
 
     @Override
@@ -882,9 +882,9 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             @Override
             public void run() {
                 ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
-                                                                   new VoidChannelPromise(nettyContext.channel(), true));
+                                                                           new VoidChannelPromise(nettyContext.channel(), true));
                 promise.addListener(future -> {
-                    if (future.isSuccess()){
+                    if (future.isSuccess()) {
                         // Should we process the new request here when we ensure we wrote out a push promise?
                         // Follow up issue https://github.com/OpenLiberty/open-liberty/issues/31439
                     }
@@ -902,7 +902,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             public void run() {
                 try {
                     ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpPipelineInitializer.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
-                                                                                                                                                        newRequest);
+                                                                                                                                                      newRequest);
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "pushNewRequest() Unable to dispatch push request: " + e.getMessage(), e);

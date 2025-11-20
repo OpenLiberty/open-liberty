@@ -62,7 +62,7 @@ error.spring.required.20.explanation=A jelenleg be\u00e1ll\u00edtott Spring Boot
 error.spring.required.20.useraction=Konfigur\u00e1lja a Spring Boot szolg\u00e1ltat\u00e1snak olyan verzi\u00f3j\u00e1t, amely kompatibilis az alkalmaz\u00e1startalommal.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: A springBoot-3.0 szolg\u00e1ltat\u00e1st konfigur\u00e1lni kell. A springBoot-1.5 vagy a springBoot-2.0 szolg\u00e1ltat\u00e1s van konfigur\u00e1lva, \u00e9s az alkalmaz\u00e1s Spring 3.0 tartalommal rendelkezik.
+error.spring3.required=CWWKC0273E: A(z) {0} szolg\u00e1ltat\u00e1st be kell \u00e1ll\u00edtani a server.xml f\u00e1jlban. A {1} funkci\u00f3t konfigur\u00e1lt\u00e1k, \u00e9s az alkalmaz\u00e1s rendelkezik a Spring Boot {2} tartalommal.
 error.spring3.required.explanation=A jelenleg be\u00e1ll\u00edtott Spring Boot szolg\u00e1ltat\u00e1s nem kompatibilis az alkalmaz\u00e1startalommal.
 error.spring3.required.useraction=Konfigur\u00e1lja a Spring Boot szolg\u00e1ltat\u00e1snak olyan verzi\u00f3j\u00e1t, amely kompatibilis az alkalmaz\u00e1startalommal.
 

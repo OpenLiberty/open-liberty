@@ -30,6 +30,7 @@ import java.util.Arrays;
 import java.util.BitSet;
 import java.util.LinkedList;
 import java.util.Set;
+import javax.management.ObjectName;
 import java.util.concurrent.TimeUnit;
 
 import javax.cache.Cache;
@@ -303,11 +304,19 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         ObjectName name;
 
         // Useful to see when the provider changes the value that is used for CacheManager
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        Set<ObjectName> names = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null);
+        if (names.isEmpty()) {
+            throw new Exception("No MBeans found matching javax.cache:type=CacheConfiguration,CacheManager=*,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
+        }
+        name = names.iterator().next();
         System.out.println("Found with name " + name.toString());
 
         // CacheMXBean for session meta info cache
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        names = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null);
+        if (names.isEmpty()) {
+            throw new Exception("No MBeans found matching javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
+        }
+        name = names.iterator().next();
         CacheMXBean metaInfoCacheMXBean = JMX.newMBeanProxy(mbs, name, CacheMXBean.class);
         assertEquals(String.class.getName(), metaInfoCacheMXBean.getKeyType());
         assertEquals(ArrayList.class.getName(), metaInfoCacheMXBean.getValueType());
@@ -315,7 +324,11 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         assertTrue(metaInfoCacheMXBean.isStatisticsEnabled());
 
         // CacheMXBean for session attributes cache
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        names = mbs.queryNames(new ObjectName("javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"), null);
+        if (names.isEmpty()) {
+            throw new Exception("No MBeans found matching javax.cache:type=CacheConfiguration,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
+        }
+        name = names.iterator().next();
         CacheMXBean attrCacheMXBean = JMX.newMBeanProxy(mbs, name, CacheMXBean.class);
         assertEquals(String.class.getName(), attrCacheMXBean.getKeyType());
         assertEquals("[B", attrCacheMXBean.getValueType()); // byte[]
@@ -323,13 +336,21 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         assertTrue(attrCacheMXBean.isStatisticsEnabled());
 
         // CacheStatisticsMXBean for session meta info cache
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        names = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp"), null);
+        if (names.isEmpty()) {
+            throw new Exception("No MBeans found matching javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.meta.default_host%2FsessionCacheConfigApp");
+        }
+        name = names.iterator().next();
         CacheStatisticsMXBean metaInfoCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
         metaInfoCacheStatsMXBean.clear();
         assertEquals(0, metaInfoCacheStatsMXBean.getCacheEvictions());
 
         // CacheStatisticsMXBean for session attributes cache
-        name = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"), null).iterator().next();
+        names = mbs.queryNames(new ObjectName("javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp"), null);
+        if (names.isEmpty()) {
+            throw new Exception("No MBeans found matching javax.cache:type=CacheStatistics,CacheManager=*infinispan.xml,Cache=com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp");
+        }
+        name = names.iterator().next();
         CacheStatisticsMXBean attrCacheStatsMXBean = JMX.newMBeanProxy(mbs, name, CacheStatisticsMXBean.class);
         long removalCount = attrCacheStatsMXBean.getCacheRemovals();
         assertTrue("Removals: " + removalCount, removalCount >= 0); // depending on order, prior tests may have used sessions

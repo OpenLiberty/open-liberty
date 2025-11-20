@@ -29,7 +29,7 @@ import jakarta.data.repository.Repository;
  * Repository that has no primary entity type and allows queries for different entity classes.
  * Do not add any lifecycle methods.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface MixedRepository { // Do not inherit from a supertype
 
     @Query("FROM City ORDER BY name DESC, stateName ASC")

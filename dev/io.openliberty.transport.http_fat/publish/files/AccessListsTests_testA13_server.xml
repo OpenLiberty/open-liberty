@@ -1,24 +1,27 @@
-<!-- Copyright (c) 2021 IBM Corporation and others. All rights reserved. 
-	This program and the accompanying materials are made available under the 
-	terms of the Eclipse Public License 2.0 which accompanies this distribution, 
-	and is available at http://www.eclipse.org/legal/epl-2.0/ Contributors: 
-	IBM Corporation - initial API and implementation
--->
+<!--
+    Copyright (c) 2021 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
 <server>
 
-	<featureManager>
-		<feature>servlet-3.1</feature>
-		<feature>componenttest-1.0</feature>
-		<feature>timedexit-1.0</feature>
-	</featureManager>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
 
-	<httpEndpoint id="defaultHttpEndpoint" host="*"
-		httpPort="${bvt.prop.HTTP_default}"
-		httpsPort="${bvt.prop.HTTP_default.secure}">
-		<!--  Access should be cleanly denied to test client -->
-		<tcpOptions hostNameIncludeList="www.ibm.com, www.rational.com, a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.27.28.29.30.31.32.33.34.35.36.37.38.39.40.41.42.43.44.45.46.47.48.49.50.51.52.53.54.55.56.57.58.59.60.61.62.63.64.65.66.67.68.69.70.71.72.73.74.75.76.77.78.79.80.81.82.83.84.85.86.87.88.89.90.91.2.93.94.95.96.97.98.99.100.101.102.103.104.105.106.107.108.109.110.111"/>
-	</httpEndpoint>
+    <httpEndpoint id="defaultHttpEndpoint" host="*"
+        httpPort="${bvt.prop.HTTP_default}"
+        httpsPort="${bvt.prop.HTTP_default.secure}">
+        <!--  Access should be cleanly denied to test client -->
+        <tcpOptions hostNameIncludeList="www.ibm.com, www.rational.com, a.b.c.d.e.f.g.h.i.j.k.l.m.n.o.p.q.r.s.t.u.v.w.x.y.z.27.28.29.30.31.32.33.34.35.36.37.38.39.40.41.42.43.44.45.46.47.48.49.50.51.52.53.54.55.56.57.58.59.60.61.62.63.64.65.66.67.68.69.70.71.72.73.74.75.76.77.78.79.80.81.82.83.84.85.86.87.88.89.90.91.2.93.94.95.96.97.98.99.100.101.102.103.104.105.106.107.108.109.110.111"/>
+    </httpEndpoint>
 
-	<application location="app1.war" />
+    <application location="app1.war" />
 
 </server>

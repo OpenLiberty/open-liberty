@@ -43,25 +43,36 @@ import componenttest.topology.utils.FATServletClient;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 import test.jakarta.data.inmemory.web.ProviderTestServlet;
 import test.jakarta.data.web.DataTestServlet;
+import test.jakarta.data.web.eclipselink.DataEclipseLinkServlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 @CheckpointTest(alwaysRun = false) // true to run locally
 public class DataTestCheckpoint extends FATServletClient {
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
 
     @Server("io.openliberty.data.internal.checkpoint.fat")
-    @TestServlets({ @TestServlet(servlet = DataTestServlet.class, contextRoot = "DataTestApp"),
-                    @TestServlet(servlet = ProviderTestServlet.class, contextRoot = "ProviderTestApp") })
+    @TestServlets({ @TestServlet(servlet = DataTestServlet.class,
+                                 contextRoot = "DataTestApp"),
+                    @TestServlet(servlet = DataEclipseLinkServlet.class,
+                                 contextRoot = "DataTestApp"),
+                    @TestServlet(servlet = ProviderTestServlet.class,
+                                 contextRoot = "ProviderTestApp") })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         // Set up server DataSource properties
-        DatabaseContainerUtil.setupDataSourcePropertiesForCheckpoint(server, testContainer);
+        DatabaseContainerUtil.build(server, testContainer)
+                        .withDriverReplacement() // env vars are not maintained after checkpoint
+                        .withPermissionReplacement() // env vars are not maintained after checkpoint
+                        .withDatabaseProperties()
+                        .modify();
 
-        WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp", "test.jakarta.data.web");
+        WebArchive war = ShrinkHelper.buildDefaultApp("DataTestApp",
+                                                      "test.jakarta.data.web",
+                                                      "test.jakarta.data.web.eclipselink");
         ShrinkHelper.exportAppToServer(server, war);
 
         JavaArchive providerJar = ShrinkWrap.create(JavaArchive.class, "palindrome-data-provider.jar")
@@ -75,6 +86,8 @@ public class DataTestCheckpoint extends FATServletClient {
                         .addAsLibrary(providerJar);
         ShrinkHelper.exportAppToServer(server, providerWar);
 
+        // Add DB_DRIVER env var because servlet uses this variable in test logic
+        // where different databases have varied behavior
         Map<String, String> envVars = new HashMap<>();
         envVars.put("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 

@@ -647,3 +647,5 @@
 
 7363=Dla typu wyliczeniowego STRING, tylko typ java.lang.String mo\u017ce by\u0107 u\u017cyty jako typ atrybutu oznaczony przez @EnumeratedValue. Sprawd\u017a atrybut [ {0} ] w klasie wyliczeniowej [ {1} ].
 
+7364=W encji [ {0} ] w NamedNativeQuery [ {1} ] u\u017cywany jest niejawny atrybut SqlResultSetMapping (atrybut "entities", "classes" lub "columns") wraz z zewn\u0119trznym atrybutem SqlResultSetMapping, do kt\u00f3rego odwo\u0142uje si\u0119 atrybut "resultSetMapping". Ta kombinacja jest niedozwolona.
+

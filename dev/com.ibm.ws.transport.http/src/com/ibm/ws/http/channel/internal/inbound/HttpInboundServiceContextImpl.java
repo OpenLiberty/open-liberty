@@ -2381,12 +2381,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         return this.forwardedHost;
     }
 
-    public boolean useForwardedHeaders() {
+    public boolean useRemoteIpOptions() {
         return getHttpConfig().useForwardingHeaders();
     }
 
     @Override
-    public boolean useForwardedHeadersInAccessLog() {
+    public boolean useRemoteIpInAccessLog() {
         return getHttpConfig().useForwardingHeadersInAccessLog();
     }
 

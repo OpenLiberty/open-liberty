@@ -14,6 +14,7 @@ package com.ibm.ws.security.token.ltpa.internal;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Map;
 import java.util.Properties;
 
 import com.ibm.websphere.ras.Tr;
@@ -26,6 +27,11 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 import com.ibm.wsspi.kernel.service.location.WsResource.Type;
 import com.ibm.wsspi.kernel.service.utils.FileUtils;
 import com.ibm.wsspi.security.registry.RegistryHelper;
+import org.osgi.service.component.ComponentContext;
+import com.ibm.ws.security.registry.RegistryException;
+import com.ibm.ws.security.registry.UserRegistryService;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import org.osgi.framework.ServiceReference;
 
 /**
  *
@@ -33,6 +39,29 @@ import com.ibm.wsspi.security.registry.RegistryHelper;
 public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LTPAKeyFileCreator {
 
     private static final TraceComponent tc = Tr.register(LTPAKeyFileCreatorImpl.class);
+    private volatile ComponentContext cc = null;
+    static final String KEY_USER_REGISTRY_SERVICE = "userRegistryService";
+    private final AtomicServiceReference<UserRegistryService> userRegistryServiceRef = new AtomicServiceReference<UserRegistryService>(KEY_USER_REGISTRY_SERVICE);
+
+    protected void setUserRegistryService(ServiceReference<UserRegistryService> ref) {
+        userRegistryServiceRef.setReference(ref);
+    }
+    protected void unsetUserRegistryService(ServiceReference<UserRegistryService> ref) {
+        userRegistryServiceRef.unsetReference(ref);
+    }
+
+    /*
+     * When FileMonitor is enabled, its onBaseline method will call performFileBasedAction(baselineFiles)
+     * to process key files after loadConfig(props), but before submitTaskToCreateLTPAKeys().
+     */
+    protected void activate(ComponentContext context) {
+        cc = context;
+        userRegistryServiceRef.activate(context); 
+    }
+
+    protected void deactivate(ComponentContext context) {
+        userRegistryServiceRef.deactivate(context);
+    }
 
     /**
      * Obtains the realm name of the configured UserRegistry, if one is available.
@@ -61,7 +90,8 @@ public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LT
     /** {@inheritDoc} */
     @Override
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes) throws Exception {
-        Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, getRealmName());
+        String realmName = isUserRegistryAvailable()?getRealmName():"defaultRealm";
+        Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, realmName);
         addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
         return ltpaProps;
     }
@@ -78,4 +108,23 @@ public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LT
         return ltpaFile.putStream();
     }
 
+
+    /**Checks if the UserRegistry Service is available
+     * 
+     * @return true if the UserRegistry is available and configured, false otherwise
+     */
+    private boolean isUserRegistryAvailable(){
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "Checking if UserRegistry is available");
+        }
+
+        UserRegistryService userRegistryService = userRegistryServiceRef.getService();
+        if (userRegistryService == null){
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "UserRegistryService is not available, defaultRealm will be used for LTPA configuration");
+            }
+            return false;
+        }
+        return true;
+    }
 }

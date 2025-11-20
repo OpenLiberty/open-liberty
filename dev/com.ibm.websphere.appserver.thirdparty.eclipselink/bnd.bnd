@@ -18,7 +18,7 @@ eclVersion=2.6.10.WAS
 eclHash=f193aac
 eclFullVersion=${eclVersion}-${eclHash}
 eclPackageVersion=1.0.16
-asmFullVersion=9.8.0
+asmFullVersion=9.9.0
 
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.eclipselink
 Bundle-Description: EclipseLink JPA
@@ -112,22 +112,28 @@ DynamicImport-Package: \
 Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
-  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
-  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  @${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
-  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper
+  @\${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @\${repo;org.eclipse.persistence:org.eclipse.persistence.asm;${asmFullVersion};EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @\${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @\${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @\${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  @\${repo;com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa;${eclFullVersion};EXACT}!/!META-INF/maven/*,\
+  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper,\
+  org/eclipse/persistence/internal/helper=resources/org/eclipse/persistence/internal/helper,\
+  org/eclipse/persistence/internal/core/databaseaccess=${bin}/org/eclipse/persistence/internal/core/databaseaccess,\
+  org/eclipse/persistence/internal/databaseaccess=${bin}/org/eclipse/persistence/internal/databaseaccess,\
+  org/eclipse/persistence/mappings/converters=${bin}/org/eclipse/persistence/mappings/converters,\
+  org/eclipse/persistence/platform/database=${bin}/org/eclipse/persistence/platform/database,\
+  org/eclipse/persistence/platform/database/oracle/plsql=${bin}/org/eclipse/persistence/platform/database/oracle/plsql,\
+  org/eclipse/persistence/internal/jpa/metadata/converters=${bin}/org/eclipse/persistence/internal/jpa/metadata/converters
 
 publish.wlp.jar.suffix: dev/api/third-party
 
 -pedantic: false
 
-instrument.classesExcludes: \
-  org/eclipse/persistence/exceptions/i18n/*.class, \
-  org/eclipse/persistence/internal/localization/i18n/*.class, \
-  org/eclipse/persistence/internal/helper/*.class
+# Exclude this bundle from instrumentation (RAS & FFDC trace injection)
+instrument.disabled: true
+instrument.ffdc: false
 
 -buildpath: \
     com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core;version=${eclFullVersion};strategy=exact,\

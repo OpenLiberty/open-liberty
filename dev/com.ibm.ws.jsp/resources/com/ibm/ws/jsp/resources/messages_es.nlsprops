@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1289,3 +1289,7 @@ jsp.bothsourcelevelset.warning.useraction=Especifique s\u00f3lo el atributo de n
 jsp.javasourcelevel.value=CWWJS0008I: El valor del atributo JSP javaSourceLevel es "{0}".
 jsp.javasourcelevel.value.explanation=
 jsp.javasourcelevel.value.useraction=
+
+pages.removed.directive.error=CWWJS0009E: La directiva " {0} " ya no es compatible, puesto que se suprimi\u00f3 en {1}.
+pages.removed.directive.error.explanation = La directiva ya no es compatible. 
+pages.removed.directive.error.useraction = Eliminar el uso de la directiva.

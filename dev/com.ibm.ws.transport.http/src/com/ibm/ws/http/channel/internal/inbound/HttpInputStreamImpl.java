@@ -6,17 +6,12 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 import java.util.zip.DataFormatException;
 
@@ -29,13 +24,9 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
-import com.ibm.wsspi.http.channel.compression.DecompressionHandler;
-import com.ibm.wsspi.http.channel.compression.DeflateInputHandler;
-import com.ibm.wsspi.http.channel.compression.GzipInputHandler;
-import com.ibm.wsspi.http.channel.compression.IdentityInputHandler;
+import com.ibm.wsspi.http.channel.HttpConstants;
 import com.ibm.wsspi.http.channel.exception.IllegalHttpBodyException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
-import com.ibm.wsspi.http.channel.values.ContentEncodingValues;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.http.FullHttpRequest;
@@ -74,25 +65,28 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     private FullHttpRequest nettyRequest = null;
     private ByteBuf nettyBody = null;
 
-    /**
-     * Constructor.
-     *
-     * @param context
-     */
     public HttpInputStreamImpl(HttpInboundServiceContext context) {
         this.isc = context;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "HttpInputStreamImpl ENTRY, constructor for CHFW inputStream, isc [" + isc + "], this [" + this + "]");
+        }
     }
 
     public HttpInputStreamImpl(HttpInboundServiceContext context, FullHttpRequest request) {
         this.isc = context;
         this.nettyRequest = request;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "HttpInputStreamImpl ENTRY, constructor for Netty inputStream, isc [" + isc + "], nettyRequest [" + nettyRequest + "], this [" + this + "]");
+        }
+        
         this.nettyBody = nettyRequest.content();
         buffer = ChannelFrameworkFactory.getBufferManager().wrap(nettyBody.nioBuffer()).position(nettyBody.readerIndex());
         // Check if the request content is compressed
         String contentEncoding = nettyRequest.headers().get(HttpHeaderNames.CONTENT_ENCODING);
     
         // If the content is compressed, use legacy decompression handler
-        if (contentEncoding != null && isCompressed(contentEncoding)) {
+        if (contentEncoding != null && isCompressed(contentEncoding.toLowerCase())) {
             HttpChannelConfig config = ((HttpInboundServiceContextImpl) isc).getHttpConfig();
 
 
@@ -113,7 +107,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     }
 
     private boolean isCompressed(String encoding) {
-        return "gzip".equalsIgnoreCase(encoding) || "deflate".equalsIgnoreCase(encoding);
+        return HttpConstants.GZIP.equals(encoding) || HttpConstants.DEFLATE.equals(encoding) || HttpConstants.X_GZIP.equals(encoding);
     }
 
     /*

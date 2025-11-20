@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -27,4 +27,5 @@ fat.project: true
 	software.amazon.jdbc:aws-advanced-jdbc-wrapper;version=2.2.3,\
 	com.ibm.ws.jca.cm;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
-	io.openliberty.org.testcontainers;version=latest
+	io.openliberty.org.testcontainers;version=latest,\
+	org.jetbrains:annotations;version=13.0

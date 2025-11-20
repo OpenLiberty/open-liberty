@@ -22,6 +22,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -32,9 +33,10 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
-import io.openliberty.mcp.internal.fat.utils.HttpTestUtils;
+import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.ToolStatus;
+import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
 @RunWith(FATRunner.class)
 public class CancellationTest extends FATServletClient {
@@ -43,9 +45,17 @@ public class CancellationTest extends FATServletClient {
     public static LibertyServer server;
     private static ExecutorService executor;
 
+    @Rule
+    public McpClient client = new McpClient(server, "/cancellationTest");
+
+    @Rule
+    public ToolStatusClient toolStatus = new ToolStatusClient(server, "/cancellationTest");
+
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "cancellationTest.war").addPackage(CancellationTools.class.getPackage());
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "cancellationTest.war")
+                                   .addPackage(CancellationTools.class.getPackage())
+                                   .addPackage(ToolStatus.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
@@ -56,7 +66,10 @@ public class CancellationTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        server.stopServer(
+                          "CWMCM0010E", //  Tool method threw an unexpected exception
+                          "CWMCM0011E" // An internal server error occurred
+        );
     }
 
     @AfterClass
@@ -66,8 +79,7 @@ public class CancellationTest extends FATServletClient {
 
     @Test
     public void testCancellationToolWithCancellableParameterAndCancellationRequestWithStringId() throws Exception {
-
-        final CountDownLatch latch = new CountDownLatch(1);
+        final String LATCH_NAME = "strId";
 
         Callable<String> threadCallingTool = () -> {
             try {
@@ -84,9 +96,8 @@ public class CancellationTest extends FATServletClient {
                                   }
                                 }
                                 """;
-                //make sure this tread executes first
-                latch.countDown();
-                return HttpTestUtils.callMCP(server, "/cancellationTest", request);
+
+                return client.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -104,18 +115,14 @@ public class CancellationTest extends FATServletClient {
                           }
                         }
                         """;
-        //make sure the tool call request has started
-        latch.await();
+        toolStatus.awaitStarted(LATCH_NAME);
 
-        // Call AwaitToolServlet to wait for the tool to start running. Adds path param "strId" to specify which countdown latch to use
-        new HttpRequest(server, "/cancellationTest/awaitTool/strId").run(String.class);
-
-        HttpTestUtils.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
+        client.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
 
         String response = future.get(10, TimeUnit.SECONDS);
 
         String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Internal server error", "type":"text"}],"isError":true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"CWMCM0011E: An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
@@ -124,6 +131,7 @@ public class CancellationTest extends FATServletClient {
     public void testCancellationToolWithCancellableParameterAndCancellationRequestWithNumbericId() throws Exception {
 
         final CountDownLatch latch = new CountDownLatch(1);
+        final String LATCH_NAME = "numId";
 
         Callable<String> threadCallingTool = () -> {
             try {
@@ -142,7 +150,7 @@ public class CancellationTest extends FATServletClient {
                                 """;
                 //make sure this tread executes first
                 latch.countDown();
-                return HttpTestUtils.callMCP(server, "/cancellationTest", request);
+                return client.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -160,18 +168,17 @@ public class CancellationTest extends FATServletClient {
                           }
                         }
                         """;
-        //make sure the tool call request has started
-        latch.await();
 
         // Call AwaitToolServlet to wait for the tool to start running. Adds path param "numId" to specify which countdown latch to use
-        new HttpRequest(server, "/cancellationTest/awaitTool/numId").run(String.class);
+        latch.await();
+        toolStatus.awaitStarted(LATCH_NAME);
 
-        HttpTestUtils.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
+        client.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
 
         String response = future.get(10, TimeUnit.SECONDS);
 
         String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"text":"Internal server error", "type":"text"}],"isError":true}}
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"text":"CWMCM0011E: An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
@@ -185,18 +192,17 @@ public class CancellationTest extends FATServletClient {
                           "id": "3",
                           "method": "tools/call",
                           "params": {
-                            "name": "cancellationToolNoWait",
+                            "name": "cancellationToolMinimalWait",
                             "arguments": {}
                           }
                         }
                         """;
 
-        String response = HttpTestUtils.callMCP(server, "/cancellationTest", request);
+        String response = client.callMCP(request);
 
         String expectedResponseString = """
                         {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text", "text": "If this String is returned, then the tool was not cancelled"}],"isError":false}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
-
 }

@@ -146,7 +146,7 @@ CWWKD1029.first.neg.or.zero=CWWKD1029E: Metoda {0} a interfe\u021bei de depozit 
 CWWKD1029.first.neg.or.zero.explanation=Num\u0103rul maxim de rezultate ale interog\u0103rii trebuie s\u0103 fie un num\u0103r pozitiv.
 CWWKD1029.first.neg.or.zero.useraction=Actualiza\u021bi metoda de depozit pentru a specifica un num\u0103r maxim pozitiv de rezultate.
 
-CWWKD1030.ql.lacks.entity=CWWKD1030E: Numele entit\u0103\u021bii lipse\u0219te din interogarea {0} care este specificat\u0103 pentru metoda {1} a depozitului {2} . \u00cen Jakarta Data Query Language, {3} interog\u0103ri ar trebui s\u0103 fie formate ca: {4} .
+CWWKD1030.ql.lacks.entity=CWWKD1030E: Numele entit\u0103\u021bii lipse\u0219te din interogarea {0} care este specificat\u0103 pentru metoda {1} din depozitul {2}. Pentru interog\u0103rile {3}, utiliza\u021bi forma: {4}.
 CWWKD1030.ql.lacks.entity.explanation=Interogarea con\u021bine o clauz\u0103 care necesit\u0103 numele entit\u0103\u021bii.
 CWWKD1030.ql.lacks.entity.useraction=Actualiza\u021bi interogarea pentru metoda depozitului pentru a include numele entit\u0103\u021bii.
 
@@ -162,9 +162,9 @@ CWWKD1033.ql.orderby.disallowed=CWWKD1033E: Metoda {0} a interfe\u021bei de depo
 CWWKD1033.ql.orderby.disallowed.explanation=Clauza ORDER BY este incompatibil\u0103 cu paginarea bazat\u0103 pe cursor.
 CWWKD1033.ql.orderby.disallowed.useraction=\u00cenlocui\u021bi clauza ORDER BY cu adnot\u0103ri care specific\u0103 criteriile de sortare.
 
-CWWKD1034.ql.where.required=CWWKD1034E: Interogarea care este specificat\u0103 de metoda {0} a interfe\u021bei de depozit {1} trebuie s\u0103 se \u00eencheie cu o clauz\u0103 WHERE deoarece metoda returneaz\u0103 {2} . Acolo clauza WHERE se termin\u0103 la pozi\u021bia {3} , dar lungimea interog\u0103rii este {4} . Interogarea este: {5} .
-CWWKD1034.ql.where.required.explanation=O clauz\u0103 WHERE este necesar\u0103 c\u00e2nd se utilizeaz\u0103 paginarea bazat\u0103 pe cursor.
-CWWKD1034.ql.where.required.useraction=Ad\u0103uga\u021bi o clauz\u0103 WHERE la interogare.
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: Interogarea specificat\u0103 de metoda {0} a interfe\u021bei depozitului {1} trebuie s\u0103 se \u00eencheie cu o clauz\u0103 WHERE deoarece metoda returneaz\u0103 {2}. Clauza WHERE se \u00eencheie la pozi\u021bia {3}, dar lungimea interog\u0103rii este {4}. Interogarea este: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=O clauz\u0103 WHERE este necesar\u0103 atunci c\u00e2nd se utilizeaz\u0103 paginarea bazat\u0103 pe cursor.
+CWWKD1034.ql.req.end.in.where.useraction=Ad\u0103uga\u021bi o clauz\u0103 WHERE la interogare.
 
 CWWKD1035.incompat.page.mode=CWWKD1035E: O solicitare de pagin\u0103 cu modul de paginare {0} nu trebuie s\u0103 fie furnizat\u0103 metodei {1} a interfe\u021bei de depozit {2} deoarece metoda returneaz\u0103 {3} \u00een loc de {4} .
 CWWKD1035.incompat.page.mode.explanation=Modul de paginare solicitat nu este compatibil cu tipul de returnare al metodei de depozit.
@@ -507,3 +507,11 @@ CWWKD1117.anno.constraint.conflict.useraction=Elimina\u021bi adnotarea conflictu
 CWWKD1118.param.anno.conflict=CWWKD1118E: Parametrul {0} al metodei {1} din interfa\u021ba depozitului {2} nu poate fi adnotat cu adnot\u0103rile: {3}. Dou\u0103 sau mai multe dintre adnot\u0103ri intr\u0103 \u00een conflict \u00eentre ele.
 CWWKD1118.param.anno.conflict.explanation=Combina\u021bia de adnot\u0103ri ale parametrilor nu este valabil\u0103.
 CWWKD1118.param.anno.conflict.useraction=Elimina\u021bi una sau mai multe dintre adnot\u0103rile conflictuale din parametrul metodei depozitului.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: Metoda {0} a interfe\u021bei depozitului {1} recupereaz\u0103 pagini care nu includ un num\u0103r total de elemente \u0219i pagini deoarece interogarea con\u021bine cuv\u00e2ntul-cheie {2}. Interogarea complet\u0103 este: {3}.
+CWWKD1119.keyword.prevents.count.explanation=Cuv\u00e2ntul cheie este incompatibil cu capacitatea de a ob\u021bine un num\u0103r total de elemente \u0219i pagini.
+CWWKD1119.keyword.prevents.count.useraction=\u00cenlocui\u021bi interogarea cu una care nu utilizeaz\u0103 cuv\u00e2ntul cheie sau evita\u021bi solicitarea unui num\u0103r total de elemente \u0219i pagini.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Metoda {0} a interfe\u021bei depozitului {1} specific\u0103 o interogare care include cuv\u00e2ntul-cheie {2}, care este incompatibil\u0103 cu paginarea bazat\u0103 pe cursor. Interog\u0103rile pentru paginarea bazat\u0103 pe cursor trebuie s\u0103 se \u00eencheie cu o clauz\u0103 WHERE \u0219i nu trebuie s\u0103 includ\u0103 subinterog\u0103ri. Interogarea este: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Cuvinte-cheie precum GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT \u0219i UNION nu sunt compatibile cu paginarea bazat\u0103 pe cursor.
+CWWKD1120.cursor.keyword.mismatch.useraction=Rescrie\u021bi interogarea pentru a include doar clauzele: SELECT, FROM \u0219i WHERE.

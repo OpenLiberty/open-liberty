@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2024 IBM Corporation and others.
+# Copyright (c) 1997, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1643,3 +1643,7 @@ read.write.bytebuffer.null.useraction=Zmodyfikuj kod aplikacji, aby utworzy\u010
 read.write.failed.isReady.false=CWWWC0011E: Pr\u00f3ba odczytu z operacji InputStream lub zapisu do operacji OutputStream nie powiod\u0142a si\u0119, poniewa\u017c funkcja API isReady zwraca warto\u015b\u0107 false.
 read.write.failed.isReady.false.explanation=Je\u015bli funkcja API isReady zwr\u00f3ci warto\u015b\u0107 false, nie mo\u017cna wywo\u0142a\u0107 metody odczytu lub zapisu.
 read.write.failed.isReady.false.useraction=Zmodyfikuj logik\u0119 aplikacji, aby upewni\u0107 si\u0119, \u017ce strumie\u0144 jest gotowy do wykonania operacji InputStream lub OutputStream .
+
+sendRedirect.cannot.convert.relative.url=CWWWC0012E: Wzgl\u0119dny adres sendRedirect URL w aplikacji nie mo\u017ce zosta\u0107 przekonwertowany na prawid\u0142owy adres URL.
+sendRedirect.cannot.convert.relative.url.explanation=Podany wzgl\u0119dny adres URL mo\u017ce zawiera\u0107 nieprawid\u0142owe znaki lub indeksy \u015bcie\u017cek.
+sendRedirect.cannot.convert.relative.url.useraction=Zweryfikuj lokalizacj\u0119 sendRedirect URL w aplikacji przed wywo\u0142aniem metody response.sendRedirect( )

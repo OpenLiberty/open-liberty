@@ -159,7 +159,7 @@ tested.features: \
 	com.ibm.websphere.javaee.websocket.1.1,\
 	com.ibm.websphere.javaee.jsf.2.3;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
-	org.apache.derby:derby;version=latest,\
+	org.apache.derby:derby;strategy=exact;version=10.11.1.1,\
 	io.openliberty.org.eclipse.microprofile.openapi.2.0,\
 	com.ibm.ws.kernel.boot,\
 	io.openliberty.org.eclipse.microprofile.jwt.1.2;version=latest,\

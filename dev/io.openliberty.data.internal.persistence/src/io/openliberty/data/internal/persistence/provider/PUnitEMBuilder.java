@@ -24,10 +24,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
 import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.PersistenceException;
@@ -49,8 +49,6 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
      * @param repositoryInterfaces  repository interfaces that use the entities.
      * @param emf                   entity manager factory.
      * @param pesistenceUnitRef     persistence unit reference.
-     * @param metadata              metadata of the application artifact that
-     *                                  contains the repository interface.
      * @param entityTypes           entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
      */
@@ -59,7 +57,6 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
                           Set<Class<?>> repositoryInterfaces,
                           EntityManagerFactory emf,
                           String persistenceUnitRef,
-                          ComponentMetaData metadata,
                           Set<Class<?>> entityTypes) throws Exception {
         super(provider, //
               repositoryClassLoader, //
@@ -74,6 +71,7 @@ public class PUnitEMBuilder extends EntityManagerBuilder {
     @Trivial
     public EntityManager createEntityManager() {
         EntityManager em = emf.createEntityManager();
+        em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "createEntityManager: " + em);

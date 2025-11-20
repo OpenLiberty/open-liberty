@@ -24,7 +24,7 @@ import jakarta.data.repository.Repository;
 /**
  * Repository for the Model entity.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Models extends CrudRepository<Model, UUID> {
     @Find
     Optional<Instant> lastModified(UUID id);

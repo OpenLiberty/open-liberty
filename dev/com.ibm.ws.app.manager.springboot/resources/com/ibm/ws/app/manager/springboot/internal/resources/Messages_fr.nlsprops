@@ -62,7 +62,7 @@ error.spring.required.20.explanation=La fonction Spring Boot actuellement config
 error.spring.required.20.useraction=Configurez une version de la fonction Spring Boot compatible avec le contenu de l'application.
 
 #ADDED for SpringBoot 3.0:
-error.spring3.required=CWWKC0273E: La fonction springBoot-3.0 doit \u00eatre configur\u00e9e. La fonction springBoot-1.5 ou springBoot-2.0 est configur\u00e9e, et l'application poss\u00e8de un contenu Spring 3.0.
+error.spring3.required=CWWKC0273E: La fonction {0} doit \u00eatre configur\u00e9e dans le fichier server.xml. La fonction {1} est configur\u00e9e et l''application a un contenu Spring Boot {2}.
 error.spring3.required.explanation=La fonction Spring Boot actuellement configur\u00e9e n'est pas compatible avec le contenu de l'application.
 error.spring3.required.useraction=Configurez une version de la fonction Spring Boot compatible avec le contenu de l'application.
 

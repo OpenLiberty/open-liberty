@@ -43,8 +43,8 @@ public class UDPUtils {
      * @return
      * @throws NettyException
      */
-    public static BootstrapExtended createUDPBootstrap(NettyFrameworkImpl framework, Map<String, Object> options) throws NettyException {
-        return create(framework, new UDPConfigurationImpl(options, true));
+    public static BootstrapExtended createUDPBootstrapInbound(NettyFrameworkImpl framework, Map<String, Object> options) throws NettyException {
+        return createBootstrap(framework, new UDPConfigurationImpl(options, true));
     }
 
     /**
@@ -57,10 +57,10 @@ public class UDPUtils {
      */
     public static BootstrapExtended createUDPBootstrapOutbound(NettyFrameworkImpl framework,
                                                                Map<String, Object> options) throws NettyException {
-        return create(framework, new UDPConfigurationImpl(options, false));
+        return createBootstrap(framework, new UDPConfigurationImpl(options, false));
     }
 
-    private static BootstrapExtended create(NettyFrameworkImpl framework, UDPConfigurationImpl config) {
+    private static BootstrapExtended createBootstrap(NettyFrameworkImpl framework, UDPConfigurationImpl config) {
         BootstrapExtended bs = new BootstrapExtended();
         bs.applyConfiguration(config);
         bs.group(framework.getChildGroup());
@@ -211,8 +211,8 @@ public class UDPUtils {
      * @return
      * @throws NettyException
      */
-    public static Channel start(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
-                                int inetPort, ChannelFutureListener openListener) throws NettyException {
+    public static Channel startInbound(NettyFrameworkImpl framework, BootstrapExtended bootstrap, String inetHost,
+                                       int inetPort, ChannelFutureListener openListener) throws NettyException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "start (UDP): attempt to bind a channel at host " + inetHost + " port " + inetPort);
         }

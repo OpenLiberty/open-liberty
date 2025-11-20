@@ -188,7 +188,7 @@ public class CoverageMapEndpointServices extends AbstractOidcEndpointServices {
         MessageDigest digest;
 
         try {
-            digest = CryptoUtils.isFips140_3EnabledWithBetaGuard() ?  MessageDigest.getInstance(ALG_SHA256) : MessageDigest.getInstance(ALG_MD5);
+            digest = CryptoUtils.isFips140_3Enabled() ?  MessageDigest.getInstance(ALG_SHA256) : MessageDigest.getInstance(ALG_MD5);
 
             for (Object appRoot : appRootsList) {
                 digest.update((Base64Coder.getBytes((String) appRoot)));

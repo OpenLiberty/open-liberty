@@ -24,7 +24,7 @@ import jakarta.websocket.Session;
 import com.ibm.websphere.simplicity.log.Log;
 
 /**
- * Client Endpoint for WebSocketTests30
+ * Client Endpoint for WebSocketTests40
  */
 @ClientEndpoint
 public class WebSocketTests40EndpointEcho {

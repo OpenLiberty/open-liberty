@@ -344,3 +344,8 @@ PROVIDER_FATAL_CWWJP9993E.explanation=Java \u6301\u4e45\u6027 API\uff08JPA\uff09
 PROVIDER_FATAL_CWWJP9993E.useraction=\u8bf7\u53c2\u9605 JPA \u63d0\u4f9b\u7a0b\u5e8f\u6587\u6863\u3002
 
 #-------------------------------------------------------------------------------
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W=CWWJP9994W: \u670d\u52a1\u5668\u65e0\u6cd5\u4e3a {0} PersistenceUnit \u521b\u5efa Bean\uff0c\u56e0\u4e3a\uff1a {1}\u3002
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.explanation=CDI \u5c1d\u8bd5\u4e3a\u6301\u4e45\u6027\u5355\u5143\u521b\u5efa Bean \u65f6\u51fa\u73b0\u5f02\u5e38\u3002 CDI \u65e0\u6cd5\u6ce8\u5165\u5b9e\u4f53\u7ba1\u7406\u5668\u3001\u5b9e\u4f53\u7ba1\u7406\u5668\u5de5\u5382\u6216\u4e0e\u8be5\u6301\u4e45\u6027\u5355\u5143\u76f8\u5173\u7684\u5b9e\u7528\u7a0b\u5e8f\u7c7b\u3002
+FAILED_TO_CREATE_PU_BEAN_CWWJP9994W.useraction=\u89e3\u51b3\u5f02\u5e38\u3002
+
+#-------------------------------------------------------------------------------

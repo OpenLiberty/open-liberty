@@ -25,6 +25,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
                 HibernateSearchTest.class,
                 ThirdPartyTests.class,
+                HibernateCDICompatibilityTest.class,
                 AlwaysPassesTest.class
 })
 public class FATSuite {

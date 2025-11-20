@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,8 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.IOException;
@@ -18,25 +18,23 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
-import java.util.Iterator;
-import java.util.List;
-
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.LocalFileDetector;
+import org.testcontainers.Testcontainers;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlFileInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.FATSuite;
@@ -48,17 +46,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.LocalFileDetector;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.BrowserWebDriverContainer;
-
-import com.ibm.ws.jsf22.fat.JSFUtils;
-import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
 import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
 import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
@@ -77,15 +64,10 @@ public class JSF22InputFileTests {
 
     protected static final Class<?> c = JSF22InputFileTests.class;
 
-    private static ExtendedWebDriver driver;
-
-    @ClassRule
-    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                    .withAccessToHost(true)
-                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
-
     @Server("jsfTestServer2")
     public static LibertyServer jsfTestServer2;
+
+    private static ExtendedWebDriver driver;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -98,9 +80,9 @@ public class JSF22InputFileTests {
 
         Testcontainers.exposeHostPorts(jsfTestServer2.getHttpDefaultPort(), jsfTestServer2.getHttpDefaultSecurePort());
 
-        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+        driver = FATSuite.getWebDriver();
 
-        driver.getRemoteWebDriver().setFileDetector(new LocalFileDetector());
+        driver.getRemoteWebDriver().setFileDetector(new LocalFileDetector()); // could be reset during the tear down, but not necessary
     }
 
     @AfterClass
@@ -109,8 +91,6 @@ public class JSF22InputFileTests {
         if (jsfTestServer2 != null && jsfTestServer2.isStarted()) {
             jsfTestServer2.stopServer();
         }
-
-        driver.quit(); // closes all sessions and terminutes the webdriver
     }
 
     @After

@@ -19,12 +19,19 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
+import io.openliberty.mcp.internal.fat.lifecycle.tests.AsyncToolLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionTest;
+import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
+import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
+import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
+import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
+import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
+import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
 
@@ -33,12 +40,19 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+                AsyncToolsTest.class,
+                AsyncToolCancellationTest.class,
+                AsyncToolLifecycleTest.class,
                 BeanLifecycleTest.class,
                 DeploymentProblemTest.class,
                 CancellationTest.class,
                 HttpTest.class,
                 LifecycleTest.class,
+                McpUrlPathTest.class,
+                NoParamNameTest.class,
                 ProtocolVersionTest.class,
+                StatefulModeTest.class,
+                StatelessModeTest.class,
                 ToolErrorHandlingTest.class,
                 ToolTest.class
 

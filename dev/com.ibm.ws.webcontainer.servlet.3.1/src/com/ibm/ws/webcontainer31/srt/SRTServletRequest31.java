@@ -289,21 +289,21 @@ public class SRTServletRequest31 extends SRTServletRequest implements HttpServle
 
     @Override
     protected Hashtable parsePostData() throws IOException {
-
         if(((SRTInputStream31) _in).getReadListener() != null) {
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  
-                logger.logp(Level.FINE, CLASS_NAME,"prepareMultipart", "Non-Blocking read already started on this InputStream , cannot parse again->" + _in);
+                logger.logp(Level.FINE, CLASS_NAME,"parsePostData", "Non-Blocking read already started on this InputStream , cannot parse again->" + _in);
             return null;
         }
-
-        if( getContentLengthLong() > 0){
-
+        
+        //Go chunk if compressed. The content-length here is of the compressed data.  It will not be read correctly inside the RequestUtils.getPostBody
+        if(getContentLengthLong() > 0 && !isCompressedData()){
             if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  
-                logger.logp(Level.FINE, CLASS_NAME,"parseParameters", "parsing post data based upon content length long");
+                logger.logp(Level.FINE, CLASS_NAME,"parsePostData", "parsing post data based upon content length long");
             return  RequestUtils.parsePostDataLong(getContentLengthLong(), getInputStream(), getReaderEncoding(), this.multiReadPropertyEnabled);  // MultiRead
         } 
+        
         if (TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))  
-            logger.logp(Level.FINE, CLASS_NAME,"parseParameters", "parsing post data based upon input stream (possibly chunked)");
+            logger.logp(Level.FINE, CLASS_NAME,"parsePostData", "parsing post data based upon input stream (possibly chunked)");
         return RequestUtils.parsePostData(getInputStream(), getReaderEncoding(), this.multiReadPropertyEnabled);   // MultiRead
     }
 

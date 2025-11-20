@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1999, 2007 IBM Corporation and others.
+ * Copyright (c) 1999, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -94,6 +94,7 @@ public final class Util {
      * Converts a byte array to a string.
      */
     public static String toString(byte[] b) {
+        if (null == b) return "null";
         StringBuffer result = new StringBuffer(b.length);
         for (int i = 0; i < b.length; i++)
             result.append((char) b[i]);
@@ -106,6 +107,7 @@ public final class Util {
      * Converts a byte array to a hexadecimal string.
      */
     public static String toHexString(byte[] b) {
+        if (null == b) return "null";
         StringBuffer result = new StringBuffer(b.length * 2);
         for (int i = 0; i < b.length; i++) {
             result.append(digits.charAt((b[i] >> 4) & 0xf));
@@ -119,6 +121,7 @@ public final class Util {
      */
 
     public static byte[] fromHexString(String s) {
+        if (null == s || "null".equals(s)) return null;
         byte[] result = new byte[s.length() / 2];
         for (int i = 0; i < result.length; i++)
             result[i] = (byte) ((digits.indexOf(s.charAt(2 * i)) << 4) + digits.indexOf(s.charAt(2 * i + 1)));

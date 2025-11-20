@@ -130,7 +130,7 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
         this.provider = provider;
         this.repositoryClassLoader = repositoryClassLoader;
         this.dataStore = dataStore;
-        this.jeeName = getArtifactName(repositoryInterface, repositoryClassLoader, provider);
+        this.jeeName = getArtifactName(repositoryInterface, repositoryClassLoader);
         this.namespace = Namespace.of(dataStore);
 
         if (Namespace.APP.isMoreGranularThan(namespace)) { // java:global or none
@@ -379,7 +379,6 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
                                         repositoryInterfaces, //
                                         (EntityManagerFactory) resource, //
                                         dataStore, //
-                                        metadata, //
                                         entityTypes);
                 } finally {
                     accessor.endContext();
@@ -653,14 +652,12 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
      *
      * @param repositoryInterface   the repository interface.
      * @param repositoryClassLoader class loader of the repository interface.
-     * @param provider              OSGi service that provides the CDI extension.
      * @return AppName[#ModuleName] with only the application name if not defined
      *         in a module.
      * @throws IllegalStateException if not running on an application thread.
      */
     private J2EEName getArtifactName(Class<?> repositoryInterface,
-                                     ClassLoader repositoryClassLoader,
-                                     DataProvider provider) {
+                                     ClassLoader repositoryClassLoader) {
         J2EEName artifactName;
 
         Optional<J2EEName> moduleNameOptional = //

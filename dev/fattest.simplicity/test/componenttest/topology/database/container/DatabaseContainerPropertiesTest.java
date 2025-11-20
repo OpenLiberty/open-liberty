@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,22 @@ import static org.junit.Assume.assumeTrue;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -39,6 +50,7 @@ import com.ibm.websphere.simplicity.config.ServerConfigurationFactory;
 import com.ibm.websphere.simplicity.config.dsprops.Properties;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_postgresql;
 
+import componenttest.app.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -52,6 +64,50 @@ public class DatabaseContainerPropertiesTest {
     @Mock
     PostgreSQLContainer cont;
 
+    @Mock
+    DerbyJava17PlusContainer cont2;
+
+    private static Path driverDir;
+
+    @BeforeClass
+    public static void setup() throws Exception {
+        // Create temporary mock jars to represent the jdbc drivers and
+        // supporting libraries for the containers under test.
+        driverDir = createJdbcDriverDirectory();
+
+        DatabaseContainerType.Postgres.streamAllArtifacts()
+                        .forEach(name -> {
+                            try {
+                                createFakeDrivers(driverDir, "jdbc", name);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+
+        DatabaseContainerType.DerbyJava17Plus.streamAllArtifacts()
+                        .forEach(name -> {
+                            try {
+                                createFakeDrivers(driverDir, "jdbcJava17Plus", name);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                            }
+                        });
+    }
+
+    @AfterClass
+    public static void teardown() throws Exception {
+        // Clean up temporary files
+        Files.walk(driverDir)
+                        .sorted(Comparator.reverseOrder())
+                        .forEach(path -> {
+                            try {
+                                Files.delete(path);
+                            } catch (IOException e) {
+                                //ignore
+                            }
+                        });
+    }
+
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
@@ -61,10 +117,14 @@ public class DatabaseContainerPropertiesTest {
         when(cont.getDatabaseName()).thenReturn("TEST");
         when(cont.getUsername()).thenReturn("TEST_USER");
         when(cont.getPassword()).thenReturn("TEST_PASS");
+
+        when(cont2.getUsername()).thenReturn("TEST_USER");
+        when(cont2.getUsername()).thenReturn("TEST_PASS");
     }
 
     @Test
     public void findAuthDataLocationsTest() throws Exception {
+
         when(server.getServerConfiguration()).thenReturn(getServerConfigFor("authDataServer.xml"));
 
         DatabaseContainerUtil inst = DatabaseContainerUtil.build(server, cont);
@@ -73,26 +133,26 @@ public class DatabaseContainerPropertiesTest {
 
         assertEquals(4, ads.size());
 
-        for(AuthData ad : ads) {
-            if(ad.getId() == null) {
+        for (AuthData ad : ads) {
+            if (ad.getId() == null) {
                 assertEquals("myUser3", ad.getUser());
                 assertEquals("myPass3", ad.getPassword());
                 continue;
             }
 
-            if(ad.getId().equals("recoveryAuth")) {
+            if (ad.getId().equals("recoveryAuth")) {
                 assertEquals("myUser1", ad.getUser());
                 assertEquals("myPass1", ad.getPassword());
                 continue;
             }
 
-            if(ad.getId().equals("userAuth")) {
+            if (ad.getId().equals("userAuth")) {
                 assertEquals("myUser2", ad.getUser());
                 assertEquals("myPass2", ad.getPassword());
                 continue;
             }
 
-            if(ad.getId().equals("contAuth")) {
+            if (ad.getId().equals("contAuth")) {
                 assertEquals("myUser4", ad.getUser());
                 assertEquals("myPass4", ad.getPassword());
                 continue;
@@ -126,6 +186,51 @@ public class DatabaseContainerPropertiesTest {
         Fileset jdbcFs = jdbcLib.getFilesets().get(0);
         assertEquals("${shared.resource.dir}/jdbc", jdbcFs.getDir());
         assertEquals(DatabaseContainerType.Postgres.getDriverName(), jdbcFs.getIncludes());
+    }
+
+    @Test
+    public void withDriverReplacementAdditionsTest() throws Exception {
+        assumeTrue(!System.getProperty("os.name").equalsIgnoreCase("OS/400"));
+        assumeTrue(JavaInfo.majorVersion() >= 17);
+
+        when(server.getServerConfiguration()).thenReturn(getServerConfigFor("libraryServerJava17Plus.xml"));
+
+        DatabaseContainerUtil inst = DatabaseContainerUtil.build(server, cont2)
+                        .withDriverReplacement();
+
+        ArgumentCaptor<ServerConfiguration> capturedConfig = ArgumentCaptor.forClass(ServerConfiguration.class);
+        doNothing().when(server).updateServerConfiguration(capturedConfig.capture());
+
+        inst.modify();
+
+        ServerConfiguration result = capturedConfig.getValue();
+
+        assertNotNull(result.getLibraries().getById("JDBCLibrary"));
+
+        Library jdbcLib = result.getLibraries().getById("JDBCLibrary");
+        assertEquals(1, jdbcLib.getFilesets().size());
+
+        Fileset jdbcFs = jdbcLib.getFilesets().get(0);
+        assertEquals("${shared.resource.dir}/jdbcJava17Plus", jdbcFs.getDir());
+        assertEquals(3, jdbcFs.getIncludes().split(",").length); //All three jars were set
+    }
+
+    @Test
+    public void withPermissionReplacementTest() throws Exception {
+        assumeTrue(!System.getProperty("os.name").equalsIgnoreCase("OS/400"));
+
+        when(server.getServerConfiguration()).thenReturn(getServerConfigFor("libraryServer.xml"));
+        when(server.isJava2SecurityEnabled()).thenReturn(true);
+
+        DatabaseContainerUtil inst = DatabaseContainerUtil.build(server, cont)
+                        .withPermissionReplacement();
+
+        ArgumentCaptor<ServerConfiguration> capturedConfig = ArgumentCaptor.forClass(ServerConfiguration.class);
+        doNothing().when(server).updateServerConfiguration(capturedConfig.capture());
+
+        inst.modify();
+
+        ServerConfiguration result = capturedConfig.getValue();
 
         assertEquals(1, result.getJavaPermissions().size());
 
@@ -135,10 +240,70 @@ public class DatabaseContainerPropertiesTest {
     }
 
     @Test
-    public void withDriverVariableTest() throws Exception {
+    public void withPermissionReplacementSkipped() throws Exception {
         assumeTrue(!System.getProperty("os.name").equalsIgnoreCase("OS/400"));
 
         when(server.getServerConfiguration()).thenReturn(getServerConfigFor("libraryServer.xml"));
+        when(server.isJava2SecurityEnabled()).thenReturn(false);
+
+        DatabaseContainerUtil inst = DatabaseContainerUtil.build(server, cont)
+                        .withPermissionReplacement();
+
+        ArgumentCaptor<ServerConfiguration> capturedConfig = ArgumentCaptor.forClass(ServerConfiguration.class);
+        doNothing().when(server).updateServerConfiguration(capturedConfig.capture());
+
+        inst.modify();
+
+        ServerConfiguration result = capturedConfig.getValue();
+
+        assertEquals(1, result.getJavaPermissions().size());
+
+        JavaPermission permission = result.getJavaPermissions().get(0);
+        assertEquals("java.security.AllPermission", permission.getClassName());
+        assertEquals("${shared.resource.dir}/jdbc/${env.DB_DRIVER}", permission.getCodeBase());
+    }
+
+    @Test
+    public void withPermissionAdditionsTest() throws Exception {
+        assumeTrue(!System.getProperty("os.name").equalsIgnoreCase("OS/400"));
+        assumeTrue(JavaInfo.majorVersion() >= 17);
+
+        when(server.getServerConfiguration()).thenReturn(getServerConfigFor("libraryServerJava17Plus.xml"));
+        when(server.isJava2SecurityEnabled()).thenReturn(true);
+
+        DatabaseContainerUtil inst = DatabaseContainerUtil.build(server, cont2)
+                        .withPermissionReplacement();
+
+        ArgumentCaptor<ServerConfiguration> capturedConfig = ArgumentCaptor.forClass(ServerConfiguration.class);
+        doNothing().when(server).updateServerConfiguration(capturedConfig.capture());
+
+        inst.modify();
+
+        ServerConfiguration result = capturedConfig.getValue();
+
+        assertEquals(3, result.getJavaPermissions().size());
+
+        List<String> expectedCodeBases = DatabaseContainerType.DerbyJava17Plus.streamAllArtifacts()
+                        .map(name -> "${shared.resource.dir}/jdbcJava17Plus/" + name)
+                        .collect(Collectors.toList());
+
+        assertEquals(3, expectedCodeBases.size());
+
+        for (JavaPermission permission : result.getJavaPermissions()) {
+            assertEquals("java.security.AllPermission", permission.getClassName());
+            assertTrue("Expected codebases did not contain: " + permission.getCodeBase(), expectedCodeBases.remove(permission.getCodeBase()));
+        }
+
+        assertTrue("Expected codebases were not present in server.xml: " + expectedCodeBases, expectedCodeBases.isEmpty());
+    }
+
+    @Test
+    public void withDriverVariableTest() throws Exception {
+        assumeTrue(!System.getProperty("os.name").equalsIgnoreCase("OS/400"));
+
+        // Use null permission server to verify that we are able to correctly parse permissions
+        // that lack a codeBase attribute.
+        when(server.getServerConfiguration()).thenReturn(getServerConfigFor("NullPermissionServer.xml"));
 
         DatabaseContainerUtil inst = DatabaseContainerUtil.build(server, cont)
                         .withDriverVariable();
@@ -159,11 +324,58 @@ public class DatabaseContainerPropertiesTest {
         assertEquals("${shared.resource.dir}/jdbc", jdbcFs.getDir());
         assertEquals("${env.DB_DRIVER}", jdbcFs.getIncludes());
 
-        assertEquals(1, result.getJavaPermissions().size());
+        assertEquals(2, result.getJavaPermissions().size());
 
-        JavaPermission permission = result.getJavaPermissions().get(0);
-        assertEquals("java.security.AllPermission", permission.getClassName());
-        assertEquals("${shared.resource.dir}/jdbc/${env.DB_DRIVER}", permission.getCodeBase());
+        List<String> expectedCodeBases = new ArrayList<>();
+        expectedCodeBases.add(null);
+        expectedCodeBases.add("${shared.resource.dir}/jdbc/${env.DB_DRIVER}");
+
+        for (JavaPermission permission : result.getJavaPermissions()) {
+            assertTrue("Expected codebases did not contain: " + permission.getCodeBase(), expectedCodeBases.remove(permission.getCodeBase()));
+        }
+
+        assertTrue("Expected codebases were not present in server.xml: " + expectedCodeBases, expectedCodeBases.isEmpty());
+    }
+
+    @Test
+    public void withDriverVariableAdditionsTest() throws Exception {
+        assumeTrue(!System.getProperty("os.name").equalsIgnoreCase("OS/400"));
+        assumeTrue(JavaInfo.JAVA_VERSION >= 17);
+
+        when(server.getServerConfiguration()).thenReturn(getServerConfigFor("libraryServerJava17Plus.xml"));
+        when(server.isJava2SecurityEnabled()).thenReturn(true);
+
+        DatabaseContainerUtil inst = DatabaseContainerUtil.build(server, cont2)
+                        .withDriverVariable();
+
+        ArgumentCaptor<ServerConfiguration> capturedConfig = ArgumentCaptor.forClass(ServerConfiguration.class);
+        doNothing().when(server).updateServerConfiguration(capturedConfig.capture());
+
+        inst.modify();
+
+        ServerConfiguration result = capturedConfig.getValue();
+
+        assertNotNull(result.getLibraries().getById("JDBCLibrary"));
+
+        Library jdbcLib = result.getLibraries().getById("JDBCLibrary");
+        assertEquals(1, jdbcLib.getFilesets().size());
+
+        Fileset jdbcFs = jdbcLib.getFilesets().get(0);
+        assertEquals("${shared.resource.dir}/jdbcJava17Plus", jdbcFs.getDir());
+        assertEquals("${env.DB_DRIVER}", jdbcFs.getIncludes());
+
+        assertEquals(3, result.getJavaPermissions().size());
+
+        List<String> expectedCodeBases = DatabaseContainerType.DerbyJava17Plus.streamAllArtifacts()
+                        .map(name -> "${shared.resource.dir}/jdbcJava17Plus/" + name)
+                        .collect(Collectors.toList());
+
+        for (JavaPermission permission : result.getJavaPermissions()) {
+            assertEquals("java.security.AllPermission", permission.getClassName());
+            assertTrue("Expected codebases did not contain: " + permission.getCodeBase(), expectedCodeBases.remove(permission.getCodeBase()));
+        }
+
+        assertTrue("Expected codebases were not present in server.xml: " + expectedCodeBases, expectedCodeBases.isEmpty());
     }
 
     @Test
@@ -314,6 +526,26 @@ public class DatabaseContainerPropertiesTest {
 
     private static InputStream getServerStream(String fileName) {
         return DatabaseContainerPropertiesTest.class.getResourceAsStream(fileName);
+    }
+
+    // Helper methods to mock gradle tasks which copy dependencies to a shared resources directory
+    private static Path createJdbcDriverDirectory() throws Exception {
+        // Change where DatabaseContainerUtil looks for shared resources
+        Field sharedResourcesDir = DatabaseContainerUtil.class.getDeclaredField("sharedResourcesDir");
+        sharedResourcesDir.setAccessible(true);
+
+        Path driverDir = Files.createTempDirectory("DatabaseContainerPropertiesTest-");
+        sharedResourcesDir.set(null, driverDir.toFile());
+
+        return driverDir;
+    }
+
+    private static void createFakeDrivers(Path driverDir, String child, String driverName) throws Exception {
+        Path jdbcDir = driverDir.resolve(child);
+        jdbcDir.toFile().mkdir();
+
+        Path jdbcJar = driverDir.resolve(child).resolve(driverName);
+        Files.write(jdbcJar, "mock jdbc driver jar".getBytes(), StandardOpenOption.CREATE);
     }
 
     // Helper methods to get private methods

@@ -26,11 +26,14 @@ dependencies {
 
 addRequiredLibraries.dependsOn addJakartaTransformer
 
-autoFVT.doLast {
+autoFVT {
+  def baseProject = project(':com.ibm.ws.transaction.cloud_fat.dualFS.1')
+  doLast {
   copy {
-    from project(':com.ibm.ws.transaction.cloud_fat.dualFS.1').file('publish/servers')
+    from baseProject.file('publish/servers')
     into new File(autoFvtDir, 'publish/servers')
     include '**'
+  }
   }
 }
 

@@ -20,7 +20,7 @@ Bundle-SymbolicName: io.openliberty.jakarta.validation.3.1; singleton:=true
 Export-Package: jakarta.validation.*;version="3.1.0"
 
 -includeresource: \
-  @${repo;jakarta.validation:jakarta.validation-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @\${repo;jakarta.validation:jakarta.validation-api;3.1.1;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.validation;artifactId=jakarta.validation-api;version=3.1.1;scope=runtime

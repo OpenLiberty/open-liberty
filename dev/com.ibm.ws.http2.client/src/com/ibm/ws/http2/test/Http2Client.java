@@ -141,6 +141,7 @@ public class Http2Client {
 
     public void sendUpgradeHeader(String requestUri, HTTPUtils.HTTPMethod httpMethod, String body, FrameSettingsClient settingsFrame) {
         String h1_upgradeHeader = new String(httpMethod.name() + " " + requestUri + " HTTP/1.1\r\n" + "Host: " + hostName + ":" + httpDefaultPort
+                                             + "\r\nContent-Length: " + (body == null ? "0" : body.length())
                                              + "\r\nConnection: Upgrade, HTTP2-Settings\r\nUpgrade: h2c\r\nHTTP2-Settings: " + settingsFrame.getBase64UrlPayload() + "\r\n\r\n");
 
         if (body != null && !body.isEmpty())

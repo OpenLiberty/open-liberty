@@ -21,8 +21,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.internal.HttpChain;
-import com.ibm.ws.http.internal.HttpChain.ActiveConfiguration;
-import com.ibm.ws.http.internal.HttpChain.ChainState;
 import com.ibm.ws.http.internal.HttpEndpointImpl;
 import com.ibm.ws.http.internal.HttpServiceConstants;
 import com.ibm.ws.http.internal.VirtualHostMap;
@@ -56,6 +54,7 @@ public class NettyChain extends HttpChain {
     private final AtomicReference<ChainState> state = new AtomicReference<>(ChainState.UNINITIALIZED);
 
     private volatile boolean enabled = false;
+    private final Object stopLock = new Object();
 
     /**
      * Netty Http Chain constructor
@@ -99,41 +98,50 @@ public class NettyChain extends HttpChain {
             Tr.entry(this, tc, "Stopping Netty Chain: " + endpointName + ", Current state: " + state.get());
         }
 
-        if (state.get() == ChainState.STARTED || state.get() == ChainState.STARTING) {
+        ChainState currentState = state.get();
+        if (currentState == ChainState.STARTED || currentState == ChainState.STARTING) {
             endpointMgr.removeEndPoint(endpointName);
             state.set(ChainState.STOPPING);
 
             try {
-                if (Objects.nonNull(serverChannel) && serverChannel.isOpen()) {
-
+                if (Objects.isNull(serverChannel)) {
+                    // Found null channel while started/starting which shouldn't be the case!
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Server Channel is open, attempting to close");
+                        Tr.debug(this, tc, "Server Channel found to be null for a state where it should be assigned an object!");
                     }
-
-                    nettyFramework.stop(serverChannel, -1);
-                    ChannelFuture stopFuture = serverChannel.closeFuture().syncUninterruptibly();
-                    stopFuture.addListener(future -> {
-                    if (future.isSuccess()){
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(this, tc, "Server Channel was successfully closed");
-                        }
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(this, tc, "Server Channel failed to close! Trying again...");
-                        }
-                        serverChannel.closeFuture().syncUninterruptibly();
-                    }});
-                    serverChannel = null;
+                    throw new IllegalStateException("Invalid chain state for stop: " + state.get());
                 }
-
+                else if (serverChannel.isActive()) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Server Channel is active, attempting to close");
+                    }
+                    nettyFramework.stop(serverChannel, -1);
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Server Channel is NOT active while starting/started. Stopping will be left to the open future handler...");
+                    }
+                }
+                serverChannel.closeFuture().addListener(future -> {
+                    synchronized (stopLock) {
+                        if (future.isSuccess()) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Server Channel was successfully closed");
+                            }
+                        } else {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "Server Channel failed to close! Assuming no missing cleanup...");
+                            }
+                        }
+                        state.set(ChainState.STOPPED);
+                        stopLock.notifyAll();
+                    }
+                });
+                serverChannel = null;
             } finally {
-
                 VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 currentConfig.clearActivePort();
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STOPPED;
                 postEvent(topic, currentConfig, null);
-
-                state.set(ChainState.STOPPED);
                 notifyAll();
             }
         } else {
@@ -150,6 +158,19 @@ public class NettyChain extends HttpChain {
     private void stopAndWait() {
         if (state.get() != ChainState.STOPPED && state.get() != ChainState.UNINITIALIZED) {
             stop();
+            synchronized (stopLock) {
+                while (state.get() == ChainState.STOPPING) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "Waiting for chain on state: " + state.get() + " to be stopped. " + this);
+                    }
+                    try {
+                        stopLock.wait();
+                    } catch (InterruptedException e) {
+                        // Assume if the thread was interrupted that the stop can proceed as expected
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -220,7 +241,7 @@ public class NettyChain extends HttpChain {
                 Map<String, Object> tcpOptions = new HashMap<>(this.getOwner().getTcpOptions());
                 tcpOptions.put(ConfigConstants.EXTERNAL_NAME, endpointName);
 
-                bootstrap = nettyFramework.createTCPBootstrap(tcpOptions);
+                bootstrap = nettyFramework.createTCPBootstrapInbound(tcpOptions);
                 HttpPipelineInitializer.HttpPipelineBuilder pipelineBuilder = new HttpPipelineInitializer.HttpPipelineBuilder(this)
                     .with(ConfigElement.COMPRESSION, owner.getCompressionConfig())
                     .with(ConfigElement.HTTP_OPTIONS, httpOptions)
@@ -240,7 +261,7 @@ public class NettyChain extends HttpChain {
                 bootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
                 bootstrap.childHandler(httpPipeline);
 
-                serverChannel = nettyFramework.start(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
+                serverChannel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
                 VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                 String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
@@ -260,9 +281,16 @@ public class NettyChain extends HttpChain {
     }
 
     private void channelFutureHandler(ChannelFuture future) {
-        if (state.get() == ChainState.STOPPING) {
+        if (state.get() == ChainState.STOPPING || state.get() == ChainState.STOPPED) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get() + ", is stopping so will not notify any virtual hosts and will just return");
+                Tr.debug(this, tc, "Chain: " + endpointName + ", Current state: " + state.get() + ", is not starting so will not notify any virtual hosts and will shutdown the channel if active");
+            }
+            if(future.channel().isActive()) {
+                // Found active channel when it should be stopped/stopping
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Found active channel: " + future.channel() + ". Will attempt to stop it.");
+                }
+                nettyFramework.stop(future.channel());
             }
             return;
         }

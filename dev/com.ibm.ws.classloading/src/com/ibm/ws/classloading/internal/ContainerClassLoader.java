@@ -1854,21 +1854,7 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
 
     @Override
     public URL findResource(String name) {
-        //check super first, which checks parent, if any.
-        URL url = super.findResource(name);
-        if (url != null) {
-            return url;
-        }
-        url = smartClassPath.getResourceURL(name, jarProtocol);
-
-        //no need to retry smartClassPath with trailing / it already dealt with that.
-        if (url == null && !name.endsWith("/")) {
-            url = super.findResource(name);
-            if (url != null)
-                url = stripTrailingSlash(url);
-        }
-
-        return url;
+        return smartClassPath.getResourceURL(name, jarProtocol);
     }
 
     @Override

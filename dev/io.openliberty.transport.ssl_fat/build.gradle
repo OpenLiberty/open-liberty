@@ -12,14 +12,17 @@ dependencies {
   requiredLibs project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
 
-autoFVT.doLast {
+autoFVT {
+  def testServletsProject = project(':com.ibm.ws.webcontainer.security_test.servlets') 
+  doLast {
   /*
    * Copy basicauth.war into test server
    */
   copy {
-    from new File(project(':com.ibm.ws.webcontainer.security_test.servlets').buildDir, 'test-application/basicauth.zip')
+    from new File(testServletsProject.buildDir, 'test-application/basicauth.zip')
     into new File(autoFvtDir, 'publish/servers/SSLOptionsServer/apps')
     rename 'basicauth.zip', 'basicauth.war'
+  }
   }
 }
 
