@@ -13,20 +13,11 @@
 package basic.war;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.nio.ByteBuffer;
-
-import jakarta.websocket.OnMessage;
-import jakarta.websocket.OnOpen;
-import jakarta.websocket.Session;
 
 import jakarta.websocket.Endpoint;
-import jakarta.websocket.MessageHandler;
 import jakarta.websocket.EndpointConfig;
-
-import io.openliberty.wsoc.common.Utils;
-
+import jakarta.websocket.MessageHandler;
+import jakarta.websocket.Session;
 /*
  * Echos messages sent to this endpoint.
  */

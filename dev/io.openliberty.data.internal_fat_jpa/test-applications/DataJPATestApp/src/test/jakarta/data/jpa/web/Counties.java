@@ -118,7 +118,12 @@ public interface Counties {
         };
     }
 
-    @Query("UPDATE County SET zipcodes=?2 WHERE name=?1")
+    @Query("""
+                    UPDATE County
+                       SET zipcodes=?2,
+                           lastUpdated=LOCAL DATETIME
+                     WHERE name=?1
+                    """)
     boolean setZipCodesFor(String name,
                            int... zipcodes);
 }

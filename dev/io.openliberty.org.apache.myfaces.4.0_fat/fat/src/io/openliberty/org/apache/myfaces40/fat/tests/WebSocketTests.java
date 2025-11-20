@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,38 +12,26 @@ package io.openliberty.org.apache.myfaces40.fat.tests;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.net.URL;
-
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.BrowserWebDriverContainer;
 
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.org.apache.myfaces40.fat.FATSuite;
-import io.openliberty.org.apache.myfaces40.fat.JSFUtils;
-import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
 import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
 import io.openliberty.faces.fat.selenium.util.internal.WebPage;
+import io.openliberty.org.apache.myfaces40.fat.FATSuite;
+import io.openliberty.org.apache.myfaces40.fat.JSFUtils;
 
 /**
  * This test class is to be used for the tests that test feature specified
@@ -61,11 +49,6 @@ public class WebSocketTests {
     @Server("faces40_WebSocketServer")
     public static LibertyServer server;
 
-    @ClassRule
-    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                    .withAccessToHost(true)
-                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
-
     private static ExtendedWebDriver driver;
 
     @BeforeClass
@@ -78,7 +61,7 @@ public class WebSocketTests {
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
 
-        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+        driver = FATSuite.getWebDriver();
     }
 
     @AfterClass
@@ -87,8 +70,6 @@ public class WebSocketTests {
         if (server != null && server.isStarted()) {
             server.stopServer("SRVE0190E"); // SRVE0190E is due to ENABLE_WEBSOCKET_ENDPOINT being false for triggering onerror on a websocket.
         }
-
-        driver.quit(); // closes all sessions and terminutes the webdriver
     }
 
     @Before

@@ -17,29 +17,24 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.FATSuite;
 import com.ibm.ws.jsf23.fat.JSFUtils;
-import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
-import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
-import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 /**
  * This test class is to be used for the tests that test feature specified
@@ -58,11 +53,6 @@ public class JSF23WebSocketTests {
 
     private String contextRoot = "WebSocket";
 
-    @ClassRule
-    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                    .withAccessToHost(true)
-                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
-
     private static ExtendedWebDriver driver;
 
     @BeforeClass
@@ -74,7 +64,7 @@ public class JSF23WebSocketTests {
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
 
-        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+        driver = FATSuite.getWebDriver();
     }
 
     @AfterClass
@@ -83,7 +73,6 @@ public class JSF23WebSocketTests {
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
-        driver.quit(); // closes all sessions and terminutes the webdriver
     }
 
     @Before

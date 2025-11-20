@@ -511,13 +511,14 @@ public abstract class BaseTestClass {
     }
 
     /**
-     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses the defaultof 5 seconds.
+     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses the default of 20 seconds.
+     * In scenario where export times out, there appears to be an average of 15s before the export is re-attempted.
      *
      * @param condition condition being evaluated
      * @throws InterruptedException
      */
     protected void assertTrueRetryWithTimeout(Supplier<Boolean> condition) throws InterruptedException {
-        assertTrueRetryWithTimeout(condition, 8);
+        assertTrueRetryWithTimeout(condition, 20);
     }
 
     /**

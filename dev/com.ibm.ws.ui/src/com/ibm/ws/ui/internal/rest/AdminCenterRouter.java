@@ -273,6 +273,8 @@ public class AdminCenterRouter implements RESTHandler, HTTPConstants {
             response.setResponseHeader("X-Content-Type-Options", "nosniff");
             response.setResponseHeader("X-Frame-Options", "SAMEORIGIN");
             response.setResponseHeader("Content-Security-Policy", "default-src 'self'; form-action 'self'; frame-ancestors 'self'");
+            response.setResponseHeader("Strict-Transport-Security", "max-age=99999999");
+            
         }
     }
 

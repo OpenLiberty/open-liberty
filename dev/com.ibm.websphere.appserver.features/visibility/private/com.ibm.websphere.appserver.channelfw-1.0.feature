@@ -6,6 +6,7 @@ IBM-Process-Types: server, \
  client
 -bundles= \
  com.ibm.ws.channelfw, \
+ io.openliberty.channel.config.common, \
  io.openliberty.endpoint, \
  com.ibm.ws.wsbytebuffer, \
  io.openliberty.accesslists.internal

@@ -18,21 +18,17 @@ import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.AfterClass;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlForm;
@@ -44,9 +40,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf23.fat.FATSuite;
 import com.ibm.ws.jsf23.fat.JSFUtils;
-import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
-import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
-import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
@@ -56,6 +49,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 import junit.framework.Assert;
 
 /**
@@ -73,11 +68,6 @@ public class JSF23CDIGeneralTests {
 
     @Server("jsf23CDIGeneralServer")
     public static LibertyServer server;
-
-    @ClassRule
-    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                    .withAccessToHost(true)
-                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
 
     private static ExtendedWebDriver driver;
 
@@ -107,10 +97,7 @@ public class JSF23CDIGeneralTests {
 
         Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
 
-        Log.info(c, "Initialization Output", chrome != null ? "Chrome not null" : "Chrome is null");
-        Log.info(c, "Initialization Output", chrome.getSeleniumAddress().toString());
-
-        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+        driver = FATSuite.getWebDriver();
     }
 
     @Before
@@ -125,9 +112,6 @@ public class JSF23CDIGeneralTests {
         // Stop the server
         if (server != null && server.isStarted()) {
             server.stopServer();
-        }
-        if (driver != null) {
-            driver.quit(); // closes all sessions and terminates the webdriver
         }
     }
 

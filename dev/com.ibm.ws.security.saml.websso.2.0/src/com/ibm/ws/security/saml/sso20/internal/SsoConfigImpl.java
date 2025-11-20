@@ -108,6 +108,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
     static final String KEY_createSession = "createSession";
     static final String KEY_useRelayStateForTarget = "useRelayStateForTarget";
     public static final String KEY_postLogoutRedirectUrl = "postLogoutRedirectUrl";
+    static final String KEY_cspHeader = "contentSecurityPolicy";
 
     static final String[] notInUseAttributes = new String[] { KEY_headerName, KEY_audiences };
 
@@ -178,6 +179,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
     boolean useRelayStateForTarget = true;
     String postLogoutRedirectUrl = null;
     private boolean servletRequestLogoutPerformsSamlLogout = false;
+    String cspHeader = null;
 
     static HashMap<String, String> nameIDFormatMap = new HashMap<String, String>();
     static {
@@ -293,6 +295,7 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
         useRelayStateForTarget = (Boolean) props.get(KEY_useRelayStateForTarget);
         postLogoutRedirectUrl = configUtils.getConfigAttribute(props, KEY_postLogoutRedirectUrl);
         servletRequestLogoutPerformsSamlLogout = (Boolean) props.get(KEY_servletRequestLogoutPerformsSamlLogout);
+        cspHeader = (String) props.get(KEY_cspHeader);
 
         // Handle the tc debug
         processPkixTrustEngine(props);
@@ -569,7 +572,8 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
                                                           + "\nx509 cert list:" + pkixX509List.toString()
                                                           + "\ncrl list:" + pkixCrlList.toString())
                      + "\npostLogoutRedirectUrl:" + postLogoutRedirectUrl
-                     + "\nservletRequestLogoutPerformsSamlLogout: " + servletRequestLogoutPerformsSamlLogout;
+                     + "\nservletRequestLogoutPerformsSamlLogout: " + servletRequestLogoutPerformsSamlLogout
+                     + "\ncspHeader: " + cspHeader;
         }
 
         return result;
@@ -965,4 +969,11 @@ public class SsoConfigImpl extends PkixTrustEngineConfig implements SsoConfig, F
 
     }
 
+    @Override
+    public String getCspHeader() {
+        if (cspHeader!=null && cspHeader.length()==0) {
+            return null;
+        }
+        return cspHeader;
+    }
 }

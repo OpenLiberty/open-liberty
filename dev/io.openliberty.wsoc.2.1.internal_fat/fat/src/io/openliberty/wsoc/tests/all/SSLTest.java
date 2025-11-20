@@ -12,27 +12,18 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests.all;
 
-import java.net.URI;
-import java.nio.ByteBuffer;
 import java.security.SecureRandom;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import jakarta.websocket.Session;
-import jakarta.websocket.WebSocketContainer;
-import jakarta.websocket.ClientEndpointConfig;
-
 import io.openliberty.wsoc.common.Constants;
-import io.openliberty.wsoc.common.Utils;
 import io.openliberty.wsoc.endpoints.client.basic.ClientHelper;
-import io.openliberty.wsoc.util.wsoc.TestWsocContainer;
 import io.openliberty.wsoc.util.wsoc.WsocTest;
 import io.openliberty.wsoc.util.wsoc.WsocTestContext;
-import junit.framework.Assert;
+import jakarta.websocket.ClientEndpointConfig;
 
 /**
  *  Verify Passed in SSLContext work in SSL Channel.

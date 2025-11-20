@@ -1912,10 +1912,10 @@ public class DataJPATestServlet extends FATServlet {
         CompletableFuture.supplyAsync(() -> {
             PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
             o1updated.total = 11.99f;
-            return orders.save(o1updated);
+            return orders.save(o1updated); // Hibernate does SELECT, but no UPDATE, so the version remains the same
         }).get(2, TimeUnit.MINUTES);
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
             ; //TODO remove skip when fixed in Hibernate or Liberty
         } else {
             tran.begin();
@@ -1996,7 +1996,7 @@ public class DataJPATestServlet extends FATServlet {
         PurchaseOrder o7 = new PurchaseOrder();
         o7.purchasedBy = "testEntitiesAsParameters-Customer7";
         o7.purchasedOn = OffsetDateTime.now();
-        o7.total = 70.99f;
+        o7.total = 70.19f;
 
         // TODO SQLServer throws com.microsoft.sqlserver.jdbc.SQLServerException: Violation of PRIMARY KEY constraint ...
         // which is not a subset of SQLIntegrityConstraintViolationException
@@ -2010,21 +2010,22 @@ public class DataJPATestServlet extends FATServlet {
         if (!jdbcJarName.startsWith("mssql-jdbc") &&
             !jdbcJarName.startsWith("postgresql")) {
             try {
-                // TODO When using Hibernate, o7 insert succeeds,
-                // causing subsequent failure on:
-                // orders.insertAll(List.of(o7, o8))
-                if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33200")) {
-                    ; //TODO remove skip when fixed in Hibernate or Liberty
-                } else {
-                    orders.insertAll(List.of(o7, o5));
-                    fail("Should not be able insert an entity with an Id that is already present.");
-                }
+                orders.insertAll(List.of(o7, o5));
+                fail("Should not be able insert an entity with an Id that is already present.");
             } catch (EntityExistsException x) {
                 // expected
             }
         }
 
         assertEquals(false, orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer7").isPresent());
+
+        // Hibernate considers the previous instance of o7 that was rolled back
+        // to be a detached entity that it will not persist. So we need a new
+        // instance:
+        o7 = new PurchaseOrder();
+        o7.purchasedBy = "testEntitiesAsParameters-Customer7";
+        o7.purchasedOn = OffsetDateTime.now();
+        o7.total = 70.99f;
 
         PurchaseOrder o8 = new PurchaseOrder();
         o8.purchasedBy = "testEntitiesAsParameters-Customer8";
@@ -2051,7 +2052,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(o7_v1, o7.versionNum);
         assertEquals(o8_v1, o8.versionNum);
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
             return; //TODO remove skip when fixed in Hibernate or Liberty
         }
 
@@ -2090,7 +2091,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(77.99f, totals.get(1), 0.001f);
         assertEquals(11.99f, totals.get(2), 0.001f); // not updated due to version mismatch
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
             ; //TODO remove skip when fixed in Hibernate or Liberty
         } else {
             try {
@@ -4231,7 +4232,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testSortByVersionFunction() {
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
             return; //TODO remove skip when fixed in Hibernate or Liberty
         }
 
@@ -4449,9 +4450,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testTimeAsVersion() throws Exception {
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
-            return; //TODO remove skip when fixed in Hibernate or Liberty
-        }
 
         /*
          * Reference Issue: https://github.com/eclipse-ee4j/eclipselink/issues/205
@@ -4877,21 +4875,9 @@ public class DataJPATestServlet extends FATServlet {
 
         boolean updated;
         try {
-            // TODO enable once #32185 is fixed in EclipseLink
-            // jakarta.persistence.PersistenceException:
-            // Exception [EclipseLink-26] (Eclipse Persistence Services -
-            // 5.0.0-B08.v202505280949-dfc411d38767f696ce9f2741de051aef050cbeba):
-            // org.eclipse.persistence.exceptions.DescriptorException
-            // Exception Description: Trying to get value for instance variable [street]
-            //   of type [test.jakarta.data.jpa.web.Street] from the object
-            //   [test.jakarta.data.jpa.web.Location]. The specified object is not an
-            //   instance of the class or interface declaring the underlying field.
-            // Internal Exception: java.lang.IllegalArgumentException:
-            //   Can not get test.jakarta.data.jpa.web.Street field
-            //   test.jakarta.data.jpa.web.Address.street on test.jakarta.data.jpa.web.Location
-            //Address newAddress = new Address("Rochester", "MN", 55901, 3605, new Street("US 52", "N"));
-            //Location newLocation = new Location(newAddress, 44.05881f, -92.50556f);
-            //assertEquals(true, businesses.updateWithJPQL(newLocation, "IBM", ibm.id));
+            Address newAddress = new Address("Rochester", "MN", 55901, 3605, new Street("US 52", "N"));
+            Location newLocation = new Location(newAddress, 44.05881f, -92.50556f);
+            assertEquals(true, businesses.updateWithJPQL(newLocation, "IBM", ibm.id));
 
             ibm.location.latitude = 44.05881f;
             ibm.location.longitude = -92.50556f;
@@ -4942,7 +4928,7 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testUpdateWithEntityResults() {
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
             return; //TODO remove skip when fixed in Hibernate or Liberty
         }
 
@@ -5135,7 +5121,7 @@ public class DataJPATestServlet extends FATServlet {
         int newVersion = o1.versionNum;
         UUID id = o1.id;
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
             return; //TODO remove skip when fixed in Hibernate or Liberty
         }
 
@@ -5212,7 +5198,7 @@ public class DataJPATestServlet extends FATServlet {
         duluth.changeCount = oldVersion;
         try {
             cities.remove(duluth);
-            if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
+            if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33232")) {
                 return; //TODO remove skip when fixed in Hibernate or Liberty
             }
             fail("Attempt to delete with an outdated version must raise OptimisticLockingFailureException.");
@@ -5262,9 +5248,6 @@ public class DataJPATestServlet extends FATServlet {
         // Hibernate has o1.versionNum still being 0 here, breaking the test
         // that intends to force an error by attempting an update at the
         // old version
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33191")) {
-            return; //TODO remove skip when fixed in Hibernate or Liberty
-        }
 
         o1 = new PurchaseOrder();
         o1.id = id;

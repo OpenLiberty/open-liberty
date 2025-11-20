@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2021,2022 IBM Corporation and others.
+    Copyright (c) 2021,2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -41,6 +41,8 @@
         </AD>        
         <AD id="createSession" name ="%createSession" description="%createSession.desc"
             required="false" type="Boolean" default="true"/>        
+        <AD id="contentSecurityPolicy" name="%contentSecurityPolicy" description="%contentSecurityPolicy.desc" 
+            required="false" type="String"/>        
         <AD id="authnRequestsSigned" name ="%authnRequestsSigned" description="%authnRequestsSigned.desc"
             required="false" type="Boolean" default="true"/>
             <AD id="includeX509InSPMetadata" name ="%includeX509InSPMetadata" description="%includeX509InSPMetadata.desc"

@@ -12,13 +12,12 @@ package io.openliberty.springboot.support.version40.test.aop.app;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.weaving.AspectJWeavingEnabler;
 
 @SpringBootApplication(
-                       exclude = { JacksonAutoConfiguration.class })
+                       excludeName = { "org.springframework.boot.jackson.autoconfigure.JacksonAutoConfiguration" })
 public class AopApplication extends SpringBootServletInitializer {
 
     @Override

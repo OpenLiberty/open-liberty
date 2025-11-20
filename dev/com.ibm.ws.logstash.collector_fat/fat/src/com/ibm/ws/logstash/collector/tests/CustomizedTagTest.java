@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -219,7 +219,7 @@ public class CustomizedTagTest extends LogstashCollectorTest {
         server.startServer();
         // Wait for Liberty server to connect to Logstash server
         // TRAS0218I: The logstash collector is connected to the logstash server on the specified host {0} and port number {1}.
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLog("TRAS0218I", 10000));
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLog("TRAS0218I", 60000));
     }
 
     private boolean isGCSupported() {

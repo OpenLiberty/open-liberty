@@ -67,7 +67,7 @@
 	<!--
     <MetadataProvider id="LocalMetadata"  xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spMetadata.xml"/>
 	-->
-<!--   -->     
+<!--   -->
 <MetadataProvider id="chain" xsi:type="ChainingMetadataProvider">
     <MetadataProvider id="spMetadata1" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1Metadata.xml"/>
     <MetadataProvider id="spMetadata1s2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1s2Metadata.xml"/>
@@ -80,6 +80,10 @@
     <MetadataProvider id="spMetadataDefaultSP" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/defaultSPMetadata.xml"/>
     <MetadataProvider id="spMetadata_enc_sha1" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_sha1Metadata.xml"/>
     <MetadataProvider id="spMetadata_enc_aes128" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes128Metadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_aes128_ec" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes128_ecMetadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_ecdsaSP_rsaIDP" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_ecdsaSP_rsaIDP_Metadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_rsaSP_ecdsaIDP" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_rsaSP_ecdsaIDP_Metadata.xml"/>
+    <MetadataProvider id="spMetadata_enc_aes128_no_sign" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes128_nosignatureMetadata.xml"/>
     <MetadataProvider id="spMetadata_enc_aes256" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes256Metadata.xml"/>
     <MetadataProvider id="spMetadata_enc_aes192" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes192Metadata.xml"/>
     <MetadataProvider id="spMetadata_enc_aes256_mismatch" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp_enc_aes256MisMatchMetadata.xml"/>
@@ -87,23 +91,23 @@
     <MetadataProvider id="spMetadata_dash" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spDashMetadata.xml"/>
     <MetadataProvider id="spMetadata_OP" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spOPMetadata.xml"/>
     <MetadataProvider id="spMetadata_underscore" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spUnderscoreMetadata.xml"/>
-	<MetadataProvider id="spMetadataNameIdCustomize" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDCustomizeMetaData.xml"/>
-	<MetadataProvider id="spMetadataNameIdEncrypted" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDEncryptedMetaData.xml"/>
-	<MetadataProvider id="spMetadataNameIdEntity" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDEntityMetaData.xml"/>
-	<MetadataProvider id="spMetadataNameIdKerberos" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDKerberosMetaData.xml"/>
-	<MetadataProvider id="spMetadataNameIdPersistent" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDPersistentMetaData.xml"/>
-	<MetadataProvider id="spMetadataNameIdTransient" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDTransientMetaData.xml"/>
-	<MetadataProvider id="spMetadataNameIdWindowsDomain" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDWindowsDomainMetaData.xml"/>
-	<MetadataProvider id="spMetadataNameIdX590SubjectName" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDX509SubjectNameMetaData.xml"/>
+    <MetadataProvider id="spMetadataNameIdCustomize" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDCustomizeMetaData.xml"/>
+    <MetadataProvider id="spMetadataNameIdEncrypted" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDEncryptedMetaData.xml"/>
+    <MetadataProvider id="spMetadataNameIdEntity" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDEntityMetaData.xml"/>
+    <MetadataProvider id="spMetadataNameIdKerberos" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDKerberosMetaData.xml"/>
+    <MetadataProvider id="spMetadataNameIdPersistent" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDPersistentMetaData.xml"/>
+    <MetadataProvider id="spMetadataNameIdTransient" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDTransientMetaData.xml"/>
+    <MetadataProvider id="spMetadataNameIdWindowsDomain" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDWindowsDomainMetaData.xml"/>
+    <MetadataProvider id="spMetadataNameIdX590SubjectName" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spNameIDX509SubjectNameMetaData.xml"/>
     <MetadataProvider id="spMetadataabsExternalURL" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_absExternalURLMetadata.xml"/>
     <MetadataProvider id="spMetadataabsLocalURL" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_absLocalURLMetadata.xml"/>
     <MetadataProvider id="spMetadataemptyString" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_emptyStringMetadata.xml"/>
     <MetadataProvider id="spMetadatainvalidRelativePath" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_invalidRelativePathMetadata.xml"/>
     <MetadataProvider id="spMetadatainvalidURL" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_invalidURLMetadata.xml"/>
-	<MetadataProvider id="spMetadatarelativePath" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_relativePathMetadata.xml"/>
-	<MetadataProvider id="spMetadata1server2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/server2sp1Metadata.xml"/>
-	<MetadataProvider id="spMetadata2server2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/server2sp2Metadata.xml"/>
-	<MetadataProvider id="spShortLifetime" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spShortLifetimeMetadata.xml"/>
-</MetadataProvider>  
-<!--   --> 
+    <MetadataProvider id="spMetadatarelativePath" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/customLogout_relativePathMetadata.xml"/>
+    <MetadataProvider id="spMetadata1server2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/server2sp1Metadata.xml"/>
+    <MetadataProvider id="spMetadata2server2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/server2sp2Metadata.xml"/>
+    <MetadataProvider id="spShortLifetime" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/spShortLifetimeMetadata.xml"/>
+</MetadataProvider>
+<!--   -->
 </MetadataProvider>

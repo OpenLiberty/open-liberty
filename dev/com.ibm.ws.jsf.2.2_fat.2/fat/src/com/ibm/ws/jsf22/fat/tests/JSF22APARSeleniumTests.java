@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,17 +9,16 @@
  *******************************************************************************/
 package com.ibm.ws.jsf22.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
-import static org.junit.Assert.assertEquals;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -27,18 +26,12 @@ import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jsf22.fat.FATSuite;
 import com.ibm.ws.jsf22.fat.JSFUtils;
-import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
-import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
-import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -46,6 +39,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 /**
  * Tests to execute on the jsf22APARSeleniumServer that use HtmlUnit.
@@ -60,11 +55,6 @@ public class JSF22APARSeleniumTests {
 
     @Server("jsf22APARSeleniumServer")
     public static LibertyServer jsf22APARSeleniumServer;
-
-    @ClassRule
-    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                    .withAccessToHost(true)
-                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
 
     private static ExtendedWebDriver driver;
 
@@ -81,8 +71,7 @@ public class JSF22APARSeleniumTests {
 
         Testcontainers.exposeHostPorts(jsf22APARSeleniumServer.getHttpDefaultPort(), jsf22APARSeleniumServer.getHttpDefaultSecurePort());
 
-        driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
-        Log.info(c, "Setup", driver.getCurrentUrl());
+        driver = FATSuite.getWebDriver();
     }
 
     @AfterClass
@@ -92,8 +81,6 @@ public class JSF22APARSeleniumTests {
             jsf22APARSeleniumServer.stopServer();
         }
         Log.info(c, "Tear Down", driver.getCurrentUrl());
-        driver.quit(); // closes all sessions and terminutes the webdriver
-
     }
 
     /*

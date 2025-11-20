@@ -32,29 +32,31 @@ Import-Package: \
 Private-Package: \
   com.ibm.ws.tcpchannel.internal.resources, \
   com.ibm.ws.udpchannel.internal.resources, \
-  com.ibm.ws.channelfw.internal.resources
+  com.ibm.ws.channelfw.internal.resources, \
+  io.openliberty.channel.config.internal
 
 -dsannotations: \
   io.openliberty.netty.internal.impl.NettyFrameworkImpl
 
 -buildpath: \
-	com.ibm.ws.channelfw,\
-	com.ibm.ws.logging,\
-	com.ibm.ws.event,\
-	com.ibm.websphere.org.osgi.core,\
-	com.ibm.websphere.org.osgi.service.component,\
-	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.kernel.feature,\
-	com.ibm.ws.kernel.feature.core,\
-	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.kernel.security.thread,\
-	com.ibm.ws.kernel.boot.core;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.wsbytebuffer,\
-	io.openliberty.accesslists.internal,\
-	io.openliberty.io.netty;version=latest,\
-	io.openliberty.netty.internal;version=latest,\
-	io.openliberty.endpoint
+    com.ibm.websphere.org.osgi.core,\
+    com.ibm.websphere.org.osgi.service.component,\
+    com.ibm.ws.channelfw,\
+    com.ibm.ws.event,\
+    com.ibm.ws.kernel.boot.core;version=latest,\
+    com.ibm.ws.kernel.feature,\
+    com.ibm.ws.kernel.feature.core,\
+    com.ibm.ws.kernel.security.thread,\
+    com.ibm.ws.kernel.service;version=latest,\
+    com.ibm.ws.logging,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.wsbytebuffer,\
+    com.ibm.wsspi.org.osgi.service.component.annotations,\
+    io.openliberty.accesslists.internal,\
+    io.openliberty.channel.config.common,\
+    io.openliberty.endpoint,\
+    io.openliberty.io.netty;version=latest,\
+    io.openliberty.netty.internal;version=latest
 
 -testpath: \
     org.hamcrest:hamcrest-all;version=1.3, \

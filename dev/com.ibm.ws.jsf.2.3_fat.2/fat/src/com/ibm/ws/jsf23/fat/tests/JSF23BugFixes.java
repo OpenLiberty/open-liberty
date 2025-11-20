@@ -9,51 +9,25 @@
  *******************************************************************************/
 package com.ibm.ws.jsf23.fat.tests;
 
-import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
-import java.util.List;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.BrowserWebDriverContainer;
 
-import com.gargoylesoftware.htmlunit.NicelyResynchronizingAjaxController;
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlAnchor;
-import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import com.gargoylesoftware.htmlunit.html.HtmlSubmitInput;
-import com.gargoylesoftware.htmlunit.html.HtmlTable;
-import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
-import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
-import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.jsf23.fat.FATSuite;
 import com.ibm.ws.jsf23.fat.JSFUtils;
-import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
-import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
-import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -74,11 +48,6 @@ public class JSF23BugFixes {
     @Server("jsf23BugFixServer")
     public static LibertyServer server;
 
-    // @ClassRule
-    // public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-    //                 .withAccessToHost(true)
-    //                 .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
-
     @BeforeClass
     public static void setup() throws Exception {
         ShrinkHelper.defaultDropinApp(server, "MYFACES-4709.war", "com.ibm.ws.jsf23.fat.myfaces4709");
@@ -87,7 +56,6 @@ public class JSF23BugFixes {
         // Many tests use the same server
         server.startServer(c.getSimpleName() + ".log");
 
-        // Testcontainers.exposeHostPorts(server.getHttpDefaultPort(), server.getHttpDefaultSecurePort());
     }
 
     @Before

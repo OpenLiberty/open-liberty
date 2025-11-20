@@ -397,6 +397,7 @@ public class Solicited {
             requestInfo.setParameter("RelayState", new String[] { relayState });
             requestInfo.setParameter("SAMLRequest", new String[] { samlRequest });
             requestInfo.setFragmentCookieMaxAge(ssoService.getConfig().getAuthnRequestTime());
+            requestInfo.setCspHeader(ssoService.getConfig().getCspHeader());
             requestInfo.redirectPostRequest(req,
                                             resp,
                                             null, // In SP_INIT, we do not depend on cookie to store sp_init id

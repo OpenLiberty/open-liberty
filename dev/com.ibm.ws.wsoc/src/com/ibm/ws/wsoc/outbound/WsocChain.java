@@ -364,14 +364,13 @@ public class WsocChain {
             newConfig.validConfiguration = true;
 
         } catch (ChannelException e) {
-            // handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
+            // FFDCIgnore: CFW will have logged and FFDCd already
         } catch (ChainException e) {
-            // handleStartupError(e, newConfig); // FFDCIgnore: CFW will have logged and FFDCd already
+            // FFDCIgnore: CFW will have logged and FFDCd already
         } catch (Exception e) {
-            // The exception stack for this is all internals and does not belong in messages.log.
-            //  Question: need error message here?
-            //  Tr.error(tc, "config.httpChain.error", tcpName, e.toString());
-            //  handleStartupError(e, newConfig);
+            if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Error updating chain " + chainName, this, e);
+            }
         }
 
     }
@@ -391,9 +390,9 @@ public class WsocChain {
             else
                 owner.unsecureBootstrap = nettyBootstrap;
         } catch (NettyException e) {
-            // When updating the legacy chain, no error processing took place
-            // due to already logged exceptions from channel framework. 
-            // https://github.com/OpenLiberty/open-liberty/issues/31815
+            if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Error updating chain " + chainName, this, e);
+            }
         }
 
     }

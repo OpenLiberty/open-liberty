@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,8 +78,8 @@ public abstract class LogstashCollectorTest {
         Log.info(c, "setConfig entry", conf);
         getServer().setMarkToEndOfLog();
         getServer().setServerConfigurationFile(conf);
-        assertNotNull("Cannot find CWWKG0016I from messages.log", getServer().waitForStringInLogUsingMark("CWWKG0016I", 10000));
-        String line = getServer().waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 10000);
+        assertNotNull("Cannot find CWWKG0016I from messages.log", getServer().waitForStringInLogUsingMark("CWWKG0016I", 60000));
+        String line = getServer().waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 60000);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I from messages.log", line);
         waitForStringInContainerOutput("CWWKG0017I|CWWKG0018I"); // waits for server configuration to finish updating (CWWKG0017I)
         waitForStringInContainerOutput("CWWKZ0003I"); // waits for application to finish updating (CWWKZ0003I)

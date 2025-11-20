@@ -24,17 +24,13 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.testcontainers.Testcontainers;
-import org.testcontainers.containers.BrowserWebDriverContainer;
 
 import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -53,7 +49,6 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
 import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
 import io.openliberty.faces.fat.selenium.util.internal.WebPage;
 import junit.framework.Assert;
@@ -81,11 +76,6 @@ public class JSF22MiscellaneousTests {
 
     @Server("jsf22MiscellaneousServer")
     public static LibertyServer jsf22MiscellaneousServer;
-
-    @ClassRule
-    public static BrowserWebDriverContainer<?> chrome = new BrowserWebDriverContainer<>(FATSuite.getChromeImage()).withCapabilities(new ChromeOptions())
-                    .withAccessToHost(true)
-                    .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -214,7 +204,7 @@ public class JSF22MiscellaneousTests {
     @Test
     public void testResetValues() throws Exception {
 
-        ExtendedWebDriver driver = new CustomDriver(new RemoteWebDriver(chrome.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
+        ExtendedWebDriver driver = FATSuite.getWebDriver();
 
         String url = JSFUtils.createSeleniumURLString(jsf22MiscellaneousServer, APP_NAME_MISCELLANEOUS, "testResetValues.xhtml");
         WebPage page = new WebPage(driver);
