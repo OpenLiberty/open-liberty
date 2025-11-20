@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServerWrapper;
+import componenttest.annotation.MinimumJavaLevel;
 
 
 /**
@@ -99,6 +100,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
    
+    @MinimumJavaLevel(javaLevel = 17)
     //scenario 2
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {
@@ -194,7 +196,8 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
 
     }
- 
+   
+    @MinimumJavaLevel(javaLevel = 17)
     //scenario 5
     @Test
     public void testCxfCallerHttpsPolicy_IncludeTokenInSubjectIsFalse() throws Exception {

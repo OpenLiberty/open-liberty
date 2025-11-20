@@ -30,6 +30,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
+import componenttest.annotation.MinimumJavaLevel;
+
 
 /**
  * WSS Template tests
@@ -135,7 +137,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Client and Server use the same policy
      * Test should succeed in accessing the server side service.
      */
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml() throws Exception {
         
@@ -178,7 +180,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Client uses a policy that omits the Initiator Token from the policy
      * Test should fail to access the server side service.
      */
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitInitiatorToken() throws Exception {
     	
@@ -233,7 +235,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Client uses a policy that omits the Recipient Token from the policy
      * Test should fail to access the server side service.
      */
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitRecipientToken() throws Exception {
     	
@@ -285,7 +287,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Client and Server use the same policy
      * Test should succeed in accessing the server side service.
      */
-   
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient() throws Exception {
         

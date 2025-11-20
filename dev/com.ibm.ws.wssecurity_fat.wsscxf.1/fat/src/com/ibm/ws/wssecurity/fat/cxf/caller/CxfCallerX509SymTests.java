@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,8 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.annotation.MinimumJavaLevel;
+
 
 @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
@@ -130,7 +132,7 @@ public class CxfCallerX509SymTests {
      * Test a symmetric x509 token as caller
      *
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     //@AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicy() throws Exception {
@@ -162,7 +164,7 @@ public class CxfCallerX509SymTests {
      * Test a symmetric x509 token as caller
      *
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     //@AllowedFFDC(value = { "java.net.MalformedURLException" }, repeatAction = { EE8FeatureReplacementAction.ID })
     @Test
     public void testCxfCallerSymmetricEndorsingPolicyHttps() throws Exception {

@@ -1,3 +1,0 @@
-org.opensaml.xmlsec.agreement.impl.ECDHKeyAgreementProcessor
-org.opensaml.xmlsec.agreement.impl.DHWithExplicitKDFKeyAgreementProcessor
-org.opensaml.xmlsec.agreement.impl.DHWithLegacyKDFKeyAgreementProcessor

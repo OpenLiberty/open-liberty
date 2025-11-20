@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2025 IBM Corporation and others.
+ * Copyright (c) 2005, 2014 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,6 @@ import com.ibm.wsspi.channelfw.exception.InvalidWeightException;
 import com.ibm.wsspi.channelfw.exception.RetryableChannelException;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
 
-import io.openliberty.channel.config.ChannelFrameworkConfig;
 /**
  * This class is the implementation of the configuration and runtime interface
  * for modifying the Channel Framework.
@@ -165,7 +164,7 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
     /** Custom property for timed delay before warning about missing config in milliseconds */
     private long missingConfigWarning = 10000L;
     /** Property for the chain quiescetimeout to default to for various paths in milliseconds */
-    private long chainQuiesceTimeout = 30000L;
+    private long chainQuiesceTimeout = 0L;
 
     /**
      * Table to keep track of which Regions a channel is being asked to be run on
@@ -334,15 +333,28 @@ public class ChannelFrameworkImpl implements ChannelFramework, FFDCSelfIntrospec
         }
     }
 
-    public void setChannelFrameworkConfig(ChannelFrameworkConfig config) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, "setChannelFrameworkConfig: " + config);
+    /**
+     * Process configuration information.
+     *
+     * @param config
+     */
+    public void updateConfig(Map<String, Object> config) {
+
+        Object value = config.get(PROPERTY_CHAIN_START_RETRY_ATTEMPTS);
+        if (null != value) {
+            setChainStartRetryAttempts(value);
         }
-        if (config != null) {
-            setChainStartRetryAttempts(config.getChainStartRetryAttempts());
-            setChainStartRetryInterval(config.getChainStartRetryInterval());
-            setDefaultChainQuiesceTimeout(config.getDefaultChainQuiesceTimeout());
-            setMissingConfigWarning(config.getMissingConfigWarning());
+        value = config.get(PROPERTY_CHAIN_START_RETRY_INTERVAL);
+        if (null != value) {
+            setChainStartRetryInterval(value);
+        }
+        value = config.get(PROPERTY_CHAIN_QUIESCETIMEOUT);
+        if (null != value) {
+            setDefaultChainQuiesceTimeout(value);
+        }
+        value = config.get(PROPERTY_MISSING_CONFIG_WARNING);
+        if (null != value) {
+            setMissingConfigWarning(value);
         }
     }
 

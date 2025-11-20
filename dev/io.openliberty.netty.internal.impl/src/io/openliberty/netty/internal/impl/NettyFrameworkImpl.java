@@ -28,14 +28,15 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.channelfw.EndPointMgr;
+import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
@@ -57,7 +58,6 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GlobalEventExecutor;
-import io.openliberty.channel.config.ChannelFrameworkConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ConfigConstants;
@@ -71,8 +71,8 @@ import io.openliberty.netty.internal.udp.UDPUtils;
 /**
  * Liberty NettyFramework implementation bundle
  */
-@Component(immediate = true, service = { NettyFramework.class, ServerQuiesceListener.class },
-           configurationPolicy = ConfigurationPolicy.IGNORE,
+@Component(configurationPid = "io.openliberty.netty.internal", immediate = true, service = { NettyFramework.class,
+                                                                                             ServerQuiesceListener.class },
            property = { "service.vendor=IBM" })
 public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework {
 
@@ -96,16 +96,15 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     private EventLoopGroup parentGroup;
     private EventLoopGroup childGroup;
 
+    private CHFWBundle chfw;
     private volatile boolean isActive = false;
 
     private ScheduledExecutorService scheduledExecutorService = null;
 
     private static final String EVENTLOOP_THREADS_PROPERTY = "io.openliberty.netty.eventloop.threads";
 
-    private ChannelFrameworkConfig channelConfig;
-
     @Activate
-    protected void activate(ComponentContext context) {
+    protected void activate(ComponentContext context, Map<String, Object> config) {
         if (!ProductInfo.getBetaEdition()) {
             // Do nothing if beta isn't enabled
             return;
@@ -151,6 +150,35 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         stopEventLoops();
     }
 
+    @Modified
+    protected void modified(ComponentContext context, Map<String, Object> config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Processing config", config);
+        }
+        // update any framework-specific config
+    }
+
+    /**
+     * DS method for setting the required channel framework service. For now
+     * this reference is needed for access to EndPointMgr. That code will be split
+     * out.
+     *
+     * @param bundle
+     */
+    @Reference(name = "chfwBundle")
+    protected void setChfwBundle(CHFWBundle bundle) {
+        chfw = bundle;
+    }
+
+    /**
+     * This is a required static reference, this won't be called until the component
+     * has been deactivated
+     *
+     * @param bundle CHFWBundle instance to unset
+     */
+    protected void unsetChfwBundle(CHFWBundle bundle) {
+    }
+
     /**
      * DS method for setting the executor service reference.
      *
@@ -160,25 +188,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Reference(service = ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setExecutorService(ExecutorService executorService) {
         this.executorService = executorService;
-    }
-
-    /*
-     * Used for share config between legacy channel framework and the netty framework.
-     */
-    @Reference(service = ChannelFrameworkConfig.class, cardinality = ReferenceCardinality.MANDATORY)
-    protected void setChannelFWConfig(ChannelFrameworkConfig config) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Updating ChannelFrameworkConfig: " + config);
-        }
-        this.channelConfig = config;
-    }
-
-    protected void updatedChannelFWConfig(ChannelFrameworkConfig config) {
-        this.channelConfig = config;
-    }
-
-    public ChannelFrameworkConfig getChannelFWConfig() {
-        return this.channelConfig;
     }
 
     /**
@@ -252,7 +261,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             }
             isActive = false;
             // If the system is configured to quiesce connections..
-            long timeout = channelConfig.getDefaultChainQuiesceTimeout();
+            long timeout = getDefaultChainQuiesceTimeout();
 
             if (timeout > 0) {
                 if (activeChannelMap.isEmpty() && outboundConnections.isEmpty()) {
@@ -604,7 +613,11 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Override
     public long getDefaultChainQuiesceTimeout() {
-        return channelConfig.getDefaultChainQuiesceTimeout();
+        if (chfw != null) {
+            return chfw.getFramework().getDefaultChainQuiesceTimeout();
+        } else {
+            return 0;
+        }
     }
 
     @Override

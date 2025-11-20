@@ -28,6 +28,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
+import componenttest.annotation.MinimumJavaLevel;
 
 
 /**
@@ -136,7 +137,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
         //issue 23060 both EE7 old/new format ehcache return with same error expectation with new jaxws-2.2
     	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_ASYM_SIGN_SERVICE));
     }
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Asymmmetric() throws Exception {
     
@@ -194,7 +195,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_ENCR_SERVICE_CLIENT_NOT_ENCR));
 
     }
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric() throws Exception {
     	
@@ -258,7 +259,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
      * The client uses a policy that does not specify that the request be encrypted
      * The test should fail since the policy can not be satisfied
      */
-    
+    @MinimumJavaLevel(javaLevel = 17)
     //@AllowedFFDC(value = { "org.apache.ws.security.WSSecurityException" }, repeatAction = { EmptyAction.ID })
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Asymmmetric_ClientNotSigned() throws Exception {
@@ -285,7 +286,7 @@ public class CxfSAMLAsymSignEncTests extends SAMLCommonTest {
         //issue 23060 both EE7 old/new ehcache return with same error expectation with new jaxws-2.2
     	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_ASYM_SIGN_ENCR_SERVICE));
     }
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFSignedEncryptedAsyncSupportingTokens_Asymmmetric() throws Exception {
 

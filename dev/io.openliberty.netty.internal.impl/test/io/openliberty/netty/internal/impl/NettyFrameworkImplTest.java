@@ -76,7 +76,7 @@ public class NettyFrameworkImplTest {
         testChannels = new ArrayList<Channel>();
         framework = new NettyFrameworkImpl();
         framework.setExecutorService(GlobalEventExecutor.INSTANCE);
-        framework.activate(null);
+        framework.activate(null, null);
         options = new HashMap<String, Object>();
     }
 
