@@ -402,11 +402,6 @@ public class BasicTools {
         return "Planet " + planet + " was created in the year " + year;
     }
 
-//    @Tool(name = "testToolArgObjectDefaultValue", title = "ToolArg Object Default Value", description = "Test tool defaults to default value when argument not provided")
-//    public City testToolArgObjectDefaultValue(@ToolArg(name = "city", description = "city you live in", required = false, defaultValue = "TODO") City city) {
-//        return city;
-//    }
-
     /////////////////////////////////////////////
     // Special characters in Tool and  parameters
 

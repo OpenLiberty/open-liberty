@@ -1,12 +1,11 @@
-package io.openliberty.mcp.tools;
+package io.openliberty.mcp.internal.requests;
 
 import io.openliberty.mcp.annotations.ToolArg;
-import jakarta.interceptor.Interceptor.Priority;
 
 /**
  * Converts default values from {@link String} to an argument object of a specific type.
  * <p>
- * Converters are discovered automatically, i.e. all implementations in a Quarkus application are registered.
+ * Converters are discovered automatically
  * <p>
  * Implementations must declare a public no-args constructor.
  * <p>

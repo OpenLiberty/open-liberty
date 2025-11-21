@@ -1,7 +1,5 @@
 package io.openliberty.mcp.internal.requests;
 
-import io.openliberty.mcp.tools.DefaultValueConverter;
-
 public class BuiltinDefaultValueConverters {
     public static class BooleanConverter implements DefaultValueConverter<Boolean> {
 
