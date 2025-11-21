@@ -18,11 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletionStage;
 
+import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.content.Content;
+import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
@@ -65,10 +68,19 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
         JsonObject inputSchema = sr.getToolInputSchema(method);
 
         boolean hasContentListReturn = (returnType instanceof ParameterizedType pt && ((Class<?>) pt.getRawType()).isAssignableFrom(List.class)
-                                        && ((Class<?>) pt.getActualTypeArguments()[0]).isAssignableFrom(Content.class));
+                                        && (pt.getActualTypeArguments()[0] instanceof Class<?>) && ((Class<?>) pt.getActualTypeArguments()[0]).isAssignableFrom(Content.class));
         boolean hasOutputSchema = (!returnTypeClass.isAssignableFrom(ToolResponse.class) && !hasContentListReturn && !returnTypeClass.isAssignableFrom(Content.class)
                                    && !returnTypeClass.isAssignableFrom(String.class) && annotation.structuredContent());
+
+        if (!hasOutputSchema && returnTypeClass.isAssignableFrom(ToolResponse.class) && annotation.structuredContent()
+            && method.isAnnotationPresent(Schema.class)
+            && method.getAnnotation(Schema.class).value() != Schema.UNSET) {
+
+            hasOutputSchema = true;
+
+        }
         JsonObject outputSchema = hasOutputSchema ? sr.getToolOutputSchema(method) : null;
+
         outputSchema = (outputSchema == null || outputSchema.isEmpty()) ? null : outputSchema;
 
         return new ToolMetadata(annotation,
@@ -88,23 +100,30 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
 
     public static Map<String, ArgumentMetadata> getArgumentMap(AnnotatedMethod<?> method) {
         Map<String, ArgumentMetadata> result = new HashMap<>();
-
+        ArrayList<String> genericParams = new ArrayList<>();
         for (AnnotatedParameter<?> param : method.getParameters()) {
 
-            ToolArg argAnnotation = param.getAnnotation(ToolArg.class);
+            if (TypeUtility.hasGenericParams(param.getBaseType())) {
+                genericParams.add(param.getJavaParameter().getName());
+            } else {
+                ToolArg argAnnotation = param.getAnnotation(ToolArg.class);
 
-            if (argAnnotation == null) {
-                continue;
+                if (argAnnotation == null) {
+                    continue;
+                }
+                String argName = resolveArgumentName(param, argAnnotation);
+                boolean isDuplicateArg = result.containsKey(argName);
+
+                result.put(argName, new ArgumentMetadata(param.getBaseType(),
+                                                         param.getPosition(),
+                                                         argAnnotation.description(),
+                                                         argAnnotation.required(),
+                                                         isDuplicateArg));
             }
 
-            String argName = resolveArgumentName(param, argAnnotation);
-            boolean isDuplicateArg = result.containsKey(argName);
-
-            result.put(argName, new ArgumentMetadata(param.getBaseType(),
-                                                     param.getPosition(),
-                                                     argAnnotation.description(),
-                                                     argAnnotation.required(),
-                                                     isDuplicateArg));
+        }
+        if (!genericParams.isEmpty()) {
+            throw new GenericArgumentException(genericParams);
         }
         return result.isEmpty() ? Collections.emptyMap() : result;
     }
@@ -140,6 +159,13 @@ public record ToolMetadata(Tool annotation, Bean<?> bean, AnnotatedMethod<?> met
      * Used for error reporting cases, such as locating Duplicate Tools and ToolArgs
      */
     public String getToolQualifiedName() {
+        return bean.getBeanClass() + "." + method.getJavaMember().getName();
+    }
+
+    /**
+     * Used for error reporting cases, such as Generic args
+     */
+    public static String getToolQualifiedName(Bean<?> bean, AnnotatedMethod<?> method) {
         return bean.getBeanClass() + "." + method.getJavaMember().getName();
     }
 }

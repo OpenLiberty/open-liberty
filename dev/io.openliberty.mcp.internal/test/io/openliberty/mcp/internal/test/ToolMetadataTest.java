@@ -7,38 +7,39 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.fat.tool.deploymentErrorApps;
+package io.openliberty.mcp.internal.test;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import java.lang.reflect.Method;
 import java.util.List;
+
+import org.junit.Before;
+import org.junit.Test;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.ToolArg;
-import jakarta.enterprise.context.ApplicationScoped;
+import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+import io.openliberty.mcp.internal.schemas.TypeUtility;
+import io.openliberty.mcp.internal.testutils.TestUtils;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 
-@ApplicationScoped
-public class ToolArgValidationTest {
+/**
+ *
+ */
+public class ToolMetadataTest {
+    Jsonb jsonb;
 
-    /////////////////////////////
-    // duplicate parameter names
-    @Tool(name = "duplicateParam")
-    public String duplicateParam(@ToolArg(name = "arg") String arg, @ToolArg(name = "arg") String notArg) {
-        return notArg;
-    }
-
-    @Tool(name = "duplicateParamVariant")
-    public String duplicateParamVariant(@ToolArg(name = "arg") String arg, @ToolArg(name = "arg") String notArg, @ToolArg(name = "arg") String notArgAgain) {
-        return notArgAgain;
-    }
-
-    @Tool(name = "argNameisBlank")
-    public String argNameisBlank(@ToolArg(name = "") String arg1) {
-        return arg1;
-    }
-
-    @Tool(name = "argNameisBlankVariant")
-    public String argNameisBlankVariant(@ToolArg(name = "") String arg1, @ToolArg(name = "") String arg2) {
-        return arg1;
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setup() throws Exception {
+        SchemaRegistry.set(new SchemaRegistry());
+        jsonb = JsonbBuilder.create();
     }
 
     @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
@@ -50,4 +51,15 @@ public class ToolArgValidationTest {
                                                                                                  @ToolArg(name = "concrete", description = "Concrete object") List<String> item2) {
         return null;
     }
+
+    @Test
+    public void testGenericParams() {
+        Method tm = TestUtils.findActualMethod(ToolMetadataTest.class, "addGenericToGenericArray");
+        assertTrue(TypeUtility.hasGenericParams(tm.getAnnotatedParameterTypes()[0].getType()));
+        assertTrue(TypeUtility.hasGenericParams(tm.getAnnotatedParameterTypes()[1].getType()));
+        assertTrue(TypeUtility.hasGenericParams(tm.getAnnotatedParameterTypes()[2].getType()));
+        assertFalse(TypeUtility.hasGenericParams(tm.getAnnotatedParameterTypes()[3].getType()));
+
+    }
+
 }

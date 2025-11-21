@@ -7,8 +7,17 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.requests;
+package io.openliberty.mcp.internal.fat.tool.inactiveCdiApp;
 
-import io.openliberty.mcp.request.RequestId;
+import io.openliberty.mcp.annotations.Tool;
+import io.openliberty.mcp.content.TextContent;
 
-public record ExecutionRequestId(RequestId id, McpSessionId sessionId) {}
+/**
+ *
+ */
+public class InactiveCdiTool {
+    @Tool(name = "toolWithoutCDI", title = "Tool Without CDI", description = "Should not be called as the class is not a CDI bean")
+    public TextContent toolWithoutCDI() {
+        return new TextContent("Hello world!");
+    }
+}

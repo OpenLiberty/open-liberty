@@ -25,6 +25,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.content.Content;
+import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.config.McpConfiguration;
@@ -40,6 +41,9 @@ import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
+import io.openliberty.mcp.internal.sessions.McpSession;
+import io.openliberty.mcp.internal.sessions.McpSessionId;
+import io.openliberty.mcp.internal.sessions.McpSessionStore;
 import io.openliberty.mcp.messaging.Cancellation;
 import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolCallException;
@@ -321,7 +325,7 @@ public class McpServlet extends HttpServlet {
         } else if (result instanceof String s) {
             return ToolResponse.success(s);
         } else if (includeStructuredContent) {
-            return ToolResponse.structuredSuccess(jsonb.toJson(result), result);
+            return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(result))), result, null);
         } else {
             return ToolResponse.success(Objects.toString(result));
         }
@@ -452,7 +456,7 @@ public class McpServlet extends HttpServlet {
     private void cancelRequest(McpTransport transport) {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
         RequestId mcpReqId = notificationParams.getRequestId();
-        String sessionId = transport.getSessionId();
+        McpSessionId sessionId = transport.getSessionId();
         if (sessionId == null) {
             transport.sendEmptyResponse();
             return;
@@ -476,7 +480,7 @@ public class McpServlet extends HttpServlet {
     }
 
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
-        String sessionId = transport.getSessionId();
+        McpSessionId sessionId = transport.getSessionId();
         if (sessionId != null) {
             return new ExecutionRequestId(transport.getMcpRequest().getId(),
                                           sessionId);

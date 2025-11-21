@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal;
+package io.openliberty.mcp.internal.sessions;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -17,6 +17,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
+import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.config.McpConfiguration;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

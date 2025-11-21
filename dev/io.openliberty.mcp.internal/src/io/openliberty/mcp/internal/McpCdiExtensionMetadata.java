@@ -15,6 +15,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import io.openliberty.mcp.internal.sessions.McpSessionStore;
 import jakarta.enterprise.inject.spi.Extension;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE)

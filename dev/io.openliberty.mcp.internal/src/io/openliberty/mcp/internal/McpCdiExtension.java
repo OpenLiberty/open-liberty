@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.ToolMetadata.ArgumentMetadata;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
+import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
@@ -144,14 +145,20 @@ public class McpCdiExtension implements Extension {
     }
 
     private void registerTool(Tool tool, Bean<?> bean, AnnotatedMethod<?> method) {
-        ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method);
-        duplicateToolsMap.computeIfAbsent(toolmd.name(), key -> new LinkedList<>()).add(toolmd.getToolQualifiedName());
-        tools.addTool(toolmd);
-        if (TraceComponent.isAnyTracingEnabled()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
-            } else if (tc.isEventEnabled()) {
-                Tr.event(this, tc, "Registered tool: " + toolmd.name(), method);
+        try {
+            ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method);
+            duplicateToolsMap.computeIfAbsent(toolmd.name(), key -> new LinkedList<>()).add(toolmd.getToolQualifiedName());
+            tools.addTool(toolmd);
+            if (TraceComponent.isAnyTracingEnabled()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
+                } else if (tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Registered tool: " + toolmd.name(), method);
+                }
+            }
+        } catch (GenericArgumentException e) {
+            for (String argument : e.getArguments()) {
+                Tr.error(tc, "CWMCM0018E.generic.arguments", ToolMetadata.getToolQualifiedName(bean, method), argument);
             }
         }
     }

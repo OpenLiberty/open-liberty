@@ -7,8 +7,18 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.requests;
+package io.openliberty.mcp.internal.sessions;
 
-import io.openliberty.mcp.request.RequestId;
+import com.ibm.websphere.ras.annotation.Sensitive;
 
-public record ExecutionRequestId(RequestId id, McpSessionId sessionId) {}
+public record McpSessionId(@Sensitive String value) {
+
+    @Override
+    public String toString() {
+        int visibleSessionIdLength = 6;
+        if (value.length() <= visibleSessionIdLength)
+            return value;
+        return value.substring(0, visibleSessionIdLength) + "*".repeat(value.length() - visibleSessionIdLength);
+    }
+
+}

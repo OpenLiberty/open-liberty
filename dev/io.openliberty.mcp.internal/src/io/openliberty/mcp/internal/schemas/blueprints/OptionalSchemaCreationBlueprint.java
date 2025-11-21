@@ -25,6 +25,7 @@ public record OptionalSchemaCreationBlueprint(Type type, Type optionalType) impl
 
     @Override
     public JsonObjectBuilder toJsonSchemaObject(SchemaGenerationContext ctx, String description) {
-        return SchemaGenerator.generateSubSchema(optionalType, ctx, SchemaAnnotation.ofDescription(description));
+        return SchemaGenerator.generateSubSchema(optionalType, ctx,
+                                                 SchemaAnnotation.ofDescription(description));
     }
 }

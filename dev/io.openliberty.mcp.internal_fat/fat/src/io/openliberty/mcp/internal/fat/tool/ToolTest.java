@@ -10,13 +10,17 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -33,6 +37,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
@@ -1782,6 +1787,208 @@ public class ToolTest extends FATServletClient {
                                         "name": "addPersonToList",
                                         "description": "adds person to people list",
                                         "title": "adds person to people list"
+                                    },
+                                    {
+                                        "outputSchema": {
+                                            "$defs": {
+                                                "Address": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "number": {
+                                                            "type": "integer"
+                                                        },
+                                                        "street": {
+                                                            "description": "A street object to represent complex streets",
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "streetName": {
+                                                                    "type": "string"
+                                                                },
+                                                                "roadType": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "streetName"
+                                                            ]
+                                                        },
+                                                        "postcode": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "number",
+                                                        "street",
+                                                        "postcode"
+                                                    ]
+                                                },
+                                                "Person": {
+                                                    "description": "A person object contains address, company objects",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "address": {
+                                                            "$ref": "#/$defs/Address"
+                                                        },
+                                                        "company": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "address": {
+                                                                    "$ref": "#/$defs/Address"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "shareholders": {
+                                                                    "description": "A list of shareholder (person object)",
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "$ref": "#/$defs/Person"
+                                                                    }
+                                                                },
+                                                                "shareholderRegistry": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "value": {
+                                                                            "$ref": "#/$defs/person"
+                                                                        },
+                                                                        "key": {
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "required": []
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "name",
+                                                                "address",
+                                                                "shareholders"
+                                                            ]
+                                                        },
+                                                        "fullname": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "fullname",
+                                                        "address",
+                                                        "company"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/$defs/Person"
+                                            },
+                                            "description": "Returns list of person object"
+                                        },
+                                        "inputSchema": {
+                                            "$defs": {
+                                                "Address": {
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "number": {
+                                                            "type": "integer"
+                                                        },
+                                                        "street": {
+                                                            "description": "A street object to represent complex streets",
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "streetName": {
+                                                                    "type": "string"
+                                                                },
+                                                                "roadType": {
+                                                                    "type": "string"
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "streetName"
+                                                            ]
+                                                        },
+                                                        "postcode": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "number",
+                                                        "street",
+                                                        "postcode"
+                                                    ]
+                                                },
+                                                "Person": {
+                                                    "description": "A person object contains address, company objects",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "address": {
+                                                            "$ref": "#/$defs/Address"
+                                                        },
+                                                        "company": {
+                                                            "type": "object",
+                                                            "properties": {
+                                                                "address": {
+                                                                    "$ref": "#/$defs/Address"
+                                                                },
+                                                                "name": {
+                                                                    "type": "string"
+                                                                },
+                                                                "shareholders": {
+                                                                    "description": "A list of shareholder (person object)",
+                                                                    "type": "array",
+                                                                    "items": {
+                                                                        "$ref": "#/$defs/Person"
+                                                                    }
+                                                                },
+                                                                "shareholderRegistry": {
+                                                                    "type": "object",
+                                                                    "properties": {
+                                                                        "value": {
+                                                                            "$ref": "#/$defs/person"
+                                                                        },
+                                                                        "key": {
+                                                                            "type": "integer"
+                                                                        }
+                                                                    },
+                                                                    "required": []
+                                                                }
+                                                            },
+                                                            "required": [
+                                                                "name",
+                                                                "address",
+                                                                "shareholders"
+                                                            ]
+                                                        },
+                                                        "fullname": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "fullname",
+                                                        "address",
+                                                        "company"
+                                                    ]
+                                                }
+                                            },
+                                            "type": "object",
+                                            "properties": {
+                                                "employeeList": {
+                                                    "description": "List of people",
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/$defs/Person"
+                                                    }
+                                                },
+                                                "person": {
+                                                    "description": "Person object",
+                                                    "$ref": "#/$defs/Person"
+                                                }
+                                            },
+                                            "required": [
+                                                "employeeList",
+                                                "person"
+                                            ]
+                                        },
+                                        "name": "addPersonToListToolResponse",
+                                        "description": "adds person to people list",
+                                        "title": "adds person to people list"
                                     }
                                 ]
                             },
@@ -2995,6 +3202,227 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void testAddPersonToListToolResponse() throws Exception {
+//        Based on the following context
+//        Address companyAddress = new Address(100, new Street("Hursley Park Rd", "Private Property"), "so21 2er", "inside hursley park");
+//        Person companyPerson = new Person("Shareholder 1", companyAddress, null);
+//        List<Person> companyList = new ArrayList<>();
+//        companyList.add(companyPerson);
+//        Map<String, Person> companyMap = new HashMap<>();
+//        companyMap.put("1", companyPerson);
+//        Company company = new Company("IBM", companyAddress, companyList, companyMap);
+//        Address personAddress = new Address(002, new Street("Poles Ln", "n/a"), "so21 2rt", "near hursley park");
+//        Person person = new Person("John Smith", personAddress, company);
+
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "addPersonToListToolResponse",
+                            "arguments": {
+                                            "person":{
+                                            "address": {
+                                                "number": 2,
+                                                "postcode": "so21 2rt",
+                                                "street": {
+                                                    "streetName": "Poles Ln",
+                                                    "roadType": "n/a"
+                                                }
+                                            },
+                                            "company": {
+                                                "address": {
+                                                    "number": 100,
+                                                    "postcode": "so21 2er",
+                                                    "street": {
+                                                        "streetName": "Hursley Park Rd",
+                                                        "roadType": "Private Property"
+                                                    }
+                                                },
+                                                "name": "IBM",
+                                                "shareholder": [
+                                                    {
+                                                        "address": {
+                                                            "number": 100,
+                                                            "postcode": "so21 2er",
+                                                            "street": {
+                                                                "streetName": "Hursley Park Rd",
+                                                                "roadType": "Private Property"
+                                                            }
+                                                        },
+                                                        "fullname": "Shareholder 1"
+                                                    }
+                                                ]
+                                            },
+                                            "fullname": "John Smith"
+                                        },
+                                        "employeeList": [
+                                                    {
+                                                        "address": {
+                                                            "number": 2,
+                                                            "postcode": "so21 2rt",
+                                                            "street": {
+                                                                "streetName": "Poles Ln",
+                                                                "roadType": "n/a"
+                                                            }
+                                                        },
+                                                        "company": {
+                                                            "address": {
+                                                                "number": 100,
+                                                                "postcode": "so21 2er",
+                                                                "street": {
+                                                                    "streetName": "Hursley Park Rd",
+                                                                    "roadType": "Private Property"
+                                                                }
+                                                            },
+                                                            "name": "IBM",
+                                                            "shareholder": [
+                                                                {
+                                                                    "address": {
+                                                                        "number": 100,
+                                                                        "postcode": "so21 2er",
+                                                                        "street": {
+                                                                            "streetName": "Hursley Park Rd",
+                                                                            "roadType": "Private Property"
+                                                                        }
+                                                                    },
+                                                                    "fullname": "Shareholder 1"
+                                                                }
+                                                            ],
+                                                            "shareholderRegistry": {
+                                                                "1": {
+                                                                    "address": {
+                                                                        "number": 100,
+                                                                        "postcode": "so21 2er",
+                                                                        "street": {
+                                                                            "streetName": "Hursley Park Rd",
+                                                                            "roadType": "Private Property"
+                                                                        }
+                                                                    },
+                                                                    "fullname": "Shareholder 1"
+                                                                }
+                                                            }
+                                                        },
+                                                        "fullname": "John Smith"
+                                                    },
+                                                    {
+                                                        "address": {
+                                                            "number": 100,
+                                                            "postcode": "so21 2er",
+                                                            "street": {
+                                                                "streetName": "Hursley Park Rd",
+                                                                "roadType": "Private Property"
+                                                            }
+                                                        },
+                                                        "fullname": "Shareholder 1"
+                                                    }
+                                                ]
+                                    }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONObject jsonResponse = new JSONObject(response);
+        // Strict Mode tests
+        String expectedResponseString = """
+                                                                {
+                            "result": {
+                                "isError": false,
+                                "structuredContent": [
+                                    {
+                                        "address": {
+                                            "number": 2,
+                                            "street": {
+                                                "streetName": "Poles Ln",
+                                                "roadType": "n/a"
+                                            },
+                                            "postcode": "so21 2rt"
+                                        },
+                                        "company": {
+                                            "address": {
+                                                "number": 100,
+                                                "street": {
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
+                                                },
+                                                "postcode": "so21 2er"
+                                            },
+                                            "shareholderRegistry": {
+                                                "1": {
+                                                    "address": {
+                                                        "number": 100,
+                                                        "street": {
+                                                            "streetName": "Hursley Park Rd",
+                                                            "roadType": "Private Property"
+                                                        },
+                                                        "postcode": "so21 2er"
+                                                    },
+                                                    "fullname": "Shareholder 1"
+                                                }
+                                            },
+                                            "name": "IBM"
+                                        },
+                                        "fullname": "John Smith"
+                                    },
+                                    {
+                                        "address": {
+                                            "number": 100,
+                                            "street": {
+                                                "streetName": "Hursley Park Rd",
+                                                "roadType": "Private Property"
+                                            },
+                                            "postcode": "so21 2er"
+                                        },
+                                        "fullname": "Shareholder 1"
+                                    },
+                                    {
+                                        "address": {
+                                            "number": 2,
+                                            "street": {
+                                                "streetName": "Poles Ln",
+                                                "roadType": "n/a"
+                                            },
+                                            "postcode": "so21 2rt"
+                                        },
+                                        "company": {
+                                            "address": {
+                                                "number": 100,
+                                                "street": {
+                                                    "streetName": "Hursley Park Rd",
+                                                    "roadType": "Private Property"
+                                                },
+                                                "postcode": "so21 2er"
+                                            },
+                                            "name": "IBM"
+                                        },
+                                        "fullname": "John Smith"
+                                    }
+                                ],
+                                "content": [
+                                    {
+                                        "text": "[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]",
+                                        "type": "text"
+                                    }
+                                ],
+                                "_meta": [
+                                            {
+                                                "key": {
+                                                    "name": "timestamp"
+                                                },
+                                                "value": 1762860699
+                                            }
+                                        ]
+                            },
+                            "id": 2,
+                            "jsonrpc": "2.0"
+                        }
+                                                                                                """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
     public void testReusingRequestIdAfterCompletionSucceeds() throws Exception {
 
         String requestTemplate = """
@@ -3023,6 +3451,33 @@ public class ToolTest extends FATServletClient {
         String duplicateResponse = client.callMCP(requestTemplate);
 
         JSONAssert.assertEquals(expectedResponseString, duplicateResponse, true);
+    }
+
+    @Test
+    @Mode(FULL)
+    public void testSessionIdNotTraced() throws Exception {
+        String sessionId = client.getSessionId();
+        int visibleSessionIdLength = 6;
+        String redactedSessionId = sessionId.substring(0, visibleSessionIdLength) + "*".repeat(sessionId.length() - visibleSessionIdLength);
+
+        assertNotNull("Expected session ID from MCP initialization", sessionId);
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "textContentTool",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+        client.callMCP(request);
+
+        assertNotNull(server.waitForStringInTrace(Pattern.quote(redactedSessionId)));
+        assertNull(server.waitForStringInTrace(sessionId, 3000)); // wait 3 seconds to confirm full session Id not found in trace
     }
 
     @Test

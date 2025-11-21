@@ -21,7 +21,11 @@ import static io.openliberty.mcp.internal.schemas.SchemaDirection.OUTPUT;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,6 +44,7 @@ import io.openliberty.mcp.internal.schemas.blueprints.OptionalSchemaCreationBlue
 import io.openliberty.mcp.internal.schemas.blueprints.SchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.TypeVariableSchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.WildcardSchemaCreationBlueprint;
+import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;
@@ -139,7 +144,9 @@ public class SchemaGenerator {
         SchemaAnnotation schemaAnnotation = SchemaAnnotation.read(method);
 
         SchemaGenerationContext ctx = new SchemaGenerationContext(blueprintRegistry, OUTPUT);
-        calculateClassFrequency(returnType, SchemaDirection.OUTPUT, ctx);
+        if (!method.getReturnType().isAssignableFrom(ToolResponse.class)) {
+            calculateClassFrequency(returnType, SchemaDirection.OUTPUT, ctx);
+        }
 
         JsonObjectBuilder outputSchema = generateSubSchema(returnType, ctx, schemaAnnotation);
         addDefs(outputSchema, ctx);
@@ -147,15 +154,27 @@ public class SchemaGenerator {
         return outputSchema.build();
     }
 
+    public record TypeKey(Type type, Map<TypeVariable<?>, Type> typeVariableMappings) {
+        public static TypeKey from(Type type, SchemaGenerationContext sgc) {
+            if (type instanceof ParameterizedType pType) {
+                return new TypeKey(pType.getRawType(), TypeUtility.createCoreTypeVariableMap(type, sgc));
+            } else {
+                return new TypeKey(type, null);
+            }
+        }
+    };
+
     public static class SchemaGenerationContext {
         /** Map of type to whether it's been seen more than once */
-        private HashMap<Type, Boolean> typeMultiUse = new HashMap<>();
+        private HashMap<TypeKey, Boolean> typeMultiUse = new HashMap<>();
         /** Map of type to name */
-        private HashMap<Type, String> nameMap = new HashMap<>();
+        private HashMap<TypeKey, String> nameMap = new HashMap<>();
         /** The values of nameMap */
         private Set<String> namesInUse = new HashSet<>();
         /** Map of types and their corresponding JSON schemas which should be added to defs */
-        private HashMap<Type, JsonObject> defsBuilder = new HashMap<>();
+        private HashMap<TypeKey, JsonObject> defsBuilder = new HashMap<>();
+        // Maps generic type variables to concrete Types
+        private Deque<Map<TypeVariable<?>, Type>> genericMapStack = new ArrayDeque<>();
         /** The blueprint registry to be used when generating schemas */
         private SchemaCreationBlueprintRegistry blueprintRegistry;
         /** Whether we're generating input or output schemas */
@@ -177,7 +196,7 @@ public class SchemaGenerator {
         public boolean registerSeen(Type type) {
             // If this is the first time we've seen this type, add it to the map with false,
             // If it's not the first time, set it to true
-            return typeMultiUse.compute(type, (k, v) -> v == null ? false : true);
+            return typeMultiUse.compute(TypeKey.from(type, this), (k, v) -> v == null ? false : true);
         }
 
         /**
@@ -187,7 +206,7 @@ public class SchemaGenerator {
          * @return {@code true} if it was used multiple times, otherwise false
          */
         public boolean isMultiUse(Type type) {
-            return typeMultiUse.getOrDefault(type, false);
+            return typeMultiUse.getOrDefault(TypeKey.from(type, this), false);
         }
 
         /**
@@ -197,7 +216,7 @@ public class SchemaGenerator {
          * @param baseName the name to use. A suffix will be added if required to make the name unique.
          */
         public void reserveName(Type type, String baseName) {
-            String name = nameMap.get(type);
+            String name = getName(type);
             if (name == null) {
                 int suffix = 1;
                 name = baseName;
@@ -205,7 +224,7 @@ public class SchemaGenerator {
                     suffix++;
                     name = baseName + suffix;
                 }
-                nameMap.put(type, name);
+                nameMap.put(TypeKey.from(type, this), name);
                 namesInUse.add(name);
             }
         }
@@ -219,28 +238,85 @@ public class SchemaGenerator {
          * @return the name
          */
         public String getName(Type type) {
-            return nameMap.get(type);
+            return nameMap.get(TypeKey.from(type, this));
+        }
+
+        /**
+         * Get the name for a type when you already have a stored TypeKey.
+         * <p>
+         * The name must have been reserved earlier using {@link #reserveName(Type, String)}
+         *
+         * @param typeKey the type key
+         * @return the name
+         */
+        public String getName(TypeKey typeKey) {
+            return nameMap.get(typeKey);
         }
 
         public SchemaDirection getDirection() {
             return direction;
         }
 
-        public HashMap<Type, JsonObject> getDefsBuilder() {
+        public HashMap<TypeKey, JsonObject> getDefsBuilder() {
             return defsBuilder;
         }
 
         public SchemaCreationBlueprintRegistry getBlueprintRegistry() {
             return blueprintRegistry;
         }
+
+        /**
+         * Add type as the current context for resolving type variables.
+         * <p>
+         * This method must be called before generating the schema for {@code type} and must be matched by a call to {@link #popTypeContext()} when generating the schema for
+         * {@code type} is finished.
+         *
+         * @param type the type to add to the current context
+         */
+        public void pushTypeContext(Type type) {
+            genericMapStack.push(TypeUtility.createTypeVariableMap(type, this));
+        }
+
+        /**
+         * Remove the last type from the context which was added with {@link #pushTypeContext(Type)}
+         * <p>
+         * This must be called once we're finished generating the schema for {@code type}
+         */
+        public void popTypeContext() {
+            genericMapStack.pop();
+        }
+
+        /**
+         * Get the value of a type variable in the current context
+         *
+         * @param typeVariable the type variable to resolve
+         * @return the value assigned to that type variable in the current context
+         */
+        public Type resolveTypeVariable(TypeVariable<?> typeVariable) {
+            if (genericMapStack.isEmpty()) {
+                return typeVariable;
+            }
+            var genericMap = genericMapStack.peek();
+            if (genericMap != null) {
+                Type resolved = genericMap.get(typeVariable);
+                if (resolved != null) {
+                    return resolved;
+                }
+            }
+            return typeVariable;
+        }
     }
 
     public static void calculateClassFrequency(Type type, SchemaDirection direction, SchemaGenerationContext ctx) {
+        if (type instanceof TypeVariable<?> tv) {
+            type = ctx.resolveTypeVariable(tv);
+        }
         SchemaCreationBlueprint scc = ctx.getBlueprintRegistry().getSchemaCreationBlueprint(type);
         boolean previouslySeen = false;
         if (scc.getDefsName().isPresent()) {
             // We might add this type to defs, so we need to add it to the typeFrequency map
             // If this is the first time we've seen this type, set it to false, if it's not the first time, set it to true
+
             previouslySeen = ctx.registerSeen(type);
 
             if (previouslySeen) {
@@ -249,6 +325,7 @@ public class SchemaGenerator {
         }
 
         if (!previouslySeen) {
+            ctx.pushTypeContext(type);
             // Process children
             if (scc instanceof ListSchemaCreationBlueprint listScb) {
                 calculateClassFrequency(listScb.itemType(), direction, ctx);
@@ -274,6 +351,7 @@ public class SchemaGenerator {
                     calculateClassFrequency(bound, direction, ctx);
                 }
             }
+            ctx.popTypeContext();
         }
     }
 
@@ -286,24 +364,33 @@ public class SchemaGenerator {
             return schemaFromAnnotation.get();
         }
 
+        if (type instanceof TypeVariable<?> typeVar) {
+            type = ctx.resolveTypeVariable(typeVar);
+        }
+
         SchemaCreationBlueprint blueprint = ctx.getBlueprintRegistry().getSchemaCreationBlueprint(type);
         String description = annotation.description().orElse(null);
-        JsonObject defsSchema = ctx.getDefsBuilder().get(type);
+        JsonObject defsSchema = ctx.getDefsBuilder().get(TypeKey.from(type, ctx));
         if (defsSchema != null) {
             // Schema is already in defs, just return a reference
             return createReference(ctx.getName(type), description, defsSchema);
         } else if (blueprint.getDefsName().isPresent() && ctx.isMultiUse(type)) {
             // Put a placeholder in the defs map, so that we will make references to the current object
             // rather than trying to generate it again (and getting stuck in a loop)
-            ctx.getDefsBuilder().put(type, GENERATION_IN_PROGRESS);
+            ctx.getDefsBuilder().put(TypeKey.from(type, ctx), GENERATION_IN_PROGRESS);
+            ctx.pushTypeContext(type);
             // Generate the real schema object and add it to defs
             JsonObject result = blueprint.toJsonSchemaObject(ctx, null).build();
-            ctx.getDefsBuilder().put(type, result);
+            ctx.popTypeContext();
+            ctx.getDefsBuilder().put(TypeKey.from(type, ctx), result);
             // Now return a reference to it
             return createReference(ctx.getName(type), description, result);
         } else {
             // Schema should not be added to defs, just generate it and return
-            return blueprint.toJsonSchemaObject(ctx, description);
+            ctx.pushTypeContext(type);
+            JsonObjectBuilder result = blueprint.toJsonSchemaObject(ctx, description);
+            ctx.popTypeContext();
+            return result;
         }
     }
 
@@ -327,8 +414,8 @@ public class SchemaGenerator {
         }
 
         JsonObjectBuilder defs = Json.createObjectBuilder();
-        ctx.getDefsBuilder().forEach((type, schema) -> {
-            defs.add(ctx.getName(type), schema);
+        ctx.getDefsBuilder().forEach((typeKey, schema) -> {
+            defs.add(ctx.getName(typeKey), schema);
         });
 
         result.add(DEFS, defs);

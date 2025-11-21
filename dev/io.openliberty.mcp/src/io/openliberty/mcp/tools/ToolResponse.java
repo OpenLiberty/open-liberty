@@ -37,7 +37,10 @@ import io.openliberty.mcp.meta.MetaKey;
  * @param structuredContent the optional structured result of the tool call
  * @param _meta the optional metadata
  */
-public record ToolResponse(boolean isError, List<? extends Content> content, Object structuredContent, Map<MetaKey, Object> _meta) {
+public record ToolResponse(boolean isError,
+                           List<? extends Content> content,
+                           Object structuredContent,
+                           Map<MetaKey, Object> _meta) {
 
     /**
      * @param <C> the content type
@@ -83,12 +86,11 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
     }
 
     /**
-     * @param message a message, returned as unstructured text content
      * @param structuredContent the structured content
      * @return a successful response with structured content
      */
-    public static ToolResponse structuredSuccess(String message, Object structuredContent) {
-        return new ToolResponse(false, List.of(new TextContent(message)), structuredContent, null);
+    public static ToolResponse structuredSuccess(Object structuredContent) {
+        return new ToolResponse(false, null, structuredContent, null);
     }
 
     public ToolResponse(boolean isError, List<? extends Content> content, Map<MetaKey, Object> _meta) {
@@ -104,5 +106,4 @@ public record ToolResponse(boolean isError, List<? extends Content> content, Obj
             throw new IllegalArgumentException("content and structuredContent must not both be null");
         }
     }
-
 }
