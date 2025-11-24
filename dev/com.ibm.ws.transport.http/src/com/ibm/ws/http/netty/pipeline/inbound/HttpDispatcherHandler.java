@@ -10,8 +10,10 @@
 package com.ibm.ws.http.netty.pipeline.inbound;
 
 import java.net.InetSocketAddress;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -32,6 +34,7 @@ import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
+import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
@@ -105,6 +108,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private final AtomicReference<CommitTrigger> commitTrigger = new AtomicReference<>(null);
+
+    private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
 
     public HttpDispatcherHandler(HttpChannelConfig config) {
         super(false);
@@ -314,7 +319,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         final HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
         final HttpInputStreamImpl body = req.getBody();
-        ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(body);
+        //if H2
+        String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
+        if (streamId != null){
+            putStream(streamId, body);
+        } else{
+            ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(body);
+        }
         final String contentEncoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
         body.nettyConfigureStreaming(queue, ctx, contentEncoding, cl, chunked);
 
@@ -715,4 +726,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             });
         }
     }
+
+    public void putStream(String streamId, HttpInputStream stream){
+        streamMap.put(streamId, stream);
+    }
+
+    public HttpInputStream getStream(String streamId){
+        return streamMap.get(streamId);
+    }
+
+    public HttpInputStream removeStream(String streamId){
+        return streamMap.remove(streamId);
+    }
+
+
 }
