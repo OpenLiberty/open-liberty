@@ -13,6 +13,12 @@ package com.ibm.ws.logging.internal.osgi;
 
 
 import java.io.PrintWriter;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.ibm.wsspi.logging.Introspector;
@@ -33,20 +39,77 @@ public class LogThrottleIntrospector implements Introspector {
     public String getIntrospectorDescription() {
         return "List of logs being throttled.";
     }
-
-    public void init() {
-    }
     
     @Override
     public void introspect(PrintWriter out) throws Exception {
-        out.println("~~~~~~~~~~~~~~~~~~~");
-        Map<String, ThrottleState> throttleStates = LogThrottlingUtils.getThrottleStates();
+        Map < String, ThrottleState > throttleStates = LogThrottlingUtils.getThrottleStates();
 
-        for (Map.Entry<String, ThrottleState> entry : throttleStates.entrySet()) {
-            out.println("Key11 being throttled: " + entry.getKey() + " -- Occurences over the last 5 minutes: " + entry.getValue().getRunningTotal() + " -- Last occurence: "
-                        + entry.getValue().getLastAccessTime());
+        List < String > keyList = new ArrayList < > ();
+        int index = 1;
+        int throttleMaxMessagesPerWindow = LogThrottlingUtils.getThrottleMaxMessages();
+        String throttleType = LogThrottlingUtils.getThrottleType();
+        
+        out.println("Config:");
+        out.println("throttleMaxMessagesPerWindow: " + throttleMaxMessagesPerWindow);
+        out.println("throttleType: " + throttleType);
+        out.println("throttleMapSize: " + LogThrottlingUtils.getThrottleMapSize() + "\n");
 
+        out.printf(
+            "%-15s %-12s %-25s %-25s%n",
+            "Index", "COUNT", "LAST OCCURRENCE", "AGE"
+        );
+
+        out.println("------------------------------------------------------------------------------------------");
+
+        for (Map.Entry < String, ThrottleState > s: throttleStates.entrySet()) {
+            Instant last = Instant.ofEpochMilli(s.getValue().getLastAccessTime());
+            long secondsAgo = Duration.between(last, Instant.now()).getSeconds();
+
+            keyList.add(s.getKey());
+            
+            if(throttleType.equals("message")) {
+            	 out.printf(
+                         "%-15s %-12s %-25s %-25s%n",
+                         "#" + index,
+                         s.getValue().getRunningTotal(),
+                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                         .withZone(ZoneId.systemDefault())
+                         .format(last),
+                         formatDuration(secondsAgo)
+                     );
+
+                     index++;
+            }
+            else {
+            	out.printf(
+                        "%-15s %-12s %-25s %-25s%n",
+                        s.getKey(),
+                        s.getValue().getRunningTotal(),
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+                        .withZone(ZoneId.systemDefault())
+                        .format(last),
+                        formatDuration(secondsAgo)
+                    );
+            }
+           
         }
-        out.println("~~~~~~~~~~~~~~~~~~~");
+
+
+        if(throttleType.equals("message")) {
+	        out.println("------------------------------------------------------------------------------------------");
+	        out.println("\nMessage References:");
+	        out.println("------------------------------------------------------------------------------------------");
+	        for (int i = 0; i < keyList.size(); i++) {
+	            out.println("#" + (i + 1) + ":" + keyList.get(i) + "\n");
+	        }
+        }
+
+
+    }
+    
+    private static String formatDuration(long seconds) {
+        long minutes = (seconds % 3600) / 60;
+        long secs = seconds % 60;
+        return String.format("%02dm %02ds ago", minutes, secs);
     }
 }

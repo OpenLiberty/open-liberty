@@ -413,7 +413,7 @@ public class BaseTraceService implements TrService {
         //Remove EMQ from BufferManager after a certain amount of time has passed
         BufferManagerEMQHelper.removeEMQByTimer();
 
-        LogThrottlingUtils.publish(this.throttleStates);
+        LogThrottlingUtils.publish(this);
 
     }
 
@@ -2550,4 +2550,20 @@ public class BaseTraceService implements TrService {
             return name.startsWith("ffdc_") && name.endsWith(".log");
         }
     };
+
+    public Map<String, ThrottleState> getThrottleStates() {
+        return this.throttleStates;
+    }
+
+    public int getThrottleMaxMessagesPerWindow() {
+        return this.throttleMaxMessagesPerWindow;
+    }
+
+    public String getThrottleType() {
+        return this.throttleType;
+    }
+
+    public int getThrottleMapSize() {
+        return this.throttleMapSize;
+    }
 }
