@@ -1,6 +1,21 @@
 package io.openliberty.mcp.internal.requests;
 
+import java.lang.reflect.Type;
+import java.util.Map;
+
 public class BuiltinDefaultValueConverters {
+
+    public static final Map<Type, DefaultValueConverter<?>> CONVERTERS = Map.of(
+                                                                                Boolean.class, new BooleanConverter(),
+                                                                                Byte.class, new ByteConverter(),
+                                                                                Short.class, new ShortConverter(),
+                                                                                Integer.class, new IntegerConverter(),
+                                                                                Long.class, new LongConverter(),
+                                                                                Float.class, new FloatConverter(),
+                                                                                Double.class, new DoubleConverter(),
+                                                                                Character.class, new CharacterConverter(),
+                                                                                String.class, new StringConverter());
+
     public static class BooleanConverter implements DefaultValueConverter<Boolean> {
 
         @Override
@@ -72,6 +87,15 @@ public class BuiltinDefaultValueConverters {
                 return defaultValue.charAt(0);
             }
             throw new IllegalArgumentException("Not a char: " + defaultValue);
+        }
+
+    }
+
+    public static class StringConverter implements DefaultValueConverter<String> {
+
+        @Override
+        public String convert(String defaultValue) {
+            return defaultValue;
         }
 
     }

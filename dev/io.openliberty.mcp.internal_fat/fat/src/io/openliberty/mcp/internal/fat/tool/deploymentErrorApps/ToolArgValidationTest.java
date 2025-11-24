@@ -41,6 +41,15 @@ public class ToolArgValidationTest {
         return arg1;
     }
 
+    @Tool(name = "testToolArgDefaultValueWithoutTypeConverter", title = "testToolArgDefaultValueWithoutTypeConverter",
+          description = "Test toolarg with defaultValue without a converter for its type")
+    public String testToolArgDefaultValueWithoutTypeConverter(@ToolArg(name = "city", description = "current city", required = false,
+                                                                       defaultValue = "name=London::country=UK::population=100::boolean=true") City city) {
+        return city.name;
+    }
+
+    public record City(String name, String country, int population, boolean isCapital) {};
+
     @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
     public @Schema(description = "Returns list of  object") <T> List<T> addGenericToGenericArray(@ToolArg(name = "generic list 1",
                                                                                                           description = "List of generics 1") T[] list1,

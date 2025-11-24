@@ -45,7 +45,8 @@ public class DeploymentProblemTest extends FATServletClient {
                           "CWMCM0005E", // There are one or more MCP validation errors.
                           "CWMCM0006E", // Duplicate special arguments.
                           "CWMCM0007E", // Invalid Special arguments.
-                          "CWMCM0018E" //  Arguments contain generics.
+                          "CWMCM0018E", //  Arguments contain generics.
+                          "CWMCM0019E" //  Default value has no type converter.
         );
     }
 
@@ -97,5 +98,12 @@ public class DeploymentProblemTest extends FATServletClient {
         String expectedErrorHeader = "The (.+?) argument of the (.+?) MCP tool method contains unsupported components such as TypeVariable, Wildcard, GenericArrayType.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.addGenericToGenericArray");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Generic Args: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testToolArgDefaultValueWithoutTypeConverter() throws Exception {
+        String expectedErrorHeader = "CWMCM0019E: The (.+?) of the (.+?) MCP tool method does not have a converter to change its default value into an object of type (.+?).";
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg DefaultValue Without Converter: ", expectedErrorHeader, expectedErrorList, server);
     }
 }

@@ -32,6 +32,37 @@ import io.openliberty.mcp.internal.schemas.SchemaGenerator.SchemaGenerationConte
 public class TypeUtility {
 
     /**
+     * Converts primitive types to their wrapper classes
+     *
+     * @param type the type to be boxed
+     * @return the boxed wrapper type if {@code type} is a primitive, otherwise it returns {@code type}
+     */
+    public static Type box(Type type) {
+        if (type instanceof Class clazz) {
+            if (!clazz.isPrimitive()) {
+                return type;
+            } else if (clazz.equals(Boolean.TYPE)) {
+                return Boolean.class;
+            } else if (clazz.equals(Character.TYPE)) {
+                return Character.class;
+            } else if (clazz.equals(Byte.TYPE)) {
+                return Byte.class;
+            } else if (clazz.equals(Short.TYPE)) {
+                return Short.class;
+            } else if (clazz.equals(Integer.TYPE)) {
+                return Integer.class;
+            } else if (clazz.equals(Long.TYPE)) {
+                return Long.class;
+            } else if (clazz.equals(Float.TYPE)) {
+                return Float.class;
+            } else if (clazz.equals(Double.TYPE)) {
+                return Double.class;
+            }
+        }
+        return type;
+    }
+
+    /**
      * The key and value type of a {@code Map}
      *
      * @param key the key type

@@ -29,15 +29,14 @@ import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+
 import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
+
+import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.event.Observes;
-import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
-import jakarta.enterprise.inject.spi.AnnotatedMethod;
-import jakarta.enterprise.inject.spi.AnnotatedType;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;
@@ -138,24 +137,30 @@ public class McpCdiExtension implements Extension {
         boolean blankArgumentsFound = false;
         boolean duplicateArgumentsFound = false;
         boolean missingArgumentName = false;
+        boolean unsupportedDefaultValueType = false;
 
         for (ToolMetadata tool : tools.getAllTools()) {
             Map<String, ArgumentMetadata> arguments = tool.arguments();
 
             for (String argName : arguments.keySet()) {
+                ArgumentMetadata argMetadata = arguments.get(argName);
                 if (argName.isBlank()) {
                     Tr.error(tc, "CWMCM0001E.blank.arguments", tool.getToolQualifiedName());
                     blankArgumentsFound = true;
-                } else if (arguments.get(argName).isDuplicate()) {
+                } else if (argMetadata.isDuplicate()) {
                     Tr.error(tc, "CWMCM0002E.duplicate.arguments", tool.getToolQualifiedName(), argName);
                     duplicateArgumentsFound = true;
                 } else if (argName.equals(ToolMetadata.MISSING_TOOL_ARG_NAME)) {
                     Tr.error(tc, "CWMCM0003E.missing.tool.argument.name", tool.getToolQualifiedName());
                     missingArgumentName = true;
+                } else if (!argMetadata.defaultValue().isEmpty()
+                           && !BuiltinDefaultValueConverters.CONVERTERS.containsKey(TypeUtility.box(argMetadata.type()))) {
+                    Tr.error(tc, "CWMCM0019E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argName, argMetadata.type());
+                    unsupportedDefaultValueType = true;
                 }
             }
         }
-        return blankArgumentsFound || duplicateArgumentsFound || missingArgumentName;
+        return blankArgumentsFound || duplicateArgumentsFound || missingArgumentName || unsupportedDefaultValueType;
     }
 
     private boolean reportOnDuplicateTools(AfterDeploymentValidation afterDeploymentValidation) {

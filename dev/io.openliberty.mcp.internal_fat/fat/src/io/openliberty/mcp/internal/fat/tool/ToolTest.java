@@ -838,27 +838,6 @@ public class ToolTest extends FATServletClient {
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
-//
-//    @Test
-//    public void testToolCallWithToolArgCustomObjectDefaultValue() throws Exception {
-//        String request = """
-//                          {
-//                          "jsonrpc": "2.0",
-//                          "id": 2,
-//                          "method": "tools/call",
-//                          "params": {
-//                            "name": "testToolArgObjectDefaultValue",
-//                            "arguments": {}
-//                          }
-//                        }
-//                        """;
-//
-//        String response = client.callMCP(request);
-//        String expectedResponseString = """
-//                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "2025"}], "isError": false}}
-//                        """;
-//        JSONAssert.assertEquals(expectedResponseString, response, true);
-//    }
 
     @Test
     public void testToolList() throws Exception {
@@ -2651,7 +2630,6 @@ public class ToolTest extends FATServletClient {
                             "jsonrpc": "2.0"
                         }
                          """;
-        System.out.println("ACTUAL RESPONSE = " + jsonResponse.toString());
         JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
