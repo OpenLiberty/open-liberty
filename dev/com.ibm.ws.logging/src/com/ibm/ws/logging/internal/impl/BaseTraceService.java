@@ -456,6 +456,8 @@ public class BaseTraceService implements TrService {
         checkpoint = trConfig.isCheckpoint();
         restore = trConfig.isRestore();
         if (restore) {
+            throttleWarningPrinted.set(false);
+            resetLogThrottling();
             registerLoggerHandlerSingleton();
             captureSystemStreams();
         }
@@ -1338,14 +1340,13 @@ public class BaseTraceService implements TrService {
     }
 
     /*
-     * Clear and reset the throttling map and variables when checkpoint restore occurs.
+     * Clear and reset the throttling map and variables when checkpoint restore occurs and when messageType changes.
      */
     public void resetLogThrottling() {
         //Empty throttleStates for checkpoint
         throttleStates.clear();
         lastTimeBasedCleanupTime = 0;
         lastSizeBasedCleanupTime = 0;
-        //throttleWarningPrinted.set(false);
     }
 
     /**

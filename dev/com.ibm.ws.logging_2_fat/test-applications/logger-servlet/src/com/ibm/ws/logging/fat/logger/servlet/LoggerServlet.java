@@ -34,22 +34,21 @@ public class LoggerServlet extends HttpServlet {
 
         String warningMessage = "TESTA0001W: Warning log test";
         String warningMessage2 = "TESTA0002W: Warning log test 2";
-                int numMessages = 6;
-                    
-                String numMessagesString = request.getParameter("numMessages");
-                try {
-                    if (numMessagesString != null) {
-                        numMessages = Integer.valueOf(numMessagesString);
-                    }
-                } catch (NumberFormatException e) {
-                }
-        
-                for(int i = 0; i < numMessages; i++) {
-                    logger.warning(warningMessage);
-                    logger.warning(warningMessage2 + " -- " + i);
-                }
+        int numMessages = 6;
 
-              PrintWriter pw = response.getWriter();
-              pw.print("Printed message to logs: " + warningMessage);
+        String numMessagesString = request.getParameter("numMessages");
+        try {
+            if (numMessagesString != null) {
+                numMessages = Integer.valueOf(numMessagesString);
             }
+        } catch (NumberFormatException e) {}
+
+        for (int i = 0; i < numMessages; i++) {
+            logger.warning(warningMessage);
+            logger.warning(warningMessage2 + " -- " + i);
+        }
+
+        PrintWriter pw = response.getWriter();
+        pw.print("Printed message to logs: " + warningMessage);
+    }
 }

@@ -48,16 +48,25 @@ public class LogThrottleIntrospector implements Introspector {
         int index = 1;
         int throttleMaxMessagesPerWindow = LogThrottlingUtils.getThrottleMaxMessages();
         String throttleType = LogThrottlingUtils.getThrottleType();
+        String keyHeader = "KEY";
         
         out.println("Config:");
         out.println("throttleMaxMessagesPerWindow: " + throttleMaxMessagesPerWindow);
         out.println("throttleType: " + throttleType);
         out.println("throttleMapSize: " + LogThrottlingUtils.getThrottleMapSize() + "\n");
 
+        
+        if(throttleType.equals("message"))
+        	keyHeader = "INDEX";
+        
         out.printf(
-            "%-15s %-12s %-25s %-25s%n",
-            "Index", "COUNT", "LAST OCCURRENCE", "AGE"
+            "%-15s %-12s %-25s %-25s %-15s%n",
+            keyHeader, "COUNT", "LAST OCCURRENCE", "AGE", "THROTTLED"
         );
+        out.printf(
+                "%-12s %-12s %-25s %-25s %-15s%n",
+                "", "(Last 5 min)", "", "", ""
+            );
 
         out.println("------------------------------------------------------------------------------------------");
 
@@ -67,28 +76,32 @@ public class LogThrottleIntrospector implements Introspector {
 
             keyList.add(s.getKey());
             
+            boolean throttled = s.getValue().getRunningTotal() > throttleMaxMessagesPerWindow ? true : false;
+            
             if(throttleType.equals("message")) {
             	 out.printf(
-                         "%-15s %-12s %-25s %-25s%n",
+                         "%-15s %-12s %-25s %-25s %-15s%n",
                          "#" + index,
                          s.getValue().getRunningTotal(),
                          DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                          .withZone(ZoneId.systemDefault())
                          .format(last),
-                         formatDuration(secondsAgo)
+                         formatDuration(secondsAgo),
+                         throttled
                      );
 
                      index++;
             }
             else {
             	out.printf(
-                        "%-15s %-12s %-25s %-25s%n",
+                        "%-15s %-12s %-25s %-25s %-15s%n",
                         s.getKey(),
                         s.getValue().getRunningTotal(),
                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                         .withZone(ZoneId.systemDefault())
                         .format(last),
-                        formatDuration(secondsAgo)
+                        formatDuration(secondsAgo),
+                        throttled
                     );
             }
            
