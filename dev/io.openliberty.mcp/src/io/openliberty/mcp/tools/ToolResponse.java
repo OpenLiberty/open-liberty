@@ -28,6 +28,8 @@ import java.util.Map;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.meta.MetaKey;
+import io.openliberty.mcp.meta.MetaResponseAdapter;
+import jakarta.json.bind.annotation.JsonbTypeAdapter;
 
 /**
  * Response to a {@code tools/call} request from the client.
@@ -40,7 +42,7 @@ import io.openliberty.mcp.meta.MetaKey;
 public record ToolResponse(boolean isError,
                            List<? extends Content> content,
                            Object structuredContent,
-                           Map<MetaKey, Object> _meta) {
+                           @JsonbTypeAdapter(MetaResponseAdapter.class) Map<MetaKey, Object> _meta) {
 
     /**
      * @param <C> the content type

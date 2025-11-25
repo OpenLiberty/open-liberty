@@ -3407,14 +3407,9 @@ public class ToolTest extends FATServletClient {
                                         "type": "text"
                                     }
                                 ],
-                                "_meta": [
-                                            {
-                                                "key": {
-                                                    "name": "timestamp"
-                                                },
-                                                "value": 1762860699
-                                            }
-                                        ]
+                                "_meta":{
+                                          "timestamp": 1762860699
+                                        }
                             },
                             "id": 2,
                             "jsonrpc": "2.0"

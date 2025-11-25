@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import jakarta.json.bind.annotation.JsonbTypeAdapter;
+
 /**
  * A key for additional metadata defined in the {@code _meta} part of the message.
  * <p>
@@ -33,6 +35,7 @@ import java.util.stream.Collectors;
  * @param prefix the prefix
  * @param name the name
  */
+@JsonbTypeAdapter(MetaKeyAdapter.class)
 public record MetaKey(String prefix, String name) {
 
     /**
