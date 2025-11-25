@@ -456,8 +456,8 @@ public class BasicTools {
         Jsonb jsonb = JsonbBuilder.create();
         Map<MetaKey, Object> _meta = new HashMap<>();
         _meta.put(MetaKey.from("timestamp"), 1762860699);
-        _meta.put(MetaKey.from("api.modelcontextprotocol.org/location"), "Hursley");
-        _meta.put(MetaKey.from("api.mcp.org/person"), personInstance);
+        _meta.put(MetaKey.from("api.ibmtest.org/location"), "Hursley");
+        _meta.put(MetaKey.from("api.libertytest.org/person"), personInstance);
         return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
     }
 

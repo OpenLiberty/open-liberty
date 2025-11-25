@@ -3408,8 +3408,8 @@ public class ToolTest extends FATServletClient {
                                     }
                                 ],
                                 "_meta":{
-                                        "api.modelcontextprotocol.org/location": "Hursley",
-                                        "api.mcp.org/person": {
+                                        "api.ibmtest.org/location": "Hursley",
+                                        "api.libertytest.org/person": {
                                             "address": {
                                                 "number": 2,
                                                 "postcode": "so21 2rt",
