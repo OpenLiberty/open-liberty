@@ -662,15 +662,11 @@ public class DataTestServlet extends FATServlet {
                                      .floatValue(),
                      0.01f);
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            //TODO remove skip when fixed in Hibernate
-        } else {
-            assertEquals(31,
-                         primes.numberAsInt(31));
+        assertEquals(31,
+                     primes.numberAsInt(31));
 
-            assertEquals(29,
-                         primes.numberAsInteger(29L).orElseThrow().intValue());
-        }
+        assertEquals(29,
+                     primes.numberAsInteger(29L).orElseThrow().intValue());
 
         assertEquals(23L,
                      primes.numberAsLong(23));
@@ -678,12 +674,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(19L,
                      primes.numberAsLongWrapper(19).orElseThrow().longValue());
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            //TODO remove skip when fixed in Hibernate
-        } else {
-            assertEquals((short) 4013,
-                         primes.numberAsShort(4013));
-        }
+        assertEquals((short) 4013,
+                     primes.numberAsShort(4013));
 
         assertEquals((short) 4007,
                      primes.numberAsShortWrapper(4007).orElseThrow().shortValue());
@@ -2250,11 +2242,7 @@ public class DataTestServlet extends FATServlet {
         prod3.price = 16.99f;
         prod3 = multi.create(prod3);
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            //TODO remove skip when fixed in Hibernate or Liberty
-        } else {
-            assertEquals(3L, multi.countEverything());
-        }
+        assertEquals(3L, multi.countEverything());
 
         assertEquals(1L, multi.discount("TestFromClauseIdentifiesEntity-Product-3", 0.30f));
         assertEquals(3L, multi.discount("TestFromClauseIdentifiesEntity-Product-_", 0.20f));
@@ -2265,11 +2253,8 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(3L, multi.destroy("TestFromClauseIdentifiesEntity-%"));
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            //TODO remove skip when fixed in Hibernate or Liberty
-        } else {
-            assertEquals(0L, multi.countEverything());
-        }
+        assertEquals(0L, multi.countEverything());
+
     }
 
     /**

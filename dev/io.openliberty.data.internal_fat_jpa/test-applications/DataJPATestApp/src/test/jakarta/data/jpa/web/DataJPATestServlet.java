@@ -4775,9 +4775,7 @@ public class DataJPATestServlet extends FATServlet {
 
         long mnVer;
         long nyVer;
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            // TODO once fixed in Hibernate, update the JPQL query to use VERSION(THIS)
-            // instead of lower case VERSION(this)
+        if (isHibernate()) {
             mnVer = cities.currentVersion(mnId);
             nyVer = cities.currentVersion(nyId);
         } else {
