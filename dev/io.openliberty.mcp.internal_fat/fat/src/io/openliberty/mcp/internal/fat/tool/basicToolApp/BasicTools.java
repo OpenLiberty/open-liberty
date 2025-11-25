@@ -451,10 +451,13 @@ public class BasicTools {
                                                                                                                     description = "List of people") List<Person> employeeList,
                                                                                                            @ToolArg(name = "person",
                                                                                                                     description = "Person object") Optional<Person> person) {
-        employeeList.add(person.get());
+        Person personInstance = person.get();
+        employeeList.add(personInstance);
         Jsonb jsonb = JsonbBuilder.create();
         Map<MetaKey, Object> _meta = new HashMap<>();
         _meta.put(MetaKey.from("timestamp"), 1762860699);
+        _meta.put(MetaKey.from("api.modelcontextprotocol.org/location"), "Hursley");
+        _meta.put(MetaKey.from("api.mcp.org/person"), personInstance);
         return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
     }
 
