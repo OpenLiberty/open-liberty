@@ -27,6 +27,8 @@ import com.ibm.ws.webcontainer31.util.UpgradeOutputByteBufferUtil;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
+import com.ibm.ws.transport.access.TransportConstants;
+
 
 /**
  * 
@@ -102,7 +104,11 @@ public class SRTUpgradeOutputStream31 extends ServletOutputStream
         //Throw a NullPointerException if the WriteListener passed in was null
         if(appWLObject == null){            
 
-            Tr.error(tc, "writelistener.is.null");  
+            Tr.error(tc, "writelistener.is.null");
+            //TODO: this is being swallowed, look for another alternative
+            System.out.println("DEBUG: upgrade output signal fatal");  
+            _outHelper.get_vc().getStateMap().put(TransportConstants.UPGRADED_FATAL_ERROR, "true");
+            System.out.println("DEBUG statemap is: "+ _outHelper.get_vc().getStateMap());
             throw new NullPointerException(Tr.formatMessage(tc, "writelistener.is.null"));
         } 
         if(_outHelper.isOutputStream_closed() || _outHelper.isOutputStream_close_initiated_but_not_Flush_ready()){

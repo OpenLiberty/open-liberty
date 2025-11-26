@@ -297,6 +297,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     public void nettyClose(VirtualConnection conn, Exception e) {
 
+        System.out.println("Netty close called");
+        Thread.currentThread().dumpStack();
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
         }
@@ -309,6 +312,40 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
             }
             ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
+            return;
+        }
+
+        boolean fatalUpgrade = false;
+        System.out.println("DEBUG: nettyClose checking fatal flag...");
+        if (vc != null) {
+            System.out.println(vc.getStateMap());
+            Object fatal = vc.getStateMap().get(TransportConstants.UPGRADED_FATAL_ERROR);
+            if ("true".equalsIgnoreCase(String.valueOf(fatal))) {
+                fatalUpgrade = true;
+                vc.getStateMap().put(TransportConstants.UPGRADED_FATAL_ERROR, "handled");
+            }
+        }
+
+        if (fatalUpgrade) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "nettyClose: closing upgraded connection due to fatal upgrade error flag");
+            }
+            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
+            if (this.isc != null) {
+                this.isc.clear();
+            }
+            this.nettyContext.channel().close();
+            return;
+        }
+
+        // Needed to match channel behavior. Related to HttpOptions' ignoreWriteAfterCommit config.
+        if (e != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Closing connection. Error occurred -> " + e.getMessage());
+            }
+            System.out.println("DEBUG: nettyClose - Close on channel on error path");
+            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
+            this.nettyContext.channel().close();
             return;
         }
 
@@ -331,7 +368,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         }
 
+        
+
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
+            System.out.println("DEBUG netty close - should not close on upgrade handler present");
             ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
             if (this.isc != null) {
                 if (!this.isc.isBodyComplete()) {
@@ -347,8 +387,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        if (nettyContext.pipeline().get("httpKeepAlive") == null || nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
-
+        if (nettyContext.pipeline().get("httpKeepAlive") == null) {
+            System.out.println("DEBUG: close on keepalive missing: " + nettyContext.pipeline().get("httpKeepAlive") == null);
             ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
             this.nettyContext.channel().close();
         }else {
@@ -360,14 +400,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         }
 
-        // Needed to match channel behavior. Related to HttpOptions' ignoreWriteAfterCommit config.
-        if(e != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Closing connection. Error occurred -> " + e.getMessage());
-            }
-            ReadFlowHandler.setClosedOrUpgraded(this.nettyContext);
-             this.nettyContext.channel().close();
-        }
+        
 
         return;
 
@@ -526,6 +559,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public void destroy(Exception e) {
+
+        System.out.println("DEBUG: dispatcher link destroy called");
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Destroy with exc=" + e);
         }
