@@ -26,10 +26,11 @@ import io.openliberty.mcp.internal.ToolMetadata.ArgumentMetadata;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
+import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
-
+import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
 
 import io.openliberty.mcp.internal.schemas.TypeUtility;
@@ -37,6 +38,10 @@ import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
+import jakarta.enterprise.inject.spi.AnnotatedMethod;
+import jakarta.enterprise.inject.spi.AnnotatedType;
+import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.enterprise.inject.spi.Extension;
 import jakarta.enterprise.inject.spi.ProcessManagedBean;

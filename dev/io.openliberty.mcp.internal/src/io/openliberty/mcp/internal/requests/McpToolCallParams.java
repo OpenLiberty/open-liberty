@@ -88,6 +88,7 @@ public class McpToolCallParams {
         return parsedArguments;
     }
 
+<<<<<<< HEAD
     public JsonObject getMeta() {
         return meta;
     }
@@ -97,8 +98,15 @@ public class McpToolCallParams {
     }
 
     private Map<String, Object> parseArguments(JsonObject requestArguments, Jsonb jsonb) {
+||||||| parent of 33f4e591db2 (Fix merge conflicts)
+<<<<<<< HEAD
+    private Map<String, Object> parseArguments(JsonObject arguments, Jsonb jsonb) {
+=======
+    private Map<String, Object> parseArguments(JsonObject requestArguments, Jsonb jsonb) {
+>>>>>>> 33f4e591db2 (Fix merge conflicts)
         Map<String, ArgumentMetadata> metadatas = metadata.arguments();
         Map<String, Object> result = new HashMap<>();
+<<<<<<< HEAD
 
         for (var argEntry : metadatas.entrySet()) {
             String argName = argEntry.getKey();
@@ -115,6 +123,77 @@ public class McpToolCallParams {
                 }
             } else {
                 List<String> data = generateArgumentMismatchData(requestArguments.keySet(), metadatas.keySet());
+||||||| parent of 33f4e591db2 (Fix merge conflicts)
+||||||| parent of e0cbf5803b0 (test: unit tests for tool arg default value)
+    private Object[] parseArguments(JsonObject requestArguments, Jsonb jsonb) {
+        JsonObject requestArgumentsObject = requestArguments.asJsonObject();
+        Map<String, ArgumentMetadata> toolArgs = metadata.arguments();
+        List<SpecialArgumentMetadata> specialArguments = metadata.specialArguments();
+        Object[] results = new Object[toolArgs.size() + specialArguments.size()];
+        for (var argName : toolArgs.keySet()) {
+            ArgumentMetadata argMetadata = toolArgs.get(argName);
+            if (requestArgumentsObject.containsKey(argName)) {
+                JsonValue argValue = requestArgumentsObject.get(argName);
+                String argValueJson = jsonb.toJson(argValue);
+                results[argMetadata.index()] = jsonb.fromJson(argValueJson, argMetadata.type());
+            } else if (!argMetadata.required()) {
+                String defaultValue = argMetadata.defaultValue();
+                if (!defaultValue.isEmpty()) {
+                    results[argMetadata.index()] = convert(defaultValue, argMetadata.type());
+                } else {
+                    results[argMetadata.index()] = nullToolArgValue((Class<?>) argMetadata.type()); //blank result for no value provided for optional argument
+                }
+=======
+    private Object[] parseArguments(JsonObject requestArguments, Jsonb jsonb) {
+        requestArguments = requestArguments.asJsonObject();
+        Map<String, ArgumentMetadata> toolArgs = metadata.arguments();
+        List<SpecialArgumentMetadata> specialArguments = metadata.specialArguments();
+        Object[] results = new Object[toolArgs.size() + specialArguments.size()];
+        for (var argName : toolArgs.keySet()) {
+            ArgumentMetadata argMetadata = toolArgs.get(argName);
+            if (requestArguments.containsKey(argName)) {
+                JsonValue argValue = requestArguments.get(argName);
+                String argValueJson = jsonb.toJson(argValue);
+                results[argMetadata.index()] = jsonb.fromJson(argValueJson, argMetadata.type());
+            } else if (!argMetadata.required()) {
+                String defaultValue = argMetadata.defaultValue();
+                if (!defaultValue.isEmpty()) {
+                    results[argMetadata.index()] = convert(argName);
+                } else {
+                    results[argMetadata.index()] = nullToolArgValue((Class<?>) argMetadata.type()); //blank result for no value provided for optional argument
+                }
+>>>>>>> e0cbf5803b0 (test: unit tests for tool arg default value)
+
+<<<<<<< HEAD
+        HashSet<String> argsProcessed = new HashSet<>();
+        for (var entry : arguments.entrySet()) {
+            String argName = entry.getKey();
+            JsonValue argValue = entry.getValue();
+            ArgumentMetadata argMetadata = metadatas.get(argName);
+            if (argMetadata != null) {
+                String json = jsonb.toJson(argValue);
+                result.put(argName, jsonb.fromJson(json, argMetadata.type()));
+||||||| parent of e0cbf5803b0 (test: unit tests for tool arg default value)
+            } else { // if a request doesn't contain a required toolArg, throw an exception
+                List<String> data = generateArgumentMismatchData(requestArgumentsObject.keySet(), toolArgs.keySet());
+=======
+
+        for (var argName : metadatas.keySet()) {
+            ArgumentMetadata argMetadata = metadatas.get(argName);
+            if (requestArguments.containsKey(argName)) {
+                JsonValue argValue = requestArguments.get(argName);
+                String argValueJson = jsonb.toJson(argValue);
+                result.put(argName, jsonb.fromJson(argValueJson, argMetadata.type()));
+            } else if (!argMetadata.required()) {
+                String defaultValue = argMetadata.defaultValue();
+                if (!defaultValue.isEmpty()) {
+                    result.put(argName, convert(argName));
+                } else {
+                    result.put(argName, nullToolArgValue((Class<?>) argMetadata.type())); //blank result for no value provided for optional argument
+                }
+            } else {
+                List<String> data = generateArgumentMismatchData(requestArguments.keySet(), metadatas.keySet());
+>>>>>>> 33f4e591db2 (Fix merge conflicts)
                 throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, data);
             }
 
@@ -160,6 +239,7 @@ public class McpToolCallParams {
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.conversion.error", toolMetadata.name(), argMetadata.name(), argMetadata.type(),
                                                                 defaultValue));
         }
+<<<<<<< HEAD
 
         throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", toolMetadata.name(), argMetadata.name(), argMetadata.type()));
     }
@@ -180,3 +260,157 @@ public class McpToolCallParams {
     }
 
 }
+||||||| parent of 33f4e591db2 (Fix merge conflicts)
+<<<<<<< HEAD
+        throw new IllegalArgumentException(
+                                           "Unable to convert the default value for argument type [" + type
+                                           + "] - provide a custom converter implementation");
+    }
+
+    public static final Map<Type, DefaultValueConverter<?>> CONVERTERS = Map.of(
+                                                                                Boolean.class, new BuiltinDefaultValueConverters.BooleanConverter(),
+                                                                                Byte.class, new BuiltinDefaultValueConverters.ByteConverter(),
+                                                                                Short.class, new BuiltinDefaultValueConverters.ShortConverter(),
+                                                                                Integer.class, new BuiltinDefaultValueConverters.IntegerConverter(),
+                                                                                Long.class, new BuiltinDefaultValueConverters.LongConverter(),
+                                                                                Float.class, new BuiltinDefaultValueConverters.FloatConverter(),
+                                                                                Double.class, new BuiltinDefaultValueConverters.DoubleConverter(),
+                                                                                Character.class, new BuiltinDefaultValueConverters.CharacterConverter());
+
+    /**
+     * Converts primitive types to their wrapper classes
+     *
+     * @param type the type to be boxed
+     * @return the boxed wrapper type if {@code type} is a primitive, otherwise it returns {@code type}
+     */
+    public static Type box(Type type) {
+        if (type instanceof Class clazz) {
+            if (!clazz.isPrimitive()) {
+                return type;
+            } else if (clazz.equals(Boolean.TYPE)) {
+                return Boolean.class;
+            } else if (clazz.equals(Character.TYPE)) {
+                return Character.class;
+            } else if (clazz.equals(Byte.TYPE)) {
+                return Byte.class;
+            } else if (clazz.equals(Short.TYPE)) {
+                return Short.class;
+            } else if (clazz.equals(Integer.TYPE)) {
+                return Integer.class;
+            } else if (clazz.equals(Long.TYPE)) {
+                return Long.class;
+            } else if (clazz.equals(Float.TYPE)) {
+                return Float.class;
+            } else if (clazz.equals(Double.TYPE)) {
+                return Double.class;
+            }
+        }
+        return type;
+    }
+
+    public List<String> generateArgumentMismatchData(Set<String> processed, Set<String> expected) {
+        Set<String> missing = new HashSet<>(expected);
+        missing.removeAll(processed);
+        Set<String> extra = new HashSet<>(processed);
+        extra.removeAll(expected);
+        ArrayList<String> data = new ArrayList<>();
+        if (!extra.isEmpty()) {
+            data.add(Tr.formatMessage(tc, "jsonrpc.extra.arguments", extra));
+        }
+        if (!missing.isEmpty()) {
+            data.add(Tr.formatMessage(tc, "jsonrpc.missing.arguments", missing));
+        }
+        return !data.isEmpty() ? data : null;
+    }
+
+||||||| parent of e0cbf5803b0 (test: unit tests for tool arg default value)
+        throw new IllegalArgumentException(
+                                           "Unable to convert the default value for argument type [" + type
+                                           + "] - provide a custom converter implementation");
+    }
+
+    public static final Map<Type, DefaultValueConverter<?>> CONVERTERS = Map.of(
+                                                                                Boolean.class, new BuiltinDefaultValueConverters.BooleanConverter(),
+                                                                                Byte.class, new BuiltinDefaultValueConverters.ByteConverter(),
+                                                                                Short.class, new BuiltinDefaultValueConverters.ShortConverter(),
+                                                                                Integer.class, new BuiltinDefaultValueConverters.IntegerConverter(),
+                                                                                Long.class, new BuiltinDefaultValueConverters.LongConverter(),
+                                                                                Float.class, new BuiltinDefaultValueConverters.FloatConverter(),
+                                                                                Double.class, new BuiltinDefaultValueConverters.DoubleConverter(),
+                                                                                Character.class, new BuiltinDefaultValueConverters.CharacterConverter());
+
+    /**
+     * Converts primitive types to their wrapper classes
+     *
+     * @param type the type to be boxed
+     * @return the boxed wrapper type if {@code type} is a primitive, otherwise it returns {@code type}
+     */
+    public static Type box(Type type) {
+        if (type instanceof Class clazz) {
+            if (!clazz.isPrimitive()) {
+                return type;
+            } else if (clazz.equals(Boolean.TYPE)) {
+                return Boolean.class;
+            } else if (clazz.equals(Character.TYPE)) {
+                return Character.class;
+            } else if (clazz.equals(Byte.TYPE)) {
+                return Byte.class;
+            } else if (clazz.equals(Short.TYPE)) {
+                return Short.class;
+            } else if (clazz.equals(Integer.TYPE)) {
+                return Integer.class;
+            } else if (clazz.equals(Long.TYPE)) {
+                return Long.class;
+            } else if (clazz.equals(Float.TYPE)) {
+                return Float.class;
+            } else if (clazz.equals(Double.TYPE)) {
+                return Double.class;
+            }
+        }
+        return type;
+    }
+
+    public List<String> generateArgumentMismatchData(Set<String> processed, Set<String> expected) {
+        Set<String> missing = new HashSet<>(expected);
+        missing.removeAll(processed);
+        Set<String> extra = new HashSet<>(processed);
+        extra.removeAll(expected);
+        ArrayList<String> data = new ArrayList<>();
+        if (!extra.isEmpty()) {
+            data.add(Tr.formatMessage(tc, "jsonrpc.extra.arguments", extra));
+        }
+        if (!missing.isEmpty()) {
+            data.add(Tr.formatMessage(tc, "jsonrpc.missing.arguments", missing));
+        }
+        return !data.isEmpty() ? data : null;
+    }
+
+    public Bean<?> getBean() {
+        return metadata.bean();
+    }
+=======
+        throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0019E.missing.toolarg.defaultvalue.converter", metadata.name(), argName, type));
+    }
+>>>>>>> e0cbf5803b0 (test: unit tests for tool arg default value)
+}
+=======
+        throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0019E.missing.toolarg.defaultvalue.converter", metadata.name(), argName, type));
+    }
+
+    public List<String> generateArgumentMismatchData(Set<String> processed, Set<String> expected) {
+        Set<String> missing = new HashSet<>(expected);
+        missing.removeAll(processed);
+        Set<String> extra = new HashSet<>(processed);
+        extra.removeAll(expected);
+        ArrayList<String> data = new ArrayList<>();
+        if (!extra.isEmpty()) {
+            data.add(Tr.formatMessage(tc, "jsonrpc.extra.arguments", extra));
+        }
+        if (!missing.isEmpty()) {
+            data.add(Tr.formatMessage(tc, "jsonrpc.missing.arguments", missing));
+        }
+        return !data.isEmpty() ? data : null;
+    }
+
+}
+>>>>>>> 33f4e591db2 (Fix merge conflicts)

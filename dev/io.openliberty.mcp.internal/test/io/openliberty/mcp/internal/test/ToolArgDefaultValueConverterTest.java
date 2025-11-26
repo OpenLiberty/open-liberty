@@ -17,9 +17,12 @@ import io.openliberty.mcp.internal.Literals;
 import io.openliberty.mcp.internal.ToolMetadata.ArgumentMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
 import io.openliberty.mcp.internal.requests.McpRequest;
+import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
+import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
 
 public class ToolArgDefaultValueConverterTest {
     public record City(String name, String country, int population, boolean isCapital) {};
@@ -28,7 +31,9 @@ public class ToolArgDefaultValueConverterTest {
 
     @BeforeClass
     public static void setup() {
-        jsonb = JsonbBuilder.create();
+        JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
+                                                   .withDeserializers(new McpRequestIdDeserializer());
+        jsonb = JsonbBuilder.create(jsonbConfig);
         ToolRegistry registry = new ToolRegistry();
         ToolRegistry.set(registry);
 
@@ -51,6 +56,7 @@ public class ToolArgDefaultValueConverterTest {
 
     @Test
     public void testArgumentDefaultValueIntTypeConversion() {
+
         StringReader reader = new StringReader("""
                         {
                           "jsonrpc": "2.0",

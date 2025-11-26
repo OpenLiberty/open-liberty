@@ -13,7 +13,7 @@ import io.openliberty.mcp.annotations.ToolArg;
  * argument type, then only the converter with highest priority is registered.
  *
  * @see ToolArg#defaultValue()
- * @param <TYPE> the agrument type
+ * @param <TYPE> the argument type
  */
 public interface DefaultValueConverter<TYPE> {
 
