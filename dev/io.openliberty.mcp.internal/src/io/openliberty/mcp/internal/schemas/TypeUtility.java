@@ -39,25 +39,18 @@ public class TypeUtility {
      */
     public static Type box(Type type) {
         if (type instanceof Class clazz) {
-            if (!clazz.isPrimitive()) {
+            if (!clazz.isPrimitive())
                 return type;
-            } else if (clazz.equals(Boolean.TYPE)) {
-                return Boolean.class;
-            } else if (clazz.equals(Character.TYPE)) {
-                return Character.class;
-            } else if (clazz.equals(Byte.TYPE)) {
-                return Byte.class;
-            } else if (clazz.equals(Short.TYPE)) {
-                return Short.class;
-            } else if (clazz.equals(Integer.TYPE)) {
-                return Integer.class;
-            } else if (clazz.equals(Long.TYPE)) {
-                return Long.class;
-            } else if (clazz.equals(Float.TYPE)) {
-                return Float.class;
-            } else if (clazz.equals(Double.TYPE)) {
-                return Double.class;
-            }
+            Map<Type, Class<?>> primitiveWrappers = Map.of(
+                                                           Boolean.TYPE, Boolean.class,
+                                                           Character.TYPE, Character.class,
+                                                           Byte.TYPE, Byte.class,
+                                                           Short.TYPE, Short.class,
+                                                           Integer.TYPE, Integer.class,
+                                                           Long.TYPE, Long.class,
+                                                           Float.TYPE, Float.class,
+                                                           Double.TYPE, Double.class);
+            return primitiveWrappers.get(clazz);
         }
         return type;
     }
