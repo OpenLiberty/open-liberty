@@ -75,6 +75,9 @@ public interface Cities {
 
     LinkedList<CityId> deleteByStateName(String state);
 
+    // TODO remove once https://github.com/OpenLiberty/open-liberty/issues/33535 is resolved
+    void deleteVoidByStateName(String state);
+
     Iterable<CityId> deleteByStateName(String state, Limit limit, Order<City> sorts);
 
     @Delete
