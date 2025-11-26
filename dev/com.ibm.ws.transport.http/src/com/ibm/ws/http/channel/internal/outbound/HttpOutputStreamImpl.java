@@ -575,6 +575,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                     System.out.println("DEBUG: skipping finishResponseMessage?: " + is101);
                     if (is101) {
                         this.isc.finishResponseMessage(null); // <— CHANGED: don’t skip for 101
+                        awaitUpgradePipelineInstalled();
                     } else {
                         this.isc.finishResponseMessage(content);
                     }

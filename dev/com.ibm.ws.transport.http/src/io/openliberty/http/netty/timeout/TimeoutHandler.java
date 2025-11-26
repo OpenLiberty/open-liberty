@@ -214,15 +214,15 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         }
         super.write(context, message, promise);
 
-        promise.addListener(future -> {
-            if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
-                if (!serverKeepAlive) {
-                    context.close();
-                } else {
-                    armPersistIfNeeded(context);
-                }
-            }
-        });
+        // promise.addListener(future -> {
+        //     if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
+        //         if (!serverKeepAlive) {
+        //             context.close();
+        //         } else {
+        //             armPersistIfNeeded(context);
+        //         }
+        //     }
+        // }); -> leave this responsibility to the link
 
     }
 

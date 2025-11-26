@@ -32,8 +32,10 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
+import com.ibm.ws.transport.access.TransportConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.VirtualConnection;
+import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 import com.ibm.wsspi.tcpchannel.TCPReadCompletedCallback;
@@ -42,7 +44,7 @@ import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import io.netty.channel.Channel;
 import io.openliberty.http.options.TcpOption;
 import com.ibm.ws.http.netty.NettyHttpConstants;
-
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 
 import io.netty.util.concurrent.EventExecutor;
@@ -99,7 +101,33 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     }
 
     private HttpInputStreamImpl input() throws IOException {
-        HttpInputStreamImpl in = nettyChannel.attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
+    
+        HttpInputStreamImpl in = null;
+        System.out.println("DEBUG: input() vc is: " + vc);
+
+
+        if (vc != null) {
+            Object candidate = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
+            if (candidate instanceof HttpInputStreamImpl) {
+                in = (HttpInputStreamImpl) candidate;
+            }
+            if (in == null) {
+                Object sid = vc.getStateMap().get(NettyHttpConstants.VC_HTTP2_STREAM_ID);
+                if (sid instanceof String) {
+                    HttpDispatcherHandler disp =
+                            nettyChannel.pipeline().get(HttpDispatcherHandler.class);
+                    if (disp != null) {
+                        HttpInputStream s = disp.getStream((String) sid);
+                        if (s instanceof HttpInputStreamImpl) {
+                            in = (HttpInputStreamImpl) s;
+                            // Optionally cache it on VC for next time:
+                            vc.getStateMap().put(NettyHttpConstants.VC_HTTP_INPUT_STREAM, in);
+                        }
+                    }
+                }
+            }
+        }
+        //HttpInputStreamImpl in = nettyChannel.attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
         if (in == null) {
             throw new IOException("HTTP input stream not initialized for channel " + nettyChannel);
         }
@@ -123,15 +151,24 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                                    + nettyChannel.remoteAddress());
         }
 
+        final boolean logicalUpg = isLogicallyUpgraded();
+        final boolean handlerReady = hasUpgradeHandler();
+
+        // If we're logically upgraded but the upgrade handler is not yet in place,
+        // DO NOT touch HttpInputStreamImpl. Just report "no data" for now.
+        if (logicalUpg && !handlerReady) {
+            return 0L;
+        }
+
         if (timeout == IMMED_TIMEOUT) {
-            if (isUpgraded())
+            if (hasUpgradeHandler())
                 ensureUpgradeHandler().immediateTimeout();
             return 0L;
         }
 
         if (timeout == ABORT_TIMEOUT) {
             aborted = true;
-            if (isUpgraded())
+            if (hasUpgradeHandler())
                 ensureUpgradeHandler().immediateTimeout();
             return 0L;
         }
@@ -139,10 +176,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         ensureBuffersOrJIT(numBytes, false);
 
         if(numBytes == 0){
-            return isUpgraded() ? upgradedImmediateDrain() : nonUpgradedImmediateDrain();
+            return hasUpgradeHandler() ? upgradedImmediateDrain() : nonUpgradedImmediateDrain();
         }
 
-        return isUpgraded() ? upgradedSyncRead(numBytes, timeout) : nonUpgradedSyncRead(numBytes, timeout);
+        return hasUpgradeHandler() ? upgradedSyncRead(numBytes, timeout) : nonUpgradedSyncRead(numBytes, timeout);
     }
 
     private long nonUpgradedSyncRead(long numBytes, int timeout) throws IOException {
@@ -308,13 +345,21 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             return null;
         }
 
-        if (isUpgraded()) {
+        boolean logicalUpg = isLogicallyUpgraded();
+        boolean handlerReady = hasUpgradeHandler();
+
+        if (logicalUpg && handlerReady) {
 
             final int effectiveTimeout = normalizeTimeout(timeout);
             if (effectiveTimeout != IMMED_TIMEOUT && effectiveTimeout != ABORT_TIMEOUT) {
                 ensureBuffersOrJIT(numBytes, true);
             }
             return upgradedAsyncRead(numBytes, callback, forceQueue, timeout);
+        }
+
+        if (logicalUpg && !handlerReady) {
+            
+            return null;
         }
 
         final int effectiveTimeout = normalizeTimeout(timeout);
@@ -347,19 +392,21 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         nettyChannel.attr(com.ibm.ws.http.netty.NettyHttpConstants.ASYNC_READ_CALLBACK).set(r);
 
-        try {
-            HttpInputStreamImpl in2 = input();
-            boolean isEE7 = (in2 instanceof HttpInputStreamEE7);
-            if (in2.available() > 0 || (isEE7 && ((HttpInputStreamEE7) in2).isFinished())) {
-                Runnable pending = nettyChannel.attr(com.ibm.ws.http.netty.NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
-                if (pending != null)
-                    HttpDispatcher.getExecutorService().execute(pending);
-            }
-        } catch (IOException ignore) { }
+        if(!isLogicallyUpgraded()){
+            try {
+                HttpInputStreamImpl in2 = input();
+                boolean isEE7 = (in2 instanceof HttpInputStreamEE7);
+                if (in2.available() > 0 || (isEE7 && ((HttpInputStreamEE7) in2).isFinished())) {
+                    Runnable pending = nettyChannel.attr(com.ibm.ws.http.netty.NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+                    if (pending != null)
+                        HttpDispatcher.getExecutorService().execute(pending);
+                }
+            } catch (IOException ignore) { }
 
-        ensureReadIfManual();
+            ensureReadIfManual();
+            return null;
+        }
         return null;
-
     }
 
     public VirtualConnection upgradedAsyncRead(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
@@ -533,9 +580,56 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
     }
 
-    private boolean isUpgraded() {
+    private boolean isLogicallyUpgraded() {
+
+        if(vc == null){
+            return false;
+        }
+        
+        Object flag = vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION);
+        if ("true".equalsIgnoreCase(String.valueOf(flag))) {
+            return true;
+        }
+        flag = vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER);
+        if ("true".equalsIgnoreCase(String.valueOf(flag))) {
+            return true;
+        }
+
+        flag = vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS);
+        if (flag != null && !"false".equalsIgnoreCase(String.valueOf(flag))) {
+            // Values like "true" or "CLOSED_NON_UPGRADED_STREAMS" mean this VC
+            // is in an upgrade scenario where the normal HTTP request is done.
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean hasUpgradeHandler() {
         return nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null;
     }
+
+    // private boolean isUpgraded() {
+    //     if(nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null){
+    //         System.out.println("DEBUG: isupgraded() true");
+    //         return true;
+    //     }
+    //     if (vc != null) {
+    //         Object flag = vc.getStateMap().get(com.ibm.ws.transport.access.TransportConstants.UPGRADED_CONNECTION);
+    //         if ("true".equalsIgnoreCase(String.valueOf(flag))) {
+    //             System.out.println("DEBUG vc upgrade flag true");
+    //             return true;
+    //         }
+    //     }
+    //     if (vc != null) {
+    //         Object flag = vc.getStateMap().get(com.ibm.ws.transport.access.TransportConstants.UPGRADED_LISTENER);
+    //         if ("true".equalsIgnoreCase(String.valueOf(flag))) {
+    //             System.out.println("DEBUG vc upgrade flag true");
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 
     private NettyServletUpgradeHandler ensureUpgradeHandler() {
         NettyServletUpgradeHandler h = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);

@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -131,6 +132,8 @@ import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.LastStreamSpecificHttpContent;
 import io.netty.handler.codec.http2.StreamSpecificHttpContent;
 import io.openliberty.http.constants.HttpGenerics;
+import io.netty.util.AsciiString;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Common code shared between both the Inbound and Outbound HTTP service
@@ -3401,6 +3404,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             sendNettyFinalContent();
         }
+        if (isNettyUpgrade101()) {
+            awaitUpgradePipelineInstalledForNetty();
+        }
         setMessageSent();
         // Queue next read request for pipelining
         // if (nettyContext.pipeline().get(LibertyHttpRequestHandler.class) == null) {
@@ -6423,6 +6429,63 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             Tr.debug(tc, "getGRPCEndStream(): returning: " + ret);
         }
         return ret;
+    }
+
+    private boolean isNettyUpgrade101() {
+        if (nettyResponse == null || nettyContext == null) {
+            return false;
+        }
+
+        if (!nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
+            return false;
+        }
+
+        // Check Connection: Upgrade and Upgrade: <token>
+        final CharSequence conn = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
+        final CharSequence upg = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
+        if (conn == null || upg == null || upg.length() == 0) {
+            return false;
+        }
+
+        return AsciiString.containsIgnoreCase(conn, "upgrade");
+    }
+
+    private void awaitUpgradePipelineInstalledForNetty() {
+        if (nettyContext == null) {
+            return;
+        }
+
+        CompletableFuture<Void> promise =
+                nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise == null) {
+            promise = new CompletableFuture<>();
+            nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "awaitUpgradePipelineInstalledForNetty: ch="
+                        + nettyContext.channel().id().asShortText()
+                        + " promise@" + System.identityHashCode(promise));
+        }
+
+        // Fire the same user event HttpDispatcherHandler.onUpgradeCommitted expects
+        nettyContext.executor().execute(() ->
+            nettyContext.pipeline().fireUserEventTriggered(
+                HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
+
+        try {
+            // Give the dispatcher a short window to flip the pipeline
+            promise.get(750, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException te) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "awaitUpgradePipelineInstalledForNetty: timed out waiting for pipeline switch; proceeding");
+            }
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "awaitUpgradePipelineInstalledForNetty: failure while waiting; proceeding " + e);
+            }
+            Thread.currentThread().interrupt();
+        }
     }
 
 }

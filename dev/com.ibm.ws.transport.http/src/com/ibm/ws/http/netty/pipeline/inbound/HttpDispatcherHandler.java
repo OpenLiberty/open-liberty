@@ -39,6 +39,7 @@ import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
+import com.ibm.wsspi.channelfw.VirtualConnection;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -309,6 +310,44 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         commitTrigger.set(null);
 
         link.initStreaming(ctx, request, config, isFullRequest);
+
+        final HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
+        final HttpInputStreamImpl body = req.getBody();
+        System.out.println("DEBUG: Should have the VC and able to store Input stream");
+        String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
+        try {
+            if (this.link.getVirtualConnection() != null) {
+                VirtualConnection v = this.link.getVirtualConnection();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "beginStreamingRequest: vc=" + v
+                                 + " stateMap=" + (v != null ? v.getStateMap() : "null")
+                                 + " streamId=" + streamId
+                                 + " channel=" + ctx.channel().id());
+                }
+                v.getStateMap().put(NettyHttpConstants.VC_HTTP_INPUT_STREAM, body);
+
+                // If this is HTTP/2, also remember the stream id on the VC
+
+                if (streamId != null) {
+                    v.getStateMap().put(NettyHttpConstants.VC_HTTP2_STREAM_ID, streamId);
+                }
+
+                System.out.println("DEBUG: map is now: " + v.getStateMap());
+            }
+            else{
+                System.out.println("DEBUG: vc was null, not expected");
+            }
+        } catch (Throwable t) {
+            // be defensive; don't let VC issues kill the request setup
+            Tr.debug(tc, "Failed to attach HttpInputStream to VC state", t);
+        }
+        //if H2
+
+        if (streamId != null) {
+            putStream(streamId, body);
+        } else {
+            ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(body);
+        }
         
 
         if (upg) {
@@ -317,15 +356,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             return;
         }
 
-        final HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
-        final HttpInputStreamImpl body = req.getBody();
-        //if H2
-        String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
-        if (streamId != null){
-            putStream(streamId, body);
-        } else{
-            ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(body);
-        }
+        
         final String contentEncoding = request.headers().get(HttpHeaderNames.CONTENT_ENCODING);
         body.nettyConfigureStreaming(queue, ctx, contentEncoding, cl, chunked);
 

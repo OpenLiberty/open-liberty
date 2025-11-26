@@ -129,7 +129,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             state.closedOrUpgraded = true;
             state.keepAliveAllowed = false;
             if (!state.responseInFlight) {
-                context.close(); // nothing in flight; close now
+                //context.close(); // nothing in flight; close now
                 return;
             }
         }

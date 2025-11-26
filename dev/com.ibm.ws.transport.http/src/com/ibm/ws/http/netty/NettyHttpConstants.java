@@ -48,6 +48,8 @@ public class NettyHttpConstants {
     public static final AttributeKey<HttpChannelConfig> HTTP_CONFIG = AttributeKey.valueOf("httpConfig");
     public static final AttributeKey<CompletableFuture<Void>> UPGRADE_READY_PROMISE =
         AttributeKey.valueOf("upgrade.ready.promise");
+    public static final String VC_HTTP_INPUT_STREAM = "netty.http.inputStream";
+    public static final String VC_HTTP2_STREAM_ID = "netty.http2.streamId";
 
     public enum ProtocolName {
         HTTP1("HTTP1"),
