@@ -1,0 +1,9 @@
+*.log*
+bundles
+dist
+/coverage.ec
+/ffdc
+/junit*properties
+/reports
+/build
+/autoFVT
