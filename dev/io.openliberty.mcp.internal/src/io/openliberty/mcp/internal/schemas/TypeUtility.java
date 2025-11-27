@@ -31,6 +31,16 @@ import io.openliberty.mcp.internal.schemas.SchemaGenerator.SchemaGenerationConte
  */
 public class TypeUtility {
 
+    public static Map<Type, Class<?>> PRIMITIVE_WRAPPERS = Map.of(
+                                                                  Boolean.TYPE, Boolean.class,
+                                                                  Character.TYPE, Character.class,
+                                                                  Byte.TYPE, Byte.class,
+                                                                  Short.TYPE, Short.class,
+                                                                  Integer.TYPE, Integer.class,
+                                                                  Long.TYPE, Long.class,
+                                                                  Float.TYPE, Float.class,
+                                                                  Double.TYPE, Double.class);
+
     /**
      * Converts primitive types to their wrapper classes
      *
@@ -41,16 +51,8 @@ public class TypeUtility {
         if (type instanceof Class clazz) {
             if (!clazz.isPrimitive())
                 return type;
-            Map<Type, Class<?>> primitiveWrappers = Map.of(
-                                                           Boolean.TYPE, Boolean.class,
-                                                           Character.TYPE, Character.class,
-                                                           Byte.TYPE, Byte.class,
-                                                           Short.TYPE, Short.class,
-                                                           Integer.TYPE, Integer.class,
-                                                           Long.TYPE, Long.class,
-                                                           Float.TYPE, Float.class,
-                                                           Double.TYPE, Double.class);
-            return primitiveWrappers.get(clazz);
+
+            return PRIMITIVE_WRAPPERS.get(clazz);
         }
         return type;
     }

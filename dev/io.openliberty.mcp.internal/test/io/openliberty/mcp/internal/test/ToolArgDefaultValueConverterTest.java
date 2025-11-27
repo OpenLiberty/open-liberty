@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package io.openliberty.mcp.internal.test;
 
 import static io.openliberty.mcp.internal.test.exception.ExceptionAssertions.assertThrows;
@@ -70,7 +79,8 @@ public class ToolArgDefaultValueConverterTest {
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
-        assertThat(toolCallRequest.convert("year"), equalTo(2025));
+        ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("year");
+        assertThat(McpToolCallParams.getDefaultValue(argMetadata), equalTo(2025));
     }
 
     @Test
@@ -88,7 +98,8 @@ public class ToolArgDefaultValueConverterTest {
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
-        assertThat(toolCallRequest.convert("planet"), equalTo("Jupiter"));
+        ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("planet");
+        assertThat(McpToolCallParams.getDefaultValue(argMetadata), equalTo("Jupiter"));
     }
 
     @Test
@@ -106,7 +117,8 @@ public class ToolArgDefaultValueConverterTest {
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
-        assertThat(toolCallRequest.convert("bool"), equalTo(true));
+        ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("bool");
+        assertThat(McpToolCallParams.getDefaultValue(argMetadata), equalTo(true));
     }
 
     @Test
@@ -124,12 +136,10 @@ public class ToolArgDefaultValueConverterTest {
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
-        assertThrows(() -> toolCallRequest.convert("city"),
+        ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("city");
+        assertThrows(() -> McpToolCallParams.getDefaultValue(argMetadata),
                      exception()
-                                .ofType(IllegalArgumentException.class)
-                                .messageIncludes("CWMCM0019E")
-                                .messageIncludes("defaultValueObj")
-                                .messageIncludes("city"));
+                                .ofType(IllegalArgumentException.class));
     }
 
 }

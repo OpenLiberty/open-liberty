@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -102,7 +103,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testToolArgDefaultValueWithoutTypeConverter() throws Exception {
-        String expectedErrorHeader = "CWMCM0019E: The (.+?) of the (.+?) MCP tool method does not have a converter to change its default value into an object of type (.+?).";
+        String expectedErrorHeader = Pattern.quote("CWMCM0019E: The city argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter MCP tool method does not have a converter to change its default value into an object of type class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest$City.");
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg DefaultValue Without Converter: ", expectedErrorHeader, expectedErrorList, server);
     }
