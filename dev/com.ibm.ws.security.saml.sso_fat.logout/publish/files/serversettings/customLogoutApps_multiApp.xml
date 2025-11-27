@@ -15,4 +15,7 @@
 <server>
 	<variable name="absLocalURL_app" value="samlclient_customLogout_absLocalURL"/>
 	<variable name="relativePath_app" value="samlclient_customLogout_relativePath"/>
+
+	<!-- Disabling log throttling for all this FAT bucket to prevent unexpected log suppression. -->
+	<logging throttleMaxMessagesPerWindow="0"/>
 </server> 
