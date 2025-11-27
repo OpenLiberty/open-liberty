@@ -42,9 +42,9 @@ public class LogThrottleIntrospector implements Introspector {
     
     @Override
     public void introspect(PrintWriter out) throws Exception {
-        Map < String, ThrottleState > throttleStates = LogThrottlingUtils.getThrottleStates();
+        Map <String, ThrottleState> throttleStates = LogThrottlingUtils.getThrottleStates();
 
-        List < String > keyList = new ArrayList < > ();
+        List <String> keyList = new ArrayList <>();
         int index = 1;
         int throttleMaxMessagesPerWindow = LogThrottlingUtils.getThrottleMaxMessages();
         String throttleType = LogThrottlingUtils.getThrottleType();
@@ -116,7 +116,21 @@ public class LogThrottleIntrospector implements Introspector {
 	            out.println("#" + (i + 1) + ":" + keyList.get(i) + "\n");
 	        }
         }
+        
+        /*
+        Sample output:
+        
+        Config:
+        throttleMaxMessagesPerWindow: 3
+        throttleType: messageID
+        throttleMapSize: 500
 
+		KEY             COUNT        LAST OCCURRENCE           AGE                       THROTTLED
+             		 (Last 5 min)
+		------------------------------------------------------------------------------------------
+		TEST15005W      1            2025-11-27 13:57:44       00m 04s ago               false
+
+        */
 
     }
     

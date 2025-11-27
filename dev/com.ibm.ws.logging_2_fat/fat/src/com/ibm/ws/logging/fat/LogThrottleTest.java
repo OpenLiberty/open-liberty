@@ -249,7 +249,6 @@ public class LogThrottleTest {
         Thread.sleep(5000);
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=1005");
 
-        RemoteFile messagesLogFile = serverInUse.getDefaultLogFile();
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
         List<String> linesWarning = serverInUse.findStringsInLogs("The logs are being throttled due to high volume");
 
@@ -326,6 +325,25 @@ public class LogThrottleTest {
 
         assertEquals("Test message TESTA0001W wasn't printed the correct number of times", 5, lines.size());
         assertFalse("Full message configuration is not functioning correctly.", lines2.size() == lines.size()); //This message shouldn't be getting throttled due to message variation
+    }
+
+    /*
+     * Test an empty throttleMaxMessagesPerWindow config and ensure the default is used.
+     */
+    @Test
+    public void testLogThrottlingEmptyMaxMessages() throws Exception {
+        setUp(baseServer, "testLogThrottlingEmptyMaxMessages");
+        serverInUse.setServerConfigurationFile(THROTTLING_EMPTY_CONFIG_XML);
+        Thread.sleep(5000);
+
+        hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=1005");
+
+        List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
+        List<String> linesWarning = serverInUse.findStringsInLogs("The logs are being throttled due to high volume");
+
+        assertEquals("The throttle log warning was not printed.", linesWarning.size(), 1);
+        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 1000);
+
     }
 
     private static void hitWebPage(String contextRoot, String servletName, boolean failureAllowed, String params) throws MalformedURLException, IOException, ProtocolException {
