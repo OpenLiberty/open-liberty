@@ -144,6 +144,13 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
         // Verify the server or client exists, if it does not then exit and do not create the certificate
         // Do this first so we don't prompt for a password we'll not use
         if (serverName != null) {
+            // Validate serverName before using it in a path
+            if (!serverName.matches("^(?![-.])[A-Za-z0-9._+-]+$")) {
+                stdout.println(getMessage("createLTPAKeys.abort"));
+                stdout.println(getMessage("invalidServerName", serverName));
+                return SecurityUtilityReturnCodes.ERR_INVALID_SERVER_NAME;
+            }
+
             String usrServers = fileUtility.getServersDirectory();
             String serverDir = usrServers + serverName + SLASH;
 

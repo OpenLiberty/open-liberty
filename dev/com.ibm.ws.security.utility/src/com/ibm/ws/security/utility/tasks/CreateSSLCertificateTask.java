@@ -134,6 +134,13 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         // Verify the server or client exists, if it does not then exit and do not create the certificate
         // Do this first so we don't prompt for a password we'll not use
         if (serverName != null) {
+            // Validate server name
+            if (!serverName.matches("^(?![-.])[A-Za-z0-9._+-]+$")) {
+                stdout.println(getMessage("sslCert.abort"));
+                stdout.println(getMessage("invalidServerName", serverName));
+                return SecurityUtilityReturnCodes.ERR_INVALID_SERVER_NAME;
+            }
+
             String usrServers = fileUtility.getServersDirectory();
             String serverDir = usrServers + serverName + SLASH;
 
@@ -148,6 +155,13 @@ public class CreateSSLCertificateTask extends BaseCommandTask {
         }
 
         if (clientName != null) {
+            // Validate clientName
+            if (!clientName.matches("^(?![-.])[A-Za-z0-9._+-]+$")) {
+                stdout.println(getMessage("sslCert.abort"));
+                stdout.println(getMessage("invalidClientName", clientName));
+                return SecurityUtilityReturnCodes.ERR_INVALID_CLIENT_NAME;
+            }
+
             String usrClients = fileUtility.getClientsDirectory();
             String clientDir = usrClients + clientName + SLASH;
 

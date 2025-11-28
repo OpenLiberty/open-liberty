@@ -880,6 +880,68 @@ public class CreateSSLCertificateTaskTest {
      * {@link com.ibm.ws.security.utility.tasks.CreateSSLCertificateTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
      * .
      */
+    @Test
+    public void handleTask_serverNameIsInvalid() throws Exception {
+    String[] invalidServerNames = { ".", "..", "-invalid", ".invalid" };
+
+    for (String name : invalidServerNames) {
+        String[] args = {
+                task.getTaskName(),
+                "--validity=" + VALIDITY,
+                "--password=" + PLAINTEXT,
+                "--subject=" + SUBJECT_DN,
+                "--server=" + name
+        };
+
+        mock.checking(new Expectations() {{
+            one(fileUtil).exists(with(any(String.class)));
+            will(returnValue(false));
+
+            one(stdout).println("Aborting certificate creation:");
+            one(stdout).println("The specified server " + name + " is not a valid server name.");
+        }});
+
+        task.handleTask(stdin, stdout, stderr, args);
+        mock.assertIsSatisfied();
+        }
+    }
+
+    /**
+     * Test method for
+     * {@link com.ibm.ws.security.utility.tasks.CreateSSLCertificateTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
+     * .
+     */
+    @Test
+    public void handleTask_clientNameIsInvalid() throws Exception {
+        String[] invalidClientNames = { ".", "..", "-invalid", ".invalid" };
+
+        for (String name : invalidClientNames) {
+            String[] args = {
+                    task.getTaskName(),
+                    "--validity=" + VALIDITY,
+                    "--password=" + PLAINTEXT,
+                    "--subject=" + SUBJECT_DN,
+                    "--client=" + name
+            };
+
+            mock.checking(new Expectations() {{
+                one(fileUtil).exists(with(any(String.class)));
+                will(returnValue(false));
+
+                one(stdout).println("Aborting certificate creation:");
+                one(stdout).println("The specified client " + name + " is not a valid client name.");
+            }});
+
+            task.handleTask(stdin, stdout, stderr, args);
+            mock.assertIsSatisfied();
+        }
+    }
+
+    /**
+     * Test method for
+     * {@link com.ibm.ws.security.utility.tasks.CreateSSLCertificateTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
+     * .
+     */
     // @Test
     public void handleTask_failedCreate() throws Exception {
         san.add("SAN=dns:localhost");

@@ -35,6 +35,8 @@ missingArg2=Either the {0} argument or the {1} argument must be provided.
 exclusiveArg=The {0} argument or the {1} argument must be specified, but not both.
 serverNotFound=The {0} specified server was not found at the {1} location.
 clientNotFound=The {0} specified client was not found at the {1} location.
+invalidClientName=The specified client {0} is not a valid client name.
+invalidServerName=The specified server {0} is not a valid server name.
 
 
 encode.enterText=Enter text:

@@ -173,6 +173,14 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         }
 
         if (serverName != null) {
+
+            // Validate server name
+            if (!serverName.matches("^(?![-.])[A-Za-z0-9._+-]+$")) {
+                stdout.println(getMessage("configureFIPS.abort"));
+                stdout.println(getMessage("invalidServerName", serverName));
+                return SecurityUtilityReturnCodes.ERR_INVALID_SERVER_NAME;
+            }
+
             String usrServers = fileUtility.getServersDirectory();
             String serverDir = usrServers + serverName + SLASH;
 
@@ -209,6 +217,13 @@ public class ConfigureFIPSTask extends BaseCommandTask {
         if (clientName != null) {
             if (serverName != null) {
                 stdout.println(""); // add a new line if we previously setup for server
+            }
+
+            // Validate clientName
+            if (!clientName.matches("^(?![-.])[A-Za-z0-9._+-]+$")) {
+                stdout.println(getMessage("configureFIPS.abort"));
+                stdout.println(getMessage("invalidClientName", clientName));
+                return SecurityUtilityReturnCodes.ERR_INVALID_CLIENT_NAME;
             }
 
             String usrClients = fileUtility.getClientsDirectory();
