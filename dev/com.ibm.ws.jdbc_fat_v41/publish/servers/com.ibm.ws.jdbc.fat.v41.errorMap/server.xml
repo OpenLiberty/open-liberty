@@ -63,7 +63,7 @@
     <dataSource jndiName="jdbc/invalid/noTarget" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
         <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
         <!-- invalid configuration: the 'as' attribute is not defined-->
-        <identifyException errorCode="1234"/>
+        <identifyException errorCode="1234" as="BOGUS"/>
     </dataSource>
     
     <dataSource jndiName="jdbc/invalid/bogusTarget" type="javax.sql.DataSource" jdbcDriverRef="CustomDriver">
