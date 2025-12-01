@@ -26,6 +26,7 @@ import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.ImageContent;
 import io.openliberty.mcp.content.Role;
 import io.openliberty.mcp.content.TextContent;
+import io.openliberty.mcp.meta.Meta;
 import io.openliberty.mcp.meta.MetaKey;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -458,6 +459,27 @@ public class BasicTools {
         _meta.put(MetaKey.from("timestamp"), 1762860699);
         _meta.put(MetaKey.from("api.ibmtest.org/location"), "Hursley");
         _meta.put(MetaKey.from("api.libertytest.org/person"), personInstance);
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
+    }
+
+    @Tool(name = "addPersonToListToolResponseWithMetaRequest", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
+    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" }, \"description\": \"Returns list of person object\" }",
+                   description = "Returns list of person object") ToolResponse addPersonToListToolResponseWithMetaRequest(@ToolArg(name = "employeeList",
+                                                                                                                                   description = "List of people") List<Person> employeeList,
+                                                                                                                          @ToolArg(name = "person",
+                                                                                                                                   description = "Person object") Optional<Person> person,
+                                                                                                                          Meta meta) {
+        Person personInstance = person.get();
+        employeeList.add(personInstance);
+        Jsonb jsonb = JsonbBuilder.create();
+        JsonObject jo = meta.asJsonObject();
+
+        Map<MetaKey, Object> _meta = new HashMap<>();
+        jo.forEach((key, value) -> {
+            MetaKey metaKey = MetaKey.from(key);
+            meta.getValue(metaKey, jsonb);
+            _meta.put(metaKey, value);
+        });
         return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
     }
 

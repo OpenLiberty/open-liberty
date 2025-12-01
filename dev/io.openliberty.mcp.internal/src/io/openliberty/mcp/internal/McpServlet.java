@@ -40,6 +40,7 @@ import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.internal.sessions.McpSessionStore;
 import io.openliberty.mcp.internal.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.messaging.Cancellation;
+import io.openliberty.mcp.meta.Meta;
 import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -233,14 +234,20 @@ public class McpServlet extends HttpServlet {
                  .whenComplete((result, throwable) -> cleanup(requestId));
     }
 
+//    private void extractMetadataFromParams(McpTransport transport) {
+//        transport.getParams(null)
+//    }
+
     /**
      * @return
      */
     private ToolArguments createToolArguments(Map<String, Object> args) {
-        return new ToolArgumentsImpl(args, new CancellationImpl());
+        Meta meta = (Meta) args.get("_meta");
+        args.remove("_meta");
+        return new ToolArgumentsImpl(args, new CancellationImpl(), meta);
     }
 
-    record ToolArgumentsImpl(Map<String, Object> args, Cancellation cancellation) implements ToolArguments {}
+    record ToolArgumentsImpl(Map<String, Object> args, Cancellation cancellation, Meta meta) implements ToolArguments {}
 
     private void cleanup(ExecutionRequestId requestId) {
         if (requestId != null && requestTracker.isOngoingRequest(requestId)) {

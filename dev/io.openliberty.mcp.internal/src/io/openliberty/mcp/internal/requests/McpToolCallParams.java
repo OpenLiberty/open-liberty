@@ -24,6 +24,8 @@ import io.openliberty.mcp.internal.ToolMetadata.ArgumentMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
+import io.openliberty.mcp.meta.Meta;
+import io.openliberty.mcp.meta.MetaImpl;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
@@ -78,15 +80,23 @@ public class McpToolCallParams {
         HashSet<String> argsProcessed = new HashSet<>();
         for (var entry : arguments.entrySet()) {
             String argName = entry.getKey();
+
             JsonValue argValue = entry.getValue();
-            ArgumentMetadata argMetadata = metadatas.get(argName);
+            ArgumentMetadata argMetadata = metadata.arguments().get(argName);
             if (argMetadata != null) {
                 String json = jsonb.toJson(argValue);
                 result.put(argName, jsonb.fromJson(json, argMetadata.type()));
+            } else {
+                if (argName.equals("_meta")) {
+                    Meta meta = MetaImpl.from(arguments);
+                    result.put("_meta", meta);
+                }
             }
-            argsProcessed.add(argName);
-        }
+            if (!argName.equals("_meta")) {
+                argsProcessed.add(argName);
+            }
 
+        }
         validateProcessedArgs(argsProcessed, metadatas.keySet());
 
         return result;

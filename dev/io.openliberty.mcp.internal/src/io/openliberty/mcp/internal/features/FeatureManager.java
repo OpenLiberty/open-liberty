@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import io.openliberty.mcp.internal.features.FeatureManager.FeatureInfo;
 import io.openliberty.mcp.messaging.Cancellation;
+import io.openliberty.mcp.meta.Meta;
 import jakarta.json.JsonObject;
 
 /**
@@ -143,7 +144,7 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
 //
 //        RawMessage rawMessage();
 //
-//        Meta meta();
+        Meta meta();
 
     }
 
