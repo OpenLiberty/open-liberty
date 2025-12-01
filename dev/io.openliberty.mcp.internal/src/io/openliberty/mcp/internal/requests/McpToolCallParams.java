@@ -80,9 +80,8 @@ public class McpToolCallParams {
         HashSet<String> argsProcessed = new HashSet<>();
         for (var entry : arguments.entrySet()) {
             String argName = entry.getKey();
-
             JsonValue argValue = entry.getValue();
-            ArgumentMetadata argMetadata = metadata.arguments().get(argName);
+            ArgumentMetadata argMetadata = metadatas.get(argName);
             if (argMetadata != null) {
                 String json = jsonb.toJson(argValue);
                 result.put(argName, jsonb.fromJson(json, argMetadata.type()));

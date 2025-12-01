@@ -234,10 +234,6 @@ public class McpServlet extends HttpServlet {
                  .whenComplete((result, throwable) -> cleanup(requestId));
     }
 
-//    private void extractMetadataFromParams(McpTransport transport) {
-//        transport.getParams(null)
-//    }
-
     /**
      * @return
      */

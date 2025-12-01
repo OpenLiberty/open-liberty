@@ -128,6 +128,7 @@ public record ToolMetadata(String name,
         ToolAnnotations annotations = readAnnotations(annotation.annotations());
 
         Map<String, ArgumentMetadata> argumentMap = getArgumentMap(method);
+
         MethodMetadata methodMetadata = new MethodMetadata(name,
                                                            bean,
                                                            method.getJavaMember(),
@@ -147,7 +148,7 @@ public record ToolMetadata(String name,
         return new ToolMetadata(name,
                                 title,
                                 description,
-                                argumentMap,
+                                getArgumentMap(method),
                                 annotations,
                                 returnsCompletionStage,
                                 inputSchema,

@@ -21,10 +21,6 @@ public enum SpecialArgumentType {
 
     private final Class<?> typeClass;
 
-    public Class<?> getTypeCLass() {
-        return typeClass;
-    }
-
     SpecialArgumentType(Class<?> typeClass) {
         this.typeClass = typeClass;
     }
