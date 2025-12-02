@@ -24,6 +24,9 @@ package io.openliberty.mcp.internal.requests;
 import java.lang.reflect.Type;
 import java.util.Map;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 public class BuiltinDefaultValueConverters {
 
     public static final Map<Type, DefaultValueConverter<?>> CONVERTERS = Map.of(
@@ -101,11 +104,12 @@ public class BuiltinDefaultValueConverters {
     }
 
     public static class CharacterConverter implements DefaultValueConverter<Character> {
+        private static final TraceComponent tc = Tr.register(CharacterConverter.class);
 
         @Override
         public Character convert(String defaultValue) {
             if (defaultValue == null || defaultValue.length() != 1)
-                throw new IllegalArgumentException(" \"" + defaultValue + "\" is not a char");
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.invalid.character", defaultValue));
             return Character.valueOf(defaultValue.charAt(0));
         }
 

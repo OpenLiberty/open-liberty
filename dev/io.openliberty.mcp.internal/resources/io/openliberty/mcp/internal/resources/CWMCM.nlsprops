@@ -160,10 +160,18 @@ CWMCM0018E.generic.arguments=CWMCM0018E: The {1} argument of the {0} MCP tool me
 CWMCM0018E.generic.arguments.explanation=MCP Tool arguments were provided but they are not supported. 
 CWMCM0018E.generic.arguments.useraction=Provide arguments that do not have generic components.
 
-# Used for encoder logging
-# {0} = The encoder class name
-# {1} = The tool name
-# {2} = The exception
-CWMCM0019E.error.encoding.element=CWMCM0019E: The {0} encoder threw an exception while encoding the result of the {1} tool. The exception is {2}
-CWMCM0019E.error.encoding.element.explanation=The encoder threw an exception while encoding the result of the tool. This could be due to a problem with the encoder, or with the tool returning an unexpected result.
-CWMCM0019E.error.encoding.element.useraction=Review the server message.log and FFDC logs to identify the problem.
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+CWMCM0019E.missing.toolarg.defaultvalue.converter=CWMCM0019E: The {1} argument of the {0} MCP tool method does not have a converter to change its default value into an object of type {2}.
+CWMCM0019E.missing.toolarg.defaultvalue.converter.explanation=One or more arguments have default values without a matching converter to convert the default value to the argument’s type.
+CWMCM0019E.missing.toolarg.defaultvalue.converter.useraction=Create a custom converter implementation for the tool argument's type.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The incorrect character value
+CWMCM0020E.defaultvalue.invalid.character=CWMCM0020E: The default value {0} cannot be converted to a character.
+CWMCM0020E.defaultvalue.invalid.character.explanation=An argument with a character type has a default value that is not a single character.
+CWMCM0020E.defaultvalue.invalid.character.useraction=Ensure that the default value for arguments with a character type contain exactly one character.
