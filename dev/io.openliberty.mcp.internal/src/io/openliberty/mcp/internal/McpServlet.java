@@ -41,6 +41,7 @@ import io.openliberty.mcp.internal.sessions.McpSessionStore;
 import io.openliberty.mcp.internal.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.messaging.Cancellation;
 import io.openliberty.mcp.meta.Meta;
+import io.openliberty.mcp.meta.MetaImpl;
 import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -202,7 +203,7 @@ public class McpServlet extends HttpServlet {
                                        McpToolCallParams params)
                     throws IllegalAccessException, IllegalArgumentException {
 
-        ToolArguments toolArgs = createToolArguments(params.getArguments(jsonb));
+        ToolArguments toolArgs = createToolArguments(params);
         if (requestId != null) {
             requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
         }
@@ -221,7 +222,7 @@ public class McpServlet extends HttpServlet {
                                                     ExecutionRequestId requestId,
                                                     McpToolCallParams params)
                     throws IllegalAccessException, IllegalArgumentException {
-        ToolArguments toolArgs = createToolArguments(params.getArguments(jsonb));
+        ToolArguments toolArgs = createToolArguments(params);
 
         if (requestId != null) {
             requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
@@ -237,9 +238,9 @@ public class McpServlet extends HttpServlet {
     /**
      * @return
      */
-    private ToolArguments createToolArguments(Map<String, Object> args) {
-        Meta meta = (Meta) args.get("_meta");
-        args.remove("_meta");
+    private ToolArguments createToolArguments(McpToolCallParams params) {
+        Map<String, Object> args = params.getArguments(jsonb);
+        Meta meta = MetaImpl.from(params.getMeta());
         return new ToolArgumentsImpl(args, new CancellationImpl(), meta);
     }
 

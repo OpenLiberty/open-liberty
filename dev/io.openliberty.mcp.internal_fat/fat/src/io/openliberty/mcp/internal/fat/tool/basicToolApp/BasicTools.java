@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.basicToolApp;
 
+import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -481,6 +482,17 @@ public class BasicTools {
             _meta.put(metaKey, value);
         });
         return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
+    }
+
+    @Tool(name = "simpleMetaRequest", title = "return string made from args and metadata", description = "return string made from args and metadata", structuredContent = false)
+    public String addPersonToListToolResponseWithSimpleMetaRequest(@ToolArg(name = "name", description = "name of person") String name,
+                                                                   Meta meta) {
+        Jsonb jsonb = JsonbBuilder.create();
+
+        String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"), jsonb);
+        BigDecimal timestamp = (BigDecimal) meta.getValue(MetaKey.from("timestamp"), jsonb);
+        String result = "Hello " + name + " you have called this tool from " + location + " at timestamp " + timestamp.toString();
+        return result;
     }
 
 }

@@ -2192,6 +2192,24 @@ public class ToolTest extends FATServletClient {
                                         "name": "addPersonToListToolResponseWithMetaRequest",
                                         "description": "adds person to people list",
                                         "title": "adds person to people list"
+                                    },{
+                                        "inputSchema": {
+                                                        "type": "object",
+                                                        "properties":
+                                                        {
+                                                            "name": {
+                                                                      "type": "string",
+                                                                      "description": "name of person"
+                                                                    }
+
+                                                        },
+                                                        "required": [
+                                                                "name"
+                                                            ]
+                                                        },
+                                        "name": "simpleMetaRequest",
+                                        "description": "return string made from args and metadata",
+                                        "title": "return string made from args and metadata"
                                     }
                                 ]
                             },
@@ -3662,35 +3680,34 @@ public class ToolTest extends FATServletClient {
                           "id": 2,
                           "method": "tools/call",
                           "params": {
+                            "_meta":{
+                                        "api.ibmtest.org/location": "Hursley",
+                                        "api.libertytest.org/person": {
+                                            "address": {
+                                                "number": 2,
+                                                "postcode": "so21 2rt",
+                                                "street": {
+                                                    "streetName": "Poles Ln",
+                                                    "roadType": "n/a"
+                                                }
+                                            },
+                                            "company": {
+                                                "address": {
+                                                    "number": 100,
+                                                    "postcode": "so21 2er",
+                                                    "street": {
+                                                        "streetName": "Hursley Park Rd",
+                                                        "roadType": "Private Property"
+                                                    }
+                                                },
+                                                "name": "IBM"
+                                            },
+                                            "fullname": "John Smith"
+                                        },
+                                        "timestamp": 1762860699
+                                    },
                             "name": "addPersonToListToolResponseWithMetaRequest",
                             "arguments": {
-                                            "_meta":{
-                                                        "api.ibmtest.org/location": "Hursley",
-                                                        "api.libertytest.org/person": {
-                                                            "address": {
-                                                                "number": 2,
-                                                                "postcode": "so21 2rt",
-                                                                "street": {
-                                                                    "streetName": "Poles Ln",
-                                                                    "roadType": "n/a"
-                                                                }
-                                                            },
-                                                            "company": {
-                                                                "address": {
-                                                                    "number": 100,
-                                                                    "postcode": "so21 2er",
-                                                                    "street": {
-                                                                        "streetName": "Hursley Park Rd",
-                                                                        "roadType": "Private Property"
-                                                                    }
-                                                                },
-                                                                "name": "IBM"
-                                                            },
-                                                            "fullname": "John Smith"
-                                                        },
-                                                        "timestamp": 1762860699
-                                                    },
-
                                             "person":{
                                             "address": {
                                                 "number": 2,
@@ -3901,6 +3918,47 @@ public class ToolTest extends FATServletClient {
                                         },
                                         "timestamp": 1762860699
                                     }
+                            },
+                            "id": 2,
+                            "jsonrpc": "2.0"
+                        }
+                                                                                                """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void simpleMetaRequest() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "_meta":{
+                                        "api.ibmtest.org/location": "Hursley",
+                                        "timestamp": 1762860699
+                                    },
+                            "name": "simpleMetaRequest",
+                            "arguments": {
+                                            "name": "IBMUser"
+                                    }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONObject jsonResponse = new JSONObject(response);
+        // Strict Mode tests
+        String expectedResponseString = """
+                                                                {
+                            "result": {
+                                "isError": false,
+                                "content": [
+                                    {
+                                        "text": "Hello IBMUser you have called this tool from Hursley at timestamp 1762860699",
+                                        "type": "text"
+                                    }
+                                ],
                             },
                             "id": 2,
                             "jsonrpc": "2.0"

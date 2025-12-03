@@ -20,7 +20,7 @@ public class MetaImpl implements Meta {
 
     public static MetaImpl from(JsonObject json) {
         if (json != null) {
-            return new MetaImpl(json.getJsonObject("_meta"));
+            return new MetaImpl(json);
         }
         return new MetaImpl(null);
     }
