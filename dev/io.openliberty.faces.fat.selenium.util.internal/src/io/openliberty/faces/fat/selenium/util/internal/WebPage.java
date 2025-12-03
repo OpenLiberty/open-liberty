@@ -38,6 +38,23 @@ public class WebPage {
     public static final Duration LONG_TIMEOUT = Duration.ofMillis(16000);
 
     protected ExtendedWebDriver webDriver;
+    private static DriverResetCallback driverResetCallback = null;
+
+    /*
+     * Interface to reset the driver, see setDriverResetCallback
+     */
+    @FunctionalInterface
+    public interface DriverResetCallback {
+        ExtendedWebDriver resetDriver() throws Exception;
+    }
+
+    /*
+     * Set a callback to reset the driver 
+     * Must be called once within the FATSuite during driver initialization
+     */
+    public static void setDriverResetCallback(DriverResetCallback callback) {
+        driverResetCallback = callback;
+    }
 
     public WebPage(ExtendedWebDriver webDriver) {
         this.webDriver = webDriver;
@@ -52,7 +69,30 @@ public class WebPage {
     }
 
     public void get(String url) {
-        webDriver.get(url);
+        int maxAttempts = 2;
+        Exception lastException = null;
+        
+        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
+            try {
+                webDriver.get(url);
+                return; 
+            } catch (Exception e) {
+                lastException = e;
+                
+                // callback exists and we have attempts left
+                if (driverResetCallback != null && attempt < maxAttempts) {
+                    try {
+                        Thread.sleep(10000); // Wait 10 seconds before retrying if it's some network issue. 
+                        webDriver = driverResetCallback.resetDriver();
+                    } catch (Exception resetEx) {
+                        // no-op, as we may have attempts left
+                    }
+                } else if (attempt == maxAttempts) {
+                    // Last attempt failed, throw exception
+                    throw new RuntimeException("Failed to navigate to URL after " + maxAttempts + " attempts: " + url, lastException);
+                }
+            }
+        }
     }
 
     public String getTitle() {

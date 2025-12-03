@@ -87,7 +87,7 @@ public class WebSocketTests {
 
         String contextRoot = "WebSocket";
 
-        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "OnErrorWebSocketTest.jsf");;
+        String url = JSFUtils.createSeleniumURLString(server, contextRoot, "OnErrorWebSocketTest.jsf");
         WebPage page = new WebPage(driver);
         page.get(url);
         page.waitForPageToLoad();

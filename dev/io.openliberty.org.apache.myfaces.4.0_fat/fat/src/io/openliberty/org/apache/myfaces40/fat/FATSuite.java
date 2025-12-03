@@ -56,6 +56,8 @@ import io.openliberty.org.apache.myfaces40.fat.tests.WebSocketTests;
 import io.openliberty.org.apache.myfaces40.fat.tests.bugfixes.MyFaces4628Test;
 import io.openliberty.org.apache.myfaces40.fat.tests.bugfixes.MyFaces4658Test;
 
+import io.openliberty.faces.fat.selenium.util.internal.WebPage;
+
 @RunWith(Suite.class)
 @SuiteClasses({
                 AcceptInputFileTest.class,
@@ -152,6 +154,22 @@ public class FATSuite extends TestContainerSuite {
         if(DRIVER == null) {
             throw new Exception("Failed to initialize WebDriver after multiple attempts! See log for details.");
         }
+        
+        // Register the driver reset callback statically for the WebPage to use if exceptions occur.
+        WebPage.setDriverResetCallback(() -> {
+            Log.info(c, "DriverResetCallback", "Resetting WebDriver due to some error. See log for details");
+            if (DRIVER != null) {
+                try {
+                    DRIVER.quit();
+                } catch (Exception e) {
+                    // no-op
+                }
+                DRIVER = null;
+            }
+            DRIVER = getWebDriver();
+            return DRIVER;
+        });
+        
         return DRIVER;
     }
 
