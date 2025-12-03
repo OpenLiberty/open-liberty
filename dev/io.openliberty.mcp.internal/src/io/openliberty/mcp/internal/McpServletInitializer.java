@@ -56,7 +56,7 @@ public class McpServletInitializer implements ServletContainerInitializer {
                 Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
             }
         } catch (IllegalStateException e) {
-            Tr.warning(tc, "CWMCM0017W.cdi.inactive.warning"); // called if ToolRegistry.get() has an issue with CDI
+            Tr.info(tc, "CWMCM0017I.cdi.inactive", context.getServletContextName()); // called if ToolRegistry.get() has an issue with CDI
         }
     }
 

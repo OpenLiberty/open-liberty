@@ -37,24 +37,26 @@ public class InactiveCdiTest extends FATServletClient {
     @Server("mcp-server")
     public static LibertyServer server;
 
-    private static final String CDI_INACTIVE_WARNING_MESSAGE = "CWMCM0017W: CDI is not active. The MCP server cannot start.";
+    private static final String APPLICATION_NAME = "inactiveCdiTest";
+    private static final String CDI_INACTIVE_INFO_MESSAGE = "CWMCM0017I: The MCP server endpoint for the application " + APPLICATION_NAME
+                                                            + " is unavailable due to CDI being inactive.";
     private static final String FILE_NOT_FOUND_ERROR_MESSAGE = "SRVE0190E: File not found: /mcp";
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "inactiveCdiTest.war").addPackage(InactiveCdiTool.class.getPackage());
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APPLICATION_NAME + ".war").addPackage(InactiveCdiTool.class.getPackage());
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         server.startServer();
     }
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(CDI_INACTIVE_WARNING_MESSAGE, FILE_NOT_FOUND_ERROR_MESSAGE);
+        server.stopServer(CDI_INACTIVE_INFO_MESSAGE, FILE_NOT_FOUND_ERROR_MESSAGE);
     }
 
     @Test
     public void testMcpCallWithoutCDIReturnsNotFoundError() throws Exception {
-        assertNotNull(server.waitForStringInLogUsingMark(CDI_INACTIVE_WARNING_MESSAGE, server.getDefaultLogFile()));
+        assertNotNull(server.waitForStringInLogUsingMark(CDI_INACTIVE_INFO_MESSAGE, server.getDefaultLogFile()));
         String initializeRequest = """
                         {
                           "jsonrpc": "2.0",
