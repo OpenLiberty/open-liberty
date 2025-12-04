@@ -36,6 +36,8 @@ public class LoggerServlet extends HttpServlet {
         String warningMessage3 = "TESTA0003W: Warning log test 3 - println";
         String warningMessage4 = "TESTA0004W: Warning log test 4 - print";
         String warningMessage5 = "TESTA0005W: Warning log test 5 - logger.log";
+        String warningMessage6 = "TESTA0006W: Warning log test 6 - system.err.println";
+        String warningMessage7 = "TESTA0007W: Warning log test 7 - system.err.println";
 
         int numMessages = 6;
 
@@ -53,6 +55,9 @@ public class LoggerServlet extends HttpServlet {
             System.out.println(warningMessage3);
             System.out.print(warningMessage4);
             logger.log(Level.INFO, warningMessage5);
+            System.err.println(warningMessage6);
+            System.err.print(warningMessage7);
+
         }
 
         PrintWriter pw = response.getWriter();

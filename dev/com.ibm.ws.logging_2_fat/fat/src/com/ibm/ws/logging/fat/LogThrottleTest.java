@@ -155,10 +155,15 @@ public class LogThrottleTest {
         List<String> lines2 = serverInUse.findStringsInLogs("TESTA0003W");
         List<String> lines3 = serverInUse.findStringsInLogs("TESTA0004W");
         List<String> lines4 = serverInUse.findStringsInLogs("TESTA0005W");
+        List<String> lines5 = serverInUse.findStringsInLogs("TESTA0006W");
+        List<String> lines6 = serverInUse.findStringsInLogs("TESTA0007W");
+
         assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5); //This confirms JUL is being throttled
         assertEquals("Test message TESTA0003W wasn't printed the correct number of times", lines2.size(), 5); //This confirms System.out.println is being throttled
         assertEquals("Test message TESTA0004W wasn't printed the correct number of times", lines3.size(), 5); //This confirms System.out.print is being throttled
         assertEquals("Test message TESTA0005W wasn't printed the correct number of times", lines4.size(), 5); //This confirms logger.log is being throttled
+        assertEquals("Test message TESTA0006W wasn't printed the correct number of times", lines5.size(), 5); //This confirms logger.log is being throttled
+        assertEquals("Test message TESTA0007W wasn't printed the correct number of times", lines6.size(), 5); //This confirms logger.log is being throttled
 
     }
 
