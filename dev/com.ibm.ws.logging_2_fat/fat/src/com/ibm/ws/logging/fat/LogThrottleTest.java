@@ -152,7 +152,14 @@ public class LogThrottleTest {
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=6");
 
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
-        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5);
+        List<String> lines2 = serverInUse.findStringsInLogs("TESTA0003W");
+        List<String> lines3 = serverInUse.findStringsInLogs("TESTA0004W");
+        List<String> lines4 = serverInUse.findStringsInLogs("TESTA0005W");
+        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5); //This confirms JUL is being throttled
+        assertEquals("Test message TESTA0003W wasn't printed the correct number of times", lines2.size(), 5); //This confirms System.out.println is being throttled
+        assertEquals("Test message TESTA0004W wasn't printed the correct number of times", lines3.size(), 5); //This confirms System.out.print is being throttled
+        assertEquals("Test message TESTA0005W wasn't printed the correct number of times", lines4.size(), 5); //This confirms logger.log is being throttled
+
     }
 
     /*
@@ -198,8 +205,14 @@ public class LogThrottleTest {
 
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
         List<String> lines2 = serverInUse.findStringsInLogs("TESTA0002W");
+        List<String> lines3 = serverInUse.findStringsInLogs("TESTA0004W");
+        List<String> lines4 = serverInUse.findStringsInLogs("TESTA0005W");
 
-        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", 5, lines.size());
+        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", 5, lines.size()); //This confirmed logger.warning is being throttled
+        assertEquals("Test message TESTA0003W wasn't printed the correct number of times", 5, lines3.size()); //This confirms System.out.println is being throttled
+        assertEquals("Test message TESTA0004W wasn't printed the correct number of times", 5, lines4.size()); //This confirms System.out.print is being throttled
+        assertEquals("Test message TESTA0005W wasn't printed the correct number of times", 5, lines4.size()); //This confirms logger.log is being throttled
+
         assertFalse("Full message configuration is not functioning correctly.", lines2.size() == lines.size()); //This message shouldn't be getting throttled due to message variation
     }
 
