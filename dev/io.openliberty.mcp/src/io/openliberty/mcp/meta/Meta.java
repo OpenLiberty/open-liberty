@@ -22,7 +22,6 @@
 package io.openliberty.mcp.meta;
 
 import jakarta.json.JsonObject;
-import jakarta.json.bind.Jsonb;
 
 /**
  * Additional metadata sent from the client to the server.
@@ -37,7 +36,7 @@ public interface Meta {
      * @param key
      * @return the value for the given key, or {@code null}
      */
-    Object getValue(MetaKey key, Jsonb jsonb);
+    Object getValue(MetaKey key);
 
     /**
      * If {@code _meta} is not present then an empty {@link JsonObject} is returned.

@@ -478,7 +478,7 @@ public class BasicTools {
         Map<MetaKey, Object> _meta = new HashMap<>();
         jo.forEach((key, value) -> {
             MetaKey metaKey = MetaKey.from(key);
-            meta.getValue(metaKey, jsonb);
+            meta.getValue(metaKey);
             _meta.put(metaKey, value);
         });
         return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
@@ -489,8 +489,8 @@ public class BasicTools {
                                                                    Meta meta) {
         Jsonb jsonb = JsonbBuilder.create();
 
-        String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"), jsonb);
-        BigDecimal timestamp = (BigDecimal) meta.getValue(MetaKey.from("timestamp"), jsonb);
+        String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"));
+        BigDecimal timestamp = (BigDecimal) meta.getValue(MetaKey.from("timestamp"));
         String result = "Hello " + name + " you have called this tool from " + location + " at timestamp " + timestamp.toString();
         return result;
     }

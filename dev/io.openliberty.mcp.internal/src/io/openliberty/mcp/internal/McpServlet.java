@@ -28,6 +28,7 @@ import io.openliberty.mcp.internal.config.McpConfiguration;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
+import io.openliberty.mcp.internal.meta.MetaImpl;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
@@ -41,7 +42,6 @@ import io.openliberty.mcp.internal.sessions.McpSessionStore;
 import io.openliberty.mcp.internal.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.messaging.Cancellation;
 import io.openliberty.mcp.meta.Meta;
-import io.openliberty.mcp.meta.MetaImpl;
 import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -240,7 +240,7 @@ public class McpServlet extends HttpServlet {
      */
     private ToolArguments createToolArguments(McpToolCallParams params) {
         Map<String, Object> args = params.getArguments(jsonb);
-        Meta meta = MetaImpl.from(params.getMeta());
+        Meta meta = new MetaImpl(params.getMeta(), jsonb);
         return new ToolArgumentsImpl(args, new CancellationImpl(), meta);
     }
 

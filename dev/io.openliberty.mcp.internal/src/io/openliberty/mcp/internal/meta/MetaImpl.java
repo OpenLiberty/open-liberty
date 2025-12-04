@@ -19,8 +19,10 @@
  * Based on https://github.com/quarkiverse/quarkus-mcp-server/blob/main/core/runtime/src/main/java/io/quarkiverse/mcp/server/runtime/MetaImpl.java
  * Modifications have been made.
  *******************************************************************************/
-package io.openliberty.mcp.meta;
+package io.openliberty.mcp.internal.meta;
 
+import io.openliberty.mcp.meta.Meta;
+import io.openliberty.mcp.meta.MetaKey;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
@@ -29,26 +31,20 @@ import jakarta.json.bind.Jsonb;
  *
  */
 public class MetaImpl implements Meta {
-
-    public static MetaImpl from(JsonObject json) {
-        if (json != null) {
-            return new MetaImpl(json);
-        }
-        return new MetaImpl(null);
-    }
-
+    private final Jsonb jsonb;
     private final JsonObject meta;
 
-    private MetaImpl(JsonObject meta) {
+    public MetaImpl(JsonObject meta, Jsonb jsonb) {
         this.meta = meta;
+        this.jsonb = jsonb;
     }
 
     @Override
-    public Object getValue(MetaKey key, Jsonb jsonb) {
+    public Object getValue(MetaKey key) {
         if (meta == null) {
             return null;
         }
-        return jsonb.fromJson(meta.get(key.toString()).toString(), Object.class);
+        return this.jsonb.fromJson(meta.get(key.toString()).toString(), Object.class);
     }
 
     @Override
