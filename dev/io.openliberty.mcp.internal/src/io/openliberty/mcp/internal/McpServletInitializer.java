@@ -56,7 +56,8 @@ public class McpServletInitializer implements ServletContainerInitializer {
                 Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
             }
         } catch (IllegalStateException e) {
-            Tr.info(tc, "CWMCM0017I.cdi.inactive", context.getServletContextName()); // called if ToolRegistry.get() has an issue with CDI
+            String inactiveCdiMsg = "The MCP server endpoint for the application {0} is unavailable due to CDI being inactive. Verify that any MCP annotations are placed on methods of CDI beans that have an appropriate scope annotation (for example, @ApplicationScoped).";
+            Tr.event(tc, inactiveCdiMsg, context.getServletContextName()); // called if ToolRegistry.get() has an issue with CDI
         }
     }
 

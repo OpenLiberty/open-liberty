@@ -38,8 +38,8 @@ public class InactiveCdiTest extends FATServletClient {
     public static LibertyServer server;
 
     private static final String APPLICATION_NAME = "inactiveCdiTest";
-    private static final String CDI_INACTIVE_INFO_MESSAGE = "CWMCM0017I: The MCP server endpoint for the application " + APPLICATION_NAME
-                                                            + " is unavailable due to CDI being inactive.";
+    private static final String CDI_INACTIVE_TRACE_MESSAGE = "The MCP server endpoint for the application " + APPLICATION_NAME
+                                                             + " is unavailable due to CDI being inactive.";
     private static final String FILE_NOT_FOUND_ERROR_MESSAGE = "SRVE0190E: File not found: /mcp";
 
     @BeforeClass
@@ -51,12 +51,12 @@ public class InactiveCdiTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer(CDI_INACTIVE_INFO_MESSAGE, FILE_NOT_FOUND_ERROR_MESSAGE);
+        server.stopServer(CDI_INACTIVE_TRACE_MESSAGE, FILE_NOT_FOUND_ERROR_MESSAGE);
     }
 
     @Test
     public void testMcpCallWithoutCDIReturnsNotFoundError() throws Exception {
-        assertNotNull(server.waitForStringInLogUsingMark(CDI_INACTIVE_INFO_MESSAGE, server.getDefaultLogFile()));
+        assertNotNull(server.waitForStringInTraceUsingMark(CDI_INACTIVE_TRACE_MESSAGE));
         String initializeRequest = """
                         {
                           "jsonrpc": "2.0",

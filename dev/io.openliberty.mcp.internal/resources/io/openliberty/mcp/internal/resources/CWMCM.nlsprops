@@ -126,11 +126,6 @@ CWMCM0016E.error.sending.response.exception=CWMCM0016E: Unexpected Server Error.
 CWMCM0016E.error.sending.response.exception.explanation=An error occurred while trying to send the response.
 CWMCM0016E.error.sending.response.exception.useraction=No action is required.
 
-# Used for server logging
-# {0} = application name
-CWMCM0017I.cdi.inactive=CWMCM0017I: MCP server endpoint for the application {0} is unavailable due to CDI being inactive. Verify that any MCP annotations are placed on methods of CDI beans that have an appropriate scope annotation (for example, @ApplicationScoped).
-CWMCM0017I.cdi.inactive.explanation=CDI is not active which may occur if there are no CDI beans in the application. Therefore, the MCP server cannot start.
-CWMCM0017I.cdi.inactive.useraction=Check that any MCP annotations are placed on methods of CDI beans that have an appropriate scope annotation (for example, @ApplicationScoped or @RequestScoped). If your application archive contains a CDI extension, ensure that it also includes a beans.xml. If your application has a beans.xml, check that "bean-discovery-mode" is not "none".
 # Used as part of a response to a client
 # do not translate jsonrpc
 # {0} = jsonrpc value
