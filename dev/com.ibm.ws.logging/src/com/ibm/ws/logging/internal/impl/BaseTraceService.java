@@ -1270,9 +1270,11 @@ public class BaseTraceService implements TrService {
      */
     public static LogResult logLine(Object event) {
         String key = null;
+        String logType = null;
 
         if (event instanceof LogTraceData) {
             LogTraceData logData = (LogTraceData) event;
+            logType = "JUL";
 
             if (throttleType.toLowerCase().equals("message"))
                 key = logData.getMessage();
@@ -1281,6 +1283,8 @@ public class BaseTraceService implements TrService {
             }
         } else if (event instanceof String) {
             String logEvent = (String) event;
+            logType = "SysOut";
+
             if (throttleType.toLowerCase().equals("message"))
                 key = logEvent;
             else {
@@ -1312,8 +1316,8 @@ public class BaseTraceService implements TrService {
                 if (throttleStates.size() < throttleMapSize) {
                     state = throttleStates.computeIfAbsent(key, k -> {
                         return new ThrottleState(throttleWindowDurationMS, () -> throttleMaxMessagesPerWindow); //throttleMaxMessagesPerWindow can be updated dynamically so need to ensure that it's always updated
-
                     });
+                    state.setLoggerType(logType);
                 } else {
                     return LogResult.LOG;
                 }

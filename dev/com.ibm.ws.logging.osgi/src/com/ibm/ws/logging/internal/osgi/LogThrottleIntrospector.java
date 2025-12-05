@@ -60,12 +60,12 @@ public class LogThrottleIntrospector implements Introspector {
         	keyHeader = "INDEX";
         
         out.printf(
-            "%-15s %-12s %-25s %-25s %-15s%n",
-            keyHeader, "COUNT", "LAST OCCURRENCE", "AGE", "THROTTLED"
+            "%-15s %-12s %-25s %-25s %-25s %-15s%n",
+            keyHeader, "COUNT", "LAST OCCURRENCE", "AGE", "LOGGER TYPE", "THROTTLED"
         );
         out.printf(
-                "%-12s %-12s %-25s %-25s %-15s%n",
-                "", "(Last 5 min)", "", "", ""
+                "%-12s %-12s %-25s %-25s %-25s %-15s%n",
+                "", "(Last 5 min)", "", "", "",""
             );
 
         out.println("------------------------------------------------------------------------------------------");
@@ -80,13 +80,14 @@ public class LogThrottleIntrospector implements Introspector {
             
             if(throttleType.equals("message")) {
             	 out.printf(
-                         "%-15s %-12s %-25s %-25s %-15s%n",
+                         "%-15s %-12s %-25s %-25s %-25s %-15s%n",
                          "#" + index,
                          s.getValue().getRunningTotal(),
                          DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                          .withZone(ZoneId.systemDefault())
                          .format(last),
                          formatDuration(secondsAgo),
+                         s.getValue().getLoggerType(),
                          throttled
                      );
 
@@ -94,13 +95,14 @@ public class LogThrottleIntrospector implements Introspector {
             }
             else {
             	out.printf(
-                        "%-15s %-12s %-25s %-25s %-15s%n",
+                        "%-15s %-12s %-25s %-25s %-25s %-15s%n",
                         s.getKey(),
                         s.getValue().getRunningTotal(),
                         DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
                         .withZone(ZoneId.systemDefault())
                         .format(last),
                         formatDuration(secondsAgo),
+                        s.getValue().getLoggerType(),
                         throttled
                     );
             }

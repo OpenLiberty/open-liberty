@@ -31,6 +31,8 @@ public class ThrottleState {
 
     private final Supplier<Integer> maxMessagesSupplier;
 
+    private String loggerType;
+
     public ThrottleState(int throttleWindowDuration, Supplier<Integer> maxMessagesSupplier) {
         this.maxMessagesSupplier = maxMessagesSupplier;
         this.bucketDurationMs = throttleWindowDuration / windowIntervals;
@@ -93,6 +95,14 @@ public class ThrottleState {
 
     public synchronized long getLastAccessTime() {
         return lastAccessTime;
+    }
+
+    public synchronized String getLoggerType() {
+        return loggerType;
+    }
+
+    public synchronized void setLoggerType(String loggerType) {
+        this.loggerType = loggerType;
     }
 
 }
