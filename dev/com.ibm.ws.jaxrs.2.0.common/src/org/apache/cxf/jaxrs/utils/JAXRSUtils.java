@@ -1468,7 +1468,7 @@ public final class JAXRSUtils {
             }
         }
 
-        logMessageHandlerProblem("NO_MSG_READER", targetTypeClass, contentType);
+        logMessageHandlerProblem("NO_MSG_READER", targetTypeClass, contentType, m);
         throw new WebApplicationException(Response.Status.UNSUPPORTED_MEDIA_TYPE);
     }
 
@@ -1991,8 +1991,39 @@ public final class JAXRSUtils {
         }
     }
 
+    // Overloaded method for backward compatibility - delegates to the 4-parameter version
     public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct) {
+        return logMessageHandlerProblem(name, cls, ct, null);
+    }
+
+    public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct, Message m) {
         Thread.dumpStack(); // temporary patch, dump stack when this error occurs
+        
+        // Debug patch: Extract and log message content
+        if (m != null) {
+            try {
+                InputStream is = m.getContent(InputStream.class);
+                if (is != null) {
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    IOUtils.copy(is, baos);
+                    byte[] messageBytes = baos.toByteArray();
+                    
+                    // Reset the input stream so it can be read again if needed
+                    m.setContent(InputStream.class, new ByteArrayInputStream(messageBytes));
+                    
+                    // Log the message content
+                    String messageContent = new String(messageBytes, StandardCharsets.UTF_8);
+                    System.out.println("DEBUG: Message content that failed to deserialize:");
+                    System.out.println(messageContent);
+                    System.out.println("DEBUG: Message content length: " + messageBytes.length + " bytes");
+                } else {
+                    System.out.println("DEBUG: No InputStream content available in Message");
+                }
+            } catch (Exception e) {
+                System.out.println("DEBUG: Failed to extract message content: " + e.getMessage());
+            }
+        }
+        
         org.apache.cxf.common.i18n.Message errorMsg =
             new org.apache.cxf.common.i18n.Message(name, BUNDLE, cls.getName(), mediaTypeToString(ct));
         String errorMessage = errorMsg.toString();
