@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal;
 
 import java.util.ArrayList;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,6 +28,7 @@ import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
+import io.openliberty.mcp.internal.requests.DefaultValueConverter;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
@@ -142,6 +144,7 @@ public class McpCdiExtension implements Extension {
         boolean duplicateArgumentsFound = false;
         boolean missingArgumentName = false;
         boolean unsupportedDefaultValueType = false;
+        boolean invalidDefaultValueForType = false;
 
         for (ToolMetadata tool : tools.getAllTools()) {
             Map<String, ArgumentMetadata> arguments = tool.arguments();
@@ -157,14 +160,26 @@ public class McpCdiExtension implements Extension {
                 } else if (argName.equals(ToolMetadata.MISSING_TOOL_ARG_NAME)) {
                     Tr.error(tc, "CWMCM0003E.missing.tool.argument.name", tool.getToolQualifiedName());
                     missingArgumentName = true;
-                } else if (!argMetadata.defaultValue().isEmpty()
-                           && !BuiltinDefaultValueConverters.CONVERTERS.containsKey(TypeUtility.box(argMetadata.type()))) {
-                    Tr.error(tc, "CWMCM0019E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argName, argMetadata.type());
-                    unsupportedDefaultValueType = true;
+                } else if (!argMetadata.defaultValue().isEmpty()) {
+                    Type typeWrapperClass = TypeUtility.box(argMetadata.type());
+                    DefaultValueConverter<?> converter = BuiltinDefaultValueConverters.CONVERTERS.get(typeWrapperClass);
+                    if (converter != null) {
+                        try {
+                            converter.convert(argMetadata.defaultValue());
+                        } catch (IllegalArgumentException | NullPointerException e) {
+                            Tr.error(tc, "CWMCM0020E.defaultvalue.conversion.error", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type(),
+                                     argMetadata.defaultValue());
+                            invalidDefaultValueForType = true;
+                        }
+                    } else {
+                        Tr.error(tc, "CWMCM0019E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argName, argMetadata.type());
+                        unsupportedDefaultValueType = true;
+                    }
+
                 }
             }
         }
-        return blankArgumentsFound || duplicateArgumentsFound || missingArgumentName || unsupportedDefaultValueType;
+        return blankArgumentsFound || duplicateArgumentsFound || missingArgumentName || unsupportedDefaultValueType || invalidDefaultValueForType;
     }
 
     private boolean reportOnDuplicateTools(AfterDeploymentValidation afterDeploymentValidation) {

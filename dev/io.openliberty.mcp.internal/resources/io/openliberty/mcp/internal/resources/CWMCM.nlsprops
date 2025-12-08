@@ -171,7 +171,10 @@ CWMCM0019E.missing.toolarg.defaultvalue.converter.useraction=Create a custom con
 
 # Used for server logging
 # do not translate MCP
-# {0} = The incorrect character value
-CWMCM0020E.defaultvalue.invalid.character=CWMCM0020E: The default value {0} cannot be converted to a character.
-CWMCM0020E.defaultvalue.invalid.character.explanation=An argument with a character type has a default value that is not a single character.
-CWMCM0020E.defaultvalue.invalid.character.useraction=Ensure that the default value for arguments with a character type contain exactly one character.
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+# {3} = corresponding default value
+CWMCM0020E.defaultvalue.conversion.error=CWMCM0020E: The MCP tool {0} has an argument {1} with the type {2} that cannot accept the default value {3}.
+CWMCM0020E.defaultvalue.conversion.error.explanation=An argument has a default value that cannot be converted to the argument's type. This may occur if the default value is null, has an invalid format, or is out of range for the target type.
+CWMCM0020E.defaultvalue.conversion.error.useraction=Ensure that the default value is valid for the argument's type. Ensure the default value is not null. For character types, provide exactly one character. For numeric types, provide a valid number within the type's range.

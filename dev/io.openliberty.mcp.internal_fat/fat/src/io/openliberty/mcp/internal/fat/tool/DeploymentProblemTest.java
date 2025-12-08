@@ -47,7 +47,8 @@ public class DeploymentProblemTest extends FATServletClient {
                           "CWMCM0006E", // Duplicate special arguments.
                           "CWMCM0007E", // Invalid Special arguments.
                           "CWMCM0018E", //  Arguments contain generics.
-                          "CWMCM0019E" //  Default value has no type converter.
+                          "CWMCM0019E", //  Default value has no type converter.
+                          "CWMCM0020E" //  Invalid default value for argument type.
         );
     }
 
@@ -106,5 +107,12 @@ public class DeploymentProblemTest extends FATServletClient {
         String expectedErrorHeader = Pattern.quote("CWMCM0019E: The city argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter MCP tool method does not have a converter to change its default value into an object of type class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest$City.");
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg DefaultValue Without Converter: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testToolArgInvalidDefaultValueForType() throws Exception {
+        String expectedErrorHeader = "CWMCM0020E: The MCP tool class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue has an argument year with the type int that cannot accept the default value TwentyTwentyFive.";
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg Invalid DefaultValue for Argument Type: ", expectedErrorHeader, expectedErrorList, server);
     }
 }

@@ -62,6 +62,10 @@ public class ToolArgDefaultValueConverterTest {
         Map<String, ArgumentMetadata> defaultValInvalidToolArgs = Map.of("initial", new ArgumentMetadata("initial", Character.class, 0, "Char value", false, "HH", false));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueInvalidArgTestTool, defaultValInvalidToolArgs, Collections.emptyList()));
 
+        Tool defaultValueInvalidLongArgTestTool = Literals.tool("defaultValueInvalidLong", "Default Value Invalid Long", "ToolArg with an invalid default value of a Long type");
+        Map<String, ArgumentMetadata> defaultValInvalidLongToolArgs = Map.of("count", new ArgumentMetadata("count", Long.class, 0, "Long value", false, "notANumber", false));
+        registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueInvalidLongArgTestTool, defaultValInvalidLongToolArgs, Collections.emptyList()));
+
         Tool defaultValueBoolArgTestTool = Literals.tool("defaultValueBool", "Default Value Bool", "ToolArg with a default value of a Bool type");
         Map<String, ArgumentMetadata> defaultValBoolToolArgs = Map.of("bool", new ArgumentMetadata("bool", Boolean.class, 0, "Bool value", false, "true", false));
         registry.addTool(ToolMetadataTestUtility.createFrom(defaultValueBoolArgTestTool, defaultValBoolToolArgs, Collections.emptyList()));
@@ -147,7 +151,30 @@ public class ToolArgDefaultValueConverterTest {
         ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("initial");
         assertThrows(() -> McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata),
                      exception()
-                                .ofType(IllegalArgumentException.class).messageIncludes("CWMCM0020E: The default value HH cannot be converted to a character."));
+                                .ofType(IllegalArgumentException.class)
+                                .messageIncludes("CWMCM0020E: The MCP tool defaultValueInvalidChar has an argument initial with the type class java.lang.Character that cannot accept the default value HH."));
+    }
+
+    @Test
+    public void testArgumentDefaultValueInvalidLongTypeConversion() {
+        StringReader reader = new StringReader("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "defaultValueInvalidLong",
+                            "arguments": {}
+                          }
+                        }
+                        """);
+        McpRequest request = jsonb.fromJson(reader, McpRequest.class);
+        McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
+        ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("count");
+        assertThrows(() -> McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata),
+                     exception()
+                                .ofType(IllegalArgumentException.class)
+                                .messageIncludes("CWMCM0020E: The MCP tool defaultValueInvalidLong has an argument count with the type class java.lang.Long that cannot accept the default value notANumber."));
     }
 
     @Test

@@ -18,6 +18,9 @@ src: \
 
 fat.project: true
 
+Include-Resource: \
+    fat/resources
+
 tested.features: \
     appSecurity-6.0,\
     cdi-4.1,\

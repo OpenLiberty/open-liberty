@@ -48,6 +48,12 @@ public class ToolArgValidationTest {
         return city.name;
     }
 
+    @Tool(name = "testToolArgInvalidNumberDefaultValue", title = "ToolArg Invalid Number Default Value",
+          description = "Test tool response to default value that can't be converted to a integer")
+    public int testToolArgInvalidNumberDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "TwentyTwentyFive") int year) {
+        return year;
+    }
+
     public record City(String name, String country, int population, boolean isCapital) {};
 
     @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
