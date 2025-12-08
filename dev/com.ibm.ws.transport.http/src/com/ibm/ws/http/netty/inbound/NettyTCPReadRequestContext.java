@@ -105,7 +105,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         HttpInputStreamImpl in = null;
         System.out.println("DEBUG: input() vc is: " + vc);
 
-
         if (vc != null) {
             Object candidate = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
             if (candidate instanceof HttpInputStreamImpl) {
@@ -127,7 +126,12 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 }
             }
         }
-        //HttpInputStreamImpl in = nettyChannel.attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
+        // if (in == null) {
+        //     Object stream = nettyChannel.attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
+        //     if (stream instanceof HttpInputStreamImpl) {
+        //         in = (HttpInputStreamImpl) stream;
+        //     }
+        // }
         if (in == null) {
             throw new IOException("HTTP input stream not initialized for channel " + nettyChannel);
         }
@@ -582,6 +586,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     private boolean isLogicallyUpgraded() {
 
+        if (hasUpgradeHandler()) {
+            return true;
+        }
+
         if(vc == null){
             return false;
         }
@@ -633,10 +641,33 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     private NettyServletUpgradeHandler ensureUpgradeHandler() {
         NettyServletUpgradeHandler h = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
-        if (h == null) {
-            throw new IllegalStateException("Channel marked upgraded but no NettyServletUpgradeHandler in pipeline");
+        if(h != null) return h;
+
+        //TODO lazy initialization due to wsoc not triggering upgrade event. Find missing location to throw event .
+        if(isWsocUpgrade()){
+            Tr.debug(tc, "Installing upgrade handler for WSOC upgrade");
+            h = new NettyServletUpgradeHandler(nettyChannel);
+            h.setTCPReadContext(this);
+            h.setTCPReadContext(this);
+            h.setVC(vc);
+            if(nettyChannel.pipeline().get("ServletUpgradeHandler") == null){
+                nettyChannel.pipeline().addLast("ServletUpgradeHandler", h);
+            }
+            return h;
         }
-        return h;
+        //if (h == null) {
+            throw new IllegalStateException("Channel marked upgraded but no NettyServletUpgradeHandler in pipeline");
+       // }
+        //return h;
+    }
+
+    private boolean isWsocUpgrade(){
+        if(vc == null){
+            return false;
+        }
+        Object upgradeConn = vc.getStateMap().get(com.ibm.ws.transport.access.TransportConstants.UPGRADED_CONNECTION);
+        Object webConn = vc.getStateMap().get(com.ibm.ws.transport.access.TransportConstants.UPGRADED_WEB_CONNECTION_OBJECT);
+        return "true".equalsIgnoreCase(String.valueOf(upgradeConn)) && webConn != null;
     }
 
     private long nonUpgradedImmediateDrain() throws IOException {
@@ -787,5 +818,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
     }
 
+
+    
 
 }

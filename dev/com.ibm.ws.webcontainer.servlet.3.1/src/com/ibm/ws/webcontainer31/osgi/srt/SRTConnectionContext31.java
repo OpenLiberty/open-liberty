@@ -151,7 +151,22 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
 
                 try
                 {
-                    ((SRTServletResponse31)_response).finishKeepConnection();
+                    try{
+                        ((SRTServletResponse31) _response).finishKeepConnection();
+                    }catch(IOException ioe){
+                        String msg = ioe.getMessage();
+                        if (msg != null && msg.contains("Stream is closed")) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc,
+                                         "finishConnection: ignoring expected 'Stream is closed' while finishing upgrade response");
+                            }
+                            // Do NOT rethrow – treat as benign
+                        } else {
+                            // Anything else is still unexpected
+                            throw ioe;
+                        }
+                    }
+                    
                     // close the current httpinput and httpoutput streams as the response is written out. 
                     if(dispatcherLink != null)
                         dispatcherLink.close(vc, null);
@@ -188,17 +203,17 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 {
                     System.out.println("DEBUG start of throwable");
                     com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "87", this);
-                    System.out.println("DEBUG: servlet throwable caught, store fatal flag...");
-                    IResponse31Impl irImpl = (IResponse31Impl) _response.getIResponse();
-                    vc = irImpl.getVC();
-                    try {
-                        if (vc != null) {
-                            vc.getStateMap().put(TransportConstants.UPGRADED_FATAL_ERROR, "true");
-                            System.out.println("DEBUG: servlet stored flag in vc");
-                        }
-                    } catch (Throwable ignore) {
-                        // best-effort only; don't let this mask the original error
-                    }
+                    // System.out.println("DEBUG: servlet throwable caught, store fatal flag...");
+                    // IResponse31Impl irImpl = (IResponse31Impl) _response.getIResponse();
+                    // vc = irImpl.getVC();
+                    // try {
+                    //     if (vc != null) {
+                    //         vc.getStateMap().put(TransportConstants.UPGRADED_FATAL_ERROR, "true");
+                    //         System.out.println("DEBUG: servlet stored flag in vc");
+                    //     }
+                    // } catch (Throwable ignore) {
+                    //     // best-effort only; don't let this mask the original error
+                    // }
                 }               
 
                 try

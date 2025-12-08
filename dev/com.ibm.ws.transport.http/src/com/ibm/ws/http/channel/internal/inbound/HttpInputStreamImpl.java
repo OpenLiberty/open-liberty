@@ -703,21 +703,15 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                         if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                             Tr.debug(tc, "Exception during streaming decompress", dfe);
                         }
-                        fragmentSource.release();
                         throw new IOException("Invalid compressed request body", dfe);
                     }
                 }
                 if(out !=null && out.hasRemaining()){
-                    if (out != fragmentSource) 
-                        fragmentSource.release();
                     this.buffer = out;
                     this.decodedBytesProduced += this.buffer.remaining();
                     return true;
                 } else{
                     //No data produced, compression might need more data
-                    if(out != fragmentSource){
-                        fragmentSource.release();
-                    }
                     continue; //fetch another fragment
                 } 
             } finally {
