@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2021 IBM Corporation and others.
+    Copyright (c) 2021, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -1681,17 +1681,68 @@
 		keyManagementKeyAlias="rs256"
 		sslRef="ssl_allSigAlg_badKeyStore"
 	>
-	</openidConnectClient>		
+	</openidConnectClient>	
 
-	<authFilter id="authFilterRP_trustStoreRefOmitted">
+	<authFilter id="authFilterES256PublicES256">
 		<requestUrl
-			id="requestUrlRP_trustStoreRefOmitted"
-			urlPattern="/simple/RP_trustStoreRefOmitted"
+			id="requestUrlES256PublicES256"
+			urlPattern="/simple/SignES256EncryptPublicES256"
 			matchType="contains" />
 	</authFilter>
 
 	<openidConnectClient
-		id="RP_trustStoreRefOmitted"
+		id="SignES256EncryptPublicES256"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSigningEncrypting/authorize" 
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"
+		authFilterRef="authFilterES256PublicES256"
+		signatureAlgorithm="ES256"
+		trustStoreRef="trust_allSigAlg"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
+		sslRef="ssl_allSigAlg_badKeyStore"
+	>
+	</openidConnectClient>	
+
+	<authFilter id="authFilterRP_trustStoreRefOmitted_RSA_OAEP">
+		<requestUrl
+			id="requestUrlRP_trustStoreRefOmitted_RSA_OAEP"
+			urlPattern="/simple/RP_trustStoreRefOmitted_RSA_OAEP"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RP_trustStoreRefOmitted_RSA_OAEP"
+		scope="openid profile"
+		clientId="client01"
+		clientSecret="{xor}LDo8LTorbm1saw=="
+		mapIdentityToRegistryUser="true"
+		httpsRequired="false"
+		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
+		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
+		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"
+		authFilterRef="authFilterRP_trustStoreRefOmitted_RSA_OAEP"
+		signatureAlgorithm="RS256"
+		trustAliasName="rs256"
+		keyManagementKeyAlias="rs256"
+		sslRef="ssl_allSigAlg"
+	>
+	</openidConnectClient>		
+
+	<authFilter id="authFilterRP_trustStoreRefOmitted_ECDH_ES">
+		<requestUrl
+			id="requestUrlRP_trustStoreRefOmitted_ECDH_ES"
+			urlPattern="/simple/RP_trustStoreRefOmitted_ECDH_ES"
+			matchType="contains" />
+	</authFilter>
+
+	<openidConnectClient
+		id="RP_trustStoreRefOmitted_ECDH_ES"
 		scope="openid profile"
 		clientId="client01"
 		clientSecret="{xor}LDo8LTorbm1saw=="
@@ -1700,10 +1751,10 @@
 		redirectToRPHostAndPort="http://localhost:${bvt.prop.security_2_HTTP_default}"
 		authorizationEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/oidc/endpoint/OidcConfigSigningEncrypting/authorize"
 		tokenEndpointUrl="http://localhost:${bvt.prop.security_1_HTTP_default}/TokenEndpointServlet/getToken"  
-		authFilterRef="authFilterRP_trustStoreRefOmitted"
-		signatureAlgorithm="RS256"
-		trustAliasName="rs256"
-		keyManagementKeyAlias="rs256"
+		authFilterRef="authFilterRP_trustStoreRefOmitted_ECDH_ES"
+		signatureAlgorithm="ES256"
+		trustAliasName="es256"
+		keyManagementKeyAlias="es256"
 		sslRef="ssl_allSigAlg"
 	>
 	</openidConnectClient>		

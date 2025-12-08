@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -39,6 +40,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * This is the test class that will run tests to verify the correct behavior when
@@ -88,6 +91,9 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
     protected enum ExpectedBehavior {
         USE_USERINFO, DO_NO_USE_USERINFO, SIGN_MISMATCH_INTROSPECT, SIGN_MISMATCH_USERINFO, ENCRYPT_MISMATCH_USERINFO
     }
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.openidconnect.client-1.0_fat.rp");
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -1015,6 +1021,7 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedRS256_validateUserinfoOnly() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256), setRS_JWEAppName(Constants.SIGALG_RS256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.USE_USERINFO);
@@ -1033,6 +1040,7 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      */
     @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedRS256_validateUserinfoOnly_userinfoMismatchES384() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_ES384), setRS_JWEAppName(Constants.SIGALG_RS256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
@@ -1050,6 +1058,7 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedRS384_validateUserinfoOnly() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS384, setJWEBuilderName(Constants.SIGALG_RS384), setJWEBuilderName(Constants.SIGALG_RS384), setRS_JWEAppName(Constants.SIGALG_RS384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.USE_USERINFO);
@@ -1068,6 +1077,7 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      */
     @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedRS384_validateUserinfoOnly_userinfoMismatchRS512() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS384, setJWEBuilderName(Constants.SIGALG_RS384), setJWEBuilderName(Constants.SIGALG_RS512), setRS_JWEAppName(Constants.SIGALG_RS384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
@@ -1085,6 +1095,7 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedRS512_validateUserinfoOnly() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS512, setJWEBuilderName(Constants.SIGALG_RS512), setJWEBuilderName(Constants.SIGALG_RS512), setRS_JWEAppName(Constants.SIGALG_RS512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.USE_USERINFO);
@@ -1103,6 +1114,7 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      */
     @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedRS512_validateUserinfoOnly_userinfoMismatchES384() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_RS512, setJWEBuilderName(Constants.SIGALG_RS512), setJWEBuilderName(Constants.SIGALG_ES384), setRS_JWEAppName(Constants.SIGALG_RS512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
@@ -1138,9 +1150,28 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      */
     @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedES256_validateUserinfoOnly_userinfoMismatchRS384() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWEBuilderName(Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_RS384), setRS_JWEAppName(Constants.SIGALG_ES256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES256 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * ES384.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
+    @Test
+    public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedES256_validateUserinfoOnly_userinfoMismatchES384() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWEBuilderName(Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_ES384), setRS_JWEAppName(Constants.SIGALG_ES256, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
 
     }
 
@@ -1173,9 +1204,28 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      */
     @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedES384_validateUserinfoOnly_userinfoMismatchRS512() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES384, setJWEBuilderName(Constants.SIGALG_ES384), setJWEBuilderName(Constants.SIGALG_RS512), setRS_JWEAppName(Constants.SIGALG_ES384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES384 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * ES512.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
+    @Test
+    public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedES384_validateUserinfoOnly_userinfoMismatchES512() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES384, setJWEBuilderName(Constants.SIGALG_ES384), setJWEBuilderName(Constants.SIGALG_ES512), setRS_JWEAppName(Constants.SIGALG_ES384, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
 
     }
 
@@ -1208,9 +1258,28 @@ public class OidcPropagationConsumeUserinfoTests extends CommonTest {
      */
     @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedES512_validateUserinfoOnly_userinfoMismatchRS384() throws Exception {
 
         genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES512, setJWEBuilderName(Constants.SIGALG_ES512), setJWEBuilderName(Constants.SIGALG_RS384), setRS_JWEAppName(Constants.SIGALG_ES512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
+
+    }
+
+    /**
+     * Test with a jwt token signed and encrypted with ES512 (created using the jwt builder as opposed to the RP requesting the
+     * token from the OP).
+     * The RS config specifies validation using userinfo. In this case, userinfo will return a JWS Token signed and encrypted with
+     * ES384.
+     * Validation of the userinfo response will fail because of the alg mistmatch. This will result in the access_token being seen
+     * as invalid and we will receive a 401 as well as error messages in the server log.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
+    @Test
+    public void OidcPropagationConsumeUserinfoTests_jweToken_EncryptedES512_validateUserinfoOnly_userinfoMismatchES384() throws Exception {
+
+        genericUseStubbedToken_ConsumeJWTUserinfoTest(Constants.SIGALG_ES512, setJWEBuilderName(Constants.SIGALG_ES512), setJWEBuilderName(Constants.SIGALG_ES384), setRS_JWEAppName(Constants.SIGALG_ES512, Constants.USERINFO_ENDPOINT, Constants.JWT_TOKEN_FORMAT), ExpectedBehavior.ENCRYPT_MISMATCH_USERINFO);
 
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -170,13 +170,17 @@ public class Constants {
     public static final String ENCRYPT_RS256 = "RS256";
     public static final String ENCRYPT_RS384 = "RS384";
     public static final String ENCRYPT_RS512 = "RS512";
+
+    public static final String ENCRYPT_ES256 = "ES256";
+    public static final String ENCRYPT_ES384 = "ES384";
+    public static final String ENCRYPT_ES512 = "ES512";
+
     public static final String[] ALL_TEST_SIGALGS = { SIGALG_HS256, SIGALG_HS384, SIGALG_HS512,
             SIGALG_RS256, SIGALG_RS384, SIGALG_RS512,
             SIGALG_ES256, SIGALG_ES384, SIGALG_ES512 };
     public static final String[] ALL_TEST_HSSIGALGS = { SIGALG_HS256, SIGALG_HS384, SIGALG_HS512 };
     public static final String[] ALL_TEST_RSSIGALGS = { SIGALG_RS256, SIGALG_RS384, SIGALG_RS512 };
     public static final String[] ALL_TEST_ESSIGALGS = { SIGALG_ES256, SIGALG_ES384, SIGALG_ES512 };
-    // Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
     public static final String[] ALL_TEST_ENCRYPTALGS = { SIGALG_RS256, SIGALG_RS384, SIGALG_RS512, SIGALG_ES256, SIGALG_ES384, SIGALG_ES512 };
 
     public static final String LOGOUT_TITLE = "Logout";

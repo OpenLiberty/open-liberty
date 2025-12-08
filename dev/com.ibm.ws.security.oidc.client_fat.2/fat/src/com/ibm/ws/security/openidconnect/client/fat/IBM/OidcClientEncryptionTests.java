@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,6 +34,8 @@ import com.meterware.httpunit.WebConversation;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * This is the test class that will run tests to verify the correct behavior with
@@ -67,6 +70,9 @@ public class OidcClientEncryptionTests extends CommonTest {
     public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
     public static final String badTokenSegment = "1234567890123456789";
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.openidconnect.client-1.0_fat.rp");
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -311,10 +317,29 @@ public class OidcClientEncryptionTests extends CommonTest {
         return jwtToken;
     }
 
-    public String createTokenWithBadElement(int badPart) throws Exception {
+    public String createGenericES256JWE() throws Exception {
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_ES256)), JwtConstants.KEY_MGMT_KEY_ALG_ES);
+        builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
+        builder.setAlorithmHeaderValue(Constants.SIGALG_ES256);
+        builder.setECKey(testOPServer.getServer().getServerRoot() + "/ES256private-key-pkcs#8.pem");
+        builder.setClaim("token_src", "testcase builder");
+        // calling buildJWE will override the header contents
+        String jwtToken = builder.buildJWE("JOSE", "jwt");
+
+        return jwtToken;
+    }
+
+    public String createTokenWithBadElement(int badPart, String builderAlg) throws Exception {
 
         String createTokenWithBadElement = "createTokenWithBadElement";
-        String jwtToken = createGenericRS256JWE();
+        String jwtToken;
+        if (builderAlg == Constants.SIGALG_ES256){
+            jwtToken = createGenericES256JWE();
+        } else if (builderAlg == Constants.SIGALG_RS256){
+            jwtToken = createGenericRS256JWE();
+        } else {
+            jwtToken = "";
+        }
         Log.info(thisClass, createTokenWithBadElement, jwtToken);
         String[] jwtTokenArray = jwtToken.split("\\.");
         Log.info(thisClass, createTokenWithBadElement, "size: " + jwtTokenArray.length);
@@ -344,6 +369,7 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_EncryptTokenRS256_RPDecryptRS256() throws Exception {
 
         genericEncryptTest(Constants.SIGALG_RS256, Constants.SIGALG_RS256);
@@ -356,6 +382,7 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_EncryptTokenRS384_RPDecryptRS384() throws Exception {
 
         genericEncryptTest(Constants.SIGALG_RS384, Constants.SIGALG_RS384);
@@ -368,6 +395,7 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_EncryptTokenRS512_RPDecryptRS512() throws Exception {
 
         genericEncryptTest(Constants.SIGALG_RS512, Constants.SIGALG_RS512);
@@ -417,8 +445,10 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithRS256_RPDecryptRS256() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_RS256;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but RS256 for decrypt
                 genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
@@ -435,8 +465,10 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithRS384_RPDecryptRS384() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_RS384;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but RS384 for decrypt
                 genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
@@ -453,8 +485,10 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithRS512_RPDecryptRS512() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_RS512;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but RS512 for decrypt
                 genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
@@ -471,8 +505,10 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithES256_RPDecryptES256() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_ES256;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES256 for decrypt
                 genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
@@ -489,8 +525,10 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithES384_RPDecryptES384() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_ES384;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES384 for decrypt
                 genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
@@ -507,8 +545,10 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithES512_RPDecryptES512() throws Exception {
 
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
         String rpDecryptAlg = Constants.SIGALG_ES512;
-        for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
+        for (String builderEncryptAlg : builderEncryptAlgs) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES512 for decrypt
                 genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
@@ -528,6 +568,7 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_SignWithVariousAlgs_EncryptWithRS256_DecryptWithRS256() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_RS256;
@@ -547,6 +588,7 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_SignWithVariousAlgs_EncryptWithRS384_DecryptWithRS384() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_RS384;
@@ -565,6 +607,7 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_SignWithVariousAlgs_EncryptWithRS512_DecryptWithRS512() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_RS512;
@@ -636,8 +679,8 @@ public class OidcClientEncryptionTests extends CommonTest {
     /****************************************************************/
     @Test
     public void OidcClientEncryptionTests_SignWithValidAlg_EncryptValid_DecryptInvalidKeyManagementKeyAlias() throws Exception {
-        String rpEncryptAlg = Constants.SIGALG_RS256;
-        String rpDecryptAlg = Constants.SIGALG_RS256;
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String rpDecryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
 
         List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "InvalidKeyException");
@@ -646,8 +689,8 @@ public class OidcClientEncryptionTests extends CommonTest {
 
     @Test
     public void OidcClientEncryptionTests_SignWithValidAlg_EncryptValid_DecryptNonExistantKeyManagementKeyAlias() throws Exception {
-        String rpEncryptAlg = Constants.SIGALG_RS256;
-        String rpDecryptAlg = Constants.SIGALG_RS256;
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String rpDecryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
 
         List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "nonExistantKeyManagementKeyAlias" + ".*" + "not present");
@@ -726,6 +769,7 @@ public class OidcClientEncryptionTests extends CommonTest {
     /* enabled - show that we fail with the appropriate errors */
     /*******************************************************************/
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_SignWithValidAlg_EncryptWithRS256_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_RS256;
         String rpEncryptAlg = Constants.SIGALG_RS256;
@@ -736,6 +780,7 @@ public class OidcClientEncryptionTests extends CommonTest {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_SignWithValidAlg_EncryptWithRS384_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_RS384;
         String rpEncryptAlg = Constants.SIGALG_RS384;
@@ -746,6 +791,7 @@ public class OidcClientEncryptionTests extends CommonTest {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_SignWithValidAlg_EncryptWithRS512_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_RS512;
         String rpEncryptAlg = Constants.SIGALG_RS512;
@@ -795,11 +841,14 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_consumeTokenThatWasEncryptedUsingOtherContentEncryptionAlg() throws Exception {
 
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192);
-        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), JwtConstants.SIGALG_RS256));
-        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
 
-        genericEncryptTest(Constants.SIGALG_RS256, Constants.SIGALG_RS256, parms);
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192);
+        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), rpEncryptAlg));
+        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_KEY_MGMT_ALG, keyManagementAlg);
+
+        genericEncryptTest(rpEncryptAlg, rpEncryptAlg, parms);
     }
 
     /**
@@ -809,6 +858,7 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_consumeTokenThatWasEncryptedUsingOtherKeyManagementKeyAlg() throws Exception {
 
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_256);
@@ -825,12 +875,19 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_JWETypeNotJose() throws Exception {
 
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         // We're going to use a test JWT token builder to create a token that has "notJOSE" in the JWE header type field
         // the Liberty builder won't allow us to update that field, so, we need to peice a token together
-        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), rpEncryptAlg)), keyManagementAlg);
         builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
-        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
-        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setAlorithmHeaderValue(rpEncryptAlg);
+        if (testOPServer.getServer().isFIPS140_3EnabledAndSupported()){
+            builder.setECKey(testOPServer.getServer().getServerRoot() + "/ES256private-key-pkcs#8.pem");
+        } else {
+            builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        }
         builder.setClaim("token_src", "testcase builder");
         builder.setAudience("client01");
         builder.setIssuedAtToNow();
@@ -843,18 +900,25 @@ public class OidcClientEncryptionTests extends CommonTest {
         // the built token will be passed to the test app via the overrideToken parm
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtToken);
 
-        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), null, parms);
+        genericEncryptTest(rpEncryptAlg, setBuilderName(rpEncryptAlg), rpEncryptAlg, setAppName(rpEncryptAlg), null, parms);
     }
 
     @Test
     public void OidcClientEncryptionTests_JWEContentTypeNotJwt() throws Exception {
 
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         // We're going to use a test JWT token builder to create a token that has "not_jwt" in the JWE header content type field
         // the Liberty builder won't allow us to update that field, so, we need to peice a token together
-        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
+        JWTTokenBuilder builder = tokenBuilderHelpers.populateAlternateJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), rpEncryptAlg)), keyManagementAlg);
         builder.setIssuer(testOPServer.getHttpString() + "/TokenEndpointServlet");
-        builder.setAlorithmHeaderValue(Constants.SIGALG_RS256);
-        builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        builder.setAlorithmHeaderValue(rpEncryptAlg);
+        if (testOPServer.getServer().isFIPS140_3EnabledAndSupported()){
+            builder.setECKey(testOPServer.getServer().getServerRoot() + "/ES256private-key-pkcs#8.pem");
+        } else {
+            builder.setRSAKey(testOPServer.getServer().getServerRoot() + "/RS256private-key.pem");
+        }
         builder.setClaim("token_src", "testcase builder");
         // calling buildJWE will override the header contents
         String jwtToken = builder.buildJWE("JOSE", "not_jwt");
@@ -864,7 +928,7 @@ public class OidcClientEncryptionTests extends CommonTest {
 
         List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs for a bad 'cty' in the ID token.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + MessageConstants.CWWKS6057E_CTY_NOT_JWT_FOR_NESTED_JWS);
-        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
+        genericEncryptTest(rpEncryptAlg, setBuilderName(rpEncryptAlg), rpEncryptAlg, setAppName(rpEncryptAlg), expectations, parms);
 
     }
 
@@ -877,15 +941,18 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_simpleJsonPayload() throws Exception {
 
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
+
         // build a jwt token whose payload contains only json data - make sure that we do not allow this format (it's not supported at this time)
-        String jwtToken = tokenBuilderHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), Constants.SIGALG_RS256)));
+        String jwtToken = tokenBuilderHelpers.buildAlternatePayloadJWEToken(JwtKeyTools.getPublicKeyFromPem(JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), rpEncryptAlg)), keyManagementAlg);
 
         // the built token will be pass to the test app via the overrideToken parm
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", jwtToken);
 
         List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying the payload of the JWE ID token wasn't a JWS.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6065E_NESTED_JWS_REQUIRED_BUT_NOT_FOUND);
-        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), expectations, parms);
+        genericEncryptTest(rpEncryptAlg, setBuilderName(rpEncryptAlg), rpEncryptAlg, setAppName(rpEncryptAlg), expectations, parms);
 
     }
 
@@ -895,6 +962,7 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientEncryptionTests_RPUsesShortPrivateKey() throws Exception {
 
         List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
@@ -909,11 +977,26 @@ public class OidcClientEncryptionTests extends CommonTest {
      * a public key, not a private key
      */
     @Test
-    public void OidcClientEncryptionTests_RPUsesPublicKey() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_RPUsesPublicKey_RSA_OAEP() throws Exception {
 
         List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying the JWS couldn't be extracted because a key was missing.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "rs256" + ".*" + "not present");
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "SignRS256EncryptPublicRS256", expectations);
+
+    }
+
+    /**
+     * The RP should not use a public key to decrypt - should use the private key
+     * The RP fails to find the key - there is a key with a name that matches the keyManagementKeyAlias, but the key is
+     * a public key, not a private key
+     */
+    @Test
+    public void OidcClientEncryptionTests_RPUsesPublicKey_ECDH_ES() throws Exception {
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying the JWS couldn't be extracted because a key was missing.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + MessageConstants.CWWKS6056E_ERROR_EXTRACTING_JWS_PAYLOAD_FROM_JWE + ".*" + "es256" + ".*" + "not present");
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, "SignES256EncryptPublicES256", expectations);
 
     }
 
@@ -930,9 +1013,11 @@ public class OidcClientEncryptionTests extends CommonTest {
     @Test
     public void OidcClientEncryptionTests_RPMissingSSLRef_serverWideSSLConfigDoesNotHaveKeyMgmtKeyAlias() throws Exception {
 
+        String rpEncryptAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+
         List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying the JWS couldn't be extracted because a key was missing.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN + ".*" + "not present");
-        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "RP_sslRefOmitted", expectations);
+        genericEncryptTest(rpEncryptAlg, setBuilderName(rpEncryptAlg), rpEncryptAlg, "RP_sslRefOmitted", expectations);
 
     }
 
@@ -946,14 +1031,38 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_RPtrustStoreRefOmitted() throws Exception {
+    @SkipJavaSemeruWithFipsEnabledRule
+    public void OidcClientEncryptionTests_RPtrustStoreRefOmitted_RSA_OAEP() throws Exception {
 
         List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying a signing key was not found.", MessageConstants.CWWKS1739E_JWT_KEY_NOT_FOUND);
         expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs for failure to validate the ID token.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
-        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "RP_trustStoreRefOmitted", expectations);
+        genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, "RP_trustStoreRefOmitted_RSA_OAEP", expectations);
 
     }
+
+    /**
+     * Test that the RP will fall back to using the key and trust stores in the sslRef if the trustStoreRef is missing from the
+     * openidConnectClient config
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_RPtrustStoreRefOmitted_ECDH_ES() throws Exception {
+
+        List<validationData> expectations = validationTools.add401Responses(Constants.LOGIN_USER);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs saying a signing key was not found.", MessageConstants.CWWKS1739E_JWT_KEY_NOT_FOUND);
+        expectations = validationTools.addMessageExpectation(testRPServer, expectations, Constants.LOGIN_USER, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Didn't find expected error message in the RP logs for failure to validate the ID token.", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, "RP_trustStoreRefOmitted_ECDH_ES", expectations);
+
+    }
+
+    /**
+     * RSA-OAEP JWE Structure Validation Tests
+     * Validates the ability to properly validate the structure of JWE
+     * (JSON Web Encryption) that use RSA-OAEP as the key management algorithm.
+     * The tests validates each aspect of the 5 part JWE structure (JOSE Header, Encrypted Key, IV, Ciphertext, Auth tag)
+     */
 
     /**
      * Test that the RP detects that the JWE is invalid as it has too many parts (6) (one of which is completely invalid)
@@ -997,7 +1106,7 @@ public class OidcClientEncryptionTests extends CommonTest {
     public void OidcClientEncryptionTests_JWE_Part1_isInvalid() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(1));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(1, Constants.SIGALG_RS256));
 
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
@@ -1012,7 +1121,7 @@ public class OidcClientEncryptionTests extends CommonTest {
     public void OidcClientEncryptionTests_JWE_Part2_isInvalid() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(2));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(2, Constants.SIGALG_RS256));
 
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
@@ -1024,10 +1133,10 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Test
-    public void OidcClientEncryptionTests_JWE_Par3_isInvalid() throws Exception {
+    public void OidcClientEncryptionTests_JWE_Part3_isInvalid() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(3));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(3, Constants.SIGALG_RS256));
 
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
@@ -1042,7 +1151,7 @@ public class OidcClientEncryptionTests extends CommonTest {
     public void OidcClientEncryptionTests_JWE_Part4_isInvalid() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(4));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(4, Constants.SIGALG_RS256));
 
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
@@ -1057,9 +1166,111 @@ public class OidcClientEncryptionTests extends CommonTest {
     public void OidcClientEncryptionTests_JWE_Part5_isInvalid() throws Exception {
 
         // the built token will be passed to the test app via the overrideToken parm
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(5));
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(5, Constants.SIGALG_RS256));
 
         genericEncryptTest(Constants.SIGALG_RS256, setBuilderName(Constants.SIGALG_RS256), Constants.SIGALG_RS256, setAppName(Constants.SIGALG_RS256), getInvalidFormatExpectations(), parms);
 
     }
+
+    /**
+     * ECDH-ES JWE Structure Validation Tests
+     * Validates the ability to properly validate the structure of JWE
+     * (JSON Web Encryption) that use ECD-ES as the key management algorithm.
+     * Unlike the RSA-OAEP tests, there is no specific test for Part 2 (Encrypted Key) in the ECDH-ES
+     * tests, as ECDH-ES uses direct key agreement (not requiring and effectively ignoring part 2 of the JWE).
+     */
+
+    /**
+     * Test that the RP detects that the JWE is invalid as it has too many parts (6) (one of which is completely invalid)
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWETooManyParts_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createGenericES256JWE() + "." + badTokenSegment);
+
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, setAppName(Constants.SIGALG_ES256), getInvalidNumberOfPartsExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid as it has too few parts - the token only has 4 parts.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWETooFewParts_ECDH_ES() throws Exception {
+
+        String jwtToken = createGenericES256JWE();
+
+        String badJweToken = jwtToken.substring(0, jwtToken.lastIndexOf(".") - 1);
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", badJweToken);
+
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, setAppName(Constants.SIGALG_ES256), getInvalidNumberOfPartsExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 1 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part1_isInvalid_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(1, Constants.SIGALG_ES256));
+
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, setAppName(Constants.SIGALG_ES256), getInvalidFormatExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 3 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part3_isInvalid_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(3, Constants.SIGALG_ES256));
+
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, setAppName(Constants.SIGALG_ES256), getInvalidFormatExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 4 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part4_isInvalid_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(4, Constants.SIGALG_ES256));
+
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, setAppName(Constants.SIGALG_ES256), getInvalidFormatExpectations(), parms);
+
+    }
+
+    /**
+     * Test that the RP detects that the JWE is invalid - Part 5 is not valid
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientEncryptionTests_JWE_Part5_isInvalid_ECDH_ES() throws Exception {
+
+        // the built token will be passed to the test app via the overrideToken parm
+        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "overrideToken", createTokenWithBadElement(5, Constants.SIGALG_ES256));
+
+        genericEncryptTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256), Constants.SIGALG_ES256, setAppName(Constants.SIGALG_ES256), getInvalidFormatExpectations(), parms);
+
+    }
+
 }

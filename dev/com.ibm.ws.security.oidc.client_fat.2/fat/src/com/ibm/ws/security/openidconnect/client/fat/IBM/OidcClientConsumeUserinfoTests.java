@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,6 +41,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * This is the test class that will run tests to verify the correct behavior when
@@ -71,6 +74,9 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
     protected enum ExpectedBehavior {
         USE_USERINFO, DO_NO_USE_USERINFO, CONTENT_TYPE_MISMATCH_JWT_NOT_JSON, CONTENT_TYPE_MISMATCH_JSON_NOT_JWT, SUBJECT_MISMATCH, SIGN_MISMATCH, ENCRYPT_MISMATCH
     }
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.openidconnect.client-1.0_fat.rp");
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -572,6 +578,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedRS256() throws Exception {
 
         genericConsumeJWEUserinfoTest(Constants.SIGALG_RS256);
@@ -586,6 +593,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      */
     @Mode(TestMode.LITE)
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedRS384() throws Exception {
 
         genericConsumeJWEUserinfoTest(Constants.SIGALG_RS384);
@@ -599,54 +607,51 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedRS512() throws Exception {
 
         genericConsumeJWEUserinfoTest(Constants.SIGALG_RS512);
 
     }
 
-    // TODO - ES encryption not working properly in the builder
-    //    /************** jwt builder/rp using the same encryption algorithm **************/
-    //    /**
-    //     * Test shows that the RP can handle a JWE response signed and encrypted with ES256 from the userinfo endpoint
-    //     *
-    //     * @throws Exception
-    //     */
-    //    @Test
-    //    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES256() throws Exception {
-    //
-    //        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), Constants.SIGALG_ES256, setBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setAppName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), null, null);
-    //      genericConsumeJWEUserinfoTest(Constants.SIGALG_ES256);
-    //
-    //    }
-    //
-    //    /************** jwt builder/rp using the same encryption algorithm **************/
-    //    /**
-    //     * Test shows that the RP can handle a JWE response signed and encrypted with ES384 from the userinfo endpoint
-    //     *
-    //     * @throws Exception
-    //     */
-    //    @Test
-    //    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES384() throws Exception {
-    //
-    //        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES384, setBuilderName(Constants.SIGALG_ES384, Constants.SIGALG_ES384), Constants.SIGALG_ES384, setBuilderName(Constants.SIGALG_ES384, Constants.SIGALG_ES384), setAppName(Constants.SIGALG_ES384, Constants.SIGALG_ES384), null, null);
-    //      genericConsumeJWEUserinfoTest(Constants.SIGALG_ES384);
-    //
-    //    }
-    //
-    //    /************** jwt builder/rp using the same encryption algorithm **************/
-    //    /**
-    //     * Test shows that the RP can handle a JWE response signed and encrypted with ES512 from the userinfo endpoint
-    //     *
-    //     * @throws Exception
-    //     */
-    //    @Test
-    //    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES512() throws Exception {
-    //
-    //        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES512, setBuilderName(Constants.SIGALG_ES512, Constants.SIGALG_ES512), Constants.SIGALG_ES512, setBuilderName(Constants.SIGALG_ES512, Constants.SIGALG_ES512), setAppName(Constants.SIGALG_ES512, Constants.SIGALG_ES512), null, null);
-    //      genericConsumeJWEUserinfoTest(Constants.SIGALG_ES512);
-    //
-    //    }
+    /************** jwt builder/rp using the same encryption algorithm **************/
+    /**
+     * Test shows that the RP can handle a JWE response signed and encrypted with ES256 from the userinfo endpoint
+     *
+     * @throws Exception
+     */
+    @Test
+   public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES256() throws Exception {
+
+        genericConsumeJWEUserinfoTest(Constants.SIGALG_ES256);
+    
+    }
+    
+   /************** jwt builder/rp using the same encryption algorithm **************/
+    /**
+     * Test shows that the RP can handle a JWE response signed and encrypted with ES384 from the userinfo endpoint
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES384() throws Exception {
+    
+        genericConsumeJWEUserinfoTest(Constants.SIGALG_ES384);
+    
+    }
+    
+    /************** jwt builder/rp using the same encryption algorithm **************/
+    /**
+     * Test shows that the RP can handle a JWE response signed and encrypted with ES512 from the userinfo endpoint
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWEResponse_encryptedES512() throws Exception {
+    
+        genericConsumeJWEUserinfoTest(Constants.SIGALG_ES512);
+    
+    }
 
     /****** userinfo returns responses that do NOT match the RP config **********/
     /**
@@ -661,6 +666,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      */
     @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_userinfoMismatch() throws Exception {
 
         for (String alg : Constants.ALL_TEST_ENCRYPTALGS) {
@@ -670,12 +676,36 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         }
     }
 
+    /****** userinfo returns responses that do NOT match the RP config **********/
+    /**
+     * Test shows that the RP will fail to be able to consume the JWS token returned by the userinfo
+     * endpoint. This will result in an error message being logged to the RP server logs. Processing will
+     * continue and we will be granted access to the test app. The JWS returned from the userinfo endpoint
+     * contained extra claims that were not in the token returned from the token endpoint. We will verify
+     * that none of those extra claims show up in the subject that the protected test app logs. This shows
+     * that the userinfo JWS claims were not applied to the subject.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "com.ibm.ws.security.openidconnect.clients.common.UserInfoException" })
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWEResponse_signedES256_userinfoMismatch() throws Exception {
+
+        String[] builderEncryptAlgs = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ALL_TEST_ESSIGALGS : Constants.ALL_TEST_ENCRYPTALGS;
+
+        for (String alg : builderEncryptAlgs) {
+            if (!(alg.equals(Constants.SIGALG_ES256))) {
+                genericConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWEBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setJWEBuilderName(alg, alg), setJWEAppName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), ExpectedBehavior.ENCRYPT_MISMATCH);
+            }
+        }
+    }
+
     /**
      * Test to ensure that we'll accept tokens that are NOT signed, but are encrypted with RS256
      *
      * @throws Exception
      */
-    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg)
     public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptRS256() throws Exception {
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_RS256), ExpectedBehavior.USE_USERINFO);
@@ -687,7 +717,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
-    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg)
     public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptRS384() throws Exception {
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS384), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS384), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_RS384), ExpectedBehavior.USE_USERINFO);
@@ -699,7 +729,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
-    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg)
     public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptRS512() throws Exception {
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS512), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_RS512), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_RS512), ExpectedBehavior.USE_USERINFO);
@@ -711,7 +741,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
-    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg (And ES encryption is working properly)
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg)
     public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptES256() throws Exception {
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES256), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_ES256), ExpectedBehavior.USE_USERINFO);
@@ -723,7 +753,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
-    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg (And ES encryption is working properly)
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg)
     public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptES384() throws Exception {
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES384), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES384), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_ES384), ExpectedBehavior.USE_USERINFO);
@@ -735,7 +765,7 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      *
      * @throws Exception
      */
-    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg (And ES encryption is working properly)
+    //@Test - enable when 19028 is resolved (and we support none as a valid signing alg)
     public void OidcClientConsumeUserinfoTests_JWEResponse_notSigned_encryptES512() throws Exception {
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_NONE, setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES512), setJWEBuilderName(Constants.SIGALG_NONE, Constants.SIGALG_ES512), setJWEAppName(Constants.SIGALG_NONE, Constants.SIGALG_ES512), ExpectedBehavior.USE_USERINFO);
@@ -765,11 +795,12 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      * Test to ensure that userinfo data that is returned that contains a different sub value is NOT used to update the
      * subject. We should issue a message indicating that the sub doesn't match, give access to the protected app,
      * but not update the subject with the claim data in the userinfo response.
-     * Userinfo is returned in the form of a JWE.
+     * Userinfo is returned in the form of a JWE encrypted with RS256 (RSA-OAEP).
      *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_misMatchSubInUserinfo() throws Exception {
 
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
@@ -777,6 +808,25 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
         parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), parms, null, ExpectedBehavior.SUBJECT_MISMATCH);
+
+    }
+
+    /**
+     * Test to ensure that userinfo data that is returned that contains a different sub value is NOT used to update the
+     * subject. We should issue a message indicating that the sub doesn't match, give access to the protected app,
+     * but not update the subject with the claim data in the userinfo response.
+     * Userinfo is returned in the form of a JWE encrypted with ES256 (ECDH-ES).
+     *
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientConsumeUserinfoTests_JWEResponse_signedES256_misMatchSubInUserinfo() throws Exception {
+
+        List<NameValuePair> parms = new ArrayList<NameValuePair>();
+        parms.add(new NameValuePair("sub", "bob"));
+        parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWEBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setJWEAppName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), parms, null, ExpectedBehavior.SUBJECT_MISMATCH);
 
     }
 
@@ -802,17 +852,35 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      * Test to ensure that userinfo data that is returned that does not contain a sub value is NOT used to update the
      * subject. We should issue a message indicating that the sub doesn't match, give access to the protected app,
      * but not update the subject with the claim data in the userinfo response.
-     * Userinfo is returned in the form of a JWE.
+     * Userinfo is returned in the form of a JWE encrypted with RS256 (RSA-OAEP).
      *
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_missingSubInUserinfo() throws Exception {
 
         List<NameValuePair> parms = new ArrayList<NameValuePair>();
         parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), parms, null, ExpectedBehavior.SUBJECT_MISMATCH);
+
+    }
+
+    /**
+     * Test to ensure that userinfo data that is returned that does not contain a sub value is NOT used to update the
+     * subject. We should issue a message indicating that the sub doesn't match, give access to the protected app,
+     * but not update the subject with the claim data in the userinfo response.
+     * Userinfo is returned in the form of a JWE encrypted with ES256 (ECDH-ES).
+     *
+     * @throws Exception
+     */
+    public void OidcClientConsumeUserinfoTests_JWEResponse_signedES256_missingSubInUserinfo() throws Exception {
+
+        List<NameValuePair> parms = new ArrayList<NameValuePair>();
+        parms.add(new NameValuePair("defaultExtraClaim", "someValue"));
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWEBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setJWEAppName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), parms, null, ExpectedBehavior.SUBJECT_MISMATCH);
 
     }
 
@@ -838,9 +906,23 @@ public class OidcClientConsumeUserinfoTests extends CommonTest {
      */
     @ExpectedFFDC({ "java.io.IOException" })
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void OidcClientConsumeUserinfoTests_JWEResponse_signedRS256_contentTypeJson() throws Exception {
 
         genericConsumeJWTUserinfoTest(Constants.SIGALG_RS256, setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEBuilderName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), setJWEAppName(Constants.SIGALG_RS256, Constants.SIGALG_RS256), null, jsonContentType, ExpectedBehavior.CONTENT_TYPE_MISMATCH_JWT_NOT_JSON);
+
+    }
+
+    /**
+     * Test that we will not accept userinfo data that is contained in a response with content-type set to json when it actually
+     * contains a JWS.
+     *
+     * @throws Exception
+     */
+    @ExpectedFFDC({ "java.io.IOException" })
+    public void OidcClientConsumeUserinfoTests_JWEResponse_signedES256_contentTypeJson() throws Exception {
+
+        genericConsumeJWTUserinfoTest(Constants.SIGALG_ES256, setJWEBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setJWEBuilderName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), setJWEAppName(Constants.SIGALG_ES256, Constants.SIGALG_ES256), null, jsonContentType, ExpectedBehavior.CONTENT_TYPE_MISMATCH_JWT_NOT_JSON);
 
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.jose4j.base64url.Base64;
 import org.junit.BeforeClass;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -37,6 +38,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyServerWrapper;
 
 /**
@@ -52,6 +55,9 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
 
     public static Class<?> thisClass = LogoutTokenValidationTests.class;
     public static final String defaultClient = "clientSignHS256";
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.backchannelLogout_fat.op");
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -1289,6 +1295,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void LogoutTokenValidationTests_encrypt_RS256() throws Exception {
         genericEncryptionTest("clientSignEncryptRS256", Constants.SIGALG_RS256, Constants.SIGALG_RS256);
     }
@@ -1309,6 +1316,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void LogoutTokenValidationTests_encrypt_RS384() throws Exception {
         genericEncryptionTest("clientSignEncryptRS384", Constants.SIGALG_RS384, Constants.SIGALG_RS384);
     }
@@ -1329,6 +1337,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void LogoutTokenValidationTests_encrypt_RS512() throws Exception {
         genericEncryptionTest("clientSignEncryptRS512", Constants.SIGALG_RS512, Constants.SIGALG_RS512);
     }
@@ -1437,19 +1446,22 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenValidationTests_encrypt_contentEncryptionAlg_A192GCM() throws Exception {
 
-        String client = "clientSignEncryptRS256";
+        String client = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? "clientSignEncryptES256" : "clientSignEncryptRS256";
+        String signatureAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String encryptionAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ENCRYPT_ES256 : Constants.ENCRYPT_RS256;
+        String keyManagementAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? JwtConstants.KEY_MGMT_KEY_ALG_ES : JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG;
 
         String logutOutEndpoint = buildBackchannelLogoutUri(client);
 
-        restoreServerVars(Constants.SIGALG_RS256);
+        restoreServerVars(signatureAlg);
 
         // the client configs are originally setup with RS256 (the only signature algs that we support in the OP right now) - without encryption (since the OP doesn't support that
         // We'll login using the RP/OP with those "default" settings, then reconfig the client before trying to verify the logout_token
         JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
 
-        setServerVars(Constants.SIGALG_RS256);
+        setServerVars(signatureAlg);
 
-        builder = updateLogoutTokenBuilderWithNonHSASignatureAndEncryptionSettings(builder, Constants.ENCRYPT_RS256, JwtConstants.CONTENT_ENCRYPT_ALG_192, JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG);
+        builder = updateLogoutTokenBuilderWithNonHSASignatureAndEncryptionSettings(builder, encryptionAlg, JwtConstants.CONTENT_ENCRYPT_ALG_192, keyManagementAlg);
 
         List<endpointSettings> parms = createParmFromBuilder(builder, true);
 
@@ -1466,6 +1478,7 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      * @throws Exception
      */
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void LogoutTokenValidationTests_encrypt_keyMgmtKeyAlg_256() throws Exception {
 
         String client = "clientSignEncryptRS256";
@@ -1498,19 +1511,21 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
     @Test
     public void LogoutTokenValidationTests_encrypt_type_notJose() throws Exception {
 
-        String client = "clientSignEncryptRS256";
+        String client = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? "clientSignEncryptES256" : "clientSignEncryptRS256";
+        String signatureAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String encryptionAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ENCRYPT_ES256 : Constants.ENCRYPT_RS256;
 
         String logutOutEndpoint = buildBackchannelLogoutUri(client);
 
-        restoreServerVars(Constants.SIGALG_RS256);
+        restoreServerVars(signatureAlg);
 
         // the client configs are originally setup with RS256 (the only signature algs that we support in the OP right now) - without encryption (since the OP doesn't support that
         // We'll login using the RP/OP with those "default" settings, then reconfig the client before trying to verify the logout_token
         JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
 
-        setServerVars(Constants.SIGALG_RS256);
+        setServerVars(signatureAlg);
 
-        builder = updateLogoutTokenBuilderWithNonHSASignatureAndEncryptionSettings(builder, Constants.ENCRYPT_RS256);
+        builder = updateLogoutTokenBuilderWithNonHSASignatureAndEncryptionSettings(builder, encryptionAlg);
 
         List<endpointSettings> parms = createParmFromBuilder(builder, true, "notJose", "jwt");
 
@@ -1527,19 +1542,22 @@ public class LogoutTokenValidationTests extends BackChannelLogoutCommonTests {
      */
     @Test
     public void LogoutTokenValidationTests_encrypt_contentTyp_notJwt() throws Exception {
-        String client = "clientSignEncryptRS256";
+        
+        String client = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? "clientSignEncryptES256" : "clientSignEncryptRS256";
+        String signatureAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.SIGALG_ES256 : Constants.SIGALG_RS256;
+        String encryptionAlg = testOPServer.getServer().isFIPS140_3EnabledAndSupported() ? Constants.ENCRYPT_ES256 : Constants.ENCRYPT_RS256;
 
         String logutOutEndpoint = buildBackchannelLogoutUri(client);
 
-        restoreServerVars(Constants.SIGALG_RS256);
+        restoreServerVars(signatureAlg);
 
         // the client configs are originally setup with RS256 (the only signature algs that we support in the OP right now) - without encryption (since the OP doesn't support that
         // We'll login using the RP/OP with those "default" settings, then reconfig the client before trying to verify the logout_token
         JWTTokenBuilder builder = loginAndReturnIdTokenData(client);
 
-        setServerVars(Constants.SIGALG_RS256);
+        setServerVars(signatureAlg);
 
-        builder = updateLogoutTokenBuilderWithNonHSASignatureAndEncryptionSettings(builder, Constants.ENCRYPT_RS256);
+        builder = updateLogoutTokenBuilderWithNonHSASignatureAndEncryptionSettings(builder, encryptionAlg);
 
         List<endpointSettings> parms = createParmFromBuilder(builder, true, "JOSE", "not_jwt");
 

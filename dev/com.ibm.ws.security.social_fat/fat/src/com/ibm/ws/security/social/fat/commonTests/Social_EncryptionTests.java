@@ -700,7 +700,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), signAlg, null, null);
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES256() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES256;
         String socialClientEncryptAlg = SocialConstants.SIGALG_NONE;
@@ -710,7 +710,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), signAlg, null, null);
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES384() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES384;
         String socialClientEncryptAlg = SocialConstants.SIGALG_NONE;
@@ -720,7 +720,7 @@ public class Social_EncryptionTests extends SocialCommonTest {
         genericEncryptTest(socialClientEncryptAlg, setBuilderName(signAlg, socialClientEncryptAlg), socialClientDecryptAlg, setAppName(signAlg, socialClientDecryptAlg), signAlg, null, null);
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void Social_EncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES512() throws Exception {
         String signAlg = SocialConstants.SIGALG_ES512;
         String socialClientEncryptAlg = SocialConstants.SIGALG_NONE;
