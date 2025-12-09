@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ public class SecurityCookieImpl {
     private final Subject receivedSubject;
     private final Subject adjustedInvokedSubject;
     private final Subject adjustedReceivedSubject;
+    private Object syncToOSThreadToken;
 
     SecurityCookieImpl(Subject invokedSubject, Subject receivedSubject) {
         this.invokedSubject = this.adjustedInvokedSubject =invokedSubject;
@@ -49,5 +50,13 @@ public class SecurityCookieImpl {
 
     public Subject getAdjustedReceivedSubject() {
         return adjustedReceivedSubject;
+    }
+    
+    public Object getSyncToOSThreadToken() {
+        return syncToOSThreadToken;
+    }
+    
+    public void setSyncToOSThreadToken(Object token) {
+        this.syncToOSThreadToken = token;
     }
 }

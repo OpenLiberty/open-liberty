@@ -229,6 +229,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
         syncToOSThread(ejbSecurityContext);
         SecurityCookieImpl securityCookie = new SecurityCookieImpl(originalInvokedSubject, originalCallerSubject, subjectManager.getInvocationSubject(), subjectToAuthorize);
+        securityCookie.setSyncToOSThreadToken(ejbSecurityContext.getSyncToOSThreadToken());
         return securityCookie;
     }
 
@@ -262,8 +263,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
                 }
             }
             try {
-                 EJBSecurityContext ejbSecurityContext = new EJBSecurityContext(subjectManager.getInvocationSubject(), subjectManager.getCallerSubject());
-                resetSyncToOSThread(ejbSecurityContext);
+                resetSyncToOSThread(securityCookie);
 
             } catch (ThreadIdentityException e) {
                 throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
@@ -840,8 +840,8 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      *            MUST NOT BE NULL.
      * @throws ThreadIdentityException
      */
-    private void resetSyncToOSThread(EJBSecurityContext ejbSecurityContext) throws ThreadIdentityException {
-        Object token = ejbSecurityContext.getSyncToOSThreadToken();
+    private void resetSyncToOSThread(SecurityCookieImpl securityCookie) throws ThreadIdentityException {
+        Object token = securityCookie.getSyncToOSThreadToken();
         if (token != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Resetting thread identity for EJB application");
