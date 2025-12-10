@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,6 +29,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import jakarta.inject.Inject;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -56,6 +57,17 @@ public class JsonBTestServlet extends FATServlet {
 
     Jsonb jsonb;
 
+    @Inject
+    Jsonb jsonbDefault;
+
+    @Inject
+    @DefaultJsonb
+    Jsonb jsonbQualifiedDefault;
+
+    @Inject
+    @PrettyJsonb
+    Jsonb jsonbQualifiedPretty;
+
     @Override
     public void destroy() {
         try {
@@ -68,6 +80,42 @@ public class JsonBTestServlet extends FATServlet {
     @Override
     public void init(ServletConfig config) throws ServletException {
         jsonb = JsonbBuilder.create();
+    }
+
+    public static class TestPerson {
+        public int age;
+        public String name;
+    }
+
+    @Test
+    public void testInjectionWithQualifiers() {
+        assertNotNull(jsonbDefault);
+        assertNotNull(jsonbQualifiedDefault);
+        assertNotNull(jsonbQualifiedPretty);
+
+        TestPerson p = new TestPerson();
+        p.age = 35;
+        p.name = "Kyle";
+
+        final String nl = System.lineSeparator();
+        final String tab = "    ";
+
+        String expected = "{\"age\":35,\"name\":\"Kyle\"}";
+        String expectedPretty = new StringBuilder()//
+                        .append("{")
+                        .append(nl)//
+                        .append(tab)
+                        .append("\"age\": 35,")
+                        .append(nl)//
+                        .append(tab)
+                        .append("\"name\": \"Kyle\"")
+                        .append(nl)//
+                        .append("}")
+                        .toString();
+
+        assertEquals(expected, jsonbDefault.toJson(p));
+        assertEquals(expected, jsonbQualifiedDefault.toJson(p));
+        assertEquals(expectedPretty, jsonbQualifiedPretty.toJson(p));
     }
 
     public static class TestCreatorParameters {
