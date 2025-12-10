@@ -8180,7 +8180,7 @@ public class LibertyServer implements LogMonitorClient {
                                                  + " with IBM Java " + info.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
                 opts.put("-Dsemeru.fips", "true");
                 opts.put("-Dsemeru.customprofile", "OpenJCEPlusFIPS.FIPS140-3-Custom");
-                opts.put("-Djava.security.properties", getSemeruFips140_3CustomProfileLocationAndPrintFileContents());
+                opts.put("-Djava.security.propertiesList", getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() + File.pathSeparator + getSemeruFips140_3CustomProfileLocationAndPrintFileContents());
             } else if (info.majorVersion() == 8) {
                 Log.info(c, "getFipsJvmOptions", "FIPS 140-3 global build properties is set for server "
                                                  + getServerName()
@@ -8206,6 +8206,16 @@ public class LibertyServer implements LogMonitorClient {
             }
         }
         return opts;
+    }
+
+    private String getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() throws Exception {
+        String location = installRoot + "/lib/security/fips140_3/FIPS140-3-Liberty.properties";
+
+        byte[] fileContents = Files.readAllBytes(Paths.get(location));
+        Log.info(c, "getLibertySemeruFips140_3ProfileLocationAndPrintFileContents",
+                 "FIPS140-3-Liberty.properties contents:\n" + new String(fileContents, StandardCharsets.UTF_8));
+
+        return location;
     }
 
     private String getSemeruFips140_3CustomProfileLocationAndPrintFileContents() throws Exception {

@@ -6,14 +6,11 @@
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.1.126.Final
+nettyVersion=4.2.7.Final
 
 Bundle-Name: Netty SSL classes as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty.ssl
@@ -28,6 +25,7 @@ Import-Package: \
   !com.ning.*,\
   !com.oracle.svm.core.annotate,\
   !io.netty.internal.tcnative,\
+  !io.netty.pkitesting,\
   !lzma.*,\
   !net.jpountz.*,\
   !org.apache.log4j.*,\

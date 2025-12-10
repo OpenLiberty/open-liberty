@@ -1,0 +1,153 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCM
+#COMPONENTNAMEFOR CWMCM MCP Server
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0001E.blank.arguments=CWMCM0001E: Die {0} MCP-Tool-Methode hat ein oder mehrere Argumente mit leeren Namen.
+CWMCM0001E.blank.arguments.explanation=MCP-Tool-Argumente wurden angegeben, aber es fehlten Namen. Jedes Argument einer Werkzeugmethode muss einen Namen haben.
+CWMCM0001E.blank.arguments.useraction=Geben Sie f\u00fcr alle erforderlichen Argumente nicht leere Werte an.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+CWMCM0002E.duplicate.arguments=CWMCM0002E: Die {0} MCP-Tool-Methode hat mehr als ein Argument namens {1}.
+CWMCM0002E.duplicate.arguments.explanation=Ein oder mehrere Argumente haben denselben Namen. Jedes Argument einer MCP-Tool-Methode muss einen anderen Namen haben.
+CWMCM0002E.duplicate.arguments.useraction=Geben Sie jedem Tool-Argument einen anderen Namen.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0003E.missing.tool.argument.name=CWMCM0003E: Die {0} MCP-Tool-Methode hat ein oder mehrere Argumente, f\u00fcr die kein Name angegeben ist.
+CWMCM0003E.missing.tool.argument.name.explanation=F\u00fcr MCP Tools wurden ein oder mehrere Tool-Argumentnamen nicht angegeben.
+CWMCM0003E.missing.tool.argument.name.useraction=F\u00fcgen Sie entweder einen Namen zur @ToolArg Anmerkung hinzu oder f\u00fcgen Sie die Compiler-Option -parameters hinzu, um den Parameternamen zu verwenden.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The list of qualified names of the tool
+CWMCM0004E.duplicate.tools=CWMCM0004E: Es gibt mehrere MCP-Tool-Methoden mit dem Namen {0}. Die Methoden sind {1}.
+CWMCM0004E.duplicate.tools.explanation=Ein oder mehrere MCP-Tool-Namen sind mehrfach aufgetreten. Der Server erwartet einen Namen pro Tool, um die Eindeutigkeit zu gew\u00e4hrleisten.
+CWMCM0004E.duplicate.tools.useraction=Geben Sie nur einen eindeutigen Namen f\u00fcr jedes MCP-Tool an.
+
+# Used for server logging
+# do not translate MCP
+CWMCM0005E.validation.error=CWMCM0005E: Es gibt einen oder mehrere MCP-Validierungsfehler. Weitere Details k\u00f6nnen Sie den Protokollen entnehmen.
+CWMCM0005E.validation.error.explanation=Die Anwendung kann aufgrund von MCP-Validierungsfehlern nicht gestartet werden.
+CWMCM0005E.validation.error.useraction=Weitere Details k\u00f6nnen Sie den Protokollen entnehmen.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0006E.duplicate.special.arguments=CWMCM0006E: Das {0} MCP-Tool hat mehr als einen Parameter vom {1} Typ. Verwenden Sie nur einen {1} Parameter in jeder Tool-Methode.
+CWMCM0006E.duplicate.special.arguments.explanation=Ein oder mehrere Sonderargumente sind mehrfach aufgetreten, es wird jedoch nur eines erwartet.
+CWMCM0006E.duplicate.special.arguments.useraction=Entfernen Sie die zus\u00e4tzlichen Instanzen.
+
+# Used for server logging
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0007E.invalid.arguments=CWMCM0007E: Das {0} MCP-Tool hat einen Parameter vom Typ {1}, der kein anerkannter spezieller Argumenttyp ist und keine `@ToolArg` Anmerkung hat.
+CWMCM0007E.invalid.arguments.explanation=Ein oder mehrere Parameter wurden nicht als Werkzeugargumente kommentiert und werden nicht als spezielle Argumenttypen erkannt.
+CWMCM0007E.invalid.arguments.useraction=\u00dcberpr\u00fcfen Sie, ob Sie die richtige Klasse f\u00fcr Ihr Argument importiert haben oder ob Sie. einf\u00fcgen wollten @ToolArg.
+
+# Used as part of a response to a client
+# {0} = Request id
+CWMCM0008E.invalid.request.params=CWMCM0008E: Eine Anfrage mit der {0} ID ist in Bearbeitung.
+CWMCM0008E.invalid.request.params.explanation=Eine Anfrage mit derselben ID ist bereits in Bearbeitung. Anfragen desselben Kunden m\u00fcssen eindeutige IDs haben.
+CWMCM0008E.invalid.request.params.useraction=Verwenden Sie f\u00fcr jede Anfrage eine eindeutige ID.
+
+# Used as part of a response to a client
+# do not translate GET, POST
+CWMCM0009I.get.disallowed=CWMCM0009I: GET-Anfragen werden nicht unterst\u00fctzt.
+CWMCM0009I.get.disallowed.explanation=Eine GET-Anfrage wurde gesendet, aber diese Funktion wird nicht unterst\u00fctzt.
+CWMCM0009I.get.disallowed.useraction=Es ist keine Aktion erforderlich.
+
+# Used for server logging
+# {0} = tool name
+# {1} = exception details
+CWMCM0010E.internal.server.error.detailed=CWMCM0010E: Die {0} Tool-Methode hat eine unerwartete Ausnahme ausgel\u00f6st. Ausnahme: {1}
+CWMCM0010E.internal.server.error.detailed.explanation=Die Tool-Methode hat eine unerwartete Ausnahme ausgel\u00f6st.
+CWMCM0010E.internal.server.error.detailed.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# Used as part of a response to a client
+CWMCM0011E.internal.server.error=CWMCM0011E: Beim Ausf\u00fchren des Tools ist ein interner Serverfehler aufgetreten.
+CWMCM0011E.internal.server.error.explanation=Der Server konnte die Toolaufruf-Anforderung nicht ausf\u00fchren.
+CWMCM0011E.internal.server.error.useraction=\u00dcberpr\u00fcfen Sie, ob die Anfrage korrekt ist. Weitere Informationen zum Fehler finden Sie m\u00f6glicherweise auf dem Server messages.log.
+
+# Used for server logging
+# do not translate bean
+# {0} = bean error details
+# {1} = tool name
+CWMCM0012E.bean.release.fail=CWMCM0012E: Beim Freigeben der CDI-Bean nach dem Aufruf des {1} Tools ist ein Fehler aufgetreten. Der Fehler: {0}
+CWMCM0012E.bean.release.fail.explanation=Beim Aufruf einer Tool-Methode wird eine Instanz des CDI-Beans, der die Methode deklariert, vor dem Aufruf der Methode abgerufen und anschlie\u00dfend wieder freigegeben. Beim Freigeben der Bean-Instanz ist ein Fehler aufgetreten.
+CWMCM0012E.bean.release.fail.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# Used for server logging and client response
+# do not translate MCP-Protocol-Version, MCP
+# {0} = List of supported MCP-Protocol-Version values
+CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Es wurde ein nicht unterst\u00fctzter MCP-Protocol-Version-Header bereitgestellt. Unterst\u00fctzte Werte: {0}
+CWMCM0013E.unsupported.mcp.http.version.explanation=Die Protokollversion im Header \u201eMCP-Protocol-Version\u201c wird vom Server nicht unterst\u00fctzt.
+CWMCM0013E.unsupported.mcp.http.version.useraction=Verwenden Sie eine unterst\u00fctzte Protokollversion.
+
+# Used as part of a response to a client
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+CWMCM0014E.unexpected.server.error=CWMCM0014E: Unerwarteter Serverfehler. Methode= {0} RequestURI={1 } RequestQuery={2 }
+CWMCM0014E.unexpected.server.error.explanation=Bei der Bearbeitung der Anfrage ist ein unerwarteter Serverfehler aufgetreten. Die Anforderung kann nicht ausgef\u00fchrt werden.
+CWMCM0014E.unexpected.server.error.useraction=Es ist keine Aktion erforderlich.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0015E.unexpected.server.error.exception=CWMCM0015E: Unerwarteter Serverfehler. Methode= {0} RequestURI={1 } RequestQuery={2 }, Ausnahme: {3}
+CWMCM0015E.unexpected.server.error.exception.explanation=Bei der Bearbeitung der Anfrage ist ein unerwarteter Serverfehler aufgetreten. Die Anforderung kann nicht ausgef\u00fchrt werden.
+CWMCM0015E.unexpected.server.error.exception.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
+
+# Used for server logging
+# {0} = ExceptionMessage
+CWMCM0016E.error.sending.response.exception=CWMCM0016E: Unerwarteter Serverfehler. Ausnahme: {0}
+CWMCM0016E.error.sending.response.exception.explanation=Beim Versuch, die Antwort zu senden, ist ein Fehler aufgetreten.
+CWMCM0016E.error.sending.response.exception.useraction=Es ist keine Aktion erforderlich.
+
+# Used as part of a response to a client
+# do not translate jsonrpc
+# {0} = jsonrpc value
+jsonrpc.exception.validation.invalid.version=Das Feld \u201ejsonrpc\u201d muss vorhanden sein. Derzeit wird nur 2.0 JSONRPC unterst\u00fctzt.
+
+# Used as part of a response to a client
+jsonrpc.validation.empty.method=Das Feld \u201eMethode\u201c ist leer.
+
+# Used as part of a response to a client
+# {0} = id value
+jsonrpc.exception.validation.empty.string.id=Das Feld \u201eid\u201c ist ung\u00fcltig. Die ID darf nicht leer sein, wenn eine Zeichenfolge angegeben wird.
+
+# Used as part of a response to a client
+jsonrpc.exception.validation.invalid.id.type=Der Typ \u201eid\u201c ist kein zul\u00e4ssiger Typ. Die ID muss eine Zeichenfolge oder eine Ganzzahl sein.
+
+# Used as part of a response to a client
+jsonrpc.missing.params=Die Anfrage enth\u00e4lt keine Argumente in den Parametern.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.extra.arguments=Die folgenden Argumente wurden \u00fcbergeben, wurden jedoch in der Methode nicht gefunden: {0}.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.missing.arguments=Die folgenden Argumente wurden von der Methode erwartet, wurden jedoch nicht bereitgestellt: {0}.

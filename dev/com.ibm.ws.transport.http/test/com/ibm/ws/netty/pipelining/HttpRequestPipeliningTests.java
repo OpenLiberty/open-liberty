@@ -20,9 +20,12 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.embedded.EmbeddedChannel;
+import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
+import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 
 import static org.junit.Assert.*;
@@ -60,7 +63,8 @@ public class HttpRequestPipeliningTests {
         assertEquals("Only the first request should have been dispatched",1L, (long)dispatcher.requestsSeen.get());
         assertFalse("Auto read should be paused when queue is at max capacity",channel.config().isAutoRead());
 
-        handler.processNextRequest();
+        // Mimic write of response
+        channel.writeOutbound(newResponse());
         runPending();
 
         assertTrue("Auto read should resume after partial drain when not closing",channel.config().isAutoRead());
@@ -96,7 +100,7 @@ public class HttpRequestPipeliningTests {
         assertTrue("Channel should be open and draining.", channel.isOpen()); 
 
         for(int i=0; i<= DEFAULT_QUEUE_MAX; i++){
-            handler.processNextRequest();
+            channel.writeOutbound(newResponse());
             runPending();
         }
 
@@ -128,9 +132,9 @@ public class HttpRequestPipeliningTests {
         assertEquals(0, request3.refCnt());
         assertEquals(0, request4.refCnt());
         //Process the 3 accepted requests.
-        handler.processNextRequest(); runPending();
-        handler.processNextRequest(); runPending();
-        handler.processNextRequest(); runPending();
+        channel.writeOutbound(newResponse()); runPending();
+        channel.writeOutbound(newResponse()); runPending();
+        channel.writeOutbound(newResponse()); runPending();
 
         assertEquals(3, dispatcher.requestsSeen.get());
         assertFalse("Channel should be close after completing max open requests." , channel.isOpen());
@@ -172,6 +176,10 @@ public class HttpRequestPipeliningTests {
         ByteBuf buf = Unpooled.buffer();
         buf.writeBytes(new byte[]{1,2,3,4,5,6,7,8,9});
         return new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, path, buf);
+    }
+
+    private static FullHttpResponse newResponse(){
+        return new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
     }
 
     private static HttpChannelConfig configWithMaxRequests(int max){

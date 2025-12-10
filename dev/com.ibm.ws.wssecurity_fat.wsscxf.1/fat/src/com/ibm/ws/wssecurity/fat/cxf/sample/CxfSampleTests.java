@@ -53,6 +53,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.annotation.MinimumJavaLevel;
 
 //@SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES })
 @RunWith(FATRunner.class)
@@ -281,7 +282,8 @@ public class CxfSampleTests {
 
         return;
     }
-
+ 
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testEcho4Service() throws Exception {
         String thisMethod = "testEcho4Service";

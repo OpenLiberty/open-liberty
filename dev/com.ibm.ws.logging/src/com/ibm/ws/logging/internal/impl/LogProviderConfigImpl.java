@@ -317,7 +317,7 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         stackTraceSingleEntry = InitConfgAttribute.STACK_JOIN_CONFIGURATION.getBooleanValueAndSaveInit(c, stackTraceSingleEntry, isInit);
 
-        throttleMaxMessagesPerWindow = InitConfgAttribute.THROTTLE_MAX_MESSAGES_PER_WINDOW.getIntValue(c, throttleMaxMessagesPerWindow, isInit);
+        throttleMaxMessagesPerWindow = InitConfgAttribute.THROTTLE_MAX_MESSAGES_PER_WINDOW.getIntValueAndSaveInit(c, throttleMaxMessagesPerWindow, isInit);
         throttleType = InitConfgAttribute.THROTTLE_TYPE.getStringValueAndSaveInit(c, throttleType, isInit);
         throttleMapSize = InitConfgAttribute.THROTTLE_MAP_SIZE.getIntValue(c, throttleMapSize, isInit);
 
@@ -686,6 +686,27 @@ public class LogProviderConfigImpl implements LogProviderConfig {
                 config.put(propertyKey, newValue);
             }
             return newValue;
+        }
+
+        /**
+         * Gets the int value. During initializing, the property value is set
+         * to the default (or server env value if set) if the config property is not found.
+         * Note: During runtime server update if configKey is not set, it'll look up the property
+         * value i.e the ibm:variable (see the metatype.xml)
+         *
+         * @param config
+         * @param defaultValue
+         * @param isInit
+         * @return
+         */
+        int getIntValueAndSaveInit(Map<String, Object> config, int defaultValue, boolean isInit) {
+            Object value = config.get(isInit ? propertyKey : configKey);
+            String newValue = Integer.toString(LoggingConfigUtils.getIntValue(value, defaultValue));
+
+            if (isInit && value == null) {
+                config.put(propertyKey, newValue);
+            }
+            return Integer.parseInt(newValue);
         }
 
         /**

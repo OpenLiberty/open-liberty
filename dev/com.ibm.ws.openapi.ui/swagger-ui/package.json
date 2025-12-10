@@ -9,42 +9,46 @@
   "author": "OpenLiberty",
   "license": "Apache-2.0",
   "devDependencies": {
-    "@babel/core": "^7.28.3",
-    "@babel/preset-env": "^7.28.3",
-    "@babel/preset-react": "^7.27.1",
+    "@babel/core": "^7.28.5",
+    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-react": "^7.28.5",
     "babel-loader": "^10.0.0",
     "clean-webpack-plugin": "^4.0.0",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^7.1.2",
-    "cssnano": "^7.1.0",
+    "cssnano": "^7.1.2",
     "dry-uninstall": "0.3.0",
-    "html-webpack-plugin": "^5.6.4",
+    "html-webpack-plugin": "^5.6.5",
     "mini-css-extract-plugin": "^2.9.4",
-    "postcss-loader": "^8.1.1",
-    "postcss-preset-env": "^10.2.4",
-    "sass": "^1.90.0",
-    "sass-loader": "^16.0.5",
+    "postcss-loader": "^8.2.0",
+    "postcss-preset-env": "^10.4.0",
+    "sass": "^1.94.1",
+    "sass-loader": "^16.0.6",
     "source-map-loader": "^5.0.0",
     "style-loader": "^4.0.0",
     "tachyons-sass": "^4.9.5",
-    "webpack": "^5.101.3",
+    "webpack": "^5.103.0",
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2"
   },
   "dependencies": {
     "buffer": "^6.0.3",
-    "core-js": "^3.45.1",
+    "core-js": "^3.47.0",
     "process": "^0.11.10",
     "regenerator-runtime": "^0.14.1",
     "stream-browserify": "^3.0.0",
-    "swagger-ui": "^5.27.1"
+    "swagger-ui": "^5.30.2"
   },
   "overrides": {
     "axios": "npm:dry-uninstall",
     "prismjs": "npm:dry-uninstall",
     "@scarf/scarf": "npm:dry-uninstall",
-    "dompurify": "^3.2.6",
-    "brace-expansion": "^4.0.1"
+    "brace-expansion": "^4.0.1",
+    "js-yaml": "^4.1.1",
+    "swagger-ui": {
+      "react": "^18 <19",
+      "react-dom": "^18 <19"
+    }
   },
   "browserslist": [
     "defaults",

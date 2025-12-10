@@ -13,9 +13,6 @@
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -40,6 +37,8 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
+
+import static org.junit.Assert.*;
 
 public class EJBAnnTestBase {
 
@@ -89,14 +88,17 @@ public class EJBAnnTestBase {
         } else {
             testHelper = new EJBAnnTestBaseHelper(server, client, false);
         }
-
+        // used to check that the right number of apps have started on the server
+        int expectedStartedApps = 1;
         switch (serverName) {
             case Constants.SERVER_EJB:
             case Constants.SERVER_EJB_AUDIT:
                 JACCFatUtils.transformApps(server, "ejbinstandalone.war", "securityejb.ear", "securityejbinwar.ear");
+                expectedStartedApps = 3;
                 break;
             case Constants.SERVER_EJB_BINDINGS:
                 JACCFatUtils.transformApps(server, "securityejbInWarEarXML.ear", "securityejbXML.ear");
+                expectedStartedApps = 2;
                 break;
             case Constants.SERVER_EJBJAR:
             case Constants.SERVER_EJBJAR_AUDIT:
@@ -105,15 +107,19 @@ public class EJBAnnTestBase {
             case Constants.SERVER_EJBJAR_INWAR:
                 JACCFatUtils.transformApps(server, "ejbjarinstandaloneM02.war", "ejbjarinstandaloneM08.war", "ejbjarinstandaloneX02.war",
                                            "securityejbjarInWarEarM01.ear", "securityejbjarInWarEarM07.ear", "securityejbjarInWarEarX01.ear");
+                expectedStartedApps = 6;
                 break;
             case Constants.SERVER_EJBJAR_MC:
                 JACCFatUtils.transformApps(server, "ejbjarinstandaloneMC06.war", "securityejbjarInWarEarMC06.ear", "securityejbjarMC.ear");
+                expectedStartedApps = 3;
                 break;
             case Constants.SERVER_EJBJAR_MERGE_BINDINGS:
                 JACCFatUtils.transformApps(server, "securityejbjarInWarEarM07XMLmerge.ear", "securityejbjarXMLmerge.ear");
+                expectedStartedApps = 2;
                 break;
             case Constants.SERVER_EJB_MERGE_BINDINGS:
                 JACCFatUtils.transformApps(server, "securityejbInWarEarXMLMerge.ear", "securityejbXMLmerge.ear");
+                expectedStartedApps = 2;
                 break;
             case Constants.SERVER_JACC_DYNAMIC:
                 JACCFatUtils.transformApps(server, "securityejbinwar.ear");
@@ -123,7 +129,7 @@ public class EJBAnnTestBase {
         testHelper.startServer(null, appName);
         // Wait for feature update to complete
         assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
-        assertNotNull("Application did not start", server.waitForStringInLog("CWWKZ0001I"));
+        assertEquals("Application/s did not start", expectedStartedApps, server.waitForMultipleStringsInLog(expectedStartedApps, "CWWKZ0001I"));
         assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLog("CWWKS4105I"));
         if (server.getValidateApps()) { // If this build is Java 7 or above
             verifyServerStartedWithJaccFeature(server);

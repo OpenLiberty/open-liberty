@@ -41,6 +41,25 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers')
     include '**'
   }
+  copy {
+    from file('publish/0servers')
+    into new File(autoFvtDir, 'publish/servers')
+    include '**'
+  }
+  copy {
+    from file('publish/1servers')
+    into new File(autoFvtDir, 'publish/servers')
+    include '**'
+  }
+}
+
+tasks.withType(Zip).matching { task ->
+  task.name.startsWith('autoFvtZip-suite.oracle')
+}.configureEach {
+  from (new File(projectDir, 'oracle')) {
+    include 'semeruFips140_3CustomProfile.properties'
+  }
+  into 'autoFVT'
 }
 
 addRequiredLibraries.dependsOn addDerbyToSharedDir

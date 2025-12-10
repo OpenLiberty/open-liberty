@@ -741,11 +741,16 @@ public class SessionCacheTestServlet extends FATServlet {
             System.out.println("Session was null and was expecting null value.");
             return;
         } else if (session == null) {
-            // Retry getSession() as session may need time to replicate to server B
-            TimeUnit.SECONDS.sleep(5);
-            session = request.getSession(false);
+            // Retry getSession() multiple times as session may need time to replicate to server B
+            // This addresses intermittent timing issues in distributed session replication
+            int maxRetries = 5;
+            for (int attempt = 1; attempt <= maxRetries && session == null; attempt++) {
+                System.out.println("Session is null on attempt " + attempt + " of " + maxRetries + ", waiting for replication...");
+                TimeUnit.SECONDS.sleep(2);
+                session = request.getSession(false);
+            }
             if (session == null) {
-                fail("Was expecting to get " + key + '=' + expectedValue + ", but instead got a null session.");
+                fail("SessionCacheTestServlet.sessionGet: Was expecting to get " + key + '=' + expectedValue + ", but instead got a null session.");
             }
         }
         Object actualValue = session.getAttribute(key);

@@ -1,0 +1,31 @@
+<server>
+	<sslDefault sslRef="goodSSLConfig" httpHostNameVerification="false" />
+	<!--ssl id="goodSSLConfig" keyStoreRef="samlKeyStore" trustStoreRef="serverStore" 
+		/ -->
+	<ssl
+		id="goodSSLConfig"
+		keyStoreRef="samlKeyStore"
+		trustStoreRef="serverStore"
+		verifyHostname="false" />
+	<keyStore
+		id="allKeyStore"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/key.p12" />
+	<keyStore
+		id="samlKeyStore"
+		password="Password"
+		type="PKCS12"
+		location="${server.config.dir}/ec_key.p12" />
+	<keyStore
+		id="serverStore"
+		password="LibertyServer"
+		type="PKCS12"
+		location="${server.config.dir}/sslServerTrust.p12" />
+	<keyStore
+		id="samlPrivKeyStore"
+		password="Liberty"
+		type="JKS"
+		location="${server.config.dir}/samlKeyPrivPass.jks" />
+
+</server>

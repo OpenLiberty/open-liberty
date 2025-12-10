@@ -181,7 +181,7 @@ public class UIOauthTest {
         String originalWindow = driver.getWindowHandle();
 
         // Check the title loads as initial validation page has loaded
-        WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
+        WebElement title = waitForElement(driver, By.cssSelector("h1.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
 
         //get the GET `/test` operation from `default`

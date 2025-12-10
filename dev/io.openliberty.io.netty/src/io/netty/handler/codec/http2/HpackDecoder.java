@@ -460,7 +460,7 @@ final class HpackDecoder {
                 break;
 
             default:
-                throw new Error("should not reach here");
+                throw new Error("Unexpected index type: " + indexType);
         }
     }
 

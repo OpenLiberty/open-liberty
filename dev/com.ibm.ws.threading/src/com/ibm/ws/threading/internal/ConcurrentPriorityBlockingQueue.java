@@ -14,8 +14,12 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * This BlockingQueue implementation takes the concepts from the DoubleQueue and ConcurrentLinkedQueue
@@ -83,6 +87,69 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         }
     }
 
+    private static ConcurrentLinkedQueue<GetQueueLock> waitingThreadLocks = new ConcurrentLinkedQueue<GetQueueLock>();
+
+    private static final ThreadLocal<GetQueueLock> threadLocalGetLock = new ThreadLocal<GetQueueLock>() {
+        @Override
+        protected GetQueueLock initialValue() {
+            return new GetQueueLock();
+        }
+    };
+
+    // D638088: Added two fields to the getQueueLock for book keeping
+    // D371967: An easily-identified marker class used for locking
+    private static class GetQueueLock extends Object {
+        private boolean notified;
+
+        public boolean isNotified() {
+            return notified;
+        }
+
+        public void setNotified(boolean notified) {
+            this.notified = notified;
+        }
+    }
+
+    private void notifyGet_() {
+        // Notify a waiting thread that work has arrived on the queue.  A notification may be lost in some cases - however as none of the
+        // threads wait endlessly, a waiting thread will either be notified, or will eventually wake up.  If there are no waiting threads,
+        // the new work will be picked up when an active thread completes its task.
+        GetQueueLock lock = waitingThreadLocks.poll();
+        if (lock != null) {
+            synchronized (lock) {
+                lock.setNotified(true);
+                lock.notify();
+            }
+        }
+    }
+
+    @FFDCIgnore(InterruptedException.class)
+    private GetQueueLock waitGet_(GetQueueLock getQueueLock, long timeout) throws InterruptedException {
+        if (getQueueLock == null) {
+            getQueueLock = threadLocalGetLock.get();
+        }
+
+        try {
+            synchronized (getQueueLock) {
+                getQueueLock.setNotified(false);
+                waitingThreadLocks.add(getQueueLock);
+                getQueueLock.wait(timeout == -1 ? 0 : timeout);
+            }
+        } catch (InterruptedException ie) {
+            // clear the interrupted flag on the thread
+            Thread.interrupted();
+            throw ie;
+        } finally {
+            if (!getQueueLock.isNotified()) {
+                // we either timed out or were interrupted, so remove ourselves from the queue...  it's okay if a producer already has the
+                // lock because we're going to exit and go try to get more work anyway, so it's okay if we don't get the signal
+                waitingThreadLocks.remove(getQueueLock);
+            }
+        }
+
+        return getQueueLock;
+    }
+
     final Head<T> expeditedHead;
 
     final AtomicReference<Node<T>> expeditedTail = new AtomicReference<>();
@@ -94,7 +161,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
     /**
      * Count of items available for poll/removal.
      */
-    final ReduceableSemaphore size = new ReduceableSemaphore(0, false);
+    final AtomicInteger size = new AtomicInteger(0);
 
     /**
      * The currentHead field is set to nonExpeditedHead initially until an expedited item is added to the queue
@@ -204,7 +271,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
 
     @Override
     public boolean isEmpty() {
-        return size.availablePermits() <= 0;
+        return size.get() <= 0;
     }
 
     @Override
@@ -290,7 +357,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
             }
             T prevItem = node.get();
             if (prevItem != null && node.compareAndSet(prevItem, null)) {
-                size.reducePermits(1);
+                size.getAndDecrement();
             }
             // Null out unconditionally since a remove on the queue could be called at the same time
             // as remove on the iterator which would cause the above if statement to not process.
@@ -344,12 +411,13 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
                 // if we win the race to update the tail's next, the new item is added to the queue
                 if (currentTail.next.compareAndSet(end, newTail)) {
                     // increase the queue size
-                    size.release();
+                    size.getAndIncrement();
 
                     // don't update the tail each time.  update the tail on a later insert into the queue
                     if (currentTail != startingTail) {
                         tail.compareAndSet(startingTail, newTail);
                     }
+                    notifyGet_();
                     return true;
                 }
 
@@ -383,34 +451,54 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
         return getFirstWithAction(head, null, GET_FIRST_ITEM);
     }
 
+    private int getAndDecrementIfNotEmpty() {
+        while (true) {
+            int currentSize = size.get();
+            if (currentSize <= 0 || size.compareAndSet(currentSize, currentSize - 1)) {
+                return currentSize;
+            }
+        }
+    }
+
     @Override
     public T poll() {
-        while (size.tryAcquire()) {
+        T first = null;
+
+        // Gets and decrement if size is not <= 0
+        if (getAndDecrementIfNotEmpty() > 0) {
             Head<T> head = currentHead.get();
-            T first = getFirstWithAction(head, null, REMOVE_FIRST_ITEM);
-            if (first != null) {
-                return first;
+            first = getFirstWithAction(head, null, REMOVE_FIRST_ITEM);
+            // Since we decrement size before removing the first item, if one isn't found due to
+            // a concurrent remove happening, we need to increment the size again
+            if (first == null) {
+                size.getAndIncrement();
             }
-            size.release(); // another thread is removing, put the permit back
-            Thread.yield();
         }
-        return null;
+        return first;
     }
 
     @Override
     public T poll(long timeout, TimeUnit unit) throws InterruptedException {
-        for (long start = System.nanoTime(), remain = timeout = unit.toNanos(timeout); //
-                        remain >= 0 && size.tryAcquire(remain, TimeUnit.NANOSECONDS); //
-                        remain = timeout - (System.nanoTime() - start)) {
-            Head<T> head = currentHead.get();
-            T first = getFirstWithAction(head, null, REMOVE_FIRST_ITEM);
-            if (first != null) {
-                return first;
-            }
-            size.release(); // another thread is removing, put the permit back
-            Thread.yield();
+        T first = poll();
+        if (first != null) {
+            return first;
         }
-        return null;
+
+        long timeLeftMillis = unit.toMillis(timeout);
+        long endTimeMillis = System.currentTimeMillis() + timeLeftMillis;
+        GetQueueLock getQueueLock = null;
+
+        while (first == null && timeLeftMillis > 0) {
+            // block on lock
+            getQueueLock = waitGet_(getQueueLock, timeLeftMillis);
+            first = poll();
+            if (first != null) {
+                break;
+            }
+
+            timeLeftMillis = endTimeMillis - System.currentTimeMillis();
+        }
+        return first;
     }
 
     @Override
@@ -471,7 +559,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
                 prev.next.compareAndSet(current, next);
             }
             if (removed) {
-                size.reducePermits(1);
+                size.getAndDecrement();
                 return true;
             }
         }
@@ -480,23 +568,26 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
 
     @Override
     public final int size() {
-        int s = size.availablePermits();
+        int s = size.get();
         return s < 0 ? 0 : s;
     }
 
     @Override
     public T take() throws InterruptedException {
-        while (true) {
-            size.acquire();
-
-            Head<T> head = currentHead.get();
-            T first = getFirstWithAction(head, null, REMOVE_FIRST_ITEM);
-            if (first != null) {
-                return first;
-            }
-            size.release(); // another thread is removing, put the permit back
-            Thread.yield();
+        T first = poll();
+        if (first != null) {
+            return first;
         }
+
+        GetQueueLock getQueueLock = null;
+
+        while (first == null) {
+            // block on lock
+            getQueueLock = waitGet_(getQueueLock, -1);
+            first = poll();
+        }
+
+        return first;
     }
 
     <F> F getFirstWithAction(Head<T> head, Node<T> end, FirstAction<T, F> firstAction) {
@@ -625,7 +716,7 @@ public class ConcurrentPriorityBlockingQueue<T> extends AbstractQueue<T> impleme
     @Override
     public String toString() {
         StringBuilder b = new StringBuilder();
-        b.append(size.availablePermits()).append(' ');
+        b.append(size.get()).append(' ');
         Iterator<T> it = iterator();
         if (!it.hasNext()) {
             b.append("[]");

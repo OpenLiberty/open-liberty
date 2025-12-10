@@ -51,10 +51,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
-import jakarta.persistence.AttributeNode;
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Subgraph;
 import jakarta.persistence.metamodel.Attribute;
 import jakarta.persistence.metamodel.Attribute.PersistentAttributeType;
 import jakarta.persistence.metamodel.EntityType;
@@ -63,7 +60,6 @@ import jakarta.persistence.metamodel.Metamodel;
 import jakarta.persistence.metamodel.PluralAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.Type;
-import jakarta.persistence.metamodel.Type.PersistenceType;
 
 /**
  * Creates EntityManager instances from an EntityManagerFactory (from a persistence unit reference)
@@ -144,16 +140,14 @@ public abstract class EntityManagerBuilder {
         this.convertibleTypes = convertibleTypes;
         EntityManager em = createEntityManager();
         try {
-            // TODO remove the following boolean once EclipseLink #33294 is fixed
-            // To temporarily reproduce the issue, set it to true below, then
-            // build this project and run the test bucket:
-            // ./gradlew io.openliberty.data.internal_fat_jpa:buildandrun
-            boolean eagerlyFetchAll = false;
+            boolean isHibernate = em.getClass().getName().startsWith("org.hibernate.");
             Set<Class<?>> missingEntityTypes = new HashSet<>(entityTypes);
             Metamodel model = em.getMetamodel();
             for (EntityType<?> entityType : model.getEntities()) {
                 Map<String, String> attributeNames = new HashMap<>();
                 Map<String, List<Member>> attributeAccessors = new HashMap<>();
+                // TODO remove this workaround for #33232 once fixed
+                Map<String, Method> attributeSetters = isHibernate ? new HashMap<>() : null;
                 SortedSet<String> attributeNamesForUpdate = new TreeSet<>();
                 SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
                 SortedMap<String, Member> idClassAttributeAccessors = null;
@@ -175,13 +169,7 @@ public abstract class EntityManagerBuilder {
                     Tr.debug(this, tc, "collecting info for " +
                                        userEntityClass.getName());
 
-                Set<Class<?>> loadGraphPopulated = new HashSet<>();
-                loadGraphPopulated.add(jpaEntityClass);
                 try {
-                    EntityGraph<?> loadGraph = eagerlyFetchAll //
-                                    ? em.createEntityGraph(jpaEntityClass) //
-                                    : null;
-
                     for (Attribute<?, ?> attr : entityType.getAttributes()) {
                         String attributeName = attr.getName();
                         PersistentAttributeType attributeType = attr.getPersistentAttributeType();
@@ -214,25 +202,17 @@ public abstract class EntityManagerBuilder {
 
                         attributeNames.put(attributeName.toLowerCase(), attributeName);
                         attributeAccessors.put(attributeName, Collections.singletonList(accessor));
+                        if (attributeSetters != null && // workaround is only needed for Hibernate
+                            recordClass == null && // Java record entities are always new instances
+                            accessor instanceof Method) // otherwise use the Field
+                            attributeSetters.put(attributeName, getSetMethod(jpaEntityClass,
+                                                                             (Method) accessor));
                         attributeTypes.put(attributeName, attr.getJavaType());
                         if (attr.isCollection()) {
                             if (attr instanceof PluralAttribute) {
                                 Type<?> elementType = ((PluralAttribute<?, ?, ?>) attr).getElementType();
-                                Class<?> elementClass = elementType.getJavaType();
                                 collectionElementTypes.put(attributeName,
                                                            elementType.getJavaType());
-                                if (elementType.getPersistenceType() == PersistenceType.ENTITY) {
-                                    if (eagerlyFetchAll &&
-                                        loadGraphPopulated.add(elementClass)) {
-                                        populateSubgraph(loadGraph.addElementSubgraph(attributeName),
-                                                         elementClass,
-                                                         model,
-                                                         loadGraphPopulated);
-                                        loadGraphPopulated.remove(elementClass);
-                                    }
-                                } else if (eagerlyFetchAll) {
-                                    loadGraph.addAttributeNodes(attributeName);
-                                }
                             }
                         } else {
                             SingularAttribute<?, ?> singleAttr = attr instanceof SingularAttribute //
@@ -247,14 +227,6 @@ public abstract class EntityManagerBuilder {
                             } else if (Collection.class.isAssignableFrom(attr.getJavaType())) {
                                 // collection attribute that is not annotated with ElementCollection
                                 collectionElementTypes.put(attributeName, Object.class);
-                            } else if (eagerlyFetchAll &&
-                                       singleAttr.isAssociation() &&
-                                       loadGraphPopulated.add(singleAttr.getJavaType())) {
-                                populateSubgraph(loadGraph.addSubgraph(attributeName),
-                                                 singleAttr.getJavaType(),
-                                                 model,
-                                                 loadGraphPopulated);
-                                loadGraphPopulated.remove(singleAttr.getJavaType());
                             }
                         }
                     }
@@ -348,22 +320,8 @@ public abstract class EntityManagerBuilder {
                             if (relAttr.isCollection()) {
                                 if (relAttr instanceof PluralAttribute) {
                                     Type<?> elementType = ((PluralAttribute<?, ?, ?>) relAttr).getElementType();
-                                    Class<?> elementClass = elementType.getJavaType();
                                     collectionElementTypes.put(fullAttributeName,
                                                                elementType.getJavaType());
-                                    if (isEmbeddablesOnly)
-                                        if (elementType.getPersistenceType() == PersistenceType.ENTITY) {
-                                            if (eagerlyFetchAll &&
-                                                loadGraphPopulated.add(elementClass)) {
-                                                populateSubgraph(loadGraph.addElementSubgraph(relationAttributeName),
-                                                                 elementClass,
-                                                                 model,
-                                                                 loadGraphPopulated);
-                                                loadGraphPopulated.remove(elementClass);
-                                            }
-                                        } else if (eagerlyFetchAll) {
-                                            loadGraph.addAttributeNodes(relationAttributeName);
-                                        }
                                 }
                             } else if (relAttr instanceof SingularAttribute) {
                                 SingularAttribute<?, ?> singleAttr = ((SingularAttribute<?, ?>) relAttr);
@@ -372,15 +330,6 @@ public abstract class EntityManagerBuilder {
                                 } else if (singleAttr.isVersion()) {
                                     versionAttrName = relationAttributeName_; // to be suitable for query-by-method
                                     attributeNamesForUpdate = null;
-                                } else if (eagerlyFetchAll &&
-                                           isEmbeddablesOnly &&
-                                           singleAttr.isAssociation() &&
-                                           loadGraphPopulated.add(singleAttr.getJavaType())) {
-                                    populateSubgraph(loadGraph.addSubgraph(relationAttributeName),
-                                                     singleAttr.getJavaType(),
-                                                     model,
-                                                     loadGraphPopulated);
-                                    loadGraphPopulated.remove(singleAttr.getJavaType());
                                 }
                             }
                         }
@@ -410,14 +359,6 @@ public abstract class EntityManagerBuilder {
                         }
                     }
 
-                    if (eagerlyFetchAll) {
-                        List<AttributeNode<?>> nodes = loadGraph.getAttributeNodes();
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "load graph for " + entityType.getName(), nodes);
-                        if (nodes.isEmpty())
-                            loadGraph = null; // avoid using a load graph
-                    }
-
                     EntityInfo entityInfo = new EntityInfo( //
                                     entityType.getName(), //
                                     jpaEntityClass, //
@@ -425,12 +366,13 @@ public abstract class EntityManagerBuilder {
                                     attributeAccessors, //
                                     attributeNames, //
                                     attributeNamesForUpdate, //
+                                    attributeSetters, //
                                     attributeTypes, //
                                     collectionElementTypes, //
                                     relationAttributeNames, //
-                                    loadGraph, //
                                     idType, //
                                     idClassAttributeAccessors, //
+                                    isHibernate, //
                                     versionAttrName, //
                                     this);
 
@@ -587,6 +529,47 @@ public abstract class EntityManagerBuilder {
     }
 
     /**
+     * Identifies the setter method that corresponds to the given getter method.
+     *
+     * @param entityClass the entity class.
+     * @param getter      the getter method for an entity attribute.
+     * @return the setter method.
+     */
+    @FFDCIgnore(NoSuchMethodException.class)
+    private Method getSetMethod(Class<?> entityClass, Method getter) {
+        String getterName = getter.getName();
+        Class<?> getterReturnType = getter.getReturnType();
+
+        String setterName;
+        if (getterName.charAt(0) == 'g')
+            setterName = 's' + getterName.substring(1);
+        else if (getterName.startsWith("is"))
+            setterName = "set" + getterName.substring(2);
+        else
+            throw new UnsupportedOperationException("Invalid entity attribute: " +
+                                                    entityClass.getName() + "." + getterName);
+
+        Method setter = null;
+        try {
+            setter = entityClass.getMethod(setterName, getterReturnType);
+        } catch (NoSuchMethodException x) {
+            for (Class<?> c = entityClass; setter == null && c != null; c = c.getSuperclass())
+                try {
+                    setter = c.getDeclaredMethod(setterName, getterReturnType);
+                } catch (NoSuchMethodException xx) {
+                }
+            if (setter == null)
+                throw new UnsupportedOperationException("Invalid entity attribute: " +
+                                                        entityClass.getName() + "." + getterName, x);
+        } catch (SecurityException x) {
+            throw new UnsupportedOperationException("Invalid entity attribute: " +
+                                                    entityClass.getName() + "." + getterName, x);
+        }
+
+        return setter;
+    }
+
+    /**
      * Write information about this instance to the introspection file for
      * Jakarta Data.
      *
@@ -615,49 +598,4 @@ public abstract class EntityManagerBuilder {
                cause instanceof SQLTransientConnectionException;
     }
 
-    /**
-     * Populates the subgraph with attributes for which to force eager loading,
-     * which allows entities to be detached.
-     *
-     * @param subgraph           the subgraph.
-     * @param entityClass        the entity class to which the subgraph applies.
-     * @param model              the metamodel.
-     * @param loadGraphPopulated entity classes that have already been covered.
-     *                               This guards against infinite recursion in
-     *                               the case of cycles.
-     */
-    private void populateSubgraph(Subgraph<?> subgraph,
-                                  Class<?> entityClass,
-                                  Metamodel model,
-                                  Set<Class<?>> loadGraphPopulated) {
-        for (Attribute<?, ?> attr : model.entity(entityClass).getAttributes())
-            if (attr.isAssociation() &&
-                attr instanceof SingularAttribute &&
-                loadGraphPopulated.add(attr.getJavaType())) {
-
-                populateSubgraph(subgraph.addSubgraph(attr.getName()),
-                                 attr.getJavaType(),
-                                 model,
-                                 loadGraphPopulated);
-
-                // allow different subgraph to reuse:
-                loadGraphPopulated.remove(attr.getJavaType());
-            } else if (attr instanceof PluralAttribute plural) {
-                Type<?> elementType = plural.getElementType();
-                Class<?> elementClass = elementType.getJavaType();
-                if (elementType.getPersistenceType() == PersistenceType.ENTITY) {
-                    if (loadGraphPopulated.add(elementClass)) {
-                        populateSubgraph(subgraph.addElementSubgraph(attr.getName()),
-                                         elementClass,
-                                         model,
-                                         loadGraphPopulated);
-
-                        // allow different subgraph to reuse:
-                        loadGraphPopulated.remove(elementClass);
-                    }
-                } else {
-                    subgraph.addAttributeNodes(attr.getName());
-                }
-            }
-    }
 }

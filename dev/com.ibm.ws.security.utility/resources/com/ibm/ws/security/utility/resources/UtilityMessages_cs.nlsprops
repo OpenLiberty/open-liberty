@@ -33,7 +33,8 @@ missingArg=Chyb\u00ed argument {0}.
 missingValue=Chyb\u00ed hodnota pro argument {0}.
 missingArg2=Mus\u00ed b\u00fdt zad\u00e1n bu\u010f argument {0}, nebo argument {1}.
 exclusiveArg=Mus\u00ed b\u00fdt zad\u00e1n bu\u010f argument {0}, nebo argument {1}, nikoli oboj\u00ed.
-serverNotFound=Zadan\u00fd server {0} nelze v um\u00edst\u011bn\u00ed {1} naj\u00edt
+serverNotFound=Zadan\u00fd {0} server nebyl nalezen na dan\u00e9m {1} m\u00edst\u011b.
+clientNotFound=Zadan\u00fd klient {0} nebyl na dan\u00e9m {1} m\u00edst\u011b nalezen.
 
 
 encode.enterText=Zadejte text:
@@ -57,7 +58,6 @@ sslCert.createFailed=Nelze vytvo\u0159it v\u00fdchoz\u00ed certifik\u00e1t SSL:\
 sslCert.errorEncodePassword=Chyba p\u0159i k\u00f3dov\u00e1n\u00ed hesla (certifik\u00e1t nebyl vytvo\u0159en):\n{0}
 sslCert.createKeyStore=Vytv\u00e1\u0159en\u00ed \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f {0}\n
 sslCert.oneType=Argumenty {0} a {1} nelze ur\u010dit sou\u010dasn\u011b.
-sslCert.clientNotFound=Zadan\u00e9ho klienta {0} nelze v um\u00edst\u011bn\u00ed {1} naj\u00edt
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 sslCert.serverXML=Vytvo\u0159en\u00fd certifik\u00e1t SSL pro server {0}. Certifik\u00e1t je vytvo\u0159en s {1} jako SubjectDN.\n\nChcete-li povolit SSL, p\u0159idejte n\u00e1sleduj\u00edc\u00ed \u0159\u00e1dky do souboru server.xml:
@@ -100,7 +100,7 @@ createLTPAKeys.fileExists=Soubor {0} ji\u017e existuje. Nelze vytvo\u0159it soub
 createLTPAKeys.createdFile=Vytvo\u0159en\u00fd soubor s kl\u00ed\u010di LTPA: {0}\nZahr\u0148te n\u00e1sleduj\u00edc\u00ed konfiguraci do souboru server.xml\n{1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=Instalace Javy bu\u010f nepoch\u00e1z\u00ed z IBM Semeru Runtimes ani IBM SDK, nebo pokud ano, nepodporuje FIPS 140-3.\nNainstalujte Javu z IBM Semeru Runtimes nebo IBM SDK pomoc\u00ed verze a opera\u010dn\u00edho syst\u00e9mu, kter\u00fd podporuje FIPS 140-3.\nPokud pou\u017e\u00edv\u00e1te IBM Semeru Runtimes, pou\u017eijte verzi 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, nebo vy\u0161\u0161\u00ed.\nPokud pou\u017e\u00edv\u00e1te IBM SDK, pou\u017eijte verzi 8.0.8.30 nebo vy\u0161\u0161\u00ed.
+configureFIPS.notIbmSdkNorSemeru=Instalace Java nen\u00ed bu\u010f z IBMSemeru Runtimes ani IBM SDK, nebo pokud ano, nepodporuje FIPS 140-3.\nNainstalujte Javu bu\u010f z IBMSemeru Runtimes nebo IBM SDK pomoc\u00ed verze a opera\u010dn\u00edho syst\u00e9mu, kter\u00fd podporuje FIPS 140-3.\nPokud pou\u017e\u00edv\u00e1te IBMSemeru Runtimes, pou\u017eijte verzi 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0, nebo vy\u0161\u0161\u00ed.\nPokud pou\u017e\u00edv\u00e1te IBM SDK, pou\u017eijte verzi 8.0.8.30 nebo vy\u0161\u0161\u00ed.
 
 configureFIPS.zosNotAvailable=P\u0159\u00edkaz securityUtility configureFIPS nen\u00ed podporov\u00e1n na adrese z/OS.
 

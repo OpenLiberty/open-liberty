@@ -1,0 +1,153 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCM
+#COMPONENTNAMEFOR CWMCM MCP Server
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0001E.blank.arguments=CWMCM0001E: Metoda instrumentului {0} MCP are unul sau mai multe argumente cu nume goale.
+CWMCM0001E.blank.arguments.explanation=Au fost furnizate argumente pentru instrumentul MCP, dar numele acestora lipseau. Fiecare argument al unei metode de instrument trebuie s\u0103 aib\u0103 un nume.
+CWMCM0001E.blank.arguments.useraction=Furniza\u021bi valori care nu sunt goale pentru toate argumentele obligatorii.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+CWMCM0002E.duplicate.arguments=CWMCM0002E: Metoda {0} instrumentului MCP are mai mult de un argument numit {1}.
+CWMCM0002E.duplicate.arguments.explanation=Unul sau mai multe argumente au acela\u0219i nume. Fiecare argument al unei metode a instrumentului MCP trebuie s\u0103 aib\u0103 un nume diferit.
+CWMCM0002E.duplicate.arguments.useraction=Da\u021bi fiec\u0103rui argument al instrumentului un nume diferit.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0003E.missing.tool.argument.name=CWMCM0003E: Metoda instrumentului {0} MCP are unul sau mai multe argumente f\u0103r\u0103 un nume specificat.
+CWMCM0003E.missing.tool.argument.name.explanation=Nu au fost furnizate unul sau mai multe nume de argumente pentru instrumentele MCP.
+CWMCM0003E.missing.tool.argument.name.useraction=Ad\u0103uga\u021bi un nume la @ToolArg adnotare sau ad\u0103uga\u021bi op\u021biunea compilatorului -parameters pentru a utiliza numele parametrului.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The list of qualified names of the tool
+CWMCM0004E.duplicate.tools=CWMCM0004E: Exist\u0103 mai multe metode ale instrumentului MCP denumite {0}. Metodele sunt {1}.
+CWMCM0004E.duplicate.tools.explanation=Unul sau mai multe nume de instrumente MCP au ap\u0103rut de mai multe ori. Serverul a\u0219teapt\u0103 un singur nume per instrument pentru unicitate.
+CWMCM0004E.duplicate.tools.useraction=Furniza\u021bi un nume unic pentru fiecare instrument MCP.
+
+# Used for server logging
+# do not translate MCP
+CWMCM0005E.validation.error=CWMCM0005E: Exist\u0103 una sau mai multe erori de validare MCP. Verifica\u021bi istoricele pentru mai multe detalii.
+CWMCM0005E.validation.error.explanation=Aplica\u021bia nu poate fi pornit\u0103 deoarece exist\u0103 erori de validare MCP.
+CWMCM0005E.validation.error.useraction=Verifica\u021bi istoricele pentru mai multe detalii.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0006E.duplicate.special.arguments=CWMCM0006E: Instrumentul {0} MCP are mai mult de un parametru de tipul {1}. Utiliza\u021bi un {1} singur parametru \u00een fiecare metod\u0103 Tool.
+CWMCM0006E.duplicate.special.arguments.explanation=Au ap\u0103rut unul sau mai multe argumente speciale de mai multe ori, dar se a\u0219teapt\u0103 doar unul.
+CWMCM0006E.duplicate.special.arguments.useraction=Elimina\u021bi instan\u021bele suplimentare.
+
+# Used for server logging
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0007E.invalid.arguments=CWMCM0007E: Instrumentul {0} MCP are un parametru de tip {1} care nu este un tip de argument special recunoscut \u0219i nu are o `@ToolArg` adnotare.
+CWMCM0007E.invalid.arguments.explanation=Unul sau mai mul\u021bi parametri nu au fost adnota\u021bi ca argumente ale instrumentului \u0219i nu sunt recunoscu\u021bi ca tipuri speciale de argumente.
+CWMCM0007E.invalid.arguments.useraction=Verifica\u021bi dac\u0103 a\u021bi importat clasa corect\u0103 pentru argumentul dvs. sau dac\u0103 a\u021bi inten\u021bionat s\u0103 include\u021bi @ToolArg.
+
+# Used as part of a response to a client
+# {0} = Request id
+CWMCM0008E.invalid.request.params=CWMCM0008E: O solicitare cu {0} ID-ul este \u00een curs de procesare.
+CWMCM0008E.invalid.request.params.explanation=O solicitare cu acela\u0219i ID este \u00een curs de procesare. Cererile provenite de la acela\u0219i client trebuie s\u0103 aib\u0103 ID-uri unice.
+CWMCM0008E.invalid.request.params.useraction=Utiliza\u021bi un ID unic pentru fiecare solicitare.
+
+# Used as part of a response to a client
+# do not translate GET, POST
+CWMCM0009I.get.disallowed=CWMCM0009I: Cererile GET nu sunt acceptate.
+CWMCM0009I.get.disallowed.explanation=A fost trimis\u0103 o solicitare GET, dar aceast\u0103 func\u021bionalitate nu este acceptat\u0103.
+CWMCM0009I.get.disallowed.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# Used for server logging
+# {0} = tool name
+# {1} = exception details
+CWMCM0010E.internal.server.error.detailed=CWMCM0010E: Metoda instrumentului {0} a generat o excep\u021bie nea\u0219teptat\u0103. Excep\u0163ia este{1}
+CWMCM0010E.internal.server.error.detailed.explanation=Metoda instrumentului a generat o excep\u021bie nea\u0219teptat\u0103.
+CWMCM0010E.internal.server.error.detailed.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Used as part of a response to a client
+CWMCM0011E.internal.server.error=CWMCM0011E: A ap\u0103rut o eroare intern\u0103 a serverului \u00een timpul rul\u0103rii instrumentului.
+CWMCM0011E.internal.server.error.explanation=Serverul nu a putut finaliza solicitarea de apelare a instrumentului.
+CWMCM0011E.internal.server.error.useraction=Verifica\u021bi dac\u0103 cererea este corect\u0103. Mai multe informa\u021bii despre eroare pot fi g\u0103site pe server messages.log.
+
+# Used for server logging
+# do not translate bean
+# {0} = bean error details
+# {1} = tool name
+CWMCM0012E.bean.release.fail=CWMCM0012E: A ap\u0103rut o eroare la eliberarea bean-ului CDI dup\u0103 apelarea instrumentului {1}. Eroarea este: {0}
+CWMCM0012E.bean.release.fail.explanation=C\u00e2nd se apeleaz\u0103 o metod\u0103 de instrument, o instan\u021b\u0103 a bean-ului CDI care declar\u0103 metoda este achizi\u021bionat\u0103 \u00eenainte de apelarea metodei \u0219i eliberat\u0103 dup\u0103 aceea. A ap\u0103rut o eroare la eliberarea instan\u021bei bean.
+CWMCM0012E.bean.release.fail.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Used for server logging and client response
+# do not translate MCP-Protocol-Version, MCP
+# {0} = List of supported MCP-Protocol-Version values
+CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: A fost furnizat un antet MCP-Protocol-Version neacceptat. Valori acceptate: {0}
+CWMCM0013E.unsupported.mcp.http.version.explanation=Versiunea protocolului din antetul MCP-Protocol-Version nu este acceptat\u0103 de server.
+CWMCM0013E.unsupported.mcp.http.version.useraction=Utiliza\u021bi o versiune de protocol acceptat\u0103.
+
+# Used as part of a response to a client
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+CWMCM0014E.unexpected.server.error=CWMCM0014E: Eroare nea\u0219teptat\u0103 a serverului. Metod\u0103= {0} RequestURI={1 } RequestQuery={2 }
+CWMCM0014E.unexpected.server.error.explanation=A ap\u0103rut o eroare nea\u0219teptat\u0103 a serverului \u00een timpul proces\u0103rii cererii. Cererea nu poate fi \u00eendeplinit\u0103.
+CWMCM0014E.unexpected.server.error.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0015E.unexpected.server.error.exception=CWMCM0015E: Eroare nea\u0219teptat\u0103 a serverului. Metod\u0103= {0} RequestURI={1 } RequestQuery={2 }, Excep\u021bie: {3}
+CWMCM0015E.unexpected.server.error.exception.explanation=A ap\u0103rut o eroare nea\u0219teptat\u0103 a serverului \u00een timpul proces\u0103rii cererii. Cererea nu poate fi \u00eendeplinit\u0103.
+CWMCM0015E.unexpected.server.error.exception.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Used for server logging
+# {0} = ExceptionMessage
+CWMCM0016E.error.sending.response.exception=CWMCM0016E: Eroare nea\u0219teptat\u0103 a serverului. Excep\u0163ia: {0}
+CWMCM0016E.error.sending.response.exception.explanation=A ap\u0103rut o eroare la \u00eencercarea de a trimite r\u0103spunsul.
+CWMCM0016E.error.sending.response.exception.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# Used as part of a response to a client
+# do not translate jsonrpc
+# {0} = jsonrpc value
+jsonrpc.exception.validation.invalid.version=C\u00e2mpul jsonrpc trebuie s\u0103 fie prezent. \u00cen prezent este acceptat 2.0 numai JSONRPC.
+
+# Used as part of a response to a client
+jsonrpc.validation.empty.method=C\u00e2mpul metod\u0103 este gol.
+
+# Used as part of a response to a client
+# {0} = id value
+jsonrpc.exception.validation.empty.string.id=C\u00e2mpul id este invalid. Id-ul nu trebuie s\u0103 fie gol dac\u0103 este furnizat un \u0219ir de caractere.
+
+# Used as part of a response to a client
+jsonrpc.exception.validation.invalid.id.type=Tipul id nu este un tip acceptabil. ID-ul trebuie s\u0103 fie un \u0219ir de caractere sau un num\u0103r \u00eentreg.
+
+# Used as part of a response to a client
+jsonrpc.missing.params=Cererea nu con\u021bine niciun argument \u00een parametri.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.extra.arguments=Urm\u0103toarele argumente au fost transmise, dar nu au fost g\u0103site \u00een metod\u0103: {0}.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.missing.arguments=Urm\u0103toarele argumente erau a\u0219teptate de metod\u0103, dar nu au fost furnizate: {0}.

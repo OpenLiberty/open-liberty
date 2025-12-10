@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.annotation.MinimumJavaLevel;
 
 @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
@@ -223,6 +224,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey1X509NotUNT() throws Exception {
 
@@ -669,7 +671,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey5() throws Exception {
 
@@ -713,7 +715,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey5AddEncrypted() throws Exception {
 
@@ -758,6 +760,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey5MissingSigned() throws Exception {
 
@@ -802,6 +805,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey5MissingSignedAddEncrypted() throws Exception {
 
@@ -846,7 +850,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey6() throws Exception {
 
@@ -890,7 +894,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey6AddSigned() throws Exception {
 
@@ -935,6 +939,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey6MissingEncrypted() throws Exception {
 
@@ -980,6 +985,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey6MissingEncryptedAddSigned() throws Exception {
 
@@ -1024,7 +1030,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a positive scenario.
      *
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey7() throws Exception {
 
@@ -1068,6 +1074,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a negative scenario.
      *
      */
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey7MissingEncrypted() throws Exception {
 
@@ -1158,6 +1165,7 @@ public class CxfDeriveKeyTests extends CommonTests {
      * This is a positive scenario.
      *
      */
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFDeriveKey7MissingSignedEncrypted() throws Exception {
 

@@ -1220,3 +1220,24 @@ CWWKD1120.cursor.keyword.mismatch.explanation=Keywords such as GROUP BY, HAVING,
  pagination.
 CWWKD1120.cursor.keyword.mismatch.useraction=Rewrite the query to include only \
  the clauses: SELECT, FROM, and WHERE.
+
+CWWKD1121.record.lacks.id=CWWKD1121E: The {0} record cannot be used as an entity \
+ because it lacks a unqiue identifier. One of the record components ({1}) must \
+ be named id, have a name that ends with _id, Id or ID, or be of the type \
+ java.util.UUID.
+CWWKD1121.record.lacks.id.explanation=Entities are required to have a unique \
+ identifier attribute.
+CWWKD1121.record.lacks.id.useraction=Add or rename a record component to \
+ follow one of the stated conventions for assigning a unique identifier.
+
+CWWKD1122.entity.lacks.id=CWWKD1122E: The {0} class cannot be used as an \
+ entity because it lacks a unique identifier. To assign a unique identifier, \
+ ensure the {1} feature is enabled and add the @jakarta.persistence.Entity annotation \
+ to the entity class and add the @jakarta.persistence.Id annotation to at most one \
+ field or getter method of the entity class. \
+ Alternatively, use a META-INF/orm.xml file to \
+ define the entity and its unique identifier.
+CWWKD1122.entity.lacks.id.explanation=Entities are required to have a unique \
+ identifier attribute.
+CWWKD1122.entity.lacks.id.useraction=Enable the Jakarta Persistence feature \
+ and follow the Jakarta Persistence entity model to assign a unique identifier.

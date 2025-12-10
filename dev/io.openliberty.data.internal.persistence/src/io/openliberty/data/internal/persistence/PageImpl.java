@@ -103,9 +103,6 @@ public class PageImpl<T> implements Page<T> {
         jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
         queryInfo.setParameters(query, args);
 
-        if (queryInfo.entityInfo.loadGraph != null)
-            query.setHint(Util.LOADGRAPH, queryInfo.entityInfo.loadGraph);
-
         int maxPageSize = pageRequest.size();
         query.setFirstResult(queryInfo.computeOffset(pageRequest));
         query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));

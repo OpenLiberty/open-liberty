@@ -17,6 +17,7 @@
  * under the License.
  */
 // https://github.com/apache/cxf/blob/03a85a52f78e6eb5826e4b8bfc4992e0f4e0414b/core/src/main/java/org/apache/cxf/io/DelayedCachedOutputStreamCleaner.java
+//backport  https://github.com/apache/cxf/pull/2684, https://github.com/apache/cxf/pull/2706
 package org.apache.cxf.io;
 
 import java.io.Closeable;
@@ -30,6 +31,8 @@ import java.util.TimerTask;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
 import java.util.logging.Logger;
 
 import javax.annotation.Resource; // Liberty Change
@@ -41,6 +44,8 @@ import org.apache.cxf.common.logging.LogUtils;
 public final class DelayedCachedOutputStreamCleaner implements CachedOutputStreamCleaner, BusLifeCycleListener {
     private static final Logger LOG = LogUtils.getL7dLogger(DelayedCachedOutputStreamCleaner.class);
     private static final long MIN_DELAY = 2000; /* 2 seconds */
+    private static final String DEFAULT_STRATEGY = "default";
+    private static final String SINGLE_TIMER_STRATEGY = "single-timer";
     private static final DelayedCleaner NOOP_CLEANER = new DelayedCleaner() {
         // NOOP
     };
@@ -74,25 +79,157 @@ public final class DelayedCachedOutputStreamCleaner implements CachedOutputStrea
         }
     }
 
-    private static final class DelayedCleanerImpl implements DelayedCleaner {
+    private static final class SingleTimerDelayedCleaner implements DelayedCleaner {
+        private static volatile Timer timer;
+        private static final Object TIMER_LOCK = new Object();
+
         private final long delay; /* default is 30 minutes, in milliseconds */
         private final DelayQueue<DelayedCloseable> queue = new DelayQueue<>();
-        private final Timer timer;
-        
-        DelayedCleanerImpl(final long delay) {
+        private final Object lock = new Object();
+        private TimerTask timerTask;
+
+        SingleTimerDelayedCleaner(final long delay) {
             this.delay = delay;
-            this.timer = new Timer("DelayedCachedOutputStreamCleaner", true);
-            this.timer.scheduleAtFixedRate(new TimerTask() {
-                @Override
-                public void run() {
-                    clean();
+        }
+
+        @Override
+        public void register(final Closeable closeable) {
+            TimerTask newTimerTask = null;
+
+            synchronized (lock) {
+                queue.put(new DelayedCloseable(closeable, delay));
+                if (timerTask == null) {
+                    timerTask = new TimerTask() {
+                        @Override
+                        public void run() {
+                            clean();
+                        }
+                    };
+                    newTimerTask = timerTask;
                 }
-            }, 0, Math.max(MIN_DELAY, delay >> 1));
+            }
+
+            if (newTimerTask != null) {
+                Timer t;
+                // CHECKSTYLE:OFF
+                // May the Gods of Code Style forgive us these three inner assignments
+                if ((t = timer) == null) {
+                    synchronized (TIMER_LOCK) {
+                        if ((t = timer) == null) {
+                            t = timer = new Timer("DelayedCachedOutputStreamCleaner", true);
+                        }
+                    }
+                }
+                // CHECKSTYLE:ON
+                t.scheduleAtFixedRate(newTimerTask, 0, Math.max(MIN_DELAY, delay >> 1));
+            }
+        }
+
+        @Override
+        public void unregister(final Closeable closeable) {
+            TimerTask oldTimerTask = null;
+            synchronized (lock) {
+                queue.remove(new DelayedCloseable(closeable, delay));
+                if (queue.isEmpty() && timerTask != null) {
+                    oldTimerTask = timerTask;
+                    timerTask = null;
+                }
+            }
+            if (oldTimerTask != null) {
+                oldTimerTask.cancel();
+            }
+        }
+
+        @Override
+        public void clean() {
+            final Collection<DelayedCloseable> closeables = new ArrayList<>();
+            TimerTask oldTimerTask = null;
+            synchronized (lock) {
+                queue.drainTo(closeables);
+                if (queue.isEmpty() && timerTask != null) {
+                    oldTimerTask = timerTask;
+                    timerTask = null;
+                }
+            }
+            if (oldTimerTask != null) {
+                oldTimerTask.cancel();
+            }
+            clean(closeables);
+        }
+
+        @Override
+        public void forceClean() {
+            TimerTask oldTimerTask = null;
+            synchronized (lock) {
+                clean(queue);
+                if (timerTask != null) {
+                    oldTimerTask = timerTask;
+                    timerTask = null;
+                }
+            }
+            if (oldTimerTask != null) {
+                oldTimerTask.cancel();
+            }
+        }
+
+        @Override
+        public void close()  {
+            TimerTask oldTimerTask = null;
+            synchronized (lock) {
+                queue.clear();
+                if (timerTask != null) {
+                    oldTimerTask = timerTask;
+                    timerTask = null;
+                }
+            }
+            if (oldTimerTask != null) {
+                oldTimerTask.cancel();
+            }
+        }
+
+        @Override
+        public int size() {
+            return queue.size();
+        }
+
+        private void clean(Collection<DelayedCloseable> closeables) {
+            final Iterator<DelayedCloseable> iterator = closeables.iterator();
+            while (iterator.hasNext()) {
+                final DelayedCloseable next = iterator.next();
+                try {
+                    iterator.remove();
+                    LOG.warning("Unclosed (leaked?) stream detected: " + next.closeable.hashCode());
+                    next.closeable.close();
+                } catch (final IOException | RuntimeException ex) {
+                    LOG.warning("Unable to close (leaked?) stream: " + ex.getMessage());
+                }
+            }
+        }
+    }
+
+    private static final class DefaultDelayedCleaner implements DelayedCleaner {
+        private final long delay; /* default is 30 minutes, in milliseconds */
+        private final DelayQueue<DelayedCloseable> queue = new DelayQueue<>();
+        private final AtomicBoolean initialized = new AtomicBoolean(false);
+        private volatile Timer timer;
+
+        DefaultDelayedCleaner(final long delay) {
+            this.delay = delay;
         }
 
         @Override
         public void register(Closeable closeable) {
             queue.put(new DelayedCloseable(closeable, delay));
+            // Initialize timer lazily only when at least one closeable is registered
+            if (initialized.compareAndSet(false, true)) {
+                this.timer = new Timer("DelayedCachedOutputStreamCleaner", true);
+                this.timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        clean();
+                    }
+                }, 0, Math.max(MIN_DELAY, delay >> 1));
+            }
         }
 
         @Override
@@ -114,7 +251,10 @@ public final class DelayedCachedOutputStreamCleaner implements CachedOutputStrea
 
         @Override
         public void close()  {
-            timer.cancel();
+            final Timer t = timer;
+            if (t != null) {
+                t.cancel();
+            }
             queue.clear();
         }
 
@@ -141,7 +281,7 @@ public final class DelayedCachedOutputStreamCleaner implements CachedOutputStrea
     private static final class DelayedCloseable implements Delayed {
         private final Closeable closeable;
         private final long expireAt;
-        
+
         DelayedCloseable(final Closeable closeable, final long delay) {
             this.closeable = closeable;
             this.expireAt = System.nanoTime() + TimeUnit.NANOSECONDS.convert(delay, TimeUnit.MILLISECONDS);
@@ -167,15 +307,15 @@ public final class DelayedCachedOutputStreamCleaner implements CachedOutputStrea
             if (this == obj) {
                 return true;
             }
-            
+
             if (obj == null) {
                 return false;
             }
-            
+
             if (getClass() != obj.getClass()) {
                 return false;
             }
-            
+
             final DelayedCloseable other = (DelayedCloseable) obj;
             return Objects.equals(closeable, other.closeable);
         }
@@ -186,11 +326,22 @@ public final class DelayedCachedOutputStreamCleaner implements CachedOutputStrea
         Number delayValue = null;
         BusLifeCycleManager busLifeCycleManager = null;
         Boolean cleanupOnShutdownValue = null;
+        Function<Long, DelayedCleaner> delayedCleanerStrategy = DefaultDelayedCleaner::new;
 
         if (bus != null) {
             delayValue = (Number) bus.getProperty(CachedConstants.CLEANER_DELAY_BUS_PROP);
             cleanupOnShutdownValue = (Boolean) bus.getProperty(CachedConstants.CLEANER_CLEAN_ON_SHUTDOWN_BUS_PROP);
             busLifeCycleManager = bus.getExtension(BusLifeCycleManager.class);
+            final String strategy = (String) bus.getProperty(CachedConstants.CLEANER_STRATEGY_BUS_PROP);
+            if (strategy == null || DEFAULT_STRATEGY.equalsIgnoreCase(strategy)) {
+                delayedCleanerStrategy = DefaultDelayedCleaner::new;
+            } else if (SINGLE_TIMER_STRATEGY.equalsIgnoreCase(strategy)) {
+                delayedCleanerStrategy = SingleTimerDelayedCleaner::new;
+            } else {
+                throw new IllegalArgumentException("The value of " + CachedConstants.CLEANER_STRATEGY_BUS_PROP
+                    + " property is invalid: " + strategy + " (should be " + DEFAULT_STRATEGY + " or "
+                        + SINGLE_TIMER_STRATEGY);
+            }
         }
 
         if (cleaner != null) {
@@ -205,15 +356,15 @@ public final class DelayedCachedOutputStreamCleaner implements CachedOutputStrea
 
         if (delayValue == null) {
             // Default delay is set to 30 mins
-            cleaner = new DelayedCleanerImpl(TimeUnit.MILLISECONDS.convert(30, TimeUnit.MINUTES));
+            cleaner = delayedCleanerStrategy.apply(TimeUnit.MILLISECONDS.convert(30, TimeUnit.MINUTES));
         } else {
             final long value = delayValue.longValue();
             if (value > 0 && value >= MIN_DELAY) {
-                cleaner = new DelayedCleanerImpl(value); /* already in milliseconds */
+                cleaner = delayedCleanerStrategy.apply(value); /* already in milliseconds */
             } else {
                 cleaner = NOOP_CLEANER;
                 if (value != 0) {
-                    throw new IllegalArgumentException("The value of " + CachedConstants.CLEANER_DELAY_BUS_PROP 
+                    throw new IllegalArgumentException("The value of " + CachedConstants.CLEANER_DELAY_BUS_PROP
                         + " property is invalid: " + value + " (should be >= " + MIN_DELAY + ", 0 to deactivate)");
                 }
             }
@@ -243,11 +394,11 @@ public final class DelayedCachedOutputStreamCleaner implements CachedOutputStrea
     public void clean() {
         cleaner.clean();
     }
-    
+
     @Override
     public void initComplete() {
     }
-    
+
     @Override
     public void postShutdown() {
         // If cleanup on shutdown is asked, force cleaning all cached output streams
@@ -256,7 +407,7 @@ public final class DelayedCachedOutputStreamCleaner implements CachedOutputStrea
             cleaner.close();
         }
     }
-    
+
     @Override
     public void preShutdown() {
         // If cleanup on shutdown is asked, defer closing till postShutdown hook

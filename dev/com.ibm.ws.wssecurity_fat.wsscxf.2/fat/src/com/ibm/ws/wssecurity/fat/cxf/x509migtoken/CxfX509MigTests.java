@@ -46,7 +46,9 @@ import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.annotation.MinimumJavaLevel;
 
+@MinimumJavaLevel(javaLevel = 17)
 //issue 24772 no need to run EE7 Lite in this test class
 @SkipForRepeat({ RepeatWithEE7cbh10.ID })
 @RunWith(FATRunner.class)

@@ -33,7 +33,8 @@ missingArg=Brak argumentu {0}.
 missingValue=Brak warto\u015bci argumentu {0}.
 missingArg2=Nale\u017cy udost\u0119pni\u0107 warto\u015b\u0107 argumentu {0} albo argumentu {1}.
 exclusiveArg=Nale\u017cy okre\u015bli\u0107 argument {0} albo argument {1}, ale nie obydwa.
-serverNotFound=W po\u0142o\u017ceniu {1} nie znaleziono podanego serwera {0}
+serverNotFound=Nie znaleziono okre\u015blonego {0} serwera w lokalizacji {1}.
+clientNotFound={0} Wskazanego klienta nie znaleziono w tej {1} lokalizacji.
 
 
 encode.enterText=Wpisz tekst:
@@ -57,7 +58,6 @@ sslCert.createFailed=Nie mo\u017cna utworzy\u0107 domy\u015blnego certyfikatu SS
 sslCert.errorEncodePassword=B\u0142\u0105d podczas kodowania has\u0142a (certyfikat nie zosta\u0142 utworzony):\n{0}
 sslCert.createKeyStore=Tworzenie magazynu kluczy {0}\n
 sslCert.oneType=Nie mo\u017cna okre\u015bla\u0107 jednocze\u015bnie argument\u00f3w {0} i {1}.
-sslCert.clientNotFound=Okre\u015blony klient {0} nie zosta\u0142 znaleziony w po\u0142o\u017ceniu {1}.
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 sslCert.serverXML=Utworzono certyfikat SSL dla serwera {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\nDodaj nast\u0119puj\u0105ce wiersze do pliku server.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
@@ -100,7 +100,7 @@ createLTPAKeys.fileExists=Plik {0} ju\u017c istnieje.  Nie mo\u017cna utworzy\u0
 createLTPAKeys.createdFile=Utworzono plik kluczy LTPA: {0}\n Do pliku server.xml dodaj nast\u0119puj\u0105c\u0105 konfiguracj\u0119\n {1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=Instalacja Java nie pochodzi z IBM Semeru Runtimes ani IBM SDK, a je\u015bli tak, to nie obs\u0142uguje FIPS 140-3.\nZainstaluj Jav\u0119 z IBM Semeru Runtimes lub IBM SDK przy u\u017cyciu wersji i systemu operacyjnego obs\u0142uguj\u0105cego FIPS 140-3.\nJe\u015bli u\u017cywasz IBM Semeru Runtimes, u\u017cyj wersji 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, lub wy\u017cszej.\nJe\u015bli korzystasz z IBM SDK, u\u017cyj wersji 8.0.8.30 lub wy\u017cszej.
+configureFIPS.notIbmSdkNorSemeru=Instalacja Java nie pochodzi z IBMSemeru Runtimes ani IBM SDK, a je\u015bli tak, to nie obs\u0142uguje FIPS 140-3.\nZainstaluj \u015brodowisko Java z pakietu IBMSemeru Runtimes lub IBM SDK, u\u017cywaj\u0105c wersji i systemu operacyjnego obs\u0142uguj\u0105cego standard FIPS 140-3.\nJe\u015bli korzystasz z IBMSemeru \u015brodowisk uruchomieniowych, u\u017cyj wersji 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0 lub wy\u017cszej.\nJe\u015bli korzystasz z IBM SDK, u\u017cyj wersji 8.0.8.30 lub nowszej.
 
 configureFIPS.zosNotAvailable=Polecenie securityUtility configureFIPS nie jest obs\u0142ugiwane na stronie z/OS.
 

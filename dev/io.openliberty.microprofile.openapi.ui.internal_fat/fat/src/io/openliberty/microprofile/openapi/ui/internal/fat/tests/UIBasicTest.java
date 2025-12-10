@@ -133,7 +133,7 @@ public class UIBasicTest {
 
     public void testUI() {
         // Check the title loads
-        WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
+        WebElement title = waitForElement(driver, By.cssSelector("h1.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
 
         // Check the title and description loads with no links

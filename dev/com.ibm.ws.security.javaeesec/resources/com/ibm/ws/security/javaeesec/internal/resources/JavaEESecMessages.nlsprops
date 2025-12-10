@@ -46,9 +46,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: The DatabaseIdentityStore fail
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=A partial list of groups for the caller is returned instead of a complete list of groups because of an error in the query.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Review the provided error and make corrections to the query so that the complete list of groups for the caller can be returned. 
 
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: The credential provided to the IdentityStore object is not a UsernamePasswordCredential and cannot be validated.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=The credential provided to the IdentityStore object is not a UsernamePasswordCredential class and cannot be validated.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=Review the type of credential passed into the IdentityStore object by the HttpAuthMechanism implementation.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: The credential provided to the IdentityStore object is neither a UsernamePasswordCredential nor a CallerOnlyCredential and cannot be validated.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=The credential provided to the IdentityStore object is neither a UsernamePasswordCredential class nor a CallerOnlyCredential and cannot be validated.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Review the type of credential passed into the IdentityStore object by the HttpAuthenticationMechanism implementation.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: The hash algorithm bean was not found for class {0}.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=The hash algorithm listed in the hashAlgorithm element on the DatabaseIdentityStoreDefinition annotation was not found.

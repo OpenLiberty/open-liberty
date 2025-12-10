@@ -27,6 +27,7 @@ import com.ibm.ws.security.saml20.fat.commonTest.SAMLTestSettings;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
+import componenttest.annotation.MinimumJavaLevel;
 
 
 /**
@@ -96,6 +97,7 @@ public class CxfSAMLCallerTests extends SAMLCommonTest {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings));
     }
  
+    @MinimumJavaLevel(javaLevel = 17)
     //scenario 2
     @Test
     public void testCxfCallerHttpsPolicy() throws Exception {

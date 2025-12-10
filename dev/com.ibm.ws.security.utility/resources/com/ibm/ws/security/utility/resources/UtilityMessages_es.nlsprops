@@ -33,7 +33,8 @@ missingArg=Falta el argumento {0}.
 missingValue=Falta el valor del argumento {0}.
 missingArg2=Debe proporcionarse el argumento {0} o el argumento {1}.
 exclusiveArg=Debe especificarse el argumento {0} o el argumento {1}, pero no ambos.
-serverNotFound=El servidor especificado {0} no se ha podido encontrar en la ubicaci\u00f3n {1}
+serverNotFound=El servidor {0} especificado no se encontr\u00f3 en la {1} ubicaci\u00f3n.
+clientNotFound=No se encontr\u00f3 el cliente {0} especificado en la {1} ubicaci\u00f3n.
 
 
 encode.enterText=Especifique el texto:
@@ -57,7 +58,6 @@ sslCert.createFailed=No se puede crear el certificado SSL por omisi\u00f3n:\n {0
 sslCert.errorEncodePassword=Error al codificar la contrase\u00f1a (no se ha creado el certificado):\n{0}
 sslCert.createKeyStore=Creando almac\u00e9n de claves {0}\n
 sslCert.oneType=Los argumentos {0} y {1} no pueden especificarse al mismo tiempo.
-sslCert.clientNotFound=El cliente especificado {0} no se ha podido encontrar en la ubicaci\u00f3n {1}
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 sslCert.serverXML=Se ha creado el certificado SSL para el servidor {0}. El certificado se ha creado con {1} como SubjectDN.\n\nA\u00f1ada las l\u00edneas siguientes a server.xml para habilitar SSL:
@@ -100,7 +100,7 @@ createLTPAKeys.fileExists=El archivo {0} ya existe.  No se puede crear un archiv
 createLTPAKeys.createdFile=Se ha creado el archivo de claves LTPA: {0}\nIncluya la siguiente configuraci\u00f3n en server.xml\n{1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=La instalaci\u00f3n de Java no es de IBM Semeru Runtimes ni de IBM SDK, o si lo es, no es compatible con FIPS 140-3.\nInstale Java desde IBM Semeru Runtimes o IBM SDK utilizando una versi\u00f3n y un sistema operativo compatibles con FIPS 140-3.\nSi utiliza IBM Semeru Runtimes, utilice la versi\u00f3n 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, o superior.\nSi utiliza IBM SDK, utilice la versi\u00f3n 8.0.8.30 o superior.
+configureFIPS.notIbmSdkNorSemeru=La instalaci\u00f3n de Java no procede de IBMSemeru Runtimes ni de IBM SDK, o si procede, no es compatible con FIPS 140-3.\nInstale Java desde Runtimes IBMSemeru o IBM SDK utilizando una versi\u00f3n y un sistema operativo que admitan FIPS 140-3.\nSi utiliza IBMSemeru Runtimes, utilice la versi\u00f3n 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0, o superior.\nSi utiliza IBM SDK, utilice la versi\u00f3n 8.0.8.30 o superior.
 
 configureFIPS.zosNotAvailable=El comando securityUtility configureFIPS no es compatible con z/OS.
 

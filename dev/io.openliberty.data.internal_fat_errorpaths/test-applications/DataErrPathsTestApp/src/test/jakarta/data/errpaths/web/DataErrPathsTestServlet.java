@@ -110,6 +110,9 @@ public class DataErrPathsTestServlet extends FATServlet {
     Investments errRecordEnityWithJPAAnnoRepo;
 
     @Inject
+    InvalidRegistrations errRecordEntityWithoutId;
+
+    @Inject
     WrongPersistenceUnitRefRepo errWrongPersistenceUnitRef;
 
     @Resource
@@ -2107,6 +2110,32 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1109E:") ||
                 !x.getMessage().contains("jakarta.persistence.Column"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify that an appropriate and informative error is raised when a
+     * record entity lacks an identifier attribute.
+     */
+    @Test
+    public void testRecordEntityWithoutId() {
+        VoterRegistration reg = new VoterRegistration( //
+                        989898989, //
+                        "Victoria", //
+                        "7 1st Ave SW, Rochester, MN 55902", //
+                        LocalDate.of(1997, 10, 28));
+
+        try {
+            reg = errRecordEntityWithoutId.save(reg);
+
+            fail("Used a record entity that has no identifier attribute: " +
+                 reg);
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1121E:") ||
+                !x.getMessage().contains(VoterRegistration.class.getName()) ||
+                !x.getMessage().contains("ssn"))
                 throw x;
         }
     }

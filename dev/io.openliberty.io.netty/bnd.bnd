@@ -10,7 +10,7 @@
 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-nettyVersion=4.1.126.Final
+nettyVersion=4.2.7.Final
 
 Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
@@ -27,6 +27,7 @@ Import-Package: \
   !com.ning.*,\
   !com.oracle.svm.core.annotate,\
   !io.netty.internal.tcnative,\
+  !jdk.jfr,\
   !lzma.*,\
   !net.jpountz.*,\
   !org.apache.log4j.*,\
@@ -53,6 +54,8 @@ instrument.disabled: true
 -buildpath: \
   io.netty:netty-buffer;version=${nettyVersion},\
   io.netty:netty-codec;version=${nettyVersion},\
+  io.netty:netty-codec-base;version=${nettyVersion},\
+  io.netty:netty-codec-compression;version=${nettyVersion},\
   io.netty:netty-codec-http;version=${nettyVersion},\
   io.netty:netty-codec-http2;version=${nettyVersion},\
   io.netty:netty-codec-socks;version=${nettyVersion},\

@@ -119,7 +119,7 @@ public class UIBasicTest {
      */
     private void testUI() {
         // Check the title loads
-        WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
+        WebElement title = waitForElement(driver, By.cssSelector("h1.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Liberty REST APIs"));
 
         // Check the headerbar colour

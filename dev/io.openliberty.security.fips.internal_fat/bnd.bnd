@@ -15,12 +15,11 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/HelloAppClient.jar/src
+	test-applications/HelloAppClient.jar/src,\
+	test-applications/Sha1App.war/src
 
 fat.project: true
 
-javac.source: 8
-javac.target: 8
-
 -buildpath: \
-    com.ibm.websphere.javaee.annotation.1.1;version=latest
+    com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+    io.openliberty.jakarta.servlet.5.0;version=latest

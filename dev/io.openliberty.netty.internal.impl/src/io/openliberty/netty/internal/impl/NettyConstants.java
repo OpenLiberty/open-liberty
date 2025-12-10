@@ -31,5 +31,24 @@ public interface NettyConstants {
     public final String ACCESSLIST_HANDLER_NAME = "accessListHandler";
     /** Netty enablement */
     String USE_NETTY = "useNettyTransport";
-
+    /** Netty scaler and metrics properties */
+    public static final String SCALER_MIN_THREADS_PROPERTY = "scalerMinThreads";
+    public static final String SCALER_MAX_THREADS_PROPERTY = "scalerMaxThreads";
+    public static final String SCALER_WINDOW_PROPERTY = "scalerWindowSize";
+    public static final String SCALER_DOWN_THRESHOLD_PROPERTY = "scalerDownThreshold";
+    public static final String SCALER_UP_THRESHOLD_PROPERTY = "scalerUpThreshold";
+    public static final String SCALER_DOWN_STEP_PROPERTY = "scalerDownStep";
+    public static final String SCALER_UP_STEP_PROPERTY = "scalerUpStep";
+    public static final String SCALER_CYCLES_PROPERTY = "scalerCycles";
+    public static final String SCALER_METRICS_WINDOW_PROPERTY = "scalerMetricsWindowSize";
+    /** Netty scaler and metrics defaults */
+    public static final int SCALER_MIN_THREADS = 1;
+    public static final int SCALER_MAX_THREADS = 4;
+    public static final long SCALER_WINDOW = 1500;
+    public static final double SCALER_DOWN_THRESHOLD = 0.15;
+    public static final double SCALER_UP_THRESHOLD = 0.85;
+    public static final int SCALER_DOWN_STEP = 1;
+    public static final int SCALER_UP_STEP = 1;
+    public static final int SCALER_CYCLES = 3;
+    public static final long SCALER_METRICS_WINDOW = 0;
 }

@@ -67,6 +67,7 @@
 <!--   -->     
 <MetadataProvider id="chain" xsi:type="ChainingMetadataProvider">
     <MetadataProvider id="spMetadata1" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1Metadata.xml"/>
+    <MetadataProvider id="spEcMetadata1" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1EcMetadata.xml"/>
     <MetadataProvider id="spMetadata1s2" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1s2Metadata.xml"/>
     <MetadataProvider id="spMetadata1ReqSigned" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1ReqSignedMetadata.xml"/>
     <MetadataProvider id="spMetadata1NotSigned" xsi:type="FilesystemMetadataProvider" metadataFile="%{idp.home}/metadata/sp1NotSignedMetadata.xml"/>

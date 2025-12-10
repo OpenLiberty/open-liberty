@@ -33,7 +33,8 @@ missingArg=Argument {0} manquant.
 missingValue=Valeur manquante pour l''argument {0}.
 missingArg2=L''argument {0} ou l''argument {1} doivent \u00eatre fournis.
 exclusiveArg=L''argument {0} ou l''argument {1} doivent \u00eatre sp\u00e9cifi\u00e9s, mais pas les deux.
-serverNotFound=Le serveur sp\u00e9cifi\u00e9 {0} est introuvable \u00e0 l''emplacement {1}
+serverNotFound=Le serveur {0} sp\u00e9cifi\u00e9 n''a pas \u00e9t\u00e9 trouv\u00e9 \u00e0 {1} l''emplacement.
+clientNotFound=Le client {0} sp\u00e9cifi\u00e9 n''a pas \u00e9t\u00e9 trouv\u00e9 \u00e0 {1} l''emplacement.
 
 
 encode.enterText=Entrez du texte :
@@ -57,7 +58,6 @@ sslCert.createFailed=Impossible de cr\u00e9er le certificat SSL par d\u00e9faut 
 sslCert.errorEncodePassword=Erreur lors du codage du mot de passe (certificat non cr\u00e9\u00e9) :\n{0}
 sslCert.createKeyStore=Cr\u00e9ation de fichier de cl\u00e9s {0}\n
 sslCert.oneType=Les arguments {0} et {1} ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s en m\u00eame temps.
-sslCert.clientNotFound=Le client sp\u00e9cifi\u00e9 {0} est introuvable \u00e0 l''emplacement {1}
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 sslCert.serverXML=Certificat SSL cr\u00e9\u00e9 pour le serveur {0}. Le certificat est cr\u00e9\u00e9 avec {1} comme SubjectDN.\n\nAjoutez les lignes suivantes dans le fichier server.xml pour activer SSL :
@@ -100,7 +100,7 @@ createLTPAKeys.fileExists=Le fichier {0} existe d\u00e9j\u00e0.  Impossible de c
 createLTPAKeys.createdFile=Fichier de cl\u00e9s LTPA cr\u00e9\u00e9 : {0}\nInclure la configuration suivante dans votre fichier server.xml\n{1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=L'installation de Java ne provient pas de IBM Semeru Runtimes ni de IBM SDK, ou si c'est le cas, elle ne prend pas en charge la norme FIPS 140-3.\nInstallez Java \u00e0 partir de IBM Semeru Runtimes ou IBM SDK en utilisant une version et un syst\u00e8me d'exploitation compatibles avec la norme FIPS 140-3.\nSi vous utilisez IBM Semeru Runtimes, utilisez la version 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0, ou une version plus r\u00e9cente.\nSi vous utilisez le SDK IBM, utilisez la version 8.0.8.30 ou une version plus r\u00e9cente.
+configureFIPS.notIbmSdkNorSemeru=L'installation Java ne provient ni de IBMSemeru Runtimes ni de IBM SDK, ou si c'est le cas, elle ne prend pas en charge FIPS 140-3.\nInstallez Java \u00e0 partir de Runtimes IBMSemeru ou IBM SDK en utilisant une version et un syst\u00e8me d'exploitation qui prennent en charge FIPS 140-3.\nSi vous utilisez IBMSemeru Runtimes, utilisez la version 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0, ou sup\u00e9rieure.\nSi vous utilisez IBM le SDK, utilisez la version 8.0.8.30 ou une version sup\u00e9rieure.
 
 configureFIPS.zosNotAvailable=La commande securityUtility configureFIPS n'est pas prise en charge sur z/OS.
 

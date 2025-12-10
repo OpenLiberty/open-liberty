@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@
 #   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
 #   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
 #   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
-#
+#   - Msgs in the range CWSIP0351-CWSIP0360 belong to class com.ibm.ws.sib.processor.runtime.AsyncUpdateThread
 #   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
 #   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
 #   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
@@ -916,7 +916,7 @@ USER_NOT_AUTHORIZED_ERROR_CWSIP0302.useraction=\uc0ac\uc6a9\uc790\uc5d0\uac8c \u
 # -------------------------------------------------------------------------------------------------
 # {0} The messaging engine name
 # {1} The bus Name
-NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303=CWSIP0303E: {1} \ubc84\uc2a4\uc758 \ubcf4\uc548 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 {0}\uc5d0 \uc5f0\uacb0\uc744 \uc791\uc131\ud560 \ub54c \uc9c0\uc815\ub41c \uc0ac\uc6a9\uc790\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303=CWSIP0303E: {1} \ubc84\uc2a4\uc758 \ubcf4\uc548 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 {0}\uc5d0 \uc5f0\uacb0\uc744 \uc791\uc131\ud560 \ub54c \uc9c0\uc815\ub41c \uc0ac\uc6a9\ufffd\ufffd\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
 NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.explanation=\ubcf4\uc548 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0 \uc5f0\uacb0\uc744 \uc791\uc131\ud558\ub824\uace0 \ud588\uc9c0\ub9cc \uc0ac\uc6a9\uc790\uac00 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
 NULL_USER_NOT_AUTHORIZED_ERROR_CWSIP0303.useraction=\uc0ac\uc6a9\uc790\uc640 \ube44\ubc00\ubc88\ud638\ub97c \uc81c\uacf5\ud558\uc5ec \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0 \ub300\ud55c \uc5f0\uacb0\uc744 \uc791\uc131\ud558\uc2ed\uc2dc\uc624.
 
@@ -1003,6 +1003,13 @@ DESTINATION_DELETE_ERROR_CWSIP0331.useraction=\uc2dc\uc2a4\ud15c\uc774 \uba54\uc
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341=CWSIP0341W: \ub300\uc0c1 {0}\uc744(\ub97c) \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 {1}\uc5d0\uc11c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=\ub85c\uceec \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \ub300\uc0c1\uc744 \uc54c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=\ub300\uc0c1 \uc774\ub984\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ub2e4\ub978 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0 \ub300\uc0c1\uc774 \uc874\uc7ac\ud558\uba74 \ub2e4\ub978 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uacfc\uc758 \ud1b5\uc2e0\uc774 \uc791\ub3d9 \uc911\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the specified batch size
+# {1} the specified batch interval
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: \uc758 \ubc30\uce58 \ud06c\uae30 \uc124\uc815\uc740 \uc758 \ubc30\uce58 {0} \uc2dc\uac04 \ucd08\uacfc {1} \uc124\uc815\uacfc \ud638\ud658\ub418\uc9c0 \uc54a\uc73c\ubbc0\ub85c \ubc30\uce58 \ud06c\uae30\ub294 0\uc73c\ub85c \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+IGNORING_BATCH_SIZE_CWSIP0351.explanation=\ube44\ub3d9\uae30 \ubc30\uce58 \ucc98\ub9ac\ub97c \ud65c\uc131\ud654\ud558\ub824\uba74 \ubc30\uce58 \ud06c\uae30 \ubc0f \ubc30\uce58 \uc2dc\uac04 \ucd08\uacfc \uac12\uc744 \ubaa8\ub450 \uc591\uc218 \uac12\uc73c\ub85c \uc124\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=\ubc30\uce58 \ud06c\uae30 \ubc0f \ubc30\uce58 \uc2dc\uac04 \ucd08\uacfc\ub97c \ubaa8\ub450 \uc591\uc218 \uac12\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The message id.
@@ -1153,6 +1160,12 @@ PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=\uba54\uc2dc\uc9c0 \uc21c\
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: \ub300\uc0c1 {0}\uc5d0 \ub300\ud55c \ud604\uc9c0\ud654 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 {1}\uacfc(\uc640) \ud1b5\uc2e0\ud560 \uc2a4\ud2b8\ub9bc\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=\ub300\uc0c1\uc5d0 \ub300\ud55c \ud604\uc9c0\ud654 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uacfc \ud1b5\uc2e0\ud560 \uc2a4\ud2b8\ub9bc\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc774\uac83\uc740 \uc2a4\ud2b8\ub9bc\uc774 \uc544\uc9c1 \ucd08\uae30\ud654\ub418\uc9c0 \uc54a\uc558\uac70\ub098 \ub124\ud2b8\uc6cc\ud06c \ud30c\ud2f0\uc158\uc73c\ub85c \uc778\ud55c \uac83\uc77c \uc218\ub3c4 \uc788\uc2b5\ub2c8\ub2e4.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=\ud604\uc9c0\ud654 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uacfc \ud1b5\uc2e0\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud55c \ub2e4\uc74c \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The ProtocolItemStream object
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: \uc798\ubabb\ub41c \ud615\uc2dd\uc758 ProtocolItemStream{0} \uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc2a4\ud2b8\ub9bc \uc0dd\uc131\uc740 \uc9c0\uc5f0 \ucc98\ub9ac\ub418\uc5b4 \uc62c\ubc14\ub974\uac8c \uad6c\uc131\ub420 \uc218 \uc788\ub3c4\ub85d \ud569\ub2c8\ub2e4.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=\uc798\ubabb\ub41c \ud615\uc2dd\uc758 ProtocolItemStream \ud30c\uc77c\uc774 \ubc1c\uacac\ub418\uc5c8\uc73c\uba70, \ud574\ub2f9 \ud30c\uc77c\uc5d0\ub294 CompletedPrefix \ud56d\ubaa9\uc774 \ud3ec\ud568\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc2a4\ud2b8\ub9bc \uc0dd\uc131\uc740 \uc9c0\uc5f0 \ucc98\ub9ac\ub418\uc5b4 \uc62c\ubc14\ub974\uac8c \uad6c\uc131\ub420 \uc218 \uc788\ub3c4\ub85d \ud569\ub2c8\ub2e4.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=\uc5c6\uc74c.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The name of the destination
@@ -1633,7 +1646,8 @@ REPEATED_MESSAGE_THRESHOLD_REACHED_ON_LINK_CWSIP0794.useraction=\uc774 \ub9c1\ud
 # {2} Receiving messaging engine
 # {3} Destination name
 REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795=CWSIP0795W: \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 {1}(\uc73c)\ub85c\ubd80\ud130 \ub300\uc0c1 {3}\uc5d0 \ub300\ud574 \uc804\uc1a1\ub418\uc5b4 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4 {2}\uc5d0\uc11c \uc218\uc2e0\ud55c \uba54\uc2dc\uc9c0\uc758 {0}\ud37c\uc13c\ud2b8\uac00 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0 \ubc18\ubcf5\uc801\uc73c\ub85c \uc804\uc1a1\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
-REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.explanation=\uc6d0\uaca9 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc73c\ub85c\ubd80\ud130 \uc804\uc1a1\ub41c \uba54\uc2dc\uc9c0\uc758 \ub9ce\uc740 \ubd80\ubd84\uc774 \uc774\uc804\uc5d0 \uc774 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0\uc11c \uc218\uc2e0\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9c0\uac00 \uc911\ubcf5\ub418\uc9c0\ub294 \uc54a\uc73c\ub098 \uba54\uc2dc\uc9c0 \uc2dc\uc2a4\ud15c\uc758 \uc131\ub2a5\uc774 \uac10\ud1f4\ub429\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc73c\ub85c \uac11\uc790\uae30 \uba54\uc2dc\uc9c0\uc758 \ubc84\uc2a4\ud2b8\uac00 \uc804\uc1a1\ub418\ub294 \uacbd\uc6b0, \ubc1c\uc0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\uac00 \ubc18\ubcf5\uc801\uc73c\ub85c \ubc1c\uc0dd\ud558\ub294 \uacbd\uc6b0\uc5d0\ub294 \ucd5c\ub300 \uba54\uc2dc\uc9c0 \ucc98\ub9ac\ub7c9\uc774 \uae30\ubcf8 \uc720\uc9c0\ub7c9\uc744 \ucd08\uacfc\ud588\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.explanation=\uc6d0\uaca9 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc73c\ub85c\ubd80\ud130 \uc804\uc1a1\ub41c \uba54\uc2dc\uc9c0\uc758 \ub9ce\uc740 \ubd80\ubd84\uc774 \uc774\uc804\uc5d0 \uc774 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc5d0\uc11c \uc218\uc2e0\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uba54\uc2dc\uc9c0\uac00 \uc911\ubcf5\ub418\uc9c0\ub294 \uc54a\uc73c\ub098 \uba54\uc2dc\uc9c0 \uc2dc\uc2a4\ud15c\uc758 \uc131\ub2a5\uc774 \uac10\ud1f4\ub429\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\ub294 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc73c\ub85c \uac11\uc790\uae30 \uba54\uc2dc\uc9c0\uc758 \ubc84\uc2a4\ud2b8\uac00 \uc804\uc1a1\ub418\ub294 \uacbd\uc6b0, \ubc1c\uc0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc774 \uba54\uc2dc\uc9c0\uac00 \ubc18\ubcf5\uc801\uc73c\ub85c \ubc1c\uc0dd\ud558\ub294 \uacbd\uc6b0\uc5d0\ub294 \ucd5c\ub300 \uba54\uc2dc\uc9c0 \ucc98\ub9ac\ub7c9\uc774 \uae30\ubcf8 \uc720\uc9c0\ub7c9\uc744 \ucd08\uacfc\ud588\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4\
+    .
 REPEATED_MESSAGE_THRESHOLD_REACHED_ON_DESTINATION_CWSIP0795.useraction=\uc774 \uba54\uc2dc\uc9d5 \uc5d4\uc9c4\uc73c\ub85c \uc804\uc1a1\ub418\ub294 \uba54\uc2dc\uc9c0 \ud504\ub85c\ub355\uc158 \uc18d\ub3c4\uac00 \ub108\ubb34 \ube60\ub974\uc9c0 \uc54a\uc740\uc9c0 \uc870\uc0ac\ud558\uc2ed\uc2dc\uc624.
 
 # -------------------------------------------------------------------------------------------------

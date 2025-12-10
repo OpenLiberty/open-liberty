@@ -15,9 +15,6 @@ import com.ibm.websphere.ras.TraceComponent;
 /**
  * Implementation for Jakarta Security 4.0 where the IdentityStorePermission
  * class has been removed.
- *
- * Jakarta Security 4.0 (appSecurity-6.0) =
- * io.openliberty.security.jakartasec.4.0.internal_1.0.<VER>.jar
  */
 
 public class IdentityStorePermissionService {

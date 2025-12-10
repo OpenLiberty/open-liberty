@@ -49,6 +49,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
+import  io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
@@ -558,8 +559,23 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 sendErrorMessage(cause);
         }
 
+        // } else if(cause instanceof TooLongFrameException) { 
+        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //         Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
+        //     }
+        //     sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE, cause);
+        //     return;
         clearPerRequestAttrs(ctx);
         ctx.close();
+    }
+
+    private void sendErrorMessage(StatusCodes code, Throwable cause) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Sending a " + code +  " for throwable [" + cause + "]");
+        }
+        loadErrorPage(code.getHttpError());
+        HttpUtil.setKeepAlive(errorResponse, false);
+        this.context.writeAndFlush(errorResponse);
     }
 
     private void sendErrorMessage(Throwable cause) {

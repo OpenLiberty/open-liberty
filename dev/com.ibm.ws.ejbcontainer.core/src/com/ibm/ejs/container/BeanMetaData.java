@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2020 IBM Corporation and others.
+ * Copyright (c) 1998, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
+import javax.naming.NamingException;
 
 import javax.ejb.TimedObject;
 import javax.naming.Context;
@@ -2618,6 +2619,10 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
             constructor = ivEnterpriseBeanFactory.getConstructor();
         }
         return constructor;
+    }
+
+    public boolean isSyncToOSThreadEnabled(){
+        return m_syncToOSThreadValue;
     }
 
 } // BeanMetaData

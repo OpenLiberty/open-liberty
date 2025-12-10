@@ -41,10 +41,10 @@ public interface Participants extends DataRepository<Participant, Integer> {
 
     // Using Query by Method Name would require @Select("name"),
     // which is not available until Data 1.1
-    @Query("SELECT name WHERE pID = ?1")
+    @Query("SELECT name WHERE PID = ?1")
     Optional<Name> findNameById(int id);
 
-    @Query("SELECT name.first WHERE pID = ?1")
+    @Query("SELECT name.first WHERE PID = ?1")
     Optional<String> getFirstName(int id);
 
     @Delete
@@ -59,6 +59,6 @@ public interface Participants extends DataRepository<Participant, Integer> {
 
     @Find
     @OrderBy("name.first")
-    @OrderBy("pID")
+    @OrderBy("PID")
     Stream<Participant> withSurname(@By("name.last") String lastName);
 }

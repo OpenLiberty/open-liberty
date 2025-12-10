@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@
 #   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
 #   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
 #   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
-#
+#   - Msgs in the range CWSIP0351-CWSIP0360 belong to class com.ibm.ws.sib.processor.runtime.AsyncUpdateThread
 #   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
 #   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
 #   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
@@ -259,6 +259,7 @@ SYSTEM_DESTINATION_USAGE_ERROR_CWSIP0024.useraction=CMSG0002
 DURABLE_MISMATCH_ERROR_CWSIP0025=CWSIP0025E: Fehler aufgrund einer Abweichung bei einer permanenten Subskription: Der Zielname {0} stimmt nicht mit dem Subskriptionsziel {1} f\u00fcr die permanente Subskription {2} in der Messaging-Engine {3} \u00fcberein.
 DURABLE_MISMATCH_ERROR_CWSIP0025.explanation= Der Versuch, einen Konsumenten f\u00fcr die angegebene permanente Subskription zu erstellen, ist fehlgeschlagen, weil das angegebene Ziel nicht mit dem Ziel \u00fcbereinstimmt, das zum Erstellen der permanenten Subskription verwendet wurde.
 DURABLE_MISMATCH_ERROR_CWSIP0025.useraction=Verwenden Sie f\u00fcr den Link mit der permanenten Subskription dasselbe Ziel, das auch f\u00fcr die Erstellung der Subskription verwendet wurde.
+
 # -------------------------------------------------------------------------------------------------
 # {1} The MQLink UUID
 # {2} The messaging engine name
@@ -308,12 +309,14 @@ SUBSCRIPTION_CREATION_FAILED_CWSIP0031.useraction=CMSG0002
 SUBSCRIPTION_CREATION_FAILED_CWSIP0033=CWSIP0033E: Der Versuch, eine Subskription f\u00fcr das Ziel {0} mit dem Namen {1} zu erstellen, ist aufgrund eines Ressourcenproblems des Datenspeichers fehlgeschlagen: {2}
 SUBSCRIPTION_CREATION_FAILED_CWSIP0033.explanation=Beim Erstellen einer permanenten Subskription wird dem Datenspeicher ein Eintrag hinzugef\u00fcgt. Dieser Vorgang ist aufgrund eines Ressourcenproblems des Cache fehlgeschlagen.
 SUBSCRIPTION_CREATION_FAILED_CWSIP0033.useraction=Vergr\u00f6\u00dfern Sie in der Administrationskonsole den Cache f\u00fcr den Datenspeicher. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the name of the destination
 # {1} The Related exception
 SUBSCRIPTION_CREATION_FAILED_CWSIP0034=CWSIP0034E: Der Versuch, eine Subskription f\u00fcr das Ziel {0} zu erstellen, ist aufgrund eines Ressourcenproblems des persistenten Speichers {2} fehlgeschlagen.
 SUBSCRIPTION_CREATION_FAILED_CWSIP0034.explanation=Beim Erstellen einer Subskription wird dem Datenspeicher ein Eintrag hinzugef\u00fcgt. Dieser Vorgang ist aufgrund eines Ressourcenproblems des Cache fehlgeschlagen.
 SUBSCRIPTION_CREATION_FAILED_CWSIP0034.useraction=Vergr\u00f6\u00dfern Sie in der Administrationskonsole den Cache f\u00fcr den Datenspeicher. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the name of the durable subscription
 # {1} is the durable home of the durable subscription
@@ -500,12 +503,14 @@ MAX_RECONSTITUTE_THREADPOOL_SIZE_CWSIP0070.useraction=Keine.
 SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072=CWSIP0072E: Die permanente Subskription mit dem Namen {0} ist nicht in der Messaging-Engine {1} vorhanden.
 SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.explanation=Es wurde versucht, auf eine permanente Subskription zuzugreifen, aber es ist keine Subskription mit dem angegebenen Namen vorhanden.
 SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.useraction=Erstellen Sie eine Subskription mit dem angegebenen Namen oder wiederholen Sie den Vorgang unter Angabe der ID einer g\u00fcltigen permanenten Subskription.
+
 # -------------------------------------------------------------------------------------------------
 # {0} the destination name
 # {1} The messaging engine name
 OBJECT_CLOSED_ERROR_CWSIP0081=CWSIP0081E: Die Browsersitzung f\u00fcr das Ziel {0} ist geschlossen und kann nicht verwendet werden.
 OBJECT_CLOSED_ERROR_CWSIP0081.explanation=Der Browser wurde geschlossen und kann f\u00fcr das angegebene Ziel nicht verwendet werden.
 OBJECT_CLOSED_ERROR_CWSIP0081.useraction=Erstellen Sie eine neue Browsersitzung mit dem angegebenen Ziel.
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the destination
 # {1} The messaging engine name
@@ -520,6 +525,7 @@ DESTINATION_IS_LOCKED_ERROR_CWSIP0085.useraction=Wiederholen Sie den Versuch, ei
 CREATE_CONSUMER_ERROR_CWSIP0092=CWSIP0092E: Es kann kein BifurcatedConsumer f\u00fcr den urspr\u00fcnglichen Konsumenten {0} in der Messaging-Engine {1} erstellt werden.
 CREATE_CONSUMER_ERROR_CWSIP0092.explanation=Es wurde versucht, einen BifurcatedConsumer zu erstellen, aber der urspr\u00fcngliche Konsument wurde nicht unter der angegebenen ID gefunden.
 CREATE_CONSUMER_ERROR_CWSIP0092.useraction=Stellen Sie sicher, dass der urspr\u00fcngliche Konsument aktiv ist, und wiederholen Sie anschlie\u00dfend die Operation mit der korrekten ID. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} The id for the originating conusmer
 # {1} The messaging engine name
@@ -527,6 +533,7 @@ CREATE_CONSUMER_ERROR_CWSIP0092.useraction=Stellen Sie sicher, dass der urspr\u0
 CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094=CWSIP0094E: Es kann kein BifurcatedConsumer f\u00fcr den urspr\u00fcnglichen Konsumenten {0} in der Messaging-Engine {1} erstellt werden, weil die Benutzer-IDs unterschiedlich sind.
 CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.explanation=Es wurde versucht, einen BifurcatedConsumer zu erstellen, aber die f\u00fcr das Erstellen des BifurcatedConsumer und des urspr\u00fcnglichen Konsumenten verwendeten Sicherheitskontexte sind verschieden.
 CREATE_BIFURCATED_CONSUMER_ERROR_CWSIP0094.useraction=Stellen Sie sicher, dass der urspr\u00fcngliche Konsument und der BifurcatedConsumer denselben Sicherheitskontext oder dieselbe Verbindung verwenden, und wiederholen Sie anschlie\u00dfend den Befehl. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the destination name.
 TEMPORARY_DESTINATION_NAME_ERROR_CWSIP0097=CWSIP0097E: Das tempor\u00e4re Ziel mit dem Namen {0} wurde nicht gefunden.
@@ -552,6 +559,7 @@ TEMPORARY_DESTINATION_CONNECTION_ERROR_CWSIP0099.useraction=Stellen Sie sicher, 
 INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100=CWSIP0100E: Die angegebene Parameterkombination ist f\u00fcr die Erstellung der geklonten permanenten Subskription {0} f\u00fcr das Ziel {1} f\u00fcr die Messaging-Engine {2} nicht g\u00fcltig.
 INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.explanation=Der Versuch, eine geklonte permanente Subskription zu erstellen, ist fehlgeschlagen, weil das Verhalten 'noLocal' angefordert wurde, dieses aber f\u00fcr geklonte Subskribenten nicht unterst\u00fctzt wird.
 INVALID_PARAMETER_COMBINATION_ERROR_CWSIP0100.useraction=Entfernen Sie mit der Administrationskonsole die Option 'noLocal' aus der Konfiguration der permanenten Subskription. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} the destination name.
 # {1} The name of the messaging engine
@@ -565,6 +573,7 @@ DESTINATION_DELETED_ERROR_CWSIP0111.useraction=Erstellen Sie das Ziel in der Adm
 DESTINATION_DELETION_ERROR_CWSIP0112=CWSIP0112E: Das Ziel {0} in der Messaging-Engine {1} kann nicht gel\u00f6scht werden, weil noch Konsumenten verbunden sind.
 DESTINATION_DELETION_ERROR_CWSIP0112.explanation=Es wurde versucht, ein Ziel zu l\u00f6schen, mit dem noch Konsumenten verbunden sind.
 DESTINATION_DELETION_ERROR_CWSIP0112.useraction=Ein Ziel kann nicht gel\u00f6scht werden, wenn noch Konsumentenanwendungen verbunden sind. Trennen Sie alle Konsumentenanwendungen vom Ziel, und wiederholen Sie anschlie\u00dfend den Vorgang. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the destination
 # {1} is the name of the messaging engine.
@@ -742,12 +751,14 @@ MSG_BLOCK_CLEARED_CWSIP0183.useraction=Keine.
 INVALID_MESSAGE_ERROR_CWSIP0191=CWSIP0191E: Die aktuelle Nachricht ist f\u00fcr das Ziel {0} in der Messaging-Engine {1} nicht g\u00fcltig.
 INVALID_MESSAGE_ERROR_CWSIP0191.explanation=Es wurde versucht, die aktuelle Nachricht freizugeben, aber es war keine freizugebende Nachricht vorhanden.
 INVALID_MESSAGE_ERROR_CWSIP0191.useraction=Die Nachricht wurde unter Umst\u00e4nden bereits vom aktuellen Konsumenten freigegeben oder gel\u00f6scht. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} The destination name
 # {1} The name of the messaging engine.
 INVALID_MESSAGE_ERROR_CWSIP0192=CWSIP0192E: Die aktuelle Nachricht ist f\u00fcr das Ziel {0} in der Messaging-Engine {1} nicht g\u00fcltig.
 INVALID_MESSAGE_ERROR_CWSIP0192.explanation=Es wurde versucht, die aktuelle Nachricht zu l\u00f6schen, aber es war keine zu l\u00f6schende Nachricht vorhanden.
 INVALID_MESSAGE_ERROR_CWSIP0192.useraction=Die Nachricht wurde unter Umst\u00e4nden bereits vom aktuellen Konsumenten freigegeben oder gel\u00f6scht. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} The message id
 # {1} The name of the messaging engine.
@@ -831,6 +842,7 @@ FORWARD_ROUTING_PATH_ERROR_CWSIP0249.useraction=Ein Topicbereich muss immer das 
 DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251=CWSIP0251E: Das Ziel {0} in der Messaging-Engine {2} ist nicht verf\u00fcgbar, weil die maximale Anzahl der Nachrichten f\u00fcr dieses Ziel ({1}) bereits erreicht ist.
 DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.explanation=In allen Warteschlangen f\u00fcr das angegebene Ziel ist die maximal zul\u00e4ssige Anzahl von Nachrichten erreicht. Deshalb kann die Nachricht nicht angenommen werden.
 DESTINATION_HIGH_MESSAGES_ERROR_CWSIP0251.useraction=\u00dcberpr\u00fcfen Sie, ob die konfigurierte maximale Anzahl der Nachrichten f\u00fcr dieses Ziel korrekt ist. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the destination
 # {1} the name of the messaging engine
@@ -879,6 +891,7 @@ ENCODE_FAIL_ERROR_CWSIP0281.useraction=Suchen Sie in den FFDC-Protokollen nach I
 EXCEPTION_DESTINATION_WARNING_CWSIP0291=CWSIP0291W: Der Versuch, eine Nachricht an das Ausnahmeziel {0} in der Messaging-Engine {1} zu senden, ist fehlgeschlagen. Ursache: {2}
 EXCEPTION_DESTINATION_WARNING_CWSIP0291.explanation=Der Versuch, eine Nachricht an das angegebene Ausnahmeziel zu senden, ist fehlgeschlagen. Der Versuch wird mit dem Standardausnahmeziel wiederholt.
 EXCEPTION_DESTINATION_WARNING_CWSIP0291.useraction=\u00dcberpr\u00fcfen Sie, ob das angegebene Ziel vorhanden und betriebsbereit ist. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} The default exception destination name
 # {1} The messaging engine name
@@ -992,6 +1005,13 @@ DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=Das angegebene Ziel ist in der
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=\u00dcberpr\u00fcfen Sie, ob der Zielname korrekt ist. Falls das Ziel in einer anderen Messaging-Engine vorhanden ist, stellen Sie sicher, dass die Kommunikation mit der Messaging-Engine funktioniert.
 
 # -------------------------------------------------------------------------------------------------
+# {0} the specified batch size
+# {1} the specified batch interval
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: Die Einstellung f\u00fcr die Stapelgr\u00f6\u00dfe von {0} ist nicht mit der Einstellung f\u00fcr das Stapelzeitlimit von {1} kompatibel, daher wird eine Stapelgr\u00f6\u00dfe von Null verwendet.
+IGNORING_BATCH_SIZE_CWSIP0351.explanation=Um die asynchrone Stapelverarbeitung zu aktivieren, m\u00fcssen sowohl die Stapelgr\u00f6\u00dfe als auch das Stapelzeitlimit auf positive Werte gesetzt werden.
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=Setzen Sie sowohl die Stapelgr\u00f6\u00dfe als auch das Stapelzeitlimit auf positive Werte.
+
+# -------------------------------------------------------------------------------------------------
 # {0} The message id.
 # {1} The destination name
 MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: Die Nachricht mit der ID {0} kann nicht gel\u00f6scht werden, weil die Transaktion, die zum Hinzuf\u00fcgen der Nachricht zum Ziel {1} verwendet wird, noch nicht festgeschrieben ist.
@@ -1004,21 +1024,25 @@ MESSAGE_INDOUBT_WARNING_CWSIP0361.useraction=Lesen Sie den Abschnitt "Unbest\u00
 MESSAGE_INDOUBT_WARNING_CWSIP0362=CWSIP0362W: Die Nachricht mit der ID {0} kann nicht vom Ziel {1} gel\u00f6scht werden, weil die Nachricht einem Konsumenten \u00fcbermittelt wurde.
 MESSAGE_INDOUBT_WARNING_CWSIP0362.explanation=Die Nachricht kann nicht gel\u00f6scht werden, weil sie einem Konsumenten \u00fcbermittelt wurde.
 MESSAGE_INDOUBT_WARNING_CWSIP0362.useraction=Stoppen Sie alle MDBs oder Anwendungen, die Nachrichten von diesem Ziel konsumieren, und versuchen Sie dann, die Nachricht erneut zu l\u00f6schen. Falls die Nachricht immer noch nicht gel\u00f6scht werden kann, lesen Sie im Information Center den Abschnitt "Unbest\u00e4tigte Transaktionen aufl\u00f6sen", um die Transaktion festzuschreiben oder r\u00fcckg\u00e4ngig zu machen. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} The selector supplied.
 INVALID_SELECTOR_ERROR_CWSIP0371=CWSIP0371E: Die Selektorsyntax {0} ist nicht g\u00fcltig.
 INVALID_SELECTOR_ERROR_CWSIP0371.explanation=Die angegebene Selektorsyntax ist nicht g\u00fcltig.
 INVALID_SELECTOR_ERROR_CWSIP0371.useraction=Korrigieren Sie die Syntax f\u00fcr den Selektor, und wiederholen Sie anschlie\u00dfend die Operation. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} The topic supplied.
 INVALID_TOPIC_ERROR_CWSIP0372=CWSIP0372E: Die Topicsyntax {0} ist nicht g\u00fcltig.
 INVALID_TOPIC_ERROR_CWSIP0372.explanation=Die angegebene Topicsyntax ist nicht g\u00fcltig.
 INVALID_TOPIC_ERROR_CWSIP0372.useraction=Korrigieren Sie die Syntax f\u00fcr das Topic, und wiederholen Sie anschlie\u00dfend die Operation.
+
 # -------------------------------------------------------------------------------------------------
 # {0} related Exception.
 ACL_ADD_WARNING_CWSIP0373=CWSIP0373W: Die Zugriffssteuerungsliste kann wegen der Ausnahme {0} nicht geladen werden.
 ACL_ADD_WARNING_CWSIP0373.explanation=Beim Laden der Zugriffssteuerungsliste ist eine Ausnahme eingetreten.
 ACL_ADD_WARNING_CWSIP0373.useraction=\u00dcberpr\u00fcfen und beheben Sie die Ausnahme, damit die Zugriffssteuerungsliste ordnungsgem\u00e4\u00df geladen werden kann. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} Discriminator name
 # {1} user
@@ -1026,12 +1050,14 @@ ACL_ADD_WARNING_CWSIP0373.useraction=\u00dcberpr\u00fcfen und beheben Sie die Au
 ACL_ADD_WARNING_CWSIP0374=CWSIP0374W: Die Zugriffssteuerungsliste kann nicht geladen werden, weil die Ausnahme {2} f\u00fcr den Diskriminator {0} und den Benutzer {1} eingetreten ist.
 ACL_ADD_WARNING_CWSIP0374.explanation=Beim Laden der Zugriffssteuerungsliste ist eine Ausnahme eingetreten.
 ACL_ADD_WARNING_CWSIP0374.useraction=\u00dcberpr\u00fcfen und beheben Sie die Ausnahme, damit die Zugriffssteuerungsliste ordnungsgem\u00e4\u00df geladen werden kann. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} Discriminator name
 # {1} related Exception.
 ACL_ADD_WARNING_CWSIP0375=CWSIP0375W: Die Zugriffssteuerungsliste kann nicht geladen werden, weil die Ausnahme {1} f\u00fcr den Diskriminator {0} eingetreten ist.
 ACL_ADD_WARNING_CWSIP0375.explanation=Beim Laden der Zugriffssteuerungsliste ist eine Ausnahme eingetreten.
 ACL_ADD_WARNING_CWSIP0375.useraction=\u00dcberpr\u00fcfen und beheben Sie die Ausnahme, damit die Zugriffssteuerungsliste ordnungsgem\u00e4\u00df geladen werden kann. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} The related exception.
 INVALID_SELECTOR_ERROR_CWSIP0376=CWSIP0376E: Der Selektor konnte wegen eines internen Fehlers nicht syntaktisch analysiert werden.
@@ -1134,6 +1160,12 @@ PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=Der Konsument muss die Ver
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: Es ist kein Datenstrom f\u00fcr die Kommunikation mit der Messaging-Engine {1} f\u00fcr das Ziel {0} verf\u00fcgbar.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=Es ist kein Datenstrom f\u00fcr die Kommunikation mit der Messaging-Engine f\u00fcr das Ziel verf\u00fcgbar. M\u00f6glicherweise ist die Initialisierung des Datenstroms noch nicht abgeschlossen, oder es liegt ein Netzfehler vor.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Stellen Sie sicher, dass eine Kommunikation mit der Lokalisierungs-Messaging-Engine m\u00f6glich ist, und wiederholen Sie anschlie\u00dfend die Operation.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The ProtocolItemStream object
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: Ein fehlerhaftes ProtocolItemStream{0} wurde gefunden. Die Erstellung des Streams wird verz\u00f6gert, damit er ordnungsgem\u00e4\u00df gebildet werden kann.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=Es wurde ein ProtocolItemStream fehlerhaftes gefunden, das kein Element CompletedPrefix enth\u00e4lt. Die Erstellung des Streams wird verz\u00f6gert, damit er ordnungsgem\u00e4\u00df gebildet werden kann.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=Keine.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The name of the destination
@@ -1284,6 +1316,7 @@ MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=Keine.
 DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: Es wurde eine Nachricht mit der ID {0} und der Systemnachrichten-ID {1} im Ziel {2} gefunden, deren Zustellungsverz\u00f6gerung das mit der Eigenschaft property sib.msgstore.maximumAllowedDeliveryDelayInterval festgelegte Zeitlimit \u00fcberschreitet. Die folgende Aktion wurde eingeleitet: ''{3}''
 DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=Diese Warnung zeigt an, dass eine Aktion eingeleitet wurde.
 DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=Es ist keine Benutzeraktion erforderlich. 
+
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: Es sind keine weiteren Elemente im Iterator vorhanden.
 NO_ELEMENTS_ERROR_CWSIP0601.explanation=Keine.
@@ -1358,6 +1391,7 @@ MESSAGE_PUMP_START_WARNING_CWSIP0656W.useraction=Der Mediationspunkt kann erneut
 NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657=CWSIP0657I: Der lokale Mediationspunkt f\u00fcr das Ziel {0} und die Mediation {1} wurde in den Status {2} versetzt.
 NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.explanation=Der Status des Mediationspunkts wurde ge\u00e4ndert.
 NOTIFY_MEDIATION_STATE_CHANGE_CWSIP0657.useraction=Keine. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the destination
 MEDIATION_EXCEPT_DEST_CLOSED_SIMP0661=CWSIP0661E: Die Mediation f\u00fcr das Ziel {0} hat versucht, eine Nachricht am Ausnahmeziel zu speichern, aber die Mediation ist gestoppt worden.
@@ -1472,11 +1506,13 @@ MEDIATION_CHANGE_REASON_CONFIG_CHANGE_SIMP0776.useraction=In der Dokumentation k
 TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777=CWSIP0777E: Die zum Empfangen der Nachricht am Ziel {0} verwendete Transaktion ist bereits abgeschlossen.
 TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.explanation=Es wurde versucht, eine Transaktion zu verwenden, die bereits abgeschlossen ist.
 TRANSACTION_RECEIVE_USAGE_ERROR_CWSIP0777.useraction=Stellen Sie sicher, dass die verwendete Transaktion eine neue Transaktion ist.
+
 # -------------------------------------------------------------------------------------------------
 # {0} The destination address
 TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778=CWSIP0778E: Die zum L\u00f6schen der Nachricht am Ziel {0} verwendete Transaktion ist bereits abgeschlossen.
 TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.explanation=Es wurde versucht, eine Transaktion zu verwenden, die bereits abgeschlossen ist.
 TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.useraction=Stellen Sie sicher, dass die verwendete Transaktion eine neue Transaktion ist.
+
 # -------------------------------------------------------------------------------------------------
 # {0} The messaging engine name
 FLUSH_REQUESTED_MESSAGE_CWSIP0780=CWSIP0780I: Messaging-Engine {0} gestartet: Zur\u00fcckschreiben der Zustellungsdatenstr\u00f6me angefordert.
@@ -1704,6 +1740,7 @@ MEDIATION_EXCEPTION_MSG_NOT_RECEIVED_CWSIP0818.useraction=Die Bedeutung der Ausn
 RMQ_DISABLED_CWSIP0819=CWSIP0819W: Es konnte keine Verbindung zum Bus-Member {0} des WebSphere-MQ-Servers hergestellt werden, weil das WebSphere-MQ-Messaging inaktiviert ist.
 RMQ_DISABLED_CWSIP0819.explanation=Das WebSphere-MQ-Messaging ist nicht verf\u00fcgbar, weil beim Starten der Messaging-Engine ein Fehler aufgetreten ist.
 RMQ_DISABLED_CWSIP0819.useraction=Stellen Sie sicher, dass ein geeigneter WebSphere-MQ-Client in der Messaging-Engine konfiguriert ist. Suchen Sie in den Startprotokollen der Messaging-Engine nach Hinweisen auf den Startfehler und ergreifen Sie die entsprechenden Fehlerbehebungsma\u00dfnahmen. 
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the Websphere MQ Server bus member name
 # {1} is the error
@@ -1784,6 +1821,7 @@ HEALTHSTATE_STATUS_CWSIP0920.useraction=Keine.
 HEALTHSTATE_STATUS_CWSIP0911=CWSIP0911W: Keine Antwort vom Empf\u00e4nger. Die Best\u00e4tigung gesendeter Nachrichten ist \u00fcberf\u00e4llig.
 HEALTHSTATE_STATUS_CWSIP0911.explanation=Die Nachrichten wurden an eine ferne Messaging-Engine gesendet, aber es wurde noch keine Best\u00e4tigung f\u00fcr diese Nachrichten empfangen.
 HEALTHSTATE_STATUS_CWSIP0911.useraction=Stellen Sie sicher, dass die empfangende Messaging-Engine gestartet ist und mit der sendenden Messaging-Engine kommunizieren kann. Wenn sie aktiv und kommunikationsbereit ist, ist das System m\u00f6glicherweise \u00fcberlastet, und das Problem kann durch eine Reduzierung des Nachrichterverkehrs behoben werden. 
+
 # -------------------------------------------------------------------------------------------------
 HEALTHSTATE_STATUS_CWSIP0912=CWSIP0912W: Blockierte \u00dcbertragungswarteschlange. Die erste Nachricht wird unerwartet lange in einer unbest\u00e4tigten Transaktion gehalten.
 HEALTHSTATE_STATUS_CWSIP0912.explanation=Die erste Nachricht im \u00dcbertragungsdatenstrom wurde teilweise festgeschrieben. Die Transaktion befindet sich m\u00f6glicherweise in einem unbest\u00e4tigten Status. Die verbleibenden Nachrichten werden blockiert, bis die Transaktion aufgel\u00f6st ist.

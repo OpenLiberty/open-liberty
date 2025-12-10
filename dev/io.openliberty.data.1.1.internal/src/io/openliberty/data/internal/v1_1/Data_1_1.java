@@ -486,6 +486,12 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public String persistenceFeatureName() {
+        return "persistence-4.0";
+    }
+
+    @Override
+    @Trivial
     public Set<Class<?>> resourceAccessorTypes(boolean stateful) {
         return stateful ? RESOURCE_ACCESSOR_CLASSES_STATEFUL //
                         : RESOURCE_ACCESSOR_CLASSES_STATELESS;

@@ -18,27 +18,25 @@ package test.jakarta.data.web;
  */
 public class Participant {
 
-    private Integer pID;
+    private Integer PID;
 
     public Name name;
 
     public static record Name(String first, String last) {
     }
 
-    // Exception Description: Could not load the field named [PID] on the class [class test.jakarta.data.web.Participant]. Ensure there is a corresponding field with that name defined on the class.
-
     public Integer getPID() {
-        return pID;
+        return PID;
     }
 
     public static Participant of(String firstName, String lastName, int id) {
         Participant p = new Participant();
-        p.pID = id;
+        p.PID = id;
         p.name = new Name(firstName, lastName);
         return p;
     }
 
     public void setPID(Integer value) {
-        pID = value;
+        PID = value;
     }
 }

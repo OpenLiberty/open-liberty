@@ -109,6 +109,51 @@
 		</bean>
 
 		<bean
+            parent="RelyingPartyByName"
+            c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp1_ec'}}"
+        >
+            <property name="profileConfigurations">
+                <list>
+                    <bean parent="Shibboleth.SSO" />
+                    <ref bean="SAML1.AttributeQuery" />
+                    <ref bean="SAML1.ArtifactResolution" />
+                    <bean
+                        parent="SAML2.SSO"
+                        p:signResponses="false"
+                        p:signAssertions="true"
+                        p:encryptAssertions="true"
+                        p:securityConfiguration-ref="ECDSASHA256_ECDHSecurityConfig"
+                        p:nameIDFormatPrecedence="urn:oasis:names:tc:SAML:2.0:nameid-format:uid"
+                        p:maximumSPSessionLifetime="PT1H" />
+                    <ref bean="SAML2.ECP" />
+                    <ref bean="SAML2.Logout" />
+                    <ref bean="SAML2.AttributeQuery" />
+                    <ref bean="SAML2.ArtifactResolution" />
+                    <ref bean="Liberty.SSOS" />
+                </list>
+            </property>
+        </bean>
+
+        <bean
+            id="ECDSASHA256_ECDHSecurityConfig"
+            class="net.shibboleth.idp.profile.config.SecurityConfiguration"
+        >
+            <property name="signatureSigningConfiguration">
+                <bean parent="shibboleth.SigningConfiguration.SHA256" p:signingCredentials-ref="shibboleth.DefaultSigningCredentialECDSA" />
+            </property>
+            <property name="encryptionConfiguration">
+                <bean parent="shibboleth.BasicEncryptionConfiguration">
+                    <property name="dataEncryptionAlgorithms">
+                        <list>
+                            <util:constant
+                                static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128_GCM" />
+                        </list>
+                    </property>
+                </bean>
+            </property>
+        </bean>
+
+		<bean
 			parent="RelyingPartyByName"
 			c:relyingPartyIds="#{{'https://localhost:xxx_SpSecurePort_xxx/ibm/saml20/sp1NotSigned'}}"
 		>

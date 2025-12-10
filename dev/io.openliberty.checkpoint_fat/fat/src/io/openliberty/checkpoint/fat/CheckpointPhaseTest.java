@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,9 @@ import static io.openliberty.checkpoint.fat.FATSuite.removeBootStrapProperties;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 
 import org.junit.After;
@@ -74,6 +77,50 @@ public class CheckpointPhaseTest {
 
         server.stopServer(false, "");
         restoreServerCheckConsoleLogHeader(server);
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+    }
+
+    @Test
+    public void testLogDirLinkEnvChange() throws Exception {
+
+        File logs = new File(server.getServerRoot() + "/logs");
+        if (logs.exists()) {
+            server.deleteDirectoryFromLibertyServerRoot("logs");
+        }
+        new File(server.getServerRoot() + "/logsLink1").mkdirs();
+        Files.createSymbolicLink(logs.toPath(), Paths.get("logsLink1"));
+
+        server.setCheckpoint(new CheckpointInfo(CheckpointPhase.AFTER_APP_START, false, (s) -> {
+            assertNotNull("App code should have run.", server.waitForStringInLogUsingMark("TESTING - contextInitialized", 100));
+        }));
+        server.startServerAndValidate(false, true, LibertyServer.validateApps);
+
+        restoreServerCheckConsoleLogHeader(server);
+        HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
+
+        server.stopServer(false, "");
+
+        // Set the LOG_DIR and switch the symbolic link;
+        // this mimics what the operator does for serviceability of logs
+        Files.delete(logs.toPath());
+        new File(server.getServerRoot() + "/logsLink2").mkdirs();
+        Files.createSymbolicLink(logs.toPath(), Paths.get("logsLink2"));
+        FATSuite.configureEnvVariable(server, Collections.singletonMap("LOG_DIR", server.getServerRoot() + "/logsLink2"));
+
+        // Not validating if the server started on restore because the LibertyServer is not equipped to handle this scenario with log dir changing.
+        // It does not know how to look in the new location.
+        // Instead of trying to enhance LibertyServer for this very limited scenario we validate the expected console log below.
+        server.checkpointRestore(false);
+        // Mark the server as started so it will be properly stopped after test; validation code typically does this; but that was skipped above.
+        server.setStarted();
+
+        // Note that we use the original logLink1 location for the console log because InstantOn (criu) does not currently
+        // allow us to swap out the file the process is piping to.
+        server.waitForStringInLog("Launching checkpointFATServer", 100, server.getFileFromLibertyServerRoot("logsLink1/" + getTestMethodNameOnly(testName)));
+        // Note that the messages.log is checked in the new linked location because we expect the restored Liberty logger
+        // to follow the new link from the logs->logsLink2
+        server.waitForStringInLog("Launching checkpointFATServer", 100, server.getFileFromLibertyServerRoot("logsLink2/messages.log"));
+
         HttpUtils.findStringInUrl(server, "app2/request", "Got ServletA");
     }
 

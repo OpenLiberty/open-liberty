@@ -206,6 +206,14 @@ public interface DataVersionCompatibility {
     String paramAnnosForUpdate();
 
     /**
+     * Returns the name of the Liberty feature that provides Jakarta Persistence.
+     * For example, persistence-3.2.
+     *
+     * @return the name of the Liberty feature that provides Jakarta Persistence.
+     */
+    String persistenceFeatureName();
+
+    /**
      * List of valid return types for resource accessor methods.
      *
      * @param stateful true for a stateful repository; false for stateless.

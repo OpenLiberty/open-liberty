@@ -18,8 +18,8 @@ import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -91,7 +91,7 @@ public class SecureHttp2Client {
         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "testing requests to:" + sb.toString());
 
         // keep track of the text of every response received
-        final List<String> responseMessages = new ArrayList<String>();
+        final List<String> responseMessages = new CopyOnWriteArrayList<String>();
         // latch to consider expected number of streams
         final CountDownLatch latch = new CountDownLatch(requestUris.length + expectedPushStreams);
 
@@ -226,7 +226,9 @@ public class SecureHttp2Client {
                             }
                         }
                         if (sb.length() > 0) {
-                            responseMessages.add(sb.toString());
+                            String response = sb.toString();
+                            LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "Adding response: " + response);
+                            responseMessages.add(response);
                         }
                         data.clear();
                     }

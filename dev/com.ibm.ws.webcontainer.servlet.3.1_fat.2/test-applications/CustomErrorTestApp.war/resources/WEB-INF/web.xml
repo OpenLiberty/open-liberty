@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
+         version="3.1">
+
+    
+    <!-- Servlet that triggers a 403 Forbidden error               -->
+    
+    <servlet>
+        <servlet-name>ForbiddenTestServlet</servlet-name>
+        <servlet-class>
+            com.ibm.ws.webcontainer.servlet_31_fat.customerrortest.war.test.servlets.ForbiddenTestServlet
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ForbiddenTestServlet</servlet-name>
+        <url-pattern>/forbidden</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- Servlet that triggers a 500 error intentionally           -->
+
+    <servlet>
+        <servlet-name>ErrorTestServlet</servlet-name>
+        <servlet-class>
+            com.ibm.ws.webcontainer.servlet_31_fat.customerrortest.war.test.servlets.ErrorTestServlet
+        </servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>ErrorTestServlet</servlet-name>
+        <url-pattern>/error</url-pattern>
+    </servlet-mapping>
+
+
+</web-app>

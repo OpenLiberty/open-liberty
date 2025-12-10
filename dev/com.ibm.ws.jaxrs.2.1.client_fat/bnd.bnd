@@ -23,7 +23,8 @@ src: \
   test-applications/jaxrs21clienttimeout/src,\
   test-applications/jaxrs21complexclient/src,\
   test-applications/jaxrs21executors/src,\
-  test-applications/jaxrs21reactivesample/src
+  test-applications/jaxrs21reactivesample/src,\
+  test-applications/jaxrs21clientthreadleak/src
 
 
 fat.project: true

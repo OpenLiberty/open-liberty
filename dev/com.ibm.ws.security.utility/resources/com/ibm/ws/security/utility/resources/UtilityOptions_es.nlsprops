@@ -59,7 +59,7 @@ encode.option-desc.encoding=\tEspecifica c\u00f3mo codificar la contrase\u00f1a.
 encode.option-key.key=\ \ \ \ --key=[clave]
 encode.option-desc.key=\tEspecifique una clave que se utilizar\u00e1 al codificar mediante AES. Esta cadena se hash para producir una clave de cifrado, que se utiliza para cifrar y descifrar la contrase\u00f1a. La clave puede proporcionarse al servidor definiendo la variable wlp.password.encryption.key cuyo valor es la clave. Si no se especifica esta opci\u00f3n, se utilizar\u00e1 una clave predeterminada.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
-encode.option-desc.base64Key=\tUna clave de bits AES-256 codificada en base64 que se utilizar\u00e1 para cifrar y descifrar la contrase\u00f1a. La clave puede proporcionarse al servidor definiendo la variable variable wlp.aes.encryption.key cuyo valor es la clave. Si se especifica --base64Key entonces --aesConfigFile y --key no pueden ser especificados.
+encode.option-desc.base64Key=\tSe utilizar\u00e1 una Base64-encodedAES-256 clave para cifrar y descifrar la\ncontrase\u00f1a. Proporcione esta clave al servidor definiendo la\nwlp.aes.encryption.key variable. Si --base64Key se\nespecifica, entonces --aesConfigFile y --key no se pueden especificar.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 encode.option-desc.aesConfigFile=\tUn archivo de propiedades XML o Java con una variable denominada wlp.password.encryption.key o wlp.aes.encryption.key con valores respectivamente. Ambas variables no pueden especificarse en el mismo fichero.\n\tSi se especifica --aesConfigFile, entonces no se pueden especificar --key y --base64Key.
 encode.option-key.notrim=\ \ \ \ --notrim
@@ -118,7 +118,7 @@ sslCert.option-desc.ext=\tInformaci\u00f3n de extensi\u00f3n de certificado para
 #line.
 
 sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
-sslCert.option-desc.passwordBase64Key=\tUna clave de bits AES-256 codificada en base64 que se utilizar\u00e1 para cifrar y descifrar la contrase\u00f1a. La clave puede proporcionarse al servidor definiendo la variable wlp.aes.encryption.key cuyo valor es la clave.\n\tSi se especifica --passwordBase64Key, entonces --aesConfigFile y --passwordKey no se pueden especificar.
+sslCert.option-desc.passwordBase64Key=\tSe utilizar\u00e1 una Base64-encodedAES-256 clave para cifrar y descifrar la\ncontrase\u00f1a. Proporcione esta clave al servidor definiendo la\nwlp.aes.encryption.key variable. Si se especifica la --passwordBase64Key opci\u00f3n\n, no se pueden especificar las opciones --aesConfigFile --passwordKey o.
 sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 sslCert.option-desc.aesConfigFile=\tUn archivo de propiedades XML o Java con una variable denominada wlp.password.encryption.key o wlp.aes.encryption.key con valores respectivamente. Ambas variables no pueden especificarse en el mismo fichero.\n\tSi se especifica --aesConfigFile, entonces --passwordBase64Key y --passwordKey no se pueden especificar.
 
@@ -144,7 +144,7 @@ createLTPAKeys.option-desc.password.encoding=\tEspecifica c\u00f3mo codificar la
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[clave]
 createLTPAKeys.option-desc.password.key=\tEspecifica una clave que se utilizar\u00e1 al codificar la contrase\u00f1a de claves LTPA mediante\n\tAES. Se utilizar\u00e1 un c\u00f3digo hash con la serie para producir una clave de cifrado, que \n\tse utilizar\u00e1 para cifrar y descifrar la contrase\u00f1a. La clave puede\n\tsuministrarse al servidor definiendo la variable\n\twlp.password.encryption.key, cuyo valor es la clave. Si no se especifica\n\testa opci\u00f3n, se utilizar\u00e1 una clave predeterminada.
 createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
-createLTPAKeys.option-desc.passwordBase64Key=\tUna clave de bits AES-256 codificada en base64 que se utilizar\u00e1 para cifrar y descifrar la contrase\u00f1a. La clave puede proporcionarse al servidor definiendo la variable variable wlp.aes.encryption.key cuyo valor es la clave. Si se especifica --passwordBase64Key entonces --aesConfigFile y --passwordKey no se pueden especificar.
+createLTPAKeys.option-desc.passwordBase64Key=\tSe utilizar\u00e1 una Base64-encodedAES-256 clave para cifrar y descifrar la\ncontrase\u00f1a. Proporcione esta clave al servidor definiendo la\nwlp.aes.encryption.key variable. Si se especifica la --passwordBase64Key opci\u00f3n\n, no se pueden especificar las opciones --aesConfigFile --passwordKey o.
 createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 createLTPAKeys.option-desc.aesConfigFile=\tUn archivo de propiedades XML o Java con una variable denominada wlp.password.encryption.key o wlp.aes.encryption.key con valores respectivamente. Ambas variables no pueden especificarse en el mismo fichero.\n\tSi se especifica --aesConfigFile, entonces --passwordBase64Key y --passwordKey no se pueden especificar.
 
@@ -207,6 +207,6 @@ configureFIPS.option-desc.4.disable=\tDesactive FIPS 140-3 estableciendo la vari
 generateaeskey.desc=\tGenera un valor que se coloca en la variable de configuraci\u00f3n wlp.aes.encryption.key para el cifrado aes.
 generateaeskey.usage.options=\t{0} generateAESKey [opciones]
 generateaeskey.option-key.key=\ \ \ \ --key =[key]
-generateaeskey.option-desc.key=\tEspecifique una clave para utilizar durante el cifrado AES. Esta cadena se hash para producir una clave de cifrado que se utilizar\u00e1 para cifrar y descifrar contrase\u00f1as. La clave de cifrado se guarda en formato base64 en una variable llamada wlp.aes.encryption.key. Si se omite esta opci\u00f3n se genera una clave aleatoria.
+generateaeskey.option-desc.key=\tEsta cadena se somete a un proceso de hash para producir una clave de cifrado\nque se utiliza para cifrar y descifrar contrase\u00f1as. Si se omite esta opci\u00f3n\n, se genera una clave aleatoria.
 generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
 generateaeskey.option-desc.createConfigFile=\tCrea un archivo XML con el valor generado guardado en una variable llamada wlp.aes.encryption.key. Si no se proporciona, el valor generado se escribir\u00e1 en la pantalla de la consola.

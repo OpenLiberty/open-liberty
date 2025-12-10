@@ -12,40 +12,25 @@
  *******************************************************************************/
 package io.openliberty.data.internal.persistence.service;
 
-import static io.openliberty.data.internal.persistence.Util.EOLN;
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
 import java.io.PrintWriter;
-import java.io.Serializable;
 import java.io.Writer;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.RecordComponent;
-import java.lang.reflect.Type;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -81,16 +66,12 @@ import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.Util;
+import io.openliberty.data.internal.persistence.orm.EntityParser;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.CacheRetrieveMode;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Embeddable;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Table;
 
 /**
  * This builder is used when a data source JNDI name, id, resource reference,
@@ -99,8 +80,7 @@ import jakarta.persistence.Table;
  */
 public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerationParticipant {
     private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
-    private static final Entry<String, String> ID_AND_VERSION_NOT_SPECIFIED = //
-                    new SimpleImmutableEntry<>(null, null);
+
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
 
     private final ClassDefiner classDefiner = new ClassDefiner();
@@ -369,197 +349,40 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
         ArrayList<InMemoryMappingFile> generatedEntities = new ArrayList<InMemoryMappingFile>();
 
-        // Classes explicitly annotated with JPA @Entity:
-        Set<String> entityClassNames = new LinkedHashSet<>(entityTypes.size() * 2);
-        Set<String> entityTableNames = new LinkedHashSet<>(entityClassNames.size());
-
-        // List of classes to inspect for the above
-        Queue<Class<?>> annotatedEntityClassQueue = new LinkedList<>();
-
-        // XML to make all other classes into JPA entities:
-        ArrayList<String> entityClassInfo = new ArrayList<>(entityTypes.size());
-
-        // Attribute types that are inferred to be embeddable on unannotated entities
-        Map<Class<?>, Map<String, Class<?>>> embeddableTypes = new LinkedHashMap<>();
+        EntityParser parser = new EntityParser(tablePrefix, provider);
 
         for (Class<?> c : entityTypes) {
             if (c.isAnnotationPresent(Entity.class)) {
-                annotatedEntityClassQueue.add(c);
+                parser.parseAnnotatedEntity(c);
+            } else if (c.isRecord()) {
+                disallowPersistenceAnnos(c, true);
+
+                // an entity class is generated for the record
+                String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX;
+                byte[] generatedEntityBytes = RecordTransformer //
+                                .generateEntityClassBytes(c,
+                                                          entityClassName,
+                                                          jeeName,
+                                                          repositoryInterfaces);
+                String name = entityClassName.replace('.', '/') + ".class";
+                generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, name));
+                Class<?> ec = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(),
+                                                                   entityClassName,
+                                                                   generatedEntityBytes);
+                generatedToRecordClass.put(ec, c);
+                parser.parseRecord(c, ec);
             } else {
-                // The table is named from the class name of the entity or
-                // record that is specified by the user, not from the generated
-                // entity class that is used internally in place of a record.
-                String tableName = c.getSimpleName();
-                Class<?> ec = c;
-                if (c.isRecord()) {
-                    disallowPersistenceAnnos(c, true);
-
-                    // an entity class is generated for the record
-                    String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX;
-                    byte[] generatedEntityBytes = RecordTransformer //
-                                    .generateEntityClassBytes(c,
-                                                              entityClassName,
-                                                              jeeName,
-                                                              repositoryInterfaces);
-                    String name = entityClassName.replace('.', '/') + ".class";
-                    generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, name));
-                    ec = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(),
-                                                              entityClassName,
-                                                              generatedEntityBytes);
-                    generatedToRecordClass.put(ec, c);
-                } else {
-                    disallowPersistenceAnnos(c, false);
-                }
-
-                StringBuilder xml = new StringBuilder(500);
-
-                xml.append(" <entity class=\"").append(ec.getName()) //
-                                .append("\">").append(EOLN);
-
-                xml.append("  <table name=\"") //
-                                .append(tablePrefix).append(tableName) //
-                                .append("\"/>").append(EOLN);
-
-                writeAttributes(xml, findAttributes(c), embeddableTypes);
-
-                xml.append(" </entity>").append(EOLN);
-
-                entityClassInfo.add(xml.toString());
+                disallowPersistenceAnnos(c, false);
+                parser.parseUnannotatedEntity(c);
             }
-        }
-
-        /*
-         * Note: When creating a persistence unit, managed classes (such as entities) are declared in an
-         * all or nothing fashion. Therefore, if we create a persistence unit with a list of entities
-         * we are also required to provide a list of converters, otherwise the persistence provider
-         * will not use them. Ideally, our internal persistence service unit would have a method to
-         * include converter classes alongside entity classes, but the persistence provider API lacks
-         * such function so the converters need to be put into the generated orm.xml file.
-         */
-        Set<Class<?>> converterTypes = new HashSet<>();
-
-        Queue<Class<?>> annotatedEmbeddedClassQueue = new LinkedList<>();
-        Set<Class<?>> embeddedClassesProcessed = new HashSet<>();
-
-        // Discover entities that are indirectly referenced via OneToOne, ManyToMany,
-        // and so forth. Also discover AttributeConverters that are referenced from
-        // classes, fields, and methods.
-        for (Class<?> c, emb = null; //
-                        (c = annotatedEntityClassQueue.poll()) != null ||
-                                     (emb = annotatedEmbeddedClassQueue.poll()) != null;) {
-            if (c != null) {
-                if (entityClassNames.add(c.getName())) {
-                    Table table = c.getAnnotation(Table.class);
-                    String tableName = table == null || table.name().length() == 0 //
-                                    ? c.getSimpleName() //
-                                    : table.name();
-                    entityTableNames.add(tableName);
-
-                    if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "entity class " + c.getName() +
-                                           " will use table " + tableName);
-                } else {
-                    c = null;
-                }
-            } else if (emb != null) {
-                embeddedClassesProcessed.add(c = emb);
-
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "embedded class " + emb.getName());
-            } else {
-                c = null;
-            }
-
-            for (Class<?> sc = c; //
-                            sc != null && sc != Object.class; //
-                            sc = sc.getSuperclass()) {
-                for (Convert convert : sc.getAnnotationsByType(Convert.class))
-                    if (convert.converter() != null)
-                        converterTypes.add(convert.converter());
-
-                for (Field f : sc.getDeclaredFields()) {
-                    if (f.isAnnotationPresent(Embedded.class) ||
-                        f.isAnnotationPresent(EmbeddedId.class)) {
-                        if (f.getType().isAnnotationPresent(Embeddable.class))
-                            annotatedEmbeddedClassQueue.add(f.getType());
-                        else if ((c = getEmbeddableClass(f.getGenericType())) != null)
-                            annotatedEmbeddedClassQueue.add(c);
-                    } else if (f.getType().isAnnotationPresent(Entity.class)) {
-                        annotatedEntityClassQueue.add(f.getType());
-                    } else if ((c = getEntityClass(f.getGenericType())) != null) {
-                        annotatedEntityClassQueue.add(c);
-                    }
-
-                    for (Convert convert : f.getAnnotationsByType(Convert.class))
-                        if (convert.converter() != null)
-                            converterTypes.add(convert.converter());
-                }
-
-                for (Method m : sc.getDeclaredMethods()) {
-                    if (m.isAnnotationPresent(Embedded.class) ||
-                        m.isAnnotationPresent(EmbeddedId.class)) {
-                        if (m.getReturnType().isAnnotationPresent(Embeddable.class))
-                            annotatedEmbeddedClassQueue.add(m.getReturnType());
-                        else if ((c = getEmbeddableClass(m.getGenericReturnType())) != null)
-                            annotatedEmbeddedClassQueue.add(c);
-                    } else if (m.getReturnType().isAnnotationPresent(Entity.class)) {
-                        annotatedEntityClassQueue.add(m.getReturnType());
-                    } else if ((c = getEntityClass(m.getGenericReturnType())) != null) {
-                        annotatedEntityClassQueue.add(c);
-                    }
-
-                    for (Convert convert : m.getAnnotationsByType(Convert.class))
-                        if (convert.converter() != null)
-                            converterTypes.add(convert.converter());
-                }
-            }
-        }
-
-        for (Entry<Class<?>, Map<String, Class<?>>> e : embeddableTypes.entrySet()) {
-            Class<?> type = e.getKey();
-            Map<String, Class<?>> attrs = e.getValue();
-
-            StringBuilder xml = new StringBuilder(500) //
-                            .append(" <embeddable class=\"") //
-                            .append(type.getName()).append("\">") //
-                            .append(EOLN);
-            writeAttributes(xml, attrs, null);
-            xml.append(" </embeddable>").append(EOLN);
-            entityClassInfo.add(xml.toString());
-        }
-
-        Set<Class<?>> convertibleTypes = new HashSet<>();
-        for (Class<?> converterType : converterTypes) {
-            StringBuilder xml = new StringBuilder(500) //
-                            .append(" <converter class=\"") //
-                            .append(converterType.getName()) //
-                            .append("\"></converter>") //
-                            .append(EOLN);
-            entityClassInfo.add(xml.toString());
-
-            for (Class<?> c = converterType; c != null; c = c.getSuperclass())
-                for (Type ifc : c.getGenericInterfaces())
-                    if (ifc instanceof ParameterizedType type &&
-                        ifc.getTypeName().startsWith(Util.ATTR_CONVERTER_CLASS_NAME)) {
-                        if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "found converter: " + ifc.getTypeName());
-
-                        Type[] typeParams = type.getActualTypeArguments();
-                        if (Util.UNSUPPORTED_ATTR_TYPES.contains(typeParams[1]))
-                            throw exc(MappingException.class,
-                                      "CWWKD1111.unsupported.convert",
-                                      converterType.getName(),
-                                      typeParams[0].getTypeName(),
-                                      typeParams[1].getTypeName(),
-                                      Util.SUPPORTED_TEMPORAL_TYPES,
-                                      Util.SUPPORTED_BASIC_TYPES);
-
-                        if (typeParams[0] instanceof Class)
-                            convertibleTypes.add((Class<?>) typeParams[0]);
-                    }
         }
 
         Map<String, Object> properties = new HashMap<>();
+
+        List<String> entityClassInfo = parser.generateView();
+        LinkedHashSet<String> entityClassNames = parser.getClassNames();
+        LinkedHashSet<String> entityTableNames = parser.getTableNames();
+        Set<Class<?>> convertibleTypes = parser.getConvertibles();
 
         properties.put("io.openliberty.persistence.internal.entityClassInfo",
                        entityClassInfo.toArray(new String[entityClassInfo.size()]));
@@ -627,114 +450,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                                   Entity.class.getName(),
                                   anno.annotationType().getName(),
                                   method.getName());
-    }
-
-    /**
-     * Find attributes of the specified class.
-     * If a record, use the record components.
-     * Otherwise, use fields and property descriptors.
-     *
-     * @param c entity class or embedded class.
-     * @return attributes, sorted alphabetically.
-     */
-    private SortedMap<String, Class<?>> findAttributes(Class<?> c) {
-        SortedMap<String, Class<?>> attributes = new TreeMap<>();
-
-        if (c.isRecord()) {
-            for (RecordComponent r : c.getRecordComponents())
-                attributes.put(r.getName(), r.getType());
-        } else {
-            for (Field f : c.getFields())
-                attributes.put(f.getName(), f.getType());
-
-            try {
-                PropertyDescriptor[] propertyDescriptors = Introspector //
-                                .getBeanInfo(c).getPropertyDescriptors();
-                if (propertyDescriptors != null)
-                    for (PropertyDescriptor p : propertyDescriptors) {
-                        Method setter = p.getWriteMethod();
-                        if (setter != null) {
-                            String n = setter.getName();
-                            String name = new StringBuilder(n.length() - 3) //
-                                            .append(Character.toLowerCase(n.charAt(3))) //
-                                            .append(n.substring(4)) //
-                                            .toString(); //
-                            attributes.putIfAbsent(name, p.getPropertyType());
-                        }
-                    }
-            } catch (IntrospectionException x) {
-                throw new MappingException(x);
-            }
-        }
-
-        return attributes;
-    }
-
-    /**
-     * Find the Id and Version attributes (if any).
-     *
-     * @param attributes top level entity or embeddable attributes.
-     * @return the Id and Version attributes (if any).
-     *         Null if there is no Id.
-     */
-    private Entry<String, String> findIdAndVersion(Map<String, Class<?>> attrs) {
-        String idAttrName = null;
-        String versionAttrName = null;
-
-        // Determine which attribute is the id and version (optional).
-        // Id precedence:
-        // (1) name is id, ignoring case.
-        // (2) name ends with _id, ignoring case.
-        // (3) name ends with Id or ID.
-        // (4) type is UUID.
-        // Version precedence (if also a valid version type):
-        // (1) name is version, ignoring case.
-        // (2) name is _version, ignoring case.
-        int idPrecedence = 10;
-        int vPrecedence = 10;
-        for (Map.Entry<String, Class<?>> attribute : attrs.entrySet()) {
-            String name = attribute.getKey();
-            Class<?> type = attribute.getValue();
-            int len = name.length();
-
-            if (idPrecedence > 1 &&
-                len >= 2 &&
-                name.regionMatches(true, len - 2, "id", 0, 2)) {
-                if (name.length() == 2) {
-                    idAttrName = name;
-                    idPrecedence = 1;
-                } else if (idPrecedence > 2 &&
-                           name.charAt(len - 3) == '_') {
-                    idAttrName = name;
-                    idPrecedence = 2;
-                } else if (idPrecedence > 3 &&
-                           name.charAt(len - 2) == 'I') {
-                    idAttrName = name;
-                    idPrecedence = 3;
-                }
-            } else if (idPrecedence > 4 && UUID.class.equals(type)) {
-                idAttrName = name;
-                idPrecedence = 4;
-            }
-
-            if (vPrecedence > 1 &&
-                len == 7 &&
-                Util.VERSION_TYPES.contains(type) &&
-                "version".equalsIgnoreCase(name)) {
-                versionAttrName = name;
-                vPrecedence = 1;
-            } else if (vPrecedence > 2 &&
-                       len == 8 &&
-                       Util.VERSION_TYPES.contains(type) &&
-                       "_version".equalsIgnoreCase(name)) {
-                versionAttrName = name;
-                vPrecedence = 2;
-            }
-        }
-
-        return idAttrName == null //
-                        ? null //
-                        : new SimpleImmutableEntry<>(idAttrName, versionAttrName);
     }
 
     /**
@@ -832,48 +547,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         }
     }
 
-    /**
-     * Obtains the embeddable class (if any) for a type that might be parameterized.
-     *
-     * @param type a type that might be parameterized.
-     * @return embeddable class or null.
-     */
-    @Trivial
-    private Class<?> getEmbeddableClass(java.lang.reflect.Type type) {
-        if (type instanceof ParameterizedType) {
-            java.lang.reflect.Type[] typeParams = //
-                            ((ParameterizedType) type).getActualTypeArguments();
-            for (java.lang.reflect.Type t : typeParams)
-                if (t instanceof Class && ((Class<?>) t).isAnnotationPresent(Embeddable.class)) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "getEmbeddableClass from parameterized " + type + ": " + t);
-                    return (Class<?>) t;
-                }
-        }
-        return null;
-    }
-
-    /**
-     * Obtains the entity class (if any) for a type that might be parameterized.
-     *
-     * @param type a type that might be parameterized.
-     * @return entity class or null.
-     */
-    @Trivial
-    private Class<?> getEntityClass(java.lang.reflect.Type type) {
-        if (type instanceof ParameterizedType) {
-            java.lang.reflect.Type[] typeParams = //
-                            ((ParameterizedType) type).getActualTypeArguments();
-            for (java.lang.reflect.Type t : typeParams)
-                if (t instanceof Class && ((Class<?>) t).isAnnotationPresent(Entity.class)) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "getEntityClass from parameterized " + type + ": " + t);
-                    return (Class<?>) t;
-                }
-        }
-        return null;
-    }
-
     @Override
     @Trivial
     protected Class<?> getRecordClass(Class<?> generatedEntityClass) {
@@ -939,128 +612,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                         .append(Integer.toHexString(hashCode())) //
                         .append(":").append(configDisplayId) //
                         .toString();
-    }
-
-    /**
-     * Write attributes for the specified entity or embeddable to XML.
-     *
-     * @param xml             XML for defining the entity attributes
-     * @param attributes      top level entity or embeddable attributes.
-     * @param embeddableTypes embeddable types list to add to. Null if the specified
-     *                            attributes are already for an embeddable.
-     *                            When non-null, this method adds embeddable types
-     *                            that are found.
-     */
-    private void writeAttributes(StringBuilder xml,
-                                 Map<String, Class<?>> attributes,
-                                 Map<Class<?>, Map<String, Class<?>>> embeddableTypes) {
-        boolean isEmbeddable = embeddableTypes == null;
-
-        Entry<String, String> idAndVersion = isEmbeddable //
-                        ? ID_AND_VERSION_NOT_SPECIFIED //
-                        : findIdAndVersion(attributes);
-
-        // Write the attributes to XML:
-
-        xml.append("  <attributes>").append(EOLN);
-
-        for (Map.Entry<String, Class<?>> attributeInfo : attributes.entrySet()) {
-            String attributeName = attributeInfo.getKey();
-            Class<?> attributeType = attributeInfo.getValue();
-            boolean isCollection = Collection.class.isAssignableFrom(attributeType);
-            boolean isPrimitive = attributeType.isPrimitive();
-            boolean isId = attributeName.equals(idAndVersion.getKey());
-
-            String columnType;
-            if (isPrimitive || //
-                attributeType.isInterface() || //
-                Serializable.class.isAssignableFrom(attributeType)) {
-                if (isId)
-                    columnType = "id";
-                else if (isCollection)
-                    columnType = "element-collection";
-                else if (attributeName.equals(idAndVersion.getValue()))
-                    columnType = "version";
-                else
-                    columnType = "basic";
-            } else {
-                if (isId)
-                    columnType = "embedded-id";
-                else
-                    columnType = "embedded";
-            }
-
-            xml.append("   <").append(columnType).append(" name=\"") //
-                            .append(attributeName).append('"');
-
-            // All other queries when using un-annotated entities or record entities are eager,
-            // element-collections should be as well.
-            if (isCollection)
-                xml.append(" fetch=\"EAGER\"");
-
-            xml.append('>').append(EOLN);
-
-            if (!isEmbeddable && // top level entity attribute
-                columnType.charAt(1) == 'm') { // embedded or embedded-id
-                LinkedList<Entry<String[], Map<String, Class<?>>>> stack = //
-                                new LinkedList<>();
-                Map<String, Class<?>> attrs = embeddableTypes.get(attributeType);
-                if (attrs == null)
-                    embeddableTypes.put(attributeType,
-                                        attrs = findAttributes(attributeType));
-                stack.add(new SimpleImmutableEntry<>( //
-                                new String[] { attributeName }, //
-                                attrs));
-                for (Entry<String[], Map<String, Class<?>>> emb; //
-                                null != (emb = stack.pollLast());) {
-                    String[] names = emb.getKey();
-                    Map<String, Class<?>> embeddableAttrs = emb.getValue();
-                    for (Entry<String, Class<?>> e : embeddableAttrs.entrySet()) {
-                        String name = e.getKey();
-                        Class<?> type = e.getValue();
-                        // attribute-override is only written for leaf-level
-                        if (type.isPrimitive() ||
-                            type.isInterface() ||
-                            Serializable.class.isAssignableFrom(type)) {
-                            xml.append("    <attribute-override name=\"");
-                            for (int n = 1; n < names.length; n++)
-                                xml.append(names[n]).append('.');
-                            xml.append(name).append("\">").append(EOLN);
-                            xml.append("     <column name=\"");
-                            for (int n = 0; n < names.length; n++)
-                                xml.append(names[n].toUpperCase()).append('_');
-                            xml.append(name.toUpperCase()) //
-                                            .append("\"/>").append(EOLN);
-                            xml.append("    </attribute-override>").append(EOLN);
-
-                            // Table name collision detection is unnecessary because
-                            // the same collisions would already be caught by entity
-                            // attribute name collision detection.
-                        } else {
-                            Map<String, Class<?>> a = embeddableTypes.get(type);
-                            if (a == null)
-                                embeddableTypes.put(type, a = findAttributes(type));
-                            String[] names2 = new String[names.length + 1];
-                            System.arraycopy(names, 0, names2, 0, names.length);
-                            names2[names.length] = name;
-                            stack.add(new SimpleImmutableEntry<>(names2, a));
-                        }
-                    }
-                }
-            }
-
-            if (isPrimitive)
-                if (isEmbeddable) {
-                    // Primitive attributes on an embeddable might need the null
-                    // value to indicate that the embeddable itself is null.
-                } else {
-                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
-                }
-
-            xml.append("   </" + columnType + ">").append(EOLN);
-        }
-
-        xml.append("  </attributes>").append(EOLN);
     }
 
     /**

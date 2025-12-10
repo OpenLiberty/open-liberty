@@ -22,13 +22,13 @@ export default class SimpleInfo31 extends React.Component {
     return (
       <div className="info">
         <hgroup className="main">
-          <h2 className="title" >
+          <h1 className="title" >
             { title }
             <span>
               { version && <VersionStamp version={version}></VersionStamp> }
               <OpenAPIVersion oasVersion="3.1" />
             </span>
-          </h2>
+          </h1>
         </hgroup>
 
         {summary && <p className="info__summary">{summary}</p>}

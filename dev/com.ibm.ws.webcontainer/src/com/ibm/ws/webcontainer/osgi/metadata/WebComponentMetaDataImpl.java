@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,8 +14,10 @@ package com.ibm.ws.webcontainer.osgi.metadata;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.List;
 
 import org.osgi.framework.ServiceRegistration;
+import com.ibm.ws.javaee.dd.common.EnvEntry;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
@@ -24,12 +26,15 @@ import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.webcontainer.osgi.WebContainerListener;
 import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
+import com.ibm.ws.runtime.metadata.SyncToOSThreadMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
+import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
+import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
 /**
  *
  */
-public class WebComponentMetaDataImpl extends MetaDataImpl implements WebComponentMetaData, IdentifiableComponentMetaData
+public class WebComponentMetaDataImpl extends MetaDataImpl implements WebComponentMetaData, IdentifiableComponentMetaData, SyncToOSThreadMetaData
  {
     private J2EEName j2eeName;
     WebModuleMetaData webModuleMetaData;
@@ -178,5 +183,25 @@ public class WebComponentMetaDataImpl extends MetaDataImpl implements WebCompone
         return WebContainerListener
                         .getPersistentIdentifierImpl(webModuleMetaData.getJ2EEName().getApplication(),
                                                      webModuleMetaData.getJ2EEName().getModule());
+    }
+    @Override
+    public boolean isSyncToOSThreadEnabled() {
+
+        boolean syncToOSThread = false;
+
+        WebAppConfiguration webAppConfig = (WebAppConfiguration)webModuleMetaData.getConfiguration();
+
+        List<EnvEntry> envEntries = webAppConfig.getEnvEntries();
+
+        // Copied from SecurityServletConfiguratorHelper.java.
+        final String SYNC_TO_OS_THREAD_ENV_ENTRY_KEY = "com.ibm.websphere.security.SyncToOSThread";
+
+        for (EnvEntry envEntry : envEntries) {
+            if (SYNC_TO_OS_THREAD_ENV_ENTRY_KEY.equals(envEntry.getName())) {
+                syncToOSThread = Boolean.parseBoolean(envEntry.getValue());
+                break;
+            }
+        }
+        return syncToOSThread;
     }
 }

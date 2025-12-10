@@ -59,7 +59,7 @@ encode.option-desc.encoding=\tSpecificare come codificare la password. Le codifi
 encode.option-key.key=\ \ \ \ --key=[key]
 encode.option-desc.key=\tSpecifica una chiave da utilizzare quando si esegue la codifica mediante AES. Questa stringa verr\u00e0 per produrre una chiave di crittografia, che viene utilizzata per crittografare e decifrare la password. La chiave pu\u00f2 essere fornita al server definendo la variabile wlp.password.encryption.key il cui valore \u00e8 la chiave. Se questa opzione non viene fornita, verr\u00e0 utilizzata una chiave predefinita.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
-encode.option-desc.base64Key=\tUna chiave di base64 codificata AES-256 bit da utilizzare per crittografare e decifrare la password. La chiave pu\u00f2 essere fornita al server definendo la variabile wlp.aes.encryption.key il cui valore \u00e8 la chiave. Se viene specificato --base64Key non \u00e8 possibile specificare --aesConfigFile e --key.
+encode.option-desc.base64Key=\tUna Base64-encodedAES-256 chiave deve essere usata per crittografare e decrittografare la\npassword. Fornisci questa chiave al server definendo la\nwlp.aes.encryption.key variabile. Se --base64Key \u00e8\nspecificato, allora --aesConfigFile e --key non possono essere specificati.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 encode.option-desc.aesConfigFile=\tUn file di propriet\u00e0 XML o Java con una variabile denominata wlp.password.encryption.key o wlp.aes.encryption.key con valori validi rispettivamente con valori validi. Entrambe le variabili non possono essere specificate nello stesso file.\n\tSe viene specificato --aesConfigFile, non \u00e8 possibile specificare --key e --base64Key.
 encode.option-key.notrim=\ \ \ \ --notrim
@@ -118,7 +118,7 @@ sslCert.option-desc.ext=\tLe informazioni sull''estensione del certificato da ag
 #line.
 
 sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
-sslCert.option-desc.passwordBase64Key=\tUna chiave di base64 codificata AES-256 bit da utilizzare per crittografare e decifrare la password. La chiave pu\u00f2 essere fornita al server definendo la variabile wlp.aes.encryption.key il cui valore \u00e8 la chiave.\n\tSe viene specificato --passwordBase64Key, allora --aesConfigFile e --passwordKey non possono essere specificati.
+sslCert.option-desc.passwordBase64Key=\tUna Base64-encodedAES-256 chiave deve essere usata per crittografare e decrittografare la\npassword. Fornisci questa chiave al server definendo la\nwlp.aes.encryption.key variabile. Se \u00e8 --passwordBase64Key specificata l''opzione\n, non \u00e8 possibile specificare le --aesConfigFile opzioni --passwordKey o.
 sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 sslCert.option-desc.aesConfigFile=\tUn file di propriet\u00e0 XML o Java con una variabile denominata wlp.password.encryption.key o wlp.aes.encryption.key con valori validi rispettivamente con valori validi. Entrambe le variabili non possono essere specificate nello stesso file.\n\tSe viene specificato --aesConfigFile, allora --passwordBase64Key e --passwordKey non possono essere specificati.
 
@@ -144,7 +144,7 @@ createLTPAKeys.option-desc.password.encoding=\tSpecifica come codificare la pass
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[key]
 createLTPAKeys.option-desc.password.key=\tSpecifica una chiave da utilizzare durante la codifica della password delle chiavi LTPA utilizzando\n\tAES. Di questa stringa verr\u00e0 eseguito l''hash per produrre una chiave di codifica che\n\tverr\u00e0 utilizzata per codificare e decodificare la password. La chiave pu\u00f2 essere\n\tfornita al server definendo la variabile \n\twlp.password.encryption.key, il cui valore \u00e8 la chiave. Se questa opzione non\n\tviene fornita, verr\u00e0 utilizzata una chiave predefinita.
 createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
-createLTPAKeys.option-desc.passwordBase64Key=\tUna chiave di base64 codificata AES-256 bit da utilizzare per crittografare e decifrare la password. La chiave pu\u00f2 essere fornita al server definendo la variabile wlp.aes.encryption.key il cui valore \u00e8 la chiave. Se --passwordBase64Key \u00e8 specificato, allora --aesConfigFile e --passwordKey non possono essere specificati.
+createLTPAKeys.option-desc.passwordBase64Key=\tUna Base64-encodedAES-256 chiave deve essere usata per crittografare e decrittografare la\npassword. Fornisci questa chiave al server definendo la\nwlp.aes.encryption.key variabile. Se \u00e8 --passwordBase64Key specificata l''opzione\n, non \u00e8 possibile specificare le --aesConfigFile opzioni --passwordKey o.
 createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 createLTPAKeys.option-desc.aesConfigFile=\tUn file di propriet\u00e0 XML o Java con una variabile denominata wlp.password.encryption.key o wlp.aes.encryption.key con valori validi rispettivamente con valori validi. Entrambe le variabili non possono essere specificate nello stesso file.\n\tSe viene specificato --aesConfigFile, allora --passwordBase64Key e --passwordKey non possono essere specificati.
 
@@ -207,6 +207,6 @@ configureFIPS.option-desc.4.disable=\tDisattivare FIPS 140-3 impostando la varia
 generateaeskey.desc=\tGenera un valore da inserire nella variabile di configurazione wlp.aes.encryption.key per la crittografia aes.
 generateaeskey.usage.options=\t{0} generateAESKey [opzioni]
 generateaeskey.option-key.key=\ \ \ \ --key =[chiave]
-generateaeskey.option-desc.key=\tSpecificare una chiave da utilizzare durante la crittografia AES. Questa stringa viene per produrre una chiave di crittografia che verr\u00e0 utilizzata per crittografare e decrittografare le password e decifrare le password. La chiave di crittografia viene salvata nel formato base64 in una variabile denominata wlp.aes.encryption.key. Se questa opzione viene viene generata una chiave casuale.
+generateaeskey.option-desc.key=\tQuesta stringa viene sottoposta a hash per produrre una chiave di crittografia\nutilizzata per crittografare e decrittografare le password. Se questa opzione viene\nomessa, viene generata una chiave casuale.
 generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
 generateaeskey.option-desc.createConfigFile=\tCrea un file XML con il valore generato salvato in una variabile denominata wlp.aes.encryption.key. Se non viene fornito, il valore generato verr\u00e0 scritto nella schermata della console.

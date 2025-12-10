@@ -28,6 +28,7 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadListenerSendImmediateData;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadWriteTimeoutHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeWriteListenerHttpUnit;
+import com.ibm.ws.webcontainer.servlet31.fat.tests.CustomizedExceptionText;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -46,7 +47,8 @@ import componenttest.topology.impl.LibertyServer;
                 UpgradeReadListenerSendImmediateData.class,
                 UpgradeReadWriteTimeoutHttpUnit.class,
                 FormLoginReadListenerTest.class,
-                NBMultiReadTest.class
+                NBMultiReadTest.class,
+                CustomizedExceptionText.class
 })
 public class FATSuite {
 

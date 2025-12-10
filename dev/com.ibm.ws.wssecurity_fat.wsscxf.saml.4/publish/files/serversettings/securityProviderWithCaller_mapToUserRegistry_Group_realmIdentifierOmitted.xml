@@ -1,0 +1,28 @@
+<server>
+	<wsSecurityProvider
+		id="default"
+		ws-security.timestamp.timeToLive="60"
+		ws-security.timestamp.futureTimeToLive="60"
+		ws-security.cache.config.file="${server.config.dir}/cxf-ehcache_ee7.xml"
+		ws-security.asymmetric.signature.algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+	>
+		<signatureProperties
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="Liberty"
+			org.apache.ws.security.crypto.merlin.keystore.alias="sslspservercert"
+			org.apache.ws.security.crypto.merlin.keystore.file="samlKey.p12" />
+		<encryptionProperties
+			org.apache.ws.security.crypto.merlin.keystore.type="PKCS12"
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyServer"
+			org.apache.ws.security.crypto.merlin.keystore.file="${server.config.dir}/samlSslServerTrust.p12" />
+		<callerToken
+			name="SamlToken"
+			userIdentifier="userIdentifier"
+			groupIdentifier="groupIdentifier"
+			userUniqueIdentifier="userUniqueIdentifier"
+			mapToUserRegistry="Group"
+			realmName="BasicRealm"
+			includeTokenInSubject="true" />
+
+	</wsSecurityProvider>
+</server>

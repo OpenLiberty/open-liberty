@@ -1,0 +1,24 @@
+<server>
+
+	<!-- SAML client configuration -->
+	<wsSecurityClient
+		id="default"
+		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
+		ws-security.saml-callback-handler="com.ibm.ws.wssecurity.callback.Saml20PropagationCallbackHandler"
+		ws-security.asymmetric.signature.algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"
+	>
+
+		<signatureProperties
+			org.apache.ws.security.crypto.merlin.keystore.type="JKS"
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+		<encryptionProperties
+			org.apache.ws.security.crypto.merlin.keystore.type="JKS"
+			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
+			org.apache.ws.security.crypto.merlin.keystore.alias="x509ServerDefaultCert"
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+
+	</wsSecurityClient>
+
+</server>

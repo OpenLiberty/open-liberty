@@ -38,8 +38,16 @@ Export-Package: \
 Service-Component= \
   com.ibm.ws.logging.internal.ffdcjanitor; \
     scheduler=java.util.concurrent.ScheduledExecutorService; \
-    implementation:=com.ibm.ws.logging.internal.osgi.FFDCJanitor
+    implementation:=com.ibm.ws.logging.internal.osgi.FFDCJanitor; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.logging.internal.osgi.LogThrottleIntrospector; \
+    provide:=com.ibm.wsspi.logging.Introspector; \
+    implementation:=com.ibm.ws.logging.internal.osgi.LogThrottleIntrospector; \
+    properties:="service.vendor=IBM" \
    
+-dsannotations: \
+	com.ibm.ws.logging.internal.osgi.LogThrottleIntrospector
+
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 instrument.disabled: true

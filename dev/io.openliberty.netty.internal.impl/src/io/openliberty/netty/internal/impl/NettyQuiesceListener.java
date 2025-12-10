@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.impl;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -67,14 +68,12 @@ public class NettyQuiesceListener {
             }
         }, quiesceTimeout, TimeUnit.MILLISECONDS);
 
-        // TODO: Maybe we should check the map for the active channels if they have any connections left that could be better
-
         this.quiesceVerifierTask = scheduler.scheduleAtFixedRate(() -> {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "The quiesceVerifierTask has started,  checking endpoints...");
             }
-            Set<Channel> activeChannels = this.bundle.getActiveChannels();
-            if (activeChannels.isEmpty()) {
+            Map<Channel, ChannelGroup> activeChannelsMap = this.bundle.getActiveChannelsMap();
+            if (activeChannelsMap.isEmpty()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "No active connections have been found. Scheduling quiesce task and cancelling quiesce verifiers for: " + this.bundle);
                 }
@@ -100,18 +99,19 @@ public class NettyQuiesceListener {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Remaining endpoints still running. Verifying which can be closed...");
                 }
-                // Iterate through active endpoints
-                for (Channel endpoint : activeChannels) {
+                // Iterate through active endpoints via Map Entries
+                for (Map.Entry<Channel, ChannelGroup> entry : activeChannelsMap.entrySet()) {
+                    Channel endpoint = entry.getKey();
+                    ChannelGroup group = entry.getValue();
+
                     // Verify if there are still active connections for that endpoint
-                    ChannelGroup group = this.bundle.getActiveChannelsMap().get(endpoint);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found group " + group + " for endpoint " + endpoint);
+                        Tr.debug(tc, "Found group " + group + " for endpoint " + endpoint + "containing " + group.size() + " active connections");
                     }
-                    if (group != null) {
+
+                    if (group != null && group.isEmpty()) {
                         // Close endpoint if no active connections left
-                        if (group.isEmpty()) {
-                            this.bundle.stop(endpoint);
-                        }
+                        this.bundle.stop(endpoint);
                     }
                 }
             }

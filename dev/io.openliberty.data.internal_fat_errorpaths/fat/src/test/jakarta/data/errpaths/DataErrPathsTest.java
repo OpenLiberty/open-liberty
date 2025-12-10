@@ -127,7 +127,8 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1120E.*groupedByAddress", // cursor pagination with GROUP BY
                                    "CWWKD1120E.*unionOfAddresses", // cursor pagination with UNION
                                    "CWWKD1120E.*withNameAndAddress", // cursor pagination with INTERSECT
-                                   "CWWKD1120E.*withNameNotAddress" // cursor pagination with EXCEPT
+                                   "CWWKD1120E.*withNameNotAddress", // cursor pagination with EXCEPT
+                                   "CWWKD1121E.*VoterRegistration" // record entity without id
                     };
 
     @Server("io.openliberty.data.internal.fat.errpaths")

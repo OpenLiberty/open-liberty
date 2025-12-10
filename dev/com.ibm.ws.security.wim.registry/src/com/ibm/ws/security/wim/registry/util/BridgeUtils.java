@@ -204,7 +204,7 @@ public class BridgeUtils implements WIMUserRegistryDefines {
 
     protected IDAndRealm separateIDAndRealm(String inputString) throws WIMException {
         // initialize the method name
-        String methodName = "seperateIDAndRealm";
+        String methodName = "separateIDAndRealm";
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " " + "inputString = \"" + inputString + "\"");
         }

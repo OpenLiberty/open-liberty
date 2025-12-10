@@ -859,6 +859,8 @@ public final class ThreadPoolController {
         int newThreads = Math.min(factor * availableProcessors, maxThreads);
         newThreads = Math.max(newThreads, coreThreads);
         currentMinimumPoolSize = coreThreads;
+        // Reset hangBufferPoolSize to maintain consistency with currentMinimumPoolSize
+        hangBufferPoolSize = coreThreads;
 
         targetPoolSize = newThreads;
         setPoolSize(newThreads);
@@ -1134,7 +1136,9 @@ public final class ThreadPoolController {
                 flippedCoin = true;
             }
             // average the aggregated shrinkScore
-            shrinkScore /= smallerPools;
+            if (smallerPools > 0) {
+                shrinkScore /= smallerPools;
+            } 
 
             if (consecutiveQueueEmptyCount > 0) {
                 // Unless we reduced the pool size and tput went down, add the shrink magic
@@ -1273,8 +1277,10 @@ public final class ThreadPoolController {
                 flippedCoin = true;
             }
             // average the results for the larger poolSize data found
-            growScore /= largerPools;
-
+            if (largerPools > 0) {
+                growScore /= largerPools;
+            } 
+			
             ThroughputDistribution currentStats = getThroughputDistribution(poolSize, false);
             ThroughputDistribution growStats = getThroughputDistribution(poolSize + poolIncrement, false);
             // 8/8/2012: Don't grow if there's a significant probability we'll shrink immediately
@@ -1845,6 +1851,8 @@ public final class ThreadPoolController {
                         }
                         // update the pool size set to resolve the hang, plus one-increment buffer
                         int hangBufferTargetSize = Math.min(targetPoolSize + poolIncrement, maxThreads);
+                        // Ensure hangBufferTargetSize is never below coreThreads
+                        hangBufferTargetSize = Math.max(hangBufferTargetSize, coreThreads);
                         if (hangBufferPoolSize < hangBufferTargetSize) {
                             hangBufferPoolSize = hangBufferTargetSize;
                             currentMinimumPoolSize = hangBufferPoolSize;
@@ -1908,6 +1916,8 @@ public final class ThreadPoolController {
                     if (controllerCyclesWithoutHang > noHangCyclesThreshold) {
                         setPoolIncrementDecrement(poolSize);
                         hangBufferPoolSize -= poolDecrement;
+                        // Ensure hangBufferPoolSize never goes below coreThreads
+                        hangBufferPoolSize = Math.max(hangBufferPoolSize, coreThreads);
                         currentMinimumPoolSize = hangBufferPoolSize;
                         controllerCyclesWithoutHang = 0;
                     }

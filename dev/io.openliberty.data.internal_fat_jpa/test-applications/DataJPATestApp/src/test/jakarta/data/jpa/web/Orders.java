@@ -82,11 +82,11 @@ public interface Orders extends CrudRepository<PurchaseOrder, UUID> {
     @OrderBy("total")
     List<Float> purchaseTotalsFor(String purchaser);
 
-    @Query("SELECT VERSION(THIS)")
+    @Query("SELECT VERSION(this)")
     @OrderBy("version(this)")
     List<Integer> versionsAsc();
 
-    @Query("SELECT VERSION(THIS)")
+    @Query("SELECT VERSION(this)")
     @OrderBy(value = "versionNum", descending = true)
     List<Integer> versionsDesc();
 }

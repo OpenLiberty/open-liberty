@@ -699,7 +699,7 @@ public class LibertyClient {
 
                         JVM_ARGS += " -Dsemeru.fips=true";
                         JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Custom";
-                        JVM_ARGS += " -Djava.security.properties=" + getSemeruFips140_3CustomProfileLocationAndPrintFileContents();
+                        JVM_ARGS += " -Djava.security.propertiesList=" + getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() + File.pathSeparator + getSemeruFips140_3CustomProfileLocationAndPrintFileContents();
                         JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
                         // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
                     } else if (javaInfo.majorVersion() == 8) {
@@ -875,6 +875,16 @@ public class LibertyClient {
         }
         postStopClientArchive();
         return output;
+    }
+
+    private String getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() throws Exception {
+        String location = installRoot + "/lib/security/fips140_3/FIPS140-3-Liberty.properties";
+
+        byte[] fileContents = Files.readAllBytes(Paths.get(location));
+        Log.info(c, "getLibertySemeruFips140_3ProfileLocationAndPrintFileContents",
+                 "FIPS140-3-Liberty.properties contents:\n" + new String(fileContents, StandardCharsets.UTF_8));
+
+        return location;
     }
 
     private String getSemeruFips140_3CustomProfileLocationAndPrintFileContents() throws Exception {

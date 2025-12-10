@@ -1906,9 +1906,6 @@ public class QueryInfo {
             jakarta.persistence.Query query = em.createQuery(jpql);
             setParameters(query, args);
 
-            if (entityInfo.loadGraph != null)
-                query.setHint(Util.LOADGRAPH, entityInfo.loadGraph);
-
             if (type == FIND_AND_DELETE)
                 query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
@@ -2139,16 +2136,6 @@ public class QueryInfo {
         } else if (void.class.equals(returnType) || Void.class.equals(returnType)) {
             returnValue = null;
         } else {
-            for (Object e : results) {
-                if (entityInfo.loadGraphMap == null)
-                    em.refresh(e);
-                else
-                    em.refresh(e, entityInfo.loadGraphMap);
-
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "refreshed", loggable(e));
-            }
-
             if (entityInfo.recordClass != null)
                 for (int i = 0; i < results.size(); i++)
                     results.set(i, entityInfo.toRecord(results.get(i)));
@@ -2297,7 +2284,7 @@ public class QueryInfo {
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "found", loggable(results.get(0)));
 
-        e = toEntity(e);
+        e = toEntity(e, em);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "merge", loggable(e));
@@ -4122,7 +4109,7 @@ public class QueryInfo {
             int length = Array.getLength(arg);
             results = resultVoid ? null : new ArrayList<>(length);
             for (; entityCount < length; entityCount++) {
-                Object entity = toEntity(Array.get(arg, entityCount));
+                Object entity = toEntity(Array.get(arg, entityCount), em);
                 em.persist(entity);
                 if (results != null)
                     results.add(entity);
@@ -4131,7 +4118,7 @@ public class QueryInfo {
             results = resultVoid ? null : new ArrayList<>();
             for (Object e : ((Iterable<?>) arg)) {
                 entityCount++;
-                Object entity = toEntity(e);
+                Object entity = toEntity(e, em);
                 em.persist(entity);
                 if (results != null)
                     results.add(entity);
@@ -4140,7 +4127,7 @@ public class QueryInfo {
             entityCount = 1;
             hasSingularEntityParam = true;
             results = resultVoid ? null : new ArrayList<>(1);
-            Object entity = toEntity(arg);
+            Object entity = toEntity(arg, em);
             em.persist(entity);
             if (results != null)
                 results.add(entity);
@@ -4153,6 +4140,8 @@ public class QueryInfo {
                       repositoryInterface.getName(),
                       method.getGenericParameterTypes()[0].getTypeName());
 
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "flush");
         em.flush();
 
         Class<?> returnType = method.getReturnType();
@@ -5160,18 +5149,20 @@ public class QueryInfo {
             results = new ArrayList<>();
             int length = Array.getLength(arg);
             for (; entityCount < length; entityCount++)
-                results.add(em.merge(toEntity(Array.get(arg, entityCount))));
+                // workaround is not possible when multiple entities
+                results.add(em.merge(toEntity(Array.get(arg, entityCount), null)));
         } else if (Iterable.class.isAssignableFrom(entityParamType)) {
             results = new ArrayList<>();
             for (Object e : ((Iterable<?>) arg)) {
                 entityCount++;
-                results.add(em.merge(toEntity(e)));
+                // workaround is not possible when multiple entities
+                results.add(em.merge(toEntity(e, null)));
             }
         } else {
             entityCount = 1;
             hasSingularEntityParam = true;
             results = resultVoid ? null : new ArrayList<>(1);
-            Object entity = em.merge(toEntity(arg));
+            Object entity = em.merge(toEntity(arg, em));
             if (results != null)
                 results.add(entity);
         }
@@ -5183,6 +5174,8 @@ public class QueryInfo {
                       repositoryInterface.getName(),
                       method.getGenericParameterTypes()[0].getTypeName());
 
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "flush");
         em.flush();
 
         Class<?> returnType = method.getReturnType();
@@ -5606,15 +5599,16 @@ public class QueryInfo {
      * Converts a record to its generated entity equivalent,
      * or does nothing if not a record.
      *
-     * @param o a record that needs conversion to an entity,
-     *              or an entity that is already an entity and does not
-     *              need conversion.
+     * @param o  a record that needs conversion to an entity,
+     *               or an entity that is already an entity and does not
+     *               need conversion.
+     * @param em entity manager.
      * @return entity.
      * @throws NullPointerException if the record is null, with a CWWKD1015 message
      *                                  that is appropriate for life cycle operations
      */
     @Trivial
-    private final Object toEntity(Object o) {
+    private final Object toEntity(Object o, EntityManager em) {
         if (o == null)
             throw exc(NullPointerException.class,
                       "CWWKD1015.null.entity.param",
@@ -5644,6 +5638,46 @@ public class QueryInfo {
                                                    targetx.getMessage());
                 throw (IllegalArgumentException) iax.initCause(x);
             }
+        // TODO entire else block can be removed once temporary workaround is no longer needed
+        else if (entityInfo.attributeSetters != null
+                 && (type == QueryType.SAVE ||
+                     type == QueryType.LC_UPDATE_MERGE)
+                 && oClass == entityInfo.getType()
+                 && em != null && !em.contains(o))
+            // Work around Hibernate issue merging detached entities by copying
+            // the entity to a new instance
+            try {
+                entity = oClass.getDeclaredConstructor().newInstance();
+                for (Entry<String, List<Member>> entry : entityInfo //
+                                .attributeAccessors.entrySet()) {
+                    String attributeName = entry.getKey();
+                    List<Member> accessors = entry.getValue();
+                    if (accessors.size() == 1) { // only top level attributes
+                        Member accessor = accessors.get(0);
+                        if (accessor instanceof Field f) {
+                            f.set(entity, f.get(o));
+                        } else {
+                            Method getter = (Method) accessor;
+                            Method setter = entityInfo.attributeSetters //
+                                            .get(attributeName);
+                            Object value = getter.invoke(o);
+                            setter.invoke(entity, value);
+                        }
+                    }
+                }
+            } catch (InstantiationException | //
+                            IllegalAccessException | //
+                            IllegalArgumentException | //
+                            InvocationTargetException | //
+                            NoSuchMethodException x) {
+                throw (IllegalArgumentException) exc(IllegalArgumentException.class,
+                                                     "CWWKD1081.entity.general.err",
+                                                     entityInfo.getType(),
+                                                     repositoryInterface,
+                                                     "",
+                                                     x.getMessage()).initCause(x);
+            }
+
         if (entity != o &&
             TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "toEntity " + loggable(o),
@@ -5787,6 +5821,8 @@ public class QueryInfo {
             updateCount = updateOne(arg, em);
         }
 
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "flush");
         em.flush();
 
         if (numExpected == 0)

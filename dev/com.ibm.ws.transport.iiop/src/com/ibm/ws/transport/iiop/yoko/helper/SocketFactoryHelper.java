@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,6 +14,7 @@ package com.ibm.ws.transport.iiop.yoko.helper;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.IgnoreNonStaticTraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import org.apache.yoko.orb.OCI.IIOP.ExtendedConnectionHelper;
 import org.omg.CORBA.ORB;
@@ -39,7 +40,15 @@ import java.security.PrivilegedAction;
  */
 public abstract class SocketFactoryHelper implements ExtendedConnectionHelper {
 
+    // Static TraceComponent for general SocketFactoryHelper class tracing
+    private static final TraceComponent tcStatic = Tr.register(SocketFactoryHelper.class);
+    
+    // Instance-specific TraceComponent for different socket factory implementations
+    // The @IgnoreNonStaticTraceComponent annotation tells the instrumentation tool
+    // that this non-static field is intentional and should not trigger warnings
+    @IgnoreNonStaticTraceComponent
     private final TraceComponent tc;
+    
     private static final Encoding CDR_1_2_ENCODING = new Encoding(ENCODING_CDR_ENCAPS.value, (byte) 1, (byte) 2);
 
     protected SocketFactoryHelper(TraceComponent tc) {

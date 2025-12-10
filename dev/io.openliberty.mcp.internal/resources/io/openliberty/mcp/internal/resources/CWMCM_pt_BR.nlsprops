@@ -1,0 +1,153 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCM
+#COMPONENTNAMEFOR CWMCM MCP Server
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0001E.blank.arguments=CWMCM0001E: O m\u00e9todo da ferramenta {0} MCP tem um ou mais argumentos com nomes em branco.
+CWMCM0001E.blank.arguments.explanation=Os argumentos da ferramenta MCP foram fornecidos, mas faltavam nomes. Cada argumento para um m\u00e9todo de ferramenta deve ter um nome.
+CWMCM0001E.blank.arguments.useraction=Forne\u00e7a valores n\u00e3o vazios para todos os argumentos obrigat\u00f3rios.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+CWMCM0002E.duplicate.arguments=CWMCM0002E: O m\u00e9todo da ferramenta {0} MCP tem mais de um argumento chamado {1}.
+CWMCM0002E.duplicate.arguments.explanation=Um ou mais argumentos t\u00eam o mesmo nome. Cada argumento de um m\u00e9todo da ferramenta MCP deve ter um nome diferente.
+CWMCM0002E.duplicate.arguments.useraction=D\u00ea a cada argumento da ferramenta um nome diferente.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0003E.missing.tool.argument.name=CWMCM0003E: O m\u00e9todo da ferramenta {0} MCP tem um ou mais argumentos sem um nome especificado.
+CWMCM0003E.missing.tool.argument.name.explanation=Um ou mais nomes de argumentos de ferramenta n\u00e3o foram fornecidos para as ferramentas MCP.
+CWMCM0003E.missing.tool.argument.name.useraction=Adicione um nome \u00e0 @ToolArg anota\u00e7\u00e3o ou adicione a op\u00e7\u00e3o do compilador -parameters para usar o nome do par\u00e2metro.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The list of qualified names of the tool
+CWMCM0004E.duplicate.tools=CWMCM0004E: Existem v\u00e1rios m\u00e9todos de ferramentas MCP denominados {0}. Os m\u00e9todos s\u00e3o {1}.
+CWMCM0004E.duplicate.tools.explanation=Um ou mais nomes de ferramentas MCP ocorreram v\u00e1rias vezes. O servidor espera um nome por ferramenta para garantir a exclusividade.
+CWMCM0004E.duplicate.tools.useraction=Forne\u00e7a apenas um nome exclusivo para cada ferramenta MCP.
+
+# Used for server logging
+# do not translate MCP
+CWMCM0005E.validation.error=CWMCM0005E: H\u00e1 um ou mais erros de valida\u00e7\u00e3o MCP. Verifique os logs para obter detalhes adicionais.
+CWMCM0005E.validation.error.explanation=N\u00e3o \u00e9 poss\u00edvel iniciar o aplicativo devido a erros de valida\u00e7\u00e3o do MCP.
+CWMCM0005E.validation.error.useraction=Verifique os logs para obter detalhes adicionais.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0006E.duplicate.special.arguments=CWMCM0006E: A ferramenta {0} MCP possui mais de um par\u00e2metro com o {1} tipo. Use apenas um {1} par\u00e2metro em cada m\u00e9todo da ferramenta.
+CWMCM0006E.duplicate.special.arguments.explanation=Um ou mais argumentos especiais ocorreram v\u00e1rias vezes, mas apenas um \u00e9 esperado.
+CWMCM0006E.duplicate.special.arguments.useraction=Remova as inst\u00e2ncias extras.
+
+# Used for server logging
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0007E.invalid.arguments=CWMCM0007E: A ferramenta {0} MCP possui um par\u00e2metro do tipo {1} que n\u00e3o \u00e9 um tipo de argumento especial reconhecido e n\u00e3o possui uma `@ToolArg` anota\u00e7\u00e3o.
+CWMCM0007E.invalid.arguments.explanation=Um ou mais par\u00e2metros n\u00e3o foram anotados como argumentos da ferramenta e n\u00e3o s\u00e3o reconhecidos como tipos de argumentos especiais.
+CWMCM0007E.invalid.arguments.useraction=Verifique se voc\u00ea importou a classe correta para o seu argumento ou se voc\u00ea pretendia incluir @ToolArg.
+
+# Used as part of a response to a client
+# {0} = Request id
+CWMCM0008E.invalid.request.params=CWMCM0008E: Uma solicita\u00e7\u00e3o com o {0} ID est\u00e1 em andamento.
+CWMCM0008E.invalid.request.params.explanation=Uma solicita\u00e7\u00e3o com o mesmo ID est\u00e1 em andamento. As solicita\u00e7\u00f5es do mesmo cliente devem ter IDs exclusivos.
+CWMCM0008E.invalid.request.params.useraction=Use um ID exclusivo para cada solicita\u00e7\u00e3o.
+
+# Used as part of a response to a client
+# do not translate GET, POST
+CWMCM0009I.get.disallowed=CWMCM0009I: As solicita\u00e7\u00f5es GET n\u00e3o s\u00e3o suportadas.
+CWMCM0009I.get.disallowed.explanation=Foi enviada uma solicita\u00e7\u00e3o GET, mas essa funcionalidade n\u00e3o \u00e9 suportada.
+CWMCM0009I.get.disallowed.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# Used for server logging
+# {0} = tool name
+# {1} = exception details
+CWMCM0010E.internal.server.error.detailed=CWMCM0010E: O m\u00e9todo da {0} ferramenta gerou uma exce\u00e7\u00e3o inesperada. A exce\u00e7\u00e3o \u00e9 {1}
+CWMCM0010E.internal.server.error.detailed.explanation=O m\u00e9todo da ferramenta gerou uma exce\u00e7\u00e3o inesperada.
+CWMCM0010E.internal.server.error.detailed.useraction=Revise os logs message.log e FFDC do servidor para identificar o problema.
+
+# Used as part of a response to a client
+CWMCM0011E.internal.server.error=CWMCM0011E: Ocorreu um erro interno do servidor durante a execu\u00e7\u00e3o da ferramenta.
+CWMCM0011E.internal.server.error.explanation=O servidor n\u00e3o conseguiu concluir a solicita\u00e7\u00e3o de chamada da ferramenta.
+CWMCM0011E.internal.server.error.useraction=Verifique se a solicita\u00e7\u00e3o est\u00e1 correta. Mais informa\u00e7\u00f5es sobre a falha podem estar no servidor messages.log.
+
+# Used for server logging
+# do not translate bean
+# {0} = bean error details
+# {1} = tool name
+CWMCM0012E.bean.release.fail=CWMCM0012E: Ocorreu um erro ao liberar o bean CDI ap\u00f3s chamar a {1} ferramenta. O erro \u00e9: {0}
+CWMCM0012E.bean.release.fail.explanation=Ao chamar um m\u00e9todo de ferramenta, uma inst\u00e2ncia do bean CDI que declara o m\u00e9todo \u00e9 adquirida antes de chamar o m\u00e9todo e liberada depois. Ocorreu um erro ao liberar a inst\u00e2ncia do bean.
+CWMCM0012E.bean.release.fail.useraction=Revise os logs message.log e FFDC do servidor para identificar o problema.
+
+# Used for server logging and client response
+# do not translate MCP-Protocol-Version, MCP
+# {0} = List of supported MCP-Protocol-Version values
+CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Foi fornecido um cabe\u00e7alho MCP-Protocol-Version n\u00e3o suportado. Valores suportados: {0}
+CWMCM0013E.unsupported.mcp.http.version.explanation=A vers\u00e3o do protocolo no cabe\u00e7alho MCP-Protocol-Version n\u00e3o \u00e9 suportada pelo servidor.
+CWMCM0013E.unsupported.mcp.http.version.useraction=Use uma vers\u00e3o de protocolo compat\u00edvel.
+
+# Used as part of a response to a client
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+CWMCM0014E.unexpected.server.error=CWMCM0014E: Erro inesperado do servidor. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }
+CWMCM0014E.unexpected.server.error.explanation=Ocorreu um erro inesperado no servidor durante o processamento da solicita\u00e7\u00e3o. A solicita\u00e7\u00e3o n\u00e3o pode ser conclu\u00edda.
+CWMCM0014E.unexpected.server.error.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0015E.unexpected.server.error.exception=CWMCM0015E: Erro inesperado do servidor. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }, Exce\u00e7\u00e3o: {3}
+CWMCM0015E.unexpected.server.error.exception.explanation=Ocorreu um erro inesperado no servidor durante o processamento da solicita\u00e7\u00e3o. A solicita\u00e7\u00e3o n\u00e3o pode ser conclu\u00edda.
+CWMCM0015E.unexpected.server.error.exception.useraction=Revise os logs message.log e FFDC do servidor para identificar o problema.
+
+# Used for server logging
+# {0} = ExceptionMessage
+CWMCM0016E.error.sending.response.exception=CWMCM0016E: Erro inesperado do servidor. Exce\u00e7\u00e3o: {0}
+CWMCM0016E.error.sending.response.exception.explanation=Ocorreu um erro ao tentar enviar a resposta.
+CWMCM0016E.error.sending.response.exception.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# Used as part of a response to a client
+# do not translate jsonrpc
+# {0} = jsonrpc value
+jsonrpc.exception.validation.invalid.version=O campo jsonrpc deve estar presente. Atualmente, apenas JSONRPC 2.0 \u00e9 compat\u00edvel.
+
+# Used as part of a response to a client
+jsonrpc.validation.empty.method=O campo m\u00e9todo est\u00e1 vazio.
+
+# Used as part of a response to a client
+# {0} = id value
+jsonrpc.exception.validation.empty.string.id=O campo id \u00e9 inv\u00e1lido. O id n\u00e3o deve ficar em branco se uma string for fornecida.
+
+# Used as part of a response to a client
+jsonrpc.exception.validation.invalid.id.type=O tipo id n\u00e3o \u00e9 um tipo aceit\u00e1vel. O id deve ser uma string ou um n\u00famero inteiro.
+
+# Used as part of a response to a client
+jsonrpc.missing.params=A solicita\u00e7\u00e3o n\u00e3o possui argumentos nos par\u00e2metros.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.extra.arguments=Os seguintes argumentos foram passados, mas n\u00e3o foram encontrados no m\u00e9todo: {0}.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.missing.arguments=Os seguintes argumentos eram esperados pelo m\u00e9todo, mas n\u00e3o foram fornecidos: {0}.

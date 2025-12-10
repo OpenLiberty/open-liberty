@@ -79,7 +79,6 @@ public class UDPConfigurationImpl implements BootstrapConfiguration {
      */
     @Override
     public void applyConfiguration(Bootstrap bootstrap) {
-        bootstrap.option(ChannelOption.SO_REUSEADDR, false);
         int receiveBufferSize = getReceiveBufferSize();
         if ((receiveBufferSize >= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MIN)
             && (receiveBufferSize <= UDPConfigConstants.RECEIVE_BUFFER_SIZE_MAX)) {

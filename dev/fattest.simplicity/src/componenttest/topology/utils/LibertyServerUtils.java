@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.common.apiservices.Bootstrap;
+import componenttest.common.apiservices.cmdline.LocalProvider;
 
 /**
  *
@@ -212,6 +213,22 @@ public class LibertyServerUtils {
      * @throws Exception
      */
     public static ProgramOutput execute(Machine machine, String javaHome, Properties envVars, String command, String... parms) throws Exception {
+        return execute(machine, javaHome, envVars, command, false, parms);
+    }
+
+    /**
+     * Execute a command on the file system with option to preserve spaces in arguments.
+     *
+     * @param machine
+     * @param javaHome
+     * @param envVars
+     * @param command
+     * @param preserveSpaces if true, arguments containing spaces will be properly quoted
+     * @param parms
+     * @return
+     * @throws Exception
+     */
+    public static ProgramOutput execute(Machine machine, String javaHome, Properties envVars, String command, boolean preserveSpaces, String... parms) throws Exception {
         final String method = "execute";
         Log.finer(c, method, "Executing: " + command, parms);
 
@@ -223,7 +240,12 @@ public class LibertyServerUtils {
         Log.finer(c, method, "Using additional env props: " + _envVars.toString());
 
         parms = parms != null ? parms : new String[] {};
-        ProgramOutput output = machine.execute(command, parms, _envVars);
+        ProgramOutput output;
+        if (preserveSpaces) {
+            output = LocalProvider.executeCommand(machine, command, parms, machine.getWorkDir(), _envVars, 0, preserveSpaces);
+        } else {
+            output = machine.execute(command, parms, _envVars);
+        }
         String stdout = output.getStdout();
         int rc = output.getReturnCode();
         // Skip logging if rc=0 (success) or rc=1 (server not running)
@@ -235,10 +257,14 @@ public class LibertyServerUtils {
     }
 
     public static ProgramOutput executeLibertyCmd(Bootstrap bootstrap, String command, String... parms) throws Exception {
+        return executeLibertyCmd(bootstrap, command, false, parms);
+    }
+
+    public static ProgramOutput executeLibertyCmd(Bootstrap bootstrap, String command, boolean preserveSpaces, String... parms) throws Exception {
         Machine machine = createMachine(bootstrap);
         String hostName = bootstrap.getValue("hostName");
         String javaHome = bootstrap.getValue(hostName + ".JavaHome");
         String cmd = bootstrap.getValue("libertyInstallPath") + "/bin/" + command;
-        return execute(machine, javaHome, null, cmd, parms);
+        return execute(machine, javaHome, null, cmd, preserveSpaces, parms);
     }
 }

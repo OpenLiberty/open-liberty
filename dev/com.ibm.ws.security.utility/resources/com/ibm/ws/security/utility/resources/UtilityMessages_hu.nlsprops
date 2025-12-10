@@ -33,7 +33,8 @@ missingArg=Hi\u00e1nyz\u00f3 param\u00e9ter: {0}.
 missingValue=Hi\u00e1nyz\u00f3 \u00e9rt\u00e9k a(z) {0} param\u00e9ter eset\u00e9ben.
 missingArg2=A(z) {0} argumentumot vagy a(z) {1} argumentumot meg kell adni.
 exclusiveArg=A(z) {0} argumentumot vagy a(z) {1} argumentumot meg kell adni, de nem adhat\u00f3 meg mindkett\u0151.
-serverNotFound=A megadott {0} kiszolg\u00e1l\u00f3 nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}
+serverNotFound=A {0} megadott szerver nem tal\u00e1lhat\u00f3 a {1} megadott helyen.
+clientNotFound=A {0} megadott \u00fcgyf\u00e9l nem tal\u00e1lhat\u00f3 a {1} megadott helyen.
 
 
 encode.enterText=Sz\u00f6veg be\u00edr\u00e1sa:
@@ -57,7 +58,6 @@ sslCert.createFailed=Nem lehet l\u00e9trehozni az alap\u00e9rtelmezett SSL tan\u
 sslCert.errorEncodePassword=Hiba a jelsz\u00f3 k\u00f3dol\u00e1sakor (a tan\u00fas\u00edtv\u00e1ny nem j\u00f6tt l\u00e9tre):\n{0}
 sslCert.createKeyStore=Kulcst\u00e1rol\u00f3 l\u00e9trehoz\u00e1sa: {0}\n
 sslCert.oneType=A(z) {0} \u00e9s a(z) {1} argumentum nem adhat\u00f3 meg egyszerre.
-sslCert.clientNotFound=A megadott {0} \u00fcgyf\u00e9l nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 sslCert.serverXML=SSL tan\u00fas\u00edtv\u00e1ny l\u00e9trehozva a k\u00f6vetkez\u0151 kiszolg\u00e1l\u00f3hoz: {0}. A tan\u00fas\u00edtv\u00e1ny a(z) {1} SubjectDN \u00e9rt\u00e9kkel ker\u00fclt l\u00e9trehoz\u00e1sra.\n\nAdja hozz\u00e1 a k\u00f6vetkez\u0151 sorokat a server.xml f\u00e1jlhoz az SSL enged\u00e9lyez\u00e9s\u00e9hez:
@@ -100,7 +100,7 @@ createLTPAKeys.fileExists=A(z) {0} f\u00e1jl m\u00e1r l\u00e9tezik.  Nem hozhat\
 createLTPAKeys.createdFile=A l\u00e9trehozott LTPA kulcsf\u00e1jl: {0}\nVegye fel a  k\u00f6vetkez\u0151 be\u00e1ll\u00edt\u00e1st a server.xml f\u00e1jlba: \n {1}\n
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-configureFIPS.notIbmSdkNorSemeru=A Java telep\u00edt\u00e9se vagy nem a IBM Semeru Runtimes vagy a IBM SDK, vagy ha igen, akkor nem t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nTelep\u00edtse a Jav\u00e1t a IBM Semeru Runtimes vagy a IBM SDK oldalr\u00f3l olyan verzi\u00f3val \u00e9s oper\u00e1ci\u00f3s rendszerrel, amely t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nHa a IBM Semeru futtat\u00f3programot haszn\u00e1lja, haszn\u00e1lja a 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.0.0 vagy magasabb verzi\u00f3t.\nHa a IBM SDK-t haszn\u00e1lja, haszn\u00e1lja a 8.0.8.30 vagy magasabb verzi\u00f3t.
+configureFIPS.notIbmSdkNorSemeru=A Java telep\u00edt\u00e9se nem a Runtimes vagy IBMIBMSemeru az SDK programb\u00f3l sz\u00e1rmazik, vagy ha igen, akkor nem t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nTelep\u00edtse a Java programot a IBMSemeru Runtimes vagy IBM az SDK programb\u00f3l, olyan verzi\u00f3t \u00e9s oper\u00e1ci\u00f3s rendszert haszn\u00e1lva, amely t\u00e1mogatja a FIPS 140-3 szabv\u00e1nyt.\nHa IBMSemeru Runtimes-t haszn\u00e1l, akkor a 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0 vagy ann\u00e1l magasabb verzi\u00f3t haszn\u00e1lja.\nHa SDK-t IBM haszn\u00e1l, akkor a 8.0.8.30 vagy ann\u00e1l magasabb verzi\u00f3t haszn\u00e1lja.
 
 configureFIPS.zosNotAvailable=A securityUtility configureFIPS parancs nem t\u00e1mogatott a z/OS oldalon.
 

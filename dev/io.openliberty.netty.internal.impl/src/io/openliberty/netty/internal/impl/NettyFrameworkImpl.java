@@ -49,14 +49,18 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
+import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory.AutoScalingUtilizationMetric;
 import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GlobalEventExecutor;
+
 import io.openliberty.channel.config.ChannelFrameworkConfig;
 import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
@@ -90,8 +94,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     private Map<Channel, ChannelGroup> activeChannelMap = new ConcurrentHashMap<Channel, ChannelGroup>();
 
-    // TODO: Should we use this or maybe the event loop on activate?
-    private ChannelGroup outboundConnections = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+    private ChannelGroup outboundConnections;
 
     private EventLoopGroup parentGroup;
     private EventLoopGroup childGroup;
@@ -100,42 +103,194 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     private ScheduledExecutorService scheduledExecutorService = null;
 
-    private static final String EVENTLOOP_THREADS_PROPERTY = "io.openliberty.netty.eventloop.threads";
-
     private ChannelFrameworkConfig channelConfig;
 
     @Activate
-    protected void activate(ComponentContext context) {
+    protected void activate(ComponentContext context, Map<String, Object> config) {
         if (!ProductInfo.getBetaEdition()) {
             // Do nothing if beta isn't enabled
             return;
         }
-        // Ideally use the executor service provided by Liberty
-        // Compared to channelfw, quiesce is hit every time because
-        // connections are lazy cleaned on deactivate
-        parentGroup = new NioEventLoopGroup(1);
-        // specify 0 for the "default" number of threads,
-        // (java.lang.Runtime.availableProcessors() * 2)
-        String eventloopThreadNumberProperty;
-        if (System.getSecurityManager() == null)
-            eventloopThreadNumberProperty = System.getProperty(EVENTLOOP_THREADS_PROPERTY, "0");
-        else
-            eventloopThreadNumberProperty = AccessController.doPrivileged(new PrivilegedAction<String>() {
+        // Netty specific configurations for performance
+        if (System.getSecurityManager() == null) {
+            setNettySystemProperties();
+        }
+        else {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
                 @Override
-                public String run() {
-                    return System.getProperty(EVENTLOOP_THREADS_PROPERTY, "0");
+                public Void run() {
+                    setNettySystemProperties();
+                    return null;
                 }
             });
-        int threadNumber;
-        try {
-            threadNumber = Integer.parseInt(eventloopThreadNumberProperty);
-        } catch (NumberFormatException ex) {
-            threadNumber = 0;
         }
-        if (threadNumber < 0)
-            threadNumber = 0;
+        // Compared to channelfw, quiesce is hit every time because
+        // connections are lazy cleaned on deactivate
+        parentGroup = new MultiThreadIoEventLoopGroup(1, NioIoHandler.newFactory());
+        // Attempt to get the properties from the passed configuration but give priority to
+        // the system properties if set
+        int maxThreads;
+        long metricsWindow;
+        if (System.getSecurityManager() == null) {
+            maxThreads = Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, (Integer)config.getOrDefault(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS));
+            metricsWindow = Long.getLong(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, (Long)config.getOrDefault(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, NettyConstants.SCALER_METRICS_WINDOW));
+        }
+        else {
+            maxThreads = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, (Integer)config.getOrDefault(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS));
+                }
+            });
+            metricsWindow = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+                @Override
+                public Long run() {
+                    return Long.getLong(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, (Long)config.getOrDefault(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, NettyConstants.SCALER_METRICS_WINDOW));
+                }
+            });
+        }
+        AutoScalingEventExecutorChooserFactory scaler = createThreadScaler();
+        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, NioIoHandler.newFactory());
+        outboundConnections = new DefaultChannelGroup(childGroup.next());
+        if (metricsWindow > 0) {
+            scheduledExecutorService.scheduleAtFixedRate(() -> {
+                StringBuilder sb = new StringBuilder("Getting metrics from MultiThreadIoEventLoopGroup with active threads " + ((MultiThreadIoEventLoopGroup)childGroup).activeExecutorCount() + " : ");
+                for (AutoScalingUtilizationMetric metric : ((MultiThreadIoEventLoopGroup)childGroup).executorUtilizations()) {
+                    sb.append("Thread@" + Integer.toHexString(metric.executor().hashCode()) + " -> " + String.format("%.2f", metric.utilization()*100.0) + "%, ");
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, sb.toString());
+                }
+            }, metricsWindow, metricsWindow, TimeUnit.MILLISECONDS);
+        }
+    }
 
-        childGroup = new NioEventLoopGroup(threadNumber);
+    private AutoScalingEventExecutorChooserFactory createThreadScaler() {
+        int minThreads, maxThreads, upStep, downStep, cycles;
+        long windowSize;
+        double downThreshold, upThreshold;
+        if (System.getSecurityManager() == null) {
+            minThreads = Integer.getInteger(NettyConstants.SCALER_MIN_THREADS_PROPERTY, NettyConstants.SCALER_MIN_THREADS);
+            maxThreads = Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+            windowSize = Long.getLong(NettyConstants.SCALER_WINDOW_PROPERTY, NettyConstants.SCALER_WINDOW);
+            downThreshold = parseDouble(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, NettyConstants.SCALER_DOWN_THRESHOLD);
+            upThreshold = parseDouble(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, NettyConstants.SCALER_UP_THRESHOLD);
+            upStep = Integer.getInteger(NettyConstants.SCALER_UP_STEP_PROPERTY, NettyConstants.SCALER_UP_STEP);
+            downStep = Integer.getInteger(NettyConstants.SCALER_DOWN_STEP_PROPERTY, NettyConstants.SCALER_DOWN_STEP);
+            cycles = Integer.getInteger(NettyConstants.SCALER_CYCLES_PROPERTY, NettyConstants.SCALER_CYCLES);
+        }
+        else {
+            minThreads = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_MIN_THREADS_PROPERTY, NettyConstants.SCALER_MIN_THREADS);
+                }
+            });
+            maxThreads = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+                }
+            });
+            windowSize = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+                @Override
+                public Long run() {
+                    return Long.getLong(NettyConstants.SCALER_WINDOW_PROPERTY, NettyConstants.SCALER_WINDOW);
+                }
+            });
+            downThreshold = AccessController.doPrivileged(new PrivilegedAction<Double>() {
+                @Override
+                public Double run() {
+                    return parseDouble(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, NettyConstants.SCALER_DOWN_THRESHOLD);
+                }
+            });
+            upThreshold = AccessController.doPrivileged(new PrivilegedAction<Double>() {
+                @Override
+                public Double run() {
+                    return parseDouble(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, NettyConstants.SCALER_UP_THRESHOLD);
+                }
+            });
+            upStep = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_UP_STEP_PROPERTY, NettyConstants.SCALER_UP_STEP);
+                }
+            });
+            downStep = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_DOWN_STEP_PROPERTY, NettyConstants.SCALER_DOWN_STEP);
+                }
+            });
+            cycles = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_CYCLES_PROPERTY, NettyConstants.SCALER_CYCLES);
+                }
+            });
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Creating AutoScaler with minThreads: " + minThreads + ", maxThreads: " + maxThreads + ", windowSize: " + windowSize + ", downThreshold: " + downThreshold + ", upThreshold: " + upThreshold + ", upStep: " + upStep + ", downStep: " + downStep + ", cycles: " + cycles);
+        }
+        return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles);
+    }
+
+    private Double parseDouble(String property, double defaultValue) {
+        String parsedProperty = System.getProperty(property);
+        if(parsedProperty == null) {
+            return defaultValue;
+        }
+        try {
+            return Double.parseDouble(parsedProperty);
+        } catch(NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    /**
+     * Creates a Netty Dynamic Autoscaler based off the values in the passed config map.
+     *
+     * @param config Bundle config containing the necessary items for the Auto Scaler
+     */
+    private AutoScalingEventExecutorChooserFactory createThreadScaler(Map<String, Object> config) {
+        if(config == null) {
+            throw new IllegalArgumentException("Passed config object that was null!!");
+        }
+        int minThreads, maxThreads, upStep, downStep, cycles;
+        long windowSize;
+        double downThreshold, upThreshold;
+        minThreads = (Integer)config.getOrDefault(NettyConstants.SCALER_MIN_THREADS_PROPERTY, NettyConstants.SCALER_MIN_THREADS);
+        maxThreads = (Integer)config.getOrDefault(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+        upStep = (Integer)config.getOrDefault(NettyConstants.SCALER_UP_STEP_PROPERTY, NettyConstants.SCALER_UP_STEP);
+        downStep = (Integer)config.getOrDefault(NettyConstants.SCALER_DOWN_STEP_PROPERTY, NettyConstants.SCALER_DOWN_STEP);
+        cycles = (Integer)config.getOrDefault(NettyConstants.SCALER_CYCLES_PROPERTY, NettyConstants.SCALER_CYCLES);
+        windowSize = (Long)config.getOrDefault(NettyConstants.SCALER_WINDOW_PROPERTY, NettyConstants.SCALER_WINDOW);
+        downThreshold = (Double)config.getOrDefault(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, NettyConstants.SCALER_DOWN_THRESHOLD);
+        upThreshold = (Double)config.getOrDefault(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, NettyConstants.SCALER_UP_THRESHOLD);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Creating AutoScaler from config with minThreads: " + minThreads + ", maxThreads: " + maxThreads + ", windowSize: " + windowSize + ", downThreshold: " + downThreshold + ", upThreshold: " + upThreshold + ", upStep: " + upStep + ", downStep: " + downStep + ", cycles: " + cycles);
+        }
+        return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles);
+    }
+
+    /**
+     * Method for setting Netty system properties default if not already set.
+     */
+    private void setNettySystemProperties() {
+        // If the properties are not already manually set in the system, set the defaults
+        // tested to bring the best performance
+        if (System.getProperty("io.netty.leakDetection.level") == null) {
+            // Netty's buffer leak detection is enabled by default which is unnecessary unless
+            // issues are found and leak detection is needed to debug them.
+            System.setProperty("io.netty.leakDetection.level", "DISABLED");
+        }
+        if (System.getProperty("io.netty.allocator.type") == null) {
+            // On Netty version 4.2, the default allocator changed from pooled to adaptive and so
+            // as of that moment, the adaptive allocator showed a regression from the pooled allocator
+            // used in Netty 4.1. We switch to the pooled allocator for the moment until these issues
+            // are addressed
+            System.setProperty("io.netty.allocator.type", "pooled");
+        }
     }
 
     @Deactivate
@@ -274,7 +429,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
                     quiesce.startTasks();
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        //TODO: change to same log used in traditional channel.
                         Tr.event(this, tc, "Exception occurred on quiesce", e);
                     }
                 }
@@ -285,7 +439,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     private void stopEventLoops() {
         Future<?> parent = null;
         Future<?> child = null;
-        Future<?> global = null;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Gracefully shutting down parentGroup Event Loop " + parentGroup);
         }
@@ -298,11 +451,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (childGroup != null) {
             child = childGroup.shutdownGracefully();
         }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Gracefully shutting down GlobalEventExecutor " + GlobalEventExecutor.INSTANCE);
-        }
-        global = GlobalEventExecutor.INSTANCE.shutdownGracefully();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Waiting for parentGroup Event Loop shutdown...");
         }
@@ -315,13 +463,6 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         if (child != null) {
             child.awaitUninterruptibly();
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Waiting for GlobalEventExecutor shutdown...");
-        }
-        if (global != null) {
-            global.awaitUninterruptibly();
-        }
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Event loops finished clean up!");
         }

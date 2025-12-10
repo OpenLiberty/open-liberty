@@ -57,4 +57,5 @@ tested.features:\
 	com.ibm.websphere.filetransfer;version=latest,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
-	com.ibm.ws.logging_fat;version=latest
+	com.ibm.ws.logging_fat;version=latest,\
+	io.openliberty.org.crac.1.4;version=latest

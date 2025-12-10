@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@
 #   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
 #   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
 #   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
-#
+#   - Msgs in the range CWSIP0351-CWSIP0360 belong to class com.ibm.ws.sib.processor.runtime.AsyncUpdateThread
 #   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
 #   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
 #   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
@@ -1005,6 +1005,13 @@ DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=A megnevezett c\u00e9l ismeret
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=Ellen\u0151rizze, hogy a c\u00e9l neve helyes-e.  Ha a c\u00e9l l\u00e9tezik egy m\u00e1sik \u00fczenetkezel\u00e9si alrendszeren, akkor gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kommunik\u00e1ci\u00f3 m\u0171k\u00f6dik a m\u00e1sik \u00fczenetkezel\u00e9si alrendszerrel.
 
 # -------------------------------------------------------------------------------------------------
+# {0} the specified batch size
+# {1} the specified batch interval
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: A k\u00f6tegm\u00e9ret {0} be\u00e1ll\u00edt\u00e1sa nem kompatibilis a k\u00f6teg id\u0151t\u00fall\u00e9p\u00e9si be\u00e1ll\u00edt\u00e1ssal {1}, ez\u00e9rt nulla k\u00f6tegm\u00e9retet haszn\u00e1lunk.
+IGNORING_BATCH_SIZE_CWSIP0351.explanation=Az aszinkron k\u00f6tegelt feldolgoz\u00e1s enged\u00e9lyez\u00e9s\u00e9hez mind a k\u00f6teg m\u00e9ret\u00e9t, mind a k\u00f6teg id\u0151korl\u00e1tj\u00e1t pozit\u00edv \u00e9rt\u00e9kre kell \u00e1ll\u00edtani.
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=\u00c1ll\u00edtsa be a k\u00f6tegm\u00e9retet \u00e9s a k\u00f6teg id\u0151t\u00fall\u00e9p\u00e9st pozit\u00edv \u00e9rt\u00e9kekre.
+
+# -------------------------------------------------------------------------------------------------
 # {0} The message id.
 # {1} The destination name
 MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: A(z) {0} azonos\u00edt\u00f3val rendelkez\u0151 \u00fczenet nem t\u00f6r\u00f6lhet\u0151, mert a(z) {1} c\u00e9lhoz hozz\u00e1ad\u00e1s\u00e1ra haszn\u00e1lt tranzakci\u00f3 nem ker\u00fclt v\u00e9gleges\u00edt\u00e9sre.
@@ -1153,6 +1160,12 @@ PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=A feldolgoz\u00f3nak sz\u0
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: A(z) {0} c\u00e9l {1} honos\u00edt\u00e1si \u00fczenetkezel\u00e9si alrendszer\u00e9vel kommunik\u00e1ci\u00f3ra haszn\u00e1lt adatfolyam nem \u00e9rhet\u0151 el.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=A c\u00e9l honos\u00edt\u00e1si \u00fczenetkezel\u00e9si alrendszer\u00e9vel kommunik\u00e1ci\u00f3ra haszn\u00e1lt adatfolyam nem \u00e9rhet\u0151 el. Ez az\u00e9rt lehet, mert az adatfolyam m\u00e9g inicializ\u00e1l\u00e1s alatt \u00e1ll, vagy egy h\u00e1l\u00f3zati part\u00edci\u00f3 miatt.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Ellen\u0151rizze, hogy lehet-e kommunik\u00e1lni a honos\u00edt\u00e1si \u00fczenetkezel\u00e9si alrendszerrel, majd pr\u00f3b\u00e1lkozzon \u00fajra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The ProtocolItemStream object
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: Hib\u00e1s ProtocolItemStream{0} tal\u00e1lhat\u00f3. A stream l\u00e9trehoz\u00e1sa elhalaszt\u00e1sra ker\u00fcl, hogy megfelel\u0151en kialak\u00edthat\u00f3 legyen.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=Tal\u00e1ltunk egy ProtocolItemStream hib\u00e1s form\u00e1tum\u00fa f\u00e1jlt, amely nem tartalmazza az CompletedPrefix elemet. A stream l\u00e9trehoz\u00e1sa elhalaszt\u00e1sra ker\u00fcl, hogy megfelel\u0151en kialak\u00edthat\u00f3 legyen.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=Nincs.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The name of the destination

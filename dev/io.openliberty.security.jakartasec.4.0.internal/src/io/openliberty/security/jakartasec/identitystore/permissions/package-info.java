@@ -16,4 +16,4 @@ package io.openliberty.security.jakartasec.identitystore.permissions;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
 
-import io.openliberty.security.jakartasec.TraceConstants;
+import io.openliberty.security.jakartasec40.TraceConstants;

@@ -33,7 +33,6 @@ public class FIPSTestUtils {
     public static final String LIBERTY_APPLICATION_FIPS_PROFILE_FILENAME = "FIPS140-3-Liberty-Application.properties";
     public static final String STANDALONE_FIPS_PROFILE_FILENAME = "semeruFips140_3CustomProfile.properties";
 
-
     public static HashMap<Integer,Integer> supportedVersions = new HashMap<>();
 
     /**

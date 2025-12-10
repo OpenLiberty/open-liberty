@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@
 #   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
 #   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
 #   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
-#
+#   - Msgs in the range CWSIP0351-CWSIP0360 belong to class com.ibm.ws.sib.processor.runtime.AsyncUpdateThread
 #   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
 #   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
 #   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
@@ -1005,6 +1005,13 @@ DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=O destino nomeado \u00e9 desco
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=Verifique se o nome do destino est\u00e1 correto.  Se o destino existir em outro mecanismo de sistema de mensagens, assegure que a comunica\u00e7\u00e3o com outro mecanismo de sistema de mensagens esteja funcionando.
 
 # -------------------------------------------------------------------------------------------------
+# {0} the specified batch size
+# {1} the specified batch interval
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: A configura\u00e7\u00e3o do tamanho do lote de {0} \u00e9 incompat\u00edvel com a configura\u00e7\u00e3o do tempo limite do lote de {1}, portanto, \u00e9 utilizado um tamanho de lote zero.
+IGNORING_BATCH_SIZE_CWSIP0351.explanation=Para habilitar o processamento em lote ass\u00edncrono, tanto o tamanho do lote quanto o tempo limite do lote devem ser definidos como valores positivos.
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=Defina o tamanho do lote e o tempo limite do lote como valores positivos.
+
+# -------------------------------------------------------------------------------------------------
 # {0} The message id.
 # {1} The destination name
 MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: A mensagem com id {0} n\u00e3o pode ser exclu\u00edda, uma vez que a transa\u00e7\u00e3o utilizada para inclui-la no destino {1} n\u00e3o foi confirmada.
@@ -1153,6 +1160,12 @@ PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=O consumidor deve desconec
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: N\u00e3o est\u00e1 dispon\u00edvel nenhum fluxo para comunicar-se com o mecanismo do sistema de mensagens local {1} para o destino {0}.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=N\u00e3o est\u00e1 dispon\u00edvel nenhum fluxo para comunicar-se com o mecanismo do sistema de mensagens local para o destino. Isso pode ocorrer porque o fluxo est\u00e1 sendo inicializado ou devido a uma parti\u00e7\u00e3o de rede.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Verifique se \u00e9 poss\u00edvel comunicar-se com o mecanismo do sistema de mensagens local e tente novamente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The ProtocolItemStream object
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: Foi ProtocolItemStream{0} encontrado um erro de formato. A cria\u00e7\u00e3o do fluxo \u00e9 adiada para que ele possa ser formado corretamente.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=Foi encontrado um ProtocolItemStream elemento malformado que n\u00e3o cont\u00e9m um CompletedPrefix item. A cria\u00e7\u00e3o do fluxo \u00e9 adiada para que ele possa ser formado corretamente.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=Nenhum.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The name of the destination

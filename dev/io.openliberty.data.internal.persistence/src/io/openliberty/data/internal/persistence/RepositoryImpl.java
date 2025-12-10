@@ -587,6 +587,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                         // TODO Is this necessary after a transaction?
                         if (em != null && queryType.detachEntities) {
                             // TODO 1.1 only detach if a stateless repository
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "clear");
                             em.clear();
                         }
                     } else {
@@ -597,12 +599,23 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 provider.tranMgr.setRollbackOnly();
                             } else if (em != null && queryType.detachEntities) {
                                 // flush changes first because detach interferes with updates
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, "flush");
                                 em.flush();
                                 // TODO 1.1 only detach if a stateless repository
-                                em.clear();
+                                if (!entityInfo.isHibernate && // TODO remove this condition once #33544 is fixed
+                                    entityInfo != null) {
+                                    // Only valid if flush writes to the database,
+                                    // and Hibernate does not seem to honor flush. #33544
+                                    if (trace && tc.isDebugEnabled())
+                                        Tr.debug(this, tc, "clear");
+                                    em.clear();
+                                }
                             }
                         } else if (em != null && queryType.detachEntities) {
                             // TODO 1.1 only detach if a stateless repository
+                            if (trace && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "clear");
                             em.clear();
                         }
                     }

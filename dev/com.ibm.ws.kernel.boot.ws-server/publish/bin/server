@@ -993,6 +993,7 @@ javaCmd()
     # output. This is done so we can restore in the foreground (run)
     # and in the background (start)
     CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
+
     # remove existing console log and the possible backup for checkpoint
     rmIfExist "${CHECKPOINT_CONSOLE_LOG}"
     rmIfExist "${X_LOG_DIR}/checkpoint-${X_LOG_FILE}"
@@ -1370,7 +1371,7 @@ criuRestore()
     mkdirs "${X_PID_DIR}"
     rmIfExist "${X_PID_FILE}"
     $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
-      --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS} \
+      --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${CUR_X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS} \
       --pidfile ${X_PID_FILE} \
       --restore-detached
     rc=$?
@@ -1399,7 +1400,7 @@ criuRestore()
     trap "killSilent $TAIL_PID" EXIT
 
     $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
-      --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS}
+      --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${CUR_X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS}
     rc=$?
 
     kill $TAIL_PID
@@ -1429,14 +1430,24 @@ restoreServer()
     fi
   done
 
-  # restore artifacts and environment prior to checkpoint here
+  # Use the log dir settings from checkpoint
+  # The exception is for the CUR_X_LOG_DIR which gets used for the checkpoint restore log
+  CUR_X_LOG_DIR=${X_LOG_DIR}
+  readServerEnv "${SERVER_OUTPUT_DIR}/workarea/checkpoint/.logdir.properties"
 
   # no good way to check for criu support since fast startup is imperative
   #   just let criu invocation fail with a hopefully informative error message.
   mkdirs ${X_LOG_DIR}/checkpoint
+  mkdirs ${CUR_X_LOG_DIR}/checkpoint
 
   # save off the log during checkpoint and start fresh from restore
-  RESTORE_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
+  if [ -z "$REAL_X_LOG_DIR" ]
+  then
+    RESTORE_CONSOLE_LOG="${X_LOG_DIR}/${X_LOG_FILE}"
+  else
+    RESTORE_CONSOLE_LOG="${REAL_X_LOG_DIR}/${X_LOG_FILE}"
+  fi
+
   CHECKPOINT_CONSOLE_LOG="${X_LOG_DIR}/checkpoint-${X_LOG_FILE}"
   backupIfNeededOrRemove $RESTORE_CONSOLE_LOG $CHECKPOINT_CONSOLE_LOG
   mkdirs "${X_LOG_DIR}"

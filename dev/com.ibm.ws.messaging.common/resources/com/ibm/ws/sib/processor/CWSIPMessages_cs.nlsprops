@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@
 #   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
 #   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
 #   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
-#
+#   - Msgs in the range CWSIP0351-CWSIP0360 belong to class com.ibm.ws.sib.processor.runtime.AsyncUpdateThread
 #   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
 #   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
 #   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
@@ -509,7 +509,7 @@ SUBSCRIPTION_DOESNT_EXIST_ERROR_CWSIP0072.useraction=Bu\u010f vytvo\u0159te trva
 # {1} The messaging engine name
 OBJECT_CLOSED_ERROR_CWSIP0081=CWSIP0081E: Relace prohl\u00ed\u017ee\u010de je u m\u00edsta ur\u010den\u00ed {0} uzav\u0159ena a nelze ji pou\u017e\u00edt.
 OBJECT_CLOSED_ERROR_CWSIP0081.explanation=Prohl\u00ed\u017ee\u010d byl uzav\u0159en a nelze jej pou\u017e\u00edt u zadan\u00e9ho c\u00edle.
-OBJECT_CLOSED_ERROR_CWSIP0081.useraction=Vytvo\u0159te u zadan\u00e9ho c\u00edle novou relaci prohl\u00ed\u017ee\u010de.
+OBJECT_CLOSED_ERROR_CWSIP0081.useraction=Vytvo\u0159te u zadan\u00e9ho c\u00edle novou relaci prohl\u00ed\ufffd\ufffde\u010de.
 
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the destination
@@ -1005,6 +1005,13 @@ DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=Pojmenovan\u00e9 m\u00edsto ur
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=Ov\u011b\u0159te, zda je n\u00e1zev m\u00edsta ur\u010den\u00ed spr\u00e1vn\u00fd. Pokud m\u00edsto ur\u010den\u00ed existuje v jin\u00e9m stroji syst\u00e9mu zpr\u00e1v, ov\u011b\u0159te, zda funguje komunikace s t\u00edmto jin\u00fdm strojem syst\u00e9mu zpr\u00e1v.
 
 # -------------------------------------------------------------------------------------------------
+# {0} the specified batch size
+# {1} the specified batch interval
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: Nastaven\u00ed {0} velikosti d\u00e1vky nen\u00ed kompatibiln\u00ed s nastaven\u00edm \u010dasov\u00e9ho limitu d\u00e1vky {1}, proto se pou\u017eije velikost d\u00e1vky nula.
+IGNORING_BATCH_SIZE_CWSIP0351.explanation=Aby bylo mo\u017en\u00e9 povolit asynchronn\u00ed d\u00e1vkov\u00e9 zpracov\u00e1n\u00ed, mus\u00ed b\u00fdt velikost d\u00e1vky i \u010dasov\u00fd limit d\u00e1vky nastaveny na kladn\u00e9 hodnoty.
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=Nastavte velikost d\u00e1vky i \u010dasov\u00fd limit d\u00e1vky na kladn\u00e9 hodnoty.
+
+# -------------------------------------------------------------------------------------------------
 # {0} The message id.
 # {1} The destination name
 MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: Zpr\u00e1vu s ID {0} nelze odstranit, proto\u017ee transakce pou\u017eit\u00e1 k jej\u00edmu p\u0159id\u00e1n\u00ed do m\u00edsta ur\u010den\u00ed {1} nebyla potvrzena.
@@ -1153,6 +1160,12 @@ PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=Spot\u0159ebitel by se m\u
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: Datov\u00fd proud pro komunikaci s domovsk\u00fdm strojem syst\u00e9mu zpr\u00e1v {1} m\u00edsta ur\u010den\u00ed {0} nen\u00ed dostupn\u00fd.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=Datov\u00fd proud pro komunikaci s domovsk\u00fdm strojem syst\u00e9mu zpr\u00e1v dan\u00e9ho c\u00edle nen\u00ed dostupn\u00fd. M\u016f\u017ee to b\u00fdt v d\u016fsledku toho, \u017ee datov\u00fd proud je dosud inicializov\u00e1n, nebo kv\u016fli s\u00ed\u0165ov\u00e9 oblasti.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Ov\u011b\u0159te, zda je mo\u017en\u00e9 s domovsk\u00fdm strojem syst\u00e9mu zpr\u00e1v komunikovat, a operaci zopakujte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The ProtocolItemStream object
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: Byla nalezena ProtocolItemStream{0} chyba ve form\u00e1tu. Vytvo\u0159en\u00ed proudu je odlo\u017eeno, aby mohl b\u00fdt spr\u00e1vn\u011b vytvo\u0159en.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=Byla nalezena ProtocolItemStream nespr\u00e1vn\u011b form\u00e1tovan\u00e1, kter\u00e1 neobsahuje polo\u017eku CompletedPrefix. Vytvo\u0159en\u00ed proudu je odlo\u017eeno, aby mohl b\u00fdt spr\u00e1vn\u011b vytvo\u0159en.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=Nen\u00ed.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The name of the destination

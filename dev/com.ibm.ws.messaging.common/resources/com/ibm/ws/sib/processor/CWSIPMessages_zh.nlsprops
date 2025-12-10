@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@
 #   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
 #   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
 #   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
-#
+#   - Msgs in the range CWSIP0351-CWSIP0360 belong to class com.ibm.ws.sib.processor.runtime.AsyncUpdateThread
 #   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
 #   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
 #   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
@@ -1005,6 +1005,13 @@ DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=\u6307\u5b9a\u7684\u76ee\u6807
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=\u8bf7\u68c0\u67e5\u76ee\u6807\u540d\u79f0\u662f\u5426\u6b63\u786e\u3002\u5982\u679c\u8be5\u76ee\u6807\u5b58\u5728\u4e8e\u53e6\u4e00\u4e2a\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u4e0a\uff0c\u90a3\u4e48\u8bf7\u786e\u4fdd\u53ef\u4ee5\u4e0e\u5176\u4ed6\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u8fdb\u884c\u901a\u4fe1\u3002
 
 # -------------------------------------------------------------------------------------------------
+# {0} the specified batch size
+# {1} the specified batch interval
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: \u7684\u6279\u5904\u7406\u5927\u5c0f\u8bbe\u7f6e\u4e0e\u7684 {0} \u6279\u5904\u7406\u8d85\u65f6\u8bbe\u7f6e\u4e0d\u517c\u5bb9\uff0c\u56e0\u6b64 {1} \u4f7f\u7528\u6279\u5904\u7406\u5927\u5c0f\u4e3a\u96f6\u3002
+IGNORING_BATCH_SIZE_CWSIP0351.explanation=\u8981\u542f\u7528\u5f02\u6b65\u6279\u5904\u7406\uff0c\u5fc5\u987b\u5c06\u6279\u5904\u7406\u5927\u5c0f\u548c\u6279\u5904\u7406\u8d85\u65f6\u90fd\u8bbe\u7f6e\u4e3a\u6b63\u503c\u3002
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=\u5c06\u6279\u5904\u7406\u5927\u5c0f\u548c\u6279\u5904\u7406\u8d85\u65f6\u90fd\u8bbe\u7f6e\u4e3a\u6b63\u503c\u3002
+
+# -------------------------------------------------------------------------------------------------
 # {0} The message id.
 # {1} The destination name
 MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: \u4e0d\u80fd\u5220\u9664\u6807\u8bc6\u4e3a {0} \u7684\u6d88\u606f\uff0c\u539f\u56e0\u662f\u5c1a\u672a\u843d\u5b9e\u7528\u6765\u5c06\u8be5\u6d88\u606f\u6dfb\u52a0\u5230\u76ee\u6807 {1} \u7684\u4e8b\u52a1\u3002
@@ -1155,6 +1162,12 @@ ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=\u7528\u4e8e\u4e3a\u76ee\u6807\
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u53ef\u4e0e\u672c\u5730\u5316\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u5b9e\u73b0\u901a\u4fe1\uff0c\u7136\u540e\u91cd\u8bd5\u3002
 
 # -------------------------------------------------------------------------------------------------
+# {0} The ProtocolItemStream object
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: \u53d1\u73b0\u4e00\u4e2a\u683c\u5f0f ProtocolItemStream{0} \u9519\u8bef\u7684\u3002 \u6d41\u7684\u521b\u5efa\u88ab\u5ef6\u8fdf\uff0c\u4ee5\u4fbf\u80fd\u591f\u6b63\u786e\u5730\u5f62\u6210\u3002
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=\u53d1\u73b0\u4e00\u4e2a ProtocolItemStream \u683c\u5f0f\u9519\u8bef\u7684\uff0c\u5176\u4e2d\u4e0d\u5305\u542b\u4e00\u4e2a CompletedPrefix \u9879\u76ee\u3002 \u6d41\u7684\u521b\u5efa\u88ab\u5ef6\u8fdf\uff0c\u4ee5\u4fbf\u80fd\u591f\u6b63\u786e\u5730\u5f62\u6210\u3002
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=\u65e0\u3002
+
+# -------------------------------------------------------------------------------------------------
 # {0} The name of the destination
 # {1} The messaging engine we are trying to reach
 ANYCAST_STREAM_NOT_FLUSHED_CWSIP0512=CWSIP0512E: \u7528\u4e8e\u4e3a\u76ee\u6807 {0} \u4e0e\u672c\u5730\u5316\u6d88\u606f\u4f20\u9012\u5f15\u64ce {1} \u901a\u4fe1\u7684\u6d41\u4e0d\u53ef\u7528\u3002
@@ -1216,6 +1229,7 @@ DESTINATION_DELETED_ERROR_CWSIP0550.useraction=\u7a0d\u540e\u5c06\u91cd\u8bd5\u6
 NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551=CWSIP0551I: UUID \u4e3a {1} \u7684\u76ee\u6807 {0} \u7684\u53d1\u9001\u5141\u8bb8\u72b6\u6001\u5df2\u66f4\u6539\u4e3a {2}\u3002
 NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.explanation=\u4e0e\u76ee\u6807\u5173\u8054\u7684\u6d88\u606f\u70b9\u7684\u884c\u4e3a\u5df2\u6539\u53d8\u3002
 NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the destination
 # {1} the UUID of the destination
@@ -1223,18 +1237,21 @@ NOTIFY_SEND_ALLOWED_STATE_CHANGE_CWSIP0551.useraction=\u65e0\u3002
 NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552=CWSIP0552I: UUID \u4e3a {1} \u7684\u76ee\u6807 {0} \u7684\u63a5\u6536\u5141\u8bb8\u72b6\u6001\u5df2\u66f4\u6539\u4e3a {2}\u3002
 NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.explanation=\u4e0e\u76ee\u6807\u5173\u8054\u7684\u6d88\u606f\u70b9\u7684\u884c\u4e3a\u5df2\u6539\u53d8\u3002
 NOTIFY_RECEIVE_ALLOWED_STATE_CHANGE_CWSIP0552.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the destination
 # {1} the name of the messaging engine
 NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553=CWSIP0553W: \u5728 {1} \u5904\u672c\u5730\u5316\u7684\u76ee\u6807 {0} \u5df2\u8fbe\u5230\u5176\u6d88\u606f\u6df1\u5ea6\u9608\u503c\u4e0a\u9650 {2}\u3002
 NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.explanation=\u6d88\u606f\u70b9\u4e2d\u5b58\u50a8\u7684\u6d88\u606f\u6570\u5df2\u8fdb\u884c\u6df1\u5ea6\u66f4\u6539\uff0c\u5c06\u5b58\u50a8\u7684\u6570\u5b57\u653e\u5728\u6df1\u5ea6\u9608\u503c\u4e0a\u9650\u4e0a\u65b9\u3002
 NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0553.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the destination
 # {1} the name of the messaging engine
 NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554=CWSIP0554W: \u5728 {1} \u5904\u672c\u5730\u5316\u7684\u76ee\u6807 {0} \u5df2\u8fbe\u5230\u5176\u6d88\u606f\u6df1\u5ea6\u9608\u503c\u4e0b\u9650 {2}\u3002
 NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.explanation=\u8be5\u76ee\u6807\u5904\u7684\u6d88\u606f\u6570\u5df2\u4ece\u8f83\u9ad8\u9608\u503c\u7ea7\u522b\u964d\u5230\u8f83\u4f4e\u9608\u503c\u7ea7\u522b\uff1b\u56e0\u6b64\uff0c\u8be5\u76ee\u6807\u53ef\u63a5\u53d7\u65b0\u6d88\u606f\u3002
 NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the messaging engine that hosts the remote messaging point.
 # {1} the name of the destination
@@ -1242,6 +1259,7 @@ NOTIFY_DEPTH_THRESHOLD_REACHED_CWSIP0554.useraction=\u65e0\u3002
 NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555=CWSIP0555W: {2} \u4e2d\u7684\u76ee\u6807 {1} \u7684 ME {0} \u4e0a\u7684\u8fdc\u7a0b\u6d88\u606f\u70b9\u5df2\u8fbe\u5230\u5176\u6d88\u606f\u6df1\u5ea6\u9608\u503c\u4e0a\u9650\u3002
 NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.explanation=\u6d88\u606f\u70b9\u4e2d\u5b58\u50a8\u7684\u6d88\u606f\u6570\u5df2\u8fdb\u884c\u6df1\u5ea6\u66f4\u6539\uff0c\u5c06\u5b58\u50a8\u7684\u6570\u5b57\u653e\u5728\u6df1\u5ea6\u9608\u503c\u4e0a\u9650\u4e0a\u65b9\u3002
 NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} the name of the messaging engine that hosts the remote messaging point.
 # {1} the name of the destination
@@ -1249,18 +1267,21 @@ NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0555.useraction=\u65e0\u3002
 NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556=CWSIP0556W: {2} \u4e2d\u7684\u76ee\u6807 {1} \u7684 ME {0} \u4e0a\u7684\u8fdc\u7a0b\u6d88\u606f\u70b9\u5df2\u8fbe\u5230\u5176\u6d88\u606f\u6df1\u5ea6\u9608\u503c\u4e0b\u9650\u3002
 NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.explanation=\u6d88\u606f\u70b9\u4e2d\u5b58\u50a8\u7684\u6d88\u606f\u6570\u5df2\u8fdb\u884c\u6df1\u5ea6\u66f4\u6539\uff0c\u5c06\u5b58\u50a8\u7684\u6570\u5b57\u653e\u5728\u6df1\u5ea6\u9608\u503c\u4e0b\u9650\u4e0b\u9762\u3002
 NOTIFY_REMOTE_DEPTH_THRESHOLD_REACHED_CWSIP0556.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the WebSphere MQ link name
 # {1} the name of the messaging engine
 NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557=CWSIP0557W: {2} \u4e2d\u7684 WebSphere MQ \u94fe\u8def {0} \u5df2\u8fbe\u5230\u5176\u6d88\u606f\u6df1\u5ea6\u9608\u503c\u4e0a\u9650\u3002
 NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.explanation=MQ \u94fe\u8def\u4e2d\u5b58\u50a8\u7684\u6d88\u606f\u6570\u5df2\u8fdb\u884c\u6df1\u5ea6\u66f4\u6539\uff0c\u5c06\u5b58\u50a8\u7684\u6570\u5b57\u653e\u5728\u6df1\u5ea6\u9608\u503c\u4e0a\u9650\u4e0a\u65b9\u3002
 NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0557.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the WebSphere MQ link name
 # {1} the name of the messaging engine
 NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558=CWSIP0558W: {1} \u4e2d\u7684 WebSphere MQ \u94fe\u8def {0} \u5df2\u8fbe\u5230\u5176\u6d88\u606f\u6df1\u5ea6\u9608\u503c\u4e0b\u9650\u3002
 NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.explanation=MQ \u94fe\u8def\u4e2d\u5b58\u50a8\u7684\u6d88\u606f\u6570\u5df2\u8fdb\u884c\u6df1\u5ea6\u66f4\u6539\uff0c\u5c06\u5b58\u50a8\u7684\u6570\u5b57\u653e\u5728\u6df1\u5ea6\u9608\u503c\u4e0b\u9650\u4e0b\u9762\u3002
 NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the SIB link name
 # {1} the name of the foreign bus
@@ -1268,6 +1289,7 @@ NOTIFY_MQLINK_DEPTH_THRESHOLD_REACHED_CWSIP0558.useraction=\u65e0\u3002
 NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559=CWSIP0559W: ME {2} \u4e0a\u603b\u7ebf {1} \u7684\u94fe\u8def {0} \u5df2\u8fbe\u5230\u5176\u6d88\u606f\u6df1\u5ea6\u9608\u503c\u4e0a\u9650\u3002
 NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.explanation=\u94fe\u8def\u4e2d\u5b58\u50a8\u7684\u6d88\u606f\u6570\u5df2\u8fdb\u884c\u4e86\u6df1\u5ea6\u66f4\u6539\uff0c\u4f7f\u5b58\u50a8\u7684\u6d88\u606f\u6570\u8d85\u8fc7\u4e86\u6df1\u5ea6\u9608\u503c\u4e0a\u9650\u3002
 NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the SIB link name
 # {1} the name of the foreign bus
@@ -1275,6 +1297,7 @@ NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0559.useraction=\u65e0\u3002
 NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560=CWSIP0560W: ME {2} \u4e0a\u603b\u7ebf {1} \u7684\u94fe\u8def {0} \u5df2\u8fbe\u5230\u5176\u6d88\u606f\u6df1\u5ea6\u9608\u503c\u4e0b\u9650\u3002
 NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.explanation=\u94fe\u8def\u4e2d\u5b58\u50a8\u7684\u6d88\u606f\u6570\u5df2\u8fdb\u884c\u4e86\u6df1\u5ea6\u66f4\u6539\uff0c\u4f7f\u5b58\u50a8\u7684\u6d88\u606f\u6570\u4f4e\u4e8e\u6df1\u5ea6\u9608\u503c\u4e0b\u9650\u3002
 NOTIFY_SIBLINK_DEPTH_THRESHOLD_REACHED_CWSIP0560.useraction=\u65e0\u3002 
+
 # -------------------------------------------------------------------------------------------------
 CONNECTION_CONTROLLABLE_ERROR_CWSIP0571=CWSIP0571E: \u8fde\u63a5\u5bf9\u8c61\u4e0d\u518d\u5b58\u5728\u3002
 CONNECTION_CONTROLLABLE_ERROR_CWSIP0571.explanation=\u7531\u4e8e\u8fde\u63a5\u4e0d\u518d\u5b58\u5728\uff0c\u56e0\u6b64\u65e0\u6cd5\u5c1d\u8bd5\u8bbf\u95ee\u8be5\u8fde\u63a5\u3002\u8fd9\u53ef\u80fd\u662f\u56e0\u4e3a\u5e94\u7528\u7a0b\u5e8f\u5df2\u5173\u95ed\u8be5\u8fde\u63a5\u3002
@@ -1293,6 +1316,7 @@ MESSAGE_EXISTS_ERROR_CWSIP0572.useraction=\u65e0
 DELIVERY_DELAY_TIME_WARNING_CWSIP0580=CWSIP0580W: \u5728\u76ee\u6807 {2} \u4e2d\u627e\u5230\u4e86\u6807\u8bc6\u4e3a {0} \u4e14\u7cfb\u7edf\u6d88\u606f\u6807\u8bc6\u4e3a {1} \u7684\u6d88\u606f\uff0c\u5e76\u4e14\u4f20\u9012\u5ef6\u8fdf\u8d85\u8fc7\u5c5e\u6027 sib.msgstore.maximumAllowedDeliveryDelayInterval \u6240\u8bbe\u7f6e\u7684\u9650\u5236\uff0c\u6267\u884c\u7684\u64cd\u4f5c\u4e3a\u201c{3}\u201d\u3002
 DELIVERY_DELAY_TIME_WARNING_CWSIP0580.explanation=\u6b64\u8b66\u544a\u6307\u793a\u5df2\u6267\u884c\u7684\u64cd\u4f5c\u3002
 DELIVERY_DELAY_TIME_WARNING_CWSIP0580.useraction=\u7528\u6237\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
 # -------------------------------------------------------------------------------------------------
 NO_ELEMENTS_ERROR_CWSIP0601=CWSIP0601E: \u8fed\u4ee3\u5668\u4e2d\u4e0d\u518d\u6709\u5143\u7d20\u3002
 NO_ELEMENTS_ERROR_CWSIP0601.explanation=\u65e0\u3002
@@ -1494,6 +1518,7 @@ TRANSACTION_DELETE_USAGE_ERROR_CWSIP0778.useraction=\u8bf7\u786e\u4fdd\u6240\u4f
 FLUSH_REQUESTED_MESSAGE_CWSIP0780=CWSIP0780I: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {0} \u5df2\u542f\u52a8\uff0c\u6e05\u7a7a\u6240\u6709\u8bf7\u6c42\u7684\u4f20\u9012\u6d41\u3002
 FLUSH_REQUESTED_MESSAGE_CWSIP0780.explanation=\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u8bc6\u522b\u4e86\u5df2\u8bf7\u6c42\u6e05\u7a7a\u5b83\u7684\u4f20\u9012\u6d41\u3002
 FLUSH_REQUESTED_MESSAGE_CWSIP0780.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} The messaging engine name
 # {1} The Stream ID
@@ -1501,6 +1526,7 @@ FLUSH_REQUESTED_MESSAGE_CWSIP0780.useraction=\u65e0\u3002
 FLUSH_INITIATED_MESSAGE_CWSIP0781=CWSIP0781I: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {0} \u5df2\u542f\u52a8\uff0c\u5df2\u5f00\u59cb\u6e05\u7a7a\u6d41 {1} \u548c\u76ee\u6807 {2}\u3002
 FLUSH_INITIATED_MESSAGE_CWSIP0781.explanation=\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u5df2\u5f00\u59cb\u6e05\u7a7a\u6d41\u3002
 FLUSH_INITIATED_MESSAGE_CWSIP0781.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} The messaging engine name
 # {1} The Stream ID
@@ -1515,6 +1541,7 @@ FLUSH_FAILED_MESSAGE_CWSIP0782.useraction=\u5982\u679c\u95ee\u9898\u4ecd\u7136\u
 FLUSH_COMPLETED_MESSAGE_CWSIP0783=CWSIP0783I: \u6d88\u606f\u4f20\u9012\u5f15\u64ce {0} \u5df2\u542f\u52a8\uff0c\u6e05\u7a7a\u5df2\u5b8c\u6210\u7684\u6240\u6709\u4f20\u9012\u6d41\u3002
 FLUSH_COMPLETED_MESSAGE_CWSIP0783.explanation=\u6d88\u606f\u4f20\u9012\u5f15\u64ce\u5df2\u6e05\u7a7a\u5b83\u7684\u6240\u6709\u4f20\u9012\u6d41\u3002
 FLUSH_COMPLETED_MESSAGE_CWSIP0783.useraction=\u65e0\u3002
+
 # -------------------------------------------------------------------------------------------------
 # {0} is the name of the destination
 # {1} is the uuid of the remote engine

@@ -48,6 +48,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -82,8 +83,10 @@ import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.ws.logging.utils.FileLogHolder;
+import com.ibm.ws.logging.utils.LogThrottlingUtils;
 import com.ibm.ws.logging.utils.RecursionCounter;
 import com.ibm.ws.logging.utils.SequenceNumber;
+import com.ibm.ws.logging.utils.ThrottleState;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
@@ -281,19 +284,19 @@ public class BaseTraceService implements TrService {
 
     private static TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
-    private final Map<String, ThrottleState> throttleStates = new ConcurrentHashMap<>();
+    private final static Map<String, ThrottleState> throttleStates = new ConcurrentHashMap<>();
 
-    private int throttleMaxMessagesPerWindow = 1000; //Default throttleMaxMessagesPerWindow is 1000 and is configurable
-    private final int throttleWindowDurationMS = 5 * 60 * 1000; //Default window duration is 5 minutes and not configurable
-    private String throttleType = "messageID"; //Logs will be throttled based on messageID by default and this is configurable
-    private int throttleMapSize = 500; //Internal attribute that is configurable
+    private static int throttleMaxMessagesPerWindow = 1000; //Default throttleMaxMessagesPerWindow is 1000 and is configurable
+    private final static int throttleWindowDurationMS = 5 * 60 * 1000; //Default window duration is 5 minutes and not configurable
+    private static String throttleType = "messageID"; //Logs will be throttled based on messageID by default and this is configurable
+    private static int throttleMapSize = 500; //Internal attribute that is configurable
 
     private static final long THROTTLE_TIME_BASED_CLEANUP_INTERVAL_MS = 10 * 1000;
     private static final long THROTTLE_SIZE_BASED_CLEANUP_INTERVAL_MS = 15 * 1000;
 
-    private long lastTimeBasedCleanupTime = 0;
-    private long lastSizeBasedCleanupTime = 0;
-    private final AtomicBoolean throttleWarningPrinted = new AtomicBoolean(false);
+    private static long lastTimeBasedCleanupTime = 0;
+    private static long lastSizeBasedCleanupTime = 0;
+    private final static AtomicBoolean throttleWarningPrinted = new AtomicBoolean(false);
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -362,7 +365,7 @@ public class BaseTraceService implements TrService {
         });
     }
 
-    public Boolean betaFenceCheck() {
+    public static Boolean betaFenceCheck() {
         if (isBetaEdition != null)
             return isBetaEdition;
 
@@ -410,6 +413,9 @@ public class BaseTraceService implements TrService {
         captureSystemStreams();
         //Remove EMQ from BufferManager after a certain amount of time has passed
         BufferManagerEMQHelper.removeEMQByTimer();
+
+        LogThrottlingUtils.publish(this);
+
     }
 
     protected void registerLoggerHandlerSingleton() {
@@ -451,6 +457,8 @@ public class BaseTraceService implements TrService {
         checkpoint = trConfig.isCheckpoint();
         restore = trConfig.isRestore();
         if (restore) {
+            throttleWarningPrinted.set(false);
+            resetLogThrottling();
             registerLoggerHandlerSingleton();
             captureSystemStreams();
         }
@@ -498,6 +506,10 @@ public class BaseTraceService implements TrService {
         }
 
         throttleMaxMessagesPerWindow = trConfig.getThrottleMaxMessagesPerWindow();
+
+        if (throttleMaxMessagesPerWindow <= 0)
+            throttleMaxMessagesPerWindow = 0;
+
         throttleMapSize = trConfig.getThrottleMapSize();
 
         if (throttleType != trConfig.getThrottleType()) {
@@ -1256,15 +1268,28 @@ public class BaseTraceService implements TrService {
     /*
      * Determine if logs should be throttled or not.
      */
-    public LogResult logLine(Object event) {
-        LogTraceData logData = (LogTraceData) event;
+    public static LogResult logLine(Object event) {
+        String key = null;
+        String logType = null;
 
-        String key;
+        if (event instanceof LogTraceData) {
+            LogTraceData logData = (LogTraceData) event;
+            logType = "JUL";
 
-        if (throttleType.toLowerCase().equals("message"))
-            key = logData.getMessage();
-        else {
-            key = logData.getMessageId();
+            if (throttleType.toLowerCase().equals("message"))
+                key = logData.getMessage();
+            else {
+                key = logData.getMessageId();
+            }
+        } else if (event instanceof String) {
+            String logEvent = (String) event;
+            logType = "SysOut";
+
+            if (throttleType.toLowerCase().equals("message"))
+                key = logEvent;
+            else {
+                key = getMessageId(logEvent);
+            }
         }
 
         long now = System.currentTimeMillis();
@@ -1291,8 +1316,8 @@ public class BaseTraceService implements TrService {
                 if (throttleStates.size() < throttleMapSize) {
                     state = throttleStates.computeIfAbsent(key, k -> {
                         return new ThrottleState(throttleWindowDurationMS, () -> throttleMaxMessagesPerWindow); //throttleMaxMessagesPerWindow can be updated dynamically so need to ensure that it's always updated
-
                     });
+                    state.setLoggerType(logType);
                 } else {
                     return LogResult.LOG;
                 }
@@ -1318,29 +1343,30 @@ public class BaseTraceService implements TrService {
     /*
      * Delete any log entries that haven't been accessed over 5 minutes(the window duration) or if the runningTotal was reduced to 0.
      */
-    private void timeBasedGarbageCollection(long now) {
+    private static void timeBasedGarbageCollection(long now) {
         throttleStates.entrySet().removeIf(e -> (now - e.getValue().getLastAccessTime() > throttleWindowDurationMS) || (e.getValue().getRunningTotal() == 0));
     }
 
     /*
      * When the Map is full, sort and remove the bottom 50 elements if the keys aren't currently being throttled.
      */
-    private void sizeBasedGarbageCollection(long now) {
-        synchronized (this) {
+    private static final Object GC_LOCK = new Object();
+
+    private static void sizeBasedGarbageCollection(long now) {
+        synchronized (GC_LOCK) {
             List<String> keysToRemove = throttleStates.entrySet().stream().sorted(Comparator.comparingLong(e -> e.getValue().getWeightedRunningTotal())).limit(50).filter(e -> e.getValue().getRunningTotal() < throttleMaxMessagesPerWindow).map(Map.Entry::getKey).collect(Collectors.toList());
             keysToRemove.forEach(throttleStates::remove);
         }
     }
 
     /*
-     * Clear and reset the throttling map and variables when checkpoint restore occurs.
+     * Clear and reset the throttling map and variables when checkpoint restore occurs and when messageType changes.
      */
     public void resetLogThrottling() {
         //Empty throttleStates for checkpoint
         throttleStates.clear();
         lastTimeBasedCleanupTime = 0;
         lastSizeBasedCleanupTime = 0;
-        //throttleWarningPrinted.set(false);
     }
 
     /**
@@ -2004,6 +2030,9 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(String s) {
+            if (!shouldPrint(s))
+                return;
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(s);
@@ -2114,6 +2143,9 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(String s) {
+            if (!shouldPrint(s))
+                return;
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(s);
@@ -2545,4 +2577,53 @@ public class BaseTraceService implements TrService {
             return name.startsWith("ffdc_") && name.endsWith(".log");
         }
     };
+
+    public static Map<String, ThrottleState> getThrottleStates() {
+        return throttleStates;
+    }
+
+    public static int getThrottleMaxMessagesPerWindow() {
+        return throttleMaxMessagesPerWindow;
+    }
+
+    public static String getThrottleType() {
+        return throttleType;
+    }
+
+    public static int getThrottleMapSize() {
+        return throttleMapSize;
+    }
+
+    /*
+     * Helper method to check if logs should be throttled or not.
+     */
+    private static boolean shouldPrint(String s) {
+        if (throttleMaxMessagesPerWindow <= 0 || !betaFenceCheck())
+            return true;
+
+        return LogResult.LOG == logLine(s);
+    }
+
+    /*
+     * Get messageID given a String
+     */
+    public static String getMessageId(String s) {
+        String messageId;
+        String message = s;
+        if (message != null) {
+            messageId = parseMessageId(message);
+            return messageId;
+        }
+        return null;
+    }
+
+    protected static String parseMessageId(String msg) {
+        Pattern messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
+
+        String messageId = null;
+        Matcher matcher = messagePattern.matcher(msg);
+        if (matcher.find())
+            messageId = msg.substring(matcher.start(), matcher.end() - 1);
+        return messageId;
+    }
 }

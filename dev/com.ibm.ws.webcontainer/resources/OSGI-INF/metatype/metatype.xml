@@ -379,6 +379,12 @@
             description="%maxPartHeaderSize.desc" 
             required="false" type="Integer" default="512" />
 
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="displayCustomizedExceptionText"
+            name="%displayCustomizedExceptionText.name" 
+            description="%displayCustomizedExceptionText.desc" 
+            required="false" type="String" ibm:beta="true"/>
+
         <AD name="internal" description="internal use only"
             id="extensionFactory" required="true" type="String" cardinality="100"
             ibm:type="pid" ibm:reference="com.ibm.wsspi.webcontainer.extension.ExtensionFactory" default="*" ibm:final="true"/> 

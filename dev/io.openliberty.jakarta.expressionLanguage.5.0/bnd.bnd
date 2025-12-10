@@ -28,7 +28,7 @@ Export-Package: \
        uses:="jakarta.el"
 
 -includeresource: \
-    @\${repo;org.apache.tomcat:tomcat-el-api;10.1.31;EXACT}!/!(META-INF/maven/*|module-info.class),\
+    @\${repo;org.apache.tomcat:tomcat-el-api;10.1.49;EXACT}!/!(META-INF/maven/*|module-info.class),\
     jakarta=resources/jakarta
 
 instrument.disabled: true
@@ -36,4 +36,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-   org.apache.tomcat:tomcat-el-api;strategy=exact;version=10.1.31
+   org.apache.tomcat:tomcat-el-api;strategy=exact;version=10.1.49

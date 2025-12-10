@@ -857,7 +857,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
         if (WebContainer.isServlet61orAbove())
             throw new IllegalArgumentException(message);
         else
-            return location;
+            throw new IllegalStateException(message);
     }
 
     public void callPage(String fileName, javax.servlet.http.HttpServletRequest hreq) throws IOException, ServletException

@@ -33,6 +33,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
     private static final AttributeKey<CompositeByteBuf> COMPOSITE_CONTENT = AttributeKey.valueOf("compositeContent");
 
     public LibertyHttpObjectAggregator(long maxContentLength) {
+        super(false); //  messages should NOT be released automatically, we will handle reference counting manually instead (i.e ReferenceCountUtil.release )
         if (maxContentLength <= 0) {
             throw new IllegalArgumentException("maxContentLength must be a positive integer.");
         }

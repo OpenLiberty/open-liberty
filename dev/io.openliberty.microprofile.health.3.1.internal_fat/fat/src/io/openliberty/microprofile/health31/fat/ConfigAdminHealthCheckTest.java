@@ -157,7 +157,7 @@ public class ConfigAdminHealthCheckTest {
         HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
         getJSONPayload(conReady);
 
-        String configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp");
+        String configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp", 10000);
         String stateMapLine = server1.waitForStringInTrace(": appName = ConfigAdminDropinsCheckApp");
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);

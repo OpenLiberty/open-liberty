@@ -81,6 +81,16 @@ public final class CachedConstants {
      */
     public static final String CLEANER_CLEAN_ON_SHUTDOWN_BUS_PROP =
         "bus.io.CachedOutputStreamCleaner.CleanOnShutdown";
+
+    //backport - https://github.com/apache/cxf/pull/2684
+    /**
+     * The strategy to be used for cleaning up unclosed {@code CachedOutputStream} instances. By default,
+     * there cleaner implementation creates a timer per each {@link Bus} instance. However, in certain 
+     * deployments it could lead to excessive number of timers being created, so there is an alternative
+     * strategy that uses single timer instance. The supported strategies are: default, single-timer.
+     */
+    public static final String CLEANER_STRATEGY_BUS_PROP =
+        "bus.io.CachedOutputStreamCleaner.Strategy";
     // Liberty Change End
     
     private CachedConstants() {

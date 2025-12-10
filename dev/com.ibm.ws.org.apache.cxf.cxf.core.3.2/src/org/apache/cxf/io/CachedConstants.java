@@ -71,7 +71,6 @@ public final class CachedConstants {
     public static final String CIPHER_TRANSFORMATION_BUS_PROP =
         "bus.io.CachedOutputStream.CipherTransformation";
 
-    // Liberty change begin
     /**
      * The delay (in ms) for cleaning up unclosed {@code CachedOutputStream} instances. 30 minutes
      * is specified by default, the minimum value is 2 seconds. If the value of the delay is set to
@@ -87,7 +86,18 @@ public final class CachedConstants {
      */
     public static final String CLEANER_CLEAN_ON_SHUTDOWN_BUS_PROP =
         "bus.io.CachedOutputStreamCleaner.CleanOnShutdown";
+
+     //// Liberty change start backport - https://github.com/apache/cxf/pull/2684
+    /**
+     * The strategy to be used for cleaning up unclosed {@code CachedOutputStream} instances. By default,
+     * there cleaner implementation creates a timer per each {@link Bus} instance. However, in certain 
+     * deployments it could lead to excessive number of timers being created, so there is an alternative
+     * strategy that uses single timer instance. The supported strategies are: default, single-timer.
+     */
+    public static final String CLEANER_STRATEGY_BUS_PROP =
+        "bus.io.CachedOutputStreamCleaner.Strategy";
     // Liberty change end
+    
     private CachedConstants() {
         // complete
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,18 +17,22 @@ import static io.openliberty.checkpoint.spi.CheckpointPhase.CONDITION_PROCESS_RU
 import static org.osgi.service.condition.Condition.CONDITION_ID;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
@@ -58,6 +62,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.feature.ServerReadyStatus;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.feature.LibertyFeature;
@@ -88,6 +93,7 @@ public class CheckpointImpl implements ServerReadyStatus {
 
     private static final String DIR_CHECKPOINT = "checkpoint/";
     private static final String FILE_RESTORE_MARKER = DIR_CHECKPOINT + ".restoreMarker";
+    private static final String LOG_DIR_ENV_PROPS = DIR_CHECKPOINT + ".logdir.properties";
     private static final String FILE_RESTORE_FAILED_MARKER = DIR_CHECKPOINT + ".restoreFailedMarker";
     private static final String FILE_ENV_PROPERTIES = DIR_CHECKPOINT + ".env.properties";
     private static final String DIR_CHECKPOINT_IMAGE = DIR_CHECKPOINT + "image/";
@@ -335,6 +341,7 @@ public class CheckpointImpl implements ServerReadyStatus {
         }
 
         checkSupportedFeatures();
+        createLogDirPropsFile();
 
         // block adding hooks to CheckpointPhase
         try {
@@ -533,6 +540,41 @@ public class CheckpointImpl implements ServerReadyStatus {
     private void createRestoreMarker() {
         // create a marker to indicate that another restore needs to restore the workarea
         locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + FILE_RESTORE_MARKER).create();
+    }
+
+    @FFDCIgnore(IOException.class)
+    private void createLogDirPropsFile() {
+        try {
+            WsResource logDirProps = locAdmin.resolveResource(WsLocationConstants.SYMBOL_SERVER_WORKAREA_DIR + LOG_DIR_ENV_PROPS);
+            logDirProps.create();
+            logDirProps.asFile();
+
+            String logDir = getEnvOrDefault(BootstrapConstants.ENV_LOG_DIR, "");
+            String xLogDir = getEnvOrDefault(BootstrapConstants.ENV_X_LOG_DIR, "");
+            String xLogFile = getEnvOrDefault(BootstrapConstants.ENV_X_LOG_FILE, "");
+            Path realLogDir = new File(xLogDir).toPath().toRealPath();
+            String realLogDirValue = realLogDir.toFile().getAbsolutePath();
+
+            Properties logDirValues = new Properties();
+            logDirValues.put("REAL_X_LOG_DIR", realLogDirValue);
+            logDirValues.put(BootstrapConstants.ENV_LOG_DIR, logDir);
+            logDirValues.put(BootstrapConstants.ENV_X_LOG_DIR, xLogDir);
+            logDirValues.put(BootstrapConstants.ENV_X_LOG_FILE, xLogFile);
+
+            try (OutputStream out = new FileOutputStream(logDirProps.asFile())) {
+                logDirValues.store(out, "");
+            }
+        } catch (IOException e) {
+            throw new CheckpointFailedException(getUnknownType(), Tr.formatMessage(tc, "UKNOWN_FAILURE_CWWKC0455E", e.getMessage()), e);
+        }
+    }
+
+    private String getEnvOrDefault(String key, String defaultValue) {
+        String result = System.getenv(key);
+        if (result == null) {
+            result = defaultValue;
+        }
+        return result;
     }
 
     private void createRestoreFailedMarker(CheckpointFailedException e) {

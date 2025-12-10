@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -35,7 +35,7 @@ property = { "api.classes=org.eclipse.microprofile.graphql.GraphQLApi",
              "bean.defining.annotations=org.eclipse.microprofile.graphql.GraphQLApi",
              "service.vendor=IBM" })
 public class GraphQLAuthorizationExtension implements Extension, WebSphereCDIExtension {
-    TraceComponent tc = Tr.register(GraphQLAuthorizationExtension.class);
+    private static final TraceComponent tc = Tr.register(GraphQLAuthorizationExtension.class);
 
     @Trivial
     public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {

@@ -124,9 +124,6 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         if (cursor.isPresent())
             queryInfo.setParametersFromCursor(query, cursor.get());
 
-        if (queryInfo.entityInfo.loadGraph != null)
-            query.setHint(Util.LOADGRAPH, queryInfo.entityInfo.loadGraph);
-
         query.setFirstResult(firstResult);
         query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
 

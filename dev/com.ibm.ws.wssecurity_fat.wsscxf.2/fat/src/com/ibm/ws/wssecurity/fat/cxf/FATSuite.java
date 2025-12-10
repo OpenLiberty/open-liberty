@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,12 +28,15 @@ import com.ibm.ws.wssecurity.fat.cxf.x509migtoken.CxfX509MigTests;
 import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh10;
 import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+
+                AlwaysPassesTest.class,
 
                 //Lite for EE9, EE10 tests
                 //Full mode also runs EE7-wsseccbh-1.0 and EE7-wsseccbh-2.0

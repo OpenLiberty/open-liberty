@@ -59,7 +59,7 @@ encode.option-desc.encoding=\tOkre\u015bla spos\u00f3b kodowania has\u0142a. Obs
 encode.option-key.key=\ \ \ \ --key=[klucz]
 encode.option-desc.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany podczas kodowania AES.\\n Ten ci\u0105g znak\u00f3w b\u0119dzie hashowany w celu utworzenia klucza szyfrowania, kt\u00f3ry jest u\u017cywany do szyfrowania i odszyfrowania has\u0142a. Klucz mo\u017ce by\u0107 dostarczony do serwera poprzez definiuj\u0105c zmienn\u0105 wlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105 jest klucz key. Je\u015bli ta opcja nie zostanie podana, powinien zosta\u0107\\n\n\\tu\u017cyty klucz domy\u015blny.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
-encode.option-desc.base64Key=\tZakodowany base64 klucz bitowy AES-256 u\u017cywany do szyfrowania i odszyfrowywania has\u0142o. Klucz mo\u017ce by\u0107 dostarczony do serwera poprzez zdefiniowanie zmiennej zmienn\u0105 wlp.aes.encryption.key, kt\u00f3rej warto\u015bci\u0105 jest klucz. Je\u015bli --base64Key jest to nie mo\u017cna okre\u015bli\u0107 --aesConfigFile i --key.
+encode.option-desc.base64Key=\tKlucz Base64-encodedAES-256 ma s\u0142u\u017cy\u0107 do szyfrowania i deszyfrowania\nhas\u0142a. Podaj ten klucz serwerowi, definiuj\u0105c zmienn\u0105\nwlp.aes.encryption.key. Je\u015bli --base64Key jest\nokre\u015blone, to --aesConfigFile i --key nie mog\u0105 by\u0107 okre\u015blone.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 encode.option-desc.aesConfigFile=\tPlik w\u0142a\u015bciwo\u015bci XML lub Java ze zmienn\u0105 o nazwie wlp.password.encryption.key lub wlp.aes.encryption.key z prawid\u0142owymi warto\u015bciami. Obie zmienne nie mog\u0105 by\u0107 okre\u015blone w tym samym pliku.\n\tJe\u015bli okre\u015blono --aesConfigFile, nie mo\u017cna okre\u015bli\u0107 --key i --base64Key.
 encode.option-key.notrim=\ \ \ \ --notrim
@@ -118,7 +118,7 @@ sslCert.option-desc.ext=\tInformacje o rozszerzeniu certyfikatu, kt\u00f3re maj\
 #line.
 
 sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
-sslCert.option-desc.passwordBase64Key=\tZakodowany base64 klucz bitowy AES-256 u\u017cywany do szyfrowania i odszyfrowywania has\u0142o. Klucz mo\u017ce by\u0107 dostarczony do serwera poprzez zdefiniowanie zmiennej wlp.aes.encryption.key kt\u00f3rej warto\u015bci\u0105 jest klucz.\n\tJe\u015bli podano --passwordBase64Key, w\u00f3wczas --aesConfigFile i --passwordKey nie mog\u0105 by\u0107 okre\u015blone.
+sslCert.option-desc.passwordBase64Key=\tKlucz Base64-encodedAES-256 ma s\u0142u\u017cy\u0107 do szyfrowania i deszyfrowania\nhas\u0142a. Podaj ten klucz serwerowi, definiuj\u0105c zmienn\u0105\nwlp.aes.encryption.key. Je\u015bli okre\u015blono opcj\u0119 --passwordBase64Key,\nnie mo\u017cna okre\u015bli\u0107 opcji --aesConfigFile--passwordKey lub.
 sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 sslCert.option-desc.aesConfigFile=\tPlik w\u0142a\u015bciwo\u015bci XML lub Java ze zmienn\u0105 o nazwie wlp.password.encryption.key lub wlp.aes.encryption.key z prawid\u0142owymi warto\u015bciami. Obie zmienne nie mog\u0105 by\u0107 okre\u015blone w tym samym pliku.\n\tJe\u015bli podano --aesConfigFile, w\u00f3wczas --passwordBase64Key i --passwordKey nie mog\u0105 by\u0107 okre\u015blone.
 
@@ -144,7 +144,7 @@ createLTPAKeys.option-desc.password.encoding=\tOkre\u015bl spos\u00f3b kodowania
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[klucz]
 createLTPAKeys.option-desc.password.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany do kodowania has\u0142a kluczy LTPA\n\tza pomoc\u0105 algorytmu AES. Ten \u0142a\u0144cuch zostanie przetworzony przy\n\tu\u017cyciu funkcji mieszaj\u0105cej w celu uzyskania klucza szyfrowania\n\tu\u017cywanego do szyfrowania i deszyfrowania has\u0142a. Ten klucz mo\u017cna\n\tudost\u0119pni\u0107 na serwerze, definiuj\u0105c zmienn\u0105\n\twlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105 b\u0119dzie ten klucz.\n \tJe\u015bli ta opcja nie zostanie podana, powinien zosta\u0107 u\u017cyty klucz\n\tdomy\u015blny.
 createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
-createLTPAKeys.option-desc.passwordBase64Key=\tZakodowany base64 klucz bitowy AES-256 u\u017cywany do szyfrowania i odszyfrowywania has\u0142o. Klucz mo\u017ce by\u0107 dostarczony do serwera poprzez zdefiniowanie zmiennej zmienn\u0105 wlp.aes.encryption.key, kt\u00f3rej warto\u015bci\u0105 jest klucz. Je\u015bli --passwordBase64Key to --aesConfigFile i --passwordKey nie mog\u0105 by\u0107 okre\u015blone.
+createLTPAKeys.option-desc.passwordBase64Key=\tKlucz Base64-encodedAES-256 ma s\u0142u\u017cy\u0107 do szyfrowania i deszyfrowania\nhas\u0142a. Podaj ten klucz serwerowi, definiuj\u0105c zmienn\u0105\nwlp.aes.encryption.key. Je\u015bli okre\u015blono opcj\u0119 --passwordBase64Key,\nnie mo\u017cna okre\u015bli\u0107 opcji --aesConfigFile--passwordKey lub.
 createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
 createLTPAKeys.option-desc.aesConfigFile=\tPlik w\u0142a\u015bciwo\u015bci XML lub Java ze zmienn\u0105 o nazwie wlp.password.encryption.key lub wlp.aes.encryption.key z prawid\u0142owymi warto\u015bciami. Obie zmienne nie mog\u0105 by\u0107 okre\u015blone w tym samym pliku.\n\tJe\u015bli podano --aesConfigFile, w\u00f3wczas --passwordBase64Key i --passwordKey nie mog\u0105 by\u0107 okre\u015blone.
 
@@ -207,6 +207,6 @@ configureFIPS.option-desc.4.disable=\tWy\u0142\u0105cz FIPS 140-3, ustawiaj\u010
 generateaeskey.desc=\tGeneruje warto\u015b\u0107 do umieszczenia w zmiennej konfiguracyjnej wlp.aes.encryption.key dla szyfrowania aes.
 generateaeskey.usage.options=\t{0} generateAESKey [opcje]
 generateaeskey.option-key.key=\ \ \ \ --key =[key]
-generateaeskey.option-desc.key=\tOkre\u015bla klucz u\u017cywany podczas szyfrowania AES. Ten ci\u0105g jest hashowany w celu utworzenia klucza szyfrowania, kt\u00f3ry b\u0119dzie u\u017cywany do szyfrowania i odszyfrowywania hase\u0142. Klucz szyfrowania jest zapisywany w formacie base64 w zmiennej o nazwie wlp.aes.encryption.key. Je\u015bli ta opcja jest zostanie pomini\u0119ta, wygenerowany zostanie losowy klucz.
+generateaeskey.option-desc.key=\tTen ci\u0105g znak\u00f3w jest poddawany funkcji skr\u00f3tu w celu utworzenia klucza szyfruj\u0105cego,\nkt\u00f3ry s\u0142u\u017cy do szyfrowania i deszyfrowania hase\u0142. Je\u015bli ta opcja zostanie\npomini\u0119ta, generowany jest losowy klucz.
 generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
 generateaeskey.option-desc.createConfigFile=\tTworzy plik XML z wygenerowan\u0105 warto\u015bci\u0105 zapisan\u0105 w zmiennej o nazwie wlp.aes.encryption.key. Je\u015bli nie zostanie podana, wygenerowana warto\u015b\u0107 zostanie zapisana na ekranie konsoli.

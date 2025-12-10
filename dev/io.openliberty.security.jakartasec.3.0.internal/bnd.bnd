@@ -34,7 +34,7 @@ Export-Package: \
 Import-Package: \
     *
 
-instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resources/resources/*.class
+instrument.classesExcludes: io/openliberty/security/jakartasec/internal/resources/*.class
 
 -buildpath: \
 	com.ibm.ws.kernel.boot;version=latest,\

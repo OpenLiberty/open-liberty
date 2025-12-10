@@ -17,12 +17,16 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.channel.ChannelConfig;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.ChannelPromise;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.util.ReferenceCountUtil;
 
 /**
@@ -31,7 +35,7 @@ import io.netty.util.ReferenceCountUtil;
  * peer already closed the connection. This handler MUST be added before the dispatcher handler to be able to
  * appropriately handle requests
  */
-public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
+public class LibertyHttpRequestHandler extends ChannelDuplexHandler {
 
     private static final TraceComponent tc = Tr.register(LibertyHttpRequestHandler.class);
     private static final int DEFAULT_MAX_QUEUE = 50;
@@ -50,9 +54,9 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
     private int completedRequests = 0;
 
     private boolean closeAfterDrain = false;
+    private boolean handlingRequest = false;
 
     public LibertyHttpRequestHandler(HttpChannelConfig config) {
-        super(false);
         int configMaxRequests = config.getMaximumPersistentRequests();
 
         this.hasMaxRequests = configMaxRequests > 0;
@@ -88,19 +92,21 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
     }
 
     @Override
-    protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
-
-        if (!(request.decoderResult().isFinished() && request.decoderResult().isSuccess())) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "Bad decode result, close connection. Cause: " + request.decoderResult().cause());
+    public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
+        if (msg instanceof FullHttpRequest) {
+            FullHttpRequest request = (FullHttpRequest) msg;
+            if (!(request.decoderResult().isFinished() && request.decoderResult().isSuccess())) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Bad decode result, close connection. Cause: " + request.decoderResult().cause());
+                }
+                ReferenceCountUtil.safeRelease(request);
+                context.close();
+                return;
             }
-            ReferenceCountUtil.safeRelease(request);
-            context.close();
-            return;
-        }
-        synchronized (context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)) {
             if (closeAfterDrain || (hasMaxRequests && acceptedRequests >= maxRequests)) {
-
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Pausing read for channel " + context.channel());
+                }
                 ReferenceCountUtil.safeRelease(request);
                 closeAfterDrain = true;
                 pauseReading(context);
@@ -111,7 +117,6 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
                 Tr.debug(this, tc, "Reading Full HTTP Request for channel: " + context.channel());
             }
 
-            boolean handlingRequest = Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.HANDLING_REQUEST).get());
             if (handlingRequest) {
                 if (!requestQueue.offer(request)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -122,7 +127,6 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
                     pauseReading(context);
                     return;
                 }
-
                 acceptedRequests++;
                 if (requestQueue.remainingCapacity() == 0) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -137,52 +141,46 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
                 }
                 return;
             }
-            context.channel().attr(NettyHttpConstants.HANDLING_REQUEST).set(true);
+            handlingRequest = true;
             acceptedRequests++;
             if (hasMaxRequests && acceptedRequests >= maxRequests) {
                 closeAfterDrain = true;
                 pauseReading(context);
             }
-
             context.fireChannelRead(request);
-
+        } else {
+            context.fireChannelRead(msg);
         }
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
         if (!peerClosedConnection && (event instanceof ChannelInputShutdownEvent || event instanceof ChannelInputShutdownReadComplete)) {
-            synchronized (context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)) {
-                // If handling request we just need to wait until processing finishes to handle the closing
-                // else we should close the channel up now
-                if (Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.HANDLING_REQUEST).get())) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Peer closed the connection while we were handling a request, ending the connection after finishing processing");
-                    }
-                    peerClosedConnection = true;
-                    pauseReading(context);
-                } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Peer closed the connection and there was no request being handled, closing the channel");
-                    }
-                    context.close();
+            // If handling request we just need to wait until processing finishes to handle the closing
+            // else we should close the channel up now
+            if (handlingRequest) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Peer closed the connection while we were handling a request, ending the connection after finishing processing");
                 }
-                return;
+                peerClosedConnection = true;
+                pauseReading(context);
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Peer closed the connection and there was no request being handled, closing the channel");
+                }
+                context.close();
             }
+            return;
         }
         super.userEventTriggered(context, event);
     }
 
-    // Method to allow for handling the next request if any in the queue of requests
-    public void processNextRequest() {
-        final ChannelHandlerContext context = requestHandlerContext;
-        if (context == null) {
-            return;
-        }
-
-        synchronized (context.channel().attr(NettyHttpConstants.HANDLING_REQUEST)) {
+    @Override
+    public void write(ChannelHandlerContext context, Object message, ChannelPromise promise) throws Exception{
+        ChannelFuture writeFuture = context.write(message, promise);
+        if (message instanceof LastHttpContent) {
+            // Found last HTTP content for the current request, can queue up other reads now
             completedRequests++;
-
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Processing next available request in request queue. Completed requests: " + completedRequests + " of max " +
                                    maxRequests + ". Queued requests: " + requestQueue.size());
@@ -192,29 +190,43 @@ public class LibertyHttpRequestHandler extends SimpleChannelInboundHandler<FullH
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Closing connection: " + requestHandlerContext.channel() + " because peer ended the connection and we have finished processing.");
                 }
-                requestHandlerContext.close();
+                writeFuture.addListener(new ChannelFutureListener() {
+                    @Override
+                    public void operationComplete(ChannelFuture future) throws Exception {
+                        requestHandlerContext.close();
+                    }
+                });
                 return;
             }
 
             FullHttpRequest nextRequest = requestQueue.poll();
             if (nextRequest == null) {
-                requestHandlerContext.channel().attr(NettyHttpConstants.HANDLING_REQUEST).set(false);
-
+                handlingRequest = false;
                 if (draining) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "No additional requests remaining. Closing channel.");
                     }
-                    context.close();
-                } else if (!context.channel().config().isAutoRead()) {
-                    resumeReading(context);
+                    writeFuture.addListener(new ChannelFutureListener() {
+                        @Override
+                        public void operationComplete(ChannelFuture future) throws Exception {
+                            requestHandlerContext.close();
+                        }
+                    });
+                } else if(!context.channel().config().isAutoRead()){
+                    resumeReading(context);                                                      
                 }
                 return;
-            }
-            if (!draining && !context.channel().config().isAutoRead() && requestQueue.remainingCapacity() > 0) {
+            }    
+            else if(!draining && !context.channel().config().isAutoRead() && requestQueue.remainingCapacity()>0){
                 resumeReading(context);
             }
-            requestHandlerContext.channel().attr(NettyHttpConstants.HANDLING_REQUEST).set(true);
-            requestHandlerContext.fireChannelRead(nextRequest);
+            handlingRequest = true;
+            writeFuture.addListener(new ChannelFutureListener() {
+                @Override
+                public void operationComplete(ChannelFuture future) throws Exception {
+                    requestHandlerContext.fireChannelRead(nextRequest);
+                }
+            });
         }
     }
 

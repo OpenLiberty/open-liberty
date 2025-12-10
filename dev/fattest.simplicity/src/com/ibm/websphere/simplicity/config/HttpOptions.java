@@ -17,6 +17,16 @@ import javax.xml.bind.annotation.XmlAttribute;
 public class HttpOptions extends ConfigElement {
 
     private Boolean ignoreWriteAfterCommit;
+    private Integer messageSizeLimit;
+
+    public Integer getMessageSizeLimit() {
+        return this.messageSizeLimit;
+    }
+    
+    @XmlAttribute
+    public void setMessageSizeLimit(Integer messageSizeLimit) {
+        this.messageSizeLimit = messageSizeLimit;
+    }
 
     public Boolean isIgnoreWriteAfterCommit() {
         return this.ignoreWriteAfterCommit;
@@ -34,6 +44,8 @@ public class HttpOptions extends ConfigElement {
             buf.append("id=\"" + this.getId() + "\" ");
         if (ignoreWriteAfterCommit != null)
             buf.append("ignoreWriteAfterCommit=\"" + ignoreWriteAfterCommit + "\" ");
+        if (messageSizeLimit != null)
+            buf.append("messageSizeLimit=\"" + messageSizeLimit + "\" ");
         buf.append("}");
         return buf.toString();
     }
