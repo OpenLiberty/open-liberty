@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2019 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.http2.test;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -31,6 +33,9 @@ public class H2StreamResult {
     private int streamId;
     private final ArrayList<Frame> expectedResponse, actualResponse;
     private final ArrayList<FrameTypes> actualResponseTypes, expectedResponseTypes;
+
+    private ByteArrayOutputStream actualData = new ByteArrayOutputStream();
+    private byte[] expectedData = null;
 
     private boolean endOfStreamFlagReceived = false;
     private boolean endOfHeadersFlagReceived = false;
@@ -143,6 +148,7 @@ public class H2StreamResult {
             if (s.toLowerCase().contains("donotadd")) {
                 return;
             }
+            this.actualData.write(fd.getData(), 0, fd.getData().length);
         }
 
         this.actualResponse.add(frame);
@@ -260,7 +266,7 @@ public class H2StreamResult {
                     exceptionsOfStream.add(new MissingExpectedFramesException("Expected Frame Type(s) not found: \n" + type.toString()));
                 }
             }
-            if (0 == exceptionsOfStream.size()) {
+            if (exceptionsOfStream.isEmpty()) {
                 if (LOGGER.isLoggable(Level.INFO))
                     LOGGER.logp(Level.INFO, CLASS_NAME, "checkResult", "All frame types present for streamId: " + streamId);
             }
@@ -317,6 +323,11 @@ public class H2StreamResult {
                     }
                 }
 
+                if (expectedFrame.getFrameType() == FrameTypes.DATA && expectedData != null) {
+                    // We won't do a 1:1 match here; continue the loop.
+                    continue;
+                }
+
                 boolean expectedFrameFound = false;
                 for (int j = 0; j < this.actualResponse.size(); j++) {
                     actualFrame = actualResponse.get(j);
@@ -338,6 +349,17 @@ public class H2StreamResult {
                 exceptionsOfStream.add(new MissingExpectedFramesException("Expected frame(s) not found: \n" + expectedFrameNotFound.toString()));
 
         }
+
+        if (this.expectedData != null) {
+        byte[] actualBytes = this.actualData.toByteArray();
+        if (!Arrays.equals(this.expectedData, actualBytes)) {
+            exceptionsOfStream.add(new MissingExpectedFramesException(
+                "StreamId " + streamId
+                + " did not receive the expected data.\n"
+                + "Expected: " + Arrays.toString(expectedData)
+                + "\nActual:   " + Arrays.toString(actualBytes)));
+        }
+    }
         return exceptionsOfStream;
     }
 
