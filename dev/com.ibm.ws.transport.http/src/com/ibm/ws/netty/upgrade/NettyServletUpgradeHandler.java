@@ -12,8 +12,9 @@ package com.ibm.ws.netty.upgrade;
 import java.io.EOFException;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -148,7 +149,13 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         peerClosed.set(true);
         if (isReadingAsync && callback != null) {
             isReadingAsync = false;
-            HttpDispatcher.getExecutorService().execute(() -> {
+            ExecutorService executor = HttpDispatcher.getExecutorService();
+            if (executor == null) {
+                // Dispatcher is already deactivated - nothing to schedule.
+                return;
+            }
+
+            executor.execute(() -> {
                 try {
                     callback.error(vc, readContext,
                                    new EOFException("Connection closed: Read failed. Possible end of stream. local=" +
