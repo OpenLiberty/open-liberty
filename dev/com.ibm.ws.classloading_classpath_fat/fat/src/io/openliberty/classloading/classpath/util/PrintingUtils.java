@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static io.openliberty.classloading.classpath.fat.FATSuite.LIB14_CLASS_NAM
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB15_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB16_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB17_CLASS_NAME;
+import static io.openliberty.classloading.classpath.fat.FATSuite.LIB18_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB1_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB2_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.LIB3_CLASS_NAME;
@@ -68,6 +69,7 @@ public class PrintingUtils {
             printLoadClass(clazz, LIB15_CLASS_NAME);
             printLoadClass(clazz, LIB16_CLASS_NAME);
             printLoadClass(clazz, LIB17_CLASS_NAME);
+            printLoadClass(clazz, LIB18_CLASS_NAME);
             printLoadClass(clazz, EJB_LIB1_CLASS_NAME);
             printLoadClass(clazz, EJB_LIB2_CLASS_NAME);
             printLoadClass(clazz, EJB_LIB3_CLASS_NAME);

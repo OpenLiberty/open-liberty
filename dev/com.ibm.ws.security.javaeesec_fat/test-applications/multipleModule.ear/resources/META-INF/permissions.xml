@@ -4,6 +4,11 @@
     xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
         http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
     version="7">
+
+   <permission>
+      <class-name>javax.security.auth.AuthPermission</class-name>
+      <name>wssecurity.getCallerSubject</name>
+   </permission>
     
    <permission>
       <class-name>javax.security.auth.AuthPermission</class-name>

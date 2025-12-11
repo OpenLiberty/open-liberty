@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,7 +16,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -58,7 +59,7 @@ public class InitialRequest implements Serializable {
     public static final int LENGTH_INT = 4;
 
     private static final int OFFSET_DATA = 1;
-    private static final String CHARSET_NAME = "UTF-8";
+    private static final Charset CHARSET_NAME = StandardCharsets.UTF_8;
     private static final int postParamSaveSize = 16000;
 
     public InitialRequest(HttpServletRequest request, String reqUrl, String requestURL, String method, String inResponseTo, String formlogout,
@@ -157,7 +158,7 @@ public class InitialRequest implements Serializable {
      * The format of the data is as follows:
      * <based64 encoded data[0] from serializeInputStreamData()>.<base 64 encoded data[1]>. and so on.
      */
-    public String serializePostParams(IExtendedRequest req) throws IOException, UnsupportedEncodingException, IllegalStateException {
+    public String serializePostParams(IExtendedRequest req) throws IOException, IllegalStateException {
         String output = null;
 
         if (this.savedPostParams != null) {
@@ -196,7 +197,7 @@ public class InitialRequest implements Serializable {
      * deserialize Post parameters.
      * The code doesn't expect that the req, cookieValueBytes, or reqURL is null.
      */
-    private HashMap deserializePostParams(byte[] paramsbytes, IExtendedRequest req) throws IOException, UnsupportedEncodingException, IllegalStateException {
+    private HashMap deserializePostParams(byte[] paramsbytes, IExtendedRequest req) throws IOException, IllegalStateException {
         HashMap output = null;
         List<byte[]> data = splitBytes(paramsbytes, (byte) '.');
         int total = data.size();

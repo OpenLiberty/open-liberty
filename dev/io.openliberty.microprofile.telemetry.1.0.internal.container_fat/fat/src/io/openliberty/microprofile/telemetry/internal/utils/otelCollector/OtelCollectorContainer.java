@@ -12,14 +12,14 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.internal.utils.otelCollector;
 
-import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
-
 import java.io.File;
 
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.utility.DockerImageName;
 import org.testcontainers.utility.ImageNameSubstitutor;
+
+import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 
 /**
  * A container for the otelCollector trace server
@@ -42,7 +42,7 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         this(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR, configFile);
     }
 
-        public OtelCollectorContainer(File configFile, int port) {
+    public OtelCollectorContainer(File configFile, int port) {
         this(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR, configFile, port);
     }
 
@@ -50,6 +50,8 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         this(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR, configFile, tlsCert, tlsKey);
     }
 
+    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.117.0
+    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     public OtelCollectorContainer(DockerImageName imageName, File configFile) {
         super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
                                                                                           ImageNameSubstitutor.instance()
@@ -62,7 +64,9 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         withCommand("--config=/etc/otel-collector-config.yaml");
     }
 
-        public OtelCollectorContainer(DockerImageName imageName, File configFile, int PROMETHEUS_METRIC_PORT) {
+    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.117.0
+    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
+    public OtelCollectorContainer(DockerImageName imageName, File configFile, int PROMETHEUS_METRIC_PORT) {
         super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
                                                                                           ImageNameSubstitutor.instance()
                                                                                                               .apply(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR)
@@ -74,6 +78,8 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         withCommand("--config=/etc/otel-collector-config.yaml");
     }
 
+    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.117.0
+    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     public OtelCollectorContainer(DockerImageName imageName, File configFile, File tlsCert, File tlsKey) {
         super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
                                                                                           ImageNameSubstitutor.instance()
@@ -101,7 +107,7 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         return getMappedPort(OTLP_GRPC_PORT);
     }
 
-            /**
+    /**
      * Get the port to use to send OTLP spans via gRPC
      * <p>
      * Only valid when the container is started

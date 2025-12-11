@@ -25,6 +25,7 @@ import javax.sql.DataSource;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import oracle.security.pki.OraclePKIProvider;
 
 @SuppressWarnings("serial")
@@ -62,6 +63,7 @@ public class OracleSSLTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testOracleWalletSSO() throws Exception {
         try (Connection con = ds_oracle_wallet_sso.getConnection(); Statement stmt = con.createStatement()) {
             stmt.execute("SELECT 1 FROM DUAL");
@@ -69,6 +71,7 @@ public class OracleSSLTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipJavaSemeruWithFipsEnabledRule
     public void testOracleWalletP12() throws Exception {
         try (Connection con = ds_oracle_wallet_p12.getConnection(); Statement stmt = con.createStatement()) {
             stmt.execute("SELECT 1 FROM DUAL");

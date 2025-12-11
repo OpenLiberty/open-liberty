@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -137,13 +137,18 @@ public class HttpServerStatsMonitor extends StatisticActions {
 		tl_startNanos.set(System.nanoTime());
 		HttpStatAttributes.Builder builder = HttpStatAttributes.builder();
 
+		
+		boolean is4xxCode = false;
+		
 		/*
 		 *  Get Status Code (and Exception if it exists)
 		 */
 		if (myargs.length > 0) {
 			if (myargs[0] != null && myargs[0] instanceof StatusCodes) {
 				StatusCodes statCode = (StatusCodes) myargs[0];
+				
 				builder.withResponseStatus(statCode.getIntCode());
+				is4xxCode = (statCode.getIntCode() % 400 <= 99 );
 			}
 
 			if (myargs[2] != null && myargs[2] instanceof Exception) {
@@ -165,8 +170,16 @@ public class HttpServerStatsMonitor extends StatisticActions {
 			 try {
 
 					HttpRequest httpRequest = httpDispatcherLink.getRequest();
+					if (!is4xxCode) {
+						builder.withHttpRoute(httpRequest.getURI());
+					} else {
+						/*
+						 * For 4xx response codes,
+						 *  set HTTP route to "/"
+						 */
+						builder.withHttpRoute("/");
+					}
 					
-					builder.withHttpRoute(httpRequest.getURI());
 					builder.withRequestMethod(httpRequest.getMethod());
 					builder.withScheme(httpRequest.getScheme());
 					resolveNetworkProtocolInfo(httpRequest.getVersion(), builder);

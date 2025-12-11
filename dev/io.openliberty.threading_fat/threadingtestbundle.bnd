@@ -1,0 +1,28 @@
+#****************************************************************************
+# Copyright (c) 2015, 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#****************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+Bundle-Name: ThreadingTestBundle
+Bundle-SymbolicName: test.bundle.threading; singleton:=true
+Bundle-Description: Bundle that provides executor overrides for ThreadFactory and TaskInterceptor; version=${bVersion}
+
+Export-Package: test.bundle.threading;version='1.0'
+
+Import-Package: com.ibm.wsspi.threading
+
+Service-Component:\
+    test.bundle.threading.ThreadFactoryImpl;\
+        implementation:=test.bundle.threading.ThreadFactoryImpl;\
+        provide:=java.util.concurrent.ThreadFactory;\
+        properties:="com.ibm.ws.threading.defaultExecutorThreadFactory=true",\
+    test.bundle.threading.TaskInterceptorImpl;\
+        implementation:=test.bundle.threading.TaskInterceptorImpl;\
+        provide:=com.ibm.wsspi.threading.ExecutorServiceTaskInterceptor

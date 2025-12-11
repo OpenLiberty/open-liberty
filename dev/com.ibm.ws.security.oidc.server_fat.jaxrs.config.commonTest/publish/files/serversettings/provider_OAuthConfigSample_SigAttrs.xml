@@ -34,7 +34,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverRS256_clientRS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverRS256_clientHS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverRS256_clientNONE,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_clientBad_serverRS256_clientRS256"
 				scope="ALL_SCOPES"
@@ -64,7 +64,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverHS256_clientHS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverHS256_clientRS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverHS256_clientNONE,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_clientBad_serverHS256_clientHS256"
 				scope="ALL_SCOPES"
@@ -95,7 +95,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverNONE_clientNONE,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverNONE_clientRS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverNONE_clientHS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_clientBad_serverNONE_clientNONE"
 				scope="ALL_SCOPES"
@@ -128,7 +128,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverRS256_clientRS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverRS256_clientHS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverRS256_clientNONE,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_clientBad_serverRS256_clientRS256"
 				scope="ALL_SCOPES"
@@ -159,7 +159,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverHS256_clientHS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverHS256_clientRS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverHS256_clientNONE,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_clientBad_serverHS256_clientHS256"
 				scope="ALL_SCOPES"
@@ -191,7 +191,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverNONE_clientNONE,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverNONE_clientRS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_serverNONE_clientHS256,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_clientBad_serverNONE_clientNONE"
 				scope="ALL_SCOPES"
@@ -222,7 +222,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_serverBad_serverRS256_clientRS256,https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/client_keyTrust_serverBad_serverRS256_clientRS256"
 				scope="ALL_SCOPES"
@@ -286,7 +286,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_serverBad_serverRS256_clientRS256,https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/client_keyTrust_serverBad_serverRS256_clientRS256"
 				scope="ALL_SCOPES"
@@ -318,7 +318,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_serverBad_serverRS256_clientRS256,https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/client_keyTrust_serverBad_serverRS256_clientRS256"
 				scope="ALL_SCOPES"
@@ -349,7 +349,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_keyTrust_serverBad_serverRS256_clientRS256,https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidcclient/redirect/client_keyTrust_serverBad_serverRS256_clientRS256"
 				scope="ALL_SCOPES"

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.microprofile.openapi20.internal.cache;
 
@@ -42,6 +39,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
+import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
 import io.smallrye.openapi.api.OpenApiConfig;
 import io.smallrye.openapi.runtime.OpenApiProcessor;
 import io.smallrye.openapi.runtime.OpenApiStaticFile;
@@ -130,7 +128,7 @@ public class CacheEntry {
                 return null;
             }
         } catch (IOException e) {
-            Tr.warning(tc, "Unexpected error attempting to read cache for the {0} application. The error is {1}", applicationName, e.toString());
+            Tr.warning(tc, MessageConstants.OPENAPI_CACHE_READ_ERROR_CWWKO1688W, applicationName, e.toString());
             return null;
         }
 
@@ -408,7 +406,7 @@ public class CacheEntry {
             }
         } catch (Exception e) {
             // warn upon unexpected failure
-            Tr.warning(tc, "An unexpected error occurred while writing the cache for application {0}. The error is {1}", appName, e.toString());
+            Tr.warning(tc, MessageConstants.OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W, appName, e.toString());
         }
     }
 

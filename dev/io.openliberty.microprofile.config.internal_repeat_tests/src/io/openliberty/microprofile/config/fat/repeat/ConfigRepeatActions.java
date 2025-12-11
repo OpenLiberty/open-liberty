@@ -12,6 +12,7 @@ package io.openliberty.microprofile.config.fat.repeat;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.utils.tck.TCKUtilities;
 
 /**
  * Contains static methods for creating standard RepeatTests rules for Config tests
@@ -44,12 +45,15 @@ public class ConfigRepeatActions {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault(String server) {
-        return MicroProfileActions.repeat(server, TestMode.FULL,
-                                          MicroProfileActions.MP70_EE10, //Config 3.1
-                                          MicroProfileActions.MP70_EE11, //Config 3.1
-                                          MicroProfileActions.MP60, //Config 3.0
-                                          MicroProfileActions.MP41, //Config 2.0
-                                          MicroProfileActions.MP33); //Config 1.4
+        return MicroProfileActions.repeatIf(server,
+                                            TCKUtilities::areAllFeaturesPresent,
+                                            TestMode.FULL,
+                                            false,
+                                            MicroProfileActions.MP70_EE10, //Config 3.1
+                                            MicroProfileActions.MP70_EE11, //Config 3.1
+                                            MicroProfileActions.MP60, //Config 3.0
+                                            MicroProfileActions.MP41, //Config 2.0
+                                            MicroProfileActions.MP33); //Config 1.4
     }
 
     /**
@@ -62,11 +66,14 @@ public class ConfigRepeatActions {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault20Up(String server) {
-        return MicroProfileActions.repeat(server, TestMode.FULL,
-                                          MicroProfileActions.MP70_EE10, //Config 3.1
-                                          MicroProfileActions.MP70_EE11, //Config 3.1
-                                          MicroProfileActions.MP60, //Config 3.0
-                                          MicroProfileActions.MP41); //Config 2.0
+        return MicroProfileActions.repeatIf(server,
+                                            TCKUtilities::areAllFeaturesPresent,
+                                            TestMode.FULL,
+                                            false,
+                                            MicroProfileActions.MP70_EE10, //Config 3.1
+                                            MicroProfileActions.MP70_EE11, //Config 3.1
+                                            MicroProfileActions.MP60, //Config 3.0
+                                            MicroProfileActions.MP41); //Config 2.0
     }
 
     /**
@@ -93,10 +100,13 @@ public class ConfigRepeatActions {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault30Up(String server, boolean skipTransformation) {
-        return MicroProfileActions.repeat(server, TestMode.FULL, skipTransformation,
-                                          MicroProfileActions.MP70_EE10, //Config 3.1
-                                          MicroProfileActions.MP70_EE11, //Config 3.1
-                                          MicroProfileActions.MP60); //Config 3.0
+        return MicroProfileActions.repeatIf(server,
+                                            TCKUtilities::areAllFeaturesPresent,
+                                            TestMode.FULL,
+                                            skipTransformation,
+                                            MicroProfileActions.MP70_EE10, //Config 3.1
+                                            MicroProfileActions.MP70_EE11, //Config 3.1
+                                            MicroProfileActions.MP60); //Config 3.0
     }
 
     /**
@@ -109,10 +119,31 @@ public class ConfigRepeatActions {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatDefault31(String server) {
-        return MicroProfileActions.repeat(server, TestMode.FULL,
-                                          MicroProfileActions.MP70_EE10, //Config 3.1
-                                          MicroProfileActions.MP70_EE11, //Config 3.1
-                                          MicroProfileActions.MP61); //Config 3.1
+        return MicroProfileActions.repeatIf(server,
+                                            TCKUtilities::areAllFeaturesPresent,
+                                            TestMode.FULL,
+                                            false,
+                                            MicroProfileActions.MP70_EE10, //Config 3.1
+                                            MicroProfileActions.MP70_EE11, //Config 3.1
+                                            MicroProfileActions.MP61); //Config 3.1
+    }
+
+    /**
+     * Return a rule to repeat tests for MicroProfile 7.0 with both EE10 and EE11.
+     * This translates to the latest MicroProfile versions which contain Config 3.1.
+     *
+     * Covers only Config 3.1. May wish to add newer versions in future.
+     *
+     * @param server the server name
+     * @return the RepeatTests rule
+     */
+    public static RepeatTests repeatMp70(String server) {
+        return MicroProfileActions.repeatIf(server,
+                                            TCKUtilities::areAllFeaturesPresent,
+                                            TestMode.FULL,
+                                            false,
+                                            MicroProfileActions.MP70_EE10, //Config 3.1
+                                            MicroProfileActions.MP70_EE11); //Config 3.1
     }
 
     /**
@@ -124,20 +155,23 @@ public class ConfigRepeatActions {
      * @return the RepeatTests rule
      */
     public static RepeatTests repeatAll(String server) {
-        return MicroProfileActions.repeat(server, TestMode.FULL,
-                                          MicroProfileActions.MP70_EE10,
-                                          MicroProfileActions.MP70_EE11,
-                                          MicroProfileActions.MP61,
-                                          MicroProfileActions.MP60,
-                                          MicroProfileActions.MP50,
-                                          MicroProfileActions.MP41,
-                                          MicroProfileActions.MP40,
-                                          MicroProfileActions.MP33,
-                                          MicroProfileActions.MP32,
-                                          MicroProfileActions.MP30,
-                                          MicroProfileActions.MP22,
-                                          MicroProfileActions.MP20,
-                                          MicroProfileActions.MP13,
-                                          MicroProfileActions.MP12);
+        return MicroProfileActions.repeatIf(server,
+                                            TCKUtilities::areAllFeaturesPresent,
+                                            TestMode.FULL,
+                                            false,
+                                            MicroProfileActions.MP70_EE10,
+                                            MicroProfileActions.MP70_EE11,
+                                            MicroProfileActions.MP61,
+                                            MicroProfileActions.MP60,
+                                            MicroProfileActions.MP50,
+                                            MicroProfileActions.MP41,
+                                            MicroProfileActions.MP40,
+                                            MicroProfileActions.MP33,
+                                            MicroProfileActions.MP32,
+                                            MicroProfileActions.MP30,
+                                            MicroProfileActions.MP22,
+                                            MicroProfileActions.MP20,
+                                            MicroProfileActions.MP13,
+                                            MicroProfileActions.MP12);
     }
 }

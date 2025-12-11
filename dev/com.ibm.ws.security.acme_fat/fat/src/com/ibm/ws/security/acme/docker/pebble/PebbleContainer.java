@@ -58,7 +58,7 @@ public class PebbleContainer extends CAContainer {
 
 	private Network network = Network.newNetwork();
 
-	public final GenericContainer<?> challtestsrv = new GenericContainer<>("letsencrypt/pebble-challtestsrv")
+	public final GenericContainer<?> challtestsrv = new GenericContainer<>(DockerImageName.parse("letsencrypt/pebble-challtestsrv:v2.3.1"))
 			.withCommand("pebble-challtestsrv").withExposedPorts(DNS_PORT, CHALL_MANAGEMENT_PORT).withNetwork(network)
 			.withLogConsumer(o -> System.out.print("[CHL] " + o.getUtf8String()));
 
@@ -99,10 +99,12 @@ public class PebbleContainer extends CAContainer {
 	 *            Address of the DNS server to use to make DNS lookups for
 	 *            domains.
 	 */
+	    //TODO switch to use ghcr.io/letsencrypt/pebble:2.6.0
+	    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
 	public PebbleContainer() {
 		super(new ImageFromDockerfile()
 				.withDockerfileFromBuilder(builder -> builder.from(
-						ImageNameSubstitutor.instance().apply(DockerImageName.parse("letsencrypt/pebble")).asCanonicalNameString())
+						ImageNameSubstitutor.instance().apply(DockerImageName.parse("letsencrypt/pebble:v2.3.1")).asCanonicalNameString())
 						.copy("pebble-config.json", "/test/config/pebble-config.json").build())
 				.withFileFromFile("pebble-config.json", PEBBLE_CONFIG_JSON_FILE), 5002, 14000, 15000);
 		challtestsrv.withStartupAttempts(20);

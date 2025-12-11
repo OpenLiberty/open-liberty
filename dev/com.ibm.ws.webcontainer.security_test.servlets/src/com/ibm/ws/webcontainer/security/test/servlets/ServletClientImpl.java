@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +36,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.HttpHostConnectException;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -61,6 +64,7 @@ public abstract class ServletClientImpl implements ServletClient {
     protected String ssoCookieName = DEFAULT_LTPA_COOKIE_NAME;
     protected String ssoCookie;
     protected DefaultHttpClient client;
+    private boolean isJaccScenario = false;
 
     protected ServletClientImpl(String host, int port, boolean isSSL, String contextRoot) {
         if (host == null || port == 0) {
@@ -331,6 +335,11 @@ public abstract class ServletClientImpl implements ServletClient {
             failWithMessage("Caught unexpected exception: " + e);
         }
         return false;
+    }
+
+    @Override
+    public void setJaccValidation(boolean isJaccScenario) {
+        this.isJaccScenario = isJaccScenario;
     }
 
     /**
@@ -676,6 +685,93 @@ public abstract class ServletClientImpl implements ServletClient {
         assertTrue("The response did not contain the expected isUserInRole(" + specifiedRole + ")",
                    response.contains("isUserInRole(" + specifiedRole + "): " + isUserInSpecifiedRole));
 
+        if (isJaccScenario) {
+            verifyPolicyContextHandlers(response);
+        }
         return true;
     }
+
+    private static final Map<String, Set<String>> expectedHandlers = new HashMap<>();
+    private static final Map<String, Set<String>> notExpectedHandlers = new HashMap<>();
+    private static final String EE7_8 = "EE7_8";
+    private static final String EE9_10 = "EE9_10";
+    private static final String EE11 = "EE11";
+    static {
+        Set<String> ee7_8expectedHandlers = new HashSet<>();
+        Set<String> ee7_8notExpectedHandlers = new HashSet<>();
+        Set<String> ee9_10expectedHandlers = new HashSet<>();
+        Set<String> ee9_10notExpectedHandlers = new HashSet<>();
+        Set<String> ee11expectedHandlers = new HashSet<>();
+        Set<String> ee11notExpectedHandlers = new HashSet<>();
+
+        String commonPolicyContextHandler = "javax.security.auth.Subject.container";
+        String principalMapperContextHandler = "jakarta.security.jacc.PrincipalMapper";
+        String[] soapMessagePolicyContextHandlers = new String[] { "javax.xml.soap.SOAPMessage", "jakarta.xml.soap.SOAPMessage" };
+        String[] httpServletRequestPolicyContextHandlers = new String[] { "javax.servlet.http.HttpServletRequest", "jakarta.servlet.http.HttpServletRequest" };
+        String[] ejbPolicyContextHandlers = new String[] { "javax.ejb.EnterpriseBean", "jakarta.ejb.EnterpriseBean" };
+        String[] ejbArgumentsPolicyContextHandlers = new String[] { "javax.ejb.arguments", "jakarta.ejb.arguments" };
+        int JAVAX_INDEX = 0;
+        int JAKARTA_INDEX = 1;
+
+        // javax.security.auth.Subject.container is expected in all of versions
+        ee7_8expectedHandlers.add(commonPolicyContextHandler);
+        ee9_10expectedHandlers.add(commonPolicyContextHandler);
+        ee11expectedHandlers.add(commonPolicyContextHandler);
+
+        // jakarta.security.jacc.PrincipalMapper is only expected with EE 11
+        ee7_8notExpectedHandlers.add(principalMapperContextHandler);
+        ee9_10notExpectedHandlers.add(principalMapperContextHandler);
+        ee11expectedHandlers.add(principalMapperContextHandler);
+
+        // For servlet.http.HttpServletRequest handlers, the jakarta is expected for all versions, but the javax one is only expected for EE 7_8
+        ee7_8expectedHandlers.add(httpServletRequestPolicyContextHandlers[JAVAX_INDEX]);
+        ee9_10notExpectedHandlers.add(httpServletRequestPolicyContextHandlers[JAVAX_INDEX]);
+        ee11notExpectedHandlers.add(httpServletRequestPolicyContextHandlers[JAVAX_INDEX]);
+
+        ee7_8expectedHandlers.add(httpServletRequestPolicyContextHandlers[JAKARTA_INDEX]);
+        ee9_10expectedHandlers.add(httpServletRequestPolicyContextHandlers[JAKARTA_INDEX]);
+        ee11expectedHandlers.add(httpServletRequestPolicyContextHandlers[JAKARTA_INDEX]);
+
+        // For all other handlers, neither the javax or jakarta one is expected
+        String[][] remainingContextHandlers = { soapMessagePolicyContextHandlers, ejbPolicyContextHandlers, ejbArgumentsPolicyContextHandlers };
+        for (String[] handlers : remainingContextHandlers) {
+            ee7_8notExpectedHandlers.add(handlers[JAVAX_INDEX]);
+            ee9_10notExpectedHandlers.add(handlers[JAVAX_INDEX]);
+            ee11notExpectedHandlers.add(handlers[JAVAX_INDEX]);
+
+            ee7_8notExpectedHandlers.add(handlers[JAKARTA_INDEX]);
+            ee9_10notExpectedHandlers.add(handlers[JAKARTA_INDEX]);
+            ee11notExpectedHandlers.add(handlers[JAKARTA_INDEX]);
+        }
+
+        expectedHandlers.put(EE7_8, ee7_8expectedHandlers);
+        expectedHandlers.put(EE9_10, ee9_10expectedHandlers);
+        expectedHandlers.put(EE11, ee11expectedHandlers);
+
+        notExpectedHandlers.put(EE7_8, ee7_8notExpectedHandlers);
+        notExpectedHandlers.put(EE9_10, ee9_10notExpectedHandlers);
+        notExpectedHandlers.put(EE11, ee11notExpectedHandlers);
+    }
+
+    private void verifyPolicyContextHandlers(String response) {
+        String key = JakartaEEAction.isEE11OrLaterActive() ? EE11 : JakartaEEAction.isEE9OrLaterActive() ? EE9_10 : EE7_8;
+        Set<String> expected = expectedHandlers.get(key);
+        Set<String> notExpected = notExpectedHandlers.get(key);
+
+        for (String exp : expected) {
+            mustContain(response, "handlerKey(" + exp + ")=true");
+        }
+        for (String notExp : notExpected) {
+            mustNotContain(response, "handlerKey(" + notExp + ")=true");
+        }
+    }
+
+    private void mustContain(String response, String target) {
+        assertTrue(target + " not found in response", response.contains(target));
+    }
+
+    private void mustNotContain(String response, String target) {
+        assertTrue(target + " found in response", !response.contains(target));
+    }
+
 }

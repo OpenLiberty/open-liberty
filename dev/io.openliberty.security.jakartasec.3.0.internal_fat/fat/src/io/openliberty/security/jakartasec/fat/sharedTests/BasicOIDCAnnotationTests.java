@@ -93,6 +93,10 @@ public class BasicOIDCAnnotationTests extends CommonAnnotatedSecurityTests {
 
         // rspValues used to validate the app output will be initialized before each test - any unique values (other than the
         //  app need to be updated by the test case - the app is updated by the invokeApp* methods)
+
+        // Wait to ensure LTPA configuration has completed before starting tests.
+        opServer.waitForStringInLog("CWWKS4105I");
+        rpServer.waitForStringInLog("CWWKS4105I");
     }
 
     /**

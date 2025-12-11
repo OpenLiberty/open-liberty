@@ -11,12 +11,15 @@ package componenttest.containers;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.file.Files;
 
 import javax.net.SocketFactory;
 
 import org.testcontainers.dockerclient.InvalidConfigurationException;
 import org.testcontainers.shaded.com.github.dockerjava.core.DefaultDockerClientConfig;
+import org.testcontainers.shaded.com.github.dockerjava.core.RemoteApiVersion;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -38,12 +41,15 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
      * Helpful when a developer wants to have repeatable behavior, or is remotely connected to a specific docker host.
      */
     private static final String FORCE_DOCKER_HOST = System.getProperty("fat.test.docker.host");
+    private static final String CHECK_PORT_AVAILABLE = System.getProperty("fat.test.docker.host.port");
+    private static final RemoteApiVersion DEFAULT_MIN_API_VERSION = RemoteApiVersion.VERSION_1_44;
 
     private boolean valid;
     private String host;
     private String hostname;
     private String verify;
     private String certPath;
+    private RemoteApiVersion apiVersion;
 
     //Singleton class
     private static ExternalDockerClientFilter instance;
@@ -59,6 +65,14 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
 
     public boolean isForced() {
         return FORCE_DOCKER_HOST != null;
+    }
+
+    public boolean checkPortAvailability() {
+        try {
+            return CHECK_PORT_AVAILABLE != null && Integer.valueOf(CHECK_PORT_AVAILABLE) >= 0;
+        } catch (NumberFormatException nfe) {
+            return false;
+        }
     }
 
     /**
@@ -79,6 +93,13 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
             return false;
         }
 
+        if (checkPortAvailability()) {
+            if (!isPortAvailable(dockerService.getAddress(), Integer.valueOf(CHECK_PORT_AVAILABLE))) {
+                Log.info(c, m, "Will not select " + dockerHostURL + " because port " + CHECK_PORT_AVAILABLE + " was not available.");
+                return false;
+            }
+        }
+
         String ca = dockerService.getProperties().get("ca.pem");
         String cert = dockerService.getProperties().get("cert.pem");
         String key = dockerService.getProperties().get("key.pem");
@@ -90,8 +111,18 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
             return false;
         }
 
+        //NOTE: consul currently does not supply this property.
+        //      if it ever does use it as the minimum
+        RemoteApiVersion apiVer = RemoteApiVersion.parseConfigWithDefault(dockerService.getProperties().get("api.version"));
+
+        if (apiVer == RemoteApiVersion.UNKNOWN_VERSION) {
+            Log.info(c, m, "Unknown minimum docker api version, defaulting to " + DEFAULT_MIN_API_VERSION);
+            apiVer = DEFAULT_MIN_API_VERSION;
+        }
+
         File certDir = new File("docker-certificates");
         certDir.mkdirs();
+
         writeFile(new File(certDir, "ca.pem"), ca);
         writeFile(new File(certDir, "cert.pem"), cert);
         writeFile(new File(certDir, "key.pem"), key);
@@ -100,6 +131,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
         host = dockerHostURL;
         verify = "1";
         certPath = certDir.getAbsolutePath();
+        apiVersion = apiVer;
 
         try {
             test();
@@ -122,6 +154,32 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
     }
 
     /**
+     * isPortAvailable() is used to determine if the docker service has a specific host port available.
+     * This is used as filter criteria for tests that need a specific host port available.
+     *
+     * @param  host The host name or address to check
+     * @param  port The port on the host to test
+     * @return      True if the host does not accept a socket connection on the given port, false otherwise.
+     */
+    private boolean isPortAvailable(String host, int port) {
+        String prefix = "tcp://";
+        if (host.startsWith(prefix)) {
+            host = host.substring(prefix.length());
+        }
+
+        try (Socket socket = new Socket()) {
+            socket.connect(new InetSocketAddress(host, port), 5000);
+            return false;
+        } catch (IOException ex) {
+            // An exception here means the host wasn't listening on the port specified. This means the port should be available
+            // for the client to attach once it's started.
+            Log.info(c, "isPortAvailable", "Port " + port + " is available on host " + host);
+        }
+        return true;
+
+    }
+
+    /**
      * Fail fast here! Never repeat this test!
      *
      * You might be tempted to add a repeat here when our Fyre systems are being flaky,
@@ -137,6 +195,7 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
                         .withDockerHost(host) //
                         .withDockerTlsVerify(verify) //
                         .withDockerCertPath(certPath) //
+                        .withApiVersion(apiVersion) //
                         .build();
 
         try {
@@ -190,5 +249,9 @@ public class ExternalDockerClientFilter implements ExternalTestServiceFilter {
 
     public String getCertPath() {
         return certPath;
+    }
+
+    public RemoteApiVersion getMinApiVersion() {
+        return apiVersion;
     }
 }

@@ -30,6 +30,7 @@ fat.project: true
 	com.ibm.ws.threading;version=latest,\
 	com.ibm.ws.resource;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    io.openliberty.threading.virtual,\
     io.openliberty.jakarta.annotation.2.1;version=latest,\
     io.openliberty.jakarta.servlet.6.0;version=latest
 

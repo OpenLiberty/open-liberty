@@ -1,7 +1,5 @@
-package com.ibm.ws.sib.msgstore.persistence.dispatcher;
-
-/*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+/* ==============================================================================
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,36 +9,35 @@ package com.ibm.ws.sib.msgstore.persistence.dispatcher;
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * ==============================================================================
+ */
+package com.ibm.ws.sib.msgstore.persistence.dispatcher;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+
 import com.ibm.ws.sib.msgstore.persistence.dispatcher.StateUtils.StateUpdater;
 
 final class DispatcherState {
-    static final StateUpdater<DispatcherState> updaterForStart = new StateUpdater<DispatcherState>() {
-        public DispatcherState update(DispatcherState currentState) {
-            return currentState.stopRequested(false).running(true);
+    static final StateUpdater<DispatcherState> updaterForStart = state -> state.startRequested().running(true);
+    static final StateUpdater<DispatcherState> updaterForStopped = state -> state.running(false);
+    static final StateUpdater<DispatcherState> updaterForErrorOccurred = DispatcherState::addThreadWriteError;
+    static final StateUpdater<DispatcherState> updaterForErrorCleared = DispatcherState::clearThreadWriteError;
+
+    public static final class StopRequesterInfo extends Throwable {
+        private static final long serialVersionUID = 1L;
+        private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yy.MM.dd_HH.mm.ss.SSS_Z");
+
+        public StopRequesterInfo(Throwable requester) {
+            super("Stop requested at " + DATE_FORMATTER.format(OffsetDateTime.now()), requester);
         }
-    };
-    static final StateUpdater<DispatcherState> updaterForStopRequested = new StateUpdater<DispatcherState>() {
-        public DispatcherState update(DispatcherState currentState) {
-            if (false == currentState.isRunning) return currentState;
-            return currentState.stopRequested(true);
-        }
-    };
-    static final StateUpdater<DispatcherState> updaterForStopped = new StateUpdater<DispatcherState>() {
-        public DispatcherState update(DispatcherState currentState) {
-            return currentState.running(false);
-        }
-    };
-    static final StateUpdater<DispatcherState> updaterForErrorOccurred = new StateUpdater<DispatcherState>() {
-        public DispatcherState update(DispatcherState currentState) {
-            return currentState.addThreadWriteError();
-        }
-    };
-    static final StateUpdater<DispatcherState> updaterForErrorCleared = new StateUpdater<DispatcherState>() {
-        public DispatcherState update(DispatcherState currentState) {
-            return currentState.clearThreadWriteError();
-        }
-    };
+    }
+
+    static StateUpdater<DispatcherState> getUpdaterForStopRequested(final Throwable requester) {
+        return state -> state.isRunning ? state.stopRequested(new StopRequesterInfo(requester)) : state;
+    }
 
     // Flag set to indicate whether dispatcher is running.
     final boolean isRunning;
@@ -49,31 +46,37 @@ final class DispatcherState {
     final boolean isStopRequested;
     // Count of the number of worker threads experiencing write errors.
     final int threadWriteErrors;
+    final Throwable requester;
 
     DispatcherState() {
-        this(false, false, 0);
+        this(false, false, 0, null);
     }
 
-    private DispatcherState(boolean running, boolean stopRequested, int threadWriteErrors) {
+    private DispatcherState(boolean running, boolean stopRequested, int threadWriteErrors, Throwable requester) {
         this.isRunning = running;
         this.isStopRequested = stopRequested;
         this.threadWriteErrors = threadWriteErrors;
+        this.requester = requester;
     }
 
     private DispatcherState running(final boolean running) {
-        return (running == isRunning) ? this : new DispatcherState(running, this.isStopRequested, this.threadWriteErrors);
+        return (running == isRunning) ? this : new DispatcherState(running, isStopRequested, threadWriteErrors, requester);
     }
 
-    private DispatcherState stopRequested(final boolean stopRequested) {
-        return (stopRequested == isStopRequested) ? this : new DispatcherState(this.isRunning, stopRequested, this.threadWriteErrors);
+    DispatcherState startRequested() {
+        return isStopRequested ? new DispatcherState(isRunning, false, threadWriteErrors, null) : this;
+    }
+
+    private DispatcherState stopRequested(Throwable requester) {
+        return isStopRequested ? this : new DispatcherState(isRunning, true, threadWriteErrors, requester);
     }
 
     private DispatcherState addThreadWriteError() {
-        return new DispatcherState(isRunning, isStopRequested, (threadWriteErrors + 1));
+        return new DispatcherState(isRunning, isStopRequested, (threadWriteErrors + 1), requester);
     }
 
     private DispatcherState clearThreadWriteError() {
-        return (0 >= threadWriteErrors) ? this : new DispatcherState(isRunning, isStopRequested, (threadWriteErrors - 1));
+        return (0 >= threadWriteErrors) ? this : new DispatcherState(isRunning, isStopRequested, (threadWriteErrors - 1), requester);
     }
 
     boolean isHealthy() {
@@ -81,10 +84,16 @@ final class DispatcherState {
     }
 
     String desc() {
-        String s = "";
-        if (isStopRequested) s+= " (STOP REQUESTED)";
-        if (!isRunning) s+= " (STOPPED)";
-        if (0 < threadWriteErrors) s+= " (ERROR)";
-        return s;
+        StringBuilder sb = new StringBuilder();
+        if (isStopRequested) sb.append(" (STOP REQUESTED)");
+        if (!isRunning) sb.append(" (STOPPED)");
+        if (0 < threadWriteErrors) sb.append(" (ERROR (").append(threadWriteErrors).append("))");
+        if (null != requester) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            requester.printStackTrace(pw.printf("%n"));
+            sb.append(sw);
+        }
+        return sb.toString();
     }
 }

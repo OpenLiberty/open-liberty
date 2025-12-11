@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public abstract class WSATTest extends FATServletClient {
 	// Normal number of seconds it takes a server to start up
 	// Transaction timeouts will be adjusted if actual startup
 	// time varies from this
-	protected final static Duration normalStartTime = Duration.ofSeconds(12);
+	protected final static Duration normalStartTime = Duration.ofSeconds(15);
 
 	public final static int REQUEST_TIMEOUT = 60;
 	public final static int START_TIMEOUT = 600000;
@@ -85,26 +85,4 @@ public abstract class WSATTest extends FATServletClient {
 			server.deleteFileFromLibertyServerRoot(stateFile);
 		}    	
     }
-
-	public static void callClearResourcesServlet(String app, LibertyServer... servers) throws Exception{
-		final String method = "callClearResourcesServlet";
-		int expectedConnectionCode = HttpURLConnection.HTTP_OK;
-		String servletName = "ClearResourcesServlet";
-
-		for (LibertyServer server : servers) {
-			String urlStr = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + app + "/" + servletName;
-	
-			Log.info(WSATTest.class, method, "callClearResourcesServlet URL: " + urlStr);
-			HttpURLConnection con = HttpUtils.getHttpConnection(new URL(urlStr), 
-				expectedConnectionCode, REQUEST_TIMEOUT);
-			try {
-				HttpUtils.getConnectionStream(con).readLine();
-			} finally {
-				con.disconnect();
-			}
-			
-			server.setMarkToEndOfLog();
-			server.setTraceMarkToEndOfDefaultTrace();
-		}
-	}
 }

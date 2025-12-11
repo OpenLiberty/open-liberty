@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package componenttest.containers;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -35,7 +34,7 @@ public final class ImageVerifier {
     static final Class<?> c = ImageVerifier.class;
 
     static final Set<DockerImageName> forgottenImages = ConcurrentHashMap.newKeySet();
-    static final Set<DockerImageName> expectedImages;
+    static final Set<DockerImageName> expectedImages = ConcurrentHashMap.newKeySet();
 
     static final String imageProperty = "fat.test.container.images";
 
@@ -56,24 +55,26 @@ public final class ImageVerifier {
         }
 
         //Add images from the testcontainers project (tracked in fattest.simplicity/bnd.bnd)
-        for (String image : Arrays.asList("testcontainers/ryuk:0.9.0", "testcontainers/sshd:1.2.0", "testcontainers/vnc-recorder:1.3.0", "alpine:3.17")) {
+        for (String image : Arrays.asList("ghcr.io/testcontainers/ryuk:0.12.0",
+                                          "ghcr.io/testcontainers/sshd:1.3.0",
+                                          "ghcr.io/testcontainers/vnc-recorder:1.4.0",
+                                          "public.ecr.aws/docker/library/alpine:3.17")) {
             _expectedImages.add(DockerImageName.parse(image));
         }
 
-        expectedImages = Collections.unmodifiableSet(_expectedImages);
+        expectedImages.addAll(_expectedImages);
     }
 
-    public static DockerImageName collectImage(DockerImageName image) {
-        return collectImage(image, null);
-    }
-
-    public static DockerImageName collectImage(DockerImageName image, DockerImageName output) {
+    public static void collectImage(DockerImageName image) {
         if (!expectedImages.contains(image)) {
             Log.info(c, "collectImage", "Found an unknown image: " + image);
             forgottenImages.add(image);
         }
+    }
 
-        return output != null ? output : image;
+    protected static void expectImage(DockerImageName image) {
+        Log.info(c, "expectImage", "Expecting image from ImageBuilder: " + image);
+        expectedImages.add(image);
     }
 
     public static void assertImages() throws IllegalStateException {

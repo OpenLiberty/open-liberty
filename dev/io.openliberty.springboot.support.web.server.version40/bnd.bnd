@@ -1,0 +1,72 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= \
+  ~../cnf/resources/bnd/bundle.props, \
+  ~../cnf/resources/bnd/bundle.spring.props
+-nouses=true
+
+bVersion=1.0
+
+javac.source: 17
+javac.target: 17
+
+Bundle-Name: WebSphere Spring Boot 4.0 Web Server Support
+Bundle-SymbolicName: io.openliberty.springboot.support.web.server.version40
+Bundle-Description: WebSphere Spring Boot 4.0 Web Server Support, version ${bVersion}
+
+Private-Package: io.openliberty.springboot.support.web.server.version40.osgi.*
+
+Import-Package: \
+    com.ibm.ws.app.manager.module.internal, \
+    *
+
+Include-Resource: springBoot40Server.jar
+
+instrument.disabled: true
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Provide-Capability: spring.boot.support; jars:List<String>=springBoot40Server.jar; version:Version=4.0
+
+// 'com.ibm.ws.logging.core' and 'com.ibm.ws.ras.instrument' are present to avoid BND warnings,
+// for example:
+// warning: [com.ibm.ws.app.manager.springboot.support.SpringBootSupport]
+// Unable to determine whether the annotation com.ibm.websphere.ras.annotation.TraceObjectField
+// is a component property type as it is not on the project build path. If this annotation is
+// a component property type then it must be present on the build path in order to be processed
+
+-buildpath: \
+  org.springframework.boot:spring-boot;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-autoconfigure;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-actuator-autoconfigure;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-web-server;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-servlet;${springBootVersion40}, \
+  org.springframework.boot:spring-boot-webmvc;${springBootVersion40}, \
+\
+  org.springframework:spring-beans;${springVersion40}, \
+  org.springframework:spring-context;${springVersion40}, \
+  org.springframework:spring-core;${springVersion40}, \
+  org.springframework:spring-web;${springVersion40}, \
+\
+  com.ibm.ws.app.manager.springboot.jakarta;version=latest, \
+  com.ibm.ws.springboot.support.web.server.jakarta;version=latest, \
+\
+  io.openliberty.jakarta.servlet.6.1, \
+  com.ibm.ws.logging.core;version=latest, \
+  com.ibm.ws.ras.instrument;version=latest, \
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+  com.ibm.ws.kernel.boot.common;version=latest
+
+-dsannotations: io.openliberty.springboot.support.web.server.version40.osgi.SpringBoot40Support
+-dsannotations-inherit: true
+
+-make= (*).(jar); type=bnd; recipe="bnd/$1.bnd"

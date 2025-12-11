@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -101,6 +101,9 @@ public class WsocTestRunner {
         LOG.info("Connecting to wsoc server container: " + c + " endpoint: " +
                  _clientEndpoint.getClass() + " config: " + _cfg + ", uri: " + _uri);
         Session sess = null;
+
+        Thread.sleep(600); // Wait for server just a little bit more. 
+
         if (_clientEndpoint instanceof Endpoint) {
             sess = c.connectToServer((Endpoint) _clientEndpoint, _cfg, _uri);
         } else {

@@ -78,7 +78,6 @@ public class OidcClientRequest extends OidcCommonClientRequest {
         this.request = request;
         this.response = response;
         OidcClientUtil.setReferrerURLCookieHandler(referrerURLCookieHandler);
-
         clientConfigId = convergedClientConfig.getId();
         authnSessionDisabled = convergedClientConfig.isAuthnSessionDisabled_propagation();
         inboundValue = convergedClientConfig.getInboundPropagation();

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2023 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.outbound;
 
@@ -34,6 +31,7 @@ import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.genericbnf.exception.MessageSentException;
 import com.ibm.wsspi.http.channel.exception.WriteBeyondContentLengthException;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 
 /**
  * HTTP transport output stream that wraps the bytebuffer usage and the HTTP
@@ -140,10 +138,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         this.amountToBuffer = size;
         this.bbSize = (49152 < size) ? 32768 : 8192;
 
-        // make sure we never create larger frames than the max http2 frame size
-        Integer h2size = (Integer) this.getVc().getStateMap().get("h2_frame_size");
-        if (h2size != null && h2size < bbSize) {
-            this.bbSize = h2size;
+        if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl)) {
+            if (!((HttpInboundServiceContextImpl) isc).getHttpConfig().useNetty()) {
+                // make sure we never create larger frames than the max http2 frame size
+                Integer h2size = (Integer) this.getVc().getStateMap().get("h2_frame_size");
+                if (h2size != null && h2size < bbSize) {
+                    this.bbSize = h2size;
+                }
+            }
         }
 
         int numBuffers = (size / this.bbSize);
@@ -503,20 +505,22 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             Tr.debug(tc, "Flushing buffers: " + this);
         }
 
-        if (this.isc.getResponse() == null) {
-            IOException x = new IOException("response Object(s) (e.g. getObjectFactory()) are null");
-            throw x;
-        }
-
-        if (!this.isc.getResponse().isCommitted()) {
-            if (obs != null && !this.WCheadersWritten) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "obs  ->" + obs);
-                }
-                obs.alertOSFirstFlush();
+        if ((isc != null) && (isc instanceof HttpInboundServiceContextImpl)) {
+            if (this.isc.getResponse() == null) {
+                IOException x = new IOException("response Object(s) (e.g. getObjectFactory()) are null");
+                throw x;
             }
 
-            this.isc.getResponse().setCommitted();
+            if (!this.isc.getResponse().isCommitted()) {
+                if (obs != null && !this.WCheadersWritten) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "obs  ->" + obs);
+                    }
+                    obs.alertOSFirstFlush();
+                }
+
+                this.isc.getResponse().setCommitted();
+            }
         }
 
         if (this.ignoreFlush) {
@@ -528,12 +532,14 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
 
         final boolean writingBody = (hasBufferedContent());
+
         // flip the last buffer for the write...
         if (writingBody && null != this.output[this.outputIndex]) {
             this.output[this.outputIndex].flip();
         }
         try {
             WsByteBuffer[] content = (writingBody) ? this.output : null;
+
             if (isClosed() || this.isClosing) {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
@@ -546,13 +552,9 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 this.isc.sendResponseBody(content);
             }
         } catch (MessageSentException mse) {
-            FFDCFilter.processException(mse, getClass().getName(),
-                                        "flushBuffers", new Object[] { this, this.isc });
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Invalid state, message-sent-exception received; " + this.isc);
-            }
-            this.error = new IOException("Invalid state");
-            throw this.error;
+
+            handleMessageSentException(mse);
+
         } catch (IOException ioe) {
             // no FFDC required
             this.error = ioe;
@@ -740,4 +742,38 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
         }
     }
 
+    /**
+     * Handles MessageSentException based on ignoreWriteAfterCommit configuration
+     * 
+     * @param mse The MessageSentException that was caught
+     * @throws IOException If the exception should be propagated
+     */
+    private void handleMessageSentException(MessageSentException mse) throws IOException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Handling: MessageSentException " + this);
+        }
+
+        boolean ignoreWriteAfterCommit = false;
+
+        if (this.isc instanceof HttpInboundServiceContextImpl) {
+            final HttpChannelConfig config = ((HttpInboundServiceContextImpl) this.isc).getHttpConfig();
+            ignoreWriteAfterCommit = config.ignoreWriteAfterCommit();
+        }
+
+        if (ignoreWriteAfterCommit) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Wrote buffer after commit. Not a good idea; Ignoring write after commit; ", mse);
+            }
+        } else {
+            FFDCFilter.processException(mse, getClass().getName(), "flushBuffers", new Object[] { this, this.isc });
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "Invalid state, message-sent-exception received; " + this.isc);
+            }
+            this.error = new IOException("Invalid state");
+            throw this.error;
+        }
+
+    }
+    
 }

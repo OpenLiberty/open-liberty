@@ -36,7 +36,7 @@
 		<localStore>
 			<client
 				name="genAppTok01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genAppTok01"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -46,7 +46,7 @@
 				appTokenAllowed="true" />
 			<client
 				name="genAppTok02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genAppTok02"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -56,7 +56,7 @@
 				appTokenAllowed="true" />
 			<client
 				name="genAppPwAndAppToken"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genAppPwAndAppToken"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -68,7 +68,7 @@
 				<!--  NOTE:  NoAppTok01 amd NoAppTok02 do NOT have appTokenAllowed - they're just used to consume the access_tokens -->
 			<client
 				name="NoAppTok01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="NoAppTok01"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -77,7 +77,7 @@
 				introspectTokens="true" />
 			<client
 				name="NoAppTok02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="NoAppTok02"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -111,7 +111,7 @@
 		<localStore>
 			<client
 				name="genAppTok01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genAppTok01"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -121,7 +121,7 @@
 				appTokenAllowed="true" />
 			<client
 				name="genAppTok02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genAppTok02"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -131,7 +131,7 @@
 				appTokenAllowed="true" />
 			<client
 				name="genAppPwAndAppToken"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genAppPwAndAppToken"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -141,7 +141,7 @@
 				<!--  NOTE:  NoAppTok01 amd NoAppTok02 do NOT have appTokenAllowed - they're just used to consume the access_tokens -->
 			<client
 				name="NoAppTok01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="NoAppTok01"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -150,7 +150,7 @@
 				introspectTokens="true" />
 			<client
 				name="NoAppTok02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="NoAppTok02"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -183,7 +183,7 @@
 
 			<client
 				name="genShortLivedAccessToken"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genShortLivedAccessToken"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -218,7 +218,7 @@
 
 			<client
 				name="userClientTokenLimit1"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="userClientTokenLimit1"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -229,7 +229,7 @@
 				
 			<client
 				name="userClientTokenLimit2"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="userClientTokenLimit2"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -263,7 +263,7 @@
 		<localStore>
 			<client
 				name="genShortLivedAppTok"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genShortLivedAppTok"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -298,7 +298,7 @@
 		<localStore>
 			<client
 				name="genAppTokLimitedNumAllowed"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="genAppTokLimitedNumAllowed"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -332,7 +332,7 @@
 		<localStore>
 			<client
 				name="missingPasswordGrantType"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="missingPasswordGrantType"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"

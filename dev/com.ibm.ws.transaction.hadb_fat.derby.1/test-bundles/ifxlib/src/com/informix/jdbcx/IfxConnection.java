@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.Executor;
 
+import com.ibm.tx.jta.ut.util.HADBTestControl;
 import com.informix.database.ConnectionManager;
 
 /**
@@ -64,6 +65,8 @@ public class IfxConnection implements Connection {
     private static boolean _testingLeaselogDeleteFlag;
     private static boolean _testingLeaselogClaimFlag;
     private static boolean _testingLeaselogGetFlag;
+
+    private static HADBTestControl _control;
 
     IfxConnection(Connection realConn) {
         System.out.println("IfxConnection(" + wrappedConn + "): construct wrapped connection using - " + realConn);
@@ -907,6 +910,10 @@ public class IfxConnection implements Connection {
         return simSQLCode;
     }
 
+    public static HADBTestControl getTestControl() {
+        return _control;
+    }
+
     /**
      * @param simSQLCode
      *            the simSQLCode to set
@@ -1031,6 +1038,17 @@ public class IfxConnection implements Connection {
     public int getNetworkTimeout() throws SQLException {
         // TODO Auto-generated method stub
         return 0;
+    }
+
+    /**
+     * @param testControl
+     */
+    public static void setControl(HADBTestControl testControl) {
+        _control = testControl;
+    }
+
+    public static HADBTestControl getControl() {
+        return _control;
     }
 
 }

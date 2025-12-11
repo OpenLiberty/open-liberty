@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.telemetry.logging.internal.container.fat;
 
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -29,13 +30,16 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.MaximumJavaLevel;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 @MaximumJavaLevel(javaLevel = 20)
+@MinimumJavaLevel(javaLevel = 11)
 public class JULLogServletTest {
 
     private static Class<?> c = JULLogServletTest.class;
@@ -45,6 +49,8 @@ public class JULLogServletTest {
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
+    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
+    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
                     .withDockerfileFromBuilder(builder -> builder.from(TestUtils.IMAGE_NAME)
@@ -81,6 +87,7 @@ public class JULLogServletTest {
      * Ensure JUL message logs are not duplicated when the OpenTelemetry Java agent is active with mpTelemetry-2.0.
      */
     @Test
+    @SkipIfSysProp(OS_ZOS)
     public void testMatchingJULMessageLogsWithContainerViaOpenTelemetryAgent() throws Exception {
         assertTrue("The server was not started successfully.", server.isStarted());
 

@@ -1,0 +1,10 @@
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+apply from: '../io.openliberty.microprofile.reactive.messaging.internal_fat.common/include-kafka-client.gradle'
+
+dependencies {
+    requiredLibs project(path: ':io.openliberty.microprofile.reactive.messaging.internal_fat.common', configuration: 'original');
+    requiredLibs project(':com.ibm.ws.crypto.passwordutil');
+}
+
+addRequiredLibraries.dependsOn copyTestContainers
+addRequiredLibraries.dependsOn addJakartaTransformer

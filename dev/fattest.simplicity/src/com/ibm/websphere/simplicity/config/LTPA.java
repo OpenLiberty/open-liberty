@@ -30,7 +30,7 @@ public class LTPA extends ConfigElement {
 
     // Atrribute to specify the password for the primary keys
     @XmlAttribute
-    public String password;
+    public String keysPassword;
 
     // Atrribute to toggle monitoring of the keys within the directory
     @XmlAttribute
@@ -66,7 +66,7 @@ public class LTPA extends ConfigElement {
         // Attributes
         buf.append("keysFileName=").append(keysFileName);
         buf.append(", expiration=").append(expiration);
-        buf.append(", password=").append(password);
+        buf.append(", keysPassword=").append(keysPassword);
         buf.append(", monitorValidationKeysDir=").append(monitorValidationKeysDir);
         buf.append(", monitorInterval=").append(monitorInterval);
         buf.append(", updateTrigger=").append(updateTrigger);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import jakarta.data.repository.Save;
  * The entity type for this repository only appears as a type parameter.
  * Do not add methods that would allow it to be discovered any other way.
  */
-@Repository(dataStore = "java:module/jdbc/env/DerbyDataSourceRef")
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Vehicles {
 
     long count();
@@ -64,10 +64,9 @@ public interface Vehicles {
     @Save
     Iterable<Vehicle> save(Iterable<Vehicle> v);
 
+    @Query("UPDATE Vehicle SET price=price+?2 WHERE (vinId=?1)")
     boolean updateByVinIdAddPrice(String vin, float priceIncrease);
 
-    // TODO switch to the following once #29893 is fixed
-    //@Query("WHERE LOWER(ID(THIS)) = ?1")
-    @Query("WHERE LOWER(vinId) = ?1")
+    @Query("WHERE LOWER(ID(this)) = ?1")
     Optional<Vehicle> withVINLowerCase(String lowerCaseVIN);
 }

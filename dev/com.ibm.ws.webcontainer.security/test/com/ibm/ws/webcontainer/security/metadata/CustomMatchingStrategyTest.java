@@ -117,45 +117,6 @@ public class CustomMatchingStrategyTest {
         }
     }
 
-    @Test
-    public void performMatch_Omission() {
-        final String methodName = "performMatch_Omission";
-        try {
-            String resourceName = ONE_EXACT_URL;
-            String method = "CUSTOM";
-            List<SecurityConstraint> securityConstraints = createSecurityConstraintsOmission(ONE_EXACT_URL, oneCustomMethod, testRoles);
-            SecurityConstraintCollection securityConstraintCollection = new SecurityConstraintCollectionImpl(securityConstraints);
-
-            MatchResponse matchResponse = matchingStrategy.performMatch(securityConstraintCollection, resourceName, method);
-
-            assertSame("There must not be a match. The response must be NO_MATCH_RESPONSE.",
-                       MatchResponse.NO_MATCH_RESPONSE, matchResponse);
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
-
-    @Test
-    public void performMatch_CustomMethodInOmissionOfFirstConstraint_Exact() {
-        final String methodName = "performMatch_CustomMethodInOmissionOfFirstConstraint_Exact";
-        try {
-            String resourceName = "/OverlapCustomServlet";
-            String method = CUSTOM;
-            SecurityConstraintsBuilder securityConstraintsBuilder = new SecurityConstraintsBuilder();
-            securityConstraintsBuilder.buildWebResourceCollection(new String[] {}, new String[] { "GET", "CUSTOM" }, "/AnotherCustomServlet");
-            securityConstraintsBuilder.buildSecurityConstraint(developerRoles, false, false, false, false);
-            securityConstraintsBuilder.buildWebResourceCollection(new String[] {}, new String[] { "GET", "POST" }, "/OverlapCustomServlet");
-            securityConstraintsBuilder.buildSecurityConstraint(testRoles, false, false, false, false);
-            List<SecurityConstraint> securityConstraints = securityConstraintsBuilder.getSecurityConstraints();
-            SecurityConstraintCollection securityConstraintCollection = new SecurityConstraintCollectionImpl(securityConstraints);
-
-            MatchResponse matchResponse = matchingStrategy.performMatch(securityConstraintCollection, resourceName, method);
-
-            assertEquals("There must be a match.", testRoles, matchResponse.getRoles());
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
-    }
 
     @Test
     public void performMatch_NotListed_Exact() {

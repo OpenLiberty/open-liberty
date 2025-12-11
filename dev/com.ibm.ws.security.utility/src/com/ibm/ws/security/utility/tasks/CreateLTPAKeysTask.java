@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,14 @@ package com.ibm.ws.security.utility.tasks;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
@@ -36,13 +43,18 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
     static final String ARG_PASSWORD = "--password";
     static final String ARG_SERVER = "--server";
     static final String ARG_FILE = "--file";
-    static final String ARG_ENCODING = "--passwordEncoding";
-    static final String ARG_KEY = "--passwordKey";
-
+    private static final List<String> BETA_ARG_TABLE = new ArrayList<>();
+    private static final List<String> BETA_OPTS = BETA_ARG_TABLE.stream().map(s -> s.startsWith("--") ? s.substring(2) : s).collect(Collectors.toList());
     private final LTPAKeyFileUtility ltpaKeyFileUtil;
     private final IFileUtility fileUtility;
     protected ConsoleWrapper stdin;
     protected PrintStream stdout;
+    private static final List<Set<String>> EXCLUSIVE_ARGUMENTS = Arrays.asList(
+                                                                               new HashSet<String>(Arrays.asList(BaseCommandTask.ARG_PASSWORD_KEY,
+                                                                                                                 BaseCommandTask.ARG_PASSWORD_BASE64_KEY,
+                                                                                                                 BaseCommandTask.ARG_AES_CONFIG_FILE)),
+                                                                               new HashSet<String>(Arrays.asList(ARG_SERVER,
+                                                                                                                 ARG_FILE)));
 
     /**
      * @param scriptName The name of the script to which this task belongs
@@ -78,8 +90,8 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
     @Override
     boolean isKnownArgument(String arg) {
         return arg.equals(ARG_SERVER) || arg.equals(ARG_PASSWORD) ||
-               arg.equals(ARG_ENCODING) || arg.equals(ARG_KEY) ||
-               arg.equals(ARG_FILE);
+               arg.equals(ARG_PASSWORD_ENCODING) || arg.equals(ARG_PASSWORD_KEY) ||
+               arg.equals(ARG_FILE) || arg.equals(ARG_PASSWORD_BASE64_KEY) || arg.equals(ARG_AES_CONFIG_FILE);
     }
 
     /** {@inheritDoc} */
@@ -92,24 +104,13 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
         }
 
         boolean passwordFound = false;
-        boolean serverFound = false;
-        boolean fileFound = false;
         for (String arg : args) {
             String key = arg.split("=")[0];
-            if (key.equals(ARG_SERVER)) {
-                serverFound = true;
-            }
-            if (key.equals(ARG_FILE)) {
-                fileFound = true;
-            }
             if (key.equals(ARG_PASSWORD)) {
                 passwordFound = true;
             }
         }
-        if (serverFound && fileFound) {
-            //both --server and --file can not be specified
-            message += " " + getMessage("exclusiveArg", ARG_SERVER, ARG_FILE);
-        }
+
         if (!passwordFound) {
             message += " " + getMessage("missingArg", ARG_PASSWORD);
         }
@@ -171,10 +172,17 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
             stdout.println(getMessage("createLTPAKeys.fileExists", path));
             return SecurityUtilityReturnCodes.ERR_FILE_EXISTS;
         } else {
+            Map<String, String> argMap = new HashMap<>();
             String password = getArgumentValue(ARG_PASSWORD, args, null);
-            String encoding = getArgumentValue(ARG_ENCODING, args, PasswordUtil.getDefaultEncoding());
-            String key = getArgumentValue(ARG_KEY, args, null);
-            String encodedPassword = PasswordUtil.encode(password, encoding, key);
+            String encoding = getArgumentValue(BaseCommandTask.ARG_PASSWORD_ENCODING, args, PasswordUtil.getDefaultEncoding());
+            String key = getArgumentValue(BaseCommandTask.ARG_PASSWORD_KEY, args, null);
+            argMap.put(BaseCommandTask.ARG_PASSWORD_KEY, key);
+            String base64Key = getArgumentValue(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, args, null);
+            argMap.put(BaseCommandTask.ARG_PASSWORD_BASE64_KEY, base64Key);
+            String aesConfigFile = getArgumentValue(BaseCommandTask.ARG_AES_CONFIG_FILE, args, null);
+            argMap.put(BaseCommandTask.ARG_AES_CONFIG_FILE, aesConfigFile);
+            Map<String, String> props = BaseCommandTask.convertToProperties(argMap, stdout);
+            String encodedPassword = PasswordUtil.encode(password, encoding, props);
 
             String xmlSnippet;
             // If the keys are generated for a server, omit the keysFileName as it would end up
@@ -189,6 +197,16 @@ public class CreateLTPAKeysTask extends BaseCommandTask {
             stdout.println(getMessage("createLTPAKeys.createdFile", path, xmlSnippet));
             return SecurityUtilityReturnCodes.OK;
         }
+    }
+
+    @Override
+    protected List<String> getBetaOptions() {
+        return BETA_OPTS;
+    }
+
+    @Override
+    protected List<Set<String>> getExclusiveArguments() {
+        return EXCLUSIVE_ARGUMENTS;
     }
 
 }

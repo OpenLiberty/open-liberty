@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,8 +42,6 @@ public class SleepTest extends DBTestBase {
 	@Server("MigrationServer2")
 	public static LibertyServer server2;
 
-	private static Duration meanStartTime;
-
 	@BeforeClass
 	public static void beforeTests() throws Exception {
 		System.getProperties().entrySet().stream().forEach(e -> Log.info(SleepTest.class, "beforeTests", e.getKey() + " -> " + e.getValue()));
@@ -66,13 +64,15 @@ public class SleepTest extends DBTestBase {
 		
 		server2.updateServerConfiguration(config);
 
-		meanStartTime = FATUtils.startServers(server, server2);
-		float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
-		if (perfFactor < MIN_PERF_FACTOR) {
-			perfFactor = MIN_PERF_FACTOR;
+		final Duration meanStartTime = FATUtils.startServers(server, server2);
+		if (meanStartTime.compareTo(normalStartTime) > 0) {
+			float perfFactor = (float)normalStartTime.getSeconds() / (float)meanStartTime.getSeconds();
+			if (perfFactor < MIN_PERF_FACTOR) {
+				perfFactor = MIN_PERF_FACTOR;
+			}
+			Log.info(SleepTest.class, "beforeTests", "Mean startup time: "+meanStartTime+", Perf factor="+perfFactor);
+			setTestQuerySuffix("perfFactor="+perfFactor);
 		}
-		Log.info(SleepTest.class, "beforeTests", "Mean startup time: "+meanStartTime+", Perf factor="+perfFactor);
-		setTestQuerySuffix("perfFactor="+perfFactor);
 	}
 
 	@AfterClass

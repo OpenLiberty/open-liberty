@@ -1,0 +1,91 @@
+<!--
+    Copyright (c) 2023, 2024 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="com.ibm.ws.webcontainer.security.fat.ltpaKeyRotationTestServer">
+
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>servlet-3.1</feature>
+        <feature>restConnector-2.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <!-- Automatically expand WAR files and EAR files -->
+    <applicationManager autoExpand="true"/>
+	
+	<administrator-role>
+		<user>user1</user>
+	</administrator-role>
+	
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user1" password="user1pwd" />
+        <user name="user2" password="user2pwd" />
+        <group name="group1">
+            <member name="user1"/>
+        </group>
+        <group name="group2">
+            <member name="user2"/>
+        </group>
+    </basicRegistry>
+
+    <application type="war" id="formlogin1" name="formlogin1" location="${server.config.dir}/apps/formlogin.war">
+        <application-bnd>
+            <security-role name="Employee">
+                <user name="user1" />
+                <group name="group1" />
+            </security-role>
+            <security-role name="Manager">
+                <user name="user2" />
+                <group name="group2" />
+            </security-role>        
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <application type="war" id="formlogin2" name="formlogin2" location="${server.config.dir}/apps/formlogin.war">
+        <application-bnd>
+            <security-role name="Employee">
+                <user name="user1" />
+                <group name="group1" />
+            </security-role>
+            <security-role name="Manager">
+                <user name="user2" />
+                <group name="group2" />
+            </security-role>        
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <authentication id="Basic" cacheEnabled="true" />
+    
+    <httpSession securityIntegrationEnabled="false"/>
+
+    <ltpa monitorInterval = "10" monitorValidationKeysDir="true" expiration="10m" updateTrigger="polled" keysFileName="${server.config.dir}/resources/security/ltpa.keys" keysPassword="{xor}CDo9Hgw=">
+        <validationKeys fileName="configuredValidation1.keys" password="{xor}CDo9Hgw=" validUntilDate="2099-01-01T00:00:00Z"/>
+    </ltpa>
+
+    <include location="../fatTestPorts.xml" />
+    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+
+    <!-- Default SSL configuration enables trust for default certificates from the Java runtime --> 
+    <ssl id="defaultSSLConfig" />
+    
+</server>

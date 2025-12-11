@@ -14,6 +14,8 @@ import java.util.Dictionary;
 import java.util.Map;
 import java.util.Optional;
 
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.info.Contact;
 import org.eclipse.microprofile.openapi.models.info.Info;
@@ -26,13 +28,23 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.microprofile.openapi20.internal.merge.ModelEquality;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIInfoConfig;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
+import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
+import io.smallrye.openapi.runtime.OpenApiRuntimeException;
 
 public class OpenAPIInfoConfigImpl implements OpenAPIInfoConfig {
 
     private static final TraceComponent tc = Tr.register(OpenAPIInfoConfigImpl.class);
+
+    private enum WarningMode {
+        LOG_WARNINGS,
+        SUPPRESS_WARNINGS
+    }
 
     protected static final String INFO_KEY = "info";
     protected static final String TITLE_KEY = "title";
@@ -48,9 +60,14 @@ public class OpenAPIInfoConfigImpl implements OpenAPIInfoConfig {
     protected static final String VERSION_KEY = "version";
 
     private volatile Optional<Info> info;
+    private Optional<Info> lastMpConfigInfo;
+    private Optional<String> lastMpConfigString;
 
     @Reference
     protected ConfigurationAdmin configAdmin;
+
+    @Reference
+    protected OpenAPIModelOperations modelOps;
 
     @Activate
     @Modified
@@ -81,7 +98,12 @@ public class OpenAPIInfoConfigImpl implements OpenAPIInfoConfig {
             return;
         }
 
-        info = parseInfoProperties(infoProperties);
+        Optional<Info> newInfo = parseInfoProperties(infoProperties);
+        if (!equals(info, newInfo)) {
+            info = newInfo;
+            // Only check if MP Config is being ignored if info in server.xml has actually changed
+            info.ifPresent(info -> warnIfMpConfigIgnored(info, ConfigProvider.getConfig()));
+        }
     }
 
     /**
@@ -131,9 +153,108 @@ public class OpenAPIInfoConfigImpl implements OpenAPIInfoConfig {
         return Optional.of(info);
     }
 
+    private static boolean equals(Optional<Info> a, Optional<Info> b) {
+        // Check if either is null
+        if (a == null) {
+            return b == null;
+        } else {
+            if (b == null) {
+                return false;
+            }
+        }
+    
+        // Check if either is not present
+        if (!a.isPresent()) {
+            return !b.isPresent();
+        } else {
+            if (!b.isPresent()) {
+                return false;
+            }
+        }
+    
+        // Both are present, test contents
+        return ModelEquality.equals(a.get(), b.get());
+    }
+
+    /**
+     * Read the {@code Info} object configured using MP Config.
+     * <p>
+     * Logs a warning if the MP Config property is set, but doesn't parse as a valid Info object.
+     *
+     * @param mpConfig the Config to read from
+     * @return the {@code Info} parsed from config, or an empty Optional if a valid Info object is not configured
+     */
+    private Optional<Info> readMpConfig(Config mpConfig) {
+        Optional<String> mpConfigString = mpConfig.getOptionalValue(Constants.MERGE_INFO_CONFIG, String.class);
+        synchronized (this) {
+            if (!mpConfigString.equals(lastMpConfigString)) {
+                // Only re-read if string in MP Config has changed
+                // to ensure we only warn on an invalid config string once
+                lastMpConfigString = mpConfigString;
+                lastMpConfigInfo = mpConfigString.flatMap(string -> readJsonString(string, WarningMode.LOG_WARNINGS));
+            }
+            return lastMpConfigInfo;
+        }
+    }
+
+    /**
+     * Parse a JSON string into an {@code Info} object.
+     * <p>
+     * Can optionally raise warnings if the string is not valid JSON or does not represent a valid {@code Info} object.
+     *
+     * @param infoJson the JSON string to parse
+     * @param warningMode whether to log warnings
+     * @return the parsed {@code Info} object, or an empty {@code Optional} if the string could not be parsed into a valid {@code Info} object
+     */
+    @FFDCIgnore(OpenApiRuntimeException.class)
+    private Optional<Info> readJsonString(String infoJson, WarningMode warningMode) {
+        try {
+            Info info = modelOps.parseInfo(infoJson);
+            if (info.getTitle() != null && info.getVersion() != null) {
+                return Optional.of(info);
+            } else {
+                if (warningMode == WarningMode.LOG_WARNINGS) {
+                    Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_INVALID_CWWKO1664W, Constants.MERGE_INFO_CONFIG, infoJson);
+                }
+                return Optional.empty();
+            }
+        } catch (OpenApiRuntimeException ex) {
+            if (warningMode == WarningMode.LOG_WARNINGS) {
+                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W, Constants.MERGE_INFO_CONFIG, infoJson, ex.toString());
+            }
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * Log a warning if equivalent or conflicting config is configured in MP Config
+     *
+     * @param infoFromServerXml the info read from server.xml
+     * @param mpConfig MicroProfile Config
+     */
+    private void warnIfMpConfigIgnored(Info infoFromServerXml, Config mpConfig) {
+        mpConfig.getOptionalValue(Constants.MERGE_INFO_CONFIG, String.class).ifPresent(json -> {
+            // Suppress any parsing warnings here because we know we're going to ignore the value from MP Config,
+            // we're only interested in whether the MP Config value is equivalent to the server.xml value
+            Optional<Info> mpConfigInfo = readJsonString(json, WarningMode.SUPPRESS_WARNINGS);
+            if (mpConfigInfo.isPresent() && ModelEquality.equals(infoFromServerXml, mpConfigInfo.get())) {
+                // MP config was set and parsed as an identical Info object
+                Tr.info(tc, MessageConstants.OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I, Constants.MERGE_INFO_CONFIG);
+            } else {
+                // MP Config was set and either didn't parse, or parsed as a different Info object
+                Tr.warning(tc, MessageConstants.OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W, Constants.MERGE_INFO_CONFIG);
+            }
+        });
+    }
+
     @Override
     public Optional<Info> getInfo() {
-        return info;
+        Optional<Info> serverXmlInfo = info;
+        if (serverXmlInfo.isPresent()) {
+            return serverXmlInfo;
+        } else {
+            return readMpConfig(ConfigProvider.getConfig());
+        }
     }
 
 }

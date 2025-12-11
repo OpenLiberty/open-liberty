@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Adnotacja harmonogramu {0} okre\u015bla pust\u0105 warto\u015b\u0107 dla sekund, w kt\u00f3rych wykonywane jest zadanie. Podaj niepust\u0105 warto\u015b\u0107 dla pola sekund lub pomi\u0144 pole sekund w adnotacji harmonogramu. Pomini\u0119cie pola sekund powoduje, \u017ce zadanie zostanie uruchomione na pocz\u0105tku minuty.
+CWWKC1410.schedule.lacks.seconds.explanation=Pusta warto\u015b\u0107 tablicy oznacza, \u017ce pole sekund musi zosta\u0107 zignorowane podczas obliczania zaplanowanych czas\u00f3w. Pomini\u0119cie pola sekund powoduje, \u017ce zadanie zostanie uruchomione na pocz\u0105tku minuty.
+CWWKC1410.schedule.lacks.seconds.useraction=Zmodyfikuj pole sekund adnotacji Harmonogram, aby okre\u015bli\u0107 warto\u015b\u0107 niepust\u0105, lub pomi\u0144 pole sekund w adnotacji Harmonogram.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: Serwer nie utworzy\u0142 komponentu bean {0} dla adnotacji {1} lub elementu deskryptora wdro\u017cenia {2} . Element adnotacji lub deskryptora wdro\u017cenia ma nazw\u0119 {3} i kwalifikatory {4} i jest zdefiniowany w artefakcie aplikacji {5} . B\u0142\u0105d to {6}
+CWWKC1411.qualified.res.err.explanation=Kod nie utworzy\u0142 zasobu ani nie zarejestrowa\u0142 zasobu jako ziarna.
+CWWKC1411.qualified.res.err.useraction=Sprawd\u017a, czy zas\u00f3b jest poprawnie skonfigurowany.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: Artefakt aplikacji {0} zawiera wiele definicji zasob\u00f3w {1} , kt\u00f3re maj\u0105 kwalifikatory {2} . Nazwy definicji zasob\u00f3w b\u0119d\u0105cych w konflikcie {1} to {3} .
+CWWKC1412.qualifier.conflict.explanation=Ka\u017cda definicja zasobu tego samego typu posiadaj\u0105ca kwalifikator musi mie\u0107 inny kwalifikator.
+CWWKC1412.qualifier.conflict.useraction=Upewnij si\u0119, \u017ce ka\u017cda definicja zasobu tego samego typu posiada inny kwalifikator lub nie posiada \u017cadnych kwalifikator\u00f3w.

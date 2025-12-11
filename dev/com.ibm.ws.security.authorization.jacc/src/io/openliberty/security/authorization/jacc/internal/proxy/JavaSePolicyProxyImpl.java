@@ -17,12 +17,14 @@ import java.security.ProtectionDomain;
 
 import javax.security.auth.Subject;
 
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.security.authorization.jacc.common.PolicyProxy;
 
 public class JavaSePolicyProxyImpl implements PolicyProxy {
 
     private static ProtectionDomain nullPd = new ProtectionDomain(new CodeSource(null, (java.security.cert.Certificate[]) null), null, null, null);
     private static CodeSource nullCs = new CodeSource(null, (java.security.cert.Certificate[]) null);
+    private static final boolean isJava24OrLater = JavaInfo.majorVersion() >= 24;
 
     private final Policy policy;
 
@@ -42,7 +44,9 @@ public class JavaSePolicyProxyImpl implements PolicyProxy {
 
     @Override
     public void setPolicy() {
-        Policy.setPolicy(policy);
+        if (!isJava24OrLater) {
+            Policy.setPolicy(policy);
+        }
     }
 
     @Override
@@ -54,6 +58,6 @@ public class JavaSePolicyProxyImpl implements PolicyProxy {
         } else {
             pd = nullPd;
         }
-        return Policy.getPolicy().implies(pd, permission);
+        return (isJava24OrLater ? policy : Policy.getPolicy()).implies(pd, permission);
     }
 }

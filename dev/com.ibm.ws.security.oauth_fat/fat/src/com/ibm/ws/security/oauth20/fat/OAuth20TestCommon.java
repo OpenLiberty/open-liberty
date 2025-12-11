@@ -159,7 +159,7 @@ public class OAuth20TestCommon {
     public String autoauthz = "true";
     public String redirectAccessToken = "access_token=";
     public String loginPrompt = "Enter your username and password to login";
-    public String clientSecret = "secret";
+    public String clientSecret = "secret1234";
     public String snoopServlet = "Snoop Servlet";
     public String loginForm = "Enter your username and password to login";
     public String refreshToken = "Refresh Token: ";

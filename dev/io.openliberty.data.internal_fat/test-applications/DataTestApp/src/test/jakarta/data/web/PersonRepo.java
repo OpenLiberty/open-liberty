@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,7 +21,6 @@ import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Save;
-import jakarta.data.repository.Update;
 import jakarta.transaction.Transactional;
 import jakarta.transaction.Transactional.TxType;
 
@@ -30,7 +29,7 @@ import jakarta.transaction.Transactional.TxType;
  * Do not add methods or inheritance that would allow the entity class
  * to be discovered another way.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 @Transactional(TxType.SUPPORTS)
 public interface PersonRepo {
     @Query("WHERE lastName=?1")
@@ -39,12 +38,6 @@ public interface PersonRepo {
     @Query("SELECT firstName WHERE lastName=:lastName")
     @OrderBy("firstName")
     List<String> findFirstNames(@Param("lastName") String surname);
-
-    @Insert
-    void insert(Person p);
-
-    @Insert
-    void insertAll(Person... p);
 
     @Insert
     void insertAll(Iterable<Person> p);
@@ -56,7 +49,7 @@ public interface PersonRepo {
     @Transactional(TxType.SUPPORTS)
     Person getPersonInCurrentOrNoTransaction(Long ssn_id);
 
-    @Query("UPDATE Person SET firstName=?2 WHERE ID(THIS)=?1")
+    @Query("UPDATE Person SET firstName=?2 WHERE ID(this)=?1")
     @Transactional(TxType.REQUIRED)
     boolean setFirstNameInCurrentOrNewTransaction(Long ssn_id,
                                                   String firstName);
@@ -66,7 +59,7 @@ public interface PersonRepo {
     boolean setFirstNameInCurrentTransaction(Long ssn,
                                              String newFirstName);
 
-    @Query("UPDATE Person SET firstName=:firstName WHERE id(THIS)=:id")
+    @Query("UPDATE Person SET firstName=:firstName WHERE id(this)=:id")
     @Transactional(TxType.REQUIRES_NEW)
     boolean setFirstNameInNewTransaction(@Param("id") Long ssn,
                                          @Param("firstName") String newFirstName);
@@ -76,14 +69,8 @@ public interface PersonRepo {
     boolean setFirstNameWhenNoTransactionIsPresent(Long id,
                                                    String newFirstName);
 
-    @Query("UPDATE Person SET firstName=?2 WHERE Id(This)=?1")
+    @Query("UPDATE Person SET firstName=?2 WHERE Id(this)=?1")
     @Transactional(TxType.NOT_SUPPORTED)
     boolean setFirstNameWithCurrentTransactionSuspended(Long id,
                                                         String newFirstName);
-
-    @Update
-    boolean updateOne(Person person);
-
-    @Update
-    long updateSome(Person... people);
 }

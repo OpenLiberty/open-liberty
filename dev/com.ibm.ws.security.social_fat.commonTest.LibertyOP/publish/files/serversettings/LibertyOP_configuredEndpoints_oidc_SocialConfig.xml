@@ -17,7 +17,7 @@
 	<oidcLogin
 		id="oidcLogin1"
 		clientId="client01"
-		clientSecret="secret"
+		clientSecret="secret1234"
 		authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
 		tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
 		hostNameVerificationEnabled="false"

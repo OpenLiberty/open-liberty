@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,13 +15,7 @@ package io.openliberty.microprofile.openapi40.internal.services.impl;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Optional;
-import java.util.Set;
-import java.util.StringJoiner;
 import java.util.function.Function;
 
 import org.eclipse.microprofile.openapi.OASConfig;
@@ -74,7 +68,8 @@ public class ConfigFieldProvider40Impl implements ConfigFieldProvider {
         INFO_LICENSE_URL("getInfoLicenseUrl", SmallRyeOASConfig.INFO_LICENSE_URL, OpenApiConfig::getInfoLicenseName),
         OPERATION_ID_STRATEGY("getOperationIdStrategy", SmallRyeOASConfig.OPERATION_ID_STRAGEGY, OpenApiConfig::getOperationIdStrategy, OperationIdStrategy::name),
         ARRAY_REFERENCES_ENABLE("arrayReferencesEnable", SmallRyeOASConfig.SMALLRYE_ARRAY_REFERENCES_ENABLE, c -> Boolean.toString(c.arrayReferencesEnable())),
-        DUPLICATE_OPERATION_ID_BEHAVIOR("getDuplicateOperationIdBehavior", SmallRyeOASConfig.DUPLICATE_OPERATION_ID_BEHAVIOR, OpenApiConfig::getDuplicateOperationIdBehavior, DuplicateOperationIdBehavior::name),
+        DUPLICATE_OPERATION_ID_BEHAVIOR("getDuplicateOperationIdBehavior", SmallRyeOASConfig.DUPLICATE_OPERATION_ID_BEHAVIOR, OpenApiConfig::getDuplicateOperationIdBehavior,
+                                        DuplicateOperationIdBehavior::name),
         DEFAULT_PRODUCES("getDefaultProduces", SmallRyeOASConfig.DEFAULT_PRODUCES, OpenApiConfig::getDefaultProduces, Optional::toString),
         DEFAULT_CONSUMES("getDefaultConsumes", SmallRyeOASConfig.DEFAULT_CONSUMES, OpenApiConfig::getDefaultConsumes, Optional::toString),
         DEFAULT_PRIMITIVES_PRODUCES("getDefaultPrimitivesProduces", SmallRyeOASConfig.DEFAULT_PRODUCES_PRIMITIVES, OpenApiConfig::getDefaultPrimitivesProduces, Optional::toString),
@@ -88,8 +83,9 @@ public class ConfigFieldProvider40Impl implements ConfigFieldProvider {
         REMOVE_UNUSED_SCHEMAS("removeUnusedSchemas", SmallRyeOASConfig.SMALLRYE_REMOVE_UNUSED_SCHEMAS, c -> Boolean.toString(c.removeUnusedSchemas())),
         MAXIMUM_STATIC_FILE_SIZE("getMaximumStaticFileSize", SmallRyeOASConfig.MAXIMUM_STATIC_FILE_SIZE, c -> c.getMaximumStaticFileSize().toString()),
         AUTO_INHERITANCE("getAutoInheritance", SmallRyeOASConfig.AUTO_INHERITANCE, OpenApiConfig::getAutoInheritance, AutoInheritance::name),
-        SCAN_COMPOSITION_EXCLUDE_PACKAGES("getScanCompositionExcludePackages", SmallRyeOASConfig.SCAN_COMPOSITION_EXCLUDE_PACKAGES, OpenApiConfig::getScanCompositionExcludePackages, ConfigField::serializeSet),
-        ;
+        SCAN_COMPOSITION_EXCLUDE_PACKAGES("getScanCompositionExcludePackages", SmallRyeOASConfig.SCAN_COMPOSITION_EXCLUDE_PACKAGES,
+                                          OpenApiConfig::getScanCompositionExcludePackages, ConfigField::serializeSet),
+        MERGE_SCHEMA_EXAMPLES("mergeSchemaExamples", SmallRyeOASConfig.SMALLRYE_MERGE_SCHEMA_EXAMPLES, c -> Boolean.toString(c.mergeSchemaExamples()));
 
         Function<OpenApiConfig, String> function;
         String methodName;

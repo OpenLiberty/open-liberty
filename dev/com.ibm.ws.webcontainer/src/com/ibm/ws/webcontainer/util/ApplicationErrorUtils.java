@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2013 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ package com.ibm.ws.webcontainer.util;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
@@ -56,7 +56,7 @@ public class ApplicationErrorUtils {
             } else {
                 errorHtml = "minimal-error.html";
             }
-            reader = new BufferedReader(new InputStreamReader(ApplicationErrorUtils.class.getResourceAsStream(errorHtml), "UTF-8"));
+            reader = new BufferedReader(new InputStreamReader(ApplicationErrorUtils.class.getResourceAsStream(errorHtml), StandardCharsets.UTF_8));
             for (String line = reader.readLine(); line != null; line = reader.readLine()) {
                 if (line.contains("{toolsLink}")) {
                     line = line.replace("{toolsLink}", "http://" + toolsLink + "/");
@@ -110,8 +110,6 @@ public class ApplicationErrorUtils {
                     buffer.append("\n</div>\n");
                 }
             }
-        } catch (UnsupportedEncodingException e) {
-            // This can't happen because JVMs are required to support UTF-8
         } catch (IOException e) {
             // TODO handle this
         } finally {

@@ -35,11 +35,17 @@ import componenttest.rules.repeater.RepeatTests;
                 MultiClientCdiTest.class,
                 ProduceConsumeTest.class,
                 PropsTest.class,
+                RESTClientUserFeatureTest.class,
                 SseTest.class
 })
 public class FATSuite {
     private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
+    /*
+     * If you are adding a new MicroProfile version to this list of repeats, don't forget to update
+     * `publish/features/javax/MyRESTClient.mf` and `publish/features/jakarta/MyRESTClient.mf` to
+     * tolerate the new versions.
+     */
     public static RepeatTests repeatMP13Up(String...servers) {
 
         // To avoid bogus timeout build-breaks on slow Windows hardware only run a few versions on

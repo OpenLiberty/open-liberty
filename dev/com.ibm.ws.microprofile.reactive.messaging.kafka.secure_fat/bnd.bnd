@@ -1,0 +1,69 @@
+#*******************************************************************************
+# Copyright (c) 2019, 2024 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src
+
+
+tested.features: mpReactiveMessaging-1.0, \
+                 mpReactiveMessaging-3.0, \
+                 mpReactiveStreams-1.0, \
+                 mpReactiveStreams-3.0, \
+                 jsonb-2.0, \
+                 jsonb-3.0, \
+                 concurrent-2.0, \
+                 concurrent-3.0, \
+                 concurrent-3.1, \
+                 mpConfig-3.0, \
+                 mpConfig-3.1, \
+                 servlet-5.0, \
+                 servlet-6.0, \
+                 servlet-6.1, \
+                 cdi-3.0, \
+                 cdi-4.0, \
+                 cdi-4.1, \
+                 jsonp-2.0, \
+                 jsonp-2.1, \
+                 checkpoint
+                 
+
+fat.project: true
+
+# Uncomment to use remote docker host to simulate continuous build behavior.
+#fat.test.use.remote.docker: true
+
+fat.test.container.images: confluentinc/cp-kafka:7.1.1
+
+Import-Package: *
+
+-buildpath: \
+	io.openliberty.microprofile.reactive.messaging.internal_fat.common;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.reactive.messaging.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.reactive.streams.operators.1.0;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.config.1.3;version=latest,\
+	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+	org.apache.kafka:kafka-clients;version=3.5.1,\
+	io.openliberty.org.testcontainers;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	org.testng:testng;version=7.5.1,\
+	org.reactivestreams:reactive-streams-tck;version=1.0.4,\
+	com.ibm.websphere.org.reactivestreams.reactive-streams.1.0;version=latest,\
+	com.ibm.ws.io.smallrye.reactive.streams-operators;version=latest,\
+	com.ibm.ws.microprofile.reactive.messaging.kafka;version=latest,\
+	com.ibm.ws.microprofile.reactive.messaging.kafka.adapter;version=latest,\
+	io.openliberty.microprofile.reactive.messaging.internal;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest
+
+-dependson.1: \
+	com.ibm.ws.org.slf4j.jdk14

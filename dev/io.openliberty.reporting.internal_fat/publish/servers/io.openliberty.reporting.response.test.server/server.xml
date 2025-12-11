@@ -40,8 +40,8 @@
       keyStoreRef="NewKeyStore"
       trustStoreRef="NewTrustStore"/>
       
-    <keyStore id="NewKeyStore" location="NewKeyStore.jks" type="JKS" password="Liberty" />
-    <keyStore id="NewTrustStore" location="NewTrustStore.jks" type="JKS" password="Liberty" />
+    <keyStore id="NewKeyStore" location="NewKeyStore.p12" type="PKCS12" password="Liberty" />
+    <keyStore id="NewTrustStore" location="NewTrustStore.p12" type="PKCS12" password="Liberty" />
 	
 
 </server>

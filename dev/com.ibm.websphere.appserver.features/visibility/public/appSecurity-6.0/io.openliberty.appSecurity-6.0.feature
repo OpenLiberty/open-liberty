@@ -25,8 +25,7 @@ Subsystem-Name: Application Security 6.0 (Jakarta Security 4.0)
   io.openliberty.jakarta.authentication-3.1, \
   com.ibm.websphere.appserver.servlet-6.1, \
   com.ibm.websphere.appserver.eeCompatible-11.0, \
-  com.ibm.websphere.appserver.security-1.0, \
-  io.openliberty.securityAPI.jakarta-1.0, \
+  com.ibm.websphere.appserver.security-2.0, \
   io.openliberty.jakarta.security.enterprise-4.0, \
   io.openliberty.expressionLanguage-6.0, \
   io.openliberty.jsonp-2.1, \
@@ -43,7 +42,7 @@ Subsystem-Name: Application Security 6.0 (Jakarta Security 4.0)
   io.openliberty.security.jakartasec.2.0.internal.cdi, \
   io.openliberty.security.oidcclientcore.internal.jakarta, \
   io.openliberty.security.jakartasec.4.0.internal, \
-  io.openliberty.security.jakartasec.3.0.internal.cdi, \
+  io.openliberty.security.jakartasec.4.0.internal.cdi, \
   io.openliberty.security.authentication.internal.filter, \
   io.openliberty.security.sso.internal, \
   io.openliberty.security.jaspic.2.0.internal, \

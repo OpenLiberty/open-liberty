@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,8 +19,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.fat.common.utils.AutomationTools;
 import com.ibm.ws.security.fat.common.CommonMessageTools;
+import com.ibm.ws.security.fat.common.utils.AutomationTools;
 
 public class DerbyUtils {
 
@@ -34,7 +34,8 @@ public class DerbyUtils {
         try {
             msgUtils.printMethodName("setupDerbyEntries");
             Log.info(thisClass, "setupDerbyEntries", "Create DataBases through the server");
-            URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20DerbySetup?port=" + defaultPort + "&schemaName=OAuthDBSchema");
+            URL setupURL = AutomationTools
+                    .getNewUrl(httpString + "/oAuth20DerbySetup?port=" + defaultPort + "&schemaName=OAuthDBSchema");
             Log.info(thisClass, "setupDerbyEntries", "setupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
             con.setDoInput(true);
@@ -75,7 +76,8 @@ public class DerbyUtils {
         try {
             msgUtils.printMethodName("cleanupDerbyEntries");
             Log.info(thisClass, "cleanupDerbyEntries", "Drop DataBases through the server");
-            URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20DerbySetup?port=" + defaultPort + "&cleanup=true");
+            URL setupURL = AutomationTools
+                    .getNewUrl(httpString + "/oAuth20DerbySetup?port=" + defaultPort + "&cleanup=true");
             Log.info(thisClass, "setupDerbyEntries", "cleanupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
             con.setDoInput(true);
@@ -112,17 +114,25 @@ public class DerbyUtils {
 
     public static void addDerbyEntry(String httpString, Integer defaultPort, String clientID, String secret,
             String compID, String salt, String alg) throws Exception {
+        addDerbyEntry(httpString, defaultPort, clientID, secret, compID, salt, alg, 32, 2048);
+    }
+
+    public static void addDerbyEntry(String httpString, Integer defaultPort, String clientID, String secret,
+            String compID, String salt, String alg, Integer hashLen, Integer iterations) throws Exception {
         String METHOD = "addDerbyEntry";
         HttpURLConnection con = null;
         try {
             msgUtils.printMethodName(METHOD);
             Log.info(thisClass, METHOD, "Add a new client " + clientID);
-            // Sending the secret as a parameter for test purposes only, so users can be manually added to the database and then
+            // Sending the secret as a parameter for test purposes only, so users can be
+            // manually added to the database and then
             // read via the Database Store
-            URL setupURL = AutomationTools.getNewUrl(
-                    httpString + "/oAuth20DerbySetup?port=" + defaultPort + "&schemaName=OAuthDBSchema&addClient=true"
-                            + "&clientID=" + clientID + "&secret=" + secret + "&compID=" + compID + (salt != null ? ("&checkSalt=" + salt) : "")
-                            + (alg != null ? ("&checkAlgorithm=" + alg) : ""));
+            URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20DerbySetup?port=" + defaultPort
+                    + "&schemaName=OAuthDBSchema&addClient=true" + "&clientID=" + clientID + "&secret=" + secret
+                    + "&compID=" + compID + (salt != null ? ("&checkSalt=" + salt) : "")
+                    + (alg != null ? ("&checkAlgorithm=" + alg) : "")
+                    + (hashLen != null ? ("&hash_len=" + hashLen) : "")
+                    + (iterations != null ? ("&hash_itr=" + iterations) : ""));
             Log.info(thisClass, METHOD, "setupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
             con.setDoInput(true);
@@ -182,8 +192,13 @@ public class DerbyUtils {
         return checkDerbyEntry(httpString, defaultPort, clientID, null, "checkAccessToken_" + encodingType);
     }
 
-    public static String checkDerbyEntry(String httpString, Integer defaultPort, String clientID, String compID, String checkType)
+    public static String checkKeyLength(String httpString, Integer defaultPort, String clientID, String compID)
             throws Exception {
+        return checkDerbyEntry(httpString, defaultPort, clientID, compID, "checkKeyLength");
+    }
+
+    public static String checkDerbyEntry(String httpString, Integer defaultPort, String clientID, String compID,
+            String checkType) throws Exception {
 
         String METHOD = "checkDerbyEntry";
         HttpURLConnection con = null;
@@ -193,8 +208,8 @@ public class DerbyUtils {
             msgUtils.printMethodName(METHOD);
             Log.info(thisClass, METHOD, "Check the " + checkType + " on client " + clientID);
             URL setupURL = AutomationTools.getNewUrl(
-                    httpString + "/oAuth20DerbySetup?port=" + defaultPort + "&schemaName=OAuthDBSchema"
-                            + "&clientID=" + clientID + (compID != null ? ("&compID=" + compID) : "") + "&" + checkType + "=true");
+                    httpString + "/oAuth20DerbySetup?port=" + defaultPort + "&schemaName=OAuthDBSchema" + "&clientID="
+                            + clientID + (compID != null ? ("&compID=" + compID) : "") + "&" + checkType + "=true");
             Log.info(thisClass, METHOD, "setupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
             con.setDoInput(true);
@@ -234,12 +249,13 @@ public class DerbyUtils {
     }
 
     public static void clearClientEntries(String httpString, Integer defaultPort) throws Exception {
-    	String METHOD = "clearClientEntries";
+        String METHOD = "clearClientEntries";
         HttpURLConnection con = null;
         try {
             msgUtils.printMethodName(METHOD);
             Log.info(thisClass, METHOD, "Remove client entries from DB and add them again.");
-            URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20DerbySetup?port=" + defaultPort + "&clearClients=true" + "&schemaName=OAuthDBSchema");
+            URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20DerbySetup?port=" + defaultPort
+                    + "&clearClients=true" + "&schemaName=OAuthDBSchema");
             Log.info(thisClass, METHOD, "cleanupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
             con.setDoInput(true);

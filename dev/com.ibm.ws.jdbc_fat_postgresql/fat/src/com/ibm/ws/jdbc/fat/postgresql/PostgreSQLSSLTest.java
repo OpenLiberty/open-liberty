@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,12 +19,16 @@ import java.util.Arrays;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import org.testcontainers.utility.DockerImageName;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.containers.ImageBuilder;
+import componenttest.containers.KeystoreBuilder;
+import componenttest.containers.KeystoreBuilder.STORE_TYPE;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -53,7 +57,11 @@ public class PostgreSQLSSLTest extends FATServletClient {
     @TestServlet(servlet = PostgreSQLNativeSSLTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer serverNativeSSL;
 
-    public static PostgreSQLContainer postgre = new PostgreSQLContainer("kyleaure/postgres-ssl:1.0")
+    private static final DockerImageName POSTGRES_SSL = ImageBuilder.build("postgres-ssl:17.0.0.1")
+                    .getDockerImageName()
+                    .asCompatibleSubstituteFor("postgres");
+
+    public static PostgreSQLContainer postgre = new PostgreSQLContainer(POSTGRES_SSL)
                     .withDatabaseName(POSTGRES_DB)
                     .withUsername(POSTGRES_USER)
                     .withPassword(POSTGRES_PASS)
@@ -96,6 +104,19 @@ public class PostgreSQLSSLTest extends FATServletClient {
             stmt.execute("CREATE TABLE people( id integer UNIQUE NOT NULL, name VARCHAR (50) );");
             stmt.close();
         }
+
+        postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverLibertySSL.getServerRoot() + "/resources/security/outboundKeys.p12");
+        KeystoreBuilder.of(serverLibertySSL, postgre)
+                        .withCertificate("server", "/var/lib/postgresql/server.crt")
+                        .withDirectory(serverLibertySSL.getServerRoot() + "/resources/security/")
+                        .withFilename("outboundKeys")
+                        .withStoreType(STORE_TYPE.PKCS12)
+                        .withPassword("liberty")
+                        .export();
+
+        postgre.copyFileFromContainer("/tmp/clientKeystore.p12", serverNativeSSL.getServerRoot() + "/resources/security/outboundKeys.p12");
+        postgre.copyFileFromContainer("/var/lib/postgresql/server.crt", serverNativeSSL.getServerRoot() + "/resources/security/server.crt");
+
         serverLibertySSL.startServer();
         serverNativeSSL.useSecondaryHTTPPort();
         serverNativeSSL.startServer();

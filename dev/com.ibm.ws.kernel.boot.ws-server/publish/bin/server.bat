@@ -277,6 +277,7 @@ goto:eof
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
 
   call:checkForVerboseGC
+  call:enableFIPS140_3
 
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
@@ -298,6 +299,7 @@ goto:eof
   set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
 
   call:checkForVerboseGC
+  call:enableFIPS140_3
 
   !JAVA_CMD_QUOTED! !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED!
   set RC=%errorlevel%
@@ -348,6 +350,7 @@ goto:eof
     set OPENJ9_JAVA_OPTIONS=!SERVER_IBM_JAVA_OPTIONS!
 	
     call:checkForVerboseGC
+    call:enableFIPS140_3
 
     @REM Use javaw so command windows can be closed.
     start /min /b "" !JAVA_CMD_QUOTED!w !JAVA_AGENT_QUOTED! !JVM_OPTIONS! !JAVA_PARAMS_QUOTED! --batch-file !PARAMS_QUOTED! >> "%X_LOG_DIR%\%X_LOG_FILE%" 2>&1
@@ -409,6 +412,9 @@ goto:eof
   call:serverEnv
   call:serverExists true
   if %RC% == 2 goto:eof
+  if not exist "!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs" (
+     mkdir "!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs"
+  )
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe"  //IS//%SERVER_NAME% --Startup=manual --DisplayName="%SERVER_NAME%" --Description="Open Liberty" ++DependsOn=Tcpip --LogPath="!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs" --StdOutput=auto --StdError=auto --StartMode=exe --StartPath="%WLP_INSTALL_DIR%" --StartImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StartParams=start#%SERVER_NAME% --StopMode=exe --StopPath="%WLP_INSTALL_DIR%" --StopImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StopParams=stop#%SERVER_NAME% --ServiceUser=LocalSystem                                                                                                                          
   set RC=!errorlevel!
 goto:eof
@@ -594,6 +600,9 @@ goto:eof
     set SERVER_IBM_JAVA_OPTIONS=!SPECIFIED_JAVA_OPTIONS!
   )
 
+  @REM Add JDK property to improve encryption performance for password utilities
+  set SERVER_IBM_JAVA_OPTIONS=-Djdk.nativePBKDF2=true !SERVER_IBM_JAVA_OPTIONS!
+
   @REM Add -Xquickstart -Xshareclasses:none for client JVMs only.  We don't want 
   @REM shared classes cache created for client operations.
   set IBM_JAVA_OPTIONS=-Xquickstart !IBM_JAVA_OPTIONS! -Xshareclasses:none
@@ -756,6 +765,60 @@ goto:eof
     )
 
     set OPENJ9_JAVA_OPTIONS="-Xverbosegclog:!X_LOG_DIR!\verbosegc.%%seq.log,10,1024" !OPENJ9_JAVA_OPTIONS!
+goto:eof
+
+@REM Check if the ENABLE_FIPS140_3 variable has been set by the user
+@REM If ENABLE_FIPS140_3 is set, determine the correct JVM options depending on the version of Java to be used and add to list
+@REM The version of java is determined to correctly set IBM SDK 8 or Semeru FIPS140-3 flags
+:enableFIPS140_3
+  if defined ENABLE_FIPS140_3 (
+    if "%ENABLE_FIPS140_3%" neq "false" (
+      @REM determine if we are using IBM SDK 8 with FIPS140-3 support
+      if exist "%JAVA_HOME%\fips140-3\" set IBM_SDK_8=true
+      if NOT defined IBM_SDK_8 (
+        if exist "%JRE_HOME%\fips140-3\" set IBM_SDK_8=true
+        if NOT defined IBM_SDK_8 (
+          if exist "%WLP_DEFAULT_JAVA_HOME%\jre\fips140-3\" set IBM_SDK_8=true
+        )
+      )
+      if not defined IBM_SDK_8 (
+        for /f "delims=" %%a in ('find "OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced" "!JAVA_HOME!\conf\security\java.security"') do (
+            if defined SKIP_FIRST_LINE (
+               set SEMERU_FIPS=true
+            ) else (
+               set SKIP_FIRST_LINE="true"
+            )
+        )
+      )
+
+      if defined IBM_SDK_8 (
+        set JVM_OPTIONS=-Xenablefips140-3 -Dcom.ibm.jsse2.usefipsprovider=true -Dcom.ibm.jsse2.usefipsProviderName=IBMJCEPlusFIPS !JVM_OPTIONS!
+      ) else (
+        if defined SEMERU_FIPS (
+            @REM de-quote input variable
+            set ENABLE_FIPS140_3=!ENABLE_FIPS140_3:"=!
+            set ENABLE_FIPS140_3=!WLP_INSTALL_DIR!\lib\security\fips140_3\FIPS140-3-Liberty.properties;!ENABLE_FIPS140_3!
+            @REM Retrieve name of Semeru FIPS140-3 profile from the last file in provided paths
+            for %%i in ("!ENABLE_FIPS140_3:;=";"!") do (
+              set "file=%%~i"
+            )
+            if not defined file (
+               set file=!WLP_INSTALL_DIR!\lib\security\fips140_3\FIPS140-3-Liberty.properties
+            )
+            for /f "usebackq delims== " %%l in ("!file!") do (
+              set line=%%l
+              if /i "!line:~0,18!" == "RestrictedSecurity" (
+                set "line=!line:~19!"
+                if "!line:~-7!" == "extends" (
+                  set profileName=!line:~0,-8!
+                )
+              )
+            )
+            set JVM_OPTIONS=-Dsemeru.fips=true -Dsemeru.customprofile=!profileName! -Djava.security.propertiesList="!ENABLE_FIPS140_3!" !JVM_OPTIONS!
+        )
+      )
+    )
+  )
 goto:eof
 
 @REM

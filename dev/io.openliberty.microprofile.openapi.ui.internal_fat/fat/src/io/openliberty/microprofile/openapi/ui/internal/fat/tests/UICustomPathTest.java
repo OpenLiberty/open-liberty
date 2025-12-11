@@ -105,7 +105,7 @@ public class UICustomPathTest {
     @Test
     public void testCustomUIPath() {
         // Check the title loads
-        WebElement title = waitForElement(driver, By.cssSelector("h2.title"), LONG_WAIT);
+        WebElement title = waitForElement(driver, By.cssSelector("h1.title"), LONG_WAIT);
         assertThat("Page title", title.getText(), Matchers.containsString("Generated API"));
 
         // Check the headerbar colour

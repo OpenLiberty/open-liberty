@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -59,14 +61,10 @@ public class LTPAConfigurationImplTest {
     private static SharedOutputManager outputMgr;
 
     private static final String PATH_TO_FILE = "/path/to/file";
-    private static final String PATH_TO_DIR = "/path/to/";
     private static final String PATH_TO_ANOTHER_FILE = "/path/to/another/file";
-    private static final String DEFAULT_CONFIG_LOCATION_DIR = "${server.config.dir}/resources/security/";
     private static final String DEFAULT_CONFIG_LOCATION = "${server.config.dir}/resources/security/ltpa.keys";
     private static final String DEFAULT_OUTPUT_LOCATION = "${server.output.dir}/resources/security/ltpa.keys";
-    private static final String DEFAULT_VALIDATION_KEY_LOCATION = "${server.config.dir}/resources/security/validation.keys";
     private static final String RESOLVED_DEFAULT_CONFIG_LOCATION = "testServerName/resources/security/ltpa.keys";
-    private static final String RESOLVED_DEFAULT_CONFIG_LOCATION_DIR = "testServerName/resources/security/";
     private static final String RESOLVED_DEFAULT_OUTPUT_LOCATION = "testServerName/resources/security/ltpa.keys";
     private static final String DEFAULT_VALIDATION_KEY_ELEMENT = "<validationKeys fileName=\"validation.keys\" password=\"pwd\" validUntilDate=\"2099-01-01T00:00:00Z\"/>";
     private static final String DEFAULT_VALIDATION_FILENAME = "validation.keys";
@@ -95,7 +93,17 @@ public class LTPAConfigurationImplTest {
     private final LTPAKeysChangeNotifier ltpaKeysChangeNotifier = mock.mock(LTPAKeysChangeNotifier.class);
 
     private LTPAConfigurationImplTestDouble ltpaConfig;
+
     private Map<String, Object> props;
+
+    private static String PATH_TO_DIR;
+    static {
+        try {
+            PATH_TO_DIR = new File("/path/to/").getCanonicalPath() + File.separator;
+        } catch (IOException ioe) {
+            PATH_TO_DIR = "/path/to/" + File.separator;
+        }
+    }
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
@@ -315,7 +323,7 @@ public class LTPAConfigurationImplTest {
 
         assertTrue("The LTPA file monitor registration must be set.", ltpaConfig.wasSetFileMonitorRegistrationCalled);
     }
-    
+
     /**
      * Tests that the file monitor is not registered and set in the LTPAConfigImpl object when updateTrigger is set to disabled.
      */
@@ -331,7 +339,6 @@ public class LTPAConfigurationImplTest {
         assertTrue("The LTPA file monitor registration must not be set.", !ltpaConfig.wasSetFileMonitorRegistrationCalled);
     }
 
-    @SuppressWarnings("deprecation")
     private void setupFileMonitorRegistrationsExpectations(final int numberOfInvocations) {
         mock.checking(new Expectations() {
             {
@@ -392,7 +399,7 @@ public class LTPAConfigurationImplTest {
     @Test
     public void getValidationKeys() {
         assertEquals("The validationKeys value was not the expected value",
-                     "[{fileName=/path/to/validation.keys, password=pwd, validUntilDate=2099-01-01T00:00:00Z}]", ltpaConfig.getValidationKeys().toString());
+                     "[{fileName=" + PATH_TO_DIR + "validation.keys, password=pwd, validUntilDate=2099-01-01T00:00:00Z}]", ltpaConfig.getValidationKeys().toString());
     }
 
     /**
@@ -652,6 +659,6 @@ public class LTPAConfigurationImplTest {
         List<Properties> outputList = ltpaConfig.maskKeysPasswords(inputList);
 
         // Assert
-        assertEquals("The password was not masked correctly", expectedList, outputList);   
+        assertEquals("The password was not masked correctly", expectedList, outputList);
     }
 }

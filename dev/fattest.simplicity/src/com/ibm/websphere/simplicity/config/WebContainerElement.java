@@ -106,6 +106,7 @@ public class WebContainerElement extends ConfigElement {
     private Boolean allowExpressionFactoryPerApp; // PI31922
     private Boolean useMaxRequestsizeforMultipart; //PI75528
     private Boolean allowAbsoluteFileNameForPartWrite; //PH62271
+    private String displayCustomizedExceptionText;
 
     /**
      * @return the listeners
@@ -643,6 +644,13 @@ public class WebContainerElement extends ConfigElement {
         return allowAbsoluteFileNameForPartWrite;
     }
 
+     /*
+      * @return the displaycustomizedexceptiontext
+      */
+    public String getDisplayCustomizedExceptionText() {
+        return displayCustomizedExceptionText;
+    }
+
     @XmlAttribute(name = "listeners")
     public void setListeners(String s) {
         this.listeners = s;
@@ -1118,6 +1126,14 @@ public class WebContainerElement extends ConfigElement {
         this.allowAbsoluteFileNameForPartWrite = allowAbsoluteFileNameForPartWrite;
     }
 
+    /**
+     * @param displayCustomizedExceptionText the displaycustomizedexceptiontext to set
+     */
+    @XmlAttribute(name = "displayCustomizedExceptionText")
+    public void setDisplayCustomizedExceptionText(String displayCustomizedExceptionText) {
+        this.displayCustomizedExceptionText = displayCustomizedExceptionText;
+    }
+
     /*
      * listeners
      * decodeurlasutf8
@@ -1352,6 +1368,9 @@ public class WebContainerElement extends ConfigElement {
         //PH62271
         if (allowAbsoluteFileNameForPartWrite != null)
             buf.append("allowAbsoluteFileNameForPartWrite=\"" + allowAbsoluteFileNameForPartWrite + "\" ");
+        
+        if (displayCustomizedExceptionText != null)
+            buf.append("displayCustomizedExceptionText=\"" + displayCustomizedExceptionText + "\" ");
 
         buf.append("}");
         return buf.toString();

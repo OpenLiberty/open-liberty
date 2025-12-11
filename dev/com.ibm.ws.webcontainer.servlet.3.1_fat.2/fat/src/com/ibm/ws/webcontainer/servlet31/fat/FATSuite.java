@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,8 +25,10 @@ import com.ibm.ws.webcontainer.servlet31.fat.tests.AsyncWriteListenerHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.FormLoginReadListenerTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.NBMultiReadTest;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadListenerHttpUnit;
+import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadListenerSendImmediateData;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeReadWriteTimeoutHttpUnit;
 import com.ibm.ws.webcontainer.servlet31.fat.tests.UpgradeWriteListenerHttpUnit;
+import com.ibm.ws.webcontainer.servlet31.fat.tests.CustomizedExceptionText;
 
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -42,29 +44,26 @@ import componenttest.topology.impl.LibertyServer;
                 AsyncWriteListenerHttpUnit.class,
                 UpgradeWriteListenerHttpUnit.class,
                 UpgradeReadListenerHttpUnit.class,
+                UpgradeReadListenerSendImmediateData.class,
                 UpgradeReadWriteTimeoutHttpUnit.class,
                 FormLoginReadListenerTest.class,
-                NBMultiReadTest.class
+                NBMultiReadTest.class,
+                CustomizedExceptionText.class
 })
 public class FATSuite {
 
-    @ClassRule
-    public static RepeatTests repeat;
-
     public static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
 
-    static {
-        // EE10 requires Java 11.
-        // EE11 requires Java 17
-        // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
-        // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
-        repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                        .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                        .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                        .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                        .andWith(FeatureReplacementAction.EE11_FEATURES());
-
-    }
+    // EE10 requires Java 11.
+    // EE11 requires Java 17
+    // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
+    // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
+    @ClassRule
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES());
 
     //Due to Fyre performance on Windows, use this method to set the server trace to the minimum
     public static void setDynamicTrace(LibertyServer server, String trace) throws Exception {

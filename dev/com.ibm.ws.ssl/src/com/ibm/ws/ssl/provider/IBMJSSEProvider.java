@@ -13,14 +13,11 @@
 
 package com.ibm.ws.ssl.provider;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEProvider;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 
 /**
@@ -36,66 +33,23 @@ import com.ibm.ws.ssl.JSSEProviderFactory;
  */
 public class IBMJSSEProvider extends AbstractJSSEProvider implements JSSEProvider {
     private static TraceComponent tc = Tr.register(IBMJSSEProvider.class, "SSL", "com.ibm.ws.ssl.resources.ssl");
-    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
-
-    private static boolean issuedBetaMessage = false;
 
     /**
      * Constructor.
      */
     public IBMJSSEProvider() {
         super();
-        String fipsON = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty("com.ibm.jsse2.usefipsprovider");
-            }
-        });
 
-        String ibmjceplusfipsprovider = AccessController.doPrivileged(new PrivilegedAction<String>() {
-            @Override
-            public String run() {
-                return System.getProperty("com.ibm.jsse2.usefipsProviderName");
-            }
-        });
+        String protocol = Constants.PROTOCOL_SSL_TLS_V2;
+        if (CryptoUtils.isFips140_3Enabled()) {
+            protocol = Constants.PROTOCOL_TLS;
+        }
 
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "provider: " + ibmjceplusfipsprovider);
-        }
-        if (isRunningBetaMode() && "true".equalsIgnoreCase(fipsON) && "IBMJCEPlusFIPS".equalsIgnoreCase(ibmjceplusfipsprovider)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "fips is enabled and using IBMJCEPlusFIPS provider");
-                Tr.debug(tc, "key manager factory alg: " + JSSEProviderFactory.getKeyManagerFactoryAlgorithm());
-                Tr.debug(tc, "trust manager factory alg: " + JSSEProviderFactory.getTrustManagerFactoryAlgorithm());
-                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_TLS);
-            }
-            initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
-                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_TLS);
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "protocol: " + Constants.PROTOCOL_SSL_TLS_V2);
-            }
-            initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
-                       Constants.SOCKET_FACTORY_WAS_DEFAULT, null, Constants.PROTOCOL_SSL_TLS_V2);
-        }
+        initialize(JSSEProviderFactory.getKeyManagerFactoryAlgorithm(), JSSEProviderFactory.getTrustManagerFactoryAlgorithm(), Constants.IBMJSSE2_NAME, null,
+                   Constants.SOCKET_FACTORY_WAS_DEFAULT, null, protocol);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Created an IBM JSSE provider");
+            Tr.debug(tc, "Created an IBM JSSE provider with protocol " + protocol);
         }
     }
-
-    boolean isRunningBetaMode() {
-        if (!ProductInfo.getBetaEdition()) {
-            return false;
-        } else {
-            // Running beta exception, issue message if we haven't already issued one for
-            // this class
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + this.getClass().getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-            return true;
-        }
-    }
-
 }

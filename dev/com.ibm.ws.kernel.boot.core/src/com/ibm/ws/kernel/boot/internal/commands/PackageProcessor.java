@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -386,6 +386,16 @@ public class PackageProcessor implements ArchiveProcessor {
         File templatesDir = new File(bootProps.getInstallRoot(), "templates");
         DirEntryConfig templatesDirConfig = new DirEntryConfig(packageArchiveEntryPrefix + "templates", templatesDir, true, PatternStrategy.IncludePreference);
         entryConfigs.add(templatesDirConfig);
+
+        /*
+         * Add back the lib/security directory
+         * Contains Liberty's Semeru FIPS 140-3 custom profile file
+         */
+        File securityDir = new File(bootProps.getInstallRoot(), "lib/security");
+        if (securityDir.exists()) {
+            DirEntryConfig securityDirConfig = new DirEntryConfig(packageArchiveEntryPrefix + "lib/security", securityDir, true, PatternStrategy.IncludePreference);
+            entryConfigs.add(securityDirConfig);
+        }
 
         /*
          * Add back the templates directory (if building a jar, it's already added)

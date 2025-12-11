@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -230,7 +231,7 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcClientBadPWOnClientSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user5", "UsrTokenPWDigestWebSvcSSL",
@@ -248,7 +249,7 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcClientBadPWOnBothSidesSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user3", "UsrTokenPWDigestWebSvcSSL",
@@ -284,7 +285,7 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @ExpectedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @ExpectedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcMissingIdInCallback() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "user4", "UsrTokenPWDigestWebSvc",
@@ -293,8 +294,8 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcMissingIdInCallbackSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user4", "UsrTokenPWDigestWebSvcSSL",
@@ -312,7 +313,7 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcClientBadIdSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "user77", "UsrTokenPWDigestWebSvcSSL",
@@ -448,7 +449,7 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @ExpectedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @ExpectedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcClientaltCallbackBadUser() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpUrl, "", "altCallback2", "UsrTokenPWDigestWebSvc",
@@ -459,8 +460,8 @@ public class CxfPasswordDigestTests extends CommonTests {
     }
 
     @Test
-    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
-    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })
+    @AllowedFFDC(value = { "java.io.IOException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
+    @AllowedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, EE8FeatureReplacementAction.ID })
     public void testPWDigestCXFSvcClientaltCallbackBadUserSSL() throws Exception {
 
         genericTest(testName.getMethodName(), clientHttpsUrl, httpsPortNumber, "altCallback2", "UsrTokenPWDigestWebSvcSSL",

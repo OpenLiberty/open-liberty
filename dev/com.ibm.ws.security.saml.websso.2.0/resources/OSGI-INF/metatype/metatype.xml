@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2021,2022 IBM Corporation and others.
+    Copyright (c) 2021,2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -30,12 +30,19 @@
         <AD id="signatureMethodAlgorithm" name ="%signatureMethodAlgorithm" description="%signatureMethodAlgorithm.desc"
             required="false" type="String" default="SHA256">
                 <!-- defect 168307 Option label="%signatureMethodAlgorithm.NONE"   value="none" / -->
-            	<Option label="%signatureMethodAlgorithm.SHA256" value="SHA256" />
-            	<Option label="%signatureMethodAlgorithm.SHA128" value="SHA128" />
-            	<Option label="%signatureMethodAlgorithm.SHA1"   value="SHA1" />
+                <Option label="%signatureMethodAlgorithm.ECDSAwithSHA512" value="ECDSAwithSHA512" />
+                <Option label="%signatureMethodAlgorithm.ECDSAwithSHA384" value="ECDSAwithSHA384" />
+                <Option label="%signatureMethodAlgorithm.ECDSAwithSHA256" value="ECDSAwithSHA256" />
+                <Option label="%signatureMethodAlgorithm.SHA512" value="SHA512" />
+                <Option label="%signatureMethodAlgorithm.SHA384" value="SHA384" />
+                <Option label="%signatureMethodAlgorithm.SHA256" value="SHA256" />
+                <Option label="%signatureMethodAlgorithm.SHA128" value="SHA128" />
+                <Option label="%signatureMethodAlgorithm.SHA1"   value="SHA1" />
         </AD>        
         <AD id="createSession" name ="%createSession" description="%createSession.desc"
             required="false" type="Boolean" default="true"/>        
+        <AD id="contentSecurityPolicy" name="%contentSecurityPolicy" description="%contentSecurityPolicy.desc" 
+            required="false" type="String"/>        
         <AD id="authnRequestsSigned" name ="%authnRequestsSigned" description="%authnRequestsSigned.desc"
             required="false" type="Boolean" default="true"/>
             <AD id="includeX509InSPMetadata" name ="%includeX509InSPMetadata" description="%includeX509InSPMetadata.desc"

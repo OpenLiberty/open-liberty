@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012-2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class DirPattern {
+
+    public static final boolean INCLUDE_BY_DEFAULT = true;
+    public static final boolean EXCLUDE_BY_DEFAULT = !INCLUDE_BY_DEFAULT;
 
     boolean includeByDefault;
 

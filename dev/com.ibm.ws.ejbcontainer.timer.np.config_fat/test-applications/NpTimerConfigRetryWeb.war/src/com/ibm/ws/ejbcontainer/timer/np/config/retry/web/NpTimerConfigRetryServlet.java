@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2024 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
     private static final boolean isMacOSX = System.getProperty("os.name", "unknown").toLowerCase().indexOf("mac os x") >= 0;
 
     private static final int TIMER_DELAY = 2500;
-    private static final int MIN_TIMER_DELAY = isMacOSX ? 15000 : TIMER_DELAY;
+    private static final int MIN_TIMER_DELAY = isMacOSX ? 25000 : TIMER_DELAY;
     private static final int LONG_TIMER_DELAY = isMacOSX ? 150000 : 5000;
     private static final long NO_CANCEL_DELAY = 0;
 
@@ -344,7 +344,7 @@ public class NpTimerConfigRetryServlet extends FATServlet {
 
         // Tolerate the timer running a 3rd time on slow hardware due to catch-up timeouts
         long expectedCount = 2;
-        if (nextTimes.get(nextTimes.size() - 1) <= completedTime && count == 3) {
+        if (count == 3 && nextTimes.get(nextTimes.size() - 2) <= completedTime) {
             expectedCount = 3;
         }
 

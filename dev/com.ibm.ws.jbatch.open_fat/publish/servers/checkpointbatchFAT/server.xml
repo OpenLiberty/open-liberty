@@ -1,51 +1,30 @@
 <server>
-    <featureManager>
-        <feature>servlet-3.1</feature>
-        <feature>batch-1.0</feature>
-        <feature>appSecurity-2.0</feature>
-		<feature>jpa-2.0</feature>
-		<feature>cdi-1.2</feature>
-    </featureManager>
 
-<!--
-    <application type="war" id="snoop" name="snoop" location="${shared.app.dir}/webcontainer/snoop" />
-    -->
-    <include location="../fatTestPorts.xml"/>
-    
-    <!-- NOW THIS MESSAGE CHANGED -->
-    
-     <!-- batch container persistence config -->
-     <!--
+    <include location="../fatTestPorts.xml" />
+
+	<featureManager>
+		<feature>batch-1.0</feature>
+		<feature>cdi-2.0</feature>
+		<feature>servlet-4.0</feature>
+	</featureManager>
+
     <batchPersistence jobStoreRef="BatchDatabaseStore" />
 
-    <databaseStore id="BatchDatabaseStore" dataSourceRef="batchDB" schema="JBATCH" tablePrefix="" />
+    <databaseStore id="BatchDatabaseStore" dataSourceRef="BatchDB" schema="JBATCH" tablePrefix="" />
 
 	<library id="DerbyLib">
-		<fileset dir="${server.config.dir}/resources/derby" />
+	    <file name="${shared.resource.dir}/derby/derby.jar"/>
 	</library>
 
-	<dataSource id="batchDB" jndiName="jdbc/batch">
-		<jdbcDriver libraryRef="DerbyLib" />
-		<properties.derby.embedded databaseName="${server.config.dir}/resources/RUNTIMEDB"
-			createDatabase="false" user="user" password="pass" />
-	</dataSource>
-  -->
-  
-  	<!-- ssl keystore to enable SSL port for batch rest connector -->
-    <keyStore id="defaultKeyStore" location="${server.config.dir}/resources/security/key.p12" type="PKCS12" password="{xor}EzY9Oi0rJg==" />
 
-    <!-- users authorized to the batch rest connector (ibm/api realm) -->
-    <basicRegistry id="basic" realm="ibm/api">
-        <user name="bob" password="bobpwd" />
-        <user name="jane" password="janepwd" />    
-    </basicRegistry>
-    
-    <!-- Everyone is a batch admin for non security related tests -->
-	<authorization-roles id="com.ibm.ws.batch">
-		<security-role name="batchAdmin">
-			<user name="bob" />
-			<user name="jane" />
-		</security-role>
-	</authorization-roles>
-	
+	<dataSource id="BatchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
+		<jdbcDriver libraryRef="DerbyLib" />
+        <properties.derby.embedded databaseName="memory:RUNTIMEDB"
+			createDatabase="create" user="user" password="pass" />
+	</dataSource>
+
+	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+
 </server>
+

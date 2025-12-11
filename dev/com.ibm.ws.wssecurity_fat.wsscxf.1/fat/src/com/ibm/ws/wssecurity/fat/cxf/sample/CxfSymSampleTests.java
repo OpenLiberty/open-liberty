@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.annotation.MinimumJavaLevel;
 
 @RunWith(FATRunner.class)
 public class CxfSymSampleTests {
@@ -200,6 +201,7 @@ public class CxfSymSampleTests {
         return;
     }
 
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testEcho3Service() throws Exception {
         String thisMethod = "testEcho3Service";
@@ -224,6 +226,7 @@ public class CxfSymSampleTests {
         return;
     }
 
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testEcho5Service() throws Exception {
         String thisMethod = "testEcho5Service";
@@ -248,6 +251,7 @@ public class CxfSymSampleTests {
         return;
     }
 
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testEcho6Service() throws Exception {
         String thisMethod = "testEcho6Service";

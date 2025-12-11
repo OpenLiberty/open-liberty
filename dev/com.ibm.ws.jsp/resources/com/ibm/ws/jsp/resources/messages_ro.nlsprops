@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1289,3 +1289,7 @@ jsp.bothsourcelevelset.warning.useraction=Specifica\u021bi numai atributul de ja
 jsp.javasourcelevel.value=CWWJS0008I: Valoarea atributului JSP este javaSource{0}".
 jsp.javasourcelevel.value.explanation=
 jsp.javasourcelevel.value.useraction=
+
+pages.removed.directive.error=CWWJS0009E: Directiva " {0} " nu mai este sus\u021binut\u0103, deoarece a fost eliminat\u0103 \u00een {1}.
+pages.removed.directive.error.explanation = Directiva nu mai este sus\u021binut\u0103. 
+pages.removed.directive.error.useraction = Elimina\u021bi utilizarea directivei.

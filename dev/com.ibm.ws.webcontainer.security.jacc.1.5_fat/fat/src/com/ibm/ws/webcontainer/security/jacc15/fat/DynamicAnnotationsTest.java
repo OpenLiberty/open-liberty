@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -121,6 +121,9 @@ public class DynamicAnnotationsTest {
         basicAuthClient = new BasicAuthClient(server, BasicAuthClient.DEFAULT_REALM, DYNAMIC_ANNOTATIONS_PURE_SERVLET, DYNAMIC_ANNOTATIONS_PURE_CONTEXT_ROOT);
         secureBasicAuthClient = new SSLBasicAuthClient(server, BasicAuthClient.DEFAULT_REALM, DYNAMIC_ANNOTATIONS_PURE_SERVLET, DYNAMIC_ANNOTATIONS_PURE_CONTEXT_ROOT);
         conflictBasicAuthClient = new BasicAuthClient(server, BasicAuthClient.DEFAULT_REALM, DYNAMIC_ANNOTATIONS_CONFLICT_SERVLET, DYNAMIC_ANNOTATIONS_CONFLICT_CONTEXT_ROOT);
+        basicAuthClient.setJaccValidation(true);
+        secureBasicAuthClient.setJaccValidation(true);
+        conflictBasicAuthClient.setJaccValidation(true);
     }
 
     protected static void verifyServerStartedWithJaccFeature(LibertyServer server) {

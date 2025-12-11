@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2024 IBM Corporation and others.
+ * Copyright (c) 2002, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.Transaction.UOWCurrent;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.ws.recoverylog.spi.RecLogService;
 import com.ibm.ws.recoverylog.spi.RecLogServiceImpl;
 import com.ibm.ws.recoverylog.spi.RecoveryDirector;
 import com.ibm.ws.recoverylog.spi.RecoveryDirectorFactory;
@@ -66,7 +67,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
     protected static RuntimeException _resyncException;
 
-    protected RecLogServiceImpl _recLogService;
+    protected RecLogService _recLogService;
 
     protected RecoveryDirector _recoveryDirector;
 
@@ -174,7 +175,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
     }
 
     @Reference
-    public void setRecoveryLogService(ServiceReference<RecLogServiceImpl> ref) {
+    public void setRecoveryLogService(ServiceReference<RecLogService> ref) {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "setRecoveryLogService", ref);
 
@@ -311,7 +312,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                 }
 
                 // Create the Recovery Director
-                _recoveryDirector = RecoveryDirectorFactory.createRecoveryDirector();
+                _recoveryDirector = RecoveryDirectorFactory.createRecoveryDirector(_recLogService);
 
                 // For cloud support, retrieve recovery identity from the configuration if it is defined.
                 if (cp != null) {
@@ -366,7 +367,7 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
 
                     // We will do peer recovery if the recovery identity and group are set
                     if (_recoveryIdentity != null && !_recoveryIdentity.isEmpty()) {
-                        _recLogService.setPeerRecoverySupported(true);
+                        _recLogService.setPeerRecoverySupported(_recoveryIdentity);
                         txAgent.setPeerRecoverySupported(true);
                         // Override the disable2PC property if it has been set
                         TransactionImpl.setDisable2PCDefault(false);
@@ -464,7 +465,8 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
                             Thread.sleep(1000);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "Waited " + ++timeSlept + " seconds for transactions to finish");
-                        } catch (InterruptedException e) {}
+                        } catch (InterruptedException e) {
+                        }
                     } else {
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Gave up waiting for transactions to finish after " + ++timeSlept + " seconds");
@@ -514,8 +516,6 @@ public class TxTMHelper implements TMService, UOWScopeCallbackAgent {
             // ConfigurationProviderManager.stop(true);
 
             _recoveryAgent.stop(false);
-
-            _recLogService.stop();
 
             // Issue #23676. The JCA component needs TX services at shutdown. If TranManagerSet.cleanup() is called,
             // as it was previously at this point, then that removes the current (shutdown) thread's reference to the TM.

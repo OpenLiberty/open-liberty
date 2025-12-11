@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/** @version 2.0 */
-@org.osgi.annotation.versioning.Version("2.0")
+/** @version 2.1 */
+@org.osgi.annotation.versioning.Version("2.1")
 @TraceOptions(traceGroup = "Naming")
 package com.ibm.ws.container.service.naming;
 

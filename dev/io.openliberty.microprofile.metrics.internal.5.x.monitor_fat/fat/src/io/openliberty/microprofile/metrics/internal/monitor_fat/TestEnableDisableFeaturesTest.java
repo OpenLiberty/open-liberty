@@ -253,6 +253,35 @@ public class TestEnableDisableFeaturesTest {
                         "connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
                         "connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}" },
                 new String[] {});
+        
+        currentServ.setMarkToEndOfLog();
+        // FAT updated to check that connectionpool metric remains after unloading
+        // application.
+        boolean res = currentServ.removeDropinsApplications("testJDBCApp.war");
+        Assert.assertTrue("TestJDBCApp.war was not removed", res);
+
+        currentServ.waitForStringInLog(".*CWWKZ0009I: The application testJDBCApp has stopped successfully.*");
+        Log.info(c, testName, "------- Removed JDBC application ------");
+        checkStrings(getHttpsServlet("/metrics?scope=vendor", serverEDF4),
+                new String[] { "connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_destroy_total{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_create_total{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_managedConnections{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS1\",mp_scope=\"vendor\",}",
+                        "connectionpool_connectionHandles{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_freeConnections{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_destroy_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_create_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_managedConnections{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}",
+                        "connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\",mp_scope=\"vendor\",}" },
+                new String[] {});
     }
 
     @Test

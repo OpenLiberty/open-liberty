@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ src: \
     test-applications/TestInjection.war/src,\
     test-applications/TestEL.war/src,\
     test-applications/TestPreDestroy.war/src,\
+    test-applications/WriteAfterRedirect.war/src,\
     test-bundle/src
 
 fat.project: true

@@ -19,6 +19,10 @@ import static org.junit.Assert.assertThat;
 import java.net.URISyntaxException;
 import java.util.List;
 
+import javax.inject.Inject;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 import org.junit.Test;
 
@@ -27,15 +31,15 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.
 import io.openliberty.microprofile.telemetry.internal_fat.apps.jaxrspropagation.common.PropagationHeaderEndpoint;
 import io.openliberty.microprofile.telemetry.internal_fat.common.TestSpans;
 import io.openliberty.microprofile.telemetry.internal_fat.common.spanexporter.InMemorySpanExporter;
+import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
+import componenttest.rules.repeater.MicroProfileActions;
+import componenttest.annotation.SkipForRepeat;
 import io.opentelemetry.api.baggage.Baggage;
 import io.opentelemetry.api.baggage.BaggageEntryMetadata;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.sdk.trace.data.SpanData;
-import javax.inject.Inject;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServletRequest;
 
 @SuppressWarnings("serial")
 @WebServlet("/testW3cTraceBaggagePropagation")
@@ -57,6 +61,8 @@ public class W3CTraceBaggagePropagationTestServlet extends FATServlet {
     private TestSpans testSpans;
 
     @Test
+    //This test is already covered in the MpTelemetry 2.0 TCK
+    @SkipForRepeat({MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP61_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP41_MPTEL20_ID,  TelemetryActions.MP14_MPTEL20_ID})
     public void testW3cTraceBaggagePropagation() throws URISyntaxException {
         Span span = testSpans.withTestSpan(() -> {
             Baggage baggage = Baggage.builder().put(BAGGAGE_KEY, BAGGAGE_VALUE, BaggageEntryMetadata.create(BAGGAGE_METADATA)).build();

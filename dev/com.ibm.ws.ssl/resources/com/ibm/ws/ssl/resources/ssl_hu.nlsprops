@@ -311,7 +311,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: A k\u00f6vetkez\u0151 he
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: A rendszer hozz\u00e1adja a(z) {0} al\u00e1\u00edr\u00f3\u00e1lnevet a(z) {1} helyi kulcst\u00e1rol\u00f3hoz a k\u00f6vetkez\u0151 SHA kivonattal: {2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: A rendszer hozz\u00e1adja a {0} al\u00e1\u00edr\u00f3 alias\u00e1t a {1} helyi kulcst\u00e1rhoz a k\u00f6vetkez\u0151 {3} digesttel: {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lokat szolg\u00e1l.
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=Nincs teend\u0151.
 # -------------------------------------------------------------------------------------------------

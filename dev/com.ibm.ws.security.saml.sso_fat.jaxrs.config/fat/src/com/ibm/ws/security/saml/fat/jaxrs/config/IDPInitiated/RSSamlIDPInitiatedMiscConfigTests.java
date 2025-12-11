@@ -34,7 +34,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-
+import com.ibm.ws.common.crypto.CryptoUtils;
 /**
  * In general, these tests perform a simple IdP initiated SAML Web SSO, using
  * httpunit to simulate browser requests. In this scenario, a Web client
@@ -977,7 +977,7 @@ public class RSSamlIDPInitiatedMiscConfigTests extends RSSamlIDPInitiatedConfigC
         defaultRsSettings.setInboundPropagation("none");
         defaultRsSettings.setAudiences("none");
         defaultRsSettings.setHeaderName("SomethingOdd");
-        defaultRsSettings.setSignatureMethodAlgorithm("SHA256");
+        defaultRsSettings.setSignatureMethodAlgorithm(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256);
 
         // Update the bootstrap prop for IdP server since that variable doesn't
         // get set for the app server

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2024 IBM Corporation and others.
+# Copyright (c) 1997, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1643,3 +1643,7 @@ read.write.bytebuffer.null.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sk\u0
 read.write.failed.isReady.false=CWWWC0011E: Egy InputStream m\u0171velet vagy egy OutputStream m\u0171velet \u00edr\u00e1sa meghi\u00fasult, mert a isReady API false \u00e9rt\u00e9ket ad vissza.
 read.write.failed.isReady.false.explanation=Ha a isReady API false \u00e9rt\u00e9ket ad vissza, akkor nem h\u00edvhat olvas\u00e1si vagy \u00edr\u00e1si met\u00f3dust.
 read.write.failed.isReady.false.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1slogik\u00e1t, hogy a folyam k\u00e9szen \u00e1lljon egy InputStream vagy a OutputStream m\u0171veletre.
+
+sendRedirect.cannot.convert.relative.url=CWWWC0012E: A sendRedirect relat\u00edv URL az alkalmaz\u00e1sban nem alak\u00edthat\u00f3 \u00e1t \u00e9rv\u00e9nyes URL -re.
+sendRedirect.cannot.convert.relative.url.explanation=A megadott relat\u00edv URL tartalmazhat \u00e9rv\u00e9nytelen el\u00e9r\u00e9si \u00fatvonalkeresztez\u0151 karaktereket vagy indexeket.
+sendRedirect.cannot.convert.relative.url.useraction=Ellen\u0151rizze a sendRedirect hely\u00e9t URL az alkalmaz\u00e1sban, miel\u0151tt megh\u00edvja a response.sendRedirect( ) m\u00f3dszert

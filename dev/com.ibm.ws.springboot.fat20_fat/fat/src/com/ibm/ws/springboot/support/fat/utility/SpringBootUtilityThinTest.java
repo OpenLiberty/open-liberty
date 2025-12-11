@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -360,14 +360,14 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
         String line = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
-            line = reader.readLine();
+            line = readTimeout(reader);
             Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
             while (line != null) {
                 Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
                 if (line.contains("CWWKT0016I")) {
                     break;
                 }
-                line = reader.readLine();
+                line = readTimeout(reader);
             }
         }
         assertNotNull("The endpoint is not available", line);
@@ -380,6 +380,21 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         assertNotNull(result);
         assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
         proc.destroy();
+    }
+
+    String readTimeout(BufferedReader reader) throws IOException {
+        // Timeout after 300*1000 ms (5 minutes)
+        for (int i = 0; i < 300; i++) {
+            if (reader.ready()) {
+                return reader.readLine();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.interrupted();
+            }
+        }
+        return null;
     }
 
     private String sendHttpsGet(String path, LibertyServer server) throws Exception {

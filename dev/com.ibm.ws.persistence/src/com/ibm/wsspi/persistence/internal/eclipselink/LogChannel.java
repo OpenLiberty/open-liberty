@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2015 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,14 +16,21 @@ import org.eclipse.persistence.logging.SessionLogEntry;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.IgnoreNonStaticTraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.wsspi.persistence.internal.PersistenceServiceConstants;
 
 //TODO(151905) -- Cleanup. Poached from Liberty
 @Trivial
 class LogChannel {
-    private final TraceComponent _tc;
+    // Static TraceComponent for general LogChannel class tracing
     private static final TraceComponent _stc = Tr.register(LogChannel.class);
+    
+    // Instance-specific TraceComponent for different EclipseLink channels
+    // The @IgnoreNonStaticTraceComponent annotation tells the instrumentation tool
+    // that this non-static field is intentional and should not trigger warnings
+    @IgnoreNonStaticTraceComponent
+    private final TraceComponent _tc;
 
     /**
      * Log levels (per EclipseLink)
@@ -38,10 +45,11 @@ class LogChannel {
      * <li>1=FINEST
      * <li>0=TRACE
      * </ul>
-     * 
+     *
      * @param channel
      */
     LogChannel(String channel) {
+        // Register a TraceComponent for this specific channel
         _tc = Tr.register(channel, LogChannel.class, PersistenceServiceConstants.TRACE_GROUP);
     }
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -111,6 +111,7 @@ public class CommonPasswordCallbackWss4j implements CallbackHandler {
             userPasswords.put("alice", "password");
             userPasswords.put("bob", "password");
             userPasswords.put("cxfca", "password");
+            userPasswords.put("secp256r1", "security");
 
             // do not distinguish encrypt or signature for now
             signaturePasswords.put("x509ClientDefault", "KLibertyX509Client");
@@ -125,6 +126,7 @@ public class CommonPasswordCallbackWss4j implements CallbackHandler {
             signaturePasswords.put("soaprequester", "client");
             signaturePasswords.put("bob", "keypass");
             signaturePasswords.put("alice", "keypass");
+            signaturePasswords.put("secp256r1", "security");
 
             encryptPasswords.put("x509ClientDefault", "KLibertyX509Client");
             encryptPasswords.put("x509clientdefault", "KLibertyX509Client");
@@ -136,6 +138,7 @@ public class CommonPasswordCallbackWss4j implements CallbackHandler {
             encryptPasswords.put("x509serversecond", "KLibertyX509Server2");
             encryptPasswords.put("bob", "keypass");
             encryptPasswords.put("alice", "keypass");
+            encryptPasswords.put("secp256r1", "security");
 
         }
 

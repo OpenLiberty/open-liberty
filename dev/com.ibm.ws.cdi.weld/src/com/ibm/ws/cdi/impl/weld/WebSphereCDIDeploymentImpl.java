@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,7 +58,6 @@ import com.ibm.ws.cdi.internal.interfaces.CDIUtils;
 import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
-import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.cdi.liberty.ExtensionMetaData;
 import com.ibm.ws.classloading.LibertyClassLoadingService;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
@@ -77,6 +76,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
     private final Map<String, WebSphereBeanDeploymentArchive> deploymentDBAs = new HashMap<String, WebSphereBeanDeploymentArchive>();
     private final Set<WebSphereBeanDeploymentArchive> applicationBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
     private final Map<String, WebSphereBeanDeploymentArchive> extensionBDAs = new HashMap<String, WebSphereBeanDeploymentArchive>();
+    private final Set<WebSphereBeanDeploymentArchive> runtimeExtensionBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
 
     private final List<WebSphereBeanDeploymentArchive> orderedBDAs = new ArrayList<WebSphereBeanDeploymentArchive>();
     private WeldBootstrap bootstrap;
@@ -519,13 +519,6 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
                     CDIUtils.getAndSetLoader(oldCL);
                 }
             }
-            //if the probe is enabled, add the probe extension
-            WeldDevelopmentMode devMode = this.cdiRuntime.getWeldDevelopmentMode();
-            if (devMode != null) {
-                extensionSet.add(devMode.getProbeExtension());
-                WebSphereBeanDeploymentArchive bda = devMode.getProbeBDA(this);
-                extensionBDAs.put(bda.getId(), bda);
-            }
 
             //Now add the extensions from the SPI.
             //Because these are not in a META-INF Service file we have to construct instances
@@ -618,6 +611,8 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         ArchiveType type = bda.getType();
         if (type != ArchiveType.RUNTIME_EXTENSION) {
             applicationBDAs.add(bda);
+        } else {
+            runtimeExtensionBDAs.add(bda);
         }
     }
 
@@ -707,6 +702,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
             this.deploymentDBAs.clear();
             this.applicationBDAs.clear();
+            this.runtimeExtensionBDAs.clear();
             this.extensionBDAs.clear();
             this.orderedBDAs.clear();
             this.classloader = null;
@@ -822,5 +818,9 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         }
 
         return empty;
+    }
+
+    public Set<WebSphereBeanDeploymentArchive> getRuntimeExtensionBDAs() {
+        return this.runtimeExtensionBDAs;
     }
 }

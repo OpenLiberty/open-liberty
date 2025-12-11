@@ -38,11 +38,9 @@ installLocation=loca\u0163ie de instalare
 options=Op\u0163iuni
 
 
-licenseOptionDescription=Prin alegerea op\u0163iunii "De acord" de mai jos, sunte\u0163i de acord cu termenii acordului de licen\u0163\u0103 \u015ficu termenii non-IBM, dac\u0103 se aplic\u0103. \
-Dac\u0103 nu sunte\u0163i de acord, selecta\u0163i "Nu sunt de acord".
+licenseOptionDescription=Prin alegerea op\u0163iunii "De acord" de mai jos, sunte\u0163i de acord cu termenii acordului de licen\u0163\u0103 \u015ficu termenii non-IBM, dac\u0103 se aplic\u0103. Dac\u0103 nu sunte\u0163i de acord, selecta\u0163i "Nu sunt de acord".
 
-licenseeAcknowledges=Licen\u0163iatul \u00een\u0163elege \u015fi este de acord c\u0103 tot codul (inclusiv caracteristici, func\u0163ii sau alte desc\u0103rc\u0103ri de software) desc\u0103rcat de Licen\u0163iat \u00een leg\u0103tur\u0103 cu acesta ("Codul") va fi folosit cu o versiune licen\u0163iat\u0103 a programului IBM WebSphere Application Server Liberty ("Programul"). \
-Licen\u0163iatul \u00een\u0163elege \u015fi este de acord c\u0103 utilizarea Codului se supune termenilor acordurilor de licen\u0163\u0103 care guverneaz\u0103 utilizarea Programului (i.e., Acordul interna\u0163ional de licen\u0163\u0103 program, Acordul interna\u0163ional de licen\u0163\u0103 pentru programe negarantate, Acordul interna\u0163ional de licen\u0163\u0103 pentru evaluarea programelor, Acordul interna\u0163ional de licen\u0163\u0103 pentru eliberarea devreme a programelor), inclusiv, dac\u0103 se aplic\u0103, orice Informa\u0163ii de licen\u0163\u0103.
+licenseeAcknowledges=Licen\u0163iatul \u00een\u0163elege \u015fi este de acord c\u0103 tot codul (inclusiv caracteristici, func\u0163ii sau alte desc\u0103rc\u0103ri de software) desc\u0103rcat de Licen\u0163iat \u00een leg\u0103tur\u0103 cu acesta ("Codul") va fi folosit cu o versiune licen\u0163iat\u0103 a programului IBM WebSphere Application Server Liberty ("Programul"). Licen\u0163iatul \u00een\u0163elege \u015fi este de acord c\u0103 utilizarea Codului se supune termenilor acordurilor de licen\u0163\u0103 care guverneaz\u0103 utilizarea Programului (i.e., Acordul interna\u0163ional de licen\u0163\u0103 program, Acordul interna\u0163ional de licen\u0163\u0103 pentru programe negarantate, Acordul interna\u0163ional de licen\u0163\u0103 pentru evaluarea programelor, Acordul interna\u0163ional de licen\u0163\u0103 pentru eliberarea devreme a programelor), inclusiv, dac\u0103 se aplic\u0103, orice Informa\u0163ii de licen\u0163\u0103.
 
 extractPrompt=Directorul \u0163int\u0103 pentru fi\u015fierele de produs?
 extractSuccess=S-au extras cu succes toate fi\u015fierele produsului.
@@ -62,8 +60,7 @@ licensePrompt=Selecta\u0163i {0} Sunt de acord, sau {1} Nu sunt de acord:
 # {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
 # {1} International Program License Agreement
 #
-licenseStatement=\u00cenainte de a putea utiliza, extrage sau instala {0}, trebuie s\u0103 accepta\u0163i termenii {1} \u015fi informa\u0163iile de licen\u0163\u0103 suplimentare. \
-V\u0103 rug\u0103m s\u0103 citi\u0163i cu aten\u0163ie urm\u0103toarele acorduri de licen\u0163\u0103.
+licenseStatement=\u00cenainte de a putea utiliza, extrage sau instala {0}, trebuie s\u0103 accepta\u0163i termenii {1} \u015fi informa\u0163iile de licen\u0163\u0103 suplimentare. V\u0103 rug\u0103m s\u0103 citi\u0163i cu aten\u0163ie urm\u0103toarele acorduri de licen\u0163\u0103.
 
 #
 # {0} --viewLicenseAgreement
@@ -240,8 +237,7 @@ unableToUpdateFingerprint=Nu se poate actualiza amprenta serviciului datorit\u01
 patchingNotApplicableNoChange=Nu a fost extras niciun con\u0163inut deoarece nu exist\u0103 nicio caracteristic\u0103 de potrivire \u00een runtime-ul {0}
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
-patchingSkippedSupersededFix=Corec\u0163ia {0} este \u00eenlocuit\u0103 de {1}, care este deja instalat\u0103.\n\
-Instalarea {0} a fost s\u0103rit\u0103.
+patchingSkippedSupersededFix=Corec\u0163ia {0} este \u00eenlocuit\u0103 de {1}, care este deja instalat\u0103.\nInstalarea {0} a fost s\u0103rit\u0103.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=A ap\u0103rut o eroare la citirea informa\u0163iilor iFix pentru instalarea curent\u0103. Mesajul excep\u0163iei este: {0}.
@@ -286,8 +282,9 @@ LICENSE_invalidInstallType=Licen\u0163a nu poate fi modernizat\u0103 deoarece in
 LICENSE_replace_invalidVersion=Licen\u0163a nu poate fi aplicat\u0103 deoarece instalarea de produs specificat\u0103 este la versiunea {0}, dar licen\u0163a nu poate fi aplicat\u0103 dec\u00e2t de la versiunea {1}.
 LICENSE_replace_invalidInstallType=Licen\u0163a nu poate fi aplicat\u0103 deoarece instalarea de produs specificat\u0103 a fost instalat\u0103 utiliz\u00e2nd IBM Installation Manager. Utiliza\u0163i IBM Installation Manager pentru a v\u0103 moderniza instalarea.
 
-LICENSE_replace_invalidEditonFeatures=Caracteristicile urm\u0103toare nu se aplic\u0103 la edi\u0163ia {0} \u015fi trebuie s\u0103 fie dezinstalate \u00eenainte de aplicarea licen\u0163ei: {1}\n\
-\n\
-Utiliza\u0163i urm\u0103toarea comand\u0103 pentru a dezinstala aceste caracteristici \u00eenainte de a aplica licen\u0163a pentru edi\u0163ia {2}: {3}
+LICENSE_replace_invalidEditonFeatures=Caracteristicile urm\u0103toare nu se aplic\u0103 la edi\u0163ia {0} \u015fi trebuie s\u0103 fie dezinstalate \u00eenainte de aplicarea licen\u0163ei: {1}\n\nUtiliza\u0163i urm\u0103toarea comand\u0103 pentru a dezinstala aceste caracteristici \u00eenainte de a aplica licen\u0163a pentru edi\u0163ia {2}: {3}
 
 LICENSE_downgrade_block_8557_low=Aceast\u0103 licen\u0163\u0103 poate fi aplicat\u0103 doar la o instalare la {0} sau superioar\u0103. Instalarea curent\u0103 este la {1}. Desc\u0103rca\u0163i \u015fi actualiza\u0163i la ultimul nivel \u015fi reaplica\u0163i licen\u0163a.
+
+#message for applying interim fix
+INTERIM_FIX_replace_invalidVersion=Remedierea intermediar\u0103 nu poate fi aplicat\u0103 deoarece instalarea produsului specificat este la versiunea {0} , dar remedierea intermediar\u0103 poate fi aplicat\u0103 numai la versiunea {1} .

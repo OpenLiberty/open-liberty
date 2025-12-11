@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Duration;
 import java.util.Base64.Encoder;
 import java.util.Properties;
 
@@ -133,7 +134,6 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
         final boolean swallowErrors = Boolean.valueOf(req.getParameter("swallow.errors"));
         final String overrideDefaultSchema = req.getParameter("override.default.schema");
         final URL ddlScriptURL = cl.getResource(ddlScriptName);
-        long timestart = System.currentTimeMillis();
 
         if (ddlScriptURL == null) {
             throw new ServletException("Unable to locate resource " + ddlScriptName);
@@ -151,7 +151,6 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
         final InputStream is = ddlScriptURL.openStream();
         final byte[] buffer = new byte[1024];
         int bytesRead = 0;
-
         while ((bytesRead = is.read(buffer)) != -1) {
             baos.write(buffer, 0, bytesRead);
         }
@@ -161,49 +160,44 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
         final String[] commands = breakApartDDLIntoCommands(ddl);
 
         final PrintWriter pw = resp.getWriter();
-        try {
-            tx.begin();
-            final Connection conn = ds.getConnection();
-            final DatabaseMetaData dbMeta = conn.getMetaData();
+
+        DatabaseMetaData dbMeta;
+        String defaultSchemaName;
+
+        // Fetch metadata before transaction
+        try (Connection metaConn = ds.getConnection()) {
+            dbMeta = metaConn.getMetaData();
             dumpDBMeta(dbMeta);
 
-            final Statement stmt = conn.createStatement();
-            final String defaultSchemaName = (overrideDefaultSchema == null || "".equals(overrideDefaultSchema.trim())) ? //
-                            sanitize(dbMeta.getUserName()) : // Usually the default schema name
-                            sanitize(overrideDefaultSchema); // But always allow for test client to override
+            defaultSchemaName = (overrideDefaultSchema == null || "".equals(overrideDefaultSchema.trim())) ?
+                    sanitize(dbMeta.getUserName()) :
+                    sanitize(overrideDefaultSchema);
+        } catch (Exception e) {
+            throw new ServletException("Failed to retrieve database metadata", e);
+        }
+
+        try {
+            // Set transaction timeout to 10 minutes
+            tx.setTransactionTimeout((int) Duration.ofMinutes(10).getSeconds());
+            tx.begin();
 
             int totalCount = 0, successCount = 0;
             int cmdIdx = 0;
+
             for (String command : commands) {
-
-                // Check if more than 1 minute has passed
-                if ((System.currentTimeMillis() - timestart) > 60000) {
-                    System.out.println("More than 1 minute has passed. Committing and beginning a new transaction.");
-
-                    // Commit the current transaction and begin a new one
-                    tx.commit();
-                    tx.begin();
-
-                    // Reset the start time
-                    timestart = System.currentTimeMillis();
-                }
-
                 final String sql = command.replace("${schemaname}", defaultSchemaName).trim();
-                if ("".equals(sql)) {
-                    continue;
-                }
-                if (sql.startsWith("#")) {
-                    // Commented out sql line
-                    continue;
-                }
+
+                if ("".equals(sql) || sql.startsWith("#")) {
+                        continue;
+                    }
 
                 cmdIdx++;
-
                 totalCount++;
-                try {
-                    System.out.println(cmdIdx + "] Executing: " + sql);
-                    pw.println(cmdIdx + "] Executing: " + sql);
 
+                System.out.println(cmdIdx + "] Executing: " + sql);
+                pw.println(cmdIdx + "] Executing: " + sql);
+
+                try (Connection conn = ds.getConnection(); Statement stmt = conn.createStatement()) {
                     if (sql.toLowerCase().startsWith("select")) {
                         ResultSet rs = stmt.executeQuery(sql);
                         System.out.println("Successful query, Result Set:");
@@ -251,6 +245,7 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
                     }
 
                     successCount++;
+
                 } catch (Exception e) {
                     if (!swallowErrors) {
                         pw.println("  <br>  SQL Execution failed: " + e);
@@ -259,7 +254,6 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
                         System.out.println("SQL Execution failed: " + e);
                         e.printStackTrace();
                     }
-
                 } finally {
                     pw.println("  <br>  ");
                 }
@@ -271,9 +265,16 @@ public abstract class AbstractDatabaseManagementServlet extends HttpServlet {
         } catch (Exception e) {
             throw new ServletException(e);
         } finally {
+            // Reset transaction timeout back to default
+            try {
+                tx.setTransactionTimeout(0);
+            } catch (Exception e) {
+                //ignore
+            }
             pw.close();
         }
     }
+
 
     private static String[] breakApartDDLIntoCommands(String ddl) {
         // Split on either ';' at the end of a line or ';' at the end of the file

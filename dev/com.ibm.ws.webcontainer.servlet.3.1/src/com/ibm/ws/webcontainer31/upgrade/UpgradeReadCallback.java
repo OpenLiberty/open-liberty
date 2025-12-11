@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer31.upgrade;
 
@@ -48,6 +45,10 @@ public class UpgradeReadCallback implements TCPReadCompletedCallback {
         _upgradeStream = uIBBU;
         _contextManager = tcm;
         _srtUpgradeStream = srtUpgradeStream;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "UpgradeReadCallback constructor, ReadListener [" + _rl + "], this " + this);
+        }
     }
 
     /* (non-Javadoc)
@@ -56,6 +57,9 @@ public class UpgradeReadCallback implements TCPReadCompletedCallback {
     @Override
     @FFDCIgnore(IOException.class)
     public void complete(VirtualConnection vc, TCPReadRequestContext rsc) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "complete ENTER , ReadListener [" + _rl + "], this " + this);
+        }
 
         if(vc == null){
             return;
@@ -105,6 +109,10 @@ public class UpgradeReadCallback implements TCPReadCompletedCallback {
                     }
                     _srtUpgradeStream.notify();
                 }
+            }
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "complete EXIT ");
             }
         }
     }

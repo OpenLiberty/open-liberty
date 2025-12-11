@@ -40,7 +40,7 @@ import javax.servlet.ServletResponse;
 public abstract class GenericServletWrapper implements IServletWrapper
 {
 	/**
-	 * The IServletContext interface thats exposed to the subclasses of this class
+	 * The IServletContext interface that's exposed to the subclasses of this class
 	 */
 	protected IServletContext context;
 	
@@ -52,7 +52,7 @@ public abstract class GenericServletWrapper implements IServletWrapper
 	private IServletWrapper wrapper;
 
 	/**
-	 * Public constructor. This contructor must be invoked from within the 
+	 * Public constructor. This constructor must be invoked from within the 
 	 * constructor of the subclass passing in the IServletContext so that the
 	 * parent object can be constructed correctly.
 	 * 

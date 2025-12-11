@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020, 2021 IBM Corporation and others.
+    Copyright (c) 2020, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -89,7 +89,7 @@
 	<!-- provide WebServiceClient user-ID and password -->
 	<wsSecurityClient
 		id="default"
-		ws-security.password="security"
+		ws-security.password="${ws_security_pwd}"
 		ws-security.username="user1"
 		ws-security.callback-handler="com.ibm.ws.wssecurity.example.cbh.CommonPasswordCallback"
 	>
@@ -98,9 +98,9 @@
 		<signatureProperties
 			signatureAlgorithm="sha256"
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client"
+			org.apache.ws.security.crypto.merlin.keystore.password="${client_signature_pwd}"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefault"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ClientDefault.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/${client_signature_keystore}" />
 		<encryptionProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
 			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Client2"
@@ -122,9 +122,9 @@
 			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerSecond.jks" />
 		<encryptionProperties
 			org.apache.ws.security.crypto.merlin.keystore.type="jks"
-			org.apache.ws.security.crypto.merlin.keystore.password="LibertyX509Server"
+			org.apache.ws.security.crypto.merlin.keystore.password="${provider_encryption_pwd}"
 			org.apache.ws.security.crypto.merlin.keystore.alias="x509ClientDefaultCert"
-			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/x509ServerDefault.jks" />
+			org.apache.ws.security.crypto.merlin.file="${server.config.dir}/${provider_encryption_keystore}" />
 	</wsSecurityProvider>
   
     <include location="imports/java2Permissions.xml" />

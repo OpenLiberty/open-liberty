@@ -490,7 +490,7 @@ public final class FeatureRepository implements FeatureResolver.Repository {
             for (FeatureResource versionedFeature : feature.getConstituents(null)) {
                 //Find the right public feature (should only be one) - set the result
                 ProvisioningFeatureDefinition versionedFeatureDef = getFeature(versionedFeature.getSymbolicName());
-                if (versionedFeatureDef.getVisibility() != Visibility.PUBLIC) {
+                if (versionedFeatureDef == null || versionedFeatureDef.getVisibility() != Visibility.PUBLIC) {
                     continue;
                 }
                 result = versionedFeatureDef;

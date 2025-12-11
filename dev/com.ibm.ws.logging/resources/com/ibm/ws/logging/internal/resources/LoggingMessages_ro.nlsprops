@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Urm\u0103toarele mesaje sunt ascunse pen
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Mesajele care sunt configurate pentru a fi ascunse nu sunt scrise \u00een fi\u015fierele console.log \u015fi messages.log. Ele sunt scrise la fi\u015fierul trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nu este necesar\u0103 nicio ac\u0163iune
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: Formatul de ie\u015fire messages.log a fost actualizat acum la '{0}'.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Formatul de ie\u015fire messages.log a fost actualizat acum la '' {0} ''.
 MESSAGE_FORMAT_UPDATED.explanation=Formatul de ie\u015fire pentru messages.log a fost actualizat acum.
 MESSAGE_FORMAT_UPDATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: Formatul de ie\u015fire al consolei a fost actualizat acum la '{0}'.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Formatul de ie\u015fire al consolei a fost actualizat acum la ''{0}''.
 CONSOLE_FORMAT_UPDATED.explanation=Formatul de ie\u015fire pentru consol\u0103 a fost actualizat acum.
 CONSOLE_FORMAT_UPDATED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
@@ -169,6 +169,10 @@ LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Specifica\u021bi un interval 
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Numele de antet lipse\u015fte pentru unul sau mai multe c\u00e2mpuri accessLogging logFormat: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Jurnalizarea JSON utilizeaz\u0103 atributul logFormat de la accessLogging pentru a selecta ce c\u00e2mpuri de mesaj http_access.log s\u0103 includ\u0103. Un nume de antet trebuie furnizat c\u00e2nd utiliza\u0163i c\u00e2mpurile %i sau %o \u00een atributul accessLogging logFormat.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Furniza\u0163i un nume de antet pentru c\u00e2mp \u00een atributul accessLogging logFormat.
+
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: Jurnalele sunt blocate din cauza volumului mare.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=Jurnalele sunt \u00een prezent restric\u021bionate din cauza volumului mare.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=Rezolva\u021bi orice problem\u0103 care cauzeaz\u0103 logare excesiv\u0103 sau cre\u0219te\u021bi pragul de logare prin configurarea atributului de logare throttleMaxMessagesPerWindow. 
 
 FFDC_FILE_DELETION=TRAS3014I: Au fost \u0219terse {0} fi\u0219iere FFDC pe baza valorii maxFfdcAge configurate.
 FFDC_FILE_DELETION.explanation=Num\u0103rul fi\u0219ierelor FFDC care au fost \u0219terse \u00een timpul unei cur\u0103\u021b\u0103ri FFDC.

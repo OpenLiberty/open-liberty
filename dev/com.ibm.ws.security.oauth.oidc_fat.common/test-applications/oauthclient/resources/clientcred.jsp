@@ -37,7 +37,7 @@
 	// default values	
 	String testName = "notSet" ;
 	String clientId = "key";
-	String clientSecret = "secret";
+	String clientSecret = "secret1234";
 	String urlBase = "https://localhost:9443";
 	String tokenEndpoint = urlBase + "/oauth/token.jsp";
 	String resourceEndpoint = urlBase + "/oauth/resource.jsp";

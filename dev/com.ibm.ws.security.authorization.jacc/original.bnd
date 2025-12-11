@@ -16,14 +16,13 @@ Bundle-SymbolicName: com.ibm.ws.security.authorization.jacc.common
 Bundle-Description: WAS Security JACC Service, version=${bVersion}
 
 Export-Package: \
+ com.ibm.ws.security.authorization.jacc;provide:=true, \
  com.ibm.ws.security.authorization.jacc.ejb, \
- com.ibm.ws.security.authorization.jacc.web, \
- com.ibm.ws.security.authorization.jacc.common, \
- com.ibm.ws.security.authorization.jacc;provide:=true
+ com.ibm.ws.security.authorization.jacc.common
 
 Private-Package: com.ibm.ws.security.authorization.jacc.internal, \
   com.ibm.ws.security.authorization.jacc.internal.resources
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.internal.JaccServiceImpl, \
-  com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManager
+  com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManagerImpl

@@ -69,7 +69,7 @@ public class ServicesTest extends InstallPackagesToolTest {
 
         //Install package
         Log.info(c, METHOD_NAME, "Installing Open Liberty package.");
-        ProgramOutput po1 = installCurrentPackage(METHOD_NAME, packageExt);
+        ProgramOutput po1 = retryInstallCurrentPackage(METHOD_NAME, packageExt);
 
         // append JAVA_HOME to server.env
         Log.info(c, METHOD_NAME, "Configure Open Liberty to use test java.");

@@ -59,7 +59,7 @@ tested.features: \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.websphere.javaee.jaxws.2.2;version=latest,\
 	com.ibm.websphere.javaee.jws.1.0;version=latest,\
-	com.sun.xml.messaging.saaj:saaj-impl;version=1.5.3,\
+	com.ibm.ws.com.sun.xml.messaging.saaj;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\

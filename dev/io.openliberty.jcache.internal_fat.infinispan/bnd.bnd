@@ -39,3 +39,5 @@ fat.test.container.images: infinispan/server:13.0.10.Final, jboss/keycloak:16.1.
     org.infinispan:infinispan-client-hotrod;version=13.0.10.Final,\
     org.infinispan:infinispan-commons;version=13.0.10.Final
     
+# Copy in FIPS keys
+ltpa.fips.enabled: true

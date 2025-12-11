@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 configurations {
@@ -24,7 +21,7 @@ dependencies {
     binaries "com.fasterxml.jackson.core:jackson-databind:2.15.2"
     binaries "org.osgi:org.osgi.core:6.0.0"
     binaries "org.apache.aries:org.apache.aries.util:1.1.3"
-    binaries "commons-io:commons-io:2.11.0"
+    binaries "commons-io:commons-io:2.19.0"
     binaries "commons-lang:commons-lang:2.4"
     binaries "org.apache.commons:commons-math:2.2"
     binaries "org.eclipse.jdt:ecj:3.22.0"
@@ -33,11 +30,11 @@ dependencies {
     binaries "com.ibm.ws.javax.j2ee:servlet:3.1"
     binaries "org.jmockit:jmockit:1.25"
     binaries "org.apache.maven:maven-model:3.5.0"
-    binaries "javax.json:javax.json-api:1.1.2"
-    binaries "org.glassfish:javax.json:1.1.2"
+    binaries "javax.json:javax.json-api:1.1.4"
+    binaries "org.glassfish:javax.json:1.1.4" //TODO update to 1.1.5.ibm from DHE
     binaries "org.codehaus.plexus:plexus-utils:3.0.24"
     binaries "org.apache.ant:ant:1.10.10"
-    binaries "com.github.mwiede:jsch:0.2.18"
+    binaries "com.github.mwiede:jsch:2.27.0"
 }
 
 //TODO: move this function somewhere common
@@ -131,16 +128,17 @@ task dependabotGenerate() {
 def pluginsProject = project(':wlp-bndPlugins')
 
 task updatePluginClasses(type: Copy) {
+    def currentProject = project
     dependsOn ':wlp-bndPlugins:jar'
     dependsOn dependabotGenerate
     from zipTree(bnd.get('build.bnd.plugins.jar'))
     into project.file('bndplugins/classes')
     doLast {
-        println 'Refresh bnd Projects after building bnd plugins in ' + project.name
+        println 'Refresh bnd Projects after building bnd plugins in ' + currentProject.name
         bnd.project.refresh()
         bnd.project.clear()
         parent.subprojects {
-            if (project != pluginsProject) {
+            if (currentProject != pluginsProject) {
                 bnd.project.refresh()
                 bnd.project.clear()
             }
@@ -193,7 +191,7 @@ parent.subprojects {
 }
 
 import org.apache.tools.ant.filters.ReplaceTokens
-import groovy.util.XmlSlurper
+import groovy.xml.XmlSlurper
 
 String getVersionFromReleaseRepo(String org, String name) {
     def versions = []
@@ -222,13 +220,13 @@ task createGradleBootstrap {
         def depsList = []
         gradleBndProjects.each { projectName ->
             def bndProject = bndWorkspace.getProject(projectName)
-            if (!bndProject.isNoBundles()) {
-                String org
-                if ('true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))) {
-                    org = 'test'
-                } else {
-                    org = 'dev'
-                }
+            // Only add the bundle to the gradle bootstrap if there are bundles in
+            // the project and it is not a test project or we are generating
+            // replacement if it is a test project.
+            boolean testProject = 'true'.equals(bndProject.get('test.project', bndProject.get('fat.project', 'false')))
+            boolean generateReplacement = 'true'.equals(bndProject.get('generate.replacement', testProject ? 'false' : 'true'))
+            if (!bndProject.isNoBundles() && generateReplacement) {
+                String org = testProject ? 'test' : 'dev'
                 for (String bsn : bndProject.getBsns()) {
                     String version = null
                     try {
@@ -313,12 +311,7 @@ task createGeneratedReplacementProjects {
             if (!generateReplacement) {
                 return
             }
-            String org
-            if (testProject) {
-                org = 'test'
-            } else {
-                org = 'dev'
-            }
+            String org = testProject ? 'test' : 'dev'
             List bsns = bndProject.getBsns()
             int bsnCount = bndProject.isNoBundles() ? 0 : bsns.size()
             String classpathEntries = ""
@@ -381,8 +374,8 @@ def releaserepo = file(bnd.get('releaserepo', 'release')) /* Release repository.
 import aQute.bnd.gradle.Index
 
 task ('index', type: Index) {
-    description 'Index the release repository. (Does not depend on releaseNeeded)'
-    group 'release'
+    description = 'Index the release repository. (Does not depend on releaseNeeded)'
+    group = 'release'
     repositoryName = "OpenLiberty ${version}"
     destinationDirectory = releaserepo
     gzip = true
@@ -396,8 +389,8 @@ task ('index', type: Index) {
 }
 
 task('createIndex') {
-    description 'Index the release repository.'
-    group 'release'
+    description = 'Index the release repository.'
+    group = 'release'
     dependsOn copyMavenLibs
     dependsOn everythingElseHasBeenReleased
     finalizedBy index
@@ -469,13 +462,13 @@ publish {
 publishing {
   publications {
     gradle(MavenPublication) {
-        artifactId 'gradle-bootstrap'
-        version project.version
+        artifactId = 'gradle-bootstrap'
+        version = project.version
         artifact zipGradleBootstrap
     }
     libertyVersions(MavenPublication) {
-        artifactId 'liberty-versions'
-        version project.version
+        artifactId = 'liberty-versions'
+        version = project.version
         artifact project.file('build/liberty-versions.props')
     }
   }

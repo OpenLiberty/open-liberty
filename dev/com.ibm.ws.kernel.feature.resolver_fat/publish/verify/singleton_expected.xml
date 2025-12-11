@@ -807,30 +807,6 @@
         </output>
     </case>
     <case>
-        <name>com.ibm.websphere.appserver.componenttest-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.componenttest-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.componenttest-1.0</root>
-        </input>
-        <output>
-            <resolved>componenttest-1.0</resolved>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.componenttest-2.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.componenttest-2.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.componenttest-2.0</root>
-        </input>
-        <output>
-            <resolved>componenttest-2.0</resolved>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.concurrent-1.0</name>
         <description>Singleton [ com.ibm.websphere.appserver.concurrent-1.0 ]</description>
         <input>
@@ -1263,18 +1239,6 @@
             <resolved>com.ibm.websphere.appserver.wimcore-1.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityInfrastructure-1.0</resolved>
             <resolved>federatedRegistry-1.0</resolved>
-        </output>
-    </case>
-    <case>
-        <name>com.ibm.websphere.appserver.http2clienttest-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.http2clienttest-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.http2clienttest-1.0</root>
-        </input>
-        <output>
-            <resolved>http2clienttest-1.0</resolved>
         </output>
     </case>
     <case>
@@ -9237,18 +9201,6 @@
         </output>
     </case>
     <case>
-        <name>com.ibm.websphere.appserver.timedexit-1.0</name>
-        <description>Singleton [ com.ibm.websphere.appserver.timedexit-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>com.ibm.websphere.appserver.timedexit-1.0</root>
-        </input>
-        <output>
-            <resolved>timedexit-1.0</resolved>
-        </output>
-    </case>
-    <case>
         <name>com.ibm.websphere.appserver.transportSecurity-1.0</name>
         <description>Singleton [ com.ibm.websphere.appserver.transportSecurity-1.0 ]</description>
         <input>
@@ -10768,55 +10720,6 @@
             <resolved>io.openliberty.cdi3.0-transaction2.0</resolved>
             <resolved>com.ibm.websphere.appserver.securityContext-1.0</resolved>
             <resolved>io.openliberty.cdi3.0-appSecurity</resolved>
-        </output>
-    </case>
-    <case>
-        <name>io.openliberty.arquillian.arquillian-support-1.0</name>
-        <description>Singleton [ io.openliberty.arquillian.arquillian-support-1.0 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>io.openliberty.arquillian.arquillian-support-1.0</root>
-        </input>
-        <output>
-            <resolved>com.ibm.websphere.appserver.eeCompatible-6.0</resolved>
-            <resolved>io.openliberty.servlet.api-3.1</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeeddSchema-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.servlet-servletSpi1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.channelfw-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.httptransport-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.requestProbes-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javax.annotation-1.1</resolved>
-            <resolved>com.ibm.websphere.appserver.artifact-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeedd-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.anno-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.containerServices-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.injection-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.appLifecycle-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.dynamicBundle-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.classloading-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.appmanager-1.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform-6.0</resolved>
-            <resolved>com.ibm.websphere.appserver.javaeePlatform-7.0</resolved>
-            <resolved>servlet-3.1</resolved>
-            <resolved>io.openliberty.servlet.internal-3.1</resolved>
-            <resolved>io.openliberty.webBundle.internal.ee-6.0</resolved>
-            <resolved>io.openliberty.webBundle.internal-1.0</resolved>
-            <resolved>com.ibm.wsspi.appserver.webBundle-1.0</resolved>
-            <resolved>arquillian-support-1.0</resolved>
-        </output>
-    </case>
-    <case>
-        <name>io.openliberty.arquillian.arquillian-support-jakarta-2.1</name>
-        <description>Singleton [ io.openliberty.arquillian.arquillian-support-jakarta-2.1 ]</description>
-        <input>
-            <kernel>com.ibm.websphere.appserver.kernelCore-1.0</kernel>
-            <kernel>com.ibm.websphere.appserver.logging-1.0</kernel>
-            <root>io.openliberty.arquillian.arquillian-support-jakarta-2.1</root>
-        </input>
-        <output>
-            <resolved>localConnector-1.0</resolved>
-            <resolved>arquillian-support-jakarta-2.1</resolved>
         </output>
     </case>
     <case>

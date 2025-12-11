@@ -169,9 +169,9 @@ elements={0}{1} elementi
 
 enable_batch_operations_as_true_not_supported=L''impostazione CMP nativa  WLS "enable-batch-operations-as-true" non \u00e8 direttamente supportata in CMP EclipseLink. Per i dettagli consultare il documento sulla migrazione.
 
-encryptor_script_description=Questa applicazione decodifica internamente una vecchia password crittografata utilizzata da un precedente EclipseLink versione e la crittografa con l''algoritmo pi\u00f9 recente.
+encryptor_script_description=Questa applicazione ha una vecchia password criptata utilizzata da una versione precedente di EclipseLink. Crittografare nuovamente con l''algoritmo pi\u00f9 recente.
 
-encryptor_script_output=La password ricriptata \u00e8: {0}
+encryptor_script_output=La password ricodificata \u00e8: {0}
 
 encryptor_script_usage=L''utilizzo \u00e8 `passwordUpdate.sh|.cmd -ip <vecchia password crittografata>`
 
@@ -318,6 +318,8 @@ jpars_could_not_find_session_bean=Viene effettuata una chiamata a un bean di ses
 jta_cannot_be_disabled_in_cmp=Quando si utilizza CMP (Container Managed Persistence), JTA non pu\u00f2 essere disabilitato. EclipseLink agir\u00e0 come se JTA fosse abilitato.
 
 jta_duplicate_ctrl_property=Classe controller di transazione JTA definita in entrambe le propriet\u00e0 "eclipselink.target-server" e "eclipselink.jta.controller". Utilizzo del valore da "eclipselink.target-server".
+
+jta_tm_lookup_failure=Impossibile cercare l''istanza di TransactionManager : {0}
 
 jta_tsr_lookup_failure=Impossibile cercare l''istanza TransactionSynchronizationRegistry: {0}
 

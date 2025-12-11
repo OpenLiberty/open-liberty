@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,15 @@ import jakarta.servlet.http.HttpServletResponse;
 public class PolicyVirtualThreadServlet extends HttpServlet {
     // Maximum number of nanoseconds to wait for a task to complete
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    Callable<Thread> dummyTask = new Callable<Thread>() {
+
+        @Override
+        public Thread call() throws Exception {
+            return Thread.currentThread();
+        }
+
+    };
 
     @Resource(lookup = "test/TestPolicyExecutorProvider")
     private PolicyExecutorProvider provider;
@@ -189,10 +198,13 @@ public class PolicyVirtualThreadServlet extends HttpServlet {
         char threadNum3 = thread3.getName().charAt(thread3.getName().length() - 1);
         char threadNum4 = thread4.getName().charAt(thread4.getName().length() - 1);
 
-        assertEquals(true, threadNum1 >= '1' && threadNum1 <= '4');
-        assertEquals(true, threadNum2 >= '1' && threadNum2 <= '4');
-        assertEquals(true, threadNum3 >= '1' && threadNum3 <= '4');
-        assertEquals(true, threadNum4 >= '1' && threadNum4 <= '4');
+        assertEquals(true, threadNum1 >= '1' && threadNum1 <= '3');
+        assertEquals(true, threadNum2 >= '1' && threadNum2 <= '3');
+        assertEquals(true, threadNum3 >= '1' && threadNum3 <= '3');
+        // Each of the above threads can create another virtual thread for tasks
+        // that remain on the queue. Any of those threads could end up running the
+        // fourth task.
+        assertEquals(true, threadNum4 >= '4' && threadNum4 <= '6');
 
         executor.shutdownNow();
     }
@@ -313,6 +325,33 @@ public class PolicyVirtualThreadServlet extends HttpServlet {
 
         // The submitting thread will run 1 or 2 of the tasks. All others must run on different virtual threads,
         assertEquals(threadNames.toString(), true, threadNames.size() == 5 || threadNames.size() == 4);
+
+        executor.shutdownNow();
+    }
+
+    /**
+     * Tests a vt override is implemented via a userFeature (or any stackproduct feature)
+     *
+     */
+    public void testDisableVirtualThreads() throws Exception {
+
+        Map<String, Object> config = new TreeMap<>();
+        config.put("max", 3);
+        config.put("maxPolicy", MaxPolicy.strict.name());
+        config.put("virtual", true);
+        // defaults:
+        config.put("expedite", 0);
+        config.put("maxWaitForEnqueue", 0L);
+        config.put("runIfQueueFull", false);
+
+        PolicyExecutor executor = provider.create("testDisableVirtualThreads");
+
+        Future<Thread> future1 = executor.submit(dummyTask);
+
+        Thread thread1 = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        //This should return false with vt override in place
+        assertEquals(false, isVirtual(thread1));
 
         executor.shutdownNow();
     }

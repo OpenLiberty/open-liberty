@@ -21,6 +21,7 @@ configurations {
 dependencies {
   requiredLibs project(":com.ibm.ws.tx.embeddable"),
    			   project(":com.ibm.ws.transaction.fat.util"),
+               project(":com.ibm.ws.transaction.test.util"),
   			   project(':com.ibm.ws.transaction.cloud_fat.base')
 }
 

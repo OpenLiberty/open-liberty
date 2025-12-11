@@ -96,7 +96,7 @@ public class OIDCClientAuthenticatorUtilTest {
     private static final String TEST_GRANT_TYPE = "openid profile";
     private static final String CLIENTID = "clientid";
     private static final String CLIENT01 = "client01";
-    // private static final String SHARED_KEY = "secret";  // conversion from net.oauth to jose4j requires a longer key
+    // private static final String SHARED_KEY = "secret1234";  // conversion from net.oauth to jose4j requires a longer key
     private static final String SHARED_KEY = "secretsecretsecretsecretsecretsecret";
     private static final String TEST_ACR_VALUES = "urn:mace:incommon:iap:silver urn:mace:incommon:iap:bronze";
 
@@ -131,7 +131,7 @@ public class OIDCClientAuthenticatorUtilTest {
     String id_token = "id_token";
     String[] idTokens = new String[] { idTokenContent };
     Cookie reqParameterCookie = null;
-    final String clientSecret = "secret";
+    final String clientSecret = "secret1234";
     String encodedReqParams = null;
 
     @Before

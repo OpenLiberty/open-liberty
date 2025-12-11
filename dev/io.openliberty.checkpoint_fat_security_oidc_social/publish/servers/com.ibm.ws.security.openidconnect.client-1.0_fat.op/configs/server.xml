@@ -54,7 +54,7 @@
     <oauthProvider allowPublicClients="false" autoAuthorize="true" filter="request-url%=SimpleServlet;request-url!=snooping" httpsRequired="false" id="OAuthConfigSample" jwtAccessToken="${oidcCreateJWTToken}" oauthOnly="true">
         <autoAuthorizeClient>client01</autoAuthorizeClient>
         <localStore>
-            <client displayname="client01" enabled="true" name="client01" redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01,        https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client01,        https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/oauthClient" scope="ALL_SCOPES" secret="{xor}LDo8LTor"/>          
+            <client displayname="client01" enabled="true" name="client01" redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01,        https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client01,        https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/oauthClient" scope="ALL_SCOPES" secret="{xor}LDo8LTorbm1saw=="/>          
         </localStore>
     </oauthProvider>
   

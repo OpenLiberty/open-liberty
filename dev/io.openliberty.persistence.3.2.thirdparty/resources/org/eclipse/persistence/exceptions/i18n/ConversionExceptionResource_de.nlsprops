@@ -49,3 +49,6 @@
 
 3010=Falscher Datumswert [JJJJ-MM-TT]: [{0}]
 
+3011=Es ist nicht m\u00f6glich, den Wert aus der Aufz\u00e4hlung : [ {0} ] aus dem Feld [ {1} ] zu erhalten 
+ [{2}].
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,6 +43,8 @@ import componenttest.topology.impl.LibertyServer;
  * These tests will just verify the response status code, Location header, and response's body without follow up with the redirect.
  *
  * Location is a fix location "https://github.com/OpenLiberty"
+ *
+ * Test IllegalArgumentException - If a relative URL is given and cannot be converted into an absolute URL
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -372,6 +374,32 @@ public class Servlet61ResponseSendRedirectTest {
                     }
                 }
                 assertTrue("Expecting body not found ", responseText.equalsIgnoreCase(RESP_DEFAULT_HYPER_TEXT_URL_BODY));
+            }
+        }
+    }
+
+    /*
+     * Test IllegalArgumentException - If a relative URL is given and cannot be converted into an absolute URL
+     */
+    @Test
+    public void test_sendRedirect_throws_IllegalArgumentException() throws Exception {
+        LOG.info("====== <test_sendRedirect_throws_IllegalArgumentException> ======");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/" + SERVLET_MAPPING;
+        HttpGet getMethod = new HttpGet(url);
+        getMethod.addHeader("runTest", "testSendRedirect_throws_IllegalArgumentException");
+
+        LOG.info("Send request [" + url + "]");
+        try (final CloseableHttpClient client = HttpClientBuilder.create().disableRedirectHandling().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                int sc = response.getCode();
+                String responseText = (EntityUtils.toString(response.getEntity()).trim());
+
+                LOG.info("\n" + "Response Status: [" + sc + "]");
+                LOG.info("\n" + "Response Text: \n[" + responseText + "]");
+
+                assertTrue("Not expect 302 status code. Found [" + sc + "]", sc != 302);
+                assertTrue("Cannot find PASSES result from response.", responseText.contains("PASSES"));
             }
         }
     }

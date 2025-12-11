@@ -21,7 +21,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 
 /**
  * The metadata for a component in a Web Module (ie., a Servlet, or a JSP or any other
- * entity compiled as a Servlet), which gets shared accross components. Components
+ * entity compiled as a Servlet), which gets shared across components. Components
  * can push their optimized config data associated with the servlet onto this
  * metaData and they can retrieve them upon invocation wither from the invocation
  * call or from the ThreadContext
@@ -72,7 +72,7 @@ public interface WebComponentMetaData extends ComponentMetaData
 	   
 	   /**
 	    * Returns the initialization parameters that have been configured for the component
-	    * associated with tihs metaData Object.
+	    * associated with this metaData Object.
 	    * @return
 	    */
 	   @SuppressWarnings("unchecked")

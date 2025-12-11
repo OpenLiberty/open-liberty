@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import static org.junit.Assert.fail;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 import java.sql.Statement;
 
 import javax.annotation.Resource;
@@ -140,7 +141,9 @@ public class JDBCDerbyServlet extends FATServlet {
             //ensure desired behavior
             assertEquals("Transaction isolation level should not have been changed: ", expected, con.getTransactionIsolation());
         } finally {
-            con.close();
+            if (con != null) {
+                con.close();
+            }
         }
     }
 
@@ -192,8 +195,11 @@ public class JDBCDerbyServlet extends FATServlet {
             if (!"Olmsted".equals(value))
                 throw new Exception("Incorrect value: " + value);
         } finally {
-            tran.rollback();
-            con.close();
+            if (con != null) {
+                tran.rollback();
+                con.close();
+                con = null;
+            }
         }
 
         try {
@@ -207,9 +213,11 @@ public class JDBCDerbyServlet extends FATServlet {
             if (!"Olmsted".equals(value))
                 throw new Exception("Incorrect value: " + value);
         } finally {
-            result.close();
-            dropTable(con, CITYTABLE);
-            con.close();
+            if (con != null) {
+                result.close();
+                dropTable(con, CITYTABLE);
+                con.close();
+            }
         }
     }
 
@@ -263,10 +271,11 @@ public class JDBCDerbyServlet extends FATServlet {
             //ensure desired behavior
             assertEquals("Auto commit should not have been changed", expected, con.getAutoCommit());
         } finally {
-            tran.rollback();
-            con.commit();
-            con.close();
-
+            if (con != null) {
+                tran.rollback();
+                con.commit();
+                con.close();
+            }
         }
     }
 
@@ -279,20 +288,13 @@ public class JDBCDerbyServlet extends FATServlet {
      */
     @Test
     public void testTNResRefBehavior() throws Throwable {
-        Connection con = null;
         int expected = Connection.TRANSACTION_NONE;
-        try {
-            con = ds1.getConnection();
+        try (Connection con = ds1.getConnection()) {
             assertEquals("Connection with dsConfig = TRAN_NONE and no res-ref should use driver default iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
         }
 
-        try {
-            con = ds1ref.getConnection();
+        try (Connection con = ds1ref.getConnection()) {
             assertEquals("Connection with dsConfig = TRAN_NONE and res-ref = TRAN_NONE should use driver default iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
         }
     }
 
@@ -305,19 +307,12 @@ public class JDBCDerbyServlet extends FATServlet {
      */
     @Test
     public void testTNResRefBehaviorDSDef() throws Throwable {
-        Connection con = null;
         int expected = Connection.TRANSACTION_NONE;
-        try {
-            con = dsd5.getConnection();
+        try (Connection con = dsd5.getConnection()) {
             assertEquals("Connection with dsConfig = TRAN_NONE and no res-ref should use driver default iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
         }
-        try {
-            con = dsd5ref.getConnection();
+        try (Connection con = dsd5ref.getConnection()) {
             assertEquals("Connection with dsConfig = TRAN_NONE and res-ref = TRAN_NONE should use driver default iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
         }
     }
 
@@ -330,21 +325,14 @@ public class JDBCDerbyServlet extends FATServlet {
      */
     @Test
     public void testTNResRefNoneBehavior() throws Throwable {
-        Connection con = null;
-        try {
+        try (Connection con = ds2ref.getConnection()) {
             int expected = Connection.TRANSACTION_REPEATABLE_READ; //WAS default
-            con = ds2ref.getConnection();
             assertEquals("Connection with no dsConfig and res-ref = TRAN_NONE should use WAS default iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
         }
 
-        try {
+        try (Connection con = ds0ref.getConnection()) {
             int expected = Connection.TRANSACTION_SERIALIZABLE; //dsConfig
-            con = ds0ref.getConnection();
             assertEquals("Connection with dsConfig = TRAN_SERIALIZABLE and res-ref = TRAN_NONE should use dsConfig iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
         }
     }
 
@@ -357,21 +345,14 @@ public class JDBCDerbyServlet extends FATServlet {
      */
     @Test
     public void testTNResRefNoneBehaviorDSDef() throws Throwable {
-        Connection con = null;
-        try {
+        try (Connection con = dsd6ref.getConnection()) {
             int expected = Connection.TRANSACTION_REPEATABLE_READ; //WAS default
-            con = dsd6ref.getConnection();
             assertEquals("Connection with no dsConfig and res-ref = TRAN_NONE should use WAS default iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
         }
 
-        try {
+        try (Connection con = dsd7ref.getConnection()) {
             int expected = Connection.TRANSACTION_SERIALIZABLE; //dsConfig
-            con = dsd7ref.getConnection();
             assertEquals("Connection with dsConfig = TRAN_SERIALIZABLE and res-ref = TRAN_NONE should use dsConfig iso lvl: ", expected, con.getTransactionIsolation());
-        } finally {
-            con.close();
         }
     }
 
@@ -386,13 +367,10 @@ public class JDBCDerbyServlet extends FATServlet {
 
         InitialContext ctx = new InitialContext();
         DataSource dsX = (DataSource) ctx.lookup("jdbc/dsfatX");
-        final Connection con = dsX.getConnection();
 
-        try {
+        try (Connection con = dsX.getConnection()) {
             int actual = con.getTransactionIsolation();
             assertEquals("Connection should have had an isolation level of: ", expected, actual);
-        } finally {
-            con.close();
         }
     }
 
@@ -407,13 +385,10 @@ public class JDBCDerbyServlet extends FATServlet {
 
         InitialContext ctx = new InitialContext();
         DataSource dsX = (DataSource) ctx.lookup("jdbc/dsfatX");
-        final Connection con = dsX.getConnection();
 
-        try {
+        try (Connection con = dsX.getConnection()) {
             int actual = con.getTransactionIsolation();
             assertEquals("Connection should have had a modified isolation level of: ", expected, actual);
-        } finally {
-            con.close();
         }
     }
 
@@ -440,5 +415,22 @@ public class JDBCDerbyServlet extends FATServlet {
         try (Connection con = driver_url_preferred.getConnection(); Statement stmt = con.createStatement();) {
             stmt.executeUpdate("create table " + CITYTABLE + " (" + CITYSCHEMA + ")");
         }
+    }
+
+    /**
+     * Ensure that when con.createNClob() throws a SQLFeatureNotSupportedException
+     * we do not create an FFDC because calling the method is the only way to determine
+     * if the driver supports the feature and third party libraries could be making such
+     * calls outside of the users control. For example: Hibernate
+     */
+    @Test
+    public void testNClobUnsupportedFFDCSupression() throws SQLException {
+        try (Connection con = ds1.getConnection()) {
+            con.createNClob();
+            fail("Behavior change - createNClob is now supported by this JDBC driver, test refactor is necessary.");
+        } catch (SQLFeatureNotSupportedException noSupportX) {
+            //expected
+        }
+        // Throw any other uncaught exceptions
     }
 }

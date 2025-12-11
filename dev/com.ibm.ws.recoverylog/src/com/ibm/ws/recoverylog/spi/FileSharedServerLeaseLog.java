@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
+import java.nio.file.FileSystemException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
@@ -30,6 +31,7 @@ import java.nio.file.StandardOpenOption;
 import java.nio.file.attribute.FileTime;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.time.Instant;
 import java.util.stream.Stream;
@@ -265,10 +267,12 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
     /*
      * (non-Javadoc)
      *
+     * Belts and braces here. Nio works differently on different platforms.
+     *
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#deleteServerLease(java.lang.String)
      */
     @Override
-    @FFDCIgnore({ NoSuchFileException.class, Throwable.class })
+    @FFDCIgnore({ FileNotFoundException.class, FileSystemException.class, NoSuchFileException.class, Throwable.class })
     public void deleteServerLease(final String recoveryIdentity, boolean isPeerServer) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "deleteServerLease", this, recoveryIdentity, isPeerServer);
@@ -301,12 +305,18 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                 Files.deleteIfExists(leaseFile);
                 Files.deleteIfExists(_serverInstallLeaseLogDir.resolve(recoveryIdentity + LOCK_SUFFIX));
             }
-        } catch (FileNotFoundException | NoSuchFileException e) {
+        } catch (FileNotFoundException e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "{0} is already deleted", _serverInstallLeaseLogDir);
+        } catch (NoSuchFileException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "{0} is already deleted", _serverInstallLeaseLogDir);
+        } catch (FileSystemException e) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Exception deleting lease file: ", e);
         } catch (IOException e) {
             if (tc.isDebugEnabled())
-                Tr.debug(tc, "Exception locking lease control file: ", e);
+                Tr.debug(tc, "Exception deleting lease file: ", e);
         } finally {
             try (Stream<Path> files = Files.list(_serverInstallLeaseLogDir)) {
                 final long fileCount = files.peek(p -> {
@@ -325,9 +335,15 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
                     }
 
                 }
-            } catch (FileNotFoundException | NoSuchFileException e) {
+            } catch (FileNotFoundException e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "{0} is already deleted", _serverInstallLeaseLogDir);
+            } catch (NoSuchFileException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "{0} is already deleted", _serverInstallLeaseLogDir);
+            } catch (FileSystemException e) {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "Error deleting in {0}: {1}", _serverInstallLeaseLogDir, e);
             } catch (IOException e) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Error deleting in {0}: {1}", _serverInstallLeaseLogDir, e);
@@ -344,6 +360,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
      * @see com.ibm.ws.recoverylog.spi.SharedServerLeaseLog#claimPeerLeaseForRecovery(java.lang.String, int)
      */
     @Override
+    @FFDCIgnore(PrivilegedActionException.class)
     public boolean claimPeerLeaseForRecovery(String recoveryIdentityToRecover, String myRecoveryIdentity, LeaseInfo leaseInfo) throws Exception {
         if (tc.isEntryEnabled())
             Tr.entry(tc, "claimPeerLeaseForRecovery", recoveryIdentityToRecover, myRecoveryIdentity, this);
@@ -442,7 +459,7 @@ public class FileSharedServerLeaseLog extends LeaseLogImpl implements SharedServ
 
             // Don't want this to have "unexpired" the lease time
             Files.setLastModifiedTime(leaseFile, newleaseTime);
-        } catch (IOException e) {
+        } catch (IOException | PrivilegedActionException e) {
             // We're not expecting this to happen. Log the event
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Caught an IOException - " + e);

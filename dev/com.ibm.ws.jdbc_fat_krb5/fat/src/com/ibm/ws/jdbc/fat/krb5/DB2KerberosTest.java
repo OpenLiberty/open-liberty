@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.krb5;
 
+import static componenttest.annotation.SkipForSecurity.FIPS_140_3;
+import static componenttest.annotation.SkipForSecurity.SEMERU;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Path;
@@ -26,6 +30,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -35,10 +40,12 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.jdbc.fat.krb5.containers.DB2KerberosContainer;
 import com.ibm.ws.jdbc.fat.krb5.containers.KerberosContainer;
-import com.ibm.ws.jdbc.fat.krb5.containers.KerberosPlatformRule;
+import com.ibm.ws.jdbc.fat.krb5.rules.KerberosPlatformRule;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForSecurity;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -47,34 +54,35 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.krb5.db2.web.DB2KerberosTestServlet;
 
+@SkipForSecurity(property = FIPS_140_3, runtimeName = SEMERU)
+@MaximumJavaLevel(javaLevel = 23) //TODO remove once JCC driver is updated
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 public class DB2KerberosTest extends FATServletClient {
 
     private static final Class<?> c = DB2KerberosTest.class;
 
-    public static final String KRB5_USER = "dbuser";
-
     public static final String APP_NAME = "krb5-db2-app";
 
     public static final DB2KerberosContainer db2 = new DB2KerberosContainer(FATSuite.network);
+
+    @ClassRule
+    public static RuleChain chain = RuleChain.outerRule(KerberosPlatformRule.instance()).around(db2);
 
     @Server("com.ibm.ws.jdbc.fat.krb5")
     @TestServlet(servlet = DB2KerberosTestServlet.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     private static Path krbConfPath;
-
-    @ClassRule
-    public static KerberosPlatformRule skipRule = new KerberosPlatformRule();
+    private static Path krbKeytabPath;
 
     @BeforeClass
     public static void setUp() throws Exception {
         krbConfPath = Paths.get(server.getServerRoot(), "security", "krb5.conf");
-
         FATSuite.krb5.generateConf(krbConfPath);
 
-        db2.start();
+        krbKeytabPath = Paths.get(server.getServerRoot(), "security", "krb5.keytab");
+        FATSuite.krb5.copyUserKeytab(krbKeytabPath, db2.getKerberosUsername());
 
         ShrinkHelper.defaultDropinApp(server, APP_NAME, "jdbc.krb5.db2.web");
 
@@ -83,12 +91,16 @@ public class DB2KerberosTest extends FATServletClient {
         server.addEnvVar("DB2_PORT", "" + db2.getMappedPort(50000));
         server.addEnvVar("DB2_USER", db2.getUsername());
         server.addEnvVar("DB2_PASS", db2.getPassword());
-        server.addEnvVar("KRB5_USER", KRB5_USER);
+        server.addEnvVar("KRB5_PRIN", db2.getKerberosPrinciple());
+        server.addEnvVar("KRB5_USER", db2.getKerberosUsername());
+        server.addEnvVar("KRB5_PASS", db2.getKerberosPassword());
         server.addEnvVar("KRB5_CONF", krbConfPath.toAbsolutePath().toString());
+        server.addEnvVar("KRB5_KEYTAB", krbKeytabPath.toAbsolutePath().toString());
+
         List<String> jvmOpts = new ArrayList<>();
         jvmOpts.add("-Dsun.security.krb5.debug=true"); // Hotspot/OpenJ9
         jvmOpts.add("-Dcom.ibm.security.krb5.krb5Debug=true"); // IBM JDK
-
+        jvmOpts.add("-Dsun.security.jgss.debug=true"); // Hotspot/OpenJ9
         server.setJvmOptions(jvmOpts);
 
         server.startServer();
@@ -96,25 +108,8 @@ public class DB2KerberosTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        Exception firstError = null;
-
-        try {
-            server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB", // expected by testBasicPassword
-                              "DSRA0304E", "DSRA0302E", "WTRN0048W"); // expected by testXARecovery
-        } catch (Exception e) {
-            firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-        try {
-            db2.stop();
-        } catch (Exception e) {
-            if (firstError == null)
-                firstError = e;
-            Log.error(c, "tearDown", e);
-        }
-
-        if (firstError != null)
-            throw firstError;
+        server.stopServer("CWWKS4345E: .*BOGUS_KEYTAB", // expected by testBasicPassword
+                          "DSRA0304E", "DSRA0302E", "WTRN0048W"); // expected by testXARecovery
     }
 
     /**
@@ -126,12 +121,18 @@ public class DB2KerberosTest extends FATServletClient {
     @Test
     @Mode(TestMode.FULL)
     public void testTicketCache() throws Exception {
-        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + KRB5_USER).toAbsolutePath().toString();
+        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCache_" + db2.getKerberosUsername()).toAbsolutePath().toString();
         try {
             generateTicketCache(ccPath, false);
         } catch (UnsupportedOperationException e) {
             Log.info(c, testName.getMethodName(), "Skipping test because OS does not support 'kinit'");
             return;
+        }
+
+        try {
+            listTicketCache(ccPath);
+        } catch (UnsupportedOperationException e) {
+            //Ignore, only for debug purposes
         }
 
         ServerConfiguration config = server.getServerConfiguration();
@@ -160,7 +161,7 @@ public class DB2KerberosTest extends FATServletClient {
     @Mode(TestMode.FULL)
     @AllowedFFDC({ "javax.resource.ResourceException", "javax.security.auth.login.LoginException" })
     public void testTicketCacheExpired() throws Exception {
-        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCacheExpired_" + KRB5_USER).toAbsolutePath().toString();
+        String ccPath = Paths.get(server.getServerRoot(), "security", "krb5TicketCacheExpired_" + db2.getKerberosUsername()).toAbsolutePath().toString();
         try {
             generateTicketCache(ccPath, true);
         } catch (UnsupportedOperationException e) {
@@ -219,14 +220,14 @@ public class DB2KerberosTest extends FATServletClient {
      */
     private static void generateTicketCache(String ccPath, boolean expired) throws Exception {
         final String m = "generateTicketCache";
-        String keytabPath = Paths.get("publish", "servers", "com.ibm.ws.jdbc.fat.krb5", "security", "krb5.keytab").toAbsolutePath().toString();
 
         ProcessBuilder pb = new ProcessBuilder();
         pb.environment().put("KRB5_CONFIG", krbConfPath.toAbsolutePath().toString());
-        pb.command("kinit", "-k", "-t", keytabPath, //
+        pb.environment().put("KRB5_TRACE", File.createTempFile("kinit", ".log", new File(server.getServerRoot(), "logs")).getAbsolutePath());
+        pb.command("kinit", "-k", "-t", krbKeytabPath.toAbsolutePath().toString(), //
                    "-c", "FILE:" + ccPath, //Some linux kinit installs require FILE:
                    "-l", expired ? "1" : "604800", //Ticket lifetime, if expired set the minimum of 1s, otherwise 7 days.
-                   KRB5_USER + "@" + KerberosContainer.KRB5_REALM);
+                   db2.getKerberosUsername() + "@" + KerberosContainer.KRB5_REALM);
 
         pb.redirectErrorStream(true);
         Process p = null;
@@ -239,7 +240,10 @@ public class DB2KerberosTest extends FATServletClient {
 
         boolean success = p.waitFor(2, TimeUnit.MINUTES);
         String kinitResult = readInputStream(p.getInputStream());
-        Log.info(c, m, "Output from creating ccache with kinit:\n" + kinitResult);
+        Log.info(c, m, "Stdout from creating ccache with kinit:\n" + kinitResult);
+
+        String kinitError = readInputStream(p.getErrorStream());
+        Log.info(c, m, "Stderr from creating ccache with kinit:\n" + kinitError);
 
         if (success && kinitResult.length() == 0) { //kinit should return silently if successful
             Log.info(c, m, "Successfully generated a ccache at: " + ccPath);
@@ -254,6 +258,47 @@ public class DB2KerberosTest extends FATServletClient {
         } else {
             throw new Exception("Failed to create Kerberos ticket cache. Kinit output was: " + kinitResult);
         }
+    }
+
+    /**
+     * Lists a ccache using klist on the local system.
+     *
+     * @param ccPath - Location to create the ccache
+     * @throws Exception
+     */
+    private static void listTicketCache(String ccPath) {
+        final String m = "listTicketCache";
+
+        ProcessBuilder pb = new ProcessBuilder();
+
+        try {
+            pb.environment().put("KRB5_CONFIG", krbConfPath.toAbsolutePath().toString());
+            pb.environment().put("KRB5_TRACE", File.createTempFile("klist", ".log", new File(server.getServerRoot(), "logs")).getAbsolutePath());
+            pb.command("klist", "-f", "-a", "-c", "FILE:" + ccPath); //Some linux klist installs require FILE:
+        } catch (IOException e) {
+            Log.info(c, m, "Failed to create klist command due to IOException" + e.getMessage());
+        }
+
+        pb.redirectErrorStream(true);
+        Process p = null;
+        try {
+            p = pb.start();
+        } catch (IOException e) {
+            Log.info(c, m, "Unable to start klist due to: " + e.getMessage());
+            throw new UnsupportedOperationException(e);
+        }
+
+        try {
+            p.waitFor(2, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            Log.info(c, m, "Failed to execute klist due to interruption: " + e.getMessage());
+        }
+
+        String klistResult = readInputStream(p.getInputStream());
+        Log.info(c, m, "Stdout from listing ccache with klist:\n" + klistResult);
+
+        String klistError = readInputStream(p.getErrorStream());
+        Log.info(c, m, "Stderr from listing ccache with klist:\n" + klistError);
     }
 
     private void updateConfigAndWait(ServerConfiguration config) throws Exception {

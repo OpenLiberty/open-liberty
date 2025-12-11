@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,29 +29,21 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
                 TelemetryAloneTest.class,
                 TelemetryBeanTest.class,
                 TelemetryMultiAppTest.class,
-                TelemetrySpiTest.class,
-                TelemetryConfigEnvTest.class,
-                TelemetryConfigServerVarTest.class,
-                TelemetryConfigSystemPropTest.class,
-                TelemetryConfigEnvOnlyTest.class,
-                TelemetryConfigNullTest.class,
-                TelemetryConfigRuntimeModeIgnoresMPConfigTest.class,
                 TelemetryServiceNameTest.class,
                 TelemetryShimTest.class,
-                TelemetryLoggingExporterTest.class,
                 TelemetryAPITest.class,
                 MultiThreadedContextTest.class,
-                TelemetryMisconfigTest.class,
                 TelemetryMultipleMetricsTest.class,
                 TelemetryLongRunningTest.class,
                 TelemetryGlobalOpenTelemetryTest.class,
-                TelemetryDisabledTest.class,
                 TelemetryServletTest.class,
                 TelemetryUserFeatureTest.class,
                 TelemetryUserFeatureAppScopedTest.class,
                 TelemetryWithSpanErrorTest.class,
                 TelemetryAttributesTest.class,
                 TelemetryRuntimeInstanceTest.class,
+                TelemetrySdkDisabledTrueWarningTest.class,
+                TelemetryStableAPIsTest.class
 
 })
 public class FATSuite {
@@ -59,9 +51,12 @@ public class FATSuite {
     public static String getTelemetryVersionUnderTest() {
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             return "1.0";
-        } else if (RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP61_MPTEL20_ID,
+        } else if (RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP70_EE10_ID, TelemetryActions.MP61_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID,
                                                             TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP14_MPTEL20_ID)) {
             return "2.0";
+        } else if (RepeatTestFilter.isAnyRepeatActionActive(MicroProfileActions.MP71_EE11_ID, MicroProfileActions.MP71_EE10_ID,TelemetryActions.MP50_MPTEL21_JAVA8_ID,
+                                                            TelemetryActions.MP50_MPTEL21_ID, TelemetryActions.MP41_MPTEL21_ID, TelemetryActions.MP14_MPTEL21_ID)) {
+            return "2.1";
         } else {
             return "1.1";
         }

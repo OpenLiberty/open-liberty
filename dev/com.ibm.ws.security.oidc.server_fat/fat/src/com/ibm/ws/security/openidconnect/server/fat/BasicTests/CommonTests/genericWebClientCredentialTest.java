@@ -120,7 +120,7 @@ public class genericWebClientCredentialTest extends ServerCommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setClientID("client01");
-        updatedTestSettings.setClientSecret("secret");
+        updatedTestSettings.setClientSecret("secret1234");
         updatedTestSettings.setScope("openid");
 
         List<validationData> expectations = expectGoodStatusCodeForAllSteps();
@@ -165,7 +165,7 @@ public class genericWebClientCredentialTest extends ServerCommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setClientID("client01");
-        updatedTestSettings.setClientSecret("secret");
+        updatedTestSettings.setClientSecret("secret1234");
         updatedTestSettings.setScope("openid");
 
         List<validationData> expectations = expectGoodStatusCodeForAllSteps();
@@ -203,7 +203,7 @@ public class genericWebClientCredentialTest extends ServerCommonTest {
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setClientID("client01");
-        updatedTestSettings.setClientSecret("secret");
+        updatedTestSettings.setClientSecret("secret1234");
         updatedTestSettings.setScope("openid");
 
         List<validationData> expectations = expectGoodStatusCodeForAllSteps();
@@ -315,7 +315,7 @@ public class genericWebClientCredentialTest extends ServerCommonTest {
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setClientID("unregisteredClient");
-        updatedTestSettings.setClientSecret("secret");
+        updatedTestSettings.setClientSecret("secret1234");
 
         List<validationData> expectations = expectGoodStatusCodesExceptForTokenEndpoint();
         expectations = setNegativeExpectationsForUnauthorized();
@@ -380,7 +380,7 @@ public class genericWebClientCredentialTest extends ServerCommonTest {
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setClientID("client01");
-        updatedTestSettings.setClientSecret("secret");
+        updatedTestSettings.setClientSecret("secret1234");
 
         List<validationData> expectations = expectGoodStatusCodesExceptForTokenEndpoint();
         expectations = vData.addResponseStatusExpectation(null, Constants.INVOKE_TOKEN_ENDPOINT, Constants.NOT_ALLOWED_STATUS);
@@ -495,7 +495,7 @@ public class genericWebClientCredentialTest extends ServerCommonTest {
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setClientID("client01");
-        updatedTestSettings.setClientSecret("secret");
+        updatedTestSettings.setClientSecret("secret1234");
         updatedTestSettings.setScope("openid");
 
         List<validationData> expectations = expectGoodStatusCodesExceptForTokenEndpoint();
@@ -534,7 +534,7 @@ public class genericWebClientCredentialTest extends ServerCommonTest {
 
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setClientID("client01");
-        updatedTestSettings.setClientSecret("secret");
+        updatedTestSettings.setClientSecret("secret1234");
 
         List<validationData> expectations = expectGoodStatusCodesExceptForTokenEndpoint();
         expectations = setNegativeExpectationsForBadRequest();

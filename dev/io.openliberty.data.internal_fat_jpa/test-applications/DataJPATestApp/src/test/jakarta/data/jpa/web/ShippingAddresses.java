@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import java.util.List;
 import java.util.Set;
 
 import jakarta.data.repository.Delete;
@@ -23,13 +22,10 @@ import jakarta.data.repository.Save;
 /**
  * Repository for testing Inheritance and DiscriminatorColumn/Value.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface ShippingAddresses {
-    long countByStreetAddressRecipientInfoEmpty();
 
     StreetAddress[] findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(int minHouseNumber, int maxHouseNumber);
-
-    List<ShippingAddress> findByStreetAddress_recipientInfoNotEmpty();
 
     WorkAddress[] findByStreetAddress_streetNameAndFloorNumber(String streetName, int floorNumber);
 

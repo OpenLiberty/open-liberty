@@ -51,9 +51,9 @@ import com.ibm.ws.sip.stack.transaction.util.ThreadPool;
 
 /**
  * @author Amirk
- *  this class acts as a conroller between layers
- *  it receives events - requests , reponses or timerEvents
- *  and prossecs them to the different layers 
+ *  this class acts as a controller between layers
+ *  it receives events - requests , responses or timerEvents
+ *  and processes them to the different layers 
  */
 public class SIPTransactionStack
 {					
@@ -226,7 +226,7 @@ public class SIPTransactionStack
 	
 	/**
 	 *  send the request to the Transport Layer
-	 *  after prossesing it
+	 *  after processing it
 	 */
 	public void sendRequestToTransportCore(MessageContext messageContext, SipProvider provider, SIPConnection connection)
 		throws SIPTransportException
@@ -235,7 +235,7 @@ public class SIPTransactionStack
 	}
 			
 							
-	/** prosses request from the UA */
+	/** process request from the UA */
 	public long prossesUASipRequest(Request sipRequest, SipProvider provider, long transactionId)
 			throws SipParseException
 	{
@@ -243,10 +243,10 @@ public class SIPTransactionStack
 		long retTidVal = 0;
 		SIPClientTranaction  sipClientTransaction = null;
 		
-		//the only Exception here is an ack sended
-		//in this state , there is not transaction to match to
-		//and no transaction is needed to be created , since there is
-		//no responce that should be arrived on this request
+		//the only Exception here is an ACK sent
+		//in this state there is no transaction to match to
+		//and no transaction is needed for an ACK to be created, 
+		//since there is no response expected for an ACK
 		if(  Request.ACK.equals( sipRequest.getMethod()) )
 		{
 			MessageContext messageContext= null;
@@ -258,7 +258,7 @@ public class SIPTransactionStack
 			}
 			catch( SIPTransportException exp )
 			{
-				//no transaction associated , egnor
+				//no transaction associated, error
 				if( c_logger.isTraceDebugEnabled())
 				{
 				c_logger.traceDebug(this,"processsUASipRequest",exp.getMessage());
@@ -295,10 +295,10 @@ public class SIPTransactionStack
 	
 	
 	/**
-	 *  The ACK and cancel Requests are the only requests
-	 *  that should be assosiated with a transaction - since 
-	 *  they are both a part of the INVITE transaction , that
-	 *  is a 3 stage handshek , and not 2 stages
+	 *  ACK and CANCEL Requests are the only requests
+	 *  that should be associated with a transaction. 
+	 *  As they are both a part of the INVITE transaction
+	 *  we have a 3 stage handshake not a 2 stage handshake
 	 *  
 	 * @param clientTransactionId - the transaction Id this message is part of
 	 * @param sipAckRequest - the request
@@ -314,7 +314,7 @@ public class SIPTransactionStack
 	}
 
 	/** 
-	 * prossec response from the UA layer 
+	 * process response from the UA layer 
 	 **/
 	public long prossesUASipResponse(Response sipResponse, long transactionId)
 				throws SipParseException,TransactionDoesNotExistException
@@ -336,8 +336,8 @@ public class SIPTransactionStack
 		
 		/*
 		 *  got notification on a message from the transport
-		 *  this could be either a request , so it should open a server transactio
-		 *  or a response , so it should be matched to the client transaction created it
+		 *  this could be either a request - so it should open a server transaction
+		 *  or a response - so it should be matched to the client transaction that created it
 		 */
 		
 		BranchMethodKey key = m_transactionsModel.createTransactionId(sipMsg);
@@ -384,11 +384,11 @@ public class SIPTransactionStack
 					sourceId = null;
 				}
 				
-				//amirk - 30/08/2004
-				//if the request is an ACK that is not related to a previouse transaction
-				//this is an ACK for a 2XX response.
-				//hence
-				//don't create a transaction to send it on , just send it to the application
+				
+				//if the request is an ACK that is not related to a previous transaction
+				//this must be an ACK to a 2XX response.
+				//don't create a transaction to send it on
+				//just send it to the application
 				if (!Request.ACK.equals( sipRequest.getMethod())) {
 					serverTransaction = createServerTransaction(sipRequest, provider, key, sourceId);
 					m_transactionsModel.putServerTransaction(serverTransaction);
@@ -432,7 +432,7 @@ public class SIPTransactionStack
 					}
 					
 					//there is no need to send the Cancel request to the transport layer 
-					//since we already sent 481 for it
+					//since we have already sent 481 response
 					return;
 				}
 			}					
@@ -477,10 +477,10 @@ public class SIPTransactionStack
 	}
 	
 	/**
-	 *  method is calles from the Transport Layer
-	 *  on receiving a request
-	 *  this is checked if the transaction is Invite or not
-	 *  and send to the right function
+	 *  This method is called from the Transport Layer
+	 *  upon receiving a request.
+	 *  It checks if the transaction is an INVITE or not
+	 *  and sends it to the right function to handle it
 	 */
 	public SIPClientTranaction createClientTransaction(Request req,
 		SipProvider provider,
@@ -504,8 +504,10 @@ public class SIPTransactionStack
 	}
 	
 	/**
-	 *  method is calles from the Transport Layer
-	 *  on receiving a request
+	 *  This method is called from the Transport Layer
+	 *  upon receiving a request
+	 *  It checks if the transaction is an INVITE or not
+	 *  and sends it to the right function to handle it
 	 */
 	private SIPServerTransaction createServerTransaction(
 		Request req,
@@ -528,7 +530,7 @@ public class SIPTransactionStack
 						
 	
 	/**
-	 * a dispacher of messages to the UA
+	 * a dispatcher of messages to the UA
 	 * @author Amirk
 	 *
 	 * To change this generated comment go to 
@@ -551,7 +553,7 @@ public class SIPTransactionStack
 				{
 					if( c_logger.isTraceDebugEnabled())
 					{
-						c_logger.traceDebug(this,"sendEventToUA","dispaching transaction " + event.getTransactionId());
+						c_logger.traceDebug(this,"sendEventToUA","dispatching transaction " + event.getTransactionId());
 					}
 					SipProviderImpl provider =  ( SipProviderImpl )event.getSource();
 					provider.onTransportEvent( event );

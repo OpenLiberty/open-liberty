@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -134,17 +134,17 @@ pluginManagement {
     if ('true'.equalsIgnoreCase(gradle.userProps.getProperty('is.using.artifactory'))) {
       maven {
           credentials {
-              username gradle.userProps.getProperty("artifactory.download.user")
-              password gradle.userProps.getProperty("artifactory.download.token")
+              username = gradle.userProps.getProperty("artifactory.download.user")
+              password = gradle.userProps.getProperty("artifactory.download.token")
           }
-          url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+          url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty"
           metadataSources {
             mavenPom()
             artifact()
           }
       }
       maven {
-        url uri(bnd_repourl)
+        url = uri(bnd_repourl)
         metadataSources {
           mavenPom()
           artifact()
@@ -152,14 +152,14 @@ pluginManagement {
       }
       maven {
         credentials {
-          username gradle.userProps.getProperty("artifactory.download.user")
-          password gradle.userProps.getProperty("artifactory.download.token")
+          username = gradle.userProps.getProperty("artifactory.download.user")
+          password = gradle.userProps.getProperty("artifactory.download.token")
         }
-        url ("https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote")
+        url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote"
       }
     } else {
       maven {
-        url uri(bnd_repourl)
+        url = uri(bnd_repourl)
         metadataSources {
           mavenPom()
           artifact()
@@ -167,7 +167,7 @@ pluginManagement {
       }
       mavenCentral()
       maven {
-        url "https://plugins.gradle.org/m2/"
+        url = "https://plugins.gradle.org/m2/"
         metadataSources {
           mavenPom()
           artifact() 
@@ -200,6 +200,29 @@ if (javaVersion < 21) {
       "  3) Restart your gradle daemon with './gradlew --stop'\n";
     throw new GradleException('JAVA_21_HOME is not set.')
   }
+}
+
+// Require cnf:initialize on clean workspace for tasks that need it.
+File bndPluginsClassesDir = file(bnd_cnf+'/bndplugins/classes')
+boolean requiresInitialize = false
+for (Iterator<String> iter = startParameter.taskNames.iterator(); iter.hasNext();) {
+  String taskName = iter.next()
+  if (taskName.contains('jar') ||
+      taskName.contains('assemble') ||
+      taskName.contains('test') ||
+      taskName.contains('build') ||
+      taskName.contains('buildfat') ||
+      taskName.contains('buildandrun') ||
+      taskName.contains('release') ||
+      taskName.contains('releaseNeeded')) {
+    requiresInitialize = true
+  }
+}
+if (requiresInitialize && !bndPluginsClassesDir.exists()) {
+  print "ERROR: Building this repository requires bnd plugins to be compiled before building projects.  Please follow these steps:\n" +
+      "  1) Run the cnf project's initialize task with `./gradlew cnf:initialize`\n" +
+      "  2) Re-run the Gradle task you intend to build.\n";
+  throw new GradleException('cnf workspace needs to be initialized.')
 }
 
 //DirectoryScanner.removeDefaultExclude("**/.gitignore")

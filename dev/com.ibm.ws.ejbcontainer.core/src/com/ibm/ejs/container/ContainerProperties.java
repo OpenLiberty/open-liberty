@@ -510,6 +510,9 @@ public final class ContainerProperties {
      */
     public static OnError customBindingsOnErr;
 
+    public static final String osName = System.getProperty("os.name");
+    public static final boolean isZOS = osName != null && (osName.equalsIgnoreCase("z/OS") || osName.equalsIgnoreCase("OS/390"));
+
     /**
      * Static constructor that will initialize all of the 'constants' based
      * on the corresponding system property. <p>
@@ -770,6 +773,7 @@ public final class ContainerProperties {
                        ExtendSetRollbackOnlyBehaviorBeyondInstanceFor);
         writer.println("Property: LimitSetRollbackOnlyBehaviorToInstanceFor = " +
                        LimitSetRollbackOnlyBehaviorToInstanceFor);
+        writer.println("Property: isZOS = " + isZOS);
         writer.end();
     }
 

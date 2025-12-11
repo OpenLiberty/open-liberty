@@ -4,15 +4,15 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.exception;
 
 /**
- * This exception class will be the base for exception classes related to netty 
+ * This exception class will be the base for exception classes related to netty
  * integrations.
- * 
+ *
  * Taken from {@link com.ibm.wsspi.channelfw.exception.ChannelException}
  */
 public class NettyException extends Exception {
@@ -23,7 +23,7 @@ public class NettyException extends Exception {
 
     /**
      * Constructor.
-     * 
+     *
      * @param message
      */
     public NettyException(String message) {
@@ -39,7 +39,7 @@ public class NettyException extends Exception {
 
     /**
      * Constructor.
-     * 
+     *
      * @param message
      * @param cause
      */
@@ -49,7 +49,7 @@ public class NettyException extends Exception {
 
     /**
      * Constructor.
-     * 
+     *
      * @param cause
      */
     public NettyException(Throwable cause) {

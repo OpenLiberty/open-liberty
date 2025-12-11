@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>io.openliberty.cdi41.internal</groupId>
+    <artifactId>tck.runner</artifactId>
+    <version>4.0</version>
+    <packaging>jar</packaging>
+
+    <name>CDI 4.1 Core TCK Runner</name>
+    
+    <properties>
+
+        <surefire.version>3.5.2</surefire.version> <!-- Any changes to the surefire version must be tested against ZOS-->
+
+        <arquillian.version>1.9.1.Final</arquillian.version>
+        <arquillian.liberty.managed.jakarta.version>2.1.3</arquillian.liberty.managed.jakarta.version>
+
+        <defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
+        <suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
+        <targetDirectory>${project.basedir}/target</targetDirectory>
+
+        <testng.version>7.10.2</testng.version>
+        <slf4j.version>1.7.36</slf4j.version>
+
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
+        <simplicity.location>${project.basedir}/../../../fattest.simplicity/build/libs/fattest.simplicity.jar</simplicity.location>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+              <groupId>org.jboss.arquillian</groupId>
+              <artifactId>arquillian-bom</artifactId>
+              <version>${arquillian.version}</version>
+              <type>pom</type>
+              <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.arquillian.jakarta</groupId>
+                <artifactId>arquillian-jakarta-bom</artifactId>
+                <version>10.0.0.Final</version>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <directory>${targetDirectory}</directory>
+        <defaultGoal>clean test</defaultGoal>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.13.0</version>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/> <!-- Default forkNode has encoding issues on ZOS -->
+
+                    <suiteXmlFiles>
+                        <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <excludedGroups>se</excludedGroups>
+
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.9.0</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.ibm.ws</groupId>
+            <artifactId>fattest.simplicity</artifactId>
+            <version>1</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/../../../fattest.simplicity/build/libs/fattest.simplicity.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.enterprise</groupId>
+            <artifactId>cdi-tck-core-impl</artifactId>
+            <version>4.1.0</version>
+        </dependency>
+        
+        <!-- Why do we need an implementation as a dependency when running the TCK?!? -->
+        <!-- This is only for the client side, all the real testing is done on the server side -->
+        <!-- When a test expects an exception, the server side serializes it and sends it back to the client side -->
+        <!-- So the client side needs to be able to deserialize Weld's internal exception classes -->
+        <dependency>
+            <groupId>org.jboss.weld</groupId>
+            <artifactId>weld-core-impl</artifactId>
+            <version>6.0.0.CR1</version>
+            <scope>test</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>${testng.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-jdk14</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.arquillian.testng</groupId>
+            <artifactId>arquillian-testng-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed-jakarta</artifactId>
+            <version>${arquillian.liberty.managed.jakarta.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>tckRunner</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.ibm.ws</groupId>
+                    <artifactId>fattest.simplicity</artifactId>
+                    <version>1</version>
+                    <scope>system</scope>
+                    <systemPath>${project.basedir}/../../lib/fattest.simplicity.jar</systemPath>
+                    <!-- This will point to build/libs/autoFVT/lib/fattest.simplicity.jar -->
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+</project>

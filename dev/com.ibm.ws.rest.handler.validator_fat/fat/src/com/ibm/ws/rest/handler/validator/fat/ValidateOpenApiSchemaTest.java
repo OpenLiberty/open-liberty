@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -62,6 +62,10 @@ public class ValidateOpenApiSchemaTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r1 = MicroProfileActions.repeat("com.ibm.ws.rest.handler.validator.openapi.fat",
+                                                              MicroProfileActions.MP71_EE11,
+                                                              MicroProfileActions.MP71_EE10,
+                                                              MicroProfileActions.MP70_EE11,
+                                                              MicroProfileActions.MP70_EE10,
                                                               MicroProfileActions.MP61,
                                                               MicroProfileActions.MP50, // EE9
                                                               MicroProfileActions.MP40, // EE8

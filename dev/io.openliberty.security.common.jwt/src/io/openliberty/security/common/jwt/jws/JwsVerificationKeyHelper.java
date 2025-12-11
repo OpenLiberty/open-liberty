@@ -1,16 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.security.common.jwt.jws;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,6 +26,7 @@ import org.jose4j.keys.HmacKey;
 
 import com.ibm.websphere.ras.ProtectedString;
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.common.http.HttpUtils;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
@@ -96,19 +97,22 @@ public class JwsVerificationKeyHelper {
         throw new UnsupportedSignatureAlgorithmException(algorithm);
     }
 
-    Key getSharedKey() throws SharedKeyMissingException, UnsupportedEncodingException {
+    Key getSharedKey() throws SharedKeyMissingException {
         if (sharedSecret == null || sharedSecret.isEmpty()) {
             throw new SharedKeyMissingException();
         }
         String sharedSecretProtectedString = new String(sharedSecret.getChars());
-        return new HmacKey(sharedSecretProtectedString.getBytes("UTF-8"));
+        return new HmacKey(sharedSecretProtectedString.getBytes(StandardCharsets.UTF_8));
     }
 
     Key retrievePublicKey(JsonWebStructure jws, String signatureAlgorithmFromJws) throws IOException, Exception {
         String kid = jws.getKeyIdHeaderValue();
-        String x5t = jws.getX509CertSha1ThumbprintHeaderValue();
+        // Support for 'x5t' header remains for interoperability purposes.
+        // If FIPS 140-3 is enabled, usage of the 'x5t' header for signature verification is disabled
+        String x5t = CryptoUtils.isFips140_3Enabled() ? null : jws.getX509CertSha1ThumbprintHeaderValue();
+        String x5tS256 = jws.getX509CertSha256ThumbprintHeaderValue();
         JwKRetriever jwkRetriever = createJwkRetriever(signatureAlgorithmFromJws);
-        return jwkRetriever.getPublicKeyFromJwk(kid, x5t, "sig", false);
+        return jwkRetriever.getPublicKeyFromJwk(kid, x5t, x5tS256, "sig", false);
     }
 
     JwKRetriever createJwkRetriever(String signatureAlgorithmFromJws) throws Exception {

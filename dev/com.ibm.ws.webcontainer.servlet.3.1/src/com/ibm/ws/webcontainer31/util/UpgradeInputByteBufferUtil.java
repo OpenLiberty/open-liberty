@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer31.util;
 
@@ -164,51 +161,75 @@ public class UpgradeInputByteBufferUtil {
      */
     private boolean immediateRead(int amountToRead){
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-            Tr.debug(tc, "immediateRead, Executing a read");
+            Tr.debug(tc, "immediateRead ENTER , buffer size [" + amountToRead + "]");
         }
         
         if(amountToRead > 1){
-          //Allocate a new temp buffer, then set the position to 0 and limit to the amount we want to read
-            //Copy in the current this.buffer as it should only have one byte in it
-            WsByteBuffer tempBuffer = allocateBuffer(amountToRead);
-            tempBuffer.position(0);
-            tempBuffer.limit(amountToRead);
-            tempBuffer.put(_buffer);
-            tempBuffer.position(1);
-            _buffer.release();
-            _buffer = tempBuffer;
-            tempBuffer = null;
-            
-            _tcpContext.getReadInterface().setBuffer(_buffer);
-            
-            long bytesRead = 0;
-            
-            try{
-                bytesRead = _tcpContext.getReadInterface().read(0, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
-            } catch (IOException readException){
-                //If we encounter an exception here we need to return the 1 byte that we already have.
-                //Returned true immediately and the next read will catch the exception and propagate it properly
+            /*
+             * On a slow system/startup, data comes from the wire faster than the channel can read/parse.  
+             * If so, data needs to be read from the prepared buffer (set during the first initialRead()) instead of the wire.
+             * This happens mainly on the very first POST request after a server cold start. 
+             * This method is called down from the application readListener onDataAvailable() read.
+             */
+            if (_upConn.getVirtualConnection().getStateMap().get(TransportConstants.NOT_UPGRADED_UNREAD_DATA) != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                    Tr.debug(tc, "immediateRead, The read encountered an exception. " + readException);
-                    Tr.debug(tc, "immediateRead, Return with our one byte");
+                    Tr.debug(tc, "immediateRead, read from saved buffer [" + _buffer + "] , amount [" + _buffer.remaining() +"]");  
+                } 
+
+                _upConn.getVirtualConnection().getStateMap().remove(TransportConstants.NOT_UPGRADED_UNREAD_DATA); 
+            }
+            // Read from the interface 
+            else {
+                //Allocate a new temp buffer, then set the position to 0 and limit to the amount we want to read
+                //Copy in the current this.buffer as it should only have one byte in it
+                WsByteBuffer tempBuffer = allocateBuffer(amountToRead);
+                tempBuffer.position(0);
+                tempBuffer.limit(amountToRead);
+                tempBuffer.put(_buffer);
+                tempBuffer.position(1);
+                _buffer.release();
+                _buffer = tempBuffer;
+                tempBuffer = null;
+
+                _tcpContext.getReadInterface().setBuffer(_buffer);
+
+                long bytesRead = 0;
+
+                try{
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                        Tr.debug(tc, "immediateRead, read from interface");
+                    } 
+                    bytesRead = _tcpContext.getReadInterface().read(0, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
+                } catch (IOException readException){
+                    //If we encounter an exception here we need to return the 1 byte that we already have.
+                    //Returned true immediately and the next read will catch the exception and propagate it properly
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                        Tr.debug(tc, "immediateRead, The read encountered an exception. " + readException);
+                        Tr.debug(tc, "immediateRead, Return with our one byte");
+                    }
+
+                    configurePostReadBuffer();
+                    return true;
                 }
-                
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                    Tr.debug(tc, "immediateRead, Complete, " + bytesRead);
+                }
+                //Get the buffer from the TCP Channel after we have told them to read.
+                _buffer = _tcpContext.getReadInterface().getBuffer(); 
+
+                //We don't need to check for null first as we know we will always get the buffer we just set
                 configurePostReadBuffer();
-                return true;
             }
-            
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                Tr.debug(tc, "immediateRead, Complete, " + bytesRead);
-            }
-            //Get the buffer from the TCP Channel after we have told them to read.
-            _buffer = _tcpContext.getReadInterface().getBuffer(); 
-            
-            //We don't need to check for null first as we know we will always get the buffer we just set
-            configurePostReadBuffer();
+
             // record the new amount of data read from the channel
             _totalBytesRead += _buffer.remaining();
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "immediateRead EXIT , returns to application this buffer [" + _buffer + "], totalBytesRead [" + _totalBytesRead + "]");
+        } 
+        
         //We will return true here in all circumstances because we always have 1 byte read from the isReady call or the initial read of the connection
         return true;
     }
@@ -296,7 +317,7 @@ public class UpgradeInputByteBufferUtil {
         configurePreReadBuffer(sizeToAllocate);
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
-          Tr.debug(tc, "setAndAllocateBuffer, Setting the buffer : " + _buffer );         
+          Tr.debug(tc, "setAndAllocateBuffer, buffer [" + _buffer + "] , size [" + sizeToAllocate + "]");         
         }
         
         _tcpContext.getReadInterface().setBuffer(_buffer);
@@ -390,7 +411,7 @@ public class UpgradeInputByteBufferUtil {
         initialRead();
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-            Tr.debug(tc, "setupReadListener, ReadListener set : " + _rl);
+            Tr.debug(tc, "setupReadListener, UpgradeReadCallback [" + _tcpChannelCallback + "] , ReadListener [" + _rl + "]");
         }
         
     }
@@ -469,19 +490,63 @@ public class UpgradeInputByteBufferUtil {
      * The provided callback will be called when the read is completed and that callback will invoke the ReadListener logic. 
      */
     public void initialRead(){
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "initialRead ENTER , callback [" + _tcpChannelCallback + "], readListener [" + _rl + "]");
+        }
+        
         _isInitialRead = true;
         if(_buffer != null){
             _buffer.release();
             _buffer = null;
+        } 
+        
+        /*
+         * If there is any unread data during the very first initialRead, those data are stored in the buffer, not at the wire, so callback complete() needs to be called
+         * to trigger the customer onDataAvailable to read those data from this prep buffer.
+         * The prep buffer has already been prepared during the HttpDispatcherLink.close() and saved in the VC.stateMap
+         */
+        WsByteBuffer data = null;
+        if ((data = (WsByteBuffer) _upConn.getVirtualConnection().getStateMap().get(TransportConstants.NOT_UPGRADED_UNREAD_DATA)) != null) {
+            int remaining = data.remaining();
+            setAndAllocateBuffer(remaining); 
+            _buffer.put(data);
+            //don't flip here!  It will be flipped during the UpgradeReadCallback.complete
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                Tr.debug(tc, "initialRead, saved [" + remaining + "] unread data from statemap [" + data + "] into _buffer [" + _buffer + "]");
+                Tr.debug(tc, "initialRead, invoke callback complete [" + _tcpChannelCallback + "]");
+            } 
+
+            data.release();
+            data = null;
+           
+            //standin dummy for immediateRead() to check and then remove (so that we don't need to save off the ByteBuffer again just for a cleanup)
+            _upConn.getVirtualConnection().getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, "initialRead");
+           
+            //complete() invokes app's onDataAvailable() to read the prepared _buffer.
+            //That read eventually call back into this.immediateRead(int).
+            //The callback complete here (and eventually the first immediateRead) happens in the same thread.
+            //Subsequently, the getReadInterface().read (below) will go async.
+            _tcpChannelCallback.complete(_upConn.getVirtualConnection(), _tcpContext.getReadInterface());
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                Tr.debug(tc, "initialRead, callback complete. All initial data read.");
+            } 
         }
+       
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "initialRead, async read data from interface");
+        } 
         
         setAndAllocateBuffer(1);
-        configurePreReadBuffer(1);
-        
+
         //This if the first read of the ReadListener, which means force the read to go async
         //We won't get an actual response from this read as it will always come back on another thread
-        _tcpContext.getReadInterface().setBuffer(_buffer);
         _tcpContext.getReadInterface().read(1, _tcpChannelCallback, true, WCCustomProperties31.UPGRADE_READ_TIMEOUT);
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "initialRead EXIT");
+        }
     }
     
     /**
@@ -489,6 +554,9 @@ public class UpgradeInputByteBufferUtil {
      * and post configure the buffer. Without this method we would lose the first byte we are reading
      */
     public void configurePostInitialReadBuffer(){
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "configurePostInitialReadBuffer");
+        }
         _isInitialRead = false;
         _isFirstRead = false;
         _buffer = _tcpContext.getReadInterface().getBuffer();

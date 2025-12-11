@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,6 @@ import com.ibm.ws.security.acme.utils.AcmeFatUtils;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
-import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -72,7 +71,7 @@ import componenttest.topology.impl.LibertyServer;
  */
 @RunWith(FATRunner.class)
 @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES }) // No value added
-public class AcmeCaRestHandlerTest extends TestContainerSuite {
+public class AcmeCaRestHandlerTest {
     @Server("com.ibm.ws.security.acme.fat.rest")
     public static LibertyServer server;
 
@@ -725,9 +724,17 @@ public class AcmeCaRestHandlerTest extends TestContainerSuite {
     private static String getLeafSerialFromHtml(String htmlCertChain) {
         String serial = null;
 
-        Matcher m = Pattern.compile(".*SerialNumber:\\s+\\[\\s*(.*)\\].*").matcher(htmlCertChain);
+        Matcher m = Pattern.compile(".*SerialNumber:\\s+\\s*(.*).*").matcher(htmlCertChain);
         if (m.find()) {
             serial = m.group(1);
+            // Before Java 23, the format was SerialNumber: [number].  Starting in Java 23, the brackets are not used.
+            // The regex above was adjusted to remove the brackets, so we need to strip off the brackets now.
+            if (serial.startsWith("[")) {
+                serial = serial.substring(1);
+            }
+            if (serial.endsWith("]")) {
+                serial= serial.substring(0, serial.length()  -1);
+            }
         }
 
         Log.info(AcmeCaRestHandlerTest.class, "getLeafSerialFromHtml(String)", serial);

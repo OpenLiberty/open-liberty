@@ -57,7 +57,7 @@ public class EL60OptionalELResolverTestServlet extends FATServlet {
         Optional<Object> actualResult = elp.eval("testBean.testString");
         log("actualResult: " + actualResult);
 
-        // Without the OpionalELResolver a Java Optional is returned.
+        // Without the OptionalELResolver a Java Optional is returned.
         assertTrue("The actual result was: " + actualResult + " but was expected to be: " + expectedResult, actualResult.get().equals(expectedResult));
     }
 

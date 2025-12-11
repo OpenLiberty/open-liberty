@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2023 IBM Corporation and others.
+ * Copyright (c) 2020,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import org.apache.wss4j.policy.model.AlgorithmSuite;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.wssecurity.internal.WSSecurityConstants;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class SignatureAlgorithms {
 
@@ -47,19 +48,22 @@ public class SignatureAlgorithms {
     static final String hmac_sha512 = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha512";
 
     static Map<String, String> RSA_MAP = new HashMap<String, String>();
+    static boolean fipsEnabled = CryptoUtils.isFips140_3Enabled();
     static {
-        RSA_MAP.put("sha1", rsa_sha1);
-        RSA_MAP.put("sha256", rsa_sha256);
-        RSA_MAP.put("sha384", rsa_sha384);
-        RSA_MAP.put("sha512", rsa_sha512);
+        if (!fipsEnabled){
+        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), rsa_sha1);}
+        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase(), rsa_sha256);
+        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.toLowerCase(), rsa_sha384);
+        RSA_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase(), rsa_sha512);
     }
 
     static Map<String, String> HMAC_MAP = new HashMap<String, String>();
     static {
-        HMAC_MAP.put("sha1", hmac_sha1);
-        HMAC_MAP.put("sha256", hmac_sha256);
-        HMAC_MAP.put("sha384", hmac_sha384);
-        HMAC_MAP.put("sha512", hmac_sha512);
+        if (!fipsEnabled){
+        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.toLowerCase(), hmac_sha1);}
+        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.toLowerCase(), hmac_sha256);
+        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.toLowerCase(), hmac_sha384);
+        HMAC_MAP.put(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.toLowerCase(), hmac_sha512);
     }
 
     public static void setAlgorithm(SoapMessage message, String method) {

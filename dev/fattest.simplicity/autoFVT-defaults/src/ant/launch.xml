@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2024 IBM Corporation and others.
+    Copyright (c) 2017, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@
 		<property name="simplicity.properties" value="${dir.component.root}/simplicity.properties" />
 		<property name="wsadminlib.py" value="${dir.src}/jython/wsadminlib.py" />
 		<property name="testinfo.properties" value="${dir.component.root}/build/testinfo.properties" />
+		<property file="${basedir}/fat.bnd.properties" />
+		<property file="${basedir}/fat.sys.properties" />
 		<iff if="zos.environment">
 			<then>
 				<!--  used for running on z/os -->
@@ -51,28 +53,54 @@
 		<!-- not necessary because it will be passed down by the calling ant script -->
 		<iff if="is.running.automated.build">
 			<else>
-				<condition property="filesToFind" value="FATSuiteLite.class;FATSuite.class;FATTest.class" else="FATSuite.class;FATTest.class">
-					<or>
-						<not>
-							<isset property="fat.test.mode" />
-						</not>
-						<equals arg1="${fat.test.mode}" arg2="lite" casesensitive="false" trim="true" />
-					</or>
-				</condition>
+				<iff>
+					<not>
+						<isset property="test.bucket.class"/>
+					</not>
+					<then>
+						<condition property="filesToFind" value="FATSuiteLite.class;FATSuite.class;FATTest.class" else="FATSuite.class;FATTest.class">
+							<or>
+								<not>
+									<isset property="fat.test.mode" />
+								</not>
+								<equals arg1="${fat.test.mode}" arg2="lite" casesensitive="false" trim="true" />
+							</or>
+						</condition>
 
-				<!-- Works out what tests to run for the autoFVT.zip-->
-				<scanJars entry="entry.point" filesToFind="${filesToFind}">
-					<fileset dir="${basedir}/build/lib" includes="**.jar" />
-				</scanJars>
+						<!-- Works out what tests to run for the autoFVT.zip-->
+						<scanJars entry="entry.point" filesToFind="${filesToFind}">
+							<fileset dir="${basedir}/build/lib" includes="**.jar" />
+						</scanJars>
 				
-				<echo message="entry point: ${entry.point}" />
-				
-				<property name="test.bucket.class" value="${entry.point}" />
+						<echo message="entry point: ${entry.point}" />
+
+						<!-- If we find more than one test bucket class, fail and instruct the user to set test.bucket.class -->
+						<iff>
+							<contains string="${entry.point}" substring="," />
+							<then>
+								<fail message="Found more than one test bucket. Specify -Dtest.bucket.class to specify the FATSuite to run, e.g -Dtest.bucket.class=com.ibm.ws.example.suite1.FATSuite" />
+							</then>
+						</iff>
+
+						<property name="test.bucket.class" value="${entry.point}" />
+					</then>
+				</iff>
 				<property name="test.bucket.name" value="${test.bucket.class}" />
 			</else>
 		</iff>
 	</target>
 
+	<!-- ant doesn't easily support getting a property value from a computed property name.  This macro copies the value from
+	     one property to be the value from another property.  It is similar contract to the propertycopy ant-contrib target. -->
+	<macrodef name="copyProperty">
+		<attribute name="from"/>
+		<attribute name="to"/>
+		<sequential>
+		    <property name="@{to}" value="${@{from}}"/>
+		</sequential>
+    </macrodef>
+
+	
 	<!-- Properties used: configuration.properties, local.properties, bootstrapping.properties, topology.properties, acute.properties, dir.log, dir.log.tmp -->
 	<target name="translateProperties" depends="initProperties">
 		<!-- ACUTE caches information in its topology properties file, so if the state of your server changed since your last invocation, ACUTE won't know about it unless you refresh the file -->
@@ -101,14 +129,17 @@
 		<echo>Initializing the classpath for ${test.bucket.name}</echo>
 		<property file="${bootstrapping.properties}" />
 
+		<property name="bucket.minimum.java.prop" value="${test.bucket.class}_fat.minimum.java.level"/>
+		<copyProperty from="${bucket.minimum.java.prop}" to="bucket.minimum.java"/>
+		
 		<!-- Work out the actual entry point based on the current java level and database properties -->
 		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
 
-		<!-- Get fat.minimum.java.level properties-->
-		<property file="${basedir}/fat.bnd.properties" />
-		<property file="${basedir}/fat.sys.properties" />
+		<condition property="fat.minimum.java" value="${bucket.minimum.java}" else="${fat.minimum.java.level}">
+			<isset property="${bucket.minimum.java.prop}" />
+		</condition>
 		
-		<!-- Enforce fat.minimum.java.level rule. If this test is compiled with a java level 
+		<!-- Enforce fat.minimum.java rule. If this test is compiled with a java level 
            higher than the one we're currently running we should skip these tests. 
            Example values for java.specification.version are:
            1.8,9,10,11,12,etc...
@@ -116,41 +147,43 @@
 		<condition property="skip.java.level" value="true">
 			<!-- this is tedious but as of Java 15 we can no longer use <script> blocks since nashorn was removed -->
 			<or>
-				<and> <equals arg1="11" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="17" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
-				<and> <equals arg1="21" arg2="${fat.minimum.java.level}"/> <equals arg1="20"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="11" arg2="${fat.minimum.java}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="17" arg2="${fat.minimum.java}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java}"/> <equals arg1="1.8" arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="17" arg2="${fat.minimum.java}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java}"/> <equals arg1="11"  arg2="${java.specification.version}"/> </and>
+				<and> <equals arg1="21" arg2="${fat.minimum.java}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java}"/> <equals arg1="17"  arg2="${java.specification.version}"/> </and>
+                <and> <equals arg1="25" arg2="${fat.minimum.java}"/> <equals arg1="21"  arg2="${java.specification.version}"/> </and>
 		    </or>
 		</condition>
-		
+
 		<!-- Output java level info -->
-		<echo message="fat.minimum.java.level=${fat.minimum.java.level}" />
+		<echo message="fat.minimum.java=${fat.minimum.java}" />
 		<echo message="java.specification.version=${java.specification.version}" />
 		<echo message="micro.version=${micro.version}" />
-		
+
 		<iff>
 			<istrue value="${skip.java.level}" />
 			<then>
-				<var name="test.bucket.class" unset="true" />
-				<var name="test.bucket.name" unset="true" />
-				
-				<property name="test.bucket.class" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
-				<property name="test.bucket.name" value="${test.bucket.class}" />
+				<property name="test.bucket.class.to.run" value="componenttest.custom.junit.runner.AlwaysPassesTest" />
+				<property name="test.bucket.name.to.run" value="${test.bucket.class.to.run}" />
 
 				<echo message="FAT bucket WILL NOT run tests, due to the following properties:" />
-				<echo message="     This bucket uses java level:         ${fat.minimum.java.level}" />
+				<echo message="     This bucket uses java level:         ${fat.minimum.java}" />
 			</then>
 		</iff>
-		
+
+		<property name="test.bucket.class.to.run" value="${test.bucket.class}" />
+		<property name="test.bucket.name.to.run" value="${test.bucket.name}" />
+
 		<!-- What will our entry point be? -->
-		<echo message="FAT entry point will be: ${test.bucket.class}" />
-		
+		<echo message="FAT entry point will be: ${test.bucket.class.to.run}" />
 	</target>
 
-	<!-- Properties used: test.bucket.name, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class -->
+	<!-- Properties used: test.bucket.name.to.run, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class.to.run -->
 	<target name="runTests" depends="initProperties">
 		<condition property="do.debug">
 			<isset property="FAT_DEBUGGING" />
@@ -179,11 +212,24 @@
 		</condition>
 
 		<!-- boolean for Java15+.  The assumption is that at this point forward (Java 15), we will only be building using LTS 
-		     or interium versions of Java -->
+		     or interim versions of Java -->
 		<condition property="is.java15.orHigher" value="true">
 			<not>
 				<or>
 					<equals arg1="11" arg2="${java.specification.version}"/>
+					<equals arg1="1.8" arg2="${java.specification.version}"/>
+				</or>
+		    </not>
+		</condition>
+		
+		<!-- boolean for Java24+.  The assumption is that at this point forward (Java 24), we will only be building using LTS 
+		     or interim versions of Java -->
+		<condition property="is.java24.orHigher" value="true">
+			<not>
+				<or>
+					<equals arg1="21"  arg2="${java.specification.version}"/>
+					<equals arg1="17"  arg2="${java.specification.version}"/>
+					<equals arg1="11"  arg2="${java.specification.version}"/>
 					<equals arg1="1.8" arg2="${java.specification.version}"/>
 				</or>
 		    </not>
@@ -199,12 +245,14 @@
 		<property name="illegal.access.permit.fat" value=""/>
 		
 		<!-- Java 17 began the security manager's deprecation process (https://openjdk.java.net/jeps/411).
-			     In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
-				 Setting up a gated property (use.java.security.manager) so that any builds that take place on Java 15+ use the JVM override 
-				 -Djava.security.manager=allow which is needed for our build process, but older versions will be skipped --> 
+             In Java 18, the `java.security.manager` system property's default changed from `allow` to `disallow`, which causes our build process to fail.  
+             Setting up a gated property (use.java.security.manager) so that any builds that take place on Java 15+ use the JVM override 
+             -Djava.security.manager=allow which is needed for our build process, but older versions will be skipped. 
+             In Java 24, they are permanently disabling the security manager (https://openjdk.org/jeps/486) and trying to specify `-Djava.security.manager=allow` throws an exception.  So not allowing that parameter to be set if Java 24 or higher. --> 
 		<condition property="use.java.security.manager" value="-Djava.security.manager=allow">
 			<and>
 				<istrue value="${is.java15.orHigher}"/>
+				<not><istrue value="${is.java24.orHigher}"/></not>
 				<not><istrue value="${supports.framework.java}"/></not>
 			</and>
 		</condition>
@@ -274,11 +322,6 @@
 				<include name="com.ibm.ws.componenttest.jar" />
 			</fileset>
 
-			<!-- shared libraries from bootstrapping.properties -->
-			<fileset dir="${local.sharedLib}" erroronmissingdir="false">
-				<include name="**/*.jar" />
-			</fileset>
-
 			<!-- java libraries for secure SSH authentication -->
 			<fileset dir="${local.java}/lib/" erroronmissingdir="false">
 				<include name="*.jar" />
@@ -342,7 +385,7 @@
 		<mkdir dir="${dir.log.xml}" />
 		<mkdir dir="${dir.log.tmp}" />
 		<copy file="${logging.properties}" tofile="${gen.logging.properties}" />
-		<propertyfile file="${gen.logging.properties}" comment="Logging file used by ${test.bucket.name}">
+		<propertyfile file="${gen.logging.properties}" comment="Logging file used by ${test.bucket.name.to.run}">
 			<entry key="java.util.logging.FileHandler.pattern" value="${dir.log}/output.txt" />
 		</propertyfile>
 
@@ -350,6 +393,8 @@
 
 		<!-- Load all env vars into env.* properties -->
 		<property environment="env" />
+		
+        <!-- Artifactory Registry Properties -->
 		
         <condition property="fat.test.artifactory.download.server"
                    value="${artifactory.download.server}"
@@ -380,6 +425,26 @@
                    else="${env.ARTIFACTORY_FORCE_EXTERNAL_REPO}">
           <isset property="artifactory.force.external.repo" />
         </condition>
+		
+        <!-- Internal Registry Properties -->
+		
+        <condition property="fat.test.docker.registry.server"
+                   value="${docker_registry.server}"
+                   else="${env.DOCKER_REGISTRY_SERVER}">
+          <isset property="docker_registry.server" />
+        </condition>
+		
+        <condition property="fat.test.docker.registry.user"
+                   value="${docker_registry.user}"
+                   else="${env.DOCKER_REGISTRY_USER}">
+          <isset property="docker_registry.user" />
+        </condition>
+        	
+        <condition property="fat.test.docker.registry.password"
+                   value="${docker_registry.password}"
+                   else="${env.DOCKER_REGISTRY_PASSWORD}">
+          <isset property="docker_registry.password" />
+        </condition>
 
 		<tstamp>
 			<format property="today.day" pattern="EEEE" />
@@ -395,7 +460,7 @@
 			</and>
 		</condition>
 
-		<echo>Running ${test.bucket.name}</echo>
+		<echo>Running ${test.bucket.name.to.run}</echo>
 		<echo>Timeout: ${fattest.timeout}</echo>
 		<iff if="env.debug.framework">
 			<then>
@@ -509,12 +574,14 @@
 						<propertyref prefix="env.fat.test." />
 						<propertyref prefix="env.fat.bucket." />
 						<propertyref prefix="env.ldap." />
+						<propertyref prefix="env.debug.server." />
 						<mapper type="glob" from="env.*" to="*" />
 					</syspropertyset>
 					<syspropertyset>
 						<propertyref prefix="bvt.prop." />
 						<mapper type="glob" from="bvt.prop.*" to="*" />
 					</syspropertyset>
+					<sysproperty key="test.bucket.class" value="${test.bucket.class.to.run}"/>
 					<!-- Add global properties -->
 					<syspropertyset>
 						<propertyref prefix="global." />
@@ -550,7 +617,7 @@
 					<!-- report will be generated as xml -->
 					<formatter type="xml" />
 					<!-- Invoke JUnit TestSuite -->
-					<test todir="${dir.log.xml}" name="${test.bucket.class}" />
+					<test todir="${dir.log.xml}" name="${test.bucket.class.to.run}" />
 					<!-- need the file.encoding for running on z/os -->
 					<jvmarg value="-Dfile.encoding=${ascii.file.encoding}" />
 					<!-- conditional JVM args and properties follow
@@ -586,7 +653,7 @@
 				<!-- Obtain the set of mark files again, in case any servers stopped during above wait -->
 				<fileset dir="${basedir}/output" includes="*.mrk" id="markfiles" />
 				<foreach param="serverFile" in="markfiles">
-					<echo>Failure running ${test.bucket.name}, attempting to stop servers that did not stop properly : ${serverFile}</echo>
+					<echo>Failure running ${test.bucket.name.to.run}, attempting to stop servers that did not stop properly : ${serverFile}</echo>
 					<local name="serverDir" />
 					<basename property="serverDir" file="${serverFile}" suffix=".mrk" />
 					<condition property="script.exec" value="cmd" else="sh">
@@ -603,7 +670,7 @@
 						<arg line="${serverDir}" />
 					</exec>
 
-					<echo>Failure running ${test.bucket.name}, attempting to copy logs from servers that did not stop properly : ${serverFile}</echo>
+					<echo>Failure running ${test.bucket.name.to.run}, attempting to copy logs from servers that did not stop properly : ${serverFile}</echo>
 					<tstamp>
 						<format property="copyTime" pattern="dd-MM-yyyy-HH-mm-ss" />
 					</tstamp>
@@ -618,7 +685,7 @@
 
 			</finally>
 		</try>
-		<echo>Finished running ${test.bucket.name}</echo>
+		<echo>Finished running ${test.bucket.name.to.run}</echo>
 		<echo>XML report is available at ${dir.log.xml}</echo>
 		<iff if="is.running.automated.build">
 			<then>
@@ -710,6 +777,10 @@
 			<arg value="-Dbasedir=${basedir}" />
 			<arg value="-Ddir.log.html=${dir.log.html}" />
 			<arg value="-Ddir.log.xml=${dir.log.xml}" />
+			<!-- In Java 24, the default for 'jdk.xml.enableExtensionFunctions' was changed to false
+				 This broke our JUnit XML to HTML transformations for FAT output in junit.html
+				 Forcing value back to true - https://bugs.openjdk.org/browse/JDK-8343024 -->
+			<jvmarg line="-Djdk.xml.enableExtensionFunctions=true" />
 		</java>
 
 		<iff>

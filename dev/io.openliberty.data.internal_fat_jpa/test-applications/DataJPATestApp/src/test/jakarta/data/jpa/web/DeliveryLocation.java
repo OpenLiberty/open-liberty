@@ -13,6 +13,7 @@ package test.jakarta.data.jpa.web;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -28,7 +29,7 @@ public class DeliveryLocation {
         HOME
     }
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     public Set<Customer> customers;
 
     @Id

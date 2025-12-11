@@ -28,7 +28,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
  {
 	   /**
 	    * Returns if the webmodule associated with this metaData object is 
-	    * atleast compliant with the Servlet 2.3 specification
+	    * at least compliant with the Servlet 2.3 specification
 	    * @return
 	    */
 	   boolean isServlet23OrHigher();
@@ -99,7 +99,7 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
      
      /*
       * Methods to associate a WebCollaboratorComponentMetaData object with a ModuleMetaData
-      * object. The WebContainer wlll use the WebCollaboratorComponentMetaData when calling
+      * object. The WebContainer will use the WebCollaboratorComponentMetaData when calling
       * preInvoke on the collaborators,
       */
      public void setCollaboratorComponentMetaData(WebCollaboratorComponentMetaData wcmd);

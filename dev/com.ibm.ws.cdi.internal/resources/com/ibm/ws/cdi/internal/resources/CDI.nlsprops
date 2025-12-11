@@ -108,3 +108,7 @@ unversioned.beansXML.warning.CWOWB1018W.useraction=Update the beans.xml file wit
 no.bda.for.module.CWOWB1019E=CWOWB1019E: WebSphere Application Server internal error occurred. Contact WebSphere Application Server support with the following data: {0} {1}
 no.bda.for.module.CWOWB1019E.explanation=CMSG0001
 no.bda.for.module.CWOWB1019E.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+dev.mode.enabled.CWOWB1020W=CWOWB1020W: Weld development mode has been removed.
+dev.mode.enabled.CWOWB1020W.explanation=Weld development mode was enabled, but it has been removed.
+dev.mode.enabled.CWOWB1020W.useraction=Disable Weld development mode to prevent this warning message.

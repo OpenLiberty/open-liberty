@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,12 @@
  *******************************************************************************/
 package tests;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,7 +28,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.transaction.fat.util.FATUtils;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
 public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
@@ -47,7 +49,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { s1 };
+        serversToCleanup = Arrays.asList(s1);
 
         // Start Server1
         FATUtils.startServers(s1);
@@ -130,10 +132,10 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
 
         final String method = "testPeerServerDoesNotAcquireLogs";
         final String id = String.format("%03d", test);
-        boolean testFailed = false;
+        final int attempts = 2;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { s1, longPeerStaleTimeServer2 };
+        serversToCleanup = Arrays.asList(s1, longPeerStaleTimeServer2);
 
         // Start Server1
         FATUtils.startServers(s1);
@@ -141,102 +143,47 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         try {
             // We expect this to fail since it is gonna crash the server
             runTest(s1, servletName, "setupRec" + id);
-        } catch (Throwable e) {
-            // as expected
+            fail();
+        } catch (IOException e) {
         }
 
         // wait for 1st server to have gone away
-        if (s1.waitForStringInLog(XAResourceImpl.DUMP_STATE) == null) {
-            testFailed = true;
-            testFailureString = "First server did not crash";
-        }
+        assertNotNull(s1.getServerName() + " did not crash", s1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
 
         // Now start server2
-        if (!testFailed) {
-            longPeerStaleTimeServer2.setHttpDefaultPort(longPeerStaleTimeServer2.getHttpSecondaryPort());
-            ProgramOutput po = longPeerStaleTimeServer2.startServerAndValidate(false, true, true);
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception ex = new Exception("Could not start server2");
-                Log.error(this.getClass(), method, ex);
-                throw ex;
-            }
+        longPeerStaleTimeServer2.setHttpDefaultPort(longPeerStaleTimeServer2.getHttpSecondaryPort());
+        FATUtils.startServers(longPeerStaleTimeServer2);
 
-            // wait for 2nd server to attempt (but fail) to perform peer recovery
-            int numStringOccurrences = longPeerStaleTimeServer2.waitForMultipleStringsInLog(2, "CWRLS0011I.*cloud001", 60000);
-            if (numStringOccurrences < 2) {
-                testFailed = true;
-                testFailureString = "Second server did not attempt peer recovery at least 2 times, attempted " + numStringOccurrences;
-            }
-            if (!testFailed && (longPeerStaleTimeServer2.waitForStringInLog("Peer recovery will not be attempted, this server was unable to claim the logs") == null)) {
-                testFailed = true;
-                testFailureString = "Server2 did not report that Peer recovery had failed";
-            }
+        // wait for 2nd server to attempt (but fail) to perform peer recovery
+        final int numStringOccurrences = longPeerStaleTimeServer2.waitForMultipleStringsInLog(attempts, "CWRLS0011I.*cloud001", 30000 * attempts);
+        assertTrue(longPeerStaleTimeServer2.getServerName() + " did not attempt peer recovery at least " + attempts + " times, attempted " + numStringOccurrences,
+                   numStringOccurrences >= attempts);
+        assertNotNull(longPeerStaleTimeServer2.getServerName() + " did not report that Peer recovery had failed",
+                      longPeerStaleTimeServer2.waitForStringInLog("Peer recovery will not be attempted, this server was unable to claim the logs"));
 
-            //Stop server2
-            if (!testFailed) {
-                FATUtils.stopServers(longPeerStaleTimeServer2);
-            }
-        }
+        //Stop server2
+        FATUtils.stopServers(longPeerStaleTimeServer2);
 
-        if (!testFailed) {
-            // restart 1st server
-            //
-            // Under the HADB locking scheme, the server should be able to acquire the logs immediately and proceed
-            // with recovery. server2 will still have the lease at this point so we'll have to wait the leaseLength
-            // (20 seconds) before this will definitely succeed
-            Thread.sleep(20000);
-            ProgramOutput po = s1.startServerAndValidate(false, true, true);
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception ex = new Exception("Could not restart server1");
-                Log.error(this.getClass(), method, ex);
-                throw ex;
-            }
+        // restart 1st server
+        //
+        // Under the HADB locking scheme, the server should be able to acquire the logs immediately and proceed
+        // with recovery. server2 will still have the lease at this point so we'll have to wait the leaseLength
+        // (20 seconds) before this will definitely succeed
+        Thread.sleep(20000);
+        FATUtils.startServers(s1);
 
-            if (s1.waitForStringInTrace("WTRN0133I") == null) {
-                testFailed = true;
-                testFailureString = "Recovery incomplete on first server";
-            }
+        assertNotNull("Recovery incomplete on " + s1.getServerName(), s1.waitForStringInTrace("WTRN0133I"));
 
-            // check resource states
-            Log.info(this.getClass(), method, "calling checkRec" + id);
-            try {
-                runTest(s1, servletName, "checkRec" + id);
-            } catch (Exception e) {
-                Log.error(this.getClass(), "dynamicTest", e);
-                throw e;
-            }
+        // check resource states
+        runTest(s1, servletName, "checkRec" + id);
 
-            // Bounce first server to clear log
-            FATUtils.stopServers(s1);
-            po = s1.startServerAndValidate(false, true, true);
-            if (po.getReturnCode() != 0) {
-                Log.info(this.getClass(), method, po.getCommand() + " returned " + po.getReturnCode());
-                Log.info(this.getClass(), method, "Stdout: " + po.getStdout());
-                Log.info(this.getClass(), method, "Stderr: " + po.getStderr());
-                Exception ex = new Exception("Could not bounce server1");
-                Log.error(this.getClass(), method, ex);
-                throw ex;
-            }
+        // Bounce first server to clear log
+        FATUtils.stopServers(s1);
+        FATUtils.startServers(s1);
 
-            // Check log was cleared
-            if (s1.waitForStringInTrace("WTRN0135I") == null) {
-                testFailed = true;
-                testFailureString = "Transactions left in transaction log on first server";
-            }
-            if (!testFailed && (s1.waitForStringInTrace("WTRN0134I.*0") == null)) {
-                testFailed = true;
-                testFailureString = "XAResources left in partner log on first server";
-            }
-        }
-
-        if (testFailed)
-            fail(testFailureString);
+        // Check log was cleared
+        assertNotNull("Transactions left in transaction log on " + s1.getServerName(), s1.waitForStringInTrace("WTRN0135I"));
+        assertNotNull("XAResources left in partner log on " + s1.getServerName(), s1.waitForStringInTrace("WTRN0134I.*0"));
     }
 
     /**
@@ -261,7 +208,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { s2, longPeerStaleTimeServer1 };
+        serversToCleanup = Arrays.asList(s2, longPeerStaleTimeServer1);
 
         // Start Server2
         s2.setHttpDefaultPort(s2.getHttpSecondaryPort());
@@ -309,7 +256,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { peerLockingDisabledServer1, peerLockingEnabledServer1 };
+        serversToCleanup = Arrays.asList(peerLockingDisabledServer1, peerLockingEnabledServer1);
 
         // switch to configuration with HADB peer locking disabled
         // Start Server1
@@ -396,7 +343,7 @@ public class DualServerPeerLockingTest2 extends DualServerPeerLockingTest {
         boolean testFailed = false;
         String testFailureString = "";
 
-        serversToCleanup = new LibertyServer[] { peerLockingDisabledServer1, s2 };
+        serversToCleanup = Arrays.asList(peerLockingDisabledServer1, s2);
 
         // switch to configuration with HADB peer locking disabled
         // Start Server1

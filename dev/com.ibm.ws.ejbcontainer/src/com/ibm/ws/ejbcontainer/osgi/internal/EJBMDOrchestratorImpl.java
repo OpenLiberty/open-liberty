@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -25,6 +25,7 @@ import java.util.StringTokenizer;
 import javax.ejb.EJBException;
 
 import com.ibm.ejs.container.BeanMetaData;
+import com.ibm.ejs.container.ContainerConfigConstants;
 import com.ibm.ejs.container.ContainerException;
 import com.ibm.ejs.container.ContainerProperties;
 import com.ibm.ejs.container.EJBConfigurationException;
@@ -36,6 +37,7 @@ import com.ibm.websphere.cpi.Persister;
 import com.ibm.websphere.csi.EJBModuleConfigData;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ejbcontainer.EJBMethodInterface;
 import com.ibm.ws.ejbcontainer.EJBMethodMetaData;
 import com.ibm.ws.ejbcontainer.InternalConstants;
@@ -58,12 +60,14 @@ import com.ibm.ws.javaee.dd.ejbbnd.MessageDriven;
 import com.ibm.ws.javaee.dd.ejbext.BeanCache;
 import com.ibm.ws.javaee.dd.ejbext.RunAsMode;
 import com.ibm.ws.javaee.dd.ejbext.Session;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.metadata.ejb.EJBMDOrchestrator;
 import com.ibm.ws.metadata.ejb.ModuleInitData;
 import com.ibm.ws.resource.ResourceRefConfigList;
 import com.ibm.wsspi.ejbcontainer.WSEJBHandlerResolver;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfiguration;
+import com.ibm.wsspi.injectionengine.InjectionBinding;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.JNDIEnvironmentRefType;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -1330,9 +1334,59 @@ public class EJBMDOrchestratorImpl extends EJBMDOrchestrator {
         // Entity not supported.  Ignore silently.
     }
 
+    @Trivial
     @Override
     protected void processZOSMetadata(BeanMetaData bmd) {
-        // Ignore.
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "processZOSMetadata : " + bmd);
+
+        if (ContainerProperties.isZOS) {
+            // If not set by environment entry, check the binding
+            if (!bmd.m_syncToOSThreadValue) {
+                bmd.m_syncToOSThreadValue = getSyncToOSThreadSetting(ContainerConfigConstants.syncToOSThreadSetting, bmd);
+            }
+
+            if (bmd.m_syncToOSThreadValue) {
+                if (isTraceOn && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "SyncToOSThread is enabled for bean: " + bmd.enterpriseBeanName);
+
+                    // Check if ThreadIdentityManager supports application thread identity
+                    if (ThreadIdentityManager.isAppThreadIdentityEnabled()) {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "EJB requests SyncToOSThread, and the server is enabled for SyncToOSThread");
+                    } else {
+                        if (isTraceOn && tc.isDebugEnabled())
+                            Tr.debug(tc, "EJB requests SyncToOSThread, but the server does not have ThreadIdentityService enabled");
+                        // Keep the setting enabled - the ThreadIdentityManager will handle the case when no service is available
+                    }
+                }
+            } else {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "SyncToOSThread is not enabled for bean: " + bmd.enterpriseBeanName);
+            }
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "processZOSMetadata");
+    }
+
+    @Trivial
+    private boolean getSyncToOSThreadSetting(String requiredAttr, BeanMetaData bmd) {
+        // The value may come from either ejb-jar.xml or ibm-ejb-jar-bnd.xml, so
+        // use the injection binding, where this has already been resolved.
+        // Note, this setting is only applicable to beans that support java:comp
+        // (i.e. ManagedBeans will not have a java:comp).
+        InjectionBinding<?> binding = bmd.ivJavaColonCompEnvMap != null ? bmd.ivJavaColonCompEnvMap.get(requiredAttr) : null;
+
+        if (binding != null) {
+            Object injectionObj = binding.getBindingObject();
+            if (injectionObj instanceof Boolean) {
+                return ((Boolean) injectionObj).booleanValue();
+            }
+        }
+        return false;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,8 @@ import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
@@ -49,6 +49,7 @@ import org.apache.hc.core5.http.nio.AsyncPushConsumer;
 import org.apache.hc.core5.http.nio.entity.StringAsyncEntityConsumer;
 import org.apache.hc.core5.http.nio.support.BasicRequestProducer;
 import org.apache.hc.core5.http.nio.support.BasicResponseConsumer;
+import org.apache.hc.core5.http2.HttpVersionPolicy;
 import org.apache.hc.core5.http2.config.H2Config;
 import org.apache.hc.core5.http2.frame.RawFrame;
 import org.apache.hc.core5.http2.impl.nio.H2StreamListener;
@@ -90,7 +91,7 @@ public class SecureHttp2Client {
         LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "testing requests to:" + sb.toString());
 
         // keep track of the text of every response received
-        final List<String> responseMessages = new ArrayList<String>();
+        final List<String> responseMessages = new CopyOnWriteArrayList<String>();
         // latch to consider expected number of streams
         final CountDownLatch latch = new CountDownLatch(requestUris.length + expectedPushStreams);
 
@@ -105,6 +106,7 @@ public class SecureHttp2Client {
 
         final HttpAsyncRequester requester = H2RequesterBootstrap.bootstrap().register("*", createAsyncPushConsumerSupplier(responseMessages,
                                                                                                                             latch)).setH2Config(h2Config).setTlsStrategy(createTlsStrategy(sslContext))
+                        .setVersionPolicy(HttpVersionPolicy.FORCE_HTTP_2)
                         //.setStreamListener(createStreamListener()) // uncomment for detailed logging on each stream
                         .create();
         requester.start();
@@ -224,7 +226,9 @@ public class SecureHttp2Client {
                             }
                         }
                         if (sb.length() > 0) {
-                            responseMessages.add(sb.toString());
+                            String response = sb.toString();
+                            LOGGER.logp(Level.INFO, CLASS_NAME, "drivePushRequests", "Adding response: " + response);
+                            responseMessages.add(response);
                         }
                         data.clear();
                     }

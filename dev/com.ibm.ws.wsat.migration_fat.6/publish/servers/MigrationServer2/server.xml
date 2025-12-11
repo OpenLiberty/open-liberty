@@ -1,14 +1,15 @@
 <server>
     <transaction
-	  backendURL="http://localhost:${bvt.prop.HTTP_secondary}"
+      backendURL="http://localhost:${bvt.prop.HTTP_secondary}"
       dataSourceRef="tranlogDataSource"
-      recoverOnStartup="true"
-      waitForRecovery="false"
       heuristicRetryInterval="10"
-      recoveryIdentity="Server2"
-      recoveryGroup="defaultGroup"
-      leaseLength="20"
       leaseCheckInterval="25"
+      leaseExpiryThreshold="100"
+      leaseLength="20"
+      recoverOnStartup="true"
+      recoveryGroup="defaultGroup"
+      recoveryIdentity="Server2"
+      waitForRecovery="false"
     />
 
     <featureManager>

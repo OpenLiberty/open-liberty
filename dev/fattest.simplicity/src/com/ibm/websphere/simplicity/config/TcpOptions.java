@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.websphere.simplicity.config;
 
@@ -27,6 +24,10 @@ public class TcpOptions extends ConfigElement {
     private String addressExcludeList;
     private String hostNameIncludeList;
     private String hostNameExcludeList;
+    private String inactivityTimeout;
+    private Integer maxOpenConnections;
+    private Integer portOpenRetries;
+    private Integer soLinger;
 
     public Boolean isSoReuseAddr() {
         return this.soReuseAddr;
@@ -46,6 +47,22 @@ public class TcpOptions extends ConfigElement {
 
     public String getHostNameExcludeList() {
         return hostNameExcludeList;
+    }
+
+    public String getInactivityTimeout() {
+        return inactivityTimeout;
+    }
+
+    public Integer getMaxOpenConnections() {
+        return maxOpenConnections;
+    }
+
+    public Integer getPortOpenRetries() {
+        return portOpenRetries;
+    }
+
+    public Integer getSoLinger() {
+        return soLinger;
     }
 
     @XmlAttribute
@@ -73,6 +90,25 @@ public class TcpOptions extends ConfigElement {
         this.hostNameExcludeList = hostNameExcludeList;
     }
 
+    @XmlAttribute
+    public void setInactivityTimeout(String inactivityTimeout) {
+        this.inactivityTimeout = inactivityTimeout;
+    }
+
+    @XmlAttribute
+    public void setMaxOpenConnections(Integer maxOpenConnections) {
+        this.maxOpenConnections = maxOpenConnections;
+    }
+
+    @XmlAttribute
+    public void setPortOpenRetries(Integer portOpenRetries) {
+        this.portOpenRetries = portOpenRetries;
+    }
+
+    public void setSoLinger(Integer soLinger) {
+        this.soLinger = soLinger;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("TcpOptions{");
@@ -88,6 +124,14 @@ public class TcpOptions extends ConfigElement {
             buf.append("hostNameIncludeList=\"" + hostNameIncludeList + "\" ");
         if (getHostNameExcludeList() != null)
             buf.append("hostNameExcludeList=\"" + hostNameExcludeList + "\" ");
+        if (getInactivityTimeout() != null)
+            buf.append("inactivityTimeout=\"" + inactivityTimeout + "\" ");
+        if (getMaxOpenConnections() != null)
+            buf.append("maxOpenConnections=\"" + maxOpenConnections + "\" ");
+        if (getPortOpenRetries() != null)
+            buf.append("portOpenRetries=\"" + portOpenRetries + "\" ");
+        if (getSoLinger() != null)
+            buf.append("soLinger=\"" + soLinger + "\" ");
         buf.append("}");
         return buf.toString();
     }

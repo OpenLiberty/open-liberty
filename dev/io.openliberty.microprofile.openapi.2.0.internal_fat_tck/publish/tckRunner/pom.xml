@@ -57,6 +57,12 @@
                 <version>${surefire.version}</version>
                 <configuration>
                     <argLine>-Dfile.encoding=${project.build.sourceEncoding} -Dcom.ibm.tools.attach.enable=yes</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBtytes(). Attach is needed becuase because arquillian uses com.sun.tools.attach to find VMs -->
+                    <systemProperties>
+                      <property>
+                        <name>java.util.logging.config.file</name>
+                        <value>logging.properties</value>
+                      </property>
+                    </systemProperties>
                     <suiteXmlFiles>
                         <suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
                     </suiteXmlFiles>

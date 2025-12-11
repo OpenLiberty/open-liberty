@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -590,11 +590,11 @@ public class HungRequestTiming {
 
                 if (elapsedMins == 0) {
                     // Handles the case, when there are system/env related issues, and the java dumps are generated around 50+ secs, and not in the full 1 min.
-                    assertTrue("Java dumps are not generated 1 min apart.", (elapsedSecs > 50));
+                    assertTrue("Java dumps are generated less than 1 min apart.", (elapsedSecs > 50));
                 } else {
                     // This verifies if the java dumps are generated 1 minute apart, including intermittent cases where the system might be really slow,
-                    // and causes the dumps to be generated within 1 min and 30 seconds, which is tolerable.
-                    assertTrue("Java dumps are not generated 1 min apart.", (elapsedMins == 1 && elapsedSecs < 30));
+                    // and causes the dumps to be generated within 1 min and 40 seconds, which is tolerable.
+                    assertTrue("Java dumps are NOT generated 1 min apart.", (elapsedMins == 1 && elapsedSecs <= 40));
                 }
 
                 // Cache the current dump file time, to compare with the next dump file.

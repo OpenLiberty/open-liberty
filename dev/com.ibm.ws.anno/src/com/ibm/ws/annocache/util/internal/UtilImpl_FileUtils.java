@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ public class UtilImpl_FileUtils {
     public static boolean isFile(final File target) {
         Boolean result = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
+	    @Trivial
             public Boolean run() {
                 return Boolean.valueOf(target.isFile());
             }
@@ -56,6 +57,7 @@ public class UtilImpl_FileUtils {
     public static boolean isDirectory(final File target) {
         Boolean result = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
+	    @Trivial
             public Boolean run() {
                 return Boolean.valueOf(target.isDirectory());
             }
@@ -66,6 +68,7 @@ public class UtilImpl_FileUtils {
     public static boolean exists(final File target) {
         Boolean exists = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
+	    @Trivial
             public Boolean run() {
                 return Boolean.valueOf(target.exists());
             }
@@ -76,6 +79,7 @@ public class UtilImpl_FileUtils {
     public static File validateDir(final File dir) {
         return AccessController.doPrivileged(new PrivilegedAction<File>() {
             @Override
+	    @Trivial
             public File run() {
                 if ( !dir.exists() ) {
                     throw new IllegalArgumentException("Target location [ " + dir.getPath() + " ] does not exist.");
@@ -91,6 +95,7 @@ public class UtilImpl_FileUtils {
     public static String getAbsolutePath(final File target) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
+	    @Trivial
             public String run() {
                 return target.getAbsolutePath();
             }
@@ -100,6 +105,7 @@ public class UtilImpl_FileUtils {
     public static String getCanonicalPath(final File target) {
         return AccessController.doPrivileged(new PrivilegedAction<String>() {
             @Override
+            @Trivial
             public String run() {
                 try {
                     return target.getCanonicalPath(); // throws IOException
@@ -118,6 +124,7 @@ public class UtilImpl_FileUtils {
     public static File[] listFiles(final File target) {
         return AccessController.doPrivileged(new PrivilegedAction<File[]>() {
             @Override
+	    @Trivial
             public File[] run() {
                 File[] fileList = target.listFiles();
                 return ( (fileList == null) ? EMPTY_FILES : fileList );
@@ -128,6 +135,7 @@ public class UtilImpl_FileUtils {
     public static File[] listFiles(final File target, final FilenameFilter filter) {
         return AccessController.doPrivileged(new PrivilegedAction<File[]>() {
             @Override
+	    @Trivial
             public File[] run() {
                 File[] fileList = target.listFiles(filter);
                 return ( (fileList == null) ? EMPTY_FILES : fileList );
@@ -138,6 +146,7 @@ public class UtilImpl_FileUtils {
     public static String[] list(final File target) {
         return AccessController.doPrivileged(new PrivilegedAction<String[]>() {
             @Override
+            @Trivial
             public String[] run() {
                 String[] fileNames = target.list();
                 return ( (fileNames == null) ? EMPTY_FILE_NAMES : fileNames );
@@ -148,6 +157,7 @@ public class UtilImpl_FileUtils {
     public static String[] list(final File target, final FilenameFilter filter) {
         return AccessController.doPrivileged(new PrivilegedAction<String[]>() {
             @Override
+            @Trivial
             public String[] run() {
                 String[] fileNames = target.list(filter);
                 return ( (fileNames == null) ? EMPTY_FILE_NAMES : fileNames );
@@ -161,6 +171,7 @@ public class UtilImpl_FileUtils {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
                 @Override
+                @Trivial
                 public FileOutputStream run() throws IOException {
                     return new FileOutputStream(target);
                 }
@@ -181,6 +192,7 @@ public class UtilImpl_FileUtils {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<OutputStream>() {
                 @Override
+                @Trivial
                 public OutputStream run() throws IOException {
                     @SuppressWarnings("resource")
                     RandomAccessFile randomAccessFile = new RandomAccessFile(target, "rw");
@@ -206,6 +218,7 @@ public class UtilImpl_FileUtils {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<FileOutputStream>() {
                 @Override
+                @Trivial
                 public FileOutputStream run() throws IOException {
                     return new FileOutputStream(target, append);
                 }
@@ -226,6 +239,7 @@ public class UtilImpl_FileUtils {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<FileInputStream>() {
                 @Override
+                @Trivial
                 public FileInputStream run() throws IOException {
                     return new FileInputStream(target);
                 }
@@ -246,6 +260,7 @@ public class UtilImpl_FileUtils {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<RandomAccessFile>() {
                 @Override
+                @Trivial
                 public RandomAccessFile run() throws IOException {
                     return new RandomAccessFile(target, "r");
                 }
@@ -266,6 +281,7 @@ public class UtilImpl_FileUtils {
         try {
             return AccessController.doPrivileged(new PrivilegedExceptionAction<JarFile>() {
                 @Override
+		@Trivial
                 public JarFile run() throws IOException {
                     return new JarFile(jarPath);
                 }
@@ -287,6 +303,7 @@ public class UtilImpl_FileUtils {
     public static boolean mkdirs(final File file) {
         Boolean result = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
+	    @Trivial
             public Boolean run() {
                 return Boolean.valueOf( file.mkdirs() );
             }
@@ -297,6 +314,7 @@ public class UtilImpl_FileUtils {
     public static boolean ensureDir(final Logger useLogger, final File file) {
         Boolean existsAsDir = AccessController.doPrivileged( new PrivilegedAction<Boolean>() {
             @Override
+	    @Trivial
             public Boolean run() {
                 return Boolean.valueOf( unprotectedEnsureDir(useLogger, file) );
             }
@@ -370,6 +388,7 @@ public class UtilImpl_FileUtils {
         
         Boolean failedRemoval = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
             @Override
+	    @Trivial
             public Boolean run() {
                 final String innerMethodName = methodName + "." + "run";
 
@@ -400,6 +419,7 @@ public class UtilImpl_FileUtils {
     public static int removeAll(final Logger useLogger, final File file) {
         Integer failedRemovals = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
             @Override
+	    @Trivial
             public Integer run() {
                 return Integer.valueOf( unprotectedRemoveAll(useLogger, file) );
             }

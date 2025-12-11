@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,13 @@ import java.time.DateTimeException;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.zip.DataFormatException;
 
 import jakarta.enterprise.concurrent.ContextServiceDefinition;
 import jakarta.enterprise.concurrent.ManagedExecutorDefinition;
@@ -62,6 +65,12 @@ public class SchedAsyncTestServlet extends FATServlet {
     private static CompletableFuture<Long> cfEveryFiveSeconds4Times;
     private static AtomicInteger cfEveryFiveSeconds4TimesCountdown;
 
+    private static CompletableFuture<String> cfEverySevenSecondsUntilExceptionalCompletion;
+
+    private static CompletableFuture<String> cfEverySevenSecondsUntilThrowsError;
+
+    private static CompletableFuture<String> cfEverySevenSecondsUntilThrowsException;
+
     private static CompletableFuture<long[]> cfEveryThreeAndEvenSeconds8Times;
     private static final AtomicInteger cfEveryThreeAndEvenSeconds8TimesCount = new AtomicInteger();
 
@@ -95,6 +104,15 @@ public class SchedAsyncTestServlet extends FATServlet {
 
         bean.everySixSeconds(3, afterSixSeconds3TimesCount).thenAccept(l -> afterSixSeconds3Times.add(l));
 
+        cfEverySevenSecondsUntilExceptionalCompletion = bean
+                        .everySevenSecondsUntilExceptionalCompletion(new AtomicInteger(2));
+
+        cfEverySevenSecondsUntilThrowsError = bean
+                        .everySevenSecondsUntilThrowsError(new AtomicInteger(2));
+
+        cfEverySevenSecondsUntilThrowsException = bean
+                        .everySevenSecondsUntilThrowsException(new AtomicInteger(2));
+
         cfEveryThreeAndEvenSeconds8Times = bean.everyThreeOrEvenSeconds(8, cfEveryThreeAndEvenSeconds8TimesCount);
 
         bean.everyFourSecondsVirtual(everyFourSecondsVirtualCountdown = new AtomicInteger(4),
@@ -106,7 +124,33 @@ public class SchedAsyncTestServlet extends FATServlet {
         //           05          11          17          23          29          35          41          47          53          59
         //   01          07          13          19          25          31          37          43          49          55
         // 00  02..04  06  08..10  12  14..16  18  20..22  24  26..28  30  32..34  36  38..40  42  44..46  48  50..52  54  56..58
-        //     02      06      10      14      18      22      26      30      24      38      42      46      50      54      58
+        //     02      06      10      14      18      22      26      30      34      38      42      46      50      54      58
+        // 00            07            14            21            28            35            42            49            56
+        //         04            11            18            25            32            39            46            53
+        //             06            13            20            27            34            41            48            55
+
+        // Seconds at which automatically scheduled asynchronous methods run:
+        // 00              08              16              24              32              40              48              56
+        //       03                  13                  23                  33                  43                  53
+    }
+
+    /**
+     * Verify whether a scheduled asynchronous method that uses CDI Observes Startup
+     * to automatically schedule itself executes multiple times successfully.
+     */
+    @Test
+    public void testAutoScheduleObservesStartup() throws Exception {
+        bean.awaitAutoScheduleCompletion(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+    }
+
+    /**
+     * Verify that a method can use CDI Observes Startup to schedule the invocation
+     * of a scheduled asynchronous method to happen after a delay, and that the
+     * scheduled asynchronous method executes multiple times successfully.
+     */
+    @Test
+    public void testDelayedAutoScheduleObservesStartup() throws Exception {
+        bean.awaitDelayedScheduleCompletion(TIMEOUT_NS, TimeUnit.NANOSECONDS);
     }
 
     /**
@@ -133,6 +177,93 @@ public class SchedAsyncTestServlet extends FATServlet {
         long elapsed = timeOfFinalExecution - init_ns;
         if (elapsed < TimeUnit.SECONDS.toNanos(10L))
             fail("A task that runs every 5 seconds must not complete 4 executions in under 10 seconds. Elapsed nanoseconds: " + elapsed);
+    }
+
+    /**
+     * An asynchronous method that is scheduled to run every 7 seconds and complete
+     * itself exceptionally after a supplied countdown reaches 0, must show as
+     * completed with the requested exception.
+     */
+    @Test
+    public void testEverySevenSecondsUntilExceptionalCompletion() throws Exception {
+        try {
+            String s = cfEverySevenSecondsUntilExceptionalCompletion
+                            .get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should have completed exceptionally, not with a result of " + s);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof DataFormatException)
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            String s = cfEverySevenSecondsUntilExceptionalCompletion.join();
+            fail("Should have completed exceptionally, not with the result " + s);
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof DataFormatException)
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * An asynchronous method that is scheduled to run every 7 seconds and
+     * raises an error after a supplied countdown reaches 0, must show as
+     * completed with the raised exception.
+     */
+    @Test
+    public void testEverySevenSecondsUntilThrowsError() throws Exception {
+        try {
+            String s = cfEverySevenSecondsUntilThrowsError
+                            .get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should have completed exceptionally, not with a result of " + s);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof Error)
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            String s = cfEverySevenSecondsUntilThrowsError.join();
+            fail("Should have completed exceptionally, not with the result " + s);
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof Error)
+                ; // expected
+            else
+                throw x;
+        }
+    }
+
+    /**
+     * An asynchronous method that is scheduled to run every 7 seconds and
+     * raises an exception after a supplied countdown reaches 0, must show as
+     * completed with the raised exception.
+     */
+    @Test
+    public void testEverySevenSecondsUntilThrowsException() throws Exception {
+        try {
+            String s = cfEverySevenSecondsUntilThrowsException
+                            .get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should have completed exceptionally, not with a result of " + s);
+        } catch (ExecutionException x) {
+            if (x.getCause() instanceof ArrayIndexOutOfBoundsException)
+                ; // expected
+            else
+                throw x;
+        }
+
+        try {
+            String s = cfEverySevenSecondsUntilThrowsException.join();
+            fail("Should have completed exceptionally, not with the result " + s);
+        } catch (CompletionException x) {
+            if (x.getCause() instanceof ArrayIndexOutOfBoundsException)
+                ; // expected
+            else
+                throw x;
+        }
     }
 
     /**

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.proxy;
 
@@ -1559,7 +1556,6 @@ public class StatefullProxy	extends BranchManager
 	 * @see com.ibm.ws.sip.container.proxy.BranchManager#getAddToPathValue()
 	 */
 	boolean getAddToPathValue() {
-		// TODO Auto-generated method stub
 		return getAddToPath();
 	}
 

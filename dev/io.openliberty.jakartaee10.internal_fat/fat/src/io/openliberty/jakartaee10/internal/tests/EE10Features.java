@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,10 @@ public class EE10Features {
 
     public static Set<String> getVersionedFeatures(Set<String> features) {
         return FeatureUtilities.rejectVersionless(features);
+    }
+
+    public static Set<String> getVersionlessFeatures(Set<String> features) {
+        return FeatureUtilities.selectVersionless(features);
     }
 
     public static final Set<String> getTestFeatures() {
@@ -120,6 +124,7 @@ public class EE10Features {
         FeatureUtilities.removeTestAutoFeatures(new File(installRoot));
         this.serverFeatures_ol = getInstalledFeatures(installRoot, OPEN_LIBERTY_ONLY);
         this.versionedFeatures_ol = getVersionedFeatures(serverFeatures_ol);
+        this.versionlessFeatures_ol = getVersionlessFeatures(serverFeatures_ol);
 
         this.compatibleFeatures_ol = getCompatibleFeatures(versionedFeatures_ol, OPEN_LIBERTY_ONLY);
         this.extendedCompatibleFeatures_ol = getExtendedCompatibleFeatures(compatibleFeatures_ol, OPEN_LIBERTY_ONLY);
@@ -130,6 +135,7 @@ public class EE10Features {
 
         this.serverFeatures_wl = getInstalledFeatures(installRoot, !OPEN_LIBERTY_ONLY);
         this.versionedFeatures_wl = getVersionedFeatures(serverFeatures_wl);
+        this.versionlessFeatures_wl = getVersionlessFeatures(serverFeatures_wl);
 
         this.compatibleFeatures_wl = getCompatibleFeatures(versionedFeatures_wl, !OPEN_LIBERTY_ONLY);
         this.extendedCompatibleFeatures_wl = getExtendedCompatibleFeatures(compatibleFeatures_wl, !OPEN_LIBERTY_ONLY);
@@ -137,21 +143,31 @@ public class EE10Features {
         this.incompatibleFeatures_wl = getIncompatibleFeatures(versionedFeatures_wl,
                                                                compatibleFeatures_wl,
                                                                !OPEN_LIBERTY_ONLY);
+        this.incompatibleVersionlessFeatures = new HashSet<>();
+        incompatibleVersionlessFeatures.add("connectorsInboundSecurity"); // Removed in EE 10
+        incompatibleVersionlessFeatures.add("data"); // Added in EE 11
+        incompatibleVersionlessFeatures.add("dataContainer"); // Added in EE 11
+        incompatibleVersionlessFeatures.add("jcaInboundSecurity"); // Removed in EE 10
+        incompatibleVersionlessFeatures.add("j2eeManagement"); // Removed in EE 9
+        incompatibleVersionlessFeatures.add("mpOpenTracing"); // Removed in MP 6
     }
 
     //
 
     private final Set<String> serverFeatures_ol;
     private final Set<String> versionedFeatures_ol;
+    private final Set<String> versionlessFeatures_ol;
     private final Set<String> compatibleFeatures_ol;
     private final Set<String> extendedCompatibleFeatures_ol;
     private final Set<String> incompatibleFeatures_ol;
 
     private final Set<String> serverFeatures_wl;
     private final Set<String> versionedFeatures_wl;
+    private final Set<String> versionlessFeatures_wl;
     private final Set<String> compatibleFeatures_wl;
     private final Set<String> extendedCompatibleFeatures_wl;
     private final Set<String> incompatibleFeatures_wl;
+    private final Set<String> incompatibleVersionlessFeatures;
 
     public Set<String> getServerFeatures(boolean openLiberty) {
         return openLiberty ? serverFeatures_ol : serverFeatures_wl;
@@ -159,6 +175,10 @@ public class EE10Features {
 
     public Set<String> getVersionedFeatures(boolean openLiberty) {
         return openLiberty ? versionedFeatures_ol : versionedFeatures_wl;
+    }
+
+    public Set<String> getVersionlessFeatures(boolean openLiberty) {
+        return openLiberty ? versionlessFeatures_ol : versionlessFeatures_wl;
     }
 
     public Set<String> getCompatibleFeatures(boolean openLiberty) {
@@ -171,6 +191,10 @@ public class EE10Features {
 
     public Set<String> getIncompatibleFeatures(boolean openLiberty) {
         return openLiberty ? incompatibleFeatures_ol : incompatibleFeatures_wl;
+    }
+
+    public Set<String> getIncompatibleVersionlessFeatures() {
+        return incompatibleVersionlessFeatures;
     }
 
     //
@@ -200,6 +224,7 @@ public class EE10Features {
         features.remove("sipServlet-1.1"); // purposely not supporting EE 10
         features.remove("springBoot-1.5"); // springBoot 3.0 only supports EE10
         features.remove("springBoot-2.0");
+        features.remove("springBoot-4.0");
 
         features.remove("mpHealth"); //versionless features in development
         features.remove("mpMetrics");
@@ -267,9 +292,15 @@ public class EE10Features {
         features.remove("microProfile-6.1");
         features.remove("mpTelemetry-1.1");
 
+        //remove MP 7.0 features which would conflict with MP 7.1 features
+        features.remove("microProfile-7.0");
+        features.remove("mpOpenAPI-4.0");
+        features.remove("mpTelemetry-2.0");
+
         // remove client features
         features.remove("jakartaeeClient-10.0");
         features.remove("appSecurityClient-1.0");
+        features.remove("xmlWSClient-4.0");
 
         // remove acmeCA-2.0 since it requires additional resources and configuration
         features.remove("acmeCA-2.0");
@@ -285,10 +316,11 @@ public class EE10Features {
 
         features.remove("audit-2.0");
 
-        // springBoot-3.0 and nosql-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
+        // springBoot-3.0, nosql-1.0, and mcpServer-1.0 require Java 17 so if we are currently not using Java 17 or later, remove it from the list of features.
         if (JavaInfo.JAVA_VERSION < 17) {
             features.remove("springBoot-3.0");
             features.remove("nosql-1.0");
+            features.remove("mcpServer-1.0");
         }
 
         return features;

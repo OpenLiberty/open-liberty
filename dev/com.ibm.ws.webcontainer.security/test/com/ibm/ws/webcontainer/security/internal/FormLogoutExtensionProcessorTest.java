@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -331,6 +331,135 @@ public class FormLogoutExtensionProcessorTest {
         List<String> logoutPageRedirectDomainList2 = new ArrayList<String>();
         logoutPageRedirectDomainList2.add("raleigh.ibm.com");
         assertFalse(processorDouble.isLogoutPageMatchDomainNameList(otherHostLogoutURL, "sparky.austin.ibm.com", logoutPageRedirectDomainList2));
+    }
+
+    /**
+     * Test URL validation with protocol patterns.
+     * Verifies rejection of URLs with protocol-like strings and acceptance of valid relative paths.
+     */
+    @Test
+    public void testVerifyLogoutURL_protocolPatternValidation() throws Exception {
+        final String invalidURL = "https%E5%98%BA//www.invalid.com";
+        final String validRelativeURL = "/logout.html";
+        
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getRequestURL();
+                will(returnValue(new StringBuffer("http://localhost:9080/snoop")));
+                allowing(req).getParameter("logoutExitPage");
+                will(returnValue(invalidURL));
+                allowing(wasc).getLogoutPageRedirectDomainList();
+                will(returnValue(null));
+            }
+        });
+
+        FormLogoutExtensionProcessor processorDouble = new FormLogoutExtensionProcessor(ctx, wasc, authApi);
+        
+        assertFalse(processorDouble.verifyLogoutURL(req, invalidURL));
+        assertTrue(processorDouble.verifyLogoutURL(req, validRelativeURL));
+    }
+
+    /**
+     * Test URL validation with various protocol schemes.
+     * Verifies proper handling of different protocol patterns.
+     */
+    @Test
+    public void testVerifyLogoutURL_variousProtocols() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getRequestURL();
+                will(returnValue(new StringBuffer("http://localhost:9080/snoop")));
+                allowing(req).getParameter("logoutExitPage");
+                allowing(wasc).getLogoutPageRedirectDomainList();
+                will(returnValue(null));
+            }
+        });
+
+        FormLogoutExtensionProcessor processorDouble = new FormLogoutExtensionProcessor(ctx, wasc, authApi);
+        
+        // Test different protocol patterns
+        assertFalse(processorDouble.verifyLogoutURL(req, "http://external.com"));
+        assertFalse(processorDouble.verifyLogoutURL(req, "https://external.com"));
+        assertFalse(processorDouble.verifyLogoutURL(req, "ftp://server.com"));
+        assertTrue(processorDouble.verifyLogoutURL(req, "/valid/path"));
+        assertTrue(processorDouble.verifyLogoutURL(req, "relative/path"));
+    }
+
+    /**
+     * Test URL validation with encoded characters.
+     * Verifies proper handling of URL encoding edge cases.
+     */
+    @Test
+    public void testVerifyLogoutURL_encodedCharacters() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getRequestURL();
+                will(returnValue(new StringBuffer("http://localhost:9080/snoop")));
+                allowing(req).getParameter("logoutExitPage");
+                allowing(wasc).getLogoutPageRedirectDomainList();
+                will(returnValue(null));
+            }
+        });
+
+        FormLogoutExtensionProcessor processorDouble = new FormLogoutExtensionProcessor(ctx, wasc, authApi);
+        
+        // Test URL encoding edge cases
+        assertFalse(processorDouble.verifyLogoutURL(req, "http%3A%2F%2Fsite.com"));
+        assertFalse(processorDouble.verifyLogoutURL(req, "https%XX//site.com"));
+        assertTrue(processorDouble.verifyLogoutURL(req, "/path%20with%20spaces"));
+        assertTrue(processorDouble.verifyLogoutURL(req, "/path%2Fwith%2Fencoded"));
+    }
+
+    /**
+     * Test URL validation with boundary conditions.
+     * Verifies proper handling of edge cases and null values.
+     */
+    @Test
+    public void testVerifyLogoutURL_boundaryConditions() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getRequestURL();
+                will(returnValue(new StringBuffer("http://localhost:9080/snoop")));
+                allowing(req).getParameter("logoutExitPage");
+                allowing(wasc).getLogoutPageRedirectDomainList();
+                will(returnValue(null));
+            }
+        });
+
+        FormLogoutExtensionProcessor processorDouble = new FormLogoutExtensionProcessor(ctx, wasc, authApi);
+        
+        // Test boundary conditions
+        assertTrue(processorDouble.verifyLogoutURL(req, ""));
+        assertTrue(processorDouble.verifyLogoutURL(req, "/"));
+        assertFalse(processorDouble.verifyLogoutURL(req, null));
+        assertTrue(processorDouble.verifyLogoutURL(req, "logout.jsp"));
+        assertTrue(processorDouble.verifyLogoutURL(req, "../logout"));
+    }
+
+    /**
+     * Test URL validation with mixed case protocol patterns.
+     * Verifies case-insensitive protocol detection.
+     */
+    @Test
+    public void testVerifyLogoutURL_mixedCaseProtocols() throws Exception {
+        mock.checking(new Expectations() {
+            {
+                allowing(req).getRequestURL();
+                will(returnValue(new StringBuffer("http://localhost:9080/snoop")));
+                allowing(req).getParameter("logoutExitPage");
+                allowing(wasc).getLogoutPageRedirectDomainList();
+                will(returnValue(null));
+            }
+        });
+
+        FormLogoutExtensionProcessor processorDouble = new FormLogoutExtensionProcessor(ctx, wasc, authApi);
+        
+        // Test case variations
+        assertFalse(processorDouble.verifyLogoutURL(req, "HTTP://site.com"));
+        assertFalse(processorDouble.verifyLogoutURL(req, "HTTPS://site.com"));
+        assertFalse(processorDouble.verifyLogoutURL(req, "HtTp://site.com"));
+        assertFalse(processorDouble.verifyLogoutURL(req, "FTP://site.com"));
+        assertTrue(processorDouble.verifyLogoutURL(req, "/HTTP/path"));
     }
 
 }

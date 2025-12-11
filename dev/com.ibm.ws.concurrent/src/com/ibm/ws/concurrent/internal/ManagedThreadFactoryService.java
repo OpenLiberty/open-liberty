@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2024 IBM Corporation and others.
+ * Copyright (c) 2013,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,6 @@ import com.ibm.ws.concurrent.cdi.MTFBeanResourceInfo;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
-import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -160,12 +159,19 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     private final ThreadGroupTracker threadGroupTracker;
 
     /**
-     * Factory that creates virtual threads if greater than Java 21
-     * or raises an error if configured to create virtual threads
-     * on less than Java 21.
-     * Null if not configured to create virtual threads.
+     * A factory that creates virtual threads if greater than Java 21 and this
+     * ManagedThreadFactory is configured to create virtual threads and its ability
+     * to create virtual threads is not overridden by the ThreadTypeOverride SPI.
+     * If configured to create virtual threads and less than Java 21, the thread
+     * factory raises an error when used.
+     * Null if less than Java 21 and not configured to create virtual threads.
      */
     private final ThreadFactory virtualThreadFactory;
+
+    /**
+     * OSGi service abstracting operations related to virtual threads.
+     */
+    private final VirtualThreadOps virtualThreadOps;
 
     /**
      * Metadata factory for the web container.
@@ -206,6 +212,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
         this.metadataIdentifierService = metadataSvc;
         this.threadGroupTracker = threadGroupTracker;
+        this.virtualThreadOps = virtualThreadOps;
 
         contextSvcRef.setReference(ref);
         contextSvcRef.activate(componentContext);
@@ -226,12 +233,19 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
         boolean virtual = Boolean.TRUE.equals(properties.get(VIRTUAL));
 
-        // TODO check the SPI to override virtual=true for CICS
-
         if (virtual)
-            if (JavaInfo.majorVersion() >= 21)
-                virtualThreadFactory = virtualThreadOps.createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":", 1L, false, null);
-            else
+            if (virtualThreadOps.isSupported()) // indicates Java 21+
+                if (virtualThreadOps.isVirtualThreadCreationEnabled()) {
+                    virtualThreadFactory = virtualThreadOps //
+                                    .createFactoryOfVirtualThreads(properties.get(CONFIG_ID) + ":",
+                                                                   1L,
+                                                                   false,
+                                                                   null);
+                } else {
+                    Tr.info(tc, "CWWKC1108.override.virtual", name);
+                    virtualThreadFactory = null;
+                }
+            else // prior to Java 21, attempts to use virtual threads raise an error
                 virtualThreadFactory = new VirtualThreadsUnsupported();
         else
             virtualThreadFactory = null;
@@ -347,8 +361,6 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                     accessor.beginContext(cData);
                     restoreMetadata = true;
                 }
-
-                // TODO look into a shortcut to avoid push/recapture and instead supply directly to the context service
             }
 
             if (appName == null) {
@@ -477,10 +489,13 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
 
             Thread thread;
             if (virtualThreadFactory == null) {
+                // new platform thread
                 String threadName = name + "-thread-" + createdThreadCount.incrementAndGet();
                 thread = new ManagedThreadImpl(this, runnable, threadName);
             } else {
-                thread = virtualThreadFactory.newThread(new ManagedVirtualThreadAction(this, runnable));
+                // new virtual thread
+                Runnable action = new ManagedVirtualThreadAction(this, runnable);
+                thread = virtualThreadFactory.newThread(action);
             }
 
             if (trace && tc.isEntryEnabled())
@@ -516,7 +531,7 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
     }
 
     /**
-     * Raises an error if the application requests a virtual threads.
+     * Raises an error if the application requests a virtual thread.
      */
     @Trivial
     private class VirtualThreadsUnsupported implements ThreadFactory {

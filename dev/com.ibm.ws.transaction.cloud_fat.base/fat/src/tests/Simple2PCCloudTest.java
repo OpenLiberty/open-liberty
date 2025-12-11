@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.ListIterator;
 
@@ -79,25 +80,6 @@ public class Simple2PCCloudTest extends CloudTestBase {
     }
 
     /**
-     * Test access to the Lease table.
-     *
-     * This is a readiness check to verify that resources are available and accessible.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testLeaseTableAccess() throws Exception {
-
-        serversToCleanup = new LibertyServer[] { server1 };
-        toleratedMsgs = new String[] { "CWWKE0701E" };
-
-        // Start Server1
-        FATUtils.startServers(server1);
-
-        runTest(server1, SERVLET_NAME, "testLeaseTableAccess");
-    }
-
-    /**
      * The purpose of this test is as a control to verify that single server recovery is working.
      *
      * The Cloud001 server is started and halted by a servlet that leaves an indoubt transaction.
@@ -109,7 +91,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testDBBaseRecovery() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         FATUtils.startServers(server1);
 
@@ -148,7 +130,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     @Test
     public void testDBRecoveryTakeover() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { server1, server2 };
+        serversToCleanup = Arrays.asList(server1, server2);
 
         FATUtils.startServers(server1);
 
@@ -161,6 +143,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
 
         // wait for 1st server to have gone away
         assertNotNull(server1.getServerName() + " did not crash", server1.waitForStringInTrace(XAResourceImpl.DUMP_STATE));
+        server1.resetStarted();
 
         server1.postStopServerArchive(); // must explicitly collect since crashed server
 
@@ -198,7 +181,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     public void testDBRecoveryCompeteForLogPeerPrecedence() throws Exception {
         final String method = "testDBRecoveryCompeteForLogPeerPrecedence";
 
-        serversToCleanup = new LibertyServer[] { peerPrecedenceServer1 };
+        serversToCleanup = Arrays.asList(peerPrecedenceServer1);
 
         // Start peerPrecedenceServer1
         FATUtils.startServers(peerPrecedenceServer1);
@@ -253,7 +236,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     // XAResources may need to be retried (tx recovery is, in such cases, working as designed.
     public void testDBRecoveryCompeteForLog() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { server1, longLeaseLengthServer1 };
+        serversToCleanup = Arrays.asList(server1, longLeaseLengthServer1);
         toleratedMsgs = new String[] { "CWWKE0701E" };
 
         // Start peerPrecedenceServer1
@@ -269,6 +252,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
         server1.postStopServerArchive(); // must explicitly collect since crashed server
         // Need to ensure we have a long (5 minute) timeout for the lease, otherwise we may decide that we CAN delete
         // and renew our own lease. longLeasLengthServer1 is a clone of server1 with a longer lease length.
+        server1.resetStarted();
 
         FATUtils.startServers(longLeaseLengthServer1);
 
@@ -282,7 +266,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     public void datasourceChangeTest() throws Exception {
         final String method = "datasourceChangeTest";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(server1);
@@ -328,7 +312,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     public void datasourceChangeTest2() throws Exception {
         final String method = "datasourceChangeTest2";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(server1);
@@ -393,7 +377,7 @@ public class Simple2PCCloudTest extends CloudTestBase {
     public void datasourceChangeTest3() throws Exception {
         final String method = "datasourceChangeTest2";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         // Start Server1
         FATUtils.startServers(server1);

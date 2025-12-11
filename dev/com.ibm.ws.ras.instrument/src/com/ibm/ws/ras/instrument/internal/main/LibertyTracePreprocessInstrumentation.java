@@ -77,6 +77,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
     public final static Type INJECTED_TRACE_TYPE = Type.getType(com.ibm.websphere.ras.annotation.InjectedTrace.class);
     public final static Type MANUAL_TRACE_TYPE = Type.getType(com.ibm.websphere.ras.annotation.ManualTrace.class);
     public final static Type TRACE_OBJECT_FIELD_TYPE = Type.getType(com.ibm.websphere.ras.annotation.TraceObjectField.class);
+    public final static Type IGNORE_NON_STATIC_TRACE_COMPONENT_TYPE = Type.getType(com.ibm.websphere.ras.annotation.IgnoreNonStaticTraceComponent.class);
 
     private boolean addFfdc = false;
     private boolean injectStatic = false;
@@ -257,7 +258,7 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
     /**
      * Introspect the class to obtain the list of fields declared as {@code com.ibm.websphere.ras.TraceComponent}s. Only static
      * declarations are considered.
-     * 
+     *
      * @param info the collected class information
      */
     private void processLibertyTraceComponentDiscovery(ClassTraceInfo info) {
@@ -267,13 +268,27 @@ public class LibertyTracePreprocessInstrumentation extends AbstractInstrumentati
             for (int i = traceComponentFields.size() - 1; i >= 0; i--) {
                 FieldNode fn = traceComponentFields.get(i);
                 if ((fn.access & Opcodes.ACC_STATIC) != Opcodes.ACC_STATIC) {
-                	// Trace Component fields found, but not static
+                	// Check if the field has the @IgnoreNonStaticTraceComponent annotation
+                    boolean hasIgnoreAnnotation = false;
+                    if (fn.visibleAnnotations != null) {
+                        for (AnnotationNode an : fn.visibleAnnotations) {
+                            if (IGNORE_NON_STATIC_TRACE_COMPONENT_TYPE.getDescriptor().equals(an.desc)) {
+                                hasIgnoreAnnotation = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Trace Component fields found, but not static
                     traceComponentFields.remove(i);
-                    StringBuilder sb = new StringBuilder();
-                    sb.append("WARNING: TraceComponent field declared but must be static in class: ");
-                    sb.append(info.classNode.name.replaceAll("/", "\\."));
-                    info.warnings.add(sb.toString());
-                    info.failInstrumentation = true;
+                    
+                    if (!hasIgnoreAnnotation) {
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("WARNING: TraceComponent field declared but must be static in class: ");
+                        sb.append(info.classNode.name.replaceAll("/", "\\."));
+                        info.warnings.add(sb.toString());
+                        info.failInstrumentation = true;
+                    }
                 }
             }
             if (traceComponentFields.size() > 1) {

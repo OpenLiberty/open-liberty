@@ -1,0 +1,50 @@
+<!--
+    Copyright (c) 2016 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server description="FAT for channel SSL - alternate SSLConfig">
+
+    <include location="../fatTestCommon.xml"/>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+    
+    <httpEndpoint id="defaultHttpEndpoint"
+          host="localhost"
+          httpPort="${bvt.prop.HTTP_default}"
+          httpsPort="${bvt.prop.HTTP_default.secure}" >
+          <tcpOptions soReuseAddr="true" portOpenRetries="60"/>
+          <sslOptions sslRef="testSSLConfig" />
+	</httpEndpoint> 
+
+     <ssl id="defaultSSLConfig"
+      keyStoreRef="defaultKeyStore"
+      trustStoreRef="defaultKeyStore"
+      serverKeyAlias="default" />
+
+     <ssl id="testSSLConfig"
+      keyStoreRef="defaultKeyStore"
+      trustStoreRef="alternateTrustStore"
+      serverKeyAlias="alternateCert" />
+
+	 <!-- inbound (HTTPS) keystore -->
+	 <keyStore id="defaultKeyStore" password="Liberty"
+	           location="${server.config.dir}/resources/security/sslOptions.jks" />
+	
+	 <keyStore id="defaultTrustStore" password="Liberty"
+	           location="${server.config.dir}/resources/security/trust.jks" />
+	           
+	 <keyStore id="alternateTrustStore" password="Liberty"
+	           location="${server.config.dir}/resources/security/optionsTrust.jks" />
+	
+    <application type="war" id="basicauth" name="basicauth"
+	             location="${server.config.dir}/apps/basicauth.war" />
+
+</server>

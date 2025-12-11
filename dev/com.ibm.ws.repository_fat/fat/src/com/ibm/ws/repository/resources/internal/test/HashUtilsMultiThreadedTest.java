@@ -24,14 +24,15 @@ import java.util.Hashtable;
 import org.junit.Test;
 
 import com.ibm.ws.repository.common.utils.internal.HashUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  *
  */
 public class HashUtilsMultiThreadedTest {
 
-    private static final String SHA256 = "SHA-256";
-    private static final String MD5 = "MD5";
+    private static final String SHA256 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+    private static final String MD5 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
 
     /**
      * Calculate the SHA256 hash of all files in a directory using multithreading

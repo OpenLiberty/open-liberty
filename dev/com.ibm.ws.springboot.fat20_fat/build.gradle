@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+addRequiredLibraries.dependsOn addDerby
+addRequiredLibraries.dependsOn copyJdbcDrivers
+addRequiredLibraries.dependsOn copyTestContainers
+
+configurations {
+  mq
+}
 
  dependencies {
   requiredLibs 'io.openliberty.springboot.test:io.openliberty.springboot.test.version15.app:1.0.0',
@@ -18,7 +25,7 @@
     'net.sourceforge.htmlunit:htmlunit:2.44.0',
     'net.sourceforge.htmlunit:neko-htmlunit:2.44.0',
     'net.sourceforge.htmlunit:webdriver:2.6',
-    'org.apache.commons:commons-lang3:3.14.0',
+    project(':com.ibm.ws.org.apache.commons.lang3'),
     'org.apache.httpcomponents:httpmime:4.3.1',
     'org.apache.tomcat.embed:tomcat-embed-websocket:8.5.23',
     'org.brotli:dec:0.1.2',
@@ -32,19 +39,40 @@
     'xml-apis:xml-apis:1.4.01',
     project(':com.ibm.ws.org.apache.commons.io'),
     project(':com.ibm.ws.org.apache.httpcomponents'),
+    project(':com.ibm.ws.org.apache.commons.lang3'),
     project(':io.openliberty.org.apache.commons.codec'),
     project(':io.openliberty.org.apache.xercesImpl')
+    mq 'com.ibm.mq:wmq.jmsra:9.4.2.0@rar'
 }
+
+task addMQ(type: Copy) {
+  shouldRunAfter jar
+  from configurations.mq
+  into new File(autoFvtDir, 'publish/shared/resources/mq')
+  rename 'wmq.*.rar', 'wmq.jmsra.rar'
+}
+
+addRequiredLibraries.dependsOn addMQ
 
 def appDefs =
   [ [ 'com.ibm.ws.springboot.fat20.app', '.jar' ],
     [ 'com.ibm.ws.springboot.fat20.war.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.http.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.http.contextroot.app', '.war' ],
     [ 'com.ibm.ws.springboot.fat20.java.app', '.jar' ],
     [ 'com.ibm.ws.springboot.fat20.webanno.app', '.jar' ],
     [ 'com.ibm.ws.springboot.fat20.websocket.app', '.jar' ],
     [ 'com.ibm.ws.springboot.fat20.actuator.app', '.jar' ],
     [ 'com.ibm.ws.springboot.fat20.webflux.app', '.jar' ],
-    [ 'com.ibm.ws.springboot.fat20.multicontext.app', '.jar' ] ]
+    [ 'com.ibm.ws.springboot.fat20.multicontext.app', '.jar' ],
+    [ 'com.ibm.ws.springboot.fat20.transactions.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.programmatic.trans.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.jms.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.data.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.concurrency.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.validation.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.aop.app', '.war' ],
+    [ 'com.ibm.ws.springboot.fat20.mbean.app', '.war' ]]
 
 autoFVT.dependsOn ':wlp.lib.extract:build'
 appDefs.each { appDef ->

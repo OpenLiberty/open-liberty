@@ -37,7 +37,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_Default_authnSessionDisabled_Default,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_Default_authnSessionDisabled_True,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_Default_authnSessionDisabled_False,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_True_authnSessionDisabled_Default,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_True_authnSessionDisabled_True,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_True_authnSessionDisabled_False,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_False_authnSessionDisabled_Default,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_False_authnSessionDisabled_True,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/disableLTPACookie_False_authnSessionDisabled_False"
 				scope="ALL_SCOPES"
@@ -45,7 +45,7 @@
 				introspectTokens="true" />
 			<client
 				name="client02"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client02"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/client_inboundPropNone_client02"
 				scope="ALL_SCOPES"
@@ -53,7 +53,7 @@
 				introspectTokens="true" />
 			<client
 				name="client03"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client03"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -61,7 +61,7 @@
 				introspectTokens="true" />
 			<client
 				name="client04"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client04"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"
@@ -69,7 +69,7 @@
 				introspectTokens="true" />
 			<client
 				name="client05"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client05"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				scope="ALL_SCOPES"
@@ -77,7 +77,7 @@
 				introspectTokens="true" />
 			<client
 				name="clientDisabled"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="clientDisabled"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/authorize_redirect.jsp"
 				scope="ALL_SCOPES"
@@ -85,7 +85,7 @@
 				introspectTokens="true" />
 			<client
 				name="clientNoIntrospect"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="clientNoIntrospect"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp"
 				scope="ALL_SCOPES"

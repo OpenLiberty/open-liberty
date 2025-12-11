@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsat.service.impl;
+
+import java.util.HashSet;
 
 import javax.xml.bind.JAXBElement;
 
@@ -51,12 +53,21 @@ public class ProtocolImpl {
 
     private EndpointReferenceType coordinatorEndpoint;
     private EndpointReferenceType participantEndpoint;
+    private static boolean reroutable = false;
 
     private static String recoveryId;
+
+    // Participants in transactions we never logged but we received prepared messages from and we told to rollback
+    private final HashSet<WSATParticipant> replayers = new HashSet<WSATParticipant>();
 
     public static ProtocolImpl getInstance() {
         if (recoveryId == null) {
             recoveryId = tranService.getRecoveryId();
+        }
+
+        reroutable = recoveryId != null && !recoveryId.isEmpty();
+        if (TC.isDebugEnabled()) {
+            Tr.debug(TC, "recoveryId={0}, reroutable={1}", recoveryId, reroutable);
         }
         return INSTANCE;
     }
@@ -125,6 +136,19 @@ public class ProtocolImpl {
         return eprCopy;
     }
 
+    private boolean needToReroute(ProtocolServiceWrapper wrapper) {
+        if (recoveryId == null || recoveryId.isEmpty())
+            return false;
+
+        if (recoveryId.equals(wrapper.getRecoveryID()))
+            return false;
+
+        if (tranService.getRecoveryIds().contains(wrapper.getRecoveryID()))
+            return false;
+
+        return true;
+    }
+
     /*
      * Participant services. These services are invoked by the coordinator
      * during 2PC. We need to invoke the appropriate method on our local
@@ -145,7 +169,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "prepare: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.PREPARE);
             return;
         } else {
@@ -238,7 +262,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "commit: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.COMMIT);
             return;
         }
@@ -273,7 +297,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "rollback: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectParticipant(wrapper, WSATParticipantState.ROLLBACK);
             return;
         }
@@ -308,6 +332,8 @@ public class ProtocolImpl {
 
         WebClient client = WebClient.getWebClient(part, coord);
         client.rollback();
+        replayers.add(part);
+        part.waitResponse(WSATConfigServiceImpl.getInstance().getAsyncResponseTimeout(), WSATParticipantState.ABORTED);
     }
 
     private void participantResponse(WSATTransaction tran, String globalId, EndpointReferenceType fromEpr, WSATParticipantState response) throws WSATException {
@@ -352,11 +378,11 @@ public class ProtocolImpl {
             Tr.debug(TC, "prepared: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.PREPARED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
-            if (participant != null) {
+            if (participant != null && participant.getState() == WSATParticipantState.PREPARE) {
                 participant.setResponse(WSATParticipantState.PREPARED);
             } else {
                 // During participant recovery we might receive an unexpected 'prepared' if the participant
@@ -382,7 +408,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "readOnly: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.READONLY);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
@@ -432,7 +458,7 @@ public class ProtocolImpl {
 
         WSATCoordinator coord = new WSATCoordinator(globalId, toEpr);
 
-        WebClient webClient = WebClient.getWebClient(coord, null);
+        final WebClient webClient = WebClient.getWebClient(coord, new WSATParticipant(globalId, wrapper.getPartID(), wrapper.getReplyTo()));
         webClient.setMisrouting(false);
 
         switch (messageType) {
@@ -455,12 +481,30 @@ public class ProtocolImpl {
             Tr.debug(TC, "aborted: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.ABORTED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());
             if (participant != null) {
                 participant.setResponse(WSATParticipantState.ABORTED);
+            } else {
+                // Response to a replay completion
+                if (TC.isDebugEnabled()) {
+                    Tr.debug(TC, "Response to replay completion for: {0}", wrapper.getTxID());
+                }
+                for (WSATParticipant part : replayers) {
+                    if (wrapper.getTxID().equals(part.getGlobalId()) && wrapper.getPartID().equals(part.getId())) {
+                        if (TC.isDebugEnabled()) {
+                            Tr.debug(TC, "Found a waiting thread");
+                        }
+                        participant = part;
+                        break;
+                    }
+                }
+                if (null != participant) {
+                    participant.setResponse(WSATParticipantState.ABORTED);
+                    replayers.remove(participant);
+                }
             }
         }
     }
@@ -470,7 +514,7 @@ public class ProtocolImpl {
             Tr.debug(TC, "committed: recoveryId={0}, incoming={1}", recoveryId, wrapper.getRecoveryID());
         }
 
-        if (recoveryId != null && wrapper.getRecoveryID() != null && !recoveryId.equals(wrapper.getRecoveryID())) {
+        if (needToReroute(wrapper)) {
             rerouteToCorrectCoordinator(wrapper, WSATParticipantState.COMMITTED);
         } else {
             WSATParticipant participant = findParticipant(wrapper.getTxID(), wrapper.getPartID());

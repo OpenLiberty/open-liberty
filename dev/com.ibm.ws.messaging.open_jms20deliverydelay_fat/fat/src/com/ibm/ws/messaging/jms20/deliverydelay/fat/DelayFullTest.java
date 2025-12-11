@@ -311,44 +311,52 @@ public class DelayFullTest {
         restartServers();
     }
 
+    // Tests that test the persistence of delivery delay messages over a server restart
+    // Each test calls a sender method in the servlet that sends 2 message, 1 persistent and 1 nonpersistent.
+    // Then the servers are restarted and the servlet is called to attempt to receive the messages.
+    // Where possible, these are amalgamated to call multiple sender and the associated receiver methods around a single server restart to reduce the number of restarts that are needed.
+    // Note: for now the ptp messages are checked first, and if a failure is detected, the test fails at this point before the pub/sub results are checked. This could be improved later to check all the results and potentially give a richer response.
+
+    // Simplified API tests
     @Test
     public void testPersistentMessageStore_B() throws Exception {
+    	
+    	// Send PtP messages
         runInServlet("testPersistentMessage");
-
-        restartServers();
-
-        boolean testResult = runInServlet("testPersistentMessageReceive");
-        assertTrue("testPersistentMessageStore_B failed", testResult);
-    }
-
-    @Test
-    public void testPersistentMessageStore_Tcp() throws Exception {
-        runInServlet("testPersistentMessage_Tcp");
-
-        restartServers();
-
-        boolean testResult = runInServlet("testPersistentMessageReceive_Tcp");
-        assertTrue("testPersistentMessageStore_Tcp failed", testResult);
-    }
-
-    @Test
-    public void testPersistentMessageStoreTopic_B() throws Exception {
+        
+        // Send pub/sub messages
         runInServlet("testPersistentMessageTopic");
 
         restartServers();
 
-        boolean testResult = runInServlet("testPersistentMessageReceiveTopic");
-        assertTrue("testPersistentMessageStoreTopic_B failed", testResult);
+        // Receive ptp messages
+        boolean ptpTestResult = runInServlet("testPersistentMessageReceive");
+        assertTrue("testPersistentMessageStore_B failed", ptpTestResult);
+        
+        // Receive pubsub messages
+        boolean pubsubTestResult = runInServlet("testPersistentMessageReceiveTopic");
+        assertTrue("testPersistentMessageStoreTopic_B failed", pubsubTestResult);
     }
 
+
     @Test
-    public void testPersistentMessageStoreTopic_Tcp() throws Exception {
+    public void testPersistentMessageStore_Tcp() throws Exception {
+    	
+    	// Send PtP messages
+        runInServlet("testPersistentMessage_Tcp");
+
+        // Send pub/sub messages
         runInServlet("testPersistentMessageTopic_Tcp");
 
         restartServers();
 
-        boolean testResult = runInServlet("testPersistentMessageReceiveTopic_Tcp");
-        assertTrue("testPersistentMessageStoreTopic_B failed", testResult);
+        // Receive ptp messages
+        boolean ptpTestResult = runInServlet("testPersistentMessageReceive_Tcp");
+        assertTrue("testPersistentMessageStore_Tcp failed", ptpTestResult);
+        
+        // Receive pubsub messages
+        boolean pubsubTestResult = runInServlet("testPersistentMessageReceiveTopic_Tcp");
+        assertTrue("testPersistentMessageStoreTopic_B failed", pubsubTestResult);
     }
 
 

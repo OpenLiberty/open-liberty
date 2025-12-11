@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2014, 2015 IBM Corporation and others.
+# Copyright (c) 2014, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Assicurarsi che il livello
 
 # Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
 # -------------------------------------------------------------------------------------------------
-NO_USER_REGISTRY=CWWKS9660E: L''elemento orb con l''attributo id {0} richiede un registro utente, ma non \u00e8 diventato disponibile alcun registro utente entro {1} secondi.   Di conseguenza, non verr\u00e0 avviata alcuna applicazione. Verificare che sia stato configurato un registro utente appropriato nel file server.xml.
+NO_USER_REGISTRY=CWWKS9660E: L''elemento orb con l''attributo id {0} richiede un registro utente, ma non \u00e8 diventato disponibile alcun registro utente entro {1} secondi. Di conseguenza, non verr\u00e0 avviata alcuna applicazione. Verificare che sia stato configurato un registro utente appropriato nel file server.xml. Per gli ambienti che utilizzano componenti basati su ORB, come le applicazioni EJB, \u00e8 necessario definire un registro utenti. Se questi componenti non sono in uso, questo messaggio pu\u00f2 essere tranquillamente ignorato.
 NO_USER_REGISTRY.explanation=Non \u00e8 stata avviata alcuna applicazione perch\u00e9 un ORB (Object Request Broker) protetto su un server richiede un registro utente, ma non \u00e8 stato trovato alcun registro utente. Dopo aver configurato un registro utente appropriato, le applicazioni verranno avviate.
 NO_USER_REGISTRY.useraction=Verificare che sia stato configurato un registro utente appropriato per il proprio ambiente.
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,10 +16,10 @@ repositories {
     if (isUsingArtifactory) {
         maven {
             credentials {
-                username userProps.getProperty("artifactory.download.user")
-                password userProps.getProperty("artifactory.download.token")
+                username = userProps.getProperty("artifactory.download.user")
+                password = userProps.getProperty("artifactory.download.token")
             }
-            url ("https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            url = "https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty"
             metadataSources {
                 mavenPom()
                 artifact()
@@ -27,7 +27,7 @@ repositories {
         }
     } else {
         maven {
-            url ("https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/")
+            url = "https://public.dhe.ibm.com/ibmdl/export/pub/software/olrepo/"
             metadataSources {
                 mavenPom()
                 artifact()
@@ -57,7 +57,7 @@ dependencies {
     library "com.fasterxml.jackson.core:jackson-core:2.15.2"
     library "com.fasterxml.jackson.core:jackson-databind:2.15.2"
     library "com.google.javascript:closure-compiler:v20160315"
-    library "com.github.mwiede:jsch:0.2.18"
+    library "com.github.mwiede:jsch:2.27.0"
     library "com.sun.xml.bind:jaxb-impl:2.3.9"
     library "commons-beanutils:commons-beanutils:1.9.2"
     library "commons-collections:commons-collections:3.2.1"
@@ -86,10 +86,10 @@ dependencies {
     library "org.webjars:bootstrap:5.1.3"
     library "org.webjars.npm:svg4everybody:2.1.9"
     library "org.webjars.npm:d3:3.5.10"
-    library "org.eclipse.che.lib:che-orion-editor:6.19.0"
-    library "idx:idx:1.5.2.6@zip"
+    library "org.eclipse.che.lib:che-orion-editor:6.19.0-20250520"
+    library "idx:idx:1.5.2.6_2@zip"
     library "manekinekko:dojo-doh-junit-report:master@zip"
-    library "org.dojotoolkit:dojo:1.12.11@zip"
+    library "org.dojotoolkit:dojo:1.13.10@zip"
     library "org.webjars:gridx:1.3.9@zip"
     library "closure-externs:externs-jquery-3.2:1.0.0"
     library "rave:rave:1.8.0.12@zip"
@@ -112,7 +112,7 @@ def dependencyToPath = [
   "com.fasterxml.jackson.core:jackson-annotations:2.15.2": "lib/buildtasks/jackson-annotations-2.15.2.jar",
   "com.fasterxml.jackson.core:jackson-core:2.15.2": "lib/buildtasks/jackson-core-2.15.2.jar",
   "com.fasterxml.jackson.core:jackson-databind:2.15.2": "lib/buildtasks/jackson-databind-2.15.2.jar",
-  "com.github.mwiede:jsch:0.2.18": "lib/buildtasks/jsch-0.2.18.jar",
+  "com.github.mwiede:jsch:2.27.0": "lib/buildtasks/jsch-2.27.0.jar",
   "com.sun.xml.bind:jaxb-impl:2.3.9": "lib/buildtasks/jaxb-impl-2.3.9.jar",
   "javax.xml.bind:activation:1.0.2": "lib/buildtasks/jaxb-activation.jar",
   "javax.xml.bind:jaxb-api:2.3.0": "lib/buildtasks/jaxb-api-2.3.0.jar",
@@ -137,8 +137,8 @@ def dependencyToPath = [
   "xerces:xercesImpl:2.12.2": "lib/cssValidator/lib/xercesImpl-2.12.2.jar",
   "xml-apis:xml-apis:1.4.01": "lib/cssValidator/lib/xml-apis-1.4.01.jar",
   "css-validator:css-validator:1.0.0": "lib/cssValidator/css-validator.jar",
-  "idx:idx:1.5.2.6": "lib/dojo/idx-1.5.2.6.zip",
-  "org.dojotoolkit:dojo:1.12.11": "lib/dojo/dojo-1.12.11.zip",
+  "idx:idx:1.5.2.6_2": "lib/dojo/idx-1.5.2.6_2.zip",
+  "org.dojotoolkit:dojo:1.13.10": "lib/dojo/dojo-1.13.10.zip",
   "org.webjars:gridx:1.3.9": "lib/dojo/gridx-1.3.9.zip",
   "rave:rave:1.8.0.12": "lib/dojo/rave-1.8.0.12.zip",
   "manekinekko:dojo-doh-junit-report:master": "lib/dojo-doh-junit-report/dojo-doh-junit-report-master.zip",
@@ -159,7 +159,7 @@ def dependencyToPath = [
   "org.webjars:bootstrap:5.1.3": "lib/bootstrap/bootstrap-5.1.3.jar",
   "org.webjars.npm:svg4everybody:2.1.9": "lib/svg4everybody/svg4everybody-2.1.9.jar",
   "org.webjars.npm:d3:3.5.10": "lib/d3/d3-3.5.10.jar",
-  "org.eclipse.che.lib:che-orion-editor:6.19.0": "lib/orion/che-orion-editor-6.19.0.jar"
+  "org.eclipse.che.lib:che-orion-editor:6.19.0-20250520": "lib/orion/che-orion-editor-6.19.0-20250520.jar"
 ]
 
 def copyDependency(File file, Map dependencyToPath) {
@@ -175,7 +175,9 @@ def copyDependency(File file, Map dependencyToPath) {
             from file
             into path
             rename '.*', name
-            fileMode = Integer.parseInt('755', 8)
+            filePermissions {
+                unix(Integer.parseInt('755', 8))
+            }
         }
     } catch (Exception e) {
         String gav = "${groupDir.getName()}:${nameDir.getName()}:${versionDir.getName()}"

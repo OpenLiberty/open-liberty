@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017,2020 IBM Corporation and others.
+# Copyright (c) 2017,2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -42,6 +42,7 @@ fat.project: true
 	org.brotli:dec;version=0.1.2,\
 	net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
 	xml-apis:xml-apis;version=1.4.01,\
-    io.openliberty.org.apache.commons.logging;version=latest,\
-    io.openliberty.org.apache.commons.codec;version=latest,\
-	io.openliberty.org.apache.xercesImpl;version=latest
+	io.openliberty.org.apache.commons.logging;version=latest,\
+	io.openliberty.org.apache.commons.codec;version=latest,\
+	io.openliberty.org.apache.xercesImpl;version=latest,\
+	com.ibm.ws.org.apache.commons.lang3;version=latest

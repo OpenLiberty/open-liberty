@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2006 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,24 +14,16 @@
 package com.ibm.json.java;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
-import java.io.InputStreamReader;
-import java.io.InputStream;
-import java.io.Writer;
-import java.io.OutputStreamWriter;
-import java.io.OutputStream;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import com.ibm.json.java.internal.Parser;
-import com.ibm.json.java.internal.Serializer;
-import com.ibm.json.java.internal.SerializerVerbose;
 
 /**
  * Extension of the basic JSONObject.  This class allows control of the serialization order of attributes.  
@@ -92,7 +84,7 @@ public class OrderedJSONObject extends JSONObject
         InputStreamReader isr = null;
         try
         {
-            isr = new InputStreamReader(is, "UTF-8");
+            isr = new InputStreamReader(is, StandardCharsets.UTF_8);
         }
         catch (Exception ex)
         {

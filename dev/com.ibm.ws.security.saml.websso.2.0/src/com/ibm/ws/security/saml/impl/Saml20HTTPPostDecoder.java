@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,14 +15,13 @@ package com.ibm.ws.security.saml.impl;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.opensaml.messaging.context.MessageContext;
 import org.opensaml.messaging.decoder.MessageDecodingException;
 import org.opensaml.saml.saml2.binding.decoding.impl.HTTPPostDecoder;
-
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -55,12 +54,7 @@ public class Saml20HTTPPostDecoder extends HTTPPostDecoder {
                     byte[] bytes = new byte[iAvailable];
                     byteStream.read(bytes, 0, iAvailable);
                     byteStream.reset();
-                    try {
-                        Tr.debug(tc, "decoded saml response:" + new String(bytes, "UTF-8"));
-                    } catch (UnsupportedEncodingException e) {
-                        // ignore it
-                        Tr.debug(tc, "decoded saml response failed to converted to a String:" + e);
-                    }
+                    Tr.debug(tc, "decoded saml response:" + new String(bytes, StandardCharsets.UTF_8));
                 } else {
                     Tr.debug(tc, "decoded saml response has bytes count:" + iAvailable);
                 }

@@ -16,29 +16,22 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiPredicate;
 
-import org.eclipse.microprofile.config.Config;
 import org.eclipse.microprofile.openapi.OASFactory;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
-import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.service.util.ServiceCaller;
 
-import io.openliberty.microprofile.openapi20.internal.services.OpenAPIModelOperations;
-import io.smallrye.openapi.runtime.OpenApiRuntimeException;
 import io.smallrye.openapi.runtime.io.Format;
 import io.smallrye.openapi.runtime.io.OpenApiSerializer;
 
 public class OpenAPIUtils {
     private static final TraceComponent tc = Tr.register(OpenAPIUtils.class);
-    private static final ServiceCaller<OpenAPIModelOperations> modelOpsService = new ServiceCaller<>(OpenAPIUtils.class, OpenAPIModelOperations.class);
 
     /**
      * The getSerializedJsonDocument method is generates an OpenAPI document from the specified model in the specified
@@ -144,29 +137,6 @@ public class OpenAPIUtils {
 
     private OpenAPIUtils() {
         // This class is not meant to be instantiated.
-    }
-
-    public static Info getConfiguredInfo(Config config) {
-        Optional<String> infoJson = config.getOptionalValue(Constants.MERGE_INFO_CONFIG, String.class);
-        if (!infoJson.isPresent()) {
-            return null;
-        }
-
-        return modelOpsService.run(modelOps -> {
-            try {
-                Info info = modelOps.parseInfo(infoJson.get());
-                if (info.getTitle() != null && info.getVersion() != null) {
-                    return info;
-                } else {
-                    Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_INVALID_CWWKO1664W, Constants.MERGE_INFO_CONFIG, infoJson.get());
-                    return null;
-                }
-            } catch (OpenApiRuntimeException ex) {
-                // Note: No auto-FFDC generated here because we're in a lambda
-                Tr.warning(tc, MessageConstants.OPENAPI_MERGE_INFO_PARSE_ERROR_CWWKO1665W, Constants.MERGE_INFO_CONFIG, infoJson.get(), ex.toString());
-                return null;
-            }
-        }).orElse(null);
     }
 
     /**

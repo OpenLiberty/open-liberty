@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,14 +11,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-task copyBundles {
-  dependsOn jar
-  doLast {
-    copy {
-      from new File(project(':com.ibm.ws.logging_fat').buildDir, 'logservice.tester.jar')
-      into new File(autoFvtDir, 'publish/bundles')
-    }
-  }
+task copyBundles(type: Copy) {
+  dependsOn ':com.ibm.ws.logging_fat:jar'
+  from new File(project(':com.ibm.ws.logging_fat').buildDir, 'logservice.tester.jar')
+  into new File(autoFvtDir, 'publish/bundles')
 }
 
 addRequiredLibraries {

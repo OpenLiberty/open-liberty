@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,16 +24,15 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.authorization.jacc.provider.PolicyFactoryImpl;
+import com.ibm.ws.security.authorization.jacc.provider.JaccPolicyProxy;
 import com.ibm.ws.security.authorization.jacc.role.FileRoleMapping;
 import com.ibm.wsspi.security.authorization.jacc.ProviderService;
 
+import jakarta.security.jacc.Policy;
 import jakarta.security.jacc.PolicyConfigurationFactory;
-import jakarta.security.jacc.PolicyFactory;
 
 @Component(service = ProviderService.class, immediate = true, name = "com.ibm.ws.security.authorization.jacc.provider", configurationPolicy = ConfigurationPolicy.OPTIONAL, property = { "service.vendor=IBM",
                                                                                                                                                                                          //                        "RequestMethodArgumentsRequired=true",
-                                                                                                                                                                                         "jakarta.security.jacc.PolicyFactory.provider=com.ibm.ws.security.authorization.jacc.provider.PolicyFactoryImpl",
                                                                                                                                                                                          "jakarta.security.jacc.PolicyConfigurationFactory.provider=com.ibm.ws.security.authorization.jacc.provider.WSPolicyConfigurationFactoryImpl"
 })
 public class ProviderServiceImpl implements ProviderService {
@@ -42,8 +41,6 @@ public class ProviderServiceImpl implements ProviderService {
     private static final String JACC_FACTORY = PolicyConfigurationFactory.FACTORY_NAME;
     private static final String JACC_FACTORY_IMPL = "com.ibm.ws.security.authorization.jacc.provider.WSPolicyConfigurationFactoryImpl";
 
-    private static final String JACC_POLICY_FACTORY_PROVIDER = PolicyFactory.FACTORY_NAME;
-    private static final String JACC_POLICY_FACTORY_PROVIDER_IMPL = "com.ibm.ws.security.authorization.jacc.provider.PolicyFactoryImpl";
     private static final String CFG_ROLE_MAPPING_FILE = "roleMappingFile";
 
     public ProviderServiceImpl() {
@@ -66,11 +63,8 @@ public class ProviderServiceImpl implements ProviderService {
 
     /** {@inheritDoc} */
     @Override
-    public PolicyFactory getPolicyFactory() {
-        if (System.getProperty(JACC_POLICY_FACTORY_PROVIDER) == null) {
-            System.setProperty(JACC_POLICY_FACTORY_PROVIDER, JACC_POLICY_FACTORY_PROVIDER_IMPL);
-        }
-        return new PolicyFactoryImpl();
+    public Policy getPolicy(String contextId) {
+        return new JaccPolicyProxy(contextId);
     }
 
     /** {@inheritDoc} */

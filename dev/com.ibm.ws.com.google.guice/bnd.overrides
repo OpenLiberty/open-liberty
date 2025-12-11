@@ -26,5 +26,5 @@ Import-Package: \
   *
 
 Include-Resource: \
- @${repo;com.google.inject:guice;2.0}!/LICENSE,\
- @${repo;com.google.inject:guice;2.0}!/NOTICE
+ @\${repo;com.google.inject:guice;2.0}!/LICENSE,\
+ @\${repo;com.google.inject:guice;2.0}!/NOTICE

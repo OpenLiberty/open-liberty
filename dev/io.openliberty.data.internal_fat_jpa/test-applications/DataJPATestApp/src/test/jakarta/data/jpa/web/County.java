@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,10 +10,11 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Version;
@@ -23,16 +24,18 @@ import jakarta.persistence.Version;
  */
 @Entity
 public class County {
+    @Column(length = 1024)
     public Set<CityId> cities;
 
     @Version
-    public Timestamp lastUpdated;
+    public LocalDateTime lastUpdated;
 
     @Id
     public String name;
 
     public int population;
 
+    @Column(length = 512)
     public int[] zipcodes;
 
     public County() {

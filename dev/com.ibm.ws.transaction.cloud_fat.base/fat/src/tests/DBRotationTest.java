@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,15 +38,17 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 @RunWith(FATRunner.class)
-@AllowedFFDC(value = { "javax.resource.spi.ResourceAllocationException", "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
+@AllowedFFDC(value = { "com.microsoft.sqlserver.jdbc.SQLServerException", "javax.resource.spi.ResourceAllocationException",
+                       "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
 public class DBRotationTest extends CloudFATServletClient {
     private static final Class<?> c = DBRotationTest.class;
 
     protected static final int cloud2ServerPort = Integer.parseInt(System.getProperty("HTTP_secondary"));
-    protected static final int longLeaseServerPortB = 9993;
-    protected static final int longLeaseServerPortC = 9994;
+    protected static final int longLeaseServerPortB = Integer.parseInt(System.getProperty("HTTP_tertiary"));;
+    protected static final int longLeaseServerPortC = Integer.parseInt(System.getProperty("HTTP_quaternary"));;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001")
     public static LibertyServer s1;
@@ -65,9 +67,6 @@ public class DBRotationTest extends CloudFATServletClient {
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.shortlease")
     public static LibertyServer shortLeaseServer1;
-
-    @Server("com.ibm.ws.transaction_ANYDBCLOUD002.shortlease")
-    public static LibertyServer shortLeaseServer2;
 
     @Server("com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup")
     public static LibertyServer noRecoveryGroupServer1;
@@ -100,7 +99,6 @@ public class DBRotationTest extends CloudFATServletClient {
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.noShutdown",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.shortlease",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.norecoverygroup",
-                                                        "com.ibm.ws.transaction_ANYDBCLOUD002.shortlease",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD002.fastcheck",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.longleaseA",
                                                         "com.ibm.ws.transaction_ANYDBCLOUD001.longleaseB",
@@ -130,15 +128,11 @@ public class DBRotationTest extends CloudFATServletClient {
         ShrinkHelper.exportAppToServer(server2, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseCompeteServer1, app, dO);
         ShrinkHelper.exportAppToServer(shortLeaseServer1, app, dO);
-        ShrinkHelper.exportAppToServer(shortLeaseServer2, app, dO);
         ShrinkHelper.exportAppToServer(noRecoveryGroupServer1, app, dO);
         ShrinkHelper.exportAppToServer(peerPrecedenceServer1, app, dO);
         ShrinkHelper.exportAppToServer(longLeaseLogFailServer1, app, dO);
         ShrinkHelper.exportAppToServer(noShutdownServer1, app, dO);
         ShrinkHelper.exportAppToServer(server2nopeerlocking, app, dO);
-        ShrinkHelper.exportAppToServer(longLeaseServerA, app, dO);
-        ShrinkHelper.exportAppToServer(longLeaseServerB, app, dO);
-        ShrinkHelper.exportAppToServer(longLeaseServerC, app, dO);
     }
 
     public static void setUp(LibertyServer server) throws Exception {
@@ -147,16 +141,9 @@ public class DBRotationTest extends CloudFATServletClient {
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());
 
         //Setup server DataSource properties
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
+        DatabaseContainerUtil.build(server, testContainer).withDatabaseProperties().modify();
 
         server.setServerStartTimeout(FATUtils.LOG_SEARCH_TIMEOUT);
-    }
-
-    @AfterClass
-    public static void teardown() throws Exception {
-        if (!isDerby()) {
-            dropTables();
-        }
     }
 
     /**
@@ -168,17 +155,12 @@ public class DBRotationTest extends CloudFATServletClient {
      */
     @Test
     public void testLeaseTableAccess() throws Exception {
-        final String method = "testLeaseTableAccess";
-        StringBuilder sb = null;
-        String id = "001";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         FATUtils.startServers(_runner, server1);
 
-        sb = runTestWithResponse(server1, SERVLET_NAME, "testLeaseTableAccess");
-
-        Log.info(c, method, "testLeaseTableAccess" + id + " returned: " + sb);
+        runTest(server1, SERVLET_NAME, "testLeaseTableAccess");
     }
 
     /**
@@ -194,7 +176,7 @@ public class DBRotationTest extends CloudFATServletClient {
     public void testDBBaseRecovery() throws Exception {
         String id = "001";
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         FATUtils.startServers(_runner, server1);
         try {
@@ -234,7 +216,7 @@ public class DBRotationTest extends CloudFATServletClient {
     @AllowedFFDC(value = { "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" })
     public void testDBRecoveryTakeover() throws Exception {
         String id = "001";
-        serversToCleanup = new LibertyServer[] { server1, server2 };
+        serversToCleanup = Arrays.asList(server1, server2);
 
         FATUtils.startServers(_runner, server1);
         try {
@@ -245,6 +227,9 @@ public class DBRotationTest extends CloudFATServletClient {
         }
 
         assertNotNull(server1.getServerName() + " didn't crash properly", server1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+
+        // server1 is down. This will stop an attempt to stop it again after test completion.
+        server1.resetStarted();
 
         // Now start server2
         server2.setHttpDefaultPort(cloud2ServerPort);
@@ -284,7 +269,7 @@ public class DBRotationTest extends CloudFATServletClient {
         final String method = "testDBRecoveryCompeteForLogPeerPrecedence";
         String id = "001";
 
-        serversToCleanup = new LibertyServer[] { peerPrecedenceServer1, server2 };
+        serversToCleanup = Arrays.asList(peerPrecedenceServer1, server2);
 
         FATUtils.startServers(_runner, peerPrecedenceServer1);
         try {
@@ -351,7 +336,7 @@ public class DBRotationTest extends CloudFATServletClient {
 
         String id = "001";
 
-        serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1 };
+        serversToCleanup = Arrays.asList(longLeaseCompeteServer1);
 
         FATUtils.startServers(_runner, longLeaseCompeteServer1);
         try {
@@ -382,7 +367,7 @@ public class DBRotationTest extends CloudFATServletClient {
     public void testLogFailure() throws Exception {
 
         if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
-            serversToCleanup = new LibertyServer[] { longLeaseLogFailServer1, server2nopeerlocking };
+            serversToCleanup = Arrays.asList(longLeaseLogFailServer1, server2nopeerlocking);
 
             longLeaseLogFailServer1.setFFDCChecking(false);
             server2nopeerlocking.setHttpDefaultPort(cloud2ServerPort);
@@ -404,6 +389,7 @@ public class DBRotationTest extends CloudFATServletClient {
 
             // Check that server1 is dead
             assertNotNull(longLeaseLogFailServer1.getServerName() + " did not shutdown", longLeaseLogFailServer1.waitForStringInLog("CWWKE0036I", FATUtils.LOG_SEARCH_TIMEOUT));
+            longLeaseLogFailServer1.resetStarted();
         }
     }
 
@@ -411,7 +397,7 @@ public class DBRotationTest extends CloudFATServletClient {
     public void testLogFailureNoShutdown() throws Exception {
 
         if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
-            serversToCleanup = new LibertyServer[] { noShutdownServer1, server2nopeerlocking };
+            serversToCleanup = Arrays.asList(noShutdownServer1, server2nopeerlocking);
 
             noShutdownServer1.setFFDCChecking(false);
             server2nopeerlocking.setHttpDefaultPort(cloud2ServerPort);
@@ -436,7 +422,7 @@ public class DBRotationTest extends CloudFATServletClient {
     @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" })
     public void testBackwardCompatibility() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         FATUtils.startServers(_runner, server1);
 
@@ -457,7 +443,7 @@ public class DBRotationTest extends CloudFATServletClient {
     @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException" })
     public void testLeaseIndexBackwardCompatibility() throws Exception {
 
-        serversToCleanup = new LibertyServer[] { noRecoveryGroupServer1, shortLeaseServer1 };
+        serversToCleanup = Arrays.asList(noRecoveryGroupServer1, shortLeaseServer1);
 
         FATUtils.startServers(_runner, noRecoveryGroupServer1);
 
@@ -473,29 +459,62 @@ public class DBRotationTest extends CloudFATServletClient {
     }
 
     @Test
-    @AllowedFFDC(value = { "javax.transaction.xa.XAException", "com.ibm.ws.recoverylog.spi.RecoveryFailedException",
-                           "javax.transaction.SystemException", "com.ibm.ws.recoverylog.spi.InternalLogException",
-                           "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException", "java.lang.Exception" })
-    public void testReactionToDeletedTables() throws Exception {
-        final String method = "testReactionToDeletedTables";
-        StringBuilder sb = null;
-        if (!TxTestContainerSuite.isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
+    // Annoying that all these have to be allowed rather that some being expected. Thanks Derby.
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException", "javax.transaction.SystemException", "java.lang.Exception",
+                           "com.ibm.ws.recoverylog.spi.InternalLogException", "java.lang.IllegalStateException" })
+    public void testHeartbeatReactionToDeletedTables() throws Exception {
 
-            serversToCleanup = new LibertyServer[] { server2, noRecoveryGroupServer1 };
-            //            server2.setHttpDefaultPort(cloud2ServerPort);
+        if (!TxTestContainerSuite.isDerby()) { // Can't get a connection to drop tables on embedded Derby
+            serversToCleanup = Arrays.asList(server2, noRecoveryGroupServer1);
             server2.useSecondaryHTTPPort();
-            FATUtils.startServers(_runner, server2);
-            assertNotNull("Home server recovery failed", server2.waitForStringInTrace("Transaction recovery processing for this server is complete", FATUtils.LOG_SEARCH_TIMEOUT));
-            FATUtils.startServers(_runner, noRecoveryGroupServer1);
 
-            sb = runTestWithResponse(noRecoveryGroupServer1, SERVLET_NAME, "dropServer2Tables");
-            Log.info(c, method, "testReactionToDeletedTables dropServer2Tables returned: " + sb);
+            FATUtils.startServers(_runner, server2, noRecoveryGroupServer1);
+            assertNotNull(server2.getServerName() + " recovery should have completed",
+                          server2.waitForStringInTrace("WTRN0133I: Transaction recovery processing for this server is complete", FATUtils.LOG_SEARCH_TIMEOUT));
 
-            assertNotNull("Failed to drop tables", noRecoveryGroupServer1.waitForStringInTrace("<<< END:   dropServer2Tables", FATUtils.LOG_SEARCH_TIMEOUT));
+            runTest(noRecoveryGroupServer1, SERVLET_NAME, "dropServer2Tables");
 
-            sb = runTestWithResponse(server2, SERVLET_NAME, "twoTrans");
-            Log.info(c, method, "testReactionToDeletedTables twoTrans returned: " + sb);
-            assertNotNull("Home server tables are still present", server2.waitForStringInTrace("Underlying SQL tables missing", FATUtils.LOG_SEARCH_TIMEOUT));
+            // Heartbeat will fail within 5 seconds and bring the server down
+            assertNotNull(server2.getServerName() + " recovery tables should have been deleted",
+                          server2.waitForStringInTrace("Underlying SQL tables missing", FATUtils.LOG_SEARCH_TIMEOUT));
+
+            assertNotNull(server2.getServerName() + " should have stopped",
+                          server2.waitForStringInLog("CWWKE0036I: The server com.ibm.ws.transaction_ANYDBCLOUD002 stopped", FATUtils.LOG_SEARCH_TIMEOUT));
+            server2.resetStarted();
+        }
+    }
+
+    @Test
+    // Same as above but take the heartbeat out of the equation and drive some transactional work instead
+    // The work should fail
+    // Annoying that all these have to be allowed rather that some being expected. Thanks Derby.
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException", "javax.transaction.SystemException", "java.lang.Exception",
+                           "com.ibm.ws.recoverylog.spi.InternalLogException", "java.lang.IllegalStateException" })
+    public void testWorkReactionToDeletedTables() throws Exception {
+
+        if (!TxTestContainerSuite.isDerby()) { // Can't get a connection to drop tables on embedded Derby
+            serversToCleanup = Arrays.asList(server2, noRecoveryGroupServer1);
+            server2.useSecondaryHTTPPort();
+
+            try (AutoCloseable x = withExtraTranAttributes(server2, APP_NAME, "peerTimeBeforeStale", "600", "timeBetweenHeartbeats", "600")) {
+                FATUtils.startServers(_runner, server2, noRecoveryGroupServer1);
+                assertNotNull(server2.getServerName() + " recovery should have completed",
+                              server2.waitForStringInTrace("WTRN0133I: Transaction recovery processing for this server is complete", FATUtils.LOG_SEARCH_TIMEOUT));
+
+                runTest(noRecoveryGroupServer1, SERVLET_NAME, "dropServer2Tables");
+                try {
+                    runInServlet(server2, SERVLET_NAME, "doomedTran");
+                } catch (IOException e) {
+                    // Not really bothered. Server probably went away too quickly.
+                }
+
+                assertNotNull(server2.getServerName() + " recovery tables should have been deleted",
+                              server2.waitForStringInTrace("Underlying SQL tables missing", FATUtils.LOG_SEARCH_TIMEOUT));
+
+                assertNotNull(server2.getServerName() + " should have stopped",
+                              server2.waitForStringInLog("CWWKE0036I: The server com.ibm.ws.transaction_ANYDBCLOUD002 stopped", FATUtils.LOG_SEARCH_TIMEOUT));
+                server2.resetStarted();
+            }
         }
     }
 
@@ -518,7 +537,7 @@ public class DBRotationTest extends CloudFATServletClient {
             return;
         }
 
-        serversToCleanup = new LibertyServer[] { longLeaseServerA, server2 };
+        serversToCleanup = Arrays.asList(longLeaseServerA, server2);
 
         longLeaseServerA.setFFDCChecking(false);
         server2.setHttpDefaultPort(cloud2ServerPort);
@@ -548,25 +567,100 @@ public class DBRotationTest extends CloudFATServletClient {
             return;
         }
 
-        serversToCleanup = new LibertyServer[] { longLeaseServerA, server2, longLeaseServerB, longLeaseServerC };
+        serversToCleanup = Arrays.asList(longLeaseServerA, server2, longLeaseServerB, longLeaseServerC);
 
         longLeaseServerA.setFFDCChecking(false);
         server2.setHttpDefaultPort(cloud2ServerPort);
         longLeaseServerB.setHttpDefaultPort(longLeaseServerPortB);
         longLeaseServerC.setHttpDefaultPort(longLeaseServerPortC);
 
-        FATUtils.startServers(_runner, longLeaseServerA, longLeaseServerB, longLeaseServerC, server2);
+        try (AutoCloseable x = withExtraTranAttributes(server2, APP_NAME, "peerTimeBeforeStale", "300")) {
+            FATUtils.startServers(_runner, longLeaseServerA, longLeaseServerB, longLeaseServerC, server2);
 
-        //  Check for key strings to see whether peer recovery has failed
-        assertNotNull("First peer recovery unexpectedly succeeded",
-                      server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0011",
-                                                   FATUtils.LOG_SEARCH_TIMEOUT));
-        assertNotNull("Second peer recovery unexpectedly succeeded",
-                      server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0012",
-                                                   FATUtils.LOG_SEARCH_TIMEOUT));
-        assertNotNull("Third peer recovery unexpectedly succeeded",
-                      server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0013",
-                                                   FATUtils.LOG_SEARCH_TIMEOUT));
+            //  Check for key strings to see whether peer recovery has failed
+            assertNotNull("First peer recovery unexpectedly succeeded",
+                          server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0011",
+                                                       FATUtils.LOG_SEARCH_TIMEOUT));
+            assertNotNull("Second peer recovery unexpectedly succeeded",
+                          server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0012",
+                                                       FATUtils.LOG_SEARCH_TIMEOUT));
+            assertNotNull("Third peer recovery unexpectedly succeeded",
+                          server2.waitForStringInTrace("WTRN0108I: Peer recovery will not be attempted, this server was unable to claim the logs of the server with recovery identity cloud0013",
+                                                       FATUtils.LOG_SEARCH_TIMEOUT));
+
+            // Shutdown server2 here so it doesn't have to process the config update
+            FATUtils.stopServers(server2);
+        }
+    }
+
+    /**
+     * Test a server can start with empty tranlog tables
+     */
+    @Test
+    public void testEmptyLogTablesStartup() throws Exception {
+        serversToCleanup = Arrays.asList(server2, noRecoveryGroupServer1);
+        server2.useSecondaryHTTPPort();
+
+        FATUtils.startServers(_runner, server2, noRecoveryGroupServer1);
+        assertNotNull(server2.getServerName() + " recovery should have completed",
+                      server2.waitForStringInTrace("WTRN0133I: Transaction recovery processing for this server is complete", FATUtils.LOG_SEARCH_TIMEOUT));
+
+        try {
+            // We expect this to fail since it is gonna crash the server (leaving non-empty logs behind)
+            runTest(server2, SERVLET_NAME, "setupRec001");
+            fail();
+        } catch (IOException e) {
+        }
+
+        assertNotNull(server2.getServerName() + " should have crashed", server2.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+
+        // Server2's logs should now exist
+        runTest(noRecoveryGroupServer1, SERVLET_NAME, "emptyServer2Tables");
+
+        FATUtils.stopServers(noRecoveryGroupServer1);
+
+        // Server2 should start normally even though its logs were empty
+        FATUtils.startServers(0, _runner, server2);
+        assertNotNull(server2.getServerName() + " recovery should have completed",
+                      server2.waitForStringInTrace("WTRN0133I: Transaction recovery processing for this server is complete", FATUtils.LOG_SEARCH_TIMEOUT));
+
+        runTest(server2, SERVLET_NAME, "normalTran");
+    }
+
+    /**
+     * Test a server can recover a peer with empty tranlog tables
+     */
+    @Test
+    public void testEmptyLogTablesPeerRecovery() throws Exception {
+        serversToCleanup = Arrays.asList(server2, server1, noRecoveryGroupServer1);
+        server2.useSecondaryHTTPPort();
+
+        FATUtils.startServers(_runner, server2, noRecoveryGroupServer1);
+        assertNotNull(server2.getServerName() + " recovery should have completed",
+                      server2.waitForStringInTrace("WTRN0133I: Transaction recovery processing for this server is complete", FATUtils.LOG_SEARCH_TIMEOUT));
+
+        try {
+            // We expect this to fail since it is gonna crash the server (leaving non-empty logs behind)
+            runTest(server2, SERVLET_NAME, "setupRec001");
+            fail();
+        } catch (IOException e) {
+        }
+
+        assertNotNull(server2.getServerName() + " should have crashed", server2.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+
+        // Server2's logs should now exist
+        runTest(noRecoveryGroupServer1, SERVLET_NAME, "emptyServer2Tables");
+
+        FATUtils.stopServers(noRecoveryGroupServer1);
+
+        // Server1 should start normally
+        FATUtils.startServers(_runner, server1);
+        assertNotNull(server1.getServerName() + " recovery should have completed",
+                      server1.waitForStringInTrace("WTRN0133I: Transaction recovery processing for this server is complete", FATUtils.LOG_SEARCH_TIMEOUT));
+
+        // Server1 should recover server2's logs even though they were empty
+        assertNotNull(server1.getServerName() + " should have recovered for " + server2.getServerName(),
+                      server1.waitForStringInTrace("Performed recovery for cloud0021", FATUtils.LOG_SEARCH_TIMEOUT));
     }
 
     // Returns false if the server is alive, throws Exception otherwise
@@ -596,12 +690,17 @@ public class DBRotationTest extends CloudFATServletClient {
 
     @Override
     protected boolean checkOrphanLeaseExists(LibertyServer server, String path, String serverName) throws Exception {
+        boolean absent = false;
         try {
-            runTest(server, path, "checkOrphanLeaseAbsence");
-            return false;
+            final StringBuilder sb = runInServlet(server, path, "checkOrphanLeaseAbsence");
+
+            if (sb.indexOf(FATServletClient.SUCCESS) != -1) {
+                absent = true;
+            }
         } catch (Exception e) {
         }
-        return true;
+
+        return !absent;
     }
 
     @Override

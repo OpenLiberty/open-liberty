@@ -1,10 +1,12 @@
-// Theme
-
-$color-info: #2276D8;
-$color-warning: #ea0000;
-
-$_color-post: #208050;
-$_color-get: #1F6FF0;
-$_color-put: #B16303;
-$_color-delete: #E00707;
-$_color-patch: #166686;
+@forward "../original/style/variables" with (
+    // Theme
+    
+    $color-info: #2276D8,
+    $color-warning: #ea0000,
+    
+    $color-post: #208050,
+    $color-get: #1F6FF0,
+    $color-put: #B16303,
+    $color-delete: #E00707,
+    $color-patch: #166686,
+);

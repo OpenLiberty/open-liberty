@@ -16,7 +16,7 @@
 
     <properties>
         <microprofile.config.version>3.0.1</microprofile.config.version>
-        <microprofile.faulttolerance.version>4.1</microprofile.faulttolerance.version>
+        <microprofile.faulttolerance.version>4.1.1</microprofile.faulttolerance.version>
         <microprofile.metrics.version>4.0</microprofile.metrics.version>
 
         <arquillian.version>1.7.0.Alpha13</arquillian.version>

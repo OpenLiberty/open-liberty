@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,7 @@ public class NoAppTest extends BaseTestClass {
                                              DeployOptions.SERVER_ONLY);
 
         server.startServer();
+        server.waitForSSLStart();
 
         //Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
@@ -81,6 +82,27 @@ public class NoAppTest extends BaseTestClass {
         String res = requestHttpServlet(route, server, requestMethod);
 
         assertTrue(validateMpMetricsHttp(getVendorMetrics(server), route, responseStatus, requestMethod));
+
+    }
+
+    @Test
+    public void noApp_nonExistent() throws Exception {
+
+        assertTrue(server.isStarted());
+
+        String route = "/madeThisUp";
+        String requestMethod = HttpMethod.GET;
+        String responseStatus = "404";
+        String expectedRoute = "/";
+
+        String res = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod));
+
+        String route2 = "/anotherMadeThisUp";
+        String res2 = requestHttpServlet(route, server, requestMethod);
+
+        assertTrue(validateMpMetricsHttp(getVendorMetrics(server), expectedRoute, responseStatus, requestMethod, null, ">1", null));
 
     }
 

@@ -1,0 +1,153 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCM
+#COMPONENTNAMEFOR CWMCM MCP Server
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0001E.blank.arguments=CWMCM0001E: MCP \u5de5\u5177 {0} \u65b9\u6cd5\u5177\u6709\u4e00\u500b\u6216\u591a\u500b\u540d\u7a31\u70ba\u7a7a\u7684\u53c3\u6578\u3002
+CWMCM0001E.blank.arguments.explanation=\u5df2\u63d0\u4f9b MCP \u5de5\u5177\u53c3\u6578\uff0c\u4f46\u5176\u4e2d\u5305\u542b\u540d\u7a31\u7f3a\u5931\u7684\u60c5\u6cc1\u3002 \u5de5\u5177\u65b9\u6cd5\u7684\u6bcf\u500b\u53c3\u6578\u90fd\u5fc5\u9808\u6709\u540d\u7a31\u3002
+CWMCM0001E.blank.arguments.useraction=\u8acb\u70ba\u6240\u6709\u5fc5\u586b\u53c3\u6578\u63d0\u4f9b\u975e\u7a7a\u503c\u3002
+
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+CWMCM0002E.duplicate.arguments=CWMCM0002E: MCP \u5de5\u5177 {0} \u65b9\u6cd5\u5177\u6709\u591a\u500b\u540d\u70ba \u7684 {1} \u53c3\u6578\u3002
+CWMCM0002E.duplicate.arguments.explanation=\u4e00\u500b\u6216\u591a\u500b\u53c3\u6578\u5177\u6709\u76f8\u540c\u540d\u7a31\u3002 MCP \u5de5\u5177\u65b9\u6cd5\u7684\u6bcf\u500b\u53c3\u6578\u540d\u7a31\u5fc5\u9808\u5404\u4e0d\u76f8\u540c\u3002
+CWMCM0002E.duplicate.arguments.useraction=\u70ba\u6bcf\u500b\u5de5\u5177\u53c3\u6578\u8ce6\u4e88\u4e0d\u540c\u7684\u540d\u7a31\u3002
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0003E.missing.tool.argument.name=CWMCM0003E: MCP \u5de5\u5177 {0} \u65b9\u6cd5\u5177\u6709\u4e00\u500b\u6216\u591a\u500b\u672a\u6307\u5b9a\u540d\u7a31\u7684\u53c3\u6578\u3002
+CWMCM0003E.missing.tool.argument.name.explanation=\u672a\u70ba MCP \u5de5\u5177\u63d0\u4f9b\u4e00\u500b\u6216\u591a\u500b\u5de5\u5177\u53c3\u6578\u540d\u7a31\u3002
+CWMCM0003E.missing.tool.argument.name.useraction=\u8acb\u5728 @ToolArg \u8a3b\u89e3\u4e2d\u6dfb\u52a0\u540d\u7a31\uff0c\u6216\u4f7f\u7528\u7de8\u8b6f\u5668\u9078\u9805 -parameters \u4f86\u6307\u5b9a\u53c3\u6578\u540d\u7a31\u3002
+
+# Used for server logging
+# do not translate MCP
+# {0} = The list of qualified names of the tool
+CWMCM0004E.duplicate.tools=CWMCM0004E: \u5b58\u5728\u591a\u500b\u540d\u70ba \u7684 MCP {0} \u5de5\u5177\u65b9\u6cd5\u3002 \u65b9\u6cd5\u662f {1}\u3002
+CWMCM0004E.duplicate.tools.explanation=\u4e00\u500b\u6216\u591a\u500b MCP \u5de5\u5177\u540d\u7a31\u51fa\u73fe\u4e86\u591a\u6b21\u3002 \u4f3a\u670d\u5668\u8981\u6c42\u6bcf\u500b\u5de5\u5177\u50c5\u80fd\u4f7f\u7528\u4e00\u500b\u540d\u7a31\u4ee5\u78ba\u4fdd\u552f\u4e00\u6027\u3002
+CWMCM0004E.duplicate.tools.useraction=\u50c5\u70ba\u6bcf\u500b MCP \u5de5\u5177\u63d0\u4f9b\u4e00\u500b\u552f\u4e00\u540d\u7a31\u3002
+
+# Used for server logging
+# do not translate MCP
+CWMCM0005E.validation.error=CWMCM0005E: \u5b58\u5728\u4e00\u500b\u6216\u591a\u500b MCP \u9a57\u8b49\u932f\u8aa4\u3002 \u8acb\u6aa2\u67e5\u65e5\u8a8c\u4ee5\u53d6\u5f97\u66f4\u591a\u8a73\u7d30\u8cc7\u6599\u3002
+CWMCM0005E.validation.error.explanation=\u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u555f\u52d5\uff0c\u56e0\u70ba\u5b58\u5728 MCP \u9a57\u8b49\u932f\u8aa4\u3002
+CWMCM0005E.validation.error.useraction=\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4ee5\u53d6\u5f97\u66f4\u591a\u8a73\u7d30\u8cc7\u6599\u3002
+
+# Used for server logging
+# do not translate MCP
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0006E.duplicate.special.arguments=CWMCM0006E: {0} MCP \u5de5\u5177\u5305\u542b\u591a\u500b\u985e\u578b\u70ba {1} \u7684\u53c3\u6578\u3002 \u6bcf\u500b\u5de5\u5177\u65b9\u6cd5\u4e2d\u50c5\u4f7f\u7528\u4e00\u500b {1} \u53c3\u6578\u3002
+CWMCM0006E.duplicate.special.arguments.explanation=\u767c\u751f\u4e00\u500b\u6216\u591a\u500b\u7279\u6b8a\u53c3\u6578\u91cd\u8907\u51fa\u73fe\u7684\u60c5\u6cc1\uff0c\u9810\u671f\u50c5\u61c9\u51fa\u73fe\u4e00\u6b21\u3002
+CWMCM0006E.duplicate.special.arguments.useraction=\u79fb\u9664\u591a\u9918\u7684\u5be6\u4f8b\u3002
+
+# Used for server logging
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0007E.invalid.arguments=CWMCM0007E: MCP \u5de5\u5177 {0} \u5177\u6709\u4e00\u500b\u985e\u578b\u70ba {1} \u7684\u53c3\u6578\uff0c\u8a72\u53c3\u6578\u4e26\u975e\u5df2\u8b58\u5225\u7684\u7279\u6b8a\u53c3\u6578\u985e\u578b\uff0c\u4e14\u672a\u5177\u5099 \u8a3b `@ToolArg` \u89e3\u3002
+CWMCM0007E.invalid.arguments.explanation=\u4e00\u500b\u6216\u591a\u500b\u53c3\u6578\u672a\u6a19\u8a3b\u70ba\u5de5\u5177\u53c3\u6578\uff0c\u4e14\u4e0d\u5c6c\u65bc\u53ef\u8b58\u5225\u7684\u7279\u6b8a\u53c3\u6578\u985e\u578b\u3002
+CWMCM0007E.invalid.arguments.useraction=\u6aa2\u67e5\u60a8\u662f\u5426\u5df2\u70ba\u53c3\u6578\u5c0e\u5165\u6b63\u78ba\u7684\u985e\u5225\uff0c\u6216\u60a8\u662f\u5426\u672c\u610f\u662f\u5305\u542b @ToolArg.
+
+# Used as part of a response to a client
+# {0} = Request id
+CWMCM0008E.invalid.request.params=CWMCM0008E: \u5177\u6709 ID {0} \u7684\u8acb\u6c42\u6b63\u5728\u9032\u884c\u4e2d\u3002
+CWMCM0008E.invalid.request.params.explanation=\u5177\u6709\u76f8\u540cID\u7684\u8acb\u6c42\u6b63\u5728\u8655\u7406\u4e2d\u3002 \u4f86\u81ea\u540c\u4e00\u5ba2\u6236\u7684\u8acb\u6c42\u5fc5\u9808\u5177\u6709\u552f\u4e00\u7684\u8b58\u5225\u78bc\u3002
+CWMCM0008E.invalid.request.params.useraction=\u70ba\u6bcf\u500b\u8acb\u6c42\u4f7f\u7528\u552f\u4e00\u7684\u8b58\u5225\u78bc\u3002
+
+# Used as part of a response to a client
+# do not translate GET, POST
+CWMCM0009I.get.disallowed=CWMCM0009I: GET \u8acb\u6c42\u4e0d\u88ab\u652f\u63f4\u3002
+CWMCM0009I.get.disallowed.explanation=\u5df2\u767c\u9001 GET \u8acb\u6c42\uff0c\u4f46\u6b64\u529f\u80fd\u4e0d\u88ab\u652f\u63f4\u3002
+CWMCM0009I.get.disallowed.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# Used for server logging
+# {0} = tool name
+# {1} = exception details
+CWMCM0010E.internal.server.error.detailed=CWMCM0010E: \u8a72 {0} \u5de5\u5177\u65b9\u6cd5\u62cb\u51fa\u4e86\u4e00\u500b\u610f\u5916\u7684\u4f8b\u5916\u3002 \u7570\u5e38\u72c0\u6cc1\u662f {1}
+CWMCM0010E.internal.server.error.detailed.explanation=\u8a72\u5de5\u5177\u65b9\u6cd5\u62cb\u51fa\u4e86\u4e00\u500b\u610f\u5916\u7684\u4f8b\u5916\u3002
+CWMCM0010E.internal.server.error.detailed.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u548c FFDC \u65e5\u8a8c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
+# Used as part of a response to a client
+CWMCM0011E.internal.server.error=CWMCM0011E: \u57f7\u884c\u5de5\u5177\u6642\u767c\u751f\u5167\u90e8\u4f3a\u670d\u5668\u932f\u8aa4\u3002
+CWMCM0011E.internal.server.error.explanation=\u4f3a\u670d\u5668\u7121\u6cd5\u5b8c\u6210\u5de5\u5177\u547c\u53eb\u8acb\u6c42\u3002
+CWMCM0011E.internal.server.error.useraction=\u8acb\u78ba\u8a8d\u8acb\u6c42\u5167\u5bb9\u662f\u5426\u6b63\u78ba\u3002 \u66f4\u591a\u95dc\u65bc\u6b64\u6545\u969c\u7684\u8cc7\u8a0a\u53ef\u80fd\u5b58\u5728\u65bc\u4f3a\u670d\u5668\u4e2d messages.log\u3002
+
+# Used for server logging
+# do not translate bean
+# {0} = bean error details
+# {1} = tool name
+CWMCM0012E.bean.release.fail=CWMCM0012E: \u5728\u547c\u53eb\u5de5\u5177 {1} \u5f8c\u91cb\u653e CDI bean \u6642\u767c\u751f\u932f\u8aa4\u3002 \u932f\u8aa4\u70ba\uff1a{0}
+CWMCM0012E.bean.release.fail.explanation=\u5728\u547c\u53eb\u5de5\u5177\u65b9\u6cd5\u6642\uff0c\u7cfb\u7d71\u6703\u5728\u547c\u53eb\u65b9\u6cd5\u524d\u53d6\u5f97\u5ba3\u544a\u8a72\u65b9\u6cd5\u7684 CDI Bean \u5be6\u4f8b\uff0c\u4e26\u65bc\u547c\u53eb\u5f8c\u91cb\u653e\u8a72\u5be6\u4f8b\u3002 \u91cb\u653e Bean \u5be6\u4f8b\u6642\u767c\u751f\u932f\u8aa4\u3002
+CWMCM0012E.bean.release.fail.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u548c FFDC \u65e5\u8a8c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
+# Used for server logging and client response
+# do not translate MCP-Protocol-Version, MCP
+# {0} = List of supported MCP-Protocol-Version values
+CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: \u63d0\u4f9b\u4e86\u4e00\u500b\u672a\u53d7\u652f\u63f4\u7684 MCP-Protocol-Version \u6a19\u982d\u3002 \u652f\u63f4\u7684\u503c\uff1a {0}
+CWMCM0013E.unsupported.mcp.http.version.explanation=\u4f3a\u670d\u5668\u4e0d\u652f\u63f4 MCP-Protocol-Version \u6a19\u982d\u4e2d\u7684\u5354\u5b9a\u7248\u672c\u3002
+CWMCM0013E.unsupported.mcp.http.version.useraction=\u8acb\u4f7f\u7528\u53d7\u652f\u63f4\u7684\u5354\u5b9a\u7248\u672c\u3002
+
+# Used as part of a response to a client
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+CWMCM0014E.unexpected.server.error=CWMCM0014E: \u610f\u5916\u7684\u4f3a\u670d\u5668\u932f\u8aa4\u3002 \u65b9\u6cd5= {0} RequestURI={1 } RequestQuery={2 }
+CWMCM0014E.unexpected.server.error.explanation=\u8655\u7406\u8acb\u6c42\u6642\u767c\u751f\u610f\u5916\u4f3a\u670d\u5668\u932f\u8aa4\u3002 \u7121\u6cd5\u5b8c\u6210\u8981\u6c42\u3002
+CWMCM0014E.unexpected.server.error.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0015E.unexpected.server.error.exception=CWMCM0015E: \u610f\u5916\u7684\u4f3a\u670d\u5668\u932f\u8aa4\u3002 \u65b9\u6cd5= {0} RequestURI={1 } RequestQuery={2 }, \u4f8b\u5916\uff1a {3}
+CWMCM0015E.unexpected.server.error.exception.explanation=\u8655\u7406\u8acb\u6c42\u6642\u767c\u751f\u610f\u5916\u4f3a\u670d\u5668\u932f\u8aa4\u3002 \u7121\u6cd5\u5b8c\u6210\u8981\u6c42\u3002
+CWMCM0015E.unexpected.server.error.exception.useraction=\u8acb\u6aa2\u95b1\u4f3a\u670d\u5668 message.log \u548c FFDC \u65e5\u8a8c\u4ee5\u8b58\u5225\u554f\u984c\u3002
+
+# Used for server logging
+# {0} = ExceptionMessage
+CWMCM0016E.error.sending.response.exception=CWMCM0016E: \u610f\u5916\u7684\u4f3a\u670d\u5668\u932f\u8aa4\u3002 \u7570\u5e38\u72c0\u6cc1\uff1a{0}
+CWMCM0016E.error.sending.response.exception.explanation=\u5728\u5617\u8a66\u50b3\u9001\u56de\u61c9\u6642\u767c\u751f\u932f\u8aa4\u3002
+CWMCM0016E.error.sending.response.exception.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+# Used as part of a response to a client
+# do not translate jsonrpc
+# {0} = jsonrpc value
+jsonrpc.exception.validation.invalid.version=jsonrpc \u6b04\u4f4d\u5fc5\u9808\u5b58\u5728\u3002 \u76ee\u524d\u50c5\u652f\u63f4 2.0 JSONRPC\u3002
+
+# Used as part of a response to a client
+jsonrpc.validation.empty.method=\u65b9\u6cd5\u6b04\u4f4d\u70ba\u7a7a\u3002
+
+# Used as part of a response to a client
+# {0} = id value
+jsonrpc.exception.validation.empty.string.id=ID\u6b04\u4f4d\u7121\u6548\u3002 \u82e5\u63d0\u4f9b\u5b57\u4e32\uff0cid \u6b04\u4f4d\u4e0d\u5f97\u70ba\u7a7a\u767d\u3002
+
+# Used as part of a response to a client
+jsonrpc.exception.validation.invalid.id.type=id \u985e\u578b\u4e26\u975e\u53ef\u63a5\u53d7\u7684\u985e\u578b\u3002 id \u5fc5\u9808\u662f\u5b57\u4e32\u6216\u6574\u6578\u3002
+
+# Used as part of a response to a client
+jsonrpc.missing.params=\u6b64\u8acb\u6c42\u5728\u53c3\u6578\u4e2d\u6c92\u6709\u4efb\u4f55\u5f15\u6578\u3002
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.extra.arguments=\u4ee5\u4e0b\u53c3\u6578\u5df2\u50b3\u905e\uff0c\u4f46\u5728\u65b9\u6cd5\u4e2d\u672a\u627e\u5230\uff1a {0}.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.missing.arguments=\u6b64\u65b9\u6cd5\u9810\u671f\u63a5\u6536\u4ee5\u4e0b\u53c3\u6578\uff0c\u4f46\u672a\u7372\u63d0\u4f9b\uff1a {0}

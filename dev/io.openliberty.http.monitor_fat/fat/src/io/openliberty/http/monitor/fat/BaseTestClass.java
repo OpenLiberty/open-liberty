@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public abstract class BaseTestClass {
     protected static final String PATH_TO_AUTOFVT_TESTFILES = "lib/LibertyFATTestFiles/";
 
     protected static final String IMAGE_NAME = ImageNameSubstitutor.instance() //
-                    .apply(DockerImageName.parse("otel/opentelemetry-collector-contrib:0.103.0")).asCanonicalNameString();
+                    .apply(DockerImageName.parse("ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.127.0")).asCanonicalNameString();
 
     protected static void trustAll() throws Exception {
         try {
@@ -259,14 +259,14 @@ public abstract class BaseTestClass {
                                   + "\",http_request_method=\""
                                   + requestMethod
                                   + "\",http_response_status_code=\"" + responseStatus
-                                  + "\",http_route=\"" + route
+                                  + ((route != null) ? ("\",http_route=\"" + route) : "\",http_route=\"")
                                   + "\",mp_scope=\"vendor\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
 
         String sumMatchString = "http_server_request_duration_seconds_sum\\{error_type=\"" + errorType
                                 + "\",http_request_method=\""
                                 + requestMethod
                                 + "\",http_response_status_code=\"" + responseStatus
-                                + "\",http_route=\"" + route
+                                + ((route != null) ? ("\",http_route=\"" + route) : "\",http_route=\"")
                                 + "\",mp_scope=\"vendor\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\",\\} ";
 
         return validatePrometheusHTTPMetricCount(vendorMetricsOutput, route, responseStatus, requestMethod, errorType, expectedCount, countMatchString) &&
@@ -325,7 +325,7 @@ public abstract class BaseTestClass {
             countMatchString = "http_server_request_duration_seconds_count\\{http_request_method=\""
                                + requestMethod
                                + "\",http_response_status_code=\"" + responseStatus
-                               + "\",http_route=\"" + route
+                               + ((route != null) ? ("\",http_route=\"" + route) : "")
                                + "\",instance=\"[a-zA-Z0-9-]*\""
                                + ",job=\"" + appName
                                + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
@@ -333,7 +333,7 @@ public abstract class BaseTestClass {
             sumMatchString = "http_server_request_duration_seconds_sum\\{http_request_method=\""
                              + requestMethod
                              + "\",http_response_status_code=\"" + responseStatus
-                             + "\",http_route=\"" + route
+                             + ((route != null) ? ("\",http_route=\"" + route) : "")
                              + "\",instance=\"[a-zA-Z0-9-]*\""
                              + ",job=\"" + appName
                              + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
@@ -342,7 +342,7 @@ public abstract class BaseTestClass {
                                + "\",http_request_method=\""
                                + requestMethod
                                + "\",http_response_status_code=\"" + responseStatus
-                               + "\",http_route=\"" + route
+                               + ((route != null) ? ("\",http_route=\"" + route) : "")
                                + "\",instance=\"[a-zA-Z0-9-]*\""
                                + ",job=\"" + appName
                                + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
@@ -351,7 +351,7 @@ public abstract class BaseTestClass {
                              + "\",http_request_method=\""
                              + requestMethod
                              + "\",http_response_status_code=\"" + responseStatus
-                             + "\",http_route=\"" + route
+                             + ((route != null) ? ("\",http_route=\"" + route) : "")
                              + "\",instance=\"[a-zA-Z0-9-]*\""
                              + ",job=\"" + appName
                              + "\",network_protocol_version=\"1\\.[01]\",server_address=\"localhost\",server_port=\"[0-9]+\",url_scheme=\"http\"\\} ";
@@ -389,6 +389,12 @@ public abstract class BaseTestClass {
         matchString += expectedCount;
 
         Log.info(c, "validatePrometheusHTTPMetricCount", "Trying to match: " + matchString);
+
+        if (vendorMetricsOutput == null) {
+            Log.info(c, "validatePrometheusHTTPMetricCount", "vendorMetricsOutput is null - metrics endpoint may not be responding");
+            return false;
+        }
+
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -443,6 +449,12 @@ public abstract class BaseTestClass {
         matchString += expectedSum;
 
         Log.info(c, "validatePrometheusHTTPMetricSum", "Trying to match: " + matchString);
+
+        if (vendorMetricsOutput == null) {
+            Log.info(c, "validatePrometheusHTTPMetricSum", "vendorMetricsOutput is null - metrics endpoint may not be responding");
+            return false;
+        }
+
         try (Scanner sc = new Scanner(vendorMetricsOutput)) {
             while (sc.hasNextLine()) {
                 String line = sc.nextLine();
@@ -499,13 +511,14 @@ public abstract class BaseTestClass {
     }
 
     /**
-     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses the defaultof 5 seconds.
+     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses the default of 20 seconds.
+     * In scenario where export times out, there appears to be an average of 15s before the export is re-attempted.
      *
      * @param condition condition being evaluated
      * @throws InterruptedException
      */
     protected void assertTrueRetryWithTimeout(Supplier<Boolean> condition) throws InterruptedException {
-        assertTrueRetryWithTimeout(condition, 8);
+        assertTrueRetryWithTimeout(condition, 20);
     }
 
     /**

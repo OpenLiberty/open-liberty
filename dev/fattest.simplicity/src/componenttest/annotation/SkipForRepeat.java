@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import componenttest.rules.repeater.CheckpointRule;
 import componenttest.rules.repeater.EE7FeatureReplacementAction;
 import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.EmptyAction;
@@ -38,6 +39,7 @@ public @interface SkipForRepeat {
     public static final String EE9_FEATURES = JakartaEEAction.EE9_ACTION_ID;
     public static final String EE10_FEATURES = JakartaEEAction.EE10_ACTION_ID;
     public static final String EE11_FEATURES = JakartaEEAction.EE11_ACTION_ID;
+    public static final String CHECKPOINT_RULE = CheckpointRule.ID;
 
     // Cannot use MultivalueSkips.name() since it isn't a constant at compile time so need to actually
     // use the string version of the enum name.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2009 IBM Corporation and others.
+ * Copyright (c) 2008, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -33,10 +33,26 @@ import static com.ibm.ws.ejbcontainer.jitdeploy.JITUtils.getTypes;
 import static com.ibm.ws.ejbcontainer.jitdeploy.JITUtils.unbox;
 import static com.ibm.ws.ejbcontainer.jitdeploy.JITUtils.writeToClassFile;
 
-import static org.objectweb.asm.Opcodes.*;
 import static com.ibm.ws.ejbcontainer.jitdeploy.JITUtils.INDENT;
 import static com.ibm.ws.ejbcontainer.jitdeploy.JITUtils.TYPE_Exception;
 import static com.ibm.ws.ejbcontainer.jitdeploy.JITUtils.TYPE_Object_ARRAY;
+
+import static org.objectweb.asm.Opcodes.AASTORE;
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_SUPER;
+import static org.objectweb.asm.Opcodes.ACONST_NULL;
+import static org.objectweb.asm.Opcodes.ALOAD;
+import static org.objectweb.asm.Opcodes.ANEWARRAY;
+import static org.objectweb.asm.Opcodes.ATHROW;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.GETFIELD;
+import static org.objectweb.asm.Opcodes.GOTO;
+import static org.objectweb.asm.Opcodes.INVOKESPECIAL;
+import static org.objectweb.asm.Opcodes.INVOKESTATIC;
+import static org.objectweb.asm.Opcodes.INVOKEVIRTUAL;
+import static org.objectweb.asm.Opcodes.NEW;
+import static org.objectweb.asm.Opcodes.RETURN;
+import static org.objectweb.asm.Opcodes.V1_2;
 
 /**
  * Provides Just In Time runtime deployment of WebService Endpoint EJB Proxys. <p>
@@ -535,19 +551,19 @@ public final class WSEJBProxy
         // -----------------------------------------------------------------------
         // Bean instance could not possibly have thrown this (unless Throwable
         // itself), so this must be coming from a poorly behaving interceptor.
-        // This is a spec violation and cannot be reported dirctly.  Do the best
+        // This is a spec violation and cannot be reported directly.  Do the best
         // we can, and wrap it in an EJBException (i.e. RuntimeException).
         //
         // catch (Throwable <ex>)
         // {
-        //   throw ExceptionUtil.EJBException( <ex> );
+        //   throw WSEJBWrapper.EJBException( <ex> );
         // }
         // -----------------------------------------------------------------------
         Label main_catch_throwable = new Label();
         mg.visitLabel(main_catch_throwable);
         mg.storeLocal(caught_ex);
         mg.loadLocal(caught_ex);
-        mg.visitMethodInsn(INVOKESTATIC, "com/ibm/ejs/container/util/ExceptionUtil",
+        mg.visitMethodInsn(INVOKESTATIC, "com/ibm/ejs/container/WSEJBWrapper",
                            "EJBException", "(Ljava/lang/Throwable;)Ljavax/ejb/EJBException;");
         mg.visitInsn(ATHROW);
 

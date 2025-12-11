@@ -58,7 +58,7 @@ public class PolicyConfigurationManagerTest {
     private final ApplicationMetaData amd = context.mock(ApplicationMetaData.class);
     private final J2EEName jen = context.mock(J2EEName.class);
     private final EJBSecurityPropagator esp = context.mock(EJBSecurityPropagator.class);
-    private PolicyConfigurationManager pcm = null;
+    private PolicyConfigurationManagerImpl pcm = null;
     private PolicyConfigurationFactory pcf = null;
     private Policy policy = null;
 
@@ -66,8 +66,8 @@ public class PolicyConfigurationManagerTest {
     public void setUp() {
         pcf = new DummyPolicyConfigurationFactory(pc1);
         policy = new DummyPolicy();
-        pcm = new PolicyConfigurationManager();
-        PolicyConfigurationManager.initialize(ProxyTestUtil.createPolicyProxy(policy), pcf);
+        pcm = new PolicyConfigurationManagerImpl();
+        pcm.initialize(ProxyTestUtil.createPolicyProxy(policy), pcf);
     }
 
     @After
@@ -83,9 +83,9 @@ public class PolicyConfigurationManagerTest {
     public void containModule() {
         final String appName = "app";
         final String contextId = "contextId";
-        assertFalse(PolicyConfigurationManager.containModule(appName, contextId));
-        PolicyConfigurationManager.addModule(appName, contextId);
-        assertTrue(PolicyConfigurationManager.containModule(appName, contextId));
+        assertFalse(pcm.containModule(appName, contextId));
+        pcm.addModule(appName, contextId);
+        assertTrue(pcm.containModule(appName, contextId));
     }
 
     /**
@@ -97,14 +97,14 @@ public class PolicyConfigurationManagerTest {
         final String appName = "app";
         final String contextId = "contextId";
         final String contextId2 = "contextId2";
-        PolicyConfigurationManager.removeModule(appName, contextId);
-        PolicyConfigurationManager.addModule(appName, contextId);
-        PolicyConfigurationManager.addModule(appName, contextId2);
-        PolicyConfigurationManager.removeModule(appName, contextId);
-        assertFalse(PolicyConfigurationManager.containModule(appName, contextId));
-        assertTrue(PolicyConfigurationManager.containModule(appName, contextId2));
-        PolicyConfigurationManager.removeModule(appName, contextId2);
-        assertFalse(PolicyConfigurationManager.containModule(appName, contextId2));
+        pcm.removeModule(appName, contextId);
+        pcm.addModule(appName, contextId);
+        pcm.addModule(appName, contextId2);
+        pcm.removeModule(appName, contextId);
+        assertFalse(pcm.containModule(appName, contextId));
+        assertTrue(pcm.containModule(appName, contextId2));
+        pcm.removeModule(appName, contextId2);
+        assertFalse(pcm.containModule(appName, contextId2));
     }
 
     /**
@@ -118,14 +118,14 @@ public class PolicyConfigurationManagerTest {
 
         context.checking(new Expectations() {
             {
-                one(esp).processEJBRoles(pcf, contextId);
+                one(esp).processEJBRoles(pcf, contextId, pcm);
             }
         });
-        PolicyConfigurationManager.addEJB(appName, contextId);
-        assertTrue(PolicyConfigurationManager.containModule(appName, contextId));
+        pcm.addEJB(appName, contextId);
+        assertTrue(pcm.containModule(appName, contextId));
 
-        PolicyConfigurationManager.setEJBSecurityPropagator(esp);
-        PolicyConfigurationManager.processEJBs(appName);
+        pcm.setEJBSecurityPropagator(esp);
+        pcm.processEJBs(appName);
     }
 
     /**
@@ -165,7 +165,7 @@ public class PolicyConfigurationManagerTest {
             fail("An exception is caught: " + e);
         }
         try {
-            PolicyConfigurationManager.linkConfiguration(APP_NAME, pc1);
+            pcm.linkConfiguration(APP_NAME, pc1);
         } catch (PolicyContextException e) {
             e.printStackTrace();
             fail("An exception is caught.");
@@ -198,7 +198,7 @@ public class PolicyConfigurationManagerTest {
             fail("An exception is caught.");
         }
         try {
-            PolicyConfigurationManager.linkConfiguration(APP_NAME, pc1);
+            pcm.linkConfiguration(APP_NAME, pc1);
         } catch (PolicyContextException e) {
             e.printStackTrace();
             fail("An exception is caught.");
@@ -226,7 +226,7 @@ public class PolicyConfigurationManagerTest {
         } catch (PolicyContextException e) {
             fail("An exception is caught: " + e);
         }
-        PolicyConfigurationManager.addModule(APP_NAME, CONTEXT_ID);
+        pcm.addModule(APP_NAME, CONTEXT_ID);
         pcm.applicationStopped(ai);
     }
 

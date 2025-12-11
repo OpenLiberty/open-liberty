@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,29 +58,23 @@ public class TelemetryShimTest extends FATServletClient {
 
     @BeforeClass
     public static void setup() throws Exception {
-        if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)) { //MpTelemetry version 1.0
-            WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
-                            .addClass(OpenTracingShimServlet.class)
-                            .addClass(TracedBean.class)
-                            .addAsLibraries(new File("lib/shim129").listFiles());
-            ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
-        } else if (FATSuite.getTelemetryVersionUnderTest().equals("1.1")) { //MpTelemetry version 1.1
-            WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
-                            .addClass(OpenTracingShimServlet.class)
-                            .addClass(TracedBean.class)
-                            .addAsLibraries(new File("lib/shim").listFiles());
-            ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
-        } else { //MpTelemetry version 2.0
-            WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
-                            .addClass(OpenTracingShimServlet.class)
-                            .addClass(TracedBean.class)
-                            .addAsLibraries(new File("lib/shim139").listFiles());
-            ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
-
+        //MpTelemetry version 1.0
+        String shimFile = "lib/shim119";
+        if (FATSuite.getTelemetryVersionUnderTest().equals("1.1")) { //MpTelemetry version 1.1
+            shimFile = "lib/shim129";
+        } else if (FATSuite.getTelemetryVersionUnderTest().equals("2.1")) { //MpTelemetry version 2.1
+            shimFile = "lib/shim148";
+        }  else { //MpTelemetry version 2.0
+            shimFile = "lib/shim139";
         }
 
-        server.startServer();
+        WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
+            .addClass(OpenTracingShimServlet.class)
+            .addClass(TracedBean.class)
+            .addAsLibraries(new File(shimFile).listFiles());
+        ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
 
+        server.startServer();
     }
 
     @AfterClass

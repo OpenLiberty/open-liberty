@@ -42,7 +42,7 @@
 		id="HS256Builder"
 		issuer="client01"
 		signatureAlgorithm="HS256"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		audiences="client01"
 		/>
 		
@@ -50,7 +50,7 @@
 		id="HS384Builder"
 		issuer="client01"
 		signatureAlgorithm="HS384"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		audiences="client01"
 		/>
 		
@@ -58,7 +58,7 @@
 		id="HS512Builder"
 		issuer="client01"
 		signatureAlgorithm="HS512"
-		sharedKey="secret"
+		sharedKey="secret1234"
 		audiences="client01"
 		/>
 		

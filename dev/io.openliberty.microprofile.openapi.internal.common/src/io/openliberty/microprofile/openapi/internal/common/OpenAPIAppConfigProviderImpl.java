@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -203,10 +204,15 @@ public class OpenAPIAppConfigProviderImpl implements OpenAPIAppConfigProvider {
             MpConfigServerConfigObject otherConfig = (MpConfigServerConfigObject) other;
 
             return (includedApps.equals(otherConfig.includedApps)
-                    && excludedApps.equals(otherConfig.excludedModules)
+                    && excludedApps.equals(otherConfig.excludedApps)
                     && includedModules.equals(otherConfig.includedModules)
                     && excludedModules.equals(otherConfig.excludedModules)
                     && configMode.equals(otherConfig.configMode));
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(configMode, excludedApps, excludedModules, includedApps, includedModules);
         }
 
         @Override
@@ -235,6 +241,25 @@ public class OpenAPIAppConfigProviderImpl implements OpenAPIAppConfigProvider {
                     || includedModules.size() > 0
                     || excludedModules.size() > 0
                     || configMode.isPresent());
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder builder = new StringBuilder();
+            builder.append("MpConfigServerConfigObject [includedApps=");
+            builder.append(includedApps);
+            builder.append(", excludedApps=");
+            builder.append(excludedApps);
+            builder.append(", includedModules=");
+            builder.append(includedModules);
+            builder.append(", excludedModules=");
+            builder.append(excludedModules);
+            builder.append(", configMode=");
+            builder.append(configMode);
+            builder.append(", wasAnyConfigFound()=");
+            builder.append(wasAnyConfigFound());
+            builder.append("]");
+            return builder.toString();
         }
     }
 

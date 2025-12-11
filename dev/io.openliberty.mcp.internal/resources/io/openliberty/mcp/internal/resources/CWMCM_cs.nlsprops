@@ -1,0 +1,153 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCM
+#COMPONENTNAMEFOR CWMCM MCP Server
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0001E.blank.arguments=CWMCM0001E: Metoda {0} n\u00e1stroje MCP m\u00e1 jeden nebo v\u00edce argument\u016f s pr\u00e1zdn\u00fdmi n\u00e1zvy.
+CWMCM0001E.blank.arguments.explanation=Byly poskytnuty argumenty n\u00e1stroje MCP, ale chyb\u011bla jim jm\u00e9na. Ka\u017ed\u00fd argument metody n\u00e1stroje mus\u00ed m\u00edt n\u00e1zev.
+CWMCM0001E.blank.arguments.useraction=Zadejte nepr\u00e1zdn\u00e9 hodnoty pro v\u0161echny po\u017eadovan\u00e9 argumenty.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+CWMCM0002E.duplicate.arguments=CWMCM0002E: Metoda n\u00e1stroje {0} MCP m\u00e1 v\u00edce ne\u017e jeden argument s n\u00e1zvem {1}.
+CWMCM0002E.duplicate.arguments.explanation=Jeden nebo v\u00edce argument\u016f m\u00e1 stejn\u00fd n\u00e1zev. Ka\u017ed\u00fd argument metody n\u00e1stroje MCP mus\u00ed m\u00edt jin\u00e9 jm\u00e9no.
+CWMCM0002E.duplicate.arguments.useraction=Ka\u017ed\u00e9mu argumentu n\u00e1stroje p\u0159i\u0159a\u010fte jin\u00e9 jm\u00e9no.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0003E.missing.tool.argument.name=CWMCM0003E: Metoda {0} n\u00e1stroje MCP m\u00e1 jeden nebo v\u00edce argument\u016f bez zadan\u00e9ho n\u00e1zvu.
+CWMCM0003E.missing.tool.argument.name.explanation=Pro n\u00e1stroje MCP nebylo zad\u00e1no jedno nebo v\u00edce jmen argument\u016f n\u00e1stroje.
+CWMCM0003E.missing.tool.argument.name.useraction=Bu\u010f p\u0159idejte n\u00e1zev do @ToolArg anotace, nebo p\u0159idejte mo\u017enost kompil\u00e1toru -parameters, abyste mohli pou\u017e\u00edt n\u00e1zev parametru.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The list of qualified names of the tool
+CWMCM0004E.duplicate.tools=CWMCM0004E: Existuje n\u011bkolik metod n\u00e1stroje MCP s n\u00e1zvem {0}. Metody jsou {1}.
+CWMCM0004E.duplicate.tools.explanation=Jeden nebo v\u00edce n\u00e1zv\u016f n\u00e1stroj\u016f MCP se vyskytlo v\u00edcekr\u00e1t. Server o\u010dek\u00e1v\u00e1 jedno jm\u00e9no pro ka\u017ed\u00fd n\u00e1stroj, aby byla zaji\u0161t\u011bna jedine\u010dnost.
+CWMCM0004E.duplicate.tools.useraction=Pro ka\u017ed\u00fd n\u00e1stroj MCP zadejte pouze jedine\u010dn\u00fd n\u00e1zev.
+
+# Used for server logging
+# do not translate MCP
+CWMCM0005E.validation.error=CWMCM0005E: Do\u0161lo k jedn\u00e9 nebo v\u00edce chyb\u00e1m ov\u011b\u0159en\u00ed MCP. Dal\u0161\u00ed podrobnosti viz protokoly.
+CWMCM0005E.validation.error.explanation=Aplikaci nelze spustit, proto\u017ee do\u0161lo k chyb\u00e1m ov\u011b\u0159en\u00ed MCP.
+CWMCM0005E.validation.error.useraction=Dal\u0161\u00ed podrobnosti viz protokoly.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0006E.duplicate.special.arguments=CWMCM0006E: N\u00e1stroj {0} MCP m\u00e1 v\u00edce ne\u017e jeden parametr typu {1}. V ka\u017ed\u00e9 metod\u011b n\u00e1stroje pou\u017e\u00edvejte pouze jeden {1} parametr.
+CWMCM0006E.duplicate.special.arguments.explanation=Jeden nebo v\u00edce speci\u00e1ln\u00edch argument\u016f se vyskytlo v\u00edcekr\u00e1t, o\u010dek\u00e1v\u00e1 se pouze jeden.
+CWMCM0006E.duplicate.special.arguments.useraction=Odstra\u0148te nadbyte\u010dn\u00e9 instance.
+
+# Used for server logging
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0007E.invalid.arguments=CWMCM0007E: N\u00e1stroj {0} MCP m\u00e1 parametr typu, {1} kter\u00fd nen\u00ed rozpoznan\u00fdm speci\u00e1ln\u00edm typem argumentu a nem\u00e1 anotaci `@ToolArg`.
+CWMCM0007E.invalid.arguments.explanation=Jeden nebo v\u00edce parametr\u016f nebylo ozna\u010deno jako argumenty n\u00e1stroje a nejsou rozpozn\u00e1ny jako speci\u00e1ln\u00ed typy argument\u016f.
+CWMCM0007E.invalid.arguments.useraction=Zkontrolujte, zda m\u00e1te pro sv\u016fj argument importovanou spr\u00e1vnou t\u0159\u00eddu, nebo zda jste cht\u011bli zahrnout @ToolArg.
+
+# Used as part of a response to a client
+# {0} = Request id
+CWMCM0008E.invalid.request.params=CWMCM0008E: \u017d\u00e1dost s ID {0} je v procesu zpracov\u00e1n\u00ed.
+CWMCM0008E.invalid.request.params.explanation=\u017d\u00e1dost se stejn\u00fdm ID je pr\u00e1v\u011b zpracov\u00e1v\u00e1na. \u017d\u00e1dosti od stejn\u00e9ho klienta mus\u00ed m\u00edt jedine\u010dn\u00e1 ID.
+CWMCM0008E.invalid.request.params.useraction=Pro ka\u017ed\u00fd po\u017eadavek pou\u017eijte jedine\u010dn\u00e9 ID.
+
+# Used as part of a response to a client
+# do not translate GET, POST
+CWMCM0009I.get.disallowed=CWMCM0009I: GET po\u017eadavky nejsou podporov\u00e1ny.
+CWMCM0009I.get.disallowed.explanation=Byl odesl\u00e1n po\u017eadavek GET, ale tato funkce nen\u00ed podporov\u00e1na.
+CWMCM0009I.get.disallowed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# Used for server logging
+# {0} = tool name
+# {1} = exception details
+CWMCM0010E.internal.server.error.detailed=CWMCM0010E: Metoda n\u00e1stroje {0} vyvolala neo\u010dek\u00e1vanou v\u00fdjimku. V\u00fdjimka: {1}
+CWMCM0010E.internal.server.error.detailed.explanation=Metoda n\u00e1stroje vyvolala neo\u010dek\u00e1vanou v\u00fdjimku.
+CWMCM0010E.internal.server.error.detailed.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Used as part of a response to a client
+CWMCM0011E.internal.server.error=CWMCM0011E: P\u0159i spu\u0161t\u011bn\u00ed n\u00e1stroje do\u0161lo k intern\u00ed chyb\u011b serveru.
+CWMCM0011E.internal.server.error.explanation=Server nebyl schopen dokon\u010dit po\u017eadavek na vol\u00e1n\u00ed n\u00e1stroje.
+CWMCM0011E.internal.server.error.useraction=Zkontrolujte, zda je po\u017eadavek spr\u00e1vn\u00fd. V\u00edce informac\u00ed o selh\u00e1n\u00ed m\u016f\u017ee b\u00fdt na serveru messages.log.
+
+# Used for server logging
+# do not translate bean
+# {0} = bean error details
+# {1} = tool name
+CWMCM0012E.bean.release.fail=CWMCM0012E: P\u0159i uvoln\u011bn\u00ed CDI bean po vol\u00e1n\u00ed n\u00e1stroje {1} do\u0161lo k chyb\u011b. Chyba je: {0}
+CWMCM0012E.bean.release.fail.explanation=P\u0159i vol\u00e1n\u00ed metody n\u00e1stroje je p\u0159ed vol\u00e1n\u00edm metody z\u00edsk\u00e1na instance CDI bean, kter\u00e1 tuto metodu deklaruje, a po vol\u00e1n\u00ed metody je uvoln\u011bna. P\u0159i uvoln\u011bn\u00ed instance bean do\u0161lo k chyb\u011b.
+CWMCM0012E.bean.release.fail.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Used for server logging and client response
+# do not translate MCP-Protocol-Version, MCP
+# {0} = List of supported MCP-Protocol-Version values
+CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Byla poskytnuta nepodporovan\u00e1 hlavi\u010dka MCP-Protocol-Version. Podporovan\u00e9 hodnoty: {0}
+CWMCM0013E.unsupported.mcp.http.version.explanation=Verze protokolu v hlavi\u010dce MCP-Protocol-Version nen\u00ed serverem podporov\u00e1na.
+CWMCM0013E.unsupported.mcp.http.version.useraction=Pou\u017eijte podporovanou verzi protokolu.
+
+# Used as part of a response to a client
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+CWMCM0014E.unexpected.server.error=CWMCM0014E: Neo\u010dek\u00e1van\u00e1 chyba serveru. Metoda= {0} RequestURI={1 } RequestQuery={2 }
+CWMCM0014E.unexpected.server.error.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b serveru. Po\u017eadavek nelze dokon\u010dit.
+CWMCM0014E.unexpected.server.error.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0015E.unexpected.server.error.exception=CWMCM0015E: Neo\u010dek\u00e1van\u00e1 chyba serveru. Metoda= {0} RequestURI={1 } RequestQuery={2 }, V\u00fdjimka: {3}
+CWMCM0015E.unexpected.server.error.exception.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b serveru. Po\u017eadavek nelze dokon\u010dit.
+CWMCM0015E.unexpected.server.error.exception.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Used for server logging
+# {0} = ExceptionMessage
+CWMCM0016E.error.sending.response.exception=CWMCM0016E: Neo\u010dek\u00e1van\u00e1 chyba serveru. V\u00fdjimka: {0}
+CWMCM0016E.error.sending.response.exception.explanation=P\u0159i pokusu o odesl\u00e1n\u00ed odpov\u011bdi do\u0161lo k chyb\u011b.
+CWMCM0016E.error.sending.response.exception.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# Used as part of a response to a client
+# do not translate jsonrpc
+# {0} = jsonrpc value
+jsonrpc.exception.validation.invalid.version=Pole jsonrpc mus\u00ed b\u00fdt p\u0159\u00edtomno. V sou\u010dasn\u00e9 dob\u011b je podporov\u00e1n 2.0 pouze JSONRPC.
+
+# Used as part of a response to a client
+jsonrpc.validation.empty.method=Pole metody je pr\u00e1zdn\u00e9.
+
+# Used as part of a response to a client
+# {0} = id value
+jsonrpc.exception.validation.empty.string.id=Pole id je neplatn\u00e9. ID nesm\u00ed b\u00fdt pr\u00e1zdn\u00e9, pokud je zad\u00e1n \u0159et\u011bzec.
+
+# Used as part of a response to a client
+jsonrpc.exception.validation.invalid.id.type=Typ id nen\u00ed p\u0159ijateln\u00fd typ. ID mus\u00ed b\u00fdt \u0159et\u011bzec nebo cel\u00e9 \u010d\u00edslo.
+
+# Used as part of a response to a client
+jsonrpc.missing.params=\u017d\u00e1dost neobsahuje \u017e\u00e1dn\u00e9 argumenty v parametrech.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.extra.arguments=Byly p\u0159ed\u00e1ny n\u00e1sleduj\u00edc\u00ed argumenty, ale nebyly nalezeny v metod\u011b: {0}.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.missing.arguments=Metoda o\u010dek\u00e1vala n\u00e1sleduj\u00edc\u00ed argumenty, ale nebyly poskytnuty: {0}.

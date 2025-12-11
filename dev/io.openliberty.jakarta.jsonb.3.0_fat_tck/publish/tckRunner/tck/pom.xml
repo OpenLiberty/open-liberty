@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2022, 2024 IBM Corporation and others. All rights reserved. 
+<!-- Copyright (c) 2022, 2025 IBM Corporation and others. All rights reserved. 
 	This program and the accompanying materials are made available under the 
 	terms of the Eclipse Public License 2.0 which accompanies this distribution, 
 	and is available at http://www.eclipse.org/legal/epl-2.0/ Contributors: 
@@ -171,8 +171,10 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.0.0-M5</version>
+				<version>3.5.2</version>
 				<configuration>
+					<argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine> <!-- Needed for ZOS. sourceEncoding is needed becuase arquillian calls string.getBytes(). -->
+					<forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/> <!-- Default forkNode has encoding issues on ZOS -->
 					<trimStackTrace>false</trimStackTrace>
 					<failIfNoTests>true</failIfNoTests>
 					<dependenciesToScan>${jakarta.jsonb.tck.groupId}:jakarta.json.bind-tck</dependenciesToScan>

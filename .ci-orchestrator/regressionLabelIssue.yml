@@ -1,0 +1,39 @@
+type: pipeline_definition
+product: Liberty
+name: Open Liberty Regression Issues Notification
+description: Creates notification of an issue marked as a regression
+triggers:
+- type: event
+  triggerName: regression-label-trigger
+  groups: ["LibertyDev"]
+  eventType: GitHubIssueData
+  eventFilters:
+  - property: action
+    include: labeled
+  - property: repo
+    include: open-liberty
+  - property: labels
+    include: "regression"
+  - property: labels
+    exclude: "test"
+  propertyDefinitions:
+    - name: user
+      isRequired: true
+      description: "User who created issue"
+    - name: number
+      isRequired: true
+      description: "Issue number"
+    - name: githubUrl
+      isRequired: true
+      description: "Issue HTML URL"
+
+steps:
+- stepName: Regression Issue Notice
+  workType: Jenkins
+  projectName: regressionIssueNotify
+  timeoutInMinutes: 120
+  properties:
+    githubIssueApi: "https://api.github.com/repos/OpenLiberty/open-liberty/issues/${number}"
+    githubIssueCreator: ${user}
+    githubIssueNumber: ${number}
+    githubIssueHtml: ${githubUrl}

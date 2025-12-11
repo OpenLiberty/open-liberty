@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # -------------------------------------------------------------------------------------------------
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,7 +65,6 @@ CWMOT5007.tel.enabled.conflict=CWMOT5007W: otel.sdk.disabled \uad6c\uc131 \uc18d
 CWMOT5007.tel.enabled.conflict.explanation: MicroProfile \uc6d0\uaca9 \uce21\uc815\uc740 \uc2dc\uc2a4\ud15c \uc18d\uc131 \ub610\ub294 \ud658\uacbd \ubcc0\uc218\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc804\uccb4 \uc11c\ubc84\uc5d0 \ub300\ud574 \ud65c\uc131\ud654\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \uc804\uccb4 \uc11c\ubc84\uc5d0 \ub300\ud574 \ud65c\uc131\ud654\ud558\uc9c0 \uc54a\uc740 \uacbd\uc6b0, MicroProfile \uad6c\uc131 \uc18d\uc131\uc744 \uc124\uc815\ud558\uc5ec \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ud65c\uc131\ud654\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4(\uc608: server.xml \ud30c\uc77c\uc5d0\uc11c \ubcc0\uc218\ub97c \uc124\uc815\ud558\ub294 \ubc29\ubc95). \uc774 \uacbd\uace0\ub294 \uc804\uccb4 \uc11c\ubc84\uc5d0 \ub300\ud574 \uc6d0\uaca9 \ubd84\uc11d\uc774 \ud65c\uc131\ud654\ub418\uc5b4 \uc788\uc9c0\ub9cc MicroProfile \uad6c\uc131 \uc18d\uc131\uc5d0\uc11c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud55c \uc6d0\uaca9 \ubd84\uc11d\uc744 \ube44\ud65c\uc131\ud654\ud558\ub294 \
     \uacbd\uc6b0 \ud45c\uc2dc\ub429\ub2c8\ub2e4. \uc804\uccb4 \uc11c\ubc84\uc5d0 \ub300\ud574 \uc6d0\uaca9 \ubd84\uc11d\uc774 \uc0ac\uc6a9 \uc124\uc815\ub418\uc5b4 \uc788\uc73c\ubbc0\ub85c \ud574\ub2f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud55c \uad6c\uc131\uc740 \ubb34\uc2dc\ub429\ub2c8\ub2e4.
 CWMOT5007.tel.enabled.conflict.useraction: \ud658\uacbd \ubcc0\uc218 \ubc0f \uc2dc\uc2a4\ud15c \uc18d\uc131 \ub610\ub294 \uae30\ud0c0 MP \uad6c\uc131 \uc18c\uc2a4\ub97c \uc0ac\uc6a9\ud558\uc5ec OpenTelemetry \uc778\uc2a4\ud134\uc2a4\ub97c \ud65c\uc131\ud654 \ub610\ub294 \ube44\ud65c\uc131\ud654\ud558\ub3c4\ub85d \uc124\uc815\uc744 \uc9c0\uc815\ud569\ub2c8\ub2e4(\ub458 \ub2e4 \uc0ac\uc6a9\ud558\uc9c0 \uc54a\uc74c).
-
 
 #-----------------------------------------------------------------------------------------------------------------------------
 # Monitor Metrics messages

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,10 +12,6 @@
  *******************************************************************************/
 
 package com.ibm.ws.wssecurity.fat.cxf.samltoken5.common;
-
-
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,6 +27,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
+import componenttest.annotation.MinimumJavaLevel;
+
 
 /**
  * The testcases in this class were ported from tWAS' test SamlWebSSOTests.
@@ -48,7 +46,6 @@ import componenttest.topology.impl.LibertyServerWrapper;
  * 2.0 token in the HTTP POST request.
  */
 
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -81,7 +78,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
      * Test should succeed in accessing the server side service.
      * 
      */
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFSignedSupportingTokens_Symmmetric() throws Exception {
         
@@ -116,7 +113,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     
     //3/2021 @AV999 - even though the client policy does not have SignedSupportingTokens, 
     //the saml token is signed by default with the new runtime and making the request processing successful at the provider   
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFSignedSupportingTokens_Symmmetric_ClientNotSigned() throws Exception {
 
@@ -143,7 +140,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     	genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_SIGN_SERVICE));
     	
     } 
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Symmmetric() throws Exception {
     
@@ -175,7 +172,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
      * The client uses a policy that does not specify that the request be encrypted
      * The test should fail since the policy can not be satisfied
      */
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFEncryptedSupportingTokens_Symmmetric_ClientNotEncrypted() throws Exception {
     	
@@ -201,7 +198,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
         genericSAML(_testName, webClient, updatedTestSettings, standardFlow, helpers.setDefaultGoodSAMLCXFExpectations(null, flowType, updatedTestSettings, SAMLConstants.CXF_SAML_TOKEN_SYM_ENCR_SERVICE_CLIENT_NOT_ENCR));
 
     }
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Symmmetric() throws Exception {
     	
@@ -233,7 +230,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
      * The client uses a policy that does not specify that the request be encrypted
      * The test should fail since the policy can not be satisfied
      */
-  
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Symmmetric_ClientNotEncrypted() throws Exception {
     
@@ -270,7 +267,7 @@ public class CxfSAMLSymSignEncTests extends SAMLCommonTest {
     //3/2021 @AV999 - client policy specifies EncryptedSupportingTokens, provider expects SignedEncryptedSupportingTokens. 
     //Looks like with the new runtime the saml tokens are signed by default.
     //This change causes the test to complete the message exchange successful between client and providers
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testSAMLCXFSignedEncryptedSupportingTokens_Symmmetric_ClientNotSigned() throws Exception {
 

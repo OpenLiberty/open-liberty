@@ -227,6 +227,30 @@ public class MetricRegistryImpl extends MetricRegistry {
 
         this.metadataMID.putIfAbsent(metadata.getName(), metadataBuilder.build());
 
+        /*
+         * This is the method used by monitor metrics to register metrics.
+         * Previously, connectionpool metrics will be associated with an application
+         * as the initial creation of a connection pool occurs under an application context thread.
+         *
+         * We must avoid associating connection pool metrics to an application
+         * so that it is not deregistered. The metric is to remain until the datasource
+         * is removed via mbean deregistration (i.e., server shut down or jbc-x.x is removed or thee datasource
+         * element in sever.xml is removed.
+         *
+         */
+        String metricName = metadata.getName();
+        if (metricName.equalsIgnoreCase("connectionpool.create.total") ||
+            metricName.equalsIgnoreCase("connectionpool.destroy.total") ||
+            metricName.equalsIgnoreCase("connectionpool.managedConnections") ||
+            metricName.equalsIgnoreCase("connectionpool.connectionHandles") ||
+            metricName.equalsIgnoreCase("connectionpool.freeConnections") ||
+            metricName.equalsIgnoreCase("connectionpool.waitTime.total") ||
+            metricName.equalsIgnoreCase("connectionpool.inUseTime.total") ||
+            metricName.equalsIgnoreCase("connectionpool.queuedRequests.total") ||
+            metricName.equalsIgnoreCase("connectionpool.usedConnections.total")) {
+            return metric;
+        }
+
         addNameToApplicationMap(MetricID);
         return metric;
     }

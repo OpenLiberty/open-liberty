@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,6 +129,7 @@ public class LibraryRefTest {
 	public void nonExistentLibrary() throws Exception {
 		server = serverNonExistentLibrary;
 		server.startServer();
+		server.waitForSSLStart();
 
 		// CWWKG0033W The value [<value>] specified for the reference attribute
 		// [libraryRef] was not found in the configuration.
@@ -216,6 +217,7 @@ public class LibraryRefTest {
 		}
 
 		server.startServer();
+		server.waitForSSLStart();
 
 		// CWMMC0014I emits that metrics is using libraryRef
 		Assert.assertNotNull("CWMMC0014I Not found",
@@ -276,6 +278,7 @@ public class LibraryRefTest {
 	public void externalMicrometerUselessJar() throws Exception {
 		server = serverMicrometerUseless;
 		server.startServer();
+		server.waitForSSLStart();
 
 		// CWMMC0014I emits that metrics is using libraryRef
 		Assert.assertNotNull("CWMMC0014I Not found",

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2024 IBM Corporation and others.
+ * Copyright (c) 2017,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,17 +29,19 @@ dependencies {
     'org.apache.directory.server:apacheds-service:2.0.0-M15',
     project(':com.ibm.ws.org.apache.directory.server'),
     project(':com.ibm.ws.security.registry'),
-    project(':com.ibm.ws.security.registry_test.servlet'),
     project(':com.ibm.ws.webcontainer.security_test.servlets')
 }
 
-autoFVT.doLast {
+autoFVT {
+  def apacheDirectoryProject = project(':com.ibm.ws.org.apache.directory.server')
+  doLast {
   /*
    * Copy the local ApacheDS LDAP instances. 
    */
   copy {
-    from project(':com.ibm.ws.org.apache.directory.server').projectDir
+    from apacheDirectoryProject.projectDir
     into autoFvtDir
     include 'apacheds-2.0.0-M15/**'
+  }
   }
 }

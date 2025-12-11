@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2020 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
+    version="7">
+  
+   <permission>
+   	   <class-name>javax.security.auth.AuthPermission</class-name>
+   	   <name>modifyPublicCredentials</name>
+   </permission>
+   
+   <permission>
+   	   <class-name>javax.security.auth.AuthPermission</class-name>
+   	   <name>createLoginContext.system.WEB_INBOUND</name>
+   </permission>
+
+</permissions>

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: A anota\u00e7\u00e3o Schedule, {0}, especifica um valor vazio para os segundos em que a tarefa \u00e9 executada. Especifique um valor n\u00e3o vazio para o campo seconds ou omita o campo seconds da anota\u00e7\u00e3o Schedule. A omiss\u00e3o do campo segundos programa a tarefa para ser executada no in\u00edcio do minuto.
+CWWKC1410.schedule.lacks.seconds.explanation=O valor vazio da matriz indica que o campo de segundos deve ser desconsiderado quando as horas programadas forem computadas. A omiss\u00e3o do campo segundos programa a tarefa para ser executada no in\u00edcio do minuto.
+CWWKC1410.schedule.lacks.seconds.useraction=Modifique o campo seconds da anota\u00e7\u00e3o Schedule para especificar um valor n\u00e3o vazio ou omita o campo seconds da anota\u00e7\u00e3o Schedule.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: O servidor n\u00e3o criou um bean {0} para a anota\u00e7\u00e3o {1} ou o elemento descritor de implanta\u00e7\u00e3o {2}. O elemento de anota\u00e7\u00e3o ou descritor de implanta\u00e7\u00e3o tem o nome {3} e os qualificadores {4} e \u00e9 definido no artefato do aplicativo {5}. O erro \u00e9 {6}
+CWWKC1411.qualified.res.err.explanation=O c\u00f3digo n\u00e3o criou o recurso ou n\u00e3o registrou o recurso como um bean.
+CWWKC1411.qualified.res.err.useraction=Certifique-se de que o recurso esteja configurado corretamente.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: O artefato do aplicativo {0} inclui v\u00e1rias defini\u00e7\u00f5es de recursos {1} que t\u00eam os qualificadores {2}. Os nomes das defini\u00e7\u00f5es de recursos {1} conflitantes s\u00e3o {3}.
+CWWKC1412.qualifier.conflict.explanation=Cada defini\u00e7\u00e3o de recurso do mesmo tipo que tenha um qualificador deve ter um qualificador diferente.
+CWWKC1412.qualifier.conflict.useraction=Certifique-se de que cada defini\u00e7\u00e3o de recurso do mesmo tipo tenha um qualificador diferente ou n\u00e3o tenha nenhum qualificador.

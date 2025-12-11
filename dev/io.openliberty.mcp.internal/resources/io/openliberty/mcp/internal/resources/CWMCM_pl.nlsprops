@@ -1,0 +1,153 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCM
+#COMPONENTNAMEFOR CWMCM MCP Server
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0001E.blank.arguments=CWMCM0001E: Metoda {0} narz\u0119dzia MCP ma jeden lub wi\u0119cej argument\u00f3w o pustych nazwach.
+CWMCM0001E.blank.arguments.explanation=Podano argumenty narz\u0119dzia MCP, ale brakowa\u0142o w nich nazw. Ka\u017cdy argument metody narz\u0119dziowej musi mie\u0107 nazw\u0119.
+CWMCM0001E.blank.arguments.useraction=Podaj niepuste warto\u015bci dla wszystkich wymaganych argument\u00f3w.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+CWMCM0002E.duplicate.arguments=CWMCM0002E: Metoda {0} narz\u0119dzia MCP ma wi\u0119cej ni\u017c jeden argument o nazwie {1}.
+CWMCM0002E.duplicate.arguments.explanation=Jeden lub wi\u0119cej argument\u00f3w ma t\u0119 sam\u0105 nazw\u0119. Ka\u017cdy argument metody narz\u0119dzia MCP musi mie\u0107 inn\u0105 nazw\u0119.
+CWMCM0002E.duplicate.arguments.useraction=Nadaj ka\u017cdemu argumentowi narz\u0119dzia inn\u0105 nazw\u0119.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+CWMCM0003E.missing.tool.argument.name=CWMCM0003E: Metoda {0} narz\u0119dzia MCP ma jeden lub wi\u0119cej argument\u00f3w bez okre\u015blonej nazwy.
+CWMCM0003E.missing.tool.argument.name.explanation=Nie podano jednej lub wi\u0119cej nazw argument\u00f3w narz\u0119dzi dla narz\u0119dzi MCP.
+CWMCM0003E.missing.tool.argument.name.useraction=Dodaj nazw\u0119 do @ToolArg adnotacji lub dodaj opcj\u0119 kompilatora -parameters, aby u\u017cy\u0107 nazwy parametru.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The list of qualified names of the tool
+CWMCM0004E.duplicate.tools=CWMCM0004E: Istnieje wiele metod narz\u0119dzia MCP o nazwie {0}. Metody s\u0105 {1} nast\u0119puj\u0105ce.
+CWMCM0004E.duplicate.tools.explanation=Jedna lub wi\u0119cej nazw narz\u0119dzi MCP pojawi\u0142a si\u0119 wielokrotnie. Serwer oczekuje jednej nazwy na narz\u0119dzie w celu zapewnienia unikalno\u015bci.
+CWMCM0004E.duplicate.tools.useraction=Podaj tylko unikaln\u0105 nazw\u0119 dla ka\u017cdego narz\u0119dzia MCP.
+
+# Used for server logging
+# do not translate MCP
+CWMCM0005E.validation.error=CWMCM0005E: Wyst\u0105pi\u0142 co najmniej jeden b\u0142\u0105d walidacji MCP. Szczeg\u00f3\u0142owe informacje znajduj\u0105 si\u0119 w dziennikach.
+CWMCM0005E.validation.error.explanation=Aplikacja nie mo\u017ce zosta\u0107 uruchomiona z powodu b\u0142\u0119d\u00f3w walidacji MCP.
+CWMCM0005E.validation.error.useraction=Szczeg\u00f3\u0142owe informacje znajduj\u0105 si\u0119 w dziennikach.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0006E.duplicate.special.arguments=CWMCM0006E: Narz\u0119dzie {0} MCP posiada wi\u0119cej ni\u017c jeden parametr typu {1}. W ka\u017cdej metodzie narz\u0119dzia nale\u017cy u\u017cywa\u0107 tylko jednego {1} parametru.
+CWMCM0006E.duplicate.special.arguments.explanation=Wyst\u0105pi\u0142o jedno lub wi\u0119cej specjalnych argument\u00f3w wielokrotnie, oczekiwane jest tylko jedno.
+CWMCM0006E.duplicate.special.arguments.useraction=Usu\u0144 dodatkowe instancje.
+
+# Used for server logging
+# {0} = The fully qualified method name
+# {1} = The parameter type simple name
+CWMCM0007E.invalid.arguments=CWMCM0007E: Narz\u0119dzie {0} MCP posiada parametr typu {1}, kt\u00f3ry nie jest rozpoznawanym specjalnym typem argumentu i nie posiada `@ToolArg` adnotacji.
+CWMCM0007E.invalid.arguments.explanation=Jeden lub wi\u0119cej parametr\u00f3w nie zosta\u0142o oznaczonych jako argumenty narz\u0119dzia i nie s\u0105 one rozpoznawane jako specjalne typy argument\u00f3w.
+CWMCM0007E.invalid.arguments.useraction=Sprawd\u017a, czy zaimportowano w\u0142a\u015bciw\u0105 klas\u0119 dla argumentu, czy te\u017c zamierza\u0142e\u015b do\u0142\u0105czy\u0107 @ToolArg.
+
+# Used as part of a response to a client
+# {0} = Request id
+CWMCM0008E.invalid.request.params=CWMCM0008E: \u017b\u0105danie o {0} identyfikatorze jest w trakcie realizacji.
+CWMCM0008E.invalid.request.params.explanation=\u017b\u0105danie o tym samym identyfikatorze jest w trakcie realizacji. \u017b\u0105dania od tego samego klienta musz\u0105 mie\u0107 unikalne identyfikatory.
+CWMCM0008E.invalid.request.params.useraction=U\u017cywaj unikalnego identyfikatora dla ka\u017cdego \u017c\u0105dania.
+
+# Used as part of a response to a client
+# do not translate GET, POST
+CWMCM0009I.get.disallowed=CWMCM0009I: \u017b\u0105dania GET nie s\u0105 obs\u0142ugiwane.
+CWMCM0009I.get.disallowed.explanation=Wys\u0142ano \u017c\u0105danie GET, ale ta funkcja nie jest obs\u0142ugiwana.
+CWMCM0009I.get.disallowed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# Used for server logging
+# {0} = tool name
+# {1} = exception details
+CWMCM0010E.internal.server.error.detailed=CWMCM0010E: Metoda {0} narz\u0119dzia wygenerowa\u0142a nieoczekiwany wyj\u0105tek. Wyj\u0105tek: {1}
+CWMCM0010E.internal.server.error.detailed.explanation=Metoda narz\u0119dzia wygenerowa\u0142a nieoczekiwany wyj\u0105tek.
+CWMCM0010E.internal.server.error.detailed.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# Used as part of a response to a client
+CWMCM0011E.internal.server.error=CWMCM0011E: Podczas uruchamiania narz\u0119dzia wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera.
+CWMCM0011E.internal.server.error.explanation=Serwer nie by\u0142 w stanie zrealizowa\u0107 \u017c\u0105dania wywo\u0142ania narz\u0119dzia.
+CWMCM0011E.internal.server.error.useraction=Sprawd\u017a, czy \u017c\u0105danie jest poprawne. Wi\u0119cej informacji na temat awarii mo\u017ce znajdowa\u0107 si\u0119 na serwerze messages.log.
+
+# Used for server logging
+# do not translate bean
+# {0} = bean error details
+# {1} = tool name
+CWMCM0012E.bean.release.fail=CWMCM0012E: Wyst\u0105pi\u0142 b\u0142\u0105d podczas zwalniania fasoli CDI po wywo\u0142aniu narz\u0119dzia {1}. B\u0142\u0105d: {0}
+CWMCM0012E.bean.release.fail.explanation=Podczas wywo\u0142ywania metody narz\u0119dziowej instancja fasoli CDI, kt\u00f3ra deklaruje t\u0119 metod\u0119, jest pobierana przed wywo\u0142aniem metody, a nast\u0119pnie zwalniana. Wyst\u0105pi\u0142 b\u0142\u0105d podczas zwalniania instancji fasoli.
+CWMCM0012E.bean.release.fail.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# Used for server logging and client response
+# do not translate MCP-Protocol-Version, MCP
+# {0} = List of supported MCP-Protocol-Version values
+CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Podano nieobs\u0142ugiwany nag\u0142\u00f3wek MCP-Protocol-Version. Obs\u0142ugiwane warto\u015bci: {0}
+CWMCM0013E.unsupported.mcp.http.version.explanation=Wersja protoko\u0142u w nag\u0142\u00f3wku MCP-Protocol-Version nie jest obs\u0142ugiwana przez serwer.
+CWMCM0013E.unsupported.mcp.http.version.useraction=U\u017cyj obs\u0142ugiwanej wersji protoko\u0142u.
+
+# Used as part of a response to a client
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+CWMCM0014E.unexpected.server.error=CWMCM0014E: Nieoczekiwany b\u0142\u0105d serwera. Metoda= {0} RequestURI={1 } RequestQuery={2 }
+CWMCM0014E.unexpected.server.error.explanation=Podczas przetwarzania \u017c\u0105dania wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d serwera. Nie mo\u017cna zrealizowa\u0107 \u017c\u0105dania.
+CWMCM0014E.unexpected.server.error.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0015E.unexpected.server.error.exception=CWMCM0015E: Nieoczekiwany b\u0142\u0105d serwera. Metoda= {0} RequestURI={1 } RequestQuery={2 }, Wyj\u0105tek: {3}
+CWMCM0015E.unexpected.server.error.exception.explanation=Podczas przetwarzania \u017c\u0105dania wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d serwera. Nie mo\u017cna zrealizowa\u0107 \u017c\u0105dania.
+CWMCM0015E.unexpected.server.error.exception.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
+
+# Used for server logging
+# {0} = ExceptionMessage
+CWMCM0016E.error.sending.response.exception=CWMCM0016E: Nieoczekiwany b\u0142\u0105d serwera. Wyj\u0105tek: {0}
+CWMCM0016E.error.sending.response.exception.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by wys\u0142ania odpowiedzi.
+CWMCM0016E.error.sending.response.exception.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# Used as part of a response to a client
+# do not translate jsonrpc
+# {0} = jsonrpc value
+jsonrpc.exception.validation.invalid.version=Pole jsonrpc musi by\u0107 obecne. Obecnie obs\u0142ugiwany jest 2.0 wy\u0142\u0105cznie JSONRPC.
+
+# Used as part of a response to a client
+jsonrpc.validation.empty.method=Pole metody jest puste.
+
+# Used as part of a response to a client
+# {0} = id value
+jsonrpc.exception.validation.empty.string.id=Pole id jest nieprawid\u0142owe. Id nie mo\u017ce by\u0107 puste, je\u015bli podano ci\u0105g znak\u00f3w.
+
+# Used as part of a response to a client
+jsonrpc.exception.validation.invalid.id.type=Typ id nie jest typem akceptowalnym. Identyfikator musi by\u0107 ci\u0105giem znak\u00f3w lub liczb\u0105 ca\u0142kowit\u0105.
+
+# Used as part of a response to a client
+jsonrpc.missing.params=\u017b\u0105danie nie zawiera \u017cadnych argument\u00f3w w parametrach.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.extra.arguments=Przekazano nast\u0119puj\u0105ce argumenty, ale nie znaleziono ich w metodzie: {0}.
+
+# Used as part of a response to a client
+# {0} = list of arguments
+jsonrpc.missing.arguments=Metoda oczekiwa\u0142a nast\u0119puj\u0105cych argument\u00f3w, ale nie zosta\u0142y one podane: {0}.

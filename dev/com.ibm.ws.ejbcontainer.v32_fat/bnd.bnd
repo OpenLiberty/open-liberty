@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2024, 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src,\
+	test-applications/JavaGlobalInjectIntoServletEJB.jar/src,\
+	test-applications/JavaGlobalInjectIntoServletWeb.war/src,\
+	test-applications/PassivationCapable.war/src,\
+	test-applications/SingletonLifecycleTx.war/src,\
+	test-applications/StatefulLifecycleTx.war/src
+
+fat.project: true
+
+tested.features: \
+	ejbLite-3.2,\
+	ejbHome-3.2,\
+	enterpriseBeansLite-4.0,\
+	enterpriseBeansHome-4.0,\
+	servlet-3.1,\
+	servlet-4.0,\
+	servlet-5.0,\
+	servlet-6.0,\
+	servlet-6.1
+
+-buildpath: \
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	io.openliberty.ejbcontainer.jakarta.fat_tools; version=latest

@@ -108,6 +108,8 @@ public class IfxPooledConnection implements PooledConnection {
                 int numberOfFailuresInt = testControl.getNumberOfFailuresInt();
                 System.out.println("SIMHADB: Stored column numberoffailures is: " + numberOfFailuresInt);
 
+                IfxConnection.setControl(testControl);
+
                 switch (testType) {
                     case STARTUP:
                         // We abuse the failovervalInt parameter. If it is set to

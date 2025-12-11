@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,7 +63,7 @@ public class HostnameVerificationTest extends FATServletClient {
         if (server != null) {
             // CWPKI0824E: SSL HANDSHAKE FAILURE:  Host name verification error while connecting to host [localhost].
             // CWPKI0063W: Hostname verification is disabled for mySSLConfigNoHNV. TLS/SSL connections do not check server identities to verify that the client is communicating with the correct server.
-            server.stopServer("CWWKE1102W", "CWPKI0824E", "CWPKI0063W");  //ignore server quiesce timeouts due to slow test machines
+            server.stopServer("CWWKO0801E", "CWWKE1102W", "CWPKI0824E", "CWPKI0063W");  //ignore server quiesce timeouts due to slow test machines
         }
     }
 

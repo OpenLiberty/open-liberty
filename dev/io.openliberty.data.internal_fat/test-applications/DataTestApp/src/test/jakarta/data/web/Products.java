@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,13 +30,21 @@ import jakarta.transaction.Transactional;
 /**
  * Repository interface for the unannotated Product entity, which has a UUID as the Id.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Products {
     @Delete
     void clear();
 
     @Query("DELETE FROM Product WHERE pk IN ?1")
     int discontinueProducts(Set<UUID> ids);
+
+    @Query("""
+                    WHERE description LIKE 'DISCOUNT^%:10' ESCAPE '^'
+                       OR description LIKE 'DISCOUNT~%:20' ESCAPE '~'
+                    ORDER BY price DESC,
+                             pk ASC
+                    """)
+    Stream<Product> discounted10or20Percent();
 
     @OrderBy("name")
     List<Product> findByNameLike(String namePattern);
@@ -51,7 +59,12 @@ public interface Products {
     @Query("DELETE FROM Product p WHERE p.name LIKE ?1")
     int purge(String namePattern);
 
-    @Query("UPDATE Product SET price = price - (?2 * price) WHERE name LIKE CONCAT('%', ?1, '%')")
+    @Query("""
+                    UPDATE Product
+                       SET price = price - (?2 * price),
+                           version = version + 1
+                     WHERE name LIKE CONCAT('%', ?1, '%')
+                    """)
     long putOnSale(String nameContains, float discount);
 
     @Query("SELECT name")
@@ -72,7 +85,7 @@ public interface Products {
     @Save
     Product[] saveMultiple(Product... p);
 
-    @Query("UPDATE Product SET price=?3 WHERE pk=?1 AND version=?2")
+    @Query("UPDATE Product SET price=?3, version=?2+1 WHERE pk=?1 AND version=?2")
     boolean setPrice(UUID pk,
                      long version,
                      float newPrice);

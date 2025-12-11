@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,12 +10,12 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.eclipse.platform:org.eclipse.equinox.region;1.5.100}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;org.eclipse.platform:org.eclipse.equinox.region;1.5.800}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -nouses=true
 
 -includeresource: \
-    @${repo;org.eclipse.platform:org.eclipse.equinox.region;1.5.100}
+    @\${repo;org.eclipse.platform:org.eclipse.equinox.region;1.5.800}
 
 -buildpath: \
-	org.eclipse.platform:org.eclipse.equinox.region;version=1.5.100
+	org.eclipse.platform:org.eclipse.equinox.region;version=1.5.800

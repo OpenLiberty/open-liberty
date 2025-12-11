@@ -17,12 +17,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.annotation.Resource;
+import javax.persistence.PersistenceUnit;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.UserTransaction;
+import javax.persistence.EntityManagerFactory;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -43,6 +45,9 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/HibernateSearchTestServlet")
 public class HibernateSearchTestServlet extends FATServlet {
+    @PersistenceUnit(unitName = "TestPU")
+    private EntityManagerFactory emf;
+
     @PersistenceContext(unitName = "TestPU")
     private EntityManager em;
 
@@ -70,4 +75,5 @@ public class HibernateSearchTestServlet extends FATServlet {
     public static void registerFieldBridgeCalled() {
         fieldBridgeCalled = true;
     }
+    
 }

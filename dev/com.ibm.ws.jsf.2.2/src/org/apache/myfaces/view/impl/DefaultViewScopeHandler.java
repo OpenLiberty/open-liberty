@@ -34,6 +34,8 @@ import org.apache.myfaces.config.annotation.LifecycleProviderFactory;
 import org.apache.myfaces.shared.util.SubKeyMap;
 import org.apache.myfaces.spi.ViewScopeProvider;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * Minimal implementation for view scope without CDI but always store
  * the beans into session.
@@ -68,7 +70,7 @@ public class DefaultViewScopeHandler extends ViewScopeProvider
         try
         {
             // try SHA1 first
-            rng = SecureRandom.getInstance("SHA1PRNG");
+            rng = SecureRandom.getInstance(CryptoUtils.SHA1PRNG);
         }
         catch (NoSuchAlgorithmException e)
         {

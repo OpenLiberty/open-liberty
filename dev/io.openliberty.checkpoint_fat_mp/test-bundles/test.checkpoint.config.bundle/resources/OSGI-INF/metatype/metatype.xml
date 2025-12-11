@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2023 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <Designate pid="checkpoint.pid">
+  <Object ocdref="checkpoint.pid"/>
+ </Designate>
+
+ <OCD id="checkpoint.pid" name="checkpoint.pid">
+  <AD id="a"        type="String" name="a"/>
+  <AD id="b"        type="String" name="b"/>
+  <AD id="c"        type="String" name="c"/>
+  <AD id="c"        type="String" name="c"/>
+  <AD id="password" type="String"  ibm:type="password" name="password" required="false"/>
+ </OCD>
+
+</metatype:MetaData>

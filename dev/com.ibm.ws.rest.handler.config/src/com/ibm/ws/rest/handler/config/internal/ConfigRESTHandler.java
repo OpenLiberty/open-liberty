@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017,2019 IBM Corporation and others.
+ * Copyright (c) 2017,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package com.ibm.ws.rest.handler.config.internal;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -518,7 +519,7 @@ public class ConfigRESTHandler extends ConfigBasedRESTHandler {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        response.getOutputStream().write(jsonString.getBytes("UTF-8"));
+        response.getOutputStream().write(jsonString.getBytes(StandardCharsets.UTF_8));
     }
 
     /**

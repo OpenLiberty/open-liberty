@@ -23,11 +23,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.security.common.TraceConstants;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class HashUtils {
 
     private static final TraceComponent tc = Tr.register(HashUtils.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
-    private static String DEFAULT_ALGORITHM = "SHA-256";
+    private static String DEFAULT_ALGORITHM = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
     private static Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
 
     /**

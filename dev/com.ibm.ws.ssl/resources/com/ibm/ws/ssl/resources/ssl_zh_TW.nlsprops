@@ -310,7 +310,7 @@ ssl.signer.local.truststore.list.CWPKI0307I=CWPKI0307I: \u4e0b\u5217\u672c\u7aef
 ssl.signer.local.truststore.list.CWPKI0307I.explanation=\u6b64\u8a0a\u606f\u50c5\u4f9b\u53c3\u8003\u7528\u3002
 ssl.signer.local.truststore.list.CWPKI0307I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
 # -------------------------------------------------------------------------------------------------
-ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: \u7cfb\u7d71\u4f7f\u7528\u4e0b\u5217 SHA \u6458\u8981\u4f86\u65b0\u589e\u7c3d\u7ae0\u8005\u5225\u540d {0} \u81f3\u672c\u7aef\u91d1\u9470\u5132\u5b58\u5eab {1}\uff1a{2}
+ssl.signer.add.to.local.truststore.CWPKI0308I=CWPKI0308I: \u7cfb\u7d71\u6b63\u5728\u5c07\u7c3d\u7f72\u8005\u5225\u540d {0} \u52a0\u5165\u672c\u6a5f\u5bc6\u9470\u5eab {1} \uff0c\u5176 {3} \u6458\u8981\u5982\u4e0b\uff1a {2}
 ssl.signer.add.to.local.truststore.CWPKI0308I.explanation=\u6b64\u8a0a\u606f\u50c5\u4f9b\u53c3\u8003\u7528\u3002
 ssl.signer.add.to.local.truststore.CWPKI0308I.useraction=\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002
 # -------------------------------------------------------------------------------------------------

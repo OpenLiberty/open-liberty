@@ -32,8 +32,11 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 })
 public class FATSuite extends TestContainerSuite {
 
+    private static final DockerImageName mongoDBImage = DockerImageName.parse("public.ecr.aws/docker/library/mongo:6.0.6")
+                    .asCompatibleSubstituteFor("mongo:6.0.6");
+
     @ClassRule
-    public static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:6.0.6"));
+    public static MongoDBContainer mongoDBContainer = new MongoDBContainer(mongoDBImage);
 
     /**
      * Pre-bucket execution setup.

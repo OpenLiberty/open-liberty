@@ -212,7 +212,14 @@ public abstract class JPAPUnitInfo implements PersistenceUnitInfo {
     {
         return ivApplInfo.getJPAComponent();
     }
-
+    
+    /**
+     * @return the ivArchivePuId
+     */
+    public JPAPuId getIvArchivePuId() {
+        return ivArchivePuId;
+    }
+    
     /**
      * Remove all leading and trailing white spaces comes from parsing <persistence-unit> in
      * persistence.xml.

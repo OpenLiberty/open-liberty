@@ -34,7 +34,7 @@
 		<localStore>
 			<client
 				name="client06"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client06"
 				redirect="http://localhost:${bvt.prop.security_1_HTTP_default}/oauthclient/redirect.jsp,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_Default_authnSessionDisabled_Default,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_Default_authnSessionDisabled_True,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_Default_authnSessionDisabled_False,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_True_authnSessionDisabled_Default,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_True_authnSessionDisabled_True,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_True_authnSessionDisabled_False,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_False_authnSessionDisabled_Default,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_False_authnSessionDisabled_True,http://localhost:${bvt.prop.security_3_HTTP_default}/oidcclient/redirect/expired_disableLTPACookie_False_authnSessionDisabled_False"
 				scope="ALL_SCOPES"

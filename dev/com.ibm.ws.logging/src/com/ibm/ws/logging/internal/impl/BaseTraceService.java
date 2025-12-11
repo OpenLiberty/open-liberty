@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +38,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -45,6 +48,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -79,8 +83,10 @@ import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.ws.logging.utils.FileLogHolder;
+import com.ibm.ws.logging.utils.LogThrottlingUtils;
 import com.ibm.ws.logging.utils.RecursionCounter;
 import com.ibm.ws.logging.utils.SequenceNumber;
+import com.ibm.ws.logging.utils.ThrottleState;
 import com.ibm.wsspi.collector.manager.SynchronousHandler;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
@@ -242,6 +248,9 @@ public class BaseTraceService implements TrService {
     /** The maximum FFDC file age before deletion. */
     private volatile long maxFfdcAge = -1;
 
+    /** The trace file name */
+    private volatile String traceFileName = "trace.log";
+
     /** Early msgs issued before MessageRouter is started. */
     protected volatile Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     protected volatile Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
@@ -275,6 +284,20 @@ public class BaseTraceService implements TrService {
 
     private static TraceComponent tc = Tr.register(BaseTraceService.class, NLSConstants.GROUP, NLSConstants.LOGGING_NLS);
 
+    private final static Map<String, ThrottleState> throttleStates = new ConcurrentHashMap<>();
+
+    private static int throttleMaxMessagesPerWindow = 1000; //Default throttleMaxMessagesPerWindow is 1000 and is configurable
+    private final static int throttleWindowDurationMS = 5 * 60 * 1000; //Default window duration is 5 minutes and not configurable
+    private static String throttleType = "messageID"; //Logs will be throttled based on messageID by default and this is configurable
+    private static int throttleMapSize = 500; //Internal attribute that is configurable
+
+    private static final long THROTTLE_TIME_BASED_CLEANUP_INTERVAL_MS = 10 * 1000;
+    private static final long THROTTLE_SIZE_BASED_CLEANUP_INTERVAL_MS = 15 * 1000;
+
+    private static long lastTimeBasedCleanupTime = 0;
+    private static long lastSizeBasedCleanupTime = 0;
+    private final static AtomicBoolean throttleWarningPrinted = new AtomicBoolean(false);
+
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
         boolean needsToOutputInternalPackageMarker = false;
@@ -292,10 +315,14 @@ public class BaseTraceService implements TrService {
     protected final static int BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD = ThreadLocalByteArrayOutputStream.getByteArrayOutputThreshold();
     public static boolean isStackTraceSingleEntryEnabled = false;
 
+    private static volatile Boolean isBetaEdition = null;
+    private static final AtomicBoolean betaCheckInitializing = new AtomicBoolean(false);
+
     /**
      * Called from Tr.getDelegate when BaseTraceService delegate is created
      */
     public BaseTraceService() {
+
         systemOut = new SystemLogHolder(LoggingConstants.SYSTEM_OUT, System.out);
         systemErr = new SystemLogHolder(LoggingConstants.SYSTEM_ERR, System.err);
 
@@ -338,6 +365,31 @@ public class BaseTraceService implements TrService {
         });
     }
 
+    public static Boolean betaFenceCheck() {
+        if (isBetaEdition != null)
+            return isBetaEdition;
+
+        //To prevent a StackOverflow error, we need to ensure only one thread runs the beta check block, otherwise the tr.info will be stuck in an infinite loop.
+        if (betaCheckInitializing.compareAndSet(false, true)) {
+            try {
+                if (isBetaEdition == null) {
+                    if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
+                        Tr.info(tc, "BETA: A beta method has been invoked for the class BaseTraceService for the first time.");
+                        isBetaEdition = true;
+                    } else {
+                        isBetaEdition = false;
+                    }
+
+                }
+
+                return isBetaEdition;
+            } finally {
+                betaCheckInitializing.set(false);
+            }
+        }
+        return isBetaEdition != null ? isBetaEdition : false;
+    }
+
     /**
      * {@inheritDoc} <p>
      * This is called at initialization time: The bootstrap/launcher uses reflection to
@@ -361,6 +413,9 @@ public class BaseTraceService implements TrService {
         captureSystemStreams();
         //Remove EMQ from BufferManager after a certain amount of time has passed
         BufferManagerEMQHelper.removeEMQByTimer();
+
+        LogThrottlingUtils.publish(this);
+
     }
 
     protected void registerLoggerHandlerSingleton() {
@@ -402,6 +457,8 @@ public class BaseTraceService implements TrService {
         checkpoint = trConfig.isCheckpoint();
         restore = trConfig.isRestore();
         if (restore) {
+            throttleWarningPrinted.set(false);
+            resetLogThrottling();
             registerLoggerHandlerSingleton();
             captureSystemStreams();
         }
@@ -446,6 +503,19 @@ public class BaseTraceService implements TrService {
         //Retrieve collectormgrPiplineUtils
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
+        }
+
+        throttleMaxMessagesPerWindow = trConfig.getThrottleMaxMessagesPerWindow();
+
+        if (throttleMaxMessagesPerWindow <= 0)
+            throttleMaxMessagesPerWindow = 0;
+
+        throttleMapSize = trConfig.getThrottleMapSize();
+
+        if (throttleType != trConfig.getThrottleType()) {
+            throttleType = trConfig.getThrottleType();
+            resetLogThrottling(); //We need to reset the throttleStates map when switching between throttleTypes.
+
         }
 
         //Sources
@@ -971,8 +1041,9 @@ public class BaseTraceService implements TrService {
         // Tee to messages.log (always)
 
         RoutedMessage routedMessage = null;
+        String message = null;
         if (externalMessageRouter.get() != null) {
-            String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
+            message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
             routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord);
         } else {
             routedMessage = new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), null, logRecord);
@@ -981,6 +1052,7 @@ public class BaseTraceService implements TrService {
         if (logSource != null) {
             publishToLogSource(routedMessage);
         }
+
         //send events to handlers
         if (TraceComponent.isAnyTracingEnabled()) {
             publishTraceLogRecord(detailLog, logRecord, NULL_ID, NULL_FORMATTED_MSG, NULL_FORMATTED_MSG);
@@ -1111,6 +1183,7 @@ public class BaseTraceService implements TrService {
      */
     @Override
     public void publishLogRecord(LogRecord logRecord) {
+
         String formattedMsg = null;
         String formattedVerboseMsg = null;
 
@@ -1118,17 +1191,23 @@ public class BaseTraceService implements TrService {
         int levelValue = level.intValue();
         TraceWriter detailLog = traceLog;
 
+        RoutedMessage routedMessage = null;
+
+        LogResult result = LogResult.LOG;
+
         if (levelValue >= Level.INFO.intValue()) {
             formattedMsg = formatter.formatMessage(logRecord);
             formattedVerboseMsg = formatter.formatVerboseMessage(logRecord, formattedMsg);
 
-            RoutedMessage routedMessage = null;
             if (externalMessageRouter.get() != null) {
                 String message = formatter.messageLogFormat(logRecord, formattedVerboseMsg);
                 routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, message, logRecord);
+
             } else {
                 routedMessage = new RoutedMessageImpl(formattedMsg, formattedVerboseMsg, null, logRecord);
+
             }
+
             // Look for external log handlers. They may suppress "normal" log
             // processing, which would prevent it from showing up in other logs.
             // This has to be checked in this method: direct invocation of system.out
@@ -1137,33 +1216,157 @@ public class BaseTraceService implements TrService {
             if (!logNormally)
                 return;
 
-            //If any messages configured to be hidden then those will not be written to console.log/message.log and redirected to trace.log.
-            if (isMessageHidden(formattedMsg)) {
-                publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
-                return;
-            }
+            //throttleMaxMessagesPerWindow must be a positive integer to be active. Setting to 0 disables log throttling.
+            if (throttleMaxMessagesPerWindow > 0 && betaFenceCheck()) {
+                if (routedMessage != null) {
+                    LogSource logSource = new LogSource();
+                    LogTraceData parsedMessage = logSource.parse(routedMessage);
+                    result = logLine(parsedMessage);
+                }
+            } else
+                result = LogResult.LOG;
 
-            /*
-             * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
-             * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
-             * However, LogstashCollector and BluemixLogCollector will receive all messages
-             */
+            if (result == LogResult.LOG) {
+                //If any messages configured to be hidden then those will not be written to console.log/message.log and redirected to trace.log.
+                if (isMessageHidden(formattedMsg)) {
+                    publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
+                    return;
+                }
 
-            // logSource only receives "normal" messages and messages that are not hidden.
-            if (logSource != null) {
-                publishToLogSource(routedMessage);
+                /*
+                 * Messages sent through LogSource will be received by MessageLogHandler and ConsoleLogHandler
+                 * if messageFormat and consoleFormat have been set to "json" and "message" is a listed source.
+                 * However, LogstashCollector and BluemixLogCollector will receive all messages
+                 */
+
+                // logSource only receives "normal" messages and messages that are not hidden.
+                if (logSource != null) {
+                    publishToLogSource(routedMessage);
+                }
             }
         }
-
         // ODD: note that formattedMsg and formattedVerboseMsg will both be NULL if
         // this message is NOT above INFO Level.  However I believe only INFO-Level + above
         // messages are sent to this method.  So the "if (INFO-Level)" check above is probably
         // unnecessary.
 
         // Proceed to trace processing for all other log records
-        if (TraceComponent.isAnyTracingEnabled()) {
-            publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
+        if (result == LogResult.LOG) {
+            if (TraceComponent.isAnyTracingEnabled()) {
+                publishTraceLogRecord(detailLog, logRecord, NULL_ID, formattedMsg, formattedVerboseMsg);
+            }
+
         }
+
+    }
+
+    public enum LogResult {
+        LOG, //Allow logs to be printed normally
+        THROTTLE //Throttle logs while the runningTotal of a certain message exceeds the configured throttleMaxMessagesPerWindow value
+    }
+
+    /*
+     * Determine if logs should be throttled or not.
+     */
+    public static LogResult logLine(Object event) {
+        String key = null;
+        String logType = null;
+
+        if (event instanceof LogTraceData) {
+            LogTraceData logData = (LogTraceData) event;
+            logType = "JUL";
+
+            if (throttleType.toLowerCase().equals("message"))
+                key = logData.getMessage();
+            else {
+                key = logData.getMessageId();
+            }
+        } else if (event instanceof String) {
+            String logEvent = (String) event;
+            logType = "SysOut";
+
+            if (throttleType.toLowerCase().equals("message"))
+                key = logEvent;
+            else {
+                key = getMessageId(logEvent);
+            }
+        }
+
+        long now = System.currentTimeMillis();
+
+        if (key != null) {
+
+            //Time-based cleanup runs maximum once every 10 seconds.
+            if (now - lastTimeBasedCleanupTime > THROTTLE_TIME_BASED_CLEANUP_INTERVAL_MS) {
+                timeBasedGarbageCollection(now);
+                lastTimeBasedCleanupTime = now;
+            }
+
+            //Size-based cleanup runs maximum once every 15 seconds and will only run when throttle map is full.
+            if (throttleStates.size() >= throttleMapSize) {
+                if (now - lastSizeBasedCleanupTime > THROTTLE_SIZE_BASED_CLEANUP_INTERVAL_MS) {
+                    sizeBasedGarbageCollection(now);
+                    lastSizeBasedCleanupTime = now;
+                }
+            }
+
+            ThrottleState state = throttleStates.get(key);
+
+            if (state == null) {
+                if (throttleStates.size() < throttleMapSize) {
+                    state = throttleStates.computeIfAbsent(key, k -> {
+                        return new ThrottleState(throttleWindowDurationMS, () -> throttleMaxMessagesPerWindow); //throttleMaxMessagesPerWindow can be updated dynamically so need to ensure that it's always updated
+                    });
+                    state.setLoggerType(logType);
+                } else {
+                    return LogResult.LOG;
+                }
+
+            }
+
+            if (state != null) {
+                boolean shouldSupress = state.increment();
+                if (shouldSupress) {
+                    //Print a warning once when throttling first occurs.
+                    if (!throttleWarningPrinted.get()) {
+                        throttleWarningPrinted.set(true);
+                        Tr.warning(tc, "LOG_THROTTLING_ACTIVE_WARNING");
+                    }
+                    return LogResult.THROTTLE;
+                }
+            }
+
+        }
+        return LogResult.LOG;
+    }
+
+    /*
+     * Delete any log entries that haven't been accessed over 5 minutes(the window duration) or if the runningTotal was reduced to 0.
+     */
+    private static void timeBasedGarbageCollection(long now) {
+        throttleStates.entrySet().removeIf(e -> (now - e.getValue().getLastAccessTime() > throttleWindowDurationMS) || (e.getValue().getRunningTotal() == 0));
+    }
+
+    /*
+     * When the Map is full, sort and remove the bottom 50 elements if the keys aren't currently being throttled.
+     */
+    private static final Object GC_LOCK = new Object();
+
+    private static void sizeBasedGarbageCollection(long now) {
+        synchronized (GC_LOCK) {
+            List<String> keysToRemove = throttleStates.entrySet().stream().sorted(Comparator.comparingLong(e -> e.getValue().getWeightedRunningTotal())).limit(50).filter(e -> e.getValue().getRunningTotal() < throttleMaxMessagesPerWindow).map(Map.Entry::getKey).collect(Collectors.toList());
+            keysToRemove.forEach(throttleStates::remove);
+        }
+    }
+
+    /*
+     * Clear and reset the throttling map and variables when checkpoint restore occurs and when messageType changes.
+     */
+    public void resetLogThrottling() {
+        //Empty throttleStates for checkpoint
+        throttleStates.clear();
+        lastTimeBasedCleanupTime = 0;
+        lastSizeBasedCleanupTime = 0;
     }
 
     /**
@@ -1251,6 +1454,7 @@ public class BaseTraceService implements TrService {
          * to trace emitted. We do not want any more pass-throughs.
          */
         try {
+
             if (!(counterForTraceSource.incrementCount() > 2)) {
                 if (logRecord != null) {
                     Level level = logRecord.getLevel();
@@ -1425,15 +1629,17 @@ public class BaseTraceService implements TrService {
     private void scheduleTimeBasedLogRollover(LogProviderConfigImpl config) {
         String rolloverStartTime = config.getRolloverStartTime();
         long rolloverInterval = config.getRolloverInterval();
+        String traceFileName = config.getTraceFileName();
 
-        //if the rollover has already been scheduled, cancel it
-        //this is either a reschedule, or a unschedule
+        // If the rollover has already been scheduled, cancel it
+        // This is either a reschedule, or a unschedule
         if (this.isLogRolloverScheduled) {
             //null and empty rolloverStartTime are the same
             if (rolloverStartTime == null)
                 rolloverStartTime = "";
-            //if neither of the rollover attributes change, return without rescheduling
-            if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval) {
+            // If neither of the rollover attributes change, return without rescheduling.
+            // Also, if the traceFileName attribute value did NOT change, return without rescheduling
+            if (this.rolloverStartTime.equals(rolloverStartTime) && this.rolloverInterval == rolloverInterval && this.traceFileName.equals(traceFileName)) {
                 return;
             } else {
                 timedLogRollover_Timer.cancel();
@@ -1478,6 +1684,7 @@ public class BaseTraceService implements TrService {
 
         this.rolloverStartTime = rolloverStartTime;
         this.rolloverInterval = rolloverInterval;
+        this.traceFileName = traceFileName; // Preserve the previous traceFileName, in order to check if the attribute changed.
 
         //parse startTimeField
         String[] hourMinPair = rolloverStartTime.split(":");
@@ -1517,7 +1724,14 @@ public class BaseTraceService implements TrService {
         }
         //schedule rollover
         timedLogRollover_Timer = new Timer(true);
-        TimedLogRoller tlr = new TimedLogRoller(messagesLog, traceLog);
+        TimedLogRoller tlr;
+        if (traceFileName.equals("stdout")) {
+            // If traceFileName is configured to stdout, that means there will be no trace.log to rollover,
+            // omit the trace.log, when scheduling the rollover.
+            tlr = new TimedLogRoller(messagesLog);
+        } else {
+            tlr = new TimedLogRoller(messagesLog, traceLog);
+        }
         timedLogRollover_Timer.scheduleAtFixedRate(tlr, firstRollover, rolloverInterval * 60000);
         this.isLogRolloverScheduled = true;
     }
@@ -1591,9 +1805,43 @@ public class BaseTraceService implements TrService {
         String sequenceNumber = getSequenceNumber();
         //indicate that we're using json fields
         int jsonKey = CollectorConstants.KEYS_JSON;
+        //get field names
+        List<String> LogTraceList = Arrays.asList(LogTraceData.NAMES_JSON);
+        Map<String, String> messageMap = new HashMap<>();
         //construct json header
         JSONObjectBuilder jsonBuilder = new JSONObject.JSONObjectBuilder();
+        //get field mappings
+        String fieldMappings = config.getjsonFields();
 
+        //apply json fields
+        if (fieldMappings != null && !fieldMappings.isEmpty() && fieldMappings != "") {
+            String[] keyValuePairs = fieldMappings.split(",");
+            for (String pair : keyValuePairs) {
+                pair = pair.trim();
+                if (pair.endsWith(":"))
+                    pair = pair + OMIT_FIELDS_STRING;
+
+                String[] entry = pair.split(":");
+                entry[0] = entry[0].trim();
+
+                if (entry.length == 2) {
+                    entry[1] = entry[1].trim();
+                    if (LogTraceList.contains(entry[0])) {
+                        messageMap.put(entry[0], entry[1]);
+                    }
+                } else if (entry.length == 3) {
+                    entry[1] = entry[1].trim();
+                    entry[2] = entry[2].trim();
+                    //add properties to their respective hashmaps and trim whitespaces
+                    if (CollectorConstants.MESSAGES_CONFIG_VAL.equals(entry[0])) {
+                        if (LogTraceList.contains(entry[1]) || entry[1].startsWith("ext_")) {
+                            messageMap.put(entry[1], entry[2]);
+                        }
+                    }
+                }
+            }
+        }
+        LogTraceData.newJsonLoggingNameAliasesMessage(messageMap);
         //@formatter:off
         jsonBuilder.addField(LogTraceData.getTypeKey(jsonKey, true), "liberty_message", false, false)
                    .addField(LogTraceData.getHostKey(jsonKey, true), serverHostName, false, true)
@@ -1645,9 +1893,10 @@ public class BaseTraceService implements TrService {
                         return InetAddress.getLocalHost().getCanonicalHostName();
                     }
                 });
-
             } catch (Exception e) {
-                e.printStackTrace();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "An exception occurred when retrieving the server hostname.", e);
+                }
                 serverHostName = "";
             }
         } else {
@@ -1781,6 +2030,9 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(String s) {
+            if (!shouldPrint(s))
+                return;
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(s);
@@ -1891,6 +2143,9 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(String s) {
+            if (!shouldPrint(s))
+                return;
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(s);
@@ -1989,7 +2244,11 @@ public class BaseTraceService implements TrService {
         @Override
         public void write(int b) throws IOException {
             threadLocal.get().write(b);
+        }
 
+        @Override
+        public void write(byte[] b, int off, int len) throws IOException {
+            threadLocal.get().write(b, off, len);
         }
 
         public void reset() {
@@ -2251,10 +2510,16 @@ public class BaseTraceService implements TrService {
             flhTrace = (FileLogHolder) trace;
         }
 
+        TimedLogRoller(TraceWriter messages) {
+            flhMessages = (FileLogHolder) messages;
+            // This means when traceFileName="stdout", there will be no trace.log file to rollover.
+            flhTrace = null;
+        }
+
         @Override
         public void run() {
             flhMessages.createStream(true);
-            if (TraceComponent.isAnyTracingEnabled()) {
+            if (flhTrace != null && TraceComponent.isAnyTracingEnabled()) {
                 flhTrace.createStream(true);
             }
         }
@@ -2312,4 +2577,53 @@ public class BaseTraceService implements TrService {
             return name.startsWith("ffdc_") && name.endsWith(".log");
         }
     };
+
+    public static Map<String, ThrottleState> getThrottleStates() {
+        return throttleStates;
+    }
+
+    public static int getThrottleMaxMessagesPerWindow() {
+        return throttleMaxMessagesPerWindow;
+    }
+
+    public static String getThrottleType() {
+        return throttleType;
+    }
+
+    public static int getThrottleMapSize() {
+        return throttleMapSize;
+    }
+
+    /*
+     * Helper method to check if logs should be throttled or not.
+     */
+    private static boolean shouldPrint(String s) {
+        if (throttleMaxMessagesPerWindow <= 0 || !betaFenceCheck())
+            return true;
+
+        return LogResult.LOG == logLine(s);
+    }
+
+    /*
+     * Get messageID given a String
+     */
+    public static String getMessageId(String s) {
+        String messageId;
+        String message = s;
+        if (message != null) {
+            messageId = parseMessageId(message);
+            return messageId;
+        }
+        return null;
+    }
+
+    protected static String parseMessageId(String msg) {
+        Pattern messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
+
+        String messageId = null;
+        Matcher matcher = messagePattern.matcher(msg);
+        if (matcher.find())
+            messageId = msg.substring(matcher.start(), matcher.end() - 1);
+        return messageId;
+    }
 }

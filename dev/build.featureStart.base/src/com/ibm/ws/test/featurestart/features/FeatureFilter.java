@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,7 +67,7 @@ public class FeatureFilter {
             // location variable.
             return "Required variable 'wmqJmsClient.rar.location' is not set";
 
-        } else if (shortName.indexOf("-") == -1 ) {
+        } else if (shortName.indexOf("-") == -1) {
             // Versionless features cannot run by themselves
             // Requires other features to be configured for it to resolve
             return "Cannot start by itself";
@@ -107,10 +107,11 @@ public class FeatureFilter {
     }
 
     /**
-     * Tell if a feature is a client-only feature.  Currently,
+     * Tell if a feature is a client-only feature. Currently,
      * features which have names which contain 'eeClient' or 'securityClient'
-     * are client-only features.  Those are 'jakartaeeClient' and
-     * 'securityClient'.
+     * are client-only features. Those are 'jakartaeeClient', 'javaeeClient' and
+     * 'securityClient'.  With EE 11 also added in xmlWSClient now that XML
+     * Web Services is not longer required by the platform.
      *
      * Previously, the test was against 'client', but that was incorrect.
      *
@@ -119,8 +120,8 @@ public class FeatureFilter {
      */
     public static boolean isClient(String shortName) {
         String upperShortName = shortName.toUpperCase();
-        return ( upperShortName.contains("EECLIENT") ||
-                 upperShortName.contains("SECURITYCLIENT") );
+        return (upperShortName.contains("EECLIENT") ||
+                upperShortName.contains("SECURITYCLIENT") ||
+                upperShortName.contains("XMLWSCLIENT"));
     }
 }
-

@@ -15,6 +15,9 @@ configurations {
   requiredLibs {
     transitive = false
   }
+  springLibs {
+    transitive = false
+  }
 }
 
 // Define G:A:V coordinates of each dependency
@@ -23,4 +26,22 @@ dependencies {
     'org.apache.httpcomponents.client5:httpclient5:5.0.2',
     'org.apache.httpcomponents.core5:httpcore5:5.0.2',
     project(':io.openliberty.org.apache.commons.codec')
+  springLibs 'org.springframework:spring-beans:6.1.14', 
+	'org.springframework:spring-context:6.1.14',
+	'org.springframework:spring-core:6.1.14',
+	'org.springframework:spring-expression:6.1.14',
+	'org.springframework:spring-web:6.1.14',
+	'org.springframework:spring-webmvc:6.1.14',
+	 project(':io.openliberty.org.apache.commons.logging')
 }
+
+task downloadSpringLibs(type: Copy) {
+  from configurations.springLibs
+  into new File(autoFvtDir, 'publish/shared/resources/spring')
+}
+
+addRequiredLibraries {
+  dependsOn downloadSpringLibs
+}
+
+

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,10 +129,6 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     @FFDCIgnore(MalformedURLException.class)
     public URL getResource() {
         String useRelPath = getRelativePath();
-
-        if ( (zipEntryData == null) || zipEntryData.isDirectory() ) {
-            useRelPath += "/";
-        }
 
         URI entryUri = rootContainer.createEntryUri(useRelPath);
         if ( entryUri == null ) {
@@ -340,8 +336,18 @@ public class ZipFileEntry implements ExtractableArtifactEntry {
     }
 
     @Trivial
-    public String getRelativePath() {
-        return a_path.substring(1); // Remove the leading '/'.
+    private String getRelativePath() {
+        if (zipEntryData != null) {
+            // If the zip entry data is available always use its source of truth
+            // for the relative path within the zip file.
+            String rPath = zipEntryData.r_getPath();
+            if (zipEntryData.isDirectory()) {
+                rPath += "/";
+            }
+            return rPath;
+        }
+        // Remove the leading '/' and assume this is a virtual directory with trailing '/'
+        return a_path.substring(1) + "/";
     }
 
     /**

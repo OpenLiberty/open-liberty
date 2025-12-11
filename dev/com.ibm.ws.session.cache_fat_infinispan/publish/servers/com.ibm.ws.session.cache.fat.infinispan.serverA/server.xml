@@ -20,6 +20,13 @@
         <feature>mpReactiveStreams-1.0</feature> <!-- Infinispan JARs have a hard dependency on Reactive Streams API -->
     </featureManager>
     
+
+    <logging traceSpecification="*=info:org.jgroups=all:org.infinispan.remoting.transport.jgroups=all"
+             consoleLogLevel="INFO"
+             traceFormat="BASIC"
+             maxFileSize="20"
+             maxFiles="10" />
+
     <include location="../fatTestPorts.xml"/>
     
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="10m"/>

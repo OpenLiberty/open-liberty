@@ -16,7 +16,6 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.Collections;
 
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -34,7 +33,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import suite.FATSuite;
 
 /**
  * These tests are designed to exercise the ability of the SQLMultiScopeRecoveryLog (transaction logs stored
@@ -129,11 +127,6 @@ public class FailoverTest2 extends FailoverTest {
                                                         "com.ibm.ws.transaction",
                                                         "com.ibm.ws.transaction_recover",
     };
-
-    @AfterClass
-    public static void afterSuite() {
-        FATSuite.afterSuite("WAS_TRAN_LOG", "WAS_PARTNER_LOG");
-    }
 
     @BeforeClass
     public static void setUp() throws Exception {

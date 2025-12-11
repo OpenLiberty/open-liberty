@@ -25,6 +25,8 @@ import java.security.NoSuchProviderException;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.security.Provider;
+import java.security.Security;
 import java.security.UnrecoverableKeyException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,6 +54,7 @@ import com.ibm.websphere.ssl.Constants;
 import com.ibm.websphere.ssl.JSSEProvider;
 import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.util.StreamHandlerUtils;
@@ -85,10 +88,8 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
     private static final WSPKCSInKeyStoreList pkcsStoreList = new WSPKCSInKeyStoreList();
     private static final Map<SSLConfig, SSLContext> sslContextCacheJAVAX = new HashMap<SSLConfig, SSLContext>();
-//    protected static final String URL_HANDLER_PROP = "java.protocol.handler.pkgs";
     private static final String PKGNAME_DELIMITER = "|";
 
-    public static String IBM_JCE_Plus_FIPS_PROVIDER = "com.ibm.crypto.provider.IBMJCEPlusFIPS";
     private static boolean handlersInitialized = false;
     private static Object _lockObj = new Object();
 
@@ -113,17 +114,26 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         this.keyStoreProvider = keyProvider;
         this.socketFactory = factory;
         this.defaultProtocol = protocolType;
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "defaultProtocol: " + defaultProtocol);
+        if (tc.isEntryEnabled()) {
+            Tr.entry(tc, "initialize ", keyMgr, trustMgr, cxtProvider, keyProvider);
         }
 
-        if (JavaInfo.isSystemClassAvailable(IBM_JCE_Plus_FIPS_PROVIDER))
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            String javaSecurityFile = AccessController.doPrivileged(new PrivilegedAction<String>() {
+                @Override
+                public String run() {
+                    return Security.getProperty("java.security.policy");
+                }
+            });
 
-        {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "jce plus fips available");
+            Tr.debug(tc, "java security policy file: " + javaSecurityFile);
+            Provider[] provider_list = Security.getProviders();
+            for (int i = 0; i < provider_list.length; i++) {
+                Tr.debug(tc, "Provider[" + i + "]: " + provider_list[i].getName() + ", info: " + provider_list[i].getInfo());
             }
+        }
+
+        if (CryptoUtils.isFips140_2Enabled() || CryptoUtils.isFips140_3Enabled()) {
             try {
                 com.ibm.ws.ssl.JSSEProviderFactory.initializeFips();
             } catch (Exception e) {
@@ -308,10 +318,13 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     private void getWSTrustmanager(List<TrustManager> tmHolder, Map<String, Object> connectionInfo, SSLConfig sslConfig) throws Exception {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.entry(tc, "getSSLContext", new Object[] { tmHolder, connectionInfo, sslConfig });
+            Tr.entry(tc, "getWSTrustmanager", new Object[] { tmHolder, connectionInfo, sslConfig });
 
         String direction = Constants.DIRECTION_UNKNOWN;
         String ctxtProvider = getSSLContextProperty(Constants.SSLPROP_CONTEXT_PROVIDER, sslConfig);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "ctxtProvider: " + ctxtProvider);
+        }
         String clientAuthentication = getSSLContextProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION, sslConfig);
         String trustStoreName = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE_NAME, sslConfig);
         String trustStoreLocation = getSSLContextProperty(Constants.SSLPROP_TRUST_STORE, sslConfig);
@@ -656,6 +669,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
         }
 
         // now generate a new SSLContext
+        //final String ctxtProvider = Constants.IBMJCEPlusFIPS_NAME;
         final String ctxtProvider = config.getProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
         final String alias = config.getProperty(Constants.SSLPROP_ALIAS);
         final String configURL = config.getProperty(Constants.SSLPROP_CONFIGURL_LOADED_FROM);
@@ -675,6 +689,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "protocol:  " + protocolVal);
+            Tr.debug(tc, "ctxtProvider:  " + ctxtProvider);
         }
 
         try {

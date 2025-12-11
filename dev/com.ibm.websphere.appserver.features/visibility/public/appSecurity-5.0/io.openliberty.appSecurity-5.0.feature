@@ -25,8 +25,7 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   io.openliberty.jakarta.authentication-3.0, \
   com.ibm.websphere.appserver.servlet-6.0, \
   com.ibm.websphere.appserver.eeCompatible-10.0, \
-  com.ibm.websphere.appserver.security-1.0, \
-  io.openliberty.securityAPI.jakarta-1.0, \
+  com.ibm.websphere.appserver.security-2.0, \
   io.openliberty.jakarta.security.enterprise-3.0, \
   io.openliberty.expressionLanguage-5.0, \
   io.openliberty.jsonp-2.1, \
@@ -39,6 +38,7 @@ Subsystem-Name: Application Security 5.0 (Jakarta Security 3.0)
   io.openliberty.org.apache.commons.codec, \
   io.openliberty.org.apache.commons.logging, \
   io.openliberty.security.common.internal, \
+  io.openliberty.security.javaeesec.internal.jakarta, \
   io.openliberty.security.jakartasec.2.0.internal, \
   io.openliberty.security.jakartasec.2.0.internal.cdi, \
   io.openliberty.security.oidcclientcore.internal.jakarta, \

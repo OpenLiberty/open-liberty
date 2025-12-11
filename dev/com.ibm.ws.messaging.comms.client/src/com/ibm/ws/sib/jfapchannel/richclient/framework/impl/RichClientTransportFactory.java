@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.richclient.framework.impl;
 
@@ -25,11 +22,9 @@ import com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;
 import com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain;
 import com.ibm.ws.sib.jfapchannel.netty.NettyNetworkConnectionFactory;
 import com.ibm.ws.sib.utils.ras.SibTr;
-import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.VirtualConnectionFactory;
 import com.ibm.wsspi.channelfw.exception.InvalidChainNameException;
 
-import io.openliberty.netty.internal.NettyFramework;
 
 /**
  * An implementation of com.ibm.ws.sib.jfapchannel.framework.NetworkTransportFactory. It is the

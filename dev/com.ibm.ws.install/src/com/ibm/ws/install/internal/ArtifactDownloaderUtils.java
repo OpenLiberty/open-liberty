@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,11 +19,14 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
+import java.net.Authenticator;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.PasswordAuthentication;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -41,6 +44,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.ibm.websphere.crypto.PasswordUtil;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.install.InstallConstants.VerifyOption;
 import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils.Messages;
@@ -112,20 +116,10 @@ public class ArtifactDownloaderUtils {
     public static int exists(String URLName, Map<String, Object> envMap, MavenRepository repository) throws IOException {
         try {
             URL url = new URL(URLName);
-            String proxyEncodedAuth = "";
-            if (url.getProtocol().equals("https") && envMap.get("https.proxyHost") != null) {
-                proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword"));
-            } else if (envMap.get("http.proxyHost") != null) {
-                proxyEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword"));
-            }
-
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             String repoEncodedAuth = ArtifactDownloaderUtils.getBasicAuthentication(repository.getUserId(), repository.getPassword());
             if (!repoEncodedAuth.isEmpty()) {
                 conn.setRequestProperty("Authorization", repoEncodedAuth);
-            }
-            if (!proxyEncodedAuth.isEmpty()) {
-                conn.setRequestProperty("Proxy-Authorization", proxyEncodedAuth);
             }
             conn.setRequestMethod("HEAD");
             conn.setConnectTimeout(10000);
@@ -162,8 +156,10 @@ public class ArtifactDownloaderUtils {
     }
 
     public static String getChecksum(String filename, String format) throws NoSuchAlgorithmException, IOException {
-        if (format.equals("SHA256")) {
-            format = "SHA-256";
+        if (format.equals(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256)) {
+            format = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+        } else if (format.equals(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512)) {
+            format = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512;
         }
         byte[] b = createChecksum(filename, format);
         String result = "";
@@ -270,7 +266,7 @@ public class ArtifactDownloaderUtils {
             } else if (repoResponseCode == 401 || repoResponseCode == 403) {
                 throw ExceptionUtils.createByKey("ERROR_INVALID_MAVEN_CREDENTIALS", repo);
             } else {
-                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN"); //503
+                throw ExceptionUtils.createByKey("ERROR_FAILED_TO_CONNECT_MAVEN", repo); //503
             }
         }
     }
@@ -307,10 +303,36 @@ public class ArtifactDownloaderUtils {
     }
 
     private static String base64Encode(String userInfo) {
-        try {
-            return Base64.getEncoder().encodeToString(userInfo.getBytes("UTF-8"));
-        } catch (UnsupportedEncodingException encodingException) {
-            throw new RuntimeException("Failed to get bytes for user info using UTF-8.", encodingException);
+        return Base64.getEncoder().encodeToString(userInfo.getBytes(StandardCharsets.UTF_8));
+    }
+
+    private static class SystemPropertiesProxyAuthenticator extends Authenticator {
+        PasswordAuthentication auth;
+
+        private SystemPropertiesProxyAuthenticator(String user, String password) {
+            auth = new PasswordAuthentication(user, PasswordUtil.passwordDecode(password).toCharArray());
+        }
+
+        @Override
+        protected PasswordAuthentication getPasswordAuthentication() {
+            return auth;
+        }
+    }
+
+    /**
+     * 'Proxy-Authorization' http header for proxy Basic authentication doesn't work with https urls.
+     *
+     * @param repository
+     * @throws MalformedURLException
+     */
+    public static void setProxyAuthenticator(Map<String, Object> envMap) throws MalformedURLException {
+        if (envMap == null) {
+            return;
+        }
+        if (envMap.get("https.proxyUser") != null) {
+            Authenticator.setDefault(new SystemPropertiesProxyAuthenticator((String) envMap.get("https.proxyUser"), (String) envMap.get("https.proxyPassword")));
+        } else if (envMap.get("http.proxyUser") != null) {
+            Authenticator.setDefault(new SystemPropertiesProxyAuthenticator((String) envMap.get("http.proxyUser"), (String) envMap.get("http.proxyPassword")));
         }
     }
 

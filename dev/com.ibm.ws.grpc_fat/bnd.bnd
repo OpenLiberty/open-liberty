@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2024 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,8 +10,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-grpcVersion=1.57.2
-nettyVersion=4.1.109.Final
+grpcVersion=1.69.0
+nettyVersion=4.2.7.Final
 
 
 src: \
@@ -77,7 +77,6 @@ tested.features:\
     com.ibm.websphere.org.eclipse.microprofile.config.1.4;version=latest,\
     com.ibm.websphere.org.eclipse.microprofile.rest.client.1.4;version=latest,\
     com.ibm.ws.org.apache.httpcomponents;version=latest, \
-    com.ibm.ws.org.slf4j.api;version=latest,\
     io.grpc:grpc-api;version=${grpcVersion},\
     io.grpc:grpc-census;version=${grpcVersion},\
     io.grpc:grpc-context;version=${grpcVersion},\
@@ -109,4 +108,5 @@ tested.features:\
     com.ibm.websphere.appserver.api.distributedMap;version=latest,\
     com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
     com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
-    io.openliberty.org.apache.xercesImpl;version=latest
+    io.openliberty.org.apache.xercesImpl;version=latest,\
+    com.ibm.ws.org.apache.commons.lang3;version=latest

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2012 IBM Corporation and others.
+ * Copyright (c) 2008, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,8 @@ package com.ibm.ejs.container;
 import java.lang.reflect.Method;
 import java.rmi.RemoteException;
 import java.util.Map;
+
+import javax.ejb.EJBException;
 
 import com.ibm.ejs.container.util.ExceptionUtil;
 import com.ibm.websphere.ras.Tr;
@@ -478,4 +480,21 @@ public class WSEJBWrapper extends EJSWrapperBase implements WSEJBEndpointManager
         return hasAroundInvoke;
     }
 
+    /**
+     * Returns an EJBException with the message text "See nested exception"
+     * and the specified cause, or the cause itself, if it is already an
+     * EJBException. <p>
+     *
+     * Included in this IBM API "internal" interface to provide the generated
+     * WSEJBProxy implementations access to EJB container internal code that
+     * provides this exception handling behavior. <p>
+     *
+     * @param cause the cause of the EJBException. If already an EJBException
+     *            it will just be returned; null is permitted.
+     * @returns an EJBException with appropriate nested exception, stack,
+     *          and message text.
+     **/
+    public static EJBException EJBException(Throwable cause) {
+        return ExceptionUtil.EJBException(cause);
+    }
 }

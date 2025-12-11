@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package io.openliberty.restfulWS.internal.ssl.component;
 
 import java.security.AccessController;
 import java.security.KeyStore;
+import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.Optional;
@@ -66,9 +67,20 @@ public class SslClientBuilderListener implements ClientBuilderListener {
         Object sslRef = clientBuilder.getConfiguration().getProperty(JAXRSClientConstants.SSL_REFKEY);
         try {
             SSLContext sslContext = ((ResteasyClientBuilder) clientBuilder).getSSLContext();
+            KeyStore keyStore = ((ResteasyClientBuilder) clientBuilder).getKeyStore();
+            KeyStore trustStore = ((ResteasyClientBuilder) clientBuilder).getTrustStore();
+            
+            boolean property = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+                @Override
+                public Boolean run() {
+                    return Boolean.parseBoolean(System.getProperty("io.openliberty.restfulws.prioritizeClientBuilderSSLConfig"));
+                }
+            });
             
             // don't override SSL config provided by the user
-            if (sslContext == null) {
+            if (!property && sslContext == null) { // default behavior
+                getSSLContext(toRefString(sslRef)).ifPresent(clientBuilder::sslContext);
+            } else if (property && sslContext == null && keyStore == null && trustStore == null) { // prioritize client API if System Property is set
                 getSSLContext(toRefString(sslRef)).ifPresent(clientBuilder::sslContext);
             }
         } catch (SSLException ex) {

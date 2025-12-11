@@ -41,7 +41,7 @@ public class OAuth2AuthCodeFlowTest extends BaseTestCase {
     protected static final String PUBLIC_CLIENT_ID = "key";
     protected static final String TESTUSER = "testuser";
     protected static final String CONF_CLIENT_ID = "key";
-    protected static final String CONF_CLIENT_SECRET = "secret";
+    protected static final String CONF_CLIENT_SECRET = "secret1234";
     protected static final String RESPONSE_TYPE_CODE = "code";
     protected static final String GRANT_TYPE_AZN_CODE = "authorization_code";
     protected static final String GRANT_TYPE_REFRESH = "refresh_token";

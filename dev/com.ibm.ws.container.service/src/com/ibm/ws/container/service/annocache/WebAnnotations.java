@@ -16,6 +16,7 @@ import java.util.List;
 
 import com.ibm.ws.container.service.annocache.FragmentAnnotations;
 import com.ibm.ws.container.service.annocache.ModuleAnnotations;
+import com.ibm.ws.container.service.annocache.internal.WebAnnotationsImpl;
 import com.ibm.ws.container.service.app.deploy.WebModuleInfo;
 import com.ibm.ws.container.service.config.WebFragmentInfo;
 import com.ibm.ws.container.service.config.WebFragmentsInfo;
@@ -162,4 +163,20 @@ public interface WebAnnotations extends ModuleAnnotations, com.ibm.ws.container.
      * @throws UnableToAdaptException Thrown by an error processing fragment paths.
      */
     FragmentAnnotations getFragmentAnnotations(WebFragmentInfo fragment) throws UnableToAdaptException;
+    
+    //
+    
+    /**
+     * Answer annotations targets generated from this web annotations, modified
+     * to remove locations not scanned by EJB.
+     * 
+     * Extra locations, if enabled, will be removed from the targets.
+     * 
+     * If extra locations are not enabled, answer these web annotations.
+     * 
+     * @return EJB annotation targets for this web module.
+     * 
+     * @throws UnableToAdaptException Thrown in case of an error.
+     */
+    WebAnnotations asEJBAnnotations() throws UnableToAdaptException;    
 }

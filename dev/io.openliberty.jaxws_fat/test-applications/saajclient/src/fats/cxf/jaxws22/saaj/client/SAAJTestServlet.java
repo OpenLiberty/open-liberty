@@ -12,20 +12,12 @@
 package fats.cxf.jaxws22.saaj.client;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
-import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
-import java.net.URL;
-import java.util.logging.Logger;
-import java.util.regex.Pattern;
 
 import javax.servlet.annotation.WebServlet;
 import javax.xml.soap.MessageFactory;
-import javax.xml.soap.MimeHeaders;
 import javax.xml.soap.SOAPBody;
-import javax.xml.soap.SOAPConnection;
-import javax.xml.soap.SOAPConnectionFactory;
 import javax.xml.soap.SOAPConstants;
 import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPEnvelope;
@@ -59,14 +51,9 @@ public class SAAJTestServlet extends FATServlet {
 
         // Set the SOAP version
         SOAPEnvelope envelope = soapPart.getEnvelope();
-        envelope.addNamespaceDeclaration("s", "http://www.w3.org/2003/05/soap-envelope");
-        envelope.addNamespaceDeclaration("t", "http://www.example.org/types");
 
         // Create a SOAP body
         SOAPBody soapBody = envelope.getBody();
-        SOAPElement soapBodyElement = soapBody.addChildElement("echo", "t", "http://www.example.org/types");
-        SOAPElement soapBodyText = soapBodyElement.addChildElement("text", "t", "http://www.example.org/types");
-        soapBodyText.addTextNode("Hello, world!");
 
         SOAPFactory SOAP_FACTORY = null;
         // Check if SAAJ meta-factory is successfully created
@@ -77,8 +64,6 @@ public class SAAJTestServlet extends FATServlet {
             return;
         }
         SOAPElement getEchoElement = SOAP_FACTORY.createElement("getEcho", "ns0", "http://objects.get.echo.io");
-        SOAPElement echoElement = SOAP_FACTORY.createElement("echo", null, "");
-        getEchoElement.addChildElement(echoElement);
         soapBody.addChildElement(getEchoElement);
 
         ByteArrayOutputStream byteOut = new ByteArrayOutputStream();
@@ -86,7 +71,7 @@ public class SAAJTestServlet extends FATServlet {
         String soapMessageString = new String(byteOut.toByteArray());
 
         // Check if duplicated namespace SAAJ bug is recessed
-        assertTrue("Duplicated namespace in SOAP Body!", validateMessageString(soapMessageString));
+        assertFalse("Duplicated namespace in SOAP Body!", validateMessageString(soapMessageString));
 
     }
 

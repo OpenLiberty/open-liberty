@@ -29,6 +29,8 @@ import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import com.ibm.websphere.simplicity.OperatingSystem;
+
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -96,6 +98,12 @@ public class JvmMetricsOtelCollectorTest {
         HttpRequest request = new HttpRequest(server, "/spanTest/waitForGarbageCollection");
         @SuppressWarnings("unused")
         String notUsed = request.run(String.class);
+
+        //JVM Metrics are not found on AIX. Upstream issue: https://bugs.openjdk.org/browse/JDK-8030957
+        OperatingSystem os = server.getMachine().getOperatingSystem();
+        if(os == OperatingSystem.AIX){
+            return;
+        }
 
         Thread.sleep(10000);
         assertEquals("pass", client.getJVMMetrics());

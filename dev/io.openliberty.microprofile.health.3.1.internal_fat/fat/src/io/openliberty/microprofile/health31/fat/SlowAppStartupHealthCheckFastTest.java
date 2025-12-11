@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import javax.json.JsonObject;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Assume;
 import org.junit.ClassRule;
 import org.junit.Test;
@@ -45,6 +46,7 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 @RunWith(FATRunner.class)
 public class SlowAppStartupHealthCheckFastTest {
@@ -62,6 +64,8 @@ public class SlowAppStartupHealthCheckFastTest {
     private final String APP_ENDPOINT = "/" + APP_NAME + "/DelayedServlet";
     final static String SERVER_NAME = "SlowAppStartupHealthCheckFast";
 
+    private final String LOG_PREFIX = ">>>>>>>>>>> ";
+
     @Server(SERVER_NAME)
     public static LibertyServer server1;
 
@@ -69,13 +73,15 @@ public class SlowAppStartupHealthCheckFastTest {
     public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
                                                              MicroProfileActions.MP70_EE10, // mpHealth-4.0 LITE
                                                              MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL
+                                                             HealthActions.MP41_MPHEALTH40, // mpHealth-4.0 FULL w/ MP41 EE8
+                                                             HealthActions.MP14_MPHEALTH40, // mpHealth-4.0 FULL w/ MP14 EE7
                                                              MicroProfileActions.MP41); // mpHealth-3.1 FULL
 
     public void setupClass(LibertyServer server, String testName) throws Exception {
         log("setupClass", testName + "Starting the server.");
 
         if (!server.isStarted())
-            server.startServer(false, false);
+            server.startServer(true, false);
 
         // Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");
@@ -103,6 +109,13 @@ public class SlowAppStartupHealthCheckFastTest {
         log("cleanUp", " - Removed the app? [" + flag + "]");
     }
 
+    @AfterClass
+    public static void tearDown() throws Exception {
+        // Once the tests and repeated tests are completed, ensure the server
+        // is fully stopped, in order to avoid conflicts with succeeding tests.
+        server1.stopServer(EXPECTED_FAILURES);
+    }
+
     /*
      * Test the Startup end point, as soon as the server starts. The startup end point will be continuously polled, until it returns a
      * 200 response code, once all the deployed applications have started. This test mimics how the Kubernetes Startup probe work.
@@ -111,7 +124,7 @@ public class SlowAppStartupHealthCheckFastTest {
     public void testStartupEndpointOnServerStart() throws Exception {
         setupClass(server1, "testStartupEndpointOnServerStart");
         deployApp(server1, "testStartupEndpointOnServerStart");
-        log("testReadinessEndpointOnServerStart", "Begin execution of testReadinessEndpointOnServerStart");
+        log("testReadinessEndpointOnServerStart", LOG_PREFIX + "Begin execution of testReadinessEndpointOnServerStart");
         server1.setMarkToEndOfLog();
         server1.stopServer(EXPECTED_FAILURES);
 
@@ -143,11 +156,12 @@ public class SlowAppStartupHealthCheckFastTest {
             Assume.assumeTrue(runTest); // Skip the test, if runTest is false.
 
             num_of_attempts += 1;
+            log("testStartupEndpointOnServerStart", LOG_PREFIX + "Attempt # : " + num_of_attempts);
 
             // Need to ensure the server is not finish starting when startup endpoint is hit so start the server on a separate thread
             // Note: this does not guarantee that we hit the endpoint during server startup, but it is highly likely that it will
             startServerThread = new StartServerOnThread();
-            log("testStartupEndpointOnServerStart", "Starting DelayedHealthCheck server on separate thread.");
+            log("testStartupEndpointOnServerStart", LOG_PREFIX + "Starting DelayedHealthCheck server on separate thread.");
             startServerThread.start();
 
             try {
@@ -160,6 +174,14 @@ public class SlowAppStartupHealthCheckFastTest {
 
                 // Repeatedly hit the readiness endpoint until a response of 200 is received
                 while (!app_started) {
+                    if (num_of_attempts == max_num_of_attempts) {
+                        log("testStartupEndpointOnServerStart",
+                            LOG_PREFIX + " Skipping test case due to multiple failed attempts in hitting the startup endpoint faster than the server can start.");
+                        startServerThread.join();
+                        runTest = false; // Skip the test.
+                        break;
+                    }
+
                     try {
                         conStarted = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, STARTED_ENDPOINT);
                         responseCode = conStarted.getResponseCode();
@@ -168,51 +190,49 @@ public class SlowAppStartupHealthCheckFastTest {
                             connectionExceptionEncountered = true;
                         }
                     } catch (SocketTimeoutException ste) {
-                        log("testStartupEndpointOnServerStart", "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
+                        log("testStartupEndpointOnServerStart", LOG_PREFIX + "Encountered a SocketTimeoutException. Retrying connection. Exception: " + ste.getMessage());
                         continue;
                     } catch (SocketException se) {
-                        log("testStartupEndpointOnServerStart", "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
+                        log("testStartupEndpointOnServerStart", LOG_PREFIX + "Encountered a SocketException. Retrying connection. Exception: " + se.getMessage());
                         continue;
                     }
 
                     // We need to ensure we get a connection refused in the case of the server not finished starting up
                     // We expect a connection refused as the ports are not open until server is fully started
                     if (first_time) {
-                        log("testStartupEndpointOnServerStart", "Testing the /health/started endpoint as the server is still starting up.");
+                        log("testStartupEndpointOnServerStart", LOG_PREFIX + "Testing the /health/started endpoint as the server is still starting up.");
                         String message = "The connection was not refused as required, but instead completed with response code: " + responseCode +
                                          " This is likely due to a rare timing issue where the server starts faster than we can hit the startup endpoint.";
 
                         if (conStarted == null && connectionExceptionEncountered) {
+                            log("testStartupEndpointOnServerStart",
+                                LOG_PREFIX + "Connection exception occurred for the first time, when the endpoint was hit really early on in the server startup cycle, retrying...");
                             first_time = false;
                         } else {
-                            if (num_of_attempts == max_num_of_attempts) {
-                                log("testStartupEndpointOnServerStart",
-                                    message + " Skipping test case due to multiple failed attempts in hitting the startup endpoint faster than the server can start.");
-                                startServerThread.join();
-                                runTest = false; // Skip the test.
-                                break;
-                            }
-
-                            log("testStartupEndpointOnServerStart", message + " At this point the test will be re-run. Number of current attempts ---> " + num_of_attempts);
+                            log("testStartupEndpointOnServerStart",
+                                LOG_PREFIX + message + " At this point the test will be re-run. Number of current attempts ---> " + num_of_attempts);
                             startServerThread.join();
-                            cleanUp();
+                            log("testStartupEndpointOnServerStart", LOG_PREFIX + " - Stopping the server, to re-run the test...");
+                            if ((server1 != null) && (server1.isStarted()))
+                                server1.stopServer(EXPECTED_FAILURES);
                             break; // We repeat the test case
                         }
                     } else {
                         if (responseCode == 200) {
-                            log("testStartupEndpointOnServerStart", "The /health/started endpoint response code was 200.");
+                            log("testStartupEndpointOnServerStart", LOG_PREFIX + "The /health/started endpoint response code was 200.");
                             app_started = true;
                             repeat = false;
                             startServerThread.join();
                         } else if (System.currentTimeMillis() - start_time > time_out) {
                             List<String> lines = server1.findStringsInFileInLibertyServerRoot("(CWWKZ0001I: Application " + APP_NAME + " started)+", MESSAGE_LOG);
+                            log("testStartupEndpointOnServerStart", LOG_PREFIX + "Exceeded time out, ensure application has started. lines = " + lines);
                             if (lines.size() == 0) {
-                                log("testStartupEndpointOnServerStart", "Waiting for Application to start.");
+                                log("testStartupEndpointOnServerStart", LOG_PREFIX + "Waiting for Application to start, after timed out.");
                                 String line = server1.waitForStringInLog("(CWWKZ0001I: Application " + APP_NAME + " started)+", time_out);
-                                log("testStartupEndpointOnServerStart", "Application started. Line Found : " + line);
+                                log("testStartupEndpointOnServerStart", LOG_PREFIX + "Application started. Line Found : " + line);
                                 assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
                             } else {
-                                log("testReadinessEndpointOnServerStart", "Application started but timeout still reached.");
+                                log("testReadinessEndpointOnServerStart", LOG_PREFIX + "Application started but timeout still reached.");
                                 throw new TimeoutException("Timed out waiting for server and app to be started. Timeout set to " + time_out + "ms.");
                             }
                         }
@@ -226,13 +246,13 @@ public class SlowAppStartupHealthCheckFastTest {
 
         }
 
-        log("testStartupEndpointOnServerStart", "Waiting for Application to start message, after Health check reports 200.");
+        log("testStartupEndpointOnServerStart", LOG_PREFIX + "Waiting for Application to start message, after Health check reports 200.");
         String line = server1.waitForStringInLog("(CWWKZ0001I: Application " + APP_NAME + " started)+", 60000);
         assertNotNull("The CWWKZ0001I Application started message did not appear in messages.log", line);
-        log("testSlowAppStartUpHealthCheck", "Application Started message found: " + line);
+        log("testSlowAppStartUpHealthCheck", LOG_PREFIX + "Application Started message found: " + line);
 
         // Access an application endpoint to verify the application is actually started
-        log("testStartupEndpointOnServerStart", "Testing an application endpoint, after server and application has started.");
+        log("testStartupEndpointOnServerStart", LOG_PREFIX + "Testing an application endpoint, after server and application has started.");
         conStarted = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, APP_ENDPOINT);
         assertEquals("The Response Code was not 200 for the following endpoint: " + conStarted.getURL().toString(), SUCCESS_RESPONSE_CODE,
                      conStarted.getResponseCode());

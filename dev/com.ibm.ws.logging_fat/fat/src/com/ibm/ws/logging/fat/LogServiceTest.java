@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public class LogServiceTest {
     private static final String KEY_THROW = "throw";
     private static final String KEY_SERVICE = "service";
     private static final String KEY_EVENT = "event";
+    private static final String KEY_CLASSLOAD = "classload";
 
     private static final String LEVEL_TRACE = "TRACE";
     private static final String LEVEL_DEBUG = "DEBUG";
@@ -122,12 +123,11 @@ public class LogServiceTest {
     }
 
     private static void event(String type) throws IOException {
-        StringBuilder urlBuilder = new StringBuilder();
-        urlBuilder.append("http://").append(server.getHostname()).append(':').append(server.getHttpDefaultPort());
-        urlBuilder.append("/logServiceTester/log?" + KEY_EVENT + "=" + type);
-        URL url = new URL(urlBuilder.toString());
-        String resp = HttpUtils.getHttpResponseAsString(url);
-        assertTrue("Unexpected resp: " + resp, resp.contains("DONE"));
+        callTestServlet(KEY_EVENT, type);
+    }
+
+    private static void classload(String className) throws IOException {
+        callTestServlet(KEY_CLASSLOAD, className);
     }
 
     private static void log(String msg, String level, String throwMsg, boolean includeService) throws IOException {
@@ -153,6 +153,15 @@ public class LogServiceTest {
             urlBuilder.append(param.getKey()).append('=').append(param.getValue());
             delim = '&';
         }
+        URL url = new URL(urlBuilder.toString());
+        String resp = HttpUtils.getHttpResponseAsString(url);
+        assertTrue("Unexpected resp: " + resp, resp.contains("DONE"));
+    }
+
+    private static void callTestServlet(String paramKey, String paramValue) throws IOException {
+        StringBuilder urlBuilder = new StringBuilder();
+        urlBuilder.append("http://").append(server.getHostname()).append(':').append(server.getHttpDefaultPort());
+        urlBuilder.append("/logServiceTester/log?" + paramKey + "=" + paramValue);
         URL url = new URL(urlBuilder.toString());
         String resp = HttpUtils.getHttpResponseAsString(url);
         assertTrue("Unexpected resp: " + resp, resp.contains("DONE"));
@@ -194,6 +203,36 @@ public class LogServiceTest {
         newPattern = newPattern.replace('\u202f', ' ');
         newPattern = newPattern.trim();
         return newPattern;
+    }
+
+    @Test
+    public void testFrameworkLoaderTrace() throws Exception {
+        setTraceSpecification("org.eclipse.osgi/debug/loader=all");
+        classload("org.osgi.framework.Bundle");
+        List<String> found = server.findStringsInLogsAndTraceUsingMark("LoggerName:org.eclipse.osgi/debug/loader");
+        assertFalse("Expected to find debug/loader LoggerName.", found.isEmpty());
+    }
+
+    @Test
+    public void testFrameworkLoaderPackagesTrace() throws Exception {
+        // test intentionally sets one pacakge to info and another to debug to make sure one doeesn't override the other
+        setTraceSpecification("org.eclipse.osgi/debug/loader/packages=debug:org.eclipse.osgi/debug/loader/packages/+/org.osgi.framework.wiring=debug:org.eclipse.osgi/debug/loader/packages/+/org.osgi.framework=info");
+
+        classload("org.osgi.framework.wiring.BundleWiring");
+        List<String> found = server.findStringsInLogsAndTraceUsingMark("LoggerName:org.eclipse.osgi/debug/loader/packages");
+        assertFalse("Expected to find debug/loader/packages LoggerName.", found.isEmpty());
+        // need to escape parenthises for regex here.  Expecting to not have trace for the org.osgi.framework package
+        found = server.findStringsInLogsAndTraceUsingMark("findClass\\(org.osgi.framework.wiring.BundleWiring\\)");
+        assertFalse("Expected to find debug for loading the BundleWiring class.", found.isEmpty());
+
+        server.setMarkToEndOfLog();
+        server.setMarkToEndOfLog(server.getConsoleLogFile());
+        server.setTraceMarkToEndOfDefaultTrace();
+
+        classload("org.osgi.framework.Filter");
+        // need to escape parenthises for regex here.  Expecting to not have trace for the org.osgi.framework package
+        found = server.findStringsInLogsAndTraceUsingMark("findClass\\(org.osgi.framework.Filter\\)");
+        assertTrue("Expected not to find debug for loading the Filter class.", found.isEmpty());
     }
 
     @Test

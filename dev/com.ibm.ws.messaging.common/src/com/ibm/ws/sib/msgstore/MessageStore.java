@@ -1,7 +1,7 @@
 package com.ibm.ws.sib.msgstore;
 
-/*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+/* ==============================================================================
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,8 @@ package com.ibm.ws.sib.msgstore;
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * ==============================================================================
+ */
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -319,4 +320,9 @@ public abstract class MessageStore implements Singleton, JsEngineComponent, JsMo
         _hasRedeliveryCountColumn = hasRedeliveryCountColumn;
     }
 
+    public final void stop(int mode) {
+        stop(mode, null);
+    }
+
+    public abstract void stop(int mode, Throwable reason);
 }

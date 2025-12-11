@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,9 @@ public class VersionlessServletToMicroProfileTest extends VersionlessTest {
 
     public static final String SERVER_NAME_SERVLET6_HEALTH = "Servlet6toHealth";
     public static final String SERVER_NAME_SERVLET6_METRICS = "Servlet6toMetrics";
+
+    public static final String SERVER_NAME_SERVLET61_HEALTH = "Servlet6_1toHealth";
+    public static final String SERVER_NAME_SERVLET61_METRICS = "Servlet6_1toMetrics";
 
     public static final String SERVER_JAKARTAEE8 = "jakartaee8";
 
@@ -94,6 +97,21 @@ public class VersionlessServletToMicroProfileTest extends VersionlessTest {
                      PlatformConstants.MICROPROFILE_ASCENDING,
                      new String[] { "mpMetrics-5.0" }, TestCase.NO_FAILURES, ALLOWED_ERRORS,
                      TestCase.JAVA_11),
+
+        new TestCase("servlet61HealthMax", SERVER_NAME_SERVLET61_HEALTH,
+                     PlatformConstants.MICROPROFILE_DESCENDING,
+                     new String[] { "mpHealth-4.0" }, TestCase.NO_FAILURES, ALLOWED_ERRORS),
+        new TestCase("servlet6HealthMin", SERVER_NAME_SERVLET61_HEALTH,
+                     PlatformConstants.MICROPROFILE_ASCENDING,
+                     new String[] { "mpHealth-4.0" }, TestCase.NO_FAILURES, ALLOWED_ERRORS),
+        new TestCase("servlet6MetricsMax", SERVER_NAME_SERVLET61_METRICS,
+                     PlatformConstants.MICROPROFILE_DESCENDING,
+                     new String[] { "mpMetrics-5.1" }, TestCase.NO_FAILURES, ALLOWED_ERRORS,
+                     TestCase.JAVA_17),
+        new TestCase("servlet6MetricsMin", SERVER_NAME_SERVLET61_METRICS,
+                     PlatformConstants.MICROPROFILE_ASCENDING,
+                     new String[] { "mpMetrics-5.1" }, TestCase.NO_FAILURES, ALLOWED_ERRORS,
+                     TestCase.JAVA_17),
 
         //JAKARTA8 TEST
         new TestCase("jakartaee8", SERVER_JAKARTAEE8, "",

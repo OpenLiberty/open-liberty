@@ -31,6 +31,7 @@ import com.ibm.ws.wsat.policy.WSATAssertionPolicyProvider;
 import com.ibm.ws.wsat.policy.WSATPolicyAwareInterceptor;
 import org.apache.cxf.transport.common.gzip.GZIPInInterceptor;
 import org.apache.cxf.transport.common.gzip.GZIPOutInterceptor;
+import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 public class WSATFeatureBusListener implements LibertyApplicationBusListener {
     private static final TraceComponent tc = Tr.register(
@@ -90,13 +91,16 @@ public class WSATFeatureBusListener implements LibertyApplicationBusListener {
         }
         AssertionBuilderRegistry reg = bus.getExtension(AssertionBuilderRegistry.class);
         if (reg != null) {
-            reg.registerBuilder(new WSATAssertionBuilder());
+            CheckpointPhase.onRestore(() -> reg.registerBuilder(new WSATAssertionBuilder()));
         }
 
         PolicyInterceptorProviderRegistry regIPR = bus.getExtension(PolicyInterceptorProviderRegistry.class);
         if (reg != null) {
-            WSATAssertionPolicyProvider _policyProvider = new WSATAssertionPolicyProvider();
-            regIPR.register(_policyProvider);
+            CheckpointPhase.onRestore(() -> {
+                WSATAssertionPolicyProvider _policyProvider = new WSATAssertionPolicyProvider();
+                regIPR.register(_policyProvider);
+            });
+            
         }
 
         if (addGzipInInterceptor)  {

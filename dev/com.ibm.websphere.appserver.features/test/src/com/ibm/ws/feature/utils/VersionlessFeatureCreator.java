@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package com.ibm.ws.feature.utils;
 
 import java.io.BufferedWriter;
@@ -6,11 +15,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class VersionlessFeatureCreator {
+
+    private Map<String, FeatureInfo> _featureRepo;
 
     private final String privatePath = "build/versionless/visibility/private/";
     private final String publicPath = "build/versionless/visibility/public/";
@@ -19,6 +31,10 @@ public class VersionlessFeatureCreator {
     private final String checkExistingPrivate = "visibility/private/";
 
     private final boolean createAll = false;
+
+    public VersionlessFeatureCreator(Map<String, FeatureInfo> featureRepo){
+        this._featureRepo = featureRepo;
+    }
 
     public boolean createFeatureFiles(VersionlessFeatureDefinition feature, VersionlessFeatureDefinition akaFeature) throws IOException {
         File priv = new File(privatePath);
@@ -55,6 +71,7 @@ public class VersionlessFeatureCreator {
         //  features[2] == the full name of the feature ex. com.ibm.ws.servlet-4.0
         if (feature.getAlsoKnownAs() == null) {
             for (String[] features : feature.getFeaturesAndPlatformAndKind()) {
+                
                 //Code for utilizing the ee/mp versions to add within the private feature defs
                 String[] dependencyVersions = feature.getAllDependencyVersions(features[0], features[1].split("-")[0]);
 
@@ -84,16 +101,16 @@ public class VersionlessFeatureCreator {
         return generatedNewFile;
     }
 
-    private boolean createPrivateVersionedFeature(String featureName, String akaFeatureName, String featureNum, String x, String y, String fullName,
+    private boolean createPrivateVersionedFeature(String featureName, String akaFeatureName, String featureNum, String mpVersionBaseName, String mpVersionTolerates, String fullName,
                                                   String edition, String kind) throws IOException {
         File checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + featureName + "-" + featureNum + ".feature");
         if (createAll) {
             //skip checking, just create the feature
-        } else if (checkExisting.exists()) {
+        } else if (checkExisting.exists() && validatePrivateLinkingFeature(featureName, featureNum, mpVersionBaseName, mpVersionTolerates, fullName)) {
             return false;
         } else if (akaFeatureName != null) {
             checkExisting = new File(checkExistingPrivate + "io.openliberty.internal.versionless." + akaFeatureName + "-" + featureNum + ".feature");
-            if (checkExisting.exists()) {
+            if (checkExisting.exists() && validatePrivateLinkingFeature(akaFeatureName, featureNum, mpVersionBaseName, mpVersionTolerates, fullName)) {
                 return false;
             }
         }
@@ -113,8 +130,8 @@ public class VersionlessFeatureCreator {
             writer.append("    io.openliberty.noShip-1.0, \\");
             writer.newLine();
         }
-        if (x != null && y != null) {
-            writer.append("    " + x + "-" + y + ", \\");
+        if (mpVersionBaseName != null && mpVersionTolerates != null) {
+            writer.append("    " + mpVersionBaseName + "-" + mpVersionTolerates + ", \\");
             writer.newLine();
         }
         writer.append("    " + fullName);
@@ -305,5 +322,47 @@ public class VersionlessFeatureCreator {
         }
 
         return null;
+    }
+
+    /*
+     * True if existing private linking feature has correct dependencies
+     * false if not
+     */
+    private boolean validatePrivateLinkingFeature(String featureName, String featureVersion, String mpVersionBase, String mpVersionTolerates, String versionedFeatureName) {
+        FeatureInfo feature = _featureRepo.get("io.openliberty.internal.versionless." + featureName + "-" + featureVersion);
+        if(feature == null){
+            return false;
+        }
+
+        File featureFile = feature.getFeatureFile();
+        boolean checkForMpVersion = (mpVersionBase != null);
+        boolean containsVersionedFeature = false;
+        boolean containsMpVersion = false;
+        try {
+            Scanner myReader = new Scanner(featureFile);
+            while (myReader.hasNextLine()) {
+                String s = myReader.nextLine();
+    
+                if(checkForMpVersion && s.trim().equals(mpVersionTolerates == null ? mpVersionBase : (mpVersionBase + "-" + mpVersionTolerates) + ", \\")){
+                    containsMpVersion = true;
+                }
+                else if(s.trim().equals(versionedFeatureName)){
+                    containsVersionedFeature = true;
+                }
+            }
+            myReader.close();
+        }
+        catch (Exception e) {
+            // We check if file exists before entering this function, should never reach this
+        }
+
+        if(checkForMpVersion && !containsMpVersion){
+            return false;
+        }
+        if(!containsVersionedFeature){
+            return false;
+        }
+
+        return true;
     }
 }

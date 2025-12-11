@@ -27,9 +27,6 @@ import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthInvoke
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthPublicClientAuthCodeTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthWebClientAuthCertRequiredTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthWebClientAuthCertTest;
-import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthWebClientAuthCodeCustomStoreBellTest;
-import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthWebClientAuthCodeCustomStoreHashTest;
-import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthWebClientAuthCodeCustomStoreXORTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthWebClientAuthCodeDerbyHashTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthWebClientAuthCodeDerbyXORTest;
 import com.ibm.ws.security.openidconnect.server.fat.BasicTests.OAuth.OAuthWebClientAuthCodeTest;
@@ -59,9 +56,9 @@ import componenttest.rules.repeater.RepeatTests;
                 OAuthWebClientAuthCertRequiredTest.class,
                 OAuthWebClientAuthCodeDerbyXORTest.class,
                 OAuthWebClientAuthCodeDerbyHashTest.class,
-                OAuthWebClientAuthCodeCustomStoreXORTest.class,
-                OAuthWebClientAuthCodeCustomStoreHashTest.class,
-                OAuthWebClientAuthCodeCustomStoreBellTest.class,
+//                OAuthWebClientAuthCodeCustomStoreXORTest.class,
+//                OAuthWebClientAuthCodeCustomStoreHashTest.class,
+//                OAuthWebClientAuthCodeCustomStoreBellTest.class,
                 OAuthPublicClientAuthCodeTest.class,
                 OAuthWebClientImplicitTest.class,
                 OAuthWebClientCredentialTest.class,

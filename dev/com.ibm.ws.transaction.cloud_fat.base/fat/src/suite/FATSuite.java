@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,11 +17,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
-
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.database.container.DatabaseContainerType;
 import tests.LongTranTest;
 import tests.Simple2PCCloudTest;
 
@@ -30,7 +27,7 @@ import tests.Simple2PCCloudTest;
                 Simple2PCCloudTest.class,
                 LongTranTest.class,
 })
-public class FATSuite extends TxTestContainerSuite {
+public class FATSuite {
 
     static String[] serverNames = new String[] {
                                                  "com.ibm.ws.transaction_CLOUD001",
@@ -39,10 +36,6 @@ public class FATSuite extends TxTestContainerSuite {
                                                  "peerPrecedenceServer1",
                                                  "com.ibm.ws.transaction_longtran",
     };
-
-    static {
-        beforeSuite(DatabaseContainerType.Derby);
-    }
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModificationInFullMode()

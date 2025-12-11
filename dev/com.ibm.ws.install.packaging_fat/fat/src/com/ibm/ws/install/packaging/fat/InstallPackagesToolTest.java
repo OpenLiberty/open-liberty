@@ -297,6 +297,38 @@ public abstract class InstallPackagesToolTest {
         return po1;
 
     }
+    
+    /**
+     * Install older test version of package. Only to be used as part of testing updates. If the older version of the package couldn't be installed, we will retry until a suitable number of attempts have occured.
+     *
+     * @param METHOD_NAME
+     * @param packageExt
+     * @return
+     * @throws Exception
+     */
+    protected static ProgramOutput retryInstallOldPackage(String METHOD_NAME, String packageExt) throws Exception {
+
+        ProgramOutput po = null;
+        int retries = 0;
+        
+        while (retries < 15) {
+            retries++;
+            
+            po = installOldPackage(METHOD_NAME, packageExt);
+            
+            if (po.getReturnCode() == 0) {
+                break;
+            }
+            
+            Thread.sleep(10000);
+        }
+        
+        return po;
+        
+
+    }
+    
+    
 
     /**
      * Install current version of package.
@@ -324,6 +356,36 @@ public abstract class InstallPackagesToolTest {
         }
 
         return po2;
+
+    }
+    
+    /**
+     * Install the current version of package. If the version of the package couldn't be installed, we will retry until a suitable number of attempts have occured.
+     *
+     * @param METHOD_NAME
+     * @param packageExt
+     * @return
+     * @throws Exception
+     */
+    protected static ProgramOutput retryInstallCurrentPackage(String METHOD_NAME, String packageExt) throws Exception {
+
+        ProgramOutput po = null;
+        int retries = 0;
+        
+        while (retries < 15) {
+            retries++;
+            
+            po = installCurrentPackage(METHOD_NAME, packageExt);
+            
+            if (po.getReturnCode() == 0) {
+                break;
+            }
+            
+            Thread.sleep(10000);
+        }
+        
+        return po;
+        
 
     }
 

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import com.ibm.ws.security.utility.IFileUtility;
 
@@ -28,6 +29,7 @@ public class FileUtility implements IFileUtility {
     static final String SLASH = String.valueOf(File.separatorChar);
     private final String WLP_USER_DIR;
     private final String WLP_OUTPUT_DIR;
+    private final String WLP_INSTALL_DIR;
 
     /**
      * Construct the FileUtility class based on the values for the various
@@ -35,12 +37,14 @@ public class FileUtility implements IFileUtility {
      * <p>
      * The supported environment variables are: WLP_USER_DIR and WLP_OUTPUT_DIR
      *
-     * @param WLP_USER_DIR The value of WLP_USER_DIR environment variable. {@code null} is supported.
+     * @param WLP_USER_DIR   The value of WLP_USER_DIR environment variable. {@code null} is supported.
      * @param WLP_OUTPUT_DIR The value of WLP_OUTPUT_DIR environment variable. {@code null} is supported.
+     * @param WLP_INSTALL_DIR The value of WLP_INSTALL_DIR environment variable. {@code null} is supported.
      */
-    public FileUtility(String WLP_USER_DIR, String WLP_OUTPUT_DIR) {
+    public FileUtility(String WLP_USER_DIR, String WLP_OUTPUT_DIR, String WLP_INSTALL_DIR) {
         this.WLP_USER_DIR = WLP_USER_DIR;
         this.WLP_OUTPUT_DIR = WLP_OUTPUT_DIR;
+        this.WLP_INSTALL_DIR = WLP_INSTALL_DIR;
     }
 
     /** {@inheritDoc} */
@@ -62,6 +66,16 @@ public class FileUtility implements IFileUtility {
             return WLP_USER_DIR + SLASH + "clients" + SLASH;
         } else {
             return System.getProperty("user.dir") + SLASH + "usr" + SLASH + "clients" + SLASH;
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getInstallDirectory() {
+        if (WLP_INSTALL_DIR != null) {
+            return WLP_INSTALL_DIR + SLASH;
+        } else {
+            return System.getProperty("user.dir") + SLASH;
         }
     }
 
@@ -126,10 +140,16 @@ public class FileUtility implements IFileUtility {
     /** {@inheritDoc} */
     @Override
     public boolean writeToFile(PrintStream stderr, String toWrite, File outFile) {
+        return writeToFile(stderr, toWrite, outFile, StandardCharsets.UTF_8);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean writeToFile(PrintStream stderr, String toWrite, File outFile, Charset charset) {
         FileOutputStream fos = null;
         try {
             fos = new FileOutputStream(outFile);
-            fos.write(toWrite.getBytes(Charset.forName("UTF-8")));
+            fos.write(toWrite.getBytes(charset));
             fos.flush();
             return true;
         } catch (FileNotFoundException e) {

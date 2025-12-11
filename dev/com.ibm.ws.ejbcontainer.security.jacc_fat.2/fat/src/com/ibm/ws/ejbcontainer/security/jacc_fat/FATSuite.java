@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,9 +51,8 @@ import componenttest.rules.repeater.RepeatTests;
                 PureAnnMergeConflictXMLBindingsTest.class, //Modified not to run the PureAnnTestBase and also removed from the lite bucket
 })
 public class FATSuite {
-    public static final Set<String> EE78_FEATURES;
-    private static final String[] EE78_FEATURES_ARRAY = {
-                                                          "appSecurity-1.0",
+    public static final Set<String> EE8_FEATURES;
+    private static final String[] EE8_FEATURES_ARRAY = {
                                                           "usr:jaccTestProvider-1.0"
     };
 
@@ -73,7 +72,7 @@ public class FATSuite {
     };
 
     static {
-        EE78_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE78_FEATURES_ARRAY)));
+        EE8_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE8_FEATURES_ARRAY)));
         EE9_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
         EE10_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_FEATURES_ARRAY)));
         EE11_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
@@ -83,7 +82,7 @@ public class FATSuite {
      * Run EE9 tests in LITE mode if Java 8, EE10 tests in LITE mode if >= Java 11, EE11 tests in LITE mode if >= Java 17 and run all tests in FULL mode.
      */
     public static RepeatTests defaultRepeat(String serverName) {
-        return RepeatTests.with(ee78Action(serverName, false).fullFATOnly())
+        return RepeatTests.with(ee8Action(serverName, false).fullFATOnly())
                         .andWith(ee9Action(serverName, false).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                         .andWith(ee10Action(serverName, false).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                         .andWith(ee11Action(serverName, false));
@@ -91,30 +90,30 @@ public class FATSuite {
 
     public static RepeatTests defaultAndCheckpointRepeat(String serverName) {
         return defaultRepeat(serverName)
-                        .andWith(ee78Action(serverName, true).fullFATOnly())
+                        .andWith(ee8Action(serverName, true).fullFATOnly())
                         .andWith(ee9Action(serverName, true).fullFATOnly())
                         .andWith(ee10Action(serverName, true).fullFATOnly())
                         .andWith(ee11Action(serverName, true));
     }
 
-    public static FeatureReplacementAction ee78Action(String serverName, boolean checkpointRepeat) {
+    public static FeatureReplacementAction ee8Action(String serverName, boolean checkpointRepeat) {
         FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE8Action() : new EE8FeatureReplacementAction();
-        return action.forServers(serverName).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).removeFeatures(EE11_FEATURES).addFeatures(EE78_FEATURES);
+        return action.forServers(serverName).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).removeFeatures(EE11_FEATURES).addFeatures(EE8_FEATURES);
     }
 
     public static FeatureReplacementAction ee9Action(String serverName, boolean checkpointRepeat) {
         FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE9Action() : new JakartaEE9Action();
-        return action.forServers(serverName).removeFeatures(EE78_FEATURES).removeFeatures(EE10_FEATURES).removeFeatures(EE11_FEATURES).addFeatures(EE9_FEATURES);
+        return action.forServers(serverName).removeFeatures(EE8_FEATURES).removeFeatures(EE10_FEATURES).removeFeatures(EE11_FEATURES).addFeatures(EE9_FEATURES);
     }
 
     public static FeatureReplacementAction ee10Action(String serverName, boolean checkpointRepeat) {
         FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE10Action() : new JakartaEE10Action();
-        return action.forServers(serverName).removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).removeFeatures(EE11_FEATURES).addFeatures(EE10_FEATURES);
+        return action.forServers(serverName).removeFeatures(EE8_FEATURES).removeFeatures(EE9_FEATURES).removeFeatures(EE11_FEATURES).addFeatures(EE10_FEATURES);
     }
 
     public static FeatureReplacementAction ee11Action(String serverName, boolean checkpointRepeat) {
         FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE11Action() : FeatureReplacementAction.EE11_FEATURES();
-        return action.forServers(serverName).removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).addFeatures(EE11_FEATURES);
+        return action.forServers(serverName).removeFeatures(EE8_FEATURES).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).addFeatures(EE11_FEATURES);
     }
 
 }

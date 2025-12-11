@@ -31,12 +31,12 @@ addRequiredLibraries.dependsOn addJakartaTransformer
  */
 def appBuildDir = "${buildDir}/test-application"
 
-
 /******************************************************************
  ** Copy feature bundles and applications to specific servers.
  **
  ******************************************************************/
- autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+autoFVT.dependsOn ':com.ibm.ws.webcontainer.security_test.servlets:war'
+
 autoFVT.doLast {
   
   /******************************************************************
@@ -104,5 +104,7 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/' + server + '/resources/security')
     include '**'
   }
-    
+  
+  def publishBaseDir = new File(autoFvtDir, 'publish') 
+  defaultCopyLTPAFIPSKeys(publishBaseDir)
 }

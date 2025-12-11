@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestConstants.NULL_TRACE_ID;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
@@ -47,6 +48,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
@@ -59,6 +61,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agentconfig.AgentConfigTestResource;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.TestUtils;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
@@ -73,6 +76,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
 @MaximumJavaLevel(javaLevel = 20)
+@SkipIfSysProp(OS_ZOS) //Agent119, 129, and 250 crashes on ZOS because it tries to read /proc as UTF-8
 public class AgentConfigTest {
 
     private static final String SERVER_NAME = "TelemetryAgentConfig";
@@ -80,8 +84,11 @@ public class AgentConfigTest {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
-    public static RepeatTests repeat = TelemetryActions.allMPRepeats(SERVER_NAME);
+    private static KeyPairs keyPairs = new KeyPairs(server);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),
+                                                                        keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(AgentConfigTest.class, "jaeger"));
+    public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
     public static RuleChain chain = RuleChain.outerRule(jaegerContainer).around(repeat);
@@ -90,12 +97,16 @@ public class AgentConfigTest {
 
     @BeforeClass
     public static void setup() throws Exception {
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
         if (RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP60_ID)) {
             server.copyFileToLibertyServerRoot("agent-119/opentelemetry-javaagent.jar");
-        } else {
+        } 
+        else if(RepeatTestFilter.isRepeatActionActive(MicroProfileActions.MP61_ID)){
             server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
+        }
+        else {
+            server.copyFileToLibertyServerRoot("agent-250/opentelemetry-javaagent.jar");
         }
 
         // Construct the test application
@@ -120,8 +131,14 @@ public class AgentConfigTest {
         // Env vars are cleared when the server starts, so we need to set the core ones up again
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
+        //The default OTLP protocol has been changed from grpc to http/protobuf in the Java Agent v2.5.0
+        server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_PROTOCOL, "grpc");
         server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
         server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
+
+        //Required for Java Agent 2.0.0+ to create Jax-Rs spans
+        server.addEnvVar("OTEL_INSTRUMENTATION_COMMON_EXPERIMENTAL_CONTROLLER_TELEMETRY_ENABLED", "true"); //otel.instrumentation.common.experimental.controller-telemetry.enabled=true)
+
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
     }
@@ -269,6 +286,8 @@ public class AgentConfigTest {
         server.addEnvVar("OTEL_INSTRUMENTATION_APACHE_HTTPCLIENT_ENABLED", "false");
         server.addEnvVar("OTEL_INSTRUMENTATION_HTTP_URL_CONNECTION_ENABLED", "false"); //For JaxRs 2.0 and 2.1
         server.addEnvVar("OTEL_INSTRUMENTATION_SERVLET_ENABLED", "false");
+        server.addEnvVar("OTEL_INSTRUMENTATION_NETTY_ENABLED", "false");
+
 
         server.startServer();
 

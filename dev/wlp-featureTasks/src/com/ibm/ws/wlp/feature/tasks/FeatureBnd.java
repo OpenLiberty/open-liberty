@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -391,6 +391,9 @@ public class FeatureBnd extends Task {
                         // next time round the loop we need to add a comma.
                         addComma = true;
 
+                        // FIPS 140-3: Algorithm assessment complete; no changes required.
+                        // MD5 is used for file comparison / checksums which isn't a cryptographic use case
+                        // We can't update the hashing algorithm used here because Ifix/ESA's only provide MD5 checksums
                         // need to store the checksum away.
                         checksums.put(inESA, MD5Utils.getFileMD5String(bundleFile));
                     } else {
@@ -466,6 +469,10 @@ public class FeatureBnd extends Task {
             //However, for a beta release we want GA and BETA features both.
             if (createESA && (kind.equals(createFor) || "ga".equals(kind))) {
                 Jar jar = builder.build();
+
+                // FIPS 140-3: Algorithm assessment complete; no changes required.
+                // MD5 is used for file comparison / checksums which isn't a cryptographic use case
+                // We can't update the hashing algorithm used here because Ifix/ESA's only provide MD5 checksums
                 checksums.put("OSGI-INF/SUBSYSTEM.MF", MD5Utils.getFileMD5String(manifest));
                 jar.putResource("OSGI-INF/checksums.cs", new PropertiesResource(checksums));
                 File file = new File(esaDir, featureSymbolicName + ".esa");

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2024 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -51,13 +51,17 @@ help.usage.options=\t{0} help [nazwa_akcji]
 #------------------------------\n at 72 chars Leading "\t"-------------\n\#
 encode.desc=\tZakoduj podany tekst.\n\n\tJe\u015bli Twoje has\u0142o zawiera znaki specjalne, musisz pomin\u0105\u0107 ka\u017cdy znak specjalny, aby mie\u0107 pewno\u015b\u0107, \u017ce has\u0142o zostanie poprawnie zakodowane.\n\tZnaki specjalne i znaki specjalne mog\u0105 si\u0119 r\u00f3\u017cni\u0107 w zale\u017cno\u015bci od systemu operacyjnego.\n\tNa przyk\u0142ad w systemach UNIX pa$$W0rd musi zosta\u0107 podane jako pa\\$\\$W0rd .\n\tWi\u0119cej informacji mo\u017cna znale\u017a\u0107 w dokumentacji kodowania narz\u0119dzia Open Liberty securityUtility .
 #Note to translator the word "encode" should not be translated
-encode.usage.options=\t{0} encode [opcje]
-encode.option-key.text=\ \ \ \ tekst_do_zakodowania
-encode.option-desc.text=\tJe\u015bli nie zostan\u0105 podane \u017cadne argumenty, narz\u0119dzie przejdzie w tryb\n\tinteraktywny. W przeciwnym razie zakodowany zostanie podany tekst.\n\tJe\u015bli tekst zawieraj\u0105cy spacje ma by\u0107 podany jako argument,\n\tnale\u017cy go uj\u0105\u0107 w cudzys\u0142\u00f3w.
+encode.usage.options=\t{0} encode [options] textToEncode
+encode.option-key.1.text=\ \ \ \ textToEncode
+encode.option-desc.1.text=\tJe\u015bli nie podano \u017cadnych argument\u00f3w, narz\u0119dzie przejdzie w tryb interaktywny w przeciwnym razie podany tekst zostanie zakodowany.\n\tTekst ze spacjami musi by\u0107 w pe\u0142ni cytowany, je\u015bli zosta\u0142 podany jako argument.
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
-encode.option-desc.encoding=\tOkre\u015bl spos\u00f3b kodowania has\u0142a. Obs\u0142ugiwane kodowania to xor, aes\n\ti hash. Kodowanie domy\u015blne to xor. {2}
+encode.option-desc.encoding=\tOkre\u015bla spos\u00f3b kodowania has\u0142a. Obs\u0142ugiwane kodowania to xor, aes, aes-128, i hash. Kodowanie domy\u015blne to xor. Aes szyfruje przy u\u017cyciu klucza aes-256 bit.\n\taes-128 mo\u017ce by\u0107 u\u017cywana w celu zapewnienia kompatybilno\u015bci z wersjami serwera sprzed 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[klucz]
-encode.option-desc.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany w przypadku kodowania AES. \n \tTen \u0142a\u0144cuch zostanie przetworzony przy u\u017cyciu funkcji mieszaj\u0105cej\n\tw celu uzyskania klucza szyfrowania u\u017cywanego do szyfrowania\n\ti deszyfrowania has\u0142a. Ten klucz mo\u017cna udost\u0119pni\u0107 dla serwera,\n\tdefiniuj\u0105c zmienn\u0105 wlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105\n\tb\u0119dzie ten klucz. Je\u015bli ta opcja nie zostanie podana, powinien zosta\u0107\n\tu\u017cyty klucz domy\u015blny.
+encode.option-desc.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany podczas kodowania AES.\\n Ten ci\u0105g znak\u00f3w b\u0119dzie hashowany w celu utworzenia klucza szyfrowania, kt\u00f3ry jest u\u017cywany do szyfrowania i odszyfrowania has\u0142a. Klucz mo\u017ce by\u0107 dostarczony do serwera poprzez definiuj\u0105c zmienn\u0105 wlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105 jest klucz key. Je\u015bli ta opcja nie zostanie podana, powinien zosta\u0107\\n\n\\tu\u017cyty klucz domy\u015blny.
+encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
+encode.option-desc.base64Key=\tKlucz Base64-encodedAES-256 ma s\u0142u\u017cy\u0107 do szyfrowania i deszyfrowania\nhas\u0142a. Podaj ten klucz serwerowi, definiuj\u0105c zmienn\u0105\nwlp.aes.encryption.key. Je\u015bli --base64Key jest\nokre\u015blone, to --aesConfigFile i --key nie mog\u0105 by\u0107 okre\u015blone.
+encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+encode.option-desc.aesConfigFile=\tPlik w\u0142a\u015bciwo\u015bci XML lub Java ze zmienn\u0105 o nazwie wlp.password.encryption.key lub wlp.aes.encryption.key z prawid\u0142owymi warto\u015bciami. Obie zmienne nie mog\u0105 by\u0107 okre\u015blone w tym samym pliku.\n\tJe\u015bli okre\u015blono --aesConfigFile, nie mo\u017cna okre\u015bli\u0107 --key i --base64Key.
 encode.option-key.notrim=\ \ \ \ --notrim
 encode.option-desc.notrim=\tOkre\u015bl, czy znaki spacji s\u0105 usuwane z pocz\u0105tku i ko\u0144ca\n\tokre\u015blonego tekstu. Je\u015bli ta opcja jest okre\u015blona, podany tekst\n\tzostanie zakodowany w postaci niezmienionej.\n\tJe\u015bli ta opcja nie zostanie podana, spacje na pocz\u0105tku i na ko\u0144cu\n\tpodanego tekstu zostan\u0105 usuni\u0119te. 
 encode.option-key.listCustom=\ \ \ \ --listCustom
@@ -113,6 +117,11 @@ sslCert.option-key.ext=\ \ \ \ --extInfo=informacje o rozszerzeniu certyfikatu
 sslCert.option-desc.ext=\tInformacje o rozszerzeniu certyfikatu, kt\u00f3re maj\u0105 zosta\u0107 dodane do certyfikatu.\n\tDomy\u015blnym rozszerzeniem jest wpis alternatywnej nazwy tematu u\u017cywaj\u0105cy \n\tnazwy hosta. Sk\u0142adnia tej opcji jest taka sama, jak\n\t opcji -ext komendy Jave Keytool. Tej opcji mo\u017cna u\u017cy\u0107 wiele razy w komendzie\n 
 #line.
 
+sslCert.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+sslCert.option-desc.passwordBase64Key=\tKlucz Base64-encodedAES-256 ma s\u0142u\u017cy\u0107 do szyfrowania i deszyfrowania\nhas\u0142a. Podaj ten klucz serwerowi, definiuj\u0105c zmienn\u0105\nwlp.aes.encryption.key. Je\u015bli okre\u015blono opcj\u0119 --passwordBase64Key,\nnie mo\u017cna okre\u015bli\u0107 opcji --aesConfigFile--passwordKey lub.
+sslCert.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+sslCert.option-desc.aesConfigFile=\tPlik w\u0142a\u015bciwo\u015bci XML lub Java ze zmienn\u0105 o nazwie wlp.password.encryption.key lub wlp.aes.encryption.key z prawid\u0142owymi warto\u015bciami. Obie zmienne nie mog\u0105 by\u0107 okre\u015blone w tym samym pliku.\n\tJe\u015bli podano --aesConfigFile, w\u00f3wczas --passwordBase64Key i --passwordKey nie mog\u0105 by\u0107 okre\u015blone.
+
 # -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -134,6 +143,10 @@ createLTPAKeys.option-key.password.encoding=\ \ \ \ --passwordEncoding=[xor|aes]
 createLTPAKeys.option-desc.password.encoding=\tOkre\u015bl spos\u00f3b kodowania has\u0142a kluczy LTPA w pliku server.xml.\n\tObs\u0142ugiwane s\u0105 kodowania xor i aes. Kodowanie domy\u015blne to xor. \n\tU\u017cyj komendy --listCustom kodowania securityUtility, aby sprawdzi\u0107\n\tczy s\u0105 dost\u0119pne dodatkowe szyfrowania niestandardowe.
 createLTPAKeys.option-key.password.key=\ \ \ \ --passwordKey=[klucz]
 createLTPAKeys.option-desc.password.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany do kodowania has\u0142a kluczy LTPA\n\tza pomoc\u0105 algorytmu AES. Ten \u0142a\u0144cuch zostanie przetworzony przy\n\tu\u017cyciu funkcji mieszaj\u0105cej w celu uzyskania klucza szyfrowania\n\tu\u017cywanego do szyfrowania i deszyfrowania has\u0142a. Ten klucz mo\u017cna\n\tudost\u0119pni\u0107 na serwerze, definiuj\u0105c zmienn\u0105\n\twlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105 b\u0119dzie ten klucz.\n \tJe\u015bli ta opcja nie zostanie podana, powinien zosta\u0107 u\u017cyty klucz\n\tdomy\u015blny.
+createLTPAKeys.option-key.passwordBase64Key=\ \ \ \ --passwordBase64Key=base64Key
+createLTPAKeys.option-desc.passwordBase64Key=\tKlucz Base64-encodedAES-256 ma s\u0142u\u017cy\u0107 do szyfrowania i deszyfrowania\nhas\u0142a. Podaj ten klucz serwerowi, definiuj\u0105c zmienn\u0105\nwlp.aes.encryption.key. Je\u015bli okre\u015blono opcj\u0119 --passwordBase64Key,\nnie mo\u017cna okre\u015bli\u0107 opcji --aesConfigFile--passwordKey lub.
+createLTPAKeys.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile
+createLTPAKeys.option-desc.aesConfigFile=\tPlik w\u0142a\u015bciwo\u015bci XML lub Java ze zmienn\u0105 o nazwie wlp.password.encryption.key lub wlp.aes.encryption.key z prawid\u0142owymi warto\u015bciami. Obie zmienne nie mog\u0105 by\u0107 okre\u015blone w tym samym pliku.\n\tJe\u015bli podano --aesConfigFile, w\u00f3wczas --passwordBase64Key i --passwordKey nie mog\u0105 by\u0107 okre\u015blone.
 
 # -------- tlsProfiler OPTIONS ------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
@@ -152,3 +165,48 @@ tlsProfiler.option-key.file=\ \ \ \ --file
 tlsProfiler.option-desc.file=\tOpcjonalna. Wynik zostanie zapisany do podanego pliku \n\tzamiast na ekran konsoli.
 tlsProfiler.option-key.verbose=\ \ \ \ --verbose
 tlsProfiler.option-desc.verbose=\tUwzgl\u0119dnij dodatkowe informacje o niezabezpieczonych protoko\u0142ach.
+
+# -------- CONFIGURE FIPS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\# 
+configureFIPS.desc=\tSkonfiguruj FIPS 140-3 w oparciu o instalacj\u0119 Java skonfigurowan\u0105 przez zmienne \u015brodowiskowe JAVA_HOME, JRE_HOME lub WLP_DEFAULT_JAVA_HOME, w tej kolejno\u015bci. Je\u015bli \u017caden nie zosta\u0142 skonfigurowany, FIPS 140-3 jest konfigurowany na podstawie maszyny JVM u\u017cytej do uruchomienia polecenia securityUtility. Polecenie konfiguruje FIPS 140-3 dla IBM Semeru Runtimes lub IBM SDK, lub zwraca b\u0142\u0105d, je\u015bli nie mo\u017cna okre\u015bli\u0107 \u017cadnego z nich.\n\n\tDla IBM Semeru Runtimes: Tworzy plik zawieraj\u0105cy niestandardowy profil FIPS 140-3 do u\u017cytku przez aplikacj\u0119 aplikacj\u0119, kt\u00f3ry rozszerza profil Liberty FIPS140-3-Liberty, kt\u00f3ry rozszerza profil IBM Semeru Runtimes FIPS140-3-Strongly-Enforced profile. Ponadto, tworzy lub aktualizuje default.env, server.env, lub client.env aby w\u0142\u0105czy\u0107 FIPS 140-3 poprzez ustawienie zmiennej \u015brodowiskowej ENABLE_FIPS140_3 na \u015bcie\u017c\
+    k\u0119 do pliku profilu niestandardowego.\n\n\tDla IBM SDK: Tworzy lub aktualizuje plik default.env, server.env lub client.env w celu w\u0142\u0105czy\u0107 FIPS 140-3 poprzez ustawienie zmiennej \u015brodowiskowej ENABLE_FIPS140_3 na warto\u015b\u0107 true.
+
+configureFIPS.usage.options=\t{0} configureFIPS [opcje]
+
+configureFIPS.option-key.1.server=\ \ \ \ --server =nazwa
+
+configureFIPS.option-desc.1.server=\tSerwer, dla kt\u00f3rego ma zosta\u0107 skonfigurowany standard FIPS 140-3. Je\u015bli ta warto\u015b\u0107 nie jest i nie okre\u015blono \u017cadnego klienta, w\u00f3wczas FIPS 140-3 jest skonfigurowany dla wszystkich klient\u00f3w, serwer\u00f3w i polece\u0144.
+
+configureFIPS.option-key.2.client=\ \ \ \ --client =nazwa
+
+configureFIPS.option-desc.2.client=\tKlient, dla kt\u00f3rego ma zosta\u0107 skonfigurowany standard FIPS 140-3. Je\u015bli ta warto\u015b\u0107 nie jest i nie okre\u015blono serwera, w\u00f3wczas FIPS 140-3 jest skonfigurowany dla wszystkich klient\u00f3w, serwer\u00f3w i polece\u0144.
+
+configureFIPS.option-key.3.customProfileFile=\ \ \ \ --customProfileFile=name
+
+configureFIPS.option-desc.3.customProfileFile=\tPlik do zapisu profilu niestandardowego IBM Semeru Runtimes FIPS 140-3.\n\tJe\u015bli ta warto\u015b\u0107 nie zostanie podana, w\u00f3wczas tworzony jest plik o nazwie FIPS140-3-Liberty-Application.properties w katalogu etc instalacji instalacji WLP. Je\u015bli u\u017cyto opcji serwera lub klienta, plik plik jest tworzony w katalogu security/resources dla okre\u015blonego serwera lub klienta.\n\n\tNazwa pliku, bez rozszerzenia, jest u\u017cywana do utworzenia nazwy profilu niestandardowego nazwy profilu niestandardowego; rozszerza ona profil Liberty FIPS140-3-Liberty.\n\tNazwa pliku musi zawiera\u0107 tylko znaki alfanumeryczne, my\u015blniki (-), podkre\u015blniki (_) i kropki (.). Podstawow\u0105 nazw\u0105 pliku nie mo\u017ce by\u0107 FIPS140-3-Liberty.\n\n\tZa pomoc\u0105 tej opcji mo\u017cna okre\u015bli\u0107 wiele plik\u00f3w, u\u017cywaj\u0105c znak\u00f3w separator\u00f3w \u015bcie\u017cek. W systemie Windows separatorem \u015b\
+    cie\u017cek jest \u015brednik (;). W systemach uniksowych separatorem \u015bcie\u017cek jest dwukropek (:). Ka\u017cdy profil niestandardowy rozszerza ka\u017cdy inny profil w kolejno\u015bci, w jakiej zosta\u0142y okre\u015blone.
+
+configureFIPS.option-key.4.disable=\ \ \ \ --disable
+
+configureFIPS.option-desc.4.disable=\tWy\u0142\u0105cz FIPS 140-3, ustawiaj\u0105c zmienn\u0105 \u015brodowiskow\u0105 ENABLE_FIPS140_3 na warto\u015b\u0107 false. Ta opcja mo\u017ce by\u0107 u\u017cywana z opcjami klienta i serwera aby okre\u015bli\u0107 klienta lub serwer do wy\u0142\u0105czenia FIPS 140-3.\n\tW przeciwnym razie wy\u0142\u0105cza FIPS 140-3 dla wszystkich klient\u00f3w, serwer\u00f3w i polece\u0144 z wyj\u0105tkiem tych, kt\u00f3re polece\u0144, z wyj\u0105tkiem tych klient\u00f3w i serwer\u00f3w, kt\u00f3re zosta\u0142y indywidualnie w\u0142\u0105czone.
+
+
+
+# -------- Generate AES-256 KEY OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+generateaeskey.desc=\tGeneruje warto\u015b\u0107 do umieszczenia w zmiennej konfiguracyjnej wlp.aes.encryption.key dla szyfrowania aes.
+generateaeskey.usage.options=\t{0} generateAESKey [opcje]
+generateaeskey.option-key.key=\ \ \ \ --key =[key]
+generateaeskey.option-desc.key=\tTen ci\u0105g znak\u00f3w jest poddawany funkcji skr\u00f3tu w celu utworzenia klucza szyfruj\u0105cego,\nkt\u00f3ry s\u0142u\u017cy do szyfrowania i deszyfrowania hase\u0142. Je\u015bli ta opcja zostanie\npomini\u0119ta, generowany jest losowy klucz.
+generateaeskey.option-key.createConfigFile=\ \ \ \ --createConfigFile=name
+generateaeskey.option-desc.createConfigFile=\tTworzy plik XML z wygenerowan\u0105 warto\u015bci\u0105 zapisan\u0105 w zmiennej o nazwie wlp.aes.encryption.key. Je\u015bli nie zostanie podana, wygenerowana warto\u015b\u0107 zostanie zapisana na ekranie konsoli.

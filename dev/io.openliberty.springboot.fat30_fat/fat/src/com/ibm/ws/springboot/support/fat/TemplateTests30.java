@@ -13,7 +13,6 @@
 package com.ibm.ws.springboot.support.fat;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
@@ -98,7 +97,7 @@ public class TemplateTests30 {
     // directory must be explicitly deleted.
 
     public void cleanupServer() throws Exception {
-        if ( LibertyFileManager.libertyFileExists(machine, serverPath) ) {
+        if (LibertyFileManager.libertyFileExists(machine, serverPath)) {
             LibertyFileManager.deleteLibertyDirectoryAndContents(machine, serverPath);
         }
     }
@@ -134,19 +133,19 @@ public class TemplateTests30 {
         validate(templateFeatures, installedFeatures,
                  extraFeatures, missingFeatures, matchedFeatures);
 
-        for ( String extraFeature : extraFeatures ) {
+        for (String extraFeature : extraFeatures) {
             System.out.println("Extra installed feature: [ " + extraFeature + " ]");
         }
-        for ( String missingFeature : missingFeatures ) {
+        for (String missingFeature : missingFeatures) {
             System.out.println("Missing installed feature: [ " + missingFeature + " ]");
         }
-        for ( String matchedFeature : matchedFeatures ) {
+        for (String matchedFeature : matchedFeatures) {
             System.out.println("Matched installed feature: [ " + matchedFeature + " ]");
         }
 
         int numMatched = matchedFeatures.size();
         int numExpected = templateFeatures.size();
-        if ( numMatched != numExpected ) {
+        if (numMatched != numExpected) {
             assertEquals("Incorrect installed features", numExpected, numMatched);
         }
     }
@@ -154,16 +153,16 @@ public class TemplateTests30 {
     private void validate(Set<String> allExpected, Set<String> allActual,
                           Set<String> extra, Set<String> missing, Set<String> matched) {
 
-        for ( String expected : allExpected ) {
-            if ( !allActual.contains(expected) ) {
+        for (String expected : allExpected) {
+            if (!allActual.contains(expected)) {
                 missing.add(expected);
             } else {
                 matched.add(expected);
             }
         }
 
-        for ( String actual : allActual ) {
-            if ( !allExpected.contains(actual) ) {
+        for (String actual : allActual) {
+            if (!allExpected.contains(actual)) {
                 extra.add(actual);
             }
         }
@@ -175,16 +174,16 @@ public class TemplateTests30 {
         Set<String> installed = new HashSet<String>();
 
         List<String> installLines = LibertyFileManager.findStringsInFile("CWWKF0012I: .*", serverLog);
-        for ( String installLine : installLines ) {
+        for (String installLine : installLines) {
             int startPos = installLine.lastIndexOf('[') + 1;
             int endPos = installLine.lastIndexOf(']');
-            if ( (startPos == -1) || (endPos == -1) || (startPos >= endPos) ) {
+            if ((startPos == -1) || (endPos == -1) || (startPos >= endPos)) {
                 System.out.println("Unexpected feature text [ " + installLine + " ]");
                 continue;
             }
             String[] packedFeatures = installLine.substring(startPos, endPos).split(",");
-            for ( String feature : packedFeatures ) {
-                installed.add( feature.trim() );
+            for (String feature : packedFeatures) {
+                installed.add(feature.trim());
             }
         }
 
@@ -204,7 +203,7 @@ public class TemplateTests30 {
 
     private void verify(String actionTag, int expectedCode, ProgramOutput po) {
         int actualCode = po.getReturnCode();
-        if ( actualCode == expectedCode ) {
+        if (actualCode == expectedCode) {
             System.out.println("Verified result [ " + actionTag + " ]: Expected [ " + expectedCode + " ]");
             return;
         }

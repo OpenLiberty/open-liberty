@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -29,8 +29,8 @@ import javax.security.jacc.PolicyContextException;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManager;
 import com.ibm.ws.security.authorization.jacc.MethodInfo;
+import com.ibm.ws.security.authorization.jacc.PolicyConfigurationManager;
 import com.ibm.ws.security.authorization.jacc.RoleInfo;
 import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityPropagator;
 
@@ -39,25 +39,27 @@ public class EJBSecurityPropagatorImpl implements EJBSecurityPropagator {
     private static final TraceComponent tc = Tr.register(EJBSecurityPropagatorImpl.class);
     private static Map<String, Set<ModuleRoleInfo>> moduleRoleInfoMap = new ConcurrentHashMap<String, Set<ModuleRoleInfo>>();
 
-    public EJBSecurityPropagatorImpl() {}
+    public EJBSecurityPropagatorImpl() {
+    }
 
     @Override
     public void propagateEJBRoles(String contextId,
                                   String appName,
                                   String beanName,
                                   Map<String, String> roleLinkMap,
-                                  Map<RoleInfo, List<MethodInfo>> methodMap) {
+                                  Map<RoleInfo, List<MethodInfo>> methodMap,
+                                  PolicyConfigurationManager policyConfigManager) {
         Set<ModuleRoleInfo> mris = moduleRoleInfoMap.get(contextId);
         if (mris == null) {
             mris = Collections.newSetFromMap(new ConcurrentHashMap<ModuleRoleInfo, Boolean>());
             moduleRoleInfoMap.put(contextId, mris);
         }
         mris.add(new ModuleRoleInfo(appName, beanName, roleLinkMap, methodMap));
-        PolicyConfigurationManager.addEJB(appName, contextId);
+        policyConfigManager.addEJB(appName, contextId);
     }
 
     @Override
-    public void processEJBRoles(PolicyConfigurationFactory pcf, String contextId) {
+    public void processEJBRoles(PolicyConfigurationFactory pcf, String contextId, PolicyConfigurationManager policyConfigManager) {
         Set<ModuleRoleInfo> mris = moduleRoleInfoMap.get(contextId);
         if (mris == null) {
             //nothing to do.
@@ -68,7 +70,7 @@ public class EJBSecurityPropagatorImpl implements EJBSecurityPropagator {
 
         PolicyConfiguration ejbPC = null;
         String appName = mris.iterator().next().appName;
-        boolean exist = PolicyConfigurationManager.containModule(appName, contextId);
+        boolean exist = policyConfigManager.containModule(appName, contextId);
         try {
             ejbPC = pcf.getPolicyConfiguration(contextId, !exist);
         } catch (PolicyContextException pce) {
@@ -82,7 +84,7 @@ public class EJBSecurityPropagatorImpl implements EJBSecurityPropagator {
                 processMethodPermissions(ejbPC, mri.beanName, mri.methodMap, allRoles);
                 // commit will be invoked in PolicyCOnfigurationManager class.
             }
-            PolicyConfigurationManager.linkConfiguration(appName, ejbPC);
+            policyConfigManager.linkConfiguration(appName, ejbPC);
             moduleRoleInfoMap.remove(contextId);
         } catch (PolicyContextException e) {
             Tr.error(tc, "JACC_EJB_PERMISSION_PROPAGATION_FAILURE", new Object[] { contextId, e });
@@ -107,7 +109,8 @@ public class EJBSecurityPropagatorImpl implements EJBSecurityPropagator {
         return allRoles;
     }
 
-    private void processMethodPermissions(PolicyConfiguration ejbPC, String beanName, Map<RoleInfo, List<MethodInfo>> methodMap, Set<String> allRoles) throws PolicyContextException {
+    private void processMethodPermissions(PolicyConfiguration ejbPC, String beanName, Map<RoleInfo, List<MethodInfo>> methodMap,
+                                          Set<String> allRoles) throws PolicyContextException {
         if (methodMap != null && methodMap.size() > 0) {
             Permissions ejbRolePerms = null;
             Permissions ejbUncheckedPerms = null;

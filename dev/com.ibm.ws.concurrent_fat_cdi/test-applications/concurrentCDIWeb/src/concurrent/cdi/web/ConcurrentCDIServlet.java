@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2024 IBM Corporation and others.
+ * Copyright (c) 2017,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,14 +17,11 @@ import static jakarta.enterprise.concurrent.ContextServiceDefinition.APPLICATION
 import static jakarta.enterprise.concurrent.ContextServiceDefinition.TRANSACTION;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -54,24 +51,22 @@ import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.inject.Inject;
-import jakarta.servlet.ServletConfig;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Status;
 import jakarta.transaction.UserTransaction;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
+import org.junit.Test;
+
+import componenttest.app.FATServlet;
 import concurrent.cdi.context.location.Location;
-import concurrent.cdi.ejb.ClearingAppContext;
-import concurrent.cdi.ejb.IgnoringTransactionContext;
 import concurrent.cdi.ejb.Invoker;
-import concurrent.cdi.ejb.PropagatingAppContext;
-import concurrent.cdi.ejb.PropagatingLocationContext;
+import concurrent.cdi.ejb.anno.ClearingAppContext;
+import concurrent.cdi.ejb.anno.IgnoringTransactionContext;
+import concurrent.cdi.ejb.anno.PropagatingAppContext;
+import concurrent.cdi.ejb.anno.PropagatingLocationContext;
 
 @ContextServiceDefinition(name = "java:app/concurrent/with-app-context",
                           qualifiers = WithAppContext.class,
@@ -127,7 +122,7 @@ import concurrent.cdi.ejb.PropagatingLocationContext;
 @SuppressWarnings("serial")
 @ApplicationScoped
 @WebServlet("/*")
-public class ConcurrentCDIServlet extends HttpServlet {
+public class ConcurrentCDIServlet extends FATServlet {
 
     /**
      * Maximum number of nanoseconds to wait for a task to finish.
@@ -161,6 +156,12 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @WithoutLocationContext
     @WithoutTransactionContext
     ManagedExecutorService executorWithoutLocationAndTxContext;
+
+    @Inject
+    OnConstruct onConstruct;
+
+    @Inject
+    OnStartup onStartup;
 
     @Inject
     @WithAppContext
@@ -226,70 +227,31 @@ public class ConcurrentCDIServlet extends HttpServlet {
     @WithoutLocationContext
     ContextService withoutLocationContext;
 
+    @Inject
+    AppBean appBean;
+
+    @Inject
+    TestBean testBean;
+
     @Resource
     UserTransaction tx;
 
     private ExecutorService unmanagedThreads;
 
     @Override
-    public void destroy() {
+    public void after() {
         unmanagedThreads.shutdownNow();
     }
 
     @Override
-    public void init(ServletConfig config) throws ServletException {
+    public void before() {
         unmanagedThreads = Executors.newFixedThreadPool(5); // TODO switch to virtual threads?
-    }
-
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String method = request.getParameter("testMethod");
-
-        System.out.println(">>> BEGIN: " + method);
-        System.out.println("Request URL: " + request.getRequestURL() + '?' + request.getQueryString());
-        PrintWriter writer = response.getWriter();
-        if (method != null && method.length() > 0) {
-            try {
-                // Use reflection to try invoking various test method signatures:
-                // 1)  method(HttpServletRequest request, HttpServletResponse response)
-                // 2)  method()
-                // 3)  use custom method invocation by calling invokeTest(method, request, response)
-                try {
-                    Method mthd = getClass().getMethod(method, HttpServletRequest.class, HttpServletResponse.class);
-                    mthd.invoke(this, request, response);
-                } catch (NoSuchMethodException nsme) {
-                    Method mthd = getClass().getMethod(method, (Class<?>[]) null);
-                    mthd.invoke(this);
-                }
-
-                writer.println("SUCCESS");
-            } catch (Throwable t) {
-                if (t instanceof InvocationTargetException) {
-                    t = t.getCause();
-                }
-
-                System.out.println("ERROR: " + t);
-                StringWriter sw = new StringWriter();
-                t.printStackTrace(new PrintWriter(sw));
-                System.err.print(sw);
-
-                writer.println("ERROR: Caught exception attempting to call test method " + method + " on servlet " + getClass().getName());
-                t.printStackTrace(writer);
-            }
-        } else {
-            System.out.println("ERROR: expected testMethod parameter");
-            writer.println("ERROR: expected testMethod parameter");
-        }
-
-        writer.flush();
-        writer.close();
-
-        System.out.println("<<< END:   " + method);
     }
 
     /**
      * Attempt to obtain a ContextService with an unrecognized qualifier.
      */
+    @Test
     public void testContextServiceWithUnrecognizedQualifier() throws Exception {
         assertEquals(false, CDI.current().select(ContextService.class, Unrecognized.Literal.INSTANCE).isResolvable());
     }
@@ -299,6 +261,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are defined
      * on a context-service element in application.xml.
      */
+    @Test
     public void testEJBSelectContextServiceQualifiedFromAppDD() throws Exception {
         ejb.runInEJB(() -> {
             Instance<ContextService> instance = CDI.current()
@@ -343,8 +306,43 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Test that a CDI extension can add Asynchronous to a bean method, and
+     * it will be recognized as an asynchronous method that is made to run on
+     * another thread.
+     */
+    @Test
+    public void testExtensionAddsAsynchronous() throws Exception {
+        // Use separate completable future to avoid causing the asynchronous
+        // method to complete inline on the requester thread.
+        CompletableFuture<Thread> cf = new CompletableFuture<>();
+
+        testBean.asyncByExtension().thenAccept(cf::complete);
+
+        Thread thread = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotSame(Thread.currentThread(), thread);
+    }
+
+    /**
+     * Test that an application-defined interceptor can be annotated with
+     * Asynchronous, causing the interceptor binding annotation to make
+     * methods into asynchronous methods.
+     */
+    @Test
+    public void testInheritAsynchronous() throws Exception {
+        // Use separate completable future to avoid causing the asynchronous
+        // method to complete inline on the requester thread.
+        CompletableFuture<Thread> cf = new CompletableFuture<>();
+
+        testBean.inheritAsync().thenAccept(cf::complete);
+
+        Thread thread = cf.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertNotSame(Thread.currentThread(), thread);
+    }
+
+    /**
      * Inject default instance of ContextService and use it.
      */
+    @Test
     public void testInjectContextServiceDefaultInstance() throws Exception {
         assertNotNull(defaultContextSvc);
 
@@ -362,6 +360,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are defined
      * on a ContextServiceDefinition annotation.
      */
+    @Test
     public void testInjectContextServiceQualifiedFromAnno() throws Exception {
         assertNotNull(withAppContext);
 
@@ -389,6 +388,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are defined
      * on a context-service element in application.xml.
      */
+    @Test
     public void testInjectContextServiceQualifiedFromAppDD() throws Exception {
         assertNotNull(withLocationContext);
 
@@ -433,6 +433,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are defined
      * on a context-service element in web.xml.
      */
+    @Test
     public void testInjectContextServiceQualifiedFromWebDD() throws Exception {
         assertNotNull(withoutLocationContext);
         assertNotNull(withoutLocationAndTxContext);
@@ -481,6 +482,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
     /**
      * Inject default instance of ManagedExecutorService and use it.
      */
+    @Test
     public void testInjectManagedExecutorServiceDefaultInstance() throws Exception {
         assertNotNull(defaultManagedExecutor);
 
@@ -497,6 +499,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are configured
      * on the ManagedExecutorDefinition annotation.
      */
+    @Test
     public void testInjectManagedExecutorServiceQualifiedFromAnno() throws Exception {
         Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
 
@@ -525,6 +528,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are configured
      * on the managed-executor element in web.xml.
      */
+    @Test
     public void testInjectManagedExecutorServiceQualifiedFromWebDD() throws Exception {
         Callable<Object[]> task = () -> {
             return new Object[] {
@@ -562,6 +566,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
     /**
      * Inject default instance of ManagedScheduledExecutorService and use it.
      */
+    @Test
     public void testInjectManagedScheduledExecutorServiceDefaultInstance() throws Exception {
         assertNotNull(defaultManagedScheduledExecutor);
 
@@ -584,6 +589,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are configured on the
      * ManagedScheduledExecutorDefinition annotation.
      */
+    @Test
     public void testInjectManagedScheduledExecutorServiceQualifiedFromAnno() throws Exception {
         Callable<?> task = () -> InitialContext.doLookup("java:comp/env/entry2");
 
@@ -612,6 +618,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are configured
      * on the managed-scheduled-executor element in web.xml.
      */
+    @Test
     public void testInjectManagedScheduledExecutorServiceQualifiedFromWebDD() throws Exception {
         Callable<Object[]> task = () -> {
             return new Object[] {
@@ -636,9 +643,146 @@ public class ConcurrentCDIServlet extends HttpServlet {
         }
     }
 
+    // Task that will verify that the same ManagedThreadFactory is used throughout
+    // the application and that the same Thread Context ClassLoader is used.
+    public static Runnable getTCCLTask(final CompletableFuture<String> result) {
+        return () -> {
+            try {
+                assertNotNull("Expected context classloader to be non-null",
+                              Thread.currentThread().getContextClassLoader());
+
+                System.out.println("Using thread context classloader: " + Thread.currentThread().getContextClassLoader());
+            } catch (AssertionError e) {
+                result.completeExceptionally(e);
+            }
+
+            try {
+                Class.forName("java.lang.Integer"); //Exists as part of JVM
+
+                Class.forName("concurrent.cdi.ejb.anno.ClearingAppContext"); //Exists inside EAR/lib
+
+                Class.forName("concurrent.cdi.web.MyAsync"); //Exists inside EAR/Web Module
+                Class.forName("concurrent.cdi.ext.ConcurrentCDIExtension"); // Exists inside EAR/Web Module/lib
+                Class.forName("concurrent.cdi.ejb.Invoker"); //Exists inside EAR/EJB Module
+
+                Class.forName("concurrent.cdi.context.location.Location"); //Exists outside EAR with commonLibraryRef
+            } catch (ClassNotFoundException e) {
+                result.completeExceptionally(e);
+            }
+
+            // NOTE: The ConcurrentCDITest deploys both the ConcurrentCDITest.ear and concurrentCDIApp2.war
+            // applications so this class should be available (just not by this application classloader)
+            try {
+                Class.forName("concurrent.cdi4.webapp.TestException"); //Exists in a different application
+                result.completeExceptionally(new IllegalStateException("Should not have been able to load a class from another application."));
+            } catch (ClassNotFoundException e) {
+                // expected
+            }
+
+            result.complete("SUCCESS");
+        };
+    }
+
+    /**
+     * Inject an instance of the default ManagedThreadFactory resource
+     * and verify the Thread Context ClassLoader is scoped to the application.
+     */
+    @Test
+    public void testInjectManagedThreadFactoryDefaultTCCLServlet() throws Exception {
+        assertNotNull(defaultManagedThreadFactory);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+        Runnable task = getTCCLTask(future);
+
+        Thread thread = defaultManagedThreadFactory.newThread(task);
+        thread.start();
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
+    /**
+     * Inject an instance of an application scoped ManagedThreadFactory resource via qualifier
+     * and verify the Thread Context Classloader is scoped to the application.
+     */
+    @Test
+    public void testInjectManagedThreadFactoryQualifiedTCCLServlet() throws Exception {
+        assertNotNull(threadFactoryWithAppContext);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+        Runnable task = getTCCLTask(future);
+
+        Thread thread = threadFactoryWithAppContext.newThread(task);
+        thread.start();
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
+    /**
+     * Inject an instance of the default ManagedThreadFactory resource into an app bean
+     * and verify the Thread Context ClassLoader is scoped to the application.
+     */
+    @Test
+    public void testInjectManagedThreadFactoryDefaultTCCLBean() throws Exception {
+        assertNotNull(appBean);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+        Runnable task = getTCCLTask(future);
+
+        appBean.runTaskUsingDefaultManagedThreadFactory(task);
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
+    /**
+     * Inject an instance of the default ManagedThreadFactory resource in an EJB
+     * and verify the Thread Context ClassLoader is scoped to the application.
+     */
+    @Test
+    public void testInjectManagedThreadFactoryDefaultTCCLEJB() throws Exception {
+        assertNotNull(ejb);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+        Runnable task = getTCCLTask(future);
+
+        ejb.runTaskUsingDefaultManagedThreadFactory(task);
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
+    /**
+     * Lookup an instance of the default ManagedThreadFactory resource using CDI
+     * and verify the Thread Context ClassLoader is scoped to the application.
+     */
+    @Test
+    public void testInjectManagedThreadFactoryDefaultTCCLLookup() throws Exception {
+        Instance<ManagedThreadFactory> defaultManagedThreadFactoryInstance = CDI.current() //
+                        .select(ManagedThreadFactory.class, new Annotation[] { Default.Literal.INSTANCE });
+
+        assertTrue("ManagedTheadFactoryBean should have been avaialble with default qualifier",
+                   defaultManagedThreadFactoryInstance.isResolvable());
+
+        ManagedThreadFactory defaultManagedThreadFactory = defaultManagedThreadFactoryInstance.get();
+
+        assertNotNull(defaultManagedThreadFactory);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+        Runnable task = getTCCLTask(future);
+
+        Thread thread = defaultManagedThreadFactory.newThread(task);
+        thread.start();
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
     /**
      * Inject an instance of the default ManagedThreadFactory resource and use it.
      */
+    @Test
     public void testInjectManagedThreadFactoryDefaultInstance() throws Exception {
         assertNotNull(defaultManagedThreadFactory);
 
@@ -667,6 +811,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are configured
      * on a ManagedThreadFactoryDefinition annotation.
      */
+    @Test
     public void testInjectManagedThreadFactoryQualifiedFromAnno() throws Exception {
         assertNotNull(threadFactoryWithAppContext);
         assertNotNull(threadFactoryWithoutAppContext);
@@ -721,6 +866,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are defined
      * on managed-thread-factory elements in application.xml.
      */
+    @Test
     public void testInjectManagedThreadFactoryQualifiedFromAppDD() throws Exception {
         assertNotNull(threadFactoryWithAppContextAppDD);
         assertNotNull(threadFactoryWithoutAppContextAppDD);
@@ -775,6 +921,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * matches the configuration that the qualifier points to. The qualifiers are configured
      * on a managed-thread-factory element in web.xml.
      */
+    @Test
     public void testInjectManagedThreadFactoryQualifiedFromWebDD() throws Exception {
         assertNotNull(threadFactoryWithoutLocationAndTxContext);
 
@@ -820,6 +967,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * capturing context at the point when the resource is created. A new instance must be created upon
      * lookup.
      */
+    @Test
     public void testLookUpManagedThreadFactory() throws Exception {
         Location.set("Rochester, MN");
         try {
@@ -845,12 +993,22 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Tests using an injected ManagedScheduledExecutorService from Observes Startup.
+     */
+    @Test
+    public void testObserveStartup() throws Exception {
+        assertEquals("SUCCESS",
+                     onStartup.getResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
      * Specify qualifiers on a ContextServiceDefinition.
      * Specify a different qualifier on a matching context-service element in web.xml.
      * Expect the qualifier from web.xml to resolve the instance.
      * Expect the qualifiers from the ContextServiceDefinition to not resolve the instance.
      * Verify the instance behaves consistently with the configured context propagation.
      */
+    @Test
     public void testOverrideContextServiceQualifiersViaDD() throws Exception {
         // Expect application context to be propagated
         Supplier<String> lookup = () -> {
@@ -903,6 +1061,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Expect the qualifiers from the ManagedExecutorDefinition to not resolve the instance.
      * Verify the instance is usable.
      */
+    @Test
     public void testOverrideManagedExecutorQualifiersViaWebDD() throws Exception {
 
         // Overridden qualifiers from ManagedExecutorDefinition must not resolve the instance:
@@ -947,6 +1106,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Expect the qualifiers from the ManagedScheduledExecutorDefinition to not resolve the instance.
      * Verify the instance can be looked up. There is no way to obtain it via qualifiers.
      */
+    @Test
     public void testOverrideManagedScheduledExecutorQualifiersViaWebDD() throws Exception {
 
         // Overridden qualifiers from ManagedScheduledExecutorDefinition must not resolve the instance:
@@ -1011,6 +1171,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Expect the qualifier from the ManagedThreadFactoryDefinition to not resolve the instance.
      * Verify the instance creates threads with the configured priority.
      */
+    @Test
     public void testOverrideManagedThreadFactoryQualifiersViaWebDD() throws Exception {
 
         // Overridden qualifiers from ManagedThreadFactoryDefinition must not resolve the instance:
@@ -1038,10 +1199,20 @@ public class ConcurrentCDIServlet extends HttpServlet {
     }
 
     /**
+     * Tests using an injected ManagedScheduledExecutorService from PostConstruct.
+     */
+    @Test
+    public void testPostConstruct() throws Exception {
+        assertEquals("SUCCESS",
+                     onConstruct.getResult(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
      * Verify that the equals operation of generated instances of qualifier annotations
      * obeys the JavaDoc for Annotation.equals and can be compared with literal instances
      * of the same annotation in either direction.
      */
+    @Test
     public void testQualifierEquals() throws Exception {
         Instance<ContextService> instance;
 
@@ -1135,6 +1306,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Verify that the hashCode operation of generated instances of qualifier annotations
      * matches the behavior of literal instances of the same annotation.
      */
+    @Test
     public void testQualifierHashCode() throws Exception {
         Instance<ContextService> instance;
         Annotation qualifier;
@@ -1183,6 +1355,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
     /**
      * Verify the toString operation of generated instances of qualifier annotations.
      */
+    @Test
     public void testQualifierToString() throws Exception {
         Instance<ContextService> instance;
         Annotation qualifier;
@@ -1232,6 +1405,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
     /**
      * Use CDI.current() to select the default instance of ContextService and use it.
      */
+    @Test
     public void testSelectContextServiceDefaultInstance() throws Exception {
         ContextService contextSvc = CDI.current().select(ContextService.class, Default.Literal.INSTANCE).get();
 
@@ -1250,6 +1424,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * Use CDI.current() to select qualified instances of ContextService and verify that the behavior of each
      * matches the configuration that the qualifier points to.
      */
+    @Test
     public void testSelectContextServiceQualified() throws Exception {
         ContextService appContext = CDI.current().select(ContextService.class, WithAppContext.Literal.INSTANCE).get();
 
@@ -1279,6 +1454,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
     /**
      * Use CDI.current() to select an instance of the default ManagedThreadFactory instance and use it.
      */
+    @Test
     public void testSelectManagedThreadFactoryDefaultInstance() throws Exception {
         ManagedThreadFactory threadFactory = CDI.current().select(ManagedThreadFactory.class, Default.Literal.INSTANCE).get();
 
@@ -1309,6 +1485,7 @@ public class ConcurrentCDIServlet extends HttpServlet {
      * at the point when the resource was created, and does not replace that context with the context that is on
      * the thread when CDI.current().select obtains the bean.
      */
+    @Test
     public void testSelectManagedThreadFactoryQualified() throws Exception {
         // Context is captured when the ManagedThreadFactory is created, not when we first obtain it from CDI,
 
@@ -1351,5 +1528,32 @@ public class ConcurrentCDIServlet extends HttpServlet {
         assertEquals(4, thread2.getPriority());
 
         assertEquals("value2", future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Use CDI.current() to select an instance of ContextService where the value of
+     * a nonbinding field of the qualifier annotation differs.
+     */
+    @Test
+    public void testSelectNonbinding() {
+        Annotation annoWithNonbinding = WithLocationContext.Literal.with(TRANSACTION);
+        Instance<ContextService> instance = CDI.current()
+                        .select(ContextService.class, annoWithNonbinding);
+
+        Supplier<String> getLocation;
+        ContextService contextSvc = instance.get();
+        try {
+            Location.set("2800 37th St NW, Rochester, MN 55901");
+            getLocation = contextSvc.contextualSupplier(Location::get);
+        } finally {
+            Location.clear();
+        }
+
+        assertEquals(null, Location.get());
+
+        assertEquals("2800 37th St NW, Rochester, MN 55901",
+                     getLocation.get());
+
+        assertEquals(null, Location.get());
     }
 }

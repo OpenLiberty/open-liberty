@@ -17,14 +17,13 @@ Bundle-SymbolicName: io.openliberty.security.authorization.internal.jacc.common
 Bundle-Description: Security JACC Service, Jakarta enabled
 
 Export-Package: \
+ com.ibm.ws.security.authorization.jacc;provide:=true, \
  com.ibm.ws.security.authorization.jacc.ejb, \
- com.ibm.ws.security.authorization.jacc.web, \
- com.ibm.ws.security.authorization.jacc.common, \
- com.ibm.ws.security.authorization.jacc;provide:=true
+ com.ibm.ws.security.authorization.jacc.common
 
 Private-Package: com.ibm.ws.security.authorization.jacc.internal, \
   com.ibm.ws.security.authorization.jacc.internal.resources
 
 -dsannotations: \
   com.ibm.ws.security.authorization.jacc.internal.JaccServiceImpl, \
-  com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManager
+  com.ibm.ws.security.authorization.jacc.common.PolicyConfigurationManagerImpl

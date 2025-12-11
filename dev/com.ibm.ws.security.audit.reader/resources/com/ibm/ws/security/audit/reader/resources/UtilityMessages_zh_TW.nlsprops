@@ -1,5 +1,5 @@
 #/*******************************************************************************
-# * Copyright (c) 2018, 2019 IBM Corporation and others.
+# * Copyright (c) 2018, 2025 IBM Corporation and others.
 # * All rights reserved. This program and the accompanying materials
 # * are made available under the terms of the Eclipse Public License 2.0
 # * which accompanies this distribution, and is available at
@@ -63,3 +63,7 @@ security.audit.ErrorLoadingKeystore=\u8f09\u5165\u91d1\u9470\u5132\u5b58\u5eab {
 security.audit.MismatchingEncKeystores=\u6307\u5b9a\u91d1\u9470\u5132\u5b58\u5eab\u7684\u8f38\u5165\u503c {0} \u542b\u6709\u7528\u4f86\u89e3\u5bc6\u5be9\u6838\u8a18\u9304\u7684\u6191\u8b49\uff0c\u4f46\u8a72\u503c\u8207\u5be9\u6838\u65e5\u8a8c\u4e2d\u6307\u5b9a\u7684\u91d1\u9470\u5132\u5b58\u5eab {1} \u4e0d\u7b26\u3002
 security.audit.MismatchingSigningKeystores=\u6307\u5b9a\u91d1\u9470\u5132\u5b58\u5eab\u7684\u8f38\u5165\u503c {0} \u542b\u6709\u7528\u4f86\u89e3\u9664\u7c3d\u7f72\u5be9\u6838\u8a18\u9304\u7684\u6191\u8b49\uff0c\u4f46\u8a72\u503c\u8207\u5be9\u6838\u65e5\u8a8c\u4e2d\u6307\u5b9a\u7684\u91d1\u9470\u5132\u5b58\u5eab {1} \u4e0d\u7b26\u3002
 security.audit.CannotFindCertificate={0} \u6191\u8b49\u5225\u540d\u4e0d\u5b58\u5728\u65bc {1} \u91d1\u9470\u5132\u5b58\u5eab\u4e2d\u3002
+
+# Do not translate "auditRecord"
+security.audit.FailedToValidateSignature=auditRecord \u7c3d\u7f72\u5728\u7d22\u5f15 [ {0} ] \u8655\u9a57\u8b49\u5931\u6557\u3002
+security.audit.FailedToDecryptAuditRecord=auditRecord \u5728\u7d22\u5f15 [ {0} ] \u8655\u89e3\u5bc6\u5931\u6557\u3002

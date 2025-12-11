@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package web.oneway.client.oneway;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Enumeration;
+import java.util.Map;
 import java.io.IOException;
 import java.net.URL;
 
@@ -26,9 +27,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.UserTransaction;
 import javax.xml.ws.BindingProvider;
 
+import com.ibm.tx.jta.ut.util.TxTestUtils;
+
 @WebServlet({ "/OnewayClientServlet" })
 public class OnewayClientServlet extends HttpServlet {
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
 
     private static String TEST_NAME_PARAM = "testName";
@@ -54,40 +57,41 @@ public class OnewayClientServlet extends HttpServlet {
         response.getWriter().println(result);
     }
 
-	protected String get(HttpServletRequest request) throws ServletException, IOException {
-		try {
-			System.out.println("begin try-catch");
-			Context ctx = new InitialContext();
-			UserTransaction userTransaction = (UserTransaction) ctx
-					.lookup("java:comp/UserTransaction");
+    protected String get(HttpServletRequest request) throws ServletException, IOException {
+        try {
+            System.out.println("begin try-catch");
+            Context ctx = new InitialContext();
+            UserTransaction userTransaction = (UserTransaction) ctx
+                    .lookup("java:comp/UserTransaction");
 
-			userTransaction.begin();
+            userTransaction.begin();
 
-			String type = request.getParameter(TEST_NAME_PARAM);
-			System.out.println("==============Test type: " + type
-					+ "================");
-			String BASE_URL = request.getParameter("baseurl");
-			if (BASE_URL == null || BASE_URL.equals(""))
-				BASE_URL = "http://localhost:8010";
-				URL wsdlLocation = new URL(BASE_URL
-						+ "/oneway/HelloImplOnewayService?wsdl");
-				HelloImplOnewayService service = new HelloImplOnewayService(
-						wsdlLocation);
-				HelloImplOneway proxy = service.getHelloImplOnewayPort();
-				BindingProvider bind = (BindingProvider) proxy;
-				bind.getRequestContext().put(
-						"javax.xml.ws.service.endpoint.address",
-						BASE_URL + "/oneway/HelloImplOnewayService");
-				proxy.sayHello();
-				userTransaction.commit();
-				System.out.println("client user transaction commit");
-				return "<html><header></header><body>Finish Oneway message</body></html>";
-		} catch (Exception e) {
-			e.printStackTrace();
-			return "<html><header></header><body> Client catch exception: "
-							+ e.toString() + "</body></html>";
-		} finally {
-			System.out.println("end dispatch");
-		}
-	}
+            String type = request.getParameter(TEST_NAME_PARAM);
+            System.out.println("==============Test type: " + type
+                    + "================");
+            String BASE_URL = request.getParameter("baseurl");
+            if (BASE_URL == null || BASE_URL.equals(""))
+                BASE_URL = "http://localhost:8010";
+                URL wsdlLocation = new URL(BASE_URL
+                        + "/oneway/HelloImplOnewayService?wsdl");
+                HelloImplOnewayService service = new HelloImplOnewayService(
+                        wsdlLocation);
+                final HelloImplOneway proxy = service.getHelloImplOnewayPort();
+                final Map<String, Object> requestContext = ((BindingProvider) proxy).getRequestContext();
+                requestContext.put(
+                        "javax.xml.ws.service.endpoint.address",
+                        BASE_URL + "/oneway/HelloImplOnewayService");
+                TxTestUtils.setTimeouts(requestContext);
+                proxy.sayHello();
+                userTransaction.commit();
+                System.out.println("client user transaction commit");
+                return "<html><header></header><body>Finish Oneway message</body></html>";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "<html><header></header><body> Client catch exception: "
+                            + e.toString() + "</body></html>";
+        } finally {
+            System.out.println("end dispatch");
+        }
+    }
 }

@@ -36,7 +36,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				redirect="http://${security.spnego.test.system.host.name}:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01"
 				scope="ALL_SCOPES"

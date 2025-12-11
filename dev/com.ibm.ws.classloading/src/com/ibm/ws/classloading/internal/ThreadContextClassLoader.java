@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
@@ -46,14 +47,26 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     private final AtomicReference<Bundle> bundle = new AtomicReference<Bundle>();
     protected final String key;
     private final AtomicInteger refCount = new AtomicInteger(0);
+
+    /**
+     * This variable MUST be named appLoader because the WebsphereLibertyClassLoaderHandler class in the open source classgraph
+     * library is doing reflection in order to call the getClassPath() method on the AppClassLoader's smartClassPath field.
+     * See the findClassOrder method in classgraph:
+     * https://github.com/classgraph/classgraph/blob/latest/src/main/java/nonapi/io/github/classgraph/classloaderhandler/WebsphereLibertyClassLoaderHandler.java
+     * classgraph is used by Eclipse JNoSQL and without this logic tests in io.openliberty.data.internal_fat_nosql fat bucket will fail.
+     */
     private final ClassLoader appLoader;
     private final ClassLoadingServiceImpl clSvc;
 
     public ThreadContextClassLoader(GatewayClassLoader augLoader, ClassLoader appLoader, String key, ClassLoadingServiceImpl clSvc) {
-        super(appLoader instanceof ParentLastClassLoader ? appLoader : augLoader, appLoader instanceof ParentLastClassLoader ? augLoader : appLoader);
+        this(augLoader, appLoader, key, clSvc, appLoader instanceof AppClassLoader ? new ClassLoaderRef((AppClassLoader) appLoader) : appLoader);
+    }
+
+    private ThreadContextClassLoader(GatewayClassLoader augLoader, ClassLoader appLoader, String key, ClassLoadingServiceImpl clSvc, ClassLoader appLoaderRef) {
+        super(appLoader instanceof ParentLastClassLoader ? appLoaderRef : augLoader, appLoader instanceof ParentLastClassLoader ? augLoader : appLoaderRef);
         bundle.set(augLoader.getBundle());
         this.key = key;
-        this.appLoader = appLoader;
+        this.appLoader = appLoaderRef;
         this.clSvc = clSvc;
     }
 
@@ -124,7 +137,7 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     }
 
     /**
-     * The ClassLoadingService implementation should call this method when it's
+     * The ClassLoadingService implementation should call this method when its
      * createThreadContextClassLoader method is called, both for new and pre-existing
      * instances. Each call to createTCCL should increment this ref counter - likewise,
      * each call to destroy should call decrementRefCount();
@@ -138,11 +151,11 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
     @Trivial
-    protected Class<?> findClass(String className, boolean returnNull) throws ClassNotFoundException {
+    protected Class<?> findClass(String className, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
         ClassNotFoundException cnfe = null;
         Class<?> c = null;
         try {
-            c =  super.findClass(className, returnNull);
+            c = super.findClass(className, delegatePolicy, returnNull);
         } catch (ClassNotFoundException x) {
             cnfe = x;
         }
@@ -162,8 +175,8 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     /** Override classloading related methods so this class shows up in stacktraces **/
     /*********************************************************************************/
     @Override
-    protected Class<?> loadClass(String name, boolean resolve, boolean onlySearchSelf, boolean returnNull) throws ClassNotFoundException {
-        return super.loadClass(name, resolve, onlySearchSelf, returnNull);
+    protected Class<?> loadClass(String name, boolean resolve, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
+        return super.loadClass(name, resolve, delegatePolicy, returnNull);
     }
 
     @Override
@@ -212,7 +225,31 @@ public class ThreadContextClassLoader extends UnifiedClassLoader implements Keye
     }
 
     final boolean isFor(ClassLoader classLoader) {
-        return classLoader == appLoader;
+        ClassLoader classLoaderToCompare = appLoader;
+        if (appLoader instanceof ClassLoaderRef) {
+            classLoaderToCompare = ((ClassLoaderRef) appLoader).getReferent();
+        }
+        return classLoader == classLoaderToCompare;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(super.toString());
+        sb.append(": Application ClassLoader ");
+        sb.append(appLoader);
+        return sb.toString();
+    }
+
+    // This is reflectively called by Spring for GLIBC proxy classes.
+    // To work properly with package private application class beans these proxies
+    // must be defined with the app loader so they have proper visibility to their
+    // super classes.
+    @Override
+    @Trivial
+    public Class<?> publicDefineClass(String name, byte[] b, ProtectionDomain protectionDomain) {
+        if (appLoader instanceof SpringLoader) {
+            return ((SpringLoader) appLoader).publicDefineClass(name, b, protectionDomain);
+        }
+        return defineClass(name, b, 0, b.length, protectionDomain);
+    }
 }

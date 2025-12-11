@@ -130,29 +130,6 @@ public class HostnameVerificationClientTestServlet extends FATServlet {
     }
 
     /*
-     * Test that Hostname Verification is disabled when BOTH ssl config is "false" 
-     * AND "com.ibm.ws.jaxrs.client.disableCNCheck" is "true".
-     * 
-     * hostnameVerification = false
-     * disableCNCheck = true
-     */
-    @Test
-    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES","EE11_FEATURES"}) // we currently don't expose a way to disable HNV on RESTEasy
-    public void testNoHostnameVerificationDisableCNCheckTrue() {
-        client = ClientBuilder.newClient();
-        client.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfigNoHNV");
-        client.property("com.ibm.ws.jaxrs.client.disableCNCheck", "true");
-        
-        Response response = client.target(SERVER_CONTEXT_ROOT)
-                        .path("echo")
-                        .request(MediaType.TEXT_PLAIN_TYPE)
-                        .get();
-        client.close();
-        assertEquals(200, response.getStatus());
-        assertEquals("Hello World!", response.readEntity(String.class));
-    }
-
-    /*
      * Test that Hostname Verification is not disabled when SSL config is "false" and the 
      * "com.ibm.ws.jaxrs.client.disableCNCheck" client property is "false".
      * 
@@ -178,5 +155,32 @@ public class HostnameVerificationClientTestServlet extends FATServlet {
             client.close();
         }
     }
+
+    // TODO:  Apparently the value for com.ibm.ws.jaxrs.client.disableCNCheck defaults to false and once it is set to "true" if cannot be
+    // set to false without restarting the application.  So this test has been moved to execute after the "false" test.
+    
+    /*
+     * Test that Hostname Verification is disabled when BOTH ssl config is "false" 
+     * AND "com.ibm.ws.jaxrs.client.disableCNCheck" is "true".
+     * 
+     * hostnameVerification = false
+     * disableCNCheck = true
+     */
+    @Test
+    @SkipForRepeat({"EE9_FEATURES","EE10_FEATURES","EE11_FEATURES"}) // we currently don't expose a way to disable HNV on RESTEasy
+    public void testNoHostnameVerificationDisableCNCheckTrue() {
+        client = ClientBuilder.newClient();
+        client.property("com.ibm.ws.jaxrs.client.ssl.config", "mySSLConfigNoHNV");
+        client.property("com.ibm.ws.jaxrs.client.disableCNCheck", "true");
+        
+        Response response = client.target(SERVER_CONTEXT_ROOT)
+                        .path("echo")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        client.close();
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello World!", response.readEntity(String.class));
+    }
+
 
 }

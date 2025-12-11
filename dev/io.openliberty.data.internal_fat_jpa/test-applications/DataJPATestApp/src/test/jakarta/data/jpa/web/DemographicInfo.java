@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import jakarta.persistence.Id;
  */
 @Entity
 public class DemographicInfo {
+    static final ZoneId TIMEZONE = ZoneId.of("America/New_York");
 
     @Column
     public Instant collectedOn;
@@ -35,10 +36,10 @@ public class DemographicInfo {
     @Id
     public BigInteger id;
 
-    @Column
+    @Column(precision = 20, scale = 2)
     public BigDecimal publicDebt;
 
-    @Column
+    @Column(precision = 20, scale = 2)
     public BigDecimal intragovernmentalDebt;
 
     @Column
@@ -50,7 +51,8 @@ public class DemographicInfo {
     public DemographicInfo(int year, int month, int day,
                            long numFullTimeWorkers,
                            double intragovernmentalDebt, double publicDebt) {
-        this.collectedOn = ZonedDateTime.of(year, month, day, 12, 0, 0, 0, ZoneId.of("America/New_York")).toInstant();
+        this.collectedOn = ZonedDateTime.of(year, month, day, 12, 0, 0, 0, TIMEZONE)
+                        .toInstant();
         this.numFullTimeWorkers = BigInteger.valueOf(numFullTimeWorkers);
         this.intragovernmentalDebt = BigDecimal.valueOf(intragovernmentalDebt);
         this.publicDebt = BigDecimal.valueOf(publicDebt);

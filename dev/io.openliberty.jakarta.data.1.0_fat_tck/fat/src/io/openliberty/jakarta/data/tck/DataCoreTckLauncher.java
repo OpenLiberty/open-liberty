@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,7 @@ public class DataCoreTckLauncher {
                                                   "CWWKD0202E", // TODO : https://github.com/OpenLiberty/open-liberty/issues/30155
                                                   "CWWKD1054E", // tested error path
                                                   "CWWKD1080E", // TODO : https://github.com/OpenLiberty/open-liberty/issues/30155
+                                                  "CWWKZ0014W", // TODO : https://github.com/OpenLiberty/open-liberty/issues/30155 (seen alongside CWWKD1080E)
                                                   "CWWKE0955E" //websphere.java.security java 18+
         };
         if (persistenceServer.isStarted()) {
@@ -87,7 +88,7 @@ public class DataCoreTckLauncher {
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
         TCKRunner.build(persistenceServer, Type.JAKARTA, "Data")
-                        .withPlatfromVersion("11")
+                        .withPlatformVersion("11")
                         .withQualifiers("core", "persistence")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)
@@ -127,7 +128,7 @@ public class DataCoreTckLauncher {
         additionalProps.put("jakarta.data.tck.version", "1.0.1");
 
         TCKRunner.build(noSQLServer, Type.JAKARTA, "Data")
-                        .withPlatfromVersion("11")
+                        .withPlatformVersion("11")
                         .withQualifiers("core", "NoSQL")
                         .withRelativeTCKRunner("publish/tckRunner/platform/")
                         .withAdditionalMvnProps(additionalProps)

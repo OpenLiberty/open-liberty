@@ -201,6 +201,7 @@ public class Constants {
     public static final String PROTOCOL_TLSV1_1 = "TLSv1.1";
     public static final String PROTOCOL_TLSV1_2 = "TLSv1.2";
     public static final String PROTOCOL_TLSV1_3 = "TLSv1.3";
+    public static final String PROTOCOL_TLS_FIPS = PROTOCOL_TLSV1_2 + ", " + PROTOCOL_TLSV1_3;
 
     /*** SECURITY LEVEL CONSTANTS ***/
     public static final String SECURITY_LEVEL_HIGH = "HIGH";
@@ -212,7 +213,7 @@ public class Constants {
     public static final String IBMJCE = "com.ibm.crypto.provider.IBMJCE";
     public static final String IBMJCE_NAME = "IBMJCE";
     public static final String IBMJCEFIPS = "com.ibm.crypto.fips.provider.IBMJCEFIPS";
-    public static final String IBMJCEPlusFIPS = "com.ibm.crypto.fips.provider.IBMJCEPlusFIPS";
+    public static final String IBMJCEPlusFIPS = "com.ibm.crypto.plus.fips.provider.IBMJCEPlusFIPS";
     public static final String IBMJCEFIPS_NAME = "IBMJCEFIPS";
     public static final String IBMJCEPlusFIPS_NAME = "IBMJCEPlusFIPS";
     public static final String IBMJSSE2 = "com.ibm.jsse2.IBMJSSEProvider2";
@@ -295,7 +296,9 @@ public class Constants {
     // unknown cipher
     public static final String SSL_UNKNOWN_CIPHER = "UNKNOWN_CIPHER";
 
-    /** SSL V2 cipher specifications */
+    // FIPS 140-3: Algorithm assessment complete; no changes required.
+    // These constants are unused with FIPS enabled, but cannot update them as they would break the backward compatibility.
+   /** SSL V2 cipher specifications */
     public static final String SSL_CK_RC4_128_WITH_MD5 = "SSL_CK_RC4_128_WITH_MD5",
                     SSL_CK_RC4_128_EXPORT40_WITH_MD5 = "SSL_CK_RC4_128_EXPORT40_WITH_MD5",
                     SSL_CK_RC2_128_CBC_WITH_MD5 = "SSL_CK_RC2_128_CBC_WITH_MD5",
@@ -454,6 +457,17 @@ public class Constants {
                                                                                         PROTOCOL_TLSV1_1,
                                                                                         PROTOCOL_TLSV1_2,
                                                                                         PROTOCOL_TLSV1_3
+    });
+
+
+    public static final List<String> FIPS_140_2_PROTOCOLS = Arrays.asList(new String[] {
+                                                                                         PROTOCOL_TLSV1,
+                                                                                         PROTOCOL_TLSV1_1
+    });
+
+    public static final List<String> FIPS_140_3_PROTOCOLS = Arrays.asList(new String[] {
+                                                                                         PROTOCOL_TLSV1_2,
+                                                                                         PROTOCOL_TLSV1_3
     });
 
     public boolean resolveDisableHostnameVerification(String targetHostname, String disabledVerifyHostname, Properties sslProps) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -133,10 +133,15 @@ public class LocalProvider {
 
     public static ProgramOutput executeCommand(Machine machine, String cmd,
                                                String[] parameters, String workDir, Properties envVars, int timeout) throws Exception {
+        return executeCommand(machine, cmd, parameters, workDir, envVars, timeout, false);
+    }
+
+    public static ProgramOutput executeCommand(Machine machine, String cmd,
+                                               String[] parameters, String workDir, Properties envVars, int timeout, boolean preserveSpaces) throws Exception {
         ByteArrayOutputStream bufferOut = new ByteArrayOutputStream();
         ByteArrayOutputStream bufferErr = new ByteArrayOutputStream();
         int rc = execute(machine, cmd, parameters, envVars, workDir, bufferOut,
-                         bufferErr, false, timeout);
+                         bufferErr, false, timeout, preserveSpaces);
         ProgramOutput ret = new ProgramOutput(cmd, rc, bufferOut.toString(), bufferErr.toString());
         return ret;
     }
@@ -149,6 +154,13 @@ public class LocalProvider {
                                      final String[] parameterArray, Properties envp,
                                      final String workDir, final OutputStream stdOutStream,
                                      final OutputStream stdErrStream, boolean async, int timeout) throws Exception {
+        return execute(machine, command, parameterArray, envp, workDir, stdOutStream, stdErrStream, async, timeout, false);
+    }
+
+    private static final int execute(Machine machine, final String command,
+                                     final String[] parameterArray, Properties envp,
+                                     final String workDir, final OutputStream stdOutStream,
+                                     final OutputStream stdErrStream, boolean async, int timeout, boolean preserveSpaces) throws Exception {
         final String method = "execute";
         Log.entering(CLASS, method, "async is " + async);
 
@@ -195,7 +207,7 @@ public class LocalProvider {
              */
             if (!cmd[0].startsWith(shellCmd) && !cmd[0].endsWith(shellCmd)) {
                 String[] tmp = new String[3];
-                String parsedCommand = shArrayTransform(cmd);
+                String parsedCommand = shArrayTransform(cmd, preserveSpaces);
                 tmp[0] = WLP_CYGWIN_HOME == null ? shellCmd : WLP_CYGWIN_HOME + "/bin/sh";
                 tmp[1] = "-c";
                 tmp[2] = parsedCommand;
@@ -307,12 +319,34 @@ public class LocalProvider {
      * @return
      */
     private static String shArrayTransform(String[] cmd) {
-        String returned = "";
+        return shArrayTransform(cmd, false);
+    }
+
+    /**
+     * This method takes the parameter array and turns it into one long string for
+     * use by the sh -c part of running the command locally on linux
+     *
+     * @param  cmd
+     * @param  preserveSpaces if true, arguments containing spaces will be quoted
+     * @return
+     */
+    private static String shArrayTransform(String[] cmd, boolean preserveSpaces) {
+        StringBuilder returned = new StringBuilder();
         for (int i = 0; i < cmd.length; i++) {
-            returned += cmd[i] + " ";
+            if (i > 0) {
+                returned.append(" ");
+            }
+            String arg = cmd[i];
+            // If preserveSpaces is true and the argument contains spaces, quote it
+            if (preserveSpaces && arg.contains(" ")) {
+                // Use single quotes to preserve the argument literally
+                // Escape any single quotes within the argument
+                returned.append("'").append(arg.replace("'", "'\\''")).append("'");
+            } else {
+                returned.append(arg);
+            }
         }
-        returned = returned.substring(0, (returned.length() - 1)); //should remove the space at the end;
-        return returned;
+        return returned.toString();
     }
 
     public static synchronized AsyncProgramOutput executeCommandAsync(Machine machine,

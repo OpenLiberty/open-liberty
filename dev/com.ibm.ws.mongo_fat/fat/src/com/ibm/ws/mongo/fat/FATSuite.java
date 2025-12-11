@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -123,7 +123,7 @@ public class FATSuite {
     public static void skipTestOnFIPS140_3Enabled(LibertyServer server) throws Exception {
         final String m = "skipTestOnFIPS140_3Enabled";
         if (server.isFIPS140_3EnabledAndSupported()) {
-            Log.info(c, m, "FIPS 140-3 is running with the supported IBM JDK 8 on server: " + server.getServerName() + ". Test will not run.");
+            Log.info(c, m, "FIPS 140-3 is running with the supported IBM JDK 8 or JDK 17 on server: " + server.getServerName() + ". Test will not run.");
             Assume.assumeTrue(false); // This disables this test class. None of the tests in the class will be run.
         }
     }

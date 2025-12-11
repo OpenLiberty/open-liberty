@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,8 +52,13 @@ public class AnnotatedTest {
         wsocTest.runEchoTest(new AnnotatedClientEP.SessionIdleTest(), "/basic/annotatedIdleTimeout", result, Constants.getLongTimeout());
         long endTime = System.currentTimeMillis();
         long totalTime = endTime - startTime;
-        if ((totalTime < 15000) || (totalTime > 25000)) {
-            Assert.fail("Test ran for " + totalTime + " which is either less than 10 seconds or more than 25 seconds,  outside of an acceptable session timeout range.");
+        // The session idle timeout is 15 seconds, but this test looks from request start to end. If the server/network takes too long, it may take up to an additonal 10-15 seconds.
+        // We don't care if it takes over 15 seconds due to network issues, but do if it's under 15 (less than teh specificed amount of time) 
+        // 60 seconds is just an upper range -- if it really took over 60 seconds something must have gone wrong ..... and we should take a look
+        // Note: The testMaxSessionIdleTimeoutTCKStyle looks at the time from onOpen to onClose. 
+
+        if ((totalTime < 15000) || (totalTime > 60000)) {
+            Assert.fail("Test ran for " + totalTime + " which is either less than 10 seconds or more than 60 seconds,  outside of an acceptable session timeout range.");
         }
     }
 

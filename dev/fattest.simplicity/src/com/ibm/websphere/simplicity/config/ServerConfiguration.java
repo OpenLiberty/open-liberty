@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -104,6 +104,9 @@ public abstract class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "webApplication")
     private ConfigElementList<WebApplication> webApplications;
+
+    @XmlElement(name = "enterpriseApplication")
+    private ConfigElementList<EnterpriseApplication> enterpriseApplications;
 
     @XmlElement(name = "springBootApplication")
     private ConfigElementList<SpringBootApplication> springBootApplications;
@@ -273,6 +276,9 @@ public abstract class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "mpMetrics")
     private MPMetricsElement mpMetricsElement;
+
+    @XmlElement(name = "mpHealth")
+    private MPHealthElement mpHealthElement;
 
     @XmlElement(name = "openapi")
     private OpenAPIElement openAPIElement;
@@ -812,6 +818,14 @@ public abstract class ServerConfiguration implements Cloneable {
         return this.mpMetricsElement;
     }
 
+    public MPHealthElement getMPHealthElement() {
+        if (this.mpHealthElement == null) {
+            this.mpHealthElement = new MPHealthElement();
+        }
+
+        return this.mpHealthElement;
+    }
+
     /**
      * @return the Jsp configuration for this server
      */
@@ -893,6 +907,16 @@ public abstract class ServerConfiguration implements Cloneable {
             this.webApplications = new ConfigElementList<WebApplication>();
         }
         return this.webApplications;
+    }
+
+    /**
+     * @return explicitly installed enterprise applications
+     */
+    public ConfigElementList<EnterpriseApplication> getEnterpriseApplications() {
+        if (this.enterpriseApplications == null) {
+            this.enterpriseApplications = new ConfigElementList<EnterpriseApplication>();
+        }
+        return this.enterpriseApplications;
     }
 
     /**

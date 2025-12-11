@@ -1,0 +1,92 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+configurations {
+  requiredLibs {
+    transitive = false
+  }
+}
+
+dependencies {
+  requiredLibs project(':com.ibm.ws.wssecurity.fat.utils.common'),
+               project(':io.openliberty.org.apache.commons.codec'),
+               project(':com.ibm.ws.org.apache.wss4j.ws.security.common'),
+               'org.apache.httpcomponents:httpclient:4.5.4',
+               'org.apache.httpcomponents:httpcore:4.4.9',
+               'org.apache.commons:commons-lang3:3.5',
+               'httpunit:httpunit:1.5.4'
+}
+
+addRequiredLibraries.dependsOn addJakartaTransformer
+
+
+autoFVT.doLast {
+
+/* Copy common files to all servers */
+
+  def servers = [
+        'com.ibm.ws.wssecurity_fat.caller'
+  ]
+
+  servers.each { server ->
+    copy {
+      from project.file('publish/files/serversettings')
+      include '*.xml'
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+    }
+  }
+
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbh').buildDir, 'com.ibm.ws.wssecurity.example.cbh.jar')
+    into new File(autoFvtDir, 'publish/files/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbh').buildDir, 'com.ibm.ws.wssecurity.example.cbh.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbhwss4j').buildDir, 'com.ibm.ws.wssecurity.example.cbhwss4j.jar')
+    into new File(autoFvtDir, 'publish/files/bundles/')
+  }
+  copy {
+    from new File(project(':com.ibm.ws.wssecurity.example.cbhwss4j').buildDir, 'com.ibm.ws.wssecurity.example.cbhwss4j.jar')
+    into new File(autoFvtDir, 'lib/LibertyFATTestFiles/bundles/')
+  }
+
+/* issue 23599 Copy CBH resource to this server only */
+
+  servers.each { server ->
+    copy {
+      from project.file('publish/files/features')
+      include 'wsseccbh-1.0.mf'
+      into new File(autoFvtDir, 'publish/features')
+    }
+    
+  }  
+     
+
+
+ /* Copy securitykeys/wss-ecdh.* to these servers */
+  servers = [
+    'com.ibm.ws.wssecurity_fat.caller'
+  ]
+
+  servers.each { server ->
+    copy { 
+      from project.file('securitykeys')
+      include "wss-ecdh.*"
+      into new File(autoFvtDir, 'publish/servers/' + server + '/')
+    }   
+  }
+
+}

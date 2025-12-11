@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jaxws22.fat;
 
+import static componenttest.annotation.SkipForRepeat.EE9_OR_LATER_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -18,6 +19,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -34,6 +36,7 @@ import fats.cxf.jaxws22.saaj.client.SAAJTestServlet;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
+@SkipForRepeat({ EE9_OR_LATER_FEATURES })
 public class SAAJBasicTest extends FATServletClient {
 
     private static final String APP_NAME = "saajtest";

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.mongo.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
@@ -24,6 +25,7 @@ import componenttest.topology.utils.FATServletClient;
 import fat.mongo.web.MongoTestServlet;
 
 @RunWith(FATRunner.class)
+@Ignore //Turning off the test cases to prevent build failures due to docker image - Defect 303550
 public class MongoBasicTest extends FATServletClient {
 
     @Server("mongo.fat.server")

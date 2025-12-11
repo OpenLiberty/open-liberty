@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+	~ Copyright (c) 2022, 2025 IBM Corporation and others. All rights reserved. 
+	~ This program and the accompanying materials are made available under the 
+	~ terms of the Eclipse Public License 2.0 which accompanies this distribution, 
+	~ and is available at 
+	~    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0 
+	~ Contributors: 
+	~    IBM Corporation - initial API and implementation 
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>io.openliberty.jakarta.data</groupId>
+		<artifactId>tck.runner</artifactId>
+	    <version>1.0-SNAPSHOT</version>
+	</parent>
+	
+	<artifactId>tck.runner.standalone</artifactId>
+	<name>Jakarta Data TCK Runner TCK Module</name>
+
+	<properties>
+		<targetDirectory>${project.basedir}/target</targetDirectory>
+	</properties>
+
+    <!-- TODO update all APIs to EE 12 -->
+	<dependencies>
+		<!-- tck - data - external TCK -->
+		<dependency>
+			<groupId>${jakarta.data.groupid}</groupId>
+			<artifactId>jakarta.data-tck</artifactId>
+			<version>${jakarta.data.tck.version}</version>
+		</dependency>
+		<!-- api - data - internal bundle -->
+		<dependency>
+			<groupId>jakarta.data</groupId>
+			<artifactId>jakarta.data-api</artifactId>
+			<version>${jakarta.data.version}</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.jakarta.data.1.0}</systemPath>
+		</dependency>
+		<!-- impl - data - external jnosql for MongoDB -->
+		<dependency>
+			<groupId>org.eclipse.jnosql.databases</groupId>
+			<artifactId>jnosql-mongodb</artifactId>
+			<version>${jnosql.mongodb.version}</version>
+		</dependency>
+		<!-- test frameworks -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.tck</groupId>
+			<artifactId>sigtest-maven-plugin</artifactId>
+			<version>${sigtest.version}</version>
+		</dependency>
+		<!-- CDI for resource injection -->
+		<dependency>
+		    <groupId>org.jboss.weld.se</groupId>
+		    <artifactId>weld-se-core</artifactId>
+		    <version>5.1.0.Final</version>
+		    <scope>test</scope>
+		</dependency>
+		<!-- APIs referenced by TCK that do not require implementations for standalone tests -->
+		<dependency>
+			<groupId>org.jboss.shrinkwrap</groupId>
+			<artifactId>shrinkwrap-api</artifactId>
+		</dependency>
+		<dependency>
+		    <groupId>org.jboss.arquillian.junit5</groupId>
+		    <artifactId>arquillian-junit5-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+			<version>6.1</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.jakarta.servlet.6.1}</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>jakarta.enterprise</groupId>
+			<artifactId>jakarta.enterprise.cdi-api</artifactId>
+			<version>4.1</version>
+			<scope>system</scope>
+			<systemPath>${io.openliberty.jakarta.cdi.4.1}</systemPath>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<directory>${targetDirectory}</directory>
+		<plugins>
+			<!-- Plugin used to internal bundles to signaturedirectory for signature tests -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>copy-data</id>
+						<phase>generate-test-sources</phase>
+						<goals>
+							<goal>run</goal>
+						</goals>
+						<configuration>
+							<target>
+								<copy file="${io.openliberty.jakarta.data.1.0}" tofile="${project.build.directory}/signaturedirectory/jakarta.data-api.jar" />
+							</target>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.5.2</version>
+				<configuration>
+					<forkNode implementation="org.apache.maven.plugin.surefire.extensions.SurefireForkNodeFactory"/> <!-- Default forkNode has encoding issues on ZOS -->
+					<trimStackTrace>false</trimStackTrace>
+					<failIfNoTests>true</failIfNoTests>
+					<dependenciesToScan>
+						<dependency>${jakarta.data.groupid}:jakarta.data-tck</dependency>
+					</dependenciesToScan>
+					<statelessTestsetReporter implementation="org.apache.maven.plugin.surefire.extensions.junit5.JUnit5Xml30StatelessReporter">
+						<usePhrasedTestCaseMethodName>true</usePhrasedTestCaseMethodName>
+						<usePhrasedTestCaseClassName>true</usePhrasedTestCaseClassName>
+					</statelessTestsetReporter>
+					<systemPropertyVariables>
+						<java.util.logging.config.file>${logging.config.file}</java.util.logging.config.file>
+						<jimage.dir>${jimage.dir}</jimage.dir>
+						<signature.sigTestClasspath>${project.build.directory}/signaturedirectory/jakarta.data-api.jar:${jimage.dir}/java.base:${jimage.dir}/java.rmi:${jimage.dir}/java.sql:${jimage.dir}/java.naming</signature.sigTestClasspath>
+						<jakarta.tck.skip.deployment>true</jakarta.tck.skip.deployment>
+						<jakarta.tck.database.type>${jakarta.tck.database.type}</jakarta.tck.database.type>
+						<jakarta.tck.database.name>${jakarta.tck.database.name}</jakarta.tck.database.name>
+					</systemPropertyVariables>
+					<excludes>
+						<exclude>${excluded.tests}</exclude>
+					</excludes>
+					<groups>${included.groups}</groups>
+					<reportNameSuffix>${jakarta.profile}-${jakarta.tck.database.type}</reportNameSuffix>
+					<testSourceDirectory>${basedir}${file.separarator}src${file.separarator}main${file.separarator}java${file.separarator}</testSourceDirectory>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

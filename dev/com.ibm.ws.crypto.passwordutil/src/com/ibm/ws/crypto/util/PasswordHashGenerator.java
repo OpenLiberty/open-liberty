@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,11 +22,17 @@ import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 public class PasswordHashGenerator {
-    final private static String DEFAULT_ALGORITHM = "PBKDF2WithHmacSHA1";
+    // FIPS 140-3: Algorithm assessment complete; no changes required.
+    // OLD_DEFAULT_ALGORITHM is only used when old hashes are being compared.
+    // Going forward new hashes with use LATEST_DEFAULT_ALGORITHM
+    final private static String OLD_DEFAULT_ALGORITHM = CryptoUtils.PBKDF2_WITH_HMAC_SHA1;
+    final public static String LATEST_DEFAULT_ALGORITHM = CryptoUtils.PBKDF2_WITH_HMAC_SHA512;
     final private static int DEFAULT_ITERATION = 6384;
     final private static int DEFAULT_OUTPUT_LENGTH = 256;
-    final private static int SEED_LENGTH = 8;
+    final private static int SALT_LENGTH = 32;
     private static final Class<?> CLASS_NAME = PasswordHashGenerator.class;
     private final static Logger logger = Logger.getLogger(CLASS_NAME.getCanonicalName());
 
@@ -39,9 +45,9 @@ public class PasswordHashGenerator {
         byte[] output = null;
         if (saltString == null || saltString.length() < 1) {
             // use randomly generated value
-            output = new byte[SEED_LENGTH];
+            output = new byte[SALT_LENGTH];
             SecureRandom rand = new SecureRandom();
-            rand.setSeed(rand.generateSeed(SEED_LENGTH));
+            rand.setSeed(rand.generateSeed(SALT_LENGTH));
             rand.nextBytes(output);
         } else {
             output = saltString.getBytes(StandardCharsets.UTF_8);
@@ -54,7 +60,7 @@ public class PasswordHashGenerator {
     }
 
     public static String getDefaultAlgorithm() {
-        return DEFAULT_ALGORITHM;
+        return OLD_DEFAULT_ALGORITHM;
     }
 
     public static int getDefaultOutputLength() {
@@ -67,10 +73,6 @@ public class PasswordHashGenerator {
         } else {
             throw new InvalidPasswordCipherException("HashedData object is null.");
         }
-    }
-
-    public static byte[] digest(char[] plainBytes) throws InvalidPasswordCipherException {
-        return digest(plainBytes, generateSalt(null), DEFAULT_ALGORITHM, DEFAULT_ITERATION, DEFAULT_OUTPUT_LENGTH);
     }
 
     /**

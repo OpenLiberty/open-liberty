@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -297,23 +297,6 @@ public class OidcClientEncryptionTests extends CommonTest {
         return expectations;
     }
 
-    /**
-     * TODO when issue 17485 is completed, remove setting/passing parms and update the builder configs that encrypt with ES algs
-     * with keyManagementKeyAlgorithm set to ECDH-ES
-     *
-     * @param alg
-     * @return
-     * @throws Exception
-     */
-    public List<endpointSettings> setParmsForECWorkaround(String alg) throws Exception {
-
-        testOPServer.addIgnoredServerException(MessageConstants.CWWKG0032W_CONFIG_INVALID_VALUE);
-
-        List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.KEY_MGMT_KEY_ALG_ES);
-        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), alg));
-        return parms;
-    }
-
     public String createGenericRS256JWE() throws Exception {
         // We're going to use a test JWT token builder to create a token that has "notJOSE" in the JWE header type field
         // the Liberty builder won't allow us to update that field, so, we need to peice a token together
@@ -397,12 +380,9 @@ public class OidcClientEncryptionTests extends CommonTest {
      * @throws Exception
      */
     @Mode(TestMode.LITE)
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_EncryptTokenES256_RPDecryptES256() throws Exception {
-
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(Constants.SIGALG_ES256, Constants.SIGALG_ES256, setParmsForECWorkaround(JwtConstants.SIGALG_ES256));
-
+        genericEncryptTest(Constants.SIGALG_ES256, Constants.SIGALG_ES256);
     }
 
     /**
@@ -410,12 +390,9 @@ public class OidcClientEncryptionTests extends CommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_EncryptTokenES384_RPDecryptES384() throws Exception {
-
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(Constants.SIGALG_ES384, Constants.SIGALG_ES384, setParmsForECWorkaround(Constants.SIGALG_ES384));
-
+        genericEncryptTest(Constants.SIGALG_ES384, Constants.SIGALG_ES384);
     }
 
     /**
@@ -423,12 +400,9 @@ public class OidcClientEncryptionTests extends CommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_EncryptTokenES512_RPDecryptES512() throws Exception {
-
-        // TODO when issue 17485 is completed, remove setting/passing parms
-        genericEncryptTest(Constants.SIGALG_ES512, Constants.SIGALG_ES512, setParmsForECWorkaround(Constants.SIGALG_ES512));
-
+        genericEncryptTest(Constants.SIGALG_ES512, Constants.SIGALG_ES512);
     }
 
     /*********** jwt builder/rp using the different algorithm ************/
@@ -447,13 +421,7 @@ public class OidcClientEncryptionTests extends CommonTest {
         for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but RS256 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                // Testing ECDH-ES for encrypting the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -471,13 +439,7 @@ public class OidcClientEncryptionTests extends CommonTest {
         for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but RS384 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                // Testing ECDH-ES for encrypting the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -495,13 +457,7 @@ public class OidcClientEncryptionTests extends CommonTest {
         for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but RS512 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                // Testing ECDH-ES for encrypting the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -512,19 +468,14 @@ public class OidcClientEncryptionTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithES256_RPDecryptES256() throws Exception {
 
         String rpDecryptAlg = Constants.SIGALG_ES256;
         for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES256 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -535,19 +486,14 @@ public class OidcClientEncryptionTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithES384_RPDecryptES384() throws Exception {
 
         String rpDecryptAlg = Constants.SIGALG_ES384;
         for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES384 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -558,19 +504,14 @@ public class OidcClientEncryptionTests extends CommonTest {
      *
      * @throws Exception
      */
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_EncryptTokenNotWithES512_RPDecryptES512() throws Exception {
 
         String rpDecryptAlg = Constants.SIGALG_ES512;
         for (String builderEncryptAlg : Constants.ALL_TEST_ENCRYPTALGS) {
             if (!rpDecryptAlg.equals(builderEncryptAlg)) {
                 //sign and encrypt with the same alg, RP specifies original alg for sign, but ES512 for decrypt
-                // TODO when issue 17485 is completed, remove setting/passing parms
-                if (builderEncryptAlg.startsWith("ES")) {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null, setParmsForECWorkaround(builderEncryptAlg));
-                } else {
-                    genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
-                }
+                genericEncryptTest(builderEncryptAlg, setBuilderName(builderEncryptAlg), rpDecryptAlg, setAppName(builderEncryptAlg, rpDecryptAlg), null);
             }
         }
 
@@ -641,13 +582,13 @@ public class OidcClientEncryptionTests extends CommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithVariousAlgs_EncryptWithES256_DecryptWithES256() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_ES256;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), builderSigAlg, null, null);
             }
         }
 
@@ -660,13 +601,13 @@ public class OidcClientEncryptionTests extends CommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithVariousAlgs_EncryptWithES384_DecryptWithES384() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_ES384;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), builderSigAlg, null, null);
             }
         }
     }
@@ -678,13 +619,13 @@ public class OidcClientEncryptionTests extends CommonTest {
      *
      * @throws Exception
      */
-    // @Test Using ECDH-ES to encrypt the Content Encryption Key of a JWE not officially supported in jwtBuilder yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithVariousAlgs_EncryptWithES512_DecryptWithES512() throws Exception {
 
         String encryptDecryptAlg = Constants.SIGALG_ES512;
         for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
             if (!encryptDecryptAlg.equals(builderSigAlg)) { // base tests already tested with same sign & encrypt
-                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), null, setParmsForECWorkaround(encryptDecryptAlg));
+                genericEncryptTest(encryptDecryptAlg, setBuilderName(builderSigAlg, encryptDecryptAlg), encryptDecryptAlg, setAppName(builderSigAlg, encryptDecryptAlg), builderSigAlg, null, null);
             }
         }
     }
@@ -750,7 +691,7 @@ public class OidcClientEncryptionTests extends CommonTest {
         genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), signAlg, null, null);
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES256() throws Exception {
         String signAlg = Constants.SIGALG_ES256;
         String rpEncryptAlg = Constants.SIGALG_NONE;
@@ -760,7 +701,7 @@ public class OidcClientEncryptionTests extends CommonTest {
         genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), signAlg, null, null);
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES384() throws Exception {
         String signAlg = Constants.SIGALG_ES384;
         String rpEncryptAlg = Constants.SIGALG_NONE;
@@ -770,7 +711,7 @@ public class OidcClientEncryptionTests extends CommonTest {
         genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), signAlg, null, null);
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithValidAlg_DoNotEncrypt_DecryptWithES512() throws Exception {
         String signAlg = Constants.SIGALG_ES512;
         String rpEncryptAlg = Constants.SIGALG_NONE;
@@ -813,31 +754,31 @@ public class OidcClientEncryptionTests extends CommonTest {
         genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsExpectations());
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithValidAlg_EncryptWithES256_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_ES256;
         String rpEncryptAlg = Constants.SIGALG_ES256;
         String rpDecryptAlg = Constants.SIGALG_NONE;
 
-        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsExpectations(), setParmsForECWorkaround(rpEncryptAlg));
+        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsExpectations());
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithValidAlg_EncryptWithES384_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_ES384;
         String rpEncryptAlg = Constants.SIGALG_ES384;
         String rpDecryptAlg = Constants.SIGALG_NONE;
 
-        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsExpectations(), setParmsForECWorkaround(rpEncryptAlg));
+        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsExpectations());
     }
 
-    @Test // Testing ECDH-ES to encrypt the Content Encryption Key of a JWE, but not officially supported yet (issue 17485)
+    @Test
     public void OidcClientEncryptionTests_SignWithValidAlg_EncryptWithES512_DoNotDecrypt() throws Exception {
         String signAlg = Constants.SIGALG_ES512;
         String rpEncryptAlg = Constants.SIGALG_ES512;
         String rpDecryptAlg = Constants.SIGALG_NONE;
 
-        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsExpectations(), setParmsForECWorkaround(rpEncryptAlg));
+        genericEncryptTest(rpEncryptAlg, setBuilderName(signAlg, rpEncryptAlg), rpDecryptAlg, setAppName(signAlg, rpDecryptAlg), getMissingDecryptionSettingsExpectations());
     }
 
     /*************** Various JWE header content tests ***************/
@@ -856,6 +797,7 @@ public class OidcClientEncryptionTests extends CommonTest {
 
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, JwtConstants.PARAM_CONTENT_ENCRYPT_ALG, JwtConstants.CONTENT_ENCRYPT_ALG_192);
         parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_ENCRYPT_KEY, JwtKeyTools.getComplexPublicKeyForSigAlg(testOPServer.getServer(), JwtConstants.SIGALG_RS256));
+        parms = eSettings.addEndpointSettingsIfNotNull(parms, JwtConstants.PARAM_KEY_MGMT_ALG, JwtConstants.DEFAULT_KEY_MGMT_KEY_ALG);
 
         genericEncryptTest(Constants.SIGALG_RS256, Constants.SIGALG_RS256, parms);
     }

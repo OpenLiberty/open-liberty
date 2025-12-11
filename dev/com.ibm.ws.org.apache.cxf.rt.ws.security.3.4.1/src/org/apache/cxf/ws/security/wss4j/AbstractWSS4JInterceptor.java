@@ -46,6 +46,8 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.wss4j.dom.handler.RequestData;
 import org.apache.wss4j.dom.handler.WSHandler;
 
+import com.ibm.websphere.ras.annotation.Trivial; // Liberty Change
+
 public abstract class AbstractWSS4JInterceptor extends WSHandler implements SoapInterceptor,
     PhaseInterceptor<SoapMessage> {
 
@@ -90,6 +92,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         this.phase = phase;
     }
 
+    @Trivial // Liberty Change
     public Object getOption(String key) {
         return properties.get(key);
     }
@@ -211,6 +214,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         if (passwordEncryptor != null) {
             msg.put(ConfigurationConstants.PASSWORD_ENCRYPTOR_INSTANCE, passwordEncryptor);
         }
+
         // Liberty Change Start
         String mustunderstand = (String)msg.getContextualProperty("ws-security.must-understand");
         if (mustunderstand != null && !mustunderstand.isEmpty()) {
@@ -220,7 +224,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
                 LOG.fine("AbstractWSS4JInterceptor: OLGH23255 - mustUnderstand is set = " + mustunderstand);
             }        
         }
-		// Liberty Change End
+        // Liberty Change End
     }
 
     @Override
@@ -229,7 +233,7 @@ public abstract class AbstractWSS4JInterceptor extends WSHandler implements Soap
         RequestData reqData
     ) throws WSSecurityException {
         Message message = (Message)reqData.getMsgContext();
-        ClassLoader classLoader = this.getClassLoader(reqData.getMsgContext());
+        ClassLoader classLoader = this.getClassLoader();
         PasswordEncryptor passwordEncryptor = getPasswordEncryptor(reqData);
         return
             WSS4JUtils.loadCryptoFromPropertiesFile(

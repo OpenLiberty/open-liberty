@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright (c) 2023, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -33,6 +33,3 @@ publish.wlp.jar.disabled: true
   org.apache.maven.indexer:indexer-core;version=6.2.2, \
   org.codehaus.plexus:plexus-utils;version=3.2.1, \
   com.googlecode.json-simple:json-simple;version=1.1.1
-
--testpath: \
-  ../build.sharedResources/lib/junit/old/junit.jar;version=file

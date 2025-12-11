@@ -12,17 +12,14 @@ package io.openliberty.jpa.data.tests.models;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 /**
  * Recreate from io.openliberty.data.internal_fat_jpa
- *
- * The problem here is with the entity itself
- * TODO: uncomment @Entity
- * TODO: remove constructor from Point
  */
-//@Entity
+@Entity
 public class Segment {
 
     @GeneratedValue
@@ -39,14 +36,7 @@ public class Segment {
 
     @Embeddable
     public static record Point(int x, int y) {
-        /**
-         * Recreate
-         * Exception Description: The instance creation method [io.openliberty.jpa.data.tests.models.Segment$Point.&lt;Default Constructor&gt;],
-         * with no parameters, does not exist, or is not accessible.
-         */
-        public Point() {
-            this(0, 0);
-        }
+       
     }
 
     public static Segment of(int x1, int y1, int x2, int y2) {

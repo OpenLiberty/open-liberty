@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ Import-Package: !javax.servlet.jsp.*, \
   org.xml.sax.helpers; resolution:=optional
 
 Include-Resource: \
-  @${repo;com.ibm.ws.javax.j2ee:servlet.jsp;2.2}!/javax/servlet/jsp/resources/**
+  @\${repo;com.ibm.ws.javax.j2ee:servlet.jsp;2.2}!/javax/servlet/jsp/resources/**
 
 instrument.disabled: true
 

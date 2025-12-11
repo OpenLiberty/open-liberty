@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -395,6 +395,8 @@ public class TargetsScannerBaseImpl {
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
                     "Location {0}: Classes {1}: Scan type {2}",
                     new Object[] { nextClassSource.getCanonicalName(), nextClassCount, scanType });
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+			        "Jandex Path: {0}", nextClassSource.getOptions().getJandexPath());
             }
         }
 

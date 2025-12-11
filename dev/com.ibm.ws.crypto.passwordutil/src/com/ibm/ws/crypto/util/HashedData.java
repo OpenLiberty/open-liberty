@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,6 @@ package com.ibm.ws.crypto.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -70,55 +69,53 @@ public class HashedData {
             logger.fine("ctor:HashedData");
             logger.fine(PasswordHashGenerator.hexDump(input));
         }
+        if (input == null) {
+            throw new InvalidPasswordCipherException("Invalid format: null object.");
+        }
         try {
-            if (input != null) {
-                ByteArrayInputStream buffer = new ByteArrayInputStream(input);
-                if (TAG_VERSION_V1 == (byte) (buffer.read() & 0xFF)) {
-                    algorithm = DEFAULT_ALGORITHM;
-                    iteration = DEFAULT_ITERATION;
-                    length = DEFAULT_OUTPUT_LENGTH;
-                    plain = null;
-                    salt = null;
-                    digest = null;
-                    bytes = input;
-                    while (buffer.available() > 0) {
-                        byte id = (byte) (buffer.read() & 0xff);
-                        switch (id) {
-                            case TAG_ALGORITHM:
-                                algorithm = readString(buffer);
-                                break;
-                            case TAG_ITERATION:
-                                iteration = readInt(buffer);
-                                break;
-                            case TAG_SALT:
-                                salt = readByte(buffer);
-                                if (logger.isLoggable(Level.FINE)) {
-                                    logger.fine("salt length : " + salt.length);
-                                    logger.fine(PasswordHashGenerator.hexDump(salt));
-                                }
-                                break;
-                            case TAG_DIGEST:
-                                digest = readByte(buffer);
-                                if (logger.isLoggable(Level.FINE)) {
-                                    logger.fine("digest length : " + digest.length);
-                                    logger.fine(PasswordHashGenerator.hexDump(digest));
-                                }
-                                break;
-                            case TAG_OUTPUT_LENGTH:
-                                length = readInt(buffer);
-                                break;
-                            default:
-                                throw new InvalidPasswordCipherException("Invalid format: data contains unknown identifier.");
+            ByteArrayInputStream buffer = new ByteArrayInputStream(input);
+            if (TAG_VERSION_V1 != (byte) (buffer.read() & 0xFF)) {
+                throw new InvalidPasswordCipherException("Invalid format: invalid data identifier.");
+            }
+            algorithm = DEFAULT_ALGORITHM;
+            iteration = DEFAULT_ITERATION;
+            length = DEFAULT_OUTPUT_LENGTH;
+            plain = null;
+            salt = null;
+            digest = null;
+            bytes = input;
+            while (buffer.available() > 0) {
+                byte id = (byte) (buffer.read() & 0xff);
+                switch (id) {
+                    case TAG_ALGORITHM:
+                        algorithm = readString(buffer);
+                        break;
+                    case TAG_ITERATION:
+                        iteration = readInt(buffer);
+                        break;
+                    case TAG_SALT:
+                        salt = readByte(buffer);
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("salt length : " + salt.length);
+                            logger.fine(PasswordHashGenerator.hexDump(salt));
                         }
-                    }
-                    if (salt == null || digest == null) {
-                        throw new InvalidPasswordCipherException("Invalid format: one of required data is missing.");
-                    }
-                } else {
-                    throw new InvalidPasswordCipherException("Invalid format: invalid data identifier.");
+                        break;
+                    case TAG_DIGEST:
+                        digest = readByte(buffer);
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("digest length : " + digest.length);
+                            logger.fine(PasswordHashGenerator.hexDump(digest));
+                        }
+                        break;
+                    case TAG_OUTPUT_LENGTH:
+                        length = readInt(buffer);
+                        break;
+                    default:
+                        throw new InvalidPasswordCipherException("Invalid format: data contains unknown identifier.");
                 }
-            } else {
-                throw new InvalidPasswordCipherException("Invalid format: null object.");
+            }
+            if (salt == null || digest == null) {
+                throw new InvalidPasswordCipherException("Invalid format: one of required data is missing.");
             }
         } catch (InvalidPasswordCipherException ipe) {
             throw ipe;
@@ -132,35 +129,36 @@ public class HashedData {
         if (bytes != null) {
             output = new byte[bytes.length];
             System.arraycopy(bytes, 0, output, 0, bytes.length);
-        } else {
-            if (algorithm != null && algorithm.length() > 0 && iteration > 0 && salt != null && salt.length > 0) {
-                try {
-                    if (digest == null) {
-                        getDigest();
-                    }
-                    ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-                    buffer.write(TAG_VERSION_V1);
-                    if (!DEFAULT_ALGORITHM.equals(algorithm)) {
-                        buffer.write(TAG_ALGORITHM);
-                        writeString(buffer, algorithm);
-                    }
-                    if (iteration != DEFAULT_ITERATION) {
-                        buffer.write(TAG_ITERATION);
-                        writeInt(buffer, iteration);
-                    }
-                    if (length != DEFAULT_OUTPUT_LENGTH) {
-                        buffer.write(TAG_OUTPUT_LENGTH);
-                        writeInt(buffer, length);
-                    }
-                    buffer.write(TAG_SALT);
-                    writeByte(buffer, salt);
-                    buffer.write(TAG_DIGEST);
-                    writeByte(buffer, digest);
-                    output = buffer.toByteArray();
-                } catch (Exception e) {
-                    throw (InvalidPasswordCipherException) new InvalidPasswordCipherException("An error while serializing object").initCause(e);
-                }
+            return output;
+        } else if (algorithm == null || algorithm.length() == 0 || iteration == 0 || salt == null || salt.length == 0) {
+            return output;
+        }
+
+        try {
+            if (digest == null) {
+                getDigest();
             }
+            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+            buffer.write(TAG_VERSION_V1);
+            if (!DEFAULT_ALGORITHM.equals(algorithm)) {
+                buffer.write(TAG_ALGORITHM);
+                writeString(buffer, algorithm);
+            }
+            if (iteration != DEFAULT_ITERATION) {
+                buffer.write(TAG_ITERATION);
+                writeInt(buffer, iteration);
+            }
+            if (length != DEFAULT_OUTPUT_LENGTH) {
+                buffer.write(TAG_OUTPUT_LENGTH);
+                writeInt(buffer, length);
+            }
+            buffer.write(TAG_SALT);
+            writeByte(buffer, salt);
+            buffer.write(TAG_DIGEST);
+            writeByte(buffer, digest);
+            output = buffer.toByteArray();
+        } catch (Exception e) {
+            throw (InvalidPasswordCipherException) new InvalidPasswordCipherException("An error while serializing object").initCause(e);
         }
         return output;
     }
@@ -227,7 +225,7 @@ public class HashedData {
         return output;
     }
 
-    private String readString(ByteArrayInputStream input) throws InvalidPasswordCipherException, UnsupportedEncodingException {
+    private String readString(ByteArrayInputStream input) throws InvalidPasswordCipherException {
         String output = null;
         if (input != null) {
             int length = readInt(input);
@@ -265,7 +263,7 @@ public class HashedData {
         }
     }
 
-    private void writeString(ByteArrayOutputStream output, String value) throws InvalidPasswordCipherException, UnsupportedEncodingException {
+    private void writeString(ByteArrayOutputStream output, String value) throws InvalidPasswordCipherException {
         if (output != null && value != null) {
             byte[] b = toByte(value.length());
             output.write(b, 0, b.length);

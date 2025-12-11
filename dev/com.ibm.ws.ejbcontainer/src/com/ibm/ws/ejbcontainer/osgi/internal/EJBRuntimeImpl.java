@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -146,6 +146,7 @@ import com.ibm.ws.ejbcontainer.runtime.EJBJPAContainer;
 import com.ibm.ws.ejbcontainer.runtime.EJBRuntimeConfig;
 import com.ibm.ws.ejbcontainer.runtime.NameSpaceBinder;
 import com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression;
+import com.ibm.ws.exception.RuntimeError;
 import com.ibm.ws.exception.RuntimeWarning;
 import com.ibm.ws.exception.WsRuntimeFwException;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -1122,7 +1123,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             Tr.info(tc, "STARTING_MODULE_CNTR4000I", name, appName);
             ejbAMD.startingModule(mmd, true);
             super.startModule(mmd);
-            ejbAMD.startedModule(mmd);
+            startedModule(mmd);
             Tr.info(tc, "STARTED_MODULE_CNTR4001I", name, appName);
         } catch (WsRuntimeFwException t) {
             Tr.error(tc, "ERROR_STARTING_MODULE_CNTR4002E", name, appName, t);
@@ -1138,11 +1139,50 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         try {
             ejbAMD.startingModule(mmd, true);
             super.startModule(mmd);
-            ejbAMD.startedModule(mmd);
+            startedModule(mmd);
             ejbAMD.started();
         } catch (WsRuntimeFwException t) {
             throw new EJBRuntimeException(t);
         }
+    }
+
+    @FFDCIgnore(RuntimeWarning.class)
+    private void startedModule(EJBModuleMetaDataImpl mmd) throws WsRuntimeFwException {
+        final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.entry(tc, "startedModule: " + mmd.getJ2EEName());
+
+        WsRuntimeFwException error = null;
+        EJBApplicationMetaData ejbAMD = mmd.getEJBApplicationMetaData();
+
+        try {
+            ejbAMD.startedModule(mmd);
+        } catch (RuntimeWarning rw) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "startedModule: " + rw);
+            error = rw;
+        } catch (Throwable t) {
+            if (isTraceOn && tc.isDebugEnabled())
+                Tr.debug(tc, "startedModule: " + t);
+            error = new RuntimeError(t);
+        }
+
+        if (error != null) {
+            try {
+                ejbAMD.stoppingModule(mmd);
+                stopModule(mmd);
+            } catch (Throwable t) {
+                if (isTraceOn && tc.isDebugEnabled())
+                    Tr.debug(tc, "startedModule: stop failed: " + t);
+            }
+
+            if (isTraceOn && tc.isEntryEnabled())
+                Tr.exit(tc, "startedModule: " + error);
+            throw error;
+        }
+
+        if (isTraceOn && tc.isEntryEnabled())
+            Tr.exit(tc, "startedModule: " + mmd.getJ2EEName());
     }
 
     @Trivial

@@ -1,7 +1,5 @@
-package com.ibm.ws.sib.msgstore.persistence.dispatcher;
-
-/*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+/* ==============================================================================
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,7 +9,10 @@ package com.ibm.ws.sib.msgstore.persistence.dispatcher;
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * ==============================================================================
+ */
+package com.ibm.ws.sib.msgstore.persistence.dispatcher;
+
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -36,10 +37,10 @@ import com.ibm.ws.sib.msgstore.transactions.impl.TransactionState;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
+import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.getUpdaterForStopRequested;
 import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForErrorCleared;
 import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForErrorOccurred;
 import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForStart;
-import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForStopRequested;
 import static com.ibm.ws.sib.msgstore.persistence.dispatcher.DispatcherState.updaterForStopped;
 import static com.ibm.ws.sib.msgstore.persistence.dispatcher.StateUtils.updateState;
 
@@ -329,7 +330,7 @@ public class SpillDispatcher extends DispatcherBase
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "start");
     }
 
-    public void stop(int mode)
+    public void stop(int mode, Throwable reason)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "stop", Integer.valueOf(mode));
 
@@ -338,7 +339,7 @@ public class SpillDispatcher extends DispatcherBase
         // First change the state of the dispatcher
         synchronized(this)
         {
-            performingTheStop = updateState(stateRef, updaterForStopRequested);
+            performingTheStop = updateState(stateRef, getUpdaterForStopRequested(reason));
         } // end synchronized
 
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,10 +17,6 @@ import java.util.Collection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.junit.After;
-
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 import com.ibm.ws.feature.tests.util.PlatformConstants;
 
@@ -32,14 +28,9 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTest {
     public static final String SERVER_NAME_EE8 = "ee8toMP";
     public static final String SERVER_NAME_EE9 = "ee9toMP";
     public static final String SERVER_NAME_EE10 = "ee10toMP";
+    public static final String SERVER_NAME_EE11 = "ee11toMP";
 
     public static final String[] ALLOWED_ERRORS = { "CWWKF0001E", "CWWKF0048E" };
-
-    @After
-    public void after() throws Exception {
-        LibertyServer server = LibertyServerFactory.getLibertyServer(getTestCase().serverName);
-        server.stopServer(ALLOWED_ERRORS);
-    }
 
     public static TestCase[] TEST_CASES = new TestCase[] {
         new TestCase("ee7toHealthAndMetricsMax",
@@ -94,7 +85,22 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTest {
                      new String[] { "mpMetrics-5.0", "mpHealth-4.0" },
                      TestCase.NO_FAILURES,
                      ALLOWED_ERRORS,
-                     TestCase.JAVA_11)
+                     TestCase.JAVA_11),
+
+        new TestCase("ee11toHealthAndMetricsMax",
+                     SERVER_NAME_EE11,
+                     PlatformConstants.MICROPROFILE_DESCENDING,
+                     new String[] { "mpMetrics-5.1", "mpHealth-4.0" },
+                     TestCase.NO_FAILURES,
+                     ALLOWED_ERRORS,
+                     TestCase.JAVA_17),
+        new TestCase("ee11toHealthAndMetricsMin",
+                     SERVER_NAME_EE11,
+                     PlatformConstants.MICROPROFILE_ASCENDING,
+                     new String[] { "mpMetrics-5.1", "mpHealth-4.0" },
+                     TestCase.NO_FAILURES,
+                     ALLOWED_ERRORS,
+                     TestCase.JAVA_17)
     };
 
     @Parameterized.Parameters
@@ -109,6 +115,11 @@ public class VersionlessJavaEEToMicroProfileTest extends VersionlessTest {
     @Test
     public void versionless_javaEEToMicroProfileTest() throws Exception {
         test(getTestCase());
+    }
+
+    @Override
+    protected boolean waitForSSL() {
+        return true;
     }
 }
 // @formatter:on

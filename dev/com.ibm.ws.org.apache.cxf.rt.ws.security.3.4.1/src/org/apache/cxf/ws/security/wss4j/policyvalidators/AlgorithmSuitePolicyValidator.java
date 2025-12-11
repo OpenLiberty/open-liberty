@@ -24,14 +24,18 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 import java.security.interfaces.DSAPublicKey;
 import java.security.interfaces.RSAPublicKey;
+import java.security.interfaces.ECPublicKey;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Logger;
 
 import javax.xml.namespace.QName;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.helpers.CastUtils;
 import org.apache.cxf.ws.policy.AssertionInfo;
 import org.apache.cxf.ws.security.policy.PolicyUtils;
+import org.apache.cxf.ws.security.policy.custom.DefaultAlgorithmSuiteLoader;
 import org.apache.wss4j.common.WSS4JConstants;
 import org.apache.wss4j.common.principal.WSDerivedKeyTokenPrincipal;
 import org.apache.wss4j.dom.WSConstants;
@@ -53,6 +57,9 @@ import org.apache.xml.security.transforms.Transforms;
 // to SoapMessage.put() will cause a NoSuchMethodException in the calling class if the class is not recompiled.
 // If a solution to this compilation issue can be found, this class should be removed as an overlay. 
 public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidator {
+    
+
+    private static final Logger LOG = LogUtils.getL7dLogger(AlgorithmSuitePolicyValidator.class); // Liberty Code Change
 
     /**
      * Return true if this SecurityPolicyValidator implementation is capable of validating a
@@ -71,6 +78,11 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
         for (AssertionInfo ai : ais) {
             AlgorithmSuite algorithmSuite = (AlgorithmSuite)ai.getAssertion();
             ai.setAsserted(true);
+            
+            //apply customization properties before validation
+            DefaultAlgorithmSuiteLoader.customize(algorithmSuite.getAlgorithmSuiteType(),
+                    parameters.getMessage()); // Liberty Change: Backport 4.x
+
 
             boolean valid = validatePolicy(ai, algorithmSuite, parameters.getResults().getResults());
             if (valid) {
@@ -283,6 +295,7 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
         AssertionInfo ai
     ) {
         AlgorithmSuiteType algorithmSuiteType = algorithmPolicy.getAlgorithmSuiteType();
+        // Liberty Change Start: Assert ECPublicKey min and max length
         if (publicKey instanceof RSAPublicKey) {
             int modulus = ((RSAPublicKey)publicKey).getModulus().bitLength();
             if (modulus < algorithmSuiteType.getMinimumAsymmetricKeyLength()
@@ -301,13 +314,15 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
                 );
                 return false;
             }
+        } else if (publicKey instanceof ECPublicKey) {
+            return true;
         } else {
             ai.setNotAsserted(
                 "An unknown public key was provided"
             );
             return false;
         }
-
+        // Liberty Change End
         return true;
     }
 

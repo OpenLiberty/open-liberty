@@ -1,0 +1,10 @@
+<!DOCTYPE aspectj PUBLIC
+        "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+	<weaver options="-verbose -debug -showWeaveInfo">     
+		<include within="io.openliberty.springboot.support.version40.test.aop.app..*"/>                
+	</weaver>       
+	<aspects>       
+		<aspect name="io.openliberty.springboot.support.version40.test.aop.app.LoggingAspectConfig"/>       
+	</aspects>       
+</aspectj>

@@ -42,10 +42,21 @@ public class FeatureDependencyProcessor {
     // Allow for the featureList.xml to be recomputed at maximum once per JVM lifespan
     private static boolean hasRetry = true;
 
+    public static File getTestedFeaturesMetdataFile() {
+        String suiteName = System.getProperty("test.bucket.class");
+        if (suiteName != null) {
+            File suiteMetadata = new File(suiteName + "-fat-metadata.json");
+            if (suiteMetadata.exists()) {
+                return suiteMetadata;
+            }
+        }
+        return new File("fat-metadata.json");
+    }
+
     public static void validateTestedFeatures(LibertyServer server, RemoteFile serverLog) throws Exception {
         final String m = "validateTestedFeatures";
         // Load the tested feature data, if it exists
-        File testedFeaturesFile = new File("fat-metadata.json");
+        File testedFeaturesFile = getTestedFeaturesMetdataFile();
         if (!testedFeaturesFile.exists()) {
             Exception noMetadata = new Exception("Unable to locate FAT metadata at: " + testedFeaturesFile.getAbsolutePath());
             Log.error(c, m, noMetadata);

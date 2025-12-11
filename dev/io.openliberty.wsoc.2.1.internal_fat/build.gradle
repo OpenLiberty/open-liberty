@@ -8,6 +8,8 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
+ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
 dependencies {
     requiredLibs 'org.apache.httpcomponents.client5:httpclient5:5.0',
     'org.apache.httpcomponents.core5:httpcore5:5.0',
@@ -15,16 +17,16 @@ dependencies {
     project(':com.ibm.ws.org.apache.httpcomponents'),
     'jakarta.websocket:jakarta.websocket-api:2.1.1',
     'jakarta.websocket:jakarta.websocket-client-api:2.1.1',
-    'org.eclipse.jetty:jetty-io:11.0.9',
-    'org.eclipse.jetty:jetty-util:11.0.9',
-    'org.eclipse.jetty:jetty-http:11.0.9',
-    'org.eclipse.jetty:jetty-client:11.0.9',
-    'org.eclipse.jetty.websocket:websocket-jakarta-common:11.0.9',
-    'org.eclipse.jetty.websocket:websocket-jakarta-client:11.0.9',
-    'org.eclipse.jetty.websocket:websocket-core-common:11.0.9',
-    'org.eclipse.jetty.websocket:websocket-core-client:11.0.9',
-    'org.eclipse.jetty.websocket:websocket-jetty-api:11.0.9',
-    'org.eclipse.jetty.websocket:websocket-jetty-client:11.0.9'
+    'org.eclipse.jetty:jetty-io:11.0.24',
+    'org.eclipse.jetty:jetty-util:11.0.24',
+    'org.eclipse.jetty:jetty-http:11.0.24',
+    'org.eclipse.jetty:jetty-client:11.0.24',
+    'org.eclipse.jetty.websocket:websocket-jakarta-common:11.0.24',
+    'org.eclipse.jetty.websocket:websocket-jakarta-client:11.0.24',
+    'org.eclipse.jetty.websocket:websocket-core-common:11.0.24',
+    'org.eclipse.jetty.websocket:websocket-core-client:11.0.24',
+    'org.eclipse.jetty.websocket:websocket-jetty-api:11.0.24',
+    'org.eclipse.jetty.websocket:websocket-jetty-client:11.0.24'
 }
 
 addRequiredLibraries {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -436,6 +436,10 @@ warning.tooManySymbolicLinks=CWWKE0096W: Napotkano zbyt wiele dowi\u0105za\u0144
 warning.tooManySymbolicLinks.explanation=Dowi\u0105zania symboliczne to skr\u00f3ty wskazuj\u0105ce na inne pliki lub katalogi. Ten b\u0142\u0105d wyst\u0119puje, gdy system napotka zbyt wiele dowi\u0105za\u0144 symbolicznych w \u0142a\u0144cuchu i nie mo\u017ce rozstrzygn\u0105\u0107 \u015bcie\u017cki.
 warning.tooManySymbolicLinks.useraction=Aby rozwi\u0105za\u0107 ten problem, sprawd\u017a dowi\u0105zania symboliczne w \u015bcie\u017cce i upewnij si\u0119, \u017ce nie tworz\u0105 one odwo\u0142a\u0144 cyklicznych. Mo\u017cna r\u00f3wnie\u017c u\u017cy\u0107 komendy 'readlink', aby sprawdzi\u0107 poszczeg\u00f3lne powi\u0105zania w \u0142a\u0144cuchu.
 
+warning.javaHomeNotSet=CWWKE0097W: Zmienna \u015brodowiskowa JAVA_HOME nie jest ustawiona.
+warning.javaHomeNotSet.explanation=Skrypt serwera nie mo\u017ce okre\u015bli\u0107 lokalizacji instalacji Java. Problem ten nie wyst\u0119puje, je\u015bli zmienna \u015brodowiskowa JAVA_HOME jest ustawiona prawid\u0142owo lub je\u015bli plik wykonywalny "java", znaleziony przez przeszukanie PATH, znajduje si\u0119 w kompletnej instalacji Java. Lokalizacja instalacji Java jest potrzebna do znalezienia plik\u00f3w konfiguracyjnych specyficznych dla wersji, takich jak java9.options. Je\u015bli nie mo\u017cna znale\u017a\u0107 instalacji Java, pliki te nie s\u0105 \u0142adowane, a aplikacje, kt\u00f3re na nich polegaj\u0105, mog\u0105 nie dzia\u0142a\u0107 zgodnie z oczekiwaniami.
+warning.javaHomeNotSet.useraction=Ustaw zmienn\u0105 \u015brodowiskow\u0105 JAVA_HOME.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Nie mo\u017cna u\u017cy\u0107 opcji --include={0}. Zamiast niej zostanie u\u017cyta opcja --include=wlp.
 warn.packageRuntime.include.unknownOption.explanation=Opcja zosta\u0142a zignorowana, poniewa\u017c nie zosta\u0142a rozpoznana.
 warn.packageRuntime.include.unknownOption.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnych opcji. Istnieje mo\u017cliwo\u015b\u0107 u\u017cycia parametru --help w celu wy\u015bwietlenia listy poprawnych opcji.
@@ -865,3 +869,7 @@ info.list.of.defined.servers=Nast\u0119puj\u0105ce serwery zosta\u0142y zdefinio
 info.communicate.server=Wyst\u0105pi\u0142 b\u0142\u0105d komunikacji mi\u0119dzy komend\u0105 {0} i serwerem {1}.
 
 info.serialFilterLoaded=Za\u0142adowano agent filtru szeregowego.
+
+# {0} The full path to a configured logs directory.
+# Displayed when creating a server dump, if an alternate server logs directory has been configured.
+info.dump.server.alt.logs=Wykryto skonfigurowany katalog dziennik\u00f3w serwera pod adresem {0}.

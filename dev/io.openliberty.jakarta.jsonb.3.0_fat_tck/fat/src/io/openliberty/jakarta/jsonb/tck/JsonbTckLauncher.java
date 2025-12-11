@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,7 @@ public class JsonbTckLauncher {
     @AllowedFFDC // The tested exceptions cause FFDC so we have to allow for this.
     public void launchJsonb30TCK() throws Exception {
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonb")
-                        .withPlatfromVersion("10")
+                        .withPlatformVersion("10")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
 

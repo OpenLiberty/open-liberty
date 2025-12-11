@@ -78,7 +78,7 @@ public class JSPPrepareJSPThreadCountDefaultValueTests {
         assertTrue("The HelloWorld.java file was not found.",
                    server.fileExistsInLibertyServerRoot("scratchdir/default_node/SMF_WebContainer/SimpleJSPApp/SimpleJSPApp/_HelloWorld.java"));
 
-        // Ensure that there are two threads listed in the trace.
+        // Ensure that there is one thread listed in the trace.
         assertNotNull("The JSP trace did not show that one thread was being used.",
                       server.waitForStringInTraceUsingMark("PrepareJspHelper run PrepareJspHelper: Number of threads: 1"));
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,11 +10,16 @@
 package com.ibm.ws.security.saml.sso20.internal.utils;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -29,6 +34,7 @@ import org.junit.rules.TestRule;
 
 import test.common.SharedOutputManager;
 
+import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
 /**
  *
  */
@@ -37,12 +43,9 @@ public class ForwardRequestInfoTest {
     static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.saml.sso20.*=all");
     @Rule
     public TestRule managerRule = outputMgr;
-
-    public final Mockery mockery = new JUnit4Mockery() {
-        {
-            setImposteriser(ClassImposteriser.INSTANCE);
-        }
-    };
+    private static final CommonMockObjects common = new CommonMockObjects();
+    private static final Mockery mockery = common.getMockery();
+    private static HttpServletResponse response = common.getServletResponse();
 
     @Rule
     public final TestName testName = new TestName();
@@ -86,21 +89,81 @@ public class ForwardRequestInfoTest {
     }
 
     @Test
-    public void testGetSamlRequestCookieTimeoutCurrentPlusFiveMinutes() {
-        String methodName = "testGetSamlRequestCookieTimeoutCurrentPlusFiveMinutes";
-        Date current = new Date(System.currentTimeMillis());
-        forwardRequest.setFragmentCookieMaxAge(5*60*1000); //5 minutes
-        try {
-            SimpleDateFormat utc_sdf = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z");
-            utc_sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-            Date currentplusfivemins = current;
+    public void testHandleFragmentCookiesAndNonce_JavaScript() {
+        String methodName = "testHandleFragmentCookiesAndNonce_JavaScript";
 
-            currentplusfivemins = utc_sdf.parse(forwardRequest.getSamlRequestCookieTimeoutString());
+        String js = forwardRequest.handleFragmentCookiesAndNonce(response);
+        assertNotNull(js);
+        //do a cursory check that we're getting back a JavaScript header
+        String jslower = js.toLowerCase();
+        assertTrue(jslower.contains("<script"));
+        assertTrue(jslower.contains("</script>"));
+    }
 
-            assertTrue("Did not find expected cookie age!", currentplusfivemins.after(current));
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(methodName, t);
-        }
+    @Test
+    public void testHandleFragmentCookiesAndNonce_MaxAgeNotSet() {
+        String methodName = "testHandleFragmentCookiesAndNoncez_MaxAgeNotSet";
+
+        String js = forwardRequest.handleFragmentCookiesAndNonce(response);
+        assertNotNull(js);
+        //check for the default value
+        assertTrue(js.contains("Max-Age="+String.valueOf(10*60)));
+    }
+
+    @Test
+    public void testHandleFragmentCookiesAndNonce_MaxAgeSet() {
+        String methodName = "testHandleFragmentCookiesAndNoncez_MaxAgeSet";
+
+        long maxAgeSec = 300;   //5 minutes
+        forwardRequest.setFragmentCookieMaxAge(maxAgeSec*1000); 
+        String js = forwardRequest.handleFragmentCookiesAndNonce(response);
+        assertNotNull(js);
+        assertTrue(js.contains("Max-Age="+String.valueOf(maxAgeSec)));
+    }
+
+    @Test
+    public void testHandleFragmentCookiesAndNonce_SetNonce() {
+        String methodName = "testHandleFragmentCookiesAndNonce_SetNonce";
+        mockery.checking(new Expectations() {
+            {
+                one(response).addHeader(with(any(String.class)), with(any(String.class)));
+            }
+        });
+
+        forwardRequest.setCspHeader("script-src 'self' 'nonce-%NONCE%' ; object-src 'self'; frame-src 'self'");
+        String js = forwardRequest.handleFragmentCookiesAndNonce(response);
+        assertNotNull(js);
+        assertTrue(js.contains("nonce="));
+    }
+
+    @Test
+    public void testHandleFragmentCookiesAndNonce_NoNonce() {
+        String methodName = "testHandleFragmentCookiesAndNonce_NoNonce";
+        mockery.checking(new Expectations() {
+            {
+                one(response).addHeader(with(any(String.class)), with(any(String.class)));
+            }
+        });
+
+        forwardRequest.setCspHeader("script-src 'self' ; object-src 'self'; frame-src 'self'");
+        String js = forwardRequest.handleFragmentCookiesAndNonce(response);
+        assertNotNull(js);
+        assertFalse(js.contains("nonce="));
+    }
+
+    @Test
+    public void testHandleFragmentCookiesAndNonce_NoceNull() {
+        String methodName = "testHandleFragmentCookiesAndNonce_NoceNull";
+        mockery.checking(new Expectations() {
+            {
+                never(response).addHeader(with(any(String.class)), with(any(String.class)));
+            }
+        });
+
+        forwardRequest.setCspHeader(null);
+        String js = forwardRequest.handleFragmentCookiesAndNonce(response);
+        assertNotNull(js);
+        assertFalse(js.contains("nonce="));
     }
 
 }

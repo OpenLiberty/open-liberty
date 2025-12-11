@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package io.openliberty.microprofile.telemetry.internal.tests;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
 import static io.openliberty.microprofile.telemetry.internal.utils.TestUtils.findOneFrom;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient.convertByteString;
 import static io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerSpanMatcher.hasKind;
@@ -50,14 +51,15 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.jaegertracing.api_v2.Model.Span;
 import io.openliberty.microprofile.telemetry.internal.apps.agent.AgentTestResource;
+import io.openliberty.microprofile.telemetry.internal.utils.KeyPairs;
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerContainer;
 import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryClient;
@@ -70,6 +72,7 @@ import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
  */
 @RunWith(FATRunner.class)
 @MaximumJavaLevel(javaLevel = 20)
+@SkipIfSysProp(OS_ZOS) //Agent129 crashes on ZOS because it tries to read /proc as UTF-8
 public class Agent129Test {
 
     private static final Class<Agent129Test> c = Agent129Test.class;
@@ -79,7 +82,10 @@ public class Agent129Test {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer().withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class, "jaeger"));
+    private static KeyPairs keyPairs = new KeyPairs(server);
+
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(), keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(Agent129Test.class,
+                                                                                                                                                            "jaeger"));
     public static RepeatTests repeat = TelemetryActions.telemetry11Repeats(SERVER_NAME);
 
     // In contrast to most tests, this test needs a new jaeger instance for each repeat
@@ -92,8 +98,7 @@ public class Agent129Test {
 
     @BeforeClass
     public static void setUp() throws Exception {
-
-        client = new JaegerQueryClient(jaegerContainer);
+        client = new JaegerQueryClient(jaegerContainer, keyPairs.getCertificate());
 
         server.copyFileToLibertyServerRoot("agent-129/opentelemetry-javaagent.jar");
 
@@ -160,7 +165,7 @@ public class Agent129Test {
 
         Span span = findOneFrom(spans, hasNoParent());
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)) {
+        if (TelemetryActions.mpTelemetry11EE7orEE8IsActive()) {
             assertThat(span, JaegerSpanMatcher.isSpan().withTraceId(traceId)
                                               .withAttribute(SemanticAttributes.HTTP_ROUTE, "/agentTest")
                                               .withAttribute(SemanticAttributes.HTTP_METHOD, "GET"));
@@ -257,10 +262,10 @@ public class Agent129Test {
         String traceId = request.run(String.class);
         traceIdsUsed.add(traceId);
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)) {
-
+        if (TelemetryActions.mpTelemetry11EE7orEE8IsActive()) {
             /*
              * JavaAgent 1.29 with MP7 and MP8 does not create the extra span for withSpan annotations (BUG)
+             * fixed in version 2.1.0 https://github.com/open-telemetry/opentelemetry-java-instrumentation/pull/10385
              */
 
             List<Span> spans = client.waitForSpansForTraceId(traceId, hasSize(2));
@@ -298,8 +303,7 @@ public class Agent129Test {
         String traceId = request.run(String.class);
         traceIdsUsed.add(traceId);
 
-        if (RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP14_MPTEL11_ID) || RepeatTestFilter.isRepeatActionActive(TelemetryActions.MP41_MPTEL11_ID)) {
-
+        if (TelemetryActions.mpTelemetry11EE7orEE8IsActive()) {
             /*
              * JavaAgent 1.29 with MP7 and MP8 does not create the extra span for withSpan annotations (BUG)
              */

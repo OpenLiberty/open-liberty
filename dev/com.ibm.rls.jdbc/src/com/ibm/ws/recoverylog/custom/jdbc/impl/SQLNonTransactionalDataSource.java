@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.recoverylog.spi.CustomLogProperties;
 import com.ibm.ws.recoverylog.spi.InternalLogException;
 import com.ibm.ws.recoverylog.spi.TraceConstants;
+import com.ibm.wsspi.resource.ResourceConfig;
 import com.ibm.wsspi.resource.ResourceFactory;
 
 //------------------------------------------------------------------------------
@@ -86,7 +87,7 @@ public class SQLNonTransactionalDataSource {
         // Retrieve the data source factory from the CustomLogProperties. This Factory should be set in the JTMConfigurationProvider
         // by the jdbc component using DeclarativeServices. TxRecoveryAgentImpl gets the factory from the ConfigurationProvider and
         // then sets it into CustomLogProperties.
-        ResourceFactory dataSourceFactory = _customLogProperties.resourceFactory();
+        final ResourceFactory dataSourceFactory = _customLogProperties.resourceFactory();
 
         if (dataSourceFactory != null) {
             if (tc.isDebugEnabled())
@@ -98,56 +99,21 @@ public class SQLNonTransactionalDataSource {
         }
 
         try {
-            nonTranDataSource = (DataSource) dataSourceFactory.createResource(null);
+            // Retrieve the resourceConfig from the custom log properties. This may be null, in which case the "old"
+            // behaviour will pertain with application authentication. A non-null resourceConfig will have been
+            // configured if container authentication has been specified.
+            ResourceConfig resourceConfig = _customLogProperties.resourceConfig();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "create resource with ResourceConfig ", resourceConfig);
+            nonTranDataSource = (DataSource) dataSourceFactory.createResource(resourceConfig);
         } catch (Exception e) {
-            //e.printStackTrace();
             if (tc.isEntryEnabled())
-                Tr.exit(tc, "getDataSource", "Caught exception " + e + "throw InternalLogException");
-            throw new InternalLogException("Failed to locate DataSource, caught exception ", null);
+                Tr.exit(tc, "getDataSource", "Caught exception " + e + ", throw InternalLogException");
+            throw new InternalLogException("Failed to locate DataSource, caught exception", e);
         }
-
-/*
- * TEMPORARY This is waiting on fixes to DeclarativeServices which impact the jdbc component. At present it is
- * possible that the DataSource will have been set but that its associated jdbc driver service will still be initialising
- */
-//        boolean refSet = false;
-//        while (!refSet)
-//        {
-//            if (tc.isDebugEnabled())
-//                Tr.debug(tc, "getDataSource after sleep");
-//            try {
-//
-//                nonTranDataSource = (DataSource) dataSourceFactory.createResource(null);
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Non Tran dataSource is " + nonTranDataSource);
-//                Connection conn = nonTranDataSource.getConnection();
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Established connection " + conn);
-//
-//                DatabaseMetaData mdata = conn.getMetaData();
-//
-//                String dbName = mdata.getDatabaseProductName();
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Database name " + dbName);
-//
-//                String dbVersion = mdata.getDatabaseProductVersion();
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Database version " + dbVersion);
-//                refSet = true;
-//            } catch (Exception e) {
-//                // We will catch an exception if the DataSource is not yet fully formed
-//                if (tc.isDebugEnabled())
-//                    Tr.debug(tc, "Caught exception: " + e);
-//            }
-//
-//            if (!refSet)
-//                Thread.sleep(200);
-//        }
-// eof TEMPORARY
 
         if (tc.isEntryEnabled())
             Tr.exit(tc, "getDataSource", nonTranDataSource);
         return nonTranDataSource;
     }
-
 }

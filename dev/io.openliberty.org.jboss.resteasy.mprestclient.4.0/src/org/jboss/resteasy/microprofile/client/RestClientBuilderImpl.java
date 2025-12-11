@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 /*
  * JBoss, Home of Professional Open Source.
  *
@@ -85,6 +94,7 @@ import org.jboss.resteasy.concurrent.ContextualExecutors;
 import org.jboss.resteasy.core.Headers;
 import org.jboss.resteasy.microprofile.client.async.AsyncInterceptorRxInvokerProvider;
 import org.jboss.resteasy.microprofile.client.async.AsyncInvocationInterceptorThreadContext;
+import org.jboss.resteasy.microprofile.client.header.ClientHeaderProviders;// Liberty change
 import org.jboss.resteasy.microprofile.client.header.ClientHeadersRequestFilter;
 import org.jboss.resteasy.microprofile.client.impl.MpClient;
 import org.jboss.resteasy.microprofile.client.impl.MpClientBuilderImpl;
@@ -333,9 +343,10 @@ public class RestClientBuilderImpl implements RestClientBuilder {
             this.executorService = ContextualExecutors.threadPool();
             resteasyClientBuilder.executorService(executorService, !executorService.isManaged());
         }
+        ClientHeaderProviders headerProviders = new ClientHeaderProviders(); // Liberty change
         resteasyClientBuilder.register(DEFAULT_MEDIA_TYPE_FILTER);
         resteasyClientBuilder.register(METHOD_INJECTION_FILTER);
-        resteasyClientBuilder.register(new ClientHeadersRequestFilter(headers));
+        resteasyClientBuilder.register(new ClientHeadersRequestFilter(headers, headerProviders)); // Liberty change
         register(new MpPublisherMessageBodyReader(executorService));
         resteasyClientBuilder.sslContext(sslContext);
         resteasyClientBuilder.trustStore(trustStore);
@@ -387,9 +398,11 @@ public class RestClientBuilderImpl implements RestClientBuilder {
                 .defaultConsumes(MediaType.APPLICATION_JSON)
                 .defaultProduces(MediaType.APPLICATION_JSON).build();
 
-        return aClass.cast(
+        T proxy = aClass.cast( // Liberty change
                 ProxyInvocationHandler.createProxy(aClass, actualClient, getLocalProviderInstances(), client,
                         beanManager));
+        headerProviders.registerForClass(aClass, proxy, beanManager); // Liberty change
+        return proxy; // Liberty change
     }
 
     @SuppressWarnings("unchecked")

@@ -24,7 +24,7 @@
 	<javaPermission className="java.security.AllPermission"
 		name="*" actions="*" />
 		
-	<webApplication id="" name="libertyCXFProperty" cotext-root="libertyCXFProperty" location="libertyCXFProperty.war">
+	<webApplication id="" name="libertyCXFProperty" context-root="libertyCXFProperty" location="libertyCXFProperty.war">
 		<webservices-bnd> 	
 			<webservice-endpoint-properties enableLoggingInOutInterceptor="true"/>  		
             <service-ref name="services/ImageServicePropertyImplService"

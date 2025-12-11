@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: ${basename;${basedir}}
+
+fat.project: true
+fat.test.databases: true
+
+tested.features:\
+  cdi-3.0, cdi-4.0,\
+  connectors-2.0, connectors-2.1,\
+  enterprisebeans-4.0,\
+  enterprisebeanshome-4.0,\
+  enterprisebeanslite-4.0,\
+  enterprisebeanspersistenttimer-4.0,\
+  enterprisebeansremote-4.0,\
+  jdbc-4.2,\
+  mdb-4.0,\
+  servlet-4.0, servlet-5.0, servlet-6.0,\
+  xmlbinding-3.0,
+
+-buildpath: \
+  com.ibm.tx.jta;version=latest,\
+  com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+  com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+  com.ibm.ws.transaction.fat.util;version=latest,\
+  com.ibm.ws.transaction.test.util;version=latest,\
+  fattest.simplicity;version=latest,\
+  io.openliberty.org.testcontainers;version=latest,\
+  io.openliberty.transaction.containerAuth_fat.derby;version=latest

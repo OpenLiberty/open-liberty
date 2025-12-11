@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<application xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/application_7.xsd"
+             version="7">
+  <display-name>JavaGlobalInjectIntoServletTestApp</display-name>
+  <module>
+    <ejb>JavaGlobalInjectIntoServletEJB.jar</ejb>
+  </module>
+  <module>
+    <web>
+      <web-uri>JavaGlobalInjectIntoServletWeb.war</web-uri>
+      <context-root>/JavaGlobalInjectIntoServletTestApp</context-root>
+    </web>
+  </module>
+
+  <env-entry>
+    <env-entry-name>java:global/env/AppXmlGlobalString</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>AppXmlString: Hello!</env-entry-value>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>java:app/env/AppXmlAppString</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>AppXmlString: Howdy!</env-entry-value>
+  </env-entry>
+
+  <env-entry>
+    <env-entry-name>java:app/env/AppXmlAppStringBean</env-entry-name>
+    <env-entry-type>java.lang.String</env-entry-type>
+    <env-entry-value>AppXmlString: Howdy, Bean!</env-entry-value>
+  </env-entry>
+
+</application>

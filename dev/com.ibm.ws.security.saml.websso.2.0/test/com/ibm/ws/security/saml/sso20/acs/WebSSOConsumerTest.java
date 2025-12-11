@@ -12,10 +12,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.acs;
 
-import static com.ibm.ws.security.saml.sso20.common.CommonMockObjects.SAML20_AUTHENTICATION_FAIL;
-import static com.ibm.ws.security.saml.sso20.common.CommonMockObjects.SETUP;
+import static com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects.SAML20_AUTHENTICATION_FAIL;
+import static com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects.SETUP;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.reset;
 import static org.opensaml.saml.common.SAMLVersion.VERSION_20;
 
 import java.util.ArrayList;
@@ -25,10 +31,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 
-import org.jmock.Expectations;
-import org.jmock.Mockery;
-import org.jmock.States;
-import org.joda.time.DateTime;
+import org.mockito.Mockito;
+import java.time.Instant;
+import java.time.Clock;
+import java.time.temporal.ChronoUnit;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -65,7 +71,7 @@ import com.ibm.ws.security.saml.SsoSamlService;
 import com.ibm.ws.security.saml.error.SamlException;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContext;
 import com.ibm.ws.security.saml.sso20.binding.BasicMessageContextBuilder;
-import com.ibm.ws.security.saml.sso20.common.CommonMockObjects;
+import com.ibm.ws.security.saml.sso20.common.CommonMockitoObjects;
 import com.ibm.ws.security.saml.sso20.internal.utils.ForwardRequestInfo;
 
 import test.common.SharedOutputManager;
@@ -73,9 +79,7 @@ import test.common.SharedOutputManager;
 @SuppressWarnings("rawtypes")
 public class WebSSOConsumerTest {
 
-    private static final CommonMockObjects common = new CommonMockObjects();
-    private static final Mockery mockery = common.getMockery();
-    private static final States stateMachine = common.getStateMachine();
+    private static final CommonMockitoObjects common = new CommonMockitoObjects();
 
     private static final Assertion assertion = common.getAssertion();
     private static final AudienceRestriction audienceRestriction = common.getAudienceRestriction();
@@ -84,7 +88,7 @@ public class WebSSOConsumerTest {
     private static final BasicMessageContextBuilder<?, ?, ?> basicMessageContextBuilder = common.getBasicMessageContextBuilder();
     private static final MessageContext mContext = common.getMessageContext();
     private static final SAMLPeerEntityContext samlPeerEntityContext = common.getSAMLPeerEntityContext();
-    private static final SAMLProtocolContext samlProtocolContext = mockery.mock(SAMLProtocolContext.class);
+    private static final SAMLProtocolContext samlProtocolContext = Mockito.mock(SAMLProtocolContext.class);
     private static final Condition condition = common.getCondition();
     private static final Conditions conditions = common.getConditions();
     private static final EncryptedAssertion encryptedAssertion = common.getEncryptedAssertion();
@@ -104,7 +108,7 @@ public class WebSSOConsumerTest {
     private static final SubjectConfirmation subjectConfirmation = common.getSubjectConfirmation();
     private static final SubjectConfirmationData subjectConfirmationData = common.getSubjectConfirmationData();
 
-    private static final Decrypter decrypter = mockery.mock(Decrypter.class, "decrypter");
+    private static final Decrypter decrypter = Mockito.mock(Decrypter.class);
 
     private static final SAMLVersion VALID_SAML_VERSION = VERSION_20;
     private static final String SUCCESS_URI = "urn:oasis:names:tc:SAML:2.0:status:Success";
@@ -139,173 +143,102 @@ public class WebSSOConsumerTest {
     @BeforeClass
     public static void setUp() throws SamlException, DecryptionException {
         outputMgr.trace("*=all");
-        stateMachine.startsAs(SETUP);
         webSSOConsumer = WebSSOConsumer.getInstance();
         conditionQName = OneTimeUse.DEFAULT_ELEMENT_NAME;
 
-        mockery.checking(new Expectations() {
-            {
-                allowing(basicMessageContextBuilder).buildAcs(request, response, ssoService, "externalRelayState", ssoRequest);
-                will(returnValue(messageContext));
+        // Setup common behaviors
+        when(basicMessageContextBuilder.buildAcs(request, response, ssoService, "externalRelayState", ssoRequest)).thenReturn(messageContext);
 
-                //allowing(messageContext).getInboundMessage();
-                allowing(messageContext).getMessageContext();
-                will(returnValue(mContext));
-                allowing(mContext).getMessage();
-                will(returnValue(samlResponse));
-                allowing(messageContext).getCachedRequestInfo();
-                will(returnValue(requestInfo));
-                allowing(messageContext).getExternalRelayState();
-                will(returnValue(with(any(String.class))));
-                allowing(messageContext).getSsoConfig();
-                will(returnValue(ssoConfig));
-                allowing(ssoConfig).getSpHostAndPort();
-                will(returnValue(null));
-                allowing(messageContext).getPeerEntityMetadata();
-                will(returnValue(entityDescriptor));
-                allowing(mContext).getSubcontext(SAMLPeerEntityContext.class, true);
-                will(returnValue(samlPeerEntityContext));
-                allowing(mContext).getSubcontext(SAMLProtocolContext.class, true);
-                will(returnValue(samlProtocolContext));
-                
-                allowing(samlProtocolContext).setProtocol(with(any(String.class)));
-                allowing(samlPeerEntityContext).setEntityId(with(any(String.class)));
-                
-                allowing(samlPeerEntityContext).setAuthenticated(with(any(Boolean.class)));
-                allowing(samlPeerEntityContext).setRole(with(any(QName.class)));
-                
-                allowing(messageContext).setInboundSamlMessageIssuer(with(any(String.class)));
-                
-                //one(messageContext).setInboundSAMLMessageAuthenticated(with(any(Boolean.class)));
-                allowing(messageContext).getHttpServletRequest();
-                will(returnValue(request));
-                one(messageContext).getSsoService();
-                will(returnValue(ssoService));
-                one(messageContext).setSubjectNameIdentifier(nameId);
-                one(messageContext).setValidatedAssertion(assertion);
-                allowing(messageContext).getDecrypter();
-                will(returnValue(decrypter));
+        when(messageContext.getMessageContext()).thenReturn(mContext);
+        when(mContext.getMessage()).thenReturn(samlResponse);
+        when(messageContext.getCachedRequestInfo()).thenReturn(requestInfo);
+        when(messageContext.getExternalRelayState()).thenReturn("externalRelayState");
+        when(messageContext.getSsoConfig()).thenReturn(ssoConfig);
+        when(ssoConfig.getSpHostAndPort()).thenReturn(null);
+        when(messageContext.getPeerEntityMetadata()).thenReturn(entityDescriptor);
+        when(mContext.getSubcontext(SAMLPeerEntityContext.class, true)).thenReturn(samlPeerEntityContext);
+        when(mContext.getSubcontext(SAMLProtocolContext.class, true)).thenReturn(samlProtocolContext);
+        
+        doNothing().when(samlProtocolContext).setProtocol(anyString());
+        doNothing().when(samlPeerEntityContext).setEntityId(anyString());
+        
+        doNothing().when(samlPeerEntityContext).setAuthenticated(anyBoolean());
+        doNothing().when(samlPeerEntityContext).setRole(any(QName.class));
+        
+        doNothing().when(messageContext).setInboundSamlMessageIssuer(anyString());
+        
+        when(messageContext.getHttpServletRequest()).thenReturn(request);
+        when(messageContext.getSsoService()).thenReturn(ssoService);
+        doNothing().when(messageContext).setSubjectNameIdentifier(nameId);
+        doNothing().when(messageContext).setValidatedAssertion(assertion);
+        when(messageContext.getDecrypter()).thenReturn(decrypter);
 
-                one(ssoService).getProviderId();
-                will(returnValue(SERVER_PROVIDER_ID));
+        when(ssoService.getProviderId()).thenReturn(SERVER_PROVIDER_ID);
 
-                allowing(samlResponse).getIssuer();
-                will(returnValue(issuer));
-                allowing(samlResponse).getStatus();
-                will(returnValue(status));
-                allowing(samlResponse).getAssertions();
-                will(returnValue(listAssertions));
-                when(stateMachine.is(SETUP));
-                allowing(samlResponse).getVersion();
-                will(returnValue(VALID_SAML_VERSION));
-                allowing(samlResponse).getInResponseTo();
-                will(returnValue(RESPONSE));
-                allowing(samlResponse).getIssueInstant();
-                will(returnValue(new DateTime()));
-                allowing(samlResponse).getDestination();
-                will(returnValue(null));
-                allowing(samlResponse).getSignature();
-                will(returnValue(null));
-                allowing(samlResponse).getEncryptedAssertions();
-                will(returnValue(listEncryptedAssertions));
-                allowing(samlResponse).getElementQName();
-                will(returnValue(new QName("test")));
-                allowing(samlResponse).getDOM();
-                will(returnValue(null));
-                allowing(samlResponse).isSigned();
-                will(returnValue(true));
-                allowing(samlResponse).getSignatureReferenceID();
-                will(returnValue("Id"));
-                allowing(samlResponse).hasChildren();
-                will(returnValue(false));
+        when(samlResponse.getIssuer()).thenReturn(issuer);
+        when(samlResponse.getStatus()).thenReturn(status);
+        when(samlResponse.getAssertions()).thenReturn(listAssertions);
+        when(samlResponse.getVersion()).thenReturn(VALID_SAML_VERSION);
+        when(samlResponse.getInResponseTo()).thenReturn(RESPONSE);
+        when(samlResponse.getIssueInstant()).thenReturn(Instant.now());
+        when(samlResponse.getDestination()).thenReturn(null);
+        when(samlResponse.getSignature()).thenReturn(null);
+        when(samlResponse.getEncryptedAssertions()).thenReturn(listEncryptedAssertions);
+        when(samlResponse.getElementQName()).thenReturn(new QName("test"));
+        when(samlResponse.getDOM()).thenReturn(null);
+        when(samlResponse.isSigned()).thenReturn(true);
+        when(samlResponse.getSignatureReferenceID()).thenReturn("Id");
+        when(samlResponse.hasChildren()).thenReturn(false);
 
-                allowing(issuer).getValue();
-                will(returnValue(ISSUER_IDENTIFIER));
-                allowing(issuer).getFormat();
-                will(returnValue(null));
+        when(issuer.getValue()).thenReturn(ISSUER_IDENTIFIER);
+        when(issuer.getFormat()).thenReturn(null);
 
-                allowing(ssoConfig).getClockSkew();
-                will(returnValue(60000l));
-                one(ssoConfig).isWantAssertionsSigned();
-                will(returnValue(false));
+        when(ssoConfig.getClockSkew()).thenReturn(60000l);
+        when(ssoConfig.isWantAssertionsSigned()).thenReturn(false);
 
-                allowing(status).getStatusCode();
-                will(returnValue(statusCode));
+        when(status.getStatusCode()).thenReturn(statusCode);
 
-                allowing(statusCode).getValue();
-                will(returnValue(SUCCESS_URI));
+        when(statusCode.getValue()).thenReturn(SUCCESS_URI);
 
-                allowing(requestInfo).getInResponseToId();
-                will(returnValue(RESPONSE));
+        when(requestInfo.getInResponseToId()).thenReturn(RESPONSE);
 
-                allowing(entityDescriptor).getEntityID();
-                will(returnValue(ISSUER_IDENTIFIER));
+        when(entityDescriptor.getEntityID()).thenReturn(ISSUER_IDENTIFIER);
 
-                allowing(assertion).getAuthnStatements();
-                will(returnValue(listAuthnStatements));
-                allowing(assertion).getSubject();
-                will(returnValue(subject));
-                when(stateMachine.is(SETUP));
-                one(assertion).getIssuer();
-                will(returnValue(issuer));
-                when(stateMachine.is(SETUP));
-                one(assertion).getSignature();
-                will(returnValue(null));
-                one(assertion).getConditions();
-                will(returnValue(conditions));
-                allowing(assertion).getID();
-                will(returnValue("Id"));
+        when(assertion.getAuthnStatements()).thenReturn(listAuthnStatements);
+        when(assertion.getSubject()).thenReturn(subject);
+        when(assertion.getIssuer()).thenReturn(issuer);
+        when(assertion.getSignature()).thenReturn(null);
+        when(assertion.getConditions()).thenReturn(conditions);
+        when(assertion.getID()).thenReturn("Id");
 
-                one(subject).getSubjectConfirmations();
-                will(returnValue(listSubjectConfirmation));
-                one(subject).getNameID();
-                will(returnValue(nameId));
+        when(subject.getSubjectConfirmations()).thenReturn(listSubjectConfirmation);
+        when(subject.getNameID()).thenReturn(nameId);
 
-                one(subjectConfirmation).getMethod();
-                will(returnValue(SubjectConfirmation.METHOD_BEARER));
-                one(subjectConfirmation).getSubjectConfirmationData();
-                will(returnValue(subjectConfirmationData));
+        when(subjectConfirmation.getMethod()).thenReturn(SubjectConfirmation.METHOD_BEARER);
+        when(subjectConfirmation.getSubjectConfirmationData()).thenReturn(subjectConfirmationData);
 
-                one(subjectConfirmationData).getNotBefore();
-                will(returnValue(null));
-                allowing(subjectConfirmationData).getNotOnOrAfter();
-                will(returnValue(new DateTime().plusYears(1000)));
-                one(subjectConfirmationData).getInResponseTo();
-                will(returnValue(RESPONSE));
-                allowing(subjectConfirmationData).getRecipient();
-                will(returnValue(RECIPIENT_URL));
+        when(subjectConfirmationData.getNotBefore()).thenReturn(null);
+        when(subjectConfirmationData.getNotOnOrAfter()).thenReturn(Instant.now().plus(1000 * 365, ChronoUnit.DAYS));
+        when(subjectConfirmationData.getInResponseTo()).thenReturn(RESPONSE);
+        when(subjectConfirmationData.getRecipient()).thenReturn(RECIPIENT_URL);
 
-                one(request).getServerName();
-                will(returnValue(SERVER_NAME));
-                one(request).getServerPort();
-                will(returnValue(SERVER_PORT));
-                allowing(request).getScheme();
-                will(returnValue(SERVER_PROTOCOL));
-                allowing(request).isSecure();
-                will(returnValue(true));
+        when(request.getServerName()).thenReturn(SERVER_NAME);
+        when(request.getServerPort()).thenReturn(SERVER_PORT);
+        when(request.getScheme()).thenReturn(SERVER_PROTOCOL);
+        when(request.isSecure()).thenReturn(true);
 
-                one(conditions).getAudienceRestrictions();
-                will(returnValue(listAudienceRestriction));
-                one(conditions).getNotBefore();
-                will(returnValue(null));
-                one(conditions).getNotOnOrAfter();
-                will(returnValue(null));
-                allowing(conditions).getConditions();
-                will(returnValue(listConditions));
+        when(conditions.getAudienceRestrictions()).thenReturn(listAudienceRestriction);
+        when(conditions.getNotBefore()).thenReturn(null);
+        when(conditions.getNotOnOrAfter()).thenReturn(null);
+        when(conditions.getConditions()).thenReturn(listConditions);
 
-                allowing(condition).getElementQName();
-                will(returnValue(conditionQName));
+        when(condition.getElementQName()).thenReturn(conditionQName);
 
-                allowing(authnStatement).getSessionNotOnOrAfter();
-                will(returnValue(new DateTime()));
-
-            }
-        });
+        when(authnStatement.getSessionNotOnOrAfter()).thenReturn(Instant.now());
     }
 
     @Before
     public void before() {
-        stateMachine.become(SETUP);
         BasicMessageContextBuilder.setInstance(basicMessageContextBuilder);
         stateTest = currentTest.getMethodName();
 
@@ -321,6 +254,42 @@ public class WebSSOConsumerTest {
         listAuthnStatements.add(authnStatement);
         listSubjectConfirmation.add(subjectConfirmation);
         listAudienceRestriction.add(audienceRestriction);
+
+        // Reset mocks to clear any test-specific behaviors
+        reset(assertion, subject, subjectConfirmation, samlResponse);
+        
+        // Re-setup common behaviors after reset
+        when(assertion.getAuthnStatements()).thenReturn(listAuthnStatements);
+        when(assertion.getSubject()).thenReturn(subject);
+        when(assertion.getIssuer()).thenReturn(issuer);
+        when(assertion.getSignature()).thenReturn(null);
+        when(assertion.getConditions()).thenReturn(conditions);
+        when(assertion.getID()).thenReturn("Id");
+        
+        when(subject.getSubjectConfirmations()).thenReturn(listSubjectConfirmation);
+        when(subject.getNameID()).thenReturn(nameId);
+        
+        when(subjectConfirmation.getMethod()).thenReturn(SubjectConfirmation.METHOD_BEARER);
+        when(subjectConfirmation.getSubjectConfirmationData()).thenReturn(subjectConfirmationData);
+        when(subjectConfirmationData.getNotBefore()).thenReturn(null);
+        when(subjectConfirmationData.getNotOnOrAfter()).thenReturn(Instant.now().plus(1000 * 365, ChronoUnit.DAYS));
+        when(subjectConfirmationData.getInResponseTo()).thenReturn(RESPONSE);
+        when(subjectConfirmationData.getRecipient()).thenReturn(RECIPIENT_URL);
+        
+        when(samlResponse.getIssuer()).thenReturn(issuer);
+        when(samlResponse.getStatus()).thenReturn(status);
+        when(samlResponse.getAssertions()).thenReturn(listAssertions);
+        when(samlResponse.getVersion()).thenReturn(VALID_SAML_VERSION);
+        when(samlResponse.getInResponseTo()).thenReturn(RESPONSE);
+        when(samlResponse.getIssueInstant()).thenReturn(Instant.now());
+        when(samlResponse.getDestination()).thenReturn(null);
+        when(samlResponse.getSignature()).thenReturn(null);
+        when(samlResponse.getEncryptedAssertions()).thenReturn(listEncryptedAssertions);
+        when(samlResponse.getElementQName()).thenReturn(new QName("test"));
+        when(samlResponse.getDOM()).thenReturn(null);
+        when(samlResponse.isSigned()).thenReturn(true);
+        when(samlResponse.getSignatureReferenceID()).thenReturn("Id");
+        when(samlResponse.hasChildren()).thenReturn(false);
     }
 
     @AfterClass
@@ -331,12 +300,6 @@ public class WebSSOConsumerTest {
 
     @Test
     public void testHandleSAMLResponse() {
-        mockery.checking(new Expectations() {
-            {
-                one(subjectConfirmation).getMethod();
-                will(returnValue(null));
-            }
-        });
         try {
             BasicMessageContext result = webSSOConsumer.handleSAMLResponse(request, response, ssoService, "externalRelayState", ssoRequest);
             assertEquals("Expected to receive the correct message context but it was not received.",
@@ -349,20 +312,9 @@ public class WebSSOConsumerTest {
 
     @Test
     public void testHandleSAMLResponse_NullIssuer() {
-        stateMachine.become(stateTest);
-        mockery.checking(new Expectations() {
-            {
-                allowing(assertion).getSubject();
-                will(returnValue(subject));
-                when(stateMachine.is(stateTest));
-                allowing(samlResponse).getAssertions();
-                will(returnValue(listAssertions));
-                when(stateMachine.is(stateTest));
-                one(assertion).getIssuer();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        
+        when(assertion.getIssuer()).thenReturn(null);
+        
         try {
             webSSOConsumer.handleSAMLResponse(request, response, ssoService, "externalRelayState", ssoRequest);
             fail("Exception was not thrown");
@@ -374,20 +326,8 @@ public class WebSSOConsumerTest {
 
     @Test
     public void testHandleSAMLResponse_NullSubject() {
-        stateMachine.become(stateTest);
-        mockery.checking(new Expectations() {
-            {
-                allowing(samlResponse).getAssertions();
-                will(returnValue(listAssertions));
-                when(stateMachine.is(stateTest));
-                one(assertion).getIssuer();
-                will(returnValue(issuer));
-                when(stateMachine.is(stateTest));
-                allowing(assertion).getSubject();
-                will(returnValue(null));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        when(assertion.getSubject()).thenReturn(null);
+        
         try {
             webSSOConsumer.handleSAMLResponse(request, response, ssoService, "externalRelayState", ssoRequest);
             fail("Exception was not thrown");
@@ -411,19 +351,7 @@ public class WebSSOConsumerTest {
 
     @Test
     public void testHandleSAMLResponse_EmptyListAssertion() {
-        stateMachine.become(stateTest);
-        final List<Assertion> emptyListAssertions = new ArrayList<Assertion>();
-
-        mockery.checking(new Expectations() {
-            {
-                one(samlResponse).getAssertions();
-                will(returnValue(listAssertions));
-                when(stateMachine.is(stateTest));
-                one(samlResponse).getAssertions();
-                will(returnValue(emptyListAssertions));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        when(samlResponse.getAssertions()).thenReturn(new ArrayList<Assertion>());
         try {
             webSSOConsumer.handleSAMLResponse(request, response, ssoService, "externalRelayState", ssoRequest);
             fail("Exception was not thrown");
@@ -435,16 +363,9 @@ public class WebSSOConsumerTest {
 
     @Test
     public void testHandleSAMLResponse_EmptyListAssertion_EmptyListEncryptedAssertions() {
-        stateMachine.become(stateTest);
         listAssertions.clear();
         listEncryptedAssertions.clear();
-        mockery.checking(new Expectations() {
-            {
-                allowing(samlResponse).getAssertions();
-                will(returnValue(listAssertions));
-                when(stateMachine.is(stateTest));
-            }
-        });
+
         try {
             webSSOConsumer.handleSAMLResponse(request, response, ssoService, "externalRelayState", ssoRequest);
             fail("Exception was not thrown");
@@ -468,21 +389,12 @@ public class WebSSOConsumerTest {
 
     @Test
     public void testDecryptEncryptedAssertion() throws DecryptionException {
-        stateMachine.become(stateTest);
         listAssertions.clear();
         listEncryptedAssertions.clear();
         listEncryptedAssertions.add(encryptedAssertion);
 
-        mockery.checking(new Expectations() {
-            {
-                one(decrypter).decrypt(encryptedAssertion);
-                will(returnValue(assertion));
-                when(stateMachine.is(stateTest));
-                allowing(samlResponse).getAssertions();
-                will(returnValue(listAssertions));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        when(decrypter.decrypt(encryptedAssertion)).thenReturn(assertion);
+        
         try {
             listAssertions = webSSOConsumer.decryptEncryptedAssertion(samlResponse, messageContext);
             if (!listAssertions.isEmpty()) {
@@ -498,29 +410,23 @@ public class WebSSOConsumerTest {
     }
 
     @Test
-    public void testDecryptEncryptedAssertion_BadAssertion() throws DecryptionException {
-        stateMachine.become(stateTest);
+    public void testDecryptEncryptedAssertion_BadAssertion() throws Exception {
         listAssertions.clear();
         listEncryptedAssertions.clear();
         listEncryptedAssertions.add(encryptedAssertion);
 
-        mockery.checking(new Expectations() {
-            {
-                one(decrypter).decrypt(encryptedAssertion);
-                will(returnValue("bad_assertion"));
-                when(stateMachine.is(stateTest));
-                allowing(samlResponse).getAssertions();
-                will(returnValue(listAssertions));
-                when(stateMachine.is(stateTest));
-            }
-        });
+        when(decrypter.decrypt(encryptedAssertion))
+            .thenThrow(new DecryptionException("bad_assertion"));
+        when(samlResponse.getAssertions()).thenReturn(listAssertions);
 
         try {
             webSSOConsumer.decryptEncryptedAssertion(samlResponse, messageContext);
             fail("Exception was not thrown");
         } catch (SamlException ex) {
-            assertEquals("Expected to receive the message for '" + SAML20_AUTHENTICATION_FAIL + "' but it was not received.",
-                         SAML20_AUTHENTICATION_FAIL, ex.getMsgKey());
+            assertEquals(
+                "Expected to receive the message for '" + SAML20_AUTHENTICATION_FAIL + "' but it was not received.",
+                SAML20_AUTHENTICATION_FAIL,
+                ex.getMsgKey());
         }
     }
 }

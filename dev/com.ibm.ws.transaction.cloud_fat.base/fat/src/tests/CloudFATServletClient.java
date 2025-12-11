@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,9 +18,11 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -78,7 +80,7 @@ public abstract class CloudFATServletClient extends CloudTestBase {
             return;
         }
 
-        serversToCleanup = new LibertyServer[] { server1, server2 };
+        serversToCleanup = Arrays.asList(server1, server2);
 
         // Start Server1
         FATUtils.startServers(_runner, server1);
@@ -129,6 +131,11 @@ public abstract class CloudFATServletClient extends CloudTestBase {
         checkLogAbsence();
     }
 
+    @After
+    public void after() throws IOException {
+        XAResourceImpl.resetWakeUp();
+    }
+
     @Before
     public void before() {
         TxTestContainerSuite.dropTables("was_leases_log");
@@ -148,7 +155,7 @@ public abstract class CloudFATServletClient extends CloudTestBase {
     @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" })
     public void testAggressiveTakeover1() throws Exception {
         if (!isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
-            serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1, server2fastcheck };
+            serversToCleanup = Arrays.asList(longLeaseCompeteServer1, server2fastcheck);
 
             FATUtils.startServers(_runner, longLeaseCompeteServer1);
 
@@ -160,7 +167,7 @@ public abstract class CloudFATServletClient extends CloudTestBase {
             }
 
             // wait for 1st server to have gone away
-            assertNotNull(longLeaseCompeteServer1.getServerName() + " did not crash", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " should have crashed", longLeaseCompeteServer1.waitForStringInLog(XAResourceImpl.DUMP_STATE));
             longLeaseCompeteServer1.postStopServerArchive(); // must explicitly collect since crashed server
             // The server has been halted but its status variable won't have been reset because we crashed it. In order to
             // setup the server for a restart, set the server state manually.
@@ -170,20 +177,34 @@ public abstract class CloudFATServletClient extends CloudTestBase {
             server2fastcheck.setHttpDefaultPort(Integer.getInteger("HTTP_secondary"));
             FATUtils.startServers(_runner, server2fastcheck);
 
-            // Wait for 10 seconds for server1's logs to go stale
-            Thread.sleep(10000);
+            // Wait till server2 has started peer recovering server1
+            server2fastcheck.resetLogMarks();
+            assertNotNull(server2fastcheck.getServerName() + " should have initiated recovery for " + longLeaseCompeteServer1.getServerName(),
+                          server2fastcheck.waitForStringInLog("WTRN0108I: Recovery initiated for server cloud0011"));
 
-            // Now start server1
+            // Server2 will now be sleeping in recover(). Start server1
             FATUtils.startServers(_runner, longLeaseCompeteServer1);
 
-            assertNotNull("Peer recovery was not interrupted",
+            // Check it recovered successfully
+            longLeaseCompeteServer1.resetLogMarks();
+            assertNotNull(longLeaseCompeteServer1.getServerName() + " should have recovered its own logs",
+                          longLeaseCompeteServer1.waitForStringInLog("WTRN0133I: Transaction recovery processing for this server is complete"));
+
+            // Wake up server2 which will be sleeping in recover
+            Log.info(getClass(), "testAggressiveTakeover1", "Wake up " + server2fastcheck.getServerName());
+            XAResourceImpl.wakeUp();
+
+            assertNotNull(server2fastcheck.getServerName() + " should have failed to recover for " + longLeaseCompeteServer1.getServerName(),
                           server2fastcheck.waitForStringInTrace("WTRN0107W: Server with identity cloud0021 attempted but failed to recover the logs of peer server cloud0011",
                                                                 FATUtils.LOG_SEARCH_TIMEOUT));
 
-            // Server appears to have started ok. Check for key string to see whether recovery has succeeded, irrespective of what server2fastcheck has done
-            assertNotNull("Local recovery failed", longLeaseCompeteServer1.waitForStringInLog("CWRLS0012I:", FATUtils.LOG_SEARCH_TIMEOUT));
+            // Prevent server2 from trying again during server1 shutdown
+            FATUtils.stopServers(server2fastcheck);
 
             FATUtils.runWithRetries(() -> runTestWithResponse(longLeaseCompeteServer1, SERVLET_NAME, "checkRecAggressiveTakeover").toString());
+
+            // At this point we know aggressive takeover worked so we will suppress FFDC checking to avoid the test being failed by e.g. intermittent testcontainer failures
+            serversToCleanup.forEach(s -> s.setFFDCChecking(false));
         }
     }
 
@@ -197,7 +218,7 @@ public abstract class CloudFATServletClient extends CloudTestBase {
     @AllowedFFDC(value = { "com.ibm.tx.jta.XAResourceNotAvailableException", "java.lang.RuntimeException" }) // should be expected but..... Derby
     public void testAggressiveTakeover2() throws Exception {
         if (!isDerby()) { // Embedded Derby cannot support tests with concurrent server startup
-            serversToCleanup = new LibertyServer[] { longLeaseCompeteServer1, server2fastcheck };
+            serversToCleanup = Arrays.asList(longLeaseCompeteServer1, server2fastcheck);
 
             FATUtils.startServers(_runner, longLeaseCompeteServer1);
 
@@ -250,24 +271,37 @@ public abstract class CloudFATServletClient extends CloudTestBase {
 
         final String nonexistantServerName = UUID.randomUUID().toString().replaceAll("\\W", "");
 
-        serversToCleanup = new LibertyServer[] { server1 };
+        serversToCleanup = Arrays.asList(server1);
 
         FATUtils.startServers(_runner, server1);
 
         setupOrphanLease(server1, SERVLET_NAME, nonexistantServerName);
 
-        assertNotNull(server1.getServerName() + " did not perform peer recovery",
-                      server1.waitForStringInTrace("< peerRecoverServers Exit", FATUtils.LOG_SEARCH_TIMEOUT));
+        final String scheduleMsg = "Scheduling lease checker in ";
+        final String failureMsg = " should be attempting peer recovery";
 
-        assertFalse("Orphan lease was not deleted", checkOrphanLeaseExists(server1, SERVLET_NAME, nonexistantServerName));
+        // Retry the test for lease deletion in case (e.g.) the server temporarily lost contact with its database
+        int retries = 0;
+        boolean orphanLeaseStillExists = true;
+        while (orphanLeaseStillExists && retries++ < 5) {
+            final String s = server1.waitForStringInTraceUsingMark(scheduleMsg, FATUtils.LOG_SEARCH_TIMEOUT);
+            server1.setTraceMarkToEndOfDefaultTrace();
+            Log.info(getClass(), "testOrphanLeaseDeletion", s);
+            assertNotNull(server1.getServerName() + failureMsg, s);
+
+            orphanLeaseStillExists = checkOrphanLeaseExists(server1, SERVLET_NAME, nonexistantServerName);
+            Log.info(getClass(), "testOrphanLeaseDeletion", "orphanLeaseStillExists: " + orphanLeaseStillExists);
+        }
+
+        assertFalse("Orphan lease should have been deleted after " + --retries + " tries", orphanLeaseStillExists);
     }
 
     @Test
     // Can get a benign InternalLogException if heartbeat happens at same time as lease claim
-    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException" }) // LUTME doesn't happen for FS
+    @AllowedFFDC(value = { "com.ibm.ws.recoverylog.spi.InternalLogException", "com.ibm.ws.recoverylog.spi.LogsUnderlyingTablesMissingException", "java.lang.Exception" }) // LUTME doesn't happen for FS
     public void testBatchLeaseDeletion() throws Exception {
         if (!TxTestContainerSuite.isDerby()) { // Exclude Derby
-            serversToCleanup = new LibertyServer[] { server1, server2 };
+            serversToCleanup = Arrays.asList(server1, server2);
 
             server2.useSecondaryHTTPPort();
             FATUtils.startServers(_runner, server1, server2);

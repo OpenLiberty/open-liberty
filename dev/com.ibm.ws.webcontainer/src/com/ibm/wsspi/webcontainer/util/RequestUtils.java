@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.wsspi.webcontainer.util;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -604,10 +605,10 @@ public class RequestUtils {
                         if (!encoding_is_ShortEnglish) {
                             try {
                                 if (!qs.isKeySingleByteString()) {
-                                    key = new String(key.getBytes(SHORT_ENGLISH), encoding);
+                                    key = new String(key.getBytes(StandardCharsets.ISO_8859_1), encoding);
                                 }
                                 if (!qs.isValueSingleByteString()) {
-                                    value = new String(value.getBytes(SHORT_ENGLISH), encoding);
+                                    value = new String(value.getBytes(StandardCharsets.ISO_8859_1), encoding);
                                 }
                             } catch (UnsupportedEncodingException uee) {
                                 //No need to nls. SHORT_ENGLISH will always be supported
@@ -706,7 +707,7 @@ public class RequestUtils {
     }
 
    /**
-    * Used to retrive the "true" uri that represents the current request.
+    * Used to retrieve the "true" uri that represents the current request.
     * If include request_uri attribute is set, it returns that value.
     * Otherwise, it returns the default of req.getRequestUri
     * @param req

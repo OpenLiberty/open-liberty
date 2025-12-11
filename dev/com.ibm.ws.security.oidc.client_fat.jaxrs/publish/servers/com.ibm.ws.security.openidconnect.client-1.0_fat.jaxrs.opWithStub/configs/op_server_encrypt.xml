@@ -73,7 +73,7 @@
 		<localStore>
 			<client
 				name="client01"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client01"
 				introspectTokens="true"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client01,
@@ -111,7 +111,9 @@
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS384Encryptnone,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS512Encryptnone,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptShortRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptShortES256,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignRS256EncryptPublicRS256,
+					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/SignES256EncryptPublicES256,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP_trustStoreRefOmitted,
 					http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/RP_sslRefOmitted"
 				scope="ALL_SCOPES"

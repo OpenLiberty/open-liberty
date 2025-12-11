@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,13 +12,12 @@
  *******************************************************************************/
 package com.ibm.websphere.security.wim.util;
 
+import java.nio.charset.StandardCharsets;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.websphere.security.wim.ras.WIMMessageHelper;
-import com.ibm.websphere.security.wim.ras.WIMMessageKey;
-import com.ibm.wsspi.security.wim.exception.WIMSystemException;
 
 /**
  * The utility which provides helper functions related with password.
@@ -35,23 +34,8 @@ public class PasswordUtil {
      * @return the byte array representation of the text string
      */
     @Sensitive
-    public static byte[] getByteArrayPassword(@Sensitive String password) throws WIMSystemException {
-        String METHODNAME = "getByteArrayPassword";
-        try {
-            if (password != null) {
-                return password.getBytes("UTF-8");
-            } else {
-                return null;
-            }
-        } catch (java.io.UnsupportedEncodingException e) {
-            if (tc.isErrorEnabled()) {
-                Tr.error(tc, WIMMessageKey.GENERIC, WIMMessageHelper.generateMsgParms(e.toString()));
-            }
-            throw new WIMSystemException(WIMMessageKey.GENERIC, Tr.formatMessage(
-                                                                                 tc,
-                                                                                 WIMMessageKey.GENERIC,
-                                                                                 WIMMessageHelper.generateMsgParms(e.toString())));
-        }
+    public static byte[] getByteArrayPassword(@Sensitive String password) {
+        return password == null ? null : password.getBytes(StandardCharsets.UTF_8);
     }
 
     /**

@@ -50,6 +50,7 @@ Export-Package: \
  org.jboss.weld.resolution;version="5.1.1.SP2",\
  org.jboss.weld.resources;version="5.1.1.SP2",\
  org.jboss.weld.util.collections;version="5.1.1.SP2",\
+ com.ibm.ws.cdi.impl.weld.validation;version="1.0",\
  org.jboss.weld.bootstrap.api;version="5.1.1.SP2";uses:="jakarta.enterprise.inject.spi,org.jboss.weld.bootstrap.spi,org.jboss.weld.manager.api",\
  org.jboss.weld.bootstrap.api.helpers;version="5.1.1.SP2";uses:="org.jboss.weld.bootstrap.api,org.jboss.weld.bootstrap.spi,org.jboss.weld.manager.api",\
  org.jboss.weld.construction.api;version="5.1.1.SP2";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.inject.spi",\

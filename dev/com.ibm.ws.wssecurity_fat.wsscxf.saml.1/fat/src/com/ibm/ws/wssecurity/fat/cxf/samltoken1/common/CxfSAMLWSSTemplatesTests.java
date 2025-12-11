@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,15 +29,13 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServerWrapper;
-import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
-import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import componenttest.annotation.MinimumJavaLevel;
 
 
 /**
  * WSS Template tests
  */
 
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
@@ -108,7 +106,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Client and Server use the same policy
      * Test should succeed in accessing the server side service.
      */
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml() throws Exception {
         
@@ -139,7 +137,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Client uses a policy that omits the Initiator Token from the policy
      * Test should fail to access the server side service.
      */
-    
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void CxfSAMLWSSTemplatesTests_AsymmetricX509MutualAuthenticationWithSaml_omitInitiatorToken() throws Exception {
     	
@@ -218,7 +216,7 @@ public class CxfSAMLWSSTemplatesTests extends SAMLCommonTest {
      * Client and Server use the same policy
      * Test should succeed in accessing the server side service.
      */
-   
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void CxfSAMLWSSTemplatesTests_X509SymmetricForMessageAndSamlForClient() throws Exception {
     	

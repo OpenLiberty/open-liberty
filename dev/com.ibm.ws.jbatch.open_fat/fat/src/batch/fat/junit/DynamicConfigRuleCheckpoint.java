@@ -54,7 +54,7 @@ public class DynamicConfigRuleCheckpoint implements TestRule {
     public static interface ServerSetup<T extends Throwable> {
         /**
          * Setup the server
-         * @return      the checkpointed server
+         * @return the checkpointed server
          * @throws T
          */
         public LibertyServer call() throws T;
@@ -138,7 +138,7 @@ public class DynamicConfigRuleCheckpoint implements TestRule {
 
     /**
      * Statement class - performs the before/after operations around a
-     * call to the base Statement's evaulate() method (which runs the test).
+     * call to the base Statement's evaluate() method (which runs the test).
      */
     protected class DynamicConfigStatement extends Statement {
 

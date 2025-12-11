@@ -34,6 +34,9 @@ fat.project: true
     org.apache.httpcomponents:httpcore;version=4.1.2,\
     net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
     net.sourceforge.htmlunit:htmlunit-cssparser;version=1.6.0,\
-	net.sourceforge.htmlunit:webdriver;version=2.6,\
+	  net.sourceforge.htmlunit:webdriver;version=2.6,\
     xalan:xalan;version=2.7.2, \
     org.brotli:dec;version=0.1.2
+
+# Copy in FIPS keys
+ltpa.fips.enabled: true

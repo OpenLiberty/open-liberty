@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,9 +61,15 @@ public class FeatureReplacementAction implements RepeatTestAction {
     public static final String NO_SERVERS = "NO_SERVERS";
     public static final String NO_CLIENTS = "NO_CLIENTS";
 
+    private static final Set<String> clientOnlyFeatureBaseNames;
     private static final Map<String, String> featuresWithNameChangeOnEE9;
 
     static {
+        Set<String> clientOnlyFeatures = new HashSet<>();
+        clientOnlyFeatures.add("jakartaeeclient");
+        clientOnlyFeatures.add("javaeeclient");
+        clientOnlyFeatures.add("xmlwsclient");
+        clientOnlyFeatureBaseNames = Collections.unmodifiableSet(clientOnlyFeatures);
         Map<String, String> featureNameMapping = new HashMap<String, String>(20);
         featureNameMapping.put("ejb", "enterpriseBeans");
         featureNameMapping.put("ejbHome", "enterpriseBeansHome");
@@ -108,36 +114,42 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
-     * Replaces any Java EE 8 features with the Java EE 7 equivalent feature.
+     * Replaces any Java / Jakarta EE features with the Java EE 6 equivalent feature.
+     */
+    public static FeatureReplacementAction EE6_FEATURES() {
+        return new EE6FeatureReplacementAction();
+    }
+
+    /**
+     * Replaces any Java / Jakarta EE features with the Java EE 7 equivalent feature.
      */
     public static FeatureReplacementAction EE7_FEATURES() {
         return new EE7FeatureReplacementAction();
     }
 
     /**
-     * Replaces any Java EE 7 features with the Java EE 8 equivalent feature.
-     * Will automatically skip if running below Java 8.
+     * Replaces any Java / Jakarta EE features with the Java EE 8 equivalent feature.
      */
     public static FeatureReplacementAction EE8_FEATURES() {
         return new EE8FeatureReplacementAction();
     }
 
     /**
-     * Remove the EE7 and EE8 features; replace them with the EE9 features
+     * Replaces any Java / Jakarta EE features with the Jakarta EE 9 equivalent feature.
      */
     public static JakartaEEAction EE9_FEATURES() {
         return new JakartaEE9Action();
     }
 
     /**
-     * Remove the EE7, EE8, and EE9 features; replace them with the EE10 features
+     * Replaces any Java / Jakarta EE features with the Jakarta EE 10 equivalent feature.
      */
     public static JakartaEEAction EE10_FEATURES() {
         return new JakartaEE10Action();
     }
 
     /**
-     * Remove the EE7, EE8, EE9, and EE10 features; replace them with the EE11 features
+     * Replaces any Java / Jakarta EE features with the Jakarta EE 11 equivalent feature.
      */
     public static JakartaEEAction EE11_FEATURES() {
         return new JakartaEE11Action();
@@ -603,7 +615,7 @@ public class FeatureReplacementAction implements RepeatTestAction {
             }
         }
         for (String clientName : clients) {
-            clientConfigs.addAll(findFile(new File(pathToAutoFVTTestServers + clientName), ".xml"));
+            clientConfigs.addAll(findFile(new File(pathToAutoFVTTestClients + clientName), ".xml"));
         }
 
         // Make sure that XML file we find is a server config file, by checking if it contains the <server> tag
@@ -663,7 +675,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
                         removeWildcardFeature(features, removeFeature);
                     }
                 }
-                features.addAll(addFeatures);
+                for (String addFeature : addFeatures) {
+                    // Do not add a client only feature to the server configuration.
+                    if (isServerConfig && isClientOnlyFeature(addFeature)) {
+                        continue;
+                    }
+                    features.add(addFeature);
+                }
             } else {
                 for (String removeFeature : removeFeatures) {
                     boolean removed = false;
@@ -682,7 +700,14 @@ public class FeatureReplacementAction implements RepeatTestAction {
                     }
                 }
             }
-            alwaysAddFeatures.forEach(s -> features.add(s));
+
+            for (String alwaysAddFeature : alwaysAddFeatures) {
+                // Do not add a client only feature to the server configuration.
+                if (isServerConfig && isClientOnlyFeature(alwaysAddFeature)) {
+                    continue;
+                }
+                features.add(alwaysAddFeature);
+            }
             Log.info(c, m, "Resulting features: " + features);
 
             if (isServerConfig) {
@@ -698,6 +723,11 @@ public class FeatureReplacementAction implements RepeatTestAction {
             LibertyServerFactory.getLibertyServer(serverName);
         for (String clientName : clients)
             LibertyClientFactory.getLibertyClient(clientName);
+    }
+
+    private boolean isClientOnlyFeature(String featureName) {
+        String featureBase = featureName.substring(0, featureName.indexOf('-')).toLowerCase();
+        return clientOnlyFeatureBaseNames.contains(featureBase);
     }
 
     protected void updateServerConfig(ServerConfiguration serverConfig) {

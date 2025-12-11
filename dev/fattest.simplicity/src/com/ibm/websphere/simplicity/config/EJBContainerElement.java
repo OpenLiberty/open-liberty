@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,8 +21,8 @@ import javax.xml.bind.annotation.XmlElement;
 public class EJBContainerElement extends ConfigElement {
 
     private Integer cacheSize;
-    private Long poolCleanupInterval;
-    private Long cacheCleanupInterval;
+    private String poolCleanupInterval;
+    private String cacheCleanupInterval;
     private Boolean startEJBsAtAppStart;
     private EJBAsynchronousElement asynchronous;
     private EJBTimerServiceElement timerService;
@@ -40,21 +40,21 @@ public class EJBContainerElement extends ConfigElement {
         this.cacheSize = cacheSize;
     }
 
-    public Long getPoolCleanupInterval() {
+    public String getPoolCleanupInterval() {
         return poolCleanupInterval;
     }
 
     @XmlAttribute(name = "poolCleanupInterval")
-    public void setPoolCleanupInterval(Long poolCleanupInterval) {
+    public void setPoolCleanupInterval(String poolCleanupInterval) {
         this.poolCleanupInterval = poolCleanupInterval;
     }
 
-    public Long getCacheCleanupInterval() {
+    public String getCacheCleanupInterval() {
         return cacheCleanupInterval;
     }
 
     @XmlAttribute(name = "cacheCleanupInterval")
-    public void setCacheCleanupInterval(Long cacheCleanupInterval) {
+    public void setCacheCleanupInterval(String cacheCleanupInterval) {
         this.cacheCleanupInterval = cacheCleanupInterval;
     }
 

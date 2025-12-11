@@ -24,7 +24,6 @@
         <param-name>org.apache.myfaces.LOG_WEB_CONTEXT_PARAMS</param-name>
         <param-value>false</param-value>
     </context-param>
-
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>

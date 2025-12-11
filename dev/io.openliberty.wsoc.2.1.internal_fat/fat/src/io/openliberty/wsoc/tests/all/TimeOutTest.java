@@ -12,19 +12,8 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests.all;
 
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.util.logging.Logger;
-
-import jakarta.websocket.Session;
-import jakarta.websocket.WebSocketContainer;
-
-import io.openliberty.wsoc.common.Constants;
-import io.openliberty.wsoc.common.Utils;
 import io.openliberty.wsoc.endpoints.client.basic.ClientHelper;
-import io.openliberty.wsoc.util.wsoc.TestWsocContainer;
 import io.openliberty.wsoc.util.wsoc.WsocTest;
-import junit.framework.Assert;
 
 /**
  * Contains test details (such as client endpoint, server uri endpoint, input, and expected output).

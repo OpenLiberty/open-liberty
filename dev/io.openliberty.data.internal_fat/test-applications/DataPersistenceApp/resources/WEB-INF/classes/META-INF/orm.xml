@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
+<entity-mappings
+    xmlns="https://jakarta.ee/xml/ns/persistence/orm"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence/orm https://jakarta.ee/xml/ns/persistence/orm/orm_3_2.xsd"
+    version="3.2">
+    
+  <!-- NOTE: this has been copied directly from the generated orm.xml when using
+             EclipseLink and our persistence service. If updates are made
+             to test entities this file will also need to be updated to verify
+             interoperability with Hibernate.
+  -->
+
+  <mapped-superclass class="test.jakarta.data.web.Residence">
+    <attributes>
+      <basic name="isOccupied" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <embedded name="occupant" access="FIELD">
+        <attribute-override name="firstName">
+          <column name="OCCUPANT_FIRSTNAME"/>
+        </attribute-override>
+        <attribute-override name="lastName">
+          <column name="OCCUPANT_LASTNAME"/>
+        </attribute-override>
+      </embedded>
+    </attributes>
+  </mapped-superclass>
+  <entity class="test.jakarta.data.web.Apartment">
+    <table name="Apartment"/>
+    <attributes>
+      <id name="APTID" access="FIELD">
+        <column nullable="false"/>
+      </id>
+      <basic name="quartersWidth" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <embedded name="quarters" access="FIELD">
+        <attribute-override name="length">
+          <column name="QUARTERS_LENGTH"/>
+        </attribute-override>
+        <attribute-override name="width">
+          <column name="QUARTERS_WIDTH"/>
+        </attribute-override>
+      </embedded>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Apartment2">
+    <table name="Apartment2"/>
+    <attributes>
+      <id name="aptId" access="FIELD">
+        <column nullable="false"/>
+      </id>
+      <basic name="quarters_width" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <embedded name="quarters" access="FIELD">
+        <attribute-override name="length">
+          <column name="QUARTERS_LENGTH"/>
+        </attribute-override>
+        <attribute-override name="width">
+          <column name="QUARTERS_WIDTH"/>
+        </attribute-override>
+      </embedded>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Apartment3">
+    <table name="Apartment3"/>
+    <attributes>
+      <id name="aptId" access="FIELD">
+        <column nullable="false"/>
+      </id>
+      <basic name="occupant_firstName" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <embedded name="quarters" access="FIELD">
+        <attribute-override name="length">
+          <column name="QUARTERS_LENGTH"/>
+        </attribute-override>
+        <attribute-override name="width">
+          <column name="QUARTERS_WIDTH"/>
+        </attribute-override>
+      </embedded>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.House">
+    <table name="House"/>
+    <attributes>
+      <id name="parcelId" access="FIELD">
+      </id>
+      <basic name="area" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="lotSize" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="numBedrooms" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="purchasePrice" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="sold" access="FIELD">
+      </basic>
+      <embedded name="garage" access="FIELD">
+        <attribute-override name="area">
+          <column name="GARAGE_AREA"/>
+        </attribute-override>
+        <attribute-override name="door.height">
+          <column name="GARAGE_DOOR_HEIGHT"/>
+        </attribute-override>
+        <attribute-override name="door.width">
+          <column name="GARAGE_DOOR_WIDTH"/>
+        </attribute-override>
+        <attribute-override name="type">
+          <column name="GARAGE_TYPE"/>
+        </attribute-override>
+      </embedded>
+      <embedded name="kitchen" access="FIELD">
+        <attribute-override name="length">
+          <column name="KITCHEN_LENGTH"/>
+        </attribute-override>
+        <attribute-override name="width">
+          <column name="KITCHEN_WIDTH"/>
+        </attribute-override>
+      </embedded>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Package">
+    <table name="Package"/>
+    <attributes>
+      <id name="id" access="FIELD">
+        <column nullable="false"/>
+      </id>
+      <basic name="description" access="FIELD">
+      </basic>
+      <basic name="height" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="length" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="width" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Participant">
+    <table name="Participant"/>
+    <attributes>
+      <id name="PID" access="PROPERTY">
+      </id>
+      <embedded name="name" access="FIELD">
+        <attribute-override name="first">
+          <column name="NAME_FIRST"/>
+        </attribute-override>
+        <attribute-override name="last">
+          <column name="NAME_LAST"/>
+        </attribute-override>
+      </embedded>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Person">
+    <table name="Person"/>
+    <attributes>
+      <id name="ssn_id" access="FIELD">
+        <column nullable="false"/>
+      </id>
+      <basic name="firstName" access="FIELD">
+      </basic>
+      <basic name="lastName" access="FIELD">
+      </basic>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Prime">
+    <table name="Prime"/>
+    <attributes>
+      <id name="numberId" access="FIELD">
+        <column nullable="false"/>
+      </id>
+      <basic name="binaryDigits" access="FIELD">
+      </basic>
+      <basic name="even" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="hex" access="FIELD">
+      </basic>
+      <basic name="name" access="FIELD">
+      </basic>
+      <basic name="romanNumeral" access="FIELD">
+      </basic>
+      <basic name="sumOfBits" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <element-collection name="romanNumeralSymbols" access="FIELD" fetch="EAGER">
+      </element-collection>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Product">
+    <table name="Product"/>
+    <attributes>
+      <id name="pk" access="FIELD">
+      </id>
+      <basic name="description" access="FIELD">
+      </basic>
+      <basic name="name" access="FIELD">
+      </basic>
+      <basic name="price" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <version name="version" access="FIELD">
+        <column nullable="false"/>
+      </version>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Purchase">
+    <table name="Purchase"/>
+    <attributes>
+      <id name="purchaseId" access="FIELD">
+        <column nullable="false"/>
+      </id>
+      <basic name="customer" access="FIELD">
+      </basic>
+      <basic name="total" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <embedded name="receipt" access="FIELD">
+        <attribute-override name="customer">
+          <column name="RECEIPT_CUSTOMER"/>
+        </attribute-override>
+        <attribute-override name="purchaseId">
+          <column name="RECEIPT_PURCHASEID"/>
+        </attribute-override>
+        <attribute-override name="total">
+          <column name="RECEIPT_TOTAL"/>
+        </attribute-override>
+      </embedded>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Thing">
+    <table name="Thing"/>
+    <attributes>
+      <id name="thingId" access="FIELD">
+        <column nullable="false"/>
+      </id>
+      <basic name="a" access="FIELD">
+      </basic>
+      <basic name="alike" access="FIELD">
+      </basic>
+      <basic name="android" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="brand" access="FIELD">
+      </basic>
+      <basic name="description" access="FIELD">
+      </basic>
+      <basic name="floor" access="FIELD">
+      </basic>
+      <basic name="info" access="FIELD">
+      </basic>
+      <basic name="notes" access="FIELD">
+      </basic>
+      <basic name="orderNumber" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="purchaseOrder" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+    </attributes>
+  </entity>
+  <entity class="test.jakarta.data.web.Vehicle">
+    <table name="Vehicle"/>
+    <attributes>
+      <id name="vinId" access="FIELD">
+      </id>
+      <basic name="make" access="FIELD">
+      </basic>
+      <basic name="model" access="FIELD">
+      </basic>
+      <basic name="numSeats" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="price" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+    </attributes>
+  </entity>
+  <embeddable class="test.jakarta.data.web.Bedroom">
+    <attributes>
+      <basic name="length" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="width" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+    </attributes>
+  </embeddable>
+  <embeddable class="test.jakarta.data.web.Garage">
+    <attributes>
+      <basic name="area" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="type" access="FIELD">
+      </basic>
+      <embedded name="door" access="FIELD">
+      </embedded>
+    </attributes>
+  </embeddable>
+  <embeddable class="test.jakarta.data.web.GarageDoor">
+    <attributes>
+      <basic name="height" access="PROPERTY">
+        <column nullable="false"/>
+      </basic>
+      <basic name="width" access="PROPERTY">
+        <column nullable="false"/>
+      </basic>
+    </attributes>
+  </embeddable>
+  <embeddable class="test.jakarta.data.web.Kitchen">
+    <attributes>
+      <basic name="length" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="width" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+    </attributes>
+  </embeddable>
+  <embeddable class="test.jakarta.data.web.Participant$Name">
+    <attributes>
+      <basic name="first" access="FIELD">
+      </basic>
+      <basic name="last" access="FIELD">
+      </basic>
+    </attributes>
+  </embeddable>
+  <embeddable class="test.jakarta.data.web.Receipt">
+    <attributes>
+      <basic name="customer" access="FIELD">
+      </basic>
+      <basic name="purchaseId" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+      <basic name="total" access="FIELD">
+        <column nullable="false"/>
+      </basic>
+    </attributes>
+  </embeddable>
+  <embeddable class="test.jakarta.data.web.Residence$Occupant">
+    <attributes>
+      <basic name="firstName" access="FIELD">
+      </basic>
+      <basic name="lastName" access="FIELD">
+      </basic>
+    </attributes>
+  </embeddable>
+</entity-mappings>

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -22,7 +22,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Arrays;
@@ -75,7 +75,7 @@ import com.ibm.wsspi.library.LibraryChangeListener;
  */
 @Component(name = "com.ibm.ws.classloading.bell", configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = { Constants.SERVICE_RANKING + ":Integer=" + Integer.MIN_VALUE })
- public class Bell implements LibraryChangeListener {
+public class Bell implements LibraryChangeListener {
 
     private static final TraceComponent tc = Tr.register(Bell.class);
     private static final char COMMENT_CHAR = '#';
@@ -349,7 +349,7 @@ import com.ibm.wsspi.library.LibraryChangeListener;
 
     private static BufferedReader createReader(final ArtifactEntry providerConfigFile) throws IOException {
         final InputStream is = providerConfigFile.getInputStream();
-        final InputStreamReader input = new InputStreamReader(is, Charset.forName("UTF8"));
+        final InputStreamReader input = new InputStreamReader(is, StandardCharsets.UTF_8);
         return new BufferedReader(input);
     }
 

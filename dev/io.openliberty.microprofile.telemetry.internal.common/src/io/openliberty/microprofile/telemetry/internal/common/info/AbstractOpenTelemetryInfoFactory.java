@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -154,7 +154,7 @@ public abstract class AbstractOpenTelemetryInfoFactory implements OpenTelemetryI
     protected ResourceBuilder customizeResource(Resource resource, ConfigProperties c, boolean runtimeEnabled) {
         ResourceBuilder builder = resource.toBuilder();
 
-        //Use a plain String not ResourceAttributes.SERVICE_NAME due to semcov moving the class around
+        //Use a plain String not ResourceAttributes.SERVICE_NAME due to semconv moving the class around
         builder.put(OpenTelemetryConstants.KEY_SERVICE_NAME, getServiceName(c, runtimeEnabled));
         return builder;
     }

@@ -34,7 +34,7 @@
 		<localStore>
 			<client
 				name="client_RS256"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_RS256"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_RS256_RS256,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_RS256_RS256,
@@ -130,7 +130,7 @@
 		<localStore>
 			<client
 				name="client_HS256"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="client_HS256"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/client_HS256_RS256,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/client_HS256_RS256,

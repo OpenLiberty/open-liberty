@@ -13,9 +13,9 @@
 <server description="com.ibm.ws.webcontainer.security.fat.formlogin">
 
 	<featureManager>
-		<feature>appSecurity-2.0</feature>
-		<feature>jsp-2.2</feature>
-		<feature>servlet-3.1</feature>
+		<feature>appSecurity-3.0</feature>
+		<feature>jsp-2.3</feature>
+		<feature>servlet-4.0</feature>
 		<feature>usr:jaccTestProvider-1.0</feature>
 	</featureManager>
 

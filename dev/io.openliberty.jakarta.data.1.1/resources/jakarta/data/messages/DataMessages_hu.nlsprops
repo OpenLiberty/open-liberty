@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME io.openliberty.jakarta.data.1.1/resources/jakarta/data/messages/resources/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Copied from the Jakarta Data github repository
+
+001.arg.required=A {0} argumentum sz\u00fcks\u00e9ges
+002.no.elements=A {0} lista nem lehet \u00fcres
+003.null.element=A {0} list\u00e1nak nem lehet null eleme
+004.arg.negative=A {0} \u00e9rv nem lehet negat\u00edv
+005.zero.not.allowed=A {0} argumentum nem lehet 0
+006.zero.size.key=A kulcsnak legal\u00e1bb egy elemb\u0151l kell \u00e1llnia
+007.wildcard.conflict=Nem lehet ugyanazt a karaktert ( {0} ) haszn\u00e1lni mindk\u00e9t jokerk\u00e9nt
+008.escape.conflict=Nem lehet ugyanazt a karaktert ( {0} ) haszn\u00e1lni mind a joker-, mind az escape karakterk\u00e9nt
+009.unknown.number.type=A Number nem v\u00e1rt alt\u00edpusa: {0}
+010.unknown.total=Az elemek teljes sz\u00e1ma nem \u00e1ll rendelkez\u00e9sre
+011.unknown.attr.type=A {0} p\u00e9ld\u00e1nyt \u00fagy kapt\u00e1k meg, hogy az attrib\u00fatum t\u00edpusa nem azonos\u00edthat\u00f3. Statikus metamodell oszt\u00e1lyok eset\u00e9n haszn\u00e1lja az attrib\u00fatum alt\u00edpuson defini\u00e1lt.of met\u00f3dust az entit\u00e1s oszt\u00e1ly \u00e9s az entit\u00e1s attrib\u00fatum t\u00edpus\u00e1nak megad\u00e1s\u00e1ra.
+012.unknown.decl.type=A {0} p\u00e9ld\u00e1nyt olyan m\u00f3don szerezt\u00e9k meg, amely nem azonos\u00edtja az attrib\u00fatumot deklar\u00e1l\u00f3 entit\u00e1soszt\u00e1lyt. Statikus metamodell oszt\u00e1lyok eset\u00e9n haszn\u00e1lja az attrib\u00fatum alt\u00edpuson defini\u00e1lt.of met\u00f3dust az entit\u00e1s oszt\u00e1ly \u00e9s az entit\u00e1s attrib\u00fatum t\u00edpus\u00e1nak megad\u00e1s\u00e1ra.

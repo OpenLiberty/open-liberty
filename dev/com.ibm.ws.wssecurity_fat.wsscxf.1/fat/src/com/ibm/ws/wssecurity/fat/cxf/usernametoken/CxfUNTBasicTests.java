@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,8 +15,7 @@ package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
 import static org.junit.Assert.assertTrue;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -29,14 +28,19 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.CheckpointRule;
+import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.CheckpointRule.ServerMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.vulnerability.LeakedPasswordChecker;
 
 @SkipForRepeat({ RepeatWithEE7cbh20.ID })
 @RunWith(FATRunner.class)
+@CheckpointTest(alwaysRun = true)
 public class CxfUNTBasicTests {
 
     static final private String serverName = "com.ibm.ws.wssecurity_fat";
@@ -51,30 +55,47 @@ public class CxfUNTBasicTests {
 
     private static LeakedPasswordChecker leakedPasswordChecker;
 
-    /**
-     * Sets up any configuration required for running the OAuth tests.
-     * Currently, it just starts the server, which should start the
-     * applications in dropins.
-     */
-    @BeforeClass
-    public static void setUp() throws Exception {
+    @ClassRule
+    public static CheckpointRule checkpointRule = new CheckpointRule()
+                                                     .setConsoleLogName(CxfUNTBasicTests.class.getSimpleName()+ ".log")
+                                                     .setServerSetup(CxfUNTBasicTests::serverSetUp)
+                                                     .setServerStart(CxfUNTBasicTests::serverStart)
+                                                     .setServerTearDown(CxfUNTBasicTests::serverTearDown)
+                                                     .addUnsupportedRepeatIDs(EmptyAction.ID, RepeatWithEE7cbh20.ID );
+
+    public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
 
         ShrinkHelper.defaultDropinApp(server, "untclient", "com.ibm.ws.wssecurity.fat.untclient", "fats.cxf.basic.wssec", "fats.cxf.basic.wssec.types");
         ShrinkHelper.defaultDropinApp(server, "untoken", "com.ibm.ws.wssecurity.fat.untoken");
-
-        server.startServer();// check CWWKS0008I: The security service is ready.
-        SharedTools.waitForMessageInLog(server, "CWWKS0008I");
         httpPortNumber = "" + server.getHttpDefaultPort();
-
-        server.waitForStringInLog("port " + httpPortNumber);
 
         untClientUrl = "http://localhost:" + httpPortNumber +
                        "/untclient/CxfUntSvcClient";
 
         leakedPasswordChecker = new LeakedPasswordChecker(server);
+        return server;
 
-        return;
+    }
 
+    public static void serverStart(ServerMode mode, LibertyServer server) throws Exception {
+        server.startServer();// check CWWKS0008I: The security service is ready.
+        SharedTools.waitForMessageInLog(server, "CWWKS0008I");
+        server.waitForStringInLog("port " + httpPortNumber);
+    }
+
+    public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {
+        if (server != null && server.isStarted()) {
+            //orig from CL
+            //server.stopServer();
+            //11/2020 pass in the error reference to stopServer; otherwise, it will be logged as FAT error
+            //OL LibertyServer class has slight different code than CL:
+            //if (!isServerExemptFromChecking(regIgnore)) { ...else {
+            //Log.info(c, method, "Skipping log validation on server " + getServerName());
+            //OL doesn't have the above code now
+            //CWWKW0226E: The user [user1] could not be validated. Verify that the user name and password credentials that were provided are correct.
+            //CWWKW0226E: The user [baduser123] could not be validated. Verify that the user name and password credentials that were provided are correct.
+            server.stopServer("CWWKW0226E");
+        }
     }
 
     @Test
@@ -302,21 +323,4 @@ public class CxfUNTBasicTests {
         return;
 
     }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            //orig from CL
-            //server.stopServer();
-            //11/2020 pass in the error reference to stopServer; otherwise, it will be logged as FAT error
-            //OL LibertyServer class has slight different code than CL:
-            //if (!isServerExemptFromChecking(regIgnore)) { ...else {
-            //Log.info(c, method, "Skipping log validation on server " + getServerName());
-            //OL doesn't have the above code now
-            //CWWKW0226E: The user [user1] could not be validated. Verify that the user name and password credentials that were provided are correct.
-            //CWWKW0226E: The user [baduser123] could not be validated. Verify that the user name and password credentials that were provided are correct.
-            server.stopServer("CWWKW0226E");
-        }
-    }
-
 }

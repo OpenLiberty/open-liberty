@@ -1,20 +1,24 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.microprofile.reactive.messaging.fat.kafka.tck;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsEngineResolver;
 import org.eclipse.microprofile.reactive.streams.operators.core.ReactiveStreamsFactoryImpl;
@@ -68,25 +72,26 @@ public class ReactiveStreamsTckTest {
                                                    KafkaSubscriberVerification.class);
 
         TestNG testNg = new TestNG(false);
-        testNg.setXmlSuites(Collections.singletonList(createSuiteForTestClasses(testClasses)));
+        testNg.setXmlSuites(Collections.singletonList(createSuiteForTestClasses("ReactiveStreamsTckTest", testClasses)));
         testNg.addListener(junitReporter);
         testNg.addListener(loggingReporter);
         testNg.setOutputDirectory("results/junit");
         testNg.run();
+        moveSuiteResultFiles("results/junit", "ReactiveStreamsTckTest");
     }
 
     /**
      * Creates a test suite to run the given classes
      * <p>
-     * The suite is structured so that the JUnit result files that it outputs matches what the FAT framework expects
+     * Results will be output in a subdirectory and must be moved into the location expected by the FAT framework
      *
+     * @param suiteName   the name of the test suite
      * @param testClasses the TestNG test classes
      * @return the TestNG suite
      */
-    private XmlSuite createSuiteForTestClasses(List<Class<?>> testClasses) {
+    private XmlSuite createSuiteForTestClasses(String suiteName, List<Class<?>> testClasses) {
         XmlSuite suite = new XmlSuite();
-        // Ignore below, a new testng requires suit names
-        suite.setName("ReactiveStreamsTckTest"); // No suite name so that result files are not put in a subdirectory
+        suite.setName(suiteName);
 
         for (Class<?> testClass : testClasses) {
             XmlTest test = new XmlTest(suite);
@@ -95,6 +100,42 @@ public class ReactiveStreamsTckTest {
         }
 
         return suite;
+    }
+
+    /**
+     * Moves test result files from where TestNG makes them to where the FAT framework expects them
+     *
+     * @param resultsDirectory the results directory
+     * @param suiteName        the name of the suite
+     */
+    private void moveSuiteResultFiles(String resultsDirectory, String suiteName) {
+        List<Exception> errors = new ArrayList<>();
+        Path resultsDir = Paths.get(resultsDirectory);
+        Path suiteDir = Paths.get(resultsDirectory, suiteName);
+
+        List<Path> filesToMove;
+        try (Stream<Path> stream = Files.list(suiteDir)) {
+            filesToMove = stream.filter(p -> p.getFileName().toString().endsWith(".xml"))
+                            .collect(Collectors.toList());
+        } catch (IOException e) {
+            errors.add(e);
+            filesToMove = Collections.emptyList();
+        }
+
+        for (Path src : filesToMove) {
+            try {
+                Path dest = resultsDir.resolve(src.getFileName());
+                Files.move(src, dest);
+            } catch (IOException e) {
+                errors.add(new Exception("Failure moving " + src, e));
+            }
+        }
+
+        if (!errors.isEmpty()) {
+            RuntimeException ex = new RuntimeException("Failures occurred moving TestNG results files");
+            errors.stream().forEach(ex::addSuppressed);
+            throw ex;
+        }
     }
 
 }

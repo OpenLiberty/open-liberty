@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,8 +26,10 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
+import jakarta.data.page.PageRequest.Mode;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
@@ -37,15 +39,47 @@ import jakarta.persistence.TypedQuery;
 public class PageImpl<T> implements Page<T> {
     private static final TraceComponent tc = Tr.register(PageImpl.class);
 
+    /**
+     * Values that are supplied when invoking the repository method that
+     * requests the page.
+     */
     private final Object[] args;
+
+    /**
+     * The request for this page.
+     */
     private final PageRequest pageRequest;
+
+    /**
+     * Query information.
+     */
     private final QueryInfo queryInfo;
+
+    /**
+     * Results of the query for this page.
+     */
     private final List<T> results;
+
+    /**
+     * Total number of elements across all pages. This value is computed lazily,
+     * with -1 indicating it has not been computed yet.
+     */
     private long totalElements = -1;
 
-    @FFDCIgnore(Exception.class)
+    /**
+     * Construct a new Page.
+     *
+     * @param queryInfo   query information.
+     * @param em          the entity manager.
+     * @param pageRequest the request for this page.
+     * @param args        values that are supplied to the repository method.
+     * @throws Exception if an error occurs.
+     */
     @Trivial
-    PageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
+    PageImpl(QueryInfo queryInfo,
+             EntityManager em,
+             PageRequest pageRequest,
+             Object[] args) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "<init>", queryInfo, pageRequest, queryInfo.loggable(args));
@@ -53,26 +87,29 @@ public class PageImpl<T> implements Page<T> {
         if (pageRequest == null)
             queryInfo.missingPageRequest();
 
+        if (pageRequest.mode() != Mode.OFFSET)
+            throw exc(IllegalArgumentException.class,
+                      "CWWKD1035.incompat.page.mode",
+                      pageRequest.mode(),
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      queryInfo.method.getGenericReturnType().getTypeName(),
+                      CursoredPage.class.getName());
+
         this.queryInfo = queryInfo;
         this.pageRequest = pageRequest;
         this.args = args;
 
-        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
-        try {
-            @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql, queryInfo.entityInfo.entityClass);
-            queryInfo.setParameters(query, args);
+        jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
+        queryInfo.setParameters(query, args);
 
-            int maxPageSize = pageRequest.size();
-            query.setFirstResult(queryInfo.computeOffset(pageRequest));
-            query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
+        int maxPageSize = pageRequest.size();
+        query.setFirstResult(queryInfo.computeOffset(pageRequest));
+        query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
-            results = query.getResultList();
-        } catch (Exception x) {
-            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
-        } finally {
-            em.close();
-        }
+        @SuppressWarnings("unchecked")
+        List<T> resultList = query.getResultList();
+        results = resultList;
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>");
@@ -96,6 +133,14 @@ public class PageImpl<T> implements Page<T> {
         if (pageRequest.page() == 1L && results.size() <= pageRequest.size() &&
             pageRequest.size() < Integer.MAX_VALUE)
             return results.size();
+
+        if (queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH)
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1119.keyword.prevents.count",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      queryInfo.jpqlCount,
+                      queryInfo.jpql);
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
@@ -142,7 +187,8 @@ public class PageImpl<T> implements Page<T> {
 
     @Override
     public boolean hasTotals() {
-        return pageRequest.requestTotal();
+        return queryInfo.jpqlCount.length() >= Util.MIN_COUNT_QUERY_LENGTH &&
+               pageRequest.requestTotal();
     }
 
     @Override

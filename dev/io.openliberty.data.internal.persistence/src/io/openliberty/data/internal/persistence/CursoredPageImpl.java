@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,15 +47,54 @@ import jakarta.persistence.TypedQuery;
 public class CursoredPageImpl<T> implements CursoredPage<T> {
     private static final TraceComponent tc = Tr.register(CursoredPageImpl.class);
 
+    /**
+     * Values that are supplied when invoking the repository method that
+     * requests the cursored page.
+     */
     private final Object[] args;
+
+    /**
+     * Indicates the direction of pagination relative to a cursor.
+     * In the case of a first page requested with offset pagination,
+     * where there is no cursor, the direction is forward.
+     */
     private final boolean isForward;
+
+    /**
+     * The request for this page.
+     */
     private final PageRequest pageRequest;
+
+    /**
+     * Query information.
+     */
     private final QueryInfo queryInfo;
+
+    /**
+     * Results of the query for this page.
+     */
     private final List<T> results;
+
+    /**
+     * Total number of elements across all pages. This value is computed lazily,
+     * with -1 indicating it has not been computed yet.
+     */
     private long totalElements = -1;
 
-    @FFDCIgnore(Exception.class)
-    CursoredPageImpl(QueryInfo queryInfo, PageRequest pageRequest, Object[] args) {
+    /**
+     * Construct a new CursoredPage.
+     *
+     * @param queryInfo   query information.
+     * @param em          the entity manager.
+     * @param pageRequest the request for this page.
+     * @param args        values that are supplied to the repository method.
+     * @throws Exception if an error occurs.
+     */
+    @Trivial // avoid tracing customer data
+    CursoredPageImpl(QueryInfo queryInfo,
+                     EntityManager em,
+                     PageRequest pageRequest,
+                     Object[] args) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(tc, "<init>", queryInfo, pageRequest, queryInfo.loggable(args));
@@ -75,36 +114,30 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                         ? queryInfo.computeOffset(this.pageRequest) //
                         : 0;
 
-        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
-        try {
-            String jpql = cursor.isEmpty() ? queryInfo.jpql : //
-                            isForward ? queryInfo.jpqlAfterCursor : //
-                                            queryInfo.jpqlBeforeCursor;
+        String jpql = cursor.isEmpty() ? queryInfo.jpql : //
+                        isForward ? queryInfo.jpqlAfterCursor : //
+                                        queryInfo.jpqlBeforeCursor;
 
-            @SuppressWarnings("unchecked")
-            TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, queryInfo.entityInfo.entityClass);
-            queryInfo.setParameters(query, args);
+        jakarta.persistence.Query query = em.createQuery(jpql);
+        queryInfo.setParameters(query, args);
 
-            if (cursor.isPresent())
-                queryInfo.setParametersFromCursor(query, cursor.get());
+        if (cursor.isPresent())
+            queryInfo.setParametersFromCursor(query, cursor.get());
 
-            query.setFirstResult(firstResult);
-            query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
+        query.setFirstResult(firstResult);
+        query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
 
-            results = query.getResultList();
+        @SuppressWarnings("unchecked")
+        List<T> resultList = query.getResultList();
+        results = resultList;
 
-            // Cursor-based pagination in the previous page direction is implemented
-            // by reversing the ORDER BY to obtain the previous page. A side-effect
-            // of that is that the resulting entries for the page are reversed,
-            // so we need to reverse again to correct that.
-            if (!isForward)
-                for (int size = results.size(), i = 0, j = size - (size > maxPageSize ? 2 : 1); i < j; i++, j--)
-                    Collections.swap(results, i, j);
-        } catch (Exception x) {
-            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
-        } finally {
-            em.close();
-        }
+        // Cursor-based pagination in the previous page direction is implemented
+        // by reversing the ORDER BY to obtain the previous page. A side-effect
+        // of that is that the resulting entries for the page are reversed,
+        // so we need to reverse again to correct that.
+        if (!isForward)
+            for (int size = results.size(), i = 0, j = size - (size > maxPageSize ? 2 : 1); i < j; i++, j--)
+                Collections.swap(results, i, j);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>");
@@ -124,6 +157,14 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                       queryInfo.method.getName(),
                       queryInfo.repositoryInterface.getName(),
                       pageRequest);
+
+        if (queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH)
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1119.keyword.prevents.count",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      queryInfo.jpqlCount,
+                      queryInfo.jpql);
 
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
@@ -200,7 +241,8 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
 
     @Override
     public boolean hasTotals() {
-        return pageRequest.requestTotal();
+        return queryInfo.jpqlCount.length() >= Util.MIN_COUNT_QUERY_LENGTH &&
+               pageRequest.requestTotal();
     }
 
     @Override
@@ -241,16 +283,17 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         s.append(isForward ? ", CURSOR_NEXT(" : " CURSOR_PREVIOUS(");
 
         boolean firstSort = true;
-        for (Sort<?> sort : queryInfo.sorts) {
-            if (firstSort)
-                firstSort = false;
-            else
-                s.append(", ");
-            s.append(sort.property()); //
-            s.append(sort.isAscending() //
-                            ? sort.ignoreCase() ? " ASC IgnoreCase" : " ASC" //
-                            : sort.ignoreCase() ? " DESC IgnoreCase" : " DESC");
-        }
+        if (queryInfo.sorts != null)
+            for (Sort<?> sort : queryInfo.sorts) {
+                if (firstSort)
+                    firstSort = false;
+                else
+                    s.append(", ");
+                s.append(sort.property()); //
+                s.append(sort.isAscending() //
+                                ? sort.ignoreCase() ? " ASC IgnoreCase" : " ASC" //
+                                : sort.ignoreCase() ? " DESC IgnoreCase" : " DESC");
+            }
 
         s.append(") @").append(Integer.toHexString(hashCode()));
         return s.toString();

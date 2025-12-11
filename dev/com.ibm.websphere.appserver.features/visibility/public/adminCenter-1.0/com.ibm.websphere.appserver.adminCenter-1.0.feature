@@ -12,7 +12,7 @@ Subsystem-Icon: OSGI-INF/admincenter_200x200.png,OSGI-INF/admincenter_200x200.pn
   io.openliberty.adminCenter1.0.internal.ee-6.0; ibm.tolerates:="9.0,10.0,11.0"
 -bundles=\
     com.ibm.ws.ui,\
-    com.ibm.websphere.jsonsupport,\
+    io.openliberty.jsonsupport.internal,\
     com.ibm.ws.org.joda.time.1.6.2, \
     io.openliberty.com.google.gson
 kind=ga

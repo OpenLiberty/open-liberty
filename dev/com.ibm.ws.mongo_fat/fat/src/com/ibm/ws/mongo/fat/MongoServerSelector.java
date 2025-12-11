@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,6 +44,7 @@ import com.mongodb.ServerAddress;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.ExternalTestService;
+import componenttest.topology.utils.ExternalTestServiceReporter;
 
 public class MongoServerSelector {
 
@@ -261,7 +262,7 @@ public class MongoServerSelector {
             mongoClient.close();
         } catch (Exception e) {
             Log.info(c, method, "Couldn't create a connection to " + mongoService.getServiceName() + " on " + mongoService.getAddress() + ". " + e.toString());
-            mongoService.reportUnhealthy("Couldn't connect to server. Exception: " + e.toString());
+            ExternalTestServiceReporter.reportUnhealthy(mongoService, "Couldn't connect to server. Exception: " + e.toString());
             return false;
         } finally {
             if (trustStore != null) {

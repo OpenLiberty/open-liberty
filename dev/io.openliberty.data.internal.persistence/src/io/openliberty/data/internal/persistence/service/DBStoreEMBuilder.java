@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,33 +14,23 @@ package io.openliberty.data.internal.persistence.service;
 
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
-import java.beans.IntrospectionException;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.io.Serializable;
+import java.io.PrintWriter;
 import java.io.Writer;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.RecordComponent;
 import java.sql.Connection;
-import java.util.AbstractMap.SimpleImmutableEntry;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
@@ -58,7 +48,13 @@ import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.rsadapter.jdbc.WSJdbcDataSource;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.wsspi.application.Application;
+import com.ibm.wsspi.application.ApplicationState;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.persistence.DDLGenerationParticipant;
 import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.InMemoryMappingFile;
@@ -70,12 +66,12 @@ import io.openliberty.data.internal.persistence.DataProvider;
 import io.openliberty.data.internal.persistence.EntityInfo;
 import io.openliberty.data.internal.persistence.EntityManagerBuilder;
 import io.openliberty.data.internal.persistence.Util;
+import io.openliberty.data.internal.persistence.orm.EntityParser;
 import jakarta.data.exceptions.DataException;
 import jakarta.data.exceptions.MappingException;
-import jakarta.persistence.Convert;
+import jakarta.persistence.CacheRetrieveMode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.Table;
 
 /**
  * This builder is used when a data source JNDI name, id, resource reference,
@@ -83,10 +79,8 @@ import jakarta.persistence.Table;
  * It creates entity managers from a PersistenceServiceUnit from the persistence service.
  */
 public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerationParticipant {
-    static final String EOLN = String.format("%n");
     private static final long MAX_WAIT_FOR_SERVICE_NS = TimeUnit.SECONDS.toNanos(60);
-    private static final Entry<String, String> ID_AND_VERSION_NOT_SPECIFIED = //
-                    new SimpleImmutableEntry<>(null, null);
+
     private static final TraceComponent tc = Tr.register(DBStoreEMBuilder.class);
 
     private final ClassDefiner classDefiner = new ClassDefiner();
@@ -126,9 +120,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
      * @param repositoryInterfaces  repository interfaces that use the entities.
      * @param dataStore             dataStore value from the Repository annotation,
      *                                  or the value with java:comp/env added.
-     * @param isJNDIName            indicates if the dataStore name is a JNDI name (begins with java: or is inferred to be java:comp/env/...)
-     * @param metaDataIdentifier    metadata identifier for the class loader of the repository interface.
-     * @param jeeName               application/module/component in which the repository interface is defined.
+     * @param isJNDIName            indicates if the dataStore name is a JNDI name
+     *                                  (begins with java: or is inferred to be java:comp/env/...)
+     * @param metadata              metadata of the application artifact that
+     *                                  contains the repository interface.
      *                                  Module and component might be null or absent.
      * @param entityTypes           entity classes as known by the user, not generated.
      * @throws Exception if an error occurs.
@@ -138,14 +133,14 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                             Set<Class<?>> repositoryInterfaces,
                             String dataStore,
                             boolean isJNDIName,
-                            String metadataIdentifier,
-                            J2EEName jeeName,
+                            ComponentMetaData metadata,
                             Set<Class<?>> entityTypes) throws Exception {
         super(provider, repositoryClassLoader, repositoryInterfaces, dataStore);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String qualifiedName = null;
         boolean javaApp = false, javaModule = false, javaComp = false;
+        J2EEName jeeName = metadata.getJ2EEName();
         String application = jeeName == null ? null : jeeName.getApplication();
         String module = jeeName == null ? null : jeeName.getModule();
 
@@ -218,7 +213,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             }
             if (dbStoreId == null) {
                 // Create a ResourceFactory that can delegate back to a resource reference lookup
-                ResourceFactory delegator = new ResRefDelegator(dataStore, metadataIdentifier, provider);
+                ResourceFactory delegator = new ResRefDelegator(dataStore, metadata);
                 Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
                 dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
                 String id = dbStoreId + "/ResourceFactory";
@@ -296,17 +291,51 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
 
         ServiceReference<DatabaseStore> ref = null;
-        for (long start = System.nanoTime(), poll_ms = 125L; ref == null; poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L) {
-            Collection<ServiceReference<DatabaseStore>> refs = bc.getServiceReferences(DatabaseStore.class,
-                                                                                       FilterUtils.createPropertyFilter("id", databaseStoreId));
+        for (long start = System.nanoTime(), poll_ms = 125L; //
+                        ref == null; //
+                        poll_ms = poll_ms < 1000L ? poll_ms * 2 : 1000L) {
+            String filter = FilterUtils.createPropertyFilter("id", databaseStoreId);
+            Collection<ServiceReference<DatabaseStore>> refs = //
+                            bc.getServiceReferences(DatabaseStore.class, filter);
             if (refs.isEmpty()) {
+                if (FrameworkState.isStopping())
+                    throw exc(IllegalStateException.class,
+                              "CWWKD1113.server.stopping",
+                              Util.names(repositoryInterfaces));
+
+                if (application != null) {
+                    filter = FilterUtils.createPropertyFilter("name", application);
+                    Collection<ServiceReference<Application>> appRefs = //
+                                    bc.getServiceReferences(Application.class, filter);
+                    if (appRefs.isEmpty()) {
+                        throw exc(IllegalStateException.class,
+                                  "CWWKD1115.app.unavailable",
+                                  Util.names(repositoryInterfaces),
+                                  application);
+                    } else {
+                        Object state = appRefs.iterator().next() //
+                                        .getProperty("application.state");
+                        if (ApplicationState.STOPPED == state ||
+                            ApplicationState.STOPPING == state)
+                            throw exc(IllegalStateException.class,
+                                      "CWWKD1114.app.stopping",
+                                      Util.names(repositoryInterfaces),
+                                      application,
+                                      state);
+                    }
+                }
+
                 if (System.nanoTime() - start < MAX_WAIT_FOR_SERVICE_NS) {
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Wait " + poll_ms + " ms for service reference to become available...");
+                        Tr.debug(this, tc, "Wait " + poll_ms +
+                                           " ms for service reference to become available...");
                     TimeUnit.MILLISECONDS.sleep(poll_ms);
                 } else {
-                    throw new IllegalStateException("The " + configDisplayId + " service component did not become available within " +
-                                                    TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS) + " seconds.");
+                    throw exc(IllegalStateException.class,
+                              "CWWKD1116.resource.unavailable",
+                              Util.names(repositoryInterfaces),
+                              configDisplayId,
+                              TimeUnit.NANOSECONDS.toSeconds(MAX_WAIT_FOR_SERVICE_NS));
                 }
             } else {
                 ref = refs.iterator().next();
@@ -318,127 +347,42 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, configDisplayId + " databaseStore reference", ref);
 
-        // Classes explicitly annotated with JPA @Entity:
-        Set<String> entityClassNames = new LinkedHashSet<>(entityTypes.size() * 2);
-        Set<String> entityTableNames = new LinkedHashSet<>(entityClassNames.size());
-
         ArrayList<InMemoryMappingFile> generatedEntities = new ArrayList<InMemoryMappingFile>();
 
-        // List of classes to inspect for the above
-        Queue<Class<?>> annotatedEntityClassQueue = new LinkedList<>();
-
-        // XML to make all other classes into JPA entities:
-        ArrayList<String> entityClassInfo = new ArrayList<>(entityTypes.size());
-
-        /*
-         * Note: When creating a persistence unit, managed classes (such as entities) are declared in an
-         * all or nothing fashion. Therefore, if we create a persistence unit with a list of entities
-         * we are also required to provide a list of converters, otherwise the persistence provider
-         * will not use them. Ideally, our internal persistence service unit would have a method to
-         * include converter classes alongside entity classes, but the persistence provider API lacks
-         * such function so the converters need to be put into the generated orm.xml file.
-         */
-        Set<Class<?>> converterTypes = new HashSet<>();
-
-        Map<Class<?>, Map<String, Class<?>>> embeddableTypes = //
-                        new LinkedHashMap<>();
+        EntityParser parser = new EntityParser(tablePrefix, provider);
 
         for (Class<?> c : entityTypes) {
             if (c.isAnnotationPresent(Entity.class)) {
-                annotatedEntityClassQueue.add(c);
+                parser.parseAnnotatedEntity(c);
+            } else if (c.isRecord()) {
+                disallowPersistenceAnnos(c, true);
 
-                for (Field field : c.getFields()) {
-                    Convert convert = field.getAnnotation(Convert.class);
-                    if (convert != null)
-                        converterTypes.add(convert.converter());
-                }
-
-                for (Method method : c.getMethods()) {
-                    Convert convert = method.getAnnotation(Convert.class);
-                    if (convert != null)
-                        converterTypes.add(convert.converter());
-                }
+                // an entity class is generated for the record
+                String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX;
+                byte[] generatedEntityBytes = RecordTransformer //
+                                .generateEntityClassBytes(c,
+                                                          entityClassName,
+                                                          jeeName,
+                                                          repositoryInterfaces);
+                String name = entityClassName.replace('.', '/') + ".class";
+                generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, name));
+                Class<?> ec = classDefiner.findLoadedOrDefineClass(getRepositoryClassLoader(),
+                                                                   entityClassName,
+                                                                   generatedEntityBytes);
+                generatedToRecordClass.put(ec, c);
+                parser.parseRecord(c, ec);
             } else {
-                // The table is named from the class name of the entity or
-                // record that is specified by the user, not from the generated
-                // entity class that is used internally in place of a record.
-                String tableName = c.getSimpleName();
-
-                if (c.isRecord()) {
-                    // an entity class is generated for the record
-                    String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX;
-                    byte[] generatedEntityBytes = RecordTransformer //
-                                    .generateEntityClassBytes(c,
-                                                              entityClassName,
-                                                              jeeName,
-                                                              repositoryInterfaces);
-                    String name = entityClassName.replace('.', '/') + ".class";
-                    generatedEntities.add(new InMemoryMappingFile(generatedEntityBytes, name));
-                    Class<?> generatedEntity = classDefiner //
-                                    .findLoadedOrDefineClass(getRepositoryClassLoader(),
-                                                             entityClassName,
-                                                             generatedEntityBytes);
-                    generatedToRecordClass.put(generatedEntity, c);
-                    c = generatedEntity;
-                }
-
-                StringBuilder xml = new StringBuilder(500);
-
-                xml.append(" <entity class=\"").append(c.getName()) //
-                                .append("\">").append(EOLN);
-
-                xml.append("  <table name=\"") //
-                                .append(tablePrefix).append(tableName) //
-                                .append("\"/>").append(EOLN);
-
-                writeAttributes(xml, findAttributes(c), embeddableTypes);
-
-                xml.append(" </entity>").append(EOLN);
-
-                entityClassInfo.add(xml.toString());
+                disallowPersistenceAnnos(c, false);
+                parser.parseUnannotatedEntity(c);
             }
         }
-
-        for (Entry<Class<?>, Map<String, Class<?>>> e : embeddableTypes.entrySet()) {
-            Class<?> type = e.getKey();
-            Map<String, Class<?>> attrs = e.getValue();
-
-            StringBuilder xml = new StringBuilder(500) //
-                            .append(" <embeddable class=\"") //
-                            .append(type.getName()).append("\">") //
-                            .append(EOLN);
-            writeAttributes(xml, attrs, null);
-            xml.append(" </embeddable>").append(EOLN);
-            entityClassInfo.add(xml.toString());
-        }
-
-        for (Class<?> type : converterTypes) {
-            StringBuilder xml = new StringBuilder(500) //
-                            .append(" <converter class=\"") //
-                            .append(type.getName()).append("\"></converter>") //
-                            .append(EOLN);
-            entityClassInfo.add(xml.toString());
-        }
-
-        // Discover entities that are indirectly referenced via OneToOne, ManyToMany, and so forth
-        for (Class<?> c; (c = annotatedEntityClassQueue.poll()) != null;)
-            if (entityClassNames.add(c.getName())) {
-                Table table = c.getAnnotation(Table.class);
-                entityTableNames.add(table == null || table.name().length() == 0 ? c.getSimpleName() : table.name());
-                Class<?> e;
-                for (Field f : c.getFields())
-                    if (f.getType().isAnnotationPresent(Entity.class))
-                        annotatedEntityClassQueue.add(f.getType());
-                    else if ((e = getEntityClass(f.getGenericType())) != null)
-                        annotatedEntityClassQueue.add(e);
-                for (Method m : c.getMethods())
-                    if (m.getReturnType().isAnnotationPresent(Entity.class))
-                        annotatedEntityClassQueue.add(m.getReturnType());
-                    else if ((e = getEntityClass(m.getGenericReturnType())) != null)
-                        annotatedEntityClassQueue.add(e);
-            }
 
         Map<String, Object> properties = new HashMap<>();
+
+        List<String> entityClassInfo = parser.generateView();
+        LinkedHashSet<String> entityClassNames = parser.getClassNames();
+        LinkedHashSet<String> entityTableNames = parser.getTableNames();
+        Set<Class<?>> convertibleTypes = parser.getConvertibles();
 
         properties.put("io.openliberty.persistence.internal.entityClassInfo",
                        entityClassInfo.toArray(new String[entityClassInfo.size()]));
@@ -453,115 +397,59 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                                                                       properties,
                                                                       entityClassNames.toArray(new String[entityClassNames.size()]));
 
-        collectEntityInfo(entityTypes);
+        collectEntityInfo(entityTypes, convertibleTypes);
     }
 
     @Override
+    @Trivial
     public EntityManager createEntityManager() {
-        return persistenceServiceUnit.createEntityManager();
+        EntityManager em = persistenceServiceUnit.createEntityManager();
+        em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "createEntityManager: " + em);
+        return em;
     }
 
     /**
-     * Find attributes of the specified class.
-     * If a record, use the record components.
-     * Otherwise, use fields and property descriptors.
+     * Raises an error if any method (or field if not a Java record) is annotated
+     * with an annotation from Jakarta Persistence.
      *
-     * @param c entity class or embedded class.
-     * @return attributes, sorted alphabetically.
+     * @param c        class that does not have the Entity annotation.
+     * @param isRecord true if the entity class is a Java record, otherwise false.
      */
-    private SortedMap<String, Class<?>> findAttributes(Class<?> c) {
-        SortedMap<String, Class<?>> attributes = new TreeMap<>();
+    @Trivial
+    private void disallowPersistenceAnnos(Class<?> c, boolean isRecord) {
 
-        if (c.isRecord()) {
-            for (RecordComponent r : c.getRecordComponents())
-                attributes.put(r.getName(), r.getType());
-        } else {
-            for (Field f : c.getFields())
-                attributes.put(f.getName(), f.getType());
+        if (!isRecord)
+            for (Field field : c.getDeclaredFields())
+                for (Annotation anno : field.getAnnotations())
+                    if (anno.annotationType().getPackageName() //
+                                    .startsWith("jakarta.persistence"))
+                        throw exc(MappingException.class,
+                                  "CWWKD1108.missing.entity.anno",
+                                  c.getName(),
+                                  Entity.class.getName(),
+                                  anno.annotationType().getName(),
+                                  field.getName());
 
-            try {
-                PropertyDescriptor[] propertyDescriptors = Introspector //
-                                .getBeanInfo(c).getPropertyDescriptors();
-                if (propertyDescriptors != null)
-                    for (PropertyDescriptor p : propertyDescriptors) {
-                        Method setter = p.getWriteMethod();
-                        if (setter != null)
-                            attributes.putIfAbsent(p.getName(),
-                                                   p.getPropertyType());
-                    }
-            } catch (IntrospectionException x) {
-                throw new MappingException(x);
-            }
-        }
-
-        return attributes;
-    }
-
-    /**
-     * Find the Id and Version attributes (if any).
-     *
-     * @param attributes top level entity or embeddable attributes.
-     * @return the Id and Version attributes (if any).
-     *         Null if there is no Id.
-     */
-    private Entry<String, String> findIdAndVersion(Map<String, Class<?>> attrs) {
-        String idAttrName = null;
-        String versionAttrName = null;
-
-        // Determine which attribute is the id and version (optional).
-        // Id precedence:
-        // (1) name is id, ignoring case.
-        // (2) name ends with _id, ignoring case.
-        // (3) name ends with Id or ID.
-        // (4) type is UUID.
-        // Version precedence (if also a valid version type):
-        // (1) name is version, ignoring case.
-        // (2) name is _version, ignoring case.
-        int idPrecedence = 10;
-        int vPrecedence = 10;
-        for (Map.Entry<String, Class<?>> attribute : attrs.entrySet()) {
-            String name = attribute.getKey();
-            Class<?> type = attribute.getValue();
-            int len = name.length();
-
-            if (idPrecedence > 1 &&
-                len >= 2 &&
-                name.regionMatches(true, len - 2, "id", 0, 2)) {
-                if (name.length() == 2) {
-                    idAttrName = name;
-                    idPrecedence = 1;
-                } else if (idPrecedence > 2 &&
-                           name.charAt(len - 3) == '_') {
-                    idAttrName = name;
-                    idPrecedence = 2;
-                } else if (idPrecedence > 3 &&
-                           name.charAt(len - 2) == 'I') {
-                    idAttrName = name;
-                    idPrecedence = 3;
-                }
-            } else if (idPrecedence > 4 && UUID.class.equals(type)) {
-                idAttrName = name;
-                idPrecedence = 4;
-            }
-
-            if (vPrecedence > 1 &&
-                len == 7 &&
-                Util.VERSION_TYPES.contains(type) &&
-                "version".equalsIgnoreCase(name)) {
-                versionAttrName = name;
-                vPrecedence = 1;
-            } else if (vPrecedence > 2 &&
-                       len == 8 &&
-                       Util.VERSION_TYPES.contains(type) &&
-                       "_version".equalsIgnoreCase(name)) {
-                versionAttrName = name;
-                vPrecedence = 2;
-            }
-        }
-
-        return idAttrName == null //
-                        ? null //
-                        : new SimpleImmutableEntry<>(idAttrName, versionAttrName);
+        for (Method method : c.getDeclaredMethods())
+            for (Annotation anno : method.getAnnotations())
+                if (anno.annotationType().getPackageName() //
+                                .startsWith("jakarta.persistence"))
+                    if (isRecord)
+                        throw exc(MappingException.class,
+                                  "CWWKD1109.jpa.anno.on.record",
+                                  anno.annotationType().getName(),
+                                  method.getName(),
+                                  c.getName());
+                    else
+                        throw exc(MappingException.class,
+                                  "CWWKD1108.missing.entity.anno",
+                                  c.getName(),
+                                  Entity.class.getName(),
+                                  anno.annotationType().getName(),
+                                  method.getName());
     }
 
     /**
@@ -646,39 +534,74 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 x.getMessage().startsWith("CWWKD"))
                 throw (RuntimeException) x;
 
+            String datastore = dsFactory instanceof ResRefDelegator //
+                            ? ((ResRefDelegator) dsFactory).jndiName //
+                            : databaseStoreId;
+
             throw (DataException) exc(DataException.class,
                                       "CWWKD1064.datastore.error",
                                       repoMethod.getName(),
                                       repoInterface.getName(),
-                                      databaseStoreId,
+                                      datastore,
                                       x.getMessage()).initCause(x);
         }
-    }
-
-    /**
-     * Obtains the entity class (if any) for a type that might be parameterized.
-     *
-     * @param type a type that might be parameterized.
-     * @return entity class or null.
-     */
-    @Trivial
-    private Class<?> getEntityClass(java.lang.reflect.Type type) {
-        Class<?> c = null;
-        if (type instanceof ParameterizedType) {
-            java.lang.reflect.Type[] typeParams = ((ParameterizedType) type).getActualTypeArguments();
-            type = typeParams.length == 1 ? typeParams[0] : null;
-            if (type instanceof Class && ((Class<?>) type).isAnnotationPresent(Entity.class))
-                c = (Class<?>) type;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "getEntityClass from parameterized " + type + ": " + c);
-        }
-        return c;
     }
 
     @Override
     @Trivial
     protected Class<?> getRecordClass(Class<?> generatedEntityClass) {
         return generatedToRecordClass.get(generatedEntityClass);
+    }
+
+    /**
+     * Write information about this instance to the introspection file for
+     * Jakarta Data.
+     *
+     * @param writer writes to the introspection file.
+     * @param indent indentation for lines.
+     */
+    @Override
+    @Trivial
+    public void introspect(PrintWriter writer, String indent) {
+        super.introspect(writer, indent);
+        writer.println(indent + "  databaseStore config.displayId: " +
+                       configDisplayId);
+        writer.println(indent + "  databaseStore id: " +
+                       databaseStoreId);
+        writer.println(indent + "  databaseStore DataSourceFactory.target: " +
+                       dataSourceFactoryFilter);
+        writer.println(indent + "  PersistenceServiceUnit: " +
+                       persistenceServiceUnit);
+
+        generatedToRecordClass.forEach((entityClass, recordClass) -> {
+            writer.println(indent + "  Record entity:");
+            writer.println(Util.toString(recordClass, indent + "    "));
+            writer.println(indent + "    converted to entity class:");
+            writer.println(Util.toString(entityClass, indent + "    "));
+        });
+    }
+
+    /**
+     * Returns true if the cause exception can be determined to be a
+     * connection-related error, otherwise false.
+     *
+     * @param cause the cause exception.
+     * @return true if known to be a connection-related error, otherise false.
+     */
+    @FFDCIgnore(Exception.class) // secondary error while reporting first error
+    @Override
+    public boolean isConnectionError(SQLException cause) {
+        boolean isConnectionError = false;
+        try {
+            WSJdbcDataSource ds = (WSJdbcDataSource) getDataSource(null, null);
+            isConnectionError = ds != null &&
+                                ds.getDatabaseHelper().isConnectionError(cause);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Could not obtain DataSource to check isConnectionError");
+        }
+
+        return isConnectionError || super.isConnectionError(cause);
     }
 
     @Override
@@ -689,128 +612,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                         .append(Integer.toHexString(hashCode())) //
                         .append(":").append(configDisplayId) //
                         .toString();
-    }
-
-    /**
-     * Write attributes for the specified entity or embeddable to XML.
-     *
-     * @param xml             XML for defining the entity attributes
-     * @param attributes      top level entity or embeddable attributes.
-     * @param embeddableTypes embeddable types list to add to. Null if the specified
-     *                            attributes are already for an embeddable.
-     *                            When non-null, this method adds embeddable types
-     *                            that are found.
-     */
-    private void writeAttributes(StringBuilder xml,
-                                 Map<String, Class<?>> attributes,
-                                 Map<Class<?>, Map<String, Class<?>>> embeddableTypes) {
-        boolean isEmbeddable = embeddableTypes == null;
-
-        Entry<String, String> idAndVersion = isEmbeddable //
-                        ? ID_AND_VERSION_NOT_SPECIFIED //
-                        : findIdAndVersion(attributes);
-
-        // Write the attributes to XML:
-
-        xml.append("  <attributes>").append(EOLN);
-
-        for (Map.Entry<String, Class<?>> attributeInfo : attributes.entrySet()) {
-            String attributeName = attributeInfo.getKey();
-            Class<?> attributeType = attributeInfo.getValue();
-            boolean isCollection = Collection.class.isAssignableFrom(attributeType);
-            boolean isPrimitive = attributeType.isPrimitive();
-            boolean isId = attributeName.equals(idAndVersion.getKey());
-
-            String columnType;
-            if (isPrimitive || //
-                attributeType.isInterface() || //
-                Serializable.class.isAssignableFrom(attributeType)) {
-                if (isId)
-                    columnType = "id";
-                else if (isCollection)
-                    columnType = "element-collection";
-                else if (attributeName.equals(idAndVersion.getValue()))
-                    columnType = "version";
-                else
-                    columnType = "basic";
-            } else {
-                if (isId)
-                    columnType = "embedded-id";
-                else
-                    columnType = "embedded";
-            }
-
-            xml.append("   <").append(columnType).append(" name=\"") //
-                            .append(attributeName).append('"');
-
-            // All other queries when using un-annotated entities or record entities are eager,
-            // element-collections should be as well.
-            if (isCollection)
-                xml.append(" fetch=\"EAGER\"");
-
-            xml.append('>').append(EOLN);
-
-            if (!isEmbeddable && // top level entity attribute
-                columnType.charAt(1) == 'm') { // embedded or embedded-id
-                LinkedList<Entry<String[], Map<String, Class<?>>>> stack = //
-                                new LinkedList<>();
-                Map<String, Class<?>> attrs = embeddableTypes.get(attributeType);
-                if (attrs == null)
-                    embeddableTypes.put(attributeType,
-                                        attrs = findAttributes(attributeType));
-                stack.add(new SimpleImmutableEntry<>( //
-                                new String[] { attributeName }, //
-                                attrs));
-                for (Entry<String[], Map<String, Class<?>>> emb; //
-                                null != (emb = stack.pollLast());) {
-                    String[] names = emb.getKey();
-                    Map<String, Class<?>> embeddableAttrs = emb.getValue();
-                    for (Entry<String, Class<?>> e : embeddableAttrs.entrySet()) {
-                        String name = e.getKey();
-                        Class<?> type = e.getValue();
-                        // attribute-override is only written for leaf-level
-                        if (type.isPrimitive() ||
-                            type.isInterface() ||
-                            Serializable.class.isAssignableFrom(type)) {
-                            xml.append("    <attribute-override name=\"");
-                            for (int n = 1; n < names.length; n++)
-                                xml.append(names[n]).append('.');
-                            xml.append(name).append("\">").append(EOLN);
-                            xml.append("     <column name=\"");
-                            for (int n = 0; n < names.length; n++)
-                                xml.append(names[n].toUpperCase()).append('_');
-                            xml.append(name.toUpperCase()) //
-                                            .append("\"/>").append(EOLN);
-                            xml.append("    </attribute-override>").append(EOLN);
-
-                            // Table name collision detection is unnecessary because
-                            // the same collisions would already be caught by entity
-                            // attribute name collision detection.
-                        } else {
-                            Map<String, Class<?>> a = embeddableTypes.get(type);
-                            if (a == null)
-                                embeddableTypes.put(type, a = findAttributes(type));
-                            String[] names2 = new String[names.length + 1];
-                            System.arraycopy(names, 0, names2, 0, names.length);
-                            names2[names.length] = name;
-                            stack.add(new SimpleImmutableEntry<>(names2, a));
-                        }
-                    }
-                }
-            }
-
-            if (isPrimitive)
-                if (isEmbeddable) {
-                    // Primitive attributes on an embeddable might need the null
-                    // value to indicate that the embeddable itself is null.
-                } else {
-                    xml.append("    <column nullable=\"false\"/>").append(EOLN);
-                }
-
-            xml.append("   </" + columnType + ">").append(EOLN);
-        }
-
-        xml.append("  </attributes>").append(EOLN);
     }
 
     /**

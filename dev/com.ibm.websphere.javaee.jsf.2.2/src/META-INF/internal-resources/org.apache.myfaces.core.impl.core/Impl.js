@@ -55,8 +55,13 @@ _MF_SINGLTN(_PFX_CORE + "Impl", _MF_OBJECT, /**  @lends myfaces._impl.core.Impl.
     P_EXECUTE:"javax.faces.partial.execute",
     P_RENDER:"javax.faces.partial.render",
     P_EVT:"javax.faces.partial.event",
+    P_BEHAVIOR_EVENT:"javax.faces.behavior.event",
     P_WINDOW_ID:"javax.faces.ClientWindow",
     P_RESET_VALUES:"javax.faces.partial.resetValues",
+    
+    //faces std values
+    STD_VALUES: [this.P_PARTIAL_SOURCE, this.P_VIEWSTATE, this.P_CLIENTWINDOW, this.P_AJAX,
+        this.P_EXECUTE, this.P_RENDER, this.P_EVT, this.P_BEHAVIOR_EVENT, this.P_WINDOW_ID, this.P_RESET_VALUES],
 
     /* message types */
     ERROR:"error",

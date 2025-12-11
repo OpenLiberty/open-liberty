@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.annotation.AllowedFFDC;
 
 @RunWith(FATRunner.class)
 public class TestEnableDisableFeaturesTest {
@@ -286,26 +287,55 @@ public class TestEnableDisableFeaturesTest {
       	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF4), 
       		new String[] { "sql: create table cities" }, new String[] {});
        	Log.info(c, testName, "------- connectionpool metrics should be available ------");
-       	checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4), new String[] {
-       		"vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS1\"}",
-       		"vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\"}",
-       		"vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\"}",
-       	}, new String[] {});
+        checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4),
+                new String[] { "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\"}", },
+                new String[] {});
+
+        currentServ.setMarkToEndOfLog();
+        // FAT updated to check that connectionpool metric remains after unloading
+        // application.
+        boolean res = currentServ.removeDropinsApplications("testJDBCApp.war");
+        Assert.assertTrue("TestJDBCApp.war was not removed", res);
+
+        currentServ.waitForStringInLog(".*CWWKZ0009I: The application testJDBCApp has stopped successfully.*");
+        Log.info(c, testName, "------- Removed JDBC application ------");
+        checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4),
+                new String[] { "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\"}", },
+                new String[] {});
     }
     
     @Test 
@@ -407,27 +437,49 @@ public class TestEnableDisableFeaturesTest {
        		new String[] { "vendor_servlet", "vendor_threadpool" });
     }
     
-    @Test 
+    @Test
+    @AllowedFFDC(value = { "javax.management.InstanceNotFoundException" })
     public void testEDF9() throws Exception {
-    	currentServ = serverEDF9;
-    	String testName = "testEDF9";
-    	serverEDF9.startServer();
-    	waitForSecurityPrerequisites(serverEDF9, 60000);
-    	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF9), 
-          		new String[] { "sql: create table cities" }, new String[] {});
-    	Log.info(c, testName, "------- Monitor filter ThreadPool, WebContainer, Session and ConnectionPool ------");
-    	serverEDF9.setMarkToEndOfLog();
-    	serverEDF9.setServerConfigurationFile("server_monitorFilter4.xml");
- 	    Assert.assertNotNull("CWWKG0017I NOT FOUND",serverEDF9.waitForStringInLogUsingMark("CWWKG0017I"));
- 	    checkStrings(getHttpServlet("/testSessionApp/testSessionServlet",serverEDF9),
- 	    		new String[] { "Session id:" }, new String[] {});
- 	    checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1",serverEDF9), 
- 			    new String[] { "sql: select" }, new String[] {});
- 	    Log.info(c, testName, "------- all four vendor metrics should be available ------");
- 	    checkStrings(getHttpsServlet("/metrics/vendor",serverEDF9), 
- 		        new String[] {"vendor_threadpool", "vendor_servlet", "vendor_session", "vendor_connectionpool" }, 
- 		        new String[] {});
+        currentServ = serverEDF9;
+        String testName = "testEDF9";
+
+        serverEDF9.startServer();
+        waitForSecurityPrerequisites(serverEDF9, 60000);
+
+        // Prime the DB app so the table exists
+        checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF9),
+                new String[] { "sql: create table cities" }, new String[] {});
+
+        Log.info(c, testName, "------- Monitor filter ThreadPool, WebContainer, Session and ConnectionPool ------");
+
+        // Mark, update config, and wait for the config-change marker
+        serverEDF9.setMarkToEndOfLog();
+        serverEDF9.setServerConfigurationFile("server_monitorFilter4.xml");
+        Assert.assertNotNull("CWWKG0017I NOT FOUND",
+                serverEDF9.waitForStringInLogUsingMark("CWWKG0017I"));
+
+        // After config update, apps are redeployed; wait until they're actually available again
+        // Wait for /testSessionApp availability
+        Assert.assertNotNull("CWWKT0016I for testSessionApp NOT FOUND after config update",
+                serverEDF9.waitForStringInLogUsingMark("CWWKT0016I.*\\/testSessionApp\\/"));
+
+        // Wait for /testJDBCApp availability
+        Assert.assertNotNull("CWWKT0016I for testJDBCApp NOT FOUND after config update",
+                serverEDF9.waitForStringInLogUsingMark("CWWKT0016I.*\\/testJDBCApp\\/"));
+
+        // Safe to hit the servlets
+        checkStrings(getHttpServlet("/testSessionApp/testSessionServlet", serverEDF9),
+                new String[] { "Session id:" }, new String[] {});
+
+        checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=select&city=city1&id=id1", serverEDF9),
+                new String[] { "sql: select" }, new String[] {});
+
+        Log.info(c, testName, "------- all four vendor metrics should be available ------");
+        checkStrings(getHttpsServlet("/metrics/vendor", serverEDF9),
+                new String[] { "vendor_threadpool", "vendor_servlet", "vendor_session", "vendor_connectionpool" },
+                new String[] {});
     }
+
     
     @Test
     public void testEDF10() throws Exception {

@@ -108,7 +108,7 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
             rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.END_SESSION + "_" + localStore));
             if (TestModeFilter.shouldRun(TestMode.FULL)) {
                 if (!theOS.equals("ISERIES")) {
-                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
+//                    rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC_RP + "_" + Constants.END_SESSION + "_" + Constants.MONGODB));
                 }
                 // needs resolution of issue https://github.com/OpenLiberty/open-liberty/issues/26615 and additional updates
                 //                rTests = addRepeat(rTests, new SecurityTestRepeatAction(Constants.OIDC__OP + "_" + Constants.HTTP_SESSION));

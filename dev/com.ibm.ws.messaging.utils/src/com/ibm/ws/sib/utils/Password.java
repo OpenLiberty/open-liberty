@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /* ************************************************************************** */
 /**
@@ -214,7 +215,7 @@ public final class Password implements Traceable, FFDCSelfIntrospectable, Serial
       {
         try
         {
-          MessageDigest digester = MessageDigest.getInstance("SHA-256");
+          MessageDigest digester = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256);
           digester.update(SALT);
 
           for(char c : _password)

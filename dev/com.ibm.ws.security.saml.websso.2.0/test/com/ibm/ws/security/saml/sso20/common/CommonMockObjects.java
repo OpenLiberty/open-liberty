@@ -95,7 +95,6 @@ public class CommonMockObjects {
     //private final IDPSSODescriptor ssoDescriptor = mockery.mock(IDPSSODescriptor.class);
     private final ForwardRequestInfo requestInfo = mockery.mock(ForwardRequestInfo.class);
     private final Signature signature = mockery.mock(Signature.class);
-    private final MessageContext messageContext = mockery.mock(MessageContext.class);
     private final Response samlResponse = mockery.mock(Response.class);
     private final SsoRequest ssoRequest = mockery.mock(SsoRequest.class);
     private final UserData userData = mockery.mock(UserData.class);
@@ -111,7 +110,11 @@ public class CommonMockObjects {
     private final AudienceRestriction audienceRestriction = mockery.mock(AudienceRestriction.class);
     private final EncryptedAssertion encryptedAssertion = mockery.mock(EncryptedAssertion.class);
     private final BasicMessageContextBuilder basicMessageContextBuilder = mockery.mock(BasicMessageContextBuilder.class);
-    private final SAMLPeerEntityContext samlPeerEntityContext = mockery.mock(SAMLPeerEntityContext.class);
+
+
+    // MessageContext/SAMLPeerEntityContext became a final class on OpenSaml v4+ and cannot be mocked directly with ClassImposteriser.
+    private MessageContext messageContext = new MessageContext();
+    private SAMLPeerEntityContext samlPeerEntityContext = new SAMLPeerEntityContext();
 
     private final States stateMachine = mockery.states("states");
 

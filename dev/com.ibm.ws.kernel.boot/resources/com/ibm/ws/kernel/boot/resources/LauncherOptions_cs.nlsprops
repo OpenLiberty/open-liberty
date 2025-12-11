@@ -128,7 +128,8 @@ option-key.no-password=\ \ \ \ --\u017e\u00e1dn\u00e9 heslo
 option-desc.no-password=\tZak\u00e1zat generov\u00e1n\u00ed v\u00fdchoz\u00edho hesla \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ Slo\u017eka serveru --server-root="root v archivu"
-option-desc.package.server-root=\tUr\u010duje n\u00e1zev slo\u017eky ko\u0159enov\u00e9ho serveru v archivn\u00edm souboru.\n
+option-desc.package.server-root=\tUr\u010duje n\u00e1zev slo\u017eky ko\u0159enov\u00e9ho serveru v archivn\u00edm souboru. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.force=\ \ \ \ --force
 option-desc.stop.force=\tP\u0159esko\u010d\u00ed f\u00e1zi uveden\u00ed do klidov\u00e9ho stavu p\u0159ed vypnut\u00edm serveru. B\u011b\u017en\u00e9 zastaven\u00ed serveru\n zahrnuje f\u00e1zi uveden\u00ed do klidov\u00e9ho stavu p\u0159ed vypnut\u00edm serveru. F\u00e1ze uveden\u00ed do klidov\u00e9ho stavu, kter\u00e1 je standardn\u011b 30 sekund, umo\u017e\u0148uje slu\u017eb\u00e1m prov\u00e1d\u011bt pr\u00e1ci p\u0159ed ukon\u010den\u00edm pr\u00e1ce; nap\u0159\u00edklad p\u0159\u00edchoz\u00ed listenery jsou zastaveny, ale existuj\u00edc\u00ed po\u017eadavky mohou b\u00fdt dokon\u010deny. Volba --force nem\u00e1 \u017e\u00e1dn\u00fd\n efekt, pokud ji\u017e bylo vyvol\u00e1no zastaven\u00ed serveru. Pou\u017eijete-li\n volbu --force, m\u016f\u017eete v souboru\n messages.log vid\u011bt neo\u010dek\u00e1van\u00e9 v\u00fdjimky, kter\u00e9 se vyskytnou po p\u0159ijet\u00ed p\u0159\u00edkazu server stop serverem. \n
 #------------------------------\n at 72 chars -- leading tab-----------\n\#

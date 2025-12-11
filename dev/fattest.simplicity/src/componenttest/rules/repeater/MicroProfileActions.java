@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,16 +9,23 @@
  *******************************************************************************/
 package componenttest.rules.repeater;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.RepeatActions.EEVersion;
 
 public class MicroProfileActions {
+
+    private static final Class<MicroProfileActions> c = MicroProfileActions.class;
 
     private static final String[] MP10_FEATURES_ARRAY = { "microProfile-1.0",
                                                           "cdi-1.2",
@@ -308,6 +315,25 @@ public class MicroProfileActions {
                                                                "mpReactiveMessaging-3.0", //standalone
                                                                "mpReactiveStreams-3.0" };//standalone
 
+    private static final String[] MP71_EE10_FEATURES_ARRAY = { "microProfile-7.1",
+                                                               "cdi-4.0", //ee10
+                                                               "restfulWS-3.1", //ee10
+                                                               "restfulWSClient-3.1", //ee10
+                                                               "jsonb-3.0", //ee10
+                                                               "jsonp-2.1", //ee10
+                                                               "mpConfig-3.1",
+                                                               "mpFaultTolerance-4.1",
+                                                               "mpHealth-4.0",
+                                                               "mpJwt-2.1",
+                                                               "mpOpenAPI-4.1",
+                                                               "mpTelemetry-2.1",
+                                                               "mpRestClient-4.0",
+                                                               "mpMetrics-5.1", //standalone
+                                                               "mpContextPropagation-1.3", //standalone
+                                                               "mpGraphQL-2.0", //standalone
+                                                               "mpReactiveMessaging-3.0", //standalone
+                                                               "mpReactiveStreams-3.0" };//standalone
+
     private static final String[] MP70_EE11_FEATURES_ARRAY = { "microProfile-7.0",
                                                                "cdi-4.1", //ee11
                                                                "restfulWS-4.0", //ee11
@@ -320,6 +346,25 @@ public class MicroProfileActions {
                                                                "mpJwt-2.1",
                                                                "mpOpenAPI-4.0",
                                                                "mpTelemetry-2.0",
+                                                               "mpRestClient-4.0",
+                                                               "mpMetrics-5.1", //standalone
+                                                               "mpContextPropagation-1.3", //standalone
+                                                               "mpGraphQL-2.0", //standalone
+                                                               "mpReactiveMessaging-3.0", //standalone
+                                                               "mpReactiveStreams-3.0" };//standalone
+
+    private static final String[] MP71_EE11_FEATURES_ARRAY = { "microProfile-7.1",
+                                                               "cdi-4.1", //ee11
+                                                               "restfulWS-4.0", //ee11
+                                                               "restfulWSClient-4.0", //ee11
+                                                               "jsonb-3.0", //ee11
+                                                               "jsonp-2.1", //ee11
+                                                               "mpConfig-3.1",
+                                                               "mpFaultTolerance-4.1",
+                                                               "mpHealth-4.0",
+                                                               "mpJwt-2.1",
+                                                               "mpOpenAPI-4.1",
+                                                               "mpTelemetry-2.1",
                                                                "mpRestClient-4.0",
                                                                "mpMetrics-5.1", //standalone
                                                                "mpContextPropagation-1.3", //standalone
@@ -344,6 +389,8 @@ public class MicroProfileActions {
     private static final Set<String> MP61_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP61_FEATURES_ARRAY)));
     private static final Set<String> MP70_EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_EE10_FEATURES_ARRAY)));
     private static final Set<String> MP70_EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP70_EE11_FEATURES_ARRAY)));
+    private static final Set<String> MP71_EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP71_EE10_FEATURES_ARRAY)));
+    private static final Set<String> MP71_EE11_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(MP71_EE11_FEATURES_ARRAY)));
 
     //The FeatureSet IDs. Since these will be used as the RepeatAction IDs, they can also be used in annotations such as @SkipForRepeat
     public static final String MP10_ID = EE7FeatureReplacementAction.ID + "_MicroProfile_10";
@@ -363,6 +410,8 @@ public class MicroProfileActions {
     public static final String MP61_ID = JakartaEE10Action.ID + "_MicroProfile_61";
     public static final String MP70_EE10_ID = JakartaEE10Action.ID + "_MicroProfile_70";
     public static final String MP70_EE11_ID = JakartaEE11Action.ID + "_MicroProfile_70";
+    public static final String MP71_EE10_ID = JakartaEE10Action.ID + "_MicroProfile_71";
+    public static final String MP71_EE11_ID = JakartaEE11Action.ID + "_MicroProfile_71";
     public static final String MP70_EE11_APP_MODE_ID = MP70_EE11_ID + "_App_Mode";
 
     //The MicroProfile FeatureSets
@@ -383,10 +432,14 @@ public class MicroProfileActions {
     public static final FeatureSet MP61 = new FeatureSet(MP61_ID, MP61_FEATURE_SET, EEVersion.EE10);
     public static final FeatureSet MP70_EE10 = new FeatureSet(MP70_EE10_ID, MP70_EE10_FEATURE_SET, EEVersion.EE10);
     public static final FeatureSet MP70_EE11 = new FeatureSet(MP70_EE11_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
+    public static final FeatureSet MP71_EE10 = new FeatureSet(MP71_EE10_ID, MP71_EE10_FEATURE_SET, EEVersion.EE10);
+    public static final FeatureSet MP71_EE11 = new FeatureSet(MP71_EE11_ID, MP71_EE11_FEATURE_SET, EEVersion.EE11);
     public static final FeatureSet MP70_EE11_APP_MODE = new FeatureSet(MP70_EE11_APP_MODE_ID, MP70_EE11_FEATURE_SET, EEVersion.EE11);
 
     //All MicroProfile FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13, MP12, MP10 };
+    private static final FeatureSet[] ALL_SETS_ARRAY = { MP71_EE11, MP71_EE10, MP70_EE11, MP70_EE10, MP61, MP60, MP50, MP41, MP40, MP33, MP32, MP30, MP22, MP21, MP20, MP14, MP13,
+                                                         MP12, MP10 };
+
     public static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     /**
@@ -535,5 +588,59 @@ public class MicroProfileActions {
      */
     public static RepeatTests repeat(String[] servers, TestMode otherFeatureSetsTestMode, boolean skipTransformation, FeatureSet firstFeatureSet, FeatureSet... otherFeatureSets) {
         return RepeatActions.repeat(servers, otherFeatureSetsTestMode, ALL, firstFeatureSet, Arrays.asList(otherFeatureSets), skipTransformation);
+    }
+
+    /**
+     * Get a repeat test for the following FeatureSets, with a predicate that will be used to filter out the FeatureSets.
+     * The first FeatureSet to pass the predicate will be run in LITE mode. The others will be run in FULL.
+     *
+     * @param  serverName  the server to repeat on
+     * @param  predicate   a predicate that will filter feature sets. If the predicate returns true, the feature set will be run
+     * @param  featureSet  the first feature set
+     * @param  featureSets the feature sets
+     * @return             a RepeatTests instance
+     */
+    public static RepeatTests repeatIf(String serverName, Predicate<FeatureSet> predicate, FeatureSet featureSet, FeatureSet... featureSets) {
+        return repeatIf(serverName, predicate, TestMode.FULL, false, featureSet, featureSets);
+    }
+
+    /**
+     * Get a repeat test for the following FeatureSets, with a predicate that will be used to filter out the FeatureSets.
+     * The first FeatureSet to pass the predicate will be run in LITE mode. The others will be run in {@code otherFeatureSetsTestMode}.
+     *
+     * @param  serverName               the server to repeat on
+     * @param  predicate                a predicate that will filter feature sets. If the predicate returns true, the feature set will be run
+     * @param  otherFeatureSetsTestMode The test mode to run the otherFeatureSets
+     * @param  skipTransformation       Skip transformation for actions
+     * @param  featureSet               the first feature set
+     * @param  featureSets              the feature sets
+     * @return                          a RepeatTests instance
+     */
+    public static RepeatTests repeatIf(String serverName, Predicate<FeatureSet> predicate, TestMode otherFeatureSetsTestMode,
+                                       boolean skipTransformation, FeatureSet featureSet, FeatureSet... featureSets) {
+
+        final String m = "repeatIf";
+
+        List<FeatureSet> featureSetsMerged = new ArrayList<FeatureSet>();
+        featureSetsMerged.add(featureSet);
+        featureSetsMerged.addAll(Arrays.asList(featureSets));
+
+        Log.info(c, m, "enter. Testing " +
+                       featureSetsMerged.stream().map(FeatureSet::getID).collect(Collectors.joining(", ")));
+
+        featureSetsMerged.removeIf((FeatureSet fs) -> (!predicate.test(fs)));
+
+        if (featureSetsMerged.isEmpty()) {
+            Log.info(c, m, "found no acceptable FeatureSets");
+            return RepeatTests.with(new DisabledAction());
+        }
+
+        Log.info(c, m, "found the following aceptable FeatureSets " +
+                       featureSetsMerged.stream().map(FeatureSet::getID).collect(Collectors.joining(", ")));
+
+        FeatureSet firstAction = featureSetsMerged.remove(0);
+        FeatureSet[] otherActions = featureSetsMerged.toArray(new FeatureSet[0]);
+
+        return repeat(serverName, otherFeatureSetsTestMode, skipTransformation, firstAction, otherActions);
     }
 }

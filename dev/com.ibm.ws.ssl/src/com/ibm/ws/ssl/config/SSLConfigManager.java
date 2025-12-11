@@ -42,6 +42,7 @@ import com.ibm.websphere.ssl.SSLConfig;
 import com.ibm.websphere.ssl.SSLConfigChangeEvent;
 import com.ibm.websphere.ssl.SSLConfigChangeListener;
 import com.ibm.websphere.ssl.SSLException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.internal.LibertyConstants;
@@ -378,8 +379,18 @@ public class SSLConfigManager {
 
         // Obtain miscellaneous attributes from system properties
         String sslProtocol = getSystemProperty(Constants.SSLPROP_PROTOCOL);
-        if (sslProtocol != null && !sslProtocol.equals(""))
-            sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
+        if (sslProtocol != null && !sslProtocol.equals("")) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Setting default SSLProtocol: " + sslProtocol);
+
+            // Use PROTOCOL_TLS_FIPS if FIPS 140-3 is enabled
+            if (CryptoUtils.isFips140_3Enabled()) {
+                sslprops.setProperty(Constants.SSLPROP_PROTOCOL, Constants.PROTOCOL_TLS_FIPS);
+
+            } else {
+                sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
+            }
+        }
 
         String contextProvider = getSystemProperty(Constants.SSLPROP_CONTEXT_PROVIDER);
         if (contextProvider != null && !contextProvider.equals("")) {
@@ -503,6 +514,10 @@ public class SSLConfigManager {
         String sslProtocol = (String) map.get("sslProtocol");
         if (sslProtocol != null && !sslProtocol.isEmpty()) {
             try {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "sslProtocol: " + sslProtocol);
+                }
+                //Print stack trace
                 protocolHelper.checkProtocolValueGood(sslProtocol);
                 sslprops.setProperty(Constants.SSLPROP_PROTOCOL, sslProtocol);
             } catch (Exception e) {

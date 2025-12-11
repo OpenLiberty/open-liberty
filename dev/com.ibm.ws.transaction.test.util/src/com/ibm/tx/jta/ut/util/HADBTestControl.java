@@ -35,12 +35,14 @@ public class HADBTestControl {
         private int _failingOperation;
         private int _numberOfFailuresInt;
         private int _simsqlcodeInt;
+        private String _sqltag;
 
         private HADBTestControl(String... values) {
                 _testType = HADBTestType.from(Integer.parseInt(values[0]));
                 _simsqlcodeInt = Integer.parseInt(values[1]);
                 _failingOperation = Integer.parseInt(values[2]);
                 _numberOfFailuresInt = Integer.parseInt(values[3]);
+                _sqltag = values.length > 4 ? values[4] : "";
         }
 
         public static HADBTestControl read() {
@@ -66,7 +68,7 @@ public class HADBTestControl {
         }
 
         public String toString() {
-                return String.join(DELIMITER, _testType.toString(), String.valueOf(_simsqlcodeInt), String.valueOf(_failingOperation), String.valueOf(_numberOfFailuresInt));
+                return String.join(DELIMITER, _testType.toString(), String.valueOf(_simsqlcodeInt), String.valueOf(_failingOperation), String.valueOf(_numberOfFailuresInt), _sqltag);
         }
 
         /**
@@ -90,6 +92,10 @@ public class HADBTestControl {
                 return _simsqlcodeInt;
         }
 
+        public String getSqltag() {
+        	return _sqltag;
+        }
+
         /**
          * @return the testType
          */
@@ -102,10 +108,18 @@ public class HADBTestControl {
         }
 
         public static void write(HADBTestType testType, int simsqlcodeInt, int failingOperation, int numberOfFailuresInt) {
+        	write(testType, simsqlcodeInt, failingOperation, numberOfFailuresInt, "");
+        }
+
+        public static void write(HADBTestType testType, int simsqlcodeInt, int failingOperation, int numberOfFailuresInt, String sqltag) {
                 try (BufferedWriter bw = Files.newBufferedWriter(testControlPath, StandardOpenOption.CREATE, StandardOpenOption.WRITE, StandardOpenOption.TRUNCATE_EXISTING)) {
-                        bw.write(String.join(DELIMITER, String.valueOf(testType.ordinal()), String.valueOf(simsqlcodeInt), String.valueOf(failingOperation), String.valueOf(numberOfFailuresInt)));
+                        bw.write(String.join(DELIMITER, String.valueOf(testType.ordinal()), String.valueOf(simsqlcodeInt), String.valueOf(failingOperation), String.valueOf(numberOfFailuresInt), sqltag));
                 } catch (Exception e) {
                         e.printStackTrace();
                 }
         }
+
+		public void setSqltag(String sqltag) {
+			_sqltag = sqltag;
+		}
 }

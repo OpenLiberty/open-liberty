@@ -767,7 +767,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String JWK_CERT = "jwk_cert";
     public static final String SHARED_SECRET = "shared secret";
     public static final String SHARED = "shared";
-    public static final String SECRET = "secret";
+    public static final String SECRET = "secret1234";
     public static final String X509 = "x509";
     public static final String JWK = "jwk";
 

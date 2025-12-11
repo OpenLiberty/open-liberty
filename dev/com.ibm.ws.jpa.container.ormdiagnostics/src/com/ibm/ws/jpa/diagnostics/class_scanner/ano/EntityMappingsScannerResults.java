@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2017 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,10 +26,14 @@ import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.Marshaller;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 import com.ibm.ws.jpa.diagnostics.class_scanner.ano.jaxb.classinfo10.ClassInformationType;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 public class EntityMappingsScannerResults {
-    public static final String KEY_MD5HASH = "MD5HASH"; // Value is a String
+    private final String shaDigestAlg = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+    public static final String KEY_SHA256HASH = "SHA256HASH"; // Value is a String
     public static final String KEY_CITXML = "CITXML";   // Value is byte[]
     
     private final ClassInformationType cit;
@@ -58,14 +62,14 @@ public class EntityMappingsScannerResults {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            final MessageDigest md = MessageDigest.getInstance("MD5");   
+            final MessageDigest md = MessageDigest.getInstance(shaDigestAlg);   
             try (final DigestOutputStream dos = new DigestOutputStream(baos, md)) {
                 marshaller.marshal(cit, baos);
                 
                 BigInteger digestBigInt = new BigInteger(1, md.digest());
                 final String hashStr = digestBigInt.toString(16);
                 
-                retMap.put(KEY_MD5HASH, hashStr);
+                retMap.put(KEY_SHA256HASH, hashStr);
                 retMap.put(KEY_CITXML, baos.toByteArray());
             }  
         } catch (Exception e) {

@@ -21,7 +21,6 @@ import java.net.ConnectException;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -39,7 +38,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import suite.FATSuite;
 
 /**
  * These tests are designed to exercise the ability of the SQLMultiScopeRecoveryLog (transaction logs stored
@@ -137,11 +135,6 @@ public class FailoverTest1 extends FailoverTest {
                                                         "com.ibm.ws.transaction_multipleretries",
     };
 
-    @AfterClass
-    public static void afterSuite() {
-        FATSuite.afterSuite("WAS_TRAN_LOG", "WAS_PARTNER_LOG");
-    }
-
     @BeforeClass
     public static void setUp() throws Exception {
         FailoverTest.commonSetUp(FailoverTest1.class);
@@ -189,7 +182,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        HADBTestControl.write(HADBTestType.RUNTIME, -4498, 12, 1);
+        HADBTestControl.write(HADBTestType.RUNTIME, -4498, 14, 1);
 
         FATUtils.startServers(runner, server);
 
@@ -213,7 +206,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = retriesServer;
 
-        HADBTestControl.write(HADBTestType.RUNTIME, -4498, 12, 5); // Can fail up to 5 times
+        HADBTestControl.write(HADBTestType.RUNTIME, -4498, 11, 5); // Can fail up to 5 times
 
         FATUtils.startServers(runner, server);
 
@@ -224,19 +217,6 @@ public class FailoverTest1 extends FailoverTest {
         // Should see a message like
         // WTRN0100E: Cannot recover from SQLException when forcing SQL RecoveryLog tranlog for server com.ibm.ws.transaction
         assertNotNull("No error message signifying log failure", server.waitForStringInLog("Cannot recover from SQLException when forcing SQL RecoveryLog"));
-
-        // We need to tidy up the environment at this point. We cannot guarantee
-        // test order, so we should ensure
-        // that we do any necessary recovery at this point
-        FATUtils.stopServers(server);
-
-        FATUtils.startServers(runner, retriesServer);
-
-        // RTC defect 170741
-        // Wait for recovery to be driven - this may suffer from a delay (see
-        // RTC 169082), so wait until the "recover("
-        // string appears in the messages.log
-        assertNotNull("Recovery didn't happen for " + server.getServerName(), server.waitForStringInTrace("Performed recovery for " + server.getServerName()));
     }
 
     /**
@@ -289,7 +269,7 @@ public class FailoverTest1 extends FailoverTest {
 
         server = defaultServer;
 
-        HADBTestControl.write(HADBTestType.STARTUP, -4498, 11, 1);
+        HADBTestControl.write(HADBTestType.STARTUP, -4498, 11, 1, "--assertLogOwnershipAtOpenPeerLocking");
 
         FATUtils.startServers(runner, server);
 
@@ -304,7 +284,7 @@ public class FailoverTest1 extends FailoverTest {
         server = defaultServer;
         serverMsgs = new String[] { "WTRN0107W", "WTRN0000E", "WTRN0112E", "WTRN0153W" };
 
-        HADBTestControl.write(HADBTestType.STARTUP, -3, 11, 1);
+        HADBTestControl.write(HADBTestType.STARTUP, -3, 11, 1, "--assertLogOwnershipAtOpenPeerLocking");
 
         FATUtils.startServers(runner, server);
         StringBuilder sb = runInServlet(server, SERVLET_NAME, "driveTransactions");
@@ -320,7 +300,7 @@ public class FailoverTest1 extends FailoverTest {
         server = defaultServer;
         serverMsgs = new String[] { "WTRN0107W", "WTRN0000E", "WTRN0112E", "WTRN0153W" };
 
-        HADBTestControl.write(HADBTestType.STARTUP, -3, 1, 1);
+        HADBTestControl.write(HADBTestType.STARTUP, -3, 4, 1, "--internalClaimRecoveryLogs");
 
         FATUtils.startServers(runner, server);
         StringBuilder sb = runInServlet(server, SERVLET_NAME, "driveTransactions");

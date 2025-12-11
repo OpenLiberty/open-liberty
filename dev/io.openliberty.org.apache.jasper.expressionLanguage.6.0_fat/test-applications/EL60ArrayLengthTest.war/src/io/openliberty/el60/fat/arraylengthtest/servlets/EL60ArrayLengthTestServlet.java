@@ -42,7 +42,7 @@ public class EL60ArrayLengthTestServlet extends FATServlet {
      * @throws Exception
      */
     @Test
-    public void testEL60ArrayLenghtProperty_Non_Zero() throws Exception {
+    public void testEL60ArrayLengthProperty_Non_Zero() throws Exception {
         int arrayLength;
         int expectedLength = 2;
 
@@ -59,7 +59,7 @@ public class EL60ArrayLengthTestServlet extends FATServlet {
      */
     @Test
     @Mode(TestMode.FULL)
-    public void testEL60ArrayLenghtProperty_Zero() throws Exception {
+    public void testEL60ArrayLengthProperty_Zero() throws Exception {
         int arrayLength;
         int expectedLength = 0;
 

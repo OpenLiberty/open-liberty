@@ -42,20 +42,18 @@ import org.apache.jasper.runtime.ExceptionUtils;
 import org.apache.jasper.runtime.JspRuntimeLibrary;
 
 /**
- * Jasper-specific CompositeELResolver that optimizes certain functions to avoid
- * unnecessary resolver calls.
+ * Jasper-specific CompositeELResolver that optimizes certain functions to avoid unnecessary resolver calls.
  */
 public class JasperELResolver extends CompositeELResolver {
 
     // Keep aligned with class under test
     private static final int STANDARD_RESOLVERS_COUNT = 11;
 
-    private AtomicInteger resolversSize = new AtomicInteger(0);
+    private final AtomicInteger resolversSize = new AtomicInteger(0);
     private volatile ELResolver[] resolvers;
     private final int appResolversSize;
 
-    public JasperELResolver(List<ELResolver> appResolvers,
-            ELResolver streamResolver) {
+    public JasperELResolver(List<ELResolver> appResolvers, ELResolver streamResolver) {
         appResolversSize = appResolvers.size();
         resolvers = new ELResolver[appResolversSize + STANDARD_RESOLVERS_COUNT];
 
@@ -96,17 +94,17 @@ public class JasperELResolver extends CompositeELResolver {
 
     @Override
     public Object getValue(ELContext context, Object base, Object property)
-        throws NullPointerException, PropertyNotFoundException, ELException {
+            throws NullPointerException, PropertyNotFoundException, ELException {
         context.setPropertyResolved(false);
 
         int start;
-        Object result = null;
+        Object result;
 
         if (base == null) {
             // call implicit and app resolvers
             int index = 1 /* implicit */ + appResolversSize;
             for (int i = 0; i < index; i++) {
-                result = resolvers[i].getValue(context, base, property);
+                result = resolvers[i].getValue(context, null, property);
                 if (context.isPropertyResolved()) {
                     return result;
                 }
@@ -131,24 +129,21 @@ public class JasperELResolver extends CompositeELResolver {
     }
 
     @Override
-    public Object invoke(ELContext context, Object base, Object method,
-            Class<?>[] paramTypes, Object[] params) {
+    public Object invoke(ELContext context, Object base, Object method, Class<?>[] paramTypes, Object[] params) {
         String targetMethod = coerceToString(method);
-        if (targetMethod.length() == 0) {
+        if (targetMethod.isEmpty()) {
             throw new ELException(new NoSuchMethodException());
         }
 
         context.setPropertyResolved(false);
 
-        Object result = null;
+        Object result;
 
         // skip implicit and call app resolvers, stream resolver and static
         // resolver
-        int index = 1 /* implicit */ + appResolversSize +
-                2 /* stream + static */;
+        int index = 1 /* implicit */ + appResolversSize + 2 /* stream + static */;
         for (int i = 1; i < index; i++) {
-            result = resolvers[i].invoke(
-                    context, base, targetMethod, paramTypes, params);
+            result = resolvers[i].invoke(context, base, targetMethod, paramTypes, params);
             if (context.isPropertyResolved()) {
                 return result;
             }
@@ -159,8 +154,7 @@ public class JasperELResolver extends CompositeELResolver {
         // call bean and the rest of resolvers
         int size = resolversSize.get();
         for (int i = index; i < size; i++) {
-            result = resolvers[i].invoke(
-                    context, base, targetMethod, paramTypes, params);
+            result = resolvers[i].invoke(context, base, targetMethod, paramTypes, params);
             if (context.isPropertyResolved()) {
                 return result;
             }

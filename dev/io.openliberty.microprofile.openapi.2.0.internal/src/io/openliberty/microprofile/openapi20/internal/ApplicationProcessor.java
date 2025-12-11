@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,8 @@ import io.openliberty.microprofile.openapi20.internal.services.ConfigFieldProvid
 import io.openliberty.microprofile.openapi20.internal.services.ModelGenerator;
 import io.openliberty.microprofile.openapi20.internal.services.ModuleSelectionConfig;
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIProvider;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIVersionConfig;
+import io.openliberty.microprofile.openapi20.internal.services.OpenAPIVersionUsageChecker;
 import io.openliberty.microprofile.openapi20.internal.utils.Constants;
 import io.openliberty.microprofile.openapi20.internal.utils.IndexUtils;
 import io.openliberty.microprofile.openapi20.internal.utils.LoggingUtils;
@@ -88,6 +90,12 @@ public class ApplicationProcessor {
 
     @Reference
     private ValidationComponent validationComponent;
+
+    @Reference
+    private volatile List<OpenAPIVersionUsageChecker> versionUsageCheckers;
+
+    @Reference
+    private OpenAPIVersionConfig versionConfig;
 
     /**
      * The processApplication method processes applications that are added to the OpenLiberty instance.
@@ -257,7 +265,14 @@ public class ApplicationProcessor {
                 }
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Generating OpenAPI model");
+                    Tr.debug(this, tc, "Scanning for annotations invalid for the current OpenAPI version");
+                }
+
+                Index finalIndex = index;
+                versionUsageCheckers.forEach(checker -> checker.checkAnnotations(finalIndex, versionConfig.getVersion()));
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Generating OpenAPI model");
                 }
 
                 openAPIModel = generateModel(config, appContainer, appClassloader, index);
@@ -265,6 +280,13 @@ public class ApplicationProcessor {
                     newCacheEntry.setIndex(index);
                     newCacheEntry.setModel(openAPIModel);
                     newCacheEntry.write();
+                }
+            } else {
+                //We may have a cached copy, if we do we want to run the versionUseageChecker against it
+                //But only if we have an index, for performance reasons we don't want to build one just to run the checker
+                Index index = loadedCacheEntry.getIndex();
+                if (index != null) {
+                    versionUsageCheckers.forEach(checker -> checker.checkAnnotations(index, versionConfig.getVersion()));
                 }
             }
 

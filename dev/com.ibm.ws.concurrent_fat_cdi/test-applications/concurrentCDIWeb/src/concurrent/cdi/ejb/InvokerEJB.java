@@ -12,12 +12,16 @@
  *******************************************************************************/
 package concurrent.cdi.ejb;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.util.concurrent.Callable;
 
 import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionManagement;
 import jakarta.ejb.TransactionManagementType;
+import jakarta.enterprise.concurrent.ManagedThreadFactory;
+import jakarta.inject.Inject;
 
 @Local(Invoker.class)
 @Stateless
@@ -27,6 +31,15 @@ public class InvokerEJB implements Invoker {
     @Override
     public <T> T runInEJB(Callable<T> testCode) throws Exception {
         return testCode.call();
+    }
+
+    @Inject
+    private ManagedThreadFactory defaultManagedThreadFactory;
+
+    public void runTaskUsingDefaultManagedThreadFactory(Runnable task) {
+        assertNotNull(defaultManagedThreadFactory);
+        Thread thread = defaultManagedThreadFactory.newThread(task);
+        thread.start();
     }
 
 }

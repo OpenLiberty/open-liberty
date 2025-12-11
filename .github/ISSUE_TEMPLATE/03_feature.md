@@ -15,10 +15,10 @@ Replace this comment with a high level description of the feature. Include enoug
 
 When available, add links to required feature documents. Use "N/A" to mark particular documents which are not required by the feature.
 
-- Externally raised requests for enhancements: 
+- Externally raised requests for enhancements:
   - [Aha](https://cloud-platform.ideas.aha.io/): Link to the Aha idea (also add a link to this issue in the Aha idea)
     - Feature owner adds label `Aha idea`
-  - [Open Liberty Feature Request](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=enhancement&template=feature_request.md&title=): Link to the OL GH issue (also add a link to this issue in the Feature Request GH issue)
+  - [Open Liberty Feature Request](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=enhancement&template=02_feature_request.md&title=): Link to the OL GH issue (also add a link to this issue in the Feature Request GH issue)
     - Feature owner adds label `Requested feature`
 - UFO: Link to [Upcoming Feature Overview](https://ibm.box.com/v/UFO-Template) document
   - [Upload the feature UFO to Box](https://ibm.ent.box.com/folder/52716090328) and set the link to be publicly accessible, with a long expiration (10 years)
@@ -31,6 +31,7 @@ When available, add links to required feature documents. Use "N/A" to mark parti
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## Process Overview
 
+- [Sizing](#sizing)
 - [Prioritization](#prioritization)
 - [Design](#design)
 - [Implementation](#implementation)
@@ -50,7 +51,26 @@ Unless otherwise indicated, the tasks are the responsibility of the feature owne
 
 If you need assistance, reach out to the [OpenLiberty/release-architect](https://github.com/orgs/OpenLiberty/teams/release-architect).
 
-**Important: Labels are used to trigger particular steps and must be added as indicated.** 
+**Important: Labels are used to trigger particular steps and must be added as indicated.**
+
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+## **Sizing** (Complete Before Development Starts)
+
+Sizing features helps inform prioritization decisions by telling us how much investment a given feature will require.
+
+- [ ] Feature owner determines the size of the feature.
+- [ ] Feature owner tells the [Open Liberty Project Manager](https://github.com/orgs/OpenLiberty/teams/project-manager), [Release Architect](https://github.com/orgs/OpenLiberty/teams/release-architect), or [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) what the size of the feature is.
+
+Consider this as the scale to use to gauge sizes:
+| Size | Guide |
+| ---- | ----- |
+| XS   | <= 1 person week's (PW) worth of work |
+| S    | 2-3 PW |
+| M    | 4-5 PW |
+| L    | 6-9 PW |
+| XL   | 10-15 PW |
+| 2XL  | 16-20 PW |
+| 3XL  | 21+ PW |
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Prioritization** (Complete Before Development Starts)
@@ -105,16 +125,26 @@ Design preliminaries determine whether a formal design, which will be provided b
   - Approver adds label `Product Management Approved` ([OpenLiberty/product-management](https://github.com/orgs/OpenLiberty/teams/product-management))
   - Note: For stabilized, superseded, and discontinued feature/capability, skip the [Beta](#beta) section of the template (you may delete it).  Otherwise, proceed as normal.
 
+### Design Approval Request
+
+Request design approval no later than **4 weeks before the Feature Complete date** for the release.
+
+Ideally, submit UFOs for design approval from the [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) as soon as possible after addressing any feedback from the socialization. But that should be no later than 4 weeks before Feature Complete.
+
+That gives the [Chief Architect](https://github.com/orgs/OpenLiberty/teams/chief-architect) time to review the design and have developers make any necessary updates before the Feature Complete date hits for the release you’re trying to go out in.
+
+See the [WebSphere Dates Monday.com board](https://ibm.monday.com/boards/7779679996) or [Current Liberty Release Schedule](https://github.ibm.com/websphere/WS-CD-Open/wiki/Current-Liberty-Release-Schedule) for relevant dates.
+
 ### **FAT Documentation**
 - [ ] "Feature Test Summary" child task created
-  - Use the [Feature Test Summary Template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=feature_test_summary.md&title=)
+  - Use the [Feature Test Summary Template](https://github.com/OpenLiberty/open-liberty/issues/new?assignees=&labels=Feature+Test+Summary&template=06_feature_test_summary.md&title=)
   - Add FTS issue link to the [Documents](#documents) section.
 
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **Implementation**
 
-A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/45) before any implementation work may begin to be delivered (inaccessible/no-ship).  However, a design focused approach should still be applied to features, and developers should think about the feature design prior to writing and delivering any code.  
-Besides being prioritized, a feature must also be socialized (or No Design Approved) before any beta code may be delivered.  All new Liberty content must be inaccessible in our GA releases until it is [Feature Complete](#feature-complete) by either marking it `kind=noship` or [beta fencing](#beta-code) it.  
+A feature must be [prioritized](https://github.com/orgs/OpenLiberty/projects/45) before any implementation work may begin to be delivered (inaccessible/no-ship).  However, a design focused approach should still be applied to features, and developers should think about the feature design prior to writing and delivering any code.
+Besides being prioritized, a feature must also be socialized (or No Design Approved) before any beta code may be delivered.  All new Liberty content must be inaccessible in our GA releases until it is [Feature Complete](#feature-complete) by either marking it `kind=noship` or [beta fencing](#beta-code) it.
 Code may not GA until this feature has obtained the `Design Approved` or `No Design Approved` label, along with all other tasks outlined in the [GA](#ga) section.
 
 ### **Feature Development Begins**
@@ -122,7 +152,7 @@ Code may not GA until this feature has obtained the `Design Approved` or `No Des
 
 ## **Legal and Translation**
 
-In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible.  Similarly, translation is to be done concurrently with development.  All items below **MUST** be completed before beta & GA is requested.
+In order to avoid last minute blockers and significant disruptions to the feature, the **legal items need to be done as early in the feature process as possible**, either in design or as early into the development as possible. Similarly, translation is to be done concurrently with development. All items below **MUST** be completed before beta & GA is requested.
 
 ### **Innovation** (Complete 1 week before Beta & GA Feature Complete Date)
 - [ ] Consider whether any aspects of the feature may be patentable. If any identified, disclosures have been submitted.
@@ -158,7 +188,7 @@ In order to facilitate early feedback from users, all new features and functiona
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ## **GA**
 
-A feature is ready to GA after it is Feature Complete and has obtained all necessary Focal Point Approvals. 
+A feature is ready to GA after it is Feature Complete and has obtained all necessary Focal Point Approvals.
 
 ### **Feature Complete**
 - [ ] Feature implementation and tests completed.
@@ -185,7 +215,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 
 ### **All Features**
 - [ ] **APIs/Externals** - Externals have been reviewed or N/A.  ([OpenLiberty/externals-approvers](https://github.com/orgs/OpenLiberty/teams/externals-approvers))
-  - Approver adds label `focalApproved:externals` 
+  - Approver adds label `focalApproved:externals`
 - [ ] **Demo** - Demo is scheduled for an upcoming EOI or N/A. ([OpenLiberty/demo-approvers](https://github.com/orgs/OpenLiberty/teams/demo-approvers))
   - Add comment `@OpenLiberty/demo-approvers Demo scheduled for EOI [Iteration Number]` to this issue.
   - Approver adds label `focalApproved:demo`.
@@ -201,7 +231,7 @@ These occur only after GA of this feature is requested (by adding a `target:ga` 
 - [ ] **Performance** - Performance testing is complete or N/A. ([OpenLiberty/performance-approvers](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
   - Approver adds label `focalApproved:performance`.
 - [ ] **Serviceability** - Serviceability has been addressed or N/A. ([OpenLiberty/serviceability-approvers](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
-  - Approver adds label `focalApproved:sve`.
+  - Approver adds label `focalApproved:serviceability`.
 - [ ] **STE** - Skills Transfer Education chart deck is complete or N/A. ([OpenLiberty/ste-approvers](https://github.com/orgs/OpenLiberty/teams/ste-approvers))
   - Approver adds label `focalApproved:ste`.
 - [ ] **SVT** - System Verification Test is complete or N/A. ([OpenLiberty/svt-approvers](https://github.com/orgs/OpenLiberty/teams/svt-approvers))

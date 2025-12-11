@@ -47,14 +47,15 @@ myfaces._impl.xhrCore._AjaxRequest = _MF_CLS(_PFX_XHR + "_ExtAjaxRequest", myfac
             //just in case the source item is outside of the form
             //only if the form override is set we have to append the issuing item
             //otherwise it is an element of the parent form
-            if (this._source && myfacesOptions && myfacesOptions.form)
+            if (this._source && !this._isBehaviorEvent()) {
                 _AJAXUTIL.appendIssuingItem(this._source, ret);
+            }
         } else {
             ret = this._Lang.createFormDataDecorator(new Array());
             _AJAXUTIL.encodeSubmittableFields(ret, this._sourceForm, this._partialIdsArray);
-            if (this._source && myfacesOptions && myfacesOptions.form)
-                _AJAXUTIL.appendIssuingItem(this._source, ret);
-
+            if (this._source && !this._isBehaviorEvent()) {
+                _AJAXUTIL.appendIssuingItem(this._source, ret);   
+            }
         }
         return ret;
     }

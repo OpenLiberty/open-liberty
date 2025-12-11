@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2017, 2023 IBM Corporation and others.
+    Copyright (c) 2017, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
 
     SPDX-License-Identifier: EPL-2.0
-
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
@@ -43,7 +40,7 @@
         <AD id="nettyTlsRef" name="internal" description="internal use only" ibm:reference="io.openliberty.netty.internal.tls" ibm:type="pid" type="String" cardinality="1" default="*" ibm:final="true" />
         <AD id="nettyTlsProvider.cardinality.minimum" name="internal" description="internal use only" ibm:final="true" required="false" type="String" default="${count(nettyTlsRef)}" />
 
-        <AD id="useNettyTransport" name="internal" description="internal" required="false" type="Boolean" default="false"/>
+        <AD id="useNettyTransport" name="internal" description="internal" required="false" type="Boolean" default="true"/>
    </OCD>
 
    <Designate factoryPid="com.ibm.ws.messaging.comms.wasJmsOutbound">

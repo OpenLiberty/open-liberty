@@ -69,7 +69,7 @@ public class BasicSpringBootWefluxTests extends FATServletClient {
     }
 
     @Test
-    public void testBasicSpringBootApplication() throws Exception {
+    public void testBasicSpringBootWebfluxApplication() throws Exception {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");
     }
 

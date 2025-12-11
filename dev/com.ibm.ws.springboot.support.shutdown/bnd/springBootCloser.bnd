@@ -1,4 +1,5 @@
 Bundle-SymbolicName: springBootCloser
-Private-Package: com.ibm.ws.springboot.support.shutdown.*
+Private-Package: com.ibm.ws.springboot.support.shutdown.*; \
+			     io.openliberty.springboot.support.shutdown
 Include-Resource: resources/container
 -maven-dependencies:

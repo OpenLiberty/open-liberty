@@ -10,6 +10,11 @@
 package io.openliberty.microprofile.openapi20.fat.deployments;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.empty;
+import static org.junit.Assert.assertThat;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,6 +30,7 @@ import org.junit.runner.RunWith;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.MpOpenAPIElement;
+import com.ibm.websphere.simplicity.config.MpOpenAPIInfoElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
@@ -57,7 +63,7 @@ public class MergeConfigBothTest {
     @After
     public void cleanup() throws Exception {
         try {
-            server.stopServer();
+            server.stopServer("CWWKO1686W");
         } finally {
             server.deleteAllDropinApplications();
             server.removeAllInstalledAppsForValidation();
@@ -65,6 +71,7 @@ public class MergeConfigBothTest {
         }
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testMPConfigIgnoredInServerXMLMode() throws Exception {
 
@@ -72,11 +79,15 @@ public class MergeConfigBothTest {
         MpOpenAPIElement mpOpenAPI = config.getMpOpenAPIElement();
         mpOpenAPI.getIncludedApplications().clear();
         mpOpenAPI.getIncludedApplications().add("all");
+        MpOpenAPIInfoElement info = new MpOpenAPIInfoElement();
+        info.setTitle("Test App ServerXml");
+        info.setVersion("1.0");
+        mpOpenAPI.setInfo(info);
         server.updateServerConfiguration(config);
 
         //The combo of all and an exclude should be all except testEar/test2, but since this is set via
         //mpConfig this should be ignored.
-        setMergeConfig(null, "testEar/test2", null);
+        setMergeConfig(null, "testEar/test2", "{\"title\": \"Test App\", \"version\":\"1.0\"}");
 
         WebArchive war1 = ShrinkWrap.create(WebArchive.class, "test1.war")
                                     .addClasses(DeploymentTestApp.class, DeploymentTestResource.class);
@@ -94,8 +105,44 @@ public class MergeConfigBothTest {
         String doc = OpenAPIConnection.openAPIDocsConnection(server, false).download();
         JsonNode openapiNode = OpenAPITestUtil.readYamlTree(doc);
         OpenAPITestUtil.checkPaths(openapiNode, 2, "/test1/test", "/test2/test");
-        OpenAPITestUtil.checkInfo(openapiNode, "Generated API", "1.0");
+        OpenAPITestUtil.checkInfo(openapiNode, "Test App ServerXml", "1.0");
         OpenAPITestUtil.checkServersForContextRoot(openapiNode, "");
+
+        // Expect warning that MP Config ignored because it conflicts
+        assertThat(server.findStringsInLogs("CWWKO1686W"),
+                   containsInAnyOrder(containsString("mp.openapi.extensions.liberty.merged.exclude"),
+                                      containsString("mp.openapi.extensions.liberty.merged.info")));
+        assertThat(server.findStringsInLogs("CWWKO1685I"), empty());
+
+        // Now update the server.xml merging config so that it's equal to the MP Config config
+        server.setMarkToEndOfLog();
+        config = server.getServerConfiguration();
+        mpOpenAPI = config.getMpOpenAPIElement();
+        mpOpenAPI.getIncludedApplications().clear();
+        mpOpenAPI.getExcludedModules().add("testEar/test2");
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(null);
+
+        // Expect info message for merge config that MP Config ignored because it is equivalent
+        assertThat(server.findStringsInLogsUsingMark("CWWKO1685I", server.getDefaultLogFile()),
+                   contains(containsString("mp.openapi.extensions.liberty.merged.exclude")));
+        // No message expected for info config since it hasn't changed
+        assertThat(server.findStringsInLogsUsingMark("CWWKO1686W", server.getDefaultLogFile()), empty());
+
+        // Now update the server.xml info config so that it's equal to the MP Config config
+        server.setMarkToEndOfLog();
+        config = server.getServerConfiguration();
+        mpOpenAPI = config.getMpOpenAPIElement();
+        info = mpOpenAPI.getInfo();
+        info.setTitle("Test App");
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(null);
+
+        // Expect info message for info config that MP Config ignored because it is equivalent
+        // No message expected for merge config because it hasn't changed
+        assertThat(server.findStringsInLogsUsingMark("CWWKO1685I", server.getDefaultLogFile()),
+                   contains(containsString("mp.openapi.extensions.liberty.merged.info")));
+        assertThat(server.findStringsInLogsUsingMark("CWWKO1686W", server.getDefaultLogFile()), empty());
     }
 
     private void setMergeConfig(String included,

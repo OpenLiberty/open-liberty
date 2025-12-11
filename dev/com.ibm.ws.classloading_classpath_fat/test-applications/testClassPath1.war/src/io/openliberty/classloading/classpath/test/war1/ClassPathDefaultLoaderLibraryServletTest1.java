@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,7 @@ import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB12;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB14;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB16;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB17;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB18;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB2;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB3;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB4;
@@ -59,6 +60,7 @@ public class ClassPathDefaultLoaderLibraryServletTest1 extends FATServlet{
         List<String> expectedOrder = Arrays.asList(TEST_EJB1, //
                                                    TEST_LIB14, //
                                                    TEST_EJB2, //
+                                                   TEST_LIB18, //
                                                    TEST_LIB4, //
                                                    TEST_LIB6, //
                                                    TEST_RAR1, //
@@ -98,6 +100,7 @@ public class ClassPathDefaultLoaderLibraryServletTest1 extends FATServlet{
         List<String> expectedOrder = Arrays.asList(TEST_EJB1, //
                                                    TEST_LIB14, //
                                                    TEST_EJB2, //
+                                                   TEST_LIB18, //
                                                    TEST_LIB4, //
                                                    TEST_LIB6, //
                                                    TEST_RAR1, //

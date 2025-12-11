@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.annotation;
 
@@ -91,7 +88,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/:app-name", 
 					sipXml, XPathConstants.NODE);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 
@@ -114,7 +110,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/:app-name", 
 					sipXml, XPathConstants.NODESET);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 
@@ -161,7 +156,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/javaee:description", 
 					sipXml, XPathConstants.NODESET);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 
@@ -184,7 +178,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/javaee:display-name", 
 					sipXml, XPathConstants.NODESET);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 
@@ -208,7 +201,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/javaee:icon", 
 					sipXml, XPathConstants.NODESET);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 
@@ -255,7 +247,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/:distributable", 
 					sipXml, XPathConstants.NODESET);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 
@@ -302,7 +293,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/:proxy-config", 
 					sipXml, XPathConstants.NODESET);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 
@@ -325,7 +315,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/:servlet-selection", 
 					sipXml, XPathConstants.NODESET);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 
@@ -374,7 +363,6 @@ public class SipAnnotationUtil {
 					"/:sip-app/:session-config", 
 					sipXml, XPathConstants.NODESET);
 		} catch (XPathExpressionException exception) {
-			// TODO Auto-generated catch block
 			System.out.println(exception.getMessage());
 		}
 

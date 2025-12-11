@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.multimodule.tests.TestM
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIAnnotationsDisabledTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.FallbackMethodTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.FaultToleranceMainTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.tests.FaultToleranceOnEJBTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryReorderedTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.TxRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.async.AsyncRequestScopedContextTest;
@@ -68,6 +69,10 @@ import componenttest.topology.impl.LibertyServer;
                 JaxRsTest.class,
                 TxRetryTest.class,
                 TxRetryReorderedTest.class,
+
+                // Tests from PMRs
+                FaultToleranceOnEJBTest.class
+
 })
 
 public class FATSuite {

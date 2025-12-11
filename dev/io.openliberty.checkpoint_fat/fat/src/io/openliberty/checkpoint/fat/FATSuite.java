@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,8 +65,6 @@ import componenttest.topology.impl.LibertyServer;
                 CheckpointWithSecurityManager.class,
                 SSLTest.class,
                 PasswordUtilsTest.class,
-                MPOpenTracingJaegerTraceTest.class,
-                MPFaultToleranceTimeoutTest.class,
                 ValidFeaturesTest.class,
                 RESTclientTest.class,
                 JNDITest.class,
@@ -77,11 +75,7 @@ import componenttest.topology.impl.LibertyServer;
                 FacesBeanTest.class,
                 WebProfileJSPWithELTest.class,
                 OpenAPITest.class,
-                MPJWTTest.class,
-                MPMetricsTest.class,
-                MPTelemetryTest.class,
                 WebProfileEARtest.class,
-                MPHealthTest.class,
                 SlowAppStartTest.class,
                 JsonbTest.class,
                 JsonpTest.class,
@@ -99,9 +93,7 @@ import componenttest.topology.impl.LibertyServer;
                 XMLbindingsTest.class,
                 LocalConnectorTest.class,
                 WebProfileJSPtest.class,
-                MPTelemetryJaxRsIntegrationTest.class,
-                LogsChangeTraceSpecTest.class,
-                OpenAPIConfigTest.class
+                LogsChangeTraceSpecTest.class
 })
 
 public class FATSuite {
@@ -227,39 +219,10 @@ public class FATSuite {
 
     public static RepeatTests defaultMPRepeat(String serverName) {
         return MicroProfileActions.repeat(serverName,
-                                          MicroProfileActions.MP70_EE10, // first test in LITE mode
-                                          // Nothing specific for EE 11 that we should repeat for checkpoint
-                                          // MicroProfileActions.MP70_EE11,
-                                          MicroProfileActions.MP61, // rest are FULL mode
+                                          MicroProfileActions.MP71_EE11, // first test in LITE mode
+                                          MicroProfileActions.MP70_EE10, // rest are FULL mode
+                                          MicroProfileActions.MP61,
                                           MicroProfileActions.MP41,
                                           MicroProfileActions.MP50);
-    }
-
-    public static final String MP50_MPTEL11_ID = MicroProfileActions.MP50_ID + "_MPTEL11";
-    public static final FeatureSet MP50_MPTEL11 = MicroProfileActions.MP50
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP50_MPTEL11_ID);
-    public static final String MP41_MPTEL11_ID = MicroProfileActions.MP41_ID + "_MPTEL11";
-    public static final FeatureSet MP41_MPTEL11 = MicroProfileActions.MP41
-                    .addFeature("mpTelemetry-1.1")
-                    .build(MP41_MPTEL11_ID);
-
-    public static RepeatTests mpTelemetryRepeat(String serverName) {
-        return MicroProfileActions.repeat(serverName,
-                                          // first test in LITE mode
-                                          MicroProfileActions.MP70_EE10,
-                                          MicroProfileActions.MP61, // rest are FULL mode
-                                          MP50_MPTEL11,
-                                          MP41_MPTEL11);
-    }
-
-    public static RepeatTests mpTelemetryRepeat2(String serverName) {
-        return MicroProfileActions.repeat(serverName,
-                                          // first test in LITE mode
-                                          // TODO need to figure out why mpTelemetry-2.0 isn't working for the test app
-                                          //MicroProfileActions.MP70_EE10,
-                                          MicroProfileActions.MP61, // rest are FULL mode
-                                          MP50_MPTEL11,
-                                          MP41_MPTEL11);
     }
 }

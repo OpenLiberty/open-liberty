@@ -1,0 +1,22 @@
+<!--Copyright (c) 2025 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License 2.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0 
+-->
+<server>
+
+    <featureManager>
+        <feature>componenttest-2.0</feature>
+        <feature>servlet-6.1</feature>
+        <feature>jndi-1.0</feature>
+        <feature>cdi-4.1</feature>
+        <feature>expressionLanguage-6.0</feature>
+        <feature>arquillian-support-jakarta-2.1</feature>
+        <feature>cdiPortingPackage-4.1</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+</server>

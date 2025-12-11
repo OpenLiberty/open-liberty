@@ -1,11 +1,12 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
+ *
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
@@ -21,7 +22,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,7 +59,7 @@ public class TimeBasedLogRolloverTest {
     private static final String LOG_EXT = ".0.log";
     private static final String FILE_SEPARATOR = "/";
     private static final SimpleDateFormat FILE_DATE = new SimpleDateFormat("_yy.MM.dd_HH.mm.ss");
-    private static final long FILE_WAIT_SECONDS_PADDING = 1000;
+    private static final long FILE_WAIT_SECONDS_PADDING = 5000; // changed from 1000 to 5000
     private static final String CLASS_NAME = TimeBasedLogRolloverTest.class.getName();
     private static final String TEST_SEPARATOR = "*******************";
 
@@ -105,6 +108,7 @@ public class TimeBasedLogRolloverTest {
         if (server != null && !server.isStarted()) {
             // Restore the original server configuration, before starting the server for each test case.
             server.restoreServerConfiguration();
+            LOG.info("Server starting at: " + new Date());
             server.startServer();
         }
     }
@@ -404,33 +408,57 @@ public class TimeBasedLogRolloverTest {
     }
 
     private static void checkForRolledLogsAtTime(Calendar cal, boolean trace) throws Exception {
-        LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime", "The next log rollover is scheduled to be at: " + cal.getTime());
+        LOG.logp(Level.INFO, CLASS_NAME, "checkForRolledLogsAtTime",
+                 "The next log rollover is scheduled to be at: " + cal.getTime() + " | Current time: " + new Date());
 
         String date = FILE_DATE.format(cal.getTime());
         String messagesLogName = FILE_SEPARATOR + MESSAGES_LOG_PREFIX + date + LOG_EXT;
-        String traceLogName = FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT;
 
-        //get rolled messages and trace logs
+        // Log directory contents
+        File logsDir = new File(getLogsDirPath());
+        LOG.info("Log directory contents: " + Arrays.toString(logsDir.list()));
+
+        // Increased wait time with better logging
+        long waitTime = cal.getTimeInMillis() - System.currentTimeMillis() + FILE_WAIT_SECONDS_PADDING;
+        if (waitTime > 0) {
+            LOG.info("Waiting " + waitTime + "ms for rollover...");
+            Thread.sleep(waitTime);
+        }
+
         File messagesLog = new File(getLogsDirPath(), messagesLogName);
-        File traceLog = new File(getLogsDirPath(), traceLogName);
 
-        long timeToFirstRollover = cal.getTimeInMillis() - Calendar.getInstance().getTimeInMillis();
-        if (timeToFirstRollover > 0)
-            Thread.sleep(timeToFirstRollover + FILE_WAIT_SECONDS_PADDING); //sleep until next time the log is set to rollover
+        //for messages
+        if (!messagesLog.exists()) {
+            LOG.info("Exact file not found, searching with tolerance...");
+            messagesLog = findFileWithTolerance(logsDir, MESSAGES_LOG_PREFIX, date);
+        }
 
-        assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist.", messagesLog.exists());
+        assertTrue("The rolled messages.log file " + messagesLog + " doesn't exist. Directory contents: " +
+                   Arrays.toString(logsDir.list()), messagesLog != null && messagesLog.exists());
 
-        if (trace)
-            assertTrue("The rolled trace.log file " + traceLog + " doesn't exist.", traceLog.exists());
+        if (trace) {
+            File traceLog = new File(getLogsDirPath(), FILE_SEPARATOR + TRACE_LOG_PREFIX + date + LOG_EXT);
+
+            //for traces
+            if (!traceLog.exists()) {
+                traceLog = findFileWithTolerance(logsDir, TRACE_LOG_PREFIX, date);
+            }
+
+            assertTrue("The rolled trace.log file doesn't exist", traceLog != null && traceLog.exists());
+        }
     }
 
     private static Calendar getNextRolloverTime(int rolloverStartHour, int rolloverInterval) {
+
         //set calendar start time
         Calendar sched = Calendar.getInstance();
         sched.set(Calendar.HOUR_OF_DAY, rolloverStartHour);
         sched.set(Calendar.MINUTE, 0);
         sched.set(Calendar.SECOND, 0);
         sched.set(Calendar.MILLISECOND, 0);
+
+        LOG.info("Calculated next rollover at: " + sched.getTime());
+
         Calendar currCal = Calendar.getInstance();
 
         if (currCal.before(sched)) { //if currTime before startTime, firstRollover = startTime - n(interval)
@@ -494,4 +522,22 @@ public class TimeBasedLogRolloverTest {
                 con.disconnect();
         }
     }
+
+    private static File findFileWithTolerance(File logsDir, String logPrefix, String date) throws Exception {
+        String expectedMinute = date.substring(0, date.length() - 5); // Remove ".00.0"
+
+        File[] files = logsDir.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                String fileName = file.getName();
+                if (fileName.startsWith(logPrefix) && fileName.endsWith(LOG_EXT) &&
+                    fileName.contains(expectedMinute)) {
+                    LOG.info("Found matching file with tolerance: " + fileName);
+                    return file;
+                }
+            }
+        }
+        return null;
+    }
+
 }

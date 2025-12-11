@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
+import componenttest.annotation.MinimumJavaLevel;
+
 
 @RunWith(FATRunner.class)
 public class CxfCallerUNTTests {
@@ -127,7 +129,7 @@ public class CxfCallerUNTTests {
      * Test a Caller UsernameToken
      *
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCxfCallerHttpPolicy() throws Exception {
 

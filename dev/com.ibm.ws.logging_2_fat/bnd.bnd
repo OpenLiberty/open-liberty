@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -18,7 +18,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/ffdc-servlet/src, \
-	test-applications/quick-log-test/src
+	test-applications/quick-log-test/src, \
+	test-applications/logger-servlet/src
 	
 
 fat.project: true
@@ -27,7 +28,6 @@ tested.features:\
 	servlet-3.1
 
 -buildpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
@@ -57,4 +57,5 @@ tested.features:\
 	com.ibm.websphere.filetransfer;version=latest,\
 	com.ibm.json4j;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
-	com.ibm.ws.logging_fat;version=latest
+	com.ibm.ws.logging_fat;version=latest,\
+	io.openliberty.org.crac.1.4;version=latest

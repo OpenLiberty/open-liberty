@@ -23,11 +23,9 @@ com.ibm.websphere.appserver.osgi.jpa-1.0 0.050935064 s
 com.ibm.websphere.appserver.acmeCA-2.0 0.127215571 s
 com.ibm.websphere.appserver.localConnector-1.0 0.002911764 s
 com.ibm.websphere.health.healthManager-1.0 0.230190773 s
-com.ibm.websphere.appserver.httpservice-2.2 0.005829436 s
 com.ibm.websphere.appserver.mqtt-3.1 0.025521501 s
 io.openliberty.enterpriseBeansLite-4.0 0.028174341 s
 com.ibm.websphere.appserver.scim-2.0 0.061969719 s
-com.ibm.websphere.appserver.fileinstall-1.0 0.001187414 s
 io.openliberty.jsonbContainer-3.0 0.010443026 s
 io.openliberty.webProfile-9.1 0.427188386 s
 com.ibm.websphere.appserver.osgiConsole-1.0 0.002062161 s
@@ -36,7 +34,6 @@ io.openliberty.mpRestClient-3.0 0.106298637 s
 com.ibm.websphere.appserver.beanValidation-2.0 0.016861005 s
 com.ibm.websphere.appserver.distributedMap-1.0 0.010481421 s
 com.ibm.websphere.appserver.transportSecurity-1.0 0.003752261 s
-com.ibm.websphere.appserver.featureverifier-1.0 0.002279037 s
 com.ibm.websphere.appserver.mongodb-2.0 0.007840448 s
 io.openliberty.mail-2.0 0.008042821 s
 io.openliberty.mail-2.1 0.010166927 s
@@ -51,7 +48,6 @@ com.ibm.websphere.appserver.passwordUtilities-1.1 0.051852864 s
 com.ibm.websphere.appserver.mpOpenTracing-2.0 0.102453282 s
 io.openliberty.mpLRACoordinator-1.0 0.042391451 s
 com.ibm.websphere.appserver.mpContextPropagation-1.2 0.016151538 s
-customTaiSample2-1.0 0.001174805 s
 com.ibm.websphere.appserver.mpContextPropagation-1.0 0.011132801 s
 com.ibm.websphere.appserver.federatedRegistry-1.0 0.007226901 s
 com.ibm.websphere.appserver.j2eeManagement-1.1 0.017950129 s
@@ -101,7 +97,6 @@ io.openliberty.appClientSupport-2.0 0.022716686 s
 com.ibm.websphere.appserver.mpGraphQL-1.0 0.042199426 s
 com.ibm.websphere.appserver.mediaServerControl-1.0 0.002358145 s
 com.ibm.websphere.appserver.jsonbContainer-1.0 0.009351198 s
-customRegistrySample-1.0 0.001531300 s
 io.openliberty.pages-3.0 0.020040140 s
 com.ibm.websphere.appserver.logstashCollector-1.0 0.006275205 s
 io.openliberty.pages-3.1 0.025526246 s
@@ -120,7 +115,6 @@ com.ibm.websphere.appserver.mpRestClient-2.0 0.035011277 s
 com.ibm.websphere.appserver.jms-2.0 0.033296951 s
 io.openliberty.enterpriseBeansPersistentTimer-4.0 0.061651854 s
 io.openliberty.jsonb-3.0 0.007780958 s
-com.ibm.websphere.appserver.componenttest-1.0 0.001185704 s
 io.openliberty.webProfile-11.0 0.276581092 s
 com.ibm.websphere.appserver.servlet-4.0 0.013875021 s
 com.ibm.websphere.dynamicRouting-1.0 0.095443696 s
@@ -161,7 +155,6 @@ io.openliberty.cdi-4.1 0.034424028 s
 com.ibm.websphere.appserver.samlWeb-2.0 0.051435206 s
 com.ibm.websphere.appserver.batchManagement-1.0 0.683526041 s
 com.ibm.websphere.appserver.javaee-7.0 0.332427786 s
-com.ibm.websphere.appserver.repositoryConnection-2.0 0.141260961 s
 io.openliberty.mpFaultTolerance-4.0 0.048129056 s
 io.openliberty.mpFaultTolerance-4.1 0.037871880 s
 com.ibm.websphere.appserver.webCacheMonitor-1.0 0.026258505 s
@@ -210,21 +203,16 @@ io.openliberty.concurrent-2.0 0.015393169 s
 com.ibm.websphere.appserver.apiDiscovery-1.0 0.055372203 s
 io.openliberty.jsonbContainer-2.0 0.007401366 s
 com.ibm.websphere.appserver.jcaInboundSecurity-1.0 0.033326640 s
-io.openliberty.arquillian.arquillian-support-1.0 0.017641049 s
 com.ibm.websphere.appserver.ejbRemote-3.2 0.029303481 s
-com.ibm.websphere.appserver.sampleHandler-1.0 0.001281689 s
 com.ibm.websphere.appserver.beanValidation-1.0 0.005093040 s
 com.ibm.websphere.appserver.beanValidation-1.1 0.007352783 s
 io.openliberty.crac-1.4 0.001228833 s
 io.openliberty.enterpriseBeansRemote-4.0 0.035177492 s
-com.ibm.websphere.scaling.testScalingAPIPlugin-1.0 0.002256894 s
 com.ibm.websphere.appserver.serverStatus-1.0 0.001474329 s
 com.ibm.websphere.appserver.requestTiming-1.0 0.005315346 s
 io.openliberty.mpOpenAPI-3.0 0.072999238 s
 io.openliberty.mpOpenAPI-3.1 0.059322060 s
-io.openliberty.arquillian.arquillian-support-jakarta-2.1 0.001588218 s
 com.ibm.websphere.appserver.collectiveController-1.0 0.100390072 s
-com.ibm.websphere.appserver.ejbTest-1.0 0.001617680 s
 com.ibm.websphere.appserver.scim-1.0 0.068461981 s
 com.ibm.websphere.appserver.jpaContainer-2.2 0.013990762 s
 com.ibm.websphere.appserver.jpaContainer-2.1 0.013336507 s
@@ -272,7 +260,6 @@ com.ibm.websphere.appserver.spnego-1.0 0.032822631 s
 io.openliberty.mpHealth-4.0 0.049546410 s
 com.ibm.websphere.appserver.cdi-1.0 0.015312963 s
 com.ibm.websphere.appserver.cdi-1.2 0.020616008 s
-com.ibm.websphere.appserver.sampleSource-1.0 0.001513323 s
 com.ibm.websphere.appserver.jndi-1.0 0.004160695 s
 com.ibm.websphere.appserver.jmsMdb-3.1 0.028747398 s
 com.ibm.websphere.appserver.jmsMdb-3.2 0.042648562 s
@@ -288,16 +275,12 @@ io.openliberty.mpMetrics-4.0 0.147126255 s
 com.ibm.websphere.appserver.cloudant-1.0 0.003716235 s
 com.ibm.websphere.appserver.osgiAppConsole-1.0 0.031807786 s
 io.openliberty.noShip-1.0 0.001035388 s
-customTaiSample-1.0 0.000729786 s
 com.ibm.websphere.appserver.microProfile-2.2 0.192556514 s
-com.ibm.websphere.health.testConditionPlugin-1.0 0.002065783 s
 io.openliberty.mpReactiveStreams-3.0 0.005671369 s
 com.ibm.websphere.appserver.microProfile-2.0 0.197746965 s
 io.openliberty.jsonp-2.1 0.003017439 s
 com.ibm.websphere.appserver.microProfile-2.1 0.236892856 s
 io.openliberty.jsonp-2.0 0.002046987 s
-com.ibm.websphere.appserver.componenttest-2.0 0.000702753 s
-com.ibm.websphere.appserver.repositoryConnection-1.0 0.061205763 s
 io.openliberty.jsonb-2.0 0.006907926 s
 com.ibm.websphere.appserver.monitor-1.0 0.003305127 s
 com.ibm.websphere.appserver.heritageAPIs-1.1 0.001103902 s
@@ -307,7 +290,6 @@ io.openliberty.facesContainer-3.0 0.033049373 s
 io.openliberty.mpOpenTracing-3.0 0.063853130 s
 io.openliberty.beanValidation-3.0 0.008153770 s
 io.openliberty.beanValidation-3.1 0.007480548 s
-com.ibm.websphere.appserver.http2clienttest-1.0 0.000871697 s
 com.ibm.websphere.appserver.zosSecurity-1.0 0.016494909 s
 com.ibm.websphere.appserver.jaxrs-2.1 0.028382639 s
 com.ibm.websphere.appserver.webProfile-7.0 0.090810483 s
@@ -339,7 +321,6 @@ com.ibm.websphere.appserver.el-3.0 0.001750882 s
 com.ibm.websphere.appserver.mpOpenAPI-2.0 0.042481982 s
 com.ibm.websphere.appserver.httpWhiteboard-1.0 0.021593155 s
 io.openliberty.restfulWS-4.0 0.056732250 s
-com.ibm.websphere.appserver.timedexit-1.0 0.011439993 s
 io.openliberty.cdi-3.0 0.038794139 s
 com.ibm.websphere.appserver.audit-2.0 0.034518023 s
 com.ibm.websphere.appserver.javaee-8.0 0.423313533 s

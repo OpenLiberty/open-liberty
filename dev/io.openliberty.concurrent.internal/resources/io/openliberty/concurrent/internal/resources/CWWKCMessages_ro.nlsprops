@@ -58,6 +58,10 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Artefactul de aplica\u021bie {0} spec
 CWWKC1207.lacks.qualifier.anno.explanation=Adnotarea calificativ indic\u0103 faptul c\u0103 adnotarea este un calificativ. Adnotarea Retention controleaz\u0103 disponibilitatea adnot\u0103rilor.
 CWWKC1207.lacks.qualifier.anno.useraction=Ad\u0103uga\u021bi adnot\u0103rile @Qualifier \u0219i @Retention(RUNTIME) la clasa de calificare.
 
+CWWKC1208.global.with.qualifiers=CWWKC1208E: Artefactul de aplica\u021bie {0} specific\u0103 o adnotare {1} sau un element descriptor de desf\u0103\u0219urare {2} care are numele {3} \u0219i lista de calificative {4}. Nu pute\u021bi configura o resurs\u0103 Jakarta Concurrency pentru a avea calificative \u0219i un spa\u021biu de nume java:global \u00een acela\u0219i timp. Elimina\u021bi calificativele din configura\u021bia resursei Jakarta Concurrency care are numele {3} sau trece\u021bi la spa\u021biul de nume java:app.
+CWWKC1208.global.with.qualifiers.explanation=Configura\u021bia resursei Jakarta Concurrency nu poate avea calificative \u0219i un spa\u021biu de nume java:global \u00een acela\u0219i timp.
+CWWKC1208.global.with.qualifiers.useraction=Actualiza\u021bi configura\u021bia resursei Jakarta Concurrency definit\u0103 de aplica\u021bie pentru a omite calificativele sau pentru a utiliza un spa\u021biu de nume diferit, cum ar fi spa\u021biul de nume java:app.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: Specifica\u021bia de concuren\u021b\u0103 necesit\u0103 ca virtual=true s\u0103 fie ignorat pe adnotarea {1} al artefactului aplica\u021biei {0} sau elementul descriptor de implementare {2} cu numele {3} deoarece Java {4} nu accept\u0103 fire virtuale.
 CWWKC1217.no.virtual.threads.explanation=Firele virtuale sunt disponibile numai \u00een Java 21 \u0219i versiuni ulterioare.
 CWWKC1217.no.virtual.threads.useraction=Actualiza\u021bi la Java 21 sau o versiune ulterioar\u0103 pentru a permite utilizarea firelor de execu\u021bie virtuale.

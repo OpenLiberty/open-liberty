@@ -1,0 +1,38 @@
+<!--Copyright (c) 2025 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License 2.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0 
+    Contributors: 
+        IBM Corporation - initial API and implementation
+-->
+<server>
+    <featureManager>
+        <feature>mpHealth-4.0</feature>
+        <feature>mpConfig-2.0</feature>
+        <feature>cdi-2.0</feature> <!-- add an EE feature so we can repeat for EE9 and EE10 -->
+        <feature>componenttest-1.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>arquillian-support-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+	
+	<webContainer deferServletLoad="false"/>
+	
+    <!--Java2 security-->
+    <javaPermission className="java.security.AllPermission"  name="*" actions="*" />
+
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <accessLogging
+            filepath="${server.output.dir}/logs/http_defaultEndpoint_access.log"
+            logFormat='%h %u %t "%r" %s %b %D %{User-agent}i'>
+        </accessLogging>         
+     </httpEndpoint>
+</server>

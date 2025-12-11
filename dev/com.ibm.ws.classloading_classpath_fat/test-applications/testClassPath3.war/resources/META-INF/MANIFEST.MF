@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Class-Path: testLib2.jar testEjb2.jar testLib13.jar
+Class-Path: testLib2.jar testEjb2.jar testLib13.jar lib/testLib18.jar

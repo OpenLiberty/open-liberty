@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package io.openliberty.checkpoint.internal.openj9;
 
 import java.io.File;
+import java.nio.file.Path;
 
 import org.eclipse.openj9.criu.CRIUSupport;
 import org.eclipse.openj9.criu.JVMCRIUException;
@@ -38,7 +39,7 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
     @Override
     @FFDCIgnore({ JVMCheckpointException.class, SystemCheckpointException.class, JVMRestoreException.class, SystemRestoreException.class, JVMCRIUException.class })
     public void dump(Runnable prepare, Runnable restore, File imageDir, String logFileName, File workDir, File envProps, boolean unprivileged) throws CheckpointFailedException {
-        CRIUSupport criuSupport = new CRIUSupport(imageDir.toPath());
+        CRIUSupport criuSupport = getCRIUSupport(imageDir.toPath());
 
         criuSupport.registerPreCheckpointHook(prepare);
         criuSupport.registerPostRestoreHook(restore);
@@ -63,6 +64,17 @@ public class ExecuteCRIU_OpenJ9 implements ExecuteCRIU {
             throw new CheckpointFailedException(Type.SYSTEM_RESTORE_FAILED, e.getMessage(), e);
         } catch (JVMCRIUException e) {
             throw new CheckpointFailedException(checkpointImpl.getUnknownType(), e.getMessage(), e);
+        }
+    }
+
+    @FFDCIgnore(Throwable.class)
+    private CRIUSupport getCRIUSupport(Path path) {
+        try {
+            // first try the new static method
+            return CRIUSupport.getCRIUSupport().setImageDir(path);
+        } catch (Throwable t) {
+            // fall back to old way
+            return new CRIUSupport(path);
         }
     }
 

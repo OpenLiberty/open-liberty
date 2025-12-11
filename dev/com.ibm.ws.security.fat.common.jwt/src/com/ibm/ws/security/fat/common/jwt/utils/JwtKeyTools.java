@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,9 +35,9 @@ public class JwtKeyTools extends KeyTools {
     public static final String rs256PrivKey = "RS256private-key.pem";
     public static final String rs384PrivKey = "RS384private-key.pem";
     public static final String rs512PrivKey = "RS512private-key.pem";
-    public static final String es256PrivKey = "ES256private-key.pem";
-    public static final String es384PrivKey = "ES384private-key.pem";
-    public static final String es512PrivKey = "ES512private-key.pem";
+    public static final String es256PrivKey = "ES256private-key-pkcs#8.pem";
+    public static final String es384PrivKey = "ES384private-key-pkcs#8.pem";
+    public static final String es512PrivKey = "ES512private-key-pkcs#8.pem";
     public static final String ps256PrivKey = "PS256private-key.pem";
     public static final String ps384PrivKey = "PS384private-key.pem";
     public static final String ps512PrivKey = "PS512private-key.pem";

@@ -1,0 +1,75 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+ configurations {
+  requiredLibs {
+    transitive = false
+  }
+} 
+
+ext {
+    extJarName = 'customEncryption.jar'
+    extJarInputDir = "${projectDir}/publish/_bin/tools/extensions/ws-customPasswordEncryption/${extJarName}"
+    extJarOutputDir = "${buildDir}/publish/bin/tools/extensions/ws-customPasswordEncryption"
+    featureDir = "publish/usr/extension/lib"
+    featureName = "customEncryption-1.0.mf"
+    featureBundleName = "com.ibm.ws.crypto.sample.customencryption.jar"
+    featureBundleWithVersion = "com.ibm.ws.crypto.sample.customencryption_1.0.jar"
+}
+ 
+// Task to publish the user feature
+task copyFeature(dependsOn: jar) {
+    description = 'Publishes the user feature'
+    group = 'build'
+    
+    doLast {
+        // Copy the bundle JAR to the feature directory 
+        copy {
+            from "${buildDir}/${featureBundleName}"
+            into "${buildDir}/${featureDir}" 
+            rename "${featureBundleName}","${featureBundleWithVersion}"
+           
+        }
+        
+        // Copy the feature manifest
+        copy {
+            from "${projectDir}/${featureDir}/features/${featureName}"
+            into "${buildDir}/${featureDir}/features"
+        }
+
+        // Copy the localization resources
+        copy {
+            from "${projectDir}/resources/l10n"
+            into "${buildDir}/${featureDir}/features/l10n"
+        }
+    }
+}
+ 
+task generateExtensionJar (type: Jar, dependsOn: copyFeature ) {
+    description = 'Generates the extension jar file'
+    group = 'build'
+    // Configure the Jar task properties
+    archiveFileName = extJarName
+    destinationDirectory = file(extJarOutputDir)
+
+    // Use the manifest from the input directory
+    manifest {
+        from "${extJarInputDir}/META-INF/MANIFEST.MF"
+    }
+    
+    doFirst {
+        mkdir extJarOutputDir
+    }
+}
+
+build.dependsOn generateExtensionJar

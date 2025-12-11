@@ -33,11 +33,11 @@ instrument.classesExcludes: com/ibm/ws/security/authorization/jacc/internal/reso
 	com.ibm.websphere.javaee.jacc.1.5;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
-	com.ibm.ws.security.authorization;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.security;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.kernel.service;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
@@ -47,9 +47,5 @@ instrument.classesExcludes: com/ibm/ws/security/authorization/jacc/internal/reso
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	com.ibm.ws.kernel.boot;version=latest,\
-	com.ibm.websphere.appserver.spi.servlet;version=latest,\
-	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
-	com.ibm.ws.classloading;version=latest,\
-	com.ibm.ws.webcontainer.security;version=latest
+	com.ibm.ws.classloading;version=latest

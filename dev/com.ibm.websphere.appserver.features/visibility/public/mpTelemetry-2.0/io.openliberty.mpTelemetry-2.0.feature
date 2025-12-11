@@ -11,6 +11,7 @@ IBM-API-Package: \
   io.opentelemetry.api.baggage.propagation;type="third-party",\
   io.opentelemetry.api;type="third-party",\
   io.opentelemetry.api.trace;type="third-party",\
+  io.opentelemetry.api.trace.propagation;type="third-party",\
   io.opentelemetry.api.common;type="third-party",\
   io.opentelemetry.api.metrics;type="third-party",\
   io.opentelemetry.api.logs;type="third-party",\

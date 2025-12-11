@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,18 +54,21 @@ public class AsyncInterceptor implements Serializable {
     @FFDCIgnore({ ClassCastException.class, NamingException.class }) // application errors raised directly to the app
     public Object intercept(InvocationContext invocation) throws Exception {
         Method method = invocation.getMethod();
-        Asynchronous anno = method.getAnnotation(Asynchronous.class);
+        Asynchronous anno = invocation.getInterceptorBinding(Asynchronous.class);
 
         // Is it a scheduled asynchronous method?
         Schedule[] schedules = anno == null ? new Schedule[0] : anno.runAt();
         if (schedules.length > 0) {
             // Identify requested inline execution for scheduled executions other than the first,
             CompletableFuture<?> future = ScheduledAsyncMethod.inlineExecutionFuture.get();
-            if (future != null)
+            if (future != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "inline subsequent execution of scheduled async method");
                 return invoke(invocation, future);
+            }
         }
 
-        validateTransactional(method);
+        validateTransactional(invocation);
 
         if (method.getDeclaringClass().getAnnotation(Asynchronous.class) != null)
             throw new UnsupportedOperationException(ConcurrencyNLS.getMessage("CWWKC1401.class.anno.disallowed",
@@ -138,43 +141,66 @@ public class AsyncInterceptor implements Serializable {
      * @throws CompletionException if the asynchronous method invocation raises an exception or error.
      */
     @FFDCIgnore(Throwable.class) // errors raised by an @Asynchronous method implementation
-    public <T> CompletionStage<T> invoke(InvocationContext invocation, CompletableFuture<T> future) {
+    @Trivial
+    public <T> CompletionStage<T> invoke(InvocationContext invocation,
+                                         CompletableFuture<T> future) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc,
+                     "invoke " + invocation.getMethod().getName(),
+                     invocation,
+                     future);
         Asynchronous.Result.setFuture(future);
         try {
             @SuppressWarnings("unchecked")
-            CompletionStage<T> asyncMethodResultStage = (CompletionStage<T>) invocation.proceed();
+            CompletionStage<T> asyncMethodResultStage = //
+                            (CompletionStage<T>) invocation.proceed();
+
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc,
+                        "invoke " + invocation.getMethod().getName(),
+                        asyncMethodResultStage);
             return asyncMethodResultStage;
         } catch (Throwable x) {
-            throw (x instanceof CompletionException ? (CompletionException) x : new CompletionException(x));
+            if (trace && tc.isEntryEnabled())
+                Tr.exit(this, tc,
+                        "invoke " + invocation.getMethod().getName(),
+                        x);
+            throw x instanceof CompletionException //
+                            ? (CompletionException) x //
+                            : new CompletionException(x);
         } finally {
             Asynchronous.Result.setFuture(null);
         }
     }
 
     /**
-     * Limits the pairing of @Asynchronous and @Transactional to NOT_SUPPORTED and REQUIRES_NEW.
+     * When @Asynchronous is paired with @Transactional, limits the TxType to
+     * NOT_SUPPORTED or REQUIRES_NEW.
      *
-     * @param method annotated method.
+     * @param invocation asynchronous method invocation context.
      * @throws UnsupportedOperationException for unsupported combinations.
      */
     @Trivial
-    private static void validateTransactional(Method method) throws UnsupportedOperationException {
-        Transactional tx = method.getAnnotation(Transactional.class);
-        if (tx == null)
-            tx = method.getDeclaringClass().getAnnotation(Transactional.class);
+    private static void validateTransactional(InvocationContext invocation) //
+                    throws UnsupportedOperationException {
+        Transactional tx = invocation.getInterceptorBinding(Transactional.class);
         if (tx != null)
             switch (tx.value()) {
                 case NOT_SUPPORTED:
                 case REQUIRES_NEW:
                     break;
                 default:
-                    throw new UnsupportedOperationException(ConcurrencyNLS.getMessage("CWWKC1403.unsupported.tx.type",
-                                                                                      "@Transactional",
-                                                                                      tx.value(),
-                                                                                      "@Asynchronous",
-                                                                                      method.getName(),
-                                                                                      method.getDeclaringClass().getName(),
-                                                                                      Arrays.asList(TxType.REQUIRES_NEW, TxType.NOT_SUPPORTED)));
+                    Method method = invocation.getMethod();
+                    throw new UnsupportedOperationException(ConcurrencyNLS //
+                                    .getMessage("CWWKC1403.unsupported.tx.type",
+                                                "@Transactional",
+                                                tx.value(),
+                                                "@Asynchronous",
+                                                method.getName(),
+                                                method.getDeclaringClass().getName(),
+                                                Arrays.asList(TxType.REQUIRES_NEW,
+                                                              TxType.NOT_SUPPORTED)));
             }
     }
 }

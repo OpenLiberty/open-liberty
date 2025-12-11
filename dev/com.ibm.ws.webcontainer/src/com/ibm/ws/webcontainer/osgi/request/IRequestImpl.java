@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2023 IBM Corporation and others.
+ * Copyright (c) 2010, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package com.ibm.ws.webcontainer.osgi.request;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.text.ParseException;
@@ -45,6 +46,8 @@ import com.ibm.wsspi.http.SSLContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 import com.ibm.wsspi.http.ee7.HttpInboundConnectionExtended;
+import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
+import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 
 import io.openliberty.http.ext.HttpRequestExt;
@@ -633,7 +636,7 @@ public class IRequestImpl implements IRequestExtended
 
               HttpInboundConnectionExtended ice = (HttpInboundConnectionExtended) conn;
 
-              if(ice.useForwardedHeaders()) {
+              if(ice.useRemoteIpOptions()) {
 
                   useForwarded = true;
                   String forwardedProto = ice.getRemoteProto();
@@ -851,7 +854,7 @@ public class IRequestImpl implements IRequestExtended
 
               HttpInboundConnectionExtended ice = (HttpInboundConnectionExtended) conn;
 
-              if (ice.useForwardedHeaders()) {
+              if (ice.useRemoteIpOptions()) {
                   useForwarded = true;
                   String forwardedProto = ice.getRemoteProto();
 
@@ -983,5 +986,13 @@ public class IRequestImpl implements IRequestExtended
   @Override
   public HttpInboundConnection getHttpInboundConnection() {
       return this.conn;
+  }
+
+  @Override
+  public Socket getRequestSocket() {
+    HttpInboundConnectionExtended connExt = (HttpInboundConnectionExtended)conn;
+    TCPConnectionContext tcpConnCtx = connExt.getTCPConnectionContext();
+    TCPReadRequestContext tcpReadReqCtx = tcpConnCtx.getReadInterface();
+    return tcpReadReqCtx.getSocket();
   }
 }

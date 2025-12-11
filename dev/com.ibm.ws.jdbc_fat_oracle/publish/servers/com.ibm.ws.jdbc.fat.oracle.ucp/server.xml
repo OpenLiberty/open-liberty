@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2016, 2024 IBM Corporation and others.
+    Copyright (c) 2016, 2025 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -91,13 +91,26 @@
     <dataSource id="ds-replay" jndiName="jdbc/ds-replay" type="javax.sql.DataSource">
         <jdbcDriver libraryRef="UCPDBLib"/>
         <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"
-                               connectionFactoryClassName="oracle.jdbc.replay.OracleDataSourceImpl" />
+                               connectionFactoryClassName="oracle.jdbc.replay.OracleDataSourceImpl" connectionWaitTimeout="30" />
     </dataSource>
     
     <dataSource id="ds-replay-xa" jndiName="jdbc/ds-replay-xa" type="javax.sql.XADataSource">
         <jdbcDriver libraryRef="UCPDBLib"/>
         <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}"
-                               connectionFactoryClassName="oracle.jdbc.replay.OracleXADataSourceImpl" />
+                               connectionFactoryClassName="oracle.jdbc.replay.OracleXADataSourceImpl" connectionWaitTimeout="30" />
+    </dataSource>
+    
+    <!-- 
+      Verify or exploit default autoCommit behavior for pooled connections in UCP
+    -->
+    <dataSource id="ds-autocommit-ltc" jndiName="jdbc/ds-autocommit-ltc" type="javax.sql.DataSource">
+        <jdbcDriver libraryRef="UCPDBLib"/>
+        <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" connectionWaitTimeout="30" />
+    </dataSource>
+    
+    <dataSource id="ds-autocommit-global" jndiName="jdbc/ds-autocommit-global" type="javax.sql.DataSource">
+        <jdbcDriver libraryRef="UCPDBLib"/>
+        <properties.oracle.ucp URL="${env.ORACLE_URL}" user="${env.ORACLE_USER}" password="${env.ORACLE_PASSWORD}" connectionWaitTimeout="30" />
     </dataSource>
     
     <javaPermission codebase="${shared.resource.dir}/ucp/ojdbc8.jar" className="java.security.AllPermission"/>

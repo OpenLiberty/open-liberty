@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+import com.ibm.ws.transaction.fat.util.PostgresqlContainerSuite;
 
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -30,10 +30,10 @@ import tests.DBRerouteTest;
 @SuiteClasses({
 	DBRerouteTest.class,
 })
-public class FATSuite extends TxTestContainerSuite {
+public class FATSuite extends PostgresqlContainerSuite {
 
     static {
-        testContainer = new PostgreSQLContainer(POSTGRES_IMAGE)
+        testContainer = new PostgreSQLContainer(getPostgresqlImageName())
                         .withDatabaseName(POSTGRES_DB)
                         .withUsername(POSTGRES_USER)
                         .withPassword(POSTGRES_PASS)

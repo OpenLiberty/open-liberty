@@ -18,7 +18,7 @@ IBM-ShortName: mpRestClient-4.0
 Subsystem-Name: MicroProfile Rest Client 4.0
 
 -features=\
-  io.openliberty.mpCompatible-7.0, \
+  io.openliberty.mpCompatible-7.0; ibm.tolerates:="7.1",\
   io.openliberty.jsonp-2.1, \
   io.openliberty.mpConfig-3.1, \
   io.openliberty.mpRestClient.internal.cdi-4.0; ibm.tolerates:="4.1", \
@@ -31,4 +31,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: microProfile-7.0
+WLP-Platform: microProfile-7.0,microProfile-7.1

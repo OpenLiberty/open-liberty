@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,10 @@ public class PolicyFactoryImpl extends PolicyFactory {
 
     @Override
     public Policy getPolicy(String contextId) {
+        if (contextId == null) {
+            return null;
+        }
+
         Policy policy = policyMap.get(contextId);
         if (policy == null) {
             // get policy and set it in the map
@@ -33,7 +37,9 @@ public class PolicyFactoryImpl extends PolicyFactory {
 
     @Override
     public void setPolicy(String contextId, Policy policy) {
-        policyMap.put(contextId, policy);
+        if (contextId != null) {
+            policyMap.put(contextId, policy);
+        }
     }
 
 }

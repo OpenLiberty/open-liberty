@@ -38,11 +38,9 @@ installLocation=um\u00edst\u011bn\u00ed instalace
 options=Volby
 
 
-licenseOptionDescription=Volbou mo\u017enosti "Souhlas\u00edm" n\u00ed\u017ee vyjad\u0159ujete souhlas s podm\u00ednkami licen\u010dn\u00ed smlouvy, p\u0159\u00edpadn\u011b tak\u00e9 podm\u00ednkami jin\u00fdch subjekt\u016f ne\u017e IBM. \
-Pokud nesouhlas\u00edte, vyberte mo\u017enost "Nesouhlas\u00edm".
+licenseOptionDescription=Volbou mo\u017enosti "Souhlas\u00edm" n\u00ed\u017ee vyjad\u0159ujete souhlas s podm\u00ednkami licen\u010dn\u00ed smlouvy, p\u0159\u00edpadn\u011b tak\u00e9 podm\u00ednkami jin\u00fdch subjekt\u016f ne\u017e IBM. Pokud nesouhlas\u00edte, vyberte mo\u017enost "Nesouhlas\u00edm".
 
-licenseeAcknowledges=Dr\u017eitel licence potvrzuje a souhlas\u00ed, \u017ee ve\u0161ker\u00fd k\u00f3d (v\u010detn\u011b vlastnost\u00ed, funkc\u00ed a dal\u0161\u00edch sta\u017een\u00ed softwaru) sta\u017een\u00fd dr\u017eitelem licence v souvislosti s t\u00edmto ("K\u00f3d") bude pou\u017e\u00edv\u00e1n pouze s licencovanou verz\u00ed programu IBM WebSphere Application Server Liberty ("Program"). \
-Dr\u017eitel licence rovn\u011b\u017e potvrzuje a souhlas\u00ed, \u017ee pou\u017eit\u00ed K\u00f3du je p\u0159edm\u011btem podm\u00ednek licen\u010dn\u00edch smluv, kter\u00e9 ur\u010duj\u00ed pou\u017e\u00edv\u00e1n\u00ed Programu (nap\u0159. International Program    License Agreement, International License Agreement for Non-Warranted Programs, International License Agreement for Evaluation of Programs, International License Agreement for Early Release of Programs), v\u010detn\u011b, je-li to uplatniteln\u00e9, ve\u0161ker\u00fdch Licen\u010dn\u00edch informac\u00ed.
+licenseeAcknowledges=Dr\u017eitel licence potvrzuje a souhlas\u00ed, \u017ee ve\u0161ker\u00fd k\u00f3d (v\u010detn\u011b vlastnost\u00ed, funkc\u00ed a dal\u0161\u00edch sta\u017een\u00ed softwaru) sta\u017een\u00fd dr\u017eitelem licence v souvislosti s t\u00edmto ("K\u00f3d") bude pou\u017e\u00edv\u00e1n pouze s licencovanou verz\u00ed programu IBM WebSphere Application Server Liberty ("Program"). Dr\u017eitel licence rovn\u011b\u017e potvrzuje a souhlas\u00ed, \u017ee pou\u017eit\u00ed K\u00f3du je p\u0159edm\u011btem podm\u00ednek licen\u010dn\u00edch smluv, kter\u00e9 ur\u010duj\u00ed pou\u017e\u00edv\u00e1n\u00ed Programu (nap\u0159. International Program    License Agreement, International License Agreement for Non-Warranted Programs, International License Agreement for Evaluation of Programs, International License Agreement for Early Release of Programs), v\u010detn\u011b, je-li to uplatniteln\u00e9, ve\u0161ker\u00fdch Licen\u010dn\u00edch informac\u00ed.
 
 extractPrompt=C\u00edlov\u00fd adres\u00e1\u0159 pro soubory produktu?
 extractSuccess=V\u0161echny soubory produktu byly \u00fasp\u011b\u0161n\u011b rozbaleny.
@@ -62,8 +60,7 @@ licensePrompt=Vyberte mo\u017enost {0} Souhlas\u00edm nebo {1} Nesouhlas\u00edm:
 # {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
 # {1} International Program License Agreement
 #
-licenseStatement=Chcete-li pou\u017e\u00edt, extrahovat nebo instalovat {0}, mus\u00edte p\u0159ijmout podm\u00ednky {1} a dodate\u010dn\u00e9 licen\u010dn\u00ed informace. \
-P\u0159e\u010dt\u011bte si pe\u010dliv\u011b n\u00e1sleduj\u00edc\u00ed licen\u010dn\u00ed smlouvy.
+licenseStatement=Chcete-li pou\u017e\u00edt, extrahovat nebo instalovat {0}, mus\u00edte p\u0159ijmout podm\u00ednky {1} a dodate\u010dn\u00e9 licen\u010dn\u00ed informace. P\u0159e\u010dt\u011bte si pe\u010dliv\u011b n\u00e1sleduj\u00edc\u00ed licen\u010dn\u00ed smlouvy.
 
 #
 # {0} --viewLicenseAgreement
@@ -240,8 +237,7 @@ unableToUpdateFingerprint=Nelze aktualizovat otisk prstu slu\u017eby kv\u016fli 
 patchingNotApplicableNoChange=Nebyl extrahov\u00e1n \u017e\u00e1dn\u00fd obsah, proto\u017ee v b\u011bhov\u00e9m prost\u0159ed\u00ed {0} nejsou \u017e\u00e1dn\u00e9 vyhovuj\u00edc\u00ed vlastnosti
 
 # {0} is the name of the superseded fix and {1} is the name of the superseding fix.
-patchingSkippedSupersededFix=Oprava {0} je nahrazena {1}, kter\u00e1 je ji\u017e nainstalov\u00e1na. \n\
-Instalace {0} byla p\u0159esko\u010dena.
+patchingSkippedSupersededFix=Oprava {0} je nahrazena {1}, kter\u00e1 je ji\u017e nainstalov\u00e1na. \nInstalace {0} byla p\u0159esko\u010dena.
 
 # {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
 ifixutils.unable.to.create.parser=P\u0159i \u010dten\u00ed informac\u00ed o oprav\u00e1ch iFix pro aktu\u00e1ln\u00ed instalaci do\u0161lo k chyb\u011b. Zpr\u00e1va v\u00fdjimky: {0}.
@@ -263,14 +259,11 @@ ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=Nelze naj\u00edt spustiteln\u00fd soubor {0} 
 # java -jar messages 
 UNABLE_TO_FIND_PID=Nezda\u0159ilo se z\u00edskat ID procesu pro proces java -jar. Do\u010dasn\u00fd adres\u00e1\u0159 extrakce {1} nelze odstranit, dokud ru\u010dn\u011b neukon\u010d\u00edte proces java -jar.
 
-UNABLE_TO_ATTACH_AGENT=Nebylo mo\u017en\u00e9 p\u0159ipojit agenta jazyka Java serveru Liberty. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo \
-trasov\u00e1n\u00ed. V\u00fdjimka: {0}
+UNABLE_TO_ATTACH_AGENT=Nebylo mo\u017en\u00e9 p\u0159ipojit agenta jazyka Java serveru Liberty. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo trasov\u00e1n\u00ed. V\u00fdjimka: {0}
 
-UNABLE_TO_FIND_TOOLS_JAR=Nebylo mo\u017en\u00e9 p\u0159ipojit agenta jazyka Java serveru Liberty, proto\u017ee tento server nepou\u017e\u00edv\u00e1 Java SDK, ale JRE. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 \
-vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo trasov\u00e1n\u00ed.
+UNABLE_TO_FIND_TOOLS_JAR=Nebylo mo\u017en\u00e9 p\u0159ipojit agenta jazyka Java serveru Liberty, proto\u017ee tento server nepou\u017e\u00edv\u00e1 Java SDK, ale JRE. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo trasov\u00e1n\u00ed.
 
-UNABLE_TO_FIND_JAVA_AGENT=Nelze nal\u00e9zt agenta jazyka Java serveru Liberty. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo \
-trasov\u00e1n\u00ed.
+UNABLE_TO_FIND_JAVA_AGENT=Nelze nal\u00e9zt agenta jazyka Java serveru Liberty. Tento server se spust\u00ed, ale nem\u016f\u017ee prov\u00e1d\u011bt funkce, kter\u00e9 vy\u017eaduj\u00ed agenta jazyka Java, jako je monitorov\u00e1n\u00ed nebo trasov\u00e1n\u00ed.
 
 RUN_IN_CHILD_JVM_DEBUG=WLP_JAR_DEBUG byl nastaven. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
 RUN_IN_CHILD_JVM_JVM_OPTIONS=Soubor jar obsahuje soubory jvm.options. Server se spust\u00ed v samostatn\u00e9m prost\u0159ed\u00ed JVM.
@@ -289,8 +282,9 @@ LICENSE_invalidInstallType=Licenci nelze upgradovat, proto\u017ee ur\u010den\u00
 LICENSE_replace_invalidVersion=Licenci nelze pou\u017e\u00edt, proto\u017ee uveden\u00e1 instalace produktu je ve verzi {0}, ale tuto licenci lze pou\u017e\u00edt pouze z verze {1}.
 LICENSE_replace_invalidInstallType=Licenci nelze pou\u017e\u00edt, proto\u017ee uveden\u00e1 instalace produktu byla nainstalov\u00e1na prost\u0159ednictv\u00edm produktu IBM Installation Manager. Pomoc\u00ed produktu IBM Installation Manager upgradujte instalaci.
 
-LICENSE_replace_invalidEditonFeatures=N\u00e1sleduj\u00edc\u00ed funkce neplat\u00ed pro vyd\u00e1n\u00ed {0}, a mus\u00ed b\u00fdt odinstalov\u00e1ny d\u0159\u00edve, ne\u017e pou\u017eijete licenci: {1}\n\
-\n\
-Pomoc\u00ed n\u00e1sleduj\u00edc\u00edho p\u0159\u00edkazu odinstalujte uveden\u00e9 funkce, teprve pak pou\u017eijte licenci pro vyd\u00e1n\u00ed {2}: {3}
+LICENSE_replace_invalidEditonFeatures=N\u00e1sleduj\u00edc\u00ed funkce neplat\u00ed pro vyd\u00e1n\u00ed {0}, a mus\u00ed b\u00fdt odinstalov\u00e1ny d\u0159\u00edve, ne\u017e pou\u017eijete licenci: {1}\n\nPomoc\u00ed n\u00e1sleduj\u00edc\u00edho p\u0159\u00edkazu odinstalujte uveden\u00e9 funkce, teprve pak pou\u017eijte licenci pro vyd\u00e1n\u00ed {2}: {3}
 
 LICENSE_downgrade_block_8557_low=Tuto licenci lze pou\u017e\u00edt pouze na instalace ve verzi {0} a vy\u0161\u0161\u00edch. Aktu\u00e1ln\u00ed instalace je ve verzi {1}. St\u00e1hn\u011bte a aktualizujte na posledn\u00ed \u00farove\u0148, a znovu pou\u017eijte licenci.
+
+#message for applying interim fix
+INTERIM_FIX_replace_invalidVersion=Prozat\u00edmn\u00ed opravu nelze pou\u017e\u00edt, proto\u017ee zadan\u00e1 instalace produktu je ve verzi {0} , ale prozat\u00edmn\u00ed opravu lze pou\u017e\u00edt pouze na verzi {1} .

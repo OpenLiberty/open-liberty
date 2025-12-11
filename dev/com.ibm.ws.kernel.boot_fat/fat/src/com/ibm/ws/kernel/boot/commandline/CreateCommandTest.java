@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2019 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -107,5 +107,42 @@ public class CreateCommandTest {
         assertFalse("Expected server.env to NOT contain generated keystore password at " + serverEnvPath, serverEnvContents.contains("keystore_password="));
         assertTrue("Expected server.env to NOT contain WLP_SKIP_MAXPERMSIZE at: " + serverEnvPath,
                    !serverEnvContents.contains("WLP_SKIP_MAXPERMSIZE"));
+    }
+
+    /**
+     * Test that server create command rejects server names containing spaces.
+     * Expected behavior: CWWKE0012E error message should be displayed indicating
+     * that the server name contains an invalid character (space).
+     */
+    @Test
+    public void testServerNameWithSpaceRejected() throws Exception {
+        String invalidServerName = "my server";
+        
+        // Use the preserveSpaces flag to ensure the server name with space is passed as a single argument
+        ProgramOutput po = LibertyServerUtils.executeLibertyCmd(bootstrap, "server", true, "create", invalidServerName);
+        
+        // Verify that the command failed (non-zero return code)
+        assertTrue("Expected non-zero return code when creating server with space in name. STDOUT: " + po.getStdout() + " STDERR: " + po.getStderr(),
+                   po.getReturnCode() != 0);
+        
+        // Error messages may be in stdout or stderr depending on how the command is executed
+        String output = po.getStdout() + " " + po.getStderr();
+        
+        // Verify that the error output contains the CWWKE0012E error message
+        assertTrue("Expected CWWKE0012E error message in output. OUTPUT: " + output,
+                   output.contains("CWWKE0012E"));
+        
+        // Verify that the error message mentions the invalid server name
+        assertTrue("Expected error message to mention the invalid server name '" + invalidServerName + "'. OUTPUT: " + output,
+                   output.contains(invalidServerName));
+        
+        // Verify that the error message mentions "character that is not valid" or similar
+        assertTrue("Expected error message to mention invalid character. OUTPUT: " + output,
+                   output.contains("character") && (output.contains("not valid") || output.contains("invalid")));
+        
+        // Verify that the server directory was NOT created
+        String invalidServerPath = installPath + "/usr/servers/" + invalidServerName;
+        assertFalse("Server directory should NOT have been created for invalid server name at " + invalidServerPath,
+                    LibertyFileManager.libertyFileExists(machine, invalidServerPath));
     }
 }

@@ -18,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
  * HashUtils replaces the old MD5Utils to generate both the MD5 and SHA256 hash keys.
@@ -25,8 +26,8 @@ import java.security.NoSuchAlgorithmException;
 public class HashUtils {
 
     private static final char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-    private static final String SHA256 = "SHA-256";
-    private static final String MD5 = "MD5";
+    private static final String SHA256 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+    private static final String MD5 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
 
     /**
      * Calculate MD5 hash of a File

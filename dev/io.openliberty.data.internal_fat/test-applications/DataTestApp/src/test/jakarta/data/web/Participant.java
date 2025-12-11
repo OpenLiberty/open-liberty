@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,17 +18,25 @@ package test.jakarta.data.web;
  */
 public class Participant {
 
-    public Integer id;
+    private Integer PID;
 
     public Name name;
 
     public static record Name(String first, String last) {
     }
 
+    public Integer getPID() {
+        return PID;
+    }
+
     public static Participant of(String firstName, String lastName, int id) {
         Participant p = new Participant();
-        p.id = id;
+        p.PID = id;
         p.name = new Name(firstName, lastName);
         return p;
+    }
+
+    public void setPID(Integer value) {
+        PID = value;
     }
 }

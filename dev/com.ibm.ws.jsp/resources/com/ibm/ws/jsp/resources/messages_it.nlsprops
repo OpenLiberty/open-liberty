@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2023 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -1289,3 +1289,7 @@ jsp.bothsourcelevelset.warning.useraction=Specificare solo l'attributo javaSourc
 jsp.javasourcelevel.value=CWWJS0008I: Il valore dell''attributo JSP javaSourceLevel \u00e8 "{0}".
 jsp.javasourcelevel.value.explanation=
 jsp.javasourcelevel.value.useraction=
+
+pages.removed.directive.error=CWWJS0009E: La direttiva " {0} " non \u00e8 pi\u00f9 supportata perch\u00e9 \u00e8 stata rimossa in {1}.
+pages.removed.directive.error.explanation = La direttiva non \u00e8 pi\u00f9 supportata. 
+pages.removed.directive.error.useraction = Eliminare l'uso della direttiva.

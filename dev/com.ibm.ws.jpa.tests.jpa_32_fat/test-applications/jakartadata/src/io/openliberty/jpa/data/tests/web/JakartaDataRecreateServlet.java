@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,9 +34,13 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -52,9 +56,17 @@ import io.openliberty.jpa.data.tests.models.Business;
 import io.openliberty.jpa.data.tests.models.City;
 import io.openliberty.jpa.data.tests.models.CityId;
 import io.openliberty.jpa.data.tests.models.Coordinate;
+import io.openliberty.jpa.data.tests.models.County;
+import io.openliberty.jpa.data.tests.models.CreditCard;
+import io.openliberty.jpa.data.tests.models.CreditCard.Issuer;
 import io.openliberty.jpa.data.tests.models.DemographicInfo;
 import io.openliberty.jpa.data.tests.models.DemographicInformation;
+import io.openliberty.jpa.data.tests.models.Door;
+import io.openliberty.jpa.data.tests.models.ECEntity;
+import io.openliberty.jpa.data.tests.models.Garage;
+import io.openliberty.jpa.data.tests.models.House;
 import io.openliberty.jpa.data.tests.models.Item;
+import io.openliberty.jpa.data.tests.models.Kitchen;
 import io.openliberty.jpa.data.tests.models.Line;
 import io.openliberty.jpa.data.tests.models.Line.Point;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
@@ -68,9 +80,16 @@ import io.openliberty.jpa.data.tests.models.Rating;
 import io.openliberty.jpa.data.tests.models.Rebate;
 import io.openliberty.jpa.data.tests.models.Rebate.Status;
 import io.openliberty.jpa.data.tests.models.Reciept;
+import io.openliberty.jpa.data.tests.models.RomanNumeral;
 import io.openliberty.jpa.data.tests.models.Segment;
+import io.openliberty.jpa.data.tests.models.ShippingAddress;
+import io.openliberty.jpa.data.tests.models.Showtime;
 import io.openliberty.jpa.data.tests.models.Store;
+import io.openliberty.jpa.data.tests.models.StreetAddress;
+import io.openliberty.jpa.data.tests.models.Student;
+import io.openliberty.jpa.data.tests.models.TaxPayer;
 import io.openliberty.jpa.data.tests.models.Triangle;
+import io.openliberty.jpa.data.tests.models.Vehicle;
 import jakarta.annotation.Resource;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.LockModeType;
@@ -168,6 +187,71 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         assertEquals(character.getHexadecimal(), result);
+    }
+
+    @Test
+    @Ignore("Reference issue:https://github.com/OpenLiberty/open-liberty/issues/29459")
+    public void testOLGH29459() throws Exception {
+        int x1 = 0, y1 = 0, x2 = 120, y2 = 209;
+        Segment segment = Segment.of(x1, y1, x2, y2);
+        List<Exception> exceptions = new ArrayList<>();
+
+        tx.begin();
+
+        try {
+            em.persist(segment);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
+                // Only rollback if it's not a RollbackException
+                if (!(e instanceof jakarta.transaction.RollbackException)) {
+                    tx.rollback();
+                }
+            }
+            exceptions.add(e);
+        }
+
+        tx.begin();
+
+        try {
+            em.createNativeQuery("INSERT INTO Segment (id, pointA_x, pointA_y, pointB_x, pointB_y) VALUES (?, ?, ?, ?, ?)")
+                            .setParameter(1, segment.id + 1)
+                            .setParameter(2, segment.pointA.x())
+                            .setParameter(3, segment.pointA.y())
+                            .setParameter(4, segment.pointB.x())
+                            .setParameter(5, segment.pointB.y())
+                            .executeUpdate();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
+                // Only rollback if it's not a RollbackException
+                if (!(e instanceof jakarta.transaction.RollbackException)) {
+                    tx.rollback();
+                }
+            }
+            exceptions.add(e);
+        }
+
+        if (!exceptions.isEmpty()) {
+            throw exceptions.get(0);
+        }
+
+        Segment retrievedSegment1 = em.find(Segment.class, segment.id);
+        Segment retrievedSegment2 = em.find(Segment.class, segment.id + 1);
+
+        // Assertions for the first segment
+        assertEquals(segment.id, retrievedSegment1.id);
+        assertEquals(x1, retrievedSegment1.pointA.x());
+        assertEquals(y1, retrievedSegment1.pointA.y());
+        assertEquals(x2, retrievedSegment1.pointB.x());
+        assertEquals(y2, retrievedSegment1.pointB.y());
+
+        // Assertions for the second segment (inserted with incremented ID)
+        assertEquals(Long.valueOf(segment.id + 1), Long.valueOf(retrievedSegment2.id));
+        assertEquals(x1, retrievedSegment2.pointA.x());
+        assertEquals(y1, retrievedSegment2.pointA.y());
+        assertEquals(x2, retrievedSegment2.pointB.x());
+        assertEquals(y2, retrievedSegment2.pointB.y());
     }
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28908
@@ -372,8 +456,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28931")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28931
     public void testOLGH28931() throws Exception {
+        deleteAllEntities(Business.class);
+
         Business ibmRoc = Business.of(44.05887f, -92.50355f, "Rochester", "Minnesota", 55901, 2800, "37th St", "NW",
                                       "IBM Rochester");
         Business ibmRTP = Business.of(35.90481f, -78.85026f, "Durham", "North Carolina", 27703, 4204, "Miami Blvd", "S",
@@ -411,6 +497,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test //Reference issue: https://github.com/eclipse-ee4j/eclipselink/issues/2234
     public void testELGH2234() throws Exception {
+        deleteAllEntities(Product.class);
 
         Product p = Product.of("testSnapshot", "product", 10.50f);
         tx.begin();
@@ -436,7 +523,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test //Original Issue: https://github.com/OpenLiberty/open-liberty/issues/29457"
     @SkipIfSysProp(DB_Oracle) //Additional Issue: https://github.com/OpenLiberty/open-liberty/issues/29440
     public void testOLGH29457() throws Exception {
-
+        deleteAllEntities(DemographicInfo.class);
         // Create a DemographicInfo instance
         DemographicInfo demographicInfo = DemographicInfo.of(2023, 8, 21, 500, 200000.00, 1000000.00);
 
@@ -564,6 +651,43 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
+    // "Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30093"
+    public void testOLGH30093() throws Exception {
+        deleteAllEntities(Prime.class); // Cleanup any left over entities
+
+        Prime two = Prime.of(2, "II", "two");
+        Prime three = Prime.of(3, "III", "three");
+        Prime five = Prime.of(5, "V", "five");
+        Prime seven = Prime.of(7, "VII", "seven");
+        List<Long> ids;
+
+        tx.begin();
+        em.persist(two);
+        em.persist(three);
+        em.persist(five);
+        em.persist(seven);
+        tx.commit();
+
+        tx.begin();
+        try {
+            ids = em.createQuery(
+                                 "SELECT ID(THIS) FROM Prime WHERE ID(THIS) < ?1 ORDER BY ID(THIS) DESC",
+                                 Long.class)
+                            .setParameter(1, 7)
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        assertEquals(3, ids.size());
+        assertEquals(5L, ids.get(0).longValue());
+        assertEquals(3L, ids.get(1).longValue());
+        assertEquals(2L, ids.get(2).longValue());
+    }
+
+    @Test
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29117")
     public void testOLGH29117() throws Exception {
         Segment unitRadius = Segment.of(0, 0, 0, 1);
@@ -678,6 +802,38 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     }
 
+    @Test
+    //Reference issue : https://github.com/OpenLiberty/open-liberty/issues/30444
+    public void testOLGH30444() throws Exception {
+        deleteAllEntities(Package.class);
+
+        Package p1 = Package.of(1, 1.0f, 1.0f, 1.0f, "testOLGH28545-1");
+        Package p2 = Package.of(2, 1.0f, 2.0f, 1.0f, "testOLGH28545-2");
+
+        List<Integer> results;
+
+        tx.begin();
+        em.persist(p1);
+        em.persist(p2);
+        tx.commit();
+
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT id FROM Package ORDER BY width DESC", Integer.class)
+                            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
+                            .setMaxResults(1)
+                            .getResultList();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        assertEquals(1, results.size());
+        assertEquals(2, results.get(0).intValue());
+
+    }
+
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
     @SkipIfSysProp({ DB_Postgres, DB_Oracle })
     public void testOLGH28545_3() throws Exception {
@@ -741,7 +897,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
+    // @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
     public void testOLGH29073() throws Exception {
         deleteAllEntities(City.class);
 
@@ -779,8 +935,45 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
+    public void testOLGH29073_WHERECLAUSE() throws Exception {
+        deleteAllEntities(City.class);
+
+        City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
+        City RochesterNY = City.of("Rochester", "New York", 209352, Set.of(14601, 14602, 14603, 14604, 14606));
+
+        // List<CityId> rochesters;
+
+        tx.begin();
+        em.persist(RochesterMN);
+        em.persist(RochesterNY);
+        tx.commit();
+
+        tx.begin();
+        try {
+            //This one failed
+            long version1 = em.createQuery("SELECT VERSION(c) FROM City c WHERE ID(c) = ?1", Long.class)
+                            .setParameter(1, new CityId("Rochester", "Minnesota"))
+                            .getSingleResult();
+
+            //This one failed
+            long version2 = em.createQuery("SELECT VERSION(THIS) FROM City  WHERE ID(THIS) = ?1", Long.class)
+                            .setParameter(1, new CityId("Rochester", "Minnesota"))
+                            .getSingleResult();
+            //This one passed
+            long rochesters = em.createQuery("SELECT VERSION(THIS) FROM City", Long.class)
+                            .getSingleResult();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
     @SkipIfSysProp(DB_Postgres) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28368
     public void testOLGH28368() throws Exception {
+        deleteAllEntities(PurchaseOrder.class, "Orders");
+
         PurchaseOrder order1 = PurchaseOrder.of("testOLGH28368-1", 12.55f);
         PurchaseOrder order2 = PurchaseOrder.of("testOLGH28368-2", 12.55f);
 
@@ -842,13 +1035,13 @@ public class JakartaDataRecreateServlet extends FATServlet {
         em.persist(US2007);
         tx.commit();
 
-        List<DemographicInfo> results;
+        List<Instant> results;
 
         tx.begin();
         try {
             results = em.createQuery(
-                                     "SELECT o FROM DemographicInfo o WHERE (o.publicDebt BETWEEN ?1 AND ?2) ORDER BY o.publicDebt",
-                                     DemographicInfo.class)
+                                     "SELECT o.collectedOn FROM DemographicInfo o WHERE (o.publicDebt BETWEEN ?1 AND ?2) ORDER BY o.publicDebt",
+                                     Instant.class)
                             .setParameter(1, BigDecimal.valueOf(5000000000000.00))
                             .setParameter(2, BigDecimal.valueOf(10000000000000.00))
                             .getResultList();
@@ -874,7 +1067,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         assertEquals(1, results.size());
-        assertEquals(2007, results.get(0).collectedOn.atZone(EASTERN).get(ChronoField.YEAR));
+        assertEquals(2007, results.get(0).atZone(EASTERN).get(ChronoField.YEAR));
 
         System.out.println(results.get(0).toString());
     }
@@ -1040,7 +1233,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/24926")
+    //Original issue: https://github.com/OpenLiberty/open-liberty/issues/24926
+    //Additional issue: https://github.com/OpenLiberty/open-liberty/issues/32848
     public void testOLGH24926() throws Exception {
         Line unitRadius = Line.of(0, 0, 1, 1);
 
@@ -1267,7 +1461,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28905")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28905
     public void testOLGH28905() throws Exception {
         Triangle t1_0 = Triangle.of((byte) 13, (byte) 84, (byte) 85);
 
@@ -1287,11 +1481,12 @@ public class JakartaDataRecreateServlet extends FATServlet {
                             .setParameter(3, (short) (198))
                             .executeUpdate();
 
+            tx.commit();
+
             t1_1 = em.createQuery("SELECT o FROM Triangle o WHERE o.distinctKey=?1", Triangle.class)
-                            .setParameter(0, t1_0.distinctKey)
+                            .setParameter(1, t1_0.distinctKey)
                             .getSingleResult();
 
-            tx.commit();
         } catch (Exception e) {
             tx.rollback();
             /*
@@ -1354,10 +1549,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
     public void testOLGH29781() throws Exception {
         ZoneId ET = ZoneId.of("America/New_York");
         Instant when = ZonedDateTime.of(2022, 4, 29, 12, 0, 0, 0, ET)
-                .toInstant();
+                        .toInstant();
         Store s1 = Store.of(2022, 4, 29, "Billy", 12L);
         Store s2 = Store.of(2024, 5, 12, "Bobby", 9L);
-        
+
         int count;
 
         tx.begin();
@@ -1368,8 +1563,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             count = em.createQuery("DELETE FROM Store WHERE this.time>:when")
-                    .setParameter("when", when)
-                    .executeUpdate();
+                            .setParameter("when", when)
+                            .executeUpdate();
             tx.commit();
         } catch (Exception e) {
             tx.rollback();
@@ -1569,7 +1764,68 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29893
+    public void testOLGH29893() throws Exception {
+        String vehicleId = "V1234";
+        Vehicle vehicle = new Vehicle();
+        vehicle.setId(vehicleId);
+        vehicle.setModel("Toyota Corolla");
+        vehicle.setColor("Blue");
+
+        tx.begin();
+        em.persist(vehicle);
+        tx.commit();
+
+        Vehicle result;
+
+        tx.begin();
+        try {
+            result = em.createQuery("FROM Vehicle WHERE LOWER(ID(THIS)) = ?1", Vehicle.class)
+                            .setParameter(1, vehicleId.toLowerCase())
+                            .getSingleResult();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        assertNotNull(result);
+        assertEquals(vehicleId, result.getId());
+        assertEquals("Toyota Corolla", result.getModel());
+        assertEquals("Blue", result.getColor());
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30501")
+    //Issue closed. Error is valid and now provides a meaningful message
+    public void testOLGH30501() throws Exception {
+        deleteAllEntities(Prime.class);
+
+        List<RomanNumeral> result;
+        Prime two = Prime.of(2, "II", "two");
+        Prime three = Prime.of(3, "III", "three");
+        Prime five = Prime.of(5, "V", "five");
+        Prime seven = Prime.of(7, "VII", "seven");
+
+        tx.begin();
+        em.persist(two);
+        em.persist(three);
+        em.persist(five);
+        em.persist(seven);
+        tx.commit();
+
+        result = em.createQuery("SELECT NEW io.openliberty.jpa.data.tests.models.RomanNumeral( "
+                                + " name, romanNumeral, romanNumeralSymbols) "
+                                + "FROM Prime WHERE numberId <= ?1 "
+                                + "ORDER BY name", RomanNumeral.class)
+                        .setParameter(1, 7) // Positional parameter starts at 1
+                        .getResultList();
+
+    }
+
+    @Test
+    //Original issue: https://github.com/OpenLiberty/open-liberty/issues/29475
+    @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28589")
     public void testOLGH29475() throws Exception {
         Rating.Reviewer jimmy = Rating.Reviewer.of("Jimothy", "Scramble", "J.Scramble@example.com");
         Rating.Item blueBerry = Rating.Item.of("BlueBerry 10", 299.99f);
@@ -1624,6 +1880,173 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     }
 
+    @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475 .This test includes issues in ElementCollection
+    public void test_29475_ElementCollection() throws Exception {
+        ECEntity e1 = new ECEntity();
+        e1.setId("EC1");
+        e1.setIntArray(new int[] { 14, 12, 1 });
+        e1.setLongList(new ArrayList<>(List.of(14L, 12L, 1L)));
+        e1.setLongListEC(new ArrayList<>(List.of(14L, 12L, 1L)));
+        e1.setStringSet(Set.of("fourteen", "twelve", "one"));
+        e1.setStringSetEC(Set.of("fourteen", "twelve", "one"));
+
+        ECEntity e2 = new ECEntity();
+        e2.setId("EC2");
+        e2.setIntArray(new int[] { 14, 12, 2 });
+        e2.setLongList(new ArrayList<>(List.of(14L, 12L, 2L)));
+        e2.setLongListEC(new ArrayList<>(List.of(14L, 12L, 2L)));
+        e2.setStringSet(Set.of("fourteen", "twelve", "two"));
+        e2.setStringSetEC(Set.of("fourteen", "twelve", "two"));
+
+        tx.begin();
+        em.persist(e1);
+        em.persist(e2);
+        tx.commit();
+        // Test JPQL queries
+        String jpql;
+        List<?> results;
+        // Query for intArray
+        tx.begin();
+        try {
+            jpql = "SELECT intArray FROM ECEntity WHERE id=?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC1")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        // Query for longList
+        tx.begin();
+        try {
+            jpql = "SELECT longList FROM ECEntity WHERE id=?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC1")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        // Query for stringSet
+        tx.begin();
+        try {
+            jpql = "SELECT stringSet FROM ECEntity WHERE id=?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC1")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        tx.begin();
+        try {
+            jpql = "SELECT longListEC FROM ECEntity WHERE id=?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC1")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        // Query for longListEC
+        tx.begin();
+        try {
+            jpql = "SELECT longListEC FROM ECEntity WHERE id LIKE ?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC%")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        tx.begin();
+        try {
+            jpql = "SELECT longList FROM ECEntity WHERE id LIKE ?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC%")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        // Query for stringSetEC
+        tx.begin();
+        try {
+            jpql = "SELECT stringSetEC FROM ECEntity WHERE id LIKE ?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC%")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+        tx.begin();
+        try {
+            jpql = "SELECT stringSet FROM ECEntity WHERE id LIKE ?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC%")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        tx.begin();
+        try {
+            jpql = "SELECT stringSetEC FROM ECEntity WHERE id=?1";
+            results = em.createQuery(jpql)
+                            .setParameter(1, "EC1")
+                            .getResultList();
+            logQueryResults(jpql, results);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+    }
+
+    public void logQueryResults(String jpql, Collection<?> results) {
+        System.out.println(jpql);
+        System.out.println("getResultList returned a " + results.getClass().getTypeName());
+        if (!results.isEmpty()) {
+            System.out.println("    elements are of type " + results.iterator().next().getClass().getTypeName());
+        } else {
+            System.out.println("    elements are of type <empty>");
+        }
+        StringBuilder s = new StringBuilder();
+        boolean first = true;
+        for (Object element : results) {
+            if (first)
+                first = false;
+            else
+                s.append(", ");
+            if (element instanceof int[])
+                s.append(Arrays.toString((int[]) element));
+            else
+                s.append(element);
+        }
+        System.out.println("            contents are [" + s.toString() + "]");
+    }
+
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
     public void testOLGH29460() throws Exception {
         // Setup test data using the factory method
@@ -1660,6 +2083,457 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     }
 
+    @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30534
+    public void testOLGH30534() throws Exception {
+
+        County county1 = new County("CountyA");
+        County county2 = new County("CountyB");
+        County county3 = new County("CountyC");
+
+        tx.begin();
+        em.persist(county1);
+        em.persist(county2);
+        em.persist(county3);
+        tx.commit();
+
+        List<County> results;
+        tx.begin();
+        try {
+            results = em.createQuery("SELECT o FROM County o WHERE o.name = ?1 ORDER BY o.name", County.class)
+                            .setParameter(1, "CountyA")
+                            .getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        assertEquals(1, results.size());
+        assertEquals("CountyA", results.get(0).getName());
+    }
+
+    @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30351
+    public void testOLGH30351() throws Exception {
+        deleteAllEntities(Business.class);
+
+        Business business1 = Business.of(43.1566f, -77.6109f, "Rochester", "NY", 14623, 123, "Main St", "N", "Acme Corp");
+        Business business2 = Business.of(43.1578f, -77.6110f, "Rochester", "NY", 14623, 456, "Broadway", "S", "Beta LLC");
+        Business business3 = Business.of(42.8864f, -78.8784f, "Buffalo", "NY", 14202, 789, "Elm St", "E", "Gamma Inc");
+
+        tx.begin();
+        em.persist(business1);
+        em.persist(business2);
+        em.persist(business3);
+        tx.commit();
+
+        List<Business> results;
+        tx.begin();
+        try {
+
+            results = em.createQuery("FROM Business WHERE location.address.city=?1 ORDER BY name", Business.class)
+                            .setParameter(1, "Rochester")
+                            .getResultList();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+        assertNotNull(results);
+        assertEquals(2, results.size());
+        assertEquals("Acme Corp", results.get(0).name);
+        assertEquals("Beta LLC", results.get(1).name);
+    }
+
+    @Test
+    @SkipIfSysProp(DB_Postgres) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30400
+    public void testOLGH30400() throws Exception {
+        deleteAllEntities(PurchaseOrder.class, "Orders");
+
+        /*
+         * Expect the following columns in the database after escaping \ from in java string
+         *
+         * | id | ____purchaseBy____ | total | v |
+         * | -- | ------------------ | ----- | - |
+         * | XX | Escape\Characters _| 23.93 | 1 |
+         * | YY | Escape\\Characters | 27.97 | 1 |
+         */
+        PurchaseOrder order1 = PurchaseOrder.of("Escape\\Characters", 23.93f);
+        PurchaseOrder order2 = PurchaseOrder.of("Escape\\\\Characters", 27.97f);
+
+        tx.begin();
+        em.persist(order1);
+        em.persist(order2);
+        tx.commit();
+
+        tx.begin();
+        List<Float> totals = em.createQuery("SELECT total FROM Orders WHERE purchasedBy LIKE ?1 ORDER BY total", Float.class)
+                        .setParameter(1, "Escape\\\\Characters") //attempt to find `Escape\\Characters` in the database
+                        .getResultList();
+        tx.commit();
+
+        assertEquals(1, totals.size());
+
+        // Failure here, because PostgreSQL automatically escaped `Escape\\Characters` and instead found `Escape\Characters` in the database.
+        // This cannot be avoided even when setting standard_conforming_strings=on
+        // EclipseLink should handle this case by adding in additional escapes to the bound parameters where PostgreSQL uses the default escape character `\`
+        assertEquals(27.97f, totals.get(0), 0.01);
+
+    }
+
+    @Test
+    //Original issue: https://github.com/OpenLiberty/open-liberty/issues/30789
+    @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28925")
+    public void testOLGH30789() throws Exception {
+        try {
+            deleteAllEntities(House.class);
+
+            House h1 = new House();
+            h1.setArea(1800);
+
+            h1.setGarage(new Garage());
+            h1.getGarage().setArea(200);
+            h1.getGarage().setDoor(new Door());
+            h1.getGarage().getDoor().setHeight(8);
+            h1.getGarage().getDoor().setWidth(10);
+            h1.getGarage().setType(Garage.Type.Attached);
+
+            h1.setKitchen(new Kitchen());
+            h1.getKitchen().setLength(15);
+            h1.getKitchen().setWidth(12);
+            h1.setLotSize(0.19f);
+            h1.setNumBedrooms(4);
+            h1.setParcelId("TestEmbeddable-104-2288-60");
+            h1.setPurchasePrice(162000);
+            h1.setSold(false);
+
+            House h2 = new House();
+            h2.setArea(2000);
+
+            h2.setGarage(new Garage());
+            h2.getGarage().setArea(220);
+            h2.getGarage().setDoor(new Door());
+            h2.getGarage().getDoor().setHeight(8);
+            h2.getGarage().getDoor().setWidth(12);
+            h2.getGarage().setType(Garage.Type.Detached);
+
+            h2.setKitchen(new Kitchen());
+            h2.getKitchen().setLength(16);
+            h2.getKitchen().setWidth(13);
+            h2.setLotSize(0.18f);
+            h2.setNumBedrooms(4);
+            h2.setParcelId("TestEmbeddable-204-2992-20");
+            h2.setPurchasePrice(188000);
+            h2.setSold(false);
+
+            // Persist the house entity
+            tx.begin();
+
+            em.persist(h1);
+            em.persist(h2);
+
+            tx.commit();
+
+            tx.begin();
+
+            em.createQuery("UPDATE House o SET o.garage=?2, o.area = o.area + ?3, o.kitchen.length=o.kitchen.length+?4, o.numBedrooms = ?5 WHERE o.parcelId = ?1", House.class)
+                            .setParameter(1, h1.getParcelId())
+                            .setParameter(2, null)
+                            .setParameter(3, 50.0)
+                            .setParameter(4, 2.0)
+                            .setParameter(5, 4)
+                            .executeUpdate();
+
+            tx.commit();
+
+            tx.begin();
+
+            House updatedHouse = em.createQuery("SELECT this from House o WHERE o.parcelId = ?1", House.class)
+                            .setParameter(1, h1.getParcelId())
+                            .getSingleResult();
+
+            assertEquals(null, updatedHouse.getGarage());
+            assertEquals(4, h1.getNumBedrooms());
+
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32263")
+    //Issue closed. Error is valid and now provides a meaningful message
+    public void testOLGH32263() throws Exception {
+        deleteAllEntities(TaxPayer.class);
+
+        AccountId account1 = new AccountId(123456789L, 111000000L);
+        AccountId account2 = new AccountId(987654321L, 222000000L);
+
+        TaxPayer tp1 = new TaxPayer(101L, TaxPayer.FilingStatus.Single, 0, 40000f, account1);
+        TaxPayer tp2 = new TaxPayer(102L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 60000f, account1);
+        TaxPayer tp3 = new TaxPayer(103L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 50000f, account2);
+
+        tx.begin();
+        em.persist(tp1);
+        em.persist(tp2);
+        em.persist(tp3);
+        tx.commit();
+
+        List<TaxPayer> result;
+
+        try {
+            result = em.createQuery(
+                                    "SELECT o FROM TaxPayer o WHERE (o.bankAccounts IS NOT EMPTY) ORDER BY o.ssn", TaxPayer.class)
+                            .setParameter(1, account1)
+                            .getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+        assertEquals(3, result.size());
+    }
+
+    @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31558
+    public void testOLGH31558() throws Exception {
+        deleteCollectionTable("ShippingAddress_RECIPIENTINFO");
+        deleteAllEntities(ShippingAddress.class);
+
+        ShippingAddress a1 = new ShippingAddress();
+        a1.id = 1001L;
+        a1.city = "Rochester";
+        a1.state = "Minnesota";
+        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
+        a1.zipCode = 55901;
+
+        ShippingAddress a2 = new ShippingAddress();
+        a2.id = 1002L;
+        a2.city = "Rochester";
+        a2.state = "Minnesota";
+        a2.streetAddress = new StreetAddress(201, "4th St SE");
+        a2.zipCode = 55904;
+
+        ShippingAddress a3 = new ShippingAddress();
+        a3.id = 1003L;
+        a3.city = "Rochester";
+        a3.state = "Minnesota";
+        a3.streetAddress = new StreetAddress(200, "1st Ave SW");
+        a3.zipCode = 55902;
+
+        ShippingAddress a4 = new ShippingAddress();
+        a4.id = 1004L;
+        a4.city = "Rochester";
+        a4.state = "Minnesota";
+        a4.streetAddress = new StreetAddress(151, "4th St SE");
+        a4.zipCode = 55904;
+
+        tx.begin();
+        em.persist(a1);
+        em.persist(a2);
+        em.persist(a3);
+        em.persist(a4);
+        tx.commit();
+
+        tx.begin();
+        try {
+            List<ShippingAddress> found = em.createQuery("SELECT o FROM ShippingAddress o WHERE (o.streetAddress.recipientInfo IS NOT EMPTY)")
+                            .getResultList();
+            tx.commit();
+            assertEquals(1, found.size());
+            ShippingAddress a = found.get(0);
+            assertEquals(a1.id, a.id);
+            assertEquals(a1.city, a.city);
+            assertEquals(a1.state, a.state);
+            assertEquals(a1.zipCode, a.zipCode);
+            assertEquals(a1.streetAddress.houseNumber, a.streetAddress.houseNumber);
+            assertEquals(a1.streetAddress.streetName, a.streetAddress.streetName);
+            assertEquals(a1.streetAddress.recipientInfo, a.streetAddress.recipientInfo);
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31559")
+    public void testOLGH31559() throws Exception {
+        deleteCollectionTable("ShippingAddress_RECIPIENTINFO");
+        deleteAllEntities(ShippingAddress.class);
+
+        ShippingAddress a1 = new ShippingAddress();
+        a1.id = 1001L;
+        a1.city = "Rochester";
+        a1.state = "Minnesota";
+        a1.streetAddress = new StreetAddress(2800, "37th St NW", List.of("Receiving Dock", "Building 040-1"));
+        a1.zipCode = 55901;
+
+        ShippingAddress a2 = new ShippingAddress();
+        a2.id = 1002L;
+        a2.city = "Rochester";
+        a2.state = "Minnesota";
+        a2.streetAddress = new StreetAddress(201, "4th St SE");
+        a2.zipCode = 55904;
+
+        ShippingAddress a3 = new ShippingAddress();
+        a3.id = 1003L;
+        a3.city = "Rochester";
+        a3.state = "Minnesota";
+        a3.streetAddress = new StreetAddress(200, "1st Ave SW");
+        a3.zipCode = 55902;
+
+        ShippingAddress a4 = new ShippingAddress();
+        a4.id = 1004L;
+        a4.city = "Rochester";
+        a4.state = "Minnesota";
+        a4.streetAddress = new StreetAddress(151, "4th St SE");
+        a4.zipCode = 55904;
+
+        tx.begin();
+        em.persist(a1);
+        em.persist(a2);
+        em.persist(a3);
+        em.persist(a4);
+        tx.commit();
+
+        tx.begin();
+        try {
+            List<StreetAddress> addresses = em.createQuery(
+                                                           "SELECT o.streetAddress FROM ShippingAddress o " +
+                                                           "WHERE o.streetAddress.houseNumber BETWEEN ?1 AND ?2 " +
+                                                           "ORDER BY o.streetAddress.streetName, o.streetAddress.houseNumber",
+                                                           StreetAddress.class)
+                            .setParameter(1, 150)
+                            .setParameter(2, 250)
+                            .getResultList();
+            tx.commit();
+            List<String> expected = List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE");
+
+            List<String> actual = addresses.stream()
+                            .map(a -> a.houseNumber + " " + a.streetName)
+                            .collect(Collectors.toList());
+            assertEquals(expected, actual);
+
+        } catch (Exception e) {
+            tx.rollback();
+            throw e;
+        }
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32204")
+    public void testOLGH32204() throws Exception {
+        deleteAllEntities(TaxPayer.class);
+
+        AccountId account1 = new AccountId(123456789L, 111000000L);
+        AccountId account2 = new AccountId(987654321L, 222000000L);
+
+        TaxPayer tp1 = new TaxPayer(101L, TaxPayer.FilingStatus.Single, 0, 40000f, account1);
+        TaxPayer tp2 = new TaxPayer(102L, TaxPayer.FilingStatus.MarriedFilingJointly, 2, 60000f, account1);
+        TaxPayer tp3 = new TaxPayer(103L, TaxPayer.FilingStatus.HeadOfHousehold, 1, 50000f, account2);
+
+        tx.begin();
+        em.persist(tp1);
+        em.persist(tp2);
+        em.persist(tp3);
+        tx.commit();
+
+        List<TaxPayer> result = em.createQuery(
+                                               "SELECT o FROM TaxPayer o WHERE (?1 MEMBER OF o.bankAccounts) ORDER BY o.income, o.ssn",
+                                               TaxPayer.class)
+                        .setParameter(1, account1)
+                        .getResultList();
+
+        assertEquals(2, result.size());
+        assertEquals(40000f, result.get(0).income, 0.01);
+        assertEquals(60000f, result.get(1).income, 0.01);
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32246")
+    //Error due to valid behavioural change introduced in B09. Passes for B08 and below.
+    public void testOLGH32246() throws Exception {
+        deleteAllEntities(Student.class);
+
+        Student s1 = new Student(1L, "Achu", new int[] { 90, 85, 88 });
+        Student s2 = new Student(2L, "Appu", new int[] { 75, 80, 70 });
+        Student s3 = new Student(3L, "Ammu", new int[] { 70, 90, 75 });
+
+        tx.begin();
+        em.persist(s1);
+        em.persist(s2);
+        em.persist(s3);
+        tx.commit();
+
+        List<?> resultStudents;
+        try {
+            resultStudents = em.createQuery("SELECT s.marks FROM Student s WHERE s.rollNo = ?1", Student.class) // Forcing ConversionException by giving wrong entity class
+                            .setParameter(1, 3L)
+                            .getResultList();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        assertEquals(
+                     List.of(Arrays.toString(new int[] { 70, 90, 75 })),
+                     resultStudents.stream()
+                                     .map(o -> Arrays.toString((int[]) o))
+                                     .collect(Collectors.toList()));
+
+    }
+
+    @Test
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32867
+    public void testOLGH32867() throws Exception {
+        deleteAllEntities(Showtime.class);
+
+        Showtime t1 = Showtime.of("Spiderman", LocalDateTime.now(),
+                                  LocalDateTime.now().plus(Duration.ofHours(2).plus(Duration.ofMinutes(6))));
+        Showtime t2 = Showtime.of("Spiderman 2", LocalDateTime.now().plus(Duration.ofDays(1)),
+                                  LocalDateTime.now().plus(Duration.ofDays(1).plus(Duration.ofHours(2).plus(Duration.ofMinutes(15)))));
+
+        tx.begin();
+        em.persist(t1);
+        em.persist(t2);
+        tx.commit();
+
+        Stream<Showtime> showtimesToday;
+        try {
+            showtimesToday = em.createQuery("SELECT NEW io.openliberty.jpa.data.tests.models.Showtime(id, movie, startTime, endTime) "
+                                            + "FROM Showtime "
+                                            + "WHERE EXTRACT(DATE FROM startTime) = ?1 "
+                                            + "ORDER BY movie DESC", Showtime.class)
+                            .setParameter(1, LocalDate.now())
+                            .getResultStream();
+        } catch (Exception e) {
+            throw e;
+        }
+
+        List<Showtime> showtimesTodayList = showtimesToday.collect(Collectors.toList());
+
+        assertEquals(1, showtimesTodayList.size());
+        assertEquals(t1.movie, showtimesTodayList.get(0).movie);
+    }
+
+    @Test
+    @SkipIfSysProp(DB_Oracle) // Reference Issue: https://github.com/OpenLiberty/open-liberty/issues/33246
+    public void testOLGH33246() throws Exception {
+//        deleteAllEntities(CreditCard.class);
+
+        CreditCard c1 = CreditCard.of(1000921011110001L, 101, LocalDate.of(2021, 1, 10), LocalDate.of(2025, 1, 10), Issuer.AmericanExtravagance);
+
+        tx.begin();
+        try {
+            em.merge(c1);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e; // Rethrows PersistenceException during failure
+        }
+    }
+
     /**
      * Utility method to drop all entities from table.
      *
@@ -1689,6 +2563,17 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         em.createQuery("DELETE FROM " + clazz.getSimpleName())
                         .executeUpdate();
+        tx.commit();
+    }
+
+    /**
+     * Deletes all rows from the specified collection table using native SQL.
+     *
+     * @param tableName the exact name of the table to delete from (e.g., "ShippingAddress_RECIPIENTINFO")
+     */
+    private void deleteCollectionTable(String tableName) throws Exception {
+        tx.begin();
+        em.createNativeQuery("DELETE FROM " + tableName).executeUpdate();
         tx.commit();
     }
 

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2013 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@
 #   - Msgs in the range CWSIP0301-CWSIP0330 General Security Errors for Message Processor
 #   - Msgs in the range CWSIP0331-CWSIP0340 belong to class com.ibm.ws.sib.processor.impl.DynamicConfigManager
 #   - Msgs in the range CWSIP0341-CWSIP0350 belong to class com.ibm.ws.sib.processor.runtime.MessageProcessorControl
-#
+#   - Msgs in the range CWSIP0351-CWSIP0360 belong to class com.ibm.ws.sib.processor.runtime.AsyncUpdateThread
 #   - Msgs in the range CWSIP0361-CWSIP0370 belong to class com.ibm.ws.sib.processor.runtime.QueuedMessage
 #   - Msgs in the range CWSIP0371-CWSIP0390 belong to class com.ibm.ws.sib.processor.matching.MessageProcessorMatching
 #   - Msgs in the range CWSIP0391-CWSIP0410 belong to class com.ibm.ws.sib.processor.impl.MessageProcessor continuation
@@ -1005,6 +1005,13 @@ DESTINATION_NOT_FOUND_ERROR_CWSIP0341.explanation=Miejsce docelowe o podanej naz
 DESTINATION_NOT_FOUND_ERROR_CWSIP0341.useraction=Sprawd\u017a, czy nazwa miejsca docelowego jest poprawna.  Je\u015bli miejsce docelowe istnieje w innym mechanizmie przesy\u0142ania komunikat\u00f3w, sprawd\u017a, czy dzia\u0142a komunikacja z innym mechanizmem przesy\u0142ania komunikat\u00f3w.
 
 # -------------------------------------------------------------------------------------------------
+# {0} the specified batch size
+# {1} the specified batch interval
+IGNORING_BATCH_SIZE_CWSIP0351=CWSIP0351W: Ustawienie rozmiaru {0} partii jest niezgodne z ustawieniem limitu czasu {1} partii, wi\u0119c stosowany jest rozmiar partii r\u00f3wny zero.
+IGNORING_BATCH_SIZE_CWSIP0351.explanation=Aby umo\u017cliwi\u0107 asynchroniczne przetwarzanie wsadowe, zar\u00f3wno rozmiar wsadu, jak i limit czasu wsadu musz\u0105 by\u0107 ustawione na warto\u015bci dodatnie.
+IGNORING_BATCH_SIZE_CWSIP0351.useraction=Ustaw zar\u00f3wno rozmiar partii, jak i limit czasu partii na warto\u015bci dodatnie.
+
+# -------------------------------------------------------------------------------------------------
 # {0} The message id.
 # {1} The destination name
 MESSAGE_INDOUBT_WARNING_CWSIP0361=CWSIP0361W: Komunikat o identyfikatorze {0} nie mo\u017ce zosta\u0107 usuni\u0119ty, poniewa\u017c transakcja, za pomoc\u0105 kt\u00f3rej dodano go do miejsca docelowego {1}, nie zosta\u0142a zatwierdzona.
@@ -1153,6 +1160,12 @@ PUTEXCEPTION_DISCONNECT_CONSUMER_CWSIP0473.useraction=Konsument powinien zosta\u
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481=CWSIP0481E: Strumie\u0144 komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w {1}, w kt\u00f3rym znajduje si\u0119 miejsce docelowe {0}, jest niedost\u0119pny.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.explanation=Strumie\u0144 komunikacji z mechanizmem przesy\u0142ania komunikat\u00f3w, w kt\u00f3rym znajduje si\u0119 to miejsce docelowe, jest niedost\u0119pny. Mo\u017ce to by\u0107 spowodowane przez niepoprawn\u0105 partycj\u0119 sieciow\u0105 lub przez to, \u017ce strumie\u0144 nadal jest inicjowany.
 ANYCAST_STREAM_UNAVAILABLE_CWSIP0481.useraction=Sprawd\u017a, czy jest mo\u017cliwa komunikacja z tym mechanizmem przesy\u0142ania komunikat\u00f3w, i spr\u00f3buj ponownie.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The ProtocolItemStream object
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511=CWSIP0511W: Wykryto ProtocolItemStream{0} nieprawid\u0142owy format. Tworzenie strumienia jest odroczone, aby m\u00f3g\u0142 on zosta\u0107 prawid\u0142owo utworzony.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.explanation=Wykryto ProtocolItemStream nieprawid\u0142owy element, kt\u00f3ry nie zawiera elementu CompletedPrefix. Tworzenie strumienia jest odroczone, aby m\u00f3g\u0142 on zosta\u0107 prawid\u0142owo utworzony.
+MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511.useraction=Brak.
 
 # -------------------------------------------------------------------------------------------------
 # {0} The name of the destination

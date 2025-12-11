@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2024 IBM Corporation and others.
+ * Copyright (c) 2015,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -234,10 +234,11 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             return;
         }
 
-        String minJava21 = "Java SE 21, Java SE 23";
-        String minJava17 = "Java SE 17, Java SE 21, Java SE 23";
-        String minJava11 = "Java SE 11, Java SE 17, Java SE 21, Java SE 23";
-        String minJava8 = "Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 23";
+        String minJava25 = "Java SE 25";
+        String minJava21 = "Java SE 21, Java SE 25";
+        String minJava17 = "Java SE 17, Java SE 21, Java SE 25";
+        String minJava11 = "Java SE 11, Java SE 17, Java SE 21, Java SE 25";
+        String minJava8 = "Java SE 8, Java SE 11, Java SE 17, Java SE 21, Java SE 25";
 
         // The min version should have been validated when the ESA was constructed
         // so checking for the version string should be safe
@@ -274,6 +275,16 @@ public class EsaResourceImpl extends RepositoryResourceImpl implements EsaResour
             // If a feature requires a min of Java 18/19/20/21, state Java 21 is required because
             // Liberty does not officially support Java 18-20
             reqs.setVersionDisplayString(minJava21);
+            return;
+        }
+
+        if (minVersion.startsWith("22.") ||
+            minVersion.startsWith("23.") ||
+            minVersion.startsWith("24.") ||
+            minVersion.startsWith("25.")) {
+            // If a feature requires a min of Java 22/23/24/25, state Java 25 is required because
+            // Liberty does not officially support Java 22-24
+            reqs.setVersionDisplayString(minJava25);
             return;
         }
 

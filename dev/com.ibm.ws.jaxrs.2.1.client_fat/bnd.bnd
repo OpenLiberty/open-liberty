@@ -23,7 +23,8 @@ src: \
   test-applications/jaxrs21clienttimeout/src,\
   test-applications/jaxrs21complexclient/src,\
   test-applications/jaxrs21executors/src,\
-  test-applications/jaxrs21reactivesample/src
+  test-applications/jaxrs21reactivesample/src,\
+  test-applications/jaxrs21clientthreadleak/src
 
 
 fat.project: true
@@ -43,7 +44,9 @@ tested.features: \
   appsecurity-4.0, \
   expressionlanguage-4.0,\
   servlet-6.0,\
-  servlet-6.1
+  servlet-6.1,\
+  expressionlanguage-5.0,\
+  appsecurity-5.0
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2,\

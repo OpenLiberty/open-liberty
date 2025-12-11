@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.was.message;
 
@@ -18,6 +15,7 @@ import jain.protocol.ip.sip.message.Request;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Socket;
 import java.nio.charset.Charset;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -935,7 +933,6 @@ public class SipMessage implements IRequestExtended, IResponse, Queueable
 			
 			@Override
 			public int read() throws IOException {
-				// TODO Auto-generated method stub
 				return 0;
 			}
 		};
@@ -1560,7 +1557,6 @@ public class SipMessage implements IRequestExtended, IResponse, Queueable
 	
     @Override
     public ThreadPool getThreadPool() {
-        // TODO Auto-generated method stub
         return null;
     }
     
@@ -1651,43 +1647,31 @@ public class SipMessage implements IRequestExtended, IResponse, Queueable
 
 	@Override
 	public void setIsClosing(boolean isClosing) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void setContentLength(int length) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void resetBuffer() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public int getBufferSize() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public void setBufferSize(int bufferSize) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public void flushBuffer() throws IOException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
 	public ServletOutputStream getOutputStream() throws IOException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -1698,4 +1682,13 @@ public class SipMessage implements IRequestExtended, IResponse, Queueable
 	public HttpInboundConnection getHttpInboundConnection() {
 		return null;
 	}
+
+	/**
+	 * @return null
+	 */
+	@Override
+	public Socket getRequestSocket() {
+		return null;
+	}
+
 }

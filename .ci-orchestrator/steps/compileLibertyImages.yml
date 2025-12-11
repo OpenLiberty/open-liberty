@@ -3,10 +3,19 @@
   workType: RTC
   timeoutInMinutes: 1440
   dependsOn:
+    - stepName: OL SHA
+      awaitOutputProperties: true
+    - stepName: WL SHA
+      awaitOutputProperties: true
+    - stepName: Launcher SHA
+      awaitOutputProperties: true
     - stepName: Compile FATs
       awaitOutputProperties: true
   properties:
     build.stub.target: build.CachedWSCD.CompileImageOnly
+    git.clone.checkout.commit: ${WL SHA:commitSHA}
+    git.laos.clone.checkout.commit: ${OL SHA:commitSHA}
+    git.launcher.clone.checkout.commit: ${Launcher SHA:commitSHA}
     skip.fat.tests: true
     upload.buckets.with.uuid: ${Compile FATs:execution_id}
   includeProperties:

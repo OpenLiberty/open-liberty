@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package test.jakarta.data.web;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 import jakarta.data.repository.By;
@@ -23,25 +24,41 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
+import jakarta.enterprise.concurrent.Asynchronous;
+import jakarta.enterprise.concurrent.Schedule;
+
+import test.jakarta.data.web.Participant.Name;
 
 /**
  * Repository for an unannotated entity with a record attribute
  * that should be interpreted as an embeddable.
  */
-@Repository
+@Repository(dataStore = "java:module/env/data/DataStoreRef")
 public interface Participants extends DataRepository<Participant, Integer> {
 
     @Insert
     void add(Participant... p);
 
-    @Query("SELECT name.first WHERE id = ?1")
+    // Using Query by Method Name would require @Select("name"),
+    // which is not available until Data 1.1
+    @Query("SELECT name WHERE PID = ?1")
+    Optional<Name> findNameById(int id);
+
+    @Query("SELECT name.first WHERE PID = ?1")
     Optional<String> getFirstName(int id);
 
     @Delete
     long remove(@By("name.last") String lastName);
 
+    @Asynchronous(runAt = @Schedule(hours = {}, // all
+                                    minutes = {}, // all
+                                    seconds = { 5, 15, 25, 35, 45, 55 }))
+    @Delete
+    CompletableFuture<Long> scheduledRemoval(String name_first,
+                                             String name_last);
+
     @Find
     @OrderBy("name.first")
-    @OrderBy("id")
+    @OrderBy("PID")
     Stream<Participant> withSurname(@By("name.last") String lastName);
 }

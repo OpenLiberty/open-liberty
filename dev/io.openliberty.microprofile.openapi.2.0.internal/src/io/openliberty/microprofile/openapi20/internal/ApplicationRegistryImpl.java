@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -57,14 +58,11 @@ public class ApplicationRegistryImpl implements ApplicationRegistry, OpenAPIAppC
 
     private static final TraceComponent tc = Tr.register(ApplicationRegistryImpl.class);
 
-    @Reference
-    private ApplicationProcessor applicationProcessor;
+    private final ApplicationProcessor applicationProcessor;
 
-    @Reference
-    private MergeDisabledAlerter mergeDisabledAlerter;
+    private final MergeDisabledAlerter mergeDisabledAlerter;
 
-    @Reference
-    private MergeProcessor mergeProcessor;
+    private final MergeProcessor mergeProcessor;
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC, unbind = "unbindAppConfigListener")
     public void bindAppConfigListener(OpenAPIAppConfigProvider openAPIAppConfigProvider) {
@@ -80,8 +78,18 @@ public class ApplicationRegistryImpl implements ApplicationRegistry, OpenAPIAppC
 
     private OpenAPIProvider cachedProvider = null;
 
-    @Reference
-    private ModuleSelectionConfig moduleSelectionConfig;
+    private final ModuleSelectionConfig moduleSelectionConfig;
+
+    @Activate
+    public ApplicationRegistryImpl(@Reference ApplicationProcessor applicationProcessor,
+                                   @Reference MergeDisabledAlerter mergeDisabledAlerter,
+                                   @Reference MergeProcessor mergeProcessor,
+                                   @Reference ModuleSelectionConfig moduleSelectionConfig) {
+        this.applicationProcessor = applicationProcessor;
+        this.mergeDisabledAlerter = mergeDisabledAlerter;
+        this.mergeProcessor = mergeProcessor;
+        this.moduleSelectionConfig = moduleSelectionConfig;
+    }
 
     /**
      * The addApplication method is invoked by the {@link ApplicationListener} when it is notified that an application

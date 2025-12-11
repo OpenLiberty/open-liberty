@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2022 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -436,6 +436,10 @@ warning.tooManySymbolicLinks=CWWKE0096W: P\u0159i pokusu syst\u00e9mu o vy\u0159
 warning.tooManySymbolicLinks.explanation=Symbolick\u00e9 odkazy jsou z\u00e1stupci, kte\u0159\u00ed odkazuj\u00ed na jin\u00e9 soubory nebo adres\u00e1\u0159e. K t\u00e9to chyb\u011b doch\u00e1z\u00ed, kdy\u017e syst\u00e9m naraz\u00ed na p\u0159\u00edli\u0161 mnoho symbolick\u00fdch odkaz\u016f v \u0159et\u011bzci a nen\u00ed schopen vy\u0159e\u0161it cestu.
 warning.tooManySymbolicLinks.useraction=Chcete-li tento probl\u00e9m vy\u0159e\u0161it, zkontrolujte symbolick\u00e9 odkazy v cest\u011b a ujist\u011bte se, \u017ee nevytv\u00e1\u0159ej\u00ed kruhov\u00e9 odkazy. M\u016f\u017eete tak\u00e9 pou\u017e\u00edt p\u0159\u00edkaz 'readlink' ke kontrole jednotliv\u00fdch odkaz\u016f v \u0159et\u011bzci.
 
+warning.javaHomeNotSet=CWWKE0097W: Prom\u011bnn\u00e1 prost\u0159ed\u00ed JAVA_HOME nen\u00ed nastavena.
+warning.javaHomeNotSet.explanation=Skript serveru nem\u016f\u017ee ur\u010dit um\u00edst\u011bn\u00ed instalace jazyka Java. K tomuto probl\u00e9mu nedoch\u00e1z\u00ed, pokud je spr\u00e1vn\u011b nastavena prom\u011bnn\u00e1 prost\u0159ed\u00ed JAVA_HOME nebo pokud je spustiteln\u00fd soubor "java", nalezen\u00fd prohled\u00e1n\u00edm PATH, um\u00edst\u011bn v kompletn\u00ed instalaci Javy. Um\u00edst\u011bn\u00ed instalace Javy je nutn\u00e9 k nalezen\u00ed konfigura\u010dn\u00edch soubor\u016f specifick\u00fdch pro danou verzi, nap\u0159\u00edklad java9.options. Pokud se instalaci Javy nepoda\u0159\u00ed naj\u00edt, tyto soubory se nena\u010dtou a aplikace, kter\u00e9 na n\u011b spol\u00e9haj\u00ed, se nemus\u00ed chovat podle o\u010dek\u00e1v\u00e1n\u00ed.
+warning.javaHomeNotSet.useraction=Nastavte prom\u011bnnou prost\u0159ed\u00ed JAVA_HOME.
+
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Nelze pou\u017e\u00edt volbu --include={0}, m\u00edsto toho se pou\u017eije --include=wlp.
 warn.packageRuntime.include.unknownOption.explanation=Volba byla ignorov\u00e1na, proto\u017ee nebyla rozpozn\u00e1na.
 warn.packageRuntime.include.unknownOption.useraction=Zopakujte p\u0159\u00edkaz s pou\u017eit\u00edm platn\u00fdch voleb. Zkuste pou\u017e\u00edt p\u0159\u00edkaz --help, kter\u00fdm vyp\u00ed\u0161ete seznam platn\u00fdch voleb.
@@ -865,3 +869,7 @@ info.list.of.defined.servers=Vzhledem k u\u017eivatelsk\u00e9mu adres\u00e1\u015
 info.communicate.server=Mezi p\u0159\u00edkazem {0} a serverem {1} do\u0161lo k chyb\u011b komunikace.
 
 info.serialFilterLoaded=Na\u010dten agent s\u00e9riov\u00e9ho filtru.
+
+# {0} The full path to a configured logs directory.
+# Displayed when creating a server dump, if an alternate server logs directory has been configured.
+info.dump.server.alt.logs=Zji\u0161t\u011bn nakonfigurovan\u00fd adres\u00e1\u0159 protokol\u016f serveru na adrese {0}.

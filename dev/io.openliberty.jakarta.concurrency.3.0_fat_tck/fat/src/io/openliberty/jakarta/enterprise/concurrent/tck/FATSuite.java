@@ -88,8 +88,7 @@ public class FATSuite {
          */
         if (TestModeFilter.FRAMEWORK_TEST_MODE != Mode.TestMode.FULL) {
             Log.info(ConcurrentTckLauncherFull.class, "createSuiteXML", "Modifying API and Spec packages to exclude specific tests for lite mode.");
-            specExcludes.addAll(Arrays.asList("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi",
-                                              "ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet"));
+            specExcludes.addAll(Arrays.asList("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi"));
         }
 
         /**
@@ -112,8 +111,9 @@ public class FATSuite {
             specExcludes.add("ee.jakarta.tck.concurrent.spec.signature");
         }
 
-        // Skip LastExecutionTests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/258
+        // Skip tests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/258
         apiExcludes.add("ee.jakarta.tck.concurrent.api.LastExecution");
+        specExcludes.add("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet");
 
         // Skip TriggerTests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/270
         apiExcludes.add("ee.jakarta.tck.concurrent.api.Trigger");

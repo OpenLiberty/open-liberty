@@ -23,7 +23,6 @@ src: \
         fat/src
 
 fat.project: true
-fat.test.container.images: postgres:17.0-alpine
 
 -buildpath: \
   io.openliberty.org.apache.commons.logging;version=latest,\

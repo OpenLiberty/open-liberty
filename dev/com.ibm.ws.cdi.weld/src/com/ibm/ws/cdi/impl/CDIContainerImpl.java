@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,9 +30,11 @@ import javax.enterprise.inject.spi.DeploymentException;
 
 import org.jboss.weld.bootstrap.BeanDeploymentModule;
 import org.jboss.weld.bootstrap.BeanDeploymentModules;
+import org.jboss.weld.bootstrap.Validator;
 import org.jboss.weld.bootstrap.WeldBootstrap;
 import org.jboss.weld.bootstrap.api.Environment;
 import org.jboss.weld.bootstrap.api.Environments;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
 import org.jboss.weld.config.ConfigurationKey;
 import org.osgi.framework.Bundle;
@@ -43,6 +45,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.impl.weld.BDAFactory;
+import com.ibm.ws.cdi.impl.weld.LibertyFilteringDelegatingValidator;
 import com.ibm.ws.cdi.impl.weld.WebSphereCDIDeploymentImpl;
 import com.ibm.ws.cdi.impl.weld.WebSphereEEModuleDescriptor;
 import com.ibm.ws.cdi.internal.interfaces.Application;
@@ -58,7 +61,6 @@ import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveFactory;
 import com.ibm.ws.cdi.internal.interfaces.ExtensionArchiveProvider;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
-import com.ibm.ws.cdi.internal.interfaces.WeldDevelopmentMode;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ApplicationMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -92,7 +94,6 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
 
     //This is a map from OSGi Service ID (of the extension) to a ExtensionArchive
     private final Map<Long, ExtensionArchive> runtimeExtensionMap = new HashMap<>();
-    private ExtensionArchive probeExtensionArchive = null;
 
     private final ThreadLocal<WebSphereCDIDeployment> currentDeployment = new ThreadLocal<WebSphereCDIDeployment>();
     private final CDIRuntime cdiRuntime;
@@ -175,6 +176,15 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
                 });
 
                 webSphereCDIDeployment.validateJEEComponentClasses();
+
+                //Create our own validator that will filter out liberty internal bundles
+                //This will prevent us from getting an ambigious bean exception if different wars
+                //have identical beans and one of our features can see all application classes
+                ServiceRegistry serviceRegistry = webSphereCDIDeployment.getServices();
+                Validator weldValidator = serviceRegistry.get(Validator.class);
+                LibertyFilteringDelegatingValidator libertyValidator = new LibertyFilteringDelegatingValidator(weldValidator, webSphereCDIDeployment);
+                serviceRegistry.add(Validator.class, libertyValidator);
+
                 weldBootstrap.deployBeans();
                 weldBootstrap.validateBeans();
             } else {
@@ -705,15 +715,6 @@ public class CDIContainerImpl implements CDIContainer, InjectionMetaDataListener
         //Now ask any providers for any ExtensionArchives that are not coming from an SPI impl. These do not go in runtimeExtensionMap but do go in the extensionSet
         for (ExtensionArchiveProvider provider : cdiRuntime.getExtensionArchiveProviders()) {
             extensionSet.addAll(provider.getArchives(cdiRuntime, applicationContext));
-        }
-
-        WeldDevelopmentMode devMode = this.cdiRuntime.getWeldDevelopmentMode();
-        if (devMode != null) {
-            if (this.probeExtensionArchive == null) {
-                this.probeExtensionArchive = devMode.getProbeExtensionArchive(this.cdiRuntime);
-            }
-            //add the probeExcension
-            extensionSet.add(this.probeExtensionArchive);
         }
 
         return extensionSet;

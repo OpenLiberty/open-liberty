@@ -359,3 +359,5 @@
 
 6183=A(z) {0} helyr\u0151l sz\u00e1rmaz\u00f3 {2} attrib\u00fatum {1} lek\u00e9pez\u00e9si t\u00edpusa nem t\u00e1mogatott a Lek\u00e9rdez\u00e9s p\u00e9lda szerint funkci\u00f3val.  Ha az attrib\u00fatum biztons\u00e1gosan figyelmen k\u00edv\u00fcl hagyhat\u00f3, akkor adja hozz\u00e1 a figyelmen k\u00edv\u00fcl hagy\u00e1s list\u00e1hoz, vagy az ir\u00e1nyelvben a p\u00e9lda \u00e9rv\u00e9nyes\u00edt\u00e9st \u00e1ll\u00edtsa be false \u00e9rt\u00e9kre.
 
+6184=Helytelen \u00e9rt\u00e9kt\u00edpus {0} van \u00e1tadva a konstruktor kifejez\u00e9snek. Az \u00f6sszetett t\u00edpusok (p\u00e9ld\u00e1ul t\u00f6mb\u00f6k, gy\u0171jtem\u00e9nyek vagy objektumok) nem t\u00e1mogatottak.
+

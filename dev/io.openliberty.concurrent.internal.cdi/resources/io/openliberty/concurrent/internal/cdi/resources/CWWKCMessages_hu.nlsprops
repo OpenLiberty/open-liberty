@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Az \u00dctemez\u00e9si megjegyz\u00e9s ( {0} ) \u00fcres \u00e9rt\u00e9ket ad meg a feladat fut\u00e1si m\u00e1sodperceihez. Adjon meg egy nem \u00fcres \u00e9rt\u00e9ket a m\u00e1sodperc mez\u0151h\u00f6z, vagy hagyja ki a m\u00e1sodperc mez\u0151t az \u00dctemez\u00e9s megjegyz\u00e9sb\u0151l. A m\u00e1sodpercek mez\u0151 kihagy\u00e1s\u00e1val a feladat a perc elej\u00e9re \u00fctemezhet\u0151.
+CWWKC1410.schedule.lacks.seconds.explanation=Az \u00fcres t\u00f6mb\u00e9rt\u00e9k azt jelzi, hogy a m\u00e1sodperc mez\u0151t figyelmen k\u00edv\u00fcl kell hagyni az \u00fctemezett id\u0151k kisz\u00e1m\u00edt\u00e1sakor. A m\u00e1sodpercek mez\u0151 kihagy\u00e1s\u00e1val a feladat a perc elej\u00e9re \u00fctemezhet\u0151.
+CWWKC1410.schedule.lacks.seconds.useraction=M\u00f3dos\u00edtsa az \u00dctemez\u00e9s annot\u00e1ci\u00f3 m\u00e1sodperces mez\u0151j\u00e9t egy nem \u00fcres \u00e9rt\u00e9k megad\u00e1s\u00e1hoz, vagy hagyja ki a m\u00e1sodperc mez\u0151t az \u00dctemez\u00e9s megjegyz\u00e9sb\u0151l.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: A szerver nem hozott l\u00e9tre {0} komponenst a {1} megjegyz\u00e9shez vagy a {2} telep\u00edt\u00e9sle\u00edr\u00f3 elemhez. A megjegyz\u00e9s vagy telep\u00edt\u00e9sle\u00edr\u00f3 elem {3} n\u00e9vvel \u00e9s {4} min\u0151s\u00edt\u0151vel rendelkezik, \u00e9s az {5} alkalmaz\u00e1s mell\u00e9kterm\u00e9k\u00e9ben van meghat\u00e1rozva. A hiba: {6}
+CWWKC1411.qualified.res.err.explanation=A k\u00f3d nem hozta l\u00e9tre az er\u0151forr\u00e1st, vagy nem regisztr\u00e1lta az er\u0151forr\u00e1st babk\u00e9nt.
+CWWKC1411.qualified.res.err.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az er\u0151forr\u00e1s megfelel\u0151en van konfigur\u00e1lva.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: A(z) {0} alkalmaz\u00e1sm\u0171term\u00e9k t\u00f6bb {1} er\u0151forr\u00e1s-defin\u00edci\u00f3t tartalmaz, amelyek rendelkeznek a(z) {2} min\u0151s\u00edt\u0151vel. Az \u00fctk\u00f6z\u0151 {1} er\u0151forr\u00e1s-defin\u00edci\u00f3k nevei: {3} .
+CWWKC1412.qualifier.conflict.explanation=Minden azonos t\u00edpus\u00fa, min\u0151s\u00edt\u0151vel rendelkez\u0151 er\u0151forr\u00e1s-defin\u00edci\u00f3nak m\u00e1s min\u0151s\u00edt\u0151vel kell rendelkeznie.
+CWWKC1412.qualifier.conflict.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy minden azonos t\u00edpus\u00fa er\u0151forr\u00e1s-defin\u00edci\u00f3 m\u00e1s min\u0151s\u00edt\u0151vel rendelkezik, vagy nem rendelkezik min\u0151s\u00edt\u0151vel.

@@ -27,6 +27,7 @@ Subsystem-Name: JMS 2.0 Client for Message Server
  com.ibm.ws.messaging.jms.common, \
  com.ibm.ws.messaging.jms.2.0, \
  com.ibm.ws.messaging.comms.client, \
+ io.openliberty.transport.config.internal, \
  io.openliberty.io.netty, \
  io.openliberty.io.netty.ssl, \
  io.openliberty.netty.internal, \

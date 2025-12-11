@@ -127,7 +127,8 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tDezactiva\u0163i generarea parolei de depozit de chei implicite
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="folderul r\u0103d\u0103cin\u0103 al serverului din arhiv\u0103"
-option-desc.package.server-root=\tSpecific\u0103 folderul r\u0103d\u0103cin\u0103 al serverului din fi\u015fierul arhiv\u0103.    \n
+option-desc.package.server-root=\tSpecific\u0103 numele folderului serverului r\u0103d\u0103cin\u0103 \u00een fi\u0219ierul arhiv\u0103. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.force=\ \ \ \ --force
 option-desc.stop.force=\tSare peste etapa de inactivare \u00eenainte ca serverul s\u0103 fie \u00eenchis. Oprirea normal\u0103 a serverului\n include o etap\u0103 de inactivare \u00eenainte ca serverul s\u0103 fie \u00eenchis. Etapa quiesce, care este de 30 de secunde \u00een mod implicit, permite serviciilor s\u0103 efectueze lucr\u0103ri de pre-oprire; de exemplu, ascult\u0103torii inbound sunt oprite, dar cererile existente sunt permise pentru a finaliza. Op\u021biunea --force nu are nici un efect \n dac\u0103 deja a fost invocat\u0103 comanda server stop. Dac\u0103 utiliza\u021bi op\u021biunea --force, \n a\u021bi putea vedea excep\u021bii nea\u0219teptate \u00een fi\u0219ierul messages.log,\n care apar dup\u0103 ce comanda server stop a fost primit\u0103 de server. \n
 #------------------------------\n at 72 chars -- leading tab-----------\n\#

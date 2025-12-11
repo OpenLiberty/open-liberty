@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -882,6 +882,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: um aplicativo iniciou ou requereu um
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=O rastreio de pilha foi capturado quando a transa\u00e7\u00e3o foi criada. O rastreio de pilha ajuda os usu\u00e1rios a determinar quais aplicativos iniciam transa\u00e7\u00f5es durante a inicializa\u00e7\u00e3o do aplicativo e, em seguida, causam a falha da solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examine o rastreio de pilha para determinar qual aplicativo iniciou uma nova transa\u00e7\u00e3o durante a solicita\u00e7\u00e3o de ponto de verifica\u00e7\u00e3o do servidor.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: A transa\u00e7\u00e3o n\u00e3o pode ser retomada no thread atual porque est\u00e1 ativa em um thread diferente ( {0} ).
+WTRN0156_CANNOT_RESUME.explanation=Liberty n\u00e3o permite que uma transa\u00e7\u00e3o esteja ativa simultaneamente em v\u00e1rios threads.
+WTRN0156_CANNOT_RESUME.useraction=Suspender a transa\u00e7\u00e3o antes de retom\u00e1-la em outro thread.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: A transa\u00e7\u00e3o n\u00e3o pode ser retomada no thread atual porque est\u00e1 ativa em outro lugar.
+WTRN0157_CANNOT_RESUME.explanation=Liberty n\u00e3o permite que uma transa\u00e7\u00e3o esteja ativa simultaneamente em v\u00e1rios threads.
+WTRN0157_CANNOT_RESUME.useraction=Suspender a transa\u00e7\u00e3o antes de retom\u00e1-la em outro thread.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

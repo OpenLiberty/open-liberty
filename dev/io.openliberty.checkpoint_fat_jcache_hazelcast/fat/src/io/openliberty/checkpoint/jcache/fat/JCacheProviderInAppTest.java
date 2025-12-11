@@ -74,18 +74,17 @@ public class JCacheProviderInAppTest extends BaseTestCase {
     @BeforeClass
     public static void beforeClass() {
         assumeShouldNotSkipTests();
-    }
-
-    @Before
-    public void before() throws Exception {
-        groupName = UUID.randomUUID().toString();
-
         /*
          * Transform apps for EE9+.
          */
         if (JakartaEEAction.isEE9OrLaterActive()) {
             JakartaEEAction.transformApp(Paths.get(server1.getServerRoot() + "/apps/providerinapp.war"));
         }
+    }
+
+    @Before
+    public void before() throws Exception {
+        groupName = UUID.randomUUID().toString();
 
         TestPluginHelper.getTestPlugin().setupServer1(server1, groupName, null, null);
     }

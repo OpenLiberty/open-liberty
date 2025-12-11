@@ -1,0 +1,32 @@
+<server description="Server for testing Telemetry10">
+
+	<include location="../fatTestPorts.xml" />
+
+	<featureManager>
+		<feature>servlet-6.0</feature>
+		<feature>mpTelemetry-1.0</feature>
+		<feature>componentTest-2.0</feature>
+	</featureManager>
+
+	<application type="war" location="exporterTest.war">
+		<classloader apiTypeVisibility="+third-party" />
+	</application>
+
+	<application type="war" location="samplerTest.war">
+		<classloader apiTypeVisibility="+third-party" />
+	</application>
+
+	<application type="war" location="resourceTest.war">
+		<classloader apiTypeVisibility="+third-party" />
+	</application>
+
+	<application type="war" location="propagatorTest.war">
+		<classloader apiTypeVisibility="+third-party" />
+	</application>
+
+	<application type="war" location="customizerTest.war">
+		<classloader apiTypeVisibility="+third-party" />
+	</application>
+
+	<javaPermission className="java.util.PropertyPermission" name="jaxws.http.autoredirect" actions="read"/>
+</server>

@@ -1,0 +1,72 @@
+<!--
+    Copyright (c) 2020 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="EJB security FAT configuration">
+
+	<featureManager>
+		<feature>appSecurity-1.0</feature>
+        	<feature>ejbLite-3.2</feature>
+		<feature>usr:jaccTestProvider-1.0</feature>
+	</featureManager>
+	
+	<ejbContainer startEJBsAtAppStart="true"/>
+	
+	<jaccTestProvider roleMappingFile="${server.config.dir}/resources/security/roleMapping.props" />
+	 <webContainer deferServletLoad="false"/>
+
+	<basicRegistry id="basic" realm="BasicRealm">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+		    <member name="user0" />
+			<member name="user1" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user6" />
+		</group>
+		<user name="user3" password="user3pwd" />
+		<group name="group3">
+			<member name="user3" />
+		</group>
+		<user name="user4" password="user4 pwd" />
+		<group name="group4">
+			<member name="user4" />
+		</group>
+		<user name="user5" password="user5pwd " />
+		<group name="group5">
+			<member name="user5" />
+		</group>
+		<user name="user6" password="user6pwd" /> 
+		<user name="user98" password="user98pwd" /> 
+		<user name="user99" password="user99pwd" />              		
+	</basicRegistry>
+
+
+	    <application type="ear" id="securityejbXMLmerge" name="securityejbXMLmerge" location="securityejbXMLmerge.ear">
+		<application-bnd>
+<!--Employee role defined in ibm-application-bnd.xml, but not here-->
+		</application-bnd>
+	    </application>
+	    
+	    
+	    <application type="ear" id="securityejbInWarEarXMLMerge" name="securityejbInWarEarXMLMerge" location="securityejbInWarEarXMLMerge.ear">
+		<application-bnd>
+	<!--Employee role defined in ibm-application-bnd.xml, but not here-->
+		</application-bnd>
+	    </application>
+	
+	
+
+	<include location="../fatTestPorts.xml"/>
+
+</server>

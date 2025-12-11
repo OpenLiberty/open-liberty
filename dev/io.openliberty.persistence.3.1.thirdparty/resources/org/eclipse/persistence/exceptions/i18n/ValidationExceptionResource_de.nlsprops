@@ -633,7 +633,7 @@
 
 7356=Vorgehensweise: [{1}] kann nicht ausgef\u00fchrt werden, weil {0} derzeit nicht mehrere OUT-Parameter unterst\u00fctzt.
 
-7357=Der "[{0} ]" URL f\u00fcr die "[{1} ]"-Ressource geh\u00f6rt nicht zu einer g\u00fcltigen Persistenzwurzel, wie in der Jakarta Persistence-Spezifikation definiert
+7357=Die "[ {0} ]" URL f\u00fcr die "[ {1} ]" Ressource geh\u00f6rt nicht zu einer g\u00fcltigen Persistenz-Root, wie sie in der Jakarta Persistence Spezifikation definiert ist.
 
 7358=Falscher ASM-Servicename angegeben.
 

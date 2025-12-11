@@ -17,7 +17,7 @@
         scope="profile email"
         userNameAttribute="sub"
         clientId="rp"
-        clientSecret="{xor}LDo8LTor"
+        clientSecret="{xor}LDo8LTorbm1saw=="
         authorizationEndpoint="https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidc/endpoint/ExternalOP/authorize"
         tokenEndpoint="https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidc/endpoint/ExternalOP/token"
         userApi="https://localhost:${bvt.prop.security_3_HTTP_default.secure}/oidc/endpoint/ExternalOP/userinfo"

@@ -1,0 +1,57 @@
+/*******************************************************************************
+ * Copyright (c) 2025 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ *******************************************************************************/
+package com.ibm.ws.springboot.fat20.programmatic.trans.app;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.jdbc.datasource.lookup.JndiDataSourceLookup;
+
+@SpringBootApplication
+public class ManagingTransactionsApplication extends SpringBootServletInitializer {
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
+		return builder.sources(ManagingTransactionsApplication.class);
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(ManagingTransactionsApplication.class, args);
+	}
+
+	@Primary
+	@Bean(name = "db1DataSource")
+	DataSource db1DataSource() {
+		return new JndiDataSourceLookup().getDataSource("jdbc/DerbyDS1");
+	}
+
+	@Primary
+	@Bean(name = "db1JdbcTemplate")
+	JdbcTemplate db1JdbcTemplate(@Qualifier("db1DataSource") DataSource dataSource) {
+		System.out.println("dataSource class: " + dataSource.getClass());
+		return new JdbcTemplate(dataSource);
+	}
+
+	@Bean
+	@ConditionalOnProperty(name = "configure.DataSourceTransactionManager")
+	public DataSourceTransactionManager transactionManager(@Qualifier("db1DataSource") DataSource dataSource) {
+		return new DataSourceTransactionManager(dataSource);
+	}
+}

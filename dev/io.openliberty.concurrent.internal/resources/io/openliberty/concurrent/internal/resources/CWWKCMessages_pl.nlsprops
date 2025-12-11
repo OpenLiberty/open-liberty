@@ -58,6 +58,10 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Artefakt aplikacji {0} okre\u015bla a
 CWWKC1207.lacks.qualifier.anno.explanation=Adnotacja Kwalifikator wskazuje, \u017ce adnotacja jest kwalifikatorem. Adnotacja Retencja kontroluje dost\u0119pno\u015b\u0107 adnotacji.
 CWWKC1207.lacks.qualifier.anno.useraction=Dodaj adnotacje @Qualifier i @Retention(RUNTIME) do klasy kwalifikatora.
 
+CWWKC1208.global.with.qualifiers=CWWKC1208E: Artefakt aplikacji {0} okre\u015bla adnotacj\u0119 {1} lub element deskryptora wdro\u017cenia {2}, kt\u00f3ry ma nazw\u0119 {3} i list\u0119 kwalifikator\u00f3w {4}. Nie mo\u017cna skonfigurowa\u0107 zasobu Jakarta Concurrency tak, aby mia\u0142 jednocze\u015bnie kwalifikatory i przestrze\u0144 nazw java:global. Usuni\u0119cie kwalifikator\u00f3w z konfiguracji zasobu Jakarta Concurrency o nazwie {3} lub przej\u015bcie do przestrzeni nazw java:app.
+CWWKC1208.global.with.qualifiers.explanation=Konfiguracja zasob\u00f3w Jakarta Concurrency nie mo\u017ce mie\u0107 jednocze\u015bnie kwalifikator\u00f3w i przestrzeni nazw java:global.
+CWWKC1208.global.with.qualifiers.useraction=Zaktualizuj konfiguracj\u0119 zdefiniowanego przez aplikacj\u0119 zasobu Jakarta Concurrency, aby pomin\u0105\u0107 kwalifikatory lub u\u017cy\u0107 innej przestrzeni nazw, takiej jak przestrze\u0144 nazw java:app.
+
 CWWKC1217.no.virtual.threads=CWWKC1217I: Specyfikacja wsp\u00f3\u0142bie\u017cno\u015bci wymaga, aby parametr virtual=true by\u0142 ignorowany w adnotacji {1} artefaktu aplikacji {0} lub w elemencie deskryptora wdro\u017cenia {2} o nazwie {3} , poniewa\u017c Java {4} nie obs\u0142uguje w\u0105tk\u00f3w wirtualnych.
 CWWKC1217.no.virtual.threads.explanation=W\u0105tki wirtualne dost\u0119pne s\u0105 tylko w Javie 21 i nowszych.
 CWWKC1217.no.virtual.threads.useraction=Aby umo\u017cliwi\u0107 korzystanie z w\u0105tk\u00f3w wirtualnych, nale\u017cy przeprowadzi\u0107 aktualizacj\u0119 do wersji Java 21 lub nowszej.

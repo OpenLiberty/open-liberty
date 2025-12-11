@@ -245,6 +245,35 @@ public class TestEnableDisableFeaturesTest {
                         "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\"}",
                         "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\"}", },
                 new String[] {});
+        
+        currentServ.setMarkToEndOfLog();
+        // FAT updated to check that connectionpool metric remains after unloading
+        // application.
+        boolean res = currentServ.removeDropinsApplications("testJDBCApp.war");
+        Assert.assertTrue("TestJDBCApp.war was not removed", res);
+
+        currentServ.waitForStringInLog(".*CWWKZ0009I: The application testJDBCApp has stopped successfully.*");
+        Log.info(c, testName, "------- Removed JDBC application ------");
+        checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4),
+                new String[] { "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS1\"}",
+                        "vendor_connectionpool_connectionHandles{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_freeConnections{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_destroy_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_create_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_managedConnections{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_waitTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_inUseTime_total_seconds{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_queuedRequests_total{datasource=\"jdbc_exampleDS2\"}",
+                        "vendor_connectionpool_usedConnections_total{datasource=\"jdbc_exampleDS2\"}", },
+                new String[] {});
     }
 
     @Test

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,9 @@ import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,7 +89,6 @@ public class JavaInfo {
         return fromPath(clientJava);
     }
 
-
     /**
      * The java.vendor of the JDK. Note that Sun and Oracle JDKs are considered to be the same.
      */
@@ -105,9 +106,10 @@ public class JavaInfo {
     final Vendor VENDOR;
     final int SERVICE_RELEASE;
     final int FIXPACK;
+    final String RUNTIME_NAME;
     Optional<Boolean> criuSupported = Optional.empty();
 
-    private JavaInfo(String jdk_home, int major, int minor, int micro, Vendor v, int sr, int fp) {
+    private JavaInfo(String jdk_home, int major, int minor, int micro, Vendor v, int sr, int fp, String runtime_name) {
         JAVA_HOME = jdk_home;
         MAJOR = major;
         MINOR = minor;
@@ -115,6 +117,7 @@ public class JavaInfo {
         VENDOR = v;
         SERVICE_RELEASE = sr;
         FIXPACK = fp;
+        RUNTIME_NAME = runtime_name;
 
         Log.info(c, "<init>", this.toString());
     }
@@ -191,6 +194,8 @@ public class JavaInfo {
             }
         }
         FIXPACK = fp;
+
+        RUNTIME_NAME = System.getProperty("java.runtime.name");
 
         Log.info(c, "<init>", this.toString());
     }
@@ -277,6 +282,10 @@ public class JavaInfo {
         return FIXPACK;
     }
 
+    public String runtimeName() {
+        return RUNTIME_NAME;
+    }
+
     /**
      * For debug purposes only
      *
@@ -312,8 +321,19 @@ public class JavaInfo {
         // the specified paths cover criu installed on a range of supported systems where we may run checkpoint FATs
         String libLoadPathSpec = "-Djava.library.path=" + System.getProperty("java.library.path") +
                                  ":/usr/local/lib64:/usr/lib/x86_64-linux-gnu:/usr/local/lib/x86_64-linux-gnu";
-        ProcessBuilder procBuilder = new ProcessBuilder(javaHome() + "/bin/java", "-XX:+EnableCRIUSupport", libLoadPathSpec, //
-                        "-cp", simplicityJar, "componenttest.topology.impl.probe.CriuSupport");
+
+        List<String> command = new ArrayList<>();
+        command.add(javaHome() + "/bin/java");
+        command.add("-XX:+EnableCRIUSupport");
+        if (majorVersion() >= 24) {
+            command.add("--enable-native-access=ALL-UNNAMED");
+        }
+        command.add(libLoadPathSpec);
+        command.add("-cp");
+        command.add(simplicityJar);
+        command.add("componenttest.topology.impl.probe.CriuSupport");
+
+        ProcessBuilder procBuilder = new ProcessBuilder(command);
         Process proc;
         try {
             proc = procBuilder.start();
@@ -425,7 +445,9 @@ public class JavaInfo {
             }
         }
 
-        return new JavaInfo(javaHome, major, minor, micro, v, sr, fp);
+        String runtimeName = buildInfo.trim();
+
+        return new JavaInfo(javaHome, major, minor, micro, v, sr, fp, runtimeName);
     }
 
     @Override

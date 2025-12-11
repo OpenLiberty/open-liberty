@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,8 +12,6 @@ package io.openliberty.microprofile.openapi20.internal;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.eclipse.microprofile.openapi.models.OpenAPI;
 import org.osgi.service.component.annotations.Activate;
@@ -21,7 +19,6 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.microprofile.openapi20.internal.services.OpenAPIVersionConfig;
 import io.openliberty.microprofile.openapi20.internal.utils.MessageConstants;
@@ -108,8 +105,13 @@ public class OpenAPIVersionConfigImpl implements OpenAPIVersionConfig {
 
         if (replace) {
             // Update the version in the model
-            model.setOpenapi(getReplacementVersion());
+            model.setOpenapi(getReplacementVersion().toString());
         }
+    }
+
+    @Override
+    public OpenAPIVersion getVersion() {
+        return getReplacementVersion();
     }
 
     /**
@@ -134,7 +136,7 @@ public class OpenAPIVersionConfigImpl implements OpenAPIVersionConfig {
      * @return {@code true} if this is a supported version, {@code false} otherwise
      */
     protected boolean isSupported(OpenAPIVersion version) {
-        return version.major == 3 && version.minor == 0;
+        return version.getMajor() == 3 && version.getMinor() == 0;
     }
 
     /**
@@ -188,114 +190,11 @@ public class OpenAPIVersionConfigImpl implements OpenAPIVersionConfig {
      *
      * @return the version to insert into the model
      */
-    protected String getReplacementVersion() {
-        if (configuredVersion.patch >= 0) {
-            return configuredVersion.toString();
+    protected OpenAPIVersion getReplacementVersion() {
+        if (configuredVersion.getPatch() >= 0) {
+            return configuredVersion;
         } else {
-            return VERSION_303.toString();
-        }
-    }
-
-    /**
-     * A parsed OpenAPI spec version. May represent a two-digit (e.g. 3.0) or three-digit (e.g. 3.0.3) version.
-     */
-    protected static class OpenAPIVersion {
-        /** Matches a.b or a.b.c where a, b and c are integers. After matching, a, b and c are in groups 1-3. */
-        private static final Pattern VERSION_PATTERN = Pattern.compile("([0-9]+)\\.([0-9]+)(?:\\.([0-9]+))?");
-
-        private int major, minor, patch;
-        private String versionString;
-
-        /**
-         * Attempt to parse a string into an OpenAPI version
-         *
-         * @param versionString the string to parse
-         * @return an {@code OpenAPIVersion} if the string represents a valid version, otherwise an empty {@code Optional}
-         */
-        @FFDCIgnore(NumberFormatException.class)
-        public static Optional<OpenAPIVersion> parse(String versionString) {
-            if (versionString == null) {
-                return Optional.empty();
-            }
-
-            versionString = versionString.trim();
-
-            Matcher matcher = VERSION_PATTERN.matcher(versionString);
-            if (!matcher.matches()) {
-                return Optional.empty();
-            }
-
-            String major = matcher.group(1);
-            String minor = matcher.group(2);
-            String patch = matcher.group(3);
-
-            try {
-                return Optional.of(new OpenAPIVersion(Integer.parseInt(major),
-                                                      Integer.parseInt(minor),
-                                                      patch == null ? -1 : Integer.parseInt(patch)));
-            } catch (NumberFormatException e) {
-                // We've already checked each component is an integer, but it could be too large for an int
-                return Optional.empty();
-            }
-        }
-
-        public OpenAPIVersion(int major, int minor, int patch) {
-            this.major = major;
-            this.minor = minor;
-            this.patch = patch;
-            versionString = major + "." + minor + (patch == -1 ? "" : "." + patch);
-        }
-
-        /**
-         * Gets the major version number.
-         *
-         * @return the major version
-         */
-        public int getMajor() {
-            return major;
-        }
-
-        /**
-         * Gets the minor version number.
-         *
-         * @return the minor version
-         */
-        public int getMinor() {
-            return minor;
-        }
-
-        /**
-         * Gets the patch version number.
-         *
-         * @return the patch version number, or {@code -1} for a two-digit version
-         */
-        public int getPatch() {
-            return patch;
-        }
-
-        /**
-         * Returns the string form of this OpenAPI version, suitable for passing to {@link OpenAPI#setOpenapi(String)}
-         */
-        @Override
-        public String toString() {
-            return versionString;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(major, minor, patch);
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            OpenAPIVersion other = (OpenAPIVersion) obj;
-            return major == other.major && minor == other.minor && patch == other.patch;
+            return VERSION_303;
         }
     }
 

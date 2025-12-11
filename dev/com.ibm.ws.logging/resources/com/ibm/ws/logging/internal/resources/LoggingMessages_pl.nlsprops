@@ -4,7 +4,7 @@
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-#
+# 
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -118,11 +118,11 @@ MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: Nast\u0119puj\u0105ce komunikaty s\u0105
 MESSAGES_CONFIGURED_HIDDEN_2.explanation=Komunikaty, kt\u00f3re s\u0105 skonfigurowane jako ukryte, nie s\u0105 zapisywane w plikach console.log i messages.log. S\u0105 zapisywane w pliku trace.log. 
 MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-MESSAGE_FORMAT_UPDATED=TRAS3002I: Format danych wyj\u015bciowych pliku messages.log zosta\u0142 zaktualizowany do '{0}'.
+MESSAGE_FORMAT_UPDATED=TRAS3002I: Format danych wyj\u015bciowych pliku messages.log zosta\u0142 zaktualizowany do {0}.
 MESSAGE_FORMAT_UPDATED.explanation=Format danych wyj\u015bciowych pliku messages.log zosta\u0142 zaktualizowany.
 MESSAGE_FORMAT_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
-CONSOLE_FORMAT_UPDATED=TRAS3003I: Format danych wyj\u015bciowych konsoli zosta\u0142 zaktualizowany do '{0}'.
+CONSOLE_FORMAT_UPDATED=TRAS3003I: Format danych wyj\u015bciowych konsoli zosta\u0142 zaktualizowany do {0}.
 CONSOLE_FORMAT_UPDATED.explanation=Format danych wyj\u015bciowych konsoli zosta\u0142 zaktualizowany.
 CONSOLE_FORMAT_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
@@ -169,6 +169,10 @@ LOG_ROLLOVER_INTERVAL_TOO_SHORT_WARNING.useraction=Nale\u017cy poda\u0107 odst\u
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED=TRAS3012W: Brak nag\u0142\u00f3wka co najmniej jednego pola logFormat konfiguracji accessLogging: {0}.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.explanation=Podczas rejestrowania w formacie JSON atrybut logFormat konfiguracji accessLogging s\u0142u\u017cy do wybierania p\u00f3l komunikat\u00f3w dziennika http_access.log do uwzgl\u0119dnienia. Gdy w atrybucie logFormat konfiguracji accessLogging u\u017cywane s\u0105 pola %i lub %o, nale\u017cy poda\u0107 nazw\u0119 nag\u0142\u00f3wka.
 JSON_ACCESS_LOG_NO_HEADER_NAME_SPECIFIED.useraction=Podaj nazw\u0119 nag\u0142\u00f3wka dla pola w atrybucie logFormat konfiguracji accessLogging.
+
+LOG_THROTTLING_ACTIVE_WARNING=TRAS3016W: Dzienniki s\u0105 ograniczane z powodu du\u017cej ilo\u015bci danych.
+LOG_THROTTLING_ACTIVE_WARNING.explanation=Dzienniki s\u0105 obecnie ograniczane z powodu du\u017cej ilo\u015bci danych.
+LOG_THROTTLING_ACTIVE_WARNING.useraction=Rozwi\u0105\u017c wszelkie problemy, kt\u00f3re powoduj\u0105 nadmierne rejestrowanie lub zwi\u0119ksz pr\u00f3g rejestrowania, konfiguruj\u0105c atrybut rejestrowania throttleMaxMessagesPerWindow. 
 
 FFDC_FILE_DELETION=TRAS3014I: Na podstawie skonfigurowanej warto\u015bci parametru maxFfdcAge usuni\u0119to nast\u0119puj\u0105c\u0105 liczb\u0119 plik\u00f3w FFDC: {0}.
 FFDC_FILE_DELETION.explanation=Liczba plik\u00f3w FFDC, kt\u00f3re zosta\u0142y usuni\u0119te podczas czyszczenia FFDC.

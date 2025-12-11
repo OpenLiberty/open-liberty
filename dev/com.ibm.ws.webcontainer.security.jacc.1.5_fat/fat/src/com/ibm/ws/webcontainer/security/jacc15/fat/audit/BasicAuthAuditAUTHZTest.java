@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,15 +16,12 @@ package com.ibm.ws.webcontainer.security.jacc15.fat.audit;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.junit.ClassRule;
-import componenttest.rules.repeater.RepeatTests;
-import componenttest.rules.repeater.FeatureReplacementAction;
-
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
@@ -34,6 +31,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.security.audit.AuditConstants;
 import com.ibm.websphere.security.audit.AuditEvent;
+import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.audit.fat.common.tooling.AuditAsserts;
 import com.ibm.ws.security.audit.fat.common.tooling.AuditCommonTest;
@@ -46,6 +44,8 @@ import com.ibm.ws.webcontainer.security.test.servlets.TestConfiguration;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -91,8 +91,9 @@ public class BasicAuthAuditAUTHZTest {
      * Need the first repeat to make sure that audit-2.0 from a previous repeat gets put back to audit-1.0
      */
     @ClassRule
-    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServers("com.ibm.ws.webcontainer.security.fat.basicauth.audit").fullFATOnly())
-                    .andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServers("com.ibm.ws.webcontainer.security.fat.basicauth.audit"));
+    public static RepeatTests auditRepeat = RepeatTests.with(new FeatureReplacementAction("audit-2.0", "audit-1.0").forServerConfigPaths("publish/files/"
+                                                                                                                                         + DEFAULT_CONFIG_FILE).fullFATOnly()).andWith(new FeatureReplacementAction("audit-1.0", "audit-2.0").forServerConfigPaths("publish/files/"
+                                                                                                                                                                                                                                                                   + DEFAULT_CONFIG_FILE));
 
     @Rule
     public TestName name = _name;
@@ -128,7 +129,9 @@ public class BasicAuthAuditAUTHZTest {
 
         JACCFatUtils.installJaccUserFeature(myServer);
         JACCFatUtils.transformApps(myServer, "basicauth.war", "basicauthXMI.ear", "basicauthXMInoAuthz.ear", "basicauthXML.ear", "basicauthXMLnoAuthz.ear");
-
+        if (isWindows()) {
+            myServer.setAppStartTimeout(myServer.getAppStartTimeout() * 2);
+        }
         testConfig.startServerClean(DEFAULT_CONFIG_FILE);
 
         if (myServer.getValidateApps()) { // If this build is Java 7 or above
@@ -138,7 +141,17 @@ public class BasicAuthAuditAUTHZTest {
 
         myClient = new BasicAuthClient(myServer);
         mySSLClient = new SSLBasicAuthClient(myServer);
+        myClient.setJaccValidation(true);
+        mySSLClient.setJaccValidation(true);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
+    }
+
+    /**
+     * @return true if the test is running on a windows platform, false otherwise
+     * @throws Exception
+     */
+    private static boolean isWindows() throws Exception {
+        return myServer.getMachine().getOperatingSystem() == OperatingSystem.WINDOWS;
     }
 
     protected static void verifyServerStartedWithJaccFeature(LibertyServer server) {

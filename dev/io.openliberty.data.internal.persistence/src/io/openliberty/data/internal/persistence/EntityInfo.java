@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,15 +14,9 @@ package io.openliberty.data.internal.persistence;
 
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 
+import java.io.PrintWriter;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.ZonedDateTime;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,7 +28,6 @@ import java.util.SortedSet;
 import java.util.concurrent.CompletableFuture;
 
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.util.UUID;
 
 import jakarta.data.exceptions.MappingException;
 import jakarta.persistence.Inheritance;
@@ -71,6 +64,13 @@ public class EntityInfo {
      */
     final SortedSet<String> attributeNamesForEntityUpdate;
 
+    /**
+     * Setter methods for entity attributes that have getter methods.
+     * Null if the workaround to create copies of detached entities
+     * is not needed.
+     */
+    final Map<String, Method> attributeSetters;
+
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
 
@@ -83,6 +83,7 @@ public class EntityInfo {
     final Class<?> idType; // type of the id, which could be a JPA IdClass for composite ids
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
+    final boolean isHibernate;
     final String name; // entity name to use in query language. If a record, the name will be [RecordName]Entity.
     final Class<?> recordClass; // null if not a record
     final String versionAttributeName; // null if unversioned
@@ -98,11 +99,13 @@ public class EntityInfo {
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
                SortedSet<String> attributeNamesForUpdate,
+               Map<String, Method> attributeSetters,
                SortedMap<String, Class<?>> attributeTypes,
                Map<String, Class<?>> collectionElementTypes,
                Map<Class<?>, List<String>> relationAttributeNames,
                Class<?> idType,
                SortedMap<String, Member> idClassAttributeAccessors,
+               boolean isHibernate,
                String versionAttributeName,
                EntityManagerBuilder entityManagerBuilder) {
         this.name = entityName;
@@ -111,11 +114,13 @@ public class EntityInfo {
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
         this.attributeNamesForEntityUpdate = attributeNamesForUpdate;
+        this.attributeSetters = attributeSetters;
         this.attributeTypes = attributeTypes;
         this.collectionElementTypes = collectionElementTypes;
         this.relationAttributeNames = relationAttributeNames;
         this.idType = idType;
         this.idClassAttributeAccessors = idClassAttributeAccessors;
+        this.isHibernate = isHibernate;
         this.recordClass = recordClass;
         this.versionAttributeName = versionAttributeName;
 
@@ -124,6 +129,7 @@ public class EntityInfo {
         validate();
     }
 
+    @Trivial
     Collection<String> getAttributeNames() {
         return attributeNames.values();
     }
@@ -184,6 +190,57 @@ public class EntityInfo {
     }
 
     /**
+     * Write information about this instance to the introspection file for
+     * Jakarta Data.
+     *
+     * @param writer writes to the introspection file.
+     * @param indent indentation for lines.
+     */
+    @Trivial
+    public void introspect(PrintWriter writer, String indent) {
+        writer.println(indent + "EntityInfo@" + Integer.toHexString(hashCode()));
+        writer.println(indent + "  name: " + name);
+        writer.println(indent + "  entity class: " + entityClass.getName());
+        writer.println(indent + "  record class: " +
+                       (recordClass == null ? null : recordClass.getName()));
+        writer.println(indent + "  builder: " + builder);
+        writer.println(indent + "  idType: " +
+                       (idType == null ? null : idType.getName()));
+        if (idClassAttributeAccessors != null)
+            idClassAttributeAccessors.forEach((idAttrName, member) -> {
+                writer.println(indent + "  id attribute: " + idAttrName);
+                writer.println(indent + "    accessor: " + member);
+            });
+        writer.println(indent + "  version attribute: " + versionAttributeName);
+        writer.println(indent + "  attribute types");
+        attributeTypes.forEach((name, type) -> {
+            writer.println(indent + "    " + name + ": " + type.getTypeName());
+        });
+        if (!collectionElementTypes.isEmpty()) {
+            writer.println(indent + "  collection types");
+            collectionElementTypes.forEach((name, type) -> {
+                writer.println(indent + "    " + name + ": " + type.getTypeName());
+            });
+        }
+        writer.println(indent + "  attribute accessors");
+        attributeAccessors.forEach((name, accessors) -> {
+            writer.print(indent + "    " + name + ": ");
+            writer.println(accessors.size() == 1 ? accessors.get(0) : accessors);
+        });
+        writer.println(indent + "  lower case attribute name to JPQL attribute name:");
+        attributeNames.forEach((lower, name) -> {
+            writer.println(indent + "    " + lower + " -> " + name);
+        });
+        if (!relationAttributeNames.isEmpty()) {
+            writer.println(indent + "    relation attributes:");
+            relationAttributeNames.forEach((relationClass, relAttrNames) -> {
+                writer.println(indent + "    " + relationClass.getName() + ": " + relAttrNames);
+            });
+        }
+        writer.println(indent + "  attributes for entity update: " + attributeNamesForEntityUpdate);
+    }
+
+    /**
      * Creates a CompletableFuture to represent an EntityInfo in PersistenceDataProvider's entityInfoMap.
      *
      * @param entityClass
@@ -223,35 +280,22 @@ public class EntityInfo {
      */
     @Trivial
     private void validate() {
-        for (Entry<String, Class<?>> attrType : attributeTypes.entrySet())
-            // ZonedDateTime is not one of the supported Temporal types
-            // Jakarta Data and Jakarta Persistence and does not behave
-            // correctly in EclipseLink where we have observed reading back
-            // a different value from the database than was persisted.
-            // If proper support is added for it in the future, then this
-            // can be removed.
-            if (ZonedDateTime.class.equals(attrType.getValue()))
+        // Unable to validate attribute types when we don't know which are converted
+        if (builder.convertibleTypes == null)
+            return;
+
+        for (Entry<String, Class<?>> attrTypeEntry : attributeTypes.entrySet()) {
+            Class<?> attrType = attrTypeEntry.getValue();
+            if (!builder.convertibleTypes.contains(attrType) &&
+                Util.UNSUPPORTED_ATTR_TYPES.contains(attrType))
                 throw exc(MappingException.class,
-                          "CWWKD1055.unsupported.entity.prop",
-                          attrType.getKey(),
+                          "CWWKD1055.unsupported.entity.attr",
+                          attrTypeEntry.getKey(),
                           entityClass.getName(),
-                          attrType.getValue(),
-                          List.of(Instant.class.getSimpleName(),
-                                  LocalDate.class.getSimpleName(),
-                                  LocalDateTime.class.getSimpleName(),
-                                  LocalTime.class.getSimpleName()),
-                          List.of(BigDecimal.class.getSimpleName(),
-                                  BigInteger.class.getSimpleName(),
-                                  Boolean.class.getSimpleName(), "boolean",
-                                  Byte.class.getSimpleName(), "byte",
-                                  "byte[]",
-                                  Character.class.getSimpleName(), "char",
-                                  Double.class.getSimpleName(), "double",
-                                  Float.class.getSimpleName(), "float",
-                                  Integer.class.getSimpleName(), "int",
-                                  Long.class.getSimpleName(), "long",
-                                  Short.class.getSimpleName(), "short",
-                                  String.class.getSimpleName(),
-                                  UUID.class.getSimpleName()));
+                          attrType.getName(),
+                          Util.SUPPORTED_TEMPORAL_TYPES,
+                          Util.SUPPORTED_BASIC_TYPES,
+                          "@Convert(converter=YourOwnAttributeConverter.class)");
+        }
     }
 }

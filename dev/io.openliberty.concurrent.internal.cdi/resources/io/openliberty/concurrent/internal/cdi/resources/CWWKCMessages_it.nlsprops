@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: L''annotazione Schedule, {0}, specifica un valore vuoto per i secondi di esecuzione dell''attivit\u00e0. Specificare un valore non vuoto per il campo secondi, oppure omettere il campo secondi dall''annotazione Schedule. Se si omette il campo dei secondi, l''operazione verr\u00e0 eseguita all''inizio del minuto.
+CWWKC1410.schedule.lacks.seconds.explanation=Il valore vuoto dell'array indica che il campo dei secondi deve essere ignorato quando vengono calcolati gli orari programmati. Se si omette il campo dei secondi, l'operazione verr\u00e0 eseguita all'inizio del minuto.
+CWWKC1410.schedule.lacks.seconds.useraction=Modificare il campo seconds dell'annotazione Schedule per specificare un valore non vuoto, oppure omettere il campo seconds dall'annotazione Schedule.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: Il server non ha creato un bean {0} per l''annotazione {1} o l''elemento descrittore di distribuzione {2}. L''elemento annotazione o descrittore di distribuzione ha il nome {3} e i qualificatori {4} ed \u00e8 definito nell''artefatto applicativo {5}. L''errore \u00e8 {6}
+CWWKC1411.qualified.res.err.explanation=Il codice non ha creato la risorsa o non ha registrato la risorsa come bean.
+CWWKC1411.qualified.res.err.useraction=Assicurarsi che la risorsa sia configurata correttamente.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: L''artefatto applicativo {0} include pi\u00f9 definizioni di risorse {1} che hanno i qualificatori {2}. I nomi delle definizioni delle risorse {1} in conflitto sono {3}.
+CWWKC1412.qualifier.conflict.explanation=Ogni definizione di risorsa dello stesso tipo che ha un qualificatore deve avere un qualificatore diverso.
+CWWKC1412.qualifier.conflict.useraction=Assicurarsi che ogni definizione di risorsa dello stesso tipo abbia un qualificatore diverso o non abbia alcun qualificatore.

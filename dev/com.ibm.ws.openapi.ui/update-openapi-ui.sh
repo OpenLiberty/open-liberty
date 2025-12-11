@@ -43,24 +43,25 @@ if ! which jq >/dev/null; then
     exit 1
 fi
 
-# Find new Swagger UI version
-export SWAGGER_UI_VERSION=$(jq -r '.packages."node_modules/swagger-ui".version' ./swagger-ui/package-lock.json)
-echo "Swagger UI version: $SWAGGER_UI_VERSION"
-
 # Update OpenAPI UI dependencies
 cd swagger-ui
 npx --yes npm-check-updates -u
 npm update
 
-# Copy SCSS from Swagger UI source
+# Find new Swagger UI version
+export SWAGGER_UI_VERSION=$(jq -r '.packages."node_modules/swagger-ui".version' ./package-lock.json)
+echo "Swagger UI version: $SWAGGER_UI_VERSION"
+
+# Copy select files from Swagger UI source
 rm -fr swagger-ui-src
 git clone --depth 1 -b v${SWAGGER_UI_VERSION} -c advice.detachedHead=false https://github.com/swagger-api/swagger-ui.git swagger-ui-src
-rm src/style/original/*
-rm -r src/style/core
-cp swagger-ui-src/src/style/* src/style/original
+rm -r src/original
+mkdir src/original
 cd swagger-ui-src/src
-find ./core -iname '*.scss' | xargs -n 1 dirname | xargs -I file mkdir -p ../../src/style/file 
-find ./core -iname '*.scss' | xargs -I file cp "file" "../../src/style/file"
+# Copy all scss files, so we can rebuild with changed colours
+find . -iname *.scss -printf %P\\n | xargs cp -t ../../src/original --parents
+# Copy URL sanitization utilities
+cp core/utils/url.js ../../src/original --parents
 cd ../..
 rm -rf swagger-ui-src
 

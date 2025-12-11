@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2020 IBM Corporation and others.
+# Copyright (c) 2012, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -61,6 +61,10 @@ CWWKC1102.listener.failed.useraction=\u7ea0\u6b63\u5931\u8d25\u539f\u56e0\u5e76\
 CWWKC1103.skip.run.failed=CWWKC1103E: \u4efb\u52a1 {0} \u7684\u6267\u884c\uff08\u5df2\u5411\u6267\u884c\u8005\u670d\u52a1 {1} \u63d0\u4ea4\uff09\u5df2\u8df3\u8fc7\uff0c\u56e0\u4e3a Trigger.skipRun \u64cd\u4f5c\u5df2\u5931\u8d25\uff0c\u5177\u6709\u4ee5\u4e0b\u9519\u8bef\uff1a{2}\u3002
 CWWKC1103.skip.run.failed.explanation=\u9488\u5bf9\u89e6\u53d1\u5668\u7684 skipRun \u64cd\u4f5c\u5df2\u5931\u8d25\uff0c\u5bfc\u81f4\u8df3\u8fc7\u4efb\u52a1\u7684\u5f53\u524d\u6267\u884c\u5c1d\u8bd5\u3002
 CWWKC1103.skip.run.failed.useraction=\u7ea0\u6b63\u5931\u8d25\u539f\u56e0\u5e76\u51b3\u5b9a\u662f\u5426\u91cd\u65b0\u63d0\u4ea4\u8be5\u4efb\u52a1\u3002
+
+CWWKC1108.override.virtual=CWWKC1108I: {0} \u6258\u7ba1\u7ebf\u7a0b\u5de5\u5382\u5c06\u521b\u5efa\u5e73\u53f0\u7ebf\u7a0b\uff0c\u56e0\u4e3a Liberty \u670d\u52a1\u5668\u5df2\u7981\u7528\u865a\u62df\u7ebf\u7a0b\u521b\u5efa\u529f\u80fd\u3002
+CWWKC1108.override.virtual.explanation=ThreadTypeOverride SPI \u7981\u7528\u4e86 Liberty \u670d\u52a1\u5668\u521b\u5efa\u865a\u62df\u7ebf\u7a0b\u7684\u529f\u80fd\u3002
+CWWKC1108.override.virtual.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 
 CWWKC1110.task.canceled=CWWKC1110I: \u63d0\u4ea4\u7ed9{1}\u6267\u884c\u670d\u52a1\u7684{0}\u4efb\u52a1\u88ab\u53d6\u6d88\u3002
 CWWKC1110.task.canceled.explanation=\u4efb\u52a1\u53d6\u6d88\u3002

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -73,7 +74,7 @@ public class ShutdownHook implements Runnable {
             String pidFile = dir + File.separator + "wlp" + File.separator + "usr" + File.separator + "servers" + File.separator + ".pid" + File.separator
                              + serverName + ".pid";
             try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(pidFile), "UTF-8"));
+                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(pidFile), StandardCharsets.UTF_8));
                 try {
                     return br.readLine();
                 } finally {
@@ -337,7 +338,7 @@ public class ShutdownHook implements Runnable {
             }
         }
 
-        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsoluteFile()), "UTF-8"));
+        BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsoluteFile()), StandardCharsets.UTF_8));
 
         if (platformType == SelfExtractUtils.PlatformType_UNIX || platformType == SelfExtractUtils.PlatformType_OS400) {
             writeUnixCleanup(file, bw);

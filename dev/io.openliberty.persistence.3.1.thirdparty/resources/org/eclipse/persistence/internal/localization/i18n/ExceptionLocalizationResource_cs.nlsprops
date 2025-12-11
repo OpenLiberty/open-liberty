@@ -303,6 +303,8 @@ metamodel_managed_type_attribute_type_incorrect=O\u010dek\u00e1v\u00e1n typ atri
 
 metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Deklarovan\u00fd atribut [{0}] ze spravovan\u00e9ho typu [{1}] nen\u00ed p\u0159\u00edtomen -  je v\u0161ak deklarovan\u00fd v supert\u0159\u00edd\u011b.
 
+missing_jpql_parser_class=Nepoda\u0159ilo se na\u010d\u00edst t\u0159\u00eddu parseru JPQL.
+
 missing_parameter_value=Argument dotazu {0} nebyl v seznamu parametr\u016f poskytnut\u00fdch b\u011bhem prov\u00e1d\u011bn\u00ed dotazu nalezen.
 
 missing_toplink_bean_definition_for=Chyb\u00ed definice objektu typu bean TopLink pro {0}

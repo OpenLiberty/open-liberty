@@ -14,16 +14,20 @@ package com.ibm.ws.springboot.fat30.test.app;
 
 import jakarta.servlet.ServletContext;
 
+import java.util.concurrent.ExecutionException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @SpringBootApplication
 @RestController
+@EnableAsync
 public class TestApplication {
 	public static final String TEST_ATTR = "test.weblistener.attr";
 	@Autowired
@@ -31,6 +35,9 @@ public class TestApplication {
 	
 	@Autowired
 	private Environment env;
+
+	@Autowired
+	private PackagePrivateBean packagePrivateBean;
 
 	public static void main(String[] args) {
 		SpringApplication.run(TestApplication.class, args);
@@ -81,7 +88,12 @@ public class TestApplication {
 	public void throwFileSystemNotFoundException() {
 		throw new java.nio.file.FileSystemNotFoundException("Thrown on purpose for FAT test. Default error page.");
 	}
-	
+
+	@RequestMapping("/testPackagePrivateBean")
+	public String testPackagePrivateBean() throws InterruptedException, ExecutionException {
+		return packagePrivateBean.testPackagePrivate().get();
+	}
+
 	static final String 
 	IbmApiClazzName = "com.ibm.websphere.application.ApplicationMBean",
 	TpClazzName 	= "jakarta.mail.Message";

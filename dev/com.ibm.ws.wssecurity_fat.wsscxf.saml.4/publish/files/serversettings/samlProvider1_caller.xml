@@ -1,0 +1,31 @@
+<server>
+
+	<samlWebSso20
+		id="sp1_ec"
+		authFilterRef="myAuthFilter1"
+		wantAssertionsSigned="true"
+		signatureMethodAlgorithm="ECDSAWithSHA256"
+		authnRequestsSigned="true"
+		forceAuthn="false"
+		isPassive="false"
+		idpMetadata="${server.config.dir}/imports/${tfimIdpServer}/Fed1MetaData.xml"
+		keyStoreRef="samlKeyStore"
+		clockSkew="300s"
+		tokenReplayTimeout="30m"
+		includeTokenInSubject="true"
+		mapToUserRegistry="No"
+		nameIDFormat="unspecified"
+	>
+	</samlWebSso20>
+
+	<authFilter id="myAuthFilter1">
+		<requestUrl
+			id="myRequestUrl"
+			urlPattern="/CxfSamlCallerSvcClient"
+			matchType="contains" />
+	</authFilter>
+
+	<samlWebSso20
+		id="defaultSP"
+		enabled="false" />
+</server>    

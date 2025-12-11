@@ -49,6 +49,8 @@ public class ConnectionPoolMetricsTest extends BaseTestClass {
     @ClassRule
     public static RepeatTests rt = FATSuite.testRepeatMPTel20(SERVER_NAME);
 	
+    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
+    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
 	@ClassRule
 	public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
 			.withDockerfileFromBuilder(builder -> builder.from(IMAGE_NAME).copy("/etc/otelcol-contrib/config.yaml",
@@ -75,6 +77,7 @@ public class ConnectionPoolMetricsTest extends BaseTestClass {
 		// Read to run a smarter planet
 		server.waitForStringInLogUsingMark("CWWKF0011I");
 		server.setMarkToEndOfLog();
+		
 	}
 
 	@AfterClass
@@ -94,6 +97,15 @@ public class ConnectionPoolMetricsTest extends BaseTestClass {
         checkStrings(requestHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", server),
                 new String[] { "sql: create table cities" });
         Log.info(c, testName, "------- connectionpool metrics should be available ------");
+        
+     	// Ensure metrics are registered.
+     	String connectionPoolStatsDS1Notification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=ConnectionPoolStats,name=jdbc/exampleDS1\\]");
+    	connectionPoolStatsDS1Notification = (connectionPoolStatsDS1Notification != null) ? "Found trace: " + connectionPoolStatsDS1Notification.trim() : "Could not find ConnectionPoolStatsDS1 MBean Registration notification.";
+    	Log.info(c, "waitForStringInTrace", connectionPoolStatsDS1Notification);
+    	
+    	String connectionPoolStatsDS2Notification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=ConnectionPoolStats,name=jdbc/exampleDS2\\]");
+    	connectionPoolStatsDS2Notification = (connectionPoolStatsDS2Notification != null) ? "Found trace: " + connectionPoolStatsDS2Notification.trim() : "Could not find ConnectionPoolStatsDS2 MBean Registration notification.";
+    	Log.info(c, "waitForStringInTrace", connectionPoolStatsDS2Notification);
 
 		// Allow time for the collector to receive and expose metrics
 		matchStringsWithRetries(() -> getContainerCollectorMetrics(container),

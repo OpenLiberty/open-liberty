@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,9 @@ import static io.opentelemetry.semconv.SemanticAttributes.URL_SCHEME;
 import static io.opentelemetry.semconv.SemanticAttributes.SERVER_ADDRESS;
 import static io.opentelemetry.semconv.SemanticAttributes.SERVER_PORT;
 
+// In MpTelemetry-2.1 SemanticAttributes moved to their relative classes
+import io.opentelemetry.semconv.HttpAttributes;
+import io.opentelemetry.semconv.UrlAttributes;
 /**
  * Test tracing requests of each JAX-RS method type
  */
@@ -87,7 +90,18 @@ public class JaxRsMethodTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        if(featureVersion.equals("2.0")){
+        if(featureVersion.equals("2.1")){  //SemanticAttributes moved to their relative classes organised by root namespaces
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(UrlAttributes.URL_FULL, testUri.toString()));
+            
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "GET")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L));
+        } else if(featureVersion.equals("2.0")){ //SemanticAttributes moved to a new package. HTTP_URL has changed to URL_FULL
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
                             .withAttribute(HTTP_REQUEST_METHOD, "GET")
@@ -140,6 +154,17 @@ public class JaxRsMethodTestServlet extends FATServlet {
                             .withKind(SpanKind.SERVER)
                             .withAttribute(HTTP_REQUEST_METHOD, "POST")
                             .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L));
+        } else if(featureVersion.equals("2.1")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "POST")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(UrlAttributes.URL_FULL, testUri.toString()));
+            
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "POST")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L));
         } else {
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
@@ -171,7 +196,18 @@ public class JaxRsMethodTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        if(featureVersion.equals("2.0")){
+        if(featureVersion.equals("2.1")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "PUT")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(UrlAttributes.URL_FULL, testUri.toString()));
+            
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "PUT")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L));
+        } else if(featureVersion.equals("2.0")){
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
                             .withAttribute(HTTP_REQUEST_METHOD, "PUT")
@@ -213,7 +249,18 @@ public class JaxRsMethodTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        if(featureVersion.equals("2.0")){
+        if(featureVersion.equals("2.1")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "HEAD")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 204L)
+                            .withAttribute(UrlAttributes.URL_FULL, testUri.toString()));
+            
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "HEAD")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 204L));
+        } else if(featureVersion.equals("2.0")){
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
                             .withAttribute(HTTP_REQUEST_METHOD, "HEAD")
@@ -256,7 +303,22 @@ public class JaxRsMethodTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        if(featureVersion.equals("2.0")){
+        if(featureVersion.equals("2.1")){
+            System.out.println("featureVersion 2.1 in method");
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "DELETE")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(UrlAttributes.URL_FULL, testUri.toString()));
+            
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "DELETE")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L));
+            
+            System.out.println("Finished 2.1 in method");
+        } else if(featureVersion.equals("2.0")){
+            System.out.println("featureVersion 2.0 in method");
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
                             .withAttribute(HTTP_REQUEST_METHOD, "DELETE")
@@ -268,6 +330,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
                             .withAttribute(HTTP_REQUEST_METHOD, "DELETE")
                             .withAttribute(HTTP_RESPONSE_STATUS_CODE, 200L));
         } else {
+            System.out.println("featureVersion 1.1 in method");
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
                             .withAttribute(SemanticAttributes.HTTP_METHOD, "DELETE")
@@ -282,7 +345,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID})
+    @SkipForRepeat({TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP14_MPTEL21_ID,})
     public void testPatch() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
@@ -298,7 +361,19 @@ public class JaxRsMethodTestServlet extends FATServlet {
 
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
-        if(featureVersion.equals("2.0")){
+        System.out.println("VERSION NUMBER: " + featureVersion);
+        if(featureVersion.equals("2.1")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "PATCH")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(UrlAttributes.URL_FULL, testUri.toString()));
+
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "PATCH")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L));
+        } else if(featureVersion.equals("2.0")){
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
                             .withAttribute(HTTP_REQUEST_METHOD, "PATCH")
@@ -324,7 +399,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID })
+    @SkipForRepeat({ TelemetryActions.MP50_MPTEL11_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, TelemetryActions.MP50_MPTEL20_ID, TelemetryActions.MP50_MPTEL20_JAVA8_ID, TelemetryActions.MP61_MPTEL20_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID, TelemetryActions.MP50_MPTEL21_ID, TelemetryActions.MP50_MPTEL21_JAVA8_ID, MicroProfileActions.MP71_EE10_ID, MicroProfileActions.MP71_EE11_ID })
     public void testOptionsBelowEE9() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
@@ -346,7 +421,18 @@ public class JaxRsMethodTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        if(featureVersion.equals("2.0")){
+        if(featureVersion.equals("2.1")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "OPTIONS")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(UrlAttributes.URL_FULL, testUri.toString()));
+            
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "OPTIONS")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L));
+        } else if(featureVersion.equals("2.0")){
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
                             .withAttribute(HTTP_REQUEST_METHOD, "OPTIONS")
@@ -372,7 +458,7 @@ public class JaxRsMethodTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID,TelemetryActions.MP41_MPTEL20_ID })
+    @SkipForRepeat({ TelemetryActions.MP14_MPTEL11_ID, TelemetryActions.MP41_MPTEL11_ID, TelemetryActions.MP14_MPTEL20_ID, TelemetryActions.MP41_MPTEL20_ID, TelemetryActions.MP14_MPTEL21_ID, TelemetryActions.MP41_MPTEL21_ID})
     public void testOptionsAboveEE8() {
         URI testUri = getUri();
         Span span = utils.withTestSpan(() -> {
@@ -391,7 +477,18 @@ public class JaxRsMethodTestServlet extends FATServlet {
         SpanData clientSpan = spans.get(1);
         SpanData serverSpan = spans.get(2);
 
-        if(featureVersion.equals("2.0")){
+        if(featureVersion.equals("2.1")){
+            assertThat(clientSpan, isSpan()
+                            .withKind(SpanKind.CLIENT)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "OPTIONS")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L)
+                            .withAttribute(UrlAttributes.URL_FULL, testUri.toString()));
+            
+            assertThat(serverSpan, isSpan()
+                            .withKind(SpanKind.SERVER)
+                            .withAttribute(HttpAttributes.HTTP_REQUEST_METHOD, "OPTIONS")
+                            .withAttribute(HttpAttributes.HTTP_RESPONSE_STATUS_CODE, 200L));
+        } else if(featureVersion.equals("2.0")){
             assertThat(clientSpan, isSpan()
                             .withKind(SpanKind.CLIENT)
                             .withAttribute(HTTP_REQUEST_METHOD, "OPTIONS")

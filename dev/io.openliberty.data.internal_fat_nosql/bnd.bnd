@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -23,7 +23,7 @@ javac.target: 17
 fat.minimum.java.level: 17
 fat.project: true
 
-fat.test.container.images: mongo:6.0.6
+fat.test.container.images: public.ecr.aws/docker/library/mongo:6.0.6
 
 -buildpath: \
 	com.ibm.ws.componenttest.2.0,\
@@ -36,3 +36,5 @@ fat.test.container.images: mongo:6.0.6
 	io.openliberty.jakarta.transaction.2.0,\
 	io.openliberty.org.eclipse.microprofile.config.3.0,\
 	io.openliberty.org.testcontainers;version=latest,\
+	org.eclipse.jnosql.communication:jnosql-communication-semistructured;version=1.1.4,\
+	org.eclipse.jnosql.mapping:jnosql-mapping-semistructured;version=1.1.4

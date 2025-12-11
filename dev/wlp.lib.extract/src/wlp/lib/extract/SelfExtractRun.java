@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2023 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -199,7 +200,7 @@ public class SelfExtractRun extends SelfExtract {
             } else {
                 // read existing file content
 
-                br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), "UTF-8"));
+                br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8));
                 while ((sCurrentLine = br.readLine()) != null) {
                     sb.append(sCurrentLine + "\n");
                 }
@@ -208,7 +209,7 @@ public class SelfExtractRun extends SelfExtract {
             // write property to disable 2PC commit
             String content = "-Dcom.ibm.tx.jta.disable2PC=true";
 
-            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsoluteFile()), "UTF-8"));
+            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file.getAbsoluteFile()), StandardCharsets.UTF_8));
             bw.write(sb.toString());
             bw.write(content);
 

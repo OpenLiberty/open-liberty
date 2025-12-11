@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,14 +25,14 @@ import jakarta.data.repository.Repository;
  * Do not add add a superinterface for this class, and do not add any lifecycle methods.
  * (A save method for Employee can be found on the Businesses repository)
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Employees {
 
     void deleteByLastName(String lastName);
 
     @OrderBy(value = "badge.accessLevel", ignoreCase = true)
     @OrderBy("empNum")
-    // The parameter would more naturally be char because the entity property
+    // The parameter would more naturally be char because the entity attribute
     // has type char, but JPA only allows String for LOWER(string_expression)
     Stream<Employee> findByBadgeAccessLevelIgnoreCaseGreaterThan(String exclusiveMin);
 

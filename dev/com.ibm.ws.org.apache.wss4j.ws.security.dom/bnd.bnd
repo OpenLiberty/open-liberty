@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2020, 2023 IBM Corporation and others.
+# Copyright (c) 2020, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,22 +10,23 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.wss4j:wss4j-ws-security-dom;2.4.1}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;io.openliberty.org.apache.wss4j:wss4j-ws-security-dom;2.4.4.1}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -sub: *.bnd
 
-wss4jVersion=2.4.1
+wss4jVersion=2.4.4.1
 
 -includeresource: \
-   @${repo;org.apache.wss4j:wss4j-ws-security-dom;${wss4jVersion}}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
-   org/apache/wss4j=${bin}/org/apache/wss4j
+ @\${repo;io.openliberty.org.apache.wss4j:wss4j-ws-security-dom;${wss4jVersion}}!/!META-INF/MANIFEST.MF|META-INF/maven/*, \
+ org/apache/wss4j=${bin}/org/apache/wss4j
   
-instrument.classesExcludes: org/apache/wss4j/dom/util/*.class
+instrument.classesExcludes: org/apache/wss4j/dom/util/*.class, \
+ org/apache/wss4j/dom/message/*.class
 
--buildpath: org.apache.wss4j:wss4j-ws-security-dom;version=${wss4jVersion}, \
-            com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
-            com.ibm.ws.org.slf4j.api;version=latest, \
-            com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
-            com.ibm.ws.org.opensaml.opensaml.core.3.4.5;version=latest, \
-            com.ibm.ws.org.joda.time.2.9.9;version=latest, \
-            com.ibm.websphere.appserver.spi.logging;version=latest
+-buildpath: \
+ io.openliberty.org.apache.wss4j:wss4j-ws-security-dom;version=${wss4jVersion}, \
+ com.ibm.ws.org.apache.wss4j.ws.security.common;version=latest, \
+ com.ibm.ws.org.slf4j.api;version=latest, \
+ com.ibm.ws.org.apache.santuario.xmlsec.2.2.0;version=latest, \
+ io.openliberty.org.opensaml.opensaml.core;version=latest, \
+ com.ibm.websphere.appserver.spi.logging;version=latest

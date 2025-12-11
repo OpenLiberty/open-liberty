@@ -1,0 +1,6 @@
+---
+# YML metadata file made use of by the Cognitive Ecosystem.
+# Reference Cognitive Metadata is available at: https://github.com/OpenLiberty/open-liberty/tree/integration/dev/build.example_fat/cognitiveMetadata.yml
+# description: Uncomment this field and add a description to give some notes about this bucket.
+# triageNotes: Uncomment this field if there are some short notes you would like Pipeline Monitors to see when triaging this bucket.
+functionalArea: Install

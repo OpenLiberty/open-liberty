@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.binding;
-
-
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -58,19 +56,19 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
     BasicMessageContext<InboundMessageType, OutboundMessageType> getBasicMessageContext(SsoSamlService ssoService) {
         return new BasicMessageContext<InboundMessageType, OutboundMessageType>(ssoService);
     }
-    
+
     BasicMessageContext<InboundMessageType, OutboundMessageType> getBasicMessageContext(SsoSamlService ssoService, HttpServletRequest request, HttpServletResponse response) {
         return new BasicMessageContext<InboundMessageType, OutboundMessageType>(ssoService, request, response);
     }
 
     public BasicMessageContext<InboundMessageType, OutboundMessageType> buildAcs(HttpServletRequest req,
-                                                                                                     HttpServletResponse res,
-                                                                                                     SsoSamlService ssoService,
-                                                                                                     String externalRelayState,
-                                                                                                     SsoRequest samlRequest) throws SamlException {
+                                                                                 HttpServletResponse res,
+                                                                                 SsoSamlService ssoService,
+                                                                                 String externalRelayState,
+                                                                                 SsoRequest samlRequest) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> basicMessageContext = getBasicMessageContext(ssoService, req, res);
-            
-        basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest); 
+
+        basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest);
         //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req)); //v2
         setIdpMetadaProvider(basicMessageContext);
 
@@ -81,10 +79,10 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
     }
 
     public BasicMessageContext<InboundMessageType, OutboundMessageType> buildSLO(HttpServletRequest req,
-                                                                                                     HttpServletResponse res,
-                                                                                                     SsoSamlService ssoService,
-                                                                                                     String externalRelayState,
-                                                                                                     SsoRequest samlRequest) throws SamlException {
+                                                                                 HttpServletResponse res,
+                                                                                 SsoSamlService ssoService,
+                                                                                 String externalRelayState,
+                                                                                 SsoRequest samlRequest) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> basicMessageContext = getBasicMessageContext(ssoService, req, res);
         basicMessageContext.setAndRemoveCachedRequestInfo(externalRelayState, samlRequest);
         //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req)); //v2
@@ -95,20 +93,20 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
     }
 
     public BasicMessageContext<InboundMessageType, OutboundMessageType> buildRsSaml(HttpServletRequest req,
-                                                                                                        HttpServletResponse res,
-                                                                                                        SsoSamlService ssoService,
-                                                                                                        String headerCpontent,
-                                                                                                        SsoRequest samlRequest) throws SamlException {
+                                                                                    HttpServletResponse res,
+                                                                                    SsoSamlService ssoService,
+                                                                                    String headerCpontent,
+                                                                                    SsoRequest samlRequest) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> basicMessageContext = getBasicMessageContext(ssoService, req, res); //v3
         //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req));
         //decodeSamlResponse(basicMessageContext, req);
-        basicMessageContext.setMessageContext(new MessageContext<SAMLObject>()); //v3
+        basicMessageContext.setMessageContext(new MessageContext()); //v3
         return basicMessageContext;
     }
 
     public BasicMessageContext<InboundMessageType, OutboundMessageType> buildIdp(HttpServletRequest req,
-                                                                                                     HttpServletResponse res,
-                                                                                                     SsoSamlService ssoService) throws SamlException {
+                                                                                 HttpServletResponse res,
+                                                                                 SsoSamlService ssoService) throws SamlException {
         BasicMessageContext<InboundMessageType, OutboundMessageType> basicMessageContext = getBasicMessageContext(ssoService);
         //basicMessageContext.setInboundMessageTransport(new HttpServletRequestAdapter(req));
         setIdpMetadaProvider(basicMessageContext);
@@ -124,8 +122,7 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "acsUrl:", acsUrl);
         }
-        
-        
+
         try {
             HTTPPostDecoder samlMessageDecoder = getSamlHttpPostDecoder(acsUrl, req);
             //samlMessageDecoder.decode(basicMessageContext); //v2
@@ -147,7 +144,7 @@ public class BasicMessageContextBuilder<InboundMessageType extends SAMLObject, O
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "SLO Url:", sloUrl);
         }
-        
+
         try {
             HTTPPostDecoder samlMessageDecoder = getSamlHttpPostDecoder(sloUrl, req); //v3
             //samlMessageDecoder.decode(basicMessageContext); //v2

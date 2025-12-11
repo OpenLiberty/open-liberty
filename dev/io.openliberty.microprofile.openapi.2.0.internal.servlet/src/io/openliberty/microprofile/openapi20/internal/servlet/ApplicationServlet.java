@@ -20,9 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response.Status;
 
-import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.openapi.models.OpenAPI;
-import org.eclipse.microprofile.openapi.models.info.Info;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -114,11 +112,7 @@ public class ApplicationServlet extends OpenAPIServletBase {
                     model.setServers(servers);
                 }
 
-                Info configuredInfo = infoConfigTracker.getService().getInfo()
-                                                       .orElseGet(() -> OpenAPIUtils.getConfiguredInfo(ConfigProvider.getConfig()));
-                if (configuredInfo != null) {
-                    model.setInfo(configuredInfo);
-                }
+                infoConfigTracker.getService().getInfo().ifPresent(model::setInfo);
 
                 versionConfigTracker.getService().applyConfig(model);
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,7 +29,7 @@ import jakarta.data.repository.Repository;
  * Repository that has no primary entity type and allows queries for different entity classes.
  * Do not add any lifecycle methods.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface MixedRepository { // Do not inherit from a supertype
 
     @Query("FROM City ORDER BY name DESC, stateName ASC")
@@ -56,5 +56,8 @@ public interface MixedRepository { // Do not inherit from a supertype
     CursoredPage<Business> locatedIn(String city, String state, PageRequest pageRequest, Order<Business> order);
 
     @Query("FROM Business WHERE location.address.zip=?1 OR location.address.zip=?2")
-    CursoredPage<Business> withZipCodeIn(int zip1, int zip2, PageRequest pageRequest, Sort<?>... sorts);
+    CursoredPage<Business> withZipCodeIn(ZipCode zip1,
+                                         ZipCode zip2,
+                                         PageRequest pageRequest,
+                                         Sort<?>... sorts);
 }

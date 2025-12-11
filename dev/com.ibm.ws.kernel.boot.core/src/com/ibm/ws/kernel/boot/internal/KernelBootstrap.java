@@ -305,7 +305,7 @@ public class KernelBootstrap {
             return serverLock.waitForStop();
         }
 
-        // Server did not propertly start (no delegate), so stop is fine.
+        // Server did not properly start (no delegate), so stop is fine.
         return ReturnCode.OK;
     }
 
@@ -438,7 +438,7 @@ public class KernelBootstrap {
      * Set Java 2 Security if enabled
      */
     public static void enableJava2SecurityIfSet(BootstrapConfig bootProps, List<URL> urlList) {
-        if (bootProps.get(BootstrapConstants.JAVA_2_SECURITY_PROPERTY) != null) {
+        if (bootProps.get(BootstrapConstants.JAVA_2_SECURITY_PROPERTY) != null && javaVersion() < 24) {
 
             NameBasedLocalBundleRepository repo = new NameBasedLocalBundleRepository(bootProps.getInstallRoot());
             File bestMatchFile = repo.selectBundle("com.ibm.ws.org.eclipse.equinox.region",
@@ -493,7 +493,7 @@ public class KernelBootstrap {
         String bsConsoleFormat = bootProps.get("com.ibm.ws.logging.console.format");
         String envConsoleFormat = System.getenv("WLP_LOGGING_CONSOLE_FORMAT");
 
-        //boostrap format should take precedence
+        //bootstrap format should take precedence
         String consoleFormat = bsConsoleFormat != null ? bsConsoleFormat : envConsoleFormat;
 
         if (productDisplayName == null) {
@@ -755,5 +755,15 @@ public class KernelBootstrap {
             return true;
         }
         return false;
+    }
+
+    private static int javaVersion() {
+        String version = System.getProperty("java.version");
+        String[] versionElements = version.split("\\D"); // split on non-digits
+
+        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+        // Post-JDK 9 the java.version is MAJOR.MINOR
+        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+        return Integer.valueOf(versionElements[i]);
     }
 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -31,7 +31,6 @@ import org.osgi.service.component.ComponentContext;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.authorization.jacc.JaccService;
 import com.ibm.ws.webcontainer.security.metadata.MatchResponse;
 import com.ibm.ws.webcontainer.security.metadata.SecurityConstraint;
 import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
@@ -59,23 +58,23 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
     private static final TraceComponent tc = Tr.register(ServletStartedListener.class);
 
     private static final String[] STANDARD_METHODS = { "GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "TRACE" };
-    protected static final String KEY_JACC_SERVICE = "jaccService";
-    private final AtomicServiceReference<JaccService> jaccService = new AtomicServiceReference<JaccService>(KEY_JACC_SERVICE);
+    protected static final String KEY_WEB_JACC_SERVICE = "webJaccService";
+    private final AtomicServiceReference<WebJaccService> webJaccService = new AtomicServiceReference<WebJaccService>(KEY_WEB_JACC_SERVICE);
 
-    protected void setJaccService(ServiceReference<JaccService> reference) {
-        jaccService.setReference(reference);
+    protected void setWebJaccService(ServiceReference<WebJaccService> reference) {
+        webJaccService.setReference(reference);
     }
 
-    protected void unsetJaccService(ServiceReference<JaccService> reference) {
-        jaccService.unsetReference(reference);
+    protected void unsetWebJaccService(ServiceReference<WebJaccService> reference) {
+        webJaccService.unsetReference(reference);
     }
 
     protected void activate(ComponentContext cc) {
-        jaccService.activate(cc);
+        webJaccService.activate(cc);
     }
 
     protected void deactivate(ComponentContext cc) {
-        jaccService.deactivate(cc);
+        webJaccService.deactivate(cc);
     }
 
     /** {@inheritDoc} */
@@ -97,7 +96,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
                 notifyDeployOfUncoveredMethods(webAppConfig);
             }
             if (checkDynamicAnnotation(webAppConfig)) {
-                JaccService js = jaccService.getService();
+                WebJaccService js = webJaccService.getService();
                 if (js != null) {
                     js.propagateWebConstraints(webAppConfig.getApplicationName(), webAppConfig.getModuleName(), webAppConfig);
                 }
@@ -206,7 +205,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
     /**
      * Updates the security metadata object (which at this time only has the deployment descriptor info)
      * with the webAppConfig information comprising all sources.
-     * 
+     *
      * @param securityMetadataFromDD the security metadata processed from the deployment descriptor
      * @param webAppConfig the web app configuration provided by the web container
      */
@@ -225,7 +224,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
      * Updates the security metadata object (which at this time only has the deployment descriptor info)
      * with the runAs roles defined in the servlet. The sources are the web.xml, static annotations,
      * and dynamic annotations.
-     * 
+     *
      * @param securityMetadataFromDD the security metadata processed from the deployment descriptor
      * @param servletConfig the configuration of the servlet
      */
@@ -252,7 +251,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
      * Updates the security constraints in the security metadata object (which at this time only has the deployment descriptor info)
      * with the servletSecurity element defined in the servlet.
      * A servletSecurity element only exists for servlets that have static or dynamic annotations.
-     * 
+     *
      * @param securityMetadataFromDD the security metadata processed from the deployment descriptor
      * @param servletConfig the configuration of the servlet
      */
@@ -278,8 +277,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
                 // per spec, constraints from annotations that would match patterns for constraints defined in DD
                 //  should have no effect for those patterns, so remove the patterns.
                 urlPatternsForAnnotations.removeAll(urlPatternsInDD);
-                List<SecurityConstraint> securityConstraints =
-                                createSecurityConstraints(securityMetadataFromDD, servletSecurity, urlPatternsForAnnotations);
+                List<SecurityConstraint> securityConstraints = createSecurityConstraints(securityMetadataFromDD, servletSecurity, urlPatternsForAnnotations);
                 if (securityConstraintsInDD == null) {
                     securityConstraintsInDD = new ArrayList<SecurityConstraint>();
                 }
@@ -296,7 +294,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
 
     /**
      * Constructs a list of SecurityConstraint objects from the given ServletSecurityElement and list of URL patterns.
-     * 
+     *
      * @param securityMetadataFromDD the security metadata processed from the deployment descriptor, for updating the roles
      * @param servletSecurity the ServletSecurityElement that represents the information parsed from the @ServletSecurity annotation
      * @param urlPatterns the list of URL patterns defined in the @WebServlet annotation
@@ -312,10 +310,10 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
     /**
      * Gets the security constraint from the HttpConstraint element defined in the given ServletSecurityElement
      * with the given list of url patterns.
-     * 
+     *
      * This constraint applies to all methods that are not explicitly overridden by the HttpMethodConstraint element. The method
      * constraints are defined as omission methods in this security constraint.
-     * 
+     *
      * @param securityMetadataFromDD the security metadata processed from the deployment descriptor, for updating the roles
      * @param urlPatterns the list of URL patterns defined in the @WebServlet annotation
      * @param servletSecurity the ServletSecurityElement that represents the information parsed from the @ServletSecurity annotation
@@ -336,7 +334,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
     /**
      * Gets the security constraints from the HttpMethodConstraint elements defined in the given ServletSecurityElement
      * with the given list of url patterns.
-     * 
+     *
      * @param securityMetadataFromDD the security metadata processed from the deployment descriptor, for updating the roles
      * @param urlPatterns the list of URL patterns defined in the @WebServlet annotation
      * @param servletSecurity the ServletSecurityElement that represents the information parsed from the @ServletSecurity annotation
@@ -361,7 +359,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
 
     /**
      * Creates a security constraint from the given web resource collections, url patterns and HttpConstraint element.
-     * 
+     *
      * @param securityMetadataFromDD the security metadata processed from the deployment descriptor, for updating the roles
      * @param webResourceCollections a list of web resource collections
      * @param httpConstraint the element representing the information in the @HttpConstraint annotation
@@ -384,7 +382,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
 
     /**
      * Gets a list of roles from the rolesAllowed element in the @HttpConstraint annotation
-     * 
+     *
      * @param httpConstraint the element representing the information in the @HttpConstraint annotation
      * @return a list of allowed roles defined in the annotation's security constraint
      */
@@ -399,9 +397,9 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
 
     /**
      * Determines if SSL is required for the given HTTP constraint.
-     * 
+     *
      * SSL is required if the transport guarantee is any value other than NONE.
-     * 
+     *
      * @param httpConstraint the element representing the information in the @HttpConstraint annotation
      * @return true if SSL is required, otherwise false
      */
@@ -416,10 +414,10 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
 
     /**
      * Determines if access is precluded for the given HTTP constraint.
-     * 
+     *
      * Access is precluded when there are no roles, and the emptyRoleSemantic
      * defined in the annotation is DENY.
-     * 
+     *
      * @param httpConstraint the element representing the information in the @HttpConstraint annotation
      * @return true if access is precluded, otherwise false
      */
@@ -435,10 +433,10 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
 
     /**
      * Determines if access is uncovered for the given HTTP constraint.
-     * 
+     *
      * Access is uncovered when there are no roles, and the emptyRoleSemantic
      * defined in the annotation is PERMIT.
-     * 
+     *
      * @param httpConstraint the element representing the information in the @HttpConstraint annotation
      * @return true if access is precluded, otherwise false
      */
@@ -455,7 +453,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
 
     /**
      * Sets the given security metadata on the deployed module's web module metadata for retrieval later.
-     * 
+     *
      * @param deployedModule the deployed module to get the web module metadata
      * @param securityMetadataFromDD the security metadata processed from the deployment descriptor
      */
@@ -472,7 +470,7 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
 
     /**
      * Gets the security metadata from the web app config
-     * 
+     *
      * @param webAppConfig the webAppConfig representing the deployed module
      * @return the security metadata
      */

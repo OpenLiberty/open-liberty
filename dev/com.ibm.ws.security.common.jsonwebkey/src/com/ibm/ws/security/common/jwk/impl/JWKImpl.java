@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,7 @@ public class JWKImpl implements JWK {
 
     protected String kid = null;
     protected String x5t = null;
+    protected String x5tS256 = null;
     protected String alg = null;
     protected String use = null;
     protected String kty = null;
@@ -81,6 +82,7 @@ public class JWKImpl implements JWK {
 
         JSONObject jkid = (JSONObject) keyObject.get("kid");
         JSONObject jx5t = (JSONObject) keyObject.get("x5t");
+        JSONObject jx5tS256 = (JSONObject) keyObject.get("x5t#S256");
         JSONObject jalg = (JSONObject) keyObject.get("alg");
         JSONObject jkty = (JSONObject) keyObject.get("kty");
         JSONObject juse = (JSONObject) keyObject.get("use");
@@ -90,6 +92,9 @@ public class JWKImpl implements JWK {
         }
         if (jx5t != null) {
             x5t = jx5t.toString();
+        }
+        if (jx5tS256 != null) {
+            x5tS256 = jx5tS256.toString();
         }
         if (jalg != null) {
             alg = jalg.toString();
@@ -105,6 +110,7 @@ public class JWKImpl implements JWK {
             Tr.debug(tc, "Algorithm=" + alg);
             Tr.debug(tc, "KeyID=" + kid);
             Tr.debug(tc, "KeyThumprint=" + x5t);
+            Tr.debug(tc, "SHA256 KeyThumbprint=" + x5tS256);
         }
         if ("sig".equals(use)) {
             buildPublicKey(keyObject, kty);
@@ -160,6 +166,12 @@ public class JWKImpl implements JWK {
     @Override
     public String getKeyX5t() {
         return this.x5t;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String getKeyX5tS256() {
+        return this.x5tS256;
     }
 
     /** {@inheritDoc} */

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2021 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -82,7 +82,8 @@ public class MaxSearchResultTest {
         Log.info(c, "tearDown", "Stopping the server...");
 
         try {
-            server.stopServer("CWIML1018E");
+            server.stopServer("CWIML1018E", "CWWKE1102W");
+            //added "CWWKE1102W" to ignore server quiesce timeouts due to slow test machines
         } finally {
             server.removeInstalledAppForValidation("userRegistry");
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");

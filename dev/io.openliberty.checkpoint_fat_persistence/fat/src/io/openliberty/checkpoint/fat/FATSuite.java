@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,21 @@
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
+import java.time.Duration;
+
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
+import org.testcontainers.containers.Db2Container;
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy;
+import org.testcontainers.utility.DockerImageName;
 
+import componenttest.containers.ImageBuilder;
+import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -29,4 +38,22 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 })
 
 public class FATSuite extends TestContainerSuite {
+
+    private static final DockerImageName DB2_SSL = ImageBuilder.build("db2-ssl:12.1.1.0")
+                    .getDockerImageName()
+                    .asCompatibleSubstituteFor("icr.io/db2_community/db2");
+
+    @ClassRule
+    public static Db2Container db2 = new Db2Container(DB2_SSL)
+                    .acceptLicense()
+                    .withUsername("db2inst1") // set in Dockerfile
+                    .withPassword("password") // set in Dockerfile
+                    .withDatabaseName("testdb") // set in Dockerfile
+                    .withExposedPorts(50000, 50001) // 50k is regular 50001 is secure
+                    // Use 5m timeout for local runs, 35m timeout for remote runs (extra time since the DB2 container can be slow to start)
+                    .waitingFor(new LogMessageWaitStrategy()
+                                    .withRegEx(".*DB2 SSH SETUP DONE.*")
+                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN && !FATRunner.ARM_ARCHITECTURE ? 5 : 35)))
+                    .withLogConsumer(new SimpleLogConsumer(FATSuite.class, "db2-ssl"))
+                    .withReuse(true);
 }

@@ -1,13 +1,10 @@
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME N/A
 #COMPONENTPREFIX CWWKO
@@ -157,3 +154,27 @@ OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Aggiornare l'attributo openA
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: L'elemento di configurazione mpOpenAPI info nel file server.xml non \u00e8 valido. Devono essere impostati entrambi gli attributi title e version. L'elemento info viene ignorato.
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=I campi title e version sono propriet\u00e0 obbligatorie nell'oggetto info di un documento OpenAPI. Quando si configura l'oggetto info, \u00e8 necessario fornire un valore per gli attributi title e version.
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Assicurarsi che gli attributi title e version siano impostati su valori validi nell'elemento info mpOpenAPI.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: L''elemento di configurazione {0} include{1}", ma non corrisponde ad alcuna applicazione o modulo web distribuito.
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=Il server \u00e8 configurato per creare la documentazione OpenAPI per il nome dell'applicazione o del modulo, ma non sono stati distribuiti moduli web o applicazioni con tale nome.
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Verificare che tutte le applicazioni siano state avviate correttamente e che i nomi nella configurazione siano stati specificati correttamente.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: La propriet\u00e0 {0} MicroProfile Config viene ignorata perch\u00e9 la configurazione equivalente \u00e8 fornita nel file server.xml 
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=Quando questa propriet\u00e0 \u00e8 impostata e la stessa funzione \u00e8 configurata tramite il file server.xml, viene utilizzata la configurazione del file server.xml e la propriet\u00e0 MicroProfile Config viene ignorata.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Rimuovere la propriet\u00e0 MicroProfile Config.
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: La propriet\u00e0 {0} MicroProfile Config viene ignorata perch\u00e9 nel file server.xml \u00e8 presente una configurazione in conflitto.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=Quando questa propriet\u00e0 \u00e8 impostata e la stessa funzione \u00e8 configurata tramite il file server.xml, viene utilizzata la configurazione del file server.xml e la propriet\u00e0 MicroProfile Config viene ignorata.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Rimuovere la propriet\u00e0 MicroProfile Config e verificare che la configurazione nel file server.xml sia corretta.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: L''elemento di annotazione {0} nella classe {1} viene ignorato perch\u00e9 richiede la versione {2} di OpenAPI, ma la versione corrente OpenAPI \u00e8 {3}.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=L'elemento di annotazione si riferisce a una caratteristica aggiunta a una versione pi\u00f9 recente delle specifiche OpenAPI rispetto a quella configurata. La versione di OpenAPI in uso non \u00e8 in grado di rappresentare queste informazioni, pertanto sono escluse dalla documentazione OpenAPI prodotta.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Considerare la rimozione dell'elemento di annotazione o l'impostazione dell'elemento di configurazione openAPIVersion a una versione che lo supporta nel file server.xml.
+
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W=CWWKO1688W: Si \u00e8 verificato un errore durante la lettura della cache di OpenAPI per l''applicazione {0}. La cache non verr\u00e0 utilizzata. L''errore \u00e8 {1}
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.explanation=La funzione MicroProfile OpenAPI memorizza alcuni dati calcolati durante l'avvio dell'applicazione per evitare di calcolarli nuovamente agli avvii futuri del server se l'applicazione \u00e8 invariata. Si \u00e8 verificato un errore durante il tentativo di lettura di questi dati, che verranno quindi ricalcolati.
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.
+
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W=CWWKO1689W: Si \u00e8 verificato un errore durante la scrittura della cache di OpenAPI per l''applicazione {0}. La cache non sar\u00e0 disponibile al prossimo avvio. L''errore \u00e8 {1}
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.explanation=La funzione MicroProfile OpenAPI memorizza alcuni dati calcolati durante l'avvio dell'applicazione per evitare di calcolarli nuovamente agli avvii futuri del server se l'applicazione \u00e8 invariata. Si \u00e8 verificato un errore durante il tentativo di scrivere questi dati, che verranno quindi ricalcolati al prossimo avvio del server.
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.useraction=Esaminare il file message.log del server e i log FFDC per identificare il problema.

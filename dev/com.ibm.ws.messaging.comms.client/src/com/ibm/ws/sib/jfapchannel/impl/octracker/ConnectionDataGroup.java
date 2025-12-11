@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2023 IBM Corporation and others.
+ * Copyright (c) 2004, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl.octracker;
 
@@ -704,16 +701,15 @@ public class ConnectionDataGroup
                         NetworkConnection vc = connectOverNetwork(jfapAddressHolder, ncfHolder);
                         connectionDataToUse = createnewConnectionData(vc);
                         if(connectionDataToUse.getConnection().isUsingNetty()) {
-                        	if(vc instanceof NettyNetworkConnection) {
-                        		try {
-									((NettyNetworkConnection) vc).linkOutboundConnection(connectionDataToUse.getConnection());
-								} catch (NettyException e) {
-									// TODO Auto-generated catch block
-									e.printStackTrace();
-									throw new JFapConnectFailedException(e.getMessage());
-								}
-                        	}else
-                        		throw new JFapConnectFailedException("Couldn't link outbound channel appropriately");
+                            if(vc instanceof NettyNetworkConnection) {
+                                try {
+                                    ((NettyNetworkConnection) vc).linkOutboundConnection(connectionDataToUse.getConnection());
+                                } catch (NettyException e) {
+                                    throw new JFapConnectFailedException(e.getMessage());
+                                }
+                            } else {
+                                throw new JFapConnectFailedException("Couldn't link outbound channel appropriately");
+                            }
                         }
                         isNewConnectionData = true;
                     } catch (FrameworkException frameworkException)

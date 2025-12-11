@@ -805,7 +805,7 @@ ERROR_SINGLE_REPO_CONNECTION_FAILED=CWWKF1389E: Unable to create a JSON file at 
 ERROR_SINGLE_REPO_CONNECTION_FAILED.explanation=The feature in the ESA file will not be installed.
 ERROR_SINGLE_REPO_CONNECTION_FAILED.useraction=Ensure that write access is available for the directory where the JSON file will be created.
 
-ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: The configured Maven Repository cannot be reached. Verify that your computer has network access and firewalls are configured correctly, then try the action again. If the connection still fails, the repository server might be temporarily unavailable.
+ERROR_FAILED_TO_CONNECT_MAVEN=CWWKF1390E: The "{0}" configured Maven Repository cannot be reached. Verify that your computer has network access and firewalls are configured correctly, then try the action again. If the connection still fails, the repository server might be temporarily unavailable.
 ERROR_FAILED_TO_CONNECT_MAVEN.explanation=An error occurred when connecting to the configured Maven Repository.
 ERROR_FAILED_TO_CONNECT_MAVEN.useraction=Ensure that the system can access the internet and the appropriate repository.
 

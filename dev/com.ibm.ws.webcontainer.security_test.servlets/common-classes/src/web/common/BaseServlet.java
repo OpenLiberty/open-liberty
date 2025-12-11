@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,6 +15,7 @@ package web.common;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Method;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Set;
@@ -165,6 +166,17 @@ public abstract class BaseServlet extends HttpServlet {
         writeLine(sb, "getRequestURL: " + req.getRequestURL().toString());
 
         try {
+            Class policyContext = Class.forName("javax.security.jacc.PolicyContext");
+            Method m = policyContext.getMethod("getHandlerKeys");
+            Set<String> handlerKeys = (Set<String>) m.invoke(null);
+            for (String key : handlerKeys) {
+                writeLine(sb, "handlerKey(" + key + ")=true\n");
+            }
+        } catch (Exception e) {
+            // expected for non JACC scenarios
+        }
+
+        try {
             // Get the CallerSubject
             Subject callerSubject = WSSubject.getCallerSubject();
             writeLine(sb, "callerSubject: " + callerSubject);
@@ -221,7 +233,7 @@ public abstract class BaseServlet extends HttpServlet {
      * logic is done, a flush() may get called and lock out changes to the
      * response.
      *
-     * @param sb Running StringBuffer
+     * @param sb  Running StringBuffer
      * @param msg Message to write
      */
     void writeLine(StringBuffer sb, String msg) {

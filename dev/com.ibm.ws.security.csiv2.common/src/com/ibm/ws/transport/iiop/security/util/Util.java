@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,11 +18,10 @@ package com.ibm.ws.transport.iiop.security.util;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.UnexpectedException;
@@ -229,7 +228,7 @@ public final class Util {
         try {
             byte[] oid_arr = encodeOID(oid);
             int oid_len = oid_arr.length;
-            byte[] name_arr = name.getBytes("UTF-8");
+            byte[] name_arr = name.getBytes(StandardCharsets.UTF_8);
             int name_len = name_arr.length;
 
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -314,10 +313,9 @@ public final class Util {
      * 
      * @param scopedNameBytes
      * @return
-     * @throws UnsupportedEncodingException
      */
-    public static String extractUserNameFromScopedName(byte[] scopedNameBytes) throws UnsupportedEncodingException {
-        String scopedUserName = new String(scopedNameBytes, "UTF8");
+    public static String extractUserNameFromScopedName(byte[] scopedNameBytes) {
+        String scopedUserName = new String(scopedNameBytes, StandardCharsets.UTF_8);
         return extractUserNameFromScopedName(scopedUserName);
     }
 
@@ -389,7 +387,7 @@ public final class Util {
         try {
             // create and encode a GSSUP initial context token
             InitialContextToken init_token = new InitialContextToken();
-            init_token.username = user.getBytes("UTF-8");
+            init_token.username = user.getBytes(StandardCharsets.UTF_8);
             init_token.password = getUTF8Bytes(pwd);
             init_token.target_name = encodeGSSExportName(GSSUPMechOID.value.substring(4), target);
 
@@ -500,8 +498,7 @@ public final class Util {
      */
     @Sensitive
     private static byte[] getUTF8Bytes(@Sensitive char[] pwd) {
-        Charset utf8 = Charset.forName("UTF-8");
-        ByteBuffer bb = utf8.encode(CharBuffer.wrap(pwd));
+        ByteBuffer bb = StandardCharsets.UTF_8.encode(CharBuffer.wrap(pwd));
         try {
             bb.rewind(); // not clear whether this is necessary
             byte[] bytes = new byte[bb.limit()];
@@ -533,7 +530,7 @@ public final class Util {
                     if (token != null) {
                         gssup_tok.username = token.username;
                         gssup_tok.password = token.password;
-                        gssup_tok.target_name = decodeGSSExportedName(token.target_name).getName().getBytes("UTF-8");
+                        gssup_tok.target_name = decodeGSSExportedName(token.target_name).getName().getBytes(StandardCharsets.UTF_8);
 
                         result = true;
                     }

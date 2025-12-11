@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright (c) 2002, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -883,6 +883,13 @@ WTRN0155_CHECKPOINT_NEW_TX_STACK=WTRN0155W: An application began or required a t
 WTRN0155_CHECKPOINT_NEW_TX_STACK.explanation=The stack trace was captured when the transaction was created. The stack trace helps users determine which applications begin transactions during application startup and then cause the checkpoint request to fail.
 WTRN0155_CHECKPOINT_NEW_TX_STACK.useraction=Examine the stack trace to determine which application began a new transaction during the server checkpoint request.
 
+WTRN0156_CANNOT_RESUME=WTRN0156E: The transaction cannot be resumed on the current thread because it is active on a different thread ({0}).
+WTRN0156_CANNOT_RESUME.explanation=Liberty does not allow a transaction to be active simultaneously on multiple threads.
+WTRN0156_CANNOT_RESUME.useraction=Suspend the transaction before resuming it on another thread.
+
+WTRN0157_CANNOT_RESUME=WTRN0157E: The transaction cannot be resumed on the current thread because it is active elsewhere.
+WTRN0157_CANNOT_RESUME.explanation=Liberty does not allow a transaction to be active simultaneously on multiple threads.
+WTRN0157_CANNOT_RESUME.useraction=Suspend the transaction before resuming it on another thread.
+
 # --------------------------------
 # WTRN9xxx Range reserved for zSeries-specific transaction messages - only used for releases prior to v5.1
-

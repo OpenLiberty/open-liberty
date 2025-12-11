@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+/*
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ */
 
 package com.ibm.ws.sib.processor.impl;
 
@@ -364,6 +364,22 @@ public class AnycastInputHandler implements InputHandler, ControlHandler
          false);
     }
 
+  private static final Filter COMPLETED_PREFIX_FILTER = new Filter() {
+      public boolean filterMatches(AbstractItem item) { return item instanceof AICompletedPrefixItem; }
+  };
+
+  private static boolean isAIProtocolItemStreamValid(AIProtocolItemStream stream) throws MessageStoreException {
+      if (null == stream) return false;
+      NonLockingCursor cursor = stream.newNonLockingItemCursor(COMPLETED_PREFIX_FILTER);
+      try {
+          cursor.allowUnavailableItems();
+          if (null != cursor.next()) return true;
+          SibTr.warning(tc, "MISSING_COMPLETED_PREFIX_IN_STREAM_CWSIP0511", new Object[] { stream });
+          return false;
+      } finally {
+          cursor.finished();
+      }
+  }
 
   /**
    * Constructor
@@ -472,8 +488,7 @@ public class AnycastInputHandler implements InputHandler, ControlHandler
         // regardless of consumer cardinality
         cursor = containerItemStream.newNonLockingItemStreamCursor(null);
         _persistentStreamState = (AIProtocolItemStream) cursor.next();
-        // if (containerItemStream.getStatistics().getAvailableItemCount() > 0)
-        if (_persistentStreamState != null)
+        if (isAIProtocolItemStreamValid(_persistentStreamState))
         {
           // Instantiate stream and initialize with persistent state
           SIBUuid12 streamId = null; // will get it from the item stream

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.MessageDigest;
 import java.security.PrivilegedAction;
@@ -175,7 +176,7 @@ public class ServerDumpPackager {
                             javacoreAscii.setWritable(true);
 
                             InputStreamReader reader = new InputStreamReader(new FileInputStream(javacoreEbcdic), Charset.forName("IBM-1047"));
-                            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(javacoreAscii), Charset.forName("US-ASCII"));
+                            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(javacoreAscii), StandardCharsets.US_ASCII);
                             int readInt;
                             while ((readInt = reader.read()) != -1) {
                                 writer.write(readInt);
@@ -260,19 +261,20 @@ public class ServerDumpPackager {
 
     static class FolderStructureGenerator {
 
-        protected static MessageDigest newMD5MessageDigest() {
+        protected static MessageDigest getMessageDigest() {
             try {
-                return MessageDigest.getInstance("MD5");
+                return MessageDigest.getInstance("SHA-512");
             } catch (Exception ex) {
                 return null;
             }
         }
 
-        private static final int NUM_MD5_BYTES = 16;
+        private static final int HASH_LEN = 64;
+        private static final int HASH_STR_LEN = HASH_LEN * 2;
 
-        private final MessageDigest md5 = newMD5MessageDigest();
-        private final byte[] md5Bytes = new byte[0x4000];
-        private final char[] md5Chars = new char[NUM_MD5_BYTES * 2];
+        private final MessageDigest digest = getMessageDigest();
+        private final byte[] hashBytes = new byte[0x4000];
+        private final char[] hashChars = new char[HASH_STR_LEN];
 
         private boolean generate(File folder, File output) {
             if (folder == null || output == null) {
@@ -315,15 +317,15 @@ public class ServerDumpPackager {
                         if (!BootstrapConstants.LOC_AREA_NAME_USR.equals(file.getName()))
                             printFileList(file, writer, leadingPathLength);
                     } else {
-                        writer.format("f  %1$10d  %2$tF %2$tT  %3$32s  %4$s%n", file.length(), file.lastModified(), md5(file), fileName);
+                        writer.format("f  %1$10d  %2$tF %2$tT  %3$" + HASH_STR_LEN + "s  %4$s%n", file.length(), file.lastModified(), hash(file), fileName);
                     }
                 }
             }
         }
 
-        protected String md5(File file) {
-            if (md5 == null) {
-                return "MD5 unavailable";
+        protected String hash(File file) {
+            if (digest == null) {
+                return "SHA-512 unavailable";
             }
 
             InputStream in = null;
@@ -331,8 +333,8 @@ public class ServerDumpPackager {
                 in = new FileInputStream(file);
                 in = new BufferedInputStream(in);
 
-                for (int read; (read = in.read(md5Bytes)) != -1;) {
-                    md5.update(md5Bytes, 0, read);
+                for (int read; (read = in.read(hashBytes)) != -1;) {
+                    digest.update(hashBytes, 0, read);
                 }
             } catch (IOException ex) {
                 return ex.toString();
@@ -340,15 +342,15 @@ public class ServerDumpPackager {
                 Utils.tryToClose(in);
             }
 
-            byte[] bytes = md5.digest();
+            byte[] bytes = digest.digest();
             int j = 0;
-            for (int i = 0; i < NUM_MD5_BYTES; i++) {
+            for (int i = 0; i < HASH_LEN; i++) {
                 byte b = bytes[i];
-                md5Chars[j++] = Character.forDigit((b >> 4) & 0xf, 16);
-                md5Chars[j++] = Character.forDigit(b & 0xf, 16);
+                hashChars[j++] = Character.forDigit((b >> 4) & 0xf, 16);
+                hashChars[j++] = Character.forDigit(b & 0xf, 16);
             }
 
-            return new String(md5Chars);
+            return new String(hashChars);
         }
     }
 

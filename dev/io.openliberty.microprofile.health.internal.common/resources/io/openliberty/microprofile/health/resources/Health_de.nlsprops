@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2024 IBM Corporation and others.
+# Copyright (c) 2021, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@
 # Messages used by Health Impl -  range is 0000-0999
 # The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
 # The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+# The 0100-0149 range is reserved for messages that are issued by the file-based health check mechanism
 #-----------------------------------------------------------------------------------------------------------------------------
 
 
@@ -55,3 +56,44 @@ readiness.healthcheck.applications.not.started.down.CWMMH0053W.useraction=Diese 
 startup.healthcheck.applications.not.started.down.CWMMH0054W=CWMMH0054W: Die Startstatuspr\u00fcfung hat einen Gesamtstatus von DOWN ergeben, weil die folgenden Anwendungen noch nicht gestartet sind: {0}
 startup.healthcheck.applications.not.started.down.CWMMH0054W.explanation=Die Startstatuspr\u00fcfung hat den Gesamtstatus DOWN gemeldet, weil die angegebenen Anwendungen noch nicht gestartet und daher f\u00fcr die Verarbeitung von Anforderungen nicht bereit sind.
 startup.healthcheck.applications.not.started.down.CWMMH0054W.useraction=Diese Warnung ist eine Aufzeichnung des Status DOWN und es ist keine Benutzeraktion erforderlich. Warten Sie, bis alle Anwendungen gestartet sind. Nachdem alle Anwendungen gestartet wurden, werden die benutzerdefinierten Statuspr\u00fcfungen verarbeitet.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# File-based health check messages
+#-----------------------------------------------------------------------------------------------------------------------------
+file.healthcheck.health.directory.create.fail.CWMMH0100W=CWMMH0100W: Das Verzeichnis /health kann unter dem folgenden Pfad nicht erstellt werden [ {0} ]. Die dateibasierte Health-Check-Funktion wird deaktiviert.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.explanation=Die Laufzeitumgebung war nicht in der Lage, das erforderliche Verzeichnis /health zu erstellen, damit die dateibasierten Gesundheitspr\u00fcfungen ordnungsgem\u00e4\u00df funktionieren.
+file.healthcheck.health.directory.create.fail.CWMMH0100W.useraction=Der Benutzer muss die Ursache ermitteln, die die Laufzeitumgebung daran hindert, das Verzeichnis /health zu erstellen.
+
+
+file.healthcheck.health.directory.write.fail.CWMMH0101W=CWMMH0101W: Es kann nicht in das Verzeichnis {0} geschrieben werden. Die dateibasierte Health-Check-Funktion wird deaktiviert.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.explanation=Die Laufzeitumgebung ben\u00f6tigt Schreibrechte f\u00fcr das Verzeichnis /health, um die Dateien "live", "ready" und "started" zu erstellen, damit die dateibasierten Gesundheitspr\u00fcfungen ordnungsgem\u00e4\u00df funktionieren.
+file.healthcheck.health.directory.write.fail.CWMMH0101W.useraction=Der Benutzer muss die Ursache f\u00fcr das Berechtigungsproblem ermitteln.
+
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W=CWMMH0102W: Die Laufzeitumgebung kann den Pfad f\u00fcr das Verzeichnis /health nicht aufl\u00f6sen. Die dateibasierte Health-Check-Funktion wird deaktiviert.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.explanation=Die Laufzeit erfordert, dass die interne Eigenschaft server.output.dir oder die Umgebungsvariable WLP_OUTPUT_DIR gesetzt ist, um den Speicherort des Verzeichnisses /health zu bestimmen.
+file.healthcheck.health.directory.resolution.fail.CWMMH0102W.useraction=Stellen Sie sicher, dass die Umgebungsvariable WLP_OUTPUT_DIR richtig gesetzt ist.
+
+file.healthcheck.file.name.conflict.CWMMH0105W=CWMMH0106W: Die Laufzeitumgebung hat das Vorhandensein des folgenden Verzeichnisses entdeckt [ {0} ]. F\u00fcr die dateibasierte Gesundheitspr\u00fcfung unter diesem Pfad ist eine Datei mit demselben Namen erforderlich. Die dateibasierte Health-Check-Funktion wird deaktiviert.
+file.healthcheck.file.name.conflict.CWMMH0105W.explanation=Die dateibasierten Gesundheitspr\u00fcfungen erfordern die Erstellung und Verwendung der Dateien "live", "ready" und "started" im Verzeichnis /health. Im Verzeichnis /health ist bereits ein Verzeichnis mit einem dieser Namen vorhanden, so dass die erforderlichen Dateien nicht erstellt werden k\u00f6nnen.
+file.healthcheck.file.name.conflict.CWMMH0105W.useraction=Das Verzeichnis wird nicht von dieser Laufzeitumgebung erstellt und kann Inhalte enthalten, die f\u00fcr den Benutzer wichtig sind. Bitte entfernen oder verschieben Sie das Verzeichnis.
+
+file.healthcheck.file.delete.fail.CWMMH0106W=CWMMH0106W: Vorhandene Datei unter [ {0} ] kann nicht gel\u00f6scht werden. Die dateibasierte Health-Check-Funktion wird deaktiviert.
+file.healthcheck.file.delete.fail.CWMMH0106W.explanation=Die dateibasierten Gesundheitspr\u00fcfungen erfordern die Erstellung und Verwendung der Dateien "live", "ready" und "started" im Verzeichnis /health. Damit die dateibasierten Gesundheitspr\u00fcfungen korrekt funktionieren, d\u00fcrfen diese Dateien beim Start der Laufzeitumgebung nicht vorhanden sein. Die Laufzeitumgebung hat versucht, die vorhandene Datei zu l\u00f6schen, konnte dies aber nicht.
+file.healthcheck.file.delete.fail.CWMMH0106W.useraction=Der Benutzer muss die Ursache daf\u00fcr finden, dass die Laufzeitumgebung die Dateien nicht l\u00f6schen kann.
+
+file.healthcheck.system.inconsistency.CWMMH0107W=CWMMH0107W: Die Laufzeitumgebung hat Inkonsistenzen mit dem lokalen dateibasierten Health-Check-Mechanismus festgestellt. Der dateibasierte Health-Check-Mechanismus ist deaktiviert.
+file.healthcheck.system.inconsistency.CWMMH0107W.explanation=Es wurden Unstimmigkeiten mit dem Dateisystem festgestellt. So ist beispielsweise die Datei "started" vorhanden, bevor die Laufzeitumgebung die Datei "started" erstellt.
+file.healthcheck.system.inconsistency.CWMMH0107W.useraction=L\u00f6schen Sie das Verzeichnis < server.output.dir >/health und starten Sie den Server neu.
+
+check.interval.config.invalid.CWMMH01010W=CWMMH01010W: F\u00fcr das Pr\u00fcfintervall wurde ein ung\u00fcltiger Wert [ {0} ] angegeben. Der angegebene Wert muss aus einer Zahl bestehen, gefolgt von einer optionalen Zeiteinheit "ms" f\u00fcr Millisekunden oder "s" f\u00fcr Sekunden. Wenn keine Zeiteinheit angegeben wird, ist der Wert standardm\u00e4\u00dfig in Sekunden. Die Standardlaufzeit betr\u00e4gt 10 Sekunden.
+check.interval.config.invalid.CWMMH01010W.explanation=Die Konfiguration des Pr\u00fcfintervalls akzeptiert nur eine Zahl, gefolgt von einer optionalen Zeiteinheit von "ms" f\u00fcr Millisekunden oder "s" f\u00fcr Sekunden. Wenn keine Zeiteinheit angegeben wird, ist der Wert standardm\u00e4\u00dfig in Sekunden.
+check.interval.config.invalid.CWMMH01010W.useraction=Geben Sie einen korrekten Wert f\u00fcr die Konfiguration des Pr\u00fcfintervalls ein.
+
+startup.check.interval.config.invalid.CWMMH01011W=CWMMH01011W: Es wurde ein ung\u00fcltiger Wert [ {0} ] f\u00fcr das Intervall der Startpr\u00fcfung angegeben. Der angegebene Wert muss aus einer Zahl bestehen, gefolgt von einer optionalen Zeiteinheit "ms" f\u00fcr Millisekunden oder "s" f\u00fcr Sekunden. Wenn keine Zeiteinheit angegeben wird, ist der Wert standardm\u00e4\u00dfig in Millisekunden angegeben. Der Standardwert f\u00fcr die Laufzeit betr\u00e4gt 100 Millisekunden.
+startup.check.interval.config.invalid.CWMMH01011W.explanation=Die Konfiguration des Startpr\u00fcfungsintervalls akzeptiert nur Werte mit einer Zahl, gefolgt von einer optionalen Zeiteinheit von "ms" f\u00fcr Millisekunden oder "s" f\u00fcr Sekunden. Wenn keine Zeiteinheit angegeben wird, ist der Wert standardm\u00e4\u00dfig in Millisekunden angegeben.
+startup.check.interval.config.invalid.CWMMH01011W.useraction=Geben Sie einen korrekten Wert f\u00fcr die Konfiguration des Startpr\u00fcfintervalls an.
+
+startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: Die Konfiguration des Startpr\u00fcfintervalls wurde eingestellt, bevor das Pr\u00fcfintervall konfiguriert wurde. Die dateibasierte Zustandspr\u00fcfung ist deaktiviert, wenn das Pr\u00fcfintervall nicht konfiguriert ist.
+startup.check.interval.config.only.set.CWMMH01012W.explanation=Wenn Sie nur das Intervall f\u00fcr die Startup-Pr\u00fcfung konfigurieren, wird der dateibasierte Zustandspr\u00fcfungsmechanismus nicht aktiviert.
+startup.check.interval.config.only.set.CWMMH01012W.useraction=Konfigurieren Sie das Pr\u00fcfintervall, um den dateibasierten Gesundheitspr\u00fcfungsmechanismus zu aktivieren.

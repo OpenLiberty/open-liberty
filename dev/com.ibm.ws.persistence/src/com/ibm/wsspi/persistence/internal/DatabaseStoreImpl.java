@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,7 @@
  *******************************************************************************/
 package com.ibm.wsspi.persistence.internal;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.sql.DataSource;
@@ -310,10 +309,10 @@ public class DatabaseStoreImpl implements DatabaseStore {
         List<InMemoryMappingFile> inMemoryFiles;
         if (entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR)) {
             String ormFileContents = createOrmFileContentsForPersistentExecutor(strategy);
-            inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes("UTF-8")));
+            inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes(StandardCharsets.UTF_8)));
         } else if (entitySet.equals(SpecialEntitySet.BATCH)) {
             String ormFileContents = createOrmFileContentsForBatch(entityClassNames, strategy);
-            inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes("UTF-8")));
+            inMemoryFiles = Collections.singletonList(new InMemoryMappingFile(ormFileContents.getBytes(StandardCharsets.UTF_8)));
         } else {
             // hidden internal non-ship property for experimenting with Jakarta Data
             @SuppressWarnings("unchecked") // TODO if persistence service could read @Table from the entity class, we could remove this hack
@@ -354,7 +353,8 @@ public class DatabaseStoreImpl implements DatabaseStore {
             if (deactivated) {
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "createPersistenceServiceUnit", "deactivated");
-                throw new IllegalStateException();
+                String errMsg = Tr.formatMessage(tc, "DEACTIVATED_CWWKD0202E");
+                throw new IllegalStateException(errMsg);
             }
 
             // ignore table creation for extra PersistenceServiceUnit that persistent executor creates to allow TRANSACTION_READ_UNCOMMITTED
@@ -370,7 +370,8 @@ public class DatabaseStoreImpl implements DatabaseStore {
             if (deactivated) {
                 if (trace && tc.isEntryEnabled())
                     Tr.exit(this, tc, "createPersistenceServiceUnit", "deactivated");
-                throw new IllegalStateException();
+                String errMsg = Tr.formatMessage(tc, "DEACTIVATED_CWWKD0202E");
+                throw new IllegalStateException(errMsg);
             }
 
             successful = true;
@@ -705,11 +706,10 @@ public class DatabaseStoreImpl implements DatabaseStore {
                                                 String tablePrefix,
                                                 LinkedHashSet<String> tableNames, // entries correspond to entityClassNames
                                                 String[] entityClassNames,
-                                                String[] entityClassEntries)
-                    throws UnsupportedEncodingException {
+                                                String[] entityClassEntries) {
         return ((entityClassNames == null || entityClassNames.length == 0) && (entityClassEntries == null || entityClassEntries.length == 0))
                         ? null
-                        : new InMemoryMappingFile(createOrm(schemaName, tablePrefix, tableNames, entityClassNames, entityClassEntries).getBytes("UTF-8"));
+                        : new InMemoryMappingFile(createOrm(schemaName, tablePrefix, tableNames, entityClassNames, entityClassEntries).getBytes(StandardCharsets.UTF_8));
     }
 
     /**

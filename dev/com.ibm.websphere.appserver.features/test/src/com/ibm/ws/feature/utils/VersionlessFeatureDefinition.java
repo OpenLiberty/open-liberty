@@ -80,8 +80,8 @@ public class VersionlessFeatureDefinition {
         featuresAndPlatformAndKind.add(featurePlatformAndKind);
     }
 
-    public void addFeaturePlatformAndKind(String feature, String platform, String kind) {
-        featuresAndPlatformAndKind.add(new String[] { feature, platform, kind });
+    public void addFeaturePlatformAndKind(String featureBaseName, String platform, String featureNameWithVersion, String kind) {
+        featuresAndPlatformAndKind.add(new String[] { featureBaseName, platform, featureNameWithVersion, kind });
     }
 
     /**

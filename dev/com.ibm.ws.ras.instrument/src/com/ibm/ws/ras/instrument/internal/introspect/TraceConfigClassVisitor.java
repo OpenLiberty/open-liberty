@@ -42,6 +42,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
     protected final static Type TRIVIAL_TYPE = Type.getType(com.ibm.websphere.ras.annotation.Trivial.class);;
     protected final static Type FFDC_IGNORE_TYPE = Type.getType(com.ibm.ws.ffdc.annotation.FFDCIgnore.class);
     protected final static Type TRACE_OBJECT_FIELD_TYPE = Type.getType(com.ibm.websphere.ras.annotation.TraceObjectField.class);
+    protected final static Type IGNORE_NON_STATIC_TRACE_COMPONENT_TYPE = Type.getType(com.ibm.websphere.ras.annotation.IgnoreNonStaticTraceComponent.class);
 
     protected ClassInfo classInfo;
     protected TraceOptionsAnnotationVisitor traceOptionsAnnotationVisitor;
@@ -85,7 +86,34 @@ public class TraceConfigClassVisitor extends ClassVisitor {
             FieldInfo fieldInfo = new FieldInfo(name, desc);
             classInfo.addFieldInfo(fieldInfo);
         }
-        return fv;
+        return new FieldInfoFieldVisitor(fv, name, desc, access);
+    }
+    
+    private final static class FieldInfoFieldVisitor extends FieldVisitor {
+        private final String fieldName;
+        private final String fieldDesc;
+        private final int fieldAccess;
+        private boolean hasIgnoreAnnotation = false;
+
+        private FieldInfoFieldVisitor(FieldVisitor fv, String name, String desc, int access) {
+            super(ASMHelper.getCurrentASM(), fv);
+            this.fieldName = name;
+            this.fieldDesc = desc;
+            this.fieldAccess = access;
+        }
+
+        @Override
+        public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+            AnnotationVisitor av = super.visitAnnotation(desc, visible);
+            if (IGNORE_NON_STATIC_TRACE_COMPONENT_TYPE.getDescriptor().equals(desc)) {
+                hasIgnoreAnnotation = true;
+            }
+            return av;
+        }
+        
+        public boolean hasIgnoreAnnotation() {
+            return hasIgnoreAnnotation;
+        }
     }
 
     @Override

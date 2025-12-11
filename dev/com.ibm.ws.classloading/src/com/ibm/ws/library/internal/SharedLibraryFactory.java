@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2014 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,21 +64,30 @@ public class SharedLibraryFactory implements ManagedServiceFactory, ModuleDelega
 
     private final ConcurrentMap<String, SharedLibraryImpl> instances = new ConcurrentHashMap<String, SharedLibraryImpl>();
 
-    private volatile BundleContext ctx;
-    private volatile ClassLoadingService classLoadingService;
-    private volatile ConfigurationAdmin configAdmin;
-    private volatile String resolvedBasePath;
+    private final BundleContext ctx;
+    private final ClassLoadingService classLoadingService;
+    private final ConfigurationAdmin configAdmin;
+    private final String resolvedBasePath;
     private final AtomicInteger rankingCounter = new AtomicInteger(0);
 
-    private volatile ArtifactContainerFactory artifactContainerFactory;
-    private RegionDigraph digraph;
-    private LibraryPackageExporter packageExporter;
+    private final ArtifactContainerFactory artifactContainerFactory;
+    private final LibraryPackageExporter packageExporter;
 
     @Activate
-    protected void activate(BundleContext ctx) {
+    public SharedLibraryFactory(BundleContext ctx, //
+                                @Reference ArtifactContainerFactory acf, //
+                                @Reference ClassLoadingService cls, //
+                                @Reference ConfigurationAdmin configAdmin, //
+                                @Reference WsLocationAdmin locationService, //
+                                @Reference RegionDigraph digraph
+                                ) {
         this.ctx = ctx;
-        clearContainerCache();
+        this.artifactContainerFactory = acf;
+        this.classLoadingService = cls;
+        this.configAdmin = configAdmin;
+        this.resolvedBasePath = locationService.resolveString(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR);
 
+        clearContainerCache();
         File f = this.ctx.getDataFile(CONT_CACHE);
         boolean ok = f.mkdir();
         if (ok != true) {
@@ -128,50 +137,6 @@ public class SharedLibraryFactory implements ManagedServiceFactory, ModuleDelega
         }
         instances.clear();
         clearContainerCache();
-    }
-
-    @Reference
-    protected void setConfigAdmin(ConfigurationAdmin configAdmin) {
-        this.configAdmin = configAdmin;
-    }
-
-    protected void unsetConfigAdmin(ConfigurationAdmin configAdmin) {
-        this.configAdmin = null;
-    }
-
-    @Reference
-    protected void setLocationService(WsLocationAdmin locationService) {
-        this.resolvedBasePath = locationService.resolveString(WsLocationConstants.SYMBOL_SERVER_CONFIG_DIR);
-    }
-
-    protected void unsetLocationService(WsLocationAdmin locationService) {}
-
-    @Reference
-    protected void setClassLoadingService(ClassLoadingService cls) {
-        classLoadingService = cls;
-    }
-
-    protected void unsetClassLoadingService(ClassLoadingService cls) {
-        classLoadingService = null;
-    }
-
-    @Reference
-    protected void setArtifactContainerFactory(ArtifactContainerFactory acf) {
-        artifactContainerFactory = acf;
-    }
-
-    protected void unsetArtifactContainerFactory(ArtifactContainerFactory acf) {
-        artifactContainerFactory = null;
-
-    }
-
-    @Reference
-    protected void setDigrah(RegionDigraph digraph) {
-        this.digraph = digraph;
-    }
-
-    protected void unsetDigraph(RegionDigraph digraph) {
-        // nothing
     }
 
     @Override

@@ -9,7 +9,7 @@
  -->
 <server description="Server for testing the Cookie SameSite attribute">
 
-    <include location="../fatTestPorts.xml" />
+    <include location="../fatTestCommon.xml"/>
 
     <featureManager>
         <feature>servlet-4.0</feature>
@@ -22,6 +22,7 @@
         httpPort="${bvt.prop.HTTP_default}"
         httpsPort="${bvt.prop.HTTP_default.secure}">
         <samesite lax="*" />
+        <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
     </httpEndpoint>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2022 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.io.FilePermission;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.AccessController;
+import java.security.AllPermission;
 import java.security.CodeSource;
 import java.security.PermissionCollection;
 import java.security.PrivilegedActionException;
@@ -617,28 +618,7 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
         }
         URL[] urls = null;
         try {
-            PermissionCollection permissionCollection = createPermissionCollection();
-            /*
-            PermissionCollection permissionCollection = Policy.getPolicy().getPermissions(codeSource);
-
-            ClassLoader loader = tcontext.getJspClassloaderContext().getClassLoader();
-            if (loader instanceof ReloadableClassLoader || loader instanceof CompoundClassLoader) {
-                Map csPerms = null;
-                if (loader instanceof ReloadableClassLoader)
-                    csPerms = ((ReloadableClassLoader) loader).getCodeSourcePermissions();
-                else
-                    csPerms = ((CompoundClassLoader) loader).getCodeSourcePermissions();
-                DynamicPolicy policy = DynamicPolicyFactory.getInstance();
-                if (policy != null) {
-                    URL webinfURL = new URL(codeSource.getLocation() + "/WEB-INF/classes/*");
-                    CodeSource webinfCS = new CodeSource(webinfURL, null);
-                    permissionCollection = ((DynamicPolicy) policy).getPermissions(webinfCS, csPerms);
-                }
-            }
-            */
-
-            String sourceDir = jspResources.getGeneratedSourceFile().getParentFile().toString() + File.separator + "*";
-            permissionCollection.add(new FilePermission(sourceDir, "read"));
+            PermissionCollection permissionCollection = createPermissionCollectionImpl();
 
             Container container = tcontext.getServletContext().getModuleContainer();
             ArrayList<URL> urlList = new ArrayList<URL>();
@@ -694,6 +674,27 @@ public abstract class AbstractJSPExtensionServletWrapper extends GenericServletW
             com.ibm.ws.ffdc.FFDCFilter.processException(e, "com.ibm.ws.jsp.webcontainerext.JSPExtensionProcessor.createClassLoader", "312", this);
             logger.logp(Level.WARNING, CLASS_NAME, "createClassLoader", "failed to create JSP class loader", e);
         }
+    }
+
+    private static final PermissionCollection ALLPERMISSIONS;
+    static {
+        AllPermission allPerm = new AllPermission();
+        ALLPERMISSIONS = allPerm.newPermissionCollection();
+        if (ALLPERMISSIONS != null) {
+            ALLPERMISSIONS.add(allPerm);
+        }
+    }
+
+    private PermissionCollection createPermissionCollectionImpl() throws MalformedURLException {
+        if (System.getSecurityManager() == null) {
+            // No need to do anything else when there is no security manager.
+            // This handles cases where the security manager isn't supported (e.g. Java 24).
+            return ALLPERMISSIONS;
+        }
+        PermissionCollection permissionCollection = createPermissionCollection();
+        String sourceDir = jspResources.getGeneratedSourceFile().getParentFile().toString() + File.separator + "*";
+        permissionCollection.add(new FilePermission(sourceDir, "read"));
+        return permissionCollection;
     }
 
     /* A request to a JSP page that has a request parameter with name jsp_precompile

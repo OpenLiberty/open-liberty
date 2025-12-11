@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import io.openliberty.microprofile.telemetry.internal.common.rest.AbstractTeleme
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.openliberty.microprofile.telemetry.spi.OpenTelemetryInfo;
 import io.opentelemetry.api.trace.Span;
+import io.opentelemetry.api.trace.SpanContext;
 import io.opentelemetry.context.Context;
 import io.opentelemetry.context.Scope;
 import io.opentelemetry.context.propagation.TextMapGetter;
@@ -142,8 +143,13 @@ public class TelemetryServletFilter extends AbstractTelemetryServletFilter imple
                 request.setAttribute(SPAN_PARENT_CONTEXT, parentContext);
                 request.setAttribute(SPAN_SCOPE, scope);
 
+                SpanContext currentSpanContext = Span.current().getSpanContext();
+                ((HttpServletResponse) response)
+                                .setHeader(ACCESS_TRACE_HEADER_NAME,
+                                           currentSpanContext.getTraceId() + ":" + currentSpanContext.getSpanId());
+
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Span traceId=" + Span.current().getSpanContext().getTraceId() + ", spanId=" + Span.current().getSpanContext().getSpanId());
+                    Tr.debug(tc, "Span traceId=" + currentSpanContext.getTraceId() + ", spanId=" + currentSpanContext.getSpanId());
                 }
             }
         }

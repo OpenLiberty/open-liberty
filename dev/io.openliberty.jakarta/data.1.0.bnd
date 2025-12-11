@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2024 IBM Corporation and others.
+# Copyright (c) 2024, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ Export-Package: \
   jakarta.data.spi;version="1.0.0"
 
 -includeresource: \
-  @${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @\${repo;jakarta.data:jakarta.data-api;1.0.0;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
    dep1;groupId=jakarta.data;artifactId=jakarta.data-api;version=1.0.0;scope=runtime

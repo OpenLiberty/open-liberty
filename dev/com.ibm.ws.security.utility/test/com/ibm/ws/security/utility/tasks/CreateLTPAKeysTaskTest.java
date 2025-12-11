@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.hamcrest.Description;
 import org.hamcrest.Factory;
@@ -29,8 +31,12 @@ import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 
+import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.ws.crypto.ltpakeyutil.LTPAKeyFileUtility;
+import com.ibm.ws.crypto.util.AesConfigFileParser;
 import com.ibm.ws.security.utility.IFileUtility;
 import com.ibm.ws.security.utility.SecurityUtilityReturnCodes;
 import com.ibm.ws.security.utility.utils.ConsoleWrapper;
@@ -132,6 +138,7 @@ public class CreateLTPAKeysTaskTest {
      */
     @Test
     public void getTaskHelp() {
+
         CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
         String help = task.getTaskHelp();
         System.out.println(help);
@@ -152,6 +159,10 @@ public class CreateLTPAKeysTaskTest {
                    help.contains("--passwordEncoding"));
         assertTrue("FAIL: The task help did not contain the option '--passwordKey'",
                    help.contains("--passwordKey"));
+        assertTrue("FAIL: The task help did not contain the option '--passwordBase64Key'",
+                   help.contains("--passwordBase64Key"));
+        assertTrue("FAIL: The task help did not contain the option '--aesConfigFile'",
+                   help.contains("--aesConfigFile"));
     }
 
     /**
@@ -399,6 +410,95 @@ public class CreateLTPAKeysTaskTest {
         assertEquals("FAIL: The task did not report execution OK",
                      SecurityUtilityReturnCodes.OK,
                      task.handleTask(stdin, stdout, stderr, args));
+    }
+
+    /**
+     * Test method for
+     * {@link com.ibm.ws.security.utility.tasks.CreateLTPAKeysTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
+     * .
+     */
+    @Test
+    public void handleTask_specifiedFile_fileCreated_aes() throws Exception {
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "securityUtility", "--passwordEncoding=aes", "--password=Liberty", "--file=targetLtpaKeysFile" };
+
+        mock.checking(new Expectations() {
+            {
+                one(fileUtil).exists("targetLtpaKeysFile");
+                will(returnValue(false));
+
+                one(ltpaKeyFileUtil).createLTPAKeysFile(with("targetLtpaKeysFile"), with(any(byte[].class)));
+
+                one(stdout).println(with(stringContaining("<ltpa", "targetLtpaKeysFile", "{aes}")));
+            }
+        });
+
+        assertEquals("FAIL: The task did not report execution OK",
+                     SecurityUtilityReturnCodes.OK,
+                     task.handleTask(stdin, stdout, stderr, args));
+    }
+
+    /**
+     * Test method for
+     * {@link com.ibm.ws.security.utility.tasks.CreateLTPAKeysTask#handleTask(com.ibm.ws.security.utility.utils.ConsoleWrapper, java.io.PrintStream, java.io.PrintStream, java.lang.String[])}
+     * .
+     */
+    @Test
+    public void handleTask_specifiedFile_fileCreated_base64_aes() throws Exception {
+
+        CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+        String[] args = new String[] { "securityUtility", "--passwordEncoding=aes", "--passwordBase64Key=JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=",
+                                       "--password=Liberty",
+                                       "--file=targetLtpaKeysFile" };
+
+        mock.checking(new Expectations() {
+            {
+                one(fileUtil).exists("targetLtpaKeysFile");
+                will(returnValue(false));
+
+                one(ltpaKeyFileUtil).createLTPAKeysFile(with("targetLtpaKeysFile"), with(any(byte[].class)));
+
+                one(stdout).println(with(stringContaining("<ltpa", "targetLtpaKeysFile", "{aes}")));
+            }
+        });
+
+        assertEquals("FAIL: The task did not report execution OK",
+                     SecurityUtilityReturnCodes.OK,
+                     task.handleTask(stdin, stdout, stderr, args));
+    }
+
+    @Test
+    public void handleTask_specifiedFile_fileCreated_aesConfigFile_aes() throws Exception {
+        try (MockedStatic<AesConfigFileParser> passwordUtil = Mockito.mockStatic(AesConfigFileParser.class, Mockito.CALLS_REAL_METHODS)) {
+
+            Map<String, String> props = new HashMap<>();
+            props.put(PasswordUtil.PROPERTY_AES_KEY, "JpOcjBKjoMlnXRNENZUrZODuAQxYIscJPtf7hDXBbuI=");
+            String aesConfigFilePath = "keys.xml";
+
+            passwordUtil.when(() -> {
+                AesConfigFileParser.parseAesEncryptionFile(aesConfigFilePath);
+            }).thenReturn(props);
+            CreateLTPAKeysTask task = new CreateLTPAKeysTask(ltpaKeyFileUtil, fileUtil, TEST_UTILITY_NAME);
+            String[] args = new String[] { "securityUtility", "--passwordEncoding=aes", "--aesConfigFile=" + aesConfigFilePath,
+                                           "--password=Liberty",
+                                           "--file=targetLtpaKeysFile" };
+
+            mock.checking(new Expectations() {
+                {
+                    one(fileUtil).exists("targetLtpaKeysFile");
+                    will(returnValue(false));
+
+                    one(ltpaKeyFileUtil).createLTPAKeysFile(with("targetLtpaKeysFile"), with(any(byte[].class)));
+
+                    one(stdout).println(with(stringContaining("<ltpa", "targetLtpaKeysFile", "{aes}")));
+
+                }
+            });
+
+            assertEquals("FAIL: The task did not report execution OK",
+                         SecurityUtilityReturnCodes.OK,
+                         task.handleTask(stdin, stdout, stderr, args));
+        }
     }
 
     /**

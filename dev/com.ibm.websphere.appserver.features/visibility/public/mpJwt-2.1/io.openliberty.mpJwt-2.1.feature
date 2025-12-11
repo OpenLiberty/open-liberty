@@ -34,7 +34,7 @@ Subsystem-Name: MicroProfile JSON Web Token 2.1
   com.ibm.websphere.appserver.httpcommons-1.0, \
   io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1", \
   io.openliberty.org.eclipse.microprofile.jwt-2.1, \
-  io.openliberty.mpCompatible-6.0; ibm.tolerates:="6.1,7.0", \
+  io.openliberty.mpCompatible-6.0; ibm.tolerates:="6.1,7.0,7.1", \
   io.openliberty.cdi-4.0; ibm.tolerates:="4.1"
 -bundles=io.openliberty.security.mp.jwt.internal,\
   io.openliberty.security.mp.jwt.cdi.internal,\
@@ -45,4 +45,4 @@ kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: microProfile-6.0,microProfile-6.1,microProfile-7.0
+WLP-Platform: microProfile-6.0,microProfile-6.1,microProfile-7.0,microProfile-7.1

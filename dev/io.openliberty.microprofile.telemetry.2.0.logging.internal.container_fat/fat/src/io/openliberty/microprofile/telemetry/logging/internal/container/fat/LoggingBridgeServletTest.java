@@ -43,6 +43,8 @@ public class LoggingBridgeServletTest {
 
     private static final String[] EXPECTED_FAILURES = { "CWMOT5005W", "SRVE0315E", "SRVE0777E" };
 
+    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector-contrib:0.117.0
+    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(new ImageFromDockerfile()
                     .withDockerfileFromBuilder(builder -> builder.from(TestUtils.IMAGE_NAME)

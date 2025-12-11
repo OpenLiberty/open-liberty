@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,6 +27,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.fat.driver.derby.FATDriver;
@@ -58,12 +59,26 @@ public class JDBCDriverManagerTest extends FATServletClient {
                         .merge(derbyJar)
                         .addAsServiceProvider(java.sql.Driver.class, FATDriver.class);
 
+        JavaArchive folderDriver = ShrinkWrap.create(JavaArchive.class, "FolderDriver.jar")
+                        .addPackage("jdbc.fat.folder.driver")
+                        .addPackage("jdbc.fat.folder.driver.pool");
+
         JavaArchive proxyDriver = ShrinkWrap.create(JavaArchive.class, "ProxyDriver.jar")
                         .addPackage("jdbc.fat.proxy.driver")
                         .addAsServiceProvider(java.sql.Driver.class, ProxyDrivr.class);
 
         ShrinkHelper.exportToServer(server, "derby", fatDriver);
         ShrinkHelper.exportToServer(server, "proxydriver", proxyDriver);
+
+        ShrinkHelper.exportArtifact(folderDriver, "publish/libs", true, false, true);
+        String destinationLibFolder = server.getInstallRoot() +
+                                      "/usr/servers/com.ibm.ws.jdbc.fat.driver/libs";
+        LibertyFileManager.copyFileIntoLiberty(server.getMachine(),
+                                               destinationLibFolder,
+                                               "folderjdbc",
+                                               "publish/libs/FolderDriver.jar",
+                                               true,
+                                               server.getServerRoot());
 
         server.startServer();
     }

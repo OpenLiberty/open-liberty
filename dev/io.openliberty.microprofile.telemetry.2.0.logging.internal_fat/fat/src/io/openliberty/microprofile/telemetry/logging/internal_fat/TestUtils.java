@@ -67,7 +67,7 @@ public class TestUtils {
         }
     }
 
-    private static String runGetMethod(String urlStr) throws Exception {
+    static String runGetMethod(String urlStr) throws Exception {
         Log.info(c, "runGetMethod", "URL = " + urlStr);
         URL url = new URL(urlStr);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();

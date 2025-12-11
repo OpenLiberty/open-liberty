@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -33,14 +33,17 @@ missingArg=Brak argumentu {0}.
 missingValue=Brak warto\u015bci argumentu {0}.
 missingArg2=Nale\u017cy udost\u0119pni\u0107 warto\u015b\u0107 argumentu {0} albo argumentu {1}.
 exclusiveArg=Nale\u017cy okre\u015bli\u0107 argument {0} albo argument {1}, ale nie obydwa.
-serverNotFound=W po\u0142o\u017ceniu {1} nie znaleziono podanego serwera {0}
+serverNotFound=Nie znaleziono okre\u015blonego {0} serwera w lokalizacji {1}.
+clientNotFound={0} Wskazanego klienta nie znaleziono w tej {1} lokalizacji.
 
 
 encode.enterText=Wpisz tekst:
 encode.reenterText=Wpisz tekst ponownie:
 encode.readError=B\u0142\u0105d odczytu tekstu.
 encode.entriesDidNotMatch=Wpisy nie s\u0105 zgodne.
-
+encode.mutuallyExclusiveArgError=Plik wej\u015bciowy nie mo\u017ce okre\u015bla\u0107 zar\u00f3wno w\u0142a\u015bciwo\u015bci {0}, jak i {1}.
+encode.aesConfigFileEncryptionAmbiguous=B\u0141\u0104D: Nie mo\u017cna u\u017cy\u0107 pliku wej\u015bciowego, je\u015bli zawiera on zar\u00f3wno zmienne {0}, jak i {1}.
+encode.aesConfigFileMissingEncryptionVariables=Nie mo\u017cna zakodowa\u0107 has\u0142a; albo plik wej\u015bciowy nie zawiera zmiennych {0} lub {1}, albo plik wej\u015bciowy jest zniekszta\u0142cony.
 
 password.enterText=Wprowad\u017a has\u0142o:
 password.reenterText=Wprowad\u017a ponownie has\u0142o:
@@ -51,23 +54,16 @@ name=nazwa
 days=dni
 
 sslCert.abort=Tworzenie certyfikatu zostanie przerwane:
-sslCert.createFailed=Nie mo\u017cna utworzy\u0107 domy\u015blnego certyfikatu SSL:\n\
-{0}
-sslCert.errorEncodePassword=B\u0142\u0105d podczas kodowania has\u0142a (certyfikat nie zosta\u0142 utworzony):\n\
-{0}
+sslCert.createFailed=Nie mo\u017cna utworzy\u0107 domy\u015blnego certyfikatu SSL:\n{0}
+sslCert.errorEncodePassword=B\u0142\u0105d podczas kodowania has\u0142a (certyfikat nie zosta\u0142 utworzony):\n{0}
 sslCert.createKeyStore=Tworzenie magazynu kluczy {0}\n
 sslCert.oneType=Nie mo\u017cna okre\u015bla\u0107 jednocze\u015bnie argument\u00f3w {0} i {1}.
-sslCert.clientNotFound=Okre\u015blony klient {0} nie zosta\u0142 znaleziony w po\u0142o\u017ceniu {1}.
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.serverXML=Utworzono certyfikat SSL dla serwera {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\
-\n\
-Dodaj nast\u0119puj\u0105ce wiersze do pliku server.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
+sslCert.serverXML=Utworzono certyfikat SSL dla serwera {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\nDodaj nast\u0119puj\u0105ce wiersze do pliku server.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
-sslCert.clientXML=Utworzono certyfikat SSL dla klienta {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\
-\n\
-Dodaj nast\u0119puj\u0105ce wiersze do pliku client.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
+sslCert.clientXML=Utworzono certyfikat SSL dla klienta {0}. Certyfikat zosta\u0142 utworzony z nazw\u0105 wyr\u00f3\u017cniaj\u0105c\u0105 podmiotu {1}.\n\nDodaj nast\u0119puj\u0105ce wiersze do pliku client.xml, aby w\u0142\u0105czy\u0107 protok\u00f3\u0142 SSL:
 
 fileUtility.failedDirCreate=Utworzenie katalogu {0} nie powiod\u0142o si\u0119
 file.exists=Plik kluczy {0} ju\u017c istnieje.  Nie mo\u017cna utworzy\u0107 pliku kluczy w tym po\u0142o\u017ceniu.
@@ -77,14 +73,9 @@ file.requiredDirNotCreated=Nie mo\u017cna utworzy\u0107 wymaganej struktury kata
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # The following string will be appended after encode.option-desc.encoding
 # message in UtilityOptions.nlsprops file.
-encode.option-custom.encryption=\n\
-\tNiestandardowe szyfrowanie has\u0142a jest tak\u017ce dost\u0119pne.
-encode.option-desc.custom.feature=\n\
-\tNazwa sk\u0142adnika {0} jest nast\u0119puj\u0105ca:\n\
-\t
-encode.option-desc.custom.description=\n\
-\tOpis elementu {0} jest nast\u0119puj\u0105cy:\n\
-\t
+encode.option-custom.encryption=\n\tNiestandardowe szyfrowanie has\u0142a jest tak\u017ce dost\u0119pne.
+encode.option-desc.custom.feature=\n\tNazwa sk\u0142adnika {0} jest nast\u0119puj\u0105ca:\n\t
+encode.option-desc.custom.description=\n\tOpis elementu {0} jest nast\u0119puj\u0105cy:\n\t
 
 # The following message is shown when there is no custom password
 # encryption is enabled.
@@ -104,9 +95,44 @@ saf.arg.not.aes=Argumenty --keyring, --keyringType i --keyLabel mog\u0105 by\u01
 
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 # Note to translator: 'LTPA' should not be translated
-createLTPAKeys.abort=Przerywanie tworzenia pliku kluczy \
-LTPA:
-createLTPAKeys.fileExists=Plik {0} ju\u017c istnieje.  Nie \
-mo\u017cna utworzy\u0107 pliku kluczy LTPA w tym po\u0142o\u017ceniu.
-createLTPAKeys.createdFile=Utworzono plik \
-kluczy LTPA: {0}\n Do pliku server.xml dodaj nast\u0119puj\u0105c\u0105 konfiguracj\u0119\n {1}\n
+createLTPAKeys.abort=Przerywanie tworzenia pliku kluczy LTPA:
+createLTPAKeys.fileExists=Plik {0} ju\u017c istnieje.  Nie mo\u017cna utworzy\u0107 pliku kluczy LTPA w tym po\u0142o\u017ceniu.
+createLTPAKeys.createdFile=Utworzono plik kluczy LTPA: {0}\n Do pliku server.xml dodaj nast\u0119puj\u0105c\u0105 konfiguracj\u0119\n {1}\n
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+configureFIPS.notIbmSdkNorSemeru=Instalacja Java nie pochodzi z IBMSemeru Runtimes ani IBM SDK, a je\u015bli tak, to nie obs\u0142uguje FIPS 140-3.\nZainstaluj \u015brodowisko Java z pakietu IBMSemeru Runtimes lub IBM SDK, u\u017cywaj\u0105c wersji i systemu operacyjnego obs\u0142uguj\u0105cego standard FIPS 140-3.\nJe\u015bli korzystasz z IBMSemeru \u015brodowisk uruchomieniowych, u\u017cyj wersji 11.0.29.0, 17.0.17.0, 21.0.9.0, 25.0.1.0 lub wy\u017cszej.\nJe\u015bli korzystasz z IBM SDK, u\u017cyj wersji 8.0.8.30 lub nowszej.
+
+configureFIPS.zosNotAvailable=Polecenie securityUtility configureFIPS nie jest obs\u0142ugiwane na stronie z/OS.
+
+configureFIPS.configureSemeru=Konfiguracja FIPS 140-3 dla IBM Semeru Runtimes.
+configureFIPS.configureIbmSdk=Konfiguracja FIPS 140-3 dla IBM SDK.
+
+configureFIPS.abort=Przerwanie konfigurowania standardu FIPS 140-3:
+
+configureFIPS.abortSemeruFile=Przerwanie IBM Semeru Tworzenie pliku profilu niestandardowego FIPS 140-3:
+
+configureFIPS.abortEnvFile=Przerwanie modyfikacji pliku konfiguracyjnego:
+
+configureFIPS.fileExists=Korzystanie z istniej\u0105cego pliku profilu niestandardowego {0} IBM Semeru Runtimes.
+
+configureFIPS.createdSemeruFile=Utworzono plik profilu niestandardowego {0} IBM Semeru Runtimes.
+
+configureFIPS.fileDoesNotExist=Plik {0} nie istnieje.
+
+configureFIPS.fileNameNotAllowed=Podstawow\u0105 nazw\u0105 pliku {0} nie mo\u017ce by\u0107 FIPS140-3-Liberty.
+
+configureFIPS.createdEnvFileToEnableFips=Utworzono plik {0} w celu w\u0142\u0105czenia standardu FIPS 140-3.
+configureFIPS.updatedEnvFileToEnableFips=Zaktualizowano plik {0}, aby w\u0142\u0105czy\u0107 FIPS 140-3.
+configureFIPS.fipsAlreadyEnabled=FIPS 140-3 jest ju\u017c w\u0142\u0105czony w pliku {0}.
+
+configureFIPS.updatedEnvFileToDisableFips=Zaktualizowano plik {0}, aby wy\u0142\u0105czy\u0107 FIPS 140-3.
+configureFIPS.fipsNotEnabled=FIPS 140-3 nie jest ju\u017c w\u0142\u0105czony w pliku {0}.
+
+configureFIPS.restartServer=Uruchom ponownie serwer {0}, aby zastosowa\u0107 zmian\u0119.
+configureFIPS.restartClient=Uruchom ponownie klienta {0}, aby zastosowa\u0107 zmian\u0119.
+configureFIPS.restart=Uruchom ponownie serwery i klient\u00f3w, aby zastosowa\u0107 zmian\u0119.
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+generate.success=Plik XML szyfrowania has\u0142a zosta\u0142 pomy\u015blnie utworzony.\nAby aktywowa\u0107 zmiany, dodaj odniesienie do lokalizacji pliku XML do pliku server.xml : <include location="{0}" />
+generateaeskey.failFileExists=Plik {0} istnieje i nie zostanie nadpisany. Przed ponown\u0105 pr\u00f3b\u0105 nale\u017cy inn\u0105 nazw\u0119 pliku lub usun\u0105\u0107 istniej\u0105cy plik przed ponown\u0105 pr\u00f3b\u0105.
+generateaeskey.failFileIsDirectory=Warto\u015b\u0107 {0} okre\u015blona dla nazwy pliku jest katalogiem. Podaj pe\u0142n\u0105 nazw\u0119 pliku i spr\u00f3buj ponownie.

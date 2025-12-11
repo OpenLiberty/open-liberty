@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2019 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -186,7 +186,7 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
 
     // Module cache data storage ...
 
-    private class ModsLock {
+    protected static class ModsLock {
         // EMPTY
     }
     private final ModsLock modsLock;
@@ -238,7 +238,7 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
 
     // Containers storage ...
 
-    private class ConsLock {
+    protected static class ConsLock {
         // EMPTY
     }
     private final ConsLock consLock;
@@ -441,9 +441,11 @@ public class TargetCacheImpl_DataApp extends TargetCacheImpl_DataBase {
                         // Without this added step information about the spawning thread is
                         // lost, making debugging writer problems very difficult.
 
-                        logger.logp(Level.WARNING, CLASS_NAME, innerMethodName, "Caught Asynchronous exception", e);
-                        logger.logp(Level.WARNING, CLASS_NAME, innerMethodName, "Scheduler", scheduler);
-                        logger.logp(Level.WARNING, CLASS_NAME, innerMethodName, "Synchronization error", e);
+                        String innerClassName = getClass().getName();
+
+                        logger.logp(Level.WARNING, innerClassName, innerMethodName, "Caught Asynchronous exception", e);
+                        logger.logp(Level.WARNING, innerClassName, innerMethodName, "Scheduler", scheduler);
+                        logger.logp(Level.WARNING, innerClassName, innerMethodName, "Synchronization error", e);
 
                         throw e;
                     }

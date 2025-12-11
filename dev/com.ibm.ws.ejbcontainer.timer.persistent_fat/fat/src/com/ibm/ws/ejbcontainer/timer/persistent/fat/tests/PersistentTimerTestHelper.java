@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -79,6 +79,14 @@ public class PersistentTimerTestHelper {
         // persistent.internal.InvokerTask run starts for a persistent timer during server shutdown,
         // but transaction service has already been shutdown.
         ignoreList.add("J2CA0027E");
+
+        // J2CA0056I: The Connection Manager received a fatal connection error from the Resource Adapter for
+        //            resource dataSource[DefaultDataSource]. The exception is: state STATE_TRAN_WRAPPER_INUSE
+        //            java.sql.SQLNonTransientException: No current connection. DSRA0010E: SQL State = 08003, Error Code = 40,000:ERROR 08003: No current connection.
+        //
+        // persistent.internal.InvokerTask run starts for a persistent timer during server shutdown,
+        // but transaction service has already been shutdown. Error occurs attempting to rollback.
+        ignoreList.add("J2CA0056I.*STATE_TRAN_WRAPPER_INUSE");
 
         // CWWKC1501W: Persistent executor [EJBPersistentTimerExecutor] rolled back task [task id]
         //             (!EJBTimerP![j2eename]) due to failure javax.ejb.EJBException: Timeout method

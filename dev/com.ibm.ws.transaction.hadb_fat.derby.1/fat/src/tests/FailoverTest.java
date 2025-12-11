@@ -129,5 +129,6 @@ public class FailoverTest extends TxFATServletClient {
 
             break;
         }
+        TxTestContainerSuite.dropTables("WAS_TRAN_LOG", "WAS_PARTNER_LOG");
     }
 }

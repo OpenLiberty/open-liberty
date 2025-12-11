@@ -127,7 +127,8 @@ option-key.no-password=\ \ \ \ --no-password
 option-desc.no-password=\tWy\u0142\u0105cz generowanie domy\u015blnego has\u0142a magazynu kluczy
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="g\u0142\u00f3wny folder serwera w archiwum"
-option-desc.package.server-root=\tOkre\u015bla nazw\u0119 g\u0142\u00f3wnego folderu serwera w pliku archiwum.\n
+option-desc.package.server-root=\tOkre\u015bla nazw\u0119 folderu g\u0142\u00f3wnego serwera w pliku archiwum. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.force=\ \ \ \ --force
 option-desc.stop.force=\tPowoduje pomini\u0119cie etapu wyciszania przed zamkni\u0119ciem serwera. Normalne zatrzymanie \nserwera obejmuje etap wyciszenia, zanim serwer zostanie wy\u0142\u0105czony. Etap wyciszania, kt\u00f3ry domy\u015blnie wynosi 30 sekund, umo\u017cliwia us\u0142ugom wykonanie pracy przed zamkni\u0119ciem systemu. Na przyk\u0142ad obiekty nas\u0142uchiwania danych przychodz\u0105cych s\u0105 zatrzymywane, ale istniej\u0105ce \u017c\u0105dania mog\u0105 zosta\u0107 zako\u0144czone. Opcja --force nie b\u0119dzie dzia\u0142a\u0107, \nje\u015bli zatrzymanie serwera zosta\u0142o ju\u017c wywo\u0142ane. Je\u015bli u\u017cywana jest opcja --force, \nw pliku messages.log mog\u0105 pojawi\u0107 si\u0119 nieoczekiwane wyj\u0105tki \nwyst\u0119puj\u0105ce po odebraniu przez serwer komendy zatrzymania. \n
 #------------------------------\n at 72 chars -- leading tab-----------\n\#

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,9 @@ package componenttest.rules.repeater;
 import static componenttest.custom.junit.runner.CheckpointSupportFilter.CHECKPOINT_ONLY_PROPERTY_NAME;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.BufferedWriter;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -42,6 +44,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
  */
 public class CheckpointRule implements TestRule {
     private static final AtomicBoolean IS_ACTIVE = new AtomicBoolean();
+    public static final String ID = "CHECKPOINT_RULE";
 
     /**
      * Returns true if the test is running with the checkpoint scenario
@@ -163,6 +166,9 @@ public class CheckpointRule implements TestRule {
     private CheckpointPhase checkpointPhase = CheckpointPhase.AFTER_APP_START;
     private Consumer<LibertyServer> postCheckpointLambda;
     private final Set<String> unsupportedRepeatIDs = new HashSet<>(Arrays.asList(EE6FeatureReplacementAction.ID, EE7FeatureReplacementAction.ID));
+    private String[] checkpointIgnoreMessages;
+    private boolean runNormalTests = true;
+    private boolean checkrestart;
 
     /**
      * Sets the optional function to do class setup before running the normal and checkpoint mode for the test
@@ -244,9 +250,7 @@ public class CheckpointRule implements TestRule {
      * @return
      */
     public CheckpointRule addUnsupportedRepeatIDs(String... unsupportedRepeatIDs) {
-        if (unsupportedRepeatIDs != null) {
-            this.unsupportedRepeatIDs.addAll(Arrays.asList(unsupportedRepeatIDs));
-        }
+        this.unsupportedRepeatIDs.addAll(Arrays.asList(unsupportedRepeatIDs));
         return this;
     }
 
@@ -273,6 +277,11 @@ public class CheckpointRule implements TestRule {
         return this;
     }
 
+    public CheckpointRule setAssertNoAppRestartOnRestore(boolean checkrestart) {
+        this.checkrestart = checkrestart;
+        return this;
+    }
+
     /**
      * Sets the console log name. When the test is run in checkpoint mode then CHECKPOINT_RULE will be prepended to the name.
      * The default name is console.log
@@ -282,6 +291,28 @@ public class CheckpointRule implements TestRule {
      */
     public CheckpointRule setConsoleLogName(String consoleLogName) {
         this.consoleLogName = consoleLogName;
+        return this;
+    }
+
+    /**
+     * Adds regular expressions to match messages to ignore from the server
+     *
+     * @param  regExs regular expression to match server messages
+     * @return
+     */
+    public CheckpointRule addCheckpointRegexIgnoreMessages(String... regExs) {
+        this.checkpointIgnoreMessages = regExs;
+        return this;
+    }
+
+    /**
+     * Sets if the tests should be run on a normal server which has no checkpoint done.
+     *
+     * @param  runNormalTests
+     * @return
+     */
+    public CheckpointRule setRunNormalTests(boolean runNormalTests) {
+        this.runNormalTests = runNormalTests;
         return this;
     }
 
@@ -326,7 +357,9 @@ public class CheckpointRule implements TestRule {
                 classSetup.call();
             }
             try {
-                evaluate(ServerMode.NORMAL);
+                if (runNormalTests) {
+                    evaluate(ServerMode.NORMAL);
+                }
                 evaluate(ServerMode.CHECKPOINT);
             } finally {
                 if (classTearDown != null) {
@@ -378,9 +411,6 @@ public class CheckpointRule implements TestRule {
 
         private boolean isCheckpointSupported() {
             if (JavaInfo.forCurrentVM().isCriuSupported()) {
-                if (unsupportedRepeatIDs == null) {
-                    return true;
-                }
                 return !RepeatTestFilter.isAnyRepeatActionActive(unsupportedRepeatIDs.toArray(new String[0]));
             }
             return false;
@@ -394,11 +424,15 @@ public class CheckpointRule implements TestRule {
             setJvmOptions();
             configureBootStrapProperties();
 
-            String logName = "CHECKPOINT_RULE_" + consoleLogName;
+            String logName = ID + "_" + consoleLogName;
             log("checkpointSetup", "Configuring checkpoint phase '" + checkpointPhase + "' with log name: " + logName);
             CheckpointInfo checkpointInfo = new CheckpointInfo(checkpointPhase, true, postCheckpointLambda);
+            checkpointInfo.setAssertNoAppRestartOnRestore(checkrestart);
             server.setConsoleLogName(logName);
             server.setCheckpoint(checkpointInfo);
+            if (checkpointIgnoreMessages != null) {
+                server.addCheckpointRegexIgnoreMessages(checkpointIgnoreMessages);
+            }
         }
 
         private void checkpointTearDown() throws Exception {
@@ -447,8 +481,12 @@ public class CheckpointRule implements TestRule {
             bootStrapProperties.remove("websphere.java.security.norethrow");
             bootStrapProperties.remove("websphere.java.security.unique");
 
-            try (OutputStream out = new FileOutputStream(server.getServerBootstrapPropertiesFile().getAbsolutePath())) {
-                bootStrapProperties.store(out, "");
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(server.getServerBootstrapPropertiesFile().getAbsolutePath()))) {
+                for (String key : bootStrapProperties.stringPropertyNames()) {
+                    String value = bootStrapProperties.getProperty(key);
+                    writer.write(key + "=" + value);
+                    writer.newLine();
+                }
             }
         }
 

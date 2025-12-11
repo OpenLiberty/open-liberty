@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023.2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,12 +19,13 @@ import java.lang.annotation.Target;
 
 import io.openliberty.data.repository.Count;
 import io.openliberty.data.repository.Exists;
-import io.openliberty.data.repository.Select;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
+import jakarta.data.repository.Select;
 
 /**
  * <p>Annotates a repository method parameter to indicate assignment

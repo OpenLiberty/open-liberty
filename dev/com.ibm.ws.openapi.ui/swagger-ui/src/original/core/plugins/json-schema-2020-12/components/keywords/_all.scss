@@ -1,0 +1,43 @@
+@use "./../../../../../style/variables" as *;
+@use "./../mixins";
+@use "./$vocabulary/$vocabulary" as vocabulary;
+@use "./Const/const";
+@use "./Constraint/constraint";
+@use "./Default/default";
+@use "./DependentRequired/dependent-required";
+@use "./Description/description";
+@use "./Enum/enum";
+@use "./Examples/examples";
+@use "./ExtensionKeywords/extension-keywords";
+@use "./PatternProperties/pattern-properties";
+@use "./Properties/properties";
+@use "./Title/title";
+
+.json-schema-2020-12-keyword {
+  @include mixins.json-schema-2020-12-keyword;
+}
+
+.json-schema-2020-12-keyword__name--secondary
+  + .json-schema-2020-12-keyword__value--secondary::before {
+  content: "=";
+}
+
+.json-schema-2020-12__attribute {
+  font-family: monospace;
+  color: $text-code-default-font-color;
+  font-size: 12px;
+  text-transform: lowercase;
+  padding-left: 10px;
+
+  &--primary {
+    color: $prop-type-font-color;
+  }
+
+  &--muted {
+    color: gray;
+  }
+
+  &--warning {
+    color: red;
+  }
+}

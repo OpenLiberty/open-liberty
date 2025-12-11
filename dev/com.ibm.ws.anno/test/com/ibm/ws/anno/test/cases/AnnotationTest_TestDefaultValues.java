@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,6 @@ package com.ibm.ws.anno.test.cases;
 
 import static org.junit.Assert.assertTrue;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 
 import org.junit.Test;
@@ -49,28 +48,26 @@ import com.ibm.wsspi.anno.info.MethodInfo;
 
 public class AnnotationTest_TestDefaultValues extends AnnotationTest_BaseDirectClass {
 
-    public static final Class<? extends Annotation> SERVLET_SECURITY_CLASS =
-                    javax.servlet.annotation.ServletSecurity.class;
+    public static final String SERVLET_SECURITY_CLASS_NAME =
+                    "javax.servlet.annotation.ServletSecurity";
     // 'value' @HttpConstraint
     // 'httpMethodConstraint' []
 
-    public static final Class<? extends Annotation> HTTP_CONSTRAINT_CLASS =
-                    javax.servlet.annotation.HttpConstraint.class;
-
+    public static final String HTTP_CONSTRAINT_CLASS_NAME =
+                    "javax.servlet.annotation.HttpConstraint";
     // 'value' javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic.PERMIT
     // 'transportGuarantee' javax.servlet.annotation.ServletSecurity.TransportGuarantee.NONE
     // 'rolesAllowed' []
 
-    public static final Class<? extends Annotation> HTTP_METHOD_CONSTRAINT_CLASS =
-                    javax.servlet.annotation.HttpMethodConstraint.class;
-
+    public static final String HTTP_METHOD_CONSTRAINT_CLASS_NAME =
+                    "javax.servlet.annotation.HttpMethodConstraint";
     // 'emptyRoleSemantic' javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic.PERMIT
     // 'transportGuarantee' javax.servlet.annotation.ServletSecurity.TransportGuarantee.NONE
     // 'rolesAllowed' []
 
     @Test
     public void testHttpConstraintDefaults() throws Exception {
-        ClassInfo httpConstraintClassInfo = getClassInfo(HTTP_CONSTRAINT_CLASS);
+        ClassInfo httpConstraintClassInfo = getClassInfo(HTTP_CONSTRAINT_CLASS_NAME);
 
         validateEnumDefaultValue(httpConstraintClassInfo, "value",
                                  "javax.servlet.annotation.ServletSecurity$EmptyRoleSemantic", "PERMIT");
@@ -81,7 +78,7 @@ public class AnnotationTest_TestDefaultValues extends AnnotationTest_BaseDirectC
 
     @Test
     public void testHttpMethodConstraintDefaults() throws Exception {
-        ClassInfo httpMethodConstraintClassInfo = getClassInfo(HTTP_METHOD_CONSTRAINT_CLASS);
+        ClassInfo httpMethodConstraintClassInfo = getClassInfo(HTTP_METHOD_CONSTRAINT_CLASS_NAME);
 
         validateNullDefaultValue(httpMethodConstraintClassInfo, "value");
         validateEnumDefaultValue(httpMethodConstraintClassInfo, "emptyRoleSemantic",
@@ -93,9 +90,9 @@ public class AnnotationTest_TestDefaultValues extends AnnotationTest_BaseDirectC
 
     @Test
     public void testServletSecurityDefaults() throws Exception {
-        System.out.println("Testing default values for [ " + SERVLET_SECURITY_CLASS.getName() + " ] ...");
+        System.out.println("Testing default values for [ " + SERVLET_SECURITY_CLASS_NAME + " ] ...");
 
-        ClassInfo servletSecurityClassInfo = getClassInfo(SERVLET_SECURITY_CLASS);
+        ClassInfo servletSecurityClassInfo = getClassInfo(SERVLET_SECURITY_CLASS_NAME);
 
         validateArrayDefaultValue(servletSecurityClassInfo, "httpMethodConstraints", 0);
         validateAnnotationDefaultValue(servletSecurityClassInfo, "value", "javax.servlet.annotation.HttpConstraint");
@@ -225,18 +222,12 @@ public class AnnotationTest_TestDefaultValues extends AnnotationTest_BaseDirectC
         System.out.println("Validating array default value [ " + targetName + " ] ... done");
     }
 
-    /**
-     * @param classInfo
-     * @param methodName
-     * @return
-     */
     private MethodInfo getDeclaredMethod(ClassInfo classInfo, String methodName) {
         for (MethodInfo m : classInfo.getDeclaredMethods()) {
             if (m.getName().equals(methodName)) {
                 return m;
             }
         }
-
         return null;
     }
 }

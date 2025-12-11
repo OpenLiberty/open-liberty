@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.annotation.MinimumJavaLevel;
+
 
 @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
 @Mode(TestMode.FULL)
@@ -145,6 +147,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
 
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFAsymmetricX509MutualAuthenticationWithUnt() throws Exception {
         genericTest(
@@ -188,7 +191,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFUsernameTokenAsEndorsingAndX509Symmetric() throws Exception {
 
@@ -243,7 +246,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFX509SymmetricAndEndorsing() throws Exception {
 
@@ -290,7 +293,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * TestDescription:
      *
      * UsernameToken authentication with Service X509Token for message protection
-     *
+     
      * Service has X509 Certificate, and client has UsernameToken without X509 token.
      * The message exchanges are signed and encrypted by an ephemeral key protected for
      * service, and client is using UsernameToken for authentication.
@@ -305,7 +308,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      *
      * Verify that the Web service is invoked successfully. This is a positive scenario.
      */
-
+    @MinimumJavaLevel(javaLevel = 17)
     @Test
     public void testCXFX509SymmetricForMessageAndUntForClient() throws Exception {
 

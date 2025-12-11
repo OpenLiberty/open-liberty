@@ -50,8 +50,7 @@ public class InboundSecurityTest extends JCAFATTest implements RarTests {
                     .addUnsupportedRepeatIDs(EmptyAction.ID)
                     .setServerSetup(InboundSecurityTest::serverSetUp)
                     .setServerStart(InboundSecurityTest::serverStart)
-                    .setServerTearDown(InboundSecurityTest::serverTearDown)
-                    .setBeta(true);
+                    .setServerTearDown(InboundSecurityTest::serverTearDown);
 
     public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.regr", null, true);

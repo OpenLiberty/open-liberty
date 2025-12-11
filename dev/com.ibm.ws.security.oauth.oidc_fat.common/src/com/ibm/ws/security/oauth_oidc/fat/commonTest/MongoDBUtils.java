@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,6 +36,7 @@ import com.mongodb.ServerAddress;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.ExternalTestService;
+import componenttest.topology.utils.ExternalTestServiceReporter;
 import de.flapdoodle.embed.mongo.Command;
 import de.flapdoodle.embed.mongo.MongodExecutable;
 import de.flapdoodle.embed.mongo.MongodStarter;
@@ -87,7 +88,7 @@ public class MongoDBUtils {
         /*
          * Local mongoDB does not run on z/OS and some other OS, use remote for now
          */
-        //isZOS = LibertyServerUtils.isZOS();
+        // isZOS = LibertyServerUtils.isZOS();
         if (runRemote) {
             Log.info(thisClass, "staticSetup", "Running remote, will connect to remote mongoDB server.");
             dbName = TEST_DATABASE_REMOTE;
@@ -115,8 +116,8 @@ public class MongoDBUtils {
     }
 
     /**
-     * Start the embedded MongoDB server. Will construct the mongoDB URL string to use while connecting to the
-     * mongoDB helper servlet -- oAuth20MongoSetup.
+     * Start the embedded MongoDB server. Will construct the mongoDB URL string to
+     * use while connecting to the mongoDB helper servlet -- oAuth20MongoSetup.
      *
      * @param server
      * @param propsFile
@@ -148,7 +149,8 @@ public class MongoDBUtils {
 
             server.copyFileToLibertyServerRoot(MONGO_PROPS_FILE);
         } catch (IllegalStateException e) {
-            Log.info(thisClass, method, "Failed to create props file, mongoDB related tests will fail. " + MONGO_PROPS_FILE);
+            Log.info(thisClass, method,
+                    "Failed to create props file, mongoDB related tests will fail. " + MONGO_PROPS_FILE);
             e.printStackTrace();
         } finally {
             tmpFile.delete();
@@ -159,14 +161,11 @@ public class MongoDBUtils {
          */
 
         Log.info(thisClass, method, "Start embedded mongoDB server.");
-        RuntimeConfig runtimeConfig = Defaults.runtimeConfigFor(Command.MongoD, LoggerFactory.getLogger(thisClass.getName()))
-                        .build();
+        RuntimeConfig runtimeConfig = Defaults
+                .runtimeConfigFor(Command.MongoD, LoggerFactory.getLogger(thisClass.getName())).build();
         MongodStarter starter = MongodStarter.getInstance(runtimeConfig);
-        MongodConfig builder = MongodConfig.builder()
-                        .version(Version.Main.PRODUCTION)
-                        .net(new Net(dbHost, dbPort, Network.localhostIsIPv6()))
-                        .timeout(new Timeout(30000))
-                        .build();
+        MongodConfig builder = MongodConfig.builder().version(Version.Main.PRODUCTION)
+                .net(new Net(dbHost, dbPort, Network.localhostIsIPv6())).timeout(new Timeout(30000)).build();
         mongodExecutable = starter.prepare(builder);
         mongodExecutable.start();
         Log.info(thisClass, method, "Started embedded mongoDB server.");
@@ -213,14 +212,15 @@ public class MongoDBUtils {
         } catch (IllegalStateException e) {
             Log.info(thisClass, method, "Failed to create props file " + MONGO_PROPS_FILE);
             e.printStackTrace();
-            throw new Exception("Could not set up " + MONGO_PROPS_FILE + ". The CustomStoreSample will likely fail to connect to the database.");
+            throw new Exception("Could not set up " + MONGO_PROPS_FILE
+                    + ". The CustomStoreSample will likely fail to connect to the database.");
         } finally {
             tmpFile.delete();
         }
 
         // build variables to send to the setup servlet
-        dbInfo = "&" + DB_NAME + "=" + dbName + "&" + DB_HOST + "=" + dbHost + "&" + DB_PWD + "=" + dbPwd + "&" + DB_PORT + "=" + dbPort + "&" + DB_USER + "=" + dbUser + "&uid="
-                 + uid;
+        dbInfo = "&" + DB_NAME + "=" + dbName + "&" + DB_HOST + "=" + dbHost + "&" + DB_PWD + "=" + dbPwd + "&"
+                + DB_PORT + "=" + dbPort + "&" + DB_USER + "=" + dbUser + "&uid=" + uid;
 
         Log.info(thisClass, method, "MongoDB props are " + dbInfo);
     }
@@ -283,19 +283,20 @@ public class MongoDBUtils {
             trustStore = File.createTempFile("mongoTrustStore", "jks");
             Map<String, String> serviceProperties = mongoService.getProperties();
 
-            String password = serviceProperties.get(TEST_USERNAME + "_password"); // will be null if there's no auth for this server
+            String password = serviceProperties.get(TEST_USERNAME + "_password"); // will be null if there's no auth for
+                                                                                  // this server
 
             MongoClientOptions clientOptions = optionsBuilder.build();
             List<MongoCredential> credentials = Collections.emptyList();
             if (password != null) {
-                MongoCredential credential = MongoCredential.createCredential(TEST_USERNAME, TEST_DATABASE_REMOTE, password.toCharArray());
+                MongoCredential credential = MongoCredential.createCredential(TEST_USERNAME, TEST_DATABASE_REMOTE,
+                        password.toCharArray());
                 credentials = Collections.singletonList(credential);
                 dbPwd = password;
             }
 
-            Log.info(thisClass, method,
-                     "Attempting to contact server " + dbHost + ":" + port + " with password " + (password != null ? "set" : "not set") + " and truststore "
-                                        + "not set");
+            Log.info(thisClass, method, "Attempting to contact server " + dbHost + ":" + port + " with password "
+                    + (password != null ? "set" : "not set") + " and truststore " + "not set");
             mongoClient = new MongoClient(new ServerAddress(dbHost, port), credentials, clientOptions);
             Log.info(thisClass, method, "New client connected");
             mongoClient.getDB(TEST_DATABASE_REMOTE).getCollectionNames();
@@ -305,8 +306,10 @@ public class MongoDBUtils {
         } catch (Exception e) {
             // "Timed out" is checked in the output.txt and can cause a spurious failure
             String exceptionMsg = e.toString().replaceAll("Timed out", "Took too long");
-            Log.info(thisClass, method, "Couldn't create a connection to " + mongoService.getServiceName() + " on " + mongoService.getAddress() + ". " + exceptionMsg);
-            mongoService.reportUnhealthy("Couldn't connect to server. Exception: " + exceptionMsg);
+            Log.info(thisClass, method, "Couldn't create a connection to " + mongoService.getServiceName() + " on "
+                    + mongoService.getAddress() + ". " + exceptionMsg);
+            ExternalTestServiceReporter.reportUnhealthy(mongoService,
+                    "Couldn't connect to server. Exception: " + exceptionMsg);
             return false;
         } finally {
             if (trustStore != null) {
@@ -332,7 +335,7 @@ public class MongoDBUtils {
             msgUtils.printMethodName(method);
             Log.info(thisClass, method, "Create DataBases through the server");
             URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20MongoSetup?port=" + defaultPort
-                                                     + "&schemaName=OAuthDBSchema" + "&uid=" + uid + dbInfo);
+                    + "&schemaName=OAuthDBSchema" + "&uid=" + uid + dbInfo);
             Log.info(thisClass, method, "setupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
             con.setDoInput(true);
@@ -374,9 +377,15 @@ public class MongoDBUtils {
      * @throws Exception
      */
     public static void addMongoDBEntry(String httpString, Integer defaultPort, String clientID, String secret,
-                                       String compID) throws Exception {
+            String compID) throws Exception {
         addMongoDBEntry(httpString, defaultPort, clientID, secret, compID, null, null);
 
+    }
+
+    public static void addMongoDBEntry(String httpString, Integer defaultPort, String clientID, String secret,
+            String compID, String salt, String alg) throws Exception {
+
+        addMongoDBEntry(httpString, defaultPort, clientID, secret, compID, salt, alg, 32, 2048);
     }
 
     /**
@@ -392,7 +401,7 @@ public class MongoDBUtils {
      * @throws Exception
      */
     public static void addMongoDBEntry(String httpString, Integer defaultPort, String clientID, String secret,
-                                       String compID, String salt, String alg) throws Exception {
+            String compID, String salt, String alg, Integer hashLen, Integer iterations) throws Exception {
         String METHOD = "addMongoDBEntry";
         HttpURLConnection con = null;
         try {
@@ -400,9 +409,11 @@ public class MongoDBUtils {
             Log.info(thisClass, METHOD, "Add new entry for " + clientID);
 
             URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20MongoSetup?port=" + defaultPort
-                                                     + "&schemaName=OAuthDBSchema&addClient=true" + "&clientID=" + clientID + "&secret=" + secret
-                                                     + "&compID=" + compID + (salt != null ? ("&checkSalt=" + salt) : "")
-                                                     + (alg != null ? ("&checkAlgorithm=" + alg) : "") + dbInfo);
+                    + "&schemaName=OAuthDBSchema&addClient=true" + "&clientID=" + clientID + "&secret=" + secret
+                    + "&compID=" + compID + (salt != null ? ("&checkSalt=" + salt) : "")
+                    + (alg != null ? ("&checkAlgorithm=" + alg) : "")
+                    + (hashLen != null ? ("&hash_len=" + hashLen) : "")
+                    + (iterations != null ? ("&hash_itr=" + iterations) : "") + dbInfo);
 
             Log.info(thisClass, METHOD, "setupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
@@ -439,7 +450,8 @@ public class MongoDBUtils {
     }
 
     /**
-     * Get the type of secret stored in the database (hashed, xor, ext) for the supplied clientID.
+     * Get the type of secret stored in the database (hashed, xor, ext) for the
+     * supplied clientID.
      *
      * @param httpString
      * @param defaultPort
@@ -448,7 +460,8 @@ public class MongoDBUtils {
      * @return
      * @throws Exception
      */
-    public static String checkSecretType(String httpString, Integer defaultPort, String clientID, String compID) throws Exception {
+    public static String checkSecretType(String httpString, Integer defaultPort, String clientID, String compID)
+            throws Exception {
         return checkEntry(httpString, defaultPort, clientID, compID, "checkSecret");
     }
 
@@ -462,7 +475,8 @@ public class MongoDBUtils {
      * @return
      * @throws Exception
      */
-    public static String checkSalt(String httpString, Integer defaultPort, String clientID, String compID) throws Exception {
+    public static String checkSalt(String httpString, Integer defaultPort, String clientID, String compID)
+            throws Exception {
         return checkEntry(httpString, defaultPort, clientID, compID, "checkSalt");
     }
 
@@ -476,7 +490,8 @@ public class MongoDBUtils {
      * @return
      * @throws Exception
      */
-    public static String checkAlgorithm(String httpString, Integer defaultPort, String clientID, String compID) throws Exception {
+    public static String checkAlgorithm(String httpString, Integer defaultPort, String clientID, String compID)
+            throws Exception {
         return checkEntry(httpString, defaultPort, clientID, compID, "checkAlgorithm");
     }
 
@@ -490,8 +505,14 @@ public class MongoDBUtils {
      * @return
      * @throws Exception
      */
-    public static String checkIteration(String httpString, Integer defaultPort, String clientID, String compID) throws Exception {
+    public static String checkIteration(String httpString, Integer defaultPort, String clientID, String compID)
+            throws Exception {
         return checkEntry(httpString, defaultPort, clientID, compID, "checkIteration");
+    }
+
+    public static String checkKeyLength(String httpString, Integer defaultPort, String clientID, String compID)
+            throws Exception {
+        return checkEntry(httpString, defaultPort, clientID, compID, "checkKeyLength");
     }
 
     /**
@@ -506,7 +527,7 @@ public class MongoDBUtils {
      * @throws Exception
      */
     public static String checkEntry(String httpString, Integer defaultPort, String clientID, String compID,
-                                    String checkType) throws Exception {
+            String checkType) throws Exception {
 
         String METHOD = "checkEntry";
         HttpURLConnection con = null;
@@ -516,9 +537,9 @@ public class MongoDBUtils {
             msgUtils.printMethodName(METHOD);
 
             Log.info(thisClass, METHOD, "Check the " + checkType + " on client " + clientID);
-            URL setupURL = AutomationTools
-                            .getNewUrl(httpString + "/oAuth20MongoSetup?port=" + defaultPort + "&schemaName=OAuthDBSchema"
-                                       + "&clientID=" + clientID + (compID != null ? ("&compID=" + compID) : "") + "&" + checkType + "=true" + dbInfo);
+            URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20MongoSetup?port=" + defaultPort
+                    + "&schemaName=OAuthDBSchema" + "&clientID=" + clientID
+                    + (compID != null ? ("&compID=" + compID) : "") + "&" + checkType + "=true" + dbInfo);
 
             Log.info(thisClass, METHOD, "setupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
@@ -565,7 +586,7 @@ public class MongoDBUtils {
             msgUtils.printMethodName("cleanupMongoDBEntries");
             Log.info(thisClass, "cleanupMongoDBEntries", "Drop DataBases through the server");
             URL setupURL = AutomationTools
-                            .getNewUrl(httpString + "/oAuth20MongoSetup?port=" + defaultPort + "&dropDB=true" + dbInfo);
+                    .getNewUrl(httpString + "/oAuth20MongoSetup?port=" + defaultPort + "&dropDB=true" + dbInfo);
             Log.info(thisClass, "cleanupMongoDBEntries", "cleanupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
             con.setDoInput(true);
@@ -613,7 +634,8 @@ public class MongoDBUtils {
         try {
             msgUtils.printMethodName(METHOD);
             Log.info(thisClass, METHOD, "Remove client entries from DB and add them again.");
-            URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20MongoSetup?port=" + defaultPort + "&clearClients=true" + "&schemaName=OAuthDBSchema" + dbInfo);
+            URL setupURL = AutomationTools.getNewUrl(httpString + "/oAuth20MongoSetup?port=" + defaultPort
+                    + "&clearClients=true" + "&schemaName=OAuthDBSchema" + dbInfo);
             Log.info(thisClass, METHOD, "cleanupURL: " + setupURL);
             con = (HttpURLConnection) setupURL.openConnection();
             con.setDoInput(true);

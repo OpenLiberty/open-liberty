@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,7 @@ package com.ibm.ws.ui.internal.rest;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
@@ -650,7 +650,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
 
         try {
             // Deserialize first. We need to know it will work before we set status
-            byte[] b = obj.toString().getBytes("UTF-8");
+            byte[] b = obj.toString().getBytes(StandardCharsets.UTF_8);
             response.setStatus(status);
             response.getOutputStream().write(b);
         } catch (IOException e) {
@@ -754,11 +754,11 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
             if (MEDIA_TYPE_TEXT_PLAIN.equals(contentType)) {
                 response.setStatus(e.getStatus());
                 response.setResponseHeader(HTTP_HEADER_CONTENT_TYPE, e.getContentType());
-                response.getOutputStream().write(e.getPayload().toString().getBytes(Charset.forName("UTF-8")));
+                response.getOutputStream().write(e.getPayload().toString().getBytes(StandardCharsets.UTF_8));
             } else {
                 response.setStatus(HTTP_INTERNAL_ERROR);
                 response.setResponseHeader(HTTP_HEADER_CONTENT_TYPE, MEDIA_TYPE_TEXT_PLAIN);
-                response.getOutputStream().write(("An internal error occurred. RESTException had a set payload but did not specify content type").getBytes(Charset.forName("UTF-8")));
+                response.getOutputStream().write(("An internal error occurred. RESTException had a set payload but did not specify content type").getBytes(StandardCharsets.UTF_8));
             }
         } else {
             response.setStatus(e.getStatus());
@@ -824,7 +824,7 @@ public class CommonRESTHandler implements AdminCenterRestHandler, APIConstants, 
                 Message error = new Message(HTTP_BAD_REQUEST, RequestNLS.formatMessage(tc, "POST_NO_PAYLOAD", maxSize));
                 throw new BadRequestException(MEDIA_TYPE_TEXT_PLAIN, error);
             }
-            return new String(buf, 0, read, "UTF-8");
+            return new String(buf, 0, read, StandardCharsets.UTF_8);
         } finally {
             input.close();
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -87,6 +87,7 @@ public class SseClientTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(MicroProfileActions.MP40_ID) // Skipping until Issue #33559 is resolved.
     public void testPublisherString(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         try (SseClient client = builder.build(SseClient.class)) {
             GenericSubscriber<String> subscriber = new GenericSubscriber<>(3);

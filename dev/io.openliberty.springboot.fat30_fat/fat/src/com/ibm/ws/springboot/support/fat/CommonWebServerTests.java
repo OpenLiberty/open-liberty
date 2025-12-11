@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,7 +14,6 @@ package com.ibm.ws.springboot.support.fat;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.HashSet;
 import java.util.Set;
 
 import componenttest.topology.utils.HttpUtils;
@@ -37,7 +36,7 @@ public abstract class CommonWebServerTests extends AbstractSpringTests {
         String methodName = testName.getMethodName();
 
         Map<String, String> properties = new HashMap<>();
-        if ( (methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT) ) {
+        if ((methodName != null) && methodName.contains(DEFAULT_HOST_WITH_APP_PORT)) {
             properties.put("bvt.prop.HTTP_default", "-1");
             properties.put("bvt.prop.HTTP_default.secure", "-1");
         }
@@ -47,7 +46,7 @@ public abstract class CommonWebServerTests extends AbstractSpringTests {
     /**
      * Override: When {@link #DEFAULT_HOST_WITH_APP_PORT} is a part of the test
      * method name, answer true, indicating the default virtual host should be
-     * used.  Otherwise, answer false.
+     * used. Otherwise, answer false.
      *
      * @return True or false telling if the default virtual host is to be used.
      */
@@ -63,9 +62,9 @@ public abstract class CommonWebServerTests extends AbstractSpringTests {
     /**
      * Override: Web applications use springboot and servlet.
      *
-     * @return The features provisioned in the test server.  This
-     *     implementation always answers "springBoot-3.0" and
-     *     "servlet-6.0".
+     * @return The features provisioned in the test server. This
+     *         implementation always answers "springBoot-3.0" and
+     *         "servlet-6.0".
      */
     @Override
     public Set<String> getFeatures() {
@@ -77,8 +76,8 @@ public abstract class CommonWebServerTests extends AbstractSpringTests {
      * base spring application.
      *
      * @return The name of the application used by this test
-     *     class.  This implementation always answers
-     *     {@link #SPRING_BOOT_30_APP_BASE}.
+     *         class. This implementation always answers
+     *         {@link #SPRING_BOOT_30_APP_BASE}.
      */
     @Override
     public String getApplication() {
@@ -89,11 +88,11 @@ public abstract class CommonWebServerTests extends AbstractSpringTests {
 
     /**
      * Common web application test: Verify that a request to the
-     * server answers expected response text.  An assertion error
+     * server answers expected response text. An assertion error
      * is thrown if the expected response text is not received.
      *
      * @throws Exception Thrown if the request was not handled by
-     *     the server.
+     *                       the server.
      */
     public void testBasicSpringBootApplication() throws Exception {
         HttpUtils.findStringInUrl(server, "", "HELLO SPRING BOOT!!");

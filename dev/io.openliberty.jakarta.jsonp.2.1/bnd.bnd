@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2024 IBM Corporation and others.
+# Copyright (c) 2022, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ Export-Package: \
    jakarta.json.stream;version=2.1
 
 -includeresource: \
-  @${repo;jakarta.json:jakarta.json-api;2.1.3;EXACT}!/!(META-INF/maven/*|module-info.class),\
+  @\${repo;jakarta.json:jakarta.json-api;2.1.3;EXACT}!/!(META-INF/maven/*|module-info.class),\
   OSGI-INF=resources/OSGI-INF
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml

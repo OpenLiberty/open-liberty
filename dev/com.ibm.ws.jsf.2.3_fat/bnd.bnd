@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -29,7 +29,6 @@ tested.features: \
     pages-3.1,\
     servlet-6.0,\
     faces-4.0,\
-    cdi-4.0,\
     persistence-3.1,\
     persistencecontainer-3.1,\
     websocket-2.1,\
@@ -41,45 +40,29 @@ tested.features: \
     websocket-2.2,\
     validation-3.1,\
     persistence-3.2,\
-    persistencecontainer-3.2
+    persistencecontainer-3.2,\
+    checkpoint
 
 src: \
     fat/src,\
-    test-applications/IterableSupport.war/src,\
-    test-applications/ComponentSearchExpression.war/src,\
-    test-applications/UIRepeatConditionCheck.war/src,\
-    test-applications/FacesDataModel.war/src,\
     test-applications/ClassLevelBeanValidation.war/src,\
-    test-applications/ImportConstantsTag.war/src,\
-    test-applications/WebSocket.war/src,\
-    test-applications/JSF23GeneralTests.war/src,\
-    test-applications/JSF23Spec1430.war/src,\
-    test-applications/JSF23Spec1346.war/src,\
     test-applications/CommandScript.war/src,\
-    test-applications/PhaseListenerException.jar/src,\
-    test-applications/JSF23UISelectMany.war/src,\
-    test-applications/JSF23ViewResource-Spec1435.war/src,\
+    test-applications/ComponentSearchExpression.war/src,\
     test-applications/EvalScripts.war/src,\
+    test-applications/FacesDataModel.war/src,\
+    test-applications/ImportConstantsTag.war/src,\
+    test-applications/IterableSupport.war/src,\
+    test-applications/JSF23GeneralTests.war/src,\
     test-applications/JSF23SelectOneRadioGroup.war/src,\
+    test-applications/JSF23Spec1346.war/src,\
+    test-applications/JSF23Spec1430.war/src,\
+    test-applications/JSF23UISelectMany.war/src,\
     test-applications/JSF23ViewParameters.war/src,\
+    test-applications/JSF23ViewResource-Spec1435.war/src,\
+    test-applications/PhaseListenerException.jar/src,\
     test-applications/StartupShutdownExternalContext.war/src,\
-    test-applications/PostRenderViewEvent.war/src,\
-    test-applications/CDIManagedProperty.war/src,\
-    test-applications/ELImplicitObjectsViaCDI.war/src,\
-    test-applications/JSF23Spec1300.war/src,\
-    test-applications/ResourceRendering.war/src,\
-    test-applications/JSF23Spec217.war/src,\
-    test-applications/JSF23Spec790.war/src,\
-    test-applications/ConvertDateTime.war/src,\
-    test-applications/ConverterValidatorBehaviorInjectionTarget.war/src,\
-    test-applications/ELImplicitObjectsViaCDIErrorApp.war/src,\
-    test-applications/JSF23Spec1433.jar/src,\
-    test-applications/CDIIntegrationTest.war/src,\
-    test-applications/CDIInjectionTests.war/src,\
-    test-applications/CDICommon/src,\
-    test-applications/CDIConfigByACP.war/src,\
-    test-applications/CDIConfigByACPJSF23.jar/src,\
-    test-applications/CDIConfigByACPFaces40.jar/src
+    test-applications/UIRepeatConditionCheck.war/src,\
+    test-applications/WebSocket.war/src
 
 fat.project: true
 
@@ -103,4 +86,5 @@ fat.project: true
     org.seleniumhq.selenium:selenium-remote-driver;version=4.8.3,\
     org.seleniumhq.selenium:selenium-support;version=4.8.3,\
     io.openliberty.faces.fat.selenium.util.internal;version=latest,\
-    xml-apis:xml-apis;version=1.4.01
+    xml-apis:xml-apis;version=1.4.01,\
+    com.ibm.ws.org.apache.commons.lang3;version=latest

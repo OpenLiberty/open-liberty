@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,10 +18,9 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
-import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
+import componenttest.topology.utils.tck.TCKUtilities;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -34,7 +33,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 public class FATSuite {
 
     public static RepeatTests allMPTel20Repeats(String serverName) {
-        return TelemetryActions
-            .repeat(serverName, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10);
+        return MicroProfileActions
+                        .repeatIf(serverName, TCKUtilities::areAllFeaturesPresent, MicroProfileActions.MP70_EE11, MicroProfileActions.MP70_EE10);
     }
 }

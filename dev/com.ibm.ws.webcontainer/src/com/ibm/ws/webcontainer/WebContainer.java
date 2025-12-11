@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1078,7 +1078,7 @@ public abstract class WebContainer extends BaseContainer {
                 }
                 res.addHeader("Content-Type", "text/html;charset=UTF-8");
                 String output = webGroupVHostNotFound;
-                outBytes = output.getBytes("UTF-8"); // The custom property is stored in server.xml which is in UTF-8 and ISO-8859-1 is a subset of UTF-8 so it would work for anything in there.                  
+                outBytes = output.getBytes(StandardCharsets.UTF_8); // The custom property is stored in server.xml which is in UTF-8 and ISO-8859-1 is a subset of UTF-8 so it would work for anything in there.
 
             }
             //PK85685 End
@@ -1107,7 +1107,7 @@ public abstract class WebContainer extends BaseContainer {
                 }
 
                 res.addHeader("Content-Type", "text/html;charset=UTF-8");
-                outBytes = output.trim().getBytes("UTF-8");                  
+                outBytes = output.trim().getBytes(StandardCharsets.UTF_8);
             }
             else{
                 res.addHeader("Content-Type", "text/html");
@@ -1138,7 +1138,7 @@ public abstract class WebContainer extends BaseContainer {
                 }
 
                 res.addHeader("Content-Type", "text/html;charset=UTF-8");
-                outBytes = output.trim().getBytes("UTF-8");                
+                outBytes = output.trim().getBytes(StandardCharsets.UTF_8);
             }
             else {
                 res.addHeader("Content-Type", "text/html");
@@ -1172,7 +1172,7 @@ public abstract class WebContainer extends BaseContainer {
                 }
 
                 res.addHeader("Content-Type", "text/html;charset=UTF-8");
-                outBytes = output.trim().getBytes("UTF-8");                  
+                outBytes = output.trim().getBytes(StandardCharsets.UTF_8);
             }
             else { 
                 res.addHeader("Content-Type", "text/html");
@@ -1716,24 +1716,32 @@ public abstract class WebContainer extends BaseContainer {
     public abstract URIMatcherFactory getURIMatcherFactory();
     
     public static void sendBadRequestResponse(IRequest req, IResponse res) throws IOException {
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) 
-            logger.entering(CLASS_NAME, "sendBadRequestResponse");
-        
-        res.addHeader("Content-Type", "text/html");
-        res.setStatusCode(400);
+        String respContentType = "text/html";
+        String reqContentType = req.getContentType();
 
         String formattedMessage = nls.getFormattedMessage("bad.request.uri:.{0}", new Object[] { ResponseUtils.encodeDataString(truncateURI(req.getRequestURI())) },
                         "Bad request URI");
+        String output = "<H1>" + formattedMessage + "</H1><BR>";
 
-        String output = "<H1>"
-                        + formattedMessage
-                        + "</H1><BR>";
+        if (reqContentType != null) {
+            if (reqContentType.toLowerCase().contains("application/json"))
+                respContentType = "application/json";
+        } else if ((reqContentType = req.getHeader("accept")) != null){
+            if (reqContentType.toLowerCase().contains("application/json"))
+                respContentType = "application/json";
+        }
+
+        res.setStatusCode(400);
+        res.addHeader("Content-Type", respContentType);
+        
+        if (respContentType.contains("json")) {
+            output = "{\"error_message\" : \"" + formattedMessage + "\"}";
+        }
 
         byte[] outBytes = output.getBytes();
         res.getOutputStream().write(outBytes, 0, outBytes.length);
 
-        //always display 400 trace
-        logger.exiting(CLASS_NAME, "sendBadRequestResponse - 400 Bad Request ["+ formattedMessage + "]" );
+        logger.logp(Level.FINE, CLASS_NAME, "sendBadRequestResponse", "400 Bad Request ["+ formattedMessage + "]");
     }
 
     // ================== CLASS ================== 721610
@@ -1787,6 +1795,9 @@ public abstract class WebContainer extends BaseContainer {
             cipherData.put("SSL_DH_anon_WITH_AES_256_CBC_SHA", 256);
             cipherData.put("SSL_DH_anon_WITH_AES_256_GCM_SHA384", 256);
             cipherData.put("SSL_DH_anon_WITH_AES_256_CBC_SHA256", 256);
+
+            // FIPS 140-3: Algorithm assessment complete; no impact; future investigation needed.
+            // because we are unsure if clients are still using the older algorithms.
 
             // _3DES_ is 168
             cipherData.put("SSL_RSA_FIPS_WITH_3DES_EDE_CBC_SHA", 168);

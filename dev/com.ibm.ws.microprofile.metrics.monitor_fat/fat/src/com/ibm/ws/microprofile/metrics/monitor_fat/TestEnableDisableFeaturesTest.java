@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -212,42 +212,73 @@ public class TestEnableDisableFeaturesTest {
        	}, new String[] {});
     }
     
-    @Test 
+    @Test
     public void testEDF4() throws Exception {
-    	currentServ = serverEDF4;
-    	String testName = "testEDF4";
-    	serverEDF4.startServer();
-    	waitForSecurityPrerequisites(serverEDF4, 60000);
-    	Log.info(c, testName, "------- Add session application ------");
-       	ShrinkHelper.defaultDropinApp(serverEDF4, "testSessionApp", "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
-       	Log.info(c, testName, "------- added testSessionApp to dropins -----");
-       	
-       	Log.info(c, testName, "------- Add JDBC application and run JDBC servlet ------");
-       	ShrinkHelper.defaultDropinApp(serverEDF4, "testJDBCApp", "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
-       	Log.info(c, testName, "------- added testJDBCApp to dropins -----");
-      	checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF4), 
-      		new String[] { "sql: create table cities" }, new String[] {});
-       	Log.info(c, testName, "------- connectionpool metrics should be available ------");
-       	checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4), new String[] {
-       		"vendor:connectionpool_jdbc_example_ds1_connection_handles",
-       		"vendor:connectionpool_jdbc_example_ds1_free_connections",
-       		"vendor:connectionpool_jdbc_example_ds1_destroy_total",
-       		"vendor:connectionpool_jdbc_example_ds1_create_total",
-       		"vendor:connectionpool_jdbc_example_ds1_managed_connections",
-       		"vendor:connectionpool_jdbc_example_ds1_wait_time_total",
-       		"vendor:connectionpool_jdbc_example_ds1_in_use_time_total",
-       		"vendor:connectionpool_jdbc_example_ds1_queued_requests_total",
-       		"vendor:connectionpool_jdbc_example_ds1_used_connections_total",
-       		"vendor:connectionpool_jdbc_example_ds2_connection_handles",
-       		"vendor:connectionpool_jdbc_example_ds2_free_connections",
-       		"vendor:connectionpool_jdbc_example_ds2_destroy_total",
-       		"vendor:connectionpool_jdbc_example_ds2_create_total",
-       		"vendor:connectionpool_jdbc_example_ds2_managed_connections",
-       		"vendor:connectionpool_jdbc_example_ds2_wait_time_total",
-       		"vendor:connectionpool_jdbc_example_ds2_in_use_time_total",
-       		"vendor:connectionpool_jdbc_example_ds2_queued_requests_total",
-       		"vendor:connectionpool_jdbc_example_ds2_used_connections_total",
-       	}, new String[] {});
+        currentServ = serverEDF4;
+        String testName = "testEDF4";
+        serverEDF4.startServer();
+        waitForSecurityPrerequisites(serverEDF4, 60000);
+        Log.info(c, testName, "------- Add session application ------");
+        ShrinkHelper.defaultDropinApp(serverEDF4, "testSessionApp",
+                "com.ibm.ws.microprofile.metrics.monitor_fat.session.servlet");
+        Log.info(c, testName, "------- added testSessionApp to dropins -----");
+
+        Log.info(c, testName, "------- Add JDBC application and run JDBC servlet ------");
+        ShrinkHelper.defaultDropinApp(serverEDF4, "testJDBCApp",
+                "com.ibm.ws.microprofile.metrics.monitor_fat.jdbc.servlet");
+        Log.info(c, testName, "------- added testJDBCApp to dropins -----");
+        checkStrings(getHttpServlet("/testJDBCApp/testJDBCServlet?operation=create", serverEDF4),
+                new String[] { "sql: create table cities" }, new String[] {});
+        Log.info(c, testName, "------- connectionpool metrics should be available ------");
+        checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4),
+                new String[] { "vendor:connectionpool_jdbc_example_ds1_connection_handles",
+                        "vendor:connectionpool_jdbc_example_ds1_free_connections",
+                        "vendor:connectionpool_jdbc_example_ds1_destroy_total",
+                        "vendor:connectionpool_jdbc_example_ds1_create_total",
+                        "vendor:connectionpool_jdbc_example_ds1_managed_connections",
+                        "vendor:connectionpool_jdbc_example_ds1_wait_time_total",
+                        "vendor:connectionpool_jdbc_example_ds1_in_use_time_total",
+                        "vendor:connectionpool_jdbc_example_ds1_queued_requests_total",
+                        "vendor:connectionpool_jdbc_example_ds1_used_connections_total",
+                        "vendor:connectionpool_jdbc_example_ds2_connection_handles",
+                        "vendor:connectionpool_jdbc_example_ds2_free_connections",
+                        "vendor:connectionpool_jdbc_example_ds2_destroy_total",
+                        "vendor:connectionpool_jdbc_example_ds2_create_total",
+                        "vendor:connectionpool_jdbc_example_ds2_managed_connections",
+                        "vendor:connectionpool_jdbc_example_ds2_wait_time_total",
+                        "vendor:connectionpool_jdbc_example_ds2_in_use_time_total",
+                        "vendor:connectionpool_jdbc_example_ds2_queued_requests_total",
+                        "vendor:connectionpool_jdbc_example_ds2_used_connections_total", },
+                new String[] {});
+
+        currentServ.setMarkToEndOfLog();
+        // FAT updated to check that connectionpool metric remains after unloading
+        // application.
+        boolean res = currentServ.removeDropinsApplications("testJDBCApp.war");
+        Assert.assertTrue("TestJDBCApp.war was not removed", res);
+
+        currentServ.waitForStringInLog(".*CWWKZ0009I: The application testJDBCApp has stopped successfully.*");
+        Log.info(c, testName, "------- Removed JDBC application ------");
+        checkStrings(getHttpsServlet("/metrics/vendor", serverEDF4),
+                new String[] { "vendor:connectionpool_jdbc_example_ds1_connection_handles",
+                        "vendor:connectionpool_jdbc_example_ds1_free_connections",
+                        "vendor:connectionpool_jdbc_example_ds1_destroy_total",
+                        "vendor:connectionpool_jdbc_example_ds1_create_total",
+                        "vendor:connectionpool_jdbc_example_ds1_managed_connections",
+                        "vendor:connectionpool_jdbc_example_ds1_wait_time_total",
+                        "vendor:connectionpool_jdbc_example_ds1_in_use_time_total",
+                        "vendor:connectionpool_jdbc_example_ds1_queued_requests_total",
+                        "vendor:connectionpool_jdbc_example_ds1_used_connections_total",
+                        "vendor:connectionpool_jdbc_example_ds2_connection_handles",
+                        "vendor:connectionpool_jdbc_example_ds2_free_connections",
+                        "vendor:connectionpool_jdbc_example_ds2_destroy_total",
+                        "vendor:connectionpool_jdbc_example_ds2_create_total",
+                        "vendor:connectionpool_jdbc_example_ds2_managed_connections",
+                        "vendor:connectionpool_jdbc_example_ds2_wait_time_total",
+                        "vendor:connectionpool_jdbc_example_ds2_in_use_time_total",
+                        "vendor:connectionpool_jdbc_example_ds2_queued_requests_total",
+                        "vendor:connectionpool_jdbc_example_ds2_used_connections_total", },
+                new String[] {});
     }
     
     @Test 
@@ -428,7 +459,7 @@ public class TestEnableDisableFeaturesTest {
     		new String[] {}, 
     		new String[] { "vendor:" });
     }
-    
+
     private void waitForSecurityPrerequisites(LibertyServer server, int timeout) {
     	// Need to ensure LTPA keys and configuration are created before hitting a secure endpoint
         Assert.assertNotNull("LTPA keys are not created within timeout period of " + timeout + "ms.", server.waitForStringInLog("CWWKS4104A",timeout));

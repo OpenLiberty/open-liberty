@@ -107,7 +107,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         MockServletResponse response = new MockServletResponse();
 
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
@@ -165,7 +165,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         MockServletResponse response = new MockServletResponse();
 
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
@@ -258,7 +258,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         MockServletResponse response = new MockServletResponse();
 
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_IMPLICIT);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
@@ -295,7 +295,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         MockServletResponse response = new MockServletResponse();
 
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
 
@@ -324,7 +324,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         MockServletResponse response = new MockServletResponse();
 
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_CLIENT_CREDENTIALS);
 
@@ -362,7 +362,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.USERNAME, "username");
         request.setParameter(OAuth20Constants.PASSWORD, "password");
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_PASSWORD);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
@@ -395,7 +395,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         request.setParameter(OAuth20Constants.USERNAME, "username");
         request.setParameter(OAuth20Constants.PASSWORD, "password");
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_PASSWORD);
         request.setHeader(OAuth20Constants.HTTP_HEADER_CONTENT_TYPE,
@@ -461,7 +461,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         MockServletResponse response = new MockServletResponse();
 
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
         request.setParameter(OAuth20Constants.RESPONSE_TYPE,
@@ -491,7 +491,7 @@ public class PermittedFlowsTest extends BaseTestCase {
         response = new MockServletResponse();
 
         request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+        request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
         request.setParameter(OAuth20Constants.GRANT_TYPE,
                 OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN);
         request.setParameter(OAuth20Constants.REFRESH_TOKEN, refresh_token);
@@ -558,7 +558,7 @@ public class PermittedFlowsTest extends BaseTestCase {
             MockServletResponse response = new MockServletResponse();
 
             request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-            request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+            request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
             request.setParameter(OAuth20Constants.GRANT_TYPE,
                     OAuth20Constants.GRANT_TYPE_AUTHORIZATION_CODE);
             request.setParameter(OAuth20Constants.RESPONSE_TYPE,
@@ -588,7 +588,7 @@ public class PermittedFlowsTest extends BaseTestCase {
             response = new MockServletResponse();
 
             request.setParameter(OAuth20Constants.CLIENT_ID, "key");
-            request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret");
+            request.setParameter(OAuth20Constants.CLIENT_SECRET, "secret1234");
             request.setParameter(OAuth20Constants.GRANT_TYPE,
                     OAuth20Constants.GRANT_TYPE_REFRESH_TOKEN);
             request.setParameter(OAuth20Constants.REFRESH_TOKEN, refresh_token);

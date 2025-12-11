@@ -21,6 +21,8 @@ package org.apache.myfaces.application;
 import javax.faces.context.FacesContext;
 import org.apache.myfaces.buildtools.maven2.plugin.builder.annotation.JSFWebConfigParam;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * This class provides an interface to separate the state caching operations (saving/restoring)
  * from the renderkit specific stuff that HtmlResponseStateManager should do.
@@ -71,7 +73,7 @@ public abstract class StateCache<K, V>
      * Sets the random algorithm to initialize the secure random id generator. 
      * By default is SHA1PRNG
      */
-    @JSFWebConfigParam(since="2.2.0", defaultValue="SHA1PRNG", group="state")
+    @JSFWebConfigParam(since="2.2.0", defaultValue=CryptoUtils.SHA1PRNG, group="state")
     public static final String RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM_PARAM 
             = "org.apache.myfaces.RANDOM_KEY_IN_CSRF_SESSION_TOKEN_SECURE_RANDOM_ALGORITM";
 

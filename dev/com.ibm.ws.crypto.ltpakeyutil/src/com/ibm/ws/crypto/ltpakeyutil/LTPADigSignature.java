@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2011 IBM Corporation and others.
+ * Copyright (c) 1997, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,43 +13,27 @@
 package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
+
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 final class LTPADigSignature {
 
+	static int keySize = (CryptoUtils.isFips140_3Enabled() ? 256 : 128);
+
 	static byte[][] testRawPubKey = null;
 	static byte[][] testRawPrivKey = null;
-	static MessageDigest md1 = null;
+	static MessageDigest md1 = CryptoUtils.getMessageDigestForLTPA();
 	static private Object lockObj1 = new Object();
 	static long created = 0;
 	static long cacheHits = 0;
-
-	static {
-		try {
-			if (LTPAKeyUtil.isFIPSEnabled() && LTPAKeyUtil.isIBMJCEPlusFIPSAvailable()) {
-				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA256,
-						LTPAKeyUtil.IBMJCE_PLUS_FIPS_NAME);
-			} else if (LTPAKeyUtil.isIBMJCEAvailable()) {
-				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA, LTPAKeyUtil.IBMJCE_NAME);
-			} else {
-				md1 = MessageDigest.getInstance(LTPAKeyUtil.MESSAGE_DIGEST_ALGORITHM_SHA);
-			}
-
-		} catch (NoSuchAlgorithmException e) {
-			// instrumented ffdc
-		} catch (NoSuchProviderException e) {
-			// instrumented ffdc;
-		}
-	}
 
 	public LTPADigSignature() {
 		super();
 	}
 
 	static void generateRSAKeys(byte[][] rsaPubKey, byte[][] rsaPrivKey) {
-		byte[][] rsaKey = LTPACrypto.rsaKey(128, true, true); // 64 is 512, 128
-																// is 1024
+		byte[][] rsaKey = LTPACrypto.rsaKey(keySize, true, true); // 64 is 512, 128
+																	// is 1024
 
 		rsaPrivKey[0] = rsaKey[0];
 		rsaPrivKey[2] = rsaKey[2];

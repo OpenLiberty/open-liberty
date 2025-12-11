@@ -18,6 +18,7 @@ fat.project: true
 
 tested.features:\
   mpTelemetry-2.0,\
+  mpTelemetry-2.1,\
   mpFaultTolerance-4.1,\
   restfulwsclient-4.0,\
   restfulws-4.0,\

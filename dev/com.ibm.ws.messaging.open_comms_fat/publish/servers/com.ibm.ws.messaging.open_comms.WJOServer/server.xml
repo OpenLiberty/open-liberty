@@ -8,7 +8,7 @@
     <feature>wasJmsSecurity-1.0</feature>
   </featureManager>
 
-  <keyStore id="defaultKeyStore" location="WJOServer.jks" password="{xor}Lz4sLCgwLTs="/>
+  <keyStore id="defaultKeyStore" location="WJOServer.p12" password="{xor}Lz4sLCgwLTs="/>
 
   <!-- Overriding the values of the properties used for httpEndpoint port configuration in fatTestPorts.xml -->
   <variable name="bvt.prop.HTTP_default"         value="${bvt.prop.http.1}"/>

@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #
 # Contributors:
@@ -18,11 +18,6 @@
 -nouses=true
 bVersion=1.0
 
-javac.source: 1.7
-javac.target: 1.7
-
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
-
 # We're going to create a bad bundle here: don't want imports
 # or anything else for the launcher. So just swallow the errors.
 -failok=true
@@ -32,11 +27,6 @@ Bundle-SymbolicName: com.ibm.ws.kernel.boot; singleton:=true
 Bundle-Description: WebSphere Liberty kernel launcher, version ${bVersion}
 
 Main-Class: com.ibm.ws.kernel.boot.cmdline.EnvCheck
-
-# This bundle emits messages before the OSGi runtime is fully started,
-# and so it needs to be able to load message translations from other
-# jar files using the jar manifest Class-Path attribute
-Class-Path: com.ibm.ws.kernel.boot.nls_${bFullVersion}.jar
 
 # Export-Package is used to generate extra system packages when preparing 
 # framework launch and to ensure bnd picks up platform/injected services
@@ -88,14 +78,15 @@ Private-Package: \
 # with the name of the osgi jar specified above.
 -includeresource: \
     OSGI-OPT=resources/OSGI-OPT, \
-    OSGI-OPT/websphere/bin/tools/ws-server.jar=${repo;com.ibm.ws.kernel.boot.ws-server}, \
+    OSGI-OPT/websphere/bin/tools/ws-server.jar=\${repo;com.ibm.ws.kernel.boot.ws-server}, \
     {OSGI-OPT/websphere/autopd-collection-environment-v2.xml=resources/OSGI-OPT/websphere/autopd-collection-environment-v2.xml}, \
-    @${repo;com.ibm.websphere.org.osgi.core}!/org/osgi/framework/Version*, \
-    @${repo;com.ibm.ws.kernel.boot.core}, \
-    @${repo;com.ibm.ws.kernel.boot.nested}, \
-    @${repo;com.ibm.ws.kernel.boot.cmdline}, \
-    @${repo;com.ibm.ws.kernel.boot.common}, \
-    @${repo;com.ibm.ws.kernel.boot.logging}
+    @\${repo;com.ibm.websphere.org.osgi.core}!/org/osgi/framework/Version*, \
+    @\${repo;com.ibm.ws.kernel.boot.core}, \
+    @\${repo;com.ibm.ws.kernel.boot.nested}, \
+    @\${repo;com.ibm.ws.kernel.boot.cmdline}, \
+    @\${repo;com.ibm.ws.kernel.boot.common}, \
+    @\${repo;com.ibm.ws.kernel.boot.logging}, \
+    @\${repo;com.ibm.ws.kernel.security.thread}
 
 -dependson: \
     com.ibm.ws.kernel.boot.ws-server

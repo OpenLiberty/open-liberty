@@ -1,0 +1,47 @@
+<!--Copyright (c) 2025 IBM Corporation and others. All rights reserved.
+    This program and the accompanying materials are made available under the 
+    terms of the Eclipse Public License 2.0 which accompanies this distribution, 
+    and is available at 
+        http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0 
+    Contributors: 
+        IBM Corporation - initial API and implementation
+-->
+<server>
+    <featureManager>
+        <feature>componenttest-2.0</feature>
+        <feature>localConnector-1.0</feature>
+        <feature>cdi-4.0</feature>
+        <feature>restfulWS-3.1</feature>
+        <feature>jsonb-3.0</feature>
+        <feature>mpConfig-3.1</feature>
+        <feature>mpRestClient-4.0</feature>
+        <feature>arquillian-support-jakarta-2.1</feature>
+        <feature>ssl-1.0</feature>
+        <!-- Servlet required since we cannot use rest protocol because rest requests create spans which results in more spans than the tests expect -->
+        <!-- See https://github.com/eclipse/microprofile-telemetry/issues/72 -->
+        <feature>servlet-6.0</feature>
+        <feature>mpTelemetry-2.1</feature>
+        <!--<feature>concurrent-3.0</feature> -->
+        <feature>monitor-1.0</feature>
+    </featureManager>
+
+    <!-- Required by Arquillian ServletTestRunner -->
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader" />
+    <javaPermission className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks" />
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read" />
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+    <javaPermission className="java.lang.RuntimePermission" name="accessClassInPackage.sun.reflect.annotation" />
+    
+    <!-- Required by Awaitility -->
+    <javaPermission className="java.lang.RuntimePermission" name="setDefaultUncaughtExceptionHandler" />
+    <javaPermission className="java.lang.RuntimePermission" name="modifyThread" />
+    
+    <!-- Required by Tests -->
+    <!-- Test makes requests to localhost using HttpUrlConnection -->
+    <javaPermission className="java.net.URLPermission" name="http://localhost:*/-" actions="*" />
+    <javaPermission className="java.lang.management.ManagementPermission" name="monitor"/>
+    <javaPermission className="java.io.FilePermission" name="${server.output.dir}/logs/messages.log" actions="read"/>
+    <include location="../fatTestPorts.xml" />
+</server>

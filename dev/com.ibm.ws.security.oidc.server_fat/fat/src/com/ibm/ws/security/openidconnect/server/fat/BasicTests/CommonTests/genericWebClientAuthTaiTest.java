@@ -38,7 +38,7 @@ public class genericWebClientAuthTaiTest extends CommonTest {
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setClientName("client01");
         updatedTestSettings.setClientID("client01");
-        updatedTestSettings.setClientSecret("secret");
+        updatedTestSettings.setClientSecret("secret1234");
         updatedTestSettings.setScope("openid profile");
         updatedTestSettings.setAuthorizeEndpt(eSettings.assembleEndpoint(testOPServer.getHttpsString(), Constants.ENDPOINT_TYPE, testSettings.getConfigSample(),
                                                                          Constants.AUTHORIZE_ENDPOINT));

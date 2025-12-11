@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2024 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -33,10 +33,10 @@ import javax.naming.InitialContext;
 /**
  * Repository for the County entity.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Counties {
 
-    boolean deleteByNameAndLastUpdated(String name, Timestamp version);
+    boolean deleteByNameAndLastUpdated(String name, LocalDateTime version);
 
     int deleteByNameIn(List<String> names);
 
@@ -51,7 +51,7 @@ public interface Counties {
     @OrderBy("name")
     List<Set<CityId>> findCitiesByNameStartsWith(String beginning);
 
-    Timestamp findLastUpdatedByName(String name);
+    LocalDateTime findLastUpdatedByName(String name);
 
     @Query("SELECT zipcodes WHERE name = ?1")
     Optional<int[]> findZipCodesByName(String name);
@@ -96,6 +96,9 @@ public interface Counties {
         }
     }
 
+    @Query("SELECT o.population FROM County o WHERE LOWER(id(o)) = ?1")
+    Optional<Integer> populationOf(String lowerCaseName);
+
     @Delete
     void remove(County c);
 
@@ -106,8 +109,21 @@ public interface Counties {
         EntityManager emOuter1 = getEntityManager();
         EntityManager emInner = getAutoClosedEntityManager();
         EntityManager emOuter2 = getEntityManager();
-        return new Object[] { emOuter1, emOuter2, emOuter1.isOpen(), emOuter2.isOpen(), emInner.isOpen() };
+        return new Object[] {
+                              emOuter1,
+                              emOuter2,
+                              emOuter1.isOpen(),
+                              emOuter2.isOpen(),
+                              emInner.isOpen()
+        };
     }
 
-    boolean updateByNameSetZipCodes(String name, int... zipcodes);
+    @Query("""
+                    UPDATE County
+                       SET zipcodes=?2,
+                           lastUpdated=LOCAL DATETIME
+                     WHERE name=?1
+                    """)
+    boolean setZipCodesFor(String name,
+                           int... zipcodes);
 }

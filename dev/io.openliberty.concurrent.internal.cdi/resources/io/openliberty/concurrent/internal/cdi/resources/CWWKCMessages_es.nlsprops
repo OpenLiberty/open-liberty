@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: La anotaci\u00f3n Schedule, {0}, especifica un valor vac\u00edo para los segundos a los que se ejecuta la tarea. Especifique un valor no vac\u00edo para el campo segundos, u omita el campo segundos de la anotaci\u00f3n Programa. Si se omite el campo segundos, la tarea se ejecutar\u00e1 al comienzo del minuto.
+CWWKC1410.schedule.lacks.seconds.explanation=El valor vac\u00edo de la matriz indica que el campo segundos no debe tenerse en cuenta al calcular los tiempos programados. Si se omite el campo segundos, la tarea se ejecutar\u00e1 al comienzo del minuto.
+CWWKC1410.schedule.lacks.seconds.useraction=Modifique el campo seconds de la anotaci\u00f3n Schedule para especificar un valor no vac\u00edo, u omita el campo seconds de la anotaci\u00f3n Schedule.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: El servidor no ha creado un bean {0} para la anotaci\u00f3n {1} o el elemento descriptor de despliegue {2}. El elemento de anotaci\u00f3n o descriptor de despliegue tiene el {3} nombre y {4} calificadores y se define en el {5} artefacto de aplicaci\u00f3n. El error es {6}
+CWWKC1411.qualified.res.err.explanation=El c\u00f3digo no ha creado el recurso o no lo ha registrado como bean.
+CWWKC1411.qualified.res.err.useraction=Aseg\u00farese de que el recurso est\u00e1 configurado correctamente.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: El artefacto de aplicaci\u00f3n {0} incluye m\u00faltiples definiciones de recursos {1} que tienen los calificadores {2}. Los nombres de las definiciones de recursos {1} en conflicto son {3}.
+CWWKC1412.qualifier.conflict.explanation=Cada definici\u00f3n de recurso del mismo tipo que tenga un calificador debe tener un calificador diferente.
+CWWKC1412.qualifier.conflict.useraction=Aseg\u00farese de que cada definici\u00f3n de recurso del mismo tipo tiene un calificador diferente o no tiene ning\u00fan calificador.

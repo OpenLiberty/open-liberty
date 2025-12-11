@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -74,6 +74,17 @@ public class SAMLCommonTest extends CommonTest {
 
     }
 
+    public static class skipIfFips140_3Enabled extends MySkipRule {
+        @Override
+        public Boolean callSpecificCheck() {
+            Log.info(thisClass, "skipIfFips140_3Enabled", "Should we skip the test: " + fips140_3Enabled);
+            if (fips140_3Enabled) {
+                testSkipped();
+            }
+            return fips140_3Enabled;
+        }
+    }
+
     final static Class<?> thisClass = SAMLCommonTest.class;
     protected static TrustManager[] trustAllCerts = null;
     public static SAMLCommonTestTools cttools = new SAMLCommonTestTools();
@@ -113,6 +124,7 @@ public class SAMLCommonTest extends CommonTest {
     protected static List<CommonLocalLDAPServerSuite> ldapRefList = new ArrayList<CommonLocalLDAPServerSuite>();
     protected static boolean cipherMayExceed128 = false;
     public static boolean usingExternalLDAPServer = false;
+    public static boolean fips140_3Enabled = false;
     //issue 17687
     public static String callbackHandlerWss4j = SAMLConstants.EXAMPLE_CALLBACK_WSS4J;
     public static String featureWss4j = SAMLConstants.EXAMPLE_CALLBACK_FEATURE_WSS4J;
@@ -308,6 +320,9 @@ public class SAMLCommonTest extends CommonTest {
 
                 usingExternalLDAPServer = shibbolethHelpers.updateToUseExternalLDaPIfInMemoryIsBad(aTestServer);
                 shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
+                aTestServer.getServer().setServerLevelFips(false);
+                fips140_3Enabled = aTestServer.getServer().isFIPS140_3EnabledAndSupported();
+
 
 //                CommonLocalLDAPServerSuite one = new CommonLocalLDAPServerSuite();
 //                CommonLocalLDAPServerSuite two = new CommonLocalLDAPServerSuite();
@@ -326,6 +341,10 @@ public class SAMLCommonTest extends CommonTest {
 //                                                                                                   Integer.toString(one.getLdapSSLPort()), Integer.toString(two.getLdapPort()),
 //                                                                                                   Integer.toString(two.getLdapSSLPort()));
 //                shibbolethHelpers.setShibbolethPropertiesForTestMachine(aTestServer);
+            } else {
+                //SAML SP Server
+                aTestServer.getServer().setServerLevelFips(true);
+                fips140_3Enabled = aTestServer.getServer().isFIPS140_3EnabledAndSupported();
             }
 
             transformApps(aTestServer);

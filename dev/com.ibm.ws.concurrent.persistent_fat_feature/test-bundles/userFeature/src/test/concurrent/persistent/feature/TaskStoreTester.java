@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,14 +77,28 @@ public class TaskStoreTester implements ResourceFactory {
     public void testFindOrCreate() throws Exception {
     	final UserTransaction tran = (UserTransaction) new InitialContext().lookup("java:comp/UserTransaction");
 
+    	final PartitionRecord warmUpRecord = new PartitionRecord(false);
+    	warmUpRecord.setExecutor("executor-warm-up");
+    	warmUpRecord.setHostName("host-warm-up");
+    	warmUpRecord.setLibertyServer("libertyServerWarmUp");
+    	warmUpRecord.setUserDir("C:/myFolder");
+
+    	// Warm up Derby; Derby has issues if first access is from concurrent threads
+    	tran.begin();
+    	try {
+    		System.out.println("initial find = " + taskStore.findOrCreate(warmUpRecord));
+    	} finally {
+    		if (tran.getStatus() == Status.STATUS_MARKED_ROLLBACK)
+    			tran.rollback();
+    		else
+    		    tran.commit();
+    	}
+
     	final PartitionRecord record = new PartitionRecord(false);
     	record.setExecutor("executor1");
     	record.setHostName("host1");
     	record.setLibertyServer("libertyServer1");
     	record.setUserDir("C:/myFolder");
-
-    	// Warm up Derby; Derby has issues if first access is from concurrent threads
-    	System.out.println("initial find = " + taskStore.find(record));
 
     	Callable<Long> findOrCreate = new Callable<Long>() {
     		public Long call() throws Exception {

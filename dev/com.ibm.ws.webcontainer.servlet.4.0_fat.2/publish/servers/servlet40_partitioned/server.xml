@@ -9,7 +9,7 @@
  -->
 <server description="Partitioned Cookies Test">
     <!-- No SameSite Configurations in this server.xml because they are all setup individually in each test -->
-  <include location="../fatTestPorts.xml"/>
+  <include location="../fatTestCommon.xml"/>
 
     <featureManager>
         <feature>servlet-4.0</feature>
@@ -19,6 +19,7 @@
                   host="*"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}">
+                  <tcpOptions id="defaultTCPOptions" portOpenRetries="60"/>
     </httpEndpoint>
 
 </server>

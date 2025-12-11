@@ -131,9 +131,19 @@ public class AnnotationConfigurator
                     
                     if (comp.createTag())
                     {
+                        String tagName = comp.tagName(); // MYFACES-4117
+                        if (tagName != null && tagName.length() > 0)
+                        {
+                            //Ok
+                        }
+                        else // 
+                        {
+                            tagName = clazz.getSimpleName();
+                            tagName = Character.toLowerCase(tagName.charAt(0)) + tagName.substring(1);
+                        }
                         facesConfig.addComponentTagDeclaration(value, 
                                 new ComponentTagDeclarationImpl(value, 
-                                    comp.namespace(), comp.tagName()));
+                                    comp.namespace(), tagName));
                     }
                 }
             }

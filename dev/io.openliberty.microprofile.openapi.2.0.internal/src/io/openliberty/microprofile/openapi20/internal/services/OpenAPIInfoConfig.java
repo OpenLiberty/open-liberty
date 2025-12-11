@@ -14,7 +14,7 @@ import java.util.Optional;
 import org.eclipse.microprofile.openapi.models.info.Info;
 
 /**
- * Provides the {@link Info} read from the server.xml configuration
+ * Provides the {@link Info} read from the server.xml or MP Config configuration
  */
 public interface OpenAPIInfoConfig {
 

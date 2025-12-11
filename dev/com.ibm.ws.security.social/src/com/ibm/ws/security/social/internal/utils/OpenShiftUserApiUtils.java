@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.net.HttpURLConnection;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -84,7 +85,7 @@ public class OpenShiftUserApiUtils {
         connection.setDoOutput(true);
 
         OutputStream outputStream = connection.getOutputStream();
-        OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream, "UTF-8");
+        OutputStreamWriter streamWriter = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
 
         String bodyString = createUserApiRequestBody(accessToken);
         streamWriter.write(bodyString);

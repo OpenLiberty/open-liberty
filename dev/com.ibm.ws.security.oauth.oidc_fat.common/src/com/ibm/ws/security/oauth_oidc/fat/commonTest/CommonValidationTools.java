@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -80,19 +80,16 @@ public class CommonValidationTools {
     /**
      * Validates the results of a step in the test process
      *
-     * @param response
-     *            - the response output from the latest step in the test process
-     * @param currentAction
-     *            - the latest test step/action performed
-     * @param expectations
-     *            - an array of validationData - these include the string to
-     *            search for, how to do the search, where to search and for
-     *            which test stop/action do expect the string
+     * @param response      - the response output from the latest step in the test
+     *                      process
+     * @param currentAction - the latest test step/action performed
+     * @param expectations  - an array of validationData - these include the string
+     *                      to search for, how to do the search, where to search and
+     *                      for which test stop/action do expect the string
      * @throws exception
      */
-    public void validateResult(Object response, String currentAction,
-            List<validationData> expectations, TestSettings settings)
-            throws Exception {
+    public void validateResult(Object response, String currentAction, List<validationData> expectations,
+            TestSettings settings) throws Exception {
 
         String thisMethod = "validateResult";
         msgUtils.printMethodName(thisMethod, "Start of");
@@ -158,15 +155,21 @@ public class CommonValidationTools {
                                                 } else {
                                                     if (expected.getWhere().equals(Constants.EXCEPTION_MESSAGE)) {
                                                         validatedExceptionHandled(expected);
-                                                        Log.info(thisClass, thisMethod, "Exception validated separately");
+                                                        Log.info(thisClass, thisMethod,
+                                                                "Exception validated separately");
                                                     } else {
-                                                        if (expected.getWhere().equals(Constants.RESPONSE_TOKEN_LENGTH)) {
+                                                        if (expected.getWhere()
+                                                                .equals(Constants.RESPONSE_TOKEN_LENGTH)) {
                                                             validateDataLengthInResponse(response, expected);
                                                         } else {
-                                                            if (expected.getWhere().equals(Constants.RESPONSE_KEY_SIZE)) {
-                                                                validateDataLengthInResponse(response, expected, Constants.RESPONSE_KEY_SIZE);
+                                                            if (expected.getWhere()
+                                                                    .equals(Constants.RESPONSE_KEY_SIZE)) {
+                                                                validateDataLengthInResponse(response, expected,
+                                                                        Constants.RESPONSE_KEY_SIZE);
                                                             } else {
-                                                                Log.info(thisClass, thisMethod, "Unknown validation type: " + expected.getWhere());
+                                                                Log.info(thisClass, thisMethod,
+                                                                        "Unknown validation type: "
+                                                                                + expected.getWhere());
                                                                 throw new Exception("Unknown validation type");
                                                             }
                                                         }
@@ -202,9 +205,11 @@ public class CommonValidationTools {
         String thisMethod = "validatedExceptionHandled";
         Log.info(thisClass, thisMethod, "Validating that exception was handled: " + expected.getValidationValue());
         if (!expected.isExceptionHandled()) {
-            throw new Exception("An exception was expected but was not marked as having been handled already for step [" + expected.getAction() + "]: " + expected.getPrintMsg() + ".");
+            throw new Exception("An exception was expected but was not marked as having been handled already for step ["
+                    + expected.getAction() + "]: " + expected.getPrintMsg() + ".");
         }
-        // Set the value back to false in case these exceptions must be used and validated again
+        // Set the value back to false in case these exceptions must be used and
+        // validated again
         expected.setIsExceptionHandled(false);
     }
 
@@ -214,41 +219,39 @@ public class CommonValidationTools {
     public void validateWithServerLog(validationData expected) throws Exception {
 
         if (expected.getServerRef() != null) {
-            Log.info(thisClass, "validateWithServerLog", "passed in Server type is: " + expected.getServerRef().getServerType() + " passed in Log name is: " + expected.getWhere());
+            Log.info(thisClass, "validateWithServerLog", "passed in Server type is: "
+                    + expected.getServerRef().getServerType() + " passed in Log name is: " + expected.getWhere());
             expected.getServerRef().waitForValueInServerLog(expected);
         } else {
             throw new Exception("Server reference passed to validateWithServerLog is null");
         }
 
-        //        if (expected.getWhere().contains("op")) {
-        //            testOPServer.validateWithServerLog(expected);
-        //        } else {
-        //            if (expected.getWhere().contains("rp")) {
-        //                testRPServer.validateWithServerLog(expected);
-        //            } else {
-        //                if (expected.getWhere().contains("generic")) {
-        //                    genericTestServer.validateWithServerLog(expected);
-        //                } else {
-        //                    throw new Exception("Unrecognized server specified");
-        //                }
-        //            }
+        // if (expected.getWhere().contains("op")) {
+        // testOPServer.validateWithServerLog(expected);
+        // } else {
+        // if (expected.getWhere().contains("rp")) {
+        // testRPServer.validateWithServerLog(expected);
+        // } else {
+        // if (expected.getWhere().contains("generic")) {
+        // genericTestServer.validateWithServerLog(expected);
+        // } else {
+        // throw new Exception("Unrecognized server specified");
+        // }
+        // }
         //
-        //        }
+        // }
 
     }
 
     /**
      * Searches for a message string in the response
      *
-     * @param reponse
-     *            - the response output to search through
-     * @param expected
-     *            - a validationMsg type to search (contains the string to
-     *            search for)
+     * @param reponse  - the response output to search through
+     * @param expected - a validationMsg type to search (contains the string to
+     *                 search for)
      * @throws exception
      */
-    public void validateWithResponse(Object response,
-            validationData expected) throws Exception {
+    public void validateWithResponse(Object response, validationData expected) throws Exception {
 
         String thisMethod = "validateWithResponse";
         msgUtils.printMethodName(thisMethod, "Start of");
@@ -272,17 +275,19 @@ public class CommonValidationTools {
                                 responseContent = getResponseHeadersString(response);
                             } else {
                                 if (expected.getWhere().equals(Constants.RESPONSE_STATUS)) {
-                                    // if we have a status code that results in an exception, that is handled differently
-                                    //                                    if (isInList(generatesExceptionList, expected.validationValue)) {
-                                    //                                        return;
-                                    //                                    } else {
+                                    // if we have a status code that results in an exception, that is handled
+                                    // differently
+                                    // if (isInList(generatesExceptionList, expected.validationValue)) {
+                                    // return;
+                                    // } else {
                                     responseContent = Integer.toString(AutomationTools.getResponseStatusCode(response));
-                                    //                                    }
+                                    // }
                                 } else {
                                     if (expected.getWhere().equals(Constants.RESPONSE_COOKIE)) {
                                         responseContent = getResponseCookiesString(response);
                                     } else {
-                                        Log.info(thisClass, thisMethod, "No valid Response area specified - assuming ALL");
+                                        Log.info(thisClass, thisMethod,
+                                                "No valid Response area specified - assuming ALL");
                                         responseContent = AutomationTools.getResponseText(response);
                                     }
                                 }
@@ -292,39 +297,41 @@ public class CommonValidationTools {
                 }
             }
 
-            Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType() + " " +
-                    "Checking for: " + expected.getValidationValue());
+            Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType() + " " + "Checking for: "
+                    + expected.getValidationValue());
 
-            String fullResponseContent = AutomationTools.getFullResponseContentForFailureMessage(response, expected.getWhere());
+            String fullResponseContent = AutomationTools.getFullResponseContentForFailureMessage(response,
+                    expected.getWhere());
 
             if (expected.getCheckType().equals(Constants.STRING_CONTAINS)) {
-                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg()
-                        + " Was expecting [" + expected.getValidationValue() + "]"
-                        + " but received [" + responseContent + "]." + fullResponseContent,
+                msgUtils.assertTrueAndLog(thisMethod,
+                        expected.getPrintMsg() + " Was expecting [" + expected.getValidationValue() + "]"
+                                + " but received [" + responseContent + "]." + fullResponseContent,
                         responseContent.contains(expected.getValidationValue()));
             } else {
                 if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN)) {
-                    msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg()
-                            + " Was not expecting [" + expected.getValidationValue() + "]"
-                            + " but received [" + responseContent + "]." + fullResponseContent,
+                    msgUtils.assertTrueAndLog(thisMethod,
+                            expected.getPrintMsg() + " Was not expecting [" + expected.getValidationValue() + "]"
+                                    + " but received [" + responseContent + "]." + fullResponseContent,
                             !responseContent.contains(expected.getValidationValue()));
                 } else {
-                    if (expected.getCheckType().equals(Constants.STRING_MATCHES) || expected.getCheckType().equals(Constants.STRING_EQUALS)) {
+                    if (expected.getCheckType().equals(Constants.STRING_MATCHES)
+                            || expected.getCheckType().equals(Constants.STRING_EQUALS)) {
                         Pattern pattern = Pattern.compile(expected.getValidationValue());
                         Matcher m = pattern.matcher(responseContent);
 
-                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg()
-                                + " Was expecting [" + expected.getValidationValue() + "]"
-                                + " but received [" + responseContent + "]." + fullResponseContent,
+                        msgUtils.assertTrueAndLog(
+                                thisMethod, expected.getPrintMsg() + " Was expecting [" + expected.getValidationValue()
+                                        + "]" + " but received [" + responseContent + "]." + fullResponseContent,
                                 m.find());
                     } else {
                         if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_MATCH)) {
                             Pattern pattern = Pattern.compile(expected.getValidationValue());
                             Matcher m = pattern.matcher(responseContent);
 
-                            msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg()
-                                    + " Was not expecting [" + expected.getValidationValue() + "]"
-                                    + " but received [" + responseContent + "]." + fullResponseContent,
+                            msgUtils.assertTrueAndLog(thisMethod,
+                                    expected.getPrintMsg() + " Was not expecting [" + expected.getValidationValue()
+                                            + "]" + " but received [" + responseContent + "]." + fullResponseContent,
                                     !(m.find()));
                         } else {
                             throw new Exception("String comparison type unknown - test case coded incorrectly");
@@ -379,11 +386,14 @@ public class CommonValidationTools {
 
         try {
             String respReceived = AutomationTools.getResponseText(response);
-            Log.info(thisClass, thisMethod, "Response with JSON data for " + expected.getValidationKey() + " : \n" + respReceived);
+            Log.info(thisClass, thisMethod,
+                    "Response with JSON data for " + expected.getValidationKey() + " : \n" + respReceived);
 
             // Now validity check the response JSON object
             JSONObject tokenInfo = JSONObject.parse(respReceived);
-            Log.info(thisClass, thisMethod, "Checking that [" + expected.getValidationKey() + "]->[" + expected.getValidationValue() + "] is [checkType: " + expected.getCheckType() + "] within " + tokenInfo);
+            Log.info(thisClass, thisMethod,
+                    "Checking that [" + expected.getValidationKey() + "]->[" + expected.getValidationValue()
+                            + "] is [checkType: " + expected.getCheckType() + "] within " + tokenInfo);
 
             String tokenValue = "";
             String key1 = null;
@@ -397,9 +407,13 @@ public class CommonValidationTools {
             }
 
             if (expected.getCheckType().equals(Constants.STRING_NULL)) {
-                msgUtils.assertTrueAndLog(thisMethod, "Token validation response contained a value for: " + key1 + " and it should not have", tokenInfo.get(key1) == null);
+                msgUtils.assertTrueAndLog(thisMethod,
+                        "Token validation response contained a value for: " + key1 + " and it should not have",
+                        tokenInfo.get(key1) == null);
             } else {
-                msgUtils.assertTrueAndLog(thisMethod, "Token validation response did not contain a value for: " + key1 + " and it should have", tokenInfo.get(key1) != null);
+                msgUtils.assertTrueAndLog(thisMethod,
+                        "Token validation response did not contain a value for: " + key1 + " and it should have",
+                        tokenInfo.get(key1) != null);
             }
 
             // Special detection to handle json property values that are JSON
@@ -430,7 +444,8 @@ public class CommonValidationTools {
             if (isBooleanFromString(tokenValue)) {
                 // Do special comparison because we need to ensure this is a
                 // true boolean value as opposed to a string "true" or "false".
-                checkValue = String.valueOf(getBooleanFromString(tokenValue)).equalsIgnoreCase(expected.getValidationValue());
+                checkValue = String.valueOf(getBooleanFromString(tokenValue))
+                        .equalsIgnoreCase(expected.getValidationValue());
             } else {
                 if (expected.getCheckType().equals(Constants.STRING_NULL)) {
                     checkValue = tokenInfo.get(key1) == null;
@@ -449,13 +464,18 @@ public class CommonValidationTools {
                                 } else {
                                     if (expected.getCheckType().equals(Constants.LIST_MATCHES)) {
                                         Log.info(thisClass, thisMethod, "Actual response: " + tokenValue);
-                                        Log.info(thisClass, thisMethod, "Expected response: " + expected.getValidationValue());
+                                        Log.info(thisClass, thisMethod,
+                                                "Expected response: " + expected.getValidationValue());
 
                                         Set<String> actuals = new HashSet<String>();
-                                        //String[] actualEntries = tokenValue.replace("^\\s*\\[", "").replace("\\]\\s*$", "").split(" ");
-                                        String[] actualEntries = tokenValue.replaceAll("^\\s*\\[", "").replaceAll("\\]\\s*$", "").replaceAll("\"", "").replaceAll(",", " ").replaceAll("  ", " ").split(" ");
+                                        // String[] actualEntries = tokenValue.replace("^\\s*\\[",
+                                        // "").replace("\\]\\s*$", "").split(" ");
+                                        String[] actualEntries = tokenValue.replaceAll("^\\s*\\[", "")
+                                                .replaceAll("\\]\\s*$", "").replaceAll("\"", "").replaceAll(",", " ")
+                                                .replaceAll("  ", " ").split(" ");
                                         actuals.addAll(Arrays.asList(actualEntries));
-                                        Log.info(thisClass, thisMethod, "Response with JSON data actuals is:" + actuals);
+                                        Log.info(thisClass, thisMethod,
+                                                "Response with JSON data actuals is:" + actuals);
 
                                         Set<String> expecteds = new HashSet<String>();
                                         String[] expectedEntries = expected.getValidationValue().split(" ");
@@ -463,9 +483,13 @@ public class CommonValidationTools {
 
                                         checkValue = false;
 
-                                        msgUtils.assertTrueAndLog(thisMethod, "Response does not contain the same number of entries for " + expected.getValidationKey()
-                                                + " as expected.", actuals.size() == expecteds.size());
-                                        msgUtils.assertTrueAndLog(thisMethod, "Response value does not contain the same entries as expected for " + expected.getValidationValue(),
+                                        msgUtils.assertTrueAndLog(thisMethod,
+                                                "Response does not contain the same number of entries for "
+                                                        + expected.getValidationKey() + " as expected.",
+                                                actuals.size() == expecteds.size());
+                                        msgUtils.assertTrueAndLog(thisMethod,
+                                                "Response value does not contain the same entries as expected for "
+                                                        + expected.getValidationValue(),
                                                 actuals.containsAll(expecteds));
 
                                         checkValue = true;
@@ -473,10 +497,12 @@ public class CommonValidationTools {
                                     } else {
                                         if (expected.getCheckType().equals(Constants.JSON_LIST_MATCHES)) {
                                             Log.info(thisClass, thisMethod, "Actual response: " + tokenValue);
-                                            Log.info(thisClass, thisMethod, "Expected response: " + expected.getValidationValue());
+                                            Log.info(thisClass, thisMethod,
+                                                    "Expected response: " + expected.getValidationValue());
 
-                                            // convert the expected list into an actual list (caller can only pass a string for this value)
-                                            //  tests assumes that the separator is a space
+                                            // convert the expected list into an actual list (caller can only pass a
+                                            // string for this value)
+                                            // tests assumes that the separator is a space
                                             String[] exp = expected.getValidationValue().split(" ");
 
                                             JSONArray entryObjects = JSONArray.parse(tokenValue);
@@ -485,29 +511,40 @@ public class CommonValidationTools {
                                             for (int i = 0; i < exp.length; i++) {
                                                 boolean found = false;
                                                 for (int j = 0; j < entryObjects.size(); j++) {
-                                                    Log.info(thisClass, thisMethod, "Checking expected: " + exp[i] + ", actual: " + entryObjects.get(j).toString());
+                                                    Log.info(thisClass, thisMethod, "Checking expected: " + exp[i]
+                                                            + ", actual: " + entryObjects.get(j).toString());
 
                                                     if (exp[i].equals(entryObjects.get(j).toString())) {
                                                         found = true;
                                                         break;
                                                     }
                                                 }
-                                                msgUtils.assertTrueAndLog(thisMethod, "Expected value (" + exp[i] + ") NOT found in Actual results (" + entryObjects.toString() + ")", found);
+                                                msgUtils.assertTrueAndLog(thisMethod,
+                                                        "Expected value (" + exp[i] + ") NOT found in Actual results ("
+                                                                + entryObjects.toString() + ")",
+                                                        found);
                                             }
                                             for (int i = 0; i < entryObjects.size(); i++) {
                                                 boolean found = false;
                                                 for (int j = 0; j < exp.length; j++) {
-                                                    Log.info(thisClass, thisMethod, "Checking actual: " + entryObjects.get(i).toString() + ", expected: " + exp[j]);
+                                                    Log.info(thisClass, thisMethod, "Checking actual: "
+                                                            + entryObjects.get(i).toString() + ", expected: " + exp[j]);
                                                     if (entryObjects.get(i).toString().equals(exp[j])) {
                                                         found = true;
                                                         break;
                                                     }
                                                 }
-                                                msgUtils.assertTrueAndLog(thisMethod, "Actual value (" + entryObjects.get(i).toString() + ") NOT found in Expected value (" + expected.getValidationValue() + ")", found);
+                                                msgUtils.assertTrueAndLog(thisMethod,
+                                                        "Actual value (" + entryObjects.get(i).toString()
+                                                                + ") NOT found in Expected value ("
+                                                                + expected.getValidationValue() + ")",
+                                                        found);
                                             }
                                             checkValue = true;
                                         } else {
-                                            Log.info(thisClass, thisMethod, "String checkType, " + expected.getCheckType() + ", unrecognized - will fail the validation check");
+                                            Log.info(thisClass, thisMethod,
+                                                    "String checkType, " + expected.getCheckType()
+                                                            + ", unrecognized - will fail the validation check");
                                         }
                                     }
                                 }
@@ -517,9 +554,9 @@ public class CommonValidationTools {
                 }
             }
             msgUtils.assertTrueAndLog(thisMethod,
-                    "Token validation response did not contain the correct value for " + expected.getValidationKey() + ".\nWas expecting: ["
-                            + expected.getValidationValue()
-                            + "] but received: [" + tokenValue.toString() + "].",
+                    "Token validation response did not contain the correct value for " + expected.getValidationKey()
+                            + ".\nWas expecting: [" + expected.getValidationValue() + "] but received: ["
+                            + tokenValue.toString() + "].",
                     checkValue);
 
             // Check other fields...
@@ -560,13 +597,18 @@ public class CommonValidationTools {
 
         try {
             String respReceived = AutomationTools.getResponseText(response);
-            Log.info(thisClass, thisMethod, "Expected number of JSON objects in result is " + expected.getValidationValue() + " in response : \n" + respReceived);
+            Log.info(thisClass, thisMethod, "Expected number of JSON objects in result is "
+                    + expected.getValidationValue() + " in response : \n" + respReceived);
 
-            Log.info(thisClass, thisMethod, "Number of JSON objects in result is  " + countTopLevelJSONObjects(respReceived) + "\n");
+            Log.info(thisClass, thisMethod,
+                    "Number of JSON objects in result is  " + countTopLevelJSONObjects(respReceived) + "\n");
             checkValue = String.valueOf(countTopLevelJSONObjects(respReceived)).equals(expected.getValidationValue());
 
-            msgUtils.assertTrueAndLog(thisMethod, "JSON response did not contain the expected number of JSON objects " + expected.getValidationValue() + "\nWas expecting: "
-                    + expected.getValidationValue() + " but received:" + String.valueOf(countTopLevelJSONObjects(respReceived)), checkValue);
+            msgUtils.assertTrueAndLog(thisMethod,
+                    "JSON response did not contain the expected number of JSON objects " + expected.getValidationValue()
+                            + "\nWas expecting: " + expected.getValidationValue() + " but received:"
+                            + String.valueOf(countTopLevelJSONObjects(respReceived)),
+                    checkValue);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -604,13 +646,11 @@ public class CommonValidationTools {
     }
 
     /**
-     * this routine does a generic validation of the id_token (required
-     * attributes, non-null values, ...
+     * this routine does a generic validation of the id_token (required attributes,
+     * non-null values, ...
      *
-     * @param response
-     *            - the received response that needs to be parsed and verified
-     * @param expected
-     *            - what values to validate
+     * @param response - the received response that needs to be parsed and verified
+     * @param expected - what values to validate
      * @throws Exception
      */
     public void validateIdToken(Object response, validationData expected, TestSettings settings) throws Exception {
@@ -630,7 +670,8 @@ public class CommonValidationTools {
                 return;
             }
 
-            // should only get this far if we're needing to validate the contents of the id token
+            // should only get this far if we're needing to validate the contents of the id
+            // token
             if (!id_token.equals(Constants.NOT_FOUND)) {
 
                 String decryptKey = settings.getDecryptKey();
@@ -649,7 +690,8 @@ public class CommonValidationTools {
                 Log.info(thisClass, thisMethod, "Decoded payload Token : " + decodedToken);
                 JSONObject tokenInfo = JSONObject.parse(decodedToken);
 
-                // no keys passed indicates that we want to do general id_token validation (check format, required parms, ...)
+                // no keys passed indicates that we want to do general id_token validation
+                // (check format, required parms, ...)
                 if (expected.getValidationKey() == null) {
                     // validate general token content
                     genericIDTokenValidation(settings, testSigAlg, id_token_jws, jws_token_parts, tokenInfo);
@@ -659,7 +701,9 @@ public class CommonValidationTools {
                     specificKeysTokenValidation(expected, tokenInfo);
                 }
                 // validate Header
-                validateJWTTokenHeader(JSONObject.parse(ApacheJsonUtils.fromBase64StringToJsonString(jws_token_parts[0])), settings, null);
+                validateJWTTokenHeader(
+                        JSONObject.parse(ApacheJsonUtils.fromBase64StringToJsonString(jws_token_parts[0])), settings,
+                        null);
 
             } else {
                 Log.info(thisClass, thisMethod, "id_token was not found - it should have been there");
@@ -674,13 +718,11 @@ public class CommonValidationTools {
     }
 
     /**
-     * this routine does a generic validation of the JWT token (required
-     * attributes, non-null values, ...
+     * this routine does a generic validation of the JWT token (required attributes,
+     * non-null values, ...
      *
-     * @param response
-     *            - the received response that needs to be parsed and verified
-     * @param expected
-     *            - what values to validate
+     * @param response - the received response that needs to be parsed and verified
+     * @param expected - what values to validate
      * @throws Exception
      */
     public void validateJWTToken(Object response, validationData expected, TestSettings settings) throws Exception {
@@ -702,7 +744,8 @@ public class CommonValidationTools {
         try {
             String testSigAlg = setExpectedSigAlg(settings);
 
-            // should only get this far if we're needing to validate the contents of the id token
+            // should only get this far if we're needing to validate the contents of the id
+            // token
             if (!jwt_token.equals(Constants.NOT_FOUND)) {
                 jwt_token_parts = jwt_token.split("\\.");
 
@@ -713,7 +756,8 @@ public class CommonValidationTools {
                 Log.info(thisClass, thisMethod, "Decoded payload of Token : " + decodedPayload);
                 JSONObject payloadInfo = JSONObject.parse(decodedPayload);
 
-                // no keys passed indicates that we want to do general id_token validation (check format, required parms, ...)
+                // no keys passed indicates that we want to do general id_token validation
+                // (check format, required parms, ...)
                 if (expected.getValidationKey() == null) {
                     // validate general token content
                     validateJWTTokenHeader(headerInfo, settings, testSigAlg);
@@ -737,16 +781,15 @@ public class CommonValidationTools {
     }
 
     /**
-     * this routine does a generic validation of the id_token (required
-     * attributes, non-null values, ...
+     * this routine does a generic validation of the id_token (required attributes,
+     * non-null values, ...
      *
-     * @param response
-     *            - the received response that needs to be parsed and verified
-     * @param expected
-     *            - what values to validate
+     * @param response - the received response that needs to be parsed and verified
+     * @param expected - what values to validate
      * @throws Exception
      */
-    public void validateGeneralResponse(Object response, validationData expected, TestSettings settings) throws Exception {
+    public void validateGeneralResponse(Object response, validationData expected, TestSettings settings)
+            throws Exception {
 
         // this routine is called when the validation type is RESPONSE_ID_TOKEN
         // it can be used to verify the content of the token, or individual segments
@@ -806,16 +849,18 @@ public class CommonValidationTools {
                     Log.info(thisClass, thisMethod, "validating entry: " + e);
                     String key = e.split(keySplitString)[0].replaceAll("^\"|\"$", "");
                     String value = e.split(keySplitString)[1].replaceAll("^\"|\"$", "");
-                    //Log.info(thisClass, thisMethod, "key: " + key);
-                    //Log.info(thisClass, thisMethod, "value: " + value);
+                    // Log.info(thisClass, thisMethod, "key: " + key);
+                    // Log.info(thisClass, thisMethod, "value: " + value);
                     if (key.equals(Constants.ACCESS_TOKEN_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "Access Token is null", value != null);
                     }
                     if (key.equals(Constants.TOKEN_TYPE_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "Token Type is null", value != null);
-                        msgUtils.assertTrueAndLog(thisMethod, "Token Type value expected: Bearer but received" + value, value.equals("Bearer"));
+                        msgUtils.assertTrueAndLog(thisMethod, "Token Type value expected: Bearer but received" + value,
+                                value.equals("Bearer"));
                     }
-                    // make sure it has value if it exists - we've already done the check for should it be there or not
+                    // make sure it has value if it exists - we've already done the check for should
+                    // it be there or not
                     if (key.equals(Constants.ID_TOKEN_KEY)) {
                         msgUtils.assertTrueAndLog(thisMethod, "ID Token is null", value != null);
                     }
@@ -830,7 +875,8 @@ public class CommonValidationTools {
                         if ((actualExpires <= expectedExpires) && (actualExpires > expectedExpires - 60L)) {
                             Log.info(thisClass, thisMethod, "expires in was within 60sec of expected time");
                         } else {
-                            fail("Expires in value expected: " + expectedExpires + " but received: " + actualExpires + " Test expects it within 60sec");
+                            fail("Expires in value expected: " + expectedExpires + " but received: " + actualExpires
+                                    + " Test expects it within 60sec");
                         }
                     }
                     if (key.equals(Constants.STATE_KEY)) {
@@ -838,11 +884,15 @@ public class CommonValidationTools {
                         if (Constants.EXIST_WITH_ANY_VALUE.equals(settings.getState())) {
                             Log.info(thisClass, thisMethod, "Skipping state check at callers request");
                         } else {
-                            msgUtils.assertTrueAndLog(thisMethod, "State value expected: " + settings.getState() + " but received: " + value, value.equals(settings.getState()));
+                            msgUtils.assertTrueAndLog(thisMethod,
+                                    "State value expected: " + settings.getState() + " but received: " + value,
+                                    value.equals(settings.getState()));
                         }
                     }
-                    // when coding the test where request and server scopes do not match in the future, set the expected response value into
-                    // TestSettings, add the expectation, then set the value in TestSettings to the value that the request should pass in (before calling
+                    // when coding the test where request and server scopes do not match in the
+                    // future, set the expected response value into
+                    // TestSettings, add the expectation, then set the value in TestSettings to the
+                    // value that the request should pass in (before calling
                     // genericRP or genericOP...
                     if (key.equals(Constants.SCOPE_KEY)) {
                         Log.info(thisClass, thisMethod, "Found scope in resonse");
@@ -860,10 +910,15 @@ public class CommonValidationTools {
                         String[] expectedScopes = expected.getValidationValue().split(" ");
                         Log.info(thisClass, thisMethod, "Expected Scopes" + Arrays.toString(expectedScopes));
                         for (String expectedScope : expectedScopes) {
-                            msgUtils.assertTrueAndLog(thisMethod, "Scope value expected: " + expectedScope + " to be in scope, but scope contained: " + value, isInList(actualScopes, expectedScope));
+                            msgUtils.assertTrueAndLog(
+                                    thisMethod, "Scope value expected: " + expectedScope
+                                            + " to be in scope, but scope contained: " + value,
+                                    isInList(actualScopes, expectedScope));
                         }
                         for (String actualScope : actualScopes) {
-                            msgUtils.assertTrueAndLog(thisMethod, "Extra scope: " + actualScope + " found in actual scope: " + value, isInList(expectedScopes, actualScope));
+                            msgUtils.assertTrueAndLog(thisMethod,
+                                    "Extra scope: " + actualScope + " found in actual scope: " + value,
+                                    isInList(expectedScopes, actualScope));
                         }
                     }
                 }
@@ -882,7 +937,7 @@ public class CommonValidationTools {
 
         msgUtils.printMethodName(thisMethod, "Start of");
 
-        //        try {
+        // try {
         // we get passed in the response from the form submissions as well
         // as a list of string pairs - these pairs contain strings
         // that we search for in the response as well as the
@@ -902,18 +957,25 @@ public class CommonValidationTools {
 
             if (action.equals(expected.getAction())) {
                 if (expected.where.equals(Constants.EXCEPTION_MESSAGE)) {
-                    // we can't return the exception as the return type needs to be response, so we need a way of doing an
-                    // "or" check against the exception because of different jdk (we got exception x OR y)  So, for now,
-                    // doing a hack and putting one value we want to check in the "key" and the other in the "value" of the
-                    // expectation (the key is never used in the exception handling - it'll work, but it's not pretty)
+                    // we can't return the exception as the return type needs to be response, so we
+                    // need a way of doing an
+                    // "or" check against the exception because of different jdk (we got exception x
+                    // OR y) So, for now,
+                    // doing a hack and putting one value we want to check in the "key" and the
+                    // other in the "value" of the
+                    // expectation (the key is never used in the exception handling - it'll work,
+                    // but it's not pretty)
                     if (expected.getValidationKey() == null) {
                         msgUtils.assertTrueAndLog(thisMethod, expected.printMsg + " received: " + e,
-                                ((e.getMessage().contains(expected.validationValue)) || (e.toString().contains(expected.validationValue))));
+                                ((e.getMessage().contains(expected.validationValue))
+                                        || (e.toString().contains(expected.validationValue))));
                         found = true;
                     } else {
                         msgUtils.assertTrueAndLog(thisMethod, expected.printMsg + " received: " + e,
-                                ((e.getMessage().contains(expected.validationValue)) || (e.toString().contains(expected.validationValue)) ||
-                                        (e.getMessage().contains(expected.validationKey)) || (e.toString().contains(expected.validationKey))));
+                                ((e.getMessage().contains(expected.validationValue))
+                                        || (e.toString().contains(expected.validationValue))
+                                        || (e.getMessage().contains(expected.validationKey))
+                                        || (e.toString().contains(expected.validationKey))));
                         found = true;
                     }
                     expected.setIsExceptionHandled(true);
@@ -924,15 +986,16 @@ public class CommonValidationTools {
         if (found) {
             return;
         } else {
-            Log.info(thisClass, thisMethod, "Action that hit the exception did NOT have an expectation defined to validate an exception");
+            Log.info(thisClass, thisMethod,
+                    "Action that hit the exception did NOT have an expectation defined to validate an exception");
             throw e;
         }
 
-        //        } catch (Exception n) {
-        //            e.printStackTrace();
-        //            Log.error(thisClass, thisMethod, n, "Error validating response");
-        //            throw n;
-        //        }
+        // } catch (Exception n) {
+        // e.printStackTrace();
+        // Log.error(thisClass, thisMethod, n, "Error validating response");
+        // throw n;
+        // }
 
     }
 
@@ -969,9 +1032,8 @@ public class CommonValidationTools {
 
             String tokenLine = null;
             if (respReceived.indexOf(Constants.RECV_FROM_TOKEN_ENDPOINT) != -1) {
-                tokenLine = respReceived.substring(
-                        respReceived.indexOf(Constants.RECV_FROM_TOKEN_ENDPOINT) + Constants.RECV_FROM_TOKEN_ENDPOINT.length(),
-                        respReceived.indexOf("}"));
+                tokenLine = respReceived.substring(respReceived.indexOf(Constants.RECV_FROM_TOKEN_ENDPOINT)
+                        + Constants.RECV_FROM_TOKEN_ENDPOINT.length(), respReceived.indexOf("}"));
             } else {
                 // using the endpoint directly and the tokens will be directly in the response
                 String partialResp = respReceived.trim();
@@ -1013,18 +1075,19 @@ public class CommonValidationTools {
                     }
                 } else {
                     for (String line : responseLines) {
-                        //                        Log.info(thisClass, "getTokenFromResponse", "Multi line response: " + line);
+                        // Log.info(thisClass, "getTokenFromResponse", "Multi line response: " + line);
                         if (line != null && line.contains(searchKey)) {
-                            //                            Log.info(thisClass, "getTokenFromResponse", "contains");
+                            // Log.info(thisClass, "getTokenFromResponse", "contains");
                             if (!searchKey.endsWith(":")) {
                                 char nextChar = line.charAt(line.indexOf(searchKey) + searchKey.length());
                                 if (nextChar != ':' && nextChar != '=' && nextChar != ' ') {
                                     continue;
                                 }
                             }
-                            String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1, line.length());
+                            String part1 = line.substring(line.indexOf(searchKey) + searchKey.length() + 1,
+                                    line.length());
                             String[] splitLine = part1.split(",");
-                            //                            Log.info(thisClass, "getTokenFromResponse", splitLine[0]);
+                            // Log.info(thisClass, "getTokenFromResponse", splitLine[0]);
                             if (splitLine != null) {
                                 if (splitLine[0] != null) {
                                     Log.info(thisClass, thisMethod, "chc: " + splitLine[0] + " FOO");
@@ -1125,8 +1188,7 @@ public class CommonValidationTools {
             if (respReceived.contains("userinfo_string")) {
                 end = respReceived.indexOf("}", end + 1); // need 2nd } , not 1st.
             }
-            String theValue = respReceived.substring(
-                    respReceived.indexOf(theString) + theString.length(), end);
+            String theValue = respReceived.substring(respReceived.indexOf(theString) + theString.length(), end);
             Log.info(thisClass, thisMethod, "The Line: " + theValue);
             if (!theValue.isEmpty()) {
                 return theValue;
@@ -1150,7 +1212,7 @@ public class CommonValidationTools {
 
         String thisMethod = "getIDTokenFromOutput";
         msgUtils.printMethodName(thisMethod);
-        //        String tokenName = "id_token=";
+        // String tokenName = "id_token=";
         Log.info(thisClass, thisMethod, " Searching for key:  " + tokenName);
 
         try {
@@ -1160,10 +1222,10 @@ public class CommonValidationTools {
                 return Constants.NOT_FOUND;
             }
 
-            //String partOne = respReceived.substring(respReceived.indexOf(tokenName) + tokenName.length(), respReceived.indexOf("}"));
+            // String partOne = respReceived.substring(respReceived.indexOf(tokenName) +
+            // tokenName.length(), respReceived.indexOf("}"));
             int start = respReceived.indexOf(tokenName);
-            String partOne = respReceived.substring(start + tokenName.length(),
-                    respReceived.indexOf("}", start));
+            String partOne = respReceived.substring(start + tokenName.length(), respReceived.indexOf("}", start));
             String theValue = null;
             if (partOne.indexOf(",") != -1) {
                 theValue = partOne.substring(0, partOne.indexOf(","));
@@ -1214,10 +1276,8 @@ public class CommonValidationTools {
     /**
      * Determines if specified string is in the list of strings
      *
-     * @param theList
-     *            - the list to search in
-     * @param searchString
-     *            - the string to search for in the list
+     * @param theList      - the list to search in
+     * @param searchString - the string to search for in the list
      * @return true/false - true - in list, false - not in list
      */
     public Boolean isInList(String[] theList, String searchString) {
@@ -1232,41 +1292,54 @@ public class CommonValidationTools {
         return false;
     }
 
-    public List<validationData> addDefaultIDTokenExpectations(List<validationData> expectations, String testcase, String providerType, String testStep, TestSettings settings) throws Exception {
+    public List<validationData> addDefaultIDTokenExpectations(List<validationData> expectations, String testcase,
+            String providerType, String testStep, TestSettings settings) throws Exception {
 
         try {
             if (providerType == Constants.OAUTH_OP) {
                 // oauth will not contain id_token
-                expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS,
-                        "Token validate response found the id_token in the response and should not have", Constants.ID_TOKEN_KEY, Constants.NOT_FOUND);
+                expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                        Constants.STRING_CONTAINS,
+                        "Token validate response found the id_token in the response and should not have",
+                        Constants.ID_TOKEN_KEY, Constants.NOT_FOUND);
             } else {
-                // even if we're testing with OIDC, if openid is NOT in the scope, we WON'T get an id_token (check for NO id_token)
+                // even if we're testing with OIDC, if openid is NOT in the scope, we WON'T get
+                // an id_token (check for NO id_token)
                 if (settings.getScope().contains("openid")) {
                     // validate general as well as specific information in the id_token
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS,
-                            "The general content of the id_token was incorrect", null, null);
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_MATCHES,
-                            "client id (aud) was not correct in the id_token", Constants.IDTOK_AUDIENCE_KEY, settings.getClientID());
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_MATCHES,
-                            "userid id (sub) was not correct in the id_token", Constants.IDTOK_SUBJECT_KEY, settings.getAdminUser());
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS,
-                            "unique security name (uniqueSecurityName) was not correct in the id_token", Constants.IDTOK_UNIQ_SEC_NAME_KEY,
-                            settings.getAdminUser());
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                            Constants.STRING_CONTAINS, "The general content of the id_token was incorrect", null, null);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                            Constants.STRING_MATCHES, "client id (aud) was not correct in the id_token",
+                            Constants.IDTOK_AUDIENCE_KEY, settings.getClientID());
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                            Constants.STRING_MATCHES, "userid id (sub) was not correct in the id_token",
+                            Constants.IDTOK_SUBJECT_KEY, settings.getAdminUser());
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                            Constants.STRING_CONTAINS,
+                            "unique security name (uniqueSecurityName) was not correct in the id_token",
+                            Constants.IDTOK_UNIQ_SEC_NAME_KEY, settings.getAdminUser());
                     String realmName = settings.getRealm();
                     if (realmName != null) {
-                        expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_MATCHES,
-                                "realm name (realmName) was not correct in the id_token", Constants.IDTOK_REALM_KEY, realmName);
+                        expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                                Constants.STRING_MATCHES, "realm name (realmName) was not correct in the id_token",
+                                Constants.IDTOK_REALM_KEY, realmName);
                     } else {
-                        expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_MATCHES,
-                                "realm name (realmName (default)) was not correct in the id_token", Constants.IDTOK_REALM_KEY, Constants.BASIC_REALM);
+                        expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                                Constants.STRING_MATCHES,
+                                "realm name (realmName (default)) was not correct in the id_token",
+                                Constants.IDTOK_REALM_KEY, Constants.BASIC_REALM);
                     }
                     if (settings.getNonce() != null && !settings.getNonce().isEmpty()) {
-                        expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_MATCHES,
-                                "nonce (nonce) was not correct in the id_token", Constants.IDTOK_NONCE_KEY, settings.getNonce());
+                        expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                                Constants.STRING_MATCHES, "nonce (nonce) was not correct in the id_token",
+                                Constants.IDTOK_NONCE_KEY, settings.getNonce());
                     }
                 } else { // (check for NO id_token)
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN, Constants.STRING_CONTAINS,
-                            "Token validate response found the id_token in the response and should not have", Constants.ID_TOKEN_KEY, Constants.NOT_FOUND);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_ID_TOKEN,
+                            Constants.STRING_CONTAINS,
+                            "Token validate response found the id_token in the response and should not have",
+                            Constants.ID_TOKEN_KEY, Constants.NOT_FOUND);
                 }
 
             }
@@ -1305,7 +1378,8 @@ public class CommonValidationTools {
     }
 
     /**
-     * Validates that the specified tokenStringRegex appears in the specified output location.
+     * Validates that the specified tokenStringRegex appears in the specified output
+     * location.
      *
      * @param vData
      * @param expectations
@@ -1315,15 +1389,20 @@ public class CommonValidationTools {
      * @return
      * @throws Exception
      */
-    public List<validationData> addIdTokenStringValidation(ValidationData vData, List<validationData> expectations, String action, String where, String tokenStringRegex) throws Exception {
-        // Private Credential: IDToken:{"iss"="http://localhost:8998/oidc/endpoint/OidcConfigSample", "sub"="testuser", "aud"="client01", "exp"=1391718480, "iat"=1391714880, "at_hash"="LHRswznUtoj3HYJYLG7CwA"}
-        expectations = vData.addExpectation(expectations, action, where, Constants.STRING_MATCHES, "Did not find expected ID token string in output.", null, tokenStringRegex);
+    public List<validationData> addIdTokenStringValidation(ValidationData vData, List<validationData> expectations,
+            String action, String where, String tokenStringRegex) throws Exception {
+        // Private Credential:
+        // IDToken:{"iss"="http://localhost:8998/oidc/endpoint/OidcConfigSample",
+        // "sub"="testuser", "aud"="client01", "exp"=1391718480, "iat"=1391714880,
+        // "at_hash"="LHRswznUtoj3HYJYLG7CwA"}
+        expectations = vData.addExpectation(expectations, action, where, Constants.STRING_MATCHES,
+                "Did not find expected ID token string in output.", null, tokenStringRegex);
         return expectations;
     }
 
     /**
-     * Get the id_token out of the response - how and where it gets it from
-     * depends on the test that we're currently running.
+     * Get the id_token out of the response - how and where it gets it from depends
+     * on the test that we're currently running.
      *
      * @param settings
      * @param response
@@ -1376,10 +1455,9 @@ public class CommonValidationTools {
     }
 
     /**
-     * Validate the general content of the id_token (the number of parts is
-     * correct, the signature algorithm is what the test expects, all required
-     * parms exist, timestamps are within the correct range, the signature is
-     * correct, ...)
+     * Validate the general content of the id_token (the number of parts is correct,
+     * the signature algorithm is what the test expects, all required parms exist,
+     * timestamps are within the correct range, the signature is correct, ...)
      *
      * @param settings
      * @param testSigAlg
@@ -1388,7 +1466,8 @@ public class CommonValidationTools {
      * @param tokenInfo
      * @throws Exception
      */
-    public void genericIDTokenValidation(TestSettings settings, String testSigAlg, String id_token, String[] id_token_parts, JSONObject tokenInfo) throws Exception {
+    public void genericIDTokenValidation(TestSettings settings, String testSigAlg, String id_token,
+            String[] id_token_parts, JSONObject tokenInfo) throws Exception {
 
         String thisMethod = "genericIDTokenValidation";
         msgUtils.printMethodName(thisMethod, "Start of");
@@ -1399,17 +1478,20 @@ public class CommonValidationTools {
                 Log.info(thisClass, thisMethod, "Found " + aKey + ": " + tokenInfo.get(aKey));
             }
             // ensure that we have the correct number of parts
-            msgUtils.assertTrueAndLog(thisMethod, "ID Token does not have the correct number of parts", validateTokenNumParts(id_token_parts, testSigAlg));
+            msgUtils.assertTrueAndLog(thisMethod, "ID Token does not have the correct number of parts",
+                    validateTokenNumParts(id_token_parts, testSigAlg));
 
             // now, validate the individual parts (sigAlg.PayLoad.Signature)
             // ensure that the algorithm is correct
-            msgUtils.assertTrueAndLog(thisMethod, "ID Token signature algorithm does not match expected ", validateTokenSignatureAlgorithm(id_token_parts, testSigAlg));
+            msgUtils.assertTrueAndLog(thisMethod, "ID Token signature algorithm does not match expected ",
+                    validateTokenSignatureAlgorithm(id_token_parts, testSigAlg));
 
             // validate keys and key values in part2 of the id_token
             validateIDTokenPayload(tokenInfo, settings, testSigAlg);
 
             // validate the signature
-            msgUtils.assertTrueAndLog(thisMethod, "The ID Token is not signed properly", validateTokenSignature(id_token, settings, testSigAlg));
+            msgUtils.assertTrueAndLog(thisMethod, "The ID Token is not signed properly",
+                    validateTokenSignature(id_token, settings, testSigAlg));
         } catch (Exception e) {
             e.printStackTrace();
             Log.error(thisClass, thisMethod, e, "Error during generic validation of the ID Token");
@@ -1419,9 +1501,9 @@ public class CommonValidationTools {
 
     /**
      * Validate the general content of the JWT token (the number of parts is
-     * correct, the signature algorithm is what the test expects, all required
-     * parms exist, timestamps are within the correct range, the signature is
-     * correct, ...)
+     * correct, the signature algorithm is what the test expects, all required parms
+     * exist, timestamps are within the correct range, the signature is correct,
+     * ...)
      *
      * @param settings
      * @param testSigAlg
@@ -1430,7 +1512,8 @@ public class CommonValidationTools {
      * @param tokenInfo
      * @throws Exception
      */
-    public void genericJWTTokenValidation(TestSettings settings, String testSigAlg, String jwt_token, String[] jwt_token_parts, JSONObject tokenInfo) throws Exception {
+    public void genericJWTTokenValidation(TestSettings settings, String testSigAlg, String jwt_token,
+            String[] jwt_token_parts, JSONObject tokenInfo) throws Exception {
 
         String thisMethod = "genericJWTTokenValidation";
         msgUtils.printMethodName(thisMethod, "Start of");
@@ -1441,17 +1524,20 @@ public class CommonValidationTools {
                 Log.info(thisClass, thisMethod, "Found " + aKey + ": " + tokenInfo.get(aKey));
             }
             // ensure that we have the correct number of parts
-            msgUtils.assertTrueAndLog(thisMethod, "JWT Token does not have the correct number of parts", validateTokenNumParts(jwt_token_parts, testSigAlg));
+            msgUtils.assertTrueAndLog(thisMethod, "JWT Token does not have the correct number of parts",
+                    validateTokenNumParts(jwt_token_parts, testSigAlg));
 
             // now, validate the individual parts (sigAlg.PayLoad.Signature)
             // ensure that the algorithm is correct
-            msgUtils.assertTrueAndLog(thisMethod, "JWT Token signature algorithm does not match expected ", validateTokenSignatureAlgorithm(jwt_token_parts, testSigAlg));
+            msgUtils.assertTrueAndLog(thisMethod, "JWT Token signature algorithm does not match expected ",
+                    validateTokenSignatureAlgorithm(jwt_token_parts, testSigAlg));
 
             // validate keys and key values in part2 of the JWT token
             validateJWTTokenPayload(tokenInfo, settings, testSigAlg);
 
             // validate the signature
-            msgUtils.assertTrueAndLog(thisMethod, "The JWT Token is not signed properly", validateTokenSignature(jwt_token, settings, testSigAlg));
+            msgUtils.assertTrueAndLog(thisMethod, "The JWT Token is not signed properly",
+                    validateTokenSignature(jwt_token, settings, testSigAlg));
         } catch (Exception e) {
             e.printStackTrace();
             Log.error(thisClass, thisMethod, e, "Error during generic validation of the ID Token");
@@ -1482,29 +1568,38 @@ public class CommonValidationTools {
         if (rawKeysValue != null) {
             actualKeysValue = tokenInfo.get(expected.getValidationKey()).toString();
         }
-        // if the expectedKeysValue is null/empty, then we just want to make sure key/value pair exists, otherwise, we need to validate content
+        // if the expectedKeysValue is null/empty, then we just want to make sure
+        // key/value pair exists, otherwise, we need to validate content
         if (expectKeysValue != null && !expectKeysValue.isEmpty()) {
 
-            msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " (actual value was null)", Boolean.valueOf(actualKeysValue != null));
+            msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " (actual value was null)",
+                    Boolean.valueOf(actualKeysValue != null));
             // check value
-            Log.info(thisClass, thisMethod, "Validating key: " + expected.getValidationKey() + " Expecting: " + expectKeysValue + " Received: " + actualKeysValue);
+            Log.info(thisClass, thisMethod, "Validating key: " + expected.getValidationKey() + " Expecting: "
+                    + expectKeysValue + " Received: " + actualKeysValue);
             if (expected.getCheckType().equals(Constants.STRING_CONTAINS)) {
-                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue.contains(expectKeysValue)));
+                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(),
+                        Boolean.valueOf(actualKeysValue.contains(expectKeysValue)));
             } else {
                 if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN)) {
-                    msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(!actualKeysValue.contains(expectKeysValue)));
+                    msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(),
+                            Boolean.valueOf(!actualKeysValue.contains(expectKeysValue)));
                 } else {
                     if (expected.getCheckType().equals(Constants.STRING_MATCHES)) {
-                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue.matches(".*" + expectKeysValue + ".*")));
+                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(),
+                                Boolean.valueOf(actualKeysValue.matches(".*" + expectKeysValue + ".*")));
                     } else {
-                        // we don't care what the value is (it may be a random number generated on the server) - we just need to make sure it has a value
-                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue != null));
+                        // we don't care what the value is (it may be a random number generated on the
+                        // server) - we just need to make sure it has a value
+                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(),
+                                Boolean.valueOf(actualKeysValue != null));
                     }
                 }
             }
         } else {
             Log.info(thisClass, thisMethod, "Checking if  " + expected.getValidationKey() + " exists");
-            if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN) || expected.getCheckType().equals(Constants.STRING_NOT_NULL)) {
+            if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN)
+                    || expected.getCheckType().equals(Constants.STRING_NOT_NULL)) {
                 msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue != null));
             } else {
                 msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg(), Boolean.valueOf(actualKeysValue == null));
@@ -1518,7 +1613,8 @@ public class CommonValidationTools {
         String thisMethod = "validateTokenNumParts";
         msgUtils.printMethodName(thisMethod, "Start of");
 
-        // should only get this far if we're needing to validate the contents of the id token
+        // should only get this far if we're needing to validate the contents of the id
+        // token
         if (testSigAlg.equals(Constants.SIGALG_NONE)) {
             numParts = 2;
         } else {
@@ -1546,17 +1642,19 @@ public class CommonValidationTools {
         String respSigAlg = ApacheJsonUtils.fromBase64StringToJsonString(token_parts[0]);
         JSONObject tokenInfo = JSONObject.parse(respSigAlg);
         String actualAlg = tokenInfo.get(Constants.HEADER_ALGORITHM).toString();
-        //        String expectString = "{\"alg\":\"" + testSigAlg + "\"}";
+        // String expectString = "{\"alg\":\"" + testSigAlg + "\"}";
         if (actualAlg.equals(testSigAlg)) {
             return true;
         } else {
-            Log.info(thisClass, thisMethod, "Token signature algorithm: " + actualAlg + " does not match expected: " + testSigAlg);
+            Log.info(thisClass, thisMethod,
+                    "Token signature algorithm: " + actualAlg + " does not match expected: " + testSigAlg);
             return false;
         }
 
     }
 
-    public void validateIDTokenPayload(JSONObject tokenInfo, TestSettings settings, String testSigAlg) throws Exception {
+    public void validateIDTokenPayload(JSONObject tokenInfo, TestSettings settings, String testSigAlg)
+            throws Exception {
 
         String thisMethod = "validateIDTokenPayload";
         msgUtils.printMethodName(thisMethod, "Start of");
@@ -1576,7 +1674,9 @@ public class CommonValidationTools {
         } else {
             // make sure at_hash does NOT exist if the response is not signed
             shouldntExistKeys.add(Constants.IDTOK_AT_HASH_KEY);
-            //     msgUtils.assertTrueAndLog(thisMethod, "Key: " + Constants.IDTOK_AT_HASH_KEY + " should NOT exist", Boolean.valueOf(tokenInfo.get(Constants.IDTOK_AT_HASH_KEY) == null));
+            // msgUtils.assertTrueAndLog(thisMethod, "Key: " + Constants.IDTOK_AT_HASH_KEY +
+            // " should NOT exist",
+            // Boolean.valueOf(tokenInfo.get(Constants.IDTOK_AT_HASH_KEY) == null));
         }
         if (settings.getNonce() != null) {
             requiredKeys.add(Constants.IDTOK_NONCE_KEY);
@@ -1585,11 +1685,13 @@ public class CommonValidationTools {
         }
 
         for (String key : requiredKeys) {
-            msgUtils.assertTrueAndLog(thisMethod, "Expected key: " + key + " does not exist", (tokenInfo.get(key) != null));
+            msgUtils.assertTrueAndLog(thisMethod, "Expected key: " + key + " does not exist",
+                    (tokenInfo.get(key) != null));
             String tokenValue = tokenInfo.get(key).toString();
             Log.info(thisClass, thisMethod, "Making sure required key: " + key + " exists");
             // a null value implies the key wasn't there
-            msgUtils.assertTrueAndLog(thisMethod, "Expected key: " + key + " does not exist", Boolean.valueOf(tokenValue != null));
+            msgUtils.assertTrueAndLog(thisMethod, "Expected key: " + key + " does not exist",
+                    Boolean.valueOf(tokenValue != null));
         }
 
         if (shouldntExistKeys != null) {
@@ -1597,25 +1699,30 @@ public class CommonValidationTools {
                 Object tokenValue = tokenInfo.get(key);
                 Log.info(thisClass, thisMethod, "Making sure key: " + key + " does NOT exist");
                 // a null value implies the key wasn't there
-                msgUtils.assertTrueAndLog(thisMethod, "Key: " + key + " does exist and should NOT - it has a value of: " + tokenValue, Boolean.valueOf(tokenValue == null));
+                msgUtils.assertTrueAndLog(thisMethod,
+                        "Key: " + key + " does exist and should NOT - it has a value of: " + tokenValue,
+                        Boolean.valueOf(tokenValue == null));
             }
         }
 
-        // now, let's validate the time  (exp and ait have just been validated as not null,
+        // now, let's validate the time (exp and ait have just been validated as not
+        // null,
         // so, we should have a value now.
         validateTokenTimeStamps(settings, tokenInfo);
 
     }
 
-    public void validateJWTTokenPayload(JSONObject tokenInfo, TestSettings settings, String testSigAlg) throws Exception {
+    public void validateJWTTokenPayload(JSONObject tokenInfo, TestSettings settings, String testSigAlg)
+            throws Exception {
 
         String thisMethod = "validateJWTTokenPayload";
         msgUtils.printMethodName(thisMethod, "Start of");
 
-        ArrayList<String> shouldntExistKeys = new ArrayList<String>(Arrays.asList("name", "given_name", "family_name", "middle_name", "nickname",
-                "preferred_username", "profile", "picture", "website", "email", "email_verified", "gender", "birthdate", "zoneinfo", "locale",
-                "phone_number", "phone_number_verified", "address", "updated_at", "nonce", "auth_time", "at_hash", "c_hash", "acr", "amr",
-                "sub_jwk", "cnf", Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS));
+        ArrayList<String> shouldntExistKeys = new ArrayList<String>(Arrays.asList("name", "given_name", "family_name",
+                "middle_name", "nickname", "preferred_username", "profile", "picture", "website", "email",
+                "email_verified", "gender", "birthdate", "zoneinfo", "locale", "phone_number", "phone_number_verified",
+                "address", "updated_at", "nonce", "auth_time", "at_hash", "c_hash", "acr", "amr", "sub_jwk", "cnf",
+                Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS));
 
         // make sure we have all required keys
         List<String> requiredKeys = new ArrayList<String>();
@@ -1636,11 +1743,11 @@ public class CommonValidationTools {
         } else {
             shouldntExistKeys.add(Constants.PAYLOAD_AUDIENCE);
         }
-        //        if (check for azp) {
-        //        	requiredKeys.add(Constants.PAYLOAD_AUTHORIZED_PARTY) ;
-        //        } else {
-        //        	shouldntExistKeys.add(Constants.PAYLOAD_AUTHORIZED_PARTY) ;
-        //        }
+        // if (check for azp) {
+        // requiredKeys.add(Constants.PAYLOAD_AUTHORIZED_PARTY) ;
+        // } else {
+        // shouldntExistKeys.add(Constants.PAYLOAD_AUTHORIZED_PARTY) ;
+        // }
         if (settings.getGroupIds() != null) {
             requiredKeys.add(Constants.PAYLOAD_GROUP);
         } else {
@@ -1649,7 +1756,8 @@ public class CommonValidationTools {
 
         for (String reqKey : requiredKeys) {
             if (shouldntExistKeys.contains(reqKey)) {
-                Log.info(thisClass, thisMethod, "Key [" + reqKey + "] noted as being required, so removing from \"shouldn't be found\" list.");
+                Log.info(thisClass, thisMethod,
+                        "Key [" + reqKey + "] noted as being required, so removing from \"shouldn't be found\" list.");
                 shouldntExistKeys.remove(reqKey);
             }
         }
@@ -1666,7 +1774,8 @@ public class CommonValidationTools {
 
     }
 
-    public void validateJWTTokenHeader(JSONObject tokenInfo, TestSettings settings, String testSigAlg) throws Exception {
+    public void validateJWTTokenHeader(JSONObject tokenInfo, TestSettings settings, String testSigAlg)
+            throws Exception {
 
         String thisMethod = "validateJWTTokenHeader";
         msgUtils.printMethodName(thisMethod, "Start of");
@@ -1676,19 +1785,22 @@ public class CommonValidationTools {
         // make sure we have all required keys
         ArrayList<String> requiredKeys = new ArrayList<String>();
 
-        //        if (Constants.JWK_CERT.equals(settings.getRsCertType()) || (settings.getUseJwtConsumer() && !Constants.X509_CERT.equals(settings.getRsCertType()))) {
+        // if (Constants.JWK_CERT.equals(settings.getRsCertType()) ||
+        // (settings.getUseJwtConsumer() &&
+        // !Constants.X509_CERT.equals(settings.getRsCertType()))) {
         String algo = (String) tokenInfo.get(Constants.HEADER_ALGORITHM);
         if (algo != null) {
             algo = algo.toString().toUpperCase();
         }
         boolean kidCheck = false;
         if (algo != null && algo.startsWith("RS")) {
-            // kid should always be present for RS256, RS384, RS(anything) algorithm, but not hs256 or none
+            // kid should always be present for RS256, RS384, RS(anything) algorithm, but
+            // not hs256 or none
             kidCheck = true;
             requiredKeys.add(Constants.HEADER_KEY_ID);
         }
         Log.info(thisClass, thisMethod, "algorithm is: " + algo + " kid check added:" + kidCheck);
-        //        }
+        // }
         requiredKeys.add(Constants.HEADER_ALGORITHM);
 
         requiredKeyCheck(requiredKeys, tokenInfo);
@@ -1700,11 +1812,13 @@ public class CommonValidationTools {
 
         String thisMethod = "requiredKeyCheck";
         for (String key : requiredKeys) {
-            msgUtils.assertTrueAndLog(thisMethod, "Expected key: " + key + " does not exist", (tokenInfo.get(key) != null));
+            msgUtils.assertTrueAndLog(thisMethod, "Expected key: " + key + " does not exist",
+                    (tokenInfo.get(key) != null));
             String tokenValue = tokenInfo.get(key).toString();
             Log.info(thisClass, thisMethod, "Making sure required key: " + key + " exists");
             // a null value implies the key wasn't there
-            msgUtils.assertTrueAndLog(thisMethod, "Expected key: " + key + " does not exist", Boolean.valueOf(tokenValue != null));
+            msgUtils.assertTrueAndLog(thisMethod, "Expected key: " + key + " does not exist",
+                    Boolean.valueOf(tokenValue != null));
         }
 
     }
@@ -1717,7 +1831,9 @@ public class CommonValidationTools {
                 Object tokenValue = tokenInfo.get(key);
                 Log.info(thisClass, thisMethod, "Making sure key: " + key + " does NOT exist");
                 // a null value implies the key wasn't there
-                msgUtils.assertTrueAndLog(thisMethod, "Key: " + key + " does exist and should NOT - it has a value of: " + tokenValue, Boolean.valueOf(tokenValue == null));
+                msgUtils.assertTrueAndLog(thisMethod,
+                        "Key: " + key + " does exist and should NOT - it has a value of: " + tokenValue,
+                        Boolean.valueOf(tokenValue == null));
             }
         }
 
@@ -1731,14 +1847,15 @@ public class CommonValidationTools {
         Set<String> allKeys = tokenInfo.keySet();
         int typCount = 0;
         for (String key : allKeys) {
-            if (key.equals("typ")) { //20171219 typ key req'd for mp-jwt, allow only one.
+            if (key.equals("typ")) { // 20171219 typ key req'd for mp-jwt, allow only one.
                 typCount++;
                 if (typCount == 1) {
                     continue;
                 }
             }
             Log.info(thisClass, thisMethod, "Found key: " + key);
-            msgUtils.assertTrueAndLog(thisMethod, "Found key, <" + key + "> in the token and it is NOT expected", allowedKeys.contains(key));
+            msgUtils.assertTrueAndLog(thisMethod, "Found key, <" + key + "> in the token and it is NOT expected",
+                    allowedKeys.contains(key));
         }
 
     }
@@ -1752,18 +1869,24 @@ public class CommonValidationTools {
                 return true;
             } else {
                 if (sigAlg == Constants.SIGALG_HS256) {
-                    if (testSettings.getClientSecret() == null || testSettings.getClientSecret().isEmpty()) {
-                        //todo - what can we do without a client secret?
+                    String clientSecret = testSettings.getClientSecret();
+                    if (clientSecret == null || clientSecret.isEmpty()) {
+                        // todo - what can we do without a client secret?
                         return true;
                     }
-                    //	        FatJsonTokenVerifier tokenVerifier = new FatJsonTokenVerifier("client01", (Object)secret.getBytes(), Constants.SIGALG_HS256, idToken);
-                    String clientSecret = testSettings.getClientSecret();
-                    Log.info(thisClass, thisMethod, "clientID " + testSettings.getClientID() + " componentID " + testSettings.getComponentID() + " store type " + testSettings.getStoreType() + " isHashed " + testSettings.isHash());
+                    // FatJsonTokenVerifier tokenVerifier = new FatJsonTokenVerifier("client01",
+                    // (Object)secret.getBytes(), Constants.SIGALG_HS256, idToken);
+
+                    Log.info(thisClass, thisMethod,
+                            "clientID " + testSettings.getClientID() + " componentID " + testSettings.getComponentID()
+                                    + " store type " + testSettings.getStoreType() + " isHashed "
+                                    + testSettings.isHash());
                     if (testSettings.isHash()) {
                         clientSecret = processHashPassword(testSettings, clientSecret);
                     }
                     // Log.info(thisClass, thisMethod, "clientSecret " + clientSecret);
-                    JWTTokenVerifier tokenVerifier = new JWTTokenVerifier(testSettings.getClientID(), clientSecret.getBytes("UTF-8"), sigAlg, id_token);
+                    JWTTokenVerifier tokenVerifier = new JWTTokenVerifier(testSettings.getClientID(),
+                            clientSecret.getBytes("UTF-8"), sigAlg, id_token);
                     // verify with current time
                     // We can call verifyAndDeserialize(SystemClock) to check with different time
                     tokenVerifier.verifyAndDeserialize();
@@ -1791,7 +1914,8 @@ public class CommonValidationTools {
 
         String thisMethod = "validateTokenTimeStamps";
 
-        // now, let's validate the time  (exp and ait have just been validated as not null,
+        // now, let's validate the time (exp and ait have just been validated as not
+        // null,
         // so, we should have a value now.
         Long iat = (Long) tokenInfo.get(Constants.PAYLOAD_ISSUED_AT_TIME_IN_SECS);
         Long exp = (Long) tokenInfo.get(Constants.PAYLOAD_EXPIRATION_TIME_IN_SECS);
@@ -1801,26 +1925,34 @@ public class CommonValidationTools {
         Long expTimeout = setAccessTimeout(settings);
 
         Log.info(thisClass, thisMethod, "Checking issued at time is NOT more than expTimeout time before exp");
-        msgUtils.assertTrueAndLog(thisMethod, " ait (" + iat + ") is not " + expTimeout + " seconds before exp (" + exp + ")", Boolean.valueOf(exp == (iat + expTimeout)));
+        msgUtils.assertTrueAndLog(thisMethod,
+                " ait (" + iat + ") is not " + expTimeout + " seconds before exp (" + exp + ")",
+                Boolean.valueOf(exp == (iat + expTimeout)));
 
         Log.info(thisClass, thisMethod, "Checking issued at time is prior to current time");
-        msgUtils.assertTrueAndLog(thisMethod, " ait (" + iat + ") is NOT prior to current time (" + nowconverted + ")", Boolean.valueOf(iat <= nowconverted));
+        msgUtils.assertTrueAndLog(thisMethod, " ait (" + iat + ") is NOT prior to current time (" + nowconverted + ")",
+                Boolean.valueOf(iat <= nowconverted));
 
         Log.info(thisClass, thisMethod, "Checking issued at time is NOT too far in the past");
-        msgUtils.assertTrueAndLog(thisMethod, " ait (" + iat + ") is too far in the past (" + nowconverted + ")", Boolean.valueOf((nowconverted - 60) <= iat));
+        msgUtils.assertTrueAndLog(thisMethod, " ait (" + iat + ") is too far in the past (" + nowconverted + ")",
+                Boolean.valueOf((nowconverted - 60) <= iat));
 
         // We're not supporting nbf at this time
-        //    	Long nbf = (Long) tokenInfo.get(Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS);
-        //    	if (nbf != null) {
-        //    		Log.info(thisClass, thisMethod, "Checking NBF is set to the same value as ait");
-        //    		Long differ = 0L ;
-        //    		if (nbf <= iat) {
-        //    			differ = iat - nbf ;
-        //    		} else {
-        //        		msgUtils.assertTrueAndLog(thisMethod, " nbf (" + nbf + ") is NOT earlier than or equal to ait (" + iat + ")", false );
-        //    		}
-        //    		msgUtils.assertTrueAndLog(thisMethod, " nbf (" + nbf + ") is NOT within approprate range earlier than ait (" + iat + ")", Boolean.valueOf(differ <= 120));
-        //    	}
+        // Long nbf = (Long) tokenInfo.get(Constants.PAYLOAD_NOT_BEFORE_TIME_IN_SECS);
+        // if (nbf != null) {
+        // Log.info(thisClass, thisMethod, "Checking NBF is set to the same value as
+        // ait");
+        // Long differ = 0L ;
+        // if (nbf <= iat) {
+        // differ = iat - nbf ;
+        // } else {
+        // msgUtils.assertTrueAndLog(thisMethod, " nbf (" + nbf + ") is NOT earlier than
+        // or equal to ait (" + iat + ")", false );
+        // }
+        // msgUtils.assertTrueAndLog(thisMethod, " nbf (" + nbf + ") is NOT within
+        // approprate range earlier than ait (" + iat + ")", Boolean.valueOf(differ <=
+        // 120));
+        // }
 
     }
 
@@ -1860,27 +1992,34 @@ public class CommonValidationTools {
         return expTimeout;
     }
 
-    public List<validationData> addDefaultGeneralResponseExpectations(List<validationData> expectations, String testcase, String providerType, String testStep,
-            TestSettings settings) throws Exception {
+    public List<validationData> addDefaultGeneralResponseExpectations(List<validationData> expectations,
+            String testcase, String providerType, String testStep, TestSettings settings) throws Exception {
 
         try {
             if (providerType == Constants.OAUTH_OP) {
 
                 // oauth will not contain id_token
-                expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_GENERAL, Constants.STRING_CONTAINS,
+                expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_GENERAL,
+                        Constants.STRING_CONTAINS,
                         "Token validate response found the id_token in the response and should not have", null, null);
             } else {
-                // if openid is not in the scope, we should make sure that id_token in not in the general response
+                // if openid is not in the scope, we should make sure that id_token in not in
+                // the general response
                 if (settings.getScope().contains("openid")) {
                     // validate general as well as specific information in the response
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_GENERAL, Constants.STRING_CONTAINS,
-                            "The general content of the response was incorrect", null, Constants.OIDC_OP);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_GENERAL,
+                            Constants.STRING_CONTAINS, "The general content of the response was incorrect", null,
+                            Constants.OIDC_OP);
                 } else {
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_GENERAL, Constants.STRING_CONTAINS,
-                            "Token validate response found the id_token in the response and should not have (openid was missing in scope)", null, null);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_GENERAL,
+                            Constants.STRING_CONTAINS,
+                            "Token validate response found the id_token in the response and should not have (openid was missing in scope)",
+                            null, null);
                 }
             }
-            expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_GENERAL, Constants.STRING_CONTAINS, "The scope content of the response was incorrect", "scope", settings.getScope());
+            expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_GENERAL,
+                    Constants.STRING_CONTAINS, "The scope content of the response was incorrect", "scope",
+                    settings.getScope());
 
         } catch (Exception e) {
 
@@ -1891,46 +2030,49 @@ public class CommonValidationTools {
         return expectations;
     }
 
-    public List<validationData> addJaxrsSnoopResponseTokenExpectations(List<validationData> expectations, String testcase, String providerType, String requestType, String token, String testStep, TestSettings settings) throws Exception {
-        return addJaxrsSnoopResponseTokenExpectations(expectations, testcase, providerType, requestType, token, testStep, settings.getWhere(), settings.getRSProtectedResource(), settings.getRsTokenType());
+    public List<validationData> addJaxrsSnoopResponseTokenExpectations(List<validationData> expectations,
+            String testcase, String providerType, String requestType, String token, String testStep,
+            TestSettings settings) throws Exception {
+        return addJaxrsSnoopResponseTokenExpectations(expectations, testcase, providerType, requestType, token,
+                testStep, settings.getWhere(), settings.getRSProtectedResource(), settings.getRsTokenType());
     }
 
-    public List<validationData> addJaxrsSnoopResponseAccessTokenExpectations(List<validationData> expectations, String testcase, String providerType, String requestType, String token, String testStep, String where, String resource) throws Exception {
-        return addJaxrsSnoopResponseTokenExpectations(expectations, testcase, providerType, requestType, token, testStep, where, resource, Constants.ACCESS_TOKEN_KEY);
+    public List<validationData> addJaxrsSnoopResponseAccessTokenExpectations(List<validationData> expectations,
+            String testcase, String providerType, String requestType, String token, String testStep, String where,
+            String resource) throws Exception {
+        return addJaxrsSnoopResponseTokenExpectations(expectations, testcase, providerType, requestType, token,
+                testStep, where, resource, Constants.ACCESS_TOKEN_KEY);
     }
 
-    // TODO - when we add tests for the attribute that allows us to "name" the jwt token (and maybe the access_token), we will probably need to enhance this method further
+    // TODO - when we add tests for the attribute that allows us to "name" the jwt
+    // token (and maybe the access_token), we will probably need to enhance this
+    // method further
     /**
      * This method adds the appropriate expectation to validate the propagation
      * token used to access the app
      *
-     * @param expectations
-     *            - expectation to update
-     * @param testcase
-     *            - the test case name
-     * @param providerType
-     *            - provider type (OIDC/OAuth)
-     * @param requestType
-     *            - GET/POST
-     * @param token
-     *            - token value to compare against
-     * @param testStep
-     *            - step/action in the test flow
-     * @param where
-     *            - where the token was put on the request (PARM/HEADER)
-     * @param resource
-     *            - test application
-     * @param tokenType
-     *            - access_token/JWT token
+     * @param expectations - expectation to update
+     * @param testcase     - the test case name
+     * @param providerType - provider type (OIDC/OAuth)
+     * @param requestType  - GET/POST
+     * @param token        - token value to compare against
+     * @param testStep     - step/action in the test flow
+     * @param where        - where the token was put on the request (PARM/HEADER)
+     * @param resource     - test application
+     * @param tokenType    - access_token/JWT token
      * @return
      * @throws Exception
      */
-    public List<validationData> addJaxrsSnoopResponseTokenExpectations(List<validationData> expectations, String testcase, String providerType, String requestType, String token, String testStep, String where, String resource, String tokenType) throws Exception {
+    public List<validationData> addJaxrsSnoopResponseTokenExpectations(List<validationData> expectations,
+            String testcase, String providerType, String requestType, String token, String testStep, String where,
+            String resource, String tokenType) throws Exception {
 
-        expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Could not invoke protected application", null, resource);
+        expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS,
+                "Could not invoke protected application", null, resource);
 
         // the access_token will be found on 1 line in the snoop output
-        // the id_token, will be split with <br> in the output - making it hard to validate
+        // the id_token, will be split with <br> in the output - making it hard to
+        // validate
         // so, for id_token, just search for the first 45 characters
         String tokenToMatch = null;
         int tokenLen = token.length();
@@ -1943,15 +2085,27 @@ public class CommonValidationTools {
         if (requestType != null) {
             if (requestType == Constants.GETMETHOD) {
                 if (where.equals(Constants.PARM)) {
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The correct propagation token was NOT found in the Snoop output", null, "access_token=" + tokenToMatch);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL,
+                            Constants.STRING_CONTAINS,
+                            "The correct propagation token was NOT found in the Snoop output", null,
+                            "access_token=" + tokenToMatch);
                 } else {
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The correct propagation token was NOT found in the Snoop output", null, "Bearer " + tokenToMatch);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL,
+                            Constants.STRING_CONTAINS,
+                            "The correct propagation token was NOT found in the Snoop output", null,
+                            "Bearer " + tokenToMatch);
                 }
             } else {
                 if (where.equals(Constants.PARM)) {
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The correct propagation token was NOT found in the Snoop output", null, "access_token</td><td>" + tokenToMatch);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL,
+                            Constants.STRING_CONTAINS,
+                            "The correct propagation token was NOT found in the Snoop output", null,
+                            "access_token</td><td>" + tokenToMatch);
                 } else {
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "The correct propagation token was NOT found in the Snoop output", null, "Bearer " + tokenToMatch);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL,
+                            Constants.STRING_CONTAINS,
+                            "The correct propagation token was NOT found in the Snoop output", null,
+                            "Bearer " + tokenToMatch);
                 }
             }
         }
@@ -1959,57 +2113,52 @@ public class CommonValidationTools {
     }
 
     /**
-     * Since boolean values detected get converted to string, there needs to be
-     * a mechanism to differentiate a string value of true / false from a
-     * boolean value. This method adds a unique offset to the boolean converted
-     * value that we understand and use it to deduce a boolean type, even if
-     * translated into a string.
+     * Since boolean values detected get converted to string, there needs to be a
+     * mechanism to differentiate a string value of true / false from a boolean
+     * value. This method adds a unique offset to the boolean converted value that
+     * we understand and use it to deduce a boolean type, even if translated into a
+     * string.
      *
-     * @param value
-     *            of boolean
+     * @param value of boolean
      * @return String encoded boolean value with offset value appended
      */
     private String getStringFromBoolean(boolean value) {
-        return (new StringBuffer())
-                .append(String.valueOf(value))
-                .append(BOOLEAN_CAST_OFFSET)
-                .toString();
+        return (new StringBuffer()).append(String.valueOf(value)).append(BOOLEAN_CAST_OFFSET).toString();
     }
 
     /**
      * Determine from a string value if the origin is from a true boolean type
      * value.
      *
-     * @param value
-     *            of string encoded boolean value with offset value appended
-     * @return true or false if string value was extracted from true boolean
-     *         type
+     * @param value of string encoded boolean value with offset value appended
+     * @return true or false if string value was extracted from true boolean type
      */
     private boolean isBooleanFromString(String value) {
         return value.endsWith(BOOLEAN_CAST_OFFSET);
     }
 
     /**
-     * Return boolean value from specially string encoded boolean value. This is
-     * to be used in conjunction with getStringFromBoolean(..)
+     * Return boolean value from specially string encoded boolean value. This is to
+     * be used in conjunction with getStringFromBoolean(..)
      *
-     * @param value
-     *            of specially string encoded boolean value
-     * @return boolean value extracted from specially encoded string boolean
-     *         value
+     * @param value of specially string encoded boolean value
+     * @return boolean value extracted from specially encoded string boolean value
      */
     private boolean getBooleanFromString(String value) {
         return value.toLowerCase().startsWith("true");
 
     }
 
-    public List<validationData> addRequestParmsExpectations(List<validationData> expectations, String testcase, String testStep, TestSettings settings) throws Exception {
+    public List<validationData> addRequestParmsExpectations(List<validationData> expectations, String testcase,
+            String testStep, TestSettings settings) throws Exception {
 
         if (settings.getWhere().equals(Constants.PARM)) {
             Map<String, String> reqParms = settings.getRequestParms();
             if (reqParms != null) {
                 for (String key : reqParms.keySet()) {
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find parm passed through to servlet", null, "Param: " + key + " with value: " + reqParms.get(key));
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL,
+                            Constants.STRING_CONTAINS, "Did not find parm passed through to servlet", null,
+                            "Param: " + key + " with value: " + reqParms.get(key));
                 }
             }
         }
@@ -2017,7 +2166,8 @@ public class CommonValidationTools {
         return expectations;
     }
 
-    public List<validationData> addRequestFileParmsExpectations(List<validationData> expectations, String testcase, String testStep, TestSettings settings) throws Exception {
+    public List<validationData> addRequestFileParmsExpectations(List<validationData> expectations, String testcase,
+            String testStep, TestSettings settings) throws Exception {
 
         Map<String, String> reqParms = settings.getRequestFileParms();
         if (reqParms != null) {
@@ -2039,10 +2189,14 @@ public class CommonValidationTools {
                     }
                     // Done with the file
                     br.close();
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find parm passed through to servlet", null, "Param: " + key + " with value: " + theValue);
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL,
+                            Constants.STRING_CONTAINS, "Did not find parm passed through to servlet", null,
+                            "Param: " + key + " with value: " + theValue);
                 } else {
                     // should never get here - if we do it's a test (code/setup bug)
-                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not find parm passed through to servlet", null, "Param: " + key + " with value: missing file");
+                    expectations = vData.addExpectation(expectations, testStep, Constants.RESPONSE_FULL,
+                            Constants.STRING_CONTAINS, "Did not find parm passed through to servlet", null,
+                            "Param: " + key + " with value: missing file");
                 }
             }
         }
@@ -2052,19 +2206,15 @@ public class CommonValidationTools {
     /**
      * Validates the results of a step in the test process
      *
-     * @param connection
-     *            - the httpURLConnection with result
-     * @param currentAction
-     *            - the latest test step/action performed
-     * @param expectations
-     *            - an array of validationData - these include the string to
-     *            search for, how to do the search, where to search and for
-     *            which test stop/action do expect the string
+     * @param connection    - the httpURLConnection with result
+     * @param currentAction - the latest test step/action performed
+     * @param expectations  - an array of validationData - these include the string
+     *                      to search for, how to do the search, where to search and
+     *                      for which test stop/action do expect the string
      * @throws exception
      */
     public void validateHttpUrlConnResult(HttpURLConnection connection, String currentAction,
-            List<validationData> expectations, TestSettings settings, String response)
-            throws Exception {
+            List<validationData> expectations, TestSettings settings, String response) throws Exception {
 
         String thisMethod = "validateHttpUrlConnResult";
         msgUtils.printMethodName(thisMethod, "Start of");
@@ -2085,10 +2235,11 @@ public class CommonValidationTools {
             for (validationData expected : expectations) {
 
                 if (currentAction.equals(expected.getAction())) {
-                    if ((expected.getWhere().equals(Constants.RESPONSE_STATUS) ||
-                            expected.getWhere().equals(Constants.RESPONSE_URL) ||
-                            expected.getWhere().equals(Constants.RESPONSE_HEADER) ||
-                            expected.getWhere().equals(Constants.RESPONSE_FULL) || expected.getWhere().equals(Constants.RESPONSE_MESSAGE))) {
+                    if ((expected.getWhere().equals(Constants.RESPONSE_STATUS)
+                            || expected.getWhere().equals(Constants.RESPONSE_URL)
+                            || expected.getWhere().equals(Constants.RESPONSE_HEADER)
+                            || expected.getWhere().equals(Constants.RESPONSE_FULL)
+                            || expected.getWhere().equals(Constants.RESPONSE_MESSAGE))) {
                         validateWithHttpUrlConnection(connection, expected, response);
                     } else {
                         if (isInList(validLogLocations, expected.getWhere())) {
@@ -2119,14 +2270,13 @@ public class CommonValidationTools {
     /**
      * Searches for a message string in the response
      *
-     * @param connection
-     *            - the HttpURLConnection from which we get the response
-     * @param expected
-     *            - a validationMsg type to search (contains the string to
-     *            search for)
+     * @param connection - the HttpURLConnection from which we get the response
+     * @param expected   - a validationMsg type to search (contains the string to
+     *                   search for)
      * @throws exception
      */
-    public void validateWithHttpUrlConnection(HttpURLConnection connection, validationData expected, String response) throws Exception {
+    public void validateWithHttpUrlConnection(HttpURLConnection connection, validationData expected, String response)
+            throws Exception {
 
         String thisMethod = "validateWithHttpUrlConnection";
         msgUtils.printMethodName(thisMethod, "Start of");
@@ -2145,7 +2295,8 @@ public class CommonValidationTools {
                     if (expected.getWhere().equals(Constants.RESPONSE_HEADER)) {
                         StringBuilder sb = new StringBuilder();
                         for (Entry<String, List<String>> header : connection.getHeaderFields().entrySet()) {
-                            sb.append(header.getKey() + ": " + header.getValue().toString().replaceAll("^\\[|\\]$", ""));
+                            sb.append(
+                                    header.getKey() + ": " + header.getValue().toString().replaceAll("^\\[|\\]$", ""));
                         }
                         responseContent = sb.toString();
                         Log.info(thisClass, thisMethod, "HttpURLValidation responseHeader :" + responseContent);
@@ -2172,18 +2323,25 @@ public class CommonValidationTools {
             }
 
             Log.info(thisClass, thisMethod, "checkType is: " + expected.getCheckType());
-            Log.info(thisClass, thisMethod, "Checking for: " + expected.getValidationValue() + " in: \n" + responseContent);
+            Log.info(thisClass, thisMethod,
+                    "Checking for: " + expected.getValidationValue() + " in: \n" + responseContent);
 
             if (expected.getCheckType().equals(Constants.STRING_CONTAINS)) {
-                msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + "\n Was expecting " + expected.getValidationValue() + " But, received: " + responseContent,
+                msgUtils.assertTrueAndLog(thisMethod,
+                        expected.getPrintMsg() + "\n Was expecting " + expected.getValidationValue()
+                                + " But, received: " + responseContent,
                         responseContent.contains(expected.getValidationValue()));
             } else {
                 if (expected.getCheckType().equals(Constants.STRING_DOES_NOT_CONTAIN)) {
-                    msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + "\n Was expecting " + expected.getValidationValue() + " But, received: " + responseContent,
+                    msgUtils.assertTrueAndLog(thisMethod,
+                            expected.getPrintMsg() + "\n Was expecting " + expected.getValidationValue()
+                                    + " But, received: " + responseContent,
                             !responseContent.contains(expected.getValidationValue()));
                 } else {
                     if (expected.getCheckType().equals(Constants.STRING_MATCHES)) {
-                        msgUtils.assertTrueAndLog(thisMethod, expected.getPrintMsg() + " Was expecting " + expected.getValidationValue() + " But, received: " + responseContent,
+                        msgUtils.assertTrueAndLog(thisMethod,
+                                expected.getPrintMsg() + " Was expecting " + expected.getValidationValue()
+                                        + " But, received: " + responseContent,
                                 responseContent.matches(expected.getValidationValue()));
                     } else {
                         throw new Exception("String comparison type unknown - test case coded incorrectly");
@@ -2204,7 +2362,8 @@ public class CommonValidationTools {
         validateDataLengthInResponse(response, expected, Constants.RESPONSE_TOKEN_LENGTH);
     }
 
-    public void validateDataLengthInResponse(Object response, validationData expected, String dataType) throws Exception {
+    public void validateDataLengthInResponse(Object response, validationData expected, String dataType)
+            throws Exception {
 
         String thisMethod = "validateDataLengthInResponse";
 
@@ -2220,11 +2379,17 @@ public class CommonValidationTools {
         if (dataType == Constants.RESPONSE_KEY_SIZE) {
             if (value != null) {
                 BigInteger decKey = BigIntegerUtil.decode(value);
-                msgUtils.assertTrueAndLog(thisMethod, "The length (" + decKey.bitLength() + ") of the specified key: " + expected.getValidationKey() + " is not " + expected.getValidationValue(), decKey.bitLength() == Integer.parseInt(expected.getValidationValue()));
+                msgUtils.assertTrueAndLog(thisMethod,
+                        "The length (" + decKey.bitLength() + ") of the specified key: " + expected.getValidationKey()
+                                + " is not " + expected.getValidationValue(),
+                        decKey.bitLength() == Integer.parseInt(expected.getValidationValue()));
             }
         } else {
             if (value.length() != 30) {
-                msgUtils.assertTrueAndLog(thisMethod, "The length (" + value.length() + ") of the specified key: " + expected.getValidationKey() + " is not " + expected.getValidationValue(), value.length() == Integer.parseInt(expected.getValidationValue()));
+                msgUtils.assertTrueAndLog(thisMethod,
+                        "The length (" + value.length() + ") of the specified key: " + expected.getValidationKey()
+                                + " is not " + expected.getValidationValue(),
+                        value.length() == Integer.parseInt(expected.getValidationValue()));
             }
         }
 
@@ -2245,22 +2410,33 @@ public class CommonValidationTools {
         return str;
     }
 
-    public List<validationData> addDefaultRSOAuthExpectations(List<validationData> expectations, String testcase, String finalAction, TestSettings settings) throws Exception {
+    public List<validationData> addDefaultRSOAuthExpectations(List<validationData> expectations, String testcase,
+            String finalAction, TestSettings settings) throws Exception {
 
         if (expectations == null) {
             expectations = vData.addSuccessStatusCodes(null);
         }
-        expectations = addIdTokenStringValidation(vData, expectations, finalAction, Constants.RESPONSE_FULL, Constants.IDToken_STR);
-        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
+        expectations = addIdTokenStringValidation(vData, expectations, finalAction, Constants.RESPONSE_FULL,
+                Constants.IDToken_STR);
+        expectations = vData.addExpectation(expectations, Constants.GET_LOGIN_PAGE, Constants.RESPONSE_FULL,
+                Constants.STRING_CONTAINS, "Did Not get the OpenID Connect login page.", null, Constants.LOGIN_PROMPT);
         expectations = addRequestParmsExpectations(expectations, testcase, finalAction, settings);
         if (settings.getRsTokenType().equals(Constants.ACCESS_TOKEN_KEY)) {
-            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not see the access_token printed in the app output", null, "access_token=");
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL,
+                    Constants.STRING_CONTAINS, "Did not see the access_token printed in the app output", null,
+                    "access_token=");
         } else {
-            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_MATCHES, "Did not see the JWT Token printed in the app output", null, Constants.JWT_STR_START + ".*\"iss\":");
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL,
+                    Constants.STRING_MATCHES, "Did not see the JWT Token printed in the app output", null,
+                    Constants.JWT_STR_START + ".*\"iss\":");
         }
         if (settings.getRequestParms() != null) {
-            String testApp = settings.getRequestParms().get("targetApp"); // if we're trying to get the app name for verification, we should have a test app set...
-            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL, Constants.STRING_CONTAINS, "Did not go to the correct app", null, "Param: targetApp with value: " + testApp);
+            String testApp = settings.getRequestParms().get("targetApp"); // if we're trying to get the app name for
+                                                                          // verification, we should have a test app
+                                                                          // set...
+            expectations = vData.addExpectation(expectations, finalAction, Constants.RESPONSE_FULL,
+                    Constants.STRING_CONTAINS, "Did not go to the correct app", null,
+                    "Param: targetApp with value: " + testApp);
         }
 
         return expectations;
@@ -2273,8 +2449,11 @@ public class CommonValidationTools {
     public List<validationData> add401Expectations(String action, int status) throws Exception {
 
         List<validationData> expectations = vData.addSuccessStatusCodes(null, action);
-        //        expectations = vData.addResponseStatusExpectation(expectations, action, status) ;
-        expectations = vData.addExpectation(expectations, action, Constants.EXCEPTION_MESSAGE, Constants.STRING_CONTAINS, "Should have received an unauthorized exception", null, Constants.UNAUTHORIZED_EXCEPTION);
+        // expectations = vData.addResponseStatusExpectation(expectations, action,
+        // status) ;
+        expectations = vData.addExpectation(expectations, action, Constants.EXCEPTION_MESSAGE,
+                Constants.STRING_CONTAINS, "Should have received an unauthorized exception", null,
+                Constants.UNAUTHORIZED_EXCEPTION);
         return expectations;
     }
 
@@ -2284,7 +2463,8 @@ public class CommonValidationTools {
         return expectations;
     }
 
-    public List<validationData> addMessageExpectation(TestServer theServer, List<validationData> expected, String step, String log, String checkType, String failureMessage, String logMessage) throws Exception {
+    public List<validationData> addMessageExpectation(TestServer theServer, List<validationData> expected, String step,
+            String log, String checkType, String failureMessage, String logMessage) throws Exception {
         // Set the actual expectation to find the message in the server log
         expected = vData.addExpectation(expected, step, theServer, log, checkType, failureMessage, null, logMessage);
 
@@ -2346,7 +2526,7 @@ public class CommonValidationTools {
         String valueFound = null;
 
         String respReceived = AutomationTools.getResponseText(response);
-        //        Log.info(thisClass, thisMethod, "Text: " + respReceived);
+        // Log.info(thisClass, thisMethod, "Text: " + respReceived);
         String[] responseLines = respReceived.split(System.getProperty("line.separator"));
         for (String line : responseLines) {
             if (line.contains(requested)) {
@@ -2363,9 +2543,10 @@ public class CommonValidationTools {
         msgUtils.printMethodName(thisMethod);
         String valueFound = null;
         String jwtTag = "issuedJwt=";
-        //        String jwtToken = validationTools.getValueFromTestAppOutput(response, Constants.BUILT_JWT_TOKEN);
+        // String jwtToken = validationTools.getValueFromTestAppOutput(response,
+        // Constants.BUILT_JWT_TOKEN);
         String respReceived = AutomationTools.getResponseText(thePage);
-        //        Log.info(thisClass, thisMethod, "Text: " + respReceived);
+        // Log.info(thisClass, thisMethod, "Text: " + respReceived);
         String[] responseLines = respReceived.split(System.getProperty("line.separator"));
         for (String line : responseLines) {
             if (line.contains(jwtTag)) {
@@ -2382,7 +2563,8 @@ public class CommonValidationTools {
     public Expectations getDefault404Expectations(String testAction) {
         Expectations expectations = new Expectations();
         expectations.addExpectation(new ResponseStatusExpectation(testAction, HttpServletResponse.SC_NOT_FOUND));
-        expectations.addExpectation(new ResponseFullExpectation(testAction, Constants.STRING_MATCHES, MessageConstants.CWOAU0073E_FRONT_END_ERROR + ".+",
+        expectations.addExpectation(new ResponseFullExpectation(testAction, Constants.STRING_MATCHES,
+                MessageConstants.CWOAU0073E_FRONT_END_ERROR + ".+",
                 "Did not get public facing error message saying authentication failed."));
         return expectations;
     }
@@ -2394,7 +2576,8 @@ public class CommonValidationTools {
     }
 
     @Deprecated
-    public List<validationData> getDefault404VDataExpectationsWithOtherwiseSuccessfulStatusCodes(String testAction) throws Exception {
+    public List<validationData> getDefault404VDataExpectationsWithOtherwiseSuccessfulStatusCodes(String testAction)
+            throws Exception {
         OAuthOidcExpectations expectations = new OAuthOidcExpectations();
         expectations.addSuccessStatusCodes(testAction);
         expectations.addExpectations(getDefault404Expectations(testAction));
@@ -2402,13 +2585,16 @@ public class CommonValidationTools {
     }
 
     /*
-     * Pull hash information from the database to compare to hash the clientSecret for token comparison
+     * Pull hash information from the database to compare to hash the clientSecret
+     * for token comparison
      */
     private String processHashPassword(TestSettings testSettings, String clientSecret) throws Exception {
         String thisMethod = "processHashPassword";
         assertNotNull("The client ID is null, token cannot be validated", testSettings.getClientID());
         String salt = null;
         String algorithm = null;
+        String iterations = null;
+        String keyLength = null;
 
         // Pull hash information from the database/custom store
         assertNotNull("The http string isn't set, can't pull salt and algorithm from the database",
@@ -2420,11 +2606,20 @@ public class CommonValidationTools {
                     testSettings.getClientID(), testSettings.getComponentID());
             algorithm = DerbyUtils.checkAlgorithm(testSettings.getHttpString(), testSettings.getHttpPort(),
                     testSettings.getClientID(), testSettings.getComponentID());
+            iterations = DerbyUtils.checkIteration(testSettings.getHttpString(), testSettings.getHttpPort(),
+                    testSettings.getClientID(), testSettings.getComponentID());
+            keyLength = DerbyUtils.checkKeyLength(testSettings.getHttpString(), testSettings.getHttpPort(),
+                    testSettings.getClientID(), testSettings.getComponentID());
+
         } else if (testSettings.getStoreType() == StoreType.CUSTOM
                 || testSettings.getStoreType() == StoreType.CUSTOMBELL) {
             salt = MongoDBUtils.checkSalt(testSettings.getHttpString(), testSettings.getHttpPort(),
                     testSettings.getClientID(), testSettings.getComponentID());
             algorithm = MongoDBUtils.checkAlgorithm(testSettings.getHttpString(), testSettings.getHttpPort(),
+                    testSettings.getClientID(), testSettings.getComponentID());
+            iterations = MongoDBUtils.checkIteration(testSettings.getHttpString(), testSettings.getHttpPort(),
+                    testSettings.getClientID(), testSettings.getComponentID());
+            keyLength = MongoDBUtils.checkKeyLength(testSettings.getHttpString(), testSettings.getHttpPort(),
                     testSettings.getClientID(), testSettings.getComponentID());
         } else {
             fail("The store type is not set to database or customstore, cannot retrieve hash information for verifying the token. Store type provided is "
@@ -2438,8 +2633,25 @@ public class CommonValidationTools {
         assertNotNull("Should have retrieved an algorithm for client " + testSettings.getClientID(), algorithm);
         assertNotSame("Algorithm not found for client " + testSettings.getClientID(), "null_algorithm", algorithm);
 
-        // Log.info(thisClass, thisMethod, "salt retrieved: " + salt + " algorithm retrieved:" + algorithm);
-        return HashSecretUtils.hashSecret(clientSecret, testSettings.getClientID(), false, salt, algorithm, 0, 0);
+        // Log.info(thisClass, thisMethod, "salt retrieved: " + salt + " algorithm
+        // retrieved:" + algorithm);
+        int iter = 0;
+        try {
+            iter = Integer.valueOf(iterations);
+        } catch (NumberFormatException nfe) {
+            Log.info(thisClass, thisMethod,
+                    "Hash iterations query returned '" + iterations + "'. Could not parse value, using 0 as default.");
+        }
+
+        int keyLen = 0;
+        try {
+            keyLen = Integer.valueOf(keyLength);
+        } catch (NumberFormatException nfe) {
+            Log.info(thisClass, thisMethod,
+                    "Key Length query returned '" + keyLength + "'. Could not parse value, using 0 as default.");
+        }
+        return HashSecretUtils.hashSecret(clientSecret, testSettings.getClientID(), false, salt, algorithm, iter,
+                keyLen);
 
     }
 
@@ -2456,12 +2668,14 @@ public class CommonValidationTools {
     }
 
     /**
-     * Verifies that no cookies with names in the provided list show up in the WebClient. The list of cookie names to match
-     * against may also be regular expressions.
+     * Verifies that no cookies with names in the provided list show up in the
+     * WebClient. The list of cookie names to match against may also be regular
+     * expressions.
      *
      * @param webClient
-     * @param cookiesThatShouldNotExist
-     *            List of cookie name prefixes or regular expressions to match against existing cookie names.
+     * @param cookiesThatShouldNotExist List of cookie name prefixes or regular
+     *                                  expressions to match against existing cookie
+     *                                  names.
      */
     public void verifyNoUnexpectedCookiesStillPresent(WebClient webClient, List<String> cookiesThatShouldNotExist) {
         List<String> unexpectedCookiesFound = new ArrayList<>();
@@ -2476,20 +2690,24 @@ public class CommonValidationTools {
             }
         }
         if (!unexpectedCookiesFound.isEmpty()) {
-            fail("Found the following cookies in the final result that should not have been there: " + unexpectedCookiesFound);
+            fail("Found the following cookies in the final result that should not have been there: "
+                    + unexpectedCookiesFound);
         }
     }
 
     /**
-     * Verifies that only cookies with names in the provided list show up in the WebClient. The list of cookie names to match
-     * against may also be regular expressions.
+     * Verifies that only cookies with names in the provided list show up in the
+     * WebClient. The list of cookie names to match against may also be regular
+     * expressions.
      *
      * @param webClient
-     * @param onlyAllowedCookies
-     *            List of cookie name prefixes or regular expressions to match against existing cookie names.
+     * @param onlyAllowedCookies List of cookie name prefixes or regular expressions
+     *                           to match against existing cookie names.
      */
     public void verifyOnlyAllowedCookiesStillPresent(WebClient webClient, List<String> onlyAllowedCookies) {
-        Log.info(thisClass, "verifyOnlyAllowedCookiesStillPresent", "Verifying that the web client contains only a subset of the following allowed cookies: " + onlyAllowedCookies);
+        Log.info(thisClass, "verifyOnlyAllowedCookiesStillPresent",
+                "Verifying that the web client contains only a subset of the following allowed cookies: "
+                        + onlyAllowedCookies);
         List<String> unexpectedCookiesFound = new ArrayList<>();
         Set<com.gargoylesoftware.htmlunit.util.Cookie> finalCookies = webClient.getCookieManager().getCookies();
         for (com.gargoylesoftware.htmlunit.util.Cookie cookie : finalCookies) {
@@ -2508,7 +2726,8 @@ public class CommonValidationTools {
             }
         }
         if (!unexpectedCookiesFound.isEmpty()) {
-            fail("Found the following cookies in the final result that should not have been there: " + unexpectedCookiesFound);
+            fail("Found the following cookies in the final result that should not have been there: "
+                    + unexpectedCookiesFound);
         }
     }
 

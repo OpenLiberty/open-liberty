@@ -1,19 +1,22 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.netty.internal.impl;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -25,19 +28,20 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
-import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 
-import com.ibm.websphere.channelfw.osgi.CHFWBundle;
+import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 import io.netty.channel.Channel;
@@ -45,114 +49,291 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.MultiThreadIoEventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.DefaultChannelGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.nio.NioIoHandler;
 import io.netty.channel.socket.nio.NioDatagramChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory;
+import io.netty.util.concurrent.AutoScalingEventExecutorChooserFactory.AutoScalingUtilizationMetric;
 import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GlobalEventExecutor;
+
+import io.openliberty.channel.config.ChannelFrameworkConfig;
+import io.openliberty.netty.internal.BootstrapConfiguration;
 import io.openliberty.netty.internal.BootstrapExtended;
+import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
 import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
-import com.ibm.websphere.channelfw.EndPointMgr;
 
 /**
  * Liberty NettyFramework implementation bundle
  */
-@Component(configurationPid = "io.openliberty.netty.internal", immediate = true, service = { NettyFramework.class,
-        ServerQuiesceListener.class }, property = { "service.vendor=IBM" })
+@Component(immediate = true, service = { NettyFramework.class, ServerQuiesceListener.class },
+           configurationPolicy = ConfigurationPolicy.IGNORE,
+           property = { "service.vendor=IBM" })
 public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework {
 
     private static final TraceComponent tc = Tr.register(NettyFrameworkImpl.class, NettyConstants.NETTY_TRACE_NAME,
-            NettyConstants.BASE_BUNDLE);
+                                                         NettyConstants.CF_BUNDLE);
 
     /** Reference to the executor service -- required */
     private ExecutorService executorService = null;
 
     /** server started logic borrowed from CHFWBundle */
     private static AtomicBoolean serverCompletelyStarted = new AtomicBoolean(false);
-    private static Queue<FutureTask<?>> serverStartedTasks = new LinkedBlockingQueue<>();
+    private static Queue<FutureTask<ChannelFuture>> serverStartedTasks = new LinkedBlockingQueue<>();
     private static Object syncStarted = new Object() {
     }; // use brackets/inner class to make lock appear in dumps using class name
 
     private Map<Channel, ChannelGroup> activeChannelMap = new ConcurrentHashMap<Channel, ChannelGroup>();
-        
-    // TODO: Should we use this or maybe the event loop on activate?
-    private ChannelGroup outboundConnections = new DefaultChannelGroup(GlobalEventExecutor.INSTANCE);
+
+    private ChannelGroup outboundConnections;
 
     private EventLoopGroup parentGroup;
     private EventLoopGroup childGroup;
 
-    private CHFWBundle chfw;
     private volatile boolean isActive = false;
 
-	private ScheduledExecutorService scheduledExecutorService = null;
+    private ScheduledExecutorService scheduledExecutorService = null;
 
+    private ChannelFrameworkConfig channelConfig;
 
-	@Activate
-	protected void activate(ComponentContext context, Map<String, Object> config) {
-		// Ideally use the executor service provided by Liberty
-		// Compared to channelfw, quiesce is hit every time because
-		// connections are lazy cleaned on deactivate
-		parentGroup = new NioEventLoopGroup(1);
-		// specify 0 for the "default" number of threads,
-		// (java.lang.Runtime.availableProcessors() * 2)
-		childGroup = new NioEventLoopGroup(0);
-	}
-
-	@Deactivate
-	protected void deactivate(ComponentContext context, Map<String, Object> properties) {
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-			Tr.event(this, tc, "Deactivate called", new Object[] {context, properties});
-		}
-		EndPointMgrImpl.destroyEndpoints();
-		stopEventLoops();
-	}
-
-    @Modified
-    protected void modified(ComponentContext context, Map<String, Object> config) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Processing config", config);
+    @Activate
+    protected void activate(ComponentContext context, Map<String, Object> config) {
+        if (!ProductInfo.getBetaEdition()) {
+            // Do nothing if beta isn't enabled
+            return;
         }
-        // update any framework-specific config
+        // Netty specific configurations for performance
+        if (System.getSecurityManager() == null) {
+            setNettySystemProperties();
+        }
+        else {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    setNettySystemProperties();
+                    return null;
+                }
+            });
+        }
+        // Compared to channelfw, quiesce is hit every time because
+        // connections are lazy cleaned on deactivate
+        parentGroup = new MultiThreadIoEventLoopGroup(1, NioIoHandler.newFactory());
+        // Attempt to get the properties from the passed configuration but give priority to
+        // the system properties if set
+        int maxThreads;
+        long metricsWindow;
+        if (System.getSecurityManager() == null) {
+            maxThreads = Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, (Integer)config.getOrDefault(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS));
+            metricsWindow = Long.getLong(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, (Long)config.getOrDefault(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, NettyConstants.SCALER_METRICS_WINDOW));
+        }
+        else {
+            maxThreads = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, (Integer)config.getOrDefault(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS));
+                }
+            });
+            metricsWindow = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+                @Override
+                public Long run() {
+                    return Long.getLong(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, (Long)config.getOrDefault(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, NettyConstants.SCALER_METRICS_WINDOW));
+                }
+            });
+        }
+        AutoScalingEventExecutorChooserFactory scaler = createThreadScaler();
+        childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, NioIoHandler.newFactory());
+        outboundConnections = new DefaultChannelGroup(childGroup.next());
+        if (metricsWindow > 0) {
+            scheduledExecutorService.scheduleAtFixedRate(() -> {
+                StringBuilder sb = new StringBuilder("Getting metrics from MultiThreadIoEventLoopGroup with active threads " + ((MultiThreadIoEventLoopGroup)childGroup).activeExecutorCount() + " : ");
+                for (AutoScalingUtilizationMetric metric : ((MultiThreadIoEventLoopGroup)childGroup).executorUtilizations()) {
+                    sb.append("Thread@" + Integer.toHexString(metric.executor().hashCode()) + " -> " + String.format("%.2f", metric.utilization()*100.0) + "%, ");
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, sb.toString());
+                }
+            }, metricsWindow, metricsWindow, TimeUnit.MILLISECONDS);
+        }
     }
-    
-    /**
-     * DS method for setting the required channel framework service. For now
-     * this reference is needed for access to EndPointMgr. That code will be split
-     * out.
-     *
-     * @param bundle
-     */
-    @Reference(name = "chfwBundle")
-    protected void setChfwBundle(CHFWBundle bundle) {
-        chfw = bundle;
+
+    private AutoScalingEventExecutorChooserFactory createThreadScaler() {
+        int minThreads, maxThreads, upStep, downStep, cycles;
+        long windowSize;
+        double downThreshold, upThreshold;
+        if (System.getSecurityManager() == null) {
+            minThreads = Integer.getInteger(NettyConstants.SCALER_MIN_THREADS_PROPERTY, NettyConstants.SCALER_MIN_THREADS);
+            maxThreads = Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+            windowSize = Long.getLong(NettyConstants.SCALER_WINDOW_PROPERTY, NettyConstants.SCALER_WINDOW);
+            downThreshold = parseDouble(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, NettyConstants.SCALER_DOWN_THRESHOLD);
+            upThreshold = parseDouble(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, NettyConstants.SCALER_UP_THRESHOLD);
+            upStep = Integer.getInteger(NettyConstants.SCALER_UP_STEP_PROPERTY, NettyConstants.SCALER_UP_STEP);
+            downStep = Integer.getInteger(NettyConstants.SCALER_DOWN_STEP_PROPERTY, NettyConstants.SCALER_DOWN_STEP);
+            cycles = Integer.getInteger(NettyConstants.SCALER_CYCLES_PROPERTY, NettyConstants.SCALER_CYCLES);
+        }
+        else {
+            minThreads = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_MIN_THREADS_PROPERTY, NettyConstants.SCALER_MIN_THREADS);
+                }
+            });
+            maxThreads = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+                }
+            });
+            windowSize = AccessController.doPrivileged(new PrivilegedAction<Long>() {
+                @Override
+                public Long run() {
+                    return Long.getLong(NettyConstants.SCALER_WINDOW_PROPERTY, NettyConstants.SCALER_WINDOW);
+                }
+            });
+            downThreshold = AccessController.doPrivileged(new PrivilegedAction<Double>() {
+                @Override
+                public Double run() {
+                    return parseDouble(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, NettyConstants.SCALER_DOWN_THRESHOLD);
+                }
+            });
+            upThreshold = AccessController.doPrivileged(new PrivilegedAction<Double>() {
+                @Override
+                public Double run() {
+                    return parseDouble(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, NettyConstants.SCALER_UP_THRESHOLD);
+                }
+            });
+            upStep = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_UP_STEP_PROPERTY, NettyConstants.SCALER_UP_STEP);
+                }
+            });
+            downStep = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_DOWN_STEP_PROPERTY, NettyConstants.SCALER_DOWN_STEP);
+                }
+            });
+            cycles = AccessController.doPrivileged(new PrivilegedAction<Integer>() {
+                @Override
+                public Integer run() {
+                    return Integer.getInteger(NettyConstants.SCALER_CYCLES_PROPERTY, NettyConstants.SCALER_CYCLES);
+                }
+            });
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Creating AutoScaler with minThreads: " + minThreads + ", maxThreads: " + maxThreads + ", windowSize: " + windowSize + ", downThreshold: " + downThreshold + ", upThreshold: " + upThreshold + ", upStep: " + upStep + ", downStep: " + downStep + ", cycles: " + cycles);
+        }
+        return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles);
+    }
+
+    private Double parseDouble(String property, double defaultValue) {
+        String parsedProperty = System.getProperty(property);
+        if(parsedProperty == null) {
+            return defaultValue;
+        }
+        try {
+            return Double.parseDouble(parsedProperty);
+        } catch(NumberFormatException e) {
+            return defaultValue;
+        }
     }
 
     /**
-     * This is a required static reference, this won't be called until the component
-     * has been deactivated
+     * Creates a Netty Dynamic Autoscaler based off the values in the passed config map.
      *
-     * @param bundle CHFWBundle instance to unset
+     * @param config Bundle config containing the necessary items for the Auto Scaler
      */
-    protected void unsetChfwBundle(CHFWBundle bundle) {
+    private AutoScalingEventExecutorChooserFactory createThreadScaler(Map<String, Object> config) {
+        if(config == null) {
+            throw new IllegalArgumentException("Passed config object that was null!!");
+        }
+        int minThreads, maxThreads, upStep, downStep, cycles;
+        long windowSize;
+        double downThreshold, upThreshold;
+        minThreads = (Integer)config.getOrDefault(NettyConstants.SCALER_MIN_THREADS_PROPERTY, NettyConstants.SCALER_MIN_THREADS);
+        maxThreads = (Integer)config.getOrDefault(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+        upStep = (Integer)config.getOrDefault(NettyConstants.SCALER_UP_STEP_PROPERTY, NettyConstants.SCALER_UP_STEP);
+        downStep = (Integer)config.getOrDefault(NettyConstants.SCALER_DOWN_STEP_PROPERTY, NettyConstants.SCALER_DOWN_STEP);
+        cycles = (Integer)config.getOrDefault(NettyConstants.SCALER_CYCLES_PROPERTY, NettyConstants.SCALER_CYCLES);
+        windowSize = (Long)config.getOrDefault(NettyConstants.SCALER_WINDOW_PROPERTY, NettyConstants.SCALER_WINDOW);
+        downThreshold = (Double)config.getOrDefault(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, NettyConstants.SCALER_DOWN_THRESHOLD);
+        upThreshold = (Double)config.getOrDefault(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, NettyConstants.SCALER_UP_THRESHOLD);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Creating AutoScaler from config with minThreads: " + minThreads + ", maxThreads: " + maxThreads + ", windowSize: " + windowSize + ", downThreshold: " + downThreshold + ", upThreshold: " + upThreshold + ", upStep: " + upStep + ", downStep: " + downStep + ", cycles: " + cycles);
+        }
+        return new AutoScalingEventExecutorChooserFactory(minThreads, maxThreads, windowSize, TimeUnit.MILLISECONDS, downThreshold, upThreshold, upStep, downStep, cycles);
+    }
+
+    /**
+     * Method for setting Netty system properties default if not already set.
+     */
+    private void setNettySystemProperties() {
+        // If the properties are not already manually set in the system, set the defaults
+        // tested to bring the best performance
+        if (System.getProperty("io.netty.leakDetection.level") == null) {
+            // Netty's buffer leak detection is enabled by default which is unnecessary unless
+            // issues are found and leak detection is needed to debug them.
+            System.setProperty("io.netty.leakDetection.level", "DISABLED");
+        }
+        if (System.getProperty("io.netty.allocator.type") == null) {
+            // On Netty version 4.2, the default allocator changed from pooled to adaptive and so
+            // as of that moment, the adaptive allocator showed a regression from the pooled allocator
+            // used in Netty 4.1. We switch to the pooled allocator for the moment until these issues
+            // are addressed
+            System.setProperty("io.netty.allocator.type", "pooled");
+        }
+    }
+
+    @Deactivate
+    protected void deactivate(ComponentContext context, Map<String, Object> properties) {
+        if (!ProductInfo.getBetaEdition()) {
+            // Do nothing if beta isn't enabled
+            return;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Deactivate called", new Object[] { context, properties });
+        }
+        EndPointMgrImpl.destroyEndpoints();
+        stopEventLoops();
     }
 
     /**
      * DS method for setting the executor service reference.
      *
      * @param executorService the {@link java.util.concurrent.ExecutorService} to
-     *                        queue work to.
+     *                            queue work to.
      */
     @Reference(service = ExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setExecutorService(ExecutorService executorService) {
-    	this.executorService = executorService;
+        this.executorService = executorService;
+    }
+
+    /*
+     * Used for share config between legacy channel framework and the netty framework.
+     */
+    @Reference(service = ChannelFrameworkConfig.class, cardinality = ReferenceCardinality.MANDATORY)
+    protected void setChannelFWConfig(ChannelFrameworkConfig config) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, "Updating ChannelFrameworkConfig: " + config);
+        }
+        this.channelConfig = config;
+    }
+
+    protected void updatedChannelFWConfig(ChannelFrameworkConfig config) {
+        this.channelConfig = config;
+    }
+
+    public ChannelFrameworkConfig getChannelFWConfig() {
+        return this.channelConfig;
     }
 
     /**
@@ -162,18 +343,22 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      * @param executorService the service instance to clear
      */
     protected void unsetExecutorService(ExecutorService executorService) {
-    	this.executorService = null;
+        this.executorService = null;
+    }
+
+    public ExecutorService getExecutorService() {
+        return this.executorService;
     }
 
     /**
      * DS method for setting the scheduled executor service reference.
      *
      * @param scheduledExecutorService the {@link java.util.concurrent.ScheduledExecutorService} to
-     *                        queue work to.
+     *                                     queue work to.
      */
     @Reference(service = ScheduledExecutorService.class, cardinality = ReferenceCardinality.MANDATORY)
     protected void setScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
-        this.scheduledExecutorService  = scheduledExecutorService;
+        this.scheduledExecutorService = scheduledExecutorService;
     }
 
     /**
@@ -185,22 +370,22 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     protected void unsetScheduledExecutorService(ScheduledExecutorService scheduledExecutorService) {
         this.scheduledExecutorService = null;
     }
-    
+
     /**
      * Returns whether the framework is active
-     * 
+     *
      */
-    public boolean isActive(){
-    	return this.isActive;
+    public boolean isActive() {
+        return this.isActive;
     }
-    
+
     /**
      * Returns whether the framework has been issued to stop
-     * 
+     *
      */
-    public boolean isStopping(){
-    	return isServerCompletelyStarted() && !this.isActive();
-    } 
+    public boolean isStopping() {
+        return isServerCompletelyStarted() && !this.isActive();
+    }
 
     /**
      * When notified that the server is going to stop, pre-quiesce all chains in the
@@ -210,128 +395,157 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      */
     @Override
     public void serverStopping() {
-    	if (isActive) {
-    		if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-    			Tr.event(this, tc, "Destroying all endpoints (closing all channels): " + activeChannelMap.keySet());
-    		}
-    		isActive = false;
-    		// If the system is configured to quiesce connections..
-    		long timeout = getDefaultChainQuiesceTimeout();
 
-    		if(timeout > 0) {
-                if(activeChannelMap.isEmpty() && outboundConnections.isEmpty()){
+        if (!ProductInfo.getBetaEdition()) {
+            // Do nothing if beta isn't enabled
+            return;
+        }
+        QuiesceState.startQuiesce();
+        if (isActive) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Destroying all endpoints (closing all channels): " + activeChannelMap.keySet());
+            }
+            isActive = false;
+            // If the system is configured to quiesce connections..
+            long timeout = channelConfig.getDefaultChainQuiesceTimeout();
+
+            if (timeout > 0) {
+                if (activeChannelMap.isEmpty() && outboundConnections.isEmpty()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-    					Tr.debug(tc, "No connections to clean up, skipping quiesce creation.");
-    				}
+                        Tr.debug(tc, "No connections to clean up, skipping quiesce creation.");
+                    }
                     return;
                 }
-    			NettyQuiesceListener quiesce = new NettyQuiesceListener(this, scheduledExecutorService, timeout);
-    			try {
-    				// Go through active endpoints and stop accepting connections
-    				for (Channel channel : activeChannelMap.keySet()) {
-    					// Fire custom user event to let know that the endpoint is being stopped
-    					channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
-    				}
-    				// Schedule quiesce tasks
-    				quiesce.startTasks();
-    			} catch (Exception e) {
-    				if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-    					//TODO: change to same log used in traditional channel.
-    					Tr.event(this, tc, "Exception occurred on quiesce", e);
-    				}
-    			}
-    		}
-    	}
+
+                NettyQuiesceListener quiesce = new NettyQuiesceListener(this, scheduledExecutorService, timeout);
+                try {
+                    // Go through active endpoints and stop accepting connections
+                    for (Channel channel : activeChannelMap.keySet()) {
+                        // Fire custom user event to let know that the endpoint is being stopped
+                        channel.pipeline().fireUserEventTriggered(QuiesceHandler.QUIESCE_EVENT);
+                    }
+
+                    // Schedule quiesce tasks
+                    quiesce.startTasks();
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "Exception occurred on quiesce", e);
+                    }
+                }
+            }
+        }
     }
-    
 
     private void stopEventLoops() {
-    	Future<?> parent = null;
-    	Future<?> child = null;
-    	Future<?> global = null;
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        Future<?> parent = null;
+        Future<?> child = null;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Gracefully shutting down parentGroup Event Loop " + parentGroup);
         }
-    	if (parentGroup != null) {
-    		parent = parentGroup.shutdownGracefully();
-    	}
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (parentGroup != null) {
+            parent = parentGroup.shutdownGracefully();
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Gracefully shutting down childGroup Event Loop " + childGroup);
         }
-    	if (childGroup != null) {
-    		child = childGroup.shutdownGracefully();
-    	}
-
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Gracefully shutting down GlobalEventExecutor " + GlobalEventExecutor.INSTANCE);
+        if (childGroup != null) {
+            child = childGroup.shutdownGracefully();
         }
-    	global = GlobalEventExecutor.INSTANCE.shutdownGracefully();
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Waiting for parentGroup Event Loop shutdown...");
         }
-    	if (parent != null) {
-    		parent.awaitUninterruptibly();
-    	}
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (parent != null) {
+            parent.awaitUninterruptibly();
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Waiting for childGroup Event Loop shutdown...");
         }
-    	if (child != null) {
-    		child.awaitUninterruptibly();
-    	}
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Waiting for GlobalEventExecutor shutdown...");
+        if (child != null) {
+            child.awaitUninterruptibly();
         }
-    	if (global != null) {
-    		global.awaitUninterruptibly();
-    	}
-    	
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Event loops finished clean up!");
         }
+        QuiesceState.stopQuiesce();
     }
-
-    
 
     /**
      * Declarative services method that is invoked once the server is started. Only
      * after this method is invoked is the initial polling for persistent tasks
      * performed.
-     * 
+     *
      * {@See CHFWBundle}
      *
      * @param ref reference to the ServerStarted service
      */
     @Reference(service = ServerStarted.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     protected void setServerStarted(ServiceReference<ServerStarted> ref) {
+        if (!ProductInfo.getBetaEdition()) {
+            // Do nothing if beta isn't enabled
+            return;
+        }
         // set will be called when the ServerStarted service has been registered (by the
         // FeatureManager as of 9/2015). This is a signal that
         // the server is fully started, but before the "smarter planet" message has been
         // output. Use this signal to run tasks, mostly likely tasks that will
         // finish the port listening logic, that need to run at the end of server
         // startup
-
-        FutureTask<?> task;
+        FutureTask<ChannelFuture> task;
+        CountDownLatch latch = new CountDownLatch(serverStartedTasks.size());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "Netty Framework signaled- Server Completely Started signal received");
         }
-        while ((task = serverStartedTasks.poll()) != null) {
-            try {
-            	if(!task.isCancelled())
-            		executorService.submit(task);
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+        synchronized (syncStarted) {
+            while ((task = serverStartedTasks.poll()) != null) {
+                try {
+                    if (!task.isCancelled()) {
+                        executorService.submit(new StartTaskRunnable(task, latch));
+                    } else
+                        latch.countDown();
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "caught exception performing late cycle server startup task: " + e);
+                    }
                 }
             }
-        }
 
-        synchronized (syncStarted) {
+            try {
+                latch.await();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             serverCompletelyStarted.set(true);
             isActive = true;
             syncStarted.notifyAll();
         }
     }
-    
+
+    private class StartTaskRunnable implements Runnable {
+
+        private FutureTask<ChannelFuture> task;
+        private CountDownLatch latch;
+
+        public StartTaskRunnable(FutureTask<ChannelFuture> task, CountDownLatch latch) {
+            this.task = task;
+            this.latch = latch;
+        }
+
+        @Override
+        public void run() {
+            task.run();
+            try {
+                task.get(getDefaultChainQuiesceTimeout(), TimeUnit.MILLISECONDS);
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "caught exception performing startup task: " + e);
+                }
+            }
+            latch.countDown();
+        }
+
+    }
+
     /**
      * Method is called to run a task if the server has already started, if the
      * server has not started that task is queued to be run when the server start
@@ -342,13 +556,19 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      *         the task to denote it has ran.
      * @throws Exception
      */
-    public <T> FutureTask<T> runWhenServerStarted(Callable<T> callable) throws Exception {
+    public FutureTask<ChannelFuture> runWhenServerStarted(Callable<ChannelFuture> callable) throws Exception {
+        if (!ProductInfo.getBetaEdition()) {
+            // Do nothing if beta isn't enabled
+            FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
+            future.cancel(false);
+            return future;
+        }
         synchronized (syncStarted) {
-        	FutureTask<T> future = new FutureTask<T>(callable);
+            FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
             if (!serverCompletelyStarted.get()) {
                 serverStartedTasks.add(future);
-            }else {
-            	this.executorService.submit(future);
+            } else {
+                this.executorService.submit(future);
             }
             return future;
         }
@@ -385,17 +605,23 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     public static boolean isServerCompletelyStarted() {
         return serverCompletelyStarted.get();
     }
-    
+
     @Override
     public void registerEndpointQuiesce(Channel chan, Callable quiesce) {
-    	if(chan != null && getActiveChannelsMap().containsKey(chan)) {
-    		ChannelHandler quiesceHandler = new QuiesceHandler(quiesce);
-        	chan.pipeline().addLast(quiesceHandler);
-    	}else {
-    		if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
-                Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+        synchronized (activeChannelMap) {
+            if (chan != null && getActiveChannelsMap().containsKey(chan)) {
+                ChannelHandler quiesceHandler = chan.pipeline().get(QuiesceHandler.class);
+                if (quiesceHandler != null) {
+                    ((QuiesceHandler) quiesceHandler).setQuiesceTask(quiesce);
+                } else {
+                    chan.pipeline().addFirst(new QuiesceHandler(quiesce));
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isWarningEnabled()) {
+                    Tr.warning(tc, "Attempted to add a Quiesce Task to a channel which is not an endpoint. Quiesce will not be added and will be ignored.");
+                }
             }
-    	}
+        }
     }
 
     /**
@@ -408,9 +634,16 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         serverCompletelyStarted.set(false);
     }
 
+    @FFDCIgnore({ NettyException.class })
     @Override
-    public ServerBootstrapExtended createTCPBootstrap(Map<String, Object> tcpOptions) throws NettyException {
-        return TCPUtils.createTCPBootstrap(this, tcpOptions);
+    public ServerBootstrapExtended createTCPBootstrapInbound(Map<String, Object> tcpOptions) throws NettyException {
+        try {
+            return TCPUtils.createTCPBootstrapInbound(this, tcpOptions);
+        } catch (NettyException e) {
+            Tr.error(tc, "chain.initialization.error", new Object[] { tcpOptions.get(ConfigConstants.EXTERNAL_NAME), e.toString() });
+            throw e;
+        }
+
     }
 
     @Override
@@ -419,8 +652,8 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
-    public BootstrapExtended createUDPBootstrap(Map<String, Object> options) throws NettyException {
-        return UDPUtils.createUDPBootstrap(this, options);
+    public BootstrapExtended createUDPBootstrapInbound(Map<String, Object> options) throws NettyException {
+        return UDPUtils.createUDPBootstrapInbound(this, options);
     }
 
     @Override
@@ -429,122 +662,138 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     }
 
     @Override
-    public FutureTask<ChannelFuture> start(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
-            ChannelFutureListener bindListener) throws NettyException {
-        return TCPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
+    @FFDCIgnore({ NettyException.class })
+    public Channel startInbound(ServerBootstrapExtended bootstrap, String inetHost, int inetPort,
+                                ChannelFutureListener bindListener) throws NettyException {
+
+        BootstrapConfiguration config = bootstrap.getConfiguration();
+        String externalName = "NOT_DEFINED";
+        if (config != null && config instanceof TCPConfigurationImpl) {
+            externalName = ((TCPConfigurationImpl) config).getExternalName();
+        }
+
+        try {
+            return TCPUtils.startInbound(this, bootstrap, inetHost, inetPort, bindListener);
+        } catch (NettyException e) {
+            Tr.error(tc, "chain.initialization.error", new Object[] { externalName, e.toString() });
+            throw e;
+        }
     }
 
     @Override
-    public FutureTask<ChannelFuture> start(BootstrapExtended bootstrap, String inetHost, int inetPort,
-            ChannelFutureListener bindListener) throws NettyException {
-        return UDPUtils.start(this, bootstrap, inetHost, inetPort, bindListener);
+    public Channel startInbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+                                ChannelFutureListener bindListener) throws NettyException {
+        return UDPUtils.startInbound(this, bootstrap, inetHost, inetPort, bindListener);
     }
 
     @Override
-    public FutureTask<ChannelFuture> startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
-    		ChannelFutureListener bindListener) throws NettyException {
-    	if (bootstrap.getConfiguration() instanceof TCPConfigurationImpl) {
-    		return TCPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
-    	} else {
-    		return UDPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
-    	}
+    public Channel startOutbound(BootstrapExtended bootstrap, String inetHost, int inetPort,
+                                 ChannelFutureListener bindListener) throws NettyException {
+        if (bootstrap.getConfiguration() instanceof TCPConfigurationImpl) {
+            return TCPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
+        } else {
+            return UDPUtils.startOutbound(this, bootstrap, inetHost, inetPort, bindListener);
+        }
     }
 
     @Override
     public ChannelFuture stop(Channel channel) {
-    	ChannelGroup group = activeChannelMap.get(channel);
-    	if(group != null) {
-    		group.close().addListener(innerFuture -> {
-    			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "channel group" + group + " has closed...");
+        synchronized (activeChannelMap) {
+            ChannelFuture closeFuture = channel.close();
+            ChannelGroup group = activeChannelMap.get(channel);
+            if (group != null) {
+                if (!QuiesceState.isQuiesceInProgress()) {
+                    group.close().addListener(innerFuture -> {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "channel group" + group + " has closed...");
+                        }
+                    });
                 }
-    		});
-    		activeChannelMap.remove(channel);
-    	}
-    	return channel.close();
+                activeChannelMap.remove(channel);
+            }
+            return closeFuture;
+        }
     }
 
     @Override
     public void stop(Channel channel, long timeout) {
-    	if (timeout == -1) {
-    		timeout = getDefaultChainQuiesceTimeout();
-    	}
-    	ChannelFuture future = stop(channel);
-    	if (future != null) {
-    		future.awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
-    	}
+        if (timeout == -1) {
+            timeout = getDefaultChainQuiesceTimeout();
+        }
+        ChannelFuture future;
+
+        synchronized (activeChannelMap) {
+            future = stop(channel);
+        }
+        if (future != null) {
+            future.awaitUninterruptibly(timeout, TimeUnit.MILLISECONDS);
+        }
     }
-    
 
     @Override
     public Set<Channel> getActiveChannels() {
         return activeChannelMap.keySet();
     }
-    
 
     public Map<Channel, ChannelGroup> getActiveChannelsMap() {
         return activeChannelMap;
     }
-    
+
     public ChannelGroup getOutboundConnections() {
         return outboundConnections;
     }
 
     @Override
     public long getDefaultChainQuiesceTimeout() {
-        if (chfw != null) {
-            return chfw.getFramework().getDefaultChainQuiesceTimeout();
-        } else {
-            return 0;
-        }
+        return channelConfig.getDefaultChainQuiesceTimeout();
     }
 
     @Override
     public void destroy() {
         // destroy covered by serverStopping
     }
-    
+
     @Override
     public String toString() {
-    	StringBuffer buf = new StringBuffer();
-    	buf.append("NettyFrameworkImpl@").append(Integer.toHexString(System.identityHashCode(this)));
-    	buf.append(": {");
-    	buf.append("Parent Group: ");
-    	buf.append(getParentGroup());
-    	if(getParentGroup() != null) {
-    		buf.append(" isShuttingDown? ");
-    		buf.append(getParentGroup().isShuttingDown());
-    		buf.append(" isShutDown? ");
-    		buf.append(getParentGroup().isShutdown());
-    		buf.append(" isTerminated? ");
-    		buf.append(getParentGroup().isTerminated());
-    	}
-    	buf.append(", Child Group: ");
-    	buf.append(getChildGroup());
-    	if(getChildGroup() != null) {
-    		buf.append(" isShuttingDown? ");
-    		buf.append(getChildGroup().isShuttingDown());
-    		buf.append(" isShutDown? ");
-    		buf.append(getChildGroup().isShutdown());
-    		buf.append(" isTerminated? ");
-    		buf.append(getChildGroup().isTerminated());
-    	}
-    	buf.append(", EndpointManager: ");
-    	buf.append(getEndpointManager());
-    	buf.append(", Default Chain Quiesce Timeout: ");
-    	buf.append(getDefaultChainQuiesceTimeout());
-    	buf.append(", Outbound Connections: ");
-    	buf.append(getOutboundConnections());
-    	buf.append(", Active Endpoints: ");
-    	buf.append(getActiveChannels());
-    	buf.append(", Active endpoint maps: ");
-    	buf.append(getActiveChannelsMap());
-    	buf.append(", Is Active: ");
-    	buf.append(isActive());
-    	buf.append(", Is Stopping: ");
-    	buf.append(isStopping());
-    	buf.append("}");
-    	return buf.toString();
+        StringBuffer buf = new StringBuffer();
+        buf.append("NettyFrameworkImpl@").append(Integer.toHexString(System.identityHashCode(this)));
+        buf.append(": {");
+        buf.append("Parent Group: ");
+        buf.append(getParentGroup());
+        if (getParentGroup() != null) {
+            buf.append(" isShuttingDown? ");
+            buf.append(getParentGroup().isShuttingDown());
+            buf.append(" isShutDown? ");
+            buf.append(getParentGroup().isShutdown());
+            buf.append(" isTerminated? ");
+            buf.append(getParentGroup().isTerminated());
+        }
+        buf.append(", Child Group: ");
+        buf.append(getChildGroup());
+        if (getChildGroup() != null) {
+            buf.append(" isShuttingDown? ");
+            buf.append(getChildGroup().isShuttingDown());
+            buf.append(" isShutDown? ");
+            buf.append(getChildGroup().isShutdown());
+            buf.append(" isTerminated? ");
+            buf.append(getChildGroup().isTerminated());
+        }
+        buf.append(", EndpointManager: ");
+        buf.append(getEndpointManager());
+        buf.append(", Default Chain Quiesce Timeout: ");
+        buf.append(getDefaultChainQuiesceTimeout());
+        buf.append(", Outbound Connections: ");
+        buf.append(getOutboundConnections());
+        buf.append(", Active Endpoints: ");
+        buf.append(getActiveChannels());
+        buf.append(", Active endpoint maps: ");
+        buf.append(getActiveChannelsMap());
+        buf.append(", Is Active: ");
+        buf.append(isActive());
+        buf.append(", Is Stopping: ");
+        buf.append(isStopping());
+        buf.append("}");
+        return buf.toString();
     }
 
     public EventLoopGroup getParentGroup() {

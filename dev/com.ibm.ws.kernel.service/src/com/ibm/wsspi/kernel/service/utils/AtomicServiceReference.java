@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import java.security.PrivilegedAction;
 import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -95,6 +97,7 @@ public class AtomicServiceReference<T> {
 
     // size of 2; it will be very uncommon to this to be used with more than 2 at a time
     private final PriorityQueue<ReferenceTuple<T>> references = new PriorityQueue<>(2);
+    private final ReadWriteLock referencesLock = new ReentrantReadWriteLock();
 
     /**
      * Create a new AtomicServiceReference for the named service.
@@ -112,9 +115,12 @@ public class AtomicServiceReference<T> {
 
     public void deactivate(ComponentContext context) {
         contextRef.set(null);
-        synchronized (references) {
+        referencesLock.writeLock().lock();
+        try {
             // clear services located from the context that is deactivating
             references.forEach((r) -> r.locatedService.set(null));
+        } finally {
+            referencesLock.writeLock().unlock();
         }
     }
 
@@ -129,7 +135,8 @@ public class AtomicServiceReference<T> {
      * @return true if this is replacing a previous (non-null) service reference
      */
     public boolean setReference(ServiceReference<T> reference) {
-        synchronized (references) {
+        referencesLock.writeLock().lock();
+        try {
             // TODO not sure null should be handled
             if (reference == null) {
                 boolean isEmpty = references.isEmpty();
@@ -154,6 +161,8 @@ public class AtomicServiceReference<T> {
             ReferenceTuple<T> newTuple = existing != null ? existing : new ReferenceTuple<>(reference);
             references.add(newTuple);
             return highest != null && highest != references.peek();
+        } finally {
+            referencesLock.writeLock().unlock();
         }
     }
 
@@ -168,7 +177,8 @@ public class AtomicServiceReference<T> {
      * @return true if a non-null value was replaced
      */
     public boolean unsetReference(ServiceReference<T> reference) {
-        synchronized (references) {
+        referencesLock.writeLock().lock();
+        try {
             // TODO not sure null should be handled
             if (reference == null) {
                 // nothing really to do
@@ -187,6 +197,8 @@ public class AtomicServiceReference<T> {
                 }
             }
             return highest != null && highest.serviceRef.equals(reference);
+        } finally {
+            referencesLock.writeLock().unlock();
         }
     }
 
@@ -198,9 +210,12 @@ public class AtomicServiceReference<T> {
      *         the backing service registration.
      */
     public ServiceReference<T> getReference() {
-        synchronized (references) {
+        referencesLock.readLock().lock();
+        try {
             ReferenceTuple<T> highest = references.peek();
             return highest == null ? null : highest.serviceRef;
+        } finally {
+            referencesLock.readLock().unlock();
         }
     }
 
@@ -240,8 +255,11 @@ public class AtomicServiceReference<T> {
         }
 
         final ReferenceTuple<T> highest;
-        synchronized (references) {
+        referencesLock.readLock().lock();
+        try {
             highest = references.peek();
+        } finally {
+            referencesLock.readLock().unlock();
         }
         if (highest == null) {
             if (throwException) {

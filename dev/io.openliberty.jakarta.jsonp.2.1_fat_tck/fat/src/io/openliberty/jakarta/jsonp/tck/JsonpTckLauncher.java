@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,7 @@ public class JsonpTckLauncher {
         additionalProps.put("java.io.tmpdir", PrivHelper.getProperty("java.io.tmpdir", "/tmp"));
 
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonp")
-                        .withPlatfromVersion("10")
+                        .withPlatformVersion("10")
                         .withAdditionalMvnProps(additionalProps)
                         .runTCK();
     }
@@ -88,7 +88,7 @@ public class JsonpTckLauncher {
         additionalPluggabilityProps.put("run-tck-tests-pluggability", "true");
 
         TCKRunner.build(DONOTSTART, Type.JAKARTA, "jsonp")
-                        .withPlatfromVersion("10")
+                        .withPlatformVersion("10")
                         .withQualifiers("pluggability")
                         .withAdditionalMvnProps(additionalPluggabilityProps)
                         .runTCK();

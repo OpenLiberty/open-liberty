@@ -113,7 +113,7 @@ Use these forms to generate sample curl commands:<br>
 	<table width=800>
 	<tr><td colspan="2"><b>Access Token Request for Client Credentials Flow</b></td></tr>
 	<tr><td>Client Id</td><td><input type="text" name="client_id" value="key" /></td></tr>
-	<tr><td>Client Secret</td><td><input type="text" name="client_secret" value="secret" /></td></tr>
+	<tr><td>Client Secret</td><td><input type="text" name="client_secret" value="secret1234" /></td></tr>
 	<tr><td>Token Endpoint</td><td><input type="text" name="token_endpoint" value="https://localhost:9443/oauth/token.jsp" size="60" /></td></tr>
 	<tr><td colspan="2"><button type="button" name="generate" onClick="tokenCurl1();">Generate Curl Command</button></td></tr>
 	<tr><td>Command</td><td><textarea readonly name="curl" rows="5" cols="60" ></textarea></td></tr>
@@ -125,7 +125,7 @@ Use these forms to generate sample curl commands:<br>
 	<table width=800>
 	<tr><td colspan="2"><b>Access Token Request for Resource Owner Password Credentials Flow</b></td></tr>
 	<tr><td>Client Id</td><td><input type="text" name="client_id" value="key" /></td></tr>
-	<tr><td>Client Secret</td><td><input type="text" name="client_secret" value="secret" /></td></tr>
+	<tr><td>Client Secret</td><td><input type="text" name="client_secret" value="secret1234" /></td></tr>
 	<tr><td>Resource Owner Username</td><td><input type="text" name="username" value="user1" /></td></tr>
 	<tr><td>Resource Owner Password</td><td><input type="text" name="password" value="pass1" /></td></tr>
 	<tr><td>Token Endpoint</td><td><input type="text" name="token_endpoint" value="https://localhost:9443/oauth/token.jsp" size="60" /></td></tr>
@@ -151,7 +151,7 @@ Use these forms to generate sample curl commands:<br>
 	<table width=800>
 	<tr><td colspan="2"><b>Refresh Token Exchange Request</b></td></tr>
 	<tr><td>Client Id</td><td><input type="text" name="client_id" value="key" /></td></tr>
-	<tr><td>Client Secret</td><td><input type="text" name="client_secret" value="secret" /></td></tr>
+	<tr><td>Client Secret</td><td><input type="text" name="client_secret" value="secret1234" /></td></tr>
 	<tr><td>Refresh Token</td><td><input type="text" name="refresh_token" value="" size="60" /></td></tr>
 	<tr><td>Token Endpoint</td><td><input type="text" name="token_endpoint" value="https://localhost:9443/oauth/token.jsp" size="60" /></td></tr>
 	<tr><td colspan="2"><button type="button" name="generate" onClick="refreshCurl();">Generate Curl Command</button></td></tr>

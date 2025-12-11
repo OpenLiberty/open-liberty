@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -238,7 +237,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         String sharedLibId = sharedLib.id();
 
         // Determine the list of folders that should contain the JDBC driver files.
-        Collection<String> driverJARs = getClasspath(sharedLib, false);
+        Collection<String> driverJARs = getAbsolutePaths(sharedLib);
 
         String message = sharedLibId.startsWith("com.ibm.ws.jdbc.jdbcDriver-")
                         ? AdapterUtil.getNLSMessage("DSRA4001.no.suitable.driver.nested", interfaceNames, dsId, driverJARs, packagesSearched)
@@ -436,15 +435,15 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
             if (null != (className = (String) properties.get(ConnectionPoolDataSource.class.getName()))
              || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true)))
+             || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(getFileNames(sharedLib)))
 
              || null != (className = (String) properties.get(DataSource.class.getName()))
              || null != (className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true)))
+             || null != (className = JDBCDrivers.getDataSourceClassName(getFileNames(sharedLib)))
 
              || null != (className = (String) properties.get(XADataSource.class.getName()))
              || null != (className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true))))
+             || null != (className = JDBCDrivers.getXADataSourceClassName(getFileNames(sharedLib))))
                 return create(className, props, dataSourceID);
 
             String url = props.getProperty("URL", props.getProperty("url"));
@@ -515,15 +514,15 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
             
             if (null != (className = (String) properties.get(XADataSource.class.getName()))
              || null != (className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true)))
+             || null != (className = JDBCDrivers.getXADataSourceClassName(getFileNames(sharedLib)))
 
              || null != (className = (String) properties.get(ConnectionPoolDataSource.class.getName()))
              || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true)))
+             || null != (className = JDBCDrivers.getConnectionPoolDataSourceClassName(getFileNames(sharedLib)))
 
              || null != (className = (String) properties.get(DataSource.class.getName()))
              || null != (className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID))
-             || null != (className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true))))
+             || null != (className = JDBCDrivers.getDataSourceClassName(getFileNames(sharedLib))))
                 return create(className, props, dataSourceID);
 
             String url = props.getProperty("URL", props.getProperty("url"));
@@ -591,14 +590,18 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
                         throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4015.no.ucp.connection.pool.datasource", dataSourceID, ConnectionPoolDataSource.class.getName()));
                     }
-                    className = JDBCDrivers.getConnectionPoolDataSourceClassName(getClasspath(sharedLib, true));
+                    className = JDBCDrivers
+                        .getConnectionPoolDataSourceClassName(getFileNames(sharedLib));
                     if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.CONNECTION_POOL_DATA_SOURCE); 
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
-                            throw classNotFound(ConnectionPoolDataSource.class.getName(), packagesSearched, dataSourceID, null);
+                            throw classNotFound(ConnectionPoolDataSource.class.getName(),
+                                                packagesSearched,
+                                                dataSourceID,
+                                                null);
                     }
                 }
             }
@@ -642,14 +645,18 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
                 className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
-                    className = JDBCDrivers.getDataSourceClassName(getClasspath(sharedLib, true));
+                    className = JDBCDrivers
+                        .getDataSourceClassName(getFileNames(sharedLib));
                     if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.DATA_SOURCE);
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
-                            throw classNotFound(DataSource.class.getName(), packagesSearched, dataSourceID, null);
+                            throw classNotFound(DataSource.class.getName(),
+                                                packagesSearched,
+                                                dataSourceID,
+                                                null);
                     }
                 }
             }
@@ -693,14 +700,17 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
                 className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
-                    className = JDBCDrivers.getXADataSourceClassName(getClasspath(sharedLib, true));
+                    className = JDBCDrivers.getXADataSourceClassName(getFileNames(sharedLib));
                     if (className == null) {
                         Set<String> packagesSearched = new LinkedHashSet<String>();
                         SimpleEntry<Integer, String> dsEntry = JDBCDrivers.inferDataSourceClassFromDriver //
                                         (classloader, packagesSearched, JDBCDrivers.XA_DATA_SOURCE);
                         className = dsEntry == null ? null : dsEntry.getValue();
                         if (className == null)
-                            throw classNotFound(XADataSource.class.getName(), packagesSearched, dataSourceID, null);
+                            throw classNotFound(XADataSource.class.getName(),
+                                                packagesSearched,
+                                                dataSourceID,
+                                                null);
                     }
                 }
             }
@@ -798,6 +808,36 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
 
     /**
+     * Returns a list of absolute file and folder names for the specified library.
+     * This is used for logging/debug purposes only.
+     *
+     * @param sharedLib library
+     * @return list of file and folder names for the library.
+     *         If the library is null, returns an empty list.
+     */
+    public static Collection<String> getAbsolutePaths(Library sharedLib) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(tc, "getAbsolutePaths", sharedLib);
+
+        Collection<String> paths = new LinkedList<String>();
+        if (sharedLib != null && sharedLib.getFiles() != null)
+            for (File file : sharedLib.getFiles())
+                paths.add(file.getAbsolutePath());
+        if (sharedLib != null && sharedLib.getFilesets() != null)
+            for (Fileset fileset : sharedLib.getFilesets())
+                for (File file : fileset.getFileset())
+                    paths.add(file.getAbsolutePath());
+        if (sharedLib != null && sharedLib.getFolders() != null)
+            for (File folder : sharedLib.getFolders())
+                paths.add(folder.getAbsolutePath());
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(tc, "getAbsolutePaths", paths);
+        return paths;
+    }
+
+    /**
      * Returns the class loader for a jdbcDriver with a libraryRef or nested library.
      * 
      * @return the class loader for a jdbcDriver with a libraryRef or nested library.
@@ -813,28 +853,33 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
     }
 
     /**
-     * Returns a list of file names for the specified library.
-     * 
+     * Returns a list of file names in the specified library
+     * (from file name=, fileset dir=, or path name={file}).
+     * These are used to help identify the JDBC driver so that we
+     * know which data source class to use.
+     *
      * @param sharedLib library
-     * @param upperCaseFileNamesOnly indicates whether or not to include file names only (not paths) and to convert the names to all upper case.
-     * @return list of file names for the library. If the library is null, returns an empty list.
+     * @return list of UPPER CASE file names in the library.
+     *         If the library is null, returns an empty list.
      */
-    public static Collection<String> getClasspath(Library sharedLib, boolean upperCaseFileNamesOnly) {
+    private static Collection<String> getFileNames(Library sharedLib) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(tc, "getClasspath", sharedLib);
+            Tr.entry(tc, "getFileNames", sharedLib);
 
         Collection<String> classpath = new LinkedList<String>();
         if (sharedLib != null && sharedLib.getFiles() != null)
             for (File file : sharedLib.getFiles())
-                classpath.add(upperCaseFileNamesOnly ? file.getName().toUpperCase() : file.getAbsolutePath());
+                classpath.add(file.getName().toUpperCase());
         if (sharedLib != null && sharedLib.getFilesets() != null)
             for (Fileset fileset : sharedLib.getFilesets())
                 for (File file : fileset.getFileset())
-                    classpath.add(upperCaseFileNamesOnly ? file.getName().toUpperCase() : file.getAbsolutePath());
+                    classpath.add(file.getName().toUpperCase());
+        // Folder names (folder dir= and path name={folder})
+        // are not used to infer the JDBC driver.
 
         if (trace && tc.isEntryEnabled())
-            Tr.exit(tc, "getClasspath", classpath);
+            Tr.exit(tc, "getFileNames", classpath);
         return classpath;
     }
 

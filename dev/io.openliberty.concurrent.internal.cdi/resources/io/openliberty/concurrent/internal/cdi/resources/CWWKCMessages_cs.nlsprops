@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2023 IBM Corporation and others.
+# Copyright (c) 2022,2024 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -24,5 +24,16 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWCK1410 to CWWCK1499
+# All messages must use the range CWWKC1410 to CWWKC1499
 
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Anotace pl\u00e1nu, {0} , ur\u010duje pr\u00e1zdnou hodnotu pro sekundy, ve kter\u00fdch bude \u00faloha spu\u0161t\u011bna. Zadejte nepr\u00e1zdnou hodnotu pro pole sekund nebo vynechejte pole sekund z anotace Pl\u00e1n. Vynech\u00e1n\u00edm pole sekund napl\u00e1nujete spu\u0161t\u011bn\u00ed \u00falohy na za\u010d\u00e1tku minuty.
+CWWKC1410.schedule.lacks.seconds.explanation=Pr\u00e1zdn\u00e1 hodnota pole znamen\u00e1, \u017ee pole sekund mus\u00ed b\u00fdt ignorov\u00e1no p\u0159i v\u00fdpo\u010dtu pl\u00e1novan\u00fdch \u010das\u016f. Vynech\u00e1n\u00edm pole sekund napl\u00e1nujete spu\u0161t\u011bn\u00ed \u00falohy na za\u010d\u00e1tku minuty.
+CWWKC1410.schedule.lacks.seconds.useraction=Upravte pole sekund v anotaci Pl\u00e1n tak, aby byla zad\u00e1na nepr\u00e1zdn\u00e1 hodnota, nebo pole sekund v anotaci Pl\u00e1n vynechejte.
+
+CWWKC1411.qualified.res.err=CWWKC1411E: Server nevytvo\u0159il objekt typu bean {0} pro anotaci {1} nebo prvek deskriptoru nasazen\u00ed {2} . Prvek anotace nebo deskriptoru nasazen\u00ed m\u00e1 {3} n\u00e1zev a kvalifik\u00e1tory {4} a je definov\u00e1n v artefaktu aplikace {5} . Chyba je {6}
+CWWKC1411.qualified.res.err.explanation=K\u00f3d nevytvo\u0159il zdroj nebo nezaregistroval zdroj jako bean.
+CWWKC1411.qualified.res.err.useraction=Ujist\u011bte se, \u017ee je prost\u0159edek spr\u00e1vn\u011b nakonfigurov\u00e1n.
+
+CWWKC1412.qualifier.conflict=CWWKC1412E: Aplika\u010dn\u00ed artefakt {0} obsahuje n\u011bkolik definic prost\u0159edk\u016f {1} , kter\u00e9 maj\u00ed kvalifik\u00e1tory {2} . N\u00e1zvy konfliktn\u00edch definic zdroj\u016f {1} jsou {3} .
+CWWKC1412.qualifier.conflict.explanation=Ka\u017ed\u00e1 definice zdroje stejn\u00e9ho typu, kter\u00e1 m\u00e1 kvalifik\u00e1tor, mus\u00ed m\u00edt jin\u00fd kvalifik\u00e1tor.
+CWWKC1412.qualifier.conflict.useraction=Ujist\u011bte se, \u017ee ka\u017ed\u00e1 definice prost\u0159edku stejn\u00e9ho typu m\u00e1 jin\u00fd kvalifik\u00e1tor nebo nem\u00e1 \u017e\u00e1dn\u00e9 kvalifik\u00e1tory.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,41 +19,45 @@ import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * HashUtils replaces the old MD5Utils to generate both the MD5 and SHA256 hash keys.
  */
 public class HashUtils {
 
     static final char hexDigits[] = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f' };
-    static final String SHA256 = "SHA-256";
-    static final String MD5 = "MD5";
+    static final String SHA256 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_256;
+    static final String MD5 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_MD5;
 
     /**
      * Calculate MD5 hash of a String
-     * 
+     *
      * @param str - the String to hash
      * @return the MD5 hash value
      */
     public static String getMD5String(String str) {
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
         MessageDigest messageDigest = getMessageDigest(MD5);
         return getHashString(str, messageDigest);
     }
 
     /**
      * Calculate MD5 hash of a File
-     * 
+     *
      * @param file - the File to hash
      * @return the MD5 hash value
      * @throws IOException
      */
     public static String getFileMD5String(File file) throws IOException {
+        // FIPS 140-3: Algorithm assessment complete; no changes required.
         MessageDigest messageDigest = getMessageDigest(MD5);
         return getFileHashString(file, messageDigest);
     }
 
     /**
      * Calculate SHA-256 hash of a String
-     * 
+     *
      * @param str - the String to hash
      * @return the SHA-256 hash value
      */
@@ -64,7 +68,7 @@ public class HashUtils {
 
     /**
      * Calculate SHA-256 hash of a File
-     * 
+     *
      * @param file - the File to hash
      * @return the SHA-256 hash value
      * @throws IOException
@@ -116,7 +120,7 @@ public class HashUtils {
     /**
      * this code replaces the creation of the message digest in a static code block
      * as that was found to fail when multi threaded.
-     * 
+     *
      * @param digestType - MD5 or SHA-256
      * @return the MessageDigest of the requested type
      */

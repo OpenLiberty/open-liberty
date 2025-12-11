@@ -36,7 +36,7 @@
 		<localStore>
 			<client
 				name="proofKeyFalse_RS256"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="proofKeyFalse_RS256"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/proofKeyFalse_RS256_S256,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/proofKeyFalse_RS256_S256,
@@ -58,7 +58,7 @@
 				enabled="true" />
 		   	<client
 				name="proofKeyTrue_RS256"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="proofKeyTrue_RS256"
 				allowRegexpRedirects="true"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/proofKeyTrue_RS256_S256,
@@ -106,7 +106,7 @@
 		<localStore>
 			<client
 				name="proofKeyFalse_HS256"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="proofKeyFalse_HS256"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/proofKeyFalse_HS256_S256,
 							https://localhost:${bvt.prop.security_2_HTTP_default.secure}/oidcclient/redirect/proofKeyFalse_HS256_S256,
@@ -128,7 +128,7 @@
 				enabled="true" />
 		   	<client
 				name="proofKeyTrue_HS256"
-				secret="{xor}LDo8LTor"
+				secret="{xor}LDo8LTorbm1saw=="
 				displayname="proofKeyTrue_HS256"
 				allowRegexpRedirects="true"
 				redirect="http://localhost:${bvt.prop.security_2_HTTP_default}/oidcclient/redirect/proofKeyTrue_HS256_S256,

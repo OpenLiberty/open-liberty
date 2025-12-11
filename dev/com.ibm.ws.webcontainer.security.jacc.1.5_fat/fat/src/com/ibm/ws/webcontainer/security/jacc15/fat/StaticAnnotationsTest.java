@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -120,6 +120,12 @@ public class StaticAnnotationsTest {
         mixedBasicAuthClient = new BasicAuthClient(server, BasicAuthClient.DEFAULT_REALM, STATIC_ANNOTATIONS_MIXED_SERVLET, STATIC_ANNOTATIONS_MIXED_CONTEXT_ROOT);
         metadataWebXMLBasicAuthClient = new BasicAuthClient(server, BasicAuthClient.DEFAULT_REALM, METADATA_COMPLETE_TRUE_WEBXML_SERVLET, METADATA_COMPLETE_TRUE_WEBXML_CONTEXT_ROOT);
         metadataWebFragmentBasicAuthClient = new BasicAuthClient(server, BasicAuthClient.DEFAULT_REALM, METADATA_COMPLETE_TRUE_WEBFRAGMENT_SERVLET, METADATA_COMPLETE_TRUE_WEBFRAGMENT_CONTEXT_ROOT);
+        basicAuthClient.setJaccValidation(true);
+        secureBasicAuthClient.setJaccValidation(true);
+        webXMLBasicAuthClient.setJaccValidation(true);
+        mixedBasicAuthClient.setJaccValidation(true);
+        metadataWebXMLBasicAuthClient.setJaccValidation(true);
+        metadataWebFragmentBasicAuthClient.setJaccValidation(true);
 
         assertNotNull("The default http port should open: " + httpDefault,
                       server.waitForStringInLog("CWWKO0219I.* " + httpDefault));

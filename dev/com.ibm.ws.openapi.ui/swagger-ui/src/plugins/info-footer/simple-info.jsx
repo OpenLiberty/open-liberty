@@ -20,13 +20,13 @@ export default class SimpleInfo extends React.Component {
     return (
       <div className="info">
         <hgroup className="main">
-          <h2 className="title" >
+          <h1 className="title" >
             { title }
             <span>
               { version && <VersionStamp version={version}></VersionStamp> }
               <OpenAPIVersion oasVersion="2.0" />{/* 2.0 version here gets overridden elsewhere for later versions */}
             </span>
-          </h2>
+          </h1>
         </hgroup>
 
         <div className="description">

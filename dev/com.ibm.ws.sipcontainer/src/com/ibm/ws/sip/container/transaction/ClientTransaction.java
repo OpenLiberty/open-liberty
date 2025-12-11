@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003 IBM Corporation and others.
+ * Copyright (c) 2003, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,8 +7,6 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sip.container.transaction;
 
@@ -211,6 +209,12 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
 						c_logger.traceDebug(this, "sendRequest","Got new Sender = " + _sender);
 					}
 					_sender.sendRequest(request, this);
+					
+					//if request is ACK, there will be no response coming back
+					//call finish ToUseSender() method now
+					if (request.getMethod().equals(Request.ACK)){
+						finishToUseSender();
+					}		
 				}	        
 			}
 			else{
@@ -411,16 +415,20 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
      *  @see com.ibm.ws.sip.container.naptr.ISenderListener#timedOut()
      */
     public void timedOut() {
-   		finishToUseSender();
-   		getListener().processTimeout(getOriginalRequest());
+	if (c_logger.isTraceDebugEnabled()){
+	        c_logger.traceDebug(this, "timedOut", "Listener has timed out, process the timeout");
+	}
+   	finishToUseSender();
+   	getListener().processTimeout(getOriginalRequest());
    		
     	//Call on the base class to do the cleanup. 
-   		super.processTimeout(); 
+   	super.processTimeout(); 
 	}
     
     /**
-     * Error in appilcation rotuer should response
-     * 500 upstream.
+     * Error in application router 
+     * send 500 response upstream
+     * 
      */
     public void processCompositionError(){
     	
@@ -483,8 +491,10 @@ public class ClientTransaction extends SipTransaction implements ISenderListener
 	 * @see com.ibm.ws.sip.container.transaction.SipTransaction#transactionTerminated(com.ibm.ws.sip.container.servlets.SipServletRequestImpl)
 	 */
 	protected void transactionTerminated(SipServletRequestImpl request) {
+		if (c_logger.isTraceDebugEnabled()){
+			c_logger.traceDebug(this, "transactionTerminated",  "transaction terminated, remove client transaction ");
+		}
 		getListener().clientTransactionTerminated(request);
-		
 		request.getTransactionUser().removeClientTransaction(this);
 	}
 	

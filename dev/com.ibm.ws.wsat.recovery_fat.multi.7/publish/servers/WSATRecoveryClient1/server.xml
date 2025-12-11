@@ -1,10 +1,6 @@
 <server>
   <featureManager>
-    <feature>cdi-2.0</feature>
     <feature>componenttest-1.0</feature>
-    <feature>jdbc-4.2</feature>
-    <feature>jndi-1.0</feature>
-    <feature>jsp-2.3</feature>
     <feature>servlet-4.0</feature>
     <feature>timedexit-1.0</feature>
     <feature>txtest-1.0</feature>
@@ -28,7 +24,6 @@
     recoverOnStartup="true"
     recoveryGroup="recovery-group-1"
     recoveryIdentity="WSATRecoveryClient1"
-    waitForRecovery="false"
   />
 
   <javaPermission name="*" actions="*" className="java.security.AllPermission"/>

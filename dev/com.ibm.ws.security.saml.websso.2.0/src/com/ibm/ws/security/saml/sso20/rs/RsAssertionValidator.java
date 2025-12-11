@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.rs;
 
+import java.time.Instant;
 import java.util.Date;
 import java.util.List;
 
@@ -59,7 +60,7 @@ public class RsAssertionValidator extends AssertionValidator {
         // passed, subject to allowable clock skew between the providers
         //c. the InResponseTo attribute in the bearer <SubjectConfirmationData> equals the ID
         //of its original <AuthnRequest> message, unless the response is unsolicited (see Section 4.1.5 ), in
-        //which case the attribute MUST NOT be present  
+        //which case the attribute MUST NOT be present
 
         //D. If any bearer <SubjectConfirmationData> includes an Address attribute, the service provider
         //MAY check the user agent's client address against it.
@@ -101,8 +102,7 @@ public class RsAssertionValidator extends AssertionValidator {
                     throw new SamlException("SAML20_SUBJECT_NOTBEFORE_ERR",
                                     // "NotBefore attribute is not allowed inside SubjectConfirmationData element.");
                                     //"SAML20_SUBJECT_NOTBEFORE_ERR=CWWKS5051E: NotBefore attribute is not allowed inside SubjectConfirmationData element."
-                                    null,
-                                    new Object[] {});
+                                    null, new Object[] {});
                 }
 
                 if (data.getNotOnOrAfter() == null) {
@@ -111,15 +111,13 @@ public class RsAssertionValidator extends AssertionValidator {
                     }
                     throw new SamlException("SAML20_ELEMENT_ATTR_ERR",
                                     //"SAML20_SUBJECT_NOTON_ERR=CWWKS5052E: NotOnOrAfter attribute inside SubjectConfirmationData is required."
-                                    null,
-                                    new Object[] { "NotOnOrAfter", "SubjectConfirmationData" });
+                                    null, new Object[] { "NotOnOrAfter", "SubjectConfirmationData" });
                 }
 
-                if (data.getNotOnOrAfter().plus(clockSkewAllowed).isBeforeNow()) {
+                if (data.getNotOnOrAfter().plusMillis(clockSkewAllowed).isBefore(Instant.now())) { // v4 update
                     throw new SamlException("SAML20_SUBJECT_NOTONAFTER_ERR",
                                     //"SAML20_SUBJECT_NOTONAFTER_ERR=CWWKS5053E: NotOnOrAfter  [{0}] in SubjectConfirmationData passed current time [{1}]"
-                                    null,
-                                    new Object[] { data.getNotOnOrAfter(), new Date(), (clockSkewAllowed / 1000) });
+                                    null, new Object[] { data.getNotOnOrAfter(), new Date(), (clockSkewAllowed / 1000) });
                 }
 
                 this.context.setSubjectNameIdentifier(subject.getNameID());
@@ -133,8 +131,7 @@ public class RsAssertionValidator extends AssertionValidator {
         throw new SamlException("SAML20_NO_BEARER_FOUND",
                         //"The subject confirmation method urn:oasis:names:tc:SAML:2.0:cm:bearer is required.");
                         //SAML20_NO_BEARER_FOUND=CWWKSS5065E: Cannot find a valid Assertion with proper SubjectConfirmationData.
-                        null,
-                        new Object[] { method });
+                        null, new Object[] { method });
     }
 
     @Override
@@ -167,8 +164,7 @@ public class RsAssertionValidator extends AssertionValidator {
                 }
                 lastException = new SamlException("SAML20_AUDIENCE_UNKNOWN_ERR",
                                 //SAML20_AUDIENCE_UNKNOWN_ERR=CWWKS5060E: The Conditions contain an invalid Audience attribute [{0}]. The expected Audience attribute is [{1}].
-                                null,
-                                new Object[] { aud.getAudienceURI(), audiences[0] });
+                                null, new Object[] { aud.getAudienceURI(), audiences[0] });
             }
         }
         if (tc.isDebugEnabled()) {
@@ -179,7 +175,6 @@ public class RsAssertionValidator extends AssertionValidator {
         }
         throw new SamlException("SAML20_ELEMENT_ATTR_ERR",
                         //SAML20_AUDIENCE_NO_ERR=CWWKS5061E: The Conditions element must contain Audience attribute.
-                        null,
-                        new Object[] { "Audience", "Conditions" });
+                        null, new Object[] { "Audience", "Conditions" });
     }
 }

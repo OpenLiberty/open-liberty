@@ -8,8 +8,8 @@
 
   <!-- Server SSL configuration -->
   <ssl id="defaultSSLConfig" keyStoreRef="clientKeyStore" trustStoreRef="clientTrustStore" />
-  <keyStore id="clientKeyStore" location="key.jks" type="JKS" password="passw0rd" />
-  <keyStore id="clientTrustStore" location="trust.jks" type="JKS" password="passw0rd" />
+  <keyStore id="clientKeyStore" location="key.p12" type="PKCS12" password="passw0rd" />
+  <keyStore id="clientTrustStore" location="trust.p12" type="PKCS12" password="passw0rd" />
 
   <include location="../fatTestPorts.xml"/>
 

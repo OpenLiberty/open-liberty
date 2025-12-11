@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.util.List;
 
 import jakarta.data.repository.BasicRepository;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -36,5 +37,6 @@ public interface Creatures extends BasicRepository<@Valid Creature, @Positive Lo
                                                                   @Positive float minWeight,
                                                                   @Positive float maxWeight);
 
-    boolean updateByIdSetWeight(long id, float newWeight);
+    @Query("UPDATE Creature SET weight=?2 WHERE id=?1")
+    boolean setWeight(long id, float newWeight);
 }

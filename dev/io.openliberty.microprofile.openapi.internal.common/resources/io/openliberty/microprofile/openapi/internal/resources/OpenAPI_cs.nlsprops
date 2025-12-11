@@ -1,13 +1,10 @@
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 # -------------------------------------------------------------------------------------------------
 #CMVCPATHNAME N/A
 #COMPONENTPREFIX CWWKO
@@ -157,3 +154,27 @@ OPENAPI_VERSION_NOT_SUPPORTED_CWWK06182W.useraction=Aktualizujte atribut openAPI
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W=CWWKO1683W: Prvek konfigurace informac\u00ed mpOpenAPI v souboru server.xml je neplatn\u00fd. Mus\u00ed b\u00fdt nastaveny atributy title i verze. Prvek info bude ignorov\u00e1n.
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.explanation=Pole nadpis a verze jsou povinn\u00e9 vlastnosti v informa\u010dn\u00edm objektu dokumentu OpenAPI . P\u0159i konfiguraci objektu info mus\u00ed b\u00fdt zad\u00e1na hodnota pro atributy title a version.
 OPENAPI_INFO_INVALID_SERVERXML_CWWKO1683W.useraction=Ujist\u011bte se, \u017ee atributy title a version jsou v informa\u010dn\u00edm prvku mpOpenAPI nastaveny na platn\u00e9 hodnoty.
+
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W=CWWKO1684W: Konfigura\u010dn\u00ed prvek {0} obsahuje \u201e {1} \u201c, ale neodpov\u00edd\u00e1 \u017e\u00e1dn\u00e9 nasazen\u00e9 aplikaci nebo webov\u00e9mu modulu.
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.explanation=Server je nakonfigurov\u00e1n tak, aby vytvo\u0159il dokumentaci OpenAPI pro n\u00e1zev aplikace nebo modulu, ale nebyla naimplementov\u00e1na \u017e\u00e1dn\u00e1 aplikace nebo webov\u00fd modul s t\u00edmto n\u00e1zvem.
+OPENAPI_MERGE_UNUSED_INCLUDE_SERVERXML_CWWKO1684W.useraction=Zkontrolujte, zda se v\u0161echny aplikace spustily spr\u00e1vn\u011b a zda jsou spr\u00e1vn\u011b zad\u00e1na jm\u00e9na v konfiguraci.
+
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I=CWWKO1685I: Vlastnost {0} MicroProfile Config je ignorov\u00e1na, proto\u017ee ekvivalentn\u00ed konfigurace je uvedena v souboru server.xml.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.explanation=Pokud je tato vlastnost nastavena a stejn\u00e1 funkce je konfigurov\u00e1na pomoc\u00ed souboru server.xml, pou\u017eije se konfigurace v souboru server.xml a vlastnost MicroProfile Config se ignoruje.
+OPENAPI_MP_CONFIG_REDUNDANT_CWWKO1685I.useraction=Odebr\u00e1n\u00ed vlastnosti MicroProfile Config.
+
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W=CWWKO1686W: Vlastnost {0} MicroProfile Config je ignorov\u00e1na, proto\u017ee v souboru server.xml je uvedena konfliktn\u00ed konfigurace.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.explanation=Pokud je tato vlastnost nastavena a stejn\u00e1 funkce je konfigurov\u00e1na pomoc\u00ed souboru server.xml, pou\u017eije se konfigurace v souboru server.xml a vlastnost MicroProfile Config se ignoruje.
+OPENAPI_MP_CONFIG_CONFLICTS_CWWKO1686W.useraction=Odeberte vlastnost MicroProfile Config a zkontrolujte, zda je konfigurace v souboru server.xml spr\u00e1vn\u00e1.
+
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W=CWWKO1687W: Anota\u010dn\u00ed prvek {0} ve t\u0159\u00edd\u011b {1} je ignorov\u00e1n, proto\u017ee vy\u017eaduje verzi OpenAPI {2}, ale aktu\u00e1ln\u00ed verze OpenAPI je {3}.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.explanation=Prvek anotace se vztahuje k funkci p\u0159idan\u00e9 do nov\u011bj\u0161\u00ed verze specifikace OpenAPI, ne\u017e je ta, kter\u00e1 je nakonfigurov\u00e1na. Pou\u017e\u00edvan\u00e1 verze OpenAPI nem\u016f\u017ee tyto informace reprezentovat, proto jsou z vytvo\u0159en\u00e9 dokumentace OpenAPI vylou\u010deny.
+OPENAPI_ANNOTATION_TOO_NEW_CWWKO1687W.useraction=Zva\u017ete odstran\u011bn\u00ed prvku anotace nebo nastaven\u00ed konfigura\u010dn\u00edho prvku openAPIVersion na verzi, kter\u00e1 jej podporuje v souboru server.xml.
+
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W=CWWKO1688W: P\u0159i \u010dten\u00ed mezipam\u011bti OpenAPI pro aplikaci {0} do\u0161lo k chyb\u011b. Mezipam\u011b\u0165 se nepou\u017e\u00edv\u00e1. Chyba je {1}
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.explanation=Funkce MicroProfile OpenAPI ukl\u00e1d\u00e1 n\u011bkter\u00e1 data vypo\u010dten\u00e1 p\u0159i spu\u0161t\u011bn\u00ed aplikace, aby se zabr\u00e1nilo op\u011btovn\u00e9mu v\u00fdpo\u010dtu t\u011bchto dat p\u0159i budouc\u00edm spu\u0161t\u011bn\u00ed serveru, pokud se aplikace nezm\u011bn\u00ed. P\u0159i pokusu o na\u010dten\u00ed t\u011bchto \u00fadaj\u016f do\u0161lo k chyb\u011b, tak\u017ee budou p\u0159epo\u010d\u00edt\u00e1ny.
+OPENAPI_CACHE_READ_ERROR_CWWKO1688W.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W=CWWKO1689W: P\u0159i z\u00e1pisu mezipam\u011bti OpenAPI pro aplikaci {0} do\u0161lo k chyb\u011b. P\u0159i dal\u0161\u00edm spu\u0161t\u011bn\u00ed nebude mezipam\u011b\u0165 k dispozici. Chyba je {1}
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.explanation=Funkce MicroProfile OpenAPI ukl\u00e1d\u00e1 n\u011bkter\u00e1 data vypo\u010dten\u00e1 p\u0159i spu\u0161t\u011bn\u00ed aplikace, aby se zabr\u00e1nilo op\u011btovn\u00e9mu v\u00fdpo\u010dtu t\u011bchto dat p\u0159i budouc\u00edm spu\u0161t\u011bn\u00ed serveru, pokud se aplikace nezm\u011bn\u00ed. P\u0159i pokusu o z\u00e1pis t\u011bchto dat do\u0161lo k chyb\u011b, tak\u017ee budou p\u0159i p\u0159\u00ed\u0161t\u00edm spu\u0161t\u011bn\u00ed serveru p\u0159epo\u010d\u00edt\u00e1na.
+OPENAPI_CACHE_WRITE_ERROR_CWWKO1689W.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -91,6 +91,11 @@ public class OSGIAppTest {
 
     private static final BasicAuthClient baClient = new BasicAuthClient(myServer, BasicAuthClient.DEFAULT_REALM, BasicAuthClient.DEFAULT_SERVLET_NAME, "/BasicAuthWAB");
     private static final FormLoginClient flClient = new FormLoginClient(myServer, FormLoginClient.DEFAULT_SERVLET_NAME, "/FormLoginWAB");
+
+    static {
+        baClient.setJaccValidation(true);
+        flClient.setJaccValidation(true);
+    }
 
     @Rule
     public final TestWatcher logger = new TestWatcher() {

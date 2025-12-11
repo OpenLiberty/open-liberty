@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.wsoc.util;
 
-import java.io.UnsupportedEncodingException;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.nio.ByteBuffer;
@@ -36,6 +35,7 @@ import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.wsoc.Constants;
 import com.ibm.ws.wsoc.WsocBufferException;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
+import com.ibm.ws.common.crypto.CryptoUtils;
 
 // Utils is excluded from auto instrumented tracing via the build.xml
 
@@ -463,11 +463,11 @@ public class Utils {
     }
 
     @Sensitive
-    public static String makeAcceptResponseHeaderValue(String key) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+    public static String makeAcceptResponseHeaderValue(String key) throws NoSuchAlgorithmException {
 
         String inputKey = key + Constants.GUID;
 
-        MessageDigest md = MessageDigest.getInstance("SHA-1");
+        MessageDigest md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_1);
         byte[] arrayKey = inputKey.getBytes(StandardCharsets.ISO_8859_1);
         // Question: should it be:  "utf-8" above?
         md.update(arrayKey, 0, arrayKey.length);

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2020 IBM Corporation and others.
+ * Copyright (c) 2009, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,6 +23,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -258,7 +259,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
         }
     }
 
-    private boolean verifyNextTimeoutsInterval(ArrayList<Long> nextTimeouts, long firstOffset, long interval) {
+    private boolean verifyNextTimeoutsInterval(List<Long> nextTimeouts, long firstOffset, long interval) {
         if (nextTimeouts == null) {
             svLogger.info("The next timeout list for the timer was null.");
             return false;
@@ -282,7 +283,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
         return true;
     }
 
-    private boolean verifyNextTimeoutsRange(ArrayList<Long> nextTimeouts, long firstOffset, long interval, long range, long rangeInterval) {
+    private boolean verifyNextTimeoutsRange(List<Long> nextTimeouts, long firstOffset, long interval, long range, long rangeInterval) {
         if (nextTimeouts == null) {
             svLogger.info("The next timeout list for the timer was null.");
             return false;
@@ -371,7 +372,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerABean.SECONDS_EXACT);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 4);
         boolean validNextTimeouts = verifyNextTimeoutsInterval(nextTimeouts, 30 * 1000, 60 * 1000);
@@ -389,7 +390,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerXBean.SECONDS_RANGE);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 15);
         boolean validNextTimeouts = verifyNextTimeoutsRange(nextTimeouts, 30 * 1000, 60 * 1000, 7, 1000);
@@ -407,7 +408,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerABean.SECONDS_INTERVAL);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 12);
         boolean validNextTimeouts = verifyNextTimeoutsRange(nextTimeouts, 30 * 1000, 60 * 1000, 3, 10 * 1000);
@@ -425,7 +426,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerXBean.SECONDS_LIST);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 9);
         boolean validNextTimeouts = verifyNextTimeoutsRange(nextTimeouts, 35 * 1000, 60 * 1000, 3, 10 * 1000);
@@ -477,7 +478,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerABean.MINUTES_INTERVAL);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 4);
         boolean validNextTimeouts = verifyNextTimeoutsInterval(nextTimeouts, 60 * 1000, 60 * 1000);
@@ -495,7 +496,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerXBean.MINUTES_RANGE);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 4);
         boolean validNextTimeouts = verifyNextTimeoutsRange(nextTimeouts, 60 * 1000, 60 * 60 * 1000, 59, 60 * 1000);
@@ -924,7 +925,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerABean.MONTH_RANGE);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 3);
         boolean validNextTimeouts = verifyNextTimeoutsInterval(nextTimeouts, 60 * 1000, 60 * 1000);
@@ -1182,7 +1183,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerXBean.MULTIPLE_SETTINGS_DONT_CONFLICT);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 3);
         boolean validNextTimeouts = verifyNextTimeoutsInterval(nextTimeouts, 60 * 1000, 60 * 1000);
@@ -1200,7 +1201,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerABean.RANGE_AND_LIST);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 3);
         boolean validNextTimeouts = verifyNextTimeoutsInterval(nextTimeouts, 60 * 1000, 60 * 1000);
@@ -1219,7 +1220,7 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties props = driverBean.getTimeoutResults(AutoCreatedTimerABean.MULTIPLE_ATTRIBUTES_COMBINED);
         int count = ((Integer) props.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts = (ArrayList<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts = (List<Long>) props.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         boolean validTimeoutCount = verifyAttemptsIsAcceptable(count, 2);
         boolean validNextTimeouts = verifyNextTimeoutsInterval(nextTimeouts, 30 * 1000, 2 * 60 * 1000);
@@ -1240,15 +1241,15 @@ public class AutoCreatedNPTimerServlet extends AbstractServlet {
 
         Properties firstProps = driverBean.getTimeoutResults(AutoCreatedTimerABean.FIRST_SCHEDULE);
         int count1 = ((Integer) firstProps.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts1 = (ArrayList<Long>) firstProps.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts1 = (List<Long>) firstProps.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         Properties secondProps = driverBean.getTimeoutResults(AutoCreatedTimerABean.SECOND_SCHEDULE);
         int count2 = ((Integer) secondProps.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts2 = (ArrayList<Long>) secondProps.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts2 = (List<Long>) secondProps.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         Properties thirdProps = driverBean.getTimeoutResults(AutoCreatedTimerABean.THIRD_SCHEDULE);
         int count3 = ((Integer) thirdProps.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();
-        ArrayList<Long> nextTimeouts3 = (ArrayList<Long>) thirdProps.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
+        List<Long> nextTimeouts3 = (List<Long>) thirdProps.get(AutoCreatedTimerDriverBean.NEXT_TIMEOUT_KEY);
 
         Properties fourthProps = driverBean.getTimeoutResults(AutoCreatedTimerABean.PROGRAMATIC_TIMEOUT);
         int count4 = ((Integer) fourthProps.get(AutoCreatedTimerDriverBean.COUNT_KEY)).intValue();

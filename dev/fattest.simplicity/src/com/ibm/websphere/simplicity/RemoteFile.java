@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -646,6 +646,13 @@ public class RemoteFile {
 
         Path localPath = useLocalFile.toPath();
         try {
+            if (Files.isSymbolicLink(localPath)) {
+                // For symbolic links just try to delete it.
+                // The target of the link may have already be deleted
+                // causing the exists check to return false.
+                Files.delete(localPath);
+                return true;
+            }
             if (!Files.exists(localPath)) {
                 return true;
             }

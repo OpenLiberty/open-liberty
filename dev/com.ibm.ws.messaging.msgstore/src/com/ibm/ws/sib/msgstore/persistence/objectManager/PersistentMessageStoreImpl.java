@@ -1,6 +1,5 @@
-package com.ibm.ws.sib.msgstore.persistence.objectManager;
-/*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+/* ==============================================================================
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,7 +9,10 @@ package com.ibm.ws.sib.msgstore.persistence.objectManager;
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
- *******************************************************************************/
+ * ==============================================================================
+ */
+package com.ibm.ws.sib.msgstore.persistence.objectManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -615,13 +617,18 @@ public final class PersistentMessageStoreImpl implements PersistentMessageStore,
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "start");
     }
 
+    @Deprecated
+    public void stop(int mode) {
+        stop(mode, null);
+    }
+
     /**
      * Stops the Persistent Message Store.
      *
      * @param mode specifies the type of stop operation which is to
      *             be performed.
      */
-    public void stop(int mode)
+    public void stop(int mode, Throwable reason)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "stop", "Mode="+mode);
 
@@ -661,7 +668,7 @@ public final class PersistentMessageStoreImpl implements PersistentMessageStore,
         // object manager.
         if (_spillDispatcher != null)
         {
-            _spillDispatcher.stop(mode);
+            _spillDispatcher.stop(mode, reason);
 
             _spillDispatcher = null;
         }
@@ -2018,12 +2025,12 @@ public final class PersistentMessageStoreImpl implements PersistentMessageStore,
                     storedOwner = (MEStoredOwner)storedOwnerToken.getManagedObject();
     
                     SibTr.info(tc, "FILE_STORE_LOCK_ONE_OWNER_SIMS1566", new Object[] {storedOwner.getMeUUID(), storedOwner.getIncUUID()});
-    		    // F008622 -start
-		    if(_ms.getProperty(MessageStoreConstants.START_MODE, MessageStoreConstants.DEAFULT_START_MODE).equalsIgnoreCase("RECOVERY"))
-		    {
-                    	owner=new MELockOwner(storedOwner.getMeUUID(),storedOwner.getIncUUID(),storedOwner.getVersion(),storedOwner.getMigrationVersion(),"default");
+                    // F008622 -start
+                    if(_ms.getProperty(MessageStoreConstants.START_MODE, MessageStoreConstants.DEFAULT_START_MODE).equalsIgnoreCase("RECOVERY"))
+                    {
+                        owner=new MELockOwner(storedOwner.getMeUUID(),storedOwner.getIncUUID(),storedOwner.getVersion(),storedOwner.getMigrationVersion(),"default");
                     }
-		   // F008622 end
+                    // F008622 end
                     // If our ME_UUID matches that found then we need
                     // to update our incarnation id.
                     if (owner.getMeUUID().equals(storedOwner.getMeUUID()))

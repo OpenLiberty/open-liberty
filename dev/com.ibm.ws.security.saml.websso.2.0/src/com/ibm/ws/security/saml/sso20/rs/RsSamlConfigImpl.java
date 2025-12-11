@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021,2024 IBM Corporation and others.
+ * Copyright (c) 2021,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,8 +30,7 @@ import com.ibm.websphere.crypto.PasswordUtil;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.crypto.common.CryptoMessageUtils;
-import com.ibm.ws.crypto.common.CryptoUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
 import com.ibm.ws.security.saml.Constants;
 import com.ibm.ws.security.saml.SsoConfig;
@@ -101,6 +100,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
     static final String KEY_targetPageUrl = "targetPageUrl";
     static final String KEY_useRelayStateForTarget = "useRelayStateForTarget";
     static final String KEY_servletRequestLogoutPerformsSamlLogout = "spLogout";
+    static final String KEY_cspHeader = "contentSecurityPolicy";
 
     static final String[] notInUseAttributes = new String[] {
                                                               KEY_authnRequestsSigned, KEY_forceAuthn, KEY_isPassive,
@@ -110,7 +110,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
                                                               KEY_sessionNotOnOrAfter, KEY_includeTokenInSubject, KEY_spCookieName,
                                                               KEY_spHostAndPort, KEY_targetPageUrl, KEY_httpsRequired,
                                                               KEY_allowCustomCacheKey, KEY_createSession, KEY_reAuthnOnAssertionExpire,
-                                                              KEY_reAuthnCushion
+                                                              KEY_reAuthnCushion, KEY_cspHeader
     };
 
     static final String ignoreAttributes;
@@ -131,7 +131,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
     String keyStoreRef = null;
     String keyAlias = null;
     String keyPassword = null;
-    String signatureMethodAlgorithm = "SHA256";
+    String signatureMethodAlgorithm = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256;
     String userIdentifier = "NameID";
     String groupIdentifier = null;
     String userUniqueIdentifier = "NameID";
@@ -151,6 +151,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
     String[] audiences = new String[] { "ANY" };
     private final String bundleLocation;
     private boolean servletRequestLogoutPerformsSamlLogout = false;
+    String cspHeader = null;
 
     public RsSamlConfigImpl(ComponentContext cc,
                             Map<String, Object> props,
@@ -192,7 +193,7 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
         clockSkewMilliSeconds = (Long) props.get(KEY_clockSkew); // milliseconds
         signatureMethodAlgorithm = trim((String) props.get(KEY_signatureMethodAlgorithm));
         if (CryptoUtils.isAlgorithmInsecure(signatureMethodAlgorithm)) {
-            CryptoMessageUtils.logInsecureAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
+            CryptoUtils.logInsecureAlgorithm(KEY_signatureMethodAlgorithm, signatureMethodAlgorithm);
         }
         userIdentifier = trim((String) props.get(KEY_userIdentifier));
         groupIdentifier = trim((String) props.get(KEY_groupIdentifier));
@@ -312,12 +313,24 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
      */
     @Override
     public String getSignatureMethodAlgorithm() {
-        if ("SHA256".equalsIgnoreCase(signatureMethodAlgorithm)) {
+        if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA256.equalsIgnoreCase(signatureMethodAlgorithm)) {
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
-        } else if ("SHA128".equalsIgnoreCase(signatureMethodAlgorithm)) {
+        } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA128.equalsIgnoreCase(signatureMethodAlgorithm)) {
             return SignatureConstants.MORE_ALGO_NS + "rsa-sha128"; //???????
-        } else if ("SHA1".equalsIgnoreCase(signatureMethodAlgorithm)) {
+        } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA1.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            // FIPS 140-3: Algorithm assessment complete; no changes required.
+            // Already log insure algorithm at top of the class
             return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA1;
+        } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA384.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA384;
+        } else if (CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA512;
+        } else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA256.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA256;
+        } else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA384.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA384;
+        } else if (CryptoUtils.SIGNATURE_ALGORITHM_ECDSAWITHSHA512.equalsIgnoreCase(signatureMethodAlgorithm)) {
+            return SignatureConstants.ALGO_ID_SIGNATURE_ECDSA_SHA512;
         }
         return SignatureConstants.ALGO_ID_SIGNATURE_RSA_SHA256;
     }
@@ -547,6 +560,14 @@ public class RsSamlConfigImpl extends PkixTrustEngineConfig implements SsoConfig
     public boolean isAuthnRequestsSigned() {
         return unexpectedCall(false);
     };
+
+    @Override
+    public String getCspHeader() {
+        if (cspHeader!=null && cspHeader.length()==0) {
+            return null;
+        }
+        return cspHeader;
+    }
 
     /*
      * (non-Javadoc)

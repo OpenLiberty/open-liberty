@@ -41,12 +41,9 @@ public class PostgreSQLContainer extends JdbcDatabaseContainer<PostgreSQLContain
                     .withStartupTimeout(Duration.of(60, ChronoUnit.SECONDS));
 
     public PostgreSQLContainer(String img) {
-        super(img);
-        this.waitStrategy = defaultWaitStrategy; //can be overwritten by calling waitingFor or setWaitStrategy
-    }
-
-    public PostgreSQLContainer(final Future<String> image) {
-        super(image);
+        // Calling super constructor like this since super(img) doesn't compile with
+        // Java 25 due to stricter annotation checking rules
+        super(DockerImageName.parse(img));
         this.waitStrategy = defaultWaitStrategy; //can be overwritten by calling waitingFor or setWaitStrategy
     }
 

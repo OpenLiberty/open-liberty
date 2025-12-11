@@ -114,6 +114,8 @@ public class FATSuite extends TestContainerSuite {
      * - Copies user.properties for authentication (user: user, password: pass)
      * - Starts using a custom command to call server.sh with the copied config.xml
      */
+    //TODO switch to use quay.io/infinispan/server:10.0.1.Final
+    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     @ClassRule
     public static GenericContainer<?> infinispan = new GenericContainer<>(new ImageFromDockerfile()
                     .withDockerfileFromBuilder(builder -> builder.from(

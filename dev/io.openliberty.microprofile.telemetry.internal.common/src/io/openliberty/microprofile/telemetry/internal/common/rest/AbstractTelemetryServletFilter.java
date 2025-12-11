@@ -19,5 +19,6 @@ public class AbstractTelemetryServletFilter {
     public static final String SPAN_SCOPE = "otel.span.http.scope";
     public static final String ENV_DISABLE_HTTP_TRACING_PROPERTY = "OTEL_TRACE_HTTP_DISABLED";
     public static final String CONFIG_DISABLE_HTTP_TRACING_PROPERTY = "otel.trace.http.disabled";
+    public static final String ACCESS_TRACE_HEADER_NAME = "io.openliberty.trace";
 
 }

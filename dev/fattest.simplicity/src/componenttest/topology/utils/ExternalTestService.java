@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 
 import javax.json.JsonArray;
@@ -40,32 +41,47 @@ import javax.net.ssl.HttpsURLConnection;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.custom.junit.runner.FATRunner;
+
 /**
  * This class represents an external service that has been defined in a central registry with additional properties about it.
+ * TODO write unit tests for this class
  */
 public class ExternalTestService {
 
     private static final Class<?> c = ExternalTestService.class;
 
+    // Service properties from consul
+    private final Map<String, ServiceProperty> props;
+
+    // Network properties to external service
     private final String address;
     private final String serviceName;
     private final int port;
     private final String hostname;
-    private final Map<String, ServiceProperty> props;
-    private static Random rand = new Random();
-    private static Map<String, Collection<String>> unhealthyServiceInstances = new HashMap<String, Collection<String>>();
-    private static ExternalTestService propertiesDecrypter;
 
+    // Keys for client JVM properties
     private static final String PROP_NETWORK_LOCATION = "global.network.location";
     private static final String PROP_SERVER_ORIGIN = "server.origin";
     private static final String PROP_CONSUL_SERVERLIST = "global.consulServerList";
-    private static final String ENCRYPTED_PREFIX = "encrypted!";
-    private static final String PROP_ACCESS_TOKEN = "global.ghe.access.token";
 
+    // Client network location
+    private static final String CLIENT_NETWORK_LOCATION = getNetworkLocation();
+
+    // Random number generator to scramble service order
+    private static final Random rand = new Random();
+
+    /**
+     * Private constructor - new instances or collections of external test service
+     * are created via builder methods on this class.
+     *
+     * @param data  - consul json response with data that represents this external test service
+     * @param props - consul service properties for this external test service
+     */
     private ExternalTestService(JsonObject data, Map<String, ServiceProperty> props) {
         JsonObject serviceData = data.getJsonObject("Service");
         JsonObject nodeData = data.getJsonObject("Node");
-        String networkLocationProp = getNetworkLocation() + "_address";
+        String networkLocationProp = CLIENT_NETWORK_LOCATION + "_address";
         String address = null;
 
         if (props.get(networkLocationProp) != null) {
@@ -90,50 +106,7 @@ public class ExternalTestService {
 
     }
 
-    /**
-     * Retrieves a Consul value from a key/value pair that may or may not be associated with a Consul service.
-     *
-     * @param propertyName The property name or path. It should be available in a web browser at:
-     *                         ${consulServer}/v1/kv/service/${propertyName}
-     */
-    public static String getProperty(String propertyName) throws Exception {
-        Exception firstEx = null;
-        for (String consulServer : getConsulServers()) {
-            try {
-                JsonArray propertiesJson = new HttpsRequest(consulServer + "/v1/kv/service/" + propertyName + "?recurse=true")
-                                .allowInsecure()
-                                .timeout(10_000)
-                                .expectCode(HttpsURLConnection.HTTP_OK)
-                                .expectCode(HttpsURLConnection.HTTP_NOT_FOUND)
-                                .run(JsonArray.class);
-
-                if (propertiesJson == null) {
-                    throw new Exception("The Consul server (" + consulServer
-                                        + ") was unavailable or did not return a result for the property: " + propertyName
-                                        + ". Look on #was-liberty-ops for outages, or updates to global.consulServerList");
-                }
-
-                if (propertiesJson.size() != 1) {
-                    throw new Exception("Expected to find exactly 1 property but found " + propertiesJson.size() +
-                                        ". Full JSON is: " + propertiesJson);
-
-                }
-                JsonObject propertyObject = propertiesJson.getJsonObject(0);
-                if (!propertyObject.containsKey("Value")) {
-                    throw new Exception("Property " + propertyName + " was found but contained no value. Full JSON is: " + propertyObject);
-                }
-
-                ServiceProperty prop = new ServiceProperty("", propertyName, propertyObject.getString("Value"));
-                return prop.getStringValue();
-            } catch (Exception e) {
-                if (firstEx == null)
-                    firstEx = e;
-                continue;
-            }
-        }
-
-        throw firstEx;
-    }
+    ///// BUILDER METHODS /////
 
     /**
      * Returns an ExternalTestService that matches the given service name.
@@ -191,25 +164,6 @@ public class ExternalTestService {
         return getServices(count, serviceName, null);
     }
 
-    private static List<String> consulServers = null;
-
-    private static List<String> getConsulServers() throws Exception {
-        if (consulServers != null)
-            return consulServers;
-
-        String consulServerList = System.getProperty(PROP_CONSUL_SERVERLIST);
-        if (consulServerList == null) {
-            throw new Exception("There are no Consul hosts defined. Please ensure that the '" + PROP_CONSUL_SERVERLIST
-                                + "' property contains a comma separated list of Consul hosts and is included in the "
-                                + "user.build.properties file in your home directory. If not running on the IBM nework, "
-                                + "this message can be ignored.");
-        }
-
-        List<String> servers = Arrays.asList(consulServerList.split(","));
-        Collections.shuffle(servers);
-        return consulServers = servers;
-    }
-
     /**
      * Returns an Collection of ExternalTestServices that matches the given service name.
      * The services returned are randomized so that load is distributed across all healthy instances.
@@ -229,33 +183,32 @@ public class ExternalTestService {
      * @throws Exception   If either not enough healthy services could be found or no consul server could be contacted.
      */
     public static Collection<ExternalTestService> getServices(int count, String serviceName, ExternalTestServiceFilter filter) throws Exception {
+        final String m = "getServices";
+
         if (filter == null) {
             filter = new ExternalTestServiceFilterAlwaysMatched();
         }
 
-        Collection<String> unhealthyReadOnly;
-        synchronized (unhealthyServiceInstances) {
+        Collection<String> unhealthyReadOnly = ExternalTestServiceReporter.getUnhealthyReport(serviceName);
 
-            Collection<String> unhealthyList = unhealthyServiceInstances.get(serviceName);
-            if (unhealthyList == null) {
-                unhealthyList = new HashSet<String>();
-                unhealthyServiceInstances.put(serviceName, unhealthyList);
-            }
-            unhealthyReadOnly = new HashSet<String>(unhealthyList);
+        Log.info(c, m, "Getting " + count + " external test service(s) named '" + serviceName + "' with a " + filter.getClass().getName());
+        if (!unhealthyReadOnly.isEmpty()) {
+            Log.info(c, m, "\tExisting unhealthy instances: " + unhealthyReadOnly.toString());
         }
 
         Exception finalError = null;
         for (String consulServer : getConsulServers()) {
             JsonArray instances;
             try {
-                HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true");
-                instancesRequest.timeout(10000);
-                instancesRequest.allowInsecure();
+                HttpsRequest instancesRequest = new HttpsRequest(consulServer + "/v1/health/service/" + serviceName + "?passing=true&stale")
+                                .timeout(30000)
+                                .allowInsecure();
                 instances = instancesRequest.run(JsonArray.class);
             } catch (Exception e) {
                 finalError = e;
                 continue;
             }
+
             //fail if no instances available
             if (instances.isEmpty()) {
                 throw new Exception("There are no healthy services available for " + serviceName);
@@ -263,7 +216,7 @@ public class ExternalTestService {
 
             JsonArray propertiesJson;
             try {
-                HttpsRequest propsRequest = new HttpsRequest(consulServer + "/v1/kv/service/" + serviceName + "/?recurse=true");
+                HttpsRequest propsRequest = new HttpsRequest(consulServer + "/v1/kv/service/" + serviceName + "/?recurse=true&stale");
                 propsRequest.allowInsecure();
                 propsRequest.timeout(10000);
                 propsRequest.expectCode(HttpsURLConnection.HTTP_OK).expectCode(HttpsURLConnection.HTTP_NOT_FOUND);
@@ -326,9 +279,12 @@ public class ExternalTestService {
                 }
             }
 
+            Log.info(c, m, "Found " + healthyTestServices.size() + " potential " + serviceName + " services, attempting to find a matching service.");
+
             //pick random healthy instance
-            Collection<ExternalTestService> matchedServices = getMatchedService(count, healthyTestServices, filter);
+            Collection<ExternalTestService> matchedServices = getMatchedServices(count, healthyTestServices, filter);
             if (matchedServices != null && matchedServices.size() == count) {
+                Log.info(c, m, "Found " + matchedServices.size() + " service(s): " + matchedServices);
                 return matchedServices;
             }
 
@@ -336,14 +292,105 @@ public class ExternalTestService {
 
         }
 
+        Log.info(c, m, "Ran out of consul servers before finding enough match services");
+
         //Http requests above ended in exception
         Exception e = new Exception("Exception attempting to connect to Consul servers");
         e.initCause(finalError);
         throw e;
-
     }
 
+    ///// UTILITY METHODS /////
+
+    /**
+     * Retrieves a Consul value from a key/value pair that may or may not be associated with a Consul service.
+     *
+     * TODO consider removing as this method is unused
+     *
+     * @param propertyName The property name or path. It should be available in a web browser at:
+     *                         ${consulServer}/v1/kv/service/${propertyName}
+     */
+    @Deprecated
+    private static String getProperty(String propertyName) throws Exception {
+        Exception firstEx = null;
+        for (String consulServer : getConsulServers()) {
+            try {
+                JsonArray propertiesJson = new HttpsRequest(consulServer + "/v1/kv/service/" + propertyName + "?recurse=true&stale")
+                                .allowInsecure()
+                                .timeout(30000)
+                                .expectCode(HttpsURLConnection.HTTP_OK)
+                                .expectCode(HttpsURLConnection.HTTP_NOT_FOUND)
+                                .run(JsonArray.class);
+
+                if (propertiesJson == null) {
+                    throw new Exception("The Consul server (" + consulServer
+                                        + ") was unavailable or did not return a result for the property: " + propertyName
+                                        + ". Look on #was-liberty-ops for outages, or updates to global.consulServerList");
+                }
+
+                if (propertiesJson.size() != 1) {
+                    throw new Exception("Expected to find exactly 1 property but found " + propertiesJson.size() +
+                                        ". Full JSON is: " + propertiesJson);
+
+                }
+                JsonObject propertyObject = propertiesJson.getJsonObject(0);
+                if (!propertyObject.containsKey("Value")) {
+                    throw new Exception("Property " + propertyName + " was found but contained no value. Full JSON is: " + propertyObject);
+                }
+
+                ServiceProperty prop = new ServiceProperty("", propertyName, propertyObject.getString("Value"));
+                return prop.getStringValue();
+            } catch (Exception e) {
+                if (firstEx == null)
+                    firstEx = e;
+                continue;
+            }
+        }
+
+        throw firstEx;
+    }
+
+    private static List<String> consulServers = null;
+
+    /**
+     * Get list of consul servers from the consul server list system property
+     *
+     * @return           List of servers some of which may be repeated
+     * @throws Exception if no servers were defined
+     */
+    private static List<String> getConsulServers() throws Exception {
+        if (consulServers != null)
+            return consulServers;
+
+        final String m = "getConsulServers";
+
+        String consulServerList = System.getProperty(PROP_CONSUL_SERVERLIST);
+        if (consulServerList == null) {
+            throw new Exception("There are no Consul hosts defined. Please ensure that the '" + PROP_CONSUL_SERVERLIST
+                                + "' property contains a comma separated list of Consul hosts and is included in the "
+                                + "user.build.properties file in your home directory. If not running on the IBM nework, "
+                                + "this message can be ignored.");
+        }
+
+        // Add all the servers to the list twice, effectively giving us a retry so double the chance of working if consul is slow
+        List<String> servers = Arrays.asList((consulServerList + "," + consulServerList).split(","));
+
+        Log.info(c, m, "Initial consul server list (duplicates expected): " + servers);
+
+        return consulServers = servers;
+    }
+
+    /**
+     * Parses a json object from a consul http response to a service property object
+     *
+     * @param  json a json object
+     * @return      a service property if the object can be parsed, null otherwise.
+     */
     private static ServiceProperty parseServiceProperty(JsonObject json) {
+        /*
+         * Get the service property key in the form:
+         * service/<service-name>/<service-instance-name>/<property-key-name>
+         */
         String key = json.getString("Key");
         String[] keyParts = key.split("/", 4);
 
@@ -354,6 +401,10 @@ public class ExternalTestService {
         String instanceName = keyParts[2];
         String keyName = keyParts[3];
 
+        /*
+         * Get the service property value.
+         * The data is base64 encoded. After decoding, the data may still be encrypted
+         */
         JsonValue value = json.get("Value");
         String base64EncodedValue;
         // Value can be null, so check the type before decoding it
@@ -366,6 +417,128 @@ public class ExternalTestService {
         return new ServiceProperty(instanceName, keyName, base64EncodedValue);
     }
 
+    /**
+     * Iterates through a list of services and returns a collection of desired size of services that match various criteria
+     * as described below:
+     *
+     * <ol>
+     * <li>Network location filtering: Service must allow connections from the client network location</li>
+     * <li>Property decryption: Property decrypter service must be able to decrypt service properties (if applicable)</li>
+     * <li>Test Service Filter: Service must pass the supplied filter's test method</li>
+     * </ol>
+     *
+     * If the service fails any of these criteria it will be reported as unhealthy and we will continue onto the next service
+     * until we have collected the requested under.
+     *
+     * @param  count        number of services to locate
+     * @param  testServices the list of all test services
+     * @param  filter       a client supplied filter with additional criteria
+     * @return              collection of test services that match all criteria, or null if no service could be located.
+     * @throws Exception    if we have exhausted the list of services and we encountered an exception along the way.
+     */
+    private static Collection<ExternalTestService> getMatchedServices(int count, List<ExternalTestService> testServices, ExternalTestServiceFilter filter) throws Exception {
+        String m = "getMatchedServices";
+        Collections.shuffle(testServices, rand);
+        Exception exception = null;
+        Collection<ExternalTestService> matchedServices = new ArrayList<ExternalTestService>();
+
+        for (ExternalTestService externalTestService : testServices) {
+            String serviceName = externalTestService.serviceName;
+
+            //Do Network Location Filtering
+            try {
+                String locationString = externalTestService.getProperties().get("allowed.networks");
+                if (Objects.nonNull(locationString)) { // If null assume the service supports all networks
+                    List<String> allowedNetworks = Arrays.asList(locationString.split(","));
+                    if (!allowedNetworks.contains(CLIENT_NETWORK_LOCATION)) {
+                        String reason = "Build Machine cannot use instance of " + serviceName + " as its networks location ("
+                                        + CLIENT_NETWORK_LOCATION + ") is not in allowed.networks (" + locationString + ")";
+                        ExternalTestServiceReporter.reportUnhealthy(externalTestService, reason);
+                        continue;
+                    }
+                }
+
+                Log.info(c, m, "Matched " + serviceName + " service based on network location (" + CLIENT_NETWORK_LOCATION + //
+                               ") is in allowed.networks (" + (Objects.isNull(locationString) ? "ALL" : locationString) + //
+                               ") continue to match service based on user defined filters.");
+
+                // Do decryption - fail fast if no decryption service is available
+                externalTestService.decryptProperties();
+
+                //Do Filter
+                if (filter.isMatched(externalTestService)) {
+                    //We found one
+                    matchedServices.add(externalTestService);
+                    if (matchedServices.size() == count) {
+                        return matchedServices;
+                    }
+                }
+            } catch (Exception e) {
+                if (exception == null) {
+                    exception = e;
+                }
+            }
+        }
+        if (exception != null) {
+            throw exception;
+        }
+        return null;
+    }
+
+    /**
+     * Determines the network location of the test system that is attempting to access the
+     * external test service.
+     *
+     * @return The network location system property if it was set, otherwise a heuristically
+     *         determined network location based on the server origin system property.
+     */
+    private static String getNetworkLocation() {
+        // Priority 1: Use global.network.location system property
+        String networkLocation = System.getProperty(PROP_NETWORK_LOCATION);
+        if (networkLocation != null) {
+            return networkLocation;
+        }
+
+        // Priority 2: Fail if we are not running locally, all build definitions should have the above property.
+        if (!FATRunner.FAT_TEST_LOCALRUN) {
+            throw new RuntimeException("This build definition lacked the " + PROP_NETWORK_LOCATION + " system property. "
+                                       + "This property is required for our builds to correctly choose an external test resource. "
+                                       + "Please contact a build monitor update this build definition with the " + PROP_NETWORK_LOCATION + " system property.");
+        } else {
+            Log.warning(c, "For better efficiency, please add global.network.location=IBM9UK or IBM9US to your user.build.properties.");
+        }
+
+        // Priority 3: Make a best guess as to where the closest service is based off of the client IP address.
+        String serverOrigin = System.getProperty(PROP_SERVER_ORIGIN);
+        // Attempt to guess where the closest services will be located
+        if (serverOrigin.startsWith("9.20.")) {
+            return "IBM9UK"; // Hursley
+        } else if (serverOrigin.startsWith("9.42.") || serverOrigin.startsWith("9.46.")) {
+            return "IBM9US"; // RTP
+        } else if (serverOrigin.startsWith("9.30.")) {
+            return "IBM9US"; // SVL
+        } else if (serverOrigin.startsWith("9.57.")) {
+            return "IBM9US"; // POK
+        } else if (serverOrigin.startsWith("10.34.") || serverOrigin.startsWith("10.36.")) {
+            return "HURPROD";
+        } else if (serverOrigin.startsWith("10.51.")) {
+            return "FYREHUR";
+        } else if (serverOrigin.startsWith("10.11.") || serverOrigin.startsWith("10.15.") || serverOrigin.startsWith("10.17.")) {
+            return "FYRESVL";
+        } else if (serverOrigin.startsWith("10.21.") || serverOrigin.startsWith("10.22.") || serverOrigin.startsWith("10.23.") || serverOrigin.startsWith("10.26.")) {
+            return "FYRERTP";
+        } else {
+            Log.warning(c, "Unable to determine closest service for the host/IP address: " + serverOrigin + ". "
+                           + "If appropriate, please update fattest.simplicity/src/componenttest/topology/utils/ExternalTestService.getNetworkLocation()");
+            return "UNKNOWN";
+        }
+    }
+
+    ///// UTILITY CLASSES /////
+
+    /**
+     * POJO that represents a service property
+     */
     private static class ServiceProperty {
 
         private final String instance;
@@ -409,212 +582,14 @@ public class ExternalTestService {
                                 .onUnmappableCharacter(CodingErrorAction.REPORT)
                                 .decode(ByteBuffer.wrap(getValue()));
                 String utf8Value = charValue.toString();
-                if (utf8Value.startsWith(ENCRYPTED_PREFIX)) {
-                    stringValue = ExternalTestService.decrypt(utf8Value);
-                } else {
-                    stringValue = utf8Value;
-                }
+
+                stringValue = ExternalTestServiceDecrypter.decrypt(utf8Value);
             }
             return stringValue;
         }
     }
 
-    private static Collection<ExternalTestService> getMatchedService(int count, List<ExternalTestService> testServices, ExternalTestServiceFilter filter) throws Exception {
-        Collections.shuffle(testServices, rand);
-        Exception exception = null;
-        Collection<ExternalTestService> matchedServices = new ArrayList<ExternalTestService>();
-        for (ExternalTestService externalTestService : testServices) {
-            //Do Network Location Filter
-            try {
-                externalTestService.decryptProperties();
-                String locationString = externalTestService.getProperties().get("allowed.networks");
-                if (locationString != null) {
-                    List<String> allowedNetworks = Arrays.asList(locationString.split(","));
-                    String networkLocation = getNetworkLocation();
-                    if (!allowedNetworks.contains(networkLocation)) {
-                        //Network is not allowed
-                        externalTestService.reportUnhealthy("Build Machine cannot use instance as its networks location ("
-                                                            + networkLocation +
-                                                            ") is not in allowed.networks ("
-                                                            + locationString +
-                                                            ")");
-                        continue;
-                    }
-
-                }
-                //If it reached here network is allowable
-
-                //Do Filter
-                boolean isMatched = filter.isMatched(externalTestService);
-                if (isMatched) {
-                    //We found one
-                    matchedServices.add(externalTestService);
-                    if (matchedServices.size() == count) {
-                        return matchedServices;
-                    }
-                }
-            } catch (Exception e) {
-                if (exception == null) {
-                    exception = e;
-                }
-            }
-        }
-        if (exception != null) {
-            throw exception;
-        }
-        return null;
-    }
-
-    private interface RetryPolicy {
-
-        /**
-         * @return true if the operation should be retried; false otherwise.
-         */
-        boolean retryable();
-
-    }
-
-    private static class CappedExponentialSleeps implements RetryPolicy {
-
-        private int sleepMsecs;
-        private final int numSleeps;
-        private int completedSleeps;
-        private final int capMsecs;
-
-        /**
-         * @param sleepMsecs initial sleep time in msecs (doubles on each retry)
-         * @param numSleeps  number of times to do a sleep before it becomes non-retryable
-         * @param capMsecs   maximum number of msecs to sleep
-         */
-        public CappedExponentialSleeps(int sleepMsecs, int numSleeps, int capMsecs) {
-            this.sleepMsecs = sleepMsecs;
-            this.numSleeps = numSleeps;
-            this.capMsecs = capMsecs;
-            this.completedSleeps = 0;
-        }
-
-        /*
-         */
-        @Override
-        public boolean retryable() {
-            if (completedSleeps < numSleeps) {
-                sleepMsecs *= 2;
-                if (sleepMsecs > capMsecs)
-                    sleepMsecs = capMsecs;
-
-                completedSleeps++;
-                try {
-                    Thread.sleep(sleepMsecs);
-                } catch (InterruptedException e) {
-                    return false;
-                }
-                return true;
-            }
-            return false;
-        }
-
-    }
-
-    /**
-     * @param  encryptedValue
-     * @return                decryptedValue
-     * @throws Exception      If either no healthy liberty-properties-decrypter services could be found or no consul server could be contacted.
-     */
-    private static synchronized String decrypt(String encryptedValue) throws Exception {
-        if (!encryptedValue.startsWith(ENCRYPTED_PREFIX)) {
-            return encryptedValue;
-        }
-
-        // Identify Access Token
-        String accessToken = System.getProperty(PROP_ACCESS_TOKEN);
-        if (accessToken == null) {
-            throw new Exception("Missing Property called: '" + PROP_ACCESS_TOKEN
-                                + "', this property is needed to decrypt secure properties, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
-        }
-
-        RetryPolicy retry = new CappedExponentialSleeps(1000, 8, 128000);
-
-        // Locate Properties Decrypter Instance
-        String decrypted = null;
-        while (decrypted == null) {
-            while (propertiesDecrypter == null) {
-                try {
-                    propertiesDecrypter = ExternalTestService.getService("liberty-properties-decrypter");
-                } catch (Exception e) {
-                    if (retry.retryable()) {
-                        continue;
-                    } else {
-                        throw e;
-                    }
-                }
-            }
-
-            // Decrypt Properties
-            HttpsRequest propsRequest = new HttpsRequest("https://" + propertiesDecrypter.getAddress() + ":" + propertiesDecrypter.getPort() + "/decrypt?value=" + encryptedValue
-                                                         + "&access_token=" + accessToken);
-            propsRequest.allowInsecure();
-            propsRequest.timeout(10000);
-            propsRequest.expectCode(HttpsURLConnection.HTTP_OK).expectCode(HttpsURLConnection.HTTP_UNAUTHORIZED).expectCode(HttpsURLConnection.HTTP_FORBIDDEN);
-            propsRequest.silent();
-            try {
-                decrypted = propsRequest.run(String.class);
-            } catch (Exception e) {
-                switch (propsRequest.getResponseCode()) {
-                    case HttpsURLConnection.HTTP_INTERNAL_ERROR:
-                    case HttpsURLConnection.HTTP_BAD_GATEWAY:
-                    case HttpsURLConnection.HTTP_UNAVAILABLE:
-                    case HttpsURLConnection.HTTP_NOT_IMPLEMENTED:
-                        propertiesDecrypter.reportUnhealthy(e.getMessage());
-                        propertiesDecrypter = null;
-                        if (retry.retryable()) {
-                            break;
-                        } else {
-                            ; //fall through
-                        }
-
-                    default:
-                        propertiesDecrypter.reportUnhealthy(e.getMessage());
-                        propertiesDecrypter = null;
-                        break;
-                }
-
-            }
-            switch (propsRequest.getResponseCode()) {
-                case HttpsURLConnection.HTTP_UNAUTHORIZED:
-                    throw new Exception(PROP_ACCESS_TOKEN
-                                        + " is not recognized by github.ibm.com, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
-                case HttpsURLConnection.HTTP_FORBIDDEN:
-                    throw new Exception(PROP_ACCESS_TOKEN
-                                        + " is not able to be access organisation data, Access Token requires read:org permission, see https://github.ibm.com/websphere/WS-CD-Open/wiki/Automated-Tests#running-fats-that-use-secure-properties-locally for more info");
-                case HttpsURLConnection.HTTP_OK:
-                    //Do nothing
-            }
-
-        }
-
-        return decrypted;
-    }
-
-    /**
-     * @return
-     */
-    private static String getNetworkLocation() {
-        String networkLocation = System.getProperty(PROP_NETWORK_LOCATION);
-        if (networkLocation != null) {
-            return networkLocation;
-        }
-        String serverOrigin = System.getProperty(PROP_SERVER_ORIGIN);
-        if (!serverOrigin.startsWith("10.")) {
-            //It might be a 9.* address or a host name either way it is on the IBM9 Network
-            return "IBM9";
-        } else if (serverOrigin.startsWith("10.10")) {
-            return "HDCRTP";
-        } else if (serverOrigin.startsWith("10.34")) {
-            return "HDCHUR";
-        } else {
-            return "UNKNOWN";
-        }
-    }
+    ///// GETTERS /////
 
     /**
      * @return the address
@@ -644,9 +619,15 @@ public class ExternalTestService {
         return port;
     }
 
+    ///// METHODS /////
+
+    @Override
+    public String toString() {
+        return "ExternalTestService [serviceName=" + serviceName + ", hostname=" + hostname + ", port=" + port + "]";
+    }
+
     /**
-     * Returns a map of properties found about the service
-     * <p>
+     * Returns a map of properties found about the service.
      * Properties whose values are not Strings are not returned by this method but can be written to a file with {@link #writePropertyAsFile}
      *
      * @return a map of properties found about the service in the central registry
@@ -670,6 +651,13 @@ public class ExternalTestService {
         return properties;
     }
 
+    /**
+     * Iterates through the list of properties and calls getStringValue()
+     * This is an eager decrypt so we can fail fast if the accessToken
+     * is unset or rejected by the decrypter service.
+     *
+     * @throws Exception
+     */
     private void decryptProperties() throws Exception {
         for (ServiceProperty prop : props.values()) {
             try {
@@ -682,8 +670,7 @@ public class ExternalTestService {
     }
 
     /**
-     * Write a service property value to a file
-     * <p>
+     * Write a service property value to a file.
      * Useful if you have a truststore or keyfile stored in your service properties
      *
      * @param  keyName               the name of the service property to write to the file
@@ -710,28 +697,26 @@ public class ExternalTestService {
     }
 
     /**
-     * This method should be used to report the instance as not working locally and will not be randomly selected again unless no other options remain
-     *
-     * Note: This implicitly calls release
-     *
-     * @param reason A simple explaination of what was unhealthy about it. e.g. Could not connect to selenium on machine.
-     */
-    public void reportUnhealthy(String reason) {
-        synchronized (unhealthyServiceInstances) {
-            Collection<String> unhealthyList = unhealthyServiceInstances.get(serviceName);
-            unhealthyList.add(address);
-
-        }
-        Log.info(getClass(), "reportUnhealthy", getServiceName() + " Service at " + getAddress() + " reported as unhealthy because: " + reason);
-        release();
-    }
-
-    /**
      * This method releases any locks acquired for this service, to allow reuse on other machines.
      */
     public void release() {
         //Placeholder to implement later
     }
+
+    /**
+     * Test classes should use the {@link ExternalTestServiceReporter}
+     * instead of this method.
+     *
+     * TODO remove when all tests have been updated to use the reporter
+     *
+     * @param reason
+     */
+    @Deprecated
+    public void reportUnhealthy(String reason) {
+        ExternalTestServiceReporter.reportUnhealthy(this, reason);
+    }
+
+    ///// MAIN /////
 
     /**
      * Testing method to ensure the ExternalTestService Works
@@ -753,10 +738,8 @@ public class ExternalTestService {
                 System.out.println(service.getProperties());
                 //service.reportUnhealthy("Testing");
             }
-
         }
 
         System.out.println("Found " + serviceAddresses.size() + " EBC services");
     }
-
 }

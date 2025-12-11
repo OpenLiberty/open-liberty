@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,8 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.internal.utils;
 
-
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.security.PrivateKey;
 import java.security.cert.Certificate;
@@ -107,7 +106,7 @@ public class RequestUtil extends KnownSamlUrl {
                     Tr.debug(tc, "The redirect SSL port is null from request. Trying to get http port");
                 }
                 int port = req.getServerPort();
-                String httpSchema = ((javax.servlet.ServletRequest) req).getScheme();
+                String httpSchema = req.getScheme();
                 // return whatever in the req
                 return httpSchema + "://" + hostName + (port > 0 && port != 443 ? ":" + port : "") + samlCtxPath;
             } else {
@@ -160,7 +159,7 @@ public class RequestUtil extends KnownSamlUrl {
                                                          req);
         response.addCookie(c);
     }
-    
+
     public static void createCookie(HttpServletRequest req,
                                     HttpServletResponse response,
                                     String cookieName,
@@ -202,35 +201,18 @@ public class RequestUtil extends KnownSamlUrl {
         if (cookieValueBytes == null || cookieValueBytes.length == 0) {
             return null;
         }
-        String result = null;
-        try {
-            result = new String(cookieValueBytes, Constants.UTF8); // no need to do Base64 decode
-        } catch (UnsupportedEncodingException e) {
-            // This should not happen, since UTF8 is OK in almost all situations
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unexpected exception, id:(" + e + ")");
-            }
-            throw new SamlException(e); // Let SamlException handle the unexpected Exception
-        }
-        return result;
+        return new String(cookieValueBytes, StandardCharsets.UTF_8); // no need to do Base64 decode
     }
 
     public static String convertBytesToString(byte[] bytes) {
-        String result = null;
-        try {
-            result = new String(bytes, Constants.UTF8); // no need to do Base64 decode
-        } catch (UnsupportedEncodingException e) {
-            // This ought to be OK
-            // The worst case is: The request is not handled
-        }
-        return result;
+        return new String(bytes, StandardCharsets.UTF_8); // no need to do Base64 decode
     }
 
     @FFDCIgnore({ SamlException.class })
     public static Credential getDecryptingCredential(SsoSamlService ssoService) throws SamlException {
         BasicX509Credential credential = null;
         try {
-            PrivateKey privateKey = ssoService.getPrivateKey();         
+            PrivateKey privateKey = ssoService.getPrivateKey();
             if (privateKey == null) {
                 // error handling
                 throw new SamlException("SAML20_NO_PRIVATE_KEY",
@@ -244,7 +226,7 @@ public class RequestUtil extends KnownSamlUrl {
                                 //SAML20_NO_CERT=CWWKS5074E: Cannot find a signature certificate from Service Provider [{0}].
                                 null, true, new Object[] { ssoService.getProviderId(), ssoService.getConfig().getKeyStoreRef() });
             }
-            credential = new BasicX509Credential((X509Certificate) certificate);           
+            credential = new BasicX509Credential((X509Certificate) certificate);
             credential.setPrivateKey(privateKey);
         } catch (SamlException e) { // declared exceptions: KeyStoreException,  CertificateException
             throw e;
@@ -274,7 +256,7 @@ public class RequestUtil extends KnownSamlUrl {
                                 null, true, new Object[] { ssoService.getProviderId(), ssoService.getConfig().getKeyStoreRef() });
             }
             credential = new BasicX509Credential((X509Certificate) certificate);
-            
+
             credential.setPrivateKey(privateKey);
 
         } catch (SamlException e) {

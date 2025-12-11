@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.cdi.visibility.tests.vistest.commonLib.CommonLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.framework.TestingBean;
+import com.ibm.ws.cdi.visibility.tests.vistest.overrideLib.OverrideLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.privateLib.PrivateLibTestingBean;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtRegular;
 import com.ibm.ws.cdi.visibility.tests.vistest.qualifiers.InRuntimeExtSeeApp;
@@ -47,6 +48,9 @@ public class StandaloneVisibilityTestServlet extends FATServlet {
     // being visible, the servlet will still start and we can test the visibility from all other points.
     @Inject
     private Instance<CommonLibTestingBean> commonLibTestingInstance;
+
+    @Inject
+    private Instance<OverrideLibTestingBean> overrideLibTestingInstance;
 
     @Inject
     private Instance<PrivateLibTestingBean> privateLibTestingInstance;
@@ -77,6 +81,8 @@ public class StandaloneVisibilityTestServlet extends FATServlet {
                 result = "ERROR: No qualifier provided\n";
             } else if (location.equals("InCommonLib")) {
                 result = commonLibTestingInstance.get().doTest();
+            } else if (location.equals("InOverrideLib")) {
+                result = overrideLibTestingInstance.get().doTest();
             } else if (location.equals("InPrivateLib")) {
                 result = privateLibTestingInstance.get().doTest();
             } else if (location.equals("InRuntimeExtRegular")) {
@@ -88,7 +94,7 @@ public class StandaloneVisibilityTestServlet extends FATServlet {
             } else if (location.equals("InStandaloneWar")) {
                 result = standaloneWarTestingInstance.get().doTest();
             } else {
-                result = "ERROR: unrecognised qualifier\n";
+                result = "ERROR: unrecognised qualifier: " + location + "\n";
             }
         } catch (UnsatisfiedResolutionException ex) {
             result = "ERROR: unable to resolve test class\n" + ex.toString() + "\n";

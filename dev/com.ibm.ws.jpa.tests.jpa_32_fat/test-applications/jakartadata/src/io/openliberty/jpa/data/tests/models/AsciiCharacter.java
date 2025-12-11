@@ -11,14 +11,17 @@ package io.openliberty.jpa.data.tests.models;
 
 import java.io.Serializable;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 /**
  * Recreate from Jakarta Data TCK
  */
-@jakarta.persistence.Entity
+@Entity
 public class AsciiCharacter implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    @jakarta.persistence.Id
+    @Id
     private long id;
 
     private int numericValue;

@@ -30,7 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
-import org.joda.time.DateTime;
+import java.time.Instant;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -133,7 +133,7 @@ public class UnsolicitedHandlerTest {
                 will(returnValue(subject_confirm_data));//
 
                 atMost(2).of(subject_confirm_data).getNotOnOrAfter(); //
-                will(returnValue((new DateTime()).plus(3600000))); //
+                will(returnValue(Instant.now().plusMillis(3600000))); //
 
                 atMost(2).of(resCache).put(with(any(String.class)), with(any(Long.class))); //
 

@@ -14,7 +14,6 @@ package com.ibm.ws.springboot.support.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
-import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.After;

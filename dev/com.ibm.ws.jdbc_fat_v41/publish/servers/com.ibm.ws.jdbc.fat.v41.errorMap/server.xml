@@ -94,6 +94,4 @@
     <!--  Permissions for application to access mbeans -->
     <javaPermission codebase="${server.config.dir}/apps/errorMappingApp.war" className="javax.management.MBeanPermission" actions="queryNames"/>
     <javaPermission codebase="${server.config.dir}/apps/errorMappingApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
-    
-    <variable name="onError" value="FAIL"/>
 </server>

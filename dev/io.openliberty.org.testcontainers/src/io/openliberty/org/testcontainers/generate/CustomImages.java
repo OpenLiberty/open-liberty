@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,88 +12,66 @@
  *******************************************************************************/
 package io.openliberty.org.testcontainers.generate;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
-import org.testcontainers.images.RemoteDockerImage;
 import org.testcontainers.images.builder.ImageFromDockerfile;
-import org.testcontainers.utility.DockerImageName;
 
 /**
- * Allows external contributors a convenient way to build the custom images we use in our build
+ * Allows external contributors a convenient way to build the custom images we
+ * use in our build
  */
 public class CustomImages {
-    
+
+    // The --build-arg necessary to overwrite the default BASE_IMAGE in the Dockerfile
+    // with the mirrored image from an alternative registry
+    public static final String BASE_IMAGE = "BASE_IMAGE";
+
     public static void main(String[] args) {
-          long start = System.currentTimeMillis();
-          
-          if(args == null || args[0] == null || args.length > 1) {
-              throw new RuntimeException("CustomImages expects a single argument (projectPath) which is the path to the io.openliberty.org.testcontainers project.");
-          }
-          
-          //Get data from calling script
-          String projectPath = args[0];
-          
-          // Get image list if it exists
-          File imageList = new File(projectPath, "cache/externals");
-          if(!imageList.exists()) {
-              System.out.println("Could not find file: " + imageList.getAbsolutePath());
-              return;
-          }
-          
-          List<DockerImageName> images = Arrays.asList();
-          try {
-              images = Files.lines(imageList.toPath())
-                      .filter(line -> !line.startsWith("#"))
-                      .map(line -> DockerImageName.parse(line))
-                      .collect(Collectors.toList());
-          } catch (Exception e) {
-              System.out.println("Could not read file: " + imageList.getAbsolutePath());
-              return;
-          }
-          
-          // Try to pull all images in the list and generate a list of images that need to be created
-          final Set<DockerImageName> unpullableImageNames = new HashSet<>(images);
-          images.stream()
-          .map(name -> new RemoteDockerImage(name))
-          .forEach(image -> {
-              try {
-                  unpullableImageNames.remove(DockerImageName.parse(image.get()));
-              } catch (Exception e) {
-                  System.out.println("Could not pull image " + image.toString() + " because " + e.getMessage());
-              }
-          });
-          
-          
-          File dockerfiles = new File(projectPath, "dockerfiles");
-          if(!dockerfiles.exists() && !dockerfiles.isDirectory()) {
-              System.out.println("Could not find directory: " + dockerfiles.getAbsolutePath());
-              return;
-          }
-          
-          // Try to find a Dockerfile for each unpullable image and build the image
-          final Set<DockerImageName> unbuildableImageNames = new HashSet<>(unpullableImageNames);
-          
-          unpullableImageNames.stream()
-              .map(name -> new ImageFromDockerfile(name.asCanonicalNameString(), false)
-                              .withDockerfile(
-                                      new File(dockerfiles.getAbsolutePath(), name.getUnversionedPart() + "/" + name.getVersionPart() + "/Dockerfile").toPath()))
-              .forEach(image ->  {
-                  try {
-                      unbuildableImageNames.remove(DockerImageName.parse(image.get()));
-                  } catch (Exception e) {
-                      System.out.println("Could not build image " + image.getDockerImageName() + " because " + e.getMessage());
-                  }
-              });
-          
-          System.out.println("Could not pull or build " + unbuildableImageNames.size() + " image(s)");
+        long start = System.currentTimeMillis();
+
+        if (args == null || args[0] == null || args.length > 1) {
+            throw new RuntimeException(
+                    "CustomImages expects a single argument (projectPath) which is the path to the io.openliberty.org.testcontainers project.");
+        }
+
+        // Get data from calling script
+        String projectPath = args[0];
         
+        if (System.getenv().containsKey("ARTIFACTORY_DOCKER_SERVER")) {
+            System.out.println("Setting fat.test.artifactory.docker.server=" + System.getenv().get("ARTIFACTORY_DOCKER_SERVER"));
+            System.setProperty("fat.test.artifactory.docker.server", System.getenv().get("ARTIFACTORY_DOCKER_SERVER"));
+        }
+        
+        if (System.getenv().containsKey("DOCKER_REGISTRY_SERVER")) {
+            System.out.println("Setting fat.test.docker.registry.server=" + System.getenv().get("DOCKER_REGISTRY_SERVER"));
+            System.setProperty("fat.test.docker.registry.server", System.getenv().get("DOCKER_REGISTRY_SERVER"));
+        }
+
+        // Where to find instructions to build images
+        Path commonPath = Paths.get(projectPath, "resources", "openliberty", "testcontainers");
+
+        // Find all dockerfiles and attempt to build their corresponding images
+        Dockerfile.findDockerfiles(commonPath).stream()
+                .map(location -> new Dockerfile(location))
+                .sorted() //Sort in case images end up depending on each other
+                .forEach(dockerfile -> {                    
+                    ImageFromDockerfile img = new ImageFromDockerfile(dockerfile.imageName.asCanonicalNameString(), false)
+                            .withDockerfile(dockerfile.location)
+                            .withBuildArg(BASE_IMAGE, dockerfile.baseImageNameSubstituted.asCanonicalNameString());
+
+                    try {
+                        System.out.println("Building image: " + dockerfile.imageName.asCanonicalNameString());
+                        img.get();
+                        System.out.println("Built image successfully: " + dockerfile.imageName.asCanonicalNameString());
+                    } catch (Exception e) {
+                        throw new RuntimeException("Could not build or find image " + dockerfile.imageName.asCanonicalNameString(), e);
+                    } finally {
+                        System.out.println("-----");
+                    }
+                });
+
         long end = System.currentTimeMillis();
-        System.out.println( "Execution time in ms: " + ( end - start ));
+        System.out.println("Execution time in ms: " + (end - start));
     }
 }
