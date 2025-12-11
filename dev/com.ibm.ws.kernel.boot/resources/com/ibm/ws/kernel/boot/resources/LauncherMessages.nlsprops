@@ -443,7 +443,7 @@ warning.tooManySymbolicLinks.explanation=Symbolic links are shortcuts that point
 warning.tooManySymbolicLinks.useraction=To resolve this issue, check the symbolic links in the path and ensure that they do not create circular references. You might also use the 'readlink' command to inspect individual links in the chain.
 
 warning.javaHomeNotSet=CWWKE0097W: The JAVA_HOME environment variable is not set.
-warning.javaHomeNotSet.explanation=The server script cannot determine the location of the Java installation. This issue does not occur if the JAVA_HOME environment variable is set properly, or if the "java" executable, found by searching the PATH, is located in a complete Java installation. The Java installation location is needed to find version-specific configuration files, such as java9.options. If the Java installation cannot be found, these files are not loaded, and applications that rely on them might not behave as expected.
+warning.javaHomeNotSet.explanation=The server script cannot determine the location of the Java installation. This issue does not occur if the JAVA_HOME environment variable is set properly, or if the "java" executable, found by searching the PATH, is located in a complete Java installation. The Java installation location is needed to find version-specific configuration files, such as the java release and options. If the Java installation cannot be found, these files are not loaded, and applications that rely on them might not behave as expected.
 warning.javaHomeNotSet.useraction=Set the JAVA_HOME environment variable.
 
 warn.packageRuntime.include.unknownOption=CWWKE0099W: Unable to use option --include={0}, will use --include=wlp instead.
