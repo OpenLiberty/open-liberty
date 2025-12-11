@@ -493,6 +493,18 @@ serverEnv()
   readServerEnv "${WLP_USER_DIR}/shared/server.env"
   readServerEnv "${SERVER_CONFIG_DIR}/server.env"
   serverEnvDefaults
+  
+  # Determine Java version and add z/OS native access flag for Java 24+ to avoid warnings
+  if [ "${uname}" = OS/390 ]; then
+    # Try to determine Java version if JAVA_HOME is set
+    if [ -n "${JAVA_HOME}" ] && [ -f "${JAVA_HOME}/release" ]; then
+      JAVA_VERSION_MAJOR=$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' | LC_ALL=C tr -d '\r' | grep ^JAVA_VERSION\s*= | tr -d '"' | awk -F= '{print $2}' | awk -F. '{if ($1 > 1) {print $1} else {print $2}}')
+      # Only add flag if version was successfully detected and is >= 24
+      if [ -n "${JAVA_VERSION_MAJOR}" ] && [ "${JAVA_VERSION_MAJOR}" -ge 24 ] 2>/dev/null; then
+        JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
+      fi
+    fi
+  fi
 }
 
 ##
@@ -506,6 +518,7 @@ serverEnvAndJVMOptions()
   # Avoids HeadlessException on all platforms and Liberty JVMs appearing as applications and stealing focus on Mac.
   # Declare allowAttachSelf=true so that the VM will permit a late self attach if localConnector-1.0 is enabled
   # need -Dcom.ibm.tools.attach.enable=yes for java 11 on z/OS
+  # Note: z/OS native access flag will be added later after Java version is determined
   if [ "${uname}" = OS/390 ]; then
     JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -Dcom.ibm.tools.attach.enable=yes"
   else
@@ -607,8 +620,21 @@ serverEnvAndJVMOptions()
     
     # In Java 24+, JNI usage must be explicitly granted when starting the JVM - https://openjdk.org/jeps/472 (needed for z/OS)
     if [ -n "${JAVA_VERSION_MAJOR}" ] && [ "${uname}" = "OS/390" ]; then
-        if [ ${JAVA_VERSION_MAJOR} -ge 24 ] && [[ -n "${SERVER_JVM_OPTIONS_QUOTED##*--enable-native-access=ALL-UNNAMED*}" ]]; then
-            SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
+        # Only add flag if version comparison succeeds (suppress errors for invalid values)
+        if [ "${JAVA_VERSION_MAJOR}" -ge 24 ] 2>/dev/null; then
+            # Check if the flag is not already present in SERVER_JVM_OPTIONS_QUOTED or JVM_OPTIONS_QUOTED
+            case "${SERVER_JVM_OPTIONS_QUOTED}" in
+                *--enable-native-access=ALL-UNNAMED*) ;;
+                *)
+                    SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
+                    ;;
+            esac
+            case "${JVM_OPTIONS_QUOTED}" in
+                *--enable-native-access=ALL-UNNAMED*) ;;
+                *)
+                    JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
+                    ;;
+            esac
         fi
     fi
   fi
