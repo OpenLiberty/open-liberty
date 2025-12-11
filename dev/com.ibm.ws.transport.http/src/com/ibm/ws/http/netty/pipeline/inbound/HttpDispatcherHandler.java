@@ -496,8 +496,16 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             HttpDispatcher.getExecutorService().execute(pending);
         }
 
+        // if (!ctx.channel().config().isAutoRead()) {
+        //     ctx.channel().read();
+        // }
         if (!ctx.channel().config().isAutoRead()) {
-            ctx.channel().read();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "onUpgradeCommitted: enabling autoRead for upgraded connection "
+                             + ctx.channel().id());
+            }
+            ctx.channel().config().setAutoRead(true);
+            ctx.channel().read(); 
         }
         try {
             CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).getAndSet(null);
