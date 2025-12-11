@@ -1326,7 +1326,7 @@ public class BaseTraceService implements TrService {
 
             if (state != null) {
                 boolean shouldSupress = state.increment();
-                if (shouldSupress) {
+                if (shouldSupress && throttleMaxMessagesPerWindow > 0) {
                     //Print a warning once when throttling first occurs.
                     if (!throttleWarningPrinted.get()) {
                         throttleWarningPrinted.set(true);
