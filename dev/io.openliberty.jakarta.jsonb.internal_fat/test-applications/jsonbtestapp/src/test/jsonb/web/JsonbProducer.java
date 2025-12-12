@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jsonb.web;
 
+import java.util.function.BiFunction;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Produces;
@@ -47,6 +49,14 @@ public class JsonbProducer {
         Jsonb created = JsonbBuilder.create(new JsonbConfig().withFormatting(true));
         System.out.println("JsonbProducer.produceJsonb() invoked. Using provider: " + created.getClass());
         return created;
+    }
+
+    @Produces
+    @ApplicationScoped
+    public BiFunction<Jsonb, Object, String> produceJsonbFunction() {
+        BiFunction<Jsonb, Object, String> function = (jsonb, object) -> jsonb.toJson(object);
+        System.out.println("JsonbProducer.produceJsonbFunction() invoked. Using function: " + function.getClass());
+        return function;
     }
 
 }

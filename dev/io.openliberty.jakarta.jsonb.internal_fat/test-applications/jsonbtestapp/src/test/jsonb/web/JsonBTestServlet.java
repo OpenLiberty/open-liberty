@@ -23,8 +23,10 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 import org.junit.Test;
 
@@ -68,6 +70,9 @@ public class JsonBTestServlet extends FATServlet {
     @PrettyJsonb
     Jsonb jsonbQualifiedPretty;
 
+    @Inject
+    BiFunction<Jsonb, Object, String> jsonbFunction;
+
     @Override
     public void destroy() {
         try {
@@ -89,9 +94,10 @@ public class JsonBTestServlet extends FATServlet {
 
     @Test
     public void testInjectionWithQualifiers() {
-        assertNotNull(jsonbDefault);
-        assertNotNull(jsonbQualifiedDefault);
-        assertNotNull(jsonbQualifiedPretty);
+//        assertNotNull(jsonbDefault);
+//        assertNotNull(jsonbQualifiedDefault);
+//        assertNotNull(jsonbQualifiedPretty);
+//        assertNotNull(jsonbFunction);
 
         TestPerson p = new TestPerson();
         p.age = 35;
@@ -113,9 +119,15 @@ public class JsonBTestServlet extends FATServlet {
                         .append("}")
                         .toString();
 
+        // Verify first use of injected bean works outside of a lambda.
         assertEquals(expected, jsonbDefault.toJson(p));
-        assertEquals(expected, jsonbQualifiedDefault.toJson(p));
-        assertEquals(expectedPretty, jsonbQualifiedPretty.toJson(p));
+
+        // Verify first use of injected bean works inside of a lambda.
+        assertEquals(expected, Arrays.asList(p).stream().map(person -> jsonbQualifiedDefault.toJson(p)).findFirst().orElse(""));
+
+        // Verify first use of injected bean works inside of another producer using a lambda
+        // (the biggest edge case)
+        assertEquals(expectedPretty, jsonbFunction.apply(jsonbQualifiedPretty, p));
     }
 
     public static class TestCreatorParameters {
