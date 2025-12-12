@@ -33,7 +33,7 @@ public interface Animals extends CrudRepository<Animal, ScientificName> {
 
     // Using @Find here would require @Select(ID), which isn't available
     // until Data 1.1
-    @Query("SELECT id WHERE id.genus = ?1")
+    @Query("SELECT o.id FROM Animal o WHERE o.id.genus = ?1")
     @OrderBy("id.species")
     Stream<ScientificName> ofGenus(String id_genus);
 }

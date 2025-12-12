@@ -95,9 +95,10 @@ def setProperties = { props ->
      */
     String timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
 
-    // For release builds we use the buildLabel as a consistent qualifier.
+    // For automated builds we use the buildLabel as a consistent qualifier.
     // buildLabel is set by the RTC build engines.
-    String qualifier = (isRelease && isAutomatedBuild) ? props.getProperty('buildLabel') : timestamp
+    String buildLabel = props.getProperty('buildLabel')
+    String qualifier = (buildLabel != null && isAutomatedBuild) ? buildLabel : timestamp
 
     props.setProperty('version.qualifier', qualifier)
     props.setProperty('buildLabel', timestamp)

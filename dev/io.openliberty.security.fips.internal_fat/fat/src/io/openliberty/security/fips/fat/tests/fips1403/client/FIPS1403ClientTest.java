@@ -66,8 +66,6 @@ public class FIPS1403ClientTest {
         }
         if (ji.majorVersion() > 8) {
             expectedProvider = "OpenJCEPlusFIPS";
-            // temporarily enable Beta for Semeru
-            // client.addEnvVar("JVM_ARGS","-Dcom.ibm.ws.beta.edition=true");
         } else {
             expectedProvider = "IBMJCEPlusFIPS";
         }

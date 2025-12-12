@@ -30,6 +30,7 @@ public class FIPSTestUtils {
     public static final String ENABLE_FIPS140_3_ENV_VAR = "ENABLE_FIPS140_3";
     public static final String SEMERU_FIPS_PROVIDER = "OpenJCEPlusFIPS";
     public static final String IBM_FIPS_PROVIDER = "IBMJCEPlusFIPS";
+    public static final String LIBERTY_BASE_FIPS_PROFILE_FILENAME = "FIPS140-3-Liberty.properties";
     public static final String LIBERTY_APPLICATION_FIPS_PROFILE_FILENAME = "FIPS140-3-Liberty-Application.properties";
     public static final String STANDALONE_FIPS_PROFILE_FILENAME = "semeruFips140_3CustomProfile.properties";
 

@@ -212,38 +212,37 @@ public class DataEclipseLinkServlet extends FATServlet {
         assertEquals("niger", foxSquirrel.id().species());
         assertEquals(1, foxSquirrel.version());
 
-        // TODO enable once #29460 is fixed
-        //assertEquals(List.of("Sciurus carolinensis",
-        //                     "Sciurus niger"),
-        //             animals.ofGenus("Sciurus")
-        //                             .map(n -> n.genus() + ' ' + n.species())
-        //                             .collect(Collectors.toList()));
+        assertEquals(List.of("Sciurus carolinensis",
+                             "Sciurus niger"),
+                     animals.ofGenus("Sciurus")
+                                     .map(n -> n.genus() + ' ' + n.species())
+                                     .collect(Collectors.toList()));
 
-        //ScientificName grayFoxId = new ScientificName("Urocyon", "cinereoargenteus");
-        //grayFox = animals.findById(grayFoxId).orElseThrow();
-        //assertEquals("gray fox", grayFox.commonName());
-        //assertEquals("Urocyon", grayFox.id().genus());
-        //assertEquals("cinereoargenteus", grayFox.id().species());
+        ScientificName grayFoxId = new ScientificName("Urocyon", "cinereoargenteus");
+        grayFox = animals.findById(grayFoxId).orElseThrow();
+        assertEquals("gray fox", grayFox.commonName());
+        assertEquals("Urocyon", grayFox.id().genus());
+        assertEquals("cinereoargenteus", grayFox.id().species());
 
-        //ScientificName graySquirrelId = new ScientificName("Sciurus", "carolinensis");
-        //graySquirrel = animals.findById(graySquirrelId).orElseThrow();
-        //assertEquals("gray squirrel", graySquirrel.commonName());
-        //assertEquals("Sciurus", graySquirrel.id().genus());
-        //assertEquals("carolinensis", graySquirrel.id().species());
+        ScientificName graySquirrelId = new ScientificName("Sciurus", "carolinensis");
+        graySquirrel = animals.findById(graySquirrelId).orElseThrow();
+        assertEquals("gray squirrel", graySquirrel.commonName());
+        assertEquals("Sciurus", graySquirrel.id().genus());
+        assertEquals("carolinensis", graySquirrel.id().species());
 
-        //foxSquirrel = foxSquirrel.withCommonName("FOX SQUIRREL");
-        //foxSquirrel = animals.save(foxSquirrel);
-        //assertEquals("FOX SQUIRREL", foxSquirrel.commonName());
-        //assertEquals("Sciurus", foxSquirrel.id().genus());
-        //assertEquals("niger", foxSquirrel.id().species());
-        //assertEquals(2, foxSquirrel.version());
+        foxSquirrel = foxSquirrel.withCommonName("FOX SQUIRREL");
+        foxSquirrel = animals.save(foxSquirrel);
+        assertEquals("FOX SQUIRREL", foxSquirrel.commonName());
+        assertEquals("Sciurus", foxSquirrel.id().genus());
+        assertEquals("niger", foxSquirrel.id().species());
+        assertEquals(2, foxSquirrel.version());
 
-        //foxSquirrel = foxSquirrel.withCommonName("fox squirrel");
-        //foxSquirrel = animals.update(foxSquirrel);
-        //assertEquals("fox squirrel", foxSquirrel.commonName());
-        //assertEquals("Sciurus", foxSquirrel.id().genus());
-        //assertEquals("niger", foxSquirrel.id().species());
-        //assertEquals(3, foxSquirrel.version());
+        foxSquirrel = foxSquirrel.withCommonName("fox squirrel");
+        foxSquirrel = animals.update(foxSquirrel);
+        assertEquals("fox squirrel", foxSquirrel.commonName());
+        assertEquals("Sciurus", foxSquirrel.id().genus());
+        assertEquals("niger", foxSquirrel.id().species());
+        assertEquals(3, foxSquirrel.version());
 
         animals.deleteById(new ScientificName("Sciurus", "niger"));
 

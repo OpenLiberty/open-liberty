@@ -14,6 +14,9 @@ package test.jakarta.data.jpa.web.hibernate;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.page.CursoredPage;
@@ -144,6 +147,52 @@ public class DataJPAHibernateServlet extends FATServlet {
                                                         pageReq);
 
         assertEquals(10, page1.totalElements());
+    }
+
+    /**
+     * Reproduces a migration issue (33205) from EclipseLink to Hibernate
+     * where Hibernate does not tolerate an ElementCollection of type
+     * java.util.ArrayList, which EclipseLink does tolerate.
+     */
+    @Test
+    public void testEntityWithArrayListAttribute() throws Exception {
+        EntityManagerFactory emf = InitialContext
+                        .doLookup("java:comp/env/persistence/HibernatePersistenceUnitRef");
+        UserTransaction tx = InitialContext
+                        .doLookup("java:comp/UserTransaction");
+
+        EntityWithArrayList entity = new EntityWithArrayList();
+        entity.setId("TestEntityWithArrayListAttribute");
+        entity.setLongList(new ArrayList<>(List.of(1L, 2L, 3L)));
+
+        EntityManager em = null;
+
+        tx.begin();
+        try {
+            em = emf.createEntityManager();
+            em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+            assertEquals(true, em.isJoinedToTransaction());
+
+            em.persist(entity);
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+            em.clear();
+            em.close();
+        }
+
+        em = emf.createEntityManager();
+        try {
+            entity = em.find(EntityWithArrayList.class,
+                             "TestEntityWithArrayListAttribute");
+        } finally {
+            em.close();
+        }
+
+        assertEquals(List.of(1L, 2L, 3L),
+                     entity.getLongList());
     }
 
     /**

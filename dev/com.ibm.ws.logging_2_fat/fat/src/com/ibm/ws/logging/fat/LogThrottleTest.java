@@ -63,6 +63,9 @@ public class LogThrottleTest {
     private static final String THROTTLING_DISABLED_XML = "server-throttlingDisabled.xml";
     private static final String THROTTLING_INVALID_CONFIG_XML = "server-invalidThrottlingConfig.xml";
     private static final String THROTTLING_FULL_MESSAGE_XML = "server-throttlingFullMessage.xml";
+    private static final String THROTTLING_FULL_MESSAGE_JSON_XML = "server-throttlingFullMessageJSON.xml";
+    private static final String THROTTLING_MESSAGE_ID_JSON_XML = "server-throttlingMessageIDJSON.xml";
+
     private static final String THROTTLING_FULL_MESSAGE_UPPERCASE_XML = "server-throttlingFullMessageUppercase.xml";
     private static final String THROTTLING_MESSAGEID_UPPERCASE_XML = "server-throttlingMessageIDUppercase.xml";
     private static final String THROTTLING_DEFAULT_CONFIG_XML = "server-defaultConfig.xml";
@@ -137,7 +140,7 @@ public class LogThrottleTest {
         loggingObj.setThrottleMaxMessagesPerWindow("5");
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=6");
 
-        List<String> lines = serverInUse.findStringsInLogs("The logs are being throttled due to high volume");
+        List<String> lines = serverInUse.findStringsInLogs("TRAS3016W");
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=6");
 
         assertEquals("The throttle log warning was not printed.", lines.size(), 1);
@@ -186,7 +189,8 @@ public class LogThrottleTest {
     public void testLogThrottlingHighMaxMessages() throws Exception {
         setUp(disabledServer, "testLogThrottlingHighMaxMessages");
         serverInUse.setServerConfigurationFile(THROTTLING_HIGH_MAX_MESSAGES_XML);
-        Thread.sleep(5000);
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=6");
 
         RemoteFile messagesLogFile = serverInUse.getDefaultLogFile();
@@ -204,7 +208,8 @@ public class LogThrottleTest {
         ServerConfiguration serverConfig = serverInUse.getServerConfiguration();
         Logging loggingObj = serverConfig.getLogging();
         loggingObj.setThrottleMaxMessagesPerWindow("5");
-        Thread.sleep(5000);
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
 
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=8");
 
@@ -241,7 +246,8 @@ public class LogThrottleTest {
     public void testInvalidLogThrottlingMaxMessagesConfig() throws Exception {
         setUp(baseServer, "testInvalidLogThrottlingMaxMessagesConfig");
         serverInUse.setServerConfigurationFile(THROTTLING_INVALID_CONFIG_XML);
-        Thread.sleep(5000);
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=6");
 
         RemoteFile messagesLogFile = serverInUse.getDefaultLogFile();
@@ -257,7 +263,8 @@ public class LogThrottleTest {
     public void testInvalidLogThrottlingMessageTypeConfig() throws Exception {
         setUp(baseServer, "testInvalidLogThrottlingMessageTypeConfig");
         serverInUse.setServerConfigurationFile(THROTTLING_INVALID_CONFIG_XML);
-        Thread.sleep(5000);
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=6");
 
         RemoteFile messagesLogFile = serverInUse.getDefaultLogFile();
@@ -273,11 +280,12 @@ public class LogThrottleTest {
     public void testDefaultConfig() throws Exception {
         setUp(defaultConfigurationServer, "testDefaultConfig");
         serverInUse.setServerConfigurationFile(THROTTLING_DEFAULT_CONFIG_XML);
-        Thread.sleep(5000);
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=1005");
 
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
-        List<String> linesWarning = serverInUse.findStringsInLogs("The logs are being throttled due to high volume");
+        List<String> linesWarning = serverInUse.findStringsInLogs("TRAS3016W");
 
         assertEquals("The throttle log warning was not printed.", linesWarning.size(), 1);
         assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 1000);
@@ -303,7 +311,7 @@ public class LogThrottleTest {
 
         // This is the post checkpoint test to make sure the default log throttling happens.
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
-        List<String> linesWarning = serverInUse.findStringsInLogs("The logs are being throttled due to high volume");
+        List<String> linesWarning = serverInUse.findStringsInLogs("TRAS3016W");
         assertEquals("The throttle log warning was not printed.", linesWarning.size(), 1);
         assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 1000);
 
@@ -314,7 +322,7 @@ public class LogThrottleTest {
         // This is a post restore test to make sure the server.env config for throttling worked
         hitWebPage("logger-servlet", "CheckpointLoggerServlet", false, "?numMessages=1005");
         lines = serverInUse.findStringsInLogs("TESTA0001W");
-        linesWarning = serverInUse.findStringsInLogs("The logs are being throttled due to high volume");
+        linesWarning = serverInUse.findStringsInLogs("TRAS3016W");
         assertEquals("The throttle log warning was not printed.", linesWarning.size(), 1);
         assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5);
 
@@ -325,7 +333,7 @@ public class LogThrottleTest {
         checkpointServer.checkpointRestore();
         hitWebPage("logger-servlet", "CheckpointLoggerServlet", false, "?numMessages=1005");
         lines = serverInUse.findStringsInLogs("TESTA0001W");
-        linesWarning = serverInUse.findStringsInLogs("The logs are being throttled due to high volume");
+        linesWarning = serverInUse.findStringsInLogs("TRAS3016W");
         assertEquals("The throttle log warning was not printed.", linesWarning.size(), 1);
         assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5);
     }
@@ -338,7 +346,8 @@ public class LogThrottleTest {
         setUp(baseServer, "testCaseSensitiveThrottletype");
         serverInUse.setServerConfigurationFile(THROTTLING_FULL_MESSAGE_UPPERCASE_XML);
 
-        Thread.sleep(5000);
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
 
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=8");
 
@@ -358,7 +367,8 @@ public class LogThrottleTest {
         setUp(baseServer, "testCaseSensitiveThrottletype");
         serverInUse.setServerConfigurationFile(THROTTLING_MESSAGEID_UPPERCASE_XML);
 
-        Thread.sleep(5000);
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
 
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=8");
 
@@ -407,16 +417,80 @@ public class LogThrottleTest {
     public void testLogThrottlingEmptyMaxMessages() throws Exception {
         setUp(baseServer, "testLogThrottlingEmptyMaxMessages");
         serverInUse.setServerConfigurationFile(THROTTLING_EMPTY_CONFIG_XML);
-        Thread.sleep(5000);
+
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
 
         hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=1005");
 
         List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
-        List<String> linesWarning = serverInUse.findStringsInLogs("The logs are being throttled due to high volume");
+        List<String> linesWarning = serverInUse.findStringsInLogs("TRAS3016W");
 
         assertEquals("The throttle log warning was not printed.", linesWarning.size(), 1);
         assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 1000);
 
+    }
+
+    /*
+     * Ensure that log throttling is activated immediately after threshold is met while using JSON log format and the messageID throttleType.
+     */
+    @Test
+    public void testLogThrottlingActiveLowOccurrenceJSON() throws Exception {
+        setUp(baseServer, "testLogThrottlingActiveLowOccurrenceJSON");
+        serverInUse.setServerConfigurationFile(THROTTLING_MESSAGE_ID_JSON_XML);
+
+        RemoteFile messageLogFile = serverInUse.getDefaultLogFile();
+        serverInUse.waitForStringInLogUsingMark("CWWKG0017I.*|CWWKG0018I.*", messageLogFile);
+
+        hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=6");
+
+        List<String> linesWarning = serverInUse.findStringsInLogs("TRAS3016W");
+        assertEquals("The throttle log warning was not printed.", linesWarning.size(), 1);
+
+        List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
+        List<String> lines2 = serverInUse.findStringsInLogs("TESTA0003W");
+        List<String> lines3 = serverInUse.findStringsInLogs("TESTA0004W");
+        List<String> lines4 = serverInUse.findStringsInLogs("TESTA0005W");
+        List<String> lines5 = serverInUse.findStringsInLogs("TESTA0006W");
+        List<String> lines6 = serverInUse.findStringsInLogs("TESTA0007W");
+
+        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", lines.size(), 5); //This confirms JUL is being throttled
+        assertEquals("Test message TESTA0003W wasn't printed the correct number of times", lines2.size(), 5); //This confirms System.out.println is being throttled
+        assertEquals("Test message TESTA0004W wasn't printed the correct number of times", lines3.size(), 5); //This confirms System.out.print is being throttled
+        assertEquals("Test message TESTA0005W wasn't printed the correct number of times", lines4.size(), 5); //This confirms logger.log is being throttled
+        assertEquals("Test message TESTA0006W wasn't printed the correct number of times", lines5.size(), 5); //This confirms logger.log is being throttled
+        assertEquals("Test message TESTA0007W wasn't printed the correct number of times", lines6.size(), 5); //This confirms logger.log is being throttled
+
+    }
+
+    /*
+     * Ensure that when using the message throttleType and JSON log format, applicable messages are throttled while other are not.
+     */
+    @Test
+    public void testLogThrottlingActiveFullMessageJSON() throws Exception {
+        setUp(baseServer, "testLogThrottlingActiveFullMessage");
+        serverInUse.setServerConfigurationFile(THROTTLING_FULL_MESSAGE_JSON_XML);
+        ServerConfiguration serverConfig = serverInUse.getServerConfiguration();
+        Logging loggingObj = serverConfig.getLogging();
+        loggingObj.setThrottleMaxMessagesPerWindow("5");
+        Thread.sleep(5000);
+
+        hitWebPage("logger-servlet", "LoggerServlet", false, "?numMessages=8");
+
+        List<String> linesWarning = serverInUse.findStringsInLogs("TRAS3016W");
+        assertEquals("The throttle log warning was not printed.", linesWarning.size(), 1);
+
+        List<String> lines = serverInUse.findStringsInLogs("TESTA0001W");
+        List<String> lines2 = serverInUse.findStringsInLogs("TESTA0002W");
+        List<String> lines3 = serverInUse.findStringsInLogs("TESTA0004W");
+        List<String> lines4 = serverInUse.findStringsInLogs("TESTA0005W");
+
+        assertEquals("Test message TESTA0001W wasn't printed the correct number of times", 5, lines.size()); //This confirmed logger.warning is being throttled
+        assertEquals("Test message TESTA0003W wasn't printed the correct number of times", 5, lines3.size()); //This confirms System.out.println is being throttled
+        assertEquals("Test message TESTA0004W wasn't printed the correct number of times", 5, lines4.size()); //This confirms System.out.print is being throttled
+        assertEquals("Test message TESTA0005W wasn't printed the correct number of times", 5, lines4.size()); //This confirms logger.log is being throttled
+
+        assertFalse("Full message configuration is not functioning correctly.", lines2.size() == lines.size()); //This message shouldn't be getting throttled due to message variation
     }
 
     private static void hitWebPage(String contextRoot, String servletName, boolean failureAllowed, String params) throws MalformedURLException, IOException, ProtocolException {

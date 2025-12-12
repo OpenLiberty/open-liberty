@@ -868,9 +868,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testElementCollection() throws Exception {
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33205")) {
-            return; //TODO remove skip when fixed in Hibernate or Liberty
-        }
 
         ECEntity e1 = new ECEntity();
         e1.setId("EC1");
@@ -1629,35 +1626,29 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(3, segments.countByPointAXLessThan(1));
 
-        // TODO enable for EclipseLink once #29460 is fixed
-        if (isHibernate()) {
-            assertEquals(List.of(s5.id, s6.id, s3.id, s4.id, s2.id),
-                         segments.endingSouthOf(175)
-                                         .map(s -> s.id)
-                                         .collect(Collectors.toList()));
+        assertEquals(List.of(s5.id, s6.id, s3.id, s4.id, s2.id),
+                     segments.endingSouthOf(175)
+                                     .map(s -> s.id)
+                                     .collect(Collectors.toList()));
 
-            assertEquals(List.of(-20, 0, 24),
-                         segments.longerThan(200, Sort.asc("pointA.x"))
-                                         .stream()
-                                         .map(s -> s.pointA.x())
-                                         .collect(Collectors.toList()));
+        assertEquals(List.of(-20, 0, 24),
+                     segments.longerThan(200, Sort.asc("pointA.x"))
+                                     .stream()
+                                     .map(s -> s.pointA.x())
+                                     .collect(Collectors.toList()));
 
-            s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
-            s3.pointA = new Point(0, 0);
-            s3 = segments.addOrModify(s3);
+        s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
+        s3.pointA = new Point(0, 0);
+        s3 = segments.addOrModify(s3);
 
-            // removes s1 and s3
-            assertEquals(2L, segments.removeStartingAt(0, 0));
+        // removes s1 and s3
+        assertEquals(2L, segments.removeStartingAt(0, 0));
 
-            Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
-            assertEquals(120, s2pointB.x());
-            assertEquals(171, s2pointB.y());
-            assertEquals(4L,
-                         segments.erase());
-        } else {
-            assertEquals(6L,
-                         segments.erase());
-        }
+        Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
+        assertEquals(120, s2pointB.x());
+        assertEquals(171, s2pointB.y());
+        assertEquals(4L,
+                     segments.erase());
     }
 
     /**
@@ -2212,14 +2203,13 @@ public class DataJPATestServlet extends FATServlet {
                                          " ORDER BY this.pointB.y ASC, this.id ASC");
             query.setParameter("yExclusiveMax", 200);
 
-            // TODO enable once #29460 is fixed
-            //@SuppressWarnings("unchecked")
-            //Stream<Segment> results = query.getResultStream();
+            @SuppressWarnings("unchecked")
+            Stream<Segment> results = query.getResultStream();
 
-            //assertEquals(List.of(s5.id, s6.id),
-            //             results
-            //                             .map(s -> s.id)
-            //                             .collect(Collectors.toList()));
+            assertEquals(List.of(s5.id, s6.id),
+                         results
+                                         .map(s -> s.id)
+                                         .collect(Collectors.toList()));
         } finally {
             if (tran.getStatus() == Status.STATUS_ACTIVE)
                 tran.commit();
@@ -2778,21 +2768,46 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClass() {
 
-        assertIterableEquals(List.of("Minnesota", "New York"),
-                             cities.findByName("Rochester")
-                                             .map(c -> c.stateName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Minnesota", "New York"),
+                     cities.findByName("Rochester")
+                                     .map(c -> c.stateName)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Kansas City", "Springfield"),
-                             cities.findByStateName("Missouri")
-                                             .map(c -> c.name)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Kansas City", "Springfield"),
+                     cities.findByStateName("Missouri")
+                                     .map(c -> c.name)
+                                     .collect(Collectors.toList()));
 
         // TODO enable once EclipseLink #29073 is fixed
-        // JPA doesn't allow querying by IdClass. This would need to be interpreted as (c.name=?1 AND c.state=?2)
-        // The current error is confusing: You have attempted to set a value of type class test.jakarta.data.jpa.web.CityId
-        // for parameter 1 with expected type of class java.lang.String from query string SELECT o FROM City o WHERE (o.state=?1)
-        //cities.findById(CityId.of("Rochester", "Minnesota"));
+        // EclipseLink tries to allow querying by IdClass, but generates wrong SQL.
+        // This would need to be interpreted as (c.name=?1 AND c.stateName=?2)
+        //
+        // At one point, this was failing with:
+        // You have attempted to set a value of type class test.jakarta.data.jpa.web.CityId
+        // for parameter 1 with expected type of class java.lang.String from query string
+        // SELECT o FROM City o WHERE (o.stateName=?1)
+        // in which case EclipseLink was wrongly only using one part (stateName) of the id class
+        // in the SQL it generates, but then attempting to send the id class CityId value as
+        // the stateName, which does not match because CityId is not a String.
+        //
+        // However, now it is failing due to no result found
+        // Jakarta Data uses this JPQL: SELECT o FROM City o WHERE (id(o)=?1)
+        // Note that id(o) is a function that obtains the id of the entity,
+        // which in this case is an instance of CityId.
+        // EclipseLink wrongly generates the SQL:
+        // SELECT STATENAME, NAME, AREACODES, CHANGECOUNT, POPULATION FROM City WHERE (NAME = ?)
+        // and invokes toString on the CityId instance, supplying it as the NAME value
+        // rather than generating a query,
+        // ... WHERE (NAME = ? AND STATENAME = ?)
+        // and supplying the name and stateName values from the CityId instance.
+        //
+        //City city = cities.findById(CityId.of("Rochester", "Minnesota"))
+        //                .orElseThrow();
+
+        //assertEquals("Rochester", city.name);
+        //assertEquals("Minnesota", city.stateName);
+        //assertEquals(Set.of(507), city.areaCodes);
+        //assertEquals(121395, city.population);
     }
 
     /**

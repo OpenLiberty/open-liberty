@@ -4442,15 +4442,13 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals("Simon", participants.getFirstName(3).orElseThrow());
 
-        // TODO enable once #29460 is fixed
-        //assertEquals(new Participant.Name("Samantha", "TestRecordAsEmbeddable"),
-        //             participants.findNameById(4).orElseThrow());
+        assertEquals(new Participant.Name("Samantha", "TestRecordAsEmbeddable"),
+                     participants.findNameById(4).orElseThrow());
 
-        // TODO enable once #29460 is fixed
-        //assertEquals(List.of("Samantha", "Sarah", "Simon", "Steve"),
-        //             participants.withSurname("TestRecordAsEmbeddable")
-        //                             .map(p -> p.name.first())
-        //                             .collect(Collectors.toList()));
+        assertEquals(List.of("Samantha", "Sarah", "Simon", "Steve"),
+                     participants.withSurname("TestRecordAsEmbeddable")
+                                     .map(p -> p.name.first())
+                                     .collect(Collectors.toList()));
 
         assertEquals(4L, participants.remove("TestRecordAsEmbeddable"));
     }

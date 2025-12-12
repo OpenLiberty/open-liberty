@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,31 +19,15 @@ public record Cylinder(
                 Coordinate center,
                 Side side) {
 
-    public static class Coordinate {
-        public int x, y;
-
-        public Coordinate() {
-        }
-
-        public Coordinate(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        public int x() {
-            return x;
-        }
-
-        public int y() {
-            return y;
-        }
-
-        @Override
-        public String toString() {
-            return "Coordinate {x=" + x + ", y=" + y + "}";
-        }
+    public static record Coordinate(
+                    int x,
+                    int y) {
     }
 
+    // TODO switch to record once #33662 is fixed
+    //public static record Side(
+    //                Coordinate a,
+    //                Coordinate b) {
     public static class Side {
         public Coordinate a, b;
 
@@ -67,18 +51,8 @@ public record Cylinder(
         public String toString() {
             return "Side {a=" + a + ", b=" + b + "}";
         }
+
     }
-
-    // TODO switch the above to the following once #29460 is fixed
-    //public static record Coordinate(
-    //                int x,
-    //                int y) {
-    //}
-
-    //public static record Side(
-    //                Coordinate a,
-    //                Coordinate b) {
-    //}
 
     public Cylinder(String cylinderID,
                     int aX, int aY,

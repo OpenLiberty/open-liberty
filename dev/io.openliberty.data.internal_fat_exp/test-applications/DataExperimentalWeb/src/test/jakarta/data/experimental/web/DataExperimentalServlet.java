@@ -1617,13 +1617,12 @@ public class DataExperimentalServlet extends FATServlet {
         s2.setStatus("ORDER_RECEIVED");
         shipments.save(s2);
 
-        // TODO enable once #29460 is fixed
-        //Instructions inst1 = shipments.getInstructions(10).orElseThrow();
-        //assertEquals("Handle with care", inst1.handlingRequirements());
-        //assertEquals("Leave at door, send text alert", inst1.deliveryRequirements());
-        //assertEquals(false, inst1.needsSignature());
+        Instructions inst1 = shipments.getInstructions(10).orElseThrow();
+        assertEquals("Handle with care", inst1.handlingRequirements());
+        assertEquals("Leave at door, send text alert", inst1.deliveryRequirements());
+        assertEquals(false, inst1.needsSignature());
 
-        //assertEquals(false, shipments.getInstructions(20).isPresent());
+        assertEquals(false, shipments.getInstructions(20).isPresent());
 
         shipments.removeEverything();
     }

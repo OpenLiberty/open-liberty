@@ -1,110 +1,112 @@
-<!-- Copyright (c) 2020 IBM Corporation and others. All rights reserved. 
-	This program and the accompanying materials are made available under the 
-	terms of the Eclipse Public License 2.0 which accompanies this distribution, 
-	and is available at http://www.eclipse.org/legal/epl-2.0/ Contributors: 
-	IBM Corporation - initial API and implementation -->
+<!--
+    Copyright (c) 2020, 2025 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+ -->
 <server description="Server for ConsumerService REST endpoint and Grpc client">
-	<featureManager>
-		<feature>grpc-1.0</feature>
-		<feature>grpcClient-1.0</feature>
-		<feature>componenttest-1.0</feature>
-		<feature>mpRestClient-1.3</feature>
-		<feature>mpConfig-1.3</feature>
-		<feature>mpOpenAPI-1.1</feature>
-		<feature>jwt-1.0</feature>
-		<feature>ssl-1.0</feature>
-		<feature>appSecurity-2.0</feature>
-	</featureManager>
+    <featureManager>
+        <feature>grpc-1.0</feature>
+        <feature>grpcClient-1.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>mpRestClient-1.3</feature>
+        <feature>mpConfig-1.3</feature>
+        <feature>mpOpenAPI-1.1</feature>
+        <feature>jwt-1.0</feature>
+        <feature>ssl-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
 
-	<include location="../fatTestCommon.xml"/>
+    <include location="../fatTestCommon.xml"/>
 
-	 <httpEndpoint id="defaultHttpEndpoint"
+    <httpEndpoint id="defaultHttpEndpoint"
                   host="*"
                   httpPort="${bvt.prop.member_1.http}"
-				  httpsPort="${bvt.prop.member_1.https}"/>
-				  
-				  
-<!-- 	 <keyStore id="defaultKeyStore" password="passw0rd" /> -->
+                  httpsPort="${bvt.prop.member_1.https}"/>
 
-	<javaPermission className="java.security.AllPermission"
-		name="*" actions="*" />
+    <!-- <keyStore id="defaultKeyStore" password="passw0rd" /> -->
 
+    <javaPermission className="java.security.AllPermission"
+        name="*" actions="*" />
 
-	<!-- Default SSL configuration enables trust for default certificates from 
-		the Java runtime -->
-	<!-- <ssl id="defaultSSLConfig" trustDefaultCerts="true" /> -->
-	
-	<sslDefault sslRef="DefaultSSLSettings" />
-	<ssl
-		id="DefaultSSLSettings"
-		keyStoreRef="rsa_key"
-		trustStoreRef="rsa_trust"
-		clientAuthenticationSupported="true" />
-	<keyStore
-		id="rsa_key"
-		password="Liberty"
-		type="PKCS12"
-		location="${server.config.dir}/rsa_key.p12" />
-	<keyStore
-		id="rsa_trust"
-		password="LibertyServer"
-		type="PKCS12"
-		location="${server.config.dir}/rsa_trust.p12" />
+    <!-- Default SSL configuration enables trust for default certificates from
+        the Java runtime -->
+    <!-- <ssl id="defaultSSLConfig" trustDefaultCerts="true" /> -->
 
-	<basicRegistry id="basic" realm="consumerRealmBasicReg">
-		<user name="dev" password="hello" /> 
-		<user name="test" password="bug" />
-		<group name="students">
-			<member name="dev" />
-			<member name="test" />
-		</group>
-	</basicRegistry>
+    <sslDefault sslRef="DefaultSSLSettings" />
+    <ssl
+        id="DefaultSSLSettings"
+        keyStoreRef="rsa_key"
+        trustStoreRef="rsa_trust"
+        clientAuthenticationSupported="true" />
+    <keyStore
+        id="rsa_key"
+        password="Liberty"
+        type="PKCS12"
+        location="${server.config.dir}/rsa_key.p12" />
+    <keyStore
+        id="rsa_trust"
+        password="LibertyServer"
+        type="PKCS12"
+        location="${server.config.dir}/rsa_trust.p12" />
 
-	<application id="StoreConsumerApp"
-		location="StoreConsumerApp.war" name="StoreConsumerApp" type="war">
-		<application-bnd>
-			<security-role name="Administrator">
-				<!--group name="${env.ROLE_NAME_ADMINISTRATOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_ADMINISTRATOR}"/ -->
-				<group name="Administrator"
-					access-id="group:consumerRealmBasicReg/Administrator" />
-			</security-role>
-			<security-role name="students">
-				<!--group name="${env.ROLE_NAME_EDITOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_EDITOR}"/ -->
-				<group name="students"
-					access-id="group:consumerRealmBasicReg/students" />
-			</security-role>
-		</application-bnd>
-	</application>
+    <basicRegistry id="basic" realm="consumerRealmBasicReg">
+        <user name="dev" password="hello" />
+        <user name="test" password="bug" />
+        <group name="students">
+            <member name="dev" />
+            <member name="test" />
+        </group>
+    </basicRegistry>
 
-	<logging
-		traceSpecification="*=info:
-			com.ibm.ws.webcontainer*=all:
-			com.ibm.wsspi.webcontainer*=all:
-			HTTPChannel=all:
-			HTTPTransport=all:
-			TCPChannel=all:
-			GenericBNF=all:
-			GRPC=all:
-			io.grpc*=all:
-			io.netty*=all:
-			com.ibm.testapp.g3store*=all"
-		maxFileSize="100" maxFiles="1" traceFormat="BASIC" />
+    <application id="StoreConsumerApp"
+        location="StoreConsumerApp.war" name="StoreConsumerApp" type="war">
+        <application-bnd>
+            <security-role name="Administrator">
+                <!--group name="${env.ROLE_NAME_ADMINISTRATOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_ADMINISTRATOR}"/ -->
+                <group name="Administrator"
+                    access-id="group:consumerRealmBasicReg/Administrator" />
+            </security-role>
+            <security-role name="students">
+                <!--group name="${env.ROLE_NAME_EDITOR}" access-id="group:${env.OIDC_REALM}/${env.ROLE_NAME_EDITOR}"/ -->
+                <group name="students"
+                    access-id="group:consumerRealmBasicReg/students" />
+            </security-role>
+        </application-bnd>
+    </application>
 
-	<jwtBuilder
-		id="defaultJWT" 
-		issuer="testIssuer"
-		 />
-		 
-	<jwtBuilder
-		id="defaultBadJWT" 
-		issuer="testIssuerBad"
-		 />
-		
-	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
-	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
-	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppNameSetBadRoles" headersToPropagate="authorization"/>
-	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getNameCookieJWTHeader" headersToPropagate="Cookie"/>
-	<grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppSetBadRoleCookieJWTHeader" headersToPropagate="Cookie"/>
-	
-	<!-- <grpcClient path="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
+    <!--logging
+        traceSpecification="*=info:
+            com.ibm.ws.webcontainer*=all:
+            com.ibm.wsspi.webcontainer*=all:
+            HTTPChannel=all:
+            HTTPTransport=all:
+            TCPChannel=all:
+            GenericBNF=all:
+            GRPC=all:
+            io.grpc*=all:
+            io.netty*=all:
+            com.ibm.testapp.g3store*=all"
+        maxFileSize="100" maxFiles="1" traceFormat="BASIC" /-->
+
+    <jwtBuilder
+        id="defaultJWT"
+        issuer="testIssuer"
+    />
+
+    <jwtBuilder
+        id="defaultBadJWT"
+        issuer="testIssuerBad"
+    />
+
+    <grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppInfo" headersToPropagate="authorization"/>
+    <grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAllAppNames" headersToPropagate="authorization"/>
+    <grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppNameSetBadRoles" headersToPropagate="authorization"/>
+    <grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getNameCookieJWTHeader" headersToPropagate="Cookie"/>
+    <grpcClient host="*" path="test.g3store.grpc.AppConsumerService/getAppSetBadRoleCookieJWTHeader" headersToPropagate="Cookie"/>
+
+    <!-- <grpcClient path="test.g3store.grpc.AppConsumerService/getAllAppNames" authnToken="jwt"/> -->
 </server>

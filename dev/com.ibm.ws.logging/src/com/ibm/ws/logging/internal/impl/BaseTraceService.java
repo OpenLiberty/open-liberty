@@ -297,6 +297,7 @@ public class BaseTraceService implements TrService {
     private static long lastTimeBasedCleanupTime = 0;
     private static long lastSizeBasedCleanupTime = 0;
     private final static AtomicBoolean throttleWarningPrinted = new AtomicBoolean(false);
+    private final static AtomicBoolean throttleMaxMessagesPerWindowUpdated = new AtomicBoolean(false);
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -481,6 +482,8 @@ public class BaseTraceService implements TrService {
 
         if (throttleMaxMessagesPerWindow <= 0)
             throttleMaxMessagesPerWindow = 0;
+
+        throttleMaxMessagesPerWindowUpdated.set(true);
 
         throttleMapSize = trConfig.getThrottleMapSize();
 
@@ -1189,7 +1192,7 @@ public class BaseTraceService implements TrService {
                 return;
 
             //throttleMaxMessagesPerWindow must be a positive integer to be active. Setting to 0 disables log throttling.
-            if (throttleMaxMessagesPerWindow > 0) {
+            if (throttleMaxMessagesPerWindowUpdated.get() && throttleMaxMessagesPerWindow > 0) {
                 if (routedMessage != null) {
                     LogSource logSource = new LogSource();
                     LogTraceData parsedMessage = logSource.parse(routedMessage);
@@ -1298,7 +1301,7 @@ public class BaseTraceService implements TrService {
 
             if (state != null) {
                 boolean shouldSupress = state.increment();
-                if (shouldSupress) {
+                if (shouldSupress && throttleMaxMessagesPerWindow > 0) {
                     //Print a warning once when throttling first occurs.
                     if (!throttleWarningPrinted.get()) {
                         throttleWarningPrinted.set(true);
