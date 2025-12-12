@@ -148,18 +148,18 @@
 
         <AD name="%throttle.max.messages.per.window" description="%throttle.max.messages.per.window.desc" 
             ibm:variable="com.ibm.ws.logging.throttle.max.messages.per.window"
-            id="throttleMaxMessagesPerWindow" required="false" type="Integer" min="0" default="1000" ibm:beta="true">
+            id="throttleMaxMessagesPerWindow" required="false" type="Integer" min="0" default="1000">
         </AD>
         
         <AD name="%throttle.type" description="%throttle.type.desc" 
             ibm:variable="com.ibm.ws.logging.throttle.type"
-            id="throttleType" required="false" type="String" default="messageID" ibm:beta="true">
+            id="throttleType" required="false" type="String" default="messageID">
             <Option label="%throttle.type.messageid" value="messageID"/>
             <Option label="%throttle.type.message" value="message"/>
         </AD>
         
         <AD name="internal" description="internal use only" 
-            id="throttleMapSize" required="false" type="Integer" min="100" default="500" ibm:beta="true">
+            id="throttleMapSize" required="false" type="Integer" min="100" default="500">
         </AD>
         
         <AD name="internal" description="internal use only" 
