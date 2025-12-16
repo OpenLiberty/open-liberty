@@ -1732,6 +1732,23 @@
                                         "name": "simpleMetaRequest",
                                         "description": "return string made from args and metadata",
                                         "title": "return string made from args and metadata"
+                                    },
+                                    {
+                                      "name": "get-user-jp",
+                                      "title": "ユーザー情報取得",
+                                      "description": "指定されたユーザー ID の名前とロールを取得します。",
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "userid": {
+                                            "description": "対象ユーザーのユーザーID。",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "userid"
+                                        ]
+                                      }
                                     }
                                 ]
                             },
