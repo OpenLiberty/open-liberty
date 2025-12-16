@@ -253,10 +253,16 @@ public class McpServlet extends HttpServlet {
     private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params) {
         Map<String, Object> args = params.getArguments(jsonb);
         Meta meta = new MetaImpl(params.getMeta(), jsonb);
-        return new ToolArgumentsImpl(args, new CancellationImpl(), meta);
+        RequestId requestId = request.id();
+
+        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistry, requestId);
     }
 
-    record ToolArgumentsImpl(Map<String, Object> args, Cancellation cancellation, Meta meta) implements ToolArguments {}
+    public record ToolArgumentsImpl(Map<String, Object> args,
+                                    Cancellation cancellation,
+                                    Meta meta,
+                                    EncoderRegistry encoderRegistry,
+                                    RequestId requestId) implements ToolArguments {}
 
     private void cleanup(ExecutionRequestId requestId) {
         if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
