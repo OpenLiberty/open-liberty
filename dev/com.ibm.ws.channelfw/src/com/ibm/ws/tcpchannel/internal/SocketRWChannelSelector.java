@@ -218,6 +218,13 @@ public class SocketRWChannelSelector extends ChannelSelector implements Runnable
                 continue;
             }
 
+            if (ioSocket == null || ioSocket.getChannel() == null) {
+                if (bTrace && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Ignoring due to null ioSocket or channel");
+                }
+                continue;
+            }
+
             final int selectorOp;
             if (work.isRequestTypeRead()) {
                 selectorOp = SelectionKey.OP_READ;
