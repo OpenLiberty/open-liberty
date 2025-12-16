@@ -2639,7 +2639,7 @@ public class ToolTest extends FATServletClient {
                                 "isError": false,
                                 "content": [
                                     {
-                                        "text": "Hello IBMUser you have called this tool from Hursley at timestamp 1762860699",
+                                        "text": "You have called this tool from Hursley at timestamp 1762860699",
                                         "type": "text"
                                     }
                                 ],
