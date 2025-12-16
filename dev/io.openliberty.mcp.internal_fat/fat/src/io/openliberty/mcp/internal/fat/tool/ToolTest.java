@@ -2614,6 +2614,44 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void noArgRequest() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "_meta":{
+                                        "api.ibmtest.org/location": "Hursley",
+                                        "timestamp": 1762860699
+                                    },
+                            "name": "noArgsRequest"
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONObject jsonResponse = new JSONObject(response);
+        // Strict Mode tests
+        String expectedResponseString = """
+                                                                {
+                            "result": {
+                                "isError": false,
+                                "content": [
+                                    {
+                                        "text": "Hello IBMUser you have called this tool from Hursley at timestamp 1762860699",
+                                        "type": "text"
+                                    }
+                                ],
+                            },
+                            "id": 2,
+                            "jsonrpc": "2.0"
+                        }
+                                                                                                """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
     public void testReusingRequestIdAfterCompletionSucceeds() throws Exception {
 
         String requestTemplate = """

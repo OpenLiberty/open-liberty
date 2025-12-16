@@ -533,8 +533,8 @@ public class BasicTools {
     }
 
     @Tool(name = "simpleMetaRequest", title = "return string made from args and metadata", description = "return string made from args and metadata", structuredContent = false)
-    public String addPersonToListToolResponseWithSimpleMetaRequest(@ToolArg(name = "name", description = "name of person") String name,
-                                                                   Meta meta) {
+    public String simpleMetaRequest(@ToolArg(name = "name", description = "name of person") String name,
+                                    Meta meta) {
         Jsonb jsonb = JsonbBuilder.create();
 
         String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"));
@@ -549,6 +549,16 @@ public class BasicTools {
     public String getUserJp(@ToolArg(name = "userid",
                                      description = "対象ユーザーのユーザーID。") String userId) { // The user ID of the target user
         return "ID: " + userId + ", Name: 仮名, role: user";
+    }
+
+    @Tool(name = "noArgsRequest", title = "call tool without propviding arguments in params", description = "return string made from args and metadata", structuredContent = false)
+    public String noArgsRequest(Meta meta) {
+        Jsonb jsonb = JsonbBuilder.create();
+
+        String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"));
+        BigDecimal timestamp = (BigDecimal) meta.getValue(MetaKey.from("timestamp"));
+        String result = "You have called this tool from " + location + " at timestamp " + timestamp.toString();
+        return result;
     }
 
 }

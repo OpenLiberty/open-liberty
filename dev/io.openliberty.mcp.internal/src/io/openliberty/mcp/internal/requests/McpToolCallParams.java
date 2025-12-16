@@ -80,7 +80,7 @@ public class McpToolCallParams {
     }
 
     public Map<String, Object> getArguments(Jsonb jsonb) {
-        if (this.arguments == null) {
+        if (!this.metadata.arguments().isEmpty() && this.arguments == null) {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of(Tr.formatMessage(tc, "jsonrpc.missing.params")));
         }
         if (parsedArguments == null) {
