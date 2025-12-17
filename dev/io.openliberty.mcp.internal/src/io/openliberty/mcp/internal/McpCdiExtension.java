@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
-import java.util.ArrayList;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,8 +34,6 @@ import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
-
-import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -71,7 +68,7 @@ public class McpCdiExtension implements Extension {
     private static Jsonb createJsonb() {
         JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
                                                    .withDeserializers(new McpRequestIdDeserializer());
-    
+
         return JsonbBuilder.create(jsonbConfig);
     }
 
@@ -168,9 +165,9 @@ public class McpCdiExtension implements Extension {
                     if (converter != null) {
                         try {
                             converter.convert(argMetadata.defaultValue());
-                        } catch (IllegalArgumentException | NullPointerException e) {
+                        } catch (Exception e) {
                             Tr.error(tc, "CWMCM0020E.defaultvalue.conversion.error", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type(),
-                                     argMetadata.defaultValue());
+                                     argMetadata.defaultValue(), e);
                             invalidDefaultValueForType = true;
                         }
                     } else {

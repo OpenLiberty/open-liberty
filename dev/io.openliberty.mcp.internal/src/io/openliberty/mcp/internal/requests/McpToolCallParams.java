@@ -146,19 +146,22 @@ public class McpToolCallParams {
     public static Object convertDefaultValueToArgType(ToolMetadata toolMetadata, ArgumentMetadata argMetadata) {
         String defaultValue = argMetadata.defaultValue();
         Type type = TypeUtility.box(argMetadata.type());
-        try {
-            DefaultValueConverter<?> converter = BuiltinDefaultValueConverters.CONVERTERS.get(type);
-            if (converter != null) {
+        DefaultValueConverter<?> converter = BuiltinDefaultValueConverters.CONVERTERS.get(type);
+
+        if (converter != null) {
+            try {
                 return converter.convert(defaultValue);
+            } catch (Exception e) {
+                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.conversion.error", toolMetadata.name(), argMetadata.name(), argMetadata.type(),
+                                                                    defaultValue, e),
+                                                   e);
             }
-            if (type instanceof Class clazz) {
-                if (clazz.isEnum()) {
-                    return Enum.valueOf(clazz.asSubclass(Enum.class), defaultValue);
-                }
+        }
+
+        if (type instanceof Class clazz) {
+            if (clazz.isEnum()) {
+                return Enum.valueOf(clazz.asSubclass(Enum.class), defaultValue);
             }
-        } catch (IllegalArgumentException | NullPointerException e) {
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.conversion.error", toolMetadata.name(), argMetadata.name(), argMetadata.type(),
-                                                                defaultValue));
         }
 
         throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", toolMetadata.name(), argMetadata.name(), argMetadata.type()));

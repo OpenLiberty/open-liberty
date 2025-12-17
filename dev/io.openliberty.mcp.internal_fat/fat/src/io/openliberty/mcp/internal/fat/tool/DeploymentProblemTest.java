@@ -111,7 +111,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testToolArgInvalidDefaultValueForType() throws Exception {
-        String expectedErrorHeader = "CWMCM0020E: The MCP tool class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue has an argument year with the type int that cannot accept the default value TwentyTwentyFive.";
+        String expectedErrorHeader = "CWMCM0020E: The default value of the year argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue MCP tool cannot be converted to the int type. The value is TwentyTwentyFive. The error is java.lang.NumberFormatException: For input string: \"TwentyTwentyFive\"";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg Invalid DefaultValue for Argument Type: ", expectedErrorHeader, expectedErrorList, server);
     }

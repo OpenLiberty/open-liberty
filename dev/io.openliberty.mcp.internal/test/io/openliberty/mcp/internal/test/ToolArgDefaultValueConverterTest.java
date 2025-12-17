@@ -152,7 +152,7 @@ public class ToolArgDefaultValueConverterTest {
         assertThrows(() -> McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata),
                      exception()
                                 .ofType(IllegalArgumentException.class)
-                                .messageIncludes("CWMCM0020E: The MCP tool defaultValueInvalidChar has an argument initial with the type class java.lang.Character that cannot accept the default value HH."));
+                                .messageIncludes("CWMCM0020E: The default value of the initial argument of the defaultValueInvalidChar MCP tool cannot be converted to the class java.lang.Character type. The value is HH. The error is java.lang.IllegalArgumentException: CWMCM0021E: A character default value must be exactly one character, but was HH."));
     }
 
     @Test
@@ -174,7 +174,7 @@ public class ToolArgDefaultValueConverterTest {
         assertThrows(() -> McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata),
                      exception()
                                 .ofType(IllegalArgumentException.class)
-                                .messageIncludes("CWMCM0020E: The MCP tool defaultValueInvalidLong has an argument count with the type class java.lang.Long that cannot accept the default value notANumber."));
+                                .messageIncludes("CWMCM0020E: The default value of the count argument of the defaultValueInvalidLong MCP tool cannot be converted to the class java.lang.Long type. The value is notANumber. The error is java.lang.NumberFormatException: For input string: \"notANumber\""));
     }
 
     @Test

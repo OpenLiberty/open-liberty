@@ -183,6 +183,14 @@ CWMCM0019E.error.encoding.element.useraction=Review the server message.log and F
 # {1} = corresponding argument name
 # {2} = corresponding argument type
 # {3} = corresponding default value
-CWMCM0020E.defaultvalue.conversion.error=CWMCM0020E: The MCP tool {0} has an argument {1} with the type {2} that cannot accept the default value {3}.
+# {4} = ExceptionMessage
+CWMCM0020E.defaultvalue.conversion.error=CWMCM0020E: The default value of the {1} argument of the {0} MCP tool cannot be converted to the {2} type. The value is {3}. The error is {4}.
 CWMCM0020E.defaultvalue.conversion.error.explanation=An argument has a default value that cannot be converted to the argument's type. This may occur if the default value is null, has an invalid format, or is out of range for the target type.
 CWMCM0020E.defaultvalue.conversion.error.useraction=Ensure that the default value is valid for the argument's type. Ensure the default value is not null. For character types, provide exactly one character. For numeric types, provide a valid number within the type's range.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The default value string
+CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: A character default value must be exactly one character, but was {0}
+CWMCM0021E.defaultvalue.character.invalid.length.explanation=A default value for a Character type argument was provided, but it does not contain exactly one character. Character arguments must have a single character string.
+CWMCM0021E.defaultvalue.character.invalid.length.useraction=Ensure that the default value for an argument with a Character type is string with exactly one character.
