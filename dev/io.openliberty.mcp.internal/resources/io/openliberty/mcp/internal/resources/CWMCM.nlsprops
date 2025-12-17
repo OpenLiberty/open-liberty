@@ -154,6 +154,15 @@ jsonrpc.missing.arguments=The following arguments were expected by the method bu
 
 # Used for server logging
 # do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+CWMCM0017E.missing.toolarg.defaultvalue.converter=CWMCM0017E: The {1} argument of the {0} MCP tool method does not have a converter to change its default value into an object of type {2}.
+CWMCM0017E.missing.toolarg.defaultvalue.converter.explanation=One or more arguments have default values without a matching converter to convert the default value to the argument's type.
+CWMCM0017E.missing.toolarg.defaultvalue.converter.useraction=Create a custom converter implementation for the tool argument's type.
+
+# Used for server logging
+# do not translate MCP
 # {0} = The qualified name of the tool
 # {1} = Parameter name
 CWMCM0018E.generic.arguments=CWMCM0018E: The {1} argument of the {0} MCP tool method contains unsupported components such as TypeVariable, Wildcard, GenericArrayType.

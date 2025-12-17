@@ -216,6 +216,22 @@
                                         "title": "Echoes the input"
                                     },
                                     {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "input": {
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                            "input"
+                                        ]
+                                      },
+                                      "name": "echoRequestId",
+                                      "description": "Returns the incoming request ID",
+                                      "title": "Echo RequestId"
+                                    },
+                                    {
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {

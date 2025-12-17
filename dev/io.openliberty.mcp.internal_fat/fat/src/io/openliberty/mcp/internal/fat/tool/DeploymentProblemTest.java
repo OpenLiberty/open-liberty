@@ -46,8 +46,8 @@ public class DeploymentProblemTest extends FATServletClient {
                           "CWMCM0005E", // There are one or more MCP validation errors.
                           "CWMCM0006E", // Duplicate special arguments.
                           "CWMCM0007E", // Invalid Special arguments.
+                          "CWMCM0017E", //  Default value has no type converter.
                           "CWMCM0018E", //  Arguments contain generics.
-                          "CWMCM0019E", //  Default value has no type converter.
                           "CWMCM0020E" //  Invalid default value for argument type.
         );
     }
@@ -104,7 +104,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testToolArgDefaultValueWithoutTypeConverter() throws Exception {
-        String expectedErrorHeader = Pattern.quote("CWMCM0019E: The city argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter MCP tool method does not have a converter to change its default value into an object of type class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest$City.");
+        String expectedErrorHeader = Pattern.quote("CWMCM0017E: The city argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter MCP tool method does not have a converter to change its default value into an object of type class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest$City.");
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg DefaultValue Without Converter: ", expectedErrorHeader, expectedErrorList, server);
     }

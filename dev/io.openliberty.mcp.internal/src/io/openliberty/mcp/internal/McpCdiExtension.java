@@ -174,7 +174,7 @@ public class McpCdiExtension implements Extension {
                             invalidDefaultValueForType = true;
                         }
                     } else {
-                        Tr.error(tc, "CWMCM0019E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argName, argMetadata.type());
+                        Tr.error(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argName, argMetadata.type());
                         unsupportedDefaultValueType = true;
                     }
 
