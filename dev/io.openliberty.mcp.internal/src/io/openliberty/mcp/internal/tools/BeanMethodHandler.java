@@ -129,6 +129,9 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
     }
 
     private ToolResponse encodeResult(Object result, EncoderRegistry encoderRegistry) {
+        if (result == null) {
+            return ToolResponse.success(Objects.toString(result));
+        }
         Class<?> resultType = result.getClass();
         if (result instanceof List<?> list && !list.isEmpty()) {
             resultType = list.get(0).getClass();
