@@ -92,7 +92,7 @@ public class ToolArgDefaultValueConverterTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("year");
-        assertThat(McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata), equalTo(2025));
+        assertThat(McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata), equalTo(2025));
     }
 
     @Test
@@ -111,7 +111,7 @@ public class ToolArgDefaultValueConverterTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("planet");
-        assertThat(McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata), equalTo("Jupiter"));
+        assertThat(McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata), equalTo("Jupiter"));
     }
 
     @Test
@@ -130,7 +130,7 @@ public class ToolArgDefaultValueConverterTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("initial");
-        assertThat(McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata), equalTo('H'));
+        assertThat(McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata), equalTo('H'));
     }
 
     @Test
@@ -149,7 +149,7 @@ public class ToolArgDefaultValueConverterTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("initial");
-        assertThrows(() -> McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata),
+        assertThrows(() -> McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata),
                      exception()
                                 .ofType(IllegalArgumentException.class)
                                 .messageIncludes("CWMCM0020E: The MCP tool defaultValueInvalidChar has an argument initial with the type class java.lang.Character that cannot accept the default value HH."));
@@ -171,7 +171,7 @@ public class ToolArgDefaultValueConverterTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("count");
-        assertThrows(() -> McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata),
+        assertThrows(() -> McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata),
                      exception()
                                 .ofType(IllegalArgumentException.class)
                                 .messageIncludes("CWMCM0020E: The MCP tool defaultValueInvalidLong has an argument count with the type class java.lang.Long that cannot accept the default value notANumber."));
@@ -193,7 +193,7 @@ public class ToolArgDefaultValueConverterTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("bool");
-        assertThat(McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata), equalTo(true));
+        assertThat(McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata), equalTo(true));
     }
 
     @Test
@@ -212,7 +212,7 @@ public class ToolArgDefaultValueConverterTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ArgumentMetadata argMetadata = toolCallRequest.getMetadata().arguments().get("city");
-        assertThrows(() -> McpToolCallParams.getDefaultValue(toolCallRequest.getMetadata(), argMetadata),
+        assertThrows(() -> McpToolCallParams.convertDefaultValueToArgType(toolCallRequest.getMetadata(), argMetadata),
                      exception()
                                 .ofType(IllegalArgumentException.class));
     }
