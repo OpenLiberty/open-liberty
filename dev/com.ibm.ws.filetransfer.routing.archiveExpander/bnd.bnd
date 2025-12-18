@@ -28,7 +28,8 @@ Import-Package: \
  !org.apache.commons.compress.compressors.lzw, \
  !org.apache.commons.compress, \
  !org.apache.commons.compress.parallel, \
- !org.apache.commons.io.file, *
+ !org.apache.commons.io.file, \
+ com.github.luben.zstd;resolution:=optional, *
 
 -includeresource: \
  @\${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/channels/FileChannels*, \
