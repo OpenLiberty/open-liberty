@@ -19,6 +19,9 @@ final public class BodyQueue {
     private volatile Throwable error;
     private final ByteBufAllocator allocator;
 
+    private final Object signalLock = new Object();
+    private long signal;
+
     public BodyQueue(ByteBufAllocator allocator){
         this(allocator, DEFAULT_HIGH, DEFAULT_LOW);
     }
@@ -32,6 +35,7 @@ final public class BodyQueue {
     public void enqueueRetained(ByteBuf buf){
         queue.add(buf.retain());
         buffered.addAndGet(buf.readableBytes());
+        signalChange();
     }
 
     public ByteBuf poll(){
@@ -50,13 +54,38 @@ final public class BodyQueue {
         return eos && queue.isEmpty();
     }
 
+    private void signalChange(){
+        synchronized (signalLock){
+            signal++;
+            signalLock.notifyAll();
+        }
+    }
+
+    public long signalToken() {
+        synchronized (signalLock) {
+            return signal;
+        }
+    }
+
+    public long awaitChange(long lastToken) throws InterruptedException {
+        synchronized (signalLock) {
+            while (signal == lastToken && !eos && error == null) {
+                signalLock.wait();
+            }
+            return signal;
+        }
+    }
+
+
+
     public void signalEos(){
-        Thread.currentThread().dumpStack();
         eos = true;
+        signalChange();
     }
 
     public void signalError(Throwable t){
         error = t;
+        signalChange();
     }
 
     public Throwable error(){
