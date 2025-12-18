@@ -146,10 +146,10 @@ public class McpCdiExtension implements Extension {
         boolean invalidDefaultValueForType = false;
 
         for (ToolMetadata tool : tools.getAllTools()) {
-            Map<String, ArgumentMetadata> arguments = tool.arguments();
 
-            for (String argName : arguments.keySet()) {
-                ArgumentMetadata argMetadata = arguments.get(argName);
+            for (var argEntry : tool.arguments().entrySet()) {
+                String argName = argEntry.getKey();
+                ArgumentMetadata argMetadata = argEntry.getValue();
                 if (argName.isBlank()) {
                     Tr.error(tc, "CWMCM0001E.blank.arguments", tool.getToolQualifiedName());
                     blankArgumentsFound = true;
