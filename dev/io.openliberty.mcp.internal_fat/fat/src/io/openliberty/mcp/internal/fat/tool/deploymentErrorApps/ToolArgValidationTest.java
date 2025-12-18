@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool.deploymentErrorApps;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
@@ -64,5 +65,13 @@ public class ToolArgValidationTest {
                                                                                                  @ToolArg(name = "generic", description = "Generic object") T item,
                                                                                                  @ToolArg(name = "concrete", description = "Concrete object") List<String> item2) {
         return null;
+    }
+
+    @Tool
+    public String toolArgWithOptionalValueAndDefaultValueSet(@ToolArg(name = "input", defaultValue = "Java world") Optional<String> input) {
+        if (input.isEmpty()) {
+            return "Hello World";
+        }
+        return "Hello from: " + input.get();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -114,5 +114,12 @@ public class DeploymentProblemTest extends FATServletClient {
         String expectedErrorHeader = "CWMCM0020E: The default value of the year argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue MCP tool cannot be converted to the int type. The value is TwentyTwentyFive. The error is java.lang.NumberFormatException: For input string: \"TwentyTwentyFive\"";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg Invalid DefaultValue for Argument Type: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testToolArgWithOptionalValueAndDefaultValue() throws Exception {
+        String expectedErrorHeader = "CWMCM0017E: The input argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet MCP tool method does not have a converter to change its default value into an object of type java.util.Optional<java.lang.String>.";
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg No Converter for DefaultValue: ", expectedErrorHeader, expectedErrorList, server);
     }
 }

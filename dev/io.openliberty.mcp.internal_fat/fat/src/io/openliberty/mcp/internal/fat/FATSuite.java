@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
+import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
 
@@ -67,6 +68,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 InactiveCdiTest.class,
                 LifecycleTest.class,
                 McpUrlPathTest.class,
+                NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
                 ProtocolVersionTest.class,
                 StatefulModeTest.class,

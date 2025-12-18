@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,15 +41,6 @@ public class McpToolCallParams {
     private String name;
     private ToolMetadata metadata;
     private static final TraceComponent tc = Tr.register(McpToolCallParams.class);
-    private static Map<Class<?>, Object> TYPE_DEFAULTS_MAP = Map.of(
-                                                                    boolean.class, false,
-                                                                    char.class, '\0',
-                                                                    byte.class, (byte) 0,
-                                                                    short.class, (short) 0,
-                                                                    int.class, 0,
-                                                                    long.class, 0L,
-                                                                    float.class, 0f,
-                                                                    double.class, 0d);
 
     /**
      * @return the metadata
@@ -116,11 +107,8 @@ public class McpToolCallParams {
                 result.put(argName, jsonb.fromJson(argValueJson, argMetadata.type()));
                 requestArgumentsProcessed++;
             } else if (!argMetadata.required()) {
-                if (!argMetadata.defaultValue().isEmpty()) {
-                    result.put(argName, convertDefaultValueToArgType(metadata, argMetadata));
-                } else {
-                    result.put(argName, emptyToolArgValue(argMetadata.type())); //blank result for no value provided for optional argument
-                }
+                //Argument is optional and not provided, resolve the default value
+                result.put(argName, DefaultValueResolver.resolveDefaultValue(argMetadata));
             } else {
                 // Required argument was not provided in the request
                 hasMissingArgs = true;
@@ -137,18 +125,6 @@ public class McpToolCallParams {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, data);
         }
         return result;
-    }
-
-    /**
-     * The null value to use for different types. Null for objects or 0 for primitives.
-     *
-     * @param type the type to get the null value for
-     * @return the null value for the class inputted as a parameter
-     */
-    public static Object emptyToolArgValue(Type type) {
-        if (type instanceof Class clazz && clazz.isPrimitive())
-            return TYPE_DEFAULTS_MAP.get(clazz);
-        return null;
     }
 
     /**

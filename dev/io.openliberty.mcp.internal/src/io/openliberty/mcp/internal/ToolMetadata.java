@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
+import io.openliberty.mcp.internal.requests.DefaultValueResolver;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.security.SecurityRequirement;
@@ -195,11 +196,13 @@ public record ToolMetadata(String name,
                 String argName = resolveArgumentName(param, argAnnotation);
                 boolean isDuplicateArg = result.containsKey(argName);
 
+                boolean required = isArgumentRequired(argAnnotation.required(), argAnnotation.defaultValue(), param.getBaseType());
+
                 result.put(argName, new ArgumentMetadata(argName,
                                                          param.getBaseType(),
                                                          param.getPosition(),
                                                          argAnnotation.description(),
-                                                         argAnnotation.required(),
+                                                         required,
                                                          argAnnotation.defaultValue(),
                                                          isDuplicateArg));
             }
@@ -209,6 +212,23 @@ public record ToolMetadata(String name,
             throw new GenericArgumentException(genericParams);
         }
         return result.isEmpty() ? Collections.emptyMap() : result;
+    }
+
+    /**
+     * Tool Arguments are NOT required if:
+     *
+     * ToolArg.required is set to false
+     * ToolArg.defaultValue is set, or
+     * the argument return type is optional
+     */
+    private static boolean isArgumentRequired(boolean requiredArgAnnotation, String defaultValue, Type argumentType) {
+        if (!defaultValue.isEmpty()) {
+            return false;
+        }
+        if (DefaultValueResolver.isOptionalType(argumentType)) {
+            return false;
+        }
+        return requiredArgAnnotation;
     }
 
     private static String resolveArgumentName(AnnotatedParameter<?> param, ToolArg argAnnotation) {

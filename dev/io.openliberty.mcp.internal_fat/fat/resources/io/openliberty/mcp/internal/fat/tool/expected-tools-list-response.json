@@ -1319,8 +1319,7 @@
                                                 }
                                             },
                                             "required": [
-                                                "employeeList",
-                                                "person"
+                                                "employeeList"
                                             ]
                                         },
                                         "name": "addPersonToList",
@@ -1521,8 +1520,7 @@
                                                 }
                                             },
                                             "required": [
-                                                "employeeList",
-                                                "person"
+                                                "employeeList"
                                             ]
                                         },
                                         "name": "addPersonToListToolResponse",
@@ -1723,8 +1721,7 @@
                                                 }
                                             },
                                             "required": [
-                                                "employeeList",
-                                                "person"
+                                                "employeeList"
                                             ]
                                         },
                                         "name": "addPersonToListToolResponseWithMetaRequest",
