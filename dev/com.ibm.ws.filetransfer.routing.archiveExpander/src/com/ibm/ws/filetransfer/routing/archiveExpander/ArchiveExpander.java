@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.zip.ZipException;
 
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.compress.archivers.zip.ZipArchiveInputStream;
@@ -79,6 +80,7 @@ public class ArchiveExpander {
             // make sure we're working with absolute canonical paths
             File source = new File(sourcePath).getCanonicalFile();
             File target = new File(targetPath).getCanonicalFile();
+            String targetCanonicalPath = target.getCanonicalPath() + File.separator;
 
             // open the archive
             in = new ZipArchiveInputStream(getInputStream(source));
@@ -93,6 +95,12 @@ public class ArchiveExpander {
                 String targetPlusOutFile = target.getPath() + File.separator + outFilename;
 
                 File targetFile = new File(targetPlusOutFile);
+
+                // Check that targetFile isn't outside target after resolving relative path components
+                if (!targetFile.getCanonicalPath().startsWith(targetCanonicalPath)) {
+                    throw new ZipException("Zip file contains invalid path: " + targetFile.getPath());
+                }
+
                 char ending = outFilename.charAt(outFilename.length() - 1);
 
                 if (ending == '/' || ending == '\\') {
