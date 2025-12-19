@@ -1769,7 +1769,7 @@
                                     {
                                         "name": "noArgsRequest",
                                         "description": "return string made from args and metadata",
-                                        "title": "call tool without propviding arguments in param",
+                                        "title": "call tool without propviding arguments in params",
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {},
