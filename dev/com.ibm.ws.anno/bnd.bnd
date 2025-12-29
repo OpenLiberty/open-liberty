@@ -61,7 +61,7 @@ instrument.classesExcludes: \
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.org.objectweb.asm;version=latest,\
-	com.ibm.ws.org.jboss.jandex;version=latest,\
+	io.openliberty.io.smallrye.jandex3;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
