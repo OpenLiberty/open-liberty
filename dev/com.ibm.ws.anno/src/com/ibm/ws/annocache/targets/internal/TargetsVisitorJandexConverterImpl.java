@@ -165,7 +165,7 @@ public class TargetsVisitorJandexConverterImpl {
 
             classesTable.jandex_i_setModifiers(i_packageName, modifiers);
 
-            for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotations().entrySet() ) {
+            for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotationsMap().entrySet() ) {
                 String annotationClassName = annoEntry.getKey().toString();
                 String i_annotationClassName = internClassName(annotationClassName);
 
@@ -232,7 +232,7 @@ public class TargetsVisitorJandexConverterImpl {
         // Jandex places all annotations of a class in a single table which is held
         // by the class information.
 
-        for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotations().entrySet() ) {
+        for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotationsMap().entrySet() ) {
             String annotationClassName = annoEntry.getKey().toString();
             String i_annotationClassName = internClassName(annotationClassName);
 
