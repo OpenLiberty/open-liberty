@@ -215,7 +215,7 @@ public class AnnotationTargetsImpl_JandexConverter {
             return;
         }
 
-        for ( AnnotationInstance jandexClassAnnotation : jandexClassInfo.classAnnotations() ) {
+        for ( AnnotationInstance jandexClassAnnotation : jandexClassInfo.annotations() ) {
             jandex_recordAnnotation(
                 scanPolicy, AnnotationCategory.CLASS,
                 i_className, jandexClassAnnotation.name());
