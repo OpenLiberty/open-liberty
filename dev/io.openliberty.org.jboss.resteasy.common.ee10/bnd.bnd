@@ -231,7 +231,7 @@ Include-Resource:\
   com.ibm.ws.kernel.service,\
   io.openliberty.webcontainer.security.internal,\
   com.ibm.websphere.security,\
-  com.ibm.ws.org.jboss.jandex,\
+  io.openliberty.io.smallrye.jandex3;version=latest,\
   org.eclipse.osgi
 
 -testpath: \

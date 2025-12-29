@@ -39,5 +39,5 @@ Private-Package: io.openliberty.microprofile.lra.internal
     com.ibm.ws.logging.core;version=latest,\
     com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.websphere.javaee.cdi.2.0,\
-    com.ibm.ws.org.jboss.jandex;version=latest
+    io.openliberty.io.smallrye.jandex3;version=latest
 

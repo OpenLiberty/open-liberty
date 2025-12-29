@@ -25,7 +25,7 @@ Import-Package: \
     io.openliberty.microprofile.openapi.internal.resources.validation,\
     javax.xml.bind.annotation;version=!,\
     io.smallrye.openapi.*;version="[2.0,5.0)",\
-    org.jboss.jandex;version="[2.4,4)",\
+    org.jboss.jandex;version="[3.2,4)",\
     *
 
 Export-Package: \
@@ -80,7 +80,7 @@ WS-TraceGroup: MPOPENAPI
     com.ibm.ws.kernel.service;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.org.apache.commons.lang3;version=latest,\
-    com.ibm.ws.org.jboss.jandex;version=latest,\
+    io.openliberty.io.smallrye.jandex3;version=latest,\
     com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
     com.ibm.ws.webcontainer;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\

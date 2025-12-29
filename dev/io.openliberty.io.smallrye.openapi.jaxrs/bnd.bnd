@@ -44,5 +44,5 @@ Export-Package: \
     com.ibm.ws.classloading;version=latest,\
     com.ibm.websphere.javaee.validation.2.0;version=latest,\
     com.ibm.websphere.org.osgi.service.component;version=latest,\
-    com.ibm.ws.org.jboss.jandex;version=latest,\
+    io.openliberty.io.smallrye.jandex3;version=latest,\
     com.ibm.ws.org.jboss.logging;version=latest
