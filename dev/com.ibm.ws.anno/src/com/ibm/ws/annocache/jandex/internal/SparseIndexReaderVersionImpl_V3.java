@@ -273,6 +273,9 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         input.seekPackedU32(); // annotationSize
         input.seekPackedU32(); // implementorSize
         input.seekPackedU32(); // subclassesSize
+        if (version >= 11) {
+            input.seekPackedU32(); // subinterfaces
+        }
         if (version >= 10) {
             usersLength = input.readPackedU32();
         }
