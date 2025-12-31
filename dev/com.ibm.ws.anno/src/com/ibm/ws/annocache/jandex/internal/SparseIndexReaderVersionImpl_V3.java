@@ -53,9 +53,9 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     
  // Changes to support Jandex 3.2
  // [M?] Major differences:
- // [M0] -- change MAX_VERSION to 11;
+ // [M0] -- change MAX_VERSION to 11; done
  // -- Trivial update
- // [M1] -- removal of obsolete 'MAX_DATA_VERSION' and 'toDataVersion';
+ // [M1] -- removal of obsolete 'MAX_DATA_VERSION' and 'toDataVersion'; Not present
  // -- Trivial update
  // [M3] -- addition of 'subinterfaces';
  // -- This new data might be ignored; the anno data handles this differently;
@@ -102,7 +102,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     //   (None of this new data is extracted by the sparse reader)
 
     public static final int MIN_VERSION = 6;
-    public static final int MAX_VERSION = 10;
+    public static final int MAX_VERSION = 11;
 
     public static boolean accept(int version) {
         return ( (version >= SparseIndexReaderVersionImpl_V3.MIN_VERSION) && 
