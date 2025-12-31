@@ -51,7 +51,26 @@ import java.util.List;
 public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderVersion {
     
     
-    
+ // Changes to support Jandex 3.2
+ // [M?] Major differences:
+ // [M0] -- change MAX_VERSION to 11;
+ // -- Trivial update
+ // [M1] -- removal of obsolete 'MAX_DATA_VERSION' and 'toDataVersion';
+ // -- Trivial update
+ // [M3] -- addition of 'subinterfaces';
+ // -- This new data might be ignored; the anno data handles this differently;
+ // [M4] -- changes to 'readNameTable';
+ // -- This needs to be reviewed.  The impact is not immediately evident.
+ // [M5] -- addition of 'references' to 'readTypeTable';
+ // -- This needs to be reviewed.  The impact is not immediately evident.
+ // [M6] -- addition of 'visibility' to annotation instances;
+ // -- This new data might be ignored; the anno data doesn't directly store this.
+ // [M7] -- addition of 'descriptorParameters' to 'readMethodEntry';
+ // -- This needs to be reviewed.  The impact is not immediately evident.
+ // [M8] -- addition of read of 'hasNoArgsConstructor' to 'readClassEntry';
+ // -- This new data might be ignored; the anno data doesn't directly record this.
+ // [M9] -- added read of 'memberClasses' to 'readClassEntry';
+ // -- This new data might be ignored; the anno data doesn't record this.
     
     // Handled range of index versions.
 
