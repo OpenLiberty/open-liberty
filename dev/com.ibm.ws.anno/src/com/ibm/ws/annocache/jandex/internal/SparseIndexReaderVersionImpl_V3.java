@@ -53,14 +53,15 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     
  // Changes to support Jandex 3.2
  // [M?] Major differences:
- // [M0] -- change MAX_VERSION to 11; done
+ // [M0] -- change MAX_VERSION to 11; ++Done++
  // -- Trivial update
  // [M1] -- removal of obsolete 'MAX_DATA_VERSION' and 'toDataVersion'; Not present
  // -- Trivial update
- // [M3] -- addition of 'subinterfaces';
+ // [M3] -- addition of 'subinterfaces'; ++Done++
  // -- This new data might be ignored; the anno data handles this differently;
- // [M4] -- changes to 'readNameTable';
+ // [M4] -- changes to 'readNameTable'; ++Done++
  // -- This needs to be reviewed.  The impact is not immediately evident.
+    // The impact seems to be a different way of looking up the head of a dotname.
  // [M5] -- addition of 'references' to 'readTypeTable';
  // -- This needs to be reviewed.  The impact is not immediately evident.
  // [M6] -- addition of 'visibility' to annotation instances;
@@ -347,6 +348,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         this.stringTable = useStringTable;
     }
 
+    //This only includes the if (version >= 11) block, and not its else block
     private void readNameTable() throws IOException {
         int numEntries = input.readPackedU32() + 1;
         // System.out.println("DotName table [ " + numEntries + " ]");
@@ -357,35 +359,26 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
         useNameTable[0] = null;
 
-        int lastDepth = -1;
-        SparseDotName lastName = null;
-
         for ( int nameNo = 1; nameNo < numEntries; nameNo++ ) {
-            int packedDepth = input.readPackedU32();
+            int prefixOffset = input.readPackedU32();
             String tail = stringTable[input.readPackedU32()];
 
             // [packedDepth] == [depthBits][innerClassBit]
-            boolean isInnerClass = ((packedDepth & 0x01) == 0x01);
-            int depth = packedDepth >> 1;
+            boolean isInnerClass = ((prefixOffset & 0x01) == 0x01);
+            int shiftedPrefixOffset = prefixOffset >> 1;
 
+            //NOT SURE IF THIS IS TRUE IN THIS VERSION
+            //But I think so, up until now, the only changes upstraem are renaming variables
             // a,      a, 0 [head == null]     [(a)]
             // a.b,    b, 1 [head == (a)]      [((a),b)]
             // a.b.c,  c, 2 [head == ((a),b)]  [(((a),(b)),c)]
             // a.b.d,  d, 2 [head == ((a),b)]  [(((a),(b)),d)]
             // b       b, 0 [head == null]     [(b)]
 
-            SparseDotName head = lastName;
-            if ( lastDepth >= depth ) {
-                while ( lastDepth-- >= depth ) {
-                    head = head.prefix();
-                }
-            }
+            SparseDotName prefix = useNameTable[shiftedPrefixOffset];
 
-            SparseDotName name = new SparseDotName(head, tail, !SparseDotName.SIMPLE, isInnerClass);
+            SparseDotName name = new SparseDotName(prefix, tail, !SparseDotName.SIMPLE, isInnerClass);
             useNameTable[nameNo] = name;
-
-            lastName = name; 
-            lastDepth = depth;
 
             // System.out.println("  String entry [ " + nameNo + " ] [ " + name + " ]");
         }
