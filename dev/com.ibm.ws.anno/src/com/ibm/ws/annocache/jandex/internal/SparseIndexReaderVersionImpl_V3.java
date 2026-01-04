@@ -62,8 +62,9 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
  // [M4] -- changes to 'readNameTable'; ++Done++
  // -- This needs to be reviewed.  The impact is not immediately evident.
     // The impact seems to be a different way of looking up the head of a dotname.
- // [M5] -- addition of 'references' to 'readTypeTable';
+ // [M5] -- addition of 'references' to 'readTypeTable'; ++Done++
  // -- This needs to be reviewed.  The impact is not immediately evident.
+    // This is new data, nothing in liberty references it at the moment. However I ensured we move through the data structures
  // [M6] -- addition of 'visibility' to annotation instances;
  // -- This new data might be ignored; the anno data doesn't directly store this.
  // [M7] -- addition of 'descriptorParameters' to 'readMethodEntry';
@@ -672,6 +673,12 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
                 readTypeListReference();
                 readAnnotations();
                 return name;
+            }
+            
+            case 8: { //TYPE_VARIABLE_REFERENCE
+                input.seekPackedU32(); //We don't bother reading the name table
+                input.seekPackedU32();
+                return SparseDotName.PLACEHOLDER;
             }
         }
     }
