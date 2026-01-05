@@ -65,7 +65,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
  // [M5] -- addition of 'references' to 'readTypeTable'; ++Done++
  // -- This needs to be reviewed.  The impact is not immediately evident.
     // This is new data, nothing in liberty references it at the moment. However I ensured we move through the data structures
- // [M6] -- addition of 'visibility' to annotation instances;
+ // [M6] -- addition of 'visibility' to annotation instances; ++Done++
  // -- This new data might be ignored; the anno data doesn't directly store this.
  // [M7] -- addition of 'descriptorParameters' to 'readMethodEntry';
  // -- This needs to be reviewed.  The impact is not immediately evident.
@@ -516,6 +516,8 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
         byte targetType = readAnnotationTarget();
         movePastAnnotationValues();
+        //move past read boolean for visiblity
+        input.readBoolean();
 
         // The liberty annotations code cares only about class, field, and method annotations.
         // Jandex places method parameter and method parameter type annotations in the
