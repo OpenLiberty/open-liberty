@@ -67,7 +67,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     // This is new data, nothing in liberty references it at the moment. However I ensured we move through the data structures
  // [M6] -- addition of 'visibility' to annotation instances; ++Done++
  // -- This new data might be ignored; the anno data doesn't directly store this.
- // [M7] -- addition of 'descriptorParameters' to 'readMethodEntry';
+ // [M7] -- addition of 'descriptorParameters' to 'readMethodEntry'; +++Done+++
  // -- This needs to be reviewed.  The impact is not immediately evident.
  // [M8] -- addition of read of 'hasNoArgsConstructor' to 'readClassEntry';
  // -- This new data might be ignored; the anno data doesn't directly record this.
@@ -770,6 +770,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         this.methodTable = useMethodTable;
     }
 
+    //Method is called readMethodEntry in upstream
     private SparseAnnotationHolder readMethod() throws IOException {
         SparseDotName methodName = getSimpleName( input.readPackedU32() );
 
@@ -781,6 +782,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         input.seekPackedU32(); // return type
         input.seekPackedU32(); // parameters
         input.seekPackedU32(); // exceptions
+        input.seekPackedU32(); // descriptorParameters
 
         // Annotation default values are written to the index starting with index format version 7.
         //   JANDEX-46 Add support for default annotation attribute
