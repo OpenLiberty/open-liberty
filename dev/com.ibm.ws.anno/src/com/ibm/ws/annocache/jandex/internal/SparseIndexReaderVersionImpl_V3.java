@@ -69,7 +69,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
  // -- This new data might be ignored; the anno data doesn't directly store this.
  // [M7] -- addition of 'descriptorParameters' to 'readMethodEntry'; +++Done+++
  // -- This needs to be reviewed.  The impact is not immediately evident.
- // [M8] -- addition of read of 'hasNoArgsConstructor' to 'readClassEntry';
+ // [M8] -- addition of read of 'hasNoArgsConstructor' to 'readClassEntry';  +++Done+++
  // -- This new data might be ignored; the anno data doesn't directly record this.
  // [M9] -- added read of 'memberClasses' to 'readClassEntry';
  // -- This new data might be ignored; the anno data doesn't record this.
@@ -868,11 +868,13 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
     private final List<SparseDotName> classAnnoClassNames;
 
+    //called readClassEntry in upstream
     private SparseClassInfo readClass() throws IOException {
         SparseDotName className = nameTable[input.readPackedU32()];
         // System.out.println("Next class name [ " + className + " ]");
 
         short flags = (short) input.readPackedU32();
+        input.readBoolean(); //skip past hasNoArgsConstructor
         SparseDotName superClassName = typeTable[input.readPackedU32()];
 
         input.seekPackedU32(); // Skip unused class data.
