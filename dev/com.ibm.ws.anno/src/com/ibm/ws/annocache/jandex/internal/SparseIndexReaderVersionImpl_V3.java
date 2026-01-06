@@ -924,6 +924,10 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
                 readPastEnclosingMethod();
             }
         }
+        
+        //Skip this line from upstream
+        //int memberClassesCount = stream.readPackedU32();
+        input.readPackedU32();
 
         int numAnnotations = input.readPackedU32();
         // System.out.println("Next class annotations [ " + numAnnotations + " ]");
