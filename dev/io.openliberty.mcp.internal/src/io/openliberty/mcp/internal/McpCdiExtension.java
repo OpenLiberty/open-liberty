@@ -95,7 +95,8 @@ public class McpCdiExtension implements Extension {
     void afterDeploymentValidation(@Observes AfterDeploymentValidation afterDeploymentValidation, BeanManager manager) {
         registerEncoders(manager);
 
-        boolean error = reportOnDuplicateTools(afterDeploymentValidation) |
+        boolean error = reportOnInvalidToolNames(afterDeploymentValidation) |
+                        reportOnDuplicateTools(afterDeploymentValidation) |
                         reportOnToolArgEdgeCases(afterDeploymentValidation) |
                         reportOnDuplicateSpecialArguments(afterDeploymentValidation) |
                         reportOnInvalidSpecialArguments(afterDeploymentValidation);
@@ -197,6 +198,26 @@ public class McpCdiExtension implements Extension {
             error = true;
             LinkedList<String> qualifiedNames = duplicateToolsMap.get(toolName);
             Tr.error(tc, "CWMCM0004E.duplicate.tools", toolName, String.join(",", qualifiedNames));
+        }
+        return error;
+
+    }
+
+    private boolean reportOnInvalidToolNames(AfterDeploymentValidation afterDeploymentValidation) {
+        boolean error = false;
+        for (ToolMetadata tool : tools.getAllTools()) {
+            List<String> errors = new ArrayList<>();
+            String toolName = tool.name();
+            if (toolName.length() == 0 || toolName.length() > 128) {
+                errors.add("Tool names should be between 1 and 128 characters in length (inclusive).");
+            }
+            if (!toolName.matches("[\\d\\w.-]+")) {
+                errors.add("The following should be the only allowed characters: uppercase and lowercase ASCII letters (A-Z, a-z), digits (0-9), underscore (_), hyphen (-), and dot (.). Tool names should not contain spaces, commas, or other special characters.");
+            }
+            if (!errors.isEmpty()) {
+                error = true;
+                Tr.error(tc, "CWMCM0022E.invalid.tool.name", toolName, errors);
+            }
         }
         return error;
 

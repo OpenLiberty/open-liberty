@@ -201,3 +201,12 @@ CWMCM0021E.defaultvalue.character.invalid.length.useraction=Ensure that the defa
 CWMCM0022E.invalid.cursor.value=CWMCM0022E: The "{0}" cursor value is invalid.
 CWMCM0022E.invalid.cursor.value.explanation=A cursor value was provided as a parameter to the tool/list command, but the value is invalid.
 CWMCM0022E.invalid.cursor.value.useraction=Ensure that the cursor value is provided exactly as it was returned from the previous tool/list call.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {0} = The list of MCP spec naming conventions broken
+CWMCM0023E.invalid.tool.name=CWMCM0022E: MCP tool method named {0} is an invalid name as it dosen't follow the following MCP naming conventions The methods are {1}.
+CWMCM0023E.invalid.tool.name.explanation=One MCP Tool name dosent follow the MCP naming convention for tools.
+CWMCM0023E.invalid.tool.name.useraction=Provide a tool name that follows the MCP naming convention.
+
