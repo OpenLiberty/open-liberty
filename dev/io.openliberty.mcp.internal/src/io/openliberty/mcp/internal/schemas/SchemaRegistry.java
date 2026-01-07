@@ -67,7 +67,7 @@ public class SchemaRegistry {
     /**
      * Gets the input JSON schema for a tool
      *
-     * @param toolMetadata the tool to get the schema for
+     * @param toolMethod the tool to get the schema for
      * @return the json schema
      */
     public JsonObject getToolInputSchema(AnnotatedMethod<?> toolMethod, Map<String, ArgumentMetadata> argumentMap) {
@@ -78,7 +78,8 @@ public class SchemaRegistry {
     /**
      * Gets the output JSON schema for a tool
      *
-     * @param toolMetadata the tool to get the schema for
+     * @param toolMethod the tool to get the schema for
+     * @param toolOutputType the unwrapped and resolved return type of the method.
      * @return the json schema
      */
     public JsonObject getToolOutputSchema(AnnotatedMethod<?> toolMethod, Type toolOutputType) {
