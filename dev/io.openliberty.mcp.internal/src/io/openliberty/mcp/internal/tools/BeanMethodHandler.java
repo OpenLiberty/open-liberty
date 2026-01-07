@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,11 @@
 package io.openliberty.mcp.internal.tools;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -61,6 +64,7 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
      * @param specialArguments special arguments required by the methods
      * @param argNames an array corresponding to the method arguments. Each element contains either a name, in which case the argument with that name should be passed to the
      *     parameter with the same index, or {@code null} in which case the parameter at that index expects a special argument.
+     * @param genericMap where the tool has being concretized from a generic parent class the concrete types are not reflected on the method so a mapping is provided instead
      *
      */
     public static record MethodMetadata(String name,
@@ -69,7 +73,8 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
                                         boolean isStructuredContent,
                                         List<Class<? extends Throwable>> businessExceptions,
                                         List<SpecialArgumentMetadata> specialArguments,
-                                        String[] argNames) {}
+                                        String[] argNames,
+                                        Map<TypeVariable<?>, Type> genericMap) {}
 
     /**
      * @param jsonb the Jsonb to use to encode a structured response

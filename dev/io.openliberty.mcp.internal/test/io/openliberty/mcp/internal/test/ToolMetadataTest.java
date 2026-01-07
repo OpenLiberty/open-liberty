@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,7 @@ import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.TestUtils;
+import io.openliberty.mcp.internal.typeimpl.ParameterizedTypeImpl;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -177,23 +178,7 @@ public class ToolMetadataTest {
 
     @Test
     public void testGetRawClassFromParameterizedType() {
-        Type listOfString = new ParameterizedType() {
-            @Override
-            public Type[] getActualTypeArguments() {
-                return new Type[] { String.class };
-            }
-
-            @Override
-            public Type getRawType() {
-                return List.class;
-            }
-
-            @Override
-            public Type getOwnerType() {
-                return null;
-            }
-        };
-
+        Type listOfString = new ParameterizedTypeImpl(List.class, String.class);
         Class<?> raw = ToolMetadata.getRawClass(listOfString);
         assertEquals(List.class, raw);
     }

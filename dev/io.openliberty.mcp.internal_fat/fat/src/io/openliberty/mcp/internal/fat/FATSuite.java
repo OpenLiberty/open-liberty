@@ -44,6 +44,7 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
+import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
@@ -65,6 +66,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 DeploymentProblemTest.class,
                 EncoderTest.class,
                 HttpTest.class,
+                GenericToolTest.class,
                 InactiveCdiTest.class,
                 LifecycleTest.class,
                 McpUrlPathTest.class,
@@ -89,7 +91,8 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 PermitAllTestsStateless.class,
                 DenyAllTestsStateless.class,
                 NoClassAnnotationTestsStateless.class,
-                AdminsRoleAllowedTestsStateless.class
+                AdminsRoleAllowedTestsStateless.class,
+
 })
 
 public class FATSuite {

@@ -9,8 +9,10 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import java.lang.reflect.GenericArrayType;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -109,12 +111,19 @@ public record ToolMetadata(String name,
         Type unwrappedOutputType = unwrapOutputType(returnType);
         Class<?> unwrappedOutputClass = getRawClass(unwrappedOutputType);
 
+        Map<TypeVariable<?>, Type> genericMap = Collections.emptyMap();
+        if (bean != null) {
+            Type javaType = bean.getBeanClass();
+            genericMap = TypeUtility.generateGenericMap(javaType);
+        }
+        Map<String, ArgumentMetadata> argumentMap = getArgumentMap(method, genericMap);
+
         WrapBusinessError wrapAnnotation = method.getAnnotation(WrapBusinessError.class);
         List<Class<? extends Throwable>> businessExceptions = (wrapAnnotation != null) ? List.of(wrapAnnotation.value()) : Collections.emptyList();
         boolean returnsCompletionStage = CompletionStage.class.isAssignableFrom(returnTypeClass);
         SchemaRegistry sr = SchemaRegistry.get();
 
-        JsonObject inputSchema = sr.getToolInputSchema(method);
+        JsonObject inputSchema = sr.getToolInputSchema(method, argumentMap);
 
         boolean hasContentListReturn = unwrappedOutputType instanceof ParameterizedType pt
                                        && (List.class.isAssignableFrom((Class<?>) pt.getRawType())
@@ -133,14 +142,14 @@ public record ToolMetadata(String name,
 
             hasOutputSchema = true;
         }
-
+        if (TypeUtility.hasGenericParams(unwrappedOutputType)) {
+            unwrappedOutputType = TypeUtility.createResolvedType(unwrappedOutputType, genericMap);
+        }
         JsonObject outputSchema = hasOutputSchema ? sr.getToolOutputSchema(method, unwrappedOutputType) : null;
 
         outputSchema = (outputSchema == null || outputSchema.isEmpty()) ? null : outputSchema;
 
         ToolAnnotations annotations = readAnnotations(annotation.annotations());
-
-        Map<String, ArgumentMetadata> argumentMap = getArgumentMap(method);
 
         MethodMetadata methodMetadata = new MethodMetadata(name,
                                                            bean,
@@ -148,7 +157,8 @@ public record ToolMetadata(String name,
                                                            hasOutputSchema,
                                                            businessExceptions,
                                                            getSpecialArgumentList(method),
-                                                           getArgNameArray(method, argumentMap));
+                                                           getArgNameArray(method, argumentMap),
+                                                           genericMap);
 
         SyncBeanMethodHandler handler = null;
         AsyncBeanMethodHandler asyncHandler = null;
@@ -161,7 +171,7 @@ public record ToolMetadata(String name,
         return new ToolMetadata(name,
                                 title,
                                 description,
-                                getArgumentMap(method),
+                                argumentMap,
                                 annotations,
                                 returnsCompletionStage,
                                 inputSchema,
@@ -180,33 +190,22 @@ public record ToolMetadata(String name,
         return nameArray;
     }
 
-    public static Map<String, ArgumentMetadata> getArgumentMap(AnnotatedMethod<?> method) {
+    public static Map<String, ArgumentMetadata> getArgumentMap(AnnotatedMethod<?> method, Map<TypeVariable<?>, Type> genericMap) {
         Map<String, ArgumentMetadata> result = new HashMap<>();
         ArrayList<String> genericParams = new ArrayList<>();
         for (AnnotatedParameter<?> param : method.getParameters()) {
-
             if (TypeUtility.hasGenericParams(param.getBaseType())) {
-                genericParams.add(param.getJavaParameter().getName());
-            } else {
-                ToolArg argAnnotation = param.getAnnotation(ToolArg.class);
-
-                if (argAnnotation == null) {
-                    continue;
+                Type baseType = param.getBaseType();
+                boolean unresolvedGenericParam = hasUnresolvableTypeVariables(baseType, genericMap);
+                if (unresolvedGenericParam) {
+                    genericParams.add(param.getJavaParameter().getName());
+                } else {
+                    Type argType = TypeUtility.createResolvedType(param.getBaseType(), genericMap);
+                    addArgumentMetadata(param, argType, result);
                 }
-                String argName = resolveArgumentName(param, argAnnotation);
-                boolean isDuplicateArg = result.containsKey(argName);
-
-                boolean required = isArgumentRequired(argAnnotation.required(), argAnnotation.defaultValue(), param.getBaseType());
-
-                result.put(argName, new ArgumentMetadata(argName,
-                                                         param.getBaseType(),
-                                                         param.getPosition(),
-                                                         argAnnotation.description(),
-                                                         required,
-                                                         argAnnotation.defaultValue(),
-                                                         isDuplicateArg));
+            } else {
+                addArgumentMetadata(param, param.getBaseType(), result);
             }
-
         }
         if (!genericParams.isEmpty()) {
             throw new GenericArgumentException(genericParams);
@@ -229,6 +228,61 @@ public record ToolMetadata(String name,
             return false;
         }
         return requiredArgAnnotation;
+
+    }
+
+    private static void addArgumentMetadata(AnnotatedParameter<?> param, Type argumentType, Map<String, ArgumentMetadata> result) {
+        ToolArg argAnnotation = param.getAnnotation(ToolArg.class);
+
+        if (argAnnotation != null) {
+            String argName = resolveArgumentName(param, argAnnotation);
+            boolean isDuplicateArg = result.containsKey(argName);
+
+            boolean required = isArgumentRequired(argAnnotation.required(), argAnnotation.defaultValue(), param.getBaseType());
+
+            result.put(argName, new ArgumentMetadata(argName, argumentType,
+                                                     param.getPosition(),
+                                                     argAnnotation.description(),
+                                                     required,
+                                                     argAnnotation.defaultValue(),
+                                                     isDuplicateArg));
+        }
+
+    }
+
+    private static boolean hasUnresolvableTypeVariables(Type baseType, Map<TypeVariable<?>, Type> genericMap) {
+
+        List<Type> genericTypes;
+        if (baseType instanceof ParameterizedType pt) {
+            genericTypes = List.of(pt.getActualTypeArguments());
+
+        } else if (baseType instanceof GenericArrayType gat) {
+            genericTypes = List.of(gat.getGenericComponentType());
+
+        } else if (baseType instanceof TypeVariable<?> tv) {
+            genericTypes = List.of(tv);
+
+        } else if (baseType instanceof Class clazz && clazz.isArray()) {
+            Type elementType = (clazz).getComponentType();
+            genericTypes = List.of(elementType);
+
+        } else {
+            genericTypes = List.of();
+        }
+
+        for (Type genericType : genericTypes) {
+            if (genericType instanceof TypeVariable<?> tv) {
+                if (genericMap.get(tv) == null) {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return hasUnresolvableTypeVariables(genericType, genericMap);
+            }
+        }
+        return false;
+
     }
 
     private static String resolveArgumentName(AnnotatedParameter<?> param, ToolArg argAnnotation) {

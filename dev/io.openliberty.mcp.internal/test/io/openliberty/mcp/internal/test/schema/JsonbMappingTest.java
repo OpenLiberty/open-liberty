@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@ package io.openliberty.mcp.internal.test.schema;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.junit.BeforeClass;
@@ -21,6 +23,7 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import io.openliberty.mcp.internal.schemas.SchemaDirection;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+import io.openliberty.mcp.internal.typeimpl.ParameterizedTypeImpl;
 import jakarta.enterprise.util.TypeLiteral;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -705,6 +708,33 @@ public class JsonbMappingTest {
 
         ChildClass cmIn = jsonb.fromJson("{\"foo\":[\"a\",\"b\",\"c\"]}", ChildClass.class);
         JSONAssert.assertEquals("{\"foo\":[\"a\",\"b\",\"c\"]}", jsonb.toJson(cmIn), true);
+
+    }
+
+    public static class Reflectionutils {
+        List<List<String>> listType;
+    }
+
+    @Test
+    public void testCustomJSONBDeserialization() {
+        Type list = ((ParameterizedType) Reflectionutils.class.getDeclaredFields()[0].getGenericType()).getRawType();
+        Type string = ((ParameterizedType) ((ParameterizedType) Reflectionutils.class.getDeclaredFields()[0].getGenericType()).getActualTypeArguments()[0]).getActualTypeArguments()[0];
+        Type typeInner = new ParameterizedTypeImpl(list, string);
+        Type typeOuter = new ParameterizedTypeImpl(list, typeInner);
+
+        String json = """
+                        [["Hello","World"],["IBM", "Liberty"]]
+                        """;
+        List<List<String>> listTypeGen = jsonb.fromJson(json, typeOuter);
+
+        String jsonMyClass2 = """
+                        {
+                            "foo": ["a", "b", "c"],
+                            "bar": ["d", "e", "f"]
+                        }
+                        """;
+        Type typeMyClass2 = new ParameterizedTypeImpl(MyClass2.class, string);
+        MyClass2<String> myClassImpl = jsonb.fromJson(jsonMyClass2, typeMyClass2);
 
     }
 
