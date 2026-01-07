@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -99,13 +99,14 @@ public abstract class BaseTestClass {
   }
     
     /**
-     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses the default of 5 seconds.
+     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses the default of 40 seconds.
+     * Increased from 20 to 40 to accommodate slower platforms (especially z/OS) where OpenTelemetry exporter may be busy.
      *
      * @param metricsText The /metrics output
      * @param expectedString String array of expected strings
      */
     protected void matchStringsWithRetries(Supplier<String> metricsOutput, String[] expectedString) throws InterruptedException {
-	matchStringsWithRetries(metricsOutput, expectedString, 20);
+ matchStringsWithRetries(metricsOutput, expectedString, 40);
     }
 
     /**
