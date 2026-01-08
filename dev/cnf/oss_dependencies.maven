@@ -289,6 +289,7 @@ io.smallrye:smallrye-open-api-jaxrs:4.0.9
 io.smallrye:smallrye-open-api-jaxrs:4.1.0
 io.smallrye:smallrye-open-api-model:4.0.9
 io.smallrye:smallrye-open-api-model:4.1.0
+io.vertx:vertx-core:5.0.6
 io.zipkin.reporter2:zipkin-reporter:2.16.4
 io.zipkin.reporter2:zipkin-reporter:3.3.0
 io.zipkin.reporter2:zipkin-sender-okhttp3:2.16.4

@@ -11,6 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 nettyVersion=4.2.10.Final
+vertxVersion=5.0.6
 
 Bundle-Name: Netty as an OSGi bundle
 Bundle-SymbolicName: io.openliberty.io.netty
@@ -40,6 +41,13 @@ Import-Package: \
   !org.slf4j*,\
   !reactor.blockhound.*,\
   !sun.*,\
+  !com.fasterxml.jackson*,\
+  !io.netty.channel.uring*,\
+  !io.netty.handler.codec.dns*,\
+  !io.netty.handler.codec.haproxy*,\
+  !io.netty.resolver.dns*,\
+  !io.vertx.codegen.annotations*,\
+  !io.vertx.core*,\
   *
 
 -includeresource: \
@@ -54,6 +62,9 @@ Bundle-NativeCode: \
   META-INF/native/libnetty_transport_native_kqueue_aarch_64.jnilib; osname=MacOSX; processor=aarch_64,\
   META-INF/native/libnetty_transport_native_kqueue_x86_64.jnilib; osname=MacOSX; processor=x86_64,\
   *
+
+Private-Package: \
+  io.vertx.core*
 
 Export-Package: \
   !io.netty.handler.ssl.*,\
@@ -80,5 +91,6 @@ instrument.disabled: true
   io.netty:netty-transport-classes-epoll;version=${nettyVersion},\
   io.netty:netty-transport-native-epoll;version=${nettyVersion},\
   io.netty:netty-transport-classes-kqueue;version=${nettyVersion},\
-  io.netty:netty-transport-native-kqueue;version=${nettyVersion}
+  io.netty:netty-transport-native-kqueue;version=${nettyVersion},\
+  io.vertx:vertx-core;version=${vertxVersion}
   
