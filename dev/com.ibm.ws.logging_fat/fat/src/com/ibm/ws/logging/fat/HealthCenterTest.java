@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,12 +16,12 @@ import java.util.List;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.JavaInfo;
@@ -38,7 +38,14 @@ public class HealthCenterTest {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.logging.healthcenter");
         ShrinkHelper.defaultDropinApp(server, "logger-servlet", "com.ibm.ws.logging.fat.logger.servlet");
         // Only IBM JDK supports Health Center, check if the runtime JDK contains the Health Check API, else skip the tests.
-        Assume.assumeTrue(JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
+        JavaInfo ji = JavaInfo.forServer(server);
+        Log.info(HealthCenterTest.class, "beforeClass", "CARL_DEBUG: JavaInfo String for com.ibm.ws.logging.healthcenter server: " + ji.toString());
+        JavaInfo ji2 = JavaInfo.forCurrentVM();
+        Log.info(HealthCenterTest.class, "beforeClass", "CARL_DEBUG: JavaInfo String for currentVM server: " + ji2.toString());
+
+        Log.info(HealthCenterTest.class, "beforeClass",
+                 "CARL_DEBUG: HealthCenter class available? " + JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
+//        Assume.assumeTrue(JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
 
         if (!server.isStarted())
             server.startServer();
@@ -57,6 +64,8 @@ public class HealthCenterTest {
         Assert.assertFalse("Expected healthcenter INFO message",
                            server.findStringsInLogs("INFO:.*Health Center agent started on port",
                                                     server.getConsoleLogFile()).isEmpty());
+        Log.info(HealthCenterTest.class, "testHealthCenterInfo", "CARL_DEBUG: FAIL ON PURPOSE.");
+        Assert.assertTrue(false);
     }
 
     @Test
