@@ -18,6 +18,7 @@ package io.netty.handler.codec.http;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.CombinedChannelDuplexHandler;
+import io.vertx.core.http.impl.VertxHttpRequestDecoder;
 
 import java.util.ArrayDeque;
 import java.util.List;
@@ -155,7 +156,9 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
      * Creates a new instance with the specified decoder configuration.
      */
     public HttpServerCodec(HttpDecoderConfig config) {
-        init(new HttpServerRequestDecoder(config), new HttpServerResponseEncoder());
+        // Liberty specific change for using Liberty httpOptions while also using
+        // Vert.x decoding logic.
+        init(new VertxHttpRequestDecoder(config), new HttpServerResponseEncoder());
     }
 
     /**
