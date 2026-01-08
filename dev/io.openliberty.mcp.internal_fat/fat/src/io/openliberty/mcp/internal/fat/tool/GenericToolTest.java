@@ -68,15 +68,11 @@ public class GenericToolTest extends FATServletClient {
                         {
                           "jsonrpc": "2.0",
                           "id": 1,
-                          "method": "tools/list",
-                          "params": {
-                            "cursor": "optional-cursor-value"
-                          }
+                          "method": "tools/list"
                         }
                         """;
 
         String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
 
         String expectedString = """
                             {

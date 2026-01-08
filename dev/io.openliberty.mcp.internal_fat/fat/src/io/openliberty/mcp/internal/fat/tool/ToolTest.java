@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -109,7 +109,8 @@ public class ToolTest extends FATServletClient {
                           "CWMCM0013E", // JSON-RPC PC request contained invalid parameters.
                           "CWMCM0014E", // An Internal Server Error occurred whilst processing the JSON-RPC request.
                           "CWMCM0010E", //  Tool method threw an unexpected exception
-                          "CWMCM0011E" // An internal server error occurred
+                          "CWMCM0011E", // An internal server error occurred
+                          "CWMCM0022E" // Invalid Cursor provided
         );
     }
 
@@ -844,18 +845,8 @@ public class ToolTest extends FATServletClient {
 
     @Test
     public void testToolList() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/list",
-                          "params": {
-                            "cursor": "optional-cursor-value"
-                          }
-                        }
-                        """;
 
-        String response = client.callMCP(request);
+        String response = client.listAllTools();
         JSONObject jsonResponse = new JSONObject(response);
         String expectedString = "";
         try (InputStream inputStream = this.getClass().getResourceAsStream("expected-tools-list-response.json")) {
@@ -867,9 +858,34 @@ public class ToolTest extends FATServletClient {
         JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    /**
-     *
-     */
+    @Test
+    public void testToolListInvalidCursor() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/list",
+                          "params": {
+                            "cursor": "optional-cursor-value"
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+
+        String expectedResponseString = """
+                        {
+                            "id": 1,
+                            "jsonrpc": "2.0",
+                            "error": {
+                                "code": -32602,
+                                "data": "CWMCM0022E: The \\"optional-cursor-value\\" cursor value is invalid.",
+                                "message": "Invalid params"
+                            }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
 
     @Test
     public void testEchoMethodCallError() throws Exception {

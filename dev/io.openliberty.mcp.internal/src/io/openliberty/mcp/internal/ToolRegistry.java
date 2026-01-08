@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,9 @@
 package io.openliberty.mcp.internal;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.enterprise.inject.spi.CDI;
@@ -51,8 +52,14 @@ public class ToolRegistry {
         return !tools.isEmpty();
     }
 
-    public Collection<ToolMetadata> getAllTools() {
-        return new ArrayList<>(tools.values());
+    /**
+     * List of tools sorted by tool name in alphabetical order. This is useful for
+     * pagination
+     */
+    public List<ToolMetadata> getAllTools() {
+        List<ToolMetadata> result = new ArrayList<>(tools.values());
+        result.sort(Comparator.comparing(ToolMetadata::name));
+        return result;
     }
 
 }

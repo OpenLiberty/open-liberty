@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,10 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.rules.ExternalResource;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -244,4 +247,66 @@ public class McpClient extends ExternalResource {
         String response = setupAndRunRequest(request, jsonRequestBody);
         assertNull("Notification request received a response", response);
     }
+
+    /**
+     * Returns the list of all tools. Takes the multiple paginated responses and combines them into a single
+     * tools list response.
+     */
+    public String listAllTools() throws Exception {
+
+        JSONArray allTools = new JSONArray();
+        String cursor = null;
+        String lastResponse = null;
+        int requestId = 1;
+
+        do {
+            String request;
+            if (cursor == null) {
+                request = String.format("""
+                                {
+                                   "jsonrpc": "2.0",
+                                   "id": %d,
+                                   "method": "tools/list"
+                                 }
+                                """, requestId++);
+            } else {
+                request = String.format("""
+                                {
+                                   "jsonrpc": "2.0",
+                                   "id": %d,
+                                   "method": "tools/list",
+                                   "params": {
+                                     "cursor": "%s"
+                                   }
+                                 }
+                                """, requestId++, cursor);
+            }
+
+            lastResponse = callMCP(request);
+
+            JSONObject jsonResponse = new JSONObject(lastResponse);
+            JSONObject result = jsonResponse.getJSONObject("result");
+
+            JSONArray tools = result.getJSONArray("tools");
+            for (int i = 0; i < tools.length(); i++) {
+                allTools.put(tools.get(i));
+            }
+
+            cursor = result.optString("nextCursor", null);
+            if (cursor != null) {
+                assertTrue(!cursor.isEmpty());
+            }
+        } while (cursor != null);
+
+        JSONObject combinedResult = new JSONObject();
+        combinedResult.put("tools", allTools);
+
+        JSONObject combinedResponse = new JSONObject();
+        combinedResponse.put("jsonrpc", "2.0");
+        combinedResponse.put("id", 1);
+        combinedResponse.put("result", combinedResult);
+
+        return combinedResponse.toString();
+    }
+
 }

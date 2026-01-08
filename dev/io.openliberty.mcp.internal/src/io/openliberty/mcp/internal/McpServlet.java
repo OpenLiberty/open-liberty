@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@ package io.openliberty.mcp.internal;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -36,6 +35,7 @@ import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
 import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
+import io.openliberty.mcp.internal.requests.McpToolListParams;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 import io.openliberty.mcp.internal.security.Authorizer;
@@ -64,6 +64,7 @@ public class McpServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private static final TraceComponent tc = Tr.register(McpServlet.class);
     private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpServlet.class, McpConfiguration.class);
+    private static final int PAGE_SIZE = 20;
 
     @Inject
     BeanManager bm;
@@ -278,17 +279,50 @@ public class McpServlet extends HttpServlet {
     private void listTools(McpTransport transport) throws IOException {
         ToolRegistry toolRegistry = ToolRegistry.get();
 
-        List<ToolDescription> response = new LinkedList<>();
-
-        if (toolRegistry.hasTools()) {
-            for (ToolMetadata tmd : toolRegistry.getAllTools()) {
-                if (Authorizer.isAuthorized(transport, tmd)) {
-                    response.add(new ToolDescription(tmd));
-                }
-            }
-            ToolResult toolResult = new ToolResult(response);
-            transport.sendResponse(toolResult);
+        if (!toolRegistry.hasTools()) {
+            transport.sendResponse(new ToolResult(List.of()));
+            return;
         }
+
+        McpToolListParams params = transport.getParams(McpToolListParams.class);
+        String cursor = params != null ? params.getCursor() : null;
+
+        List<ToolMetadata> allTools = toolRegistry.getAllTools();
+
+        int startIndex = findStartIndex(allTools, cursor);
+
+        //get PAGE_SIZE + 1 tools to see if there's more authorised tools after PAGE_SIZE
+        List<ToolMetadata> authorisedTools = allTools.stream()
+                                                     .skip(startIndex)
+                                                     .filter(tmd -> Authorizer.isAuthorized(transport, tmd))
+                                                     .limit(PAGE_SIZE + 1)
+                                                     .toList();
+
+        boolean theresMore = authorisedTools.size() > PAGE_SIZE;
+
+        List<ToolDescription> response = authorisedTools.stream()
+                                                        .limit(PAGE_SIZE)
+                                                        .map(ToolDescription::new)
+                                                        .toList();
+
+        String nextCursor = theresMore ? authorisedTools.get(PAGE_SIZE - 1).name() : null;
+
+        ToolResult toolResult = new ToolResult(response, nextCursor);
+        transport.sendResponse(toolResult);
+    }
+
+    private int findStartIndex(List<ToolMetadata> allTools, String cursor) {
+
+        if (cursor == null || cursor.isEmpty()) {
+            return 0;
+        }
+        for (int i = 0; i < allTools.size(); i++) {
+            if (allTools.get(i).name().equals(cursor)) {
+                return i + 1;
+            }
+        }
+        throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
+                                   Tr.formatMessage(tc, "CWMCM0022E.invalid.cursor.value", cursor));
     }
 
     /**
