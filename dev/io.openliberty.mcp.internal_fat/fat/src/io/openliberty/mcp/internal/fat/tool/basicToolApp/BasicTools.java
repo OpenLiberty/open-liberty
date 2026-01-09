@@ -158,15 +158,6 @@ public class BasicTools {
         return input;
     }
 
-    //tool name is empty string -> allow empty string
-    //tool title is empty string -> ignore
-    //tool description is empty string -> ignore
-    //arg  description is empty string -> ignore
-    @Tool(name = "", title = "", description = "")
-    public String emptyEcho(@ToolArg(name = "input", description = "") String input) {
-        return input;
-    }
-
     //////////
     // Strings
     //////////
@@ -403,13 +394,7 @@ public class BasicTools {
     }
 
     /////////////////////////////////////////////
-    // Special characters in Tool and  parameters
-
-    @Tool(name = "specialCharactersInToolName@!><={}'().%:")
-    public String specialCharactersInToolName(@ToolArg(name = "arg1", description = "specialCharactersInToolName") String arg1) {
-        return arg1;
-    }
-
+    // Special characters in parameters
     @Tool(name = "specialCharactersInToolArgName")
     public String specialCharactersInToolArgName(@ToolArg(name = "@arg1!><", description = "specialCharactersInToolArgName") String arg1,
                                                  @ToolArg(name = "@arg2={}", description = "specialCharactersInToolArgName") String arg2) {

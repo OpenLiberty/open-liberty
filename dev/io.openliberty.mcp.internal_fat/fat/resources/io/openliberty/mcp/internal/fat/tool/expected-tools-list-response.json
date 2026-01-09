@@ -19,20 +19,6 @@
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {
-                                                "input": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "input"
-                                            ]
-                                        },
-                                        "name": ""
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
                                                 "num1": {
                                                     "description": "first number",
                                                     "type": "integer"
@@ -162,21 +148,6 @@
                                             ]
                                         },
                                         "name": "package"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "arg1": {
-                                                    "description": "specialCharactersInToolName",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "arg1"
-                                            ]
-                                        },
-                                        "name": "specialCharactersInToolName@!><={}'().%:"
                                     },
                                     {
                                         "inputSchema": {

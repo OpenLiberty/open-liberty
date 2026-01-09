@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,9 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.deploymentErrorApps;
 
-import java.util.List;
-
-import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.ToolArg;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -20,49 +17,54 @@ import jakarta.enterprise.context.ApplicationScoped;
 public class InvalidToolNameTest {
 
     /////////////////////////////
-    // duplicate parameter names
-    @Tool(name = "duplicateParam")
-    public String duplicateParam(@ToolArg(name = "arg") String arg, @ToolArg(name = "arg") String notArg) {
-        return notArg;
+    @Tool(name = "validTool")
+    public String validTool(@ToolArg(name = "arg") String arg) {
+        return arg;
     }
 
-    @Tool(name = "duplicateParamVariant")
-    public String duplicateParamVariant(@ToolArg(name = "arg") String arg, @ToolArg(name = "arg") String notArg, @ToolArg(name = "arg") String notArgAgain) {
-        return notArgAgain;
+    @Tool(name = "validTool1")
+    public String validTool1(@ToolArg(name = "arg") String arg) {
+        return arg;
     }
 
-    @Tool(name = "argNameisBlank")
-    public String argNameisBlank(@ToolArg(name = "") String arg1) {
-        return arg1;
+    @Tool(name = "valid_Tool2")
+    public String valid_Tool2(@ToolArg(name = "arg") String arg) {
+        return arg;
     }
 
-    @Tool(name = "argNameisBlankVariant")
-    public String argNameisBlankVariant(@ToolArg(name = "") String arg1, @ToolArg(name = "") String arg2) {
-        return arg1;
+    @Tool(name = "valid_Tool.3")
+    public String valid_Tool3(@ToolArg(name = "arg") String arg) {
+        return arg;
     }
 
-    @Tool(name = "testToolArgDefaultValueWithoutTypeConverter", title = "testToolArgDefaultValueWithoutTypeConverter",
-          description = "Test toolarg with defaultValue without a converter for its type")
-    public String testToolArgDefaultValueWithoutTypeConverter(@ToolArg(name = "city", description = "current city", required = false,
-                                                                       defaultValue = "name=London::country=UK::population=100::boolean=true") City city) {
-        return city.name;
+    @Tool(name = "valid_Tool-Name.4")
+    public String valid_ToolName4(@ToolArg(name = "arg") String arg) {
+        return arg;
     }
 
-    @Tool(name = "testToolArgInvalidNumberDefaultValue", title = "ToolArg Invalid Number Default Value",
-          description = "Test tool response to default value that can't be converted to a integer")
-    public int testToolArgInvalidNumberDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "TwentyTwentyFive") int year) {
-        return year;
+    @Tool(name = "invalid tool")
+    public String invalidTool1(@ToolArg(name = "arg") String arg) {
+        return arg;
     }
 
-    public record City(String name, String country, int population, boolean isCapital) {};
-
-    @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
-    public @Schema(description = "Returns list of  object") <T> List<T> addGenericToGenericArray(@ToolArg(name = "generic list 1",
-                                                                                                          description = "List of generics 1") T[] list1,
-                                                                                                 @ToolArg(name = "generic list 2",
-                                                                                                          description = "List of generics 1 ") List<List<T>>[] list2,
-                                                                                                 @ToolArg(name = "generic", description = "Generic object") T item,
-                                                                                                 @ToolArg(name = "concrete", description = "Concrete object") List<String> item2) {
-        return null;
+    @Tool(name = "invalidtool2!")
+    public String invalidTool2(@ToolArg(name = "arg") String arg) {
+        return arg;
     }
+
+    @Tool(name = "invalid,tool3")
+    public String invalidTool3(@ToolArg(name = "arg") String arg) {
+        return arg;
+    }
+
+    @Tool(name = "")
+    public String invalidTool4(@ToolArg(name = "arg") String arg) {
+        return arg;
+    }
+
+    @Tool(name = "ibmopenlibertyibmopenlibertyibmopenlibertyibmopenliberty ibmopenlibertyibmopenlibertyibmopenlibertyibmopenliberty_ibmopenlibertyibmopenliberty")
+    public String invalidTool5(@ToolArg(name = "arg") String arg) {
+        return arg;
+    }
+
 }

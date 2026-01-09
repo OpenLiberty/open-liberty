@@ -341,7 +341,7 @@ public record ToolMetadata(String name,
      * Used for error reporting cases, such as locating Duplicate Tools and ToolArgs
      */
     public String getToolQualifiedName() {
-        return methodMetadata.map(m -> m.bean().getBeanClass().toString() + "." + m.method().getName())
+        return methodMetadata.map(m -> m.bean().getBeanClass().getName() + "." + m.method().getName())
                              .orElse("User-defined tool: " + name);
     }
 

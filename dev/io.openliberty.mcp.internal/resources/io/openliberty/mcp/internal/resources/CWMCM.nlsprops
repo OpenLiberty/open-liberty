@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=Either add a name to the @ToolA
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: There are multiple MCP tool methods named {0}. The methods are {1}.
 CWMCM0004E.duplicate.tools.explanation=One or more MCP Tool names occurred multiple times. The server expects one name per tool for uniqueness.
 CWMCM0004E.duplicate.tools.useraction=Only provide a unique name for each MCP Tool.
@@ -204,9 +205,11 @@ CWMCM0022E.invalid.cursor.value.useraction=Ensure that the cursor value is provi
 
 # Used for server logging
 # do not translate MCP
-# {0} = The name of the tool
-# {0} = The list of MCP spec naming conventions broken
-CWMCM0023E.invalid.tool.name=CWMCM0022E: MCP tool method named {0} is an invalid name as it dosen't follow the following MCP naming conventions The methods are {1}.
-CWMCM0023E.invalid.tool.name.explanation=One MCP Tool name dosent follow the MCP naming convention for tools.
-CWMCM0023E.invalid.tool.name.useraction=Provide a tool name that follows the MCP naming convention.
+# {1} = The qualified name of the tool
+# {1} = The name of the tool
+# {2} = The list of MCP spec naming conventions broken
+CWMCM0022E.invalid.tool.name=CWMCM0022E: MCP tool method {0} has the name {1} which is invalid as it does not follow the following MCP naming conventions: {2}
+CWMCM0022E.invalid.tool.name.explanation=One MCP Tool name dosent follow the MCP naming convention for tools.
+CWMCM0022E.invalid.tool.name.useraction=Provide a tool name that follows the MCP naming convention.
+
 

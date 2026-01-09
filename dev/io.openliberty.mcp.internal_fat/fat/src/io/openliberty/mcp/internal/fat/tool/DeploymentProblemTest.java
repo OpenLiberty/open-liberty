@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
@@ -48,7 +49,8 @@ public class DeploymentProblemTest extends FATServletClient {
                           "CWMCM0007E", // Invalid Special arguments.
                           "CWMCM0017E", //  Default value has no type converter.
                           "CWMCM0018E", //  Arguments contain generics.
-                          "CWMCM0020E" //  Invalid default value for argument type.
+                          "CWMCM0020E", //  Invalid default value for argument type.
+                          "CWMCM0022E" // Invalid tool names
         );
     }
 
@@ -103,15 +105,64 @@ public class DeploymentProblemTest extends FATServletClient {
     }
 
     @Test
+    public void testInvalidToolNamesWithinvalidCharctersTestCase() throws Exception {
+
+        for (Map.Entry<String, String> entry : Map.of("invalidTool1", "invalid tool", "invalidTool2", "invalidtool2!", "invalidTool3", "invalid,tool3").entrySet()) {
+            String qualifiedName = "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest." + entry.getKey();
+            String expectedErrorHeader = Pattern.quote("MCP tool method " + qualifiedName + " has the name " + entry.getValue()
+                                                       + " which is invalid as it does not follow the following MCP naming conventions: The following should be the only allowed characters: uppercase and lowercase ASCII letters (A-Z, a-z), digits (0-9), underscore (_), hyphen (-), and dot (.). Tool names should not contain spaces, commas, or other special characters.");
+            List<String> expectedErrorList = List.of(qualifiedName);
+            ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Generic Args: ", expectedErrorHeader, expectedErrorList, server);
+        }
+    }
+
+    @Test
+    public void testInvalidToolNamesWithinvalidLengthTestCase() throws Exception {
+        String expectedErrorHeader = Pattern.quote("MCP tool method io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4 has the name  which is invalid as it does not follow the following MCP naming conventions: Tool names should be between 1 and 128 characters in length (inclusive).");
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Generic Args: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testInvalidToolNamesWithinvalidLengthandCharactersTestCase() throws Exception {
+        String expectedErrorHeader = Pattern.quote("MCP tool method io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5 has the name ibmopenlibertyibmopenlibertyibmopenlibertyibmopenliberty ibmopenlibertyibmopenlibertyibmopenlibertyibmopenliberty_ibmopenlibertyibmopenliberty which is invalid as it does not follow the following MCP naming conventions: Tool names should be between 1 and 128 characters in length (inclusive).,The following should be the only allowed characters: uppercase and lowercase ASCII letters (A-Z, a-z), digits (0-9), underscore (_), hyphen (-), and dot (.). Tool names should not contain spaces, commas, or other special characters.");
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Generic Args: ", expectedErrorHeader, expectedErrorList, server);
+    }
+//
+//    @Test
+//    public void testInvalidToolNamesWithinvalidCharctersTestCase() throws Exception {
+//        String expectedErrorHeader = "MCP tool method named (.+?) is an invalid name as it does not follow the following MCP naming conventions: (.+?)";
+//        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool1",
+//                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool2",
+//                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool3");
+//        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Tool Name: ", expectedErrorHeader, expectedErrorList, server);
+//    }
+//
+//    @Test
+//    public void testInvalidToolNamesWithinvalidLengthTestCase() throws Exception {
+//        String expectedErrorHeader = "MCP tool method named (.*?) is an invalid name as it does not follow the following MCP naming conventions: (.+?)";
+//        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4");
+//        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Tool name: ", expectedErrorHeader, expectedErrorList, server);
+//    }
+//
+//    @Test
+//    public void testInvalidToolNamesWithinvalidLengthandCharactersTestCase() throws Exception {
+//        String expectedErrorHeader = "MCP tool method named (.+?) is an invalid name as it does not follow the following MCP naming conventions: (.+?)";
+//        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5");
+//        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Tool name: ", expectedErrorHeader, expectedErrorList, server);
+//    }
+
+    @Test
     public void testToolArgDefaultValueWithoutTypeConverter() throws Exception {
-        String expectedErrorHeader = Pattern.quote("CWMCM0017E: The city argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter MCP tool method does not have a converter to change its default value into an object of type class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest$City.");
+        String expectedErrorHeader = Pattern.quote("CWMCM0017E: The city argument of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter MCP tool method does not have a converter to change its default value into an object of type class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest$City.");
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg DefaultValue Without Converter: ", expectedErrorHeader, expectedErrorList, server);
     }
 
     @Test
     public void testToolArgInvalidDefaultValueForType() throws Exception {
-        String expectedErrorHeader = "CWMCM0020E: The default value of the year argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue MCP tool cannot be converted to the int type. The value is TwentyTwentyFive. The error is java.lang.NumberFormatException: For input string: \"TwentyTwentyFive\"";
+        String expectedErrorHeader = "CWMCM0020E: The default value of the year argument of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue MCP tool cannot be converted to the int type. The value is TwentyTwentyFive. The error is java.lang.NumberFormatException: For input string: \"TwentyTwentyFive\"";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg Invalid DefaultValue for Argument Type: ", expectedErrorHeader, expectedErrorList, server);
     }

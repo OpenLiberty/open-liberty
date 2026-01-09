@@ -216,7 +216,7 @@ public class McpCdiExtension implements Extension {
             }
             if (!errors.isEmpty()) {
                 error = true;
-                Tr.error(tc, "CWMCM0022E.invalid.tool.name", toolName, errors);
+                Tr.error(tc, "CWMCM0022E.invalid.tool.name", tool.getToolQualifiedName(), toolName, String.join(",", errors));
             }
         }
         return error;
