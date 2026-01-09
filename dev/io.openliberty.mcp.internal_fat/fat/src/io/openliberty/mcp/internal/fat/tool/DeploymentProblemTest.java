@@ -169,7 +169,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testToolArgWithOptionalValueAndDefaultValue() throws Exception {
-        String expectedErrorHeader = "CWMCM0017E: The input argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet MCP tool method does not have a converter to change its default value into an object of type java.util.Optional<java.lang.String>.";
+        String expectedErrorHeader = "CWMCM0017E: The input argument of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet MCP tool method does not have a converter to change its default value into an object of type java.util.Optional<java.lang.String>.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg No Converter for DefaultValue: ", expectedErrorHeader, expectedErrorList, server);
     }
